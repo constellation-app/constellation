@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2023 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,13 @@ package au.gov.asd.tac.constellation.views.analyticview.visualisation;
 
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewController;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.translators.AbstractSizeTranslator;
+import au.gov.asd.tac.constellation.views.analyticview.translators.AnalyticTranslator;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import javafx.scene.Node;
 import javafx.scene.control.ToggleButton;
 
@@ -33,6 +36,7 @@ public class SizeVisualisation<C> extends GraphVisualisation {
 
     private final AbstractSizeTranslator<? extends AnalyticResult<?>, C> translator;
     private final ToggleButton sizeButton;
+    private boolean activated = false;
 
     public SizeVisualisation(final AbstractSizeTranslator<? extends AnalyticResult<?>, C> translator) {
         this.translator = translator;
@@ -40,9 +44,21 @@ public class SizeVisualisation<C> extends GraphVisualisation {
         this.sizeButton = new ToggleButton("Size");
         sizeButton.setId("size-visualisation-button");
         sizeButton.setOnAction(event -> {
-            final boolean reset = !sizeButton.isSelected();
-            translator.executePlugin(reset);
+            activated = sizeButton.isSelected(); 
+            this.translator.executePlugin(!activated);
+            AnalyticViewController.getDefault().updateGraphVisualisations(this, activated);
+            AnalyticViewController.getDefault().writeState();
         });
+    }
+
+    @Override
+    public void deactivate(final boolean reset) {
+        if (reset) {
+            translator.executePlugin(reset);
+            activated = !reset;
+            sizeButton.setSelected(activated);
+            AnalyticViewController.getDefault().updateGraphVisualisations(this, activated);
+        }
     }
 
     @Override
@@ -54,11 +70,37 @@ public class SizeVisualisation<C> extends GraphVisualisation {
     public Node getVisualisation() {
         return sizeButton;
     }
+    
+    @Override 
+    public AnalyticTranslator getTranslator() {
+        return translator;
+    }
 
     @Override
     public List<SchemaAttribute> getAffectedAttributes() {
         return Arrays.asList(
                 VisualConcept.VertexAttribute.NODE_RADIUS,
                 VisualConcept.TransactionAttribute.WIDTH);
+    }
+
+    @Override
+    public boolean isActive() {
+        return activated;
+    }
+
+    @Override
+    public void setSelected(final boolean selected) {
+        sizeButton.setSelected(selected);
+        activated = selected;
+    }
+    
+    @Override 
+    public boolean equals(final Object object) {
+        return (object != null && getClass() == object.getClass());
+    }
+    
+    @Override 
+    public int hashCode() {
+        return Objects.hash(sizeButton.getClass());
     }
 }

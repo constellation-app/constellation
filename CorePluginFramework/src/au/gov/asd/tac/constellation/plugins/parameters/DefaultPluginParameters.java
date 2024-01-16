@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2023 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ public class DefaultPluginParameters {
 
     private static final Map<Class<? extends Plugin>, PluginParameters> DEFAULT_PARAMETER_IDS = new HashMap<>();
 
-    public static PluginParameters getDefaultParameters(Plugin plugin) {
+    public static PluginParameters getDefaultParameters(final Plugin plugin) {
         final PluginParameters parameters;
         if (!DEFAULT_PARAMETER_IDS.containsKey(plugin.getClass())) {
             parameters = plugin.createParameters();

@@ -73,6 +73,14 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>org.openide.filesystems</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>9.18</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>org.openide.filesystems.nb</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -89,11 +97,27 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>org.openide.loaders</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>7.76</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>org.openide.modules</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
                         <specification-version>7.48.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.openide.nodes</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>7.53</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -164,6 +188,7 @@
                 <package>au.gov.asd.tac.constellation.utilities.memory</package>
                 <package>au.gov.asd.tac.constellation.utilities.nifi</package>
                 <package>au.gov.asd.tac.constellation.utilities.nifi.rest</package>
+                <package>au.gov.asd.tac.constellation.utilities.qs</package>
                 <package>au.gov.asd.tac.constellation.utilities.query</package>
                 <package>au.gov.asd.tac.constellation.utilities.rest</package>
                 <package>au.gov.asd.tac.constellation.utilities.sql</package>

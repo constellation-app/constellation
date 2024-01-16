@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -116,6 +117,7 @@ public abstract class ImportController<D> {
     public void displayAlert(final String header, final String message, final AlertType alertType) {
         final Alert dialog;
         dialog = new Alert(alertType, "", ButtonType.OK);
+        dialog.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         dialog.setTitle("Delimited Importer");
         dialog.setHeaderText(header);
         dialog.setContentText(message);

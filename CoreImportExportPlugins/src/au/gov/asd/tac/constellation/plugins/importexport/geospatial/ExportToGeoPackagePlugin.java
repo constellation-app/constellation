@@ -22,11 +22,11 @@ import static au.gov.asd.tac.constellation.plugins.importexport.geospatial.Abstr
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
-import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -43,7 +43,7 @@ public class ExportToGeoPackagePlugin extends AbstractGeoExportPlugin {
 
     @Override
     protected ExtensionFilter getExportType() {
-        return new FileChooser.ExtensionFilter("GeoPackage", "*.gpkg");
+        return new ExtensionFilter("GeoPackage", FileExtensionConstants.GEO_PACKAGE);
     }
 
     @Override

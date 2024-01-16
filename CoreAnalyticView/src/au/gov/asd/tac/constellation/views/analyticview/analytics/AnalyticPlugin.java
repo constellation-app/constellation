@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2023 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -91,8 +91,8 @@ public abstract class AnalyticPlugin<R extends AnalyticResult<?>> extends Simple
     public String getHelpPath() {
         final String codebaseName = "constellation";
         final String sep = File.separator;
-        return Generator.getBaseDirectory() + codebaseName + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep + "gov" + sep
-                + "asd" + sep + "tac" + sep + codebaseName + sep + "views" + sep + "analyticview" + sep + "docs" + sep;
+        return Generator.getBaseDirectory() + sep + "ext" + sep + "docs" + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep + "gov" + sep
+                + "asd" + sep + "tac" + sep + codebaseName + sep + "views" + sep + "analyticview" +  sep;
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.openide.filesystems.FileChooserBuilder;
+import org.openide.windows.TopComponent;
+import org.openide.windows.TopComponent.Registry;
 import org.openide.windows.WindowManager;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
@@ -39,11 +41,16 @@ public class ShowFileChooserDialogNGTest {
     
     @Test
     public void run_open_save() {
-        try(final MockedStatic<WindowManager> windowManagerMockedStatic = Mockito.mockStatic(WindowManager.class)) {
+        try (final MockedStatic<WindowManager> windowManagerMockedStatic = Mockito.mockStatic(WindowManager.class);
+                final MockedStatic<TopComponent> topComponentMockedStatic = Mockito.mockStatic(TopComponent.class)) {
             final WindowManager windowManager = mock(WindowManager.class);
             windowManagerMockedStatic.when(WindowManager::getDefault).thenReturn(windowManager);
             final JFrame frame = mock(JFrame.class);
             when(windowManager.getMainWindow()).thenReturn(frame);
+            
+            final Registry registry = mock(Registry.class);
+            when(registry.getActivated()).thenReturn(null);
+            topComponentMockedStatic.when(() -> TopComponent.getRegistry()).thenReturn(registry);
             
             final FileChooserBuilder fileChooserBuilder = mock(FileChooserBuilder.class);
             final File file = mock(File.class);

@@ -86,7 +86,7 @@ public class TableViewTopComponentNGTest {
 
         doCallRealMethod().when(tableViewTopComponent).createStyle();
 
-        assertEquals("resources/table-view.css", tableViewTopComponent.createStyle());
+        assertEquals("resources/table-view-light.css", tableViewTopComponent.createStyle());
     }
 
     @Test

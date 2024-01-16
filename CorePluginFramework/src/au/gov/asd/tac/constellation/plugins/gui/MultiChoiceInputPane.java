@@ -128,7 +128,7 @@ public class MultiChoiceInputPane extends HBox {
         
         final HBox fieldAndButtons = new HBox();
         fieldAndButtons.setSpacing(2);
-        fieldAndButtons.getChildren().addAll(field, field.getBulkSelectionOptionsMenuButton());
+        fieldAndButtons.getChildren().addAll(field);
         getChildren().add(fieldAndButtons);
     }
 }

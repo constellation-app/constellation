@@ -21,7 +21,6 @@ import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionMod
 import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionProtectedPanel;
 import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionRenamerPanel;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.KeyAdapter;
@@ -161,8 +160,6 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
         // Create label and container to show user when no active graph selected:
         panelNoGraph.setLayout(new BorderLayout());
         panelNoGraph.setName("panelNoGraph");
-        lblNoGraph.setBackground(Color.WHITE);
-        lblNoGraph.setForeground(Color.LIGHT_GRAY);
         lblNoGraph.setOpaque(true);
         lblNoGraph.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblNoGraph.setVerticalAlignment(javax.swing.SwingConstants.CENTER);

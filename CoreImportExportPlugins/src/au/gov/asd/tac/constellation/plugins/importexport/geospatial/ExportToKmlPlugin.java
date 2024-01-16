@@ -20,12 +20,12 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Map;
-import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -42,7 +42,7 @@ public class ExportToKmlPlugin extends AbstractGeoExportPlugin {
 
     @Override
     protected ExtensionFilter getExportType() {
-        return new FileChooser.ExtensionFilter("KML", "*.kml");
+        return new ExtensionFilter("KML", FileExtensionConstants.KML);
     }
 
     @Override
