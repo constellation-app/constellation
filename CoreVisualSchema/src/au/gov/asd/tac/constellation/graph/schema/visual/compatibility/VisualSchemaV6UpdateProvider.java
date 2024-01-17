@@ -68,6 +68,7 @@ public class VisualSchemaV6UpdateProvider extends SchemaUpdateProvider {
             final int newGraphBottomLabelsAttributeId = VisualConcept.GraphAttribute.BOTTOM_LABELS.ensure(graph);
             final String bottomLabelValue = graph.getStringValue(oldGraphBottomlabelsAttributeId, 0);
             graph.setStringValue(newGraphBottomLabelsAttributeId, 0, bottomLabelValue);
+            graph.removeAttribute(oldGraphBottomlabelsAttributeId);
         }
 
         // retrieve the new values for the graph_labels_top and set it to the new values
@@ -75,11 +76,8 @@ public class VisualSchemaV6UpdateProvider extends SchemaUpdateProvider {
             final int newGraphTopLabelsAttributeId = VisualConcept.GraphAttribute.TOP_LABELS.ensure(graph);
             final String topLabelValue = graph.getStringValue(oldGraphToplabelsAttributeId, 0);
             graph.setStringValue(newGraphTopLabelsAttributeId, 0, topLabelValue);
+            graph.removeAttribute(oldGraphToplabelsAttributeId);
         }
-
-        // remove the old attributes
-        graph.removeAttribute(oldGraphBottomlabelsAttributeId);
-        graph.removeAttribute(oldGraphToplabelsAttributeId);
     }
 
 }
