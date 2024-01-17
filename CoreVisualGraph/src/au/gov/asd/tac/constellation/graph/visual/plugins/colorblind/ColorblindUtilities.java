@@ -54,7 +54,7 @@ public class ColorblindUtilities {
                     wg.setObjectValue(vxColorblindAttr, vxId, newColor);
                 }
             }
-
+            //Iterate through graph transactions. If transcationType is a defined schemaType color will be adjusted if applicable.
             for (int transaction = 0; transaction < transactionCount; transaction++) {
                 final int transactionId = wg.getTransaction(transaction);
                 final ConstellationColor transactionColor = wg.getObjectValue(txColorAttr, transactionId);
