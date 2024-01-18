@@ -189,7 +189,7 @@ public class ContentTokenizingServices {
             Thread.currentThread().setName("NGram.NGramServices.Thread.NGramComputation" + threadID);
             // Connect the adaptor to the data source 
             phraseAdaptor.connect();
-            // tokenize the content!
+            // tokenize the content
             extractTokensFromElements();
             // disconnect the adaptor from the data source 
             phraseAdaptor.disconnect();

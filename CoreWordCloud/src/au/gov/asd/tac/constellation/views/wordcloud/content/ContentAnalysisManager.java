@@ -247,6 +247,7 @@ public class ContentAnalysisManager {
                     wordCloud = new WordCloud(handler, bgHandler, elementType, phrasiphyContentParams.getThreshold(), phrasiphyContentParams.hasFilterAllWords(), (WordCloud) graph.getObjectValue(cloudAttr, 0));
                 }
 
+                LOGGER.log(Level.SEVERE, "Word cloud has been created");
                 wordCloud.setQueryInfo(phrasiphyContentParams.getPhraseLength(), phrasiphyContentParams.getProximity(), graph.getAttributeName(phrasiphyContentParams.getOnAttributeID()));
                 graph.setObjectValue(cloudAttr, 0, wordCloud);
             }
