@@ -40,6 +40,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser.ExtensionFilter;
 import org.apache.commons.lang3.StringUtils;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileChooserBuilder;
 import org.openide.util.Exceptions;
 
@@ -164,7 +166,7 @@ public class FileInputPane extends HBox {
         field.setManaged(parameter.isVisible());
         this.setManaged(parameter.isVisible());
         this.setVisible(parameter.isVisible());
-
+        
         field.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.DELETE) {
                 final IndexRange selection = field.getSelection();
@@ -211,8 +213,10 @@ public class FileInputPane extends HBox {
         field.setPrefWidth(defaultWidth);
 
         final Tooltip tooltip = new Tooltip("");
-        tooltip.setStyle("-fx-text-fill: black;");
-        field.textProperty().addListener((observableValue, oldValue, newValue) -> {
+        
+        // Looks for changes to the input field
+        // Triggers a change to the parameter
+        field.textProperty().addListener((observableValue, oldValue, newValue) -> {            
             // Validation
             final String error = parameter.validateString(field.getText());
             if ((required && StringUtils.isBlank(field.getText())) || error != null) {
@@ -224,19 +228,26 @@ public class FileInputPane extends HBox {
                 field.setTooltip(null);
                 field.setId("");
             }
-            parameter.setStringValue(field.getText());
+            
+            // Do not retrigger the parameter listner if this event was triggered by the parameter listner.
+            String param = parameter.getStringValue();
+            if (!field.getText().equals(param)){
+                parameter.setStringValue(field.getText());
+            }
         });
 
+        // Looks for changes to the plugin parameter
+        // Can be triggered by a change from the application or a change from the respective input field
         parameter.addListener((pluginParameter, change) -> {
             Platform.runLater(() -> {
                 switch (change) {
                     case VALUE:
-                        // Don't change the value if it isn't necessary.
-                        final String param = parameter.getStringValue();
-                        if (!field.getText().equals(param)) {
-                            field.setText(param);
-                        }
-                        break;
+                    // Do not retrigger the fieled listner if this event was triggered by the field listner.
+                    final String param = parameter.getStringValue();
+                    if (!field.getText().equals(param)) {
+                        field.setText(param);
+                    }
+                    break;
                     case ENABLED:
                         field.setDisable(!pluginParameter.isEnabled());
                         break;

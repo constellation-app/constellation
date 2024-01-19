@@ -321,7 +321,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
     }
     
     @Override
-    public void notifyRequiredParameterChange(PluginParameter<?> parameter, boolean currentlySatisfied) {
+    public void notifyParameterValidityChange(PluginParameter<?> parameter, boolean currentlySatisfied) {
         // Must be overriden to implement PluginParametersPaneListener
     }
 

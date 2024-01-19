@@ -75,6 +75,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import org.apache.commons.lang3.StringUtils;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.awt.StatusDisplayer;
 import org.openide.util.HelpCtx;
 
@@ -812,13 +814,17 @@ public final class PluginParametersPane extends GridPane {
         }
         
         private void updateTop(PluginParameter<?> parameter){
+            
             parameter.getStringValue();
             if (parameter.isRequired()){
                 if (StringUtils.isBlank(parameter.getStringValue())) {
-                    top.notifyRequiredParameterChange(parameter, false);  
+                    top.notifyParameterValidityChange(parameter, false);  
                 } else {
-                    top.notifyRequiredParameterChange(parameter, true);
+                    top.notifyParameterValidityChange(parameter, true);
                 }
+            }
+            if (parameter.validateString(parameter.getStringValue()) != null){
+                top.notifyParameterValidityChange(parameter, false);
             }
         }
             

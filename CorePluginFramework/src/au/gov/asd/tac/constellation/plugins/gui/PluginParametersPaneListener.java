@@ -54,6 +54,6 @@ public interface PluginParametersPaneListener {
      * @param parameter
      * @param currentlySatisfied 
      */
-    public void notifyRequiredParameterChange(final PluginParameter<?> parameter, final boolean currentlySatisfied);
+    public void notifyParameterValidityChange(final PluginParameter<?> parameter, final boolean currentlySatisfied);
     
 }

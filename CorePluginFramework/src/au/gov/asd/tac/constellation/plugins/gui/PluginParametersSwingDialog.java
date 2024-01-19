@@ -57,7 +57,7 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
     private final String title;
     private final JFXPanel xp;
     
-    final HashMap<PluginParameter<?>, Boolean> requiredParameters = new HashMap();
+    final HashMap<PluginParameter<?>, Boolean> parameterValidity = new HashMap();
     final JButton acceptanceOption;
 
     /**
@@ -241,13 +241,13 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
         }
         
         @Override
-        public void notifyRequiredParameterChange(final PluginParameter<?> parameter, final boolean currentlySatisfied){
-            requiredParameters.put(parameter, currentlySatisfied);
+        public void notifyParameterValidityChange(final PluginParameter<?> parameter, final boolean currentlySatisfied){
+            parameterValidity.put(parameter, currentlySatisfied);
             acceptanceOption.setEnabled(requirmentsSatisfied());
         }
         
         public boolean requirmentsSatisfied(){
-            return requiredParameters.values().stream().noneMatch(val -> val.equals(false));
+            return parameterValidity.values().stream().noneMatch(val -> val.equals(false));
         }
 
     /**

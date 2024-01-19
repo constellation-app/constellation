@@ -178,7 +178,7 @@ public class HeadingPaneNGTest {
         }
 
         @Override
-        public void notifyRequiredParameterChange(PluginParameter<?> parameter, boolean currentlySatisfied) {
+        public void notifyParameterValidityChange(PluginParameter<?> parameter, boolean currentlySatisfied) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 

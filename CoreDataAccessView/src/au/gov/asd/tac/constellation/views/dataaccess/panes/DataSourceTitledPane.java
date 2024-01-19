@@ -407,7 +407,7 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
     }
 
     @Override
-    public void notifyRequiredParameterChange(PluginParameter<?> parameter, boolean currentlySatisfied) {
+    public void notifyParameterValidityChange(PluginParameter<?> parameter, boolean currentlySatisfied) {
         // Must be overriden to implement PluginParametersPaneListener
     }
 

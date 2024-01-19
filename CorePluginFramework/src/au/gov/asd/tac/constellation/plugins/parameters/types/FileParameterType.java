@@ -20,6 +20,9 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.io.File;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -154,6 +157,12 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
      */
     public static void enableAcceptAllFileFilter(final PluginParameter<FileParameterValue> parameter) {
         parameter.getParameterValue().enableAcceptAllFileFilter();
+    }
+    
+    @Override
+    public String validateString(final PluginParameter<FileParameterValue> param, final String stringValue) {
+        final FileParameterValue v = param.getParameterValue();
+        return v.validateString(stringValue);
     }
 
     /**
@@ -343,7 +352,22 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
 
         @Override
         public String validateString(final String s) {
-            return null;
+            try {
+                Path path = Paths.get(s);
+                File validationFile = new File(s);
+                File validFile = new File("valid");
+                //Accepted Conditions:
+                //The current file is a directory
+                //The current file has no parent
+                //the current file has a prent that is a directory
+                if (validationFile.isDirectory() || (!validationFile.isDirectory() && (validationFile.getParentFile() == validFile.getParentFile() || (validationFile.getParentFile() != null && validationFile.getParentFile().exists())))){
+                    return null;
+                } else {
+                    return "The specified file path doe not contain valid directories";   
+                }
+            } catch (InvalidPathException | NullPointerException ex) {
+                return "The provided Path is invalid";
+            }
         }
 
         @Override
