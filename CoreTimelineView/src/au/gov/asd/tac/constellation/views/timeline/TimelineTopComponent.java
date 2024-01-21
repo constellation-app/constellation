@@ -98,8 +98,6 @@ import org.openide.windows.TopComponent;
 public final class TimelineTopComponent extends TopComponent implements LookupListener, GraphChangeListener, UndoRedo.Provider {
 
     private static final double DEFAULT_DIVIDER_LOCATION = 0.8;
-    private static final String LIGHT_THEME = "resources/Style-Container-Light.css";
-    private static final String DARK_THEME = "resources/Style-Container-Dark.css";
     private static final String UPDATE_TIMELINE_THREAD_NAME = "Update Timeline from Graph";
     public static final List<String> SUPPORTED_DATETIME_ATTRIBUTE_TYPES = Arrays.asList(
             ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME,
@@ -160,7 +158,6 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
             splitPane.setId("hiddenSplitter");
             splitPane.getItems().addAll(timelinePanel, overviewPanel);
             splitPane.setOrientation(Orientation.VERTICAL);
-            splitPane.getStylesheets().add(TimelineTopComponent.class.getResource(DARK_THEME).toExternalForm());
             splitPane.setMinHeight(height * 0.8);
             splitPane.setVisible(false);
             splitPane.setDisable(true);
@@ -170,7 +167,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
 
             // Create the scene:
             final Scene scene = new Scene(root);
-            scene.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
+            scene.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
 
             splitPane.prefHeightProperty().bind(scene.heightProperty());
             splitPane.prefWidthProperty().bind(scene.widthProperty());

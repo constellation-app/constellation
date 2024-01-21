@@ -21,12 +21,11 @@ import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
 
@@ -73,17 +72,17 @@ public class GettingStartedWelcomePlugin implements WelcomePluginInterface {
     public Button getButton() {
         started.setFitHeight(25);
         started.setFitWidth(25);
-        final Text title = new Text("Getting Started");
-        title.setFill(Color.WHITE);
-        final Text subtitle = new Text("Quick Start Guide");
-        subtitle.setId("smallInfoText");
-        subtitle.setFill(Color.WHITE);
+        final Label title = new Label("Getting Started");
+        title.setId("label");
+        final Label subtitle = new Label("Quick Start Guide");
+        subtitle.setId("infoText");
         final VBox layoutVBox = new VBox(title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER_LEFT);
         final HBox layoutHBox = new HBox(started, layoutVBox);
         layoutHBox.setSpacing(8);
         layoutHBox.setAlignment(Pos.CENTER_LEFT);
         startedBtn.setGraphic(layoutHBox);
+        startedBtn.setId("left-button");
         return startedBtn;
     }
 }

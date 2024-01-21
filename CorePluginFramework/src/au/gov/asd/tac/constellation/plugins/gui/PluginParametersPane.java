@@ -714,7 +714,7 @@ public final class PluginParametersPane extends GridPane {
     }
 
     private static Button buildHelpButton(final String helpId, final String helpForLabel) {
-        final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
+        final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor())));
         helpButton.paddingProperty().set(HELP_INSETS);
         helpButton.setTooltip(new Tooltip(String.format("Display help for %s", helpForLabel)));
         helpButton.setOnAction(event -> {
@@ -724,7 +724,7 @@ public final class PluginParametersPane extends GridPane {
         });
 
         // Get rid of the ugly button look so the icon stands alone.
-        helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
+        helpButton.setStyle("-fx-border-color: transparent; -fx-background-color: transparent; -fx-effect: null; ");
         return helpButton;
     }
 
@@ -752,11 +752,11 @@ public final class PluginParametersPane extends GridPane {
             final Label description = new Label(parameter.getDescription());
             label.setMinWidth(145);
             label.setWrapText(true);
-            label.setStyle("-fx-font-weight: bold"); // TODO: temporary fix until the main and dynamic style sheets are loaded
-            description.setId("smallInfoText"); // TODO: this is not being used because the style sheets are not loaded
-            description.getStyleClass().add("description-label"); // TODO: this is not being used because the style sheets are not loaded
+            label.setStyle("-fx-font-weight: bold");
+            description.setId("smallInfoText"); 
+            description.getStyleClass().add("description-label");
             description.setWrapText(true);
-            description.setStyle("-fx-font-size: smaller"); // TODO: temporary fix until the main and dynamic style sheets are loaded
+            description.setStyle("-fx-font-size: smaller"); 
             final LabelDescriptionBox labels = new LabelDescriptionBox(label, description);
             labels.setVisible(parameter.isVisible());
             labels.setManaged(parameter.isVisible());

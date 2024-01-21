@@ -126,6 +126,35 @@ public class LevenshteinDistancePluginNGTest {
      * @throws java.lang.Exception
      */
     @Test
+    public void testLevenshteinDistanceMaxDistanceZero() throws Exception {
+
+        final int vertexLabelAttributeId = VisualConcept.VertexAttribute.LABEL.ensure(graph);
+
+        graph.getSchema().newGraph(graph);
+        final int srcId = graph.addVertex();
+        graph.setStringValue(vertexLabelAttributeId, srcId, "Test");
+
+        final int dstId = graph.addVertex();
+        graph.setStringValue(vertexLabelAttributeId, dstId, "Test");
+
+        final LevenshteinDistancePlugin instance = new LevenshteinDistancePlugin();
+        PluginExecution.withPlugin(instance)
+                .withParameter(LevenshteinDistancePlugin.ATTRIBUTE_PARAMETER_ID, graph.getAttributeName(vertexLabelAttributeId))
+                .withParameter(LevenshteinDistancePlugin.MAXIMUM_DISTANCE_PARAMETER_ID, 0)
+                .withParameter(LevenshteinDistancePlugin.CASE_INSENSITIVE_PARAMETER_ID, false)
+                .withParameter(LevenshteinDistancePlugin.SELECTED_ONLY_PARAMETER_ID, false)
+                .executeNow(graph);
+
+        // Assert there is a similarity link between the nodes with distance = 1
+        assertEquals(graph.getTransactionCount(), 1);
+    }
+
+    /**
+     * Test of class LevenshteinDistancePlugin.
+     *
+     * @throws java.lang.Exception
+     */
+    @Test
     public void testLevenshteinDistanceCaseInsensitive() throws Exception {
 
         final int vertexIdentifierAttributeId = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);

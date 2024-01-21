@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.plugins.gui;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -127,7 +128,6 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
         Platform.runLater(() -> {
             final BorderPane root = new BorderPane();
             root.setPadding(new Insets(10));
-            root.setStyle("-fx-background-color: #F0F0F0;");
 
             // Attempt to give the window a sensible width and/or height.
             root.setMinWidth(500);
@@ -135,11 +135,8 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
             final PluginParametersPane parametersPane = PluginParametersPane.buildPane(parameters, this, excludedParameters);
             root.setCenter(parametersPane);
             final Scene scene = new Scene(root);
+            scene.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
 
-            // TODO: the main stylesheet isn't loaded here and should be
-            // something like the following
-//            scene.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
-//            scene.getStylesheets().add(JavafxStyleManager.getDynamicStyleSheet());
             xp.setScene(scene);
             xp.setPreferredSize(new Dimension((int) scene.getWidth(), (int) scene.getHeight()));
             latch.countDown();
