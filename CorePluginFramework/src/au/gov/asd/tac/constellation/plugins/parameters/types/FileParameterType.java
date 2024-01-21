@@ -360,7 +360,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
                 //The current file is a directory
                 //The current file has no parent
                 //the current file has a prent that is a directory
-                if (validationFile.isDirectory() || (!validationFile.isDirectory() && (validationFile.getParentFile() == validFile.getParentFile() || (validationFile.getParentFile() != null && validationFile.getParentFile().exists())))){
+                if (validationFile.isDirectory() || (!validationFile.isDirectory() && validationFile.getParentFile() != null && validationFile.getParentFile().exists())){
                     return null;
                 } else {
                     return "The specified file path doe not contain valid directories";   

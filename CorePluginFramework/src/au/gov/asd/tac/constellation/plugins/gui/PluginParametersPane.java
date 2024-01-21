@@ -803,7 +803,7 @@ public final class PluginParametersPane extends GridPane {
                         }
                         Platform.runLater(this::parameterHasChanged);
                         break;
-                    case VALUE:
+                    case VALUE: 
                         Platform.runLater(this::parameterHasChanged);
                         break;
                     default:
@@ -813,18 +813,18 @@ public final class PluginParametersPane extends GridPane {
             });
         }
         
-        private void updateTop(PluginParameter<?> parameter){
-            
-            parameter.getStringValue();
-            if (parameter.isRequired()){
-                if (StringUtils.isBlank(parameter.getStringValue())) {
-                    top.notifyParameterValidityChange(parameter, false);  
+        /**
+         * Notifies the listener of conditions relevant to the plugin is class.
+         * Top notified of changes in validity of parameters contained with the plugin parameters pane. 
+         * @param parameter 
+         */
+        private void updateTop(PluginParameter<?> parameter){  
+            if (parameter != null & top != null){
+                if ((parameter.isRequired() && StringUtils.isBlank(parameter.getStringValue())) || parameter.getError() != null){
+                    top.notifyParameterValidityChange(parameter, false);
                 } else {
                     top.notifyParameterValidityChange(parameter, true);
                 }
-            }
-            if (parameter.validateString(parameter.getStringValue()) != null){
-                top.notifyParameterValidityChange(parameter, false);
             }
         }
             
