@@ -52,9 +52,9 @@ public class ImportExportPluginsHelpProvider extends HelpPageProvider {
         //Export Plugins
         map.put("au.gov.asd.tac.constellation.plugins.importexport.export", importExportModulePath + "export-from-constellation.md");
         map.put("au.gov.asd.tac.constellation.plugins.importexport.geospatial.ExportToGeoJsonPlugin", importExportModulePath + "export-from-constellation.md");
-        map.put("au.gov.asd.tac.constellation.plugins.importexport.geospatial..ExportToImagePlugin", importExportModulePath + "export-from-constellation.md");
+        map.put("au.gov.asd.tac.constellation.plugins.importexport.geospatial.ExportToImagePlugin", importExportModulePath + "export-from-constellation.md");
         map.put("au.gov.asd.tac.constellation.plugins.importexport.geospatial.ExportToJsonPlugin", importExportModulePath + "export-from-constellation.md");
-        map.put("au.gov.asd.tac.constellation.plugins.importexport.geospatial..ExportToGeoPackagePlugin", importExportModulePath + "export-from-constellation.md");
+        map.put("au.gov.asd.tac.constellation.plugins.importexport.geospatial.ExportToGeoPackagePlugin", importExportModulePath + "export-from-constellation.md");
         map.put("au.gov.asd.tac.constellation.plugins.importexport.geospatial.ExportToShapefilePlugin", importExportModulePath + "export-from-constellation.md");
         map.put("au.gov.asd.tac.constellation.plugins.importexport.geospatial.ExportToKmlPlugin", importExportModulePath + "export-from-constellation.md");
         
