@@ -1,0 +1,87 @@
+.root {
+    -fx-control-inner-background: #FFFFFF;
+    -fx-background: #f0f0f0;
+    -fx-base: #f0f0f0;
+    -fx-cell-hover-color: -fx-shadow-highlight-color;
+}
+
+.menu-button {
+    -fx-background-color: #181818;
+    -fx-border-color: #444444;
+}
+
+.menu:hover {
+    -fx-background-color: #0093FF;
+}
+
+.description-label {
+    -fx-text-fill: rgb(200,200,200);
+    -fx-font-size: smaller;
+}
+
+.title {
+    -fx-text-fill: white;
+}
+
+#title-style {
+    -fx-text-fill: white;
+}
+
+.accordion .titled-pane-heading .title, .titled-pane-heading > .title {
+    -fx-background-color: linear-gradient(to bottom, derive(#0093FF,100%), derive(#0093FF,0%) 5%, derive(#0093FF,-25%) 95%, derive(#0093FF,50%) 100%);
+    -fx-padding: 3;
+}
+
+.titled-pane-selected > .title {
+    -fx-background-color: linear-gradient(to bottom, derive(#2adb48,100%), derive(#2adb48,0%) 5%, derive(#2adb48,-25%) 95%, derive(#2adb48,50%) 100%);
+}
+
+.titled-pane-selected-invalid > .title {
+    -fx-background-color: linear-gradient(to bottom, derive(#2adb48,0%), derive(#2adb48,0%) 60%, derive(#2adb48,0%) 85%, derive(#2adb48,0%) 100%);
+    
+}
+
+.titled-pane-matched > .title {
+    -fx-background-color: linear-gradient(to bottom, derive(#0093FF,100%), derive(#0093FF,0%) 5%, derive(#0093FF,-25%) 95%, derive(#0093FF,50%) 100%);
+}
+
+.titled-pane-invalid > .title {
+    -fx-background-color: linear-gradient(to bottom, derive(#B31D2F,100%), derive(#B31D2F,0%) 5%, derive(#B31D2F,-25%) 95%, derive(#B31D2F,50%) 100%);
+}
+
+.titled-pane-heading > .title {
+    -fx-background-insets: 0, 1, 2;
+    -fx-background-radius: 5 5 0 0, 4 4 0 0, 3 3 0 0;
+    -fx-padding: 0.166667em 0.833333em 0.25em 0.833333em;  /*2 10 3 10*/
+}
+
+.page-corner {
+    -fx-padding: 4.5 4.5 4.5 4.5;
+    -fx-background-color: linear-gradient( from 0% 0% to 50% 50%, rgba(252,247,182,0.5), rgba(165,156,49,0.5));
+    -fx-shape: "M0,0H9L0,9Z";
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 4 , 0.0 , 0 , 0 );
+}
+
+.text-input {
+    -fx-prompt-text-fill: gray;
+}
+
+#invalid {
+    -fx-background-color: #B31D2F;
+    -fx-control-inner-background: #B31D2F;
+}
+
+#titled-pane-label {
+    -fx-text-fill: #111111;
+}
+
+.combo-box {
+    -fx-background-color: white;
+    -fx-border-color: #999999
+}
+
+.scroll-bar:vertical .track {
+    -fx-background-color: white;
+    -fx-border-color: white;
+}
+

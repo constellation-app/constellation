@@ -1,0 +1,67 @@
+#pluginReport {
+    -fx-background-radius: 3;
+    -fx-border-color: #333333;
+    -fx-border-width: 1;
+    -fx-border-radius: 3;
+}
+
+.running {
+    -fx-background-color: green;
+}
+
+.finished {
+    -fx-background-color: #555555;
+}
+
+.errored {
+    -fx-background-color: #8a1d1d;
+}
+
+.failed {
+    -fx-background-color: orange;
+}
+
+.interrupted {
+    -fx-background-color: blue;
+}
+
+.defaultNameText {
+    -fx-text-fill: #eeeeee;
+}
+
+.defaultMessageText {
+    -fx-text-fill: white;
+}
+
+.errorMessageText {
+    -fx-text-fill: #222222;
+}
+
+.errorMessageText {
+    -fx-text-fill: #222222;
+}
+
+.progress-bar .bar {
+    -fx-padding: 5 5 5 5;
+    -fx-background-insets: 3 4 4 4;
+}
+
+.combo-box-popup .list-view .list-cell:filled:selected, 
+.combo-box-popup .list-view .list-cell:filled:selected:hover {
+    -fx-background: -fx-accent;
+    -fx-background-color: #1c5aa6;
+    -fx-text-fill: -fx-selection-bar-text;
+}
+
+.combo-box-popup .list-view .list-cell:filled:hover {
+    -fx-background-color: #1c5aa6;
+    -fx-text-fill: white;
+}
+
+.combo-box-base:hover {
+    -fx-color: -fx-hover-base;
+}
+
+.combo-box-base:showing {
+    -fx-color: -fx-pressed-base;
+}

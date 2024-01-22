@@ -1,0 +1,37 @@
+.web-view {
+    -fx-context-menu-enabled: false;
+}
+
+body {
+    font-family: "Arial Unicode MS", sans-serif;
+}
+
+strong {
+    font-weight: bold;
+}
+
+a {
+    color: #e4741f;
+}
+
+.section {
+    font-weight: lighter;
+}
+
+.badge {
+    font-weight: bold;
+    color: #ffffff;
+    white-space: nowrap;
+    vertical-align: baseline;
+    background-color: #999999;
+    padding: 2px;
+    border-radius: 9px;
+}
+
+.badge-recent {
+    background-color: #ab0095;
+}
+
+.badge-section {
+    background-color: #3a87ad;
+}

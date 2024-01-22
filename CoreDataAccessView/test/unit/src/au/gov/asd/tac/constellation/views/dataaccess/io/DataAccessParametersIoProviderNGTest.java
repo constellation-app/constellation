@@ -108,7 +108,7 @@ public class DataAccessParametersIoProviderNGTest {
                 "param2", "tab2_param2_value"
         );
 
-        saveParameters(tab1GlobalParams, tab2GlobalParams, false);
+        saveParameters(tab1GlobalParams, tab2GlobalParams, true);
     }
 
     @Test
@@ -122,7 +122,7 @@ public class DataAccessParametersIoProviderNGTest {
                 "param2", "tab2_param2_value"
         );
 
-        saveParameters(tab1GlobalParams, tab2GlobalParams, false);
+        saveParameters(tab1GlobalParams, tab2GlobalParams, true);
     }
 
     @Test

@@ -73,7 +73,6 @@ public class WelcomeViewPaneNGTest {
         welcomePane.setButtonProps(button);
 
         verify(button).setMaxSize(150, 150);
-        verify(button).setStyle("-fx-background-color: #2e4973;");
         verify(button).setContentDisplay(ContentDisplay.TOP);
     }
 
@@ -88,7 +87,7 @@ public class WelcomeViewPaneNGTest {
         welcomePane.createRecentButtons(button);
 
         verify(button).setMaxSize(175, 175);
-        verify(button).setStyle("-fx-background-color: #333333; -fx-background-radius: 10px; -fx-text-fill: white;");
+        verify(button).setId("recent-button");
         verify(button).setContentDisplay(ContentDisplay.TOP);
     }
 

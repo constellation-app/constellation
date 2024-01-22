@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.schemaview;
 
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -63,7 +64,9 @@ public final class SchemaViewTopComponent extends JavaFxTopComponent<SchemaViewP
 
     @Override
     protected String createStyle() {
-        return "resources/schema-view.css";
+        return JavafxStyleManager.isDarkTheme() 
+            ? "resources/schema-view-dark.css" 
+            : "resources/schema-view-light.css";
     }
 
     @Override

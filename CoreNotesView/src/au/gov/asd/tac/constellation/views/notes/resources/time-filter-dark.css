@@ -1,0 +1,110 @@
+.custom-menu-item {
+    -fx-background-color: #313131;
+
+}
+
+.custom-menu-item:focused {
+    -fx-background-color: #313131;
+}
+
+.combo-box-popup .list-view .list-cell:filled:selected, .combo-box-popup .list-view .list-cell:filled:selected:hover 
+{
+    -fx-background: -fx-accent;
+    -fx-background-color: #1c5aa6;
+    -fx-text-fill: -fx-selection-bar-text;
+}
+
+.combo-box-popup .list-view .list-cell:filled:hover 
+{
+    -fx-background-color: #1c5aa6;
+    -fx-text-fill: -fx-text-inner-color;
+}
+
+.label {
+    -fx-text-fill: white;
+}
+
+.title-field {
+    -fx-text-fill: black;
+}
+
+.contentField {
+    -fx-control-inner-background:#000000;
+    -fx-text-fill: white;
+}
+
+.dialog-pane {
+    -fx-background-color: black;
+}
+
+.applyToSelection {
+    -fx-text-fill: white;
+}
+
+#add-button {
+    -fx-text-fill: white; 
+    -fx-padding: 0px 17px;
+    -fx-min-height: 25px;
+}
+
+.combo-box-base:hover {
+    -fx-color: -fx-hover-base;
+}
+
+.combo-box-base:showing {
+    -fx-color: -fx-pressed-base;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Time Filter                                                                 *
+ *                                                                             *
+ ******************************************************************************/
+
+.spinner {
+    -fx-base: black;
+}
+
+.spinner .increment-arrow-button, .spinner .decrement-arrow-button {
+    -fx-body-color: #1c5aa6;
+    -fx-border-color: #444444;
+}
+
+.spinner:focused {
+    -fx-border-color: transparent;
+}
+
+.menu-button {
+    -fx-background-color: 111111;
+    -fx-border-radius: 2px; 
+    -fx-border-color: #444444;
+    -fx-arrow-color: white;
+}
+
+#filter-label {
+    -fx-text-fill: white;
+}
+
+.menu-button:hover {
+    -fx-background-color: #292929;
+}
+
+.date-picker-popup > .month-year-pane {
+    -fx-mark-color: white;
+    -fx-background-color: #1c5aa6;
+}
+
+.date-picker > .text-field {
+    -fx-background-color: black;
+}
+
+.date-picker-popup .spinner .button .left-arrow,
+.date-picker-popup .spinner .button .right-arrow {
+    -fx-background-color: white;
+}
+
+.date-picker-popup .spinner {
+    -fx-border-color: white;
+    -fx-background-color: #222222;
+    -fx-border-radius: 4px;
+}

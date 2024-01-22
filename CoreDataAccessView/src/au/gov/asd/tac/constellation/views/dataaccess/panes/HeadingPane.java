@@ -43,8 +43,8 @@ public class HeadingPane extends TitledPane implements PluginParametersPaneListe
     private final List<DataSourceTitledPane> dataSources = new ArrayList<>();
     private final PluginParametersPaneListener top;
 
-    private static final Color LIGHT_GREEN = Color.web("#5E9656");
-    private static final Color DARK_GREEN = Color.web("#1A4D1A");
+    private static final Color LIGHT_GREEN = Color.web("#6bd65c");
+    private static final Color DARK_GREEN = Color.web("#5E9656");
     private static final Color GREY = Color.web("#e6e6e6").deriveColor(1, 1, 1, 0.3);
     
     // Smaller makes it obvious that they are not center aligned

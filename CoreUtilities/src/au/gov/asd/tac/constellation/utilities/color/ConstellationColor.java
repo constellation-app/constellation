@@ -68,6 +68,7 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
     public static final ConstellationColor PINK = new ConstellationColor("Pink", Color.PINK);
     public static final ConstellationColor PURPLE = new ConstellationColor("Purple", 0.63F, 0.28F, 0.63F, 1.0F);
     public static final ConstellationColor RED = new ConstellationColor("Red", Color.RED);
+    public static final ConstellationColor SKY = new ConstellationColor("Sky", 48, 148, 219, 255);
     public static final ConstellationColor TEAL = new ConstellationColor("Teal", 0.0F, 0.5F, 0.5F, 1.0F);
     public static final ConstellationColor TURQUOISE = new ConstellationColor("Turquoise", 0, 202, 213, 255);
     public static final ConstellationColor VIOLET = new ConstellationColor("Violet", 0.75F, 0.0F, 1.0F, 1.0F);
@@ -109,6 +110,7 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
                     PINK,
                     PURPLE,
                     RED,
+                    SKY,
                     TEAL,
                     TURQUOISE,
                     VIOLET,

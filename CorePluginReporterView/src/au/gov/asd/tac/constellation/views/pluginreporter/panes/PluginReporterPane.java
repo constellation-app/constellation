@@ -89,7 +89,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
     private static final int MAXIMUM_REPORT_PANES = 300;
 
     public PluginReporterPane() {
-
+    
         // Update filtered tags from preferences
         final Preferences prefs = NbPreferences.forModule(PluginReporterPane.class);
         String filteredTagString = prefs.get(FILTERED_TAGS_KEY, PluginTags.LOW_LEVEL);
@@ -120,8 +120,9 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
             setPluginReportFilter(defaultReportFilter);
         });
 
-        final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor()));
+        final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor()));
         Button helpButton = new Button("", helpImage);
+        helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent; -fx-effect: null; ");
         helpButton.setOnAction((ActionEvent event)
                 -> new HelpCtx(getClass().getPackage().getName()).display());
 
