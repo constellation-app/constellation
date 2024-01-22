@@ -286,7 +286,7 @@ public class FileInputPane extends HBox {
 
         if (extensionFilter != null) {
             for (final String extension : extensionFilter.getExtensions()){
-                //Add a file filter for all registered exportable file types.
+                // Add a file filter for all registered exportable file types.
                 fileChooserBuilder = fileChooserBuilder.addFileFilter(new FileFilter(){
                     @Override
                     public boolean accept(final File file) {
