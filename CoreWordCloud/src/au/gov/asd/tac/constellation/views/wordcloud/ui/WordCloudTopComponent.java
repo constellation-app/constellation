@@ -38,6 +38,7 @@ import org.openide.windows.TopComponent;
  */
 @TopComponent.Description(
         preferredID = "WordCloudTopComponent",
+        iconBase = "au/gov/asd/tac/constellation/views/wordcloud/ui/resources/word_cloud.png",
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
 @TopComponent.Registration(
