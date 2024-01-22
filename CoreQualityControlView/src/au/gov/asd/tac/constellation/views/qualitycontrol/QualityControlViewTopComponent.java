@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.qualitycontrol;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetter;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlListener;
@@ -72,7 +73,7 @@ public final class QualityControlViewTopComponent extends JavaFxTopComponent<Qua
 
     @Override
     protected String createStyle() {
-        return "resources/quality-control-view.css";
+        return null;
     }
 
     @Override

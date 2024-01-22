@@ -75,6 +75,7 @@ public final class DataAccessUserPreferences {
         // Extract the global parameters
         globalParameters = pane.getGlobalParametersPane().getParams().getParameters().entrySet().stream()
                 .map(param -> new AbstractMap.SimpleImmutableEntry<>(param.getKey(), param.getValue().getStringValue()))
+                .filter(param -> param.getValue() != null)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         
         pluginParameters = new HashMap<>();

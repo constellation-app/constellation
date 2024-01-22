@@ -2,7 +2,6 @@
     -fx-pref-width: 8.25em;
 }
 
-
 .slider .thumb {
     -fx-background-color: #ffffff;
     -fx-background-insets: 0, 1, 2;

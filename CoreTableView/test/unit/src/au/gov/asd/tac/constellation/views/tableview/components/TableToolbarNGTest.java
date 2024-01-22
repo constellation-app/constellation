@@ -231,7 +231,7 @@ public class TableToolbarNGTest {
         // Help Button
         buttonChecks(
                 tableToolbar.getHelpButton(),
-                UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor()),
+                UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.WHITE.getJavaColor()),
                 "Display help for Table View"
         );
 

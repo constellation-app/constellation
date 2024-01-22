@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.whatsnew.WhatsNewProvider.WhatsNewEntry;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -60,7 +61,7 @@ import org.w3c.dom.events.EventTarget;
  * @author aldebaran30701
  */
 public class WhatsNewViewPane extends BorderPane {
-    
+
     private static final Logger LOGGER = Logger.getLogger(WhatsNewViewPane.class.getName());
 
     private final BorderPane whatsNewViewPane;
@@ -141,7 +142,14 @@ public class WhatsNewViewPane extends BorderPane {
                     }
                 }
             });
-            whatsNewView.getEngine().setUserStyleSheetLocation(WhatsNewTopComponent.class.getResource("resources/whatsnew.css").toExternalForm());
+            whatsNewView.getEngine()
+                    .setUserStyleSheetLocation(
+                            WhatsNewTopComponent.class.getResource(
+                                    JavafxStyleManager.isDarkTheme() 
+                                            ? "resources/whatsnew-dark.css"
+                                            : "resources/whatsnew-light.css"
+                            ).toExternalForm()
+                    );
             whatsNewView.getStyleClass().add("web-view");
             try {
                 whatsNewView.getEngine().loadContent(getWhatsNew());

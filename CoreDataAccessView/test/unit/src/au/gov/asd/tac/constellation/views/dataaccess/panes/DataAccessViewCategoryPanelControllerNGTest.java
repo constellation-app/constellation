@@ -145,6 +145,13 @@ public class DataAccessViewCategoryPanelControllerNGTest {
         List<String> result2 = dataAccessViewCategoryPanelSpy.getHiddenCategory();
         verify(dataAccessViewCategoryPanelSpy, times(1)).getHiddenCategory();
         assertEquals(result2, expResult2);
+        
+        dataAccessViewCategoryPanel.setVisibleCategory("[Import, Utility]");
+        dataAccessViewCategoryPanel.setHiddenCategory("[Developer, Clean]");
+        dataAccessViewCategoryPanel.restoreDefaults();
+
+        assertEquals(dataAccessViewCategoryPanel.getVisibleCategory().toString(), "[Import, Clean, Utility, Developer]");
+        assertEquals(dataAccessViewCategoryPanel.getHiddenCategory().toString(), "[]");
     }
 
     /**
