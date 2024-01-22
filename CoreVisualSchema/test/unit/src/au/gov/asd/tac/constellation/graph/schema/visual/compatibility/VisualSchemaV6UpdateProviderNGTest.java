@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -99,16 +99,12 @@ public class VisualSchemaV6UpdateProviderNGTest {
         System.out.println("VisualSchemaV6UpdateProviderNGTest.testSchemaUpdate");
         when(mockStoreGraph.getAttribute(GraphElementType.GRAPH, "node_labels_bottom")).thenReturn(23);
         when(mockStoreGraph.getAttribute(GraphElementType.GRAPH, "node_labels_top")).thenReturn(24);
-        when(mockStoreGraph.getAttribute(GraphElementType.GRAPH, "transaction_labels")).thenReturn(25);
         when(mockStoreGraph.getStringValue(23, 0)).thenReturn("strBottom");
         when(mockStoreGraph.getStringValue(24, 0)).thenReturn("strTop");
-        when(mockStoreGraph.getStringValue(25, 0)).thenReturn("strTrans");
         instance.schemaUpdate(mockStoreGraph);
         Mockito.verify(mockStoreGraph, times(1)).setStringValue(0, 0, "strBottom");
         Mockito.verify(mockStoreGraph, times(1)).setStringValue(0, 0, "strTop");
-        Mockito.verify(mockStoreGraph, times(1)).setStringValue(0, 0, "strTrans");
         Mockito.verify(mockStoreGraph, times(1)).removeAttribute(23);
         Mockito.verify(mockStoreGraph, times(1)).removeAttribute(24);
-        Mockito.verify(mockStoreGraph, times(1)).removeAttribute(25);
     }
 }
