@@ -243,7 +243,7 @@ public class PluginParametersSwingDialog {
      * @return 
      */
     private String getAcceptanceButton() {
-        if (!StringUtils.isBlank(acceptanceText)) {
+        if (StringUtils.isNotBlank(acceptanceText)) {
             return acceptanceText;
         }
         for (final String keyWord : acceptanceButtonLabels){
