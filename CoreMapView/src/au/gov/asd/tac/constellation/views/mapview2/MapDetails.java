@@ -134,7 +134,7 @@ public class MapDetails {
     /**
      * Provides future scope to display base map layers of formats other than SVG paths.
      */
-    enum MapType {
+    public enum MapType {
         SVG,
         RASTER  // ie JPG, PNG etc. THese may provide greater details of a specific area but are unable to scale well
     }

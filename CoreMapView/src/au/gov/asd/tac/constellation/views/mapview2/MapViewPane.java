@@ -130,7 +130,6 @@ public class MapViewPane extends BorderPane {
     private final MenuButton zoomDropDown;
 
     private final Button helpButton;
-    private final List<String> dropDownOptions = new ArrayList<>();
     private final Label latLabel = new Label("Latitude: ");
     private final Label lonLabel = new Label("Longitude: ");
     private final Label latField = new Label("0.00");
@@ -138,7 +137,9 @@ public class MapViewPane extends BorderPane {
 
     // Store list of available maps and an object to store the currently selected map.
     private final List<MapDetails> maps = Arrays.asList(
-            new MapDetails(MapDetails.MapType.SVG, 1000, 999, 85.0511, -85.0511, -180, 180, "Full World (default)",
+            new MapDetails(MapDetails.MapType.SVG, 1000, 999, 85.0511, -85.0511, -180, 180, "Full World (small file default)",
+                           ConstellationInstalledFileLocator.locate("modules/ext/data/FullWorld1000x999.svg", "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain())),
+            new MapDetails(MapDetails.MapType.SVG, 1000, 999, 85.0511, -85.0511, -180, 180, "Full World (more detailed large file)",
                            ConstellationInstalledFileLocator.locate("modules/ext/data/WorldMap1000x999.svg", "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain())),
             new MapDetails(MapDetails.MapType.SVG, 1000, 1018, 38, -36, -18, 60, "Africa & Middle East",
                            ConstellationInstalledFileLocator.locate("modules/ext/data/AfricaAndMiddleEast1000x1018.svg", "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain())),
