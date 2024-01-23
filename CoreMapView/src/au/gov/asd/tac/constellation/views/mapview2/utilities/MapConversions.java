@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.mapview2.utilities;
 import au.gov.asd.tac.constellation.views.mapview2.MapDetails;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.geometry.Bounds;
 
 /**
  * This class provides utilities to convert between real world latitude and longitudes and X,Y coordinates on a map.
@@ -63,6 +64,12 @@ public class MapConversions {
                                                     // represents 360 degrees of longitude, it also equates to the
                                                     // circumference of the earth. The radius us calculated from this
                                                     // circumference value.
+    
+    private static double windowLeftBound = 0.0;
+    private static double windowRightBound = 0.0;
+    private static double windowTopBound = 0.0;
+    private static double windowBottomBound = 0.0;
+    private static double heightAdjustmentFactor = 1.0;
     
     // Offsets from world map centre of the map edges
     private static double mapTopOffsetFromFullWorldMapCentre = 0.0; // The vertical offset of the supplied maps top left
@@ -142,7 +149,7 @@ public class MapConversions {
      */
     public static void initMapDimensions(final double width, final double height, final double topLat, final double bottomLat, final double leftLon, final double rightLon) {
         resetMapDimensions();
-        
+        LOGGER.setLevel(Level.ALL);
         // Validate map size
         if (width <= 0) {
             throw new IllegalArgumentException("Supplied map width is invalid");
@@ -172,13 +179,14 @@ public class MapConversions {
             throw new IllegalArgumentException("Invalid right longitude supplied");
         }
         
-        mapWidth = width;
-        mapHeight = height;
+        mapWidth = windowRightBound - windowLeftBound;
+        mapHeight = windowBottomBound -  windowTopBound;
         mapTopLat = topLat;
         mapLeftLon = leftLon;
         mapBottomLat = bottomLat;
         mapRightLon = rightLon;
         
+        LOGGER.log(Level.INFO, " === incoming width = " + width + " : layout-calc width = " + mapWidth + " === incoming height = " + height + " : layout-calc height = " + mapHeight);
         // Determine full world map extents, which provides us an idea of what the full world would look like if the map
         // was extended to cover the full 360 degrees of longitude.
         fullWorldMapWidth = mapWidth /((mapRightLon - mapLeftLon)/360);
@@ -199,6 +207,7 @@ public class MapConversions {
         // mercartor projection but we can check it is the expected height based on top and bottom lat/long
         final double expectedMapHeight = (mapBottomOffsetFromFullWorldMapCentre - mapTopOffsetFromFullWorldMapCentre);
         if (Math.abs(expectedMapHeight - mapHeight) > 1.0) {
+            heightAdjustmentFactor = mapHeight / expectedMapHeight;
             LOGGER.log(Level.INFO, "Supplied map height suggests invalid Mercartor projection. Expected={0}, supplied={1}",
                        new Object[]{expectedMapHeight, mapHeight});
             // At some point we may decide that the map is no good, or we may try to stretch our Y coordinates, however
@@ -379,6 +388,10 @@ public class MapConversions {
         return (radians * (180 / Math.PI));
     }
 
+//    private static double getRenderedXposition(final double sourceX) {
+//        return sourceX - windowLeftBound;
+//    }
+    
     /**
      * Take the given latitude value (in degrees) and determine the offset (in map dimension units) of its position on
      * the supplied map from the equator.This is used to help position the selected map extents relative to the centre
@@ -415,7 +428,7 @@ public class MapConversions {
      * the longitude is to the left of the map extents. A value > mapWidth indicates that the longitude is to the right
      * of the map extents. The function isXInMap(double) will perform these extent checks and return a boolean
      * indication that the longitude falls within map bounds.
-     * @param longDegrees The longitude to convert.
+     * @param lonDegrees The longitude to convert.
      * @return X offset from left of map.
      */
     public static double lonToMapX(final double lonDegrees) {
@@ -424,7 +437,7 @@ public class MapConversions {
             return 0.0;
         }
         
-        return (lonDegrees - mapLeftLon) * (mapWidth / (mapRightLon - mapLeftLon));
+        return (lonDegrees - mapLeftLon) * (mapWidth / (mapRightLon - mapLeftLon)) + windowLeftBound;
     }
     
     /**
@@ -443,9 +456,9 @@ public class MapConversions {
         
         final double yOffsetFromEquator = latToOffsetFromFullMapEquator(latDegrees);
         
-        final double degrees = offsetFromFullMapEquatortoLat(yOffsetFromEquator);
+//        final double degrees = offsetFromFullMapEquatortoLat(yOffsetFromEquator);
         
-        return (yOffsetFromEquator - mapTopOffsetFromFullWorldMapCentre);
+        return (yOffsetFromEquator - mapTopOffsetFromFullWorldMapCentre) * heightAdjustmentFactor + windowTopBound;
     }
     
     public static double mapXToLon(final double x) {
@@ -454,7 +467,8 @@ public class MapConversions {
             return 0.0;
         }
         
-        return (x /(mapWidth / (mapRightLon - mapLeftLon))) + mapLeftLon;
+        double result = ((x - windowLeftBound) /(mapWidth / (mapRightLon - mapLeftLon))) + mapLeftLon;
+        return result ; //(x /(mapWidth / (mapRightLon - mapLeftLon))) + mapLeftLon;
     } 
     
     public static double mapYToLat(final double y) {
@@ -464,8 +478,11 @@ public class MapConversions {
         }
         
         // first convert the y value to an offset from centre of full world map
-        final double offset = mapTopOffsetFromFullWorldMapCentre + y;
-        return offsetFromFullMapEquatortoLat(offset);
+//        final double offset = mapTopOffsetFromFullWorldMapCentre + y;
+//        return offsetFromFullMapEquatortoLat(offset);
+        final double offset = mapTopOffsetFromFullWorldMapCentre + (y - windowTopBound) / heightAdjustmentFactor;
+        double result = offsetFromFullMapEquatortoLat(offset);
+        return result;
     } 
     
     /**
@@ -530,5 +547,12 @@ public class MapConversions {
             return false;
         }
         return (isXInMap(location.getX()) && isYInMap(location.getY()));
+    }
+    
+    public static void setWindowBounds(final Bounds windowBounds) {
+        windowLeftBound = windowBounds.getMinX();
+        windowRightBound = windowBounds.getMaxX();
+        windowTopBound = windowBounds.getMinY();
+        windowBottomBound = windowBounds.getMaxY();
     }
 }
