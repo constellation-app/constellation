@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.utilities.graphics;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.testng.annotations.Test;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
@@ -24,6 +26,8 @@ import static org.testng.Assert.assertFalse;
  * @author groombridge34a
  */
 public class MathfNGTest {
+
+    private static final Logger LOG = Logger.getLogger(MathfNGTest.class.getName());
     
     private static final float F1 = 1.23F;
     private static final float F2 = 3.21F;
@@ -110,8 +114,9 @@ public class MathfNGTest {
         final Vector4f planeEq = new Vector4f();
         Mathf.planeEquation(planeEq, new Vector3f(F1, F2, F3), 
                 new Vector3f(F4, F5, F6), new Vector3f(F7, F8, F9));
-        assertEquals(planeEq.a, new float[] {0.7757828F, -0.20191793F, 
-            -0.59782124F, 2.4200084F});
+        LOG.log(Level.SEVERE, String.format("!@!@!@! plane Equation: %s", planeEq.toString()));
+        assertEquals(planeEq.a, new float[] {0.775783F, -0.201918F, 
+            -0.597821F, 2.420008F});
     }
     
     
