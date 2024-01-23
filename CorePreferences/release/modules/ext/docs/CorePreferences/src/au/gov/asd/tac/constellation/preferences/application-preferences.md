@@ -67,3 +67,12 @@ directory.
 
 This is where the user is able to set their preferred default font and
 default font size for the Constellation application.
+
+## Colorblind Mode
+
+The user is able to set a colorblind mode for constellation. When a 
+colorblind mode is set, draw nodes are automatically generated with
+colorblind-friendly colors, and existing graphs can be adjusted to 
+the new color scheme using Display -> Apply colorblind selection
+to graph. Apply colorblind selection -> to the graph, allows users to 
+change the colors of the nodes on the currently focused graph
