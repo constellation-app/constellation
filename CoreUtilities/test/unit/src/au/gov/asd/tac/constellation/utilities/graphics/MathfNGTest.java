@@ -102,17 +102,17 @@ public class MathfNGTest {
         assertEquals(distance, expectedResult);
     }
     
-//    /**
-//     * Can get the plane equation from three points.
-//     */
-//    @Test
-//    public void testPlaneEquation() {
-//        final Vector4f planeEq = new Vector4f();
-//        Mathf.planeEquation(planeEq, new Vector3f(F1, F2, F3), 
-//                new Vector3f(F4, F5, F6), new Vector3f(F7, F8, F9));
-//        assertEquals(planeEq.a, new float[] {0.7757828F, -0.20191793F, 
-//            -0.59782124F, 2.4200084F});
-//    }
+    /**
+     * Can get the plane equation from three points.
+     */
+    @Test
+    public void testPlaneEquation() {
+        final Vector4f planeEq = new Vector4f();
+        Mathf.planeEquation(planeEq, new Vector3f(F1, F2, F3), 
+                new Vector3f(F4, F5, F6), new Vector3f(F7, F8, F9));
+        assertEquals(planeEq.a, new float[] {0.7757828F, -0.20191793F, 
+            -0.59782124F, 2.4200084F});
+    }
     
     
     @Test
