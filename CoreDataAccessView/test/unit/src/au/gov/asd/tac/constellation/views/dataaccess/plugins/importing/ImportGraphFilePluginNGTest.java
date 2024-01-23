@@ -25,7 +25,10 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import java.io.File;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.stage.FileChooser.ExtensionFilter;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -41,6 +44,8 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class ImportGraphFilePluginNGTest {
+
+    private static final Logger LOGGER = Logger.getLogger(ImportGraphFilePluginNGTest.class.getName());
     
     public ImportGraphFilePluginNGTest() {
     }
@@ -96,7 +101,7 @@ public class ImportGraphFilePluginNGTest {
         
         final PluginParameter<FileParameterValue> fileName = (PluginParameter<FileParameterValue>) params.getParameters().get("ImportGraphFilePlugin.file_name");
         fileName.setStringValue(ImportGraphFilePluginNGTest.class.getResource("file/resources/test.gml").getPath());
-        
+       
         final PluginManager manager = mock(PluginManager.class);        
         when(manager.getGraphNode()).thenReturn(null);
         when(manager.getPlugin()).thenReturn(instance);

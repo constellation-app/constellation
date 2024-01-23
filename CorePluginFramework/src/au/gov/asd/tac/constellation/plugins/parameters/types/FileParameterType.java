@@ -20,13 +20,11 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.io.File;
-import java.nio.file.InvalidPathException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Logger;
 import javafx.stage.FileChooser.ExtensionFilter;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -222,6 +220,8 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
         private FileParameterKind kind;
         private ExtensionFilter filter;
         private boolean acceptAllFileFilterUsed;
+        private static final Logger LOGGER = Logger.getLogger(FileParameterValue.class.getName());
+        
 
         /**
          * Constructs a new FileParameterValue
@@ -352,21 +352,15 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
 
         @Override
         public String validateString(final String s) {
-            try {
-                Path path = Paths.get(s);
-                File validationFile = new File(s);
-                File validFile = new File("valid");
-                //Accepted Conditions:
-                //The current file is a directory
-                //The current file has no parent
-                //the current file has a prent that is a directory
-                if (validationFile.isDirectory() || (!validationFile.isDirectory() && validationFile.getParentFile() != null && validationFile.getParentFile().exists())){
-                    return null;
-                } else {
-                    return "The specified file path doe not contain valid directories";   
-                }
-            } catch (InvalidPathException | NullPointerException ex) {
-                return "The provided Path is invalid";
+            File validationFile = new File(s);
+            //Accepted Conditions:
+            //The current file is a directory
+            //The current file has no parent
+            //the current file has a prent that is a directory
+            if (validationFile.isDirectory() || (!validationFile.isDirectory() && validationFile.getParentFile() != null && validationFile.getParentFile().exists())){
+                return null;
+            } else {
+                return "The specified file path doe not contain valid directories";   
             }
         }
 
