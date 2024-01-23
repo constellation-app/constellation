@@ -85,7 +85,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         fnamParam.setName("File Location");
         fnamParam.setDescription("File location and name for export");
         FileParameterType.setKind(fnamParam, FileParameterType.FileParameterKind.SAVE);
-        FileParameterType.setFileFilters(fnamParam, new FileChooser.ExtensionFilter("SVG file", "*" + FileExtensionConstants.SVG));
+        FileParameterType.setFileFilters(fnamParam, new FileChooser.ExtensionFilter("SVG file", FileExtensionConstants.SVG));
         fnamParam.setRequired(true);
         parameters.addParameter(fnamParam);
         
@@ -194,6 +194,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
      * @throws IOException 
      */
     private void exportToSVG(final File file, final SVGData data, final PluginInteraction interaction) throws IOException, InterruptedException {
+        LOGGER.log(Level.SEVERE, String.format("FileName: %s", file.getAbsolutePath()));
         final boolean fileOverwritten = file.createNewFile();
         try (final FileWriter writer = new FileWriter(file)) {
             writer.write(data.toString());
