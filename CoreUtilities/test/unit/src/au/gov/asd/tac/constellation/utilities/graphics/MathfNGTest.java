@@ -90,27 +90,29 @@ public class MathfNGTest {
                 8.848424F);
     }
     
-//    /**
-//     * Can get the distance of a point to a plane.
-//     */
-//    @Test
-//    public void testDistanceToPlane() {
-//        assertEquals(Mathf.distanceToPlane(
-//                new Vector3f(F1, F2, F3), new Vector4f(F4, F5, F6, F7)), 
-//                5.6429143F);
-//    }
-    
     /**
-     * Can get the plane equation from three points.
+     * Can get the distance of a point to a plane.
      */
     @Test
-    public void testPlaneEquation() {
-        final Vector4f planeEq = new Vector4f();
-        Mathf.planeEquation(planeEq, new Vector3f(F1, F2, F3), 
-                new Vector3f(F4, F5, F6), new Vector3f(F7, F8, F9));
-        assertEquals(planeEq.a, new float[] {0.7757828F, -0.20191793F, 
-            -0.59782124F, 2.4200084F});
+    public void testDistanceToPlane() {
+        Vector3f point = new Vector3f(F1, F2, F3);
+        Vector4f plane = new Vector4f(F4, F5, F6, F7);
+        float distance = Mathf.distanceToPlane(point, plane);
+        float expectedResult = 5.6429143F;
+        assertEquals(distance, expectedResult);
     }
+    
+//    /**
+//     * Can get the plane equation from three points.
+//     */
+//    @Test
+//    public void testPlaneEquation() {
+//        final Vector4f planeEq = new Vector4f();
+//        Mathf.planeEquation(planeEq, new Vector3f(F1, F2, F3), 
+//                new Vector3f(F4, F5, F6), new Vector3f(F7, F8, F9));
+//        assertEquals(planeEq.a, new float[] {0.7757828F, -0.20191793F, 
+//            -0.59782124F, 2.4200084F});
+//    }
     
     
     @Test
