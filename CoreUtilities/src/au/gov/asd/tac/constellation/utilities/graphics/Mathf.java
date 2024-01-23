@@ -168,7 +168,6 @@ public final class Mathf {
             planePointY = -((plane.getX()/plane.getY())*planePointX) - ((plane.getZ()/plane.getY())*planePointZ) - (plane.getW()/plane.getY());
         }
         
-        
         planePoint.set(planePointX, planePointY, planePointZ);
     }
     /**
