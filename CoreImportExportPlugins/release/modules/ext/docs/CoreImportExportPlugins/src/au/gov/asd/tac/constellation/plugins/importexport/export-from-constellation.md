@@ -72,17 +72,26 @@ this page:
 -   *KML* - Export the graph as a KML file
 
 ## Export to SVG
-
+<div style="text-align: center;">
+    <a href="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/exportToSVGParameters.png">
+        <img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/exportToSVGParameters.png" alt="Export to SVG Example"  width="573"/>
+    </a>
+</div>
 ### Parameters
 
--   *Output File* - the name and location of the output file
--   *Graph Title* - the title of the graph
+-   *File Location* (Required) - the name and location of the output file
+-   *Graph Title* - the title of the graph 
 -   *Background Color* - the color of the graph background
--   *Selected Nodes Only* - only export the selected nodes
+-   *Selected Elements* - only export the selected nodes
+-   *Show Nodes* - include nodes in the export
 -   *Show Connections* - include connections in the export
 -   *Show Node Labels* - include node labels in the export
 -   *Show Connection Labels* - include connections labels in the export
+-   *Show Blazes* - include blazes in the export
 -   *Perspective* - set the camera perspective to export the graph from
+
+Note: When this plugin is executed, parameters will automatically reflect the state of the current graph. 
+Users may modify these parameters during the export stage to include or exclude information from the export.  
 
 ## Export to GeoJSON
 

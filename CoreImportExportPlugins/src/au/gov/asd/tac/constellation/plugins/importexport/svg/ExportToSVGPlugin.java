@@ -107,7 +107,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         
         final PluginParameter<BooleanParameterValue> showNodesParam = BooleanParameterType.build(SHOW_NODES_PARAMETER_ID);
         showNodesParam.setName("Show Nodes");
-        showNodesParam.setDescription("Include Nodes in export");
+        showNodesParam.setDescription("Include nodes in export");
         parameters.addParameter(showNodesParam);
         
         final PluginParameter<BooleanParameterValue> showConnectionsParam = BooleanParameterType.build(SHOW_CONNECTIONS_PARAMETER_ID);
@@ -127,7 +127,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         
         final PluginParameter<BooleanParameterValue> showBlazesParam = BooleanParameterType.build(SHOW_BLAZES_PARAMETER_ID);
         showBlazesParam.setName("Show Blazes");
-        showBlazesParam.setDescription("Include Blazes in the export");
+        showBlazesParam.setDescription("Include blazes in the export");
         parameters.addParameter(showBlazesParam);
         
         final PluginParameter<SingleChoiceParameterValue> exportPerspectiveParam = SingleChoiceParameterType.build(EXPORT_PERSPECTIVE_PARAMETER_ID);
