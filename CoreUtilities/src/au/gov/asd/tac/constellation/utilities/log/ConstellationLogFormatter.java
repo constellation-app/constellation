@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.utilities.log;
 
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
@@ -35,7 +36,10 @@ public class ConstellationLogFormatter extends Formatter {
         sb.append(" [");
         sb.append(record.getLoggerName());
         sb.append("]: ");
-        sb.append(record.getMessage());
+        
+        String formattedMessage = MessageFormat.format(record.getMessage(), record.getParameters());
+        sb.append(formattedMessage);
+        
         sb.append(SeparatorConstants.NEWLINE);
         return sb.toString();
     }
