@@ -37,7 +37,13 @@ public class ConstellationLogFormatter extends Formatter {
         sb.append(record.getLoggerName());
         sb.append("]: ");
         
-        String formattedMessage = MessageFormat.format(record.getMessage(), record.getParameters());
+        final String formattedMessage;
+
+        if (record.getMessage() != null && record.getParameters() != null) {
+            formattedMessage = MessageFormat.format(record.getMessage(), record.getParameters());
+        } else {
+            formattedMessage = record.getMessage();
+        }
         sb.append(formattedMessage);
         
         sb.append(SeparatorConstants.NEWLINE);
