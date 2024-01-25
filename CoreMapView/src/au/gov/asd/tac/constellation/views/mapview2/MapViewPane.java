@@ -137,7 +137,7 @@ public class MapViewPane extends BorderPane {
 
     // Store list of available maps and an object to store the currently selected map.
     private final List<MapDetails> maps = Arrays.asList(
-            new MapDetails(MapDetails.MapType.SVG, 1000, 999, 85.0511, -85.0511, -180, 180, "Full World (small file default)",
+            new MapDetails(MapDetails.MapType.SVG, 1000, 999, 85.0511, -85.0511, -180, 180, "Full World (default)",
                            ConstellationInstalledFileLocator.locate("modules/ext/data/FullWorld1000x999.svg", "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain())),
             new MapDetails(MapDetails.MapType.SVG, 1000, 999, 85.0511, -85.0511, -180, 180, "Full World (more detailed large file)",
                            ConstellationInstalledFileLocator.locate("modules/ext/data/WorldMap1000x999.svg", "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain())),

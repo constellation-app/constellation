@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import javafx.scene.shape.Shape;
 
 /**
  * Another path layer that draws a line from one node to the other but takes
@@ -106,7 +107,7 @@ public class LocationPathsLayer extends AbstractPathsLayer {
                             final LineMarker l = new LineMarker(parent, parent.getNewMarkerID(), vertexID, (float) sourceLat, (float) sourceLon, (float) destLat, (float) destLon);
                             if (!parent.getAllMarkers().keySet().contains(coordinateKey)) {
 
-                                l.getMarker().setStrokeWidth(parent.getScaledMapLineWidth() * 20);
+                                l.getMarker().setStrokeWidth(parent.getScaledMapLineWidth() * 10);
                                 l.setMarkerPosition(MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
                                 entityPaths.getChildren().add(l.getMarker());
                             }
@@ -117,4 +118,11 @@ public class LocationPathsLayer extends AbstractPathsLayer {
         }
     }
 
+    public void scale(final double scalingFactor){
+        entityPaths.getChildren().forEach(entity -> {
+            if (entity instanceof Shape) {
+                ((Shape) entity).setStrokeWidth(parent.getScaledMapLineWidth() * 10 / scalingFactor);
+            } 
+        } );
+    }
 }

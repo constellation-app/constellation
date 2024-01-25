@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.geospatial.Geohash;
 import au.gov.asd.tac.constellation.views.mapview2.layers.AbstractMapLayer;
+import au.gov.asd.tac.constellation.views.mapview2.layers.LocationPathsLayer;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.CircleMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.ClusterMarker;
@@ -49,7 +50,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -99,7 +99,7 @@ import org.girod.javafx.svgimage.SVGLoader;
 public class MapView extends ScrollPane {
 
     private static final Logger LOGGER = Logger.getLogger(MapView.class.getName());
-    private static final double scaledMapLineWidth = 0.1;  // Scaled width of lines on maps (for SVF maps) to account
+    private static final double scaledMapLineWidth = 0.05;  // Scaled width of lines on maps (for SVF maps) to account
 
     private final MapViewPane parent;
 
@@ -182,7 +182,6 @@ public class MapView extends ScrollPane {
 
     // Factor to scale map by when zooming
     private static final double MAP_SCALE_FACTOR = 1.25;
-    private double currentScaleFactor = 1.0;
 
     // The paths for the edges of all the countries
     private final List<SVGPath> countrySVGPaths = new ArrayList<>();
@@ -736,6 +735,18 @@ public class MapView extends ScrollPane {
         }
     }
 
+    private void resizeLines(){
+        //layers.forEach(layer -> layer.getLayer().setScaleX(MAX_LAT));
+        double adjustment = this.currentScale == 1 ? 1 : 
+                this.currentScale > 1 ? (0.75 * (Math.pow(this.currentScale, 0.75))) : (1 / Math.pow((2 - this.currentScale), 2));
+        layers.forEach(layer -> {
+            if (layer instanceof LocationPathsLayer) {
+                LocationPathsLayer locLayer = (LocationPathsLayer) layer;
+                locLayer.scale(adjustment);
+            }
+        });
+    }
+    
     /**
      * Adjust the scaling of marker text to take into account the current map scale.
      * This requires that the scale of the marker text to be 1/currentScale to allow them to remain the same size.
@@ -743,8 +754,8 @@ public class MapView extends ScrollPane {
      * marker text is set to be paired with a GeoShape, that the MArker object in the pair is a dummy UserText marker.
      */
      private void resizeMarkerText(Pair<AbstractMarker, Text> textLabel) {
-        textLabel.getValue().setScaleX(1/this.currentScale);
-        textLabel.getValue().setScaleY(1/this.currentScale);
+        textLabel.getValue().setScaleX(0.75 +0.25/this.currentScale);
+        textLabel.getValue().setScaleY(0.75 +0.25/this.currentScale);
      }
     
      /**
@@ -810,16 +821,16 @@ public class MapView extends ScrollPane {
      * @param scalingFactor The scale to zoom the map to.
      */
     private void scale(final double scalingFactor) {
+        final Bounds contentBounds = scrollContent.getLayoutBounds();
         final Bounds viewportBounds = this.getViewportBounds();
-        if ((contentBounds.getWidth() * scaleFactor <= viewportBounds.getWidth()) &&
-            (contentBounds.getHeight() * scaleFactor <= viewportBounds.getHeight()) && scaleFactor < currentScaleFactor) {
+        if ((contentBounds.getWidth() * scalingFactor <= viewportBounds.getWidth()) &&
+            (contentBounds.getHeight() * scalingFactor <= viewportBounds.getHeight() && scalingFactor < this.currentScale)) {
             return;
         }
-        currentScaleFactor = scaleFactor;
         
         // Determine the new scale value and line width value. The scaledMapLineWidth value is designed to counteract
         // the value of scaleFactor and ensure that map lines remain at the same width
-        this.currentScale = scalingFactor;
+        this.currentScale = this.currentScale * scalingFactor;
         pointMarkerGlobalScale = 1 / this.currentScale;
 
         // Scale mapStackPane to the new zoom factor and update map line widths to counter it 
@@ -831,6 +842,7 @@ public class MapView extends ScrollPane {
          
         // Resize markers
         resizeMarkers();
+        resizeLines();
         resizeAllText();
     }
     
@@ -862,7 +874,7 @@ public class MapView extends ScrollPane {
                 self.setHvalue(hScrollPos);
                 self.setVvalue(vScrollPos);                
             }
-            event.consume();
+            e.consume();
         });
     }
 
@@ -1007,21 +1019,22 @@ public class MapView extends ScrollPane {
      */
     private void resizeMarkers() {
         // TODO: once all markers have scaleMarker() set up, just call scaleMarker()
+        double adjustment = this.currentScale == 1 ? 1 : this.currentScale > 1 ? (0.75*(Math.pow(this.currentScale, 0.75))) : (1/(2 - this.currentScale)/(2 - this.currentScale));
         markers.values().forEach(abstractMarker -> {
             if (abstractMarker instanceof PointMarker) {
                 final PointMarker marker = (PointMarker) abstractMarker;
-                marker.scaleMarker(this.currentScale);
+                marker.scaleMarker(adjustment);
             } else {
-                abstractMarker.scaleMarker(this.currentScale);
+                abstractMarker.scaleMarker(adjustment);
             }
         });
 
         userMarkers.forEach(abstractMarker -> {
             if (abstractMarker instanceof UserPointMarker) {
                 final UserPointMarker marker = (UserPointMarker) abstractMarker;
-                marker.scaleMarker(this.currentScale);
+                marker.scaleMarker(adjustment);
             } else {
-                 abstractMarker.scaleMarker(this.currentScale);
+                abstractMarker.scaleMarker(adjustment);
             }
         });
     }
