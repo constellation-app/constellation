@@ -48,12 +48,13 @@ public class PluginParametersSwingDialog {
     
     private static final Logger LOGGER = Logger.getLogger(PluginParametersSwingDialog.class.getName());
     
-    private final String[] acceptanceButtonLabels = {"OK", "Import", "Export", "Save", "Open", "Build", "Create", "Load", "Rename"};
+    private final String[] acceptanceButtonLabels = {"OK", "Import", "Export", "Save", "Open", "Build", "Create", "Load", "Rename", "Add", "Remove"};
     public static final String CANCEL = "Cancel";
     public static final String OK = "OK";
 
     private volatile String result;
     private final String title;
+    private final String acceptanceText;
     private final JFXPanel xp;
 
     /**
@@ -67,7 +68,7 @@ public class PluginParametersSwingDialog {
      * @param parameters The plugin parameters.
      */
     public PluginParametersSwingDialog(final String title, final PluginParameters parameters) {
-        this(title, parameters, null, null);
+        this(title, parameters, null, null, null);
     }
 
     /**
@@ -83,7 +84,7 @@ public class PluginParametersSwingDialog {
      * box.
      */
     public PluginParametersSwingDialog(final String title, final PluginParameters parameters, final Set<String> excludedParameters) {
-        this(title, parameters, excludedParameters, null);
+        this(title, parameters, excludedParameters, null, null);
     }
 
     /**
@@ -112,11 +113,12 @@ public class PluginParametersSwingDialog {
      * @param parameters The plugin parameters.
      * @param excludedParameters Plugin parameters to exclude from the dialog
      * box.
+     * @param acceptanceText acceptance Button text
      * @param helpID The JavaHelp ID of the help.
      */
-    public PluginParametersSwingDialog(final String title, final PluginParameters parameters, final Set<String> excludedParameters, final String helpID) {
+    public PluginParametersSwingDialog(final String title, final PluginParameters parameters, final Set<String> excludedParameters, final String acceptanceText, final String helpID) {
         this.title = title;
-
+        this.acceptanceText = acceptanceText;
         final CountDownLatch latch = new CountDownLatch(1);
         xp = helpID != null ? new JFXPanelWithHelp(helpID) : new JFXPanel();
         Platform.runLater(() -> {
@@ -233,19 +235,22 @@ public class PluginParametersSwingDialog {
 
     /**
      * Generates the text of the PluginParameterPane acceptance button based on keywords in the Pane title.
-     * This implementation is useful as it does not require the convoluted work of enabling developers to set 
-     * the acceptance button text at the plugin creation level.
+     * If developers have specified an acceptance button text, this specified text is returned.
+     * If no text was specified a key word is extracted from the title and returned. 
+     * If no word key word is extracted, "OK" is returned
      * 
-     * @param title
      * @return 
      */
     private String getAcceptanceButton() {
+        if (StringUtils.isNotBlank(acceptanceText)) {
+            return acceptanceText;
+        }
         for (final String keyWord : acceptanceButtonLabels){
             if (StringUtils.containsIgnoreCase(title, keyWord)){
                 return keyWord;
             }
         }
-        return "OK";
+        return PluginParametersSwingDialog.OK;
     }
     
     /**
