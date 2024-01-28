@@ -99,7 +99,7 @@ public class PluginParametersSwingDialog {
      * @param helpID The JavaHelp ID of the help.
      */
     public PluginParametersSwingDialog(final String title, final PluginParameters parameters, final String helpID) {
-        this(title, parameters, null, helpID);
+        this(title, parameters, null, null, helpID);
     }
 
     /**
