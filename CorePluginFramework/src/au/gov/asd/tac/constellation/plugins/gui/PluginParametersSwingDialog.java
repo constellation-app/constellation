@@ -43,6 +43,7 @@ import org.openide.util.HelpCtx;
  *
  * @see PluginParametersDialog
  * @author algol
+ * @author capricornunicorn123
  */
 public class PluginParametersSwingDialog {
     
