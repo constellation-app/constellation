@@ -15,11 +15,13 @@
  */
 package au.gov.asd.tac.constellation.plugins.gui;
 
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
@@ -44,7 +46,7 @@ import org.openide.util.HelpCtx;
  * @see PluginParametersDialog
  * @author algol
  */
-public class PluginParametersSwingDialog {
+public class PluginParametersSwingDialog implements PluginParametersPaneListener {
     
     private static final Logger LOGGER = Logger.getLogger(PluginParametersSwingDialog.class.getName());
     
@@ -54,8 +56,10 @@ public class PluginParametersSwingDialog {
 
     private volatile String result;
     private final String title;
-    private final String acceptanceText;
     private final JFXPanel xp;
+    
+    final HashMap<PluginParameter<?>, Boolean> parameterValidity = new HashMap();
+    final JButton acceptanceOption;
 
     /**
      * Display a dialog box containing the parameters that allows the user to
@@ -118,7 +122,7 @@ public class PluginParametersSwingDialog {
      */
     public PluginParametersSwingDialog(final String title, final PluginParameters parameters, final Set<String> excludedParameters, final String acceptanceText, final String helpID) {
         this.title = title;
-        this.acceptanceText = acceptanceText;
+        this.acceptanceOption = new JButton(getAcceptanceButton(acceptanceText));
         final CountDownLatch latch = new CountDownLatch(1);
         xp = helpID != null ? new JFXPanelWithHelp(helpID) : new JFXPanel();
         Platform.runLater(() -> {
@@ -128,7 +132,7 @@ public class PluginParametersSwingDialog {
             // Attempt to give the window a sensible width and/or height.
             root.setMinWidth(500);
 
-            final PluginParametersPane parametersPane = PluginParametersPane.buildPane(parameters, null, excludedParameters);
+            final PluginParametersPane parametersPane = PluginParametersPane.buildPane(parameters, this, excludedParameters);
             root.setCenter(parametersPane);
             final Scene scene = new Scene(root);
             scene.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
@@ -154,7 +158,7 @@ public class PluginParametersSwingDialog {
      * Generates a DialogDescripter window and waits until the user
      * to select an option (the acceptance option will be highlighted). 
      * The acceptance option is "OK" by default.
-     * The rejectionoOption is "Cancel" by default. 
+     * The rejection Option is "Cancel" by default. 
      * If a keyword is present in the title of the DialogDisplayer
      * the acceptance option will adjust dynamically to express that keyword 
      * (i.e. "Build", "Save", "Export")
@@ -207,7 +211,7 @@ public class PluginParametersSwingDialog {
     private DialogDescriptor createDialogDescriptor(final boolean focused) {
         // Generate options
         final Object[] options = new Object[2];
-        final JButton acceptanceOption = new JButton(getAcceptanceButton());
+        //final JButton acceptanceOption = new JButton(getAcceptanceButton());
         
         options[0] = acceptanceOption; 
         options[1] = DialogDescriptor.CANCEL_OPTION; 
@@ -222,6 +226,27 @@ public class PluginParametersSwingDialog {
         acceptanceOption.addActionListener(al);
 
         return dd;
+    }
+    
+        
+    @Override
+    public void validityChanged(boolean valid) {
+       //Not Required for this Listner
+    }
+
+    @Override
+    public void hierarchicalUpdate() {
+       //Not Required for this Listner
+    }
+
+    @Override
+    public void notifyParameterValidityChange(final PluginParameter<?> parameter, final boolean currentlySatisfied){
+        parameterValidity.put(parameter, currentlySatisfied);
+        acceptanceOption.setEnabled(requirmentsSatisfied());
+    }
+
+    public boolean requirmentsSatisfied(){
+        return parameterValidity.values().stream().noneMatch(val -> val.equals(false));
     }
 
     /**
@@ -242,7 +267,7 @@ public class PluginParametersSwingDialog {
      * 
      * @return 
      */
-    private String getAcceptanceButton() {
+    private String getAcceptanceButton(final String acceptanceText) {
         if (StringUtils.isNotBlank(acceptanceText)) {
             return acceptanceText;
         }
