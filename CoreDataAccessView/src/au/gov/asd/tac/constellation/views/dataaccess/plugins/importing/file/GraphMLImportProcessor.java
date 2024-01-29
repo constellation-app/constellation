@@ -289,10 +289,10 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
 
             final String errorMsg = processingErrorTypes.entrySet().stream()
                     .map(e -> {
-                        String plural = " doesn't ";
+                        String plural = " doesn't";
                         final long errorCount = e.getValue();
                         if(errorCount > 1){
-                            plural = "s don't ";
+                            plural = "s don't";
                         }
                         
                         return String.format(e.getKey(), errorCount, plural);
