@@ -45,6 +45,7 @@ import org.openide.util.HelpCtx;
  *
  * @see PluginParametersDialog
  * @author algol
+ * @author capricornunicorn123
  */
 public class PluginParametersSwingDialog implements PluginParametersPaneListener {
     
@@ -103,7 +104,7 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
      * @param helpID The JavaHelp ID of the help.
      */
     public PluginParametersSwingDialog(final String title, final PluginParameters parameters, final String helpID) {
-        this(title, parameters, null, null, null);
+        this(title, parameters, null, null, helpID);
     }
 
     /**
@@ -218,7 +219,6 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
         
         //Having 'No' button as initial value means focus is off of 'OK' and 'Cancel' buttons
         final Object focus = focused ? acceptanceOption : DialogDescriptor.NO_OPTION;
-        
         final DialogDescriptor dd = new DialogDescriptor(xp, title, true, options, focus, DialogDescriptor.DEFAULT_ALIGN, null, null);
         
         // Create an action listener for the custom button

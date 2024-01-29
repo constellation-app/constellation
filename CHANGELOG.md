@@ -1,4 +1,7 @@
 # Constellation Changes
+## Changes in December 2023
+-  Updated GraphML error messaging for invalid nodes and edges. Transaction Identifiers added as UUIDs if none are found.
+
 ## Changes in July 2023
 -  Replaced FindView to express the new interface build in JavaFX and removed the old Swing implementation
 
