@@ -943,7 +943,7 @@ public class ContentTokenizingServices {
         protected String sanitizeString(final String str) {
             String newStr = str;
             for (int i = 0; i < str.length(); i++) {
-                if (toFilter.contains(str.charAt(i))) {
+                if (toFilter.contains(str.charAt(i)) && replacement.length() > 0) {
                     newStr = str.substring(0, i) + replacement + str.substring(i + 1, str.length());
                     i += (replacement.length() - 1);
                 }
