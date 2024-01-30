@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Logger;
 import javafx.stage.FileChooser.ExtensionFilter;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -220,7 +219,6 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
         private FileParameterKind kind;
         private ExtensionFilter filter;
         private boolean acceptAllFileFilterUsed;
-        private static final Logger LOGGER = Logger.getLogger(FileParameterValue.class.getName());
         
 
         /**
@@ -352,16 +350,8 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
 
         @Override
         public String validateString(final String s) {
-            File validationFile = new File(s);
-            //Accepted Conditions:
-            //The current file is a directory
-            //The current file has no parent
-            //the current file has a prent that is a directory
-            if (validationFile.isDirectory() || (!validationFile.isDirectory() && validationFile.getParentFile() != null && validationFile.getParentFile().exists())){
-                return null;
-            } else {
-                return "The specified file path doe not contain valid directories";   
-            }
+            final File validationFile = new File(s);
+            return (validationFile.isDirectory() || (validationFile.getParentFile() != null && validationFile.getParentFile().exists())) ? null : "The specified file path doe not contain valid directories";
         }
 
         @Override

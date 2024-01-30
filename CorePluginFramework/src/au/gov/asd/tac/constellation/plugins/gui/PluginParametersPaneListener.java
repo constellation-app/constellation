@@ -31,7 +31,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 public interface PluginParametersPaneListener {
 
     /**
-     * Called when the object that is being listened to has changed its
+     * Called when the object that is being listened to has changes its
      * validity.
      *
      * @param valid Whether or not the objec
@@ -49,11 +49,11 @@ public interface PluginParametersPaneListener {
     public void hierarchicalUpdate();
 
     /**
-     * called to notify listeners that a change has occurred to a required parameter.
-     * this is called for each time a character is entered into a plugin parameter input field. 
+     * Called to notify listeners that a parameter being listened too has changed its validity. 
+     * Can be triggered by a missing required parameter or by a parameter having a value that is invalid.
      * @param parameter
      * @param currentlySatisfied 
      */
     public void notifyParameterValidityChange(final PluginParameter<?> parameter, final boolean currentlySatisfied);
-    
+     
 }

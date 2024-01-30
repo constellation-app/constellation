@@ -48,8 +48,6 @@ import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
@@ -75,8 +73,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import org.apache.commons.lang3.StringUtils;
-import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
 import org.openide.awt.StatusDisplayer;
 import org.openide.util.HelpCtx;
 
@@ -818,7 +814,7 @@ public final class PluginParametersPane extends GridPane {
          * Top notified of changes in validity of parameters contained with the plugin parameters pane. 
          * @param parameter 
          */
-        private void updateTop(PluginParameter<?> parameter){  
+        private void updateTop(final PluginParameter<?> parameter){  
             if (parameter != null & top != null){
                 if ((parameter.isRequired() && StringUtils.isBlank(parameter.getStringValue())) || parameter.getError() != null){
                     top.notifyParameterValidityChange(parameter, false);

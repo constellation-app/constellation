@@ -217,8 +217,8 @@ public class FileInputPane extends HBox {
         field.textProperty().addListener((observableValue, oldValue, newValue) -> {            
             
             // As the change is happening in the field, the parameter object will not have updated its error value yet
-            final String error = parameter.validateString(field.getText());
-            if ((required && StringUtils.isBlank(field.getText())) || error != null) {
+            final String error = parameter.validateString(newValue);
+            if ((required && StringUtils.isBlank(newValue)) || error != null) {
                 tooltip.setText(StringUtils.isNotBlank(error) ? error : "File is required!");
                 field.setTooltip(tooltip);
                 field.setId("invalid");
@@ -227,11 +227,7 @@ public class FileInputPane extends HBox {
                 field.setTooltip(null);
                 field.setId("");
             }
-            
-            // Do not retrigger the parameter listner if this event was triggered by the parameter listner.
-            if (!field.getText().equals(parameter.getStringValue())){
-                parameter.setStringValue(field.getText());
-            }
+            parameter.setStringValue(field.getText());
         });
 
         // Looks for changes to the plugin parameter
@@ -240,12 +236,12 @@ public class FileInputPane extends HBox {
             Platform.runLater(() -> {
                 switch (change) {
                     case VALUE:
-                    // Do not retrigger the fieled listner if this event was triggered by the field listner.
-                    final String param = parameter.getStringValue();
-                    if (!field.getText().equals(param)) {
-                        field.setText(param);
-                    }
-                    break;
+                        // Do not retrigger the fieled listner if this event was triggered by the field listner.
+                        final String param = parameter.getStringValue();
+                        if (!field.getText().equals(param)) {
+                            field.setText(param);
+                        }
+                        break;
                     case ENABLED:
                         field.setDisable(!pluginParameter.isEnabled());
                         break;
@@ -269,7 +265,6 @@ public class FileInputPane extends HBox {
     
     /**
      * Creates a FileChooser for the Parameter
-
      * If an extension filter has not been specified, all file types will be accepted by default.
      * @param parameter
      * @param title

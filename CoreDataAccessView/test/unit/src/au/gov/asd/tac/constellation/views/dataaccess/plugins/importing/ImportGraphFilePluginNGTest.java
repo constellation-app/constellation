@@ -25,10 +25,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
-import java.io.File;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.stage.FileChooser.ExtensionFilter;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -44,8 +41,6 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class ImportGraphFilePluginNGTest {
-
-    private static final Logger LOGGER = Logger.getLogger(ImportGraphFilePluginNGTest.class.getName());
     
     public ImportGraphFilePluginNGTest() {
     }
