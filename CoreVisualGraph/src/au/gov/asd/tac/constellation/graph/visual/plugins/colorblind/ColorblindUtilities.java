@@ -83,7 +83,7 @@ public class ColorblindUtilities {
     /*Adjust RGB values using the to-be removed RGB value as a proportion of the calculation, acting as contrast booster for brightness adjustments.  
         Evaluate the selected colorblind mode and adjust contrast if RGB value is high enough; prevents new color from being too dark, then remove imperceivable colors. 
         Primary colors for the modes are then adjusted at different strengths to improve contrast. I.E. remove 50% red in deut, remove 18% blue for prot.*/
-    public static ConstellationColor calcColorBrightness(ConstellationColor vertexColor) {
+    public static final ConstellationColor calcColorBrightness(ConstellationColor vertexColor) {
         Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         String COLORMODE = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
 
