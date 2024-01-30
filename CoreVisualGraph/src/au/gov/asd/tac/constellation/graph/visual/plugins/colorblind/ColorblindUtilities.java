@@ -58,7 +58,7 @@ public class ColorblindUtilities {
             for (int transaction = 0; transaction < transactionCount; transaction++) {
                 final int transactionId = wg.getTransaction(transaction);
                 final ConstellationColor transactionColor = wg.getObjectValue(txColorAttr, transactionId);
-                final ConstellationColor txColorblindAlpha = wg.getObjectValue(vxColorblindAttr, transactionId);
+                final ConstellationColor txColorblindAlpha = wg.getObjectValue(txColorblindAttr, transactionId);
 
                 if (txColorblindAlpha == null || txColorblindAlpha.getAlpha() == 0.99F) {
                     ConstellationColor newColor = calcColorBrightness(transactionColor);
