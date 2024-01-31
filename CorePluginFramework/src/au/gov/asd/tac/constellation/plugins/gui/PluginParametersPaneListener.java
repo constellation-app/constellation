@@ -31,7 +31,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 public interface PluginParametersPaneListener {
 
     /**
-     * Called when the object that is being listened to has changes its
+     * Called when the object that is being listened to has changed its
      * validity.
      *
      * @param valid Whether or not the objec

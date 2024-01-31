@@ -159,9 +159,9 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
      * Generates a DialogDescripter window and waits until the user
      * to select an option (the acceptance option will be highlighted). 
      * The acceptance option is "OK" by default.
-     * The rejection Option is "Cancel" by default. 
-     * If a keyword is present in the title of the DialogDisplayer
-     * the acceptance option will adjust dynamically to express that keyword 
+     * The rejection option is "Cancel" by default. 
+     * Unless explicitly stated, the acceptance option will adjust 
+     * dynamically to express that keyword present in the title of the DialogDisplayer
      * (i.e. "Build", "Save", "Export")
      */
     public void showAndWait() {
@@ -180,9 +180,9 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
      * Generates a DialogDescripter window and waits until the user
      * to select an option (No option will be highlighted). 
      * The acceptance option is "OK" by default.
-     * The rejectionoOption is "Cancel" by default. 
-     * If a keyword is present in the title of the DialogDisplayer
-     * the acceptance option will adjust dynamically to express that keyword 
+     * The rejection option is "Cancel" by default. 
+     * Unless explicitly stated, the acceptance option will adjust 
+     * dynamically to express that keyword present in the title of the DialogDisplayer
      * (i.e. "Build", "Save", "Export")
      */
     public void showAndWaitNoFocus() {
@@ -201,9 +201,9 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
      * Generates a DialogDescripter window and dynamically sets the 
      * acceptance option based on the title. 
      * The acceptance option is "OK" by default.
-     * The rejectionoOption is "Cancel" by default. 
-     * If a keyword is present in the title of the DialogDisplayer
-     * the acceptance option will adjust dynamically to express that keyword 
+     * The rejection option is "Cancel" by default. 
+     * Unless explicitly stated, the acceptance option will adjust 
+     * dynamically to express that keyword present in the title of the DialogDisplayer
      * (i.e. "Build", "Save", "Export")
      * @param focused a Boolean representing if the 
      * acceptance option should be highlighted by default
@@ -211,13 +211,7 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
      */
     private DialogDescriptor createDialogDescriptor(final boolean focused) {
         // Generate options
-        final Object[] options = new Object[2];
-        //final JButton acceptanceOption = new JButton(getAcceptanceButton());
-        
-        options[0] = acceptanceOption; 
-        options[1] = DialogDescriptor.CANCEL_OPTION; 
-        
-        //Having 'No' button as initial value means focus is off of 'OK' and 'Cancel' buttons
+        final Object[] options = {acceptanceOption, DialogDescriptor.CANCEL_OPTION};
         final Object focus = focused ? acceptanceOption : DialogDescriptor.NO_OPTION;
         final DialogDescriptor dd = new DialogDescriptor(xp, title, true, options, focus, DialogDescriptor.DEFAULT_ALIGN, null, null);
         

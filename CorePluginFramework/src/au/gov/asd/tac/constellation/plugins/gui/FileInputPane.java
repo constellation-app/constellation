@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.plugins.gui;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
-import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.io.File;
 import javax.swing.filechooser.FileFilter;
@@ -41,7 +40,6 @@ import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser.ExtensionFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.filesystems.FileChooserBuilder;
-import org.openide.util.Exceptions;
 
 
 /**
@@ -232,6 +230,7 @@ public class FileInputPane extends HBox {
 
         // Looks for changes to the plugin parameter
         // Can be triggered by a change from the application or a change from the respective input field
+        // Can trigger a change to the input field which will cause this listner to be triggered a second time.
         parameter.addListener((pluginParameter, change) -> {
             Platform.runLater(() -> {
                 switch (change) {
