@@ -50,6 +50,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javafx.stage.FileChooser;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -73,7 +74,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
     public static final String SHOW_CONNECTIONS_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_connections");
     public static final String SHOW_NODE_LABELS_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_node_labels");
     public static final String SHOW_CONNECTION_LABELS_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_transaction_labels");
-    public static final String SHOW_BLAZES_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_blases");
+    public static final String SHOW_BLAZES_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_blazes");
     public static final String EXPORT_PERSPECTIVE_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "export_perspective");
     private static final Logger LOGGER = Logger.getLogger(ExportToSVGPlugin.class.getName());
     
@@ -133,10 +134,11 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         final PluginParameter<SingleChoiceParameterValue> exportPerspectiveParam = SingleChoiceParameterType.build(EXPORT_PERSPECTIVE_PARAMETER_ID);
         exportPerspectiveParam.setName("Export Perspective");
         exportPerspectiveParam.setDescription("The perspective the exported graph will be viewed from");
-        List<String> options = new ArrayList<>();
+        final List<String> options = new ArrayList<>();
         options.add("Current Perspective");
         options.addAll(Stream.of(AxisConstants.values()).map(AxisConstants::toString).collect(Collectors.toList()));
         SingleChoiceParameterType.setOptions(exportPerspectiveParam, options);
+        SingleChoiceParameterType.setChoice(exportPerspectiveParam, "Current Perspective");
         parameters.addParameter(exportPerspectiveParam);
         
         return parameters;
@@ -157,7 +159,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         final boolean showBlazes = parameters.getBooleanValue(SHOW_BLAZES_PARAMETER_ID);
         final String exportPerspective = parameters.getStringValue(EXPORT_PERSPECTIVE_PARAMETER_ID);
         
-        if (fnam.isBlank()){
+        if (StringUtils.isBlank(fnam)){
             throw new PluginException(PluginNotificationLevel.ERROR, "File location has not been specified.");
         }
         
@@ -194,7 +196,6 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
      * @throws IOException 
      */
     private void exportToSVG(final File file, final SVGData data, final PluginInteraction interaction) throws IOException, InterruptedException {
-        LOGGER.log(Level.SEVERE, String.format("FileName: %s", file.getAbsolutePath()));
         final boolean fileOverwritten = file.createNewFile();
         try (final FileWriter writer = new FileWriter(file)) {
             writer.write(data.toString());

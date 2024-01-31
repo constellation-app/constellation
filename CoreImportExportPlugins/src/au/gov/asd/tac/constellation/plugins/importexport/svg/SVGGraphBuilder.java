@@ -115,7 +115,7 @@ public class SVGGraphBuilder {
      * @param interaction 
      * @return SVGGraphBuilder
      */
-    public SVGGraphBuilder  withInteraction(final PluginInteraction interaction) {
+    public SVGGraphBuilder withInteraction(final PluginInteraction interaction) {
         this.interaction = interaction;
         return this;
     }
@@ -165,7 +165,7 @@ public class SVGGraphBuilder {
      * @param showConnections
      * @return 
      */
-    public SVGGraphBuilder includeConnections(final Boolean showConnections) {
+    public SVGGraphBuilder includeConnections(final boolean showConnections) {
         this.showConnections = showConnections;
         return this;
     }
@@ -175,7 +175,7 @@ public class SVGGraphBuilder {
      * @param showNodeLabels
      * @return 
      */
-    public SVGGraphBuilder includeNodeLabels(final Boolean showNodeLabels) {
+    public SVGGraphBuilder includeNodeLabels(final boolean showNodeLabels) {
         this.showNodeLabels = showNodeLabels;
         return this;
     }
@@ -185,7 +185,7 @@ public class SVGGraphBuilder {
      * @param showConnectionLabels
      * @return 
      */
-    public SVGGraphBuilder includeConnectionLabels(final Boolean showConnectionLabels) {
+    public SVGGraphBuilder includeConnectionLabels(final boolean showConnectionLabels) {
         this.showConnectionLabels = showConnectionLabels;
         return this;
     }
@@ -195,7 +195,7 @@ public class SVGGraphBuilder {
      * @param showBlazes
      * @return 
      */
-    public SVGGraphBuilder includeBlazes(final Boolean showBlazes) {
+    public SVGGraphBuilder includeBlazes(final boolean showBlazes) {
         this.showBlazes = showBlazes;
         return this;
     }
@@ -220,7 +220,7 @@ public class SVGGraphBuilder {
         
         try{
             preBuild();
-        } catch (IllegalArgumentException ex){
+        } catch (final IllegalArgumentException ex){
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             return null;
         }
@@ -262,7 +262,7 @@ public class SVGGraphBuilder {
         if (exportPerspective != null) {
             BoundingBoxUtilities.recalculateFromGraph(box, readableGraph, selectedElementsOnly);
             CameraUtilities.refocus(camera, exportPerspective, box);
-            Animation.startAnimation(new PanAnimation(String.format("Reset to @s View", exportPerspective), oldCamera, camera, true));
+            Animation.startAnimation(new PanAnimation(String.format("Reset to %s View", exportPerspective), oldCamera, camera, true));
         }
         
         // Determine the dimensions of the users InteractiveGraphView pane
@@ -325,9 +325,9 @@ public class SVGGraphBuilder {
         for (int vertexIndex = 0 ; vertexIndex < access.getVertexCount() ; vertexIndex++) {
             
             // Do not export this vertex if only selected nodes are being exported and the node is not selected.
-            // Do not export the node if the node is invisable
+            // Do not export the node if the node is invisible
             // Do not export the node if the node is not within the field of view
-            if (!inView(vertexIndex) || ((selectedElementsOnly && !access.isVertexSelected(vertexIndex)) || access.getVertexVisibility(vertexIndex) == 0)) {
+            if (!inView(vertexIndex) || (selectedElementsOnly && !access.isVertexSelected(vertexIndex)) || access.getVertexVisibility(vertexIndex) == 0) {
                 continue;
             }
             
@@ -478,7 +478,7 @@ public class SVGGraphBuilder {
         final float blazeSize = access.getBlazeSize();
         final float blazeWidth = 512 * blazeSize;
         final float blazeHeight = 128 * blazeSize;
-        final Vector4f edgePosition = this.offSetPosition(this.getVertexPosition(vertexIndex), this.getVertexScaledRadius(vertexIndex), Math.toRadians(blazeAngle + 90D));
+        final Vector4f edgePosition = this.offsetPosition(this.getVertexPosition(vertexIndex), this.getVertexScaledRadius(vertexIndex), Math.toRadians(blazeAngle + 90D));
         
         // Build the blaze
         final SVGObject svgBlaze = SVGTemplateConstants.BLAZE.getSVGObject();
@@ -597,8 +597,8 @@ public class SVGGraphBuilder {
                     final Vector3f highDirectionVector = Vector3f.subtract(lowCenterPosition, highCenterPosition);
 
                     // Get the coordinates of the points where the connection intersects the node circumferences
-                    final Vector3f highCircumferencePosition = offSetPosition(highCenterPosition, access.getRadius(highIndex), highDirectionVector);
-                    final Vector3f lowCircumferencePosition = offSetPosition(lowCenterPosition, access.getRadius(lowIndex), lowDirectionVector);
+                    final Vector3f highCircumferencePosition = offsetPosition(highCenterPosition, access.getRadius(highIndex), highDirectionVector);
+                    final Vector3f lowCircumferencePosition = offsetPosition(lowCenterPosition, access.getRadius(lowIndex), lowDirectionVector);
 
                     // Get the direction vector of the line parallell to the viewing plane and perpendicular to the connection
                     final Vector3f vertexTagentDirection = new Vector3f();
@@ -611,8 +611,8 @@ public class SVGGraphBuilder {
                     final float perpendicularOffsetDirection = ((Double) Math.pow(-1, connectionIndex)).floatValue();
                     
                     // Determine the unique world corrdinates for end positions for the individual connection.
-                    final Vector3f highEndPoint = offSetPosition(highCircumferencePosition, perpendicularOffsetDistance * perpendicularOffsetDirection, vertexTagentDirection);
-                    final Vector3f lowEndPoint = offSetPosition(lowCircumferencePosition, perpendicularOffsetDistance * perpendicularOffsetDirection, vertexTagentDirection);
+                    final Vector3f highEndPoint = offsetPosition(highCircumferencePosition, perpendicularOffsetDistance * perpendicularOffsetDirection, vertexTagentDirection);
+                    final Vector3f lowEndPoint = offsetPosition(lowCircumferencePosition, perpendicularOffsetDistance * perpendicularOffsetDirection, vertexTagentDirection);
 
                     // Get the world corrdinates of the points where the conection passes through the frustum
                     final Vector3f lowFrustumEntryPoint = viewFrustum.getEntryPoint(lowEndPoint, highEndPoint);
@@ -624,8 +624,8 @@ public class SVGGraphBuilder {
                     }   
                     
                     // Get the world coordinates of the point where the shaft will join the arrow head.
-                    final Vector3f highArowHeadConnectionPoint = offSetPosition(highEndPoint, 0.65F, highDirectionVector);
-                    final Vector3f lowArowHeadConnectionPoint = offSetPosition(lowEndPoint, 0.65F, lowDirectionVector);
+                    final Vector3f highArowHeadConnectionPoint = offsetPosition(highEndPoint, 0.65F, highDirectionVector);
+                    final Vector3f lowArowHeadConnectionPoint = offsetPosition(lowEndPoint, 0.65F, lowDirectionVector);
                     
                     // Assign the positional values of shaft and arrow head/s based on the direction of the Transaction/Edge/Link
                     final Vector3f highArrowShaftPosition = new Vector3f(highFrustumEntryPoint);
@@ -637,8 +637,8 @@ public class SVGGraphBuilder {
                         case BIDIRECTED:
                             
                             // Generate new arrow base for diamond arrow heads
-                            final Vector3f highArrowHeadBasePoint = offSetPosition(highEndPoint, 1.0F, highDirectionVector);
-                            final Vector3f lowArowHeadBasePoint = offSetPosition(lowEndPoint, 1.0F, lowDirectionVector);
+                            final Vector3f highArrowHeadBasePoint = offsetPosition(highEndPoint, 1.0F, highDirectionVector);
+                            final Vector3f lowArowHeadBasePoint = offsetPosition(lowEndPoint, 1.0F, lowDirectionVector);
                             
                             // Only build the high arrow head if the high arrow head has not been cropped
                             if (highFrustumEntryPoint.areSame(highEndPoint)) {
@@ -741,7 +741,7 @@ public class SVGGraphBuilder {
         // Calculate the position of the label
         final float offsetDistance = Mathf.distance(highPosition, lowPosition) * segmentRatio;
         final Vector3f angle = Vector3f.subtract(highPosition, lowPosition);
-        final Vector3f worldPosition = this.offSetPosition(lowPosition, offsetDistance, angle);
+        final Vector3f worldPosition = this.offsetPosition(lowPosition, offsetDistance, angle);
           
         // Only procede if the label is in view
         if (viewFrustum.inView(worldPosition, 0)){
@@ -785,8 +785,8 @@ public class SVGGraphBuilder {
         // Calculate the four points of the arrow head.
         final Vector4f point = this.getScreenPosition(arrowPointPosition);
         final Vector4f base = this.getScreenPosition(arrowBasePosition);
-        final Vector4f upperEdge = this.getScreenPosition(this.offSetPosition(shaftEndPosition, -0.15F, perpendicularDirection));
-        final Vector4f lowerEdge = this.getScreenPosition(this.offSetPosition(shaftEndPosition, 0.15F, perpendicularDirection));
+        final Vector4f upperEdge = this.getScreenPosition(this.offsetPosition(shaftEndPosition, -0.15F, perpendicularDirection));
+        final Vector4f lowerEdge = this.getScreenPosition(this.offsetPosition(shaftEndPosition, 0.15F, perpendicularDirection));
                
         svgArrowHead.setID(String.format("arrow-head-%s-%s", point.getX(), point.getY()));
 
@@ -804,10 +804,10 @@ public class SVGGraphBuilder {
     private void buildLinearArrowShaft(final SVGObject svgArrowShaft, final Vector3f sourcePosition, final Vector3f destinationPosition, final Vector3f perpendicularDirection) {
 
         // Calculate the four points of the arrow shaft.
-        final Vector4f p1 = this.getScreenPosition(this.offSetPosition(sourcePosition, 0.03F, perpendicularDirection));
-        final Vector4f p2 = this.getScreenPosition(this.offSetPosition(sourcePosition, -0.03F, perpendicularDirection));
-        final Vector4f p3 = this.getScreenPosition(this.offSetPosition(destinationPosition, -0.03F, perpendicularDirection));
-        final Vector4f p4 = this.getScreenPosition(this.offSetPosition(destinationPosition, 0.03F, perpendicularDirection));
+        final Vector4f p1 = this.getScreenPosition(this.offsetPosition(sourcePosition, 0.03F, perpendicularDirection));
+        final Vector4f p2 = this.getScreenPosition(this.offsetPosition(sourcePosition, -0.03F, perpendicularDirection));
+        final Vector4f p3 = this.getScreenPosition(this.offsetPosition(destinationPosition, -0.03F, perpendicularDirection));
+        final Vector4f p4 = this.getScreenPosition(this.offsetPosition(destinationPosition, 0.03F, perpendicularDirection));
         
         svgArrowShaft.setPoints(p1, p2, p3, p4);
     }
@@ -849,7 +849,7 @@ public class SVGGraphBuilder {
         final float contentWidth = viewPortWidth - widthTrimValue;
         final float contentHeight = viewPortHeight - heightTrimValue;
         
-        SVGObjectConstants.CONTENT.findIn(svgGraph).setViewBox(widthTrimValue / 2F , heightTrimValue / 2F, contentWidth , contentHeight);
+        SVGObjectConstants.CONTENT.findIn(svgGraph).setViewBox(widthTrimValue / 2, heightTrimValue / 2, contentWidth , contentHeight);
         
         svgGraph.setDimension(contentWidth, contentHeight + (contentHeight * .05F));
     }
@@ -886,9 +886,6 @@ public class SVGGraphBuilder {
     private Vector4f getScreenPosition(final Vector3f worldPosition) {
         final Vector4f screenPosition = new Vector4f();
         Graphics3DUtilities.project(worldPosition, modelViewProjectionMatrix, viewPort, screenPosition);
-        if (screenPosition.getW() < 0) {
-            LOGGER.log(Level.INFO, String.format("World Position: %s, is behind the viewer and cannot be projected to the screen. W value of %s", worldPosition, screenPosition.getW()));
-        }
         return screenPosition;
     }
 
@@ -952,7 +949,7 @@ public class SVGGraphBuilder {
      * @param direction
      * @return 
      */
-    private Vector4f offSetPosition(final Vector4f origin, final float distance, final double direction) {
+    private Vector4f offsetPosition(final Vector4f origin, final float distance, final double direction) {
         final float x = (float) (origin.getX() - (distance * Math.cos(direction)));
         final float y = (float) (origin.getY() - (distance * Math.sin(direction)));
         return new Vector4f(x, y, origin.getZ(), origin.getW());
@@ -966,8 +963,8 @@ public class SVGGraphBuilder {
      * @param direction
      * @return 
      */
-    private Vector3f offSetPosition(final Vector3f origin, final float distance, final Vector3f direction) {
-        Vector3f offsetVector = new Vector3f(direction);
+    private Vector3f offsetPosition(final Vector3f origin, final float distance, final Vector3f direction) {
+        final Vector3f offsetVector = new Vector3f(direction);
 
         // Ensute the direction vector is normalised
         offsetVector.normalize();

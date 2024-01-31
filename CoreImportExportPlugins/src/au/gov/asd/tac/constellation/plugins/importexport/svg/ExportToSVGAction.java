@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -53,7 +54,7 @@ public final class ExportToSVGAction implements ActionListener {
     @Override
     public void actionPerformed(final ActionEvent e) {
         
-        //The Action must be abale to interpret the active graph to prefill parameters
+        //The Action must be able to interpret the active graph to prefill parameters
         final ReadableGraph graph = context.getGraph().getReadableGraph();
         
         //Get the attribute IDs
@@ -70,7 +71,7 @@ public final class ExportToSVGAction implements ActionListener {
             final String message = "Unable to export empty graph.";
             final Object[] options = new Object[]{NotifyDescriptor.OK_OPTION};
             final NotifyDescriptor d = new NotifyDescriptor(message, "Unable To Perform Action", NotifyDescriptor.DEFAULT_OPTION, NotifyDescriptor.INFORMATION_MESSAGE, options, NotifyDescriptor.OK_OPTION);
-            DialogDisplayer.getDefault().notify(d);
+            NotifyDisplayer.display(d);
         
         //The graph has visual data so export it
         } else {
@@ -83,7 +84,6 @@ public final class ExportToSVGAction implements ActionListener {
                     .withParameter(ExportToSVGPlugin.SHOW_CONNECTION_LABELS_PARAMETER_ID, flags.drawConnectionLabels())
                     .withParameter(ExportToSVGPlugin.SHOW_BLAZES_PARAMETER_ID, flags.drawBlazes())
                     .withParameter(ExportToSVGPlugin.BACKGROUND_COLOR_PARAMETER_ID, color)
-                    .withParameter(ExportToSVGPlugin.EXPORT_PERSPECTIVE_PARAMETER_ID, "Current Perspective")
                     .interactively(true)
                     .executeLater(context.getGraph());
         }
