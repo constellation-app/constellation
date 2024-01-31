@@ -277,7 +277,7 @@ public class FileInputPane extends HBox {
         FileChooserBuilder fileChooserBuilder = new FileChooserBuilder(title)
                 .setTitle(title)
                 .setAcceptAllFileFilterUsed(extensionFilter == null ? true : FileParameterType.isAcceptAllFileFilterUsed(parameter))
-                .setFilesOnly(false);
+                .setFilesOnly(true);
 
         if (extensionFilter != null) {
             for (final String extension : extensionFilter.getExtensions()){
