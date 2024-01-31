@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.views.wordcloud.content.PhraseTokenHandler;
 import au.gov.asd.tac.constellation.views.wordcloud.content.SparseMatrix;
 import au.gov.asd.tac.constellation.views.wordcloud.content.TaggedSparseMatrix;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -244,14 +245,14 @@ public class WordCloud {
      * words
      */
     public Map<Integer, Set<Integer>> getHashedWordSets() {
-        return new HashMap<>(hashedWordSets);
+        return Collections.unmodifiableMap(hashedWordSets);
     }
 
     /**
      * Gets a map relating words to their hashes
      */
     public Map<String, Integer> getWordToHashes() {
-        return new HashMap<>(wordsToHashes);
+        return Collections.unmodifiableMap(wordsToHashes);
     }
     
     /**
@@ -339,11 +340,7 @@ public class WordCloud {
      * words and current selection mode
      */
     public Set<Integer> getElementsCorrespondingToSelection() {
-        if (isUnionSelect) {
-            return getElementsWithAnyWords();
-        } else {
-            return getElementsWithAllWords();
-        }
+        return isUnionSelect ? getElementsWithAnyWords() : getElementsWithAllWords();
     }
 
     /**

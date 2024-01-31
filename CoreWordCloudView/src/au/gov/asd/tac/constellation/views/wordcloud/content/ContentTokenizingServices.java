@@ -652,7 +652,7 @@ public class ContentTokenizingServices {
          */
         @Override
         public void tokenizePhrase(final char[] phrase, final int elementPos) {
-            TokenizerState state = getNewState(phrase);
+            final TokenizerState state = getNewState(phrase);
             while (state.findNextToken()) {
                 if (handler instanceof PhraseTokenHandler) {
                     ((PhraseTokenHandler) handler).registerToken(new String(state.getToken()), elementPos, ((PhraseTokenizerState) state).currentSingleWords, ((PhraseTokenizerState) state).storeSingleWords);
@@ -891,11 +891,7 @@ public class ContentTokenizingServices {
 
         @Override
         protected String sanitizeString(final String str) {
-            String newStr = "";
-            if (!caseSensitive) {
-                newStr = str.toLowerCase();
-            }
-            return newStr;
+            return !caseSensitive ? str.toLowerCase(): "";
         }
     }
 

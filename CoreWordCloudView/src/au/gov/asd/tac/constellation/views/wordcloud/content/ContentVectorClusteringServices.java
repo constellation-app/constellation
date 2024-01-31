@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.views.wordcloud.content;
 
 import au.gov.asd.tac.constellation.views.wordcloud.content.ContentAnalysisOptions.TokenThresholdMethod;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -80,7 +80,7 @@ public class ContentVectorClusteringServices {
     }
 
     public Map<Integer, Integer> getClusters() {
-        return new HashMap<>(elementToCluster);
+        return Collections.unmodifiableMap(elementToCluster);
     }
 
     private class KMeansClustering implements Clustering {

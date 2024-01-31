@@ -44,11 +44,9 @@ public class WordCloudParametersPane extends TitledPane implements PluginParamet
     private final PluginParameters params;
     private final Button run;
     private static final String EMPTY_STRING = "";
-    private static final ArrayList<String> EMPTY_STRING_LIST = new ArrayList<>(Arrays.asList(EMPTY_STRING));
-    @SuppressWarnings("unchecked") // EMPTY_STRING_LIST is a list of strings
-    private List<String> nodeAttributes = (List<String>) EMPTY_STRING_LIST.clone();
-    @SuppressWarnings("unchecked") // EMPTY_STRING_LIST is a list of strings
-    private List<String> transAttributes = (List<String>) EMPTY_STRING_LIST.clone();
+    private static final List<String> EMPTY_STRING_LIST = Arrays.asList(EMPTY_STRING);
+    private List<String> nodeAttributes = new ArrayList<>();
+    private List<String> transAttributes = new ArrayList<>();
 
     public WordCloudParametersPane(final WordCloudPane master) {
         setText("Generate Word Cloud");
@@ -137,7 +135,7 @@ public class WordCloudParametersPane extends TitledPane implements PluginParamet
                 if (masterParameter.getError() != null) {
                     IntegerParameterType.setMinimum(proximityParam, 0);
                 } else {
-                    int currentPhraseLength = Integer.parseInt(masterParameter.getStringValue());
+                    final int currentPhraseLength = Integer.parseInt(masterParameter.getStringValue());
                     IntegerParameterType.setMinimum(proximityParam, currentPhraseLength);
                     if (Integer.parseInt(proximityParam.getStringValue()) < currentPhraseLength) {
                         proximityParam.setStringValue(masterParameter.getStringValue());

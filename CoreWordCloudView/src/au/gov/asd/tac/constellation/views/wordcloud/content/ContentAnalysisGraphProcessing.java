@@ -65,25 +65,25 @@ public class ContentAnalysisGraphProcessing {
     }
 
     public static void makeSelectionsFromClusters(final Graph graph, final Map<Integer, Integer> elementToCluster) {
-        ContentAnalysisGraphProcessing cagp = new ContentAnalysisGraphProcessing(graph);
+        final ContentAnalysisGraphProcessing cagp = new ContentAnalysisGraphProcessing(graph);
         cagp.followUpPlugins.add(cagp.new MakeSelectionsPlugin(elementToCluster));
         cagp.performFollowUp();
     }
 
     public static void recordClusters(final Graph graph, final Map<Integer, Integer> elementToCluster) {
-        ContentAnalysisGraphProcessing cagp = new ContentAnalysisGraphProcessing(graph);
+        final ContentAnalysisGraphProcessing cagp = new ContentAnalysisGraphProcessing(graph);
         cagp.followUpPlugins.add(cagp.new ClusterElementsPlugin(elementToCluster));
         cagp.followUpPlugins.add(cagp.new ShowClustersOnHistogramPlugin());
         cagp.performFollowUp();
     }
 
     public static void addTransactionsForPairwiseSimilarities(final Graph graph, final List<ElementSimilarity> pairwiseSimilarities) {
-        ContentAnalysisGraphProcessing cagp = new ContentAnalysisGraphProcessing(graph);
+        final ContentAnalysisGraphProcessing cagp = new ContentAnalysisGraphProcessing(graph);
         cagp.followUpPlugins.add(cagp.new AddTransactionsPlugin(pairwiseSimilarities));
         cagp.performFollowUp();
     }
 
-    public ContentAnalysisGraphProcessing(final Graph graph, final ContentVectorClusteringServices cvcs, GraphElementType elementType, final FollowUpChoice followUpChoice) {
+    public ContentAnalysisGraphProcessing(final Graph graph, final ContentVectorClusteringServices cvcs, final GraphElementType elementType, final FollowUpChoice followUpChoice) {
         this.graphElementType = elementType;
         this.graph = graph;
         switch (followUpChoice) {
@@ -99,7 +99,7 @@ public class ContentAnalysisGraphProcessing {
     }
 
     public void performFollowUp() {
-        for (Plugin followUpPlugin : followUpPlugins) {
+        for (final Plugin followUpPlugin : followUpPlugins) {
             final Future<?> f = PluginExecution.withPlugin(followUpPlugin).executeLater(graph);
             try {
                 f.get();
@@ -133,59 +133,54 @@ public class ContentAnalysisGraphProcessing {
         }
     }
 
+    @PluginInfo(pluginType = PluginType.NONE, tags = {"LOW LEVEL"})
     private class ClusterElementsPlugin extends SimpleEditPlugin {
 
         private static final String PLUGIN_NAME = "Cluster Similar Elements";
         private final Map<Integer, Integer> elementToCluster;
 
         public ClusterElementsPlugin(final Map<Integer, Integer> elementToCluster) {
-            this.elementToCluster = new HashMap<>(elementToCluster);
+            this.elementToCluster = elementToCluster;
         }
 
         @Override
         public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-            try {
-                // Create the cluster attribtue if it is not already present in the rgaph, or if it was, reset all vertices to be unclustered.
-                int clusterElementAttr = wg.getAttribute(graphElementType, ClusteringConcept.VertexAttribute.NAMED_CLUSTER.getName());
-                if (clusterElementAttr == Graph.NOT_FOUND || clusterElementAttr < 0) {
-                    clusterElementAttr = wg.addAttribute(graphElementType, ClusteringConcept.VertexAttribute.NAMED_CLUSTER.getAttributeType(), ClusteringConcept.VertexAttribute.NAMED_CLUSTER.getName(), ClusteringConcept.VertexAttribute.NAMED_CLUSTER.getDescription(), ClusteringConcept.VertexAttribute.NAMED_CLUSTER.getDefault(), null);
-                } else {
-                    int elementCount;
-                    switch (graphElementType) {
-                        case VERTEX:
-                            elementCount = wg.getVertexCount();
-                            break;
-                        case TRANSACTION:
-                            elementCount = wg.getTransactionCount();
-                            break;
-                        default:
-                            elementCount = 0;
-                    }
+            // Create the cluster attribtue if it is not already present in the rgaph, or if it was, reset all vertices to be unclustered.
+            int clusterElementAttr = wg.getAttribute(graphElementType, ClusteringConcept.VertexAttribute.NAMED_CLUSTER.getName());
+            ClusteringConcept.VertexAttribute.NAMED_CLUSTER.ensure(wg);
+            int elementCount;
+            switch (graphElementType) {
+                case VERTEX:
+                    elementCount = wg.getVertexCount();
+                    break;
+                case TRANSACTION:
+                    elementCount = wg.getTransactionCount();
+                    break;
+                default:
+                    elementCount = 0;
+            }
 
-                    for (int i = 0; i < elementCount; i++) {
-                        int element;
-                        switch (graphElementType) {
-                            case VERTEX:
-                                element = wg.getVertex(i);
-                                break;
-                            case TRANSACTION:
-                                element = wg.getTransaction(i);
-                                break;
-                            default:
-                                element = -1;
-                        }
-                        wg.setStringValue(clusterElementAttr, element, "no cluster");
-                    }
+            for (int i = 0; i < elementCount; i++) {
+                int element;
+                switch (graphElementType) {
+                    case VERTEX:
+                        element = wg.getVertex(i);
+                        break;
+                    case TRANSACTION:
+                        element = wg.getTransaction(i);
+                        break;
+                    default:
+                        element = -1;
                 }
+                wg.setStringValue(clusterElementAttr, element, "no cluster");
+            }
 
-                // Record the clusters 
-                final Iterator<Integer> iter = elementToCluster.keySet().iterator();
-                while (iter.hasNext()) {
-                    final int elID = iter.next();
-                    wg.setStringValue(clusterElementAttr, elID, elementToCluster.get(elID).toString());
-                }
-            } catch (final Exception ex) {
-                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+            // Record the clusters 
+            final Iterator<Integer> iter = elementToCluster.keySet().iterator();
+            while (iter.hasNext()) {
+                final int elID = iter.next();
+                wg.setStringValue(clusterElementAttr, elID, elementToCluster.get(elID).toString());
+
             }
         }
 
@@ -245,6 +240,7 @@ public class ContentAnalysisGraphProcessing {
         }
     }
 
+    @PluginInfo(pluginType = PluginType.NONE, tags = {"LOW LEVEL"})
     private class AddTransactionsPlugin extends SimpleEditPlugin {
 
         private static final String SIMILARITY_ATTRIBUTE_NAME = "n-gram Similarity";
@@ -284,35 +280,31 @@ public class ContentAnalysisGraphProcessing {
                 throw new PluginException(PluginNotificationLevel.WARNING, TOO_MANY_TRANSACTIONS_ERROR_MESSAGE);
             }
 
-            try {
-                // Note: this sort of stuff should be implemented using schema lookup once the attribute schema is introduced for constellation
-                final int nGramSimilarityAttr = wg.addAttribute(GraphElementType.TRANSACTION, SIMILARITY_ATTR_TYPE, SIMILARITY_ATTRIBUTE_NAME, SIMILARITY_ATTR_DESCRIPTION, 0F, null);
-                final int typeAttr = wg.addAttribute(GraphElementType.TRANSACTION, TYPE_ATTR_TYPE, TYPE_ATTRIBUTE_NAME, TYPE_ATTR_DESCRIPTION, null, null);
-                final int subtypeAttr = wg.addAttribute(GraphElementType.TRANSACTION, SUBTYPE_ATTR_TYPE, SUBTYPE_ATTRIBUTE_NAME, SUBTYPE_ATTR_DESCRIPTION, null, null);
-                final int name = wg.addAttribute(GraphElementType.TRANSACTION, NAME_ATTR_TYPE, NAME_ATTRIBUTE_NAME, NAME_ATTR_DESCRIPTION, null, null);
-                final int colorAttr = wg.addAttribute(GraphElementType.TRANSACTION, COLOR_ATTR_TYPE, COLOR_ATTRIBUTE_NAME, COLOR_ATTR_DESCRIPTION, null, null);
+            // Note: this sort of stuff should be implemented using schema lookup once the attribute schema is introduced for constellation
+            final int nGramSimilarityAttr = wg.addAttribute(GraphElementType.TRANSACTION, SIMILARITY_ATTR_TYPE, SIMILARITY_ATTRIBUTE_NAME, SIMILARITY_ATTR_DESCRIPTION, 0F, null);
+            final int typeAttr = wg.addAttribute(GraphElementType.TRANSACTION, TYPE_ATTR_TYPE, TYPE_ATTRIBUTE_NAME, TYPE_ATTR_DESCRIPTION, null, null);
+            final int subtypeAttr = wg.addAttribute(GraphElementType.TRANSACTION, SUBTYPE_ATTR_TYPE, SUBTYPE_ATTRIBUTE_NAME, SUBTYPE_ATTR_DESCRIPTION, null, null);
+            final int name = wg.addAttribute(GraphElementType.TRANSACTION, NAME_ATTR_TYPE, NAME_ATTRIBUTE_NAME, NAME_ATTR_DESCRIPTION, null, null);
+            final int colorAttr = wg.addAttribute(GraphElementType.TRANSACTION, COLOR_ATTR_TYPE, COLOR_ATTRIBUTE_NAME, COLOR_ATTR_DESCRIPTION, null, null);
 
-                int currentLinkNum = 0;
+            int currentLinkNum = 0;
 
-                for (final ElementSimilarity entry : pairwiseSimilarities) {
-                    final int srcID = entry.low;
-                    final int destID = entry.high;
-                    final double similarity = entry.score;
+            for (final ElementSimilarity entry : pairwiseSimilarities) {
+                final int srcID = entry.low;
+                final int destID = entry.high;
+                final double similarity = entry.score;
 
-                    // Add the transaction
-                    final int link = wg.addTransaction(srcID, destID, false);
+                // Add the transaction
+                final int link = wg.addTransaction(srcID, destID, false);
 
-                    // Add the relevant attributes to the transaction
-                    wg.setDoubleValue(nGramSimilarityAttr, link, similarity);
-                    wg.setStringValue(typeAttr, link, SIMILARTYPE_VALUE);
-                    wg.setStringValue(subtypeAttr, link, NGRAMSIMILARTYPE_VALUE);
-                    wg.setStringValue(name, link, linkName + currentLinkNum++);
-                    wg.setObjectValue(colorAttr, link, ConstellationColor.PURPLE);
-                }
-
-            } catch (final Exception ex) {
-                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                // Add the relevant attributes to the transaction
+                wg.setDoubleValue(nGramSimilarityAttr, link, similarity);
+                wg.setStringValue(typeAttr, link, SIMILARTYPE_VALUE);
+                wg.setStringValue(subtypeAttr, link, NGRAMSIMILARTYPE_VALUE);
+                wg.setStringValue(name, link, linkName + currentLinkNum++);
+                wg.setObjectValue(colorAttr, link, ConstellationColor.PURPLE);
             }
+
         }
 
         @Override

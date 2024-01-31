@@ -62,11 +62,8 @@ public class ContentPairwiseSimilarityServices {
 
     private static ContentPairwiseSimilarityServices pairwiseComparison(final PairwiseComparisonTokenHandler handler, final NGramAnalysisParameters nGramParams) {
         final ContentPairwiseSimilarityServices cpss = new ContentPairwiseSimilarityServices(handler);
-        if (nGramParams.isBinarySpace()) {
-            cpss.similarityCalculator = new BinarySpaceTaxicabNormCalculator();
-        } else {
-            cpss.similarityCalculator = new IntegerSpaceTaxicabNormCalculator();
-        }
+        cpss.similarityCalculator = nGramParams.isBinarySpace() ? new BinarySpaceTaxicabNormCalculator() : new IntegerSpaceTaxicabNormCalculator();
+        
         cpss.computeSimilarities(nGramParams.getThreshold());
         return cpss;
     }
@@ -90,17 +87,18 @@ public class ContentPairwiseSimilarityServices {
                 j = handler.numChunks;
                 max = handler.totalChunks;
             }
-            for (; j < max; j++) {
+            while (j < max) {
                 final int chunk1 = i;
                 final int chunk2 = j;
                 handler.tokenElementFrequencies.values().parallelStream().forEach(value -> processPairsWithToken(value[chunk1], value[chunk2]));
                 for (int k = 0; k < pairwiseSimilaritiesCalculation.length; k++) {
-                    Map<Integer, MutableDouble> elementSimilarities = pairwiseSimilaritiesCalculation[k];
+                    final Map<Integer, MutableDouble> elementSimilarities = pairwiseSimilaritiesCalculation[k];
                     if (elementSimilarities != null) {
                         processPairwiseSimilarities(k, elementSimilarities, threshold);
                     }
                     pairwiseSimilaritiesCalculation[k] = null;
                 }
+                j++;
             }
         }
     }
@@ -130,7 +128,7 @@ public class ContentPairwiseSimilarityServices {
                             pairwiseSimilaritiesCalculation[loElement] = new HashMap<>();
                         }
 
-                        Map<Integer, MutableDouble> elementMap = pairwiseSimilaritiesCalculation[loElement];
+                        final Map<Integer, MutableDouble> elementMap = pairwiseSimilaritiesCalculation[loElement];
                         if (!elementMap.containsKey(hiElement)) {
                             elementMap.put(hiElement, new MutableDouble(0.0));
                         } else {
@@ -141,7 +139,7 @@ public class ContentPairwiseSimilarityServices {
             }));
     }
 
-    private void processPairwiseSimilarities(final int loElement, Map<Integer, MutableDouble> elementSimilarities, final double threshold) {
+    private void processPairwiseSimilarities(final int loElement, final Map<Integer, MutableDouble> elementSimilarities, final double threshold) {
         final double loModulii = similarityCalculator.computeModulii() ? (double) modulii.get(loElement) : (double) handler.elementCardinalities.get(loElement);
         elementSimilarities.entrySet().forEach(similarity -> {
             final int hiElement = similarity.getKey();

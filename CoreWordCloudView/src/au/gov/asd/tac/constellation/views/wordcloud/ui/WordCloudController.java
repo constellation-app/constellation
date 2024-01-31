@@ -29,7 +29,7 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.views.wordcloud.phraseanalysis.PhrasiphyContentPlugin;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
@@ -55,8 +55,6 @@ public class WordCloudController {
     private WordCloudTopComponent parent;
     private static final String ATTR_STRING_TYPE = "string";
     private static final String SELECTED_ATTRIBUTE = "selected";
-    static final String EMPTY_STRING = "";
-    static final ArrayList<String> EMPTY_STRING_LIST = new ArrayList<>(Arrays.asList(EMPTY_STRING));
     private long attrModCount;
     private WordCloudPane pane = null;
     private Graph graph = null;
@@ -64,8 +62,8 @@ public class WordCloudController {
     private boolean controllerIsInitialising = false;
     private final int currentFontSize;
     
-    private List<String> vertTextAttributes = new ArrayList<>(EMPTY_STRING_LIST);
-    private List<String> transTextAttributes = new ArrayList<>(EMPTY_STRING_LIST);
+    private final List<String> vertTextAttributes = new ArrayList<>();
+    private final List<String> transTextAttributes = new ArrayList<>();
 
     /**
      * Construct the controller
@@ -97,11 +95,11 @@ public class WordCloudController {
     }
 
     public List<String> getVertTextAttributes() {
-        return new ArrayList<>(vertTextAttributes);
+        return Collections.unmodifiableList(vertTextAttributes);
     }
 
     public List<String> getTransTextAttributes() {
-        return new ArrayList<>(transTextAttributes);
+        return Collections.unmodifiableList(transTextAttributes);
     }
     
     public boolean isControllerIntialising() {
@@ -239,8 +237,8 @@ public class WordCloudController {
      * Manages a new graph becoming active in the application
      */
     public void updateActiveGraph(final Graph graph) {
-        vertTextAttributes = new ArrayList<>(EMPTY_STRING_LIST);
-        transTextAttributes = new ArrayList<>(EMPTY_STRING_LIST);
+        vertTextAttributes.clear();
+        transTextAttributes.clear();
         final ReadableGraph rg = graph.getReadableGraph();
         try {
             // Retrieve the cloud attribute from the new graph if present
@@ -270,8 +268,8 @@ public class WordCloudController {
      * Manages a graph change and updates the word cloud pane 
      */
     public void updateGraph() {
-        vertTextAttributes = new ArrayList<>(EMPTY_STRING_LIST);
-        transTextAttributes = new ArrayList<>(EMPTY_STRING_LIST);
+        vertTextAttributes.clear();
+        transTextAttributes.clear();
         final long amc;
         final long mc;
         boolean doCloudUpdate = false;

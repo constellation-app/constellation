@@ -19,6 +19,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -45,11 +46,11 @@ public class PhraseAnalysisModelLoader {
     }
 
     public static Map<String, Set> getExcludedWords() {
-        return new HashMap<>(excludedWords);
+        return Collections.unmodifiableMap(excludedWords);
     }
 
     public static Map<String, Set> getDelimiters() {
-        return new HashMap<>(delimiters);
+        return Collections.unmodifiableMap(delimiters);
     }
     
     public static void loadMap() throws IOException {
@@ -67,21 +68,21 @@ public class PhraseAnalysisModelLoader {
         isLoaded = true;
     }
 
-    private enum MODE {
+    private enum Mode {
         ADD_CHARACTERS, ADD_SET_OF_SETS, ADD_UNICODE_RANGE, LOOK_FOR_MODE_TOKEN
     }
 
     private static void processLines(final BufferedReader reader, final Map<String, Set> map, final boolean singleCharacterLines) throws IOException {
 
-        MODE currentMode = MODE.LOOK_FOR_MODE_TOKEN;
+        Mode currentMode = Mode.LOOK_FOR_MODE_TOKEN;
         Set currentSet = new HashSet<>();
 
         while (true) {
             String line = reader.readLine();
             if (line == null) {
                 return;
-            } else if (line.trim().isEmpty()) {
-                currentMode = MODE.LOOK_FOR_MODE_TOKEN;
+            } else if (line.isBlank()) {
+                currentMode = Mode.LOOK_FOR_MODE_TOKEN;
                 continue;
             }
 
@@ -106,13 +107,12 @@ public class PhraseAnalysisModelLoader {
                 case LOOK_FOR_MODE_TOKEN:
                     final String token_type = line.substring(0, 2);
                     if (!token_type.equals(COMMENT_TOKEN)) {
-                        String currentString = line.substring(line.indexOf(OPEN_SET) + 1, line.indexOf(CLOSE_SET));
-                        if (token_type.equals(UNICODE_RANGE_TOKEN)) {
-                            currentSet = new HashSet<>();
-                            currentMode = MODE.ADD_UNICODE_RANGE;
+                        currentSet = new HashSet<>();
+                        final String currentString = line.substring(line.indexOf(OPEN_SET) + 1, line.indexOf(CLOSE_SET));
+                        if (token_type.equals(UNICODE_RANGE_TOKEN)) { 
+                            currentMode = Mode.ADD_UNICODE_RANGE;
                         } else {
-                            currentSet = new HashSet<>();
-                            currentMode = token_type.equals(SET_TOKEN) ? MODE.ADD_CHARACTERS : MODE.ADD_SET_OF_SETS;
+                            currentMode = token_type.equals(SET_TOKEN) ? Mode.ADD_CHARACTERS : Mode.ADD_SET_OF_SETS;
                         }
                         map.put(currentString, currentSet);
                     }

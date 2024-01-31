@@ -170,10 +170,10 @@ public class ContentAnalysisManager {
         final DefaultTokenHandler th = new DefaultTokenHandler();
         ContentTokenizingServices.createDocumentClusteringTokenizingService(th, clusterDocumentsParams, allocator);
 
-        ContentVectorClusteringServices cvcs = ContentVectorClusteringServices.createKMeansClusteringService(th, clusterDocumentsParams, querySize);
+       final  ContentVectorClusteringServices cvcs = ContentVectorClusteringServices.createKMeansClusteringService(th, clusterDocumentsParams, querySize);
         cvcs.createAndRunThreads(allocator);
 
-        ContentAnalysisGraphProcessing gp = new ContentAnalysisGraphProcessing(graph, cvcs, elementType, clusterDocumentsParams.getFollowUpChoice());
+        final ContentAnalysisGraphProcessing gp = new ContentAnalysisGraphProcessing(graph, cvcs, elementType, clusterDocumentsParams.getFollowUpChoice());
         gp.performFollowUp();
     }
 
@@ -247,7 +247,6 @@ public class ContentAnalysisManager {
                     wordCloud = new WordCloud(handler, bgHandler, elementType, phrasiphyContentParams.getThreshold(), phrasiphyContentParams.hasFilterAllWords(), (WordCloud) graph.getObjectValue(cloudAttr, 0));
                 }
 
-                LOGGER.log(Level.SEVERE, "Word cloud has been created");
                 wordCloud.setQueryInfo(phrasiphyContentParams.getPhraseLength(), phrasiphyContentParams.getProximity(), graph.getAttributeName(phrasiphyContentParams.getOnAttributeID()));
                 graph.setObjectValue(cloudAttr, 0, wordCloud);
             }

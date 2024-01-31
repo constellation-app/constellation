@@ -36,43 +36,43 @@ public class NGramAnalysisParameters {
     private FollowUpChoice followUpChoice;
     private FollowUpScope followUpScope;
 
-    static final String FOLLOW_UP_CHOICE_PARAMETER_ID = PluginParameter.buildId(NGramAnalysisParameters.class, "follow_up_choice");
-    static final String FOLLOW_UP_CHOICE_NAME = "Followup Action on Similar Nodes";
-    static final String FOLLOW_UP_CHOICE_DESCRIPTION = "The action to be performed on nodes that are determined to be 'n-grammatically' similar.";
+    public static final String FOLLOW_UP_CHOICE_PARAMETER_ID = PluginParameter.buildId(NGramAnalysisParameters.class, "follow_up_choice");
+    public static final String FOLLOW_UP_CHOICE_NAME = "Followup Action on Similar Nodes";
+    public static final String FOLLOW_UP_CHOICE_DESCRIPTION = "The action to be performed on nodes that are determined to be 'n-grammatically' similar.";
 
-    static final String FOLLOW_UP_SCOPE_PARAMETER_ID = PluginParameter.buildId(NGramAnalysisParameters.class, "follow_up_scope");
-    static final String FOLLOW_UP_SCOPE_NAME = "Candidate Nodes for Followup Action";
-    static final String FOLLOW_UP_SCOPE_DESCRIPTION = "The set of candidates nodes for the followup action.";
+    public static final String FOLLOW_UP_SCOPE_PARAMETER_ID = PluginParameter.buildId(NGramAnalysisParameters.class, "follow_up_scope");
+    public static final String FOLLOW_UP_SCOPE_NAME = "Candidate Nodes for Followup Action";
+    public static final String FOLLOW_UP_SCOPE_DESCRIPTION = "The set of candidates nodes for the followup action.";
 
-    static final String ATTRIBUTE_TO_ANALYSE_PARAMETER_ID = PluginParameter.buildId(NGramAnalysisParameters.class, "attribute_to_analyse");
-    static final String ATTRIBUTE_TO_ANALYSE_NAME = "Attribute to Analyse";
-    static final String ATTRIBUTE_TO_ANALYSE_DESCRIPTION = "The attribute to use for n-gram analysis when comparing similarity of nodes.";
+    public static final String ATTRIBUTE_TO_ANALYSE_PARAMETER_ID = PluginParameter.buildId(NGramAnalysisParameters.class, "attribute_to_analyse");
+    public static final String ATTRIBUTE_TO_ANALYSE_NAME = "Attribute to Analyse";
+    public static final String ATTRIBUTE_TO_ANALYSE_DESCRIPTION = "The attribute to use for n-gram analysis when comparing similarity of nodes.";
 
-    static final String NGRAM_LENGTH_PARAMETER_ID = PluginParameter.buildId(NGramAnalysisParameters.class, "ngram_length");
-    static final String NGRAM_LENGTH_NAME = "n-gram Length";
-    static final String NGRAM_LENGTH_DESCIPTION = "The length of the n-grams to be used to compare nodes.";
+    public static final String NGRAM_LENGTH_PARAMETER_ID = PluginParameter.buildId(NGramAnalysisParameters.class, "ngram_length");
+    public static final String NGRAM_LENGTH_NAME = "n-gram Length";
+    public static final String NGRAM_LENGTH_DESCIPTION = "The length of the n-grams to be used to compare nodes.";
 
-    static final String THRESHOLD_PARAMETER_ID = PluginParameter.buildId(NGramAnalysisParameters.class, "threshold");
-    static final String THRESHOLD_NAME = "Similarity Threshold";
-    static final String THRESHOLD_DESCRIPTION = "A threshold between 0 and 1 for two nodes to be considered n-grammatically similar. 0 matches nodes that share at least one n-gram, 1 requires nodes to be identical.";
+    public static final String THRESHOLD_PARAMETER_ID = PluginParameter.buildId(NGramAnalysisParameters.class, "threshold");
+    public static final String THRESHOLD_NAME = "Similarity Threshold";
+    public static final String THRESHOLD_DESCRIPTION = "A threshold between 0 and 1 for two nodes to be considered n-grammatically similar. 0 matches nodes that share at least one n-gram, 1 requires nodes to be identical.";
 
-    static final String BINARY_SPACE_PARAMETER_ID = PluginParameter.buildId(NGramAnalysisParameters.class, "binary_space");
-    static final String BINARY_SPACE_NAME = "Analyse Unique n-grams";
-    static final String BINARY_SPACE_DESCRIPTION = "If true, only the unique n-grams in a node will be considered.";
+    public static final String BINARY_SPACE_PARAMETER_ID = PluginParameter.buildId(NGramAnalysisParameters.class, "binary_space");
+    public static final String BINARY_SPACE_NAME = "Analyse Unique n-grams";
+    public static final String BINARY_SPACE_DESCRIPTION = "If true, only the unique n-grams in a node will be considered.";
 
-    static final String CASE_SENSITIVE_PARAMETER_ID = PluginParameter.buildId(NGramAnalysisParameters.class, "case_sensitive");
-    static final String CASE_SENSITIVE_NAME = "Case Sensitivity";
-    static final String CASE_SENSITIVE_DESCRIPTION = "If true, n-grams will only match if case matches.";
+    public static final String CASE_SENSITIVE_PARAMETER_ID = PluginParameter.buildId(NGramAnalysisParameters.class, "case_sensitive");
+    public static final String CASE_SENSITIVE_NAME = "Case Sensitivity";
+    public static final String CASE_SENSITIVE_DESCRIPTION = "If true, n-grams will only match if case matches.";
 
-    static final String REMOVE_DOMAIN_PARAMETER_ID = PluginParameter.buildId(NGramAnalysisParameters.class, "remove_domain");
-    static final String REMOVE_DOMAIN_NAME = "Remove Domain";
-    static final String REMOVE_DOMAIN_DESCRIPTION = "If true, remove the domain after the '@' symbol in email addresses.";
+    public static final String REMOVE_DOMAIN_PARAMETER_ID = PluginParameter.buildId(NGramAnalysisParameters.class, "remove_domain");
+    public static final String REMOVE_DOMAIN_NAME = "Remove Domain";
+    public static final String REMOVE_DOMAIN_DESCRIPTION = "If true, remove the domain after the '@' symbol in email addresses.";
 
-    static final int NGRAM_LENGTH_MIN_VALUE = 1;
-    static final int NGRAM_LENGTH_MAX_VALUE = 100;
-    static final float THRESHOLD_MIN_VALUE = 0.00F;
-    static final float THRESHOLD_MAX_VALUE = 1.00F;
-    static final float THRESHOLD_STEP_SIZE_VALUE = 0.01F;
+    public static final int NGRAM_LENGTH_MIN_VALUE = 1;
+    public static final int NGRAM_LENGTH_MAX_VALUE = 100;
+    public static final float THRESHOLD_MIN_VALUE = 0.00F;
+    public static final float THRESHOLD_MAX_VALUE = 1.00F;
+    public static final float THRESHOLD_STEP_SIZE_VALUE = 0.01F;
 
     public NGramAnalysisParameters(final boolean caseSensitive, final boolean removeDomain, final int nGramLength, final boolean binarySpace, final float threshold, final FollowUpChoice followUpChoice, final FollowUpScope followUpScope) {
         this.onAttributeID = -1;

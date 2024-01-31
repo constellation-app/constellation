@@ -35,81 +35,81 @@ import java.util.Set;
  */
 public class ClusterDocumentsParameters {
 
-    static final String TRANS_ATTRIBUTE_PARAMETER_ID = PluginParameter.buildId(ClusterDocumentsParameters.class, "trans_attribute");
-    static final String VERT_ATTRIBUTE_PARAMETER_ID = PluginParameter.buildId(ClusterDocumentsParameters.class, "vert_attribute");
+    public static final String TRANS_ATTRIBUTE_PARAMETER_ID = PluginParameter.buildId(ClusterDocumentsParameters.class, "trans_attribute");
+    public static final String VERT_ATTRIBUTE_PARAMETER_ID = PluginParameter.buildId(ClusterDocumentsParameters.class, "vert_attribute");
 
-    static final String FOLLOW_UP_CHOICE_PARAMETER_ID = PluginParameter.buildId(ClusterDocumentsParameters.class, "follow_up_choice");
-    static final String FOLLOW_UP_CHOICE_NAME = "Followup Action on Elements in Same Cluster";
-    static final String FOLLOW_UP_CHOICE_DESCRIPTION = "The action to be performed on graph elements whose documents are placed in the same cluster";
+    public static final String FOLLOW_UP_CHOICE_PARAMETER_ID = PluginParameter.buildId(ClusterDocumentsParameters.class, "follow_up_choice");
+    public static final String FOLLOW_UP_CHOICE_NAME = "Followup Action on Elements in Same Cluster";
+    public static final String FOLLOW_UP_CHOICE_DESCRIPTION = "The action to be performed on graph elements whose documents are placed in the same cluster";
 
-    static final String FOLLOW_UP_SCOPE_PARAMETER_ID = PluginParameter.buildId(ClusterDocumentsParameters.class, "follow_up_scope");
-    static final String FOLLOW_UP_SCOPE_NAME = "Candidate Elements for Followup Action";
-    static final String FOLLOW_UP_SCOPE_DESCRIPTION = "The set of candidates graph elements for the followup action.";
+    public static final String FOLLOW_UP_SCOPE_PARAMETER_ID = PluginParameter.buildId(ClusterDocumentsParameters.class, "follow_up_scope");
+    public static final String FOLLOW_UP_SCOPE_NAME = "Candidate Elements for Followup Action";
+    public static final String FOLLOW_UP_SCOPE_DESCRIPTION = "The set of candidates graph elements for the followup action.";
 
-    static final String ELEMENT_TYPE_PARAMETER_ID = PluginParameter.buildId(ClusterDocumentsParameters.class, "element_type");
-    static final String ELEMENT_TYPE_NAME = "Element Type";
-    static final String ELEMENT_TYPE_DESCRIPTION = "The type of graph element to cluster";
-    static final String ELEMENT_TYPE_DEFAULT = "transaction";
-    static final List<String> ELEMENT_TYPE_CHOICES = Arrays.asList(ELEMENT_TYPE_DEFAULT, "node");
+    public static final String ELEMENT_TYPE_PARAMETER_ID = PluginParameter.buildId(ClusterDocumentsParameters.class, "element_type");
+    public static final String ELEMENT_TYPE_NAME = "Element Type";
+    public static final String ELEMENT_TYPE_DESCRIPTION = "The type of graph element to cluster";
+    public static final String ELEMENT_TYPE_DEFAULT = "transaction";
+    public static final List<String> ELEMENT_TYPE_CHOICES = Arrays.asList(ELEMENT_TYPE_DEFAULT, "node");
 
-    static final String ATTRIBUTE_TO_ANALYSE_PARAMETER_ID = PluginParameter.buildId(ClusterDocumentsParameters.class, "attribute_to_analyse");
-    static final String ATTRIBUTE_TO_ANALYSE_NAME = "Attribute to Analyse";
-    static final String ATTRIBUTE_TO_ANALYSE_DESCRIPTION = "The attribute which holds the documents being clustered.";
+    public static final String ATTRIBUTE_TO_ANALYSE_PARAMETER_ID = PluginParameter.buildId(ClusterDocumentsParameters.class, "attribute_to_analyse");
+    public static final String ATTRIBUTE_TO_ANALYSE_NAME = "Attribute to Analyse";
+    public static final String ATTRIBUTE_TO_ANALYSE_DESCRIPTION = "The attribute which holds the documents being clustered.";
 
-    static final String TO_FILTER_PARAMETER_ID = PluginParameter.buildId(ClusterDocumentsParameters.class, "to_filter");
-    static final String TO_FILTER_NAME = "Characters To Filter";
-    static final String TO_FILTER_DESCRIPTION = "The list of characters ignored when clustering documents.";
+    public static final String TO_FILTER_PARAMETER_ID = PluginParameter.buildId(ClusterDocumentsParameters.class, "to_filter");
+    public static final String TO_FILTER_NAME = "Characters To Filter";
+    public static final String TO_FILTER_DESCRIPTION = "The list of characters ignored when clustering documents.";
 
-    static final String TOKENIZING_METHOD_PARAMETER_ID = PluginParameter.buildId(ClusterDocumentsParameters.class, "tokenizing_method");
-    static final String TOKENIZING_METHOD_NAME = "Tokenizing Method";
-    static final String TOKENIZING_METHOD_DESCRIPTION = "The method used to break content into small tokens which can be compared";
+    public static final String TOKENIZING_METHOD_PARAMETER_ID = PluginParameter.buildId(ClusterDocumentsParameters.class, "tokenizing_method");
+    public static final String TOKENIZING_METHOD_NAME = "Tokenizing Method";
+    public static final String TOKENIZING_METHOD_DESCRIPTION = "The method used to break content into small tokens which can be compared";
 
-    static final String DELIMITER_PARAMETER_ID = PluginParameter.buildId(ClusterDocumentsParameters.class, "delimiter");
-    static final String DELIMITER_NAME = "Delimiter";
-    static final String DELIMITER_DESCRIPTION = "The Delimiter to use to deliniate between tokens when using n-word tokenization methods.";
+    public static final String DELIMITER_PARAMETER_ID = PluginParameter.buildId(ClusterDocumentsParameters.class, "delimiter");
+    public static final String DELIMITER_NAME = "Delimiter";
+    public static final String DELIMITER_DESCRIPTION = "The Delimiter to use to deliniate between tokens when using n-word tokenization methods.";
 
-    static final String TOKEN_LENGTH_PARAMETER_ID = PluginParameter.buildId(ClusterDocumentsParameters.class, "token_length");
-    static final String TOKEN_LENGTH_NAME = "Token Length";
-    static final String TOKEN_LENGTH_DESCRIPTION = "The length of the tokens to be used to compare documents.";
+    public static final String TOKEN_LENGTH_PARAMETER_ID = PluginParameter.buildId(ClusterDocumentsParameters.class, "token_length");
+    public static final String TOKEN_LENGTH_NAME = "Token Length";
+    public static final String TOKEN_LENGTH_DESCRIPTION = "The length of the tokens to be used to compare documents.";
 
-    static final String THRESHOLD_PARAMETER_ID = PluginParameter.buildId(ClusterDocumentsParameters.class, "threshold");
-    static final String THRESHOLD_NAME = "Token Significance Threshold";
-    static final String THRESHOLD_DESCRIPTION = "A threshold between 0 and 1 for a token to be considered a 'significamt feature' of a document.";
+    public static final String THRESHOLD_PARAMETER_ID = PluginParameter.buildId(ClusterDocumentsParameters.class, "threshold");
+    public static final String THRESHOLD_NAME = "Token Significance Threshold";
+    public static final String THRESHOLD_DESCRIPTION = "A threshold between 0 and 1 for a token to be considered a 'significamt feature' of a document.";
 
-    static final String THRESHOLD_METHOD_PARAMETER_ID = PluginParameter.buildId(ClusterDocumentsParameters.class, "threshold_method");
-    static final String THRESHOLD_METHOD_NAME = "Token Threshold Method";
-    static final String THRESHOLD_METHOD_DESCRIPTION = "The method used to determine whether a token is above the desired threshold";
+    public static final String THRESHOLD_METHOD_PARAMETER_ID = PluginParameter.buildId(ClusterDocumentsParameters.class, "threshold_method");
+    public static final String THRESHOLD_METHOD_NAME = "Token Threshold Method";
+    public static final String THRESHOLD_METHOD_DESCRIPTION = "The method used to determine whether a token is above the desired threshold";
 
-    static final String THRESHOLD_DIRECTION_PARAMETER_ID = PluginParameter.buildId(ClusterDocumentsParameters.class, "threshold_direction");
-    static final String THRESHOLD_DIRECTION_NAME = "Take tokens above threshold";
-    static final String THRESHOLD_DIRECTION_DESCRIPTION = "If true, take only tokens which are more common than the threshold, if false, take those which are less common.";
+    public static final String THRESHOLD_DIRECTION_PARAMETER_ID = PluginParameter.buildId(ClusterDocumentsParameters.class, "threshold_direction");
+    public static final String THRESHOLD_DIRECTION_NAME = "Take tokens above threshold";
+    public static final String THRESHOLD_DIRECTION_DESCRIPTION = "If true, take only tokens which are more common than the threshold, if false, take those which are less common.";
 
-    static final String WEIGHTING_EXPONENT_PARAMETER_ID = PluginParameter.buildId(ClusterDocumentsParameters.class, "weighting_exponent");
-    static final String WEIGHTING_EXPONENT_NAME = "Token weighting exponent";
-    static final String WEIGHTING_EXPONENT_DESCRIPTION = "The exponent with which to weight tokens. Positive exponents weight common tokens more heavily, while negative exponents weight rare tokens more heavily. Zero exponent weights all tokens equally.";
+    public static final String WEIGHTING_EXPONENT_PARAMETER_ID = PluginParameter.buildId(ClusterDocumentsParameters.class, "weighting_exponent");
+    public static final String WEIGHTING_EXPONENT_NAME = "Token weighting exponent";
+    public static final String WEIGHTING_EXPONENT_DESCRIPTION = "The exponent with which to weight tokens. Positive exponents weight common tokens more heavily, while negative exponents weight rare tokens more heavily. Zero exponent weights all tokens equally.";
 
-    static final String BINARY_SPACE_PARAMETER_ID = PluginParameter.buildId(ClusterDocumentsParameters.class, "binary_space");
-    static final String BINARY_SPACE_NAME = "Consider unique tokens only";
-    static final String BINARY_SPACE_DESCRIPTION = "If True, each unique token will be counted only once in a given document.";
+    public static final String BINARY_SPACE_PARAMETER_ID = PluginParameter.buildId(ClusterDocumentsParameters.class, "binary_space");
+    public static final String BINARY_SPACE_NAME = "Consider unique tokens only";
+    public static final String BINARY_SPACE_DESCRIPTION = "If True, each unique token will be counted only once in a given document.";
 
-    static final String CASE_SENSITIVE_PARAMETER_ID = PluginParameter.buildId(ClusterDocumentsParameters.class, "case_sensitive");
-    static final String CASE_SENSITIVE_NAME = "Case Sensitivity";
-    static final String CASE_SENSITIVE_DESCRIPTION = "If True, tokens will only match if case matches.";
+    public static final String CASE_SENSITIVE_PARAMETER_ID = PluginParameter.buildId(ClusterDocumentsParameters.class, "case_sensitive");
+    public static final String CASE_SENSITIVE_NAME = "Case Sensitivity";
+    public static final String CASE_SENSITIVE_DESCRIPTION = "If True, tokens will only match if case matches.";
 
-    static final String NUMBER_OF_MEANS_PARAMETER_ID = PluginParameter.buildId(ClusterDocumentsParameters.class, "number_of_means");
-    static final String NUMBER_OF_MEANS_NAME = "Number of Means";
-    static final String NUMBER_OF_MEANS_DESCRIPTION = "The number of clusters to group the documents into.";
+    public static final String NUMBER_OF_MEANS_PARAMETER_ID = PluginParameter.buildId(ClusterDocumentsParameters.class, "number_of_means");
+    public static final String NUMBER_OF_MEANS_NAME = "Number of Means";
+    public static final String NUMBER_OF_MEANS_DESCRIPTION = "The number of clusters to group the documents into.";
 
-    static final int TOKEN_LENGTH_MIN_VALUE = 1;
-    static final int TOKEN_LENGTH_MAX_VALUE = 100;
-    static final float THRESHOLD_MIN_VALUE = 0.00F;
-    static final float THRESHOLD_MAX_VALUE = 1.00F;
-    static final float THRESHOLD_STEP_SIZE_VALUE = 0.01F;
-    static final float WEIGHTING_EXPONENT_MIN_VALUE = -5.00F;
-    static final float WEIGHTING_EXPONENT_MAX_VALUE = 5.00F;
-    static final float WEIGHTING_EXPONENT_STEP_SIZE_VALUE = 0.10F;
-    static final int NUMBER_OF_MEANS_MIN_VALUE = 2;
-    static final int NUMBER_OF_MEANS_MAX_VALUE = 1000;
+    public static final int TOKEN_LENGTH_MIN_VALUE = 1;
+    public static final int TOKEN_LENGTH_MAX_VALUE = 100;
+    public static final float THRESHOLD_MIN_VALUE = 0.00F;
+    public static final float THRESHOLD_MAX_VALUE = 1.00F;
+    public static final float THRESHOLD_STEP_SIZE_VALUE = 0.01F;
+    public static final float WEIGHTING_EXPONENT_MIN_VALUE = -5.00F;
+    public static final float WEIGHTING_EXPONENT_MAX_VALUE = 5.00F;
+    public static final float WEIGHTING_EXPONENT_STEP_SIZE_VALUE = 0.10F;
+    public static final int NUMBER_OF_MEANS_MIN_VALUE = 2;
+    public static final int NUMBER_OF_MEANS_MAX_VALUE = 1000;
 
     private int onAttributeID;
     private boolean caseSensitive;
@@ -168,7 +168,7 @@ public class ClusterDocumentsParameters {
     }
 
     public Set<Character> getToFilterSet() {
-        Set<Character> toFilterSet = new HashSet<>();
+        final Set<Character> toFilterSet = new HashSet<>();
         for (int i = 0; i < toFilter.length; i++) {
             toFilterSet.add(toFilter[i]);
         }

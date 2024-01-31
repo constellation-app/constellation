@@ -79,12 +79,8 @@ public class WordCloudIOProvider extends AbstractGraphIOProvider {
                 final int setSize = iter.next().asInt();
                 final Set<Integer> wordSet = new HashSet<>();
                 for (int i = 0; i < setSize; i++) {
-                    int elID = iter.next().asInt();
-                    if (elementType == GraphElementType.VERTEX) {
-                        elID = vertexMap.get(elID);
-                    } else {
-                        elID = transactionMap.get(elID);
-                    }
+                    int elID = iter.next().asInt();                        
+                    elID = (elementType == GraphElementType.VERTEX) ? vertexMap.get(elID): transactionMap.get(elID);
                     wordSet.add(elID);
                 }
                 hashedWordSets.put(hash, wordSet);
@@ -95,9 +91,9 @@ public class WordCloudIOProvider extends AbstractGraphIOProvider {
             iter = jnode.get(WORDLIST).iterator();
             wordListWithSizes = new TreeMap<>();
             while (iter.hasNext()) {
-                String word = iter.next().asText();
+                final String word = iter.next().asText();
                 // note this little hacky bit is a little horrid but is required as sizes were once saved as actual font sizes rather than relative frequencies between 0 and 1 
-                float size = version < 2 ? ((float) iter.next().asInt() - 10) / 30 : (float) iter.next().asDouble();
+                final float size = version < 2 ? ((float) iter.next().asInt() - 10) / 30 : (float) iter.next().asDouble();
                 wordListWithSizes.put(word, size);
             }
 
@@ -105,7 +101,7 @@ public class WordCloudIOProvider extends AbstractGraphIOProvider {
             if (jnode.has(WORDSIGNIFICANCES)) {
                 iter = jnode.get(WORDSIGNIFICANCES).iterator();
                 while (iter.hasNext()) {
-                    double significance = iter.next().asDouble();
+                    final double significance = iter.next().asDouble();
                     final Set<String> words = new HashSet<>();
                     wordSignificances.put(significance, words);
                     final Iterator<JsonNode> subIter = iter.next().iterator();
