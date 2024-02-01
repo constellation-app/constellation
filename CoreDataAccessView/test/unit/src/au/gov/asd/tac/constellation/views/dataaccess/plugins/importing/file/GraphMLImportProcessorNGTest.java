@@ -224,6 +224,59 @@ public class GraphMLImportProcessorNGTest {
     }
 
     /**
+     * Test of process method, of class GraphMLImportProcessor processing nodes and edges that are invalid
+     * @throws au.gov.asd.tac.constellation.graph.processing.ProcessingException
+     */
+    @Test
+    public void testProcessInvalidNodesEdges() throws ProcessingException {
+        System.out.println("InvalidNodesEdges");
+
+        // Mock the NotifyDisplayer to prevent dialogs from being displayed on screen
+        // Mock the buffered reader to always throw an IO exception when the readLine() method is called
+        try (final MockedStatic<NotifyDisplayer> notiDispMock = Mockito.mockStatic(NotifyDisplayer.class)) {
+            // get the parameters for processing
+            final ImportGraphFilePlugin plugin = new ImportGraphFilePlugin();
+            final PluginParameters parameters = plugin.createParameters();
+            parameters.setBooleanValue("ImportGraphFilePlugin.retrieve_transactions", true);
+
+            final File file = new File(GraphMLImportProcessorNGTest.class.getResource("resources/processing.graphml").getPath());
+            final RecordStore output = new GraphRecordStore();
+            final GraphMLImportProcessor instance = new GraphMLImportProcessor();
+            instance.process(parameters, file, output);
+
+            // should have 21 elements with nodes and edges that are valid
+            assertEquals(output.size(), 10);
+        }
+    }
+
+    /**
+     * Test of process method, of class GraphMLImportProcessor processing nodes
+     * that don't have an id, the id is a required field in graphML and constellation.
+     * @throws au.gov.asd.tac.constellation.graph.processing.ProcessingException
+     */
+    @Test
+    public void testProcessInvalidEdges() throws ProcessingException {
+        System.out.println("InvalidEdges");
+
+        // Mock the NotifyDisplayer to prevent dialogs from being displayed on screen
+        // Mock the buffered reader to always throw an IO exception when the readLine() method is called
+        try (final MockedStatic<NotifyDisplayer> notiDispMock = Mockito.mockStatic(NotifyDisplayer.class)) {
+            // get the parameters for processing
+            final ImportGraphFilePlugin plugin = new ImportGraphFilePlugin();
+            final PluginParameters parameters = plugin.createParameters();
+            parameters.setBooleanValue("ImportGraphFilePlugin.retrieve_transactions", true);
+
+            final File file = new File(GraphMLImportProcessorNGTest.class.getResource("resources/processingEdges.graphml").getPath());
+            final RecordStore output = new GraphRecordStore();
+            final GraphMLImportProcessor instance = new GraphMLImportProcessor();
+            instance.process(parameters, file, output);
+
+            // There are 22 valid nodes and edges, the invalid ones are dropped and a warning is displayed
+            assertEquals(output.size(), 22);
+        }
+    }
+
+    /**
      * Test of process method, of class GraphMLImportProcessor. Importing nodes and transactions
      * @throws au.gov.asd.tac.constellation.graph.processing.ProcessingException
      */

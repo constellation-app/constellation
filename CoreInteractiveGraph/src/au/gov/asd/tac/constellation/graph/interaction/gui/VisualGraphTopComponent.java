@@ -767,7 +767,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog("Rename Graph", parameters);
                 dialog.showAndWait();
 
-                if (PluginParametersSwingDialog.OK.equals(dialog.getResult())) {
+                if (dialog.isAccepted()) {
                     final String newGraphName = parameters.getStringValue(NEW_GRAPH_NAME_PARAMETER_ID);
 
                     if (!newGraphName.isEmpty()) {
