@@ -59,8 +59,8 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
     private final String title;
     private final JFXPanel xp;
     
-    final HashMap<PluginParameter<?>, Boolean> parameterValidity = new HashMap();
-    final JButton acceptanceOption;
+    private final HashMap<PluginParameter<?>, Boolean> parameterValidity = new HashMap();
+    private final JButton acceptanceOption;
 
     /**
      * Display a dialog box containing the parameters that allows the user to
@@ -224,7 +224,7 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
     
         
     @Override
-    public void validityChanged(boolean valid) {
+    public void validityChanged(final boolean valid) {
        //Not Required for this Listner
     }
 

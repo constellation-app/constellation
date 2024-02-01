@@ -316,12 +316,12 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
     }
 
     @Override
-    public void validityChanged(boolean enabled) {
+    public void validityChanged(final boolean enabled) {
         // Must be overriden to implement PluginParametersPaneListener
     }
     
     @Override
-    public void notifyParameterValidityChange(PluginParameter<?> parameter, boolean currentlySatisfied) {
+    public void notifyParameterValidityChange(final PluginParameter<?> parameter, final boolean currentlySatisfied) {
         // Must be overriden to implement PluginParametersPaneListener
     }
 

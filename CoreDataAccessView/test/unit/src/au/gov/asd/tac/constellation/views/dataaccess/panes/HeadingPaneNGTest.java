@@ -168,7 +168,7 @@ public class HeadingPaneNGTest {
         }
 
         @Override
-        public void validityChanged(boolean valid) {
+        public void validityChanged(final boolean valid) {
             didValidityUpdate = true;
         }
 
@@ -178,12 +178,10 @@ public class HeadingPaneNGTest {
         }
 
         @Override
-        public void notifyParameterValidityChange(PluginParameter<?> parameter, boolean currentlySatisfied) {
+        public void notifyParameterValidityChange(final PluginParameter<?> parameter, final boolean currentlySatisfied) {
             //Not used by heading pane class
         }
-
     }
-
     /**
      * TODO: Test of hierarchicalUpdate method, of class HeadingPane, when pane is
      * QueryEnabled. Tricky because HeadingPane is creating a List of new

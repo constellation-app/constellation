@@ -170,7 +170,7 @@ public class HeadingPane extends TitledPane implements PluginParametersPaneListe
     }
 
     @Override
-    public void notifyParameterValidityChange(PluginParameter<?> parameter, boolean currentlySatisfied) {
+    public void notifyParameterValidityChange(final PluginParameter<?> parameter, final boolean currentlySatisfied) {
         // Must be overriden to implement PluginParametersPaneListener
     }
 }

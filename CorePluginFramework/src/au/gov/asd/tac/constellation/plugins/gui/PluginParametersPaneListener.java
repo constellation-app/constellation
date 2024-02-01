@@ -36,7 +36,7 @@ public interface PluginParametersPaneListener {
      *
      * @param valid Whether or not the objec
      */
-    public void validityChanged(boolean valid);
+    public void validityChanged(final boolean valid);
 
     /**
      * Called to indicate that a change registered by a given listener means an
