@@ -59,8 +59,8 @@ import org.openide.windows.TopComponent;
 )
 @Messages({
     "CTL_WordCloudAction=Word Cloud",
-    "CTL_WordCloudTopComponent=Word Cloud",
-    "HINT_WordCloudTopComponent=Word Cloud"
+    "CTL_WordCloudTopComponent=Word Cloud View",
+    "HINT_WordCloudTopComponent=Word Cloud View"
 })
 public final class WordCloudTopComponent extends JavaFxTopComponent<WordCloudPane> {
 
