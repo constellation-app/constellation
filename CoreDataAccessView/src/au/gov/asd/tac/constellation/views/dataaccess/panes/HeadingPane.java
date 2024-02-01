@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPaneListener;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
 import java.util.ArrayList;
@@ -166,5 +167,10 @@ public class HeadingPane extends TitledPane implements PluginParametersPaneListe
 
     protected FlowPane getBoxes() {
         return boxes;
+    }
+
+    @Override
+    public void notifyParameterValidityChange(final PluginParameter<?> parameter, final boolean currentlySatisfied) {
+        // Must be overriden to implement PluginParametersPaneListener
     }
 }

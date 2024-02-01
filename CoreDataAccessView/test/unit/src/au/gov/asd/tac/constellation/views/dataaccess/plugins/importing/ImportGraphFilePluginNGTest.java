@@ -96,7 +96,7 @@ public class ImportGraphFilePluginNGTest {
         
         final PluginParameter<FileParameterValue> fileName = (PluginParameter<FileParameterValue>) params.getParameters().get("ImportGraphFilePlugin.file_name");
         fileName.setStringValue(ImportGraphFilePluginNGTest.class.getResource("file/resources/test.gml").getPath());
-        
+       
         final PluginManager manager = mock(PluginManager.class);        
         when(manager.getGraphNode()).thenReturn(null);
         when(manager.getPlugin()).thenReturn(instance);
