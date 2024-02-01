@@ -92,11 +92,7 @@ public class PhraseAnalysisModelLoader {
                     currentSet.addAll(map.get(line));
                     break;
                 case ADD_CHARACTERS:
-                    if (singleCharacterLines) {
-                        currentSet.add(line.charAt(0));
-                    } else {
-                        currentSet.add(line);
-                    }
+                    currentSet.add(singleCharacterLines ? line.charAt(0) : line);
                     break;
                 case ADD_UNICODE_RANGE:
                     final String rangeStart = line.substring(line.indexOf(OPEN_SET) + 1, line.indexOf(CLOSE_SET));
