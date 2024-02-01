@@ -274,9 +274,7 @@ public class SVGData {
         final String linePrefix = SeparatorConstants.NEWLINE + (prefix == null ? "" : prefix);
         final Set<String> keys = attributes.keySet();
         keys.forEach(key -> {
-            if (SVGAttributeConstants.NAME_SPACE.getName().equals(key) && this.parent != null) {
-                //do nothing here
-            } else {
+            if (!SVGAttributeConstants.NAME_SPACE.getName().equals(key) || this.parent == null) {
                 attributeBuilder.append(String.format(" %s=\"%s\"", key, attributes.get(key)));
             }
         });
@@ -292,13 +290,11 @@ public class SVGData {
      * @return String representation of element header.
      */
     private String elementHeaderToSVG(final String prefix) {
-        final String linePrefix = SeparatorConstants.NEWLINE + (prefix == null ? "" : prefix);
         final StringBuilder attributeBuilder = new StringBuilder();
+        final String linePrefix = SeparatorConstants.NEWLINE + (prefix == null ? "" : prefix);
         final Set<String> keys = attributes.keySet();
         keys.forEach(key -> {
-            if (SVGAttributeConstants.NAME_SPACE.getName().equals(key) && this.parent != null) {
-                //do nothing here
-            } else {
+            if (!SVGAttributeConstants.NAME_SPACE.getName().equals(key) || this.parent == null) {
                 attributeBuilder.append(String.format(" %s=\"%s\"", key, attributes.get(key)));
             }
         });
@@ -326,12 +322,12 @@ public class SVGData {
      */
     private String elementChildrenToSVG (final String prefix) {
         final StringBuilder childSVGString = new StringBuilder();
-        String childPrefix = SeparatorConstants.TAB;
+        final StringBuilder childPrefix = new StringBuilder(SeparatorConstants.TAB); 
         if (prefix != null) {
-            childPrefix += prefix;
+            childPrefix.append(prefix);
         }
         for (final SVGData child : this.getAllChildren()) {
-            childSVGString.append(child.toString(childPrefix));
+            childSVGString.append(child.toString(childPrefix.toString()));
         }
         return childSVGString.toString();
     }

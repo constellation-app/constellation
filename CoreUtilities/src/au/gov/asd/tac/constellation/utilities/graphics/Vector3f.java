@@ -97,7 +97,7 @@ public final class Vector3f implements Serializable {
      */
     public static Vector3f add(final Vector3f... vectors) {
         final Vector3f result = new Vector3f();
-        for (Vector3f vector : vectors){
+        for (final Vector3f vector : vectors){
             result.add(vector);
         }
         return result;

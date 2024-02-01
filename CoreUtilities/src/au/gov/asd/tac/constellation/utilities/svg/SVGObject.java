@@ -85,8 +85,12 @@ public class SVGObject {
         this.svgDataReference.removeChild(id);
     }
     
+    /**
+     * Gets a reference to all children of this SVGObject. 
+     * @return 
+     */
     private List<SVGObject> getAllChildren() {
-        final ArrayList<SVGObject> children = new ArrayList<>();
+        final List<SVGObject> children = new ArrayList<>();
         this.svgDataReference.getAllChildren().forEach(child -> children.add(new SVGObject(child)));
         return children;
     }   
@@ -156,7 +160,7 @@ public class SVGObject {
      * @param attributeValue 
      */
     private void setAttribute(final SVGAttributeConstants attributeKey, final int attributeValue) {
-        svgDataReference.setAttribute(attributeKey, String.format("%s", attributeValue));
+        svgDataReference.setAttribute(attributeKey, String.valueOf(attributeValue));
     }
     
     /**
@@ -165,7 +169,7 @@ public class SVGObject {
      * @param attributeValue 
      */
     private void setAttribute(final SVGAttributeConstants attributeKey, final ConstellationColor attributeValue) {
-        svgDataReference.setAttribute(attributeKey, String.format("%s", attributeValue.getHtmlColor()));
+        svgDataReference.setAttribute(attributeKey, attributeValue.getHtmlColor());
     }
     
     private String getAttributeString(final SVGAttributeConstants attributeKey) {
@@ -470,8 +474,8 @@ public class SVGObject {
      * @param points 
      */
     public void setPoints(final Vector4f... points) {
-        StringBuilder sb = new StringBuilder();
-        for (Vector4f point : points){
+        final StringBuilder sb = new StringBuilder();
+        for (final Vector4f point : points){
             sb.append(String.format("%s %s, ", point.getX(), point.getY()));
         }
         setAttribute(SVGAttributeConstants.POINTS, sb.toString().substring(0, sb.length()-2));
@@ -510,7 +514,7 @@ public class SVGObject {
     public static SVGObject loadFromInputStream(final InputStream is) {
         try{
             return new SVGObject(SVGParser.parse(is));
-        } catch (IOException e) {
+        } catch (final IOException e) {
             return null;
         }
     }

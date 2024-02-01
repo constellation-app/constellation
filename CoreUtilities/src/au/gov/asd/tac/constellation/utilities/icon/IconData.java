@@ -62,15 +62,18 @@ public abstract class IconData {
         try {
             final InputStream is = createVectorInputStream();
             final SVGObject svg = SVGObject.loadFromInputStream(is);
-            svg.setDimension(size, size);
-            if (color != null) {
-                svg.saturateSVG(ConstellationColor.fromJavaColor(color));
+            if (svg != null){
+                svg.setDimension(size, size);
+                if (color != null) {
+                    svg.saturateSVG(ConstellationColor.fromJavaColor(color));
+                }
+                return svg.toSVGData();
             }
-            return svg.toSVGData();
-        } catch (final Exception ex) {
+        } catch (final IOException | UnsupportedOperationException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
             return null;
         }
+        return null;
     }
 
     /**

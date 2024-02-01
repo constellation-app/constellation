@@ -520,6 +520,7 @@ public class ConstellationIcon {
                 return os.toByteArray();
             }
         } catch (final IOException ex) {
+            LOGGER.log(Level.WARNING, ex.getLocalizedMessage());
             return original;
         }
     }

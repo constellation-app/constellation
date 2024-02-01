@@ -155,15 +155,13 @@ public final class Mathf {
     public static void getPointOnPlane(final Vector3f planePoint, final Vector4f plane){
         //The plane does not have a constant Z value and therefore coresses all points on the X-Y Axis. 
         final float origin = 0F;
-        final float planePointX;
+        final float planePointX = origin;;
         final float planePointY;
         final float planePointZ;
         if (plane.getZ() != 0){
-            planePointX = origin;
             planePointY = origin;
             planePointZ = -((plane.getX()/plane.getZ())*planePointX) - ((plane.getY()/plane.getZ())*planePointY) - (plane.getW()/plane.getZ());  
         } else {
-            planePointX = origin;
             planePointZ = origin;
             planePointY = -((plane.getX()/plane.getY())*planePointX) - ((plane.getZ()/plane.getY())*planePointZ) - (plane.getW()/plane.getY());
         }
