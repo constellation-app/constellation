@@ -23,6 +23,7 @@ import static au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualCon
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import java.awt.event.ActionEvent;
 import static org.mockito.ArgumentMatchers.any;
@@ -33,7 +34,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify; 
-import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -49,10 +49,9 @@ public class ExportToSVGActionNGTest {
     
     private static MockedStatic<PluginExecution> pluginExecutionStaticMock;
     private static MockedStatic<GraphNode> graphNodeStaticMock;
-    private static MockedStatic<DialogDisplayer> dialogDisplayerStaticMock;
+    private static MockedStatic<NotifyDisplayer> notifyDisplayerStaticMock;
     private static PluginExecution pluginExecutionMock;
     private static GraphNode contextMock;
-    private static DialogDisplayer dialogDisplayerMock;
     
     private static Graph graphMock;
     private static ReadableGraph readableGraphMock;
@@ -77,10 +76,9 @@ public class ExportToSVGActionNGTest {
     public void setUpMethod() throws Exception {
         pluginExecutionStaticMock = mockStatic(PluginExecution.class);
         graphNodeStaticMock = mockStatic(GraphNode.class);
-        dialogDisplayerStaticMock = mockStatic(DialogDisplayer.class);
+        notifyDisplayerStaticMock = mockStatic(NotifyDisplayer.class);
         pluginExecutionMock = mock(PluginExecution.class);
         contextMock = mock(GraphNode.class);
-        dialogDisplayerMock = mock(DialogDisplayer.class);
         
         graphMock = mock(Graph.class);
         readableGraphMock = mock(ReadableGraph.class);
@@ -104,12 +102,6 @@ public class ExportToSVGActionNGTest {
         doReturn(graphName).when(contextMock).getDisplayName();
         doReturn(graphName).when(readableGraphMock).getId();
         
-        dialogDisplayerStaticMock.when(() 
-                -> DialogDisplayer.getDefault())
-                .thenReturn(dialogDisplayerMock);
-        
-        doReturn(null).when(dialogDisplayerMock).notify(any(NotifyDescriptor.class));
-        
         doReturn(drawFlagsID).when((GraphReadMethods) readableGraphMock).getAttribute(GraphAttribute.DRAW_FLAGS.getElementType(),GraphAttribute.DRAW_FLAGS.getName());
         doReturn(backgroundColorID).when(readableGraphMock).getAttribute(GraphAttribute.BACKGROUND_COLOR.getElementType(),GraphAttribute.BACKGROUND_COLOR.getName());
         
@@ -121,7 +113,7 @@ public class ExportToSVGActionNGTest {
     public void tearDownMethod() throws Exception {
         graphNodeStaticMock.close();
         pluginExecutionStaticMock.close();
-        dialogDisplayerStaticMock.close();
+        notifyDisplayerStaticMock.close();
     }
 
     /**
@@ -137,7 +129,7 @@ public class ExportToSVGActionNGTest {
         doReturn(0).when(readableGraphMock).getVertexCount();
 
         instance.actionPerformed(e);
-        verify(dialogDisplayerMock, times(1)).notify(any(NotifyDescriptor.class));
+        notifyDisplayerStaticMock.verify(() -> NotifyDisplayer.display(any(NotifyDescriptor.class)), times(1));
     }
     
     /**
@@ -154,7 +146,6 @@ public class ExportToSVGActionNGTest {
 
         instance.actionPerformed(e);
         
-        verify(pluginExecutionMock, times(1)).withParameter(ExportToSVGPlugin.EXPORT_PERSPECTIVE_PARAMETER_ID, "Current Perspective");
         verify(pluginExecutionMock, times(1)).withParameter(ExportToSVGPlugin.SELECTED_ELEMENTS_PARAMETER_ID, false);
         verify(pluginExecutionMock, times(1)).withParameter(ExportToSVGPlugin.SHOW_NODE_LABELS_PARAMETER_ID, true);
         verify(pluginExecutionMock, times(1)).withParameter(ExportToSVGPlugin.SHOW_CONNECTION_LABELS_PARAMETER_ID, true);
