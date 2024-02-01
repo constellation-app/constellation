@@ -61,7 +61,8 @@ public class ShowFileChooserDialogNGTest {
             assertEquals(showFileChooserDialog.getSelectedFiles(), Optional.empty());
 
             final JFileChooser jFileChooser = mock(JFileChooser.class);
-            when(jFileChooser.showSaveDialog(any())).thenReturn(1);
+            // Ensure the return value indicates the file selection was approved and not cancelled
+            when(jFileChooser.showSaveDialog(any())).thenReturn(0);
             when(jFileChooser.getSelectedFile()).thenReturn(file);
             when(fileChooserBuilder.createFileChooser()).thenReturn(jFileChooser);
 
