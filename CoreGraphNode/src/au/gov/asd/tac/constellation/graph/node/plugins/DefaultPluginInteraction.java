@@ -281,26 +281,22 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
         pluginManager.getPluginThread().interrupt();
         return true;
     }
-
+  
     @Override
-    public boolean prompt(final String promptName, final PluginParameters parameters) {
+    public boolean prompt(final String promptName, final PluginParameters parameters, final String helpID) {
         if (SwingUtilities.isEventDispatchThread()) {
             throw new IllegalStateException("Plugins should not be run on the EDT!");
         }
 
-        boolean result = false;
+        final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(promptName, parameters, helpID);
 
-        final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(promptName, parameters);
         if (!parameters.hasMultiLineStringParameter()) {
             dialog.showAndWait();
         } else {
             dialog.showAndWaitNoFocus();
         }
-        if (PluginParametersDialog.OK.equals(dialog.getResult())) {
-            result = true;
-        }
 
-        return result;
+        return dialog.isAccepted();
     }
 
     protected class Timer extends Thread {
