@@ -323,7 +323,7 @@ public class ContentTokenizingServices {
             protected boolean findNextToken() {
                 // The next token is found by incrementing the position and checking that there are at least n characters left in the phrase 
                 pos++;
-                return (pos < +phrase.length - nGramLength);
+                return (pos <= phrase.length - nGramLength);
             }
 
             public int getPos() {

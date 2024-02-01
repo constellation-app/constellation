@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.wordcloud.phraseanalysis.PhrasiphyContentParameters;
 import au.gov.asd.tac.constellation.views.wordcloud.ui.WordCloud;
 import au.gov.asd.tac.constellation.views.wordcloud.ui.WordCloudAttributeDescription;
+import au.gov.asd.tac.constellation.views.wordcloud.ui.WordCloudConcept;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -238,10 +239,10 @@ public class ContentAnalysisManager {
         final Future<?> f = PluginExecution.withPlugin(new SimpleEditPlugin("Display Word Cloud") {
             @Override
             public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-                int cloudAttr = graph.getAttribute(GraphElementType.META, WordCloud.WORD_CLOUD_ATTR);
+                int cloudAttr = WordCloudConcept.MetaAttribute.WORD_CLOUD_ATTRIBUTE.get(graph);
                 final WordCloud wordCloud;
                 if (cloudAttr == Graph.NOT_FOUND) {
-                    cloudAttr = graph.addAttribute(GraphElementType.META, WordCloudAttributeDescription.ATTRIBUTE_NAME, WordCloud.WORD_CLOUD_ATTR, WordCloud.WORD_CLOUD_DESCR, null, null);
+                    cloudAttr = WordCloudConcept.MetaAttribute.WORD_CLOUD_ATTRIBUTE.ensure(graph);
                     wordCloud = new WordCloud(handler, bgHandler, elementType, phrasiphyContentParams.getThreshold(), phrasiphyContentParams.hasFilterAllWords());
                 } else {
                     wordCloud = new WordCloud(handler, bgHandler, elementType, phrasiphyContentParams.getThreshold(), phrasiphyContentParams.hasFilterAllWords(), (WordCloud) graph.getObjectValue(cloudAttr, 0));

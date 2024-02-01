@@ -101,7 +101,7 @@ public class PhraseAnalysisModelLoader {
                 case ADD_UNICODE_RANGE:
                     final String rangeStart = line.substring(line.indexOf(OPEN_SET) + 1, line.indexOf(CLOSE_SET));
                     final String rangeEnd = line.substring(line.indexOf(OPEN_SET, line.indexOf(CLOSE_SET) + 1) + 1, line.indexOf(CLOSE_SET, line.indexOf(CLOSE_SET)) + 1);
-					int[] range = {Integer.parseInt(rangeStart, 16), Integer.parseInt(rangeEnd, 16)};
+                    final int[] range = {Integer.parseInt(rangeStart, 16), Integer.parseInt(rangeEnd, 16)};
                     currentSet.add(range);
                     break;
                 case LOOK_FOR_MODE_TOKEN:

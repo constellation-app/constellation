@@ -18,7 +18,9 @@ package au.gov.asd.tac.constellation.views.wordcloud.content;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ClusteringConcept;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -246,18 +248,12 @@ public class ContentAnalysisGraphProcessing {
         private static final String SIMILARITY_ATTRIBUTE_NAME = "n-gram Similarity";
         private static final String SIMILARITY_ATTR_TYPE = "float";
         private static final String SIMILARITY_ATTR_DESCRIPTION = "The N-Gramatic Similarity between the selectors represented by the two nodes";
-        private static final String TYPE_ATTRIBUTE_NAME = "Type";
-        private static final String TYPE_ATTR_TYPE = "string";
-        private static final String TYPE_ATTR_DESCRIPTION = "The top level type of the edge";
         private static final String SUBTYPE_ATTRIBUTE_NAME = "SubType";
         private static final String SUBTYPE_ATTR_TYPE = "string";
         private static final String SUBTYPE_ATTR_DESCRIPTION = "Holds the hierachy of types from the top level down";
         private static final String NAME_ATTRIBUTE_NAME = "Name";
         private static final String NAME_ATTR_TYPE = "string";
         private static final String NAME_ATTR_DESCRIPTION = "Name";
-        private static final String COLOR_ATTRIBUTE_NAME = "color";
-        private static final String COLOR_ATTR_TYPE = "color";
-        private static final String COLOR_ATTR_DESCRIPTION = "The color";
         private static final String NGRAMSIMILARTYPE_VALUE = "SIMILARITY.nGrammaticallySimilar";
         private static final String SIMILARTYPE_VALUE = "SIMILARITY";
         private static final String LINK_NAME_PREFIX = "n-gram similarity plugin: ";
@@ -280,12 +276,11 @@ public class ContentAnalysisGraphProcessing {
                 throw new PluginException(PluginNotificationLevel.WARNING, TOO_MANY_TRANSACTIONS_ERROR_MESSAGE);
             }
 
-            // Note: this sort of stuff should be implemented using schema lookup once the attribute schema is introduced for constellation
             final int nGramSimilarityAttr = wg.addAttribute(GraphElementType.TRANSACTION, SIMILARITY_ATTR_TYPE, SIMILARITY_ATTRIBUTE_NAME, SIMILARITY_ATTR_DESCRIPTION, 0F, null);
-            final int typeAttr = wg.addAttribute(GraphElementType.TRANSACTION, TYPE_ATTR_TYPE, TYPE_ATTRIBUTE_NAME, TYPE_ATTR_DESCRIPTION, null, null);
+            final int typeAttr = AnalyticConcept.TransactionAttribute.TYPE.ensure(wg);
             final int subtypeAttr = wg.addAttribute(GraphElementType.TRANSACTION, SUBTYPE_ATTR_TYPE, SUBTYPE_ATTRIBUTE_NAME, SUBTYPE_ATTR_DESCRIPTION, null, null);
             final int name = wg.addAttribute(GraphElementType.TRANSACTION, NAME_ATTR_TYPE, NAME_ATTRIBUTE_NAME, NAME_ATTR_DESCRIPTION, null, null);
-            final int colorAttr = wg.addAttribute(GraphElementType.TRANSACTION, COLOR_ATTR_TYPE, COLOR_ATTRIBUTE_NAME, COLOR_ATTR_DESCRIPTION, null, null);
+            final int colorAttr = VisualConcept.TransactionAttribute.COLOR.ensure(wg);
 
             int currentLinkNum = 0;
 

@@ -29,7 +29,7 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.views.wordcloud.phraseanalysis.PhrasiphyContentPlugin;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
@@ -61,9 +61,10 @@ public class WordCloudController {
     private WordCloud cloud = null;
     private boolean controllerIsInitialising = false;
     private final int currentFontSize;
-    
-    private final List<String> vertTextAttributes = new ArrayList<>();
-    private final List<String> transTextAttributes = new ArrayList<>();
+    private static final String EMPTY_STRING = "";
+    private static final List<String> EMPTY_STRING_LIST = Arrays.asList(EMPTY_STRING);
+    private List<String> vertTextAttributes = new ArrayList<>(EMPTY_STRING_LIST);
+    private List<String> transTextAttributes = new ArrayList<>(EMPTY_STRING_LIST);
 
     /**
      * Construct the controller
@@ -95,11 +96,11 @@ public class WordCloudController {
     }
 
     public List<String> getVertTextAttributes() {
-        return Collections.unmodifiableList(vertTextAttributes);
+        return vertTextAttributes;
     }
 
     public List<String> getTransTextAttributes() {
-        return Collections.unmodifiableList(transTextAttributes);
+        return transTextAttributes;
     }
     
     public boolean isControllerIntialising() {
@@ -237,12 +238,12 @@ public class WordCloudController {
      * Manages a new graph becoming active in the application
      */
     public void updateActiveGraph(final Graph graph) {
-        vertTextAttributes.clear();
-        transTextAttributes.clear();
+        vertTextAttributes = new ArrayList<>(EMPTY_STRING_LIST);
+        transTextAttributes = new ArrayList<>(EMPTY_STRING_LIST);
         final ReadableGraph rg = graph.getReadableGraph();
         try {
             // Retrieve the cloud attribute from the new graph if present
-            final int cloudAttr = rg.getAttribute(GraphElementType.META, WordCloud.WORD_CLOUD_ATTR);
+            final int cloudAttr = WordCloudConcept.MetaAttribute.WORD_CLOUD_ATTRIBUTE.get(rg);
             cloud = cloudAttr != Graph.NOT_FOUND ? (WordCloud) rg.getObjectValue(cloudAttr, 0) : null;
 
             // Retrieve list of string attributes from new graph for nodes and transactions 
@@ -268,8 +269,8 @@ public class WordCloudController {
      * Manages a graph change and updates the word cloud pane 
      */
     public void updateGraph() {
-        vertTextAttributes.clear();
-        transTextAttributes.clear();
+        vertTextAttributes = new ArrayList<>(EMPTY_STRING_LIST);
+        transTextAttributes = new ArrayList<>(EMPTY_STRING_LIST);
         final long amc;
         final long mc;
         boolean doCloudUpdate = false;
@@ -279,7 +280,7 @@ public class WordCloudController {
             final ReadableGraph rg = graph.getReadableGraph();
             try {
                 // Check for updates to the word cloud 
-                final int cloudAttr = rg.getAttribute(GraphElementType.META, WordCloud.WORD_CLOUD_ATTR);
+                final int cloudAttr = WordCloudConcept.MetaAttribute.WORD_CLOUD_ATTRIBUTE.get(rg);
                 amc = rg.getAttributeModificationCounter();
                 WordCloud newCloud = cloud;
                 if (cloudAttr != Graph.NOT_FOUND) {
