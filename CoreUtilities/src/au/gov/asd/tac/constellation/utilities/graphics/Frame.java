@@ -131,6 +131,12 @@ public final class Frame implements Serializable {
     public void getXAxis(final Vector3f vector) {
         vector.crossProduct(up, forward);
     }
+    
+    public Vector3f getXAxis() {
+        final Vector3f result = new Vector3f();
+        result.crossProduct(up, forward);
+        return result;
+    }
 
     public void getYAxis(final Vector3f vector) {
         getUpVector(vector);

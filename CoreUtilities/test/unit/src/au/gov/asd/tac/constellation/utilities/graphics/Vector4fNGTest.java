@@ -127,6 +127,22 @@ public class Vector4fNGTest {
                 new Vector4f(F9, F7, F8, F10));
         assertEquals(v.a, new float[]{83F, 463F, -705F, 219.9F});
     }
+    
+    /**
+     * Can reflect a point over a reference point.
+     */
+    @Test
+    public void testReflect() {
+        final Vector4f v = new Vector4f();
+        Vector4f.reflect(
+                v,
+                new Vector4f(F3, F4, F1, F2),
+                new Vector4f(F9, F7, F8, F10));
+        assertEquals(v.a[0], 290F);
+        assertEquals(v.a[1], -272F);
+        assertEquals(v.a[2], 1533F);
+        assertEquals(v.a[3], -118.799995F);
+    }
 
     /**
      * Can copy a vector.

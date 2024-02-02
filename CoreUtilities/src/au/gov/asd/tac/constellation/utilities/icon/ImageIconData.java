@@ -37,9 +37,14 @@ public class ImageIconData extends IconData {
     }
 
     @Override
-    protected InputStream createInputStream() throws IOException {
+    protected InputStream createRasterInputStream() throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         ImageIO.write(image, ConstellationIcon.DEFAULT_ICON_FORMAT, os);
         return new ByteArrayInputStream(os.toByteArray());
+    }
+
+    @Override
+    protected InputStream createVectorInputStream() throws IOException {
+        throw new UnsupportedOperationException("Image data can not be converted to vector input stream."); 
     }
 }

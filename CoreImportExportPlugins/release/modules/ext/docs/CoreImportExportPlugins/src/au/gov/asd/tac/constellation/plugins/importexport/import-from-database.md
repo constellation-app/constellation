@@ -1,4 +1,4 @@
-# Import from Database
+# Import From Database
 
 <table class="table table-striped">
 <thead>
