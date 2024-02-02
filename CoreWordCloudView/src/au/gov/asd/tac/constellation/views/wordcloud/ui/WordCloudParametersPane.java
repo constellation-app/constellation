@@ -232,4 +232,9 @@ public class WordCloudParametersPane extends TitledPane implements PluginParamet
 
         return helpDocumentationButton;
     }
+    
+    @Override
+    public void notifyParameterValidityChange(final PluginParameter<?> parameter, final boolean currentlySatisfied) {
+        // Must be overriden to implement PluginParametersPaneListener
+    }
 }
