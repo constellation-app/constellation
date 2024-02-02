@@ -148,8 +148,7 @@ public class ContentAnalysisGraphProcessing {
         @Override
         public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
             // Create the cluster attribtue if it is not already present in the rgaph, or if it was, reset all vertices to be unclustered.
-            int clusterElementAttr = wg.getAttribute(graphElementType, ClusteringConcept.VertexAttribute.NAMED_CLUSTER.getName());
-            ClusteringConcept.VertexAttribute.NAMED_CLUSTER.ensure(wg);
+            int clusterElementAttr = ClusteringConcept.VertexAttribute.NAMED_CLUSTER.ensure(wg);
             int elementCount;
             switch (graphElementType) {
                 case VERTEX:

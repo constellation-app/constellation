@@ -79,9 +79,9 @@ public class WordCloudIOProvider extends AbstractGraphIOProvider {
                 final int setSize = iter.next().asInt();
                 final Set<Integer> wordSet = new HashSet<>();
                 for (int i = 0; i < setSize; i++) {
-                    int elID = iter.next().asInt();                        
-                    elID = (elementType == GraphElementType.VERTEX) ? vertexMap.get(elID): transactionMap.get(elID);
-                    wordSet.add(elID);
+                    final int elID = iter.next().asInt();                        
+                    final int elementID = (elementType == GraphElementType.VERTEX) ? vertexMap.get(elID): transactionMap.get(elID);
+                    wordSet.add(elementID);
                 }
                 hashedWordSets.put(hash, wordSet);
             }

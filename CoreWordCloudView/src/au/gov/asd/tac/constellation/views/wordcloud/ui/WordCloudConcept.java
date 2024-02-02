@@ -49,7 +49,9 @@ public class WordCloudConcept extends SchemaConcept {
     
     public static class MetaAttribute {
         
-        public static final SchemaAttribute WORD_CLOUD_ATTRIBUTE = new SchemaAttribute.Builder(GraphElementType.META, WordCloudAttributeDescription.ATTRIBUTE_NAME, WordCloud.WORD_CLOUD_ATTR).build();
+        public static final SchemaAttribute WORD_CLOUD_ATTRIBUTE = new SchemaAttribute.Builder(GraphElementType.META, WordCloudAttributeDescription.ATTRIBUTE_NAME, WordCloud.WORD_CLOUD_ATTR)
+                .setDescription("The current state of the word cloud")
+                .build();
         
     }
     

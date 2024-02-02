@@ -21,7 +21,7 @@
 
 ## Introduction
 
-The Word Cloud View is used to create word clouds based on words or phrased found 
+The Word Cloud View is used to create word clouds based on words or phrases found 
 within attributes in nodes and transactions on a graph. The length of the phrase,
 how many words the phrase can span and the minimum number of times the phrase or 
 word needs to appear on a graph for it to be shown in the word cloud can be 
