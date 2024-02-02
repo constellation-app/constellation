@@ -50,7 +50,7 @@ public class UriIconData extends IconData {
     }
 
     @Override
-    protected InputStream createInputStream() throws IOException {
+    protected InputStream createRasterInputStream() throws IOException {
         InputStream stream;
 
         try {
@@ -66,5 +66,10 @@ public class UriIconData extends IconData {
         }
 
         return stream;
+    }
+
+    @Override
+    protected InputStream createVectorInputStream() throws IOException {
+        throw new UnsupportedOperationException("URI data can not be converted to vector input stream.");
     }
 }

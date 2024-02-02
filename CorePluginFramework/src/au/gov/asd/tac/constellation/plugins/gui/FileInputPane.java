@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.plugins.gui;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
-import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.io.File;
 import javax.swing.filechooser.FileFilter;
@@ -41,7 +40,6 @@ import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser.ExtensionFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.filesystems.FileChooserBuilder;
-import org.openide.util.Exceptions;
 
 
 /**
@@ -164,7 +162,7 @@ public class FileInputPane extends HBox {
         field.setManaged(parameter.isVisible());
         this.setManaged(parameter.isVisible());
         this.setVisible(parameter.isVisible());
-
+        
         field.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.DELETE) {
                 final IndexRange selection = field.getSelection();
@@ -211,11 +209,14 @@ public class FileInputPane extends HBox {
         field.setPrefWidth(defaultWidth);
 
         final Tooltip tooltip = new Tooltip("");
-        tooltip.setStyle("-fx-text-fill: black;");
-        field.textProperty().addListener((observableValue, oldValue, newValue) -> {
-            // Validation
-            final String error = parameter.validateString(field.getText());
-            if ((required && StringUtils.isBlank(field.getText())) || error != null) {
+        
+        // Looks for changes to the input field
+        // Triggers a change to the parameter
+        field.textProperty().addListener((observableValue, oldValue, newValue) -> {            
+            
+            // As the change is happening in the field, the parameter object will not have updated its error value yet
+            final String error = parameter.validateString(newValue);
+            if ((required && StringUtils.isBlank(newValue)) || error != null) {
                 tooltip.setText(StringUtils.isNotBlank(error) ? error : "File is required!");
                 field.setTooltip(tooltip);
                 field.setId("invalid");
@@ -227,11 +228,14 @@ public class FileInputPane extends HBox {
             parameter.setStringValue(field.getText());
         });
 
+        // Looks for changes to the plugin parameter
+        // Can be triggered by a change from the application or a change from the respective input field
+        // Can trigger a change to the input field which will cause this listner to be triggered a second time.
         parameter.addListener((pluginParameter, change) -> {
             Platform.runLater(() -> {
                 switch (change) {
                     case VALUE:
-                        // Don't change the value if it isn't necessary.
+                        // Do not retrigger the fieled listner if this event was triggered by the field listner.
                         final String param = parameter.getStringValue();
                         if (!field.getText().equals(param)) {
                             field.setText(param);
@@ -260,30 +264,35 @@ public class FileInputPane extends HBox {
     
     /**
      * Creates a FileChooser for the Parameter
+     * If an extension filter has not been specified, all file types will be accepted by default.
      * @param parameter
      * @param title
      * @return 
      */
     private FileChooserBuilder getFileChooser(final PluginParameter<FileParameterValue> parameter, final String title) {
+        
+        final ExtensionFilter extensionFilter = FileParameterType.getFileFilters(parameter);
+        
         FileChooserBuilder fileChooserBuilder = new FileChooserBuilder(title)
                 .setTitle(title)
-                .setAcceptAllFileFilterUsed(FileParameterType.isAcceptAllFileFilterUsed(parameter))
-                .setFilesOnly(false);
-        
-        final ExtensionFilter cef = FileParameterType.getFileFilters(parameter);
-        for (final String extension : cef.getExtensions()){
-            //Add a file filter for all registered exportable file types.
-            fileChooserBuilder = fileChooserBuilder.addFileFilter(new FileFilter(){
-                @Override
-                public boolean accept(final File file) {
-                    final String name = file.getName();
-                    return (file.isFile() && StringUtils.endsWithIgnoreCase(name, extension)) || file.isDirectory();
-                }
-                @Override
-                public String getDescription() {
-                    return cef.getDescription();
-                }
-            });
+                .setAcceptAllFileFilterUsed(extensionFilter == null ? true : FileParameterType.isAcceptAllFileFilterUsed(parameter))
+                .setFilesOnly(true);
+
+        if (extensionFilter != null) {
+            for (final String extension : extensionFilter.getExtensions()){
+                // Add a file filter for all registered exportable file types.
+                fileChooserBuilder = fileChooserBuilder.addFileFilter(new FileFilter(){
+                    @Override
+                    public boolean accept(final File file) {
+                        final String name = file.getName();
+                        return (file.isFile() && StringUtils.endsWithIgnoreCase(name, extension)) || file.isDirectory();
+                    }
+                    @Override
+                    public String getDescription() {
+                        return extensionFilter.getDescription();
+                    }
+                });
+            }
         }
         return fileChooserBuilder;
     }

@@ -1,0 +1,22 @@
+{
+    "depthA": {
+        "depth": {
+            "description": "This list isn't selected as its deeper thsn other option",
+            "listdata3": [{
+                    "depth3a": 3
+                }]
+        }
+    },
+    "depthB": {
+        "description": "This list will ultimately be selected",
+        "listdata": [{
+                "depth2a": 2
+            }]
+    },
+    "depthC": {
+        "description": "This list is at equal lowest depth, but is second found, so not selected",
+        "listdata": [{
+                "depth2b": 2
+            }]
+    }
+}

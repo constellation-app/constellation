@@ -394,8 +394,8 @@ public class PluginParameter<V extends ParameterValue> {
             this.error = error;
             if (errorChange) {
                 fireChangeEvent(ParameterChange.ERROR);
-            }
         }
+    }
     }
 
     /**
@@ -509,12 +509,10 @@ public class PluginParameter<V extends ParameterValue> {
      */
     public final void setStringValue(final String stringValue) {
         setError(value.validateString(stringValue));
-        if (getError() != null) {
-            return;
-        }
-
-        if (value.setStringValue(stringValue)) {
-            fireChangeEvent(ParameterChange.VALUE);
+        if (getError() == null) {
+            if (value.setStringValue(stringValue)) {
+                fireChangeEvent(ParameterChange.VALUE);
+            } 
         }
     }
 

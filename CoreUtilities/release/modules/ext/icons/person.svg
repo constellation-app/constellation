@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="person" xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <path id="body" d="m128,144.93c-37.07,0-67.12,14.37-67.12,32.1v19.8h134.24v-19.8c0-17.73-30.05-32.1-67.12-32.1Z" fill="#fff" stroke-width="0"/>
+  <circle id="head" cx="128.63" cy="93.66" r="34.49" fill="#fff" stroke-width="0"/>
+</svg>
