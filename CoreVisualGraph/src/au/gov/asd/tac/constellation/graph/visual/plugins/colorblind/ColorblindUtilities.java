@@ -33,16 +33,16 @@ public class ColorblindUtilities {
     }
 
     public static void colorNodes(final GraphWriteMethods wg, final int vxColorblindAttr, final int txColorblindAttr) {
-        Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-        String COLORMODE = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
+        final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+        final String colorMode = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
 
-        final int vxColorAttr = VisualConcept.VertexAttribute.COLOR.get(wg);
-        final int txColorAttr = VisualConcept.TransactionAttribute.COLOR.get(wg);
+        final int vxColorAttr = VisualConcept.VertexAttribute.COLOR.ensure(wg);
+        final int txColorAttr = VisualConcept.TransactionAttribute.COLOR.ensure(wg);
 
         final int vertexCount = wg.getVertexCount();
         final int transactionCount = wg.getTransactionCount();
 
-        if (!"None".equals(COLORMODE)) {
+        if (!"None".equals(colorMode)) {
             //Iterate through graph vertices. If vertexType is a defined schemaType color will be adjusted if applicable.
             for (int vertex = 0; vertex < vertexCount; vertex++) {
                 final int vxId = wg.getVertex(vertex);
@@ -84,8 +84,8 @@ public class ColorblindUtilities {
         Evaluate the selected colorblind mode and adjust contrast if RGB value is high enough; prevents new color from being too dark, then remove imperceivable colors. 
         Primary colors for the modes are then adjusted at different strengths to improve contrast. I.E. remove 50% red in deut, remove 18% blue for prot.*/
     public static final ConstellationColor calcColorBrightness(final ConstellationColor vertexColor) {
-        Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-        String COLORMODE = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
+        final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+        final String colorMode = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
 
         float adjustedRed = vertexColor.getRed();
         float adjustedGreen = vertexColor.getGreen();
@@ -96,7 +96,7 @@ public class ColorblindUtilities {
         final float minimumCombinedRGB = 0.70f;
         final float brightenRGB = 0.1f;
 
-        switch (COLORMODE) {
+        switch (colorMode) {
             case "None":
                 //do nothing
                 break;
