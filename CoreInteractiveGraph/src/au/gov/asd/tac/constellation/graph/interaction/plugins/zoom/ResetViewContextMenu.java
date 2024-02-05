@@ -19,7 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
-import au.gov.asd.tac.constellation.graph.visual.contextmenu.ContextMenuProvider;
+import au.gov.asd.tac.constellation.graph.visual.contextmenu.GraphContextMenuProvider;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.util.ArrayList;
@@ -35,8 +35,8 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author algol
  */
-@ServiceProvider(service = ContextMenuProvider.class, position = 10000)
-public class ResetViewContextMenu implements ContextMenuProvider {
+@ServiceProvider(service = GraphContextMenuProvider.class, position = 10000)
+public class ResetViewContextMenu implements GraphContextMenuProvider {
 
     private static final String RESET_VIEW = "Reset View";
     private static final String X_AXIS = "X Axis";

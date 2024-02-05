@@ -23,7 +23,6 @@ import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Blaze;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.utilities.BlazeUtilities;
 import au.gov.asd.tac.constellation.graph.visual.VisualGraphPluginRegistry;
-import au.gov.asd.tac.constellation.graph.visual.contextmenu.ContextMenuProvider;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginRegistry;
@@ -43,6 +42,7 @@ import javax.swing.ImageIcon;
 import org.netbeans.api.annotations.common.StaticResource;
 import org.openide.util.ImageUtilities;
 import org.openide.util.lookup.ServiceProvider;
+import au.gov.asd.tac.constellation.graph.visual.contextmenu.GraphContextMenuProvider;
 
 /**
  * Add, remove and color blazes.
@@ -59,8 +59,8 @@ import org.openide.util.lookup.ServiceProvider;
  * @author algol
  * @author elnath
  */
-@ServiceProvider(service = ContextMenuProvider.class, position = 200)
-public class BlazeContextMenu implements ContextMenuProvider {
+@ServiceProvider(service = GraphContextMenuProvider.class, position = 200)
+public class BlazeContextMenu implements GraphContextMenuProvider {
 
     private static final String BLAZE_MENU = "Blazes";
     private static final String ADD_CUSTOM_BLAZE = "Add Custom Blazes";

@@ -19,20 +19,20 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.graph.visual.contextmenu.ContextMenuProvider;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.openide.util.lookup.ServiceProvider;
+import au.gov.asd.tac.constellation.graph.visual.contextmenu.GraphContextMenuProvider;
 
 /**
  * Merge Nodes Context Menu
  *
  * @author algol
  */
-@ServiceProvider(service = ContextMenuProvider.class, position = 700)
-public class PermanentMergeNodeContextMenu implements ContextMenuProvider {
+@ServiceProvider(service = GraphContextMenuProvider.class, position = 700)
+public class PermanentMergeNodeContextMenu implements GraphContextMenuProvider {
 
     @Override
     public List<String> getMenuPath(final GraphElementType elementType) {

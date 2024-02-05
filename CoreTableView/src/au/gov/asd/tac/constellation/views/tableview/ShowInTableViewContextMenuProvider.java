@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.views.tableview;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.graph.visual.contextmenu.ContextMenuProvider;
+import au.gov.asd.tac.constellation.graph.visual.contextmenu.GraphContextMenuProvider;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.util.Arrays;
 import java.util.Collections;
@@ -33,8 +33,8 @@ import org.openide.windows.WindowManager;
  *
  * @author cygnus_x-1
  */
-@ServiceProvider(service = ContextMenuProvider.class, position = 1000)
-public class ShowInTableViewContextMenuProvider implements ContextMenuProvider {
+@ServiceProvider(service = GraphContextMenuProvider.class, position = 1000)
+public class ShowInTableViewContextMenuProvider implements GraphContextMenuProvider {
 
     @Override
     public List<String> getMenuPath(final GraphElementType elementType) {

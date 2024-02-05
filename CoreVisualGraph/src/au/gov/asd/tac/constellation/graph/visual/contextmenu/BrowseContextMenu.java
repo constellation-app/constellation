@@ -36,8 +36,8 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author sirius
  */
-@ServiceProvider(service = ContextMenuProvider.class, position = 10000)
-public class BrowseContextMenu implements ContextMenuProvider {
+@ServiceProvider(service = GraphContextMenuProvider.class, position = 10000)
+public class BrowseContextMenu implements GraphContextMenuProvider {
 
     @Override
     public List<String> getMenuPath(final GraphElementType elementType) {

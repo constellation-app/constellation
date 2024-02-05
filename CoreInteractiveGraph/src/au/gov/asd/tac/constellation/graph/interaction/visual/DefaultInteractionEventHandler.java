@@ -37,7 +37,7 @@ import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.NewLine
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionBoxModel;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionFreeformModel;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.graph.visual.contextmenu.ContextMenuProvider;
+import au.gov.asd.tac.constellation.graph.visual.contextmenu.GraphContextMenuProvider;
 import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
@@ -1155,17 +1155,17 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
 
     private void showContextMenu(final GraphReadMethods rg, final Camera camera, final Point screenLocation, final GraphElementType elementType, final int clickedId) {
         final JPopupMenu popup = new JPopupMenu();
-        final Collection<? extends ContextMenuProvider> popups = Lookup.getDefault().lookupAll(ContextMenuProvider.class);
+        final Collection<? extends GraphContextMenuProvider> popups = Lookup.getDefault().lookupAll(GraphContextMenuProvider.class);
         final Vector3f graphLocation = visualInteraction.windowToGraphCoordinates(camera, screenLocation);
 
-        for (final ContextMenuProvider pmp : popups) {
+        for (final GraphContextMenuProvider gcmp : popups) {
             // Retrive list of item names to populate and optional list of icons to assign
             // Icons will be added corresponding to an image if the icons list is not ull
             // and a non null icon is provided with corresponding index.
-            final List<String> items = pmp.getItems(rg, elementType, clickedId);
-            final List<ImageIcon> icons = pmp.getIcons(rg, elementType, clickedId);
+            final List<String> items = gcmp.getItems(rg, elementType, clickedId);
+            final List<ImageIcon> icons = gcmp.getIcons(rg, elementType, clickedId);
             if (!items.isEmpty()) {
-                final List<String> menuPath = pmp.getMenuPath(elementType);
+                final List<String> menuPath = gcmp.getMenuPath(elementType);
                 if (CollectionUtils.isEmpty(menuPath)) {
                     for (int idx = 0; idx < items.size(); idx++) {
                         final Icon icon = (icons != null && icons.size() > idx + 1) ? (Icon) icons.get(idx) : null;
@@ -1175,7 +1175,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                             popup.add(new AbstractAction(item) {
                                 @Override
                                 public void actionPerformed(final ActionEvent event) {
-                                    PluginExecution.withPlugin(new SelectGraphItem(pmp, item, elementType, clickedId, graphLocation)).executeLater(null);
+                                    PluginExecution.withPlugin(new SelectGraphItem(gcmp, item, elementType, clickedId, graphLocation)).executeLater(null);
                                 }
                             });
                         } else {
@@ -1183,7 +1183,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                             popup.add(new AbstractAction(item, icon) {
                                 @Override
                                 public void actionPerformed(final ActionEvent event) {
-                                    PluginExecution.withPlugin(new SelectGraphItem(pmp, item, elementType, clickedId, graphLocation)).executeLater(null);
+                                    PluginExecution.withPlugin(new SelectGraphItem(gcmp, item, elementType, clickedId, graphLocation)).executeLater(null);
                                 }
                             });
                         }
@@ -1221,7 +1221,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                             ((JMenu) currentMenu).add(new AbstractAction(item) {
                                 @Override
                                 public void actionPerformed(final ActionEvent event) {
-                                    PluginExecution.withPlugin(new SelectGraphItem(pmp, item, elementType, clickedId, graphLocation)).executeLater(null);
+                                    PluginExecution.withPlugin(new SelectGraphItem(gcmp, item, elementType, clickedId, graphLocation)).executeLater(null);
                                 }
                             });
                         } else {
@@ -1229,7 +1229,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                             ((JMenu) currentMenu).add(new AbstractAction(item, icon) {
                                 @Override
                                 public void actionPerformed(final ActionEvent event) {
-                                    PluginExecution.withPlugin(new SelectGraphItem(pmp, item, elementType, clickedId, graphLocation)).executeLater(null);
+                                    PluginExecution.withPlugin(new SelectGraphItem(gcmp, item, elementType, clickedId, graphLocation)).executeLater(null);
                                 }
                             });
                         }
@@ -1254,13 +1254,13 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
     @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
     private class SelectGraphItem extends SimplePlugin {
 
-        private final ContextMenuProvider pmp;
+        private final GraphContextMenuProvider pmp;
         private final String item;
         private final GraphElementType elementType;
         private final int clickedId;
         private final Vector3f graphLocation;
 
-        public SelectGraphItem(final ContextMenuProvider pmp, final String item, final GraphElementType elementType, final int clickedId, final Vector3f graphLocation) {
+        public SelectGraphItem(final GraphContextMenuProvider pmp, final String item, final GraphElementType elementType, final int clickedId, final Vector3f graphLocation) {
             this.pmp = pmp;
             this.item = item;
             this.elementType = elementType;

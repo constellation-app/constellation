@@ -24,7 +24,7 @@ import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcep
 import au.gov.asd.tac.constellation.graph.schema.analytic.utilities.CompositeUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaPluginRegistry;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.graph.visual.contextmenu.ContextMenuProvider;
+import au.gov.asd.tac.constellation.graph.visual.contextmenu.GraphContextMenuProvider;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -50,12 +50,12 @@ import org.openide.util.lookup.ServiceProviders;
  * @author twilight_sparkle
  */
 @ServiceProviders({
-    @ServiceProvider(service = ContextMenuProvider.class, position = 600),
+    @ServiceProvider(service = GraphContextMenuProvider.class, position = 600),
     @ServiceProvider(service = Plugin.class)
 })
 @NbBundle.Messages("DestroyCompositePlugin=Destroy Composite")
 @PluginInfo(pluginType = PluginType.DELETE, tags = {PluginTags.DELETE})
-public class DestroyCompositePlugin extends SimpleEditPlugin implements ContextMenuProvider {
+public class DestroyCompositePlugin extends SimpleEditPlugin implements GraphContextMenuProvider {
 
     private int selectedItem;
 
