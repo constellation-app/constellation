@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.welcome;
 
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import java.awt.BorderLayout;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -62,8 +63,6 @@ import org.openide.windows.TopComponent;
 public final class WelcomeTopComponent extends JavaFxTopComponent<WelcomeViewPane> {
 
     private final WelcomeViewPane pane;
-
-    private static final String WELCOME_THEME = "resources/welcome_theme.css";
 
     public WelcomeTopComponent() {
         initComponents();
@@ -146,7 +145,7 @@ public final class WelcomeTopComponent extends JavaFxTopComponent<WelcomeViewPan
 
     @Override
     protected String createStyle() {
-        return WELCOME_THEME;
+        return JavafxStyleManager.isDarkTheme() ? "resources/dark_welcome.css" : "resources/light_welcome.css";
     }
 
     @Override

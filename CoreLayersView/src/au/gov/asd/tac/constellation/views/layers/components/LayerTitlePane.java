@@ -33,6 +33,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -82,7 +83,8 @@ public class LayerTitlePane extends TitledPane {
         enabled.setSelected(query.isVisible());
         enabled.selectedProperty().addListener(enabledChanged);
         final String displayedLayerName = StringUtils.truncate(layerName, MAX_DISPLAYED_CHARS);
-        label = new Label(StringUtils.isBlank(layerName) ? String.format("%d", layerId) : String.format("%-2.2s - %s",String.valueOf(layerId), displayedLayerName));
+        label = new Label(StringUtils.isBlank(layerName) ? String.format("%d", layerId) : String.format("%-2.2s - %s",String.valueOf(layerId), displayedLayerName));   
+        label.setId("titled-pane-label");
         this.layerId = layerId;
         final Button deleteButton = new Button("X");
         deleteButton.setMaxSize(10, 10);

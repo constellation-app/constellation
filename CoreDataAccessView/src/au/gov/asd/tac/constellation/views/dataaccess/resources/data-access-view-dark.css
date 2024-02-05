@@ -1,0 +1,51 @@
+.description-label {
+    -fx-font-size: smaller;
+}
+
+.accordion .titled-pane-heading .title, .titled-pane-heading > .title {
+    -fx-font-weight: bold;
+    -fx-background-color: linear-gradient(to bottom, derive(#1c5aa6,100%), derive(#1c5aa6,0%) 5%, derive(#1c5aa6,-25%) 95%, derive(#1c5aa6,50%) 100%);
+    -fx-padding: 3;
+}
+
+.titled-pane > .title {
+    -fx-base: #333333;
+}
+.titled-pane-selected > .title {
+    -fx-background-color: linear-gradient(to bottom, derive(#5E9656,100%), derive(#5E9656,0%) 5%, derive(#5E9656,-25%) 95%, derive(#5E9656,50%) 100%);
+}
+
+.titled-pane-matched > .title {
+    -fx-background-color: #1d627e; 
+}
+
+.titled-pane-heading > .title {
+    -fx-background-insets: 0, 1, 2;
+    -fx-background-radius: 5 5 0 0, 4 4 0 0, 3 3 0 0;
+    -fx-padding: 0.166667em 0.833333em 0.25em 0.833333em;  /*2 10 3 10*/
+}
+
+.titled-pane-datetime > .title {
+    -fx-base: #1f6fba;
+}
+
+.page-corner {
+    -fx-padding: 4.5 4.5 4.5 4.5;
+    -fx-background-color: linear-gradient( from 0% 0% to 50% 50%, rgba(252,247,182,0.5), rgba(165,156,49,0.5));
+    -fx-shape: "M0,0H9L0,9Z";
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 4 , 0.0 , 0 , 0 );
+}
+
+#invalid {
+    -fx-background-color: #8a1d1d;
+    -fx-control-inner-background: #8a1d1d;
+}
+
+.check-box > .box {
+    -fx-background-color: linear-gradient(to bottom, derive(#999999,100%), derive(#555555,0%) 5%, derive(#999999,-25%) 95%, derive(#999999,50%) 100%);
+}
+
+#options-menu {
+    -fx-background-color: #121212;
+    -fx-border-color: #444444;
+}

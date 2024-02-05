@@ -56,9 +56,6 @@ import javafx.scene.shape.Rectangle;
 public class OverviewPanel extends Pane {
     // Private Globals:
 
-    private static final double VERTICAL = 270.0;
-    private static final String LIGHT_THEME = "resources/Style-Overview-Light.css";
-    private static final String DARK_THEME = "resources/Style-Overview-Dark.css";
     // OverviewPanel components:
     private final AreaChart<Number, Number> histogram;
     private NumberAxis xAxis;
@@ -100,7 +97,6 @@ public class OverviewPanel extends Pane {
         innerPane.prefWidthProperty().bind(this.widthProperty());
         innerPane.prefHeightProperty().bind(this.heightProperty());
 
-        this.getStylesheets().add(OverviewPanel.class.getResource(DARK_THEME).toExternalForm());
         this.getChildren().add(innerPane);
         this.setOnScroll(coordinator::zoomFromOverview);
 

@@ -7,6 +7,13 @@ When enabled, incorrect spellings and some grammar errors are highlighted and un
 <p>Constellation Option  "Enable spell checking in specified text areas" (Enabled by default) and the plugin Parameter option "setSpellCheckEnabled"(Disabled by default and should be enabled in the code per plugin parameter) are used to enable/disable spell checking.
 If both of these are set, the right click context menu option "Turn On Spell Checking" will be available and it can be used to toggle on/off spell checking dynamically. </p>
 
+== 2024-01-09 Data Access View Categories change
+<p>Added a new "Restore to Default" button to the Data Access View Categories </p>
+
+== 2024-01-08 Light and dark mode support
+<p>Light/Dark mode themes have been reworked and now comprehensively cover most of the application.</p>
+<p>The modes can be accessed via SetUp -&gt; Options -&gt; Appearance -&gt; Look and Feel -&gt; FlatLaf Light/FlatLaf Dark respectively.</p>
+
 == 2023-11-15 Rename graphs through REST API and Jupyter Notebooks
 <p>Jupyter notebook users can now specify or change Constellation graph title names within scripts using the client.</p>
 <p>When creating a new graph <strong>new_graph</strong> the graph name can be specified as an optional parameter. There's also a separate function to rename a graph specified by the graph ID <strong>rename_graph</strong>. If a graph ID is not specified, the current active graph will be renamed.</p> 

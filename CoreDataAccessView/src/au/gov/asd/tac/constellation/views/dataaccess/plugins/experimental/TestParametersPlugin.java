@@ -56,6 +56,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.text.SpellCheckingTextArea;
 import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
@@ -88,7 +89,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
-import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import org.netbeans.api.annotations.common.StaticResource;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
@@ -285,13 +286,15 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         final PluginParameter<FileParameterValue> openFileParam = FileParameterType.build(INPUT_FILE_PARAMETER_ID);
         openFileParam.setName("Input file");
         openFileParam.setDescription("A file to read stuff from");
+        FileParameterType.setKind(openFileParam, FileParameterType.FileParameterKind.OPEN);
+        FileParameterType.enableAcceptAllFileFilter(openFileParam);
         params.addParameter(openFileParam);
 
         final PluginParameter<FileParameterValue> saveFileParam = FileParameterType.build(OUTPUT_FILE_PARAMETER_ID);
         saveFileParam.setName("Output file");
         saveFileParam.setDescription("A file to write stuff to");
         FileParameterType.setKind(saveFileParam, FileParameterType.FileParameterKind.SAVE);
-        FileParameterType.setFileFilters(saveFileParam, new FileChooser.ExtensionFilter("Text files", "*.txt"));
+        FileParameterType.setFileFilters(saveFileParam, new ExtensionFilter("Text files", FileExtensionConstants.TEXT));
         params.addParameter(saveFileParam);
 
         final PluginParameter<ColorParameterValue> color = ColorParameterType.build(COLOR_PARAMETER_ID);
@@ -367,8 +370,8 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
 
     @Override
     protected RecordStore query(final RecordStore query, final PluginInteraction interaction, final PluginParameters parameters) throws PluginException, InterruptedException {
-        
-        // Retrieve PluginParameter values 
+
+        // Retrieve PluginParameter values
         final int sleepDuration = parameters.getParameters().get(SLEEP_PARAMETER_ID).getIntegerValue();
         final LocalDate localDate = parameters.getLocalDateValue(LOCAL_DATE_PARAMETER_ID);
         final ParameterValue elementType = parameters.getSingleChoice(ELEMENT_TYPE_PARAMETER_ID);
@@ -378,21 +381,21 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         final DateTimeRange dateTimeRange = parameters.getDateTimeRangeValue(CoreGlobalParameters.DATETIME_RANGE_PARAMETER_ID);
         final String interactionLevel = parameters.getParameters().get(INTERACTION_PARAMETER_ID).getStringValue();
         final String exceptionLevel = parameters.getParameters().get(LEVEL_PARAMETER_ID).getStringValue();
-        
+
         // No Errors thrown as parameters values are checked before being used
-        
+
         // Local process-tracking variables (Process is indeteminate due to the nature of plugin reporting through the logger)
         final int currentProcessStep = 0;
-        final int totalProcessSteps = -1; 
+        final int totalProcessSteps = -1;
         interaction.setProgress(currentProcessStep, totalProcessSteps, "Testing parameters...", true);
-        
+
         //Display parameter information
         LOGGER.log(Level.INFO, "parameters: {0}", parameters);
         LOGGER.log(Level.INFO, "==== begin string values");
         parameters.getParameters().values().stream().forEach(param ->
                 LOGGER.log(Level.INFO, "String {0}: \"{1}\"", new Object[]{param.getName(), param.getStringValue()}));
         LOGGER.log(Level.INFO, "==== end string values");
-        
+
         // Using PluginParameter<IntegerParameterValue>
         for (int i = 0; i < sleepDuration; i++) {
             LOGGER.log(Level.INFO, "sleep {0}/{1}", new Object[]{i, sleepDuration});
@@ -404,7 +407,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
             }
         }
         LOGGER.log(Level.INFO, "slept for {0} seconds", sleepDuration);
-        
+
         // Using PluginParameter<LocalDateParameterValue>
         LOGGER.log(Level.INFO, "localdate: {0} ", localDate);
         if (localDate != null) {
@@ -414,7 +417,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
             LOGGER.log(Level.INFO, String.format("fields: [%04d-%02d-%02d]",
                     localDate.get(ChronoField.YEAR), localDate.get(ChronoField.MONTH_OF_YEAR), localDate.get(ChronoField.DAY_OF_MONTH)));
         }
-        
+
         // Using PluginParameter<MultiChoiceParameterValue>
         planets.getChoices().stream().forEach(planet -> LOGGER.log(Level.INFO, "Planet: {0}", planet));
 
@@ -437,7 +440,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
 
         // Testing PluginParameter<SingleChoiceParameterValue>
         LOGGER.log(Level.INFO, "GraphElementType: {0}", elementType);
-        
+
         final PluginNotificationLevel pnInteractionLevel;
         if (interactionLevel != null) {
             switch (interactionLevel) {
@@ -465,7 +468,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
                 interaction.notify(pnInteractionLevel, "Interaction from plugin");
             }
         }
-        
+
         final PluginNotificationLevel pnExceptionLevel;
         if (exceptionLevel != null) {
             switch (exceptionLevel) {
@@ -493,7 +496,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
                 throw new PluginException(pnExceptionLevel, "Exception thrown from plugin");
             }
         }
-        
+
         final File outputDir = DataAccessPreferenceUtilities.getDataAccessResultsDir();
         if (outputDir != null) {
             final String fnam = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")) + "-testChainer.txt";
@@ -506,9 +509,9 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
                 LOGGER.log(Level.SEVERE, "The specified file encoding is unsupported", ex);
             }
         }
-        
+
         LOGGER.log(Level.INFO, "query name: {0}", queryName);
-        
+
         final List<String> keys = query.keys();
         while (query.next()) {
             keys.stream().forEach(key -> LOGGER.log(Level.INFO, String.format("%-20s: %s", key, query.get(key))));

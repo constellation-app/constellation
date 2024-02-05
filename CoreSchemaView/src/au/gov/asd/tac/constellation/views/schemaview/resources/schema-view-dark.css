@@ -1,0 +1,8 @@
+.schemaview-highlight-blue {
+    -fx-background-color: rgb(30,144,255);
+    -fx-padding: 2 5 2 5;
+}
+
+.tab-pane {
+    -fx-background-color: #333333;
+}

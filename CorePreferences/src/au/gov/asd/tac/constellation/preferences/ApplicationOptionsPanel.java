@@ -126,14 +126,6 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
         downloadPythonClientCheckBox.setSelected(downloadPythonClient);
     }
 
-    public boolean isRememberOpenSaveLocationSelected() {
-        return rememberOpenAndSaveLocationCheckBox.isSelected();
-    }
-
-    public void setRememberOpenSaveLocation(final boolean rememberSaveLocation) {
-        this.rememberOpenAndSaveLocationCheckBox.setSelected(rememberSaveLocation);
-    }
-
     public String getCurrentFont() {
         return fontCombo.getSelectedItem().toString();
     }
@@ -194,8 +186,6 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
         notebookDirectoryText = new JTextField();
         notebookDirectoryButton = new JButton();
         downloadPythonClientCheckBox = new JCheckBox();
-        openAndSaveLocationPanel = new JPanel();
-        rememberOpenAndSaveLocationCheckBox = new JCheckBox();
         fontPanel = new JPanel();
         fontLbl = new JLabel();
         fontSizeLbl = new JLabel();
@@ -373,27 +363,6 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        openAndSaveLocationPanel.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.openAndSaveLocationPanel.border.title"))); // NOI18N
-
-        rememberOpenAndSaveLocationCheckBox.setSelected(true);
-        Mnemonics.setLocalizedText(rememberOpenAndSaveLocationCheckBox, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.rememberOpenAndSaveLocationCheckBox.text")); // NOI18N
-        rememberOpenAndSaveLocationCheckBox.setActionCommand(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.rememberOpenAndSaveLocationCheckBox.actionCommand")); // NOI18N
-
-        GroupLayout openAndSaveLocationPanelLayout = new GroupLayout(openAndSaveLocationPanel);
-        openAndSaveLocationPanel.setLayout(openAndSaveLocationPanelLayout);
-        openAndSaveLocationPanelLayout.setHorizontalGroup(openAndSaveLocationPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(openAndSaveLocationPanelLayout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addComponent(rememberOpenAndSaveLocationCheckBox)
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        openAndSaveLocationPanelLayout.setVerticalGroup(openAndSaveLocationPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(openAndSaveLocationPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(rememberOpenAndSaveLocationCheckBox)
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
         fontPanel.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.fontPanel.border.title"))); // NOI18N
 
         Mnemonics.setLocalizedText(fontLbl, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.fontLbl.text")); // NOI18N
@@ -484,7 +453,6 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                         .addComponent(userDirectoryButton))
                     .addComponent(webserverPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(notebookPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(openAndSaveLocationPanel, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(fontPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(spellCheckingPanel, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
@@ -498,23 +466,20 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                     .addComponent(userDirectoryText, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(autosavePanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(startupPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(webserverPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(notebookPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(openAndSaveLocationPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(fontPanel, GroupLayout.PREFERRED_SIZE, 95, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(spellCheckingPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(111, Short.MAX_VALUE))
         );
 
         notebookPanel.getAccessibleContext().setAccessibleName(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.notebookPanel.AccessibleContext.accessibleName")); // NOI18N
-        openAndSaveLocationPanel.getAccessibleContext().setAccessibleName(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.openAndSaveLocationPanel.AccessibleContext.accessibleName")); // NOI18N
         spellCheckingPanel.getAccessibleContext().setAccessibleName(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.spellCheckingPanel.AccessibleContext.accessibleName")); // NOI18N
     }// </editor-fold>//GEN-END:initComponents
 
@@ -589,8 +554,6 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
     private JLabel notebookDirectoryLabel;
     private JTextField notebookDirectoryText;
     private JPanel notebookPanel;
-    private JPanel openAndSaveLocationPanel;
-    private JCheckBox rememberOpenAndSaveLocationCheckBox;
     private JButton resetBtn;
     private JButton restDirectoryButton;
     private JLabel restDirectoryLabel;

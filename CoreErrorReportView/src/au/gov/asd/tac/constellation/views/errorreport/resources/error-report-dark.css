@@ -1,0 +1,107 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 16 Feb. 2023, 3:25:16 pm
+    Author     : OrionsGuardian
+*/
+
+
+#errorReport {
+    -fx-background-radius: 3;
+    -fx-border-color: #ff8888;
+    -fx-border-width: 1;
+    -fx-border-radius: 3;
+}
+
+.lightNameText {
+    -fx-text-fill: #eeeeee;
+}
+
+.darkNameText {
+    -fx-text-fill: #555555;
+}
+
+.lightMessageText {
+    -fx-text-fill: white;
+}
+
+.darkMessageText {
+    -fx-text-fill: #777777;
+}
+
+.interrupted {
+    -fx-background-color: blue;
+}
+
+.progress-bar .bar {
+    -fx-padding: 5 5 5 5;
+    -fx-background-insets: 3 4 4 4;
+}
+
+.text-area {
+    text-area-background: black ;
+}
+
+.text-area .content {
+    -fx-background-color: text-area-background ;
+}
+/*
+
+.titled-pane-heading .title, .titled-pane-heading > .title {
+    -fx-background-color: linear-gradient(to bottom, derive(#cd853f,100%), derive(#cd853f,0%) 5%, derive(#cd853f,-25%) 95%, derive(#cd853f,50%) 100%);
+    -fx-text-fill: white;
+    -fx-padding: 3;
+}
+
+.titled-pane > .title {
+    -fx-base: #333333;
+}
+.titled-pane-selected > .title {
+    -fx-background-color: linear-gradient(to bottom, derive(#5E9656,100%), derive(#5E9656,0%) 5%, derive(#5E9656,-25%) 95%, derive(#5E9656,50%) 100%);
+}
+
+.titled-pane-matched > .title {
+    -fx-background-color: linear-gradient(to bottom, derive(#5E96EE,100%), derive(#5E96EE,0%) 5%, derive(#5E96EE,-25%) 95%, derive(#5E96EE,50%) 100%);
+}
+
+.titled-pane-heading > .title {
+    -fx-background-insets: 0, 1, 2;
+    -fx-background-radius: 5 5 0 0, 4 4 0 0, 3 3 0 0;
+    -fx-padding: 0.166667em 0.833333em 0.25em 0.833333em; 
+}
+*/
+
+.titled-pane-heading .title, .titled-pane-heading > .title {
+    -fx-background-color: linear-gradient(to bottom, derive(#cd853f,100%), derive(#cd853f,0%) 5%, derive(#cd853f,-25%) 95%, derive(#cd853f,50%) 100%);
+    -fx-text-fill: white;
+    -fx-padding: 3;
+}
+.titled-pane-heading > .title {
+    -fx-background-insets: 0, 1, 2;
+    -fx-background-radius: 5 5 0 0, 4 4 0 0, 3 3 0 0;
+    -fx-padding: 0.166667em 0.833333em 0.25em 0.833333em;  /*2 10 3 10*/
+}
+
+.page-corner {
+    -fx-padding: 4.5 4.5 4.5 4.5;
+    -fx-background-color: linear-gradient( from 0% 0% to 50% 50%, rgba(252,247,182,0.5), rgba(165,156,49,0.5));
+    -fx-shape: "M0,0H9L0,9Z";
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 4 , 0.0 , 0 , 0 );
+}
+
+.titled-pane-datetime > .title {
+    -fx-base: #5E9656;
+}
+
+#outer-pane {
+    -fx-background-color: black;
+}
+
+.check-box .box {
+    -fx-background-color: #D3D3D3;
+    -fx-mark-color: black;
+}
+

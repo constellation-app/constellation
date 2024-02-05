@@ -69,7 +69,6 @@ public class TableVisualisation<C extends AnalyticData> extends InternalVisualis
 
         this.tableFilter = new TextField();
         tableFilter.setPromptText("Type here to filter results: ");
-        tableFilter.setStyle("-fx-prompt-text-fill: gray;");
 
         final AnalyticExportResultsMenu menu = new AnalyticExportResultsMenu(table);
         menu.init();

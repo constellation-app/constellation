@@ -59,9 +59,9 @@ public class AnalyticViewPane extends BorderPane {
     private static final Logger LOGGER = Logger.getLogger(AnalyticViewPane.class.getName());
 
     private static final String RUN_START_TEXT = "Run";
-    private static final String RUN_START_STYLE = "-fx-background-color: rgb(64,180,64); -fx-padding: 2 5 2 5;";
+    private static final String RUN_START_STYLE = "-fx-background-color: rgb(64,180,64);";
     private static final String RUN_STOP_TEXT = "Stop";
-    private static final String RUN_STOP_STYLE = "-fx-background-color: rgb(180,64,64); -fx-padding: 2 5 2 5;";
+    private static final String RUN_STOP_STYLE = "-fx-background-color: rgb(180,64,64);";
 
     private final VBox viewPane;
     private final AnchorPane analyticOptionsPane;
@@ -97,8 +97,10 @@ public class AnalyticViewPane extends BorderPane {
 
         // the pane holding the analytic option buttons
         this.analyticOptionButtons = new HBox();
-        final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
+        this.analyticOptionButtons.setSpacing(6);
+        final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor())));
         helpButton.setOnAction(event -> new HelpCtx(this.getClass().getName()).display());
+        helpButton.setStyle("-fx-border-color: transparent; -fx-background-color: transparent; -fx-effect: null; ");
         this.runButton = new Button(RUN_START_TEXT);
         runButton.setStyle(RUN_START_STYLE);
         runButton.setOnAction(event -> {   

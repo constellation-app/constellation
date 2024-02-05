@@ -65,7 +65,6 @@ public class DataAccessParametersIoProvider {
     public static void saveParameters(final TabPane tabs) {
         final List<DataAccessUserPreferences> dataAccessUserPreferenceses = new ArrayList<>();
 
-        String queryName = null;
         for (final Tab step : tabs.getTabs()) {
             // Translate the plugin pane to the JSON format
             final DataAccessUserPreferences preferences = new DataAccessUserPreferences(
@@ -76,26 +75,11 @@ public class DataAccessParametersIoProvider {
             final Label defaultCaption = (Label) tabCaption.getGraphic();
             preferences.setStepCaption(!StringUtils.isBlank(tabCaption.getText()) ? tabCaption.getText() : defaultCaption.getText());
 
-            // Remember the first non-null, non-blank query name.
-            if (queryName == null
-                    && preferences.getGlobalParameters().containsKey(
-                            CoreGlobalParameters.QUERY_NAME_PARAMETER_ID
-                    )
-                    && StringUtils.isNotBlank(preferences.getGlobalParameters().get(
-                            CoreGlobalParameters.QUERY_NAME_PARAMETER_ID
-                    ))) {
-                queryName = preferences.getGlobalParameters().get(
-                        CoreGlobalParameters.QUERY_NAME_PARAMETER_ID
-                );
-            }
-
             dataAccessUserPreferenceses.add(preferences);
         }
 
-        // Only save if the query name parameter is present
-        if (queryName != null) {
-            JsonIO.saveJsonPreferences(Optional.of(DATA_ACCESS_DIR), dataAccessUserPreferenceses);
-        }
+        // Can now save the preferences even if no query name parameter is present
+        JsonIO.saveJsonPreferences(Optional.of(DATA_ACCESS_DIR), dataAccessUserPreferenceses);
     }
 
     /**

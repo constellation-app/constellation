@@ -134,6 +134,33 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
     public static ExtensionFilter getFileFilters(final PluginParameter<FileParameterValue> parameter) {
         return parameter.getParameterValue().getFilter();
     }
+    
+    /**
+     * Determine if the "All Files" selection filter should be enabled for the given parameter. 
+     * This will be active by default when the user is presented with a file selection window. 
+     *
+     * @param parameter A {@link PluginParameter} of this type.
+     * @return boolean that indicates is the accept all file selection filter is enabled.
+     */
+    public static boolean isAcceptAllFileFilterUsed(final PluginParameter<FileParameterValue> parameter) {
+        return parameter.getParameterValue().isAcceptAllFileFilterUsed();
+    }
+    
+    /**
+     * Enable the "All Files" selection filter for the given parameter. 
+     * This will be active by default when the user is presented with a file selection window. 
+     *
+     * @param parameter A {@link PluginParameter} of this type.
+     */
+    public static void enableAcceptAllFileFilter(final PluginParameter<FileParameterValue> parameter) {
+        parameter.getParameterValue().enableAcceptAllFileFilter();
+    }
+    
+    @Override
+    public String validateString(final PluginParameter<FileParameterValue> param, final String stringValue) {
+        final FileParameterValue v = param.getParameterValue();
+        return v.validateString(stringValue);
+    }
 
     /**
      * Describes the method of file selection for a parameter of this type.
@@ -141,18 +168,43 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
     public enum FileParameterKind {
 
         /**
-         * Allows selection of multiple files.
+         * Allows selection of multiple files. Displays "Open" on the button.
          */
-        OPEN_MULTIPLE,
+        OPEN_MULTIPLE("Open"),
         /**
-         * Allows selection of a single file only.
+         * Allows selection of multiple files. Displays "..." on the button.
          */
-        OPEN,
+        OPEN_MULTIPLE_OBSCURED("..."),
+        /**
+         * Allows selection of a single file only. Displays "Open" on the button.
+         */
+        OPEN("Open"),
+        /**
+         * Allows selection of a single file only. Displays "..." on the button.
+         */
+        OPEN_OBSCURED("..."),
         /**
          * Allows selection of a file, or entry of a non-existing but valid file
-         * path.
+         * path. Displays "Save" on the button.
          */
-        SAVE
+        SAVE("Save"),
+                /**
+         * Allows selection of a file, or entry of a non-existing but valid file
+         * path. Displays "..." on the button.
+         */
+        SAVE_OBSCURED("..."),;
+
+        
+        private final String text;
+        
+        private FileParameterKind(final String text){
+            this.text = text;
+        }
+        
+        @Override
+        public String toString(){
+            return text;
+        }
     }
 
     /**
@@ -166,6 +218,8 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
         private final List<String> files;
         private FileParameterKind kind;
         private ExtensionFilter filter;
+        private boolean acceptAllFileFilterUsed;
+        
 
         /**
          * Constructs a new FileParameterValue
@@ -174,6 +228,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
             files = new ArrayList<>();
             kind = FileParameterKind.OPEN_MULTIPLE; // backward-compatible default.
             filter = null;
+            acceptAllFileFilterUsed = false;
         }
 
         /**
@@ -188,6 +243,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
             this.files.addAll(files);
             kind = FileParameterKind.OPEN_MULTIPLE; // backward-compatible default.
             filter = null;
+            acceptAllFileFilterUsed = false;
         }
 
         /**
@@ -200,6 +256,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
             files = new ArrayList<>(fpv.files);
             kind = fpv.kind;
             filter = fpv.filter;
+            acceptAllFileFilterUsed = fpv.acceptAllFileFilterUsed;
         }
 
         /**
@@ -274,10 +331,27 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
         public void setFilter(final ExtensionFilter filter) {
             this.filter = filter;
         }
+        
+        /**
+         * Determine if the "All Files" selection filter is used.
+         *
+         * @return boolean indicating if the accept all file filter is used.
+         */
+        public boolean isAcceptAllFileFilterUsed() {
+            return acceptAllFileFilterUsed;
+        }
+        
+        /**
+         * Ensure the "All Files" selection filter is used.
+         */
+        public void enableAcceptAllFileFilter() {
+            acceptAllFileFilterUsed = true;
+        }
 
         @Override
         public String validateString(final String s) {
-            return null;
+            final File validationFile = new File(s);
+            return (validationFile.isDirectory() || (validationFile.getParentFile() != null && validationFile.getParentFile().exists())) ? null : "The specified file path doe not contain valid directories";
         }
 
         @Override

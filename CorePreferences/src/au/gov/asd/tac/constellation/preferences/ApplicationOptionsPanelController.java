@@ -78,7 +78,6 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
         applicationOptionsPanel.setNotebookDirectory(prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT));
         applicationOptionsPanel.setRestDirectory(prefs.get(ApplicationPreferenceKeys.REST_DIR, ApplicationPreferenceKeys.REST_DIR_DEFAULT));
         applicationOptionsPanel.setDownloadPythonClient(prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT));
-        applicationOptionsPanel.setRememberOpenSaveLocation(prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT));
         applicationOptionsPanel.setCurrentFont(prefs.get(ApplicationPreferenceKeys.FONT_FAMILY, ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT));
         applicationOptionsPanel.setFontSize(prefs.get(ApplicationPreferenceKeys.FONT_SIZE, ApplicationPreferenceKeys.FONT_SIZE_DEFAULT));
         applicationOptionsPanel.setEnableSpellChecking(prefs.getBoolean(ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING, ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING_DEFAULT));
@@ -104,7 +103,6 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
                 prefs.put(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, applicationOptionsPanel.getNotebookDirectory());
                 prefs.put(ApplicationPreferenceKeys.REST_DIR, applicationOptionsPanel.getRestDirectory());
                 prefs.putBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, applicationOptionsPanel.isDownloadPythonClientSelected());
-                prefs.putBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, applicationOptionsPanel.isRememberOpenSaveLocationSelected());
                 prefs.put(ApplicationPreferenceKeys.FONT_FAMILY, applicationOptionsPanel.getCurrentFont());
                 prefs.put(ApplicationPreferenceKeys.FONT_SIZE, applicationOptionsPanel.getFontSize());
                 prefs.putBoolean(ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING, applicationOptionsPanel.isEnableSpellCheckingSelected());
@@ -144,7 +142,6 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
                 && applicationOptionsPanel.getNotebookDirectory().equals(prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT))
                 && applicationOptionsPanel.getRestDirectory().equals(prefs.get(ApplicationPreferenceKeys.REST_DIR, ApplicationPreferenceKeys.REST_DIR_DEFAULT))
                 && applicationOptionsPanel.isDownloadPythonClientSelected() == prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT)
-                && applicationOptionsPanel.isRememberOpenSaveLocationSelected() == prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT)
                 && applicationOptionsPanel.getCurrentFont().equals(prefs.get(ApplicationPreferenceKeys.FONT_FAMILY, ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT))
                 && applicationOptionsPanel.getFontSize().equals(prefs.get(ApplicationPreferenceKeys.FONT_SIZE, ApplicationPreferenceKeys.FONT_SIZE_DEFAULT))
                 && applicationOptionsPanel.isEnableSpellCheckingSelected() == prefs.getBoolean(ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING, ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING_DEFAULT));
