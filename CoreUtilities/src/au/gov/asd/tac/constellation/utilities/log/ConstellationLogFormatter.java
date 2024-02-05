@@ -49,13 +49,15 @@ public class ConstellationLogFormatter extends Formatter {
         }
         
         Throwable error = record.getThrown();
-        if(!error.getMessage().isBlank()){
-            sb.append(record.getThrown().toString());
+        if (error != null && error.getMessage() != null && !error.getMessage().isBlank()) {
+            sb.append(error.toString());
             sb.append(SeparatorConstants.NEWLINE);
-            String stackTrace = Arrays.asList(record.getThrown().getStackTrace())
-                .stream()
-                .map(Objects::toString)
-                .collect(Collectors.joining(SeparatorConstants.NEWLINE));
+            sb.append(SeparatorConstants.NEWLINE);
+
+            String stackTrace = Arrays.stream(error.getStackTrace())
+                    .map(Objects::toString)
+                    .collect(Collectors.joining(SeparatorConstants.NEWLINE));
+
             sb.append(stackTrace);
             sb.append(SeparatorConstants.NEWLINE);
         }else{
