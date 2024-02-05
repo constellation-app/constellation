@@ -24,9 +24,7 @@ import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.Separator;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
@@ -58,6 +56,7 @@ public final class SpellChecker {
     private boolean turnOffSpellChecking = false;
     private int startOfMisspelledTextUnderCursor;
     private int endOfMisspelledTextUnderCursor;
+    private String specificRuleId;
     private static final Logger LOGGER = Logger.getLogger(SpellChecker.class.getName());
     private static final double POPUP_HEIGHT = 108;
 
@@ -73,11 +72,10 @@ public final class SpellChecker {
      * selected row.
      */
     private void initialize() {
-        for (Rule rule : langTool.getAllRules()) {
+        for (final Rule rule : langTool.getAllRules()) {
             if (rule.getId().equals("UPPERCASE_SENTENCE_START")) {
                 langTool.disableRule(rule.getId());
-            }
-            if (rule instanceof SpellingCheckRule) {
+            } else if (rule instanceof SpellingCheckRule) {
                 spellingCheckRule = (SpellingCheckRule) rule;
             }
         }
@@ -85,21 +83,20 @@ public final class SpellChecker {
         //initialize langtool to prevent the spell checking being too slow at the first word after loading costy
         try {
             matches = langTool.check("random text");
+            //initialize popup
+            popup = new Popup();
+            suggestions.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
+                if (newValue != null) {
+                    final StringBuilder builder = new StringBuilder(textArea.getText());
+                    builder.replace(startOfMisspelledTextUnderCursor, endOfMisspelledTextUnderCursor, newValue);
+                    textArea.replaceText​(builder.toString());
+                }
+                popup.hide();
+                checkSpelling();
+            });
         } catch (final IOException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
         }
-
-        //initialize popup
-        popup = new Popup();
-        suggestions.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
-            if (newValue != null) {
-                StringBuilder builder = new StringBuilder(textArea.getText());
-                builder.replace(startOfMisspelledTextUnderCursor, endOfMisspelledTextUnderCursor, newValue);
-                textArea.replaceText​(builder.toString());
-            }
-            popup.hide();
-            checkSpelling();
-        });
     }
 
     /**
@@ -109,20 +106,20 @@ public final class SpellChecker {
     public void checkSpelling() {
         textArea.clearStyles();
         misspells.clear();
+
         if (!turnOffSpellChecking && StringUtils.isNotBlank(textArea.getText())) {
             try {
                 matches = langTool.check(textArea.getText());
+                matches.forEach(match -> {
+                    final int start = match.getFromPos();
+                    final int end = match.getToPos();
+                    final String misspell = textArea.getText().substring(start, end);
+                    misspells.add(misspell);
+                    textArea.highlightText(start, end);
+                });
             } catch (final IOException ex) {
                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
             }
-
-            matches.forEach(match -> {
-                final int start = match.getFromPos();
-                final int end = match.getToPos();
-                final String misspell = textArea.getText().substring(start, end);
-                misspells.add(misspell);
-                textArea.highlightText(start, end);
-            });
         }
     }
 
@@ -140,45 +137,36 @@ public final class SpellChecker {
             popup.setHideOnEscape(true);
 
             if (isWordUnderCursorMisspelled()) {
-                final MenuItem ignoreMenuItem = new MenuItem("Ignore");
-                ignoreMenuItem.setOnAction(e -> this.addWordsAndPhrasesToIgnore());
-
                 suggestionsList.clear();
                 suggestionsList.addAll(matches.get(indexOfMisspelledTextUnderCursor).getSuggestedReplacements());
+                if (suggestionsList.isEmpty()) {
+                    return;
+                }
 
                 suggestions.setItems(suggestionsList.size() > 5 ? FXCollections.observableArrayList(suggestionsList.subList(0, 5)) : suggestionsList);
-                //suggestions.getItems().add(suggestionsList);
-                //suggestions.getItems().add(ignoreMenuItem);
                 Button ignoreButton = new Button("Ignore All");
                 VBox popupContent = new VBox(); //StackPane();
-                ignoreButton.setOnAction(e -> this.addWordsAndPhrasesToIgnore());
-
+                ignoreButton.setOnAction(e -> this.addWordsToIgnore());
 
                 suggestions.setPrefHeight(POPUP_HEIGHT);
 
-
-                final Label popupMsg = new Label("");
-//                popupMsg.setStyle(
-//                        "-fx-background-color: black;"
-//                        + "-fx-text-fill: white;"
-//                        + "-fx-padding: 5;");
                 popup.getContent().clear();
                 popupContent.getChildren().clear();
-                // popupContent.getContent().add(popupMsg);
-//                popup.getContent().add(suggestions);
-//                popup.getContent().add(ignoreMenuItem);
+
                 popupContent.setStyle(
                         "-fx-background-color: black;"
                         + "-fx-text-fill: white;"
                         + "-fx-padding: 5;");
 
-                //popupContent.getChildren().addAll(ignoreButton, new Separator(), suggestions);
-                popupContent.getChildren().addAll(suggestions, new Separator(), ignoreButton); // new SeparatorMenuItem(),
+                // Temporary check to remove ignore button on non spelling errors
+                if (specificRuleId.equals("MORFOLOGIK_RULE_EN_AU")) {
+                    popupContent.getChildren().addAll(suggestions, new Separator(), ignoreButton);
+                } else {
+                    popupContent.getChildren().addAll(suggestions);
+                }
+
                 popupContent.autosize();
                 popup.getContent().add(popupContent);
-                //popupContent.setStyle("-fx-border-color: black; -fx-border-width: 2; -fx-background-color: grey;");
-
-
                 popup.setAutoFix(true);
                 popup.show(textArea, event.getScreenX(), event.getScreenY() + 10);
             }
@@ -205,6 +193,7 @@ public final class SpellChecker {
                 indexOfMisspelledTextUnderCursor = misspells.indexOf(textArea.getText().substring(start, end));
                 startOfMisspelledTextUnderCursor = start;
                 endOfMisspelledTextUnderCursor = end;
+                specificRuleId = match.getSpecificRuleId();
                 return true;
             }
         }
@@ -232,14 +221,9 @@ public final class SpellChecker {
         this.turnOffSpellChecking = turnOffSpellChecking;
     }
 
-    public void addWordsAndPhrasesToIgnore() {
-        final String wordOrPhrase = textArea.getText().substring(startOfMisspelledTextUnderCursor, endOfMisspelledTextUnderCursor);
+    public void addWordsToIgnore() {
         if (spellingCheckRule != null) {
-            if (wordOrPhrase.contains(" ")) {//if word
-                spellingCheckRule.acceptPhrases(Arrays.asList(wordOrPhrase));
-            } else {
-                spellingCheckRule.addIgnoreTokens(Arrays.asList(wordOrPhrase));
-            }
+            spellingCheckRule.addIgnoreTokens(Arrays.asList(textArea.getText().substring(startOfMisspelledTextUnderCursor, endOfMisspelledTextUnderCursor)));
             popup.hide();
             checkSpelling();
         }

@@ -43,10 +43,9 @@ public class PasswordInputPane extends HBox {
     private final TextInputControl field;
     private final boolean required;
     private int comboBoxWidth = EMPTY_WIDTH;
-    private static final Logger LOGGER = Logger.getLogger(ValueInputPane.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(PasswordInputPane.class.getName());
 
     public PasswordInputPane(final PluginParameter<?> parameter) {
-        final int numberOfLines = 1;
         required = parameter.isRequired();
 
         field = new PasswordField();

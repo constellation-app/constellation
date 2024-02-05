@@ -111,8 +111,6 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
      * underline and highlight the text from start to end.
      */
     public void highlightText(final int start, final int end) {
-
-
         this.setStyle(start, end, underlineAndHighlightStyle);
     }
 
@@ -123,7 +121,7 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
         this.setStyle(0, this.getText().length(), clearStyle);
     }
 
-    public boolean isWordUnderCursorHighlighted(int index) {
+    public boolean isWordUnderCursorHighlighted(final int index) {
         return this.getStyleOfChar(index) == underlineAndHighlightStyle;
     }
 
