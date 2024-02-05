@@ -18,8 +18,11 @@ package au.gov.asd.tac.constellation.utilities.log;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -44,9 +47,21 @@ public class ConstellationLogFormatter extends Formatter {
         } else {
             formattedMessage = record.getMessage();
         }
-        sb.append(formattedMessage);
         
-        sb.append(SeparatorConstants.NEWLINE);
+        Throwable error = record.getThrown();
+        if(!error.getMessage().isBlank()){
+            sb.append(record.getThrown().toString());
+            sb.append(SeparatorConstants.NEWLINE);
+            String stackTrace = Arrays.asList(record.getThrown().getStackTrace())
+                .stream()
+                .map(Objects::toString)
+                .collect(Collectors.joining(SeparatorConstants.NEWLINE));
+            sb.append(stackTrace);
+            sb.append(SeparatorConstants.NEWLINE);
+        }else{
+            sb.append(formattedMessage);
+            sb.append(SeparatorConstants.NEWLINE);
+        }
         return sb.toString();
     }
 }
