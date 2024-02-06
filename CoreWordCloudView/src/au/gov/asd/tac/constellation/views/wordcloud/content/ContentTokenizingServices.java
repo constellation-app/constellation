@@ -129,12 +129,16 @@ public class ContentTokenizingServices {
 
         final Set<Character> wordDelimiters = new HashSet<>();
         for (final String setName : wordDelimiterSetNames) {
-            wordDelimiters.addAll(PhraseAnalysisModelLoader.getDelimiters().get(setName));
+            final Set<String> delimiters = PhraseAnalysisModelLoader.getDelimiters().get(setName);
+            delimiters.forEach(delimiter -> 
+                wordDelimiters.add(delimiter.charAt(0)));
         }
 
         final Set<Character> phraseDelimiters = new HashSet<>();
         for (final String setName : phraseDelimiterSetNames) {
-            phraseDelimiters.addAll(PhraseAnalysisModelLoader.getDelimiters().get(setName));
+            final Set<String> delimiters = PhraseAnalysisModelLoader.getDelimiters().get(setName);
+            delimiters.forEach(delimiter -> 
+                phraseDelimiters.add(delimiter.charAt(0)));
         }
         
         final char phrase_delimiter = '.';

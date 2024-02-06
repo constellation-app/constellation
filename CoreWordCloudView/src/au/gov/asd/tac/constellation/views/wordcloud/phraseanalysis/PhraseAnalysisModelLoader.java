@@ -30,12 +30,11 @@ import java.util.Set;
  */
 public class PhraseAnalysisModelLoader {
 
-    private static final Map<String, Set> excludedWords = new HashMap<>();
-    private static final Map<String, Set> delimiters = new HashMap<>();
+    private static final Map<String, Set<String>> excludedWords = new HashMap<>();
+    private static final Map<String, Set<String>> delimiters = new HashMap<>();
 
     private static final String COMMENT_TOKEN = "##";
     private static final String SET_TOKEN = "#{";
-    private static final String UNICODE_RANGE_TOKEN = "#|";
     private static final String OPEN_SET = "{";
     private static final String CLOSE_SET = "}";
 
@@ -45,11 +44,11 @@ public class PhraseAnalysisModelLoader {
         throw new IllegalStateException("Utility class");
     }
 
-    public static Map<String, Set> getExcludedWords() {
+    public static Map<String, Set<String>> getExcludedWords() {
         return Collections.unmodifiableMap(excludedWords);
     }
 
-    public static Map<String, Set> getDelimiters() {
+    public static Map<String, Set<String>> getDelimiters() {
         return Collections.unmodifiableMap(delimiters);
     }
     
@@ -69,13 +68,13 @@ public class PhraseAnalysisModelLoader {
     }
 
     private enum Mode {
-        ADD_CHARACTERS, ADD_SET_OF_SETS, ADD_UNICODE_RANGE, LOOK_FOR_MODE_TOKEN
+        ADD_CHARACTERS, ADD_SET_OF_SETS, LOOK_FOR_MODE_TOKEN
     }
 
-    private static void processLines(final BufferedReader reader, final Map<String, Set> map, final boolean singleCharacterLines) throws IOException {
+    private static void processLines(final BufferedReader reader, final Map<String, Set<String>> map, final boolean singleCharacterLines) throws IOException {
 
         Mode currentMode = Mode.LOOK_FOR_MODE_TOKEN;
-        Set currentSet = new HashSet<>();
+        Set<String> currentSet = new HashSet<>();
 
         while (true) {
             String line = reader.readLine();
@@ -92,24 +91,14 @@ public class PhraseAnalysisModelLoader {
                     currentSet.addAll(map.get(line));
                     break;
                 case ADD_CHARACTERS:
-                    currentSet.add(singleCharacterLines ? line.charAt(0) : line);
-                    break;
-                case ADD_UNICODE_RANGE:
-                    final String rangeStart = line.substring(line.indexOf(OPEN_SET) + 1, line.indexOf(CLOSE_SET));
-                    final String rangeEnd = line.substring(line.indexOf(OPEN_SET, line.indexOf(CLOSE_SET) + 1) + 1, line.indexOf(CLOSE_SET, line.indexOf(CLOSE_SET)) + 1);
-                    final int[] range = {Integer.parseInt(rangeStart, 16), Integer.parseInt(rangeEnd, 16)};
-                    currentSet.add(range);
+                    currentSet.add(singleCharacterLines ? String.valueOf(line.charAt(0)) : line);
                     break;
                 case LOOK_FOR_MODE_TOKEN:
                     final String token_type = line.substring(0, 2);
                     if (!token_type.equals(COMMENT_TOKEN)) {
                         currentSet = new HashSet<>();
                         final String currentString = line.substring(line.indexOf(OPEN_SET) + 1, line.indexOf(CLOSE_SET));
-                        if (token_type.equals(UNICODE_RANGE_TOKEN)) { 
-                            currentMode = Mode.ADD_UNICODE_RANGE;
-                        } else {
-                            currentMode = token_type.equals(SET_TOKEN) ? Mode.ADD_CHARACTERS : Mode.ADD_SET_OF_SETS;
-                        }
+                        currentMode = token_type.equals(SET_TOKEN) ? Mode.ADD_CHARACTERS : Mode.ADD_SET_OF_SETS;
                         map.put(currentString, currentSet);
                     }
                     break;
