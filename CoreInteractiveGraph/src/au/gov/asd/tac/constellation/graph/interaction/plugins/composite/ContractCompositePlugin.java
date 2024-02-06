@@ -23,7 +23,7 @@ import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.objects.Comp
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.utilities.CompositeUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaPluginRegistry;
-import au.gov.asd.tac.constellation.graph.visual.contextmenu.GraphContextMenuProvider;
+import au.gov.asd.tac.constellation.graph.visual.contextmenu.ContextMenuProvider;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -49,12 +49,12 @@ import org.openide.util.lookup.ServiceProviders;
  * @author twilight_sparkle
  */
 @ServiceProviders({
-    @ServiceProvider(service = GraphContextMenuProvider.class, position = 400),
+    @ServiceProvider(service = ContextMenuProvider.class, position = 400),
     @ServiceProvider(service = Plugin.class)
 })
 @NbBundle.Messages("ContractCompositePlugin=Contract Composite")
 @PluginInfo(pluginType = PluginType.DISPLAY, tags = {PluginTags.MODIFY})
-public class ContractCompositePlugin extends SimpleEditPlugin implements GraphContextMenuProvider {
+public class ContractCompositePlugin extends SimpleEditPlugin implements ContextMenuProvider {
 
     private int selectedItem;
 

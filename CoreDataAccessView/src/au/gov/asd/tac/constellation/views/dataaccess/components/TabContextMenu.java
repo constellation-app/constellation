@@ -15,27 +15,18 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.components;
 
-import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.PluginFinder;
-import java.util.List;
 import javafx.application.Platform;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Tab;
-import org.openide.util.NbBundle;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Creates a context menu for a specific tab.
  *
  * @author formalhaunt
  */
-//@ServiceProvider(service = DataAccessContextMenuProvider.class, position = 100)
-@NbBundle.Messages("TabContextMenu=Data Access Shortcuts")
 public final class TabContextMenu {
     private static final String DEACTIVATE_ALL_PLUGINS_TEXT = "Deactivate all plugins";
     private static final String FIND_PLUGIN_TEXT = "Find plugin...";

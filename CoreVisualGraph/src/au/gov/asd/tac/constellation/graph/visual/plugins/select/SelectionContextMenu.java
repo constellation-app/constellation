@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.visual.VisualGraphPluginRegistry;
+import au.gov.asd.tac.constellation.graph.visual.contextmenu.ContextMenuProvider;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.util.ArrayList;
@@ -29,15 +30,14 @@ import javax.swing.ImageIcon;
 import org.netbeans.api.annotations.common.StaticResource;
 import org.openide.util.ImageUtilities;
 import org.openide.util.lookup.ServiceProvider;
-import au.gov.asd.tac.constellation.graph.visual.contextmenu.GraphContextMenuProvider;
 
 /**
  * Selection Context Menu
  *
  * @author sirius
  */
-@ServiceProvider(service = GraphContextMenuProvider.class, position = 800)
-public class SelectionContextMenu implements GraphContextMenuProvider {
+@ServiceProvider(service = ContextMenuProvider.class, position = 800)
+public class SelectionContextMenu implements ContextMenuProvider {
 
     private static final String SELECT_ALL = "Select All";
     private static final String DESELECT_ALL = "Deselect All";

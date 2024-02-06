@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.visual.contextmenu.ContextMenuProvider;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
@@ -36,16 +37,15 @@ import java.util.Collections;
 import java.util.List;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
-import au.gov.asd.tac.constellation.graph.visual.contextmenu.GraphContextMenuProvider;
 
 /**
  * Gather Nodes Context Menu
  *
  * @author algol
  */
-@ServiceProvider(service = GraphContextMenuProvider.class, position = 100)
+@ServiceProvider(service = ContextMenuProvider.class, position = 100)
 @Messages("GatherNodesContextMenu=Gather Selected Nodes")
-public class GatherNodesContextMenu implements GraphContextMenuProvider {
+public class GatherNodesContextMenu implements ContextMenuProvider {
 
     @Override
     public List<String> getMenuPath(final GraphElementType elementType) {

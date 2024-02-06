@@ -29,7 +29,7 @@ import au.gov.asd.tac.constellation.graph.schema.analytic.utilities.CompositeUti
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexTypeUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaPluginRegistry;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.graph.visual.contextmenu.GraphContextMenuProvider;
+import au.gov.asd.tac.constellation.graph.visual.contextmenu.ContextMenuProvider;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -57,12 +57,12 @@ import org.openide.util.lookup.ServiceProviders;
  * @author twilight_sparkle
  */
 @ServiceProviders({
-    @ServiceProvider(service = GraphContextMenuProvider.class, position = 300),
+    @ServiceProvider(service = ContextMenuProvider.class, position = 300),
     @ServiceProvider(service = Plugin.class)
 })
 @Messages("CreateCompositeFromSelectionPlugin=Composite Selected Nodes")
 @PluginInfo(pluginType = PluginType.CREATE, tags = {PluginTags.CREATE})
-public class CreateCompositeFromSelectionPlugin extends SimpleEditPlugin implements GraphContextMenuProvider {
+public class CreateCompositeFromSelectionPlugin extends SimpleEditPlugin implements ContextMenuProvider {
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {

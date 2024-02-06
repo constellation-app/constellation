@@ -20,7 +20,7 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.graph.visual.contextmenu.GraphContextMenuProvider;
+import au.gov.asd.tac.constellation.graph.visual.contextmenu.ContextMenuProvider;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
@@ -45,8 +45,8 @@ import org.openide.windows.WindowManager;
  *
  * @author algol
  */
-@ServiceProvider(service = GraphContextMenuProvider.class, position = 900)
-public class ShowInAttributeEditorContextMenu implements GraphContextMenuProvider {
+@ServiceProvider(service = ContextMenuProvider.class, position = 900)
+public class ShowInAttributeEditorContextMenu implements ContextMenuProvider {
 
     private static final String TEXT = "Show in Attribute Editor";
 

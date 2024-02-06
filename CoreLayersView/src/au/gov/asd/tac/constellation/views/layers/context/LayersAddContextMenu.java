@@ -20,7 +20,7 @@ import au.gov.asd.tac.constellation.graph.GraphConstants;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.graph.visual.contextmenu.GraphContextMenuProvider;
+import au.gov.asd.tac.constellation.graph.visual.contextmenu.ContextMenuProvider;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQuery;
@@ -39,8 +39,8 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author aldebaran30701
  */
-@ServiceProvider(service = GraphContextMenuProvider.class, position = 210)
-public class LayersAddContextMenu implements GraphContextMenuProvider {
+@ServiceProvider(service = ContextMenuProvider.class, position = 210)
+public class LayersAddContextMenu implements ContextMenuProvider {
 
     private static final String LAYER_MENU = "Layers";
     private static final String NO_LAYER_TEXT = "[NO DESCRIPTION]";
