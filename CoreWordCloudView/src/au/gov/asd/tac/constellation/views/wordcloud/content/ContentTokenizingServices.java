@@ -488,11 +488,11 @@ public class ContentTokenizingServices {
             }
 
             public char[][] getWords() {
-                return words.clone();
+                return words;
             }
 
             public void setWords(final char[][] words) {
-                this.words = words.clone();
+                this.words = words;
             }
 
             protected void resetState() {
