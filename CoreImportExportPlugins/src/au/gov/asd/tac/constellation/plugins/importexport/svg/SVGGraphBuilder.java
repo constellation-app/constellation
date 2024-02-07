@@ -217,22 +217,28 @@ public class SVGGraphBuilder {
     public SVGData build() throws InterruptedException {
         
         final SVGObject svgGraph = SVGTemplateConstants.LAYOUT.getSVGObject();
-        
         try{
-            preBuild();
-        } catch (final IllegalArgumentException ex){
-            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-            return null;
+            try{
+                preBuild();
+            } catch (final IllegalArgumentException ex){
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+                return null;
+            }
+
+            // Build the SVG image
+            buildHeader(svgGraph);
+            buildNodes(svgGraph);
+            buildConnections(svgGraph);            
+            buildLayout(svgGraph);
+
+            // Clean up the builder
+            postBuild();
+        } catch (InterruptedException ex) {
+            // This class utilizes GraphVisualAccess and is responsible for closing off the graph lock when the plugin is interupted
+            postBuild();
+            throw ex;
         }
-        
-        // Build the SVG image
-        buildHeader(svgGraph);
-        buildNodes(svgGraph);
-        buildConnections(svgGraph);            
-        buildLayout(svgGraph);
-        
-        // Clean up the builder
-        postBuild();
+            
         
         return svgGraph.toSVGData();
     }       
