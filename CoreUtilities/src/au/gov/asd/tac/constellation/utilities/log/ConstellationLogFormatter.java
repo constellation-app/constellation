@@ -23,6 +23,7 @@ import java.util.Objects;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -48,13 +49,13 @@ public class ConstellationLogFormatter extends Formatter {
             formattedMessage = record.getMessage();
         }
         
-        Throwable error = record.getThrown();
-        if (error != null && error.getMessage() != null && !error.getMessage().isBlank()) {
+        final Throwable error = record.getThrown();
+        if (error != null && StringUtils.isNotBlank(error.getMessage())) {
             sb.append(error.toString());
             sb.append(SeparatorConstants.NEWLINE);
             sb.append(SeparatorConstants.NEWLINE);
 
-            String stackTrace = Arrays.stream(error.getStackTrace())
+            final String stackTrace = Arrays.stream(error.getStackTrace())
                     .map(Objects::toString)
                     .collect(Collectors.joining(SeparatorConstants.NEWLINE));
 
