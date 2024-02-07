@@ -24,12 +24,14 @@
 The "Import from Database" window allows you to import data from a
 database using a JDBC Connection.
 
+Full Example:
 <div style="text-align: center">
-
-<img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/dragging_attributes_jdbc_import.png" alt="Database
-Importer" />
-
+    <img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/ImportDatabaseFullExample.png" alt="Database Importer Connection
+    example with all details" />
 </div>
+<br/>
+
+
 
 ## High Level Workflow Steps
 
@@ -60,40 +62,34 @@ drivers example" />
     -   *Connection name* - user specified name for the connection
     -   *Driver* - Pick the database driver needed to connect to the db
     -   *Connection String* - It will contain the database type, host, port,
-        and database of the db in the format `jdbc:[database
+        and name of the database in the format `jdbc:[database
         name]://[host]:[port]/[database name]`
     -   e.g. `jdbc:mysql://localhost:3306/employees` for mysql or
         `jdbc:postgresql://localhost:5432/test` for postgres.
     -   If the username and password are not required, leave them blank.
 
-    <div style="text-align: center">
         <img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/DBConnections.png" alt="Database Importer Connection example" />
-    </div>
 3.  Select the connection from the "Connection" drop-down in the main
     Import window.
 4.  Enter the username and password if the connection requires them.
 5.  Enter the SQL Query and Click the "Query" button to retrieve data.
 6.  Select your destination graph.
-7.  Drag and drop attributes from the bottom pane onto your columns.
+7.  Drag and drop attributes from the bottom pane onto your columns (Shown in the image below).
 8.  Right click an attribute for more options.
 9.  Click on the "Import" button to import the data to your destination
     graph.
+
+    <img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/dragging_attributes_jdbc_import.png" alt="Database
+    Importer" />
 
 Hints:
 
 -   See all supported attributes using Options -> Show all schema
     attributes
 -   Hover over the attribute name for a tooltip.
--   Filter in the Configuration Pane by adding searches of the form
-    \<column_name> =="\<search text>" E.g. first_name=="Nick".
+-   Filter in the Configuration Pane by adding searches e.g. first_name=="Nick".
 
-Full Example:
 
-<div style="text-align: center">
-    <img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/ImportDatabaseFullExample.png" alt="Database Importer Connection
-    example with all details" />
-</div>
-<br/>
 ## Add and Remove Connections to Import Queries From
 
 Once you select a connection and submit a query, the "Configuration"
