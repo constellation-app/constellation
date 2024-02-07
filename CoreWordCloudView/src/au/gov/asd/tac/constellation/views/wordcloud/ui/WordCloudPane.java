@@ -99,7 +99,7 @@ public class WordCloudPane extends BorderPane {
 
     private final Hyperlink noWord;
     
-    // The mutlaplicitive size difference between the smallest and largest words in the cloud 
+    // The mutliplicative size difference between the smallest and largest words in the cloud 
     private static final int FONT_EXPANSION_FACTOR = 3;
 
     /**

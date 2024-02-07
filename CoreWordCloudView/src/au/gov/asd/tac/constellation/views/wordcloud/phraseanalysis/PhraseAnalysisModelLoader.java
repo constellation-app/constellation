@@ -91,7 +91,7 @@ public class PhraseAnalysisModelLoader {
                     currentSet.addAll(map.get(line));
                     break;
                 case ADD_CHARACTERS:
-                    currentSet.add(singleCharacterLines ? String.valueOf(line.charAt(0)) : line);
+                    currentSet.add(singleCharacterLines ? line.substring(0, 1) : line);
                     break;
                 case LOOK_FOR_MODE_TOKEN:
                     final String token_type = line.substring(0, 2);

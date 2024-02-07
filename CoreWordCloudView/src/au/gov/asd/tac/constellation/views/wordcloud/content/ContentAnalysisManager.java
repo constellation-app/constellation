@@ -25,7 +25,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.wordcloud.phraseanalysis.PhrasiphyContentParameters;
 import au.gov.asd.tac.constellation.views.wordcloud.ui.WordCloud;
-import au.gov.asd.tac.constellation.views.wordcloud.ui.WordCloudAttributeDescription;
 import au.gov.asd.tac.constellation.views.wordcloud.ui.WordCloudConcept;
 import java.io.BufferedReader;
 import java.io.File;

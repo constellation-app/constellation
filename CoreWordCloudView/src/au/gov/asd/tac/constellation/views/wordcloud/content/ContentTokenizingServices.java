@@ -29,7 +29,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Provies services for tokenizing string attributes from graph elements using a
+ * Provides services for tokenizing string attributes from graph elements using a
  * multi-threaded adaptor pattern. Tokenizing includes preprocessing of strings
  * (e.g. filtering characters and converting case), as well as splitting string
  * into 'tokens' based on various rules (e.g. delimiting characters).
@@ -668,14 +668,14 @@ public class ContentTokenizingServices {
 
         public class PhraseTokenizerState extends NWordWithSingleCharacterWordsTokenizerState {
 
-            char[] leadWord;
-            int[] skips;
-            boolean[] delimitersBeforeWord;
-            boolean newPhraseBlock = true;
-            int currentWord = 0;
-            int currentSpan = 0;
-            PermutationGenerationState pgs = null;
-            Set<String> currentSingleWords;
+            private char[] leadWord;
+            private int[] skips;
+            private boolean[] delimitersBeforeWord;
+            private boolean newPhraseBlock = true;
+            private int currentWord = 0;
+            private int currentSpan = 0;
+            private PermutationGenerationState pgs = null;
+            private Set<String> currentSingleWords;
             protected boolean storeSingleWords;
 
             /**
