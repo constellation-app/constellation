@@ -30,6 +30,9 @@ import org.apache.commons.lang3.StringUtils;
  * @author Guilty-Spark-343
  */
 public class ConstellationLogFormatter extends Formatter {
+    
+    private String logMessage = "";
+    
     @Override
     public final String format(final LogRecord record) {
         final StringBuilder sb = new StringBuilder();
@@ -48,7 +51,10 @@ public class ConstellationLogFormatter extends Formatter {
         } else {
             formattedMessage = record.getMessage();
         }
-        
+        if(formattedMessage == null ? logMessage == null : formattedMessage.equals(logMessage)){
+            sb.append("Last record repeated again.");
+            return sb.toString();
+        }
         final Throwable error = record.getThrown();
         if (error != null && StringUtils.isNotBlank(error.getMessage())) {
             sb.append(error.toString());
@@ -65,6 +71,7 @@ public class ConstellationLogFormatter extends Formatter {
             sb.append(formattedMessage);
             sb.append(SeparatorConstants.NEWLINE);
         }
+        logMessage = formattedMessage;
         return sb.toString();
     }
 }
