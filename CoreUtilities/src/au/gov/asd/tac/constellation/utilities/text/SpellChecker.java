@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
@@ -51,6 +52,7 @@ public final class SpellChecker {
     private int indexOfMisspelledTextUnderCursor;       // position of the current misspelled text in misspells list
     private final ListView<String> suggestions = new ListView<>(FXCollections.observableArrayList());
     private final JLanguageTool langTool;
+    private static JLanguageTool langToolStatic;
     private SpellingCheckRule spellingCheckRule;
     private Popup popup;
     private boolean turnOffSpellChecking = false;
@@ -60,17 +62,30 @@ public final class SpellChecker {
     private static final Logger LOGGER = Logger.getLogger(SpellChecker.class.getName());
     private static final double POPUP_HEIGHT = 108;
 
+    protected static final CompletableFuture<Void> LANGTOOL_LOAD;
+
+    static {
+        // langToolStatic is used to initialize the JLanguageTool at the loading, because
+        // the very first initializing of JLanguageTool is slow but after that it is fast.
+        LANGTOOL_LOAD = CompletableFuture.supplyAsync(() -> {
+            while (true) {
+                langToolStatic = new MultiThreadedJLanguageTool(new AustralianEnglish());
+                try {
+                    //perform a check here to prevent the spell checking being too slow at the first word after loading costy
+                    List<RuleMatch> initMatches = langToolStatic.check("random text");
+                } catch (final IOException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                }
+            }
+        });
+    }
+
     public SpellChecker(final SpellCheckingTextArea spellCheckingTextArea) {
         textArea = spellCheckingTextArea;
         langTool = new MultiThreadedJLanguageTool(new AustralianEnglish()); //Can pass in the language when supporting multiple languages
-
         initialize();
     }
 
-    /**
-     * set a listener on the list views selection model to get the text of the
-     * selected row.
-     */
     private void initialize() {
         for (final Rule rule : langTool.getAllRules()) {
             if (rule.getId().equals("UPPERCASE_SENTENCE_START")) {
@@ -80,23 +95,17 @@ public final class SpellChecker {
             }
         }
 
-        //initialize langtool to prevent the spell checking being too slow at the first word after loading costy
-        try {
-            matches = langTool.check("random text");
-            //initialize popup
-            popup = new Popup();
-            suggestions.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
-                if (newValue != null) {
-                    final StringBuilder builder = new StringBuilder(textArea.getText());
-                    builder.replace(startOfMisspelledTextUnderCursor, endOfMisspelledTextUnderCursor, newValue);
-                    textArea.replaceText​(builder.toString());
-                }
-                popup.hide();
-                checkSpelling();
-            });
-        } catch (final IOException ex) {
-            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-        }
+        //initialize popup
+        popup = new Popup();
+        suggestions.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
+            if (newValue != null) {
+                final StringBuilder builder = new StringBuilder(textArea.getText());
+                builder.replace(startOfMisspelledTextUnderCursor, endOfMisspelledTextUnderCursor, newValue);
+                textArea.replaceText​(builder.toString());
+            }
+            popup.hide();
+            checkSpelling();
+        });
     }
 
     /**
