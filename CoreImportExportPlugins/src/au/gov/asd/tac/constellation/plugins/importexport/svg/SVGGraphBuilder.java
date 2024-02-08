@@ -271,7 +271,7 @@ public class SVGGraphBuilder {
         viewPort = new int[] {Math.round(camera.lookAtEye.getX()),  Math.round(camera.lookAtEye.getY()), paneWidth, paneHeight};
 
         // Define the view frustum in local units
-        final float fieldOfView = Camera.FIELD_OF_VIEW + 2.5F; //Increase the field of view to ensure that objects near the end are rendered corretly.
+        final float fieldOfView = Camera.FIELD_OF_VIEW; //Increase the field of view to ensure that objects near the end are rendered corretly.
         final float aspect = paneWidth / (float) paneHeight;
         final float ymax = Camera.PERSPECTIVE_NEAR * (float) Math.tan(fieldOfView * Math.PI / 360.0);
         final float xmax = ymax * aspect;
@@ -556,9 +556,15 @@ public class SVGGraphBuilder {
                     
                     // Apply the tranlsation
                     final Vector3f loopWorldCenterPosition = Vector3f.add(highCenterPosition, upTranslation, rightTranslation);
+                   
+                    // Do not export the loop if it is not in view
+                    if (!viewFrustum.inView(loopWorldCenterPosition, 0.25F)){
+                        continue;
+                    }
+                    
                     final Vector4f loopScreenCenterPosition = this.getScreenPosition(loopWorldCenterPosition);
                     final float loopSize = getDepthScaleFactor(loopWorldCenterPosition) * 128;
-                    
+
                     // Create the loopedConnection
                     final SVGObject svgLoop = SVGTemplateConstants.CONNECTION_LOOP.getSVGObject();
                     svgLoop.setID(access.getConnectionId(connection));
@@ -844,8 +850,8 @@ public class SVGGraphBuilder {
 
         // Trim the content window to reflect the users view window.
         // This is to counteract the increas to the field of view to ensure elements near the edge were drawn correctly
-        final float widthTrimValue = viewPortWidth * 0.07F;
-        final float heightTrimValue = viewPortHeight * 0.07F;
+        final float widthTrimValue = viewPortWidth * 0.0F;
+        final float heightTrimValue = viewPortHeight * 0.0F;
         final float contentWidth = viewPortWidth - widthTrimValue;
         final float contentHeight = viewPortHeight - heightTrimValue;
         
