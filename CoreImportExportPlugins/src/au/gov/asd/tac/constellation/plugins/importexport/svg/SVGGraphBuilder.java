@@ -217,8 +217,8 @@ public class SVGGraphBuilder {
     public SVGData build() throws InterruptedException {
         
         final SVGObject svgGraph = SVGTemplateConstants.LAYOUT.getSVGObject();
-        try{
-            try{
+        try {
+            try {
                 preBuild();
             } catch (final IllegalArgumentException ex){
                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
@@ -232,14 +232,13 @@ public class SVGGraphBuilder {
             buildLayout(svgGraph);
 
             // Clean up the builder
-            postBuild();
-        } catch (InterruptedException ex) {
-            // This class utilizes GraphVisualAccess and is responsible for closing off the graph lock when the plugin is interupted
+            postBuild();     
+        } catch (final InterruptedException ex) {
+            // This class utilizes GraphVisualAccess and is responsible for releasing the graph lock when the plugin is interupted
             postBuild();
             throw ex;
         }
-            
-        
+             
         return svgGraph.toSVGData();
     }       
 
