@@ -602,7 +602,7 @@ public class SVGGraphBuilder {
 
                     // Get the direction vector of the line parallell to the viewing plane and perpendicular to the connection
                     final Vector3f vertexTagentDirection = new Vector3f();
-                    vertexTagentDirection.crossProduct(highDirectionVector, camera.getObjectFrame().getForwardVector());
+                    vertexTagentDirection.crossProduct(camera.getObjectFrame().getForwardVector(), highDirectionVector);
                     
                     // Determine the perpendicular offset distance of the current connection from the center line joing the source and destination node
                     final float perpendicularOffsetDistance = (connectionIndex / 2 + ((connectionIndex % 2 == 0) ? 0 : 1)) * 0.15F;
