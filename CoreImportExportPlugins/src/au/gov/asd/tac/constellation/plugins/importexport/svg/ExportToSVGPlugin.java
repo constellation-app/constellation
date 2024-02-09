@@ -45,7 +45,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -184,7 +183,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
             exportToSVG(imageFile, svg, interaction);
             interaction.setProgress(1, 0, "Finished", true);
         
-        // Catch exceptions for mising paramter values and 
+        // Catch exceptions for mising paramter values and issues writing to files
         } catch (final IllegalArgumentException | IOException ex) {
             throw new PluginException(PluginNotificationLevel.ERROR, ex.getLocalizedMessage());
         }
