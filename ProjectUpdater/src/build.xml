@@ -20,8 +20,8 @@
              usetimestamp="true">
             <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/unfolding-master-20171010.jar"/>
         </get>
-    
-        <echo level="info" message="installing gluegen..." if:set="third.party.depdendencies"/>
+        
+<!--        <echo level="info" message="installing gluegen..." if:set="third.party.depdendencies"/>
         <get if:set="third.party.depdendencies"
              dest="${suite.dir}/CoreDependencies/release/modules/ext" 
              usetimestamp="true">
@@ -71,7 +71,7 @@
              usetimestamp="true">
             <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/nativewindow-natives-windows-i586.jar"/>
             <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/nativewindow.jar"/>
-        </get>
+        </get>-->
     
         <echo level="info" message="installing processing..." if:set="third.party.depdendencies"/>
         <get if:set="third.party.depdendencies"
