@@ -26,25 +26,24 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
 /*
- * stop the animation
+ * Developer tool for interrupting animations
  */
-@ActionID(category = "Experimental", id = "au.gov.asd.tac.constellation.graph.interaction.animation.actions.AnimateStopAction")
-@ActionRegistration(displayName = "#CTL_AnimateStopAction", surviveFocusChange = true)
+@ActionID(category = "Experimental", id = "au.gov.asd.tac.constellation.graph.interaction.animation.actions.AnimateInterruptAction")
+@ActionRegistration(displayName = "#CTL_AnimateInterruptAction", surviveFocusChange = true)
 @ActionReferences({
-    @ActionReference(path = "Menu/Experimental/Animations", position = 100, separatorBefore = 99),
-    @ActionReference(path = "Shortcuts", name = "S-Escape")
+    @ActionReference(path = "Menu/Experimental/Developer", position = 100),
 })
-@Messages("CTL_AnimateStopAction=Stop Animating")
-public final class AnimateStopAction implements ActionListener {
+@Messages("CTL_AnimateInterruptAction=Interrupt Animating")
+public final class AnimateInterruptAction implements ActionListener {
 
     private final GraphNode context;
 
-    public AnimateStopAction(final GraphNode context) {
+    public AnimateInterruptAction(final GraphNode context) {
         this.context = context;
     }
 
     @Override
     public void actionPerformed(final ActionEvent ev) {
-        Animation.stopAllAnimation();
+        Animation.interruptAllAnimation();
     }
 }
