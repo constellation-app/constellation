@@ -32,9 +32,9 @@ import java.util.Map;
 public class ThrobbingNodeAnimation extends Animation {
 
     private int nodeRadiusAttribute;
-    private static final float LOWER_LIMIT = 1;
-    private static final float UPPER_LIMIT = 4;
-    private float currentDirection = 0.1F;
+    private static final float LOWER_LIMIT = 0.5F;
+    private static final float UPPER_LIMIT = 1.5F;
+    private float currentDirection = 0.05F;
     private float currentRadius = 1F;
     private final long throbbingNodeAnimationId = VisualChangeBuilder.generateNewId();
 
@@ -65,7 +65,7 @@ public class ThrobbingNodeAnimation extends Animation {
             currentRadius += currentDirection;
             for (int pos = 0; pos < wg.getVertexCount(); pos++) {
                 final int vxId = wg.getVertex(pos);
-                wg.setFloatValue(nodeRadiusAttribute, vxId, currentRadius);
+                wg.setFloatValue(nodeRadiusAttribute, vxId, currentRadius * originalNodeRadii.get(vxId));
             }
             return Arrays.asList(new VisualChangeBuilder(VisualProperty.VERTEX_RADIUS).forItems(wg.getVertexCount()).withId(throbbingNodeAnimationId).build());
         }
@@ -80,7 +80,7 @@ public class ThrobbingNodeAnimation extends Animation {
 
     @Override
     public long getIntervalInMillis() {
-        return 10;
+        return 30;
     }
 
     @Override
