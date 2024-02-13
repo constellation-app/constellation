@@ -35,7 +35,7 @@ import java.util.List;
  */
 public final class PanAnimation extends Animation {
 
-    private static final int STEPS = 12;
+    private static final int STEPS = 24;
 
     private final String name;
     private final Camera from;
@@ -93,11 +93,6 @@ public final class PanAnimation extends Animation {
     @Override
     public void reset(GraphWriteMethods wg) {
         // Method override required, intentionally left blank
-    }
-
-    @Override
-    public long getIntervalInMillis() {
-        return 15;
     }
 
     @Override
