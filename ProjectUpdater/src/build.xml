@@ -66,9 +66,9 @@
              dest="${suite.dir}/CoreDependencies/release/modules/ext" 
              usetimestamp="true">
             <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.5.0/nativewindow-2.5.0.jar"/>
-            <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.5.0/jogl-all-2.5.0-natives-linux-amd64.jar"/>
-            <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.5.0/jogl-all-2.5.0-natives-macosx-universal.jar"/>
-            <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.5.0/jogl-all-2.5.0-natives-windows-amd64.jar"/>
+            <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.5.0/nativewindow-2.5.0-natives-linux-amd64.jar"/>
+            <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.5.0/nativewindow-2.5.0-natives-macosx-universal.jar"/>
+            <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.5.0/nativewindow-2.5.0-natives-windows-amd64.jar"/>
         </get>
     
         <echo level="info" message="installing processing..." if:set="third.party.depdendencies"/>
