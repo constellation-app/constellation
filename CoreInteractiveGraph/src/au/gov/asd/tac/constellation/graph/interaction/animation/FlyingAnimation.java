@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.graph.interaction.animation;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import static au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.ResetViewPlugin.SIGNIFICANT_PARAMETER_ID;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
@@ -46,6 +47,8 @@ import java.util.List;
 public final class FlyingAnimation extends Animation {
 
     private int stepsPerLink;
+    private int cameraAttribute;
+    private Camera initialPosition;
 
     @Override
     public void initialise(GraphWriteMethods wg) {
@@ -63,9 +66,11 @@ public final class FlyingAnimation extends Animation {
             rAttr = VisualConcept.VertexAttribute.NODE_RADIUS.get(wg);
             selectedAttr = VisualConcept.VertexAttribute.SELECTED.get(wg);
             doMixing = x2Attr != Graph.NOT_FOUND && y2Attr != Graph.NOT_FOUND && z2Attr != Graph.NOT_FOUND;
-            final int cameraAttribute = VisualConcept.GraphAttribute.CAMERA.get(wg);
+            cameraAttribute = VisualConcept.GraphAttribute.CAMERA.get(wg);
             camera = wg.getObjectValue(cameraAttribute, 0);
-
+            
+            initialPosition = new Camera(camera);
+            
             stepsPerLink = STEPS_PER_LINK * (int) Math.sqrt(1 + (wg.getVertexCount() / 2000));
 
             final Vector3f vec0 = new Vector3f(camera.lookAtEye);
@@ -123,12 +128,12 @@ public final class FlyingAnimation extends Animation {
 
     @Override
     public void reset(GraphWriteMethods wg) {
-        // Method override required, intentionally left blank
+         wg.setObjectValue(cameraAttribute, 0, initialPosition);
     }
 
     @Override
     public long getIntervalInMillis() {
-        return 15;
+        return 35;
     }
 
     private static final int STEPS_PER_LINK = 96;

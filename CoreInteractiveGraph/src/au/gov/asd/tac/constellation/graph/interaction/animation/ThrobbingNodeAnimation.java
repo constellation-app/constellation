@@ -80,7 +80,7 @@ public class ThrobbingNodeAnimation extends Animation {
 
     @Override
     public long getIntervalInMillis() {
-        return 30;
+        return 35;
     }
 
     @Override

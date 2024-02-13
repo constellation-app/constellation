@@ -214,7 +214,7 @@ public abstract class Animation {
                     // Idealy woud throw a PluginException explaining why it was interrupted 
                     // but can't do this in a thread
                 } finally {
-                    if (lockGraphSafely(graph)){                    
+                    if (lockGraphSafely(graph)) {                    
                         reset(wg);
                         wg.commit();
                     }
