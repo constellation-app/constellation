@@ -72,7 +72,7 @@
         <dependency org="javax.help" name="javahelp" rev="2.0.05"/>
         <dependency org="log4j" name="log4j" rev="1.2.17"/>
         <dependency org="org.assertj" name="assertj-core" rev="3.25.3" />
-        <dependency org="org.controlsfx" name="controlsfx" rev="11.2.0"/>
+        <dependency org="org.controlsfx" name="controlsfx" rev="11.1.2"/>
         <dependency org="org.eclipse.jetty" name="jetty-server" rev="11.0.6"/>
         <dependency org="org.eclipse.jetty" name="jetty-servlet" rev="11.0.20"/>
         <dependency org="org.ejml" name="ejml-all" rev="0.43.1"/>

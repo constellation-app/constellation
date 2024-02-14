@@ -798,6 +798,8 @@
                 <package>jogamp.nativetag.common.macosx.universal</package>
                 <package>jogamp.nativetag.common.windows.amd64</package>
                 <package>jogamp.nativetag.common.windows.i586</package>
+                <package>jogamp.nativetag.nativewindow.linux.amd64</package>
+                <package>jogamp.nativetag.nativewindow.macosx.universal</package>
                 <package>jogamp.nativetag.nativewindow.windows.amd64</package>
                 <package>jogamp.nativetag.nativewindow.windows.i586</package>
                 <package>jogamp.nativetag.newt.linux.amd64</package>
@@ -3367,8 +3369,8 @@
                 <binary-origin>release/modules/ext/commons-text-1.11.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/controlsfx-11.2.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/controlsfx-11.2.0.jar</binary-origin>
+                <runtime-relative-path>ext/controlsfx-11.1.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/controlsfx-11.1.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/core.jar</runtime-relative-path>
@@ -3849,6 +3851,18 @@
             <class-path-extension>
                 <runtime-relative-path>ext/mockito-inline-5.2.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/mockito-inline-5.2.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/nativewindow-2.5.0-natives-linux-amd64.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/nativewindow-2.5.0-natives-linux-amd64.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/nativewindow-2.5.0-natives-macosx-universal.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/nativewindow-2.5.0-natives-macosx-universal.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/nativewindow-2.5.0-natives-windows-amd64.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/nativewindow-2.5.0-natives-windows-amd64.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/nativewindow-2.5.0.jar</runtime-relative-path>
