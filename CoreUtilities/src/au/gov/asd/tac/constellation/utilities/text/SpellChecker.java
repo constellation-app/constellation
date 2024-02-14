@@ -32,8 +32,9 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import org.apache.commons.lang3.StringUtils;
 import org.languagetool.JLanguageTool;
+import org.languagetool.Language;
+import org.languagetool.Languages;
 import org.languagetool.MultiThreadedJLanguageTool;
-import org.languagetool.language.AustralianEnglish;
 import org.languagetool.rules.Rule;
 import org.languagetool.rules.RuleMatch;
 import org.languagetool.rules.spelling.SpellingCheckRule;
@@ -61,6 +62,7 @@ public final class SpellChecker {
     private String specificRuleId;
     private static final Logger LOGGER = Logger.getLogger(SpellChecker.class.getName());
     private static final double POPUP_HEIGHT = 108;
+    private static Language language;
 
     protected static final CompletableFuture<Void> LANGTOOL_LOAD;
 
@@ -69,7 +71,8 @@ public final class SpellChecker {
         // the very first initializing of JLanguageTool is slow but after that it is fast.
         LANGTOOL_LOAD = CompletableFuture.supplyAsync(() -> {
             while (true) {
-                langToolStatic = new MultiThreadedJLanguageTool(new AustralianEnglish());
+                language = Languages.getLanguageForShortCode("en-AU");
+                langToolStatic = new MultiThreadedJLanguageTool(language);
                 try {
                     //perform a check here to prevent the spell checking being too slow at the first word after loading costy
                     List<RuleMatch> initMatches = langToolStatic.check("random text");
@@ -82,7 +85,7 @@ public final class SpellChecker {
 
     public SpellChecker(final SpellCheckingTextArea spellCheckingTextArea) {
         textArea = spellCheckingTextArea;
-        langTool = new MultiThreadedJLanguageTool(new AustralianEnglish()); //Can pass in the language when supporting multiple languages
+        langTool = new MultiThreadedJLanguageTool(language); //Can pass in the language when supporting multiple languages
         initialize();
     }
 
