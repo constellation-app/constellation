@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.graph.interaction.animation;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import static au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.ResetViewPlugin.SIGNIFICANT_PARAMETER_ID;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
@@ -72,12 +71,13 @@ public final class FlyingAnimation extends Animation {
             initialPosition = new Camera(camera);
             
             stepsPerLink = STEPS_PER_LINK * (int) Math.sqrt(1 + (wg.getVertexCount() / 2000));
-
+            
             final Vector3f vec0 = new Vector3f(camera.lookAtEye);
             final Vector3f vec1 = new Vector3f(camera.lookAtCentre);
             xyzQueue.add(vec0);
+            xyzQueue.add(vec0);
             xyzQueue.add(vec1);
-
+            
             currentVxId = Graph.NOT_FOUND;
             for (int i = xyzQueue.size(); i < VERTICES_PER_SPLINE; i++) {
                 final Vector3f xyz = getNextVertex(wg, camera.getMix());
@@ -128,7 +128,7 @@ public final class FlyingAnimation extends Animation {
 
     @Override
     public void reset(GraphWriteMethods wg) {
-         wg.setObjectValue(cameraAttribute, 0, initialPosition);
+         Animation.startAnimation(new PanAnimation("Reset View", camera, initialPosition, true));
     }
 
     @Override
