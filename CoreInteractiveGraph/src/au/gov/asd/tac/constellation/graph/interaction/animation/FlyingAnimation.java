@@ -44,7 +44,7 @@ import java.util.List;
  * @author algol
  */
 public final class FlyingAnimation extends Animation {
-
+    public static String NAME = "Fly Through Animation";
     private int stepsPerLink;
     private int cameraAttribute;
     private Camera initialPosition;

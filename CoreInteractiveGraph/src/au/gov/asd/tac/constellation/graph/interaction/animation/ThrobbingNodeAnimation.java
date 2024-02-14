@@ -30,7 +30,7 @@ import java.util.Map;
  * @author twilight_sparkle
  */
 public class ThrobbingNodeAnimation extends Animation {
-
+    public static String NAME = "Throbbing Node Animation";
     private int nodeRadiusAttribute;
     private static final float LOWER_LIMIT = 0.5F;
     private static final float UPPER_LIMIT = 1.5F;

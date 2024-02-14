@@ -49,37 +49,47 @@ import java.util.Map;
  */
 public abstract class Animation {
 
-    private static final Map<String, Animation> runningAnimations = new HashMap<String, Animation>();
-    
+    private static final Map<String, Map<String, Animation>> ANIMATED_GRAPHS = new HashMap<String, Map<String, Animation>>();
+
     private WritableGraph wg;
     private VisualManager manager;
+    private String graphID;
+    private boolean finished = false;
+    private Thread animationThread;
+    
+    public void setGraphID(final String graphID){
+        this.graphID = graphID;
+    }
     
     /**
-     * Stop this animation.
+     * Stop this animation on the currently active graph.
      */
     public synchronized void stopAnimation() {
         stopAnimation(this.getName());
     }
     
     /**
-     * Stop the requested animation.
+     * Stop the requested animation on the currently active graph.
      * 
-     * @param currentlyRunningAnimation
+     * @param animationName
      */
     public static final synchronized void stopAnimation(final String animationName) {
+        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+        final Map<String, Animation> runningAnimations = ANIMATED_GRAPHS.get(activeGraph.getId());
         if (!runningAnimations.isEmpty()) {
             runningAnimations.remove(animationName).stop();
         }
     }
     
     /**
-     * Stop all running animations.
+     * Stops all running animations on the currently active graph.
      */
     public static final synchronized void stopAllAnimation() {
+        Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+        Map<String, Animation> runningAnimations = ANIMATED_GRAPHS.get(activeGraph.getId());
         runningAnimations.keySet().forEach(animationName -> {
             runningAnimations.get(animationName).stop();
         });
-        runningAnimations.clear();
     }
 
     /**
@@ -87,26 +97,53 @@ public abstract class Animation {
      *
      * @param animation The animation to run
      */
-    public static final synchronized void startAnimation(final Animation animation){
+    public static final synchronized void startAnimation(final Animation animation) {
         startAnimation(animation, GraphManager.getDefault().getActiveGraph());
     }
 
     /**
      * Start the specified animation on the specified graph.
+     * if the specified animation is already running, nothing will occur.
      *
      * @param animation The animation to run
      * @param graph The graph to run the animation on.
      */
     public static final synchronized void startAnimation(final Animation animation, final Graph graph) {
-        Animation currentlyRunningInstance = runningAnimations.get(animation.getName());
         
-        if (currentlyRunningInstance == null){
+        //Set the graph ID for this animation for easy reference over the ainimations s lifetime
+        animation.setGraphID(graph.getId());
+        
+        //Get hte running animations for this animations graph
+        Map<String, Animation> runningAnimations = ANIMATED_GRAPHS.get(animation.graphID);
+        
+        //No animations are running on this graph so a new map to store animations for this graph is created
+        if (runningAnimations == null){
+            runningAnimations = new HashMap<>();
+            ANIMATED_GRAPHS.put(graph.getId(), runningAnimations);
+        }
+        
+        //The animation is not running on the current graph so it can be run and registered
+        if (runningAnimations.get(animation.getName()) == null){
             animation.run(graph);
             runningAnimations.put(animation.getName(), animation);
-        } else {
-            currentlyRunningInstance.stopAnimation();
         }
 
+    }
+    
+    /**
+     * Checks if an animation is animating on the a graph.
+     * @param name
+     * @param graphID
+     * @return 
+     */
+    public static boolean isAnimating(String name, String graphID) {
+        Map<String, Animation> runningAnimations = ANIMATED_GRAPHS.get(graphID);
+        if (runningAnimations != null){
+            if (runningAnimations.get(name) != null){
+                return true;
+            } 
+        }
+        return false;
     }
 
     /**
@@ -189,10 +226,6 @@ public abstract class Animation {
         finished = true;
     }
 
-    private boolean finished = false;
-
-    private Thread animationThread;
-
     /**
      * Handles the variables that persist for the life-cycle of the animation
      * and creates the animation thread.
@@ -223,9 +256,15 @@ public abstract class Animation {
                         reset(wg);
                         wg.commit();
                     }
+                    
+                    final Map<String, Animation> runningAnimations = ANIMATED_GRAPHS.get(this.graphID);
+                    runningAnimations.remove(this.getName());
+
+                    if (runningAnimations.isEmpty()){
+                        ANIMATED_GRAPHS.remove(this.graphID);
+                    }
                 }    
             });
-            animationThread.setName("Animation");
             animationThread.start();
         }
     }
@@ -277,17 +316,31 @@ public abstract class Animation {
     }
     
     /**
-     * Interrupt all running animations.
+     * Interrupt all running animations on all animated graphs.
      */
     public static final synchronized void interruptAllAnimation() {
-        runningAnimations.keySet().forEach(animationName -> {
-            runningAnimations.get(animationName).interrupt();
+        
+        // Itterate over all animated graphs
+        ANIMATED_GRAPHS.keySet().forEach(graphKey -> {
+            
+            // Get the animations curently running on that grah
+            final Map<String, Animation> runningAnimations = ANIMATED_GRAPHS.get(graphKey);
+            
+            //Itterate over all animations on that graph and interrupt the annimation
+            runningAnimations.keySet().forEach(animationName -> {
+                runningAnimations.get(animationName).interrupt();
+            });
+            
+            //Remove all reverences to animations from the graph reference
+            runningAnimations.clear();
         });
-        runningAnimations.clear();
+        
+        //Remove all references to graphs being animated
+        ANIMATED_GRAPHS.clear();
     }
     
     /**
-     * Interrupt this animations.
+     * Interrupt this animation.
      */
     public void interrupt(){
         this.animationThread.interrupt();

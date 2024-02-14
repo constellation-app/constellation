@@ -17,8 +17,9 @@ package au.gov.asd.tac.constellation.graph.interaction.animation.actions;
 
 import au.gov.asd.tac.constellation.graph.interaction.animation.Animation;
 import au.gov.asd.tac.constellation.graph.interaction.animation.FlyingAnimation;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import java.awt.event.ActionEvent;
+import au.gov.asd.tac.constellation.graph.node.gui.MenuBaseAction;
 import java.awt.event.ActionListener;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -29,19 +30,29 @@ import org.openide.util.NbBundle.Messages;
  * adding animation motion to graph elements
  */
 @ActionID(category = "Experimental", id = "au.gov.asd.tac.constellation.graph.interaction.animation.actions.AnimateFlyingAction")
-@ActionRegistration(displayName = "#CTL_AnimateFlyingAction", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_AnimateFlyingAction", lazy = false)
 @ActionReference(path = "Menu/Experimental/Animations", position = 0)
 @Messages("CTL_AnimateFlyingAction=Fly-through")
-public final class AnimateFlyingAction implements ActionListener {
+public final class AnimateFlyingAction extends MenuBaseAction implements ActionListener {
 
-    private final GraphNode context;
-
-    public AnimateFlyingAction(final GraphNode context) {
-        this.context = context;
+    public AnimateFlyingAction() {
+        super();
+        this.initCheckBox(Bundle.CTL_AnimateFlyingAction(), false);
+    }
+    
+    @Override
+    protected void updateValue() {
+        if ( menuButton.isSelected()){
+            Animation.startAnimation(new FlyingAnimation(), this.getContext().getGraph());
+        } else {
+            Animation.stopAnimation(FlyingAnimation.NAME);
+        }
+        
     }
 
     @Override
-    public void actionPerformed(final ActionEvent ev) {
-        Animation.startAnimation(new FlyingAnimation(), context.getGraph());
+    protected void displayValue() {
+        final String id = GraphManager.getDefault().getActiveGraph().getId();
+        menuButton.setSelected(Animation.isAnimating(FlyingAnimation.NAME, id));
     }
 }
