@@ -20,14 +20,12 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.plugins.PluginException;
-import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
 import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import org.openide.util.Exceptions;
+import java.util.Map;
 
 /**
  * Base class for animations as well as static utilities for running animations.
@@ -51,7 +49,7 @@ import org.openide.util.Exceptions;
  */
 public abstract class Animation {
 
-    private static final List<Animation> runningAnimations = new ArrayList<Animation>();
+    private static final Map<String, Animation> runningAnimations = new HashMap<String, Animation>();
     
     private WritableGraph wg;
     private VisualManager manager;
@@ -60,7 +58,7 @@ public abstract class Animation {
      * Stop this animation.
      */
     public synchronized void stopAnimation() {
-        stopAnimation(this);
+        stopAnimation(this.getName());
     }
     
     /**
@@ -68,9 +66,9 @@ public abstract class Animation {
      * 
      * @param currentlyRunningAnimation
      */
-    public static final synchronized void stopAnimation(final Animation currentlyRunningAnimation) {
+    public static final synchronized void stopAnimation(final String animationName) {
         if (!runningAnimations.isEmpty()) {
-            runningAnimations.remove(runningAnimations.indexOf(currentlyRunningAnimation)).stop();
+            runningAnimations.remove(animationName).stop();
         }
     }
     
@@ -78,8 +76,8 @@ public abstract class Animation {
      * Stop all running animations.
      */
     public static final synchronized void stopAllAnimation() {
-        runningAnimations.forEach(animation -> {
-            animation.stop();
+        runningAnimations.keySet().forEach(animationName -> {
+            runningAnimations.get(animationName).stop();
         });
         runningAnimations.clear();
     }
@@ -89,7 +87,7 @@ public abstract class Animation {
      *
      * @param animation The animation to run
      */
-    public static final synchronized void startAnimation(final Animation animation) {
+    public static final synchronized void startAnimation(final Animation animation){
         startAnimation(animation, GraphManager.getDefault().getActiveGraph());
     }
 
@@ -100,8 +98,15 @@ public abstract class Animation {
      * @param graph The graph to run the animation on.
      */
     public static final synchronized void startAnimation(final Animation animation, final Graph graph) {
-        animation.run(graph);
-        runningAnimations.add(animation);
+        Animation currentlyRunningInstance = runningAnimations.get(animation.getName());
+        
+        if (currentlyRunningInstance == null){
+            animation.run(graph);
+            runningAnimations.put(animation.getName(), animation);
+        } else {
+            currentlyRunningInstance.stopAnimation();
+        }
+
     }
 
     /**
@@ -275,8 +280,8 @@ public abstract class Animation {
      * Interrupt all running animations.
      */
     public static final synchronized void interruptAllAnimation() {
-        runningAnimations.forEach(animation -> {
-            animation.interrupt();
+        runningAnimations.keySet().forEach(animationName -> {
+            runningAnimations.get(animationName).interrupt();
         });
         runningAnimations.clear();
     }

@@ -128,7 +128,7 @@ public final class FlyingAnimation extends Animation {
 
     @Override
     public void reset(GraphWriteMethods wg) {
-         Animation.startAnimation(new PanAnimation("Reset View", camera, initialPosition, true));
+        Animation.startAnimation(new PanAnimation("Reset View", camera, initialPosition, true));
     }
 
     @Override
