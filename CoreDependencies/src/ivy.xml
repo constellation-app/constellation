@@ -81,7 +81,8 @@
         <dependency org="org.python" name="jython-standalone" rev="2.7.3"/>
         <dependency org="org.swinglabs" name="swingx" rev="1.6.1"/>
         <dependency org="org.fxmisc.richtext" name="richtextfx" rev="0.11.2"/>
-        
+        <dependency org="org.openjdk.nashorn" name="nashorn-core" rev="15.4"/>
+                
         <!-- Testing -->
         <dependency org="nl.jqno.equalsverifier" name="equalsverifier" rev="3.7"/>
         <dependency org="org.testfx" name="openjfx-monocle" rev="11.0.2" transitive="false" />
