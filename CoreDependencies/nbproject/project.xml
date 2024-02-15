@@ -2633,6 +2633,12 @@
                 <package>org.mockito.stubbing</package>
                 <package>org.mockito.stubbing.answers</package>
                 <package>org.mockito.verification</package>
+                <package>org.objectweb.asm</package>
+                <package>org.objectweb.asm.commons</package>
+                <package>org.objectweb.asm.signature</package>
+                <package>org.objectweb.asm.tree</package>
+                <package>org.objectweb.asm.tree.analysis</package>
+                <package>org.objectweb.asm.util</package>
                 <package>org.objenesis</package>
                 <package>org.objenesis.instantiator</package>
                 <package>org.objenesis.instantiator.android</package>
@@ -2683,6 +2689,35 @@
                 <package>org.opengis.style</package>
                 <package>org.opengis.temporal</package>
                 <package>org.opengis.util</package>
+                <package>org.openjdk.nashorn.api.linker</package>
+                <package>org.openjdk.nashorn.api.scripting</package>
+                <package>org.openjdk.nashorn.api.tree</package>
+                <package>org.openjdk.nashorn.internal</package>
+                <package>org.openjdk.nashorn.internal.codegen</package>
+                <package>org.openjdk.nashorn.internal.codegen.types</package>
+                <package>org.openjdk.nashorn.internal.ir</package>
+                <package>org.openjdk.nashorn.internal.ir.annotations</package>
+                <package>org.openjdk.nashorn.internal.ir.debug</package>
+                <package>org.openjdk.nashorn.internal.ir.visitor</package>
+                <package>org.openjdk.nashorn.internal.lookup</package>
+                <package>org.openjdk.nashorn.internal.objects</package>
+                <package>org.openjdk.nashorn.internal.objects.annotations</package>
+                <package>org.openjdk.nashorn.internal.parser</package>
+                <package>org.openjdk.nashorn.internal.runtime</package>
+                <package>org.openjdk.nashorn.internal.runtime.arrays</package>
+                <package>org.openjdk.nashorn.internal.runtime.doubleconv</package>
+                <package>org.openjdk.nashorn.internal.runtime.events</package>
+                <package>org.openjdk.nashorn.internal.runtime.linker</package>
+                <package>org.openjdk.nashorn.internal.runtime.logging</package>
+                <package>org.openjdk.nashorn.internal.runtime.options</package>
+                <package>org.openjdk.nashorn.internal.runtime.regexp</package>
+                <package>org.openjdk.nashorn.internal.runtime.regexp.joni</package>
+                <package>org.openjdk.nashorn.internal.runtime.regexp.joni.ast</package>
+                <package>org.openjdk.nashorn.internal.runtime.regexp.joni.constants</package>
+                <package>org.openjdk.nashorn.internal.runtime.regexp.joni.encoding</package>
+                <package>org.openjdk.nashorn.internal.runtime.regexp.joni.exception</package>
+                <package>org.openjdk.nashorn.internal.scripts</package>
+                <package>org.openjdk.nashorn.tools</package>
                 <package>org.openxmlformats.schemas.drawingml.x2006.chart</package>
                 <package>org.openxmlformats.schemas.drawingml.x2006.chart.impl</package>
                 <package>org.openxmlformats.schemas.drawingml.x2006.diagram</package>
@@ -3305,6 +3340,26 @@
                 <binary-origin>release/modules/ext/apiguardian-api-1.1.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/asm-7.3.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/asm-7.3.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/asm-analysis-7.3.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/asm-analysis-7.3.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/asm-commons-7.3.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/asm-commons-7.3.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/asm-tree-7.3.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/asm-tree-7.3.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/asm-util-7.3.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/asm-util-7.3.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/assertj-core-3.25.3.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/assertj-core-3.25.3.jar</binary-origin>
             </class-path-extension>
@@ -3851,6 +3906,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/mockito-inline-5.2.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/mockito-inline-5.2.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/nashorn-core-15.4.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/nashorn-core-15.4.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/nativewindow-2.5.0-natives-linux-amd64.jar</runtime-relative-path>
