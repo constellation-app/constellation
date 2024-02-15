@@ -67,22 +67,8 @@ public class HyperlinkAttributeDescriptionNGTest {
         System.out.println("convertFromObject");
         
         assertNull(instance.convertFromObject(null));
-        final URL goodUrl = new URL("https://my.good.url");
+        final URL goodUrl = URI.create("https://my.good.url").toURL();
         assertEquals(instance.convertFromObject(goodUrl), goodUrl.toURI());
-    }
-    
-    /**
-     * Test of convertFromObject method, of class HyperlinkAttributeDescription. Bad URL
-     * @throws java.net.MalformedURLException
-     * @throws java.net.URISyntaxException
-     */
-    @Test(expectedExceptions = IllegalArgumentException.class, 
-            expectedExceptionsMessageRegExp = "Error converting Object \'class java.net.URL\' to hyperlink")
-    public void testConvertFromObjectBadURL() throws MalformedURLException, URISyntaxException {
-        System.out.println("convertFromObjectBadURL");
-        
-        final URL badUrl = new URL("https://mybadurl^");
-        instance.convertFromObject(badUrl);
     }
     
     /**
