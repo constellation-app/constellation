@@ -23,14 +23,10 @@ import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
 import au.gov.asd.tac.constellation.utilities.graphics.Mathf;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
-import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChangeBuilder;
-import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
 import java.security.SecureRandom;
 import java.util.ArrayDeque;
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * Fly around the graph using a succession of Catmull-Rom splines to generate a
@@ -67,9 +63,7 @@ public final class FlyingAnimation extends Animation {
             doMixing = x2Attr != Graph.NOT_FOUND && y2Attr != Graph.NOT_FOUND && z2Attr != Graph.NOT_FOUND;
             cameraAttribute = VisualConcept.GraphAttribute.CAMERA.get(wg);
             camera = wg.getObjectValue(cameraAttribute, 0);
-            
             initialPosition = new Camera(camera);
-            
             stepsPerLink = STEPS_PER_LINK * (int) Math.sqrt(1 + (wg.getVertexCount() / 2000));
             
             final Vector3f vec0 = new Vector3f(camera.lookAtEye);
@@ -87,10 +81,11 @@ public final class FlyingAnimation extends Animation {
     }
 
     @Override
-    public List<VisualChange> animate(GraphWriteMethods wg) {
+    public void animate(GraphWriteMethods wg) {
         // dont animate unless there is more than 1 node
         if (wg.getVertexCount() > 1) {
-
+            camera = new Camera(camera);
+            
             if (step >= stepsPerLink) {
                 // Get the next p3 vertex.
                 final Vector3f xyz = getNextVertex(wg, camera.getMix());
@@ -112,7 +107,7 @@ public final class FlyingAnimation extends Animation {
 
             // Determine the new lookAt eye and center.
             final float t = step / (float) stepsPerLink;
-            final float t1 = (step + 1) / (float) stepsPerLink;
+            final float t1 = (step + 5) / (float) stepsPerLink;
             final float[] eye = new float[3];
             Mathf.catmullRom(eye, p0, p1, p2, p3, t);
             final float[] centre = new float[3];
@@ -120,10 +115,10 @@ public final class FlyingAnimation extends Animation {
 
             camera.lookAtEye.set(eye[0], eye[1], eye[2]);
             camera.lookAtCentre.set(centre[0], centre[1], centre[2]);
-
+            wg.setObjectValue(cameraAttribute, 0, camera);
+            
             step++;
         }
-        return Arrays.asList(new VisualChangeBuilder(VisualProperty.CAMERA).forItems(1).withId(flyingAnimationId).build());
     }
 
     @Override

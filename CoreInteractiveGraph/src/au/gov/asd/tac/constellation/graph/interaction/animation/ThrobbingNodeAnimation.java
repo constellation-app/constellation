@@ -17,12 +17,8 @@ package au.gov.asd.tac.constellation.graph.interaction.animation;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChangeBuilder;
-import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -55,7 +51,7 @@ public class ThrobbingNodeAnimation extends Animation {
     }
 
     @Override
-    public List<VisualChange> animate(GraphWriteMethods wg) {
+    public void animate(GraphWriteMethods wg) {
         // if there is at least 1 node on the graph
         if (wg.getVertexCount() > 0) {
 
@@ -67,10 +63,7 @@ public class ThrobbingNodeAnimation extends Animation {
                 final int vxId = wg.getVertex(pos);
                 wg.setFloatValue(nodeRadiusAttribute, vxId, currentRadius * originalNodeRadii.get(vxId));
             }
-            return Arrays.asList(new VisualChangeBuilder(VisualProperty.VERTEX_RADIUS).forItems(wg.getVertexCount()).withId(throbbingNodeAnimationId).build());
         }
-        // return an empty list if 0 nodes
-        return Arrays.asList();
     }
 
     @Override

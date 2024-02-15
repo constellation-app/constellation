@@ -19,12 +19,7 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
-import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChangeBuilder;
-import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Pan (and translate) the camera from one position to another.
@@ -70,7 +65,7 @@ public final class PanAnimation extends Animation {
     }
 
     @Override
-    public List<VisualChange> animate(GraphWriteMethods wg) {
+    public void animate(GraphWriteMethods wg) {
         if (step <= STEPS) {
             final float t = step / (float) STEPS;
             final float mix = reflect(t);
@@ -83,10 +78,8 @@ public final class PanAnimation extends Animation {
 
             wg.setObjectValue(cameraAttr, 0, camera);
             step++;
-            return Arrays.asList(new VisualChangeBuilder(VisualProperty.CAMERA).forItems(1).withId(panAnimationId).build());
         } else {
             setFinished();
-            return Collections.emptyList();
         }
     }
 

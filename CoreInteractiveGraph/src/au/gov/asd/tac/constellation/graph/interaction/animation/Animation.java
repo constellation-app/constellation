@@ -20,11 +20,9 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
 import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -127,7 +125,6 @@ public abstract class Animation {
             animation.run(graph);
             runningAnimations.put(animation.getName(), animation);
         }
-
     }
     
     /**
@@ -169,7 +166,7 @@ public abstract class Animation {
      * @param wg A write lock on the graph the animation is running on.
      * @return
      */
-    public abstract List<VisualChange> animate(GraphWriteMethods wg);
+    public abstract void animate(GraphWriteMethods wg);
 
     /**
      * Reset any ephemeral changes made by the animation.
@@ -282,13 +279,8 @@ public abstract class Animation {
                 
             // Animate a frame
             if (lockGraphSafely(graph)){
-                final List<VisualChange> changes = animate(wg);
+                animate(wg);
                 wg.commit();
-
-                // Notify the VisualManager of changes from the animation
-                if (!changes.isEmpty() && manager != null) {
-                    manager.addMultiChangeOperation(changes);
-                }
             }
             
             // Sleep untill it is time for the next frame
