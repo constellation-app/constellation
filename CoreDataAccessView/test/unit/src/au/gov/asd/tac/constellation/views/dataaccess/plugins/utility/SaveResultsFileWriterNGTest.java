@@ -141,8 +141,8 @@ public class SaveResultsFileWriterNGTest {
             // Execution should not make it this far, an invalid file should result in an exception.
             Assert.fail("PluginException is expected.");
 
-        } catch (Exception ex) {
-            mockedRecordStoreUtilities.verify(times(0), () -> RecordStoreUtilities.toCsv(Mockito.any(), Mockito.any()));
+        } catch (PluginException ex) {
+            mockedRecordStoreUtilities.verify(() -> RecordStoreUtilities.toCsv(Mockito.any(), Mockito.any()), times(0));
             Assert.assertFalse(fileCreated, "Record store file was not created.");
             Assert.assertEquals(constellationLoggerHelperStatus, ConstellationLoggerHelper.FAILURE,
                     "ConstellationLoggerHelper passed status = FAILURE.");
@@ -208,7 +208,7 @@ public class SaveResultsFileWriterNGTest {
         });
 
         SaveResultsFileWriter.writeRecordStore(plugin, tabularRecordStore);
-        mockedRecordStoreUtilities.verify(times(1), () -> RecordStoreUtilities.toCsv(Mockito.any(), Mockito.any()));
+        mockedRecordStoreUtilities.verify(() -> RecordStoreUtilities.toCsv(Mockito.any(), Mockito.any()), times(1));
 
         Assert.assertTrue(fileCreated, "Record store file was created.");
         Assert.assertEquals(constellationLoggerHelperStatus, ConstellationLoggerHelper.SUCCESS,

@@ -19,7 +19,7 @@ import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 

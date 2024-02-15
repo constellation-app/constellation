@@ -15,7 +15,8 @@
  */
 package au.gov.asd.tac.constellation.graph;
 
-import static org.testng.AssertJUnit.assertEquals;
+
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
 
 /**

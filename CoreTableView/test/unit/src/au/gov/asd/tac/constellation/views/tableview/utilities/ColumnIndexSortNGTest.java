@@ -23,7 +23,7 @@ import au.gov.asd.tac.constellation.views.tableview.state.TableViewState;
 import java.util.List;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.Test;
 
 /**
