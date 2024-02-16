@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.graph.interaction.animation;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.utilities.visual.VisualChangeBuilder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,7 +31,6 @@ public class ThrobbingNodeAnimation extends Animation {
     private static final float UPPER_LIMIT = 1.5F;
     private float currentDirection = 0.05F;
     private float currentRadius = 1F;
-    private final long throbbingNodeAnimationId = VisualChangeBuilder.generateNewId();
 
     final Map<Integer, Float> originalNodeRadii = new HashMap<>();
 

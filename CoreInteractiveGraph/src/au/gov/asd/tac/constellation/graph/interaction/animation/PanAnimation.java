@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
-import au.gov.asd.tac.constellation.utilities.visual.VisualChangeBuilder;
 
 /**
  * Pan (and translate) the camera from one position to another.
@@ -36,7 +35,6 @@ public final class PanAnimation extends Animation {
     private final Camera from;
     private final Camera to;
     private final boolean isSignificant;
-    private final long panAnimationId = VisualChangeBuilder.generateNewId();
 
     private Camera camera;
     private int cameraAttr;

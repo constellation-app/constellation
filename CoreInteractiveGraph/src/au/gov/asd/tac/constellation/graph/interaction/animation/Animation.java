@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,8 +48,7 @@ public abstract class Animation {
 
     private static final Map<String, Map<String, Animation>> ANIMATED_GRAPHS = new HashMap<String, Map<String, Animation>>();
 
-    private WritableGraph wg;
-    private VisualManager manager;
+    private WritableGraph wg;;
     private String graphID;
     private boolean finished = false;
     private Thread animationThread;
@@ -230,9 +228,6 @@ public abstract class Animation {
      */
     private void run(final Graph graph) {
         if (GraphNode.getGraphNode(graph) != null) {
-            
-            // Set the VisualManager for the graph of this animation
-            manager = GraphNode.getGraphNode(graph).getVisualManager();
             
             // Chreate the Thread for this animaton
             animationThread = new Thread(() -> {

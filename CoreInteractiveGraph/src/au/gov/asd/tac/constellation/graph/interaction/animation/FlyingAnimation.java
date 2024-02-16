@@ -23,7 +23,6 @@ import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
 import au.gov.asd.tac.constellation.utilities.graphics.Mathf;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
-import au.gov.asd.tac.constellation.utilities.visual.VisualChangeBuilder;
 import java.security.SecureRandom;
 import java.util.ArrayDeque;
 import java.util.Iterator;
@@ -84,46 +83,51 @@ public final class FlyingAnimation extends Animation {
     public void animate(GraphWriteMethods wg) {
         // dont animate unless there is more than 1 node
         if (wg.getVertexCount() > 1) {
-            camera = new Camera(camera);
             
-            if (step >= stepsPerLink) {
-                // Get the next p3 vertex.
-                final Vector3f xyz = getNextVertex(wg, camera.getMix());
+            if (camera != wg.getObjectValue(cameraAttribute, 0)){
+                stopAnimation();
+            } else {
+                camera = new Camera(camera);
 
-                // Remove the old p0 and add the new p3.
-                xyzQueue.removeFirst();
-                xyzQueue.addLast(xyz);
+                if (step >= stepsPerLink) {
+                    // Get the next p3 vertex.
+                    final Vector3f xyz = getNextVertex(wg, camera.getMix());
 
-                // The first step between p1 and p2.
-                step = 0;
+                    // Remove the old p0 and add the new p3.
+                    xyzQueue.removeFirst();
+                    xyzQueue.addLast(xyz);
+
+                    // The first step between p1 and p2.
+                    step = 0;
+                }
+
+                // The four control points of the spline.
+                final Iterator<Vector3f> it = xyzQueue.iterator();
+                final float[] p0 = it.next().a;
+                final float[] p1 = it.next().a;
+                final float[] p2 = it.next().a;
+                final float[] p3 = it.next().a;
+
+                // Determine the new lookAt eye and center.
+                final float t = step / (float) stepsPerLink;
+                final float t1 = (step + 5) / (float) stepsPerLink;
+                final float[] eye = new float[3];
+                Mathf.catmullRom(eye, p0, p1, p2, p3, t);
+                final float[] centre = new float[3];
+                Mathf.catmullRom(centre, p0, p1, p2, p3, t1);
+
+                camera.lookAtEye.set(eye[0], eye[1], eye[2]);
+                camera.lookAtCentre.set(centre[0], centre[1], centre[2]);
+                wg.setObjectValue(cameraAttribute, 0, camera);
+
+                step++;
             }
-
-            // The four control points of the spline.
-            final Iterator<Vector3f> it = xyzQueue.iterator();
-            final float[] p0 = it.next().a;
-            final float[] p1 = it.next().a;
-            final float[] p2 = it.next().a;
-            final float[] p3 = it.next().a;
-
-            // Determine the new lookAt eye and center.
-            final float t = step / (float) stepsPerLink;
-            final float t1 = (step + 5) / (float) stepsPerLink;
-            final float[] eye = new float[3];
-            Mathf.catmullRom(eye, p0, p1, p2, p3, t);
-            final float[] centre = new float[3];
-            Mathf.catmullRom(centre, p0, p1, p2, p3, t1);
-
-            camera.lookAtEye.set(eye[0], eye[1], eye[2]);
-            camera.lookAtCentre.set(centre[0], centre[1], centre[2]);
-            wg.setObjectValue(cameraAttribute, 0, camera);
-            
-            step++;
         }
     }
 
     @Override
     public void reset(GraphWriteMethods wg) {
-        Animation.startAnimation(new PanAnimation("Reset View", camera, initialPosition, true));
+        Animation.startAnimation(new PanAnimation("Reset View", wg.getObjectValue(cameraAttribute, 0), initialPosition, true));
     }
 
     @Override
@@ -134,8 +138,6 @@ public final class FlyingAnimation extends Animation {
     private static final int STEPS_PER_LINK = 96;
     private static final int VERTICES_PER_SPLINE = 4;
     private static final int BACKTRACK_LENGTH = 10;
-
-    private final long flyingAnimationId = VisualChangeBuilder.generateNewId();
 
     private final ArrayDeque<Vector3f> xyzQueue;
     private Camera camera;
