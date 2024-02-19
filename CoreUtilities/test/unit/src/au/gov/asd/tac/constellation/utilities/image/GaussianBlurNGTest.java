@@ -164,6 +164,26 @@ public class GaussianBlurNGTest {
         final float[] expResult = {0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F};
         assertEquals(targetChannel, expResult);
     }
+    
+    /**
+     * Test of gaussianBlurBox method, of class GaussianBlur. Fast BoxBlurType
+     */
+    @Test
+    public void testGaussianBlurBoxFastest() {
+        System.out.println("gaussianBlurBoxFastest");
+        final float[] sourceChannel = {1F, 2F, 3F, 4F, 5F, 6F};
+        //final float[] targetChannel = new float[8];
+        final float[] targetChannel = {0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f};
+        final int width = 2;
+        final int height = 3;
+        final int radius = 2;
+        final int passes = 1;
+
+        GaussianBlur.gaussianBlurBox(sourceChannel, targetChannel, width, height, radius, passes, BoxBlurType.FASTEST);
+
+        final float[] expResult = {0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F};
+        assertEquals(targetChannel, expResult);
+    }
 
     /**
      * Test of normalise method, of class GaussianBlur.

@@ -24,7 +24,7 @@ import org.apache.commons.lang3.ArrayUtils;
  * @author cygnus_x-1
  */
 public class GaussianBlur {
-    
+
     private static final String TARGET_SMALLER_THAN_SOURCE = "Target channel is smaller than source channel.";
 
     protected static final int[] RAINBOW = {
@@ -105,6 +105,7 @@ public class GaussianBlur {
             if (sourceChannel.length <= targetChannel.length) {
                 float[] tempChannel = Arrays.copyOf(sourceChannel, sourceChannel.length);
                 final int[] boxes = boxesForGauss(radius, passes);
+                System.out.println(boxes[0]);
                 for (int i = 0; i < passes; i++) {
                     switch (type) {
                         case STANDARD:
@@ -199,6 +200,7 @@ public class GaussianBlur {
     private static void boxBlurFFH(final float[] sourceChannel, final float[] targetChannel,
             final int width, final int height, final int radius) {
         final float iarr = 1F / (radius + radius + 1);
+        //System.out.println(Integer.toString(width) + " " + Integer.toString(height) + " " + Integer.toString(radius));
         for (int i = 0; i < height; i++) {
             int ti = i * width;
             int li = ti;
@@ -207,19 +209,35 @@ public class GaussianBlur {
             final float lv = sourceChannel[ti + width - 1];
             float val = (radius + 1) * fv;
             for (int j = 0; j < radius; j++) {
-                val += sourceChannel[ti + j];
+                if (ti + j < sourceChannel.length) {
+                    val += sourceChannel[ti + j];
+                }
             }
             for (int j = 0; j <= radius; j++) {
-                val += sourceChannel[ri++] - fv;
-                targetChannel[ti++] = val * iarr;
+                //System.out.println(ri);
+                if (ri < sourceChannel.length) {
+                    val += sourceChannel[ri++] - fv;
+                }
+                //System.out.println(Integer.toString(i) + " " + Integer.toString(j) + " " + Float.toString(val) + " " + Integer.toString(ri));
+                if (ti < targetChannel.length) {
+                    targetChannel[ti++] = val * iarr;
+                }
             }
             for (int j = radius + 1; j < width - radius; j++) {
-                val += sourceChannel[ri++] - sourceChannel[li++];
-                targetChannel[ti++] = val * iarr;
+                if (ri < sourceChannel.length && li < sourceChannel.length) {
+                    val += sourceChannel[ri++] - sourceChannel[li++];
+                }
+                if (ti < targetChannel.length) {
+                    targetChannel[ti++] = val * iarr;
+                }
             }
             for (int j = width - radius; j < width; j++) {
-                val += lv - sourceChannel[li++];
-                targetChannel[ti++] = val * iarr;
+                if (li < sourceChannel.length) {
+                    val += lv - sourceChannel[li++];
+                }
+                if (ti < targetChannel.length) {
+                    targetChannel[ti++] = val * iarr;
+                }
             }
         }
     }
@@ -235,24 +253,38 @@ public class GaussianBlur {
             final float lv = sourceChannel[ti + width * (height - 1)];
             float val = (radius + 1) * fv;
             for (int j = 0; j < radius; j++) {
-                val += sourceChannel[ti + j * width];
+                if (ti + j < sourceChannel.length) {
+                    val += sourceChannel[ti + j * width];
+                }
             }
             for (int j = 0; j <= radius; j++) {
-                val += sourceChannel[ri] - fv;
-                targetChannel[ti] = val * iarr;
+                if (ri < sourceChannel.length) {
+                    val += sourceChannel[ri] - fv;
+                }
+                if (ti < targetChannel.length) {
+                    targetChannel[ti] = val * iarr;
+                }
                 ri += width;
                 ti += width;
             }
             for (int j = radius + 1; j < height - radius; j++) {
-                val += sourceChannel[ri] - sourceChannel[li];
-                targetChannel[ti] = val * iarr;
+                if (ri < sourceChannel.length) {
+                    val += sourceChannel[ri] - sourceChannel[li];
+                }
+                if (ti < targetChannel.length) {
+                    targetChannel[ti] = val * iarr;
+                }
                 li += width;
                 ri += width;
                 ti += width;
             }
             for (int j = height - radius; j < height; j++) {
-                val += lv - sourceChannel[li];
-                targetChannel[ti] = val * iarr;
+                if (li < sourceChannel.length) {
+                    val += lv - sourceChannel[li];
+                }
+                if (ti < targetChannel.length) {
+                    targetChannel[ti] = val * iarr;
+                }
                 li += width;
                 ri += width;
             }
