@@ -21,7 +21,6 @@ import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.Def
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import org.openide.util.lookup.ServiceProvider;
@@ -46,7 +45,6 @@ public class IntegerObjectEditorFactory extends AttributeValueEditorFactory<Inte
     public class IntegerObjectEditor extends AbstractEditor<Integer> {
 
         private TextField numberField;
-        private CheckBox noValueCheckBox;
 
         protected IntegerObjectEditor(final EditOperation editOperation, final DefaultGetter<Integer> defaultGetter, final ValueValidator<Integer> validator, final String editedItemName, final Integer initialValue) {
             super(editOperation, defaultGetter, validator, editedItemName, initialValue);
@@ -54,7 +52,6 @@ public class IntegerObjectEditorFactory extends AttributeValueEditorFactory<Inte
 
         @Override
         public void updateControlsWithValue(final Integer value) {
-            noValueCheckBox.setSelected(false);
             if (value != null) {
                 numberField.setText(String.valueOf(value));
             }
@@ -62,9 +59,6 @@ public class IntegerObjectEditorFactory extends AttributeValueEditorFactory<Inte
 
         @Override
         protected Integer getValueFromControls() throws ControlsInvalidException {
-            if (noValueCheckBox.isSelected()) {
-                return null;
-            }
             try {
                 return Integer.parseInt(numberField.getText());
             } catch (final NumberFormatException ex) {
@@ -77,19 +71,9 @@ public class IntegerObjectEditorFactory extends AttributeValueEditorFactory<Inte
             final GridPane controls = new GridPane();
             controls.setAlignment(Pos.CENTER);
             controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
-
             numberField = new TextField();
             numberField.textProperty().addListener((o, n, v) -> update());
-
-            noValueCheckBox = new CheckBox(NO_VALUE_LABEL);
-            noValueCheckBox.setAlignment(Pos.CENTER);
-            noValueCheckBox.selectedProperty().addListener((v, o, n) -> {
-                numberField.setDisable(noValueCheckBox.isSelected());
-                update();
-            });
-
             controls.addRow(0, numberField);
-            controls.addRow(1, noValueCheckBox);
             return controls;
         }
     }

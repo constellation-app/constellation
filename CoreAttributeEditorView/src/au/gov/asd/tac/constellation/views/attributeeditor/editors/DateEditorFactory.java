@@ -24,7 +24,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.layout.GridPane;
 import javafx.util.converter.LocalDateStringConverter;
@@ -49,8 +48,8 @@ public class DateEditorFactory extends AttributeValueEditorFactory<LocalDate> {
     }
 
     public class DateEditor extends AbstractEditor<LocalDate> {
+
         private DatePicker datePicker;
-        private CheckBox noValueCheckBox;
 
         protected DateEditor(final EditOperation editOperation, final DefaultGetter<LocalDate> defaultGetter, final ValueValidator<LocalDate> validator, final String editedItemName, final LocalDate initialValue) {
             super(editOperation, defaultGetter, validator, editedItemName, initialValue);
@@ -58,7 +57,6 @@ public class DateEditorFactory extends AttributeValueEditorFactory<LocalDate> {
 
         @Override
         public void updateControlsWithValue(final LocalDate value) {
-            noValueCheckBox.setSelected(false);
             if (value != null) {
                 datePicker.setValue(value);
             }
@@ -66,9 +64,6 @@ public class DateEditorFactory extends AttributeValueEditorFactory<LocalDate> {
 
         @Override
         protected LocalDate getValueFromControls() throws ControlsInvalidException {
-            if (noValueCheckBox.isSelected()) {
-                return null;
-            }
             final String dateString = datePicker.getEditor().getText();
             // The converter is being used here to try and determine if the entered date is a LocalDate
             // It will throw an exception and won't convert it if its invalid
@@ -87,23 +82,13 @@ public class DateEditorFactory extends AttributeValueEditorFactory<LocalDate> {
             final GridPane controls = new GridPane();
             controls.setAlignment(Pos.CENTER);
             controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
-
-            noValueCheckBox = new CheckBox(NO_VALUE_LABEL);
-            noValueCheckBox.setAlignment(Pos.CENTER);
-            noValueCheckBox.selectedProperty().addListener((v, o, n) -> {
-                datePicker.setDisable(noValueCheckBox.isSelected());
-                update();
-            });
-
             datePicker = new DatePicker();
             datePicker.setConverter(new LocalDateStringConverter(
                     TemporalFormatting.DATE_FORMATTER, TemporalFormatting.DATE_FORMATTER));
             datePicker.getEditor().textProperty().addListener((v, o, n) -> update());
             datePicker.setValue(LocalDate.now());
             datePicker.valueProperty().addListener((v, o, n) -> update());
-
             controls.addRow(0, datePicker);
-            controls.addRow(1, noValueCheckBox);
             return controls;
         }
     }

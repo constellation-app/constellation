@@ -23,7 +23,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import org.openide.util.lookup.ServiceProvider;
@@ -48,7 +47,6 @@ public class HyperlinkEditorFactory extends AttributeValueEditorFactory<URI> {
     public class HyperlinkEditor extends AbstractEditor<URI> {
 
         private TextField textField;
-        private CheckBox noValueCheckBox;
 
         protected HyperlinkEditor(final EditOperation editOperation, final DefaultGetter<URI> defaultGetter, final ValueValidator<URI> validator, final String editedItemName, final URI initialValue) {
             super(editOperation, defaultGetter, validator, editedItemName, initialValue);
@@ -56,7 +54,6 @@ public class HyperlinkEditorFactory extends AttributeValueEditorFactory<URI> {
 
         @Override
         public void updateControlsWithValue(final URI value) {
-            noValueCheckBox.setSelected(false);
             if (value != null) {
                 textField.setText(String.valueOf(value));
             }
@@ -64,9 +61,6 @@ public class HyperlinkEditorFactory extends AttributeValueEditorFactory<URI> {
 
         @Override
         protected URI getValueFromControls() throws ControlsInvalidException {
-            if (noValueCheckBox.isSelected()) {
-                return null;
-            }
             try {
                 return new URI(textField.getText());
             } catch (final URISyntaxException ex) {
@@ -79,19 +73,9 @@ public class HyperlinkEditorFactory extends AttributeValueEditorFactory<URI> {
             final GridPane controls = new GridPane();
             controls.setAlignment(Pos.CENTER);
             controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
-
             textField = new TextField();
             textField.textProperty().addListener((o, n, v) -> update());
-
-            noValueCheckBox = new CheckBox(NO_VALUE_LABEL);
-            noValueCheckBox.setAlignment(Pos.CENTER);
-            noValueCheckBox.selectedProperty().addListener((v, o, n) -> {
-                textField.setDisable(noValueCheckBox.isSelected());
-                update();
-            });
-
             controls.addRow(0, textField);
-            controls.addRow(1, noValueCheckBox);
             return controls;
         }
     }

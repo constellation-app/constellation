@@ -21,7 +21,6 @@ import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.Def
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.IndexRange;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
@@ -52,9 +51,7 @@ public class StringEditorFactory extends AttributeValueEditorFactory<String> {
     public class StringEditor extends AbstractEditor<String> {
 
         private static final int CONTROLS_SPACING = 10;
-
         private TextArea textArea;
-        private CheckBox noValueCheckBox;
 
         protected StringEditor(final EditOperation editOperation, final DefaultGetter<String> defaultGetter, final ValueValidator<String> validator, final String editedItemName, final String initialValue) {
             super(editOperation, defaultGetter, validator, editedItemName, initialValue);
@@ -62,18 +59,12 @@ public class StringEditorFactory extends AttributeValueEditorFactory<String> {
 
         @Override
         public void updateControlsWithValue(final String value) {
-            noValueCheckBox.setSelected(false);
-            if (value != null) {
-                textArea.setText(value);
-            }
+            textArea.setText(value != null ? value : "");
         }
 
         @Override
         protected String getValueFromControls() {
-            if (noValueCheckBox.isSelected()) {
-                return null;
-            }
-            return textArea.getText();
+            return textArea.getText().isBlank() ? null : textArea.getText();
         }
 
         @Override
@@ -129,17 +120,8 @@ public class StringEditorFactory extends AttributeValueEditorFactory<String> {
                 }
             });
 
-            noValueCheckBox = new CheckBox(NO_VALUE_LABEL);
-            noValueCheckBox.setAlignment(Pos.CENTER);
-            noValueCheckBox.selectedProperty().addListener((v, o, n) -> {
-                textArea.setDisable(noValueCheckBox.isSelected());
-                update();
-            });
-
             controls.addRow(0, textArea);
-            controls.addRow(1, noValueCheckBox);
             return controls;
         }
-
     }
 }
