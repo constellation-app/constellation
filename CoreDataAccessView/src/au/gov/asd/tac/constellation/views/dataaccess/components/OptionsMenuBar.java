@@ -55,7 +55,7 @@ public class OptionsMenuBar {
     private static final String CONNECTION_LOGGING_TEXT = "Connection Logging";
     private static final String TITLE = "Folder to save data access results to";
 
-    private static final String OPTIONS_MENU_TEXT = "Workflow Options";
+    private static final String OPTIONS_MENU_TEXT = "FOUND";
 
     static {
         SETTINGS_ICON = new ImageView(new Image(

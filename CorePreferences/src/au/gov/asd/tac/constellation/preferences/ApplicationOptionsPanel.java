@@ -234,6 +234,11 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
 
         Mnemonics.setLocalizedText(startupWelcomeCheckbox, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.startupWelcomeCheckbox.text")); // NOI18N
         startupWelcomeCheckbox.setActionCommand(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.startupWelcomeCheckbox.actionCommand")); // NOI18N
+        startupWelcomeCheckbox.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                startupWelcomeCheckboxActionPerformed(evt);
+            }
+        });
 
         Mnemonics.setLocalizedText(startupWhatsNewCheckbox, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.startupWhatsNewCheckbox.text")); // NOI18N
         startupWhatsNewCheckbox.setActionCommand(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.startupWhatsNewCheckbox.actionCommand")); // NOI18N
@@ -504,6 +509,10 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
         fontCombo.setSelectedItem("Arial");
         fontSizeSpinner.setValue(12);
     }//GEN-LAST:event_resetBtnActionPerformed
+
+    private void startupWelcomeCheckboxActionPerformed(ActionEvent evt) {//GEN-FIRST:event_startupWelcomeCheckboxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_startupWelcomeCheckboxActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private JCheckBox autosaveCheckBox;

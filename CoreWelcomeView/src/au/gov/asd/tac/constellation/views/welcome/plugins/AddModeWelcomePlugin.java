@@ -87,7 +87,7 @@ public class AddModeWelcomePlugin implements WelcomePluginInterface {
     public Button getButton() {
         addView.setFitHeight(75);
         addView.setFitWidth(75);
-        final Label title = new Label("New Graph");
+        final Label title = new Label("FOUND IT");
         final Label subtitle = new Label("Add mode");
         subtitle.setId("smallInfoText");
         final VBox layoutVBox = new VBox(addView, title, subtitle);

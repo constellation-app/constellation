@@ -27,7 +27,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class DataAccessPluginCoreType implements DataAccessPluginType {
 
     public static final String FAVOURITES = "Favourites";
-    public static final String IMPORT = "Import";
+    public static final String IMPORT = "Import FOUND";
     public static final String EXTEND = "Extend";
     public static final String CLEAN = "Clean";
     public static final String WORKFLOW = "Workflow";

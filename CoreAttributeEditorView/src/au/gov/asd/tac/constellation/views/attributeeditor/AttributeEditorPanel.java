@@ -130,7 +130,8 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.openide.util.NbPreferences;
 
 /**
- * The AttributeEditorPanel provides the bulk of the user interface for Constellation's 'attribute editor' view.
+ * The AttributeEditorPanel provides the bulk of the user interface for
+ * Constellation's 'attribute editor' view.
  *
  * @see AttributeEditorTopComponent
  * @author twinkle2_little
@@ -148,7 +149,8 @@ public class AttributeEditorPanel extends BorderPane {
     private static final GraphElementType[] ELEMENT_TYPES = {GraphElementType.GRAPH, GraphElementType.VERTEX, GraphElementType.TRANSACTION};
     private static final String NO_VALUE_TEXT = "<No Value>";
 
-    private static final String PRIMARY_KEY_ATTRIBUTE_COLOR = "#8a1d1d";
+    //private static final String PRIMARY_KEY_ATTRIBUTE_COLOR = "#8a1d1d";
+    private static final String PRIMARY_KEY_ATTRIBUTE_COLOR = "#711d8a";
     private static final String CUSTOM_ATTRIBUTE_COLOR = "#1f4f8a";
     private static final String HIDDEN_ATTRIBUTE_COLOR = "#999999";
     private static final String SCHEMA_ATTRIBUTE_COLOR = JavafxStyleManager.isDarkTheme() ? "#333333" : "#777777";
@@ -164,11 +166,11 @@ public class AttributeEditorPanel extends BorderPane {
     private final AttributeEditorTopComponent topComponent;
     private final StringProperty[] headingTitleProperties = new StringProperty[3];
     private final Map<GraphElementType, List<String>> currentAttributeNames = new HashMap<>();
-    
+
     private enum HeadingType {
         GRAPH, NODE, TRANSACTION;
     }
-    
+
     private final Map<HeadingType, ToggleButton> showEmptyToggles; // Access to 'Show Toggle' buttons to allow reset
     private static final AttributeEditorFactory ATTRIBUTE_EDITOR_FACTORY = new AttributeEditorFactory();
     private static final ListSelectionEditorFactory LIST_SELECTION_EDITOR_FACTORY = new ListSelectionEditorFactory();
@@ -242,8 +244,8 @@ public class AttributeEditorPanel extends BorderPane {
     }
 
     /**
-     * Every time that the 'Attribute Editor' is redisplayed, reset the
-     * 'Show Empty' toggles to be toggled on.
+     * Every time that the 'Attribute Editor' is redisplayed, reset the 'Show
+     * Empty' toggles to be toggled on.
      */
     public void refreshShowEmpty() {
         for (final HeadingType headingType : HeadingType.values()) {
@@ -266,7 +268,7 @@ public class AttributeEditorPanel extends BorderPane {
             // Ensure empty attributes are shown by default  
             prefs.putBoolean(emptyKey, true);
             if (showEmptyToggles.containsKey(headingType)) {
-                showEmptyToggles.get(headingType).setSelected(true); 
+                showEmptyToggles.get(headingType).setSelected(true);
             }
         }
     }
@@ -515,6 +517,7 @@ public class AttributeEditorPanel extends BorderPane {
     /**
      * Determine if the values list is null or all values in the supplied values
      * list are empty (null).
+     *
      * @param values List of values to check.
      * @return True if values is null or all values in the supplied values list
      * are empty (null) or false otherwise.
@@ -530,7 +533,7 @@ public class AttributeEditorPanel extends BorderPane {
         }
         return true;
     }
-    
+
     /**
      * Creates individual TitledPane within header title panes.
      *
@@ -679,7 +682,7 @@ public class AttributeEditorPanel extends BorderPane {
                 for (int i = 0; i < titledPaneHeadingsContainer.getChildren().size(); i++) {
                     final TitledPane tp = (TitledPane) titledPaneHeadingsContainer.getChildren().get(i);
                     final int count = ((VBox) tp.getContent()).getChildren().size();
-                    final int totalAttrs = state.getAttributeCounts().get(ELEMENT_TYPES[i]);                 
+                    final int totalAttrs = state.getAttributeCounts().get(ELEMENT_TYPES[i]);
                     final String attrCountDisplay = totalAttrs == count ? String.format(HEADING_TITLES[i], totalAttrs, "") : String.format(HEADING_TITLES[i], totalAttrs, String.format(HIDDEN_EMPTY_ATTRIBUTES_INFORMATION, totalAttrs - count));
                     headingTitleProperties[i].setValue(attrCountDisplay);
                     if (!state.getActiveGraphElements().isEmpty()) {
@@ -796,8 +799,10 @@ public class AttributeEditorPanel extends BorderPane {
      * populates one of the header titled panes with attributes
      *
      * @param state containing the data of the attributes on the graph
-     * @param type type of graphelement as each of these have their own headings in the attribute editor
-     * @param longestTitleWidth used for layout calculations...(dodgy javafx workaround)
+     * @param type type of graphelement as each of these have their own headings
+     * in the attribute editor
+     * @param longestTitleWidth used for layout calculations...(dodgy javafx
+     * workaround)
      */
     private void populateContentContainer(final AttributeState state, final GraphElementType type, final double longestTitleWidth) {
         final int elementTypeIndex;
@@ -823,7 +828,7 @@ public class AttributeEditorPanel extends BorderPane {
 
         // Check if we are showing all attributes regardless of hidden state
         final boolean showEmpty = prefs.getBoolean(showEmptyKey, false);
-      
+
         if (elementTypeIndex > -1 && state != null) {
             final List<AttributeData> attributeDataList = state.getAttributeNames().get(type);
             if (attributeDataList != null) {
@@ -841,11 +846,11 @@ public class AttributeEditorPanel extends BorderPane {
                     // If we are NOT showing all attributes and this attribute
                     // is null, don't add it to the list of children, this will
                     // have the effect of hiding it
-                    if (showEmpty || !noValue ) {
+                    if (showEmpty || !noValue) {
                         final TitledPane attribute = createAttributeTitlePane(data, values, longestTitleWidth, hidden);
                         attribute.setMinWidth(0);
                         attribute.maxWidthProperty().bind(header.widthProperty());
-                        header.getChildren().add(attribute); 
+                        header.getChildren().add(attribute);
                     }
                 }
             }
@@ -969,7 +974,9 @@ public class AttributeEditorPanel extends BorderPane {
     }
 
     /**
-     * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The content of this method is always regenerated by the Form Editor.
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
