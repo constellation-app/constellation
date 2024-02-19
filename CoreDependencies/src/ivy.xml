@@ -84,7 +84,7 @@
         <dependency org="org.openjdk.nashorn" name="nashorn-core" rev="15.4"/>
                 
         <!-- Testing -->
-        <dependency org="nl.jqno.equalsverifier" name="equalsverifier" rev="3.7"/>
+        <dependency org="nl.jqno.equalsverifier" name="equalsverifier" rev="3.15.6"/>
         <dependency org="org.testfx" name="openjfx-monocle" rev="11.0.2" transitive="false" />
         <dependency org="org.testfx" name="testfx-core" rev="4.0.16-alpha" />
         

@@ -784,6 +784,7 @@
                 <package>nl.jqno.equalsverifier.internal.prefabvalues.factoryproviders</package>
                 <package>nl.jqno.equalsverifier.internal.reflection</package>
                 <package>nl.jqno.equalsverifier.internal.reflection.annotations</package>
+                <package>nl.jqno.equalsverifier.internal.testhelpers</package>
                 <package>nl.jqno.equalsverifier.internal.util</package>
                 <package>org.apache.commons.codec</package>
                 <package>org.apache.commons.codec.binary</package>
@@ -2581,8 +2582,8 @@
                 <binary-origin>release/modules/ext/ejml-zdense-0.43.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/equalsverifier-3.7.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/equalsverifier-3.7.jar</binary-origin>
+                <runtime-relative-path>ext/equalsverifier-3.15.6.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/equalsverifier-3.15.6.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/error_prone_annotations-2.23.0.jar</runtime-relative-path>
