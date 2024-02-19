@@ -39,18 +39,17 @@ import java.util.Iterator;
  * @author algol
  */
 public final class FlyingAnimation extends Animation {
-    public static String NAME = "Fly Through Animation";
+    public static final String NAME = "Fly Through Animation";
     private int stepsPerLink;
     private int cameraAttribute;
     private Camera initialPosition;
 
     @Override
-    public void initialise(GraphWriteMethods wg) {
+    public void initialise(final GraphWriteMethods wg) {
         // dont initilise the animation if there is less than 2 nodes
         if (wg.getVertexCount() <= 1) {
             stopAnimation();
         } else {
-
             xAttr = VisualConcept.VertexAttribute.X.get(wg);
             yAttr = VisualConcept.VertexAttribute.Y.get(wg);
             zAttr = VisualConcept.VertexAttribute.Z.get(wg);
@@ -65,11 +64,9 @@ public final class FlyingAnimation extends Animation {
             initialPosition = new Camera(camera);
             stepsPerLink = STEPS_PER_LINK * (int) Math.sqrt(1 + (wg.getVertexCount() / 2000));
             
-            final Vector3f vec0 = new Vector3f(camera.lookAtEye);
-            final Vector3f vec1 = new Vector3f(camera.lookAtCentre);
-            xyzQueue.add(vec0);
-            xyzQueue.add(vec0);
-            xyzQueue.add(vec1);
+            xyzQueue.add(new Vector3f(camera.lookAtEye));
+            xyzQueue.add(new Vector3f(camera.lookAtEye));
+            xyzQueue.add(new Vector3f(camera.lookAtCentre));
             
             currentVxId = Graph.NOT_FOUND;
             for (int i = xyzQueue.size(); i < VERTICES_PER_SPLINE; i++) {
@@ -80,7 +77,7 @@ public final class FlyingAnimation extends Animation {
     }
 
     @Override
-    public void animate(GraphWriteMethods wg) {
+    public void animate(final GraphWriteMethods wg) {
         // dont animate unless there is more than 1 node
         if (wg.getVertexCount() > 1) {
             
@@ -126,7 +123,7 @@ public final class FlyingAnimation extends Animation {
     }
 
     @Override
-    public void reset(GraphWriteMethods wg) {
+    public void reset(final GraphWriteMethods wg) {
         Animation.startAnimation(new PanAnimation("Reset View", wg.getObjectValue(cameraAttribute, 0), initialPosition, true));
     }
 
@@ -199,7 +196,7 @@ public final class FlyingAnimation extends Animation {
         return xyz;
     }
 
-    private int getNextVertexId(GraphReadMethods rg) {
+    private int getNextVertexId(final GraphReadMethods rg) {
         if (currentVxId != Graph.NOT_FOUND) {
             // Go through the links connected to the current vertex in a random order.
             final int nLinks = rg.getVertexLinkCount(currentVxId);
@@ -275,6 +272,6 @@ public final class FlyingAnimation extends Animation {
 
     @Override
     protected String getName() {
-        return "Fly Through Animation";
+        return NAME;
     }
 }

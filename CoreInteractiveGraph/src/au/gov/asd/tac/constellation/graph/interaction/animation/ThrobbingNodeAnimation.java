@@ -35,7 +35,7 @@ public class ThrobbingNodeAnimation extends Animation {
     final Map<Integer, Float> originalNodeRadii = new HashMap<>();
 
     @Override
-    public void initialise(GraphWriteMethods wg) {
+    public void initialise(final GraphWriteMethods wg) {
         // dont initialise if there is 0 nodes present
         if (wg.getVertexCount() == 0) {
             stopAnimation();
@@ -49,7 +49,7 @@ public class ThrobbingNodeAnimation extends Animation {
     }
 
     @Override
-    public void animate(GraphWriteMethods wg) {
+    public void animate(final GraphWriteMethods wg) {
         // if there is at least 1 node on the graph
         if (wg.getVertexCount() > 0) {
 
@@ -65,7 +65,7 @@ public class ThrobbingNodeAnimation extends Animation {
     }
 
     @Override
-    public void reset(GraphWriteMethods wg) {
+    public void reset(final GraphWriteMethods wg) {
         originalNodeRadii.forEach((vxId, radius) -> wg.setObjectValue(nodeRadiusAttribute, vxId, radius));
     }
 
@@ -76,7 +76,7 @@ public class ThrobbingNodeAnimation extends Animation {
 
     @Override
     protected String getName() {
-        return "Throbbing Node Animation";
+        return NAME;
     }
 
 }

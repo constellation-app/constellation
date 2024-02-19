@@ -57,13 +57,13 @@ public final class PanAnimation extends Animation {
     }
 
     @Override
-    public void initialise(GraphWriteMethods wg) {
+    public void initialise(final GraphWriteMethods wg) {
         cameraAttr = VisualConcept.GraphAttribute.CAMERA.ensure(wg);
         camera = wg.getObjectValue(cameraAttr, 0);
     }
 
     @Override
-    public void animate(GraphWriteMethods wg) {
+    public void animate(final GraphWriteMethods wg) {
         if (step <= STEPS) {
             final float t = step / (float) STEPS;
             final float mix = reflect(t);
@@ -82,7 +82,7 @@ public final class PanAnimation extends Animation {
     }
 
     @Override
-    public void reset(GraphWriteMethods wg) {
+    public void reset(final GraphWriteMethods wg) {
         // Method override required, intentionally left blank
     }
 
