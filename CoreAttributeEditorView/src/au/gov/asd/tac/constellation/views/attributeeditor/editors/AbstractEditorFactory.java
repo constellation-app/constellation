@@ -28,7 +28,6 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.Node;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 
 /**
@@ -55,7 +54,6 @@ public abstract class AbstractEditorFactory<V> {
     public abstract static class AbstractEditor<V> {
 
         private static final String HEADING_DEFAULT_STYLE = "header";
-        protected static final String NO_VALUE_LABEL = "No Value";
         protected static final int CONTROLS_DEFAULT_HORIZONTAL_SPACING = 5;
         protected static final int CONTROLS_DEFAULT_VERTICAL_SPACING = 10;
 
@@ -66,6 +64,7 @@ public abstract class AbstractEditorFactory<V> {
         protected final StringProperty errorMessageProperty;
         protected final String editedItemName;
         protected V currentValue;
+        protected V savedValue;
         protected Node editorHeading = null;
         protected Node editorControls = null;
 
@@ -79,6 +78,14 @@ public abstract class AbstractEditorFactory<V> {
             this.errorMessageProperty = new SimpleStringProperty();
             this.editedItemName = editedItemName;
             setCurrentValue(initialValue);
+        }
+
+        public final void storeValue() {
+            savedValue = currentValue;
+        }
+
+        public final void restoreValue() {
+            setCurrentValue(savedValue);
         }
 
         protected final V getCurrentValue() {
@@ -158,6 +165,7 @@ public abstract class AbstractEditorFactory<V> {
             if (editorHeading == null) {
                 editorHeading = createEditorHeading();
             }
+
             return editorHeading;
         }
 
@@ -175,6 +183,7 @@ public abstract class AbstractEditorFactory<V> {
                     ((PluginSequenceEditOperation) editOperation).setPreEdit(preEdit());
                     ((PluginSequenceEditOperation) editOperation).setPostEdit(postEdit());
                 }
+
                 editOperation.performEdit(getCurrentValue());
             }
         }

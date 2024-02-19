@@ -45,6 +45,7 @@ public class AttributeEditorDialog extends ConstellationDialog {
     private final Button okButton;
     private final Button cancelButton;
     private final Button defaultButton;
+    private final Button undoDefaultButton;
 
     public AttributeEditorDialog(final boolean restoreDefaultButton, final AbstractEditor<?> editor) {
         final VBox root = new VBox();
@@ -57,7 +58,17 @@ public class AttributeEditorDialog extends ConstellationDialog {
 
         okButton = new Button("OK");
         cancelButton = new Button("Cancel");
+
         defaultButton = new Button("Restore Default");
+        defaultButton.setMinWidth(100);
+
+        undoDefaultButton = new Button("Undo Default");
+        undoDefaultButton.setMinWidth(100);
+        undoDefaultButton.setStyle("-fx-font-weight: bold;");
+
+        okCancelHBox = new HBox(20);
+        okCancelHBox.setPadding(new Insets(10));
+        okCancelHBox.setAlignment(Pos.CENTER);
 
         okButton.setOnAction(e -> {
             editor.performEdit();
@@ -66,11 +77,21 @@ public class AttributeEditorDialog extends ConstellationDialog {
 
         cancelButton.setOnAction(e -> hideDialog());
 
-        defaultButton.setOnAction(e -> editor.setDefaultValue());
+        defaultButton.setOnAction(e -> {
+            editor.storeValue();
+            editor.setDefaultValue();
+            editor.getEditorControls().setDisable(true);
+            okCancelHBox.getChildren().remove(defaultButton);
+            okCancelHBox.getChildren().add(undoDefaultButton);
+        });
 
-        okCancelHBox = new HBox(20);
-        okCancelHBox.setPadding(new Insets(10));
-        okCancelHBox.setAlignment(Pos.CENTER);
+        undoDefaultButton.setOnAction(e -> {
+            editor.restoreValue();
+            editor.getEditorControls().setDisable(false);
+            okCancelHBox.getChildren().remove(undoDefaultButton);
+            okCancelHBox.getChildren().add(defaultButton);
+        });
+
         if (restoreDefaultButton) {
             okCancelHBox.getChildren().addAll(okButton, cancelButton, defaultButton);
         } else {
@@ -80,6 +101,7 @@ public class AttributeEditorDialog extends ConstellationDialog {
         okButton.disableProperty().bind(editor.getEditDisabledProperty());
         errorLabel.visibleProperty().bind(editor.getEditDisabledProperty());
         errorLabel.textProperty().bind(editor.getErrorMessageProperty());
+
         final Node ec = editor.getEditorControls();
         VBox.setVgrow(ec, Priority.ALWAYS);
         root.getChildren().addAll(editor.getEditorHeading(), ec, errorLabel, okCancelHBox);
@@ -87,9 +109,11 @@ public class AttributeEditorDialog extends ConstellationDialog {
         final Scene scene = new Scene(root);
         scene.setFill(Color.rgb(0, 0, 0, 0));
         scene.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
+
         if (JavafxStyleManager.isDarkTheme()) {
             scene.getStylesheets().add(AttributeEditorDialog.class.getResource(DARK_THEME).toExternalForm());
         }
+
         fxPanel.setScene(scene);
     }
 }
