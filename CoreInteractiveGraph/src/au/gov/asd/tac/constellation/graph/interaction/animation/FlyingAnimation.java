@@ -39,10 +39,45 @@ import java.util.Iterator;
  * @author algol
  */
 public final class FlyingAnimation extends Animation {
+    
     public static final String NAME = "Fly Through Animation";
+    
+    private static final int STEPS_PER_LINK = 96;
+    private static final int VERTICES_PER_SPLINE = 4;
+    private static final int BACKTRACK_LENGTH = 10;
+    
+    // Keep track of recent links we've visited so we don't retrace our immediate tracks.
+    private final ArrayDeque<Integer> prevLinks;
+    private final SecureRandom random;
+    private final ArrayDeque<Vector3f> xyzQueue;
+    
+    // Attribut references
+    private int selectedAttr;
+    private int xAttr;
+    private int yAttr;
+    private int zAttr;
+    private int x2Attr;
+    private int y2Attr;
+    private int z2Attr;
+    private boolean doMixing;
+    
     private int stepsPerLink;
+    private int step;
+    
     private int cameraAttribute;
     private Camera initialPosition;
+    private Camera camera;
+
+    // The current destination vertex.
+    private int currentVxId = Graph.NOT_FOUND;
+
+    public FlyingAnimation() {
+        random = new SecureRandom();
+
+        xyzQueue = new ArrayDeque<>(VERTICES_PER_SPLINE);
+
+        prevLinks = new ArrayDeque<>();
+    }
 
     @Override
     public void initialise(final GraphWriteMethods wg) {
@@ -56,7 +91,6 @@ public final class FlyingAnimation extends Animation {
             x2Attr = VisualConcept.VertexAttribute.X2.get(wg);
             y2Attr = VisualConcept.VertexAttribute.Y2.get(wg);
             z2Attr = VisualConcept.VertexAttribute.Z2.get(wg);
-            rAttr = VisualConcept.VertexAttribute.NODE_RADIUS.get(wg);
             selectedAttr = VisualConcept.VertexAttribute.SELECTED.get(wg);
             doMixing = x2Attr != Graph.NOT_FOUND && y2Attr != Graph.NOT_FOUND && z2Attr != Graph.NOT_FOUND;
             cameraAttribute = VisualConcept.GraphAttribute.CAMERA.get(wg);
@@ -68,7 +102,7 @@ public final class FlyingAnimation extends Animation {
             xyzQueue.add(new Vector3f(camera.lookAtEye));
             xyzQueue.add(new Vector3f(camera.lookAtCentre));
             
-            currentVxId = Graph.NOT_FOUND;
+            // Set up the initial four points for the spline.
             for (int i = xyzQueue.size(); i < VERTICES_PER_SPLINE; i++) {
                 final Vector3f xyz = getNextVertex(wg, camera.getMix());
                 xyzQueue.add(xyz);
@@ -78,9 +112,11 @@ public final class FlyingAnimation extends Animation {
 
     @Override
     public void animate(final GraphWriteMethods wg) {
-        // dont animate unless there is more than 1 node
+        
+        // Do not animate unless there is more than 1 node
         if (wg.getVertexCount() > 1) {
             
+            // Stop the animation if the camera has been changed externaly 
             if (camera != wg.getObjectValue(cameraAttribute, 0)){
                 stopAnimation();
             } else {
@@ -140,41 +176,6 @@ public final class FlyingAnimation extends Animation {
     @Override
     public long getIntervalInMillis() {
         return 35;
-    }
-
-    private static final int STEPS_PER_LINK = 96;
-    private static final int VERTICES_PER_SPLINE = 4;
-    private static final int BACKTRACK_LENGTH = 10;
-
-    private final ArrayDeque<Vector3f> xyzQueue;
-    private Camera camera;
-    private int selectedAttr;
-    private int xAttr;
-    private int yAttr;
-    private int zAttr;
-    private int x2Attr;
-    private int y2Attr;
-    private int z2Attr;
-    private int rAttr;
-    private boolean doMixing;
-
-    // The current destination vertex.
-    private int currentVxId;
-
-    // Keep track of recent links we've visited so we don't retrace our immediate tracks.
-    private final ArrayDeque<Integer> prevLinks;
-
-    private int step;
-
-    private final SecureRandom random;
-
-    public FlyingAnimation() {
-        random = new SecureRandom();
-
-        xyzQueue = new ArrayDeque<>(VERTICES_PER_SPLINE);
-
-        // Set up the initial four points for the spline.
-        prevLinks = new ArrayDeque<>();
     }
 
     private Vector3f getNextVertex(final GraphReadMethods rg, final float mix) {
