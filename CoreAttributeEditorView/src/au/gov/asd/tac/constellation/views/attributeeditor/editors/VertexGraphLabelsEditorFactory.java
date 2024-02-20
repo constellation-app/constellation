@@ -153,6 +153,11 @@ public class VertexGraphLabelsEditorFactory extends AttributeValueEditorFactory<
             return controls;
         }
 
+        @Override
+        public Boolean noValueCheckBoxAvailable() {
+            return false;
+        }
+
         private class LabelEntry {
 
             final ComboBox<String> attrCombo;

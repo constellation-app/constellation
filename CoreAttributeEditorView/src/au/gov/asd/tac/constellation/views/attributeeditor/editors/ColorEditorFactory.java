@@ -140,5 +140,10 @@ public class ColorEditorFactory extends AttributeValueEditorFactory<Constellatio
             controls.addRow(1, pickerLabel, picker);
             return controls;
         }
+
+        @Override
+        public Boolean noValueCheckBoxAvailable() {
+            return true;
+        }
     }
 }

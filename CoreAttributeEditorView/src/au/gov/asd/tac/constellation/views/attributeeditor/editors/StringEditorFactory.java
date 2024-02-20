@@ -59,7 +59,9 @@ public class StringEditorFactory extends AttributeValueEditorFactory<String> {
 
         @Override
         public void updateControlsWithValue(final String value) {
-            textArea.setText(value != null ? value : "");
+            if (value != null) {
+                textArea.setText(value);
+            }
         }
 
         @Override
@@ -122,6 +124,11 @@ public class StringEditorFactory extends AttributeValueEditorFactory<String> {
 
             controls.addRow(0, textArea);
             return controls;
+        }
+
+        @Override
+        public Boolean noValueCheckBoxAvailable() {
+            return true;
         }
     }
 }

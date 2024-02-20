@@ -80,7 +80,7 @@ public class VertexTypeEditorFactory extends AttributeValueEditorFactory<SchemaV
 
         @Override
         protected SchemaVertexType getValueFromControls() {
-            return typeList.getSelectionModel().getSelectedItem() != null 
+            return typeList.getSelectionModel().getSelectedItem() != null
                     ? typeList.getSelectionModel().getSelectedItem()
                     : SchemaVertexTypeUtilities.getTypeOrBuildNew(nameText.getText());
         }
@@ -144,6 +144,11 @@ public class VertexTypeEditorFactory extends AttributeValueEditorFactory<SchemaV
             controls.addRow(1, listLabel);
             controls.addRow(2, typeList);
             return controls;
+        }
+
+        @Override
+        public Boolean noValueCheckBoxAvailable() {
+            return false;
         }
     }
 }

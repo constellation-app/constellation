@@ -188,5 +188,10 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
             controls.addRow(4, pickerLabel, picker);
             return controls;
         }
+
+        @Override
+        public Boolean noValueCheckBoxAvailable() {
+            return true;
+        }
     }
 }

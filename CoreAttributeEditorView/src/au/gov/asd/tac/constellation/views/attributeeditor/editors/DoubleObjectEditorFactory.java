@@ -77,5 +77,10 @@ public class DoubleObjectEditorFactory extends AttributeValueEditorFactory<Doubl
             controls.addRow(0, numberField);
             return controls;
         }
+
+        @Override
+        public Boolean noValueCheckBoxAvailable() {
+            return true;
+        }
     }
 }

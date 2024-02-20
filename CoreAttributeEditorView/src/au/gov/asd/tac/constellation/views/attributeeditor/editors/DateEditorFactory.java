@@ -91,5 +91,10 @@ public class DateEditorFactory extends AttributeValueEditorFactory<LocalDate> {
             controls.addRow(0, datePicker);
             return controls;
         }
+
+        @Override
+        public Boolean noValueCheckBoxAvailable() {
+            return true;
+        }
     }
 }

@@ -76,5 +76,10 @@ public class IntegerObjectEditorFactory extends AttributeValueEditorFactory<Inte
             controls.addRow(0, numberField);
             return controls;
         }
+
+        @Override
+        public Boolean noValueCheckBoxAvailable() {
+            return true;
+        }
     }
 }

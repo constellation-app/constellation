@@ -72,5 +72,10 @@ public class BooleanObjectEditorFactory extends AttributeValueEditorFactory<Bool
             controls.addRow(0, checkBox);
             return controls;
         }
+
+        @Override
+        public Boolean noValueCheckBoxAvailable() {
+            return true;
+        }
     }
 }

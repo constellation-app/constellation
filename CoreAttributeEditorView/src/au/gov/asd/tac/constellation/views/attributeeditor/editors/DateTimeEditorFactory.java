@@ -173,6 +173,11 @@ public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDate
             return controls;
         }
 
+        @Override
+        public Boolean noValueCheckBoxAvailable() {
+            return true;
+        }
+
         private void updateTimeZoneList() {
             timeZoneComboBox.getSelectionModel().selectedItemProperty().removeListener(updateTimeFromZone);
             final ZoneId selected = timeZoneComboBox.getValue();

@@ -78,5 +78,10 @@ public class HyperlinkEditorFactory extends AttributeValueEditorFactory<URI> {
             controls.addRow(0, textField);
             return controls;
         }
+
+        @Override
+        public Boolean noValueCheckBoxAvailable() {
+            return true;
+        }
     }
 }

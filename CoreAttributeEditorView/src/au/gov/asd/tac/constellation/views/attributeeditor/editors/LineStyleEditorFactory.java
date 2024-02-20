@@ -99,5 +99,10 @@ public class LineStyleEditorFactory extends AttributeValueEditorFactory<LineStyl
             controls.addRow(0, lineStyleLabel, lineStyleComboBox);
             return controls;
         }
+
+        @Override
+        public Boolean noValueCheckBoxAvailable() {
+            return false;
+        }
     }
 }

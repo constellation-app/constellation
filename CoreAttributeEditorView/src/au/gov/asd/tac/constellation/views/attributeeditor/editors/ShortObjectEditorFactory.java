@@ -77,5 +77,10 @@ public class ShortObjectEditorFactory extends AttributeValueEditorFactory<Short>
             controls.addRow(0, numberField);
             return controls;
         }
+
+        @Override
+        public Boolean noValueCheckBoxAvailable() {
+            return true;
+        }
     }
 }

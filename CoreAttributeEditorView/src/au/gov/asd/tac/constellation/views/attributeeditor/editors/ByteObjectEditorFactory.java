@@ -77,5 +77,10 @@ public class ByteObjectEditorFactory extends AttributeValueEditorFactory<Byte> {
             controls.addRow(0, numberField);
             return controls;
         }
+
+        @Override
+        public Boolean noValueCheckBoxAvailable() {
+            return true;
+        }
     }
 }

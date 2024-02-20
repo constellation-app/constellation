@@ -73,10 +73,10 @@ public class DecoratorsEditorFactory extends AttributeValueEditorFactory<VertexD
         @Override
         public void updateControlsWithValue(VertexDecorators value) {
             // Ensure a null value is translated to an empty/default VertexDecorators object
-            if (value == null ) {
+            if (value == null) {
                 value = new VertexDecorators(null, null, null, null);
             }
-            
+
             setDecoratorChoice(nwCombo, value.getNorthWestDecoratorAttribute());
             setDecoratorChoice(neCombo, value.getNorthEastDecoratorAttribute());
             setDecoratorChoice(seCombo, value.getSouthEastDecoratorAttribute());
@@ -126,6 +126,11 @@ public class DecoratorsEditorFactory extends AttributeValueEditorFactory<VertexD
             controls.addRow(1, swLabel, swCombo);
 
             return controls;
+        }
+
+        @Override
+        public Boolean noValueCheckBoxAvailable() {
+            return false;
         }
 
         private void setDecoratorChoice(final ComboBox<String> comboBox, final String choice) {

@@ -97,6 +97,11 @@ public class TimeEditorFactory extends AttributeValueEditorFactory<LocalTime> {
             return controls;
         }
 
+        @Override
+        public Boolean noValueCheckBoxAvailable() {
+            return true;
+        }
+
         private HBox createTimeSpinners() {
             hourSpinner = new Spinner<>(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23));
             minSpinner = new Spinner<>(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59));

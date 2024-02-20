@@ -146,6 +146,11 @@ public class AttributeEditorFactory extends AbstractEditorFactory<AttributeProto
             return controls;
         }
 
+        @Override
+        public Boolean noValueCheckBoxAvailable() {
+            return false;
+        }
+
         @SuppressWarnings("unchecked")
         private <T> EventHandler<ActionEvent> getSelectDefaultHandler() {
             return e -> {

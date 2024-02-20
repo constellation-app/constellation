@@ -190,5 +190,10 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
 
             return timeSpinnerContainer;
         }
+
+        @Override
+        public Boolean noValueCheckBoxAvailable() {
+            return true;
+        }
     }
 }
