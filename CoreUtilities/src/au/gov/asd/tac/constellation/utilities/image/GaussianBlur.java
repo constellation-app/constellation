@@ -105,7 +105,6 @@ public class GaussianBlur {
             if (sourceChannel.length <= targetChannel.length) {
                 float[] tempChannel = Arrays.copyOf(sourceChannel, sourceChannel.length);
                 final int[] boxes = boxesForGauss(radius, passes);
-                System.out.println(boxes[0]);
                 for (int i = 0; i < passes; i++) {
                     switch (type) {
                         case STANDARD:
@@ -200,7 +199,6 @@ public class GaussianBlur {
     private static void boxBlurFFH(final float[] sourceChannel, final float[] targetChannel,
             final int width, final int height, final int radius) {
         final float iarr = 1F / (radius + radius + 1);
-        //System.out.println(Integer.toString(width) + " " + Integer.toString(height) + " " + Integer.toString(radius));
         for (int i = 0; i < height; i++) {
             int ti = i * width;
             int li = ti;
@@ -214,11 +212,9 @@ public class GaussianBlur {
                 }
             }
             for (int j = 0; j <= radius; j++) {
-                //System.out.println(ri);
                 if (ri < sourceChannel.length) {
                     val += sourceChannel[ri++] - fv;
                 }
-                //System.out.println(Integer.toString(i) + " " + Integer.toString(j) + " " + Float.toString(val) + " " + Integer.toString(ri));
                 if (ti < targetChannel.length) {
                     targetChannel[ti++] = val * iarr;
                 }
