@@ -327,6 +327,27 @@ public abstract class Animation {
     }
     
     /**
+     * Interrupt all running animations on all animated graphs.
+     * @param graphId
+     */
+    public static final synchronized void interruptGraphAnimation(final String graphId) {
+        
+        // Get the animations curently running on that grah
+        final Map<String, Animation> runningAnimations = ANIMATED_GRAPHS.remove(graphId);
+            if (runningAnimations != null){
+
+            //Itterate over all animations on that graph and interrupt the annimation
+            runningAnimations.keySet().forEach(animationName -> {
+                runningAnimations.get(animationName).interrupt();
+            });
+
+            //Remove all reverences to animations from the graph reference
+            runningAnimations.clear();
+        }
+    
+    }
+    
+    /**
      * Interrupt this animation.
      */
     public void interrupt(){
