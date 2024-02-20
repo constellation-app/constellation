@@ -43,7 +43,7 @@ public class ThrobbingNodeAnimation extends Animation {
             nodeRadiusAttribute = VisualConcept.VertexAttribute.NODE_RADIUS.get(wg);
             for (int pos = 0; pos < wg.getVertexCount(); pos++) {
                 final int vxId = wg.getVertex(pos);
-                originalNodeRadii.put(vxId, wg.getFloatValue(nodeRadiusAttribute, vxId));
+                registerNode(vxId, wg);
             }
         }
     }
@@ -59,6 +59,12 @@ public class ThrobbingNodeAnimation extends Animation {
             currentRadius += currentDirection;
             for (int pos = 0; pos < wg.getVertexCount(); pos++) {
                 final int vxId = wg.getVertex(pos);
+                
+                // If a NOde is added during animation its original radius needs to be captured. 
+                if (originalNodeRadii.get(vxId) == null){
+                    registerNode(vxId, wg);
+                }
+                
                 wg.setFloatValue(nodeRadiusAttribute, vxId, currentRadius * originalNodeRadii.get(vxId));
             }
         }
@@ -77,6 +83,10 @@ public class ThrobbingNodeAnimation extends Animation {
     @Override
     protected String getName() {
         return NAME;
+    }
+
+    private void registerNode(final int vxId, final GraphWriteMethods wg) {
+        originalNodeRadii.put(vxId, wg.getFloatValue(nodeRadiusAttribute, vxId));
     }
 
 }
