@@ -42,8 +42,7 @@ public class ThrobbingNodeAnimation extends Animation {
         } else {
             nodeRadiusAttribute = VisualConcept.VertexAttribute.NODE_RADIUS.get(wg);
             for (int pos = 0; pos < wg.getVertexCount(); pos++) {
-                final int vxId = wg.getVertex(pos);
-                registerNode(vxId, wg);
+                registerNode(wg.getVertex(pos), wg);
             }
         }
     }

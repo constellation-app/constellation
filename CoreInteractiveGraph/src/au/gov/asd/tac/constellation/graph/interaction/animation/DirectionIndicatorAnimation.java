@@ -33,7 +33,7 @@ public final class DirectionIndicatorAnimation extends Animation {
         if (wg.getVertexCount() <= 1) {
             stopAnimation();
         } else {
-            motionAtt = VisualConcept.GraphAttribute.CONNECTION_MOTION.get(wg);
+            motionAtt = VisualConcept.GraphAttribute.CONNECTION_MOTION.ensure(wg);
             
         }
     }
