@@ -139,7 +139,7 @@ public class ColorblindUtilities {
                 break;
         }
 
-        ConstellationColor newColor = ConstellationColor.getColorValue(adjustedRed, adjustedGreen, adjustedBlue, 0.99F);
+        final ConstellationColor newColor = ConstellationColor.getColorValue(adjustedRed, adjustedGreen, adjustedBlue, 0.99F);
         return newColor;
     }
 
