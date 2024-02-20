@@ -1,4 +1,4 @@
-# Import from Database
+# Import From Database
 
 <table class="table table-striped">
 <thead>
@@ -24,40 +24,71 @@
 The "Import from Database" window allows you to import data from a
 database using a JDBC Connection.
 
+Full Example:
 <div style="text-align: center">
-
-<img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/dragging_attributes_jdbc_import.png" alt="Database
-Importer" />
-
+    <img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/ImportDatabaseFullExample.png" alt="Database Importer Connection
+    example with all details" />
 </div>
+<br/>
+
+
 
 ## High Level Workflow Steps
 
 The following is a high level workflow an analyst can follow (explained
 in detail later on):
 
-1.  Add the relevant JDBC Driver via "Manage Connections" -> "Drivers"
-    tab.
-2.  Add the Connection details in "Manage Connections" -> "Connections"
-    tab. If the username and password are not required, leave them
-    blank.
+1.  Add the relevant JDBC Driver via "Manage Connections" -&gt; "Drivers"
+    tab. These drivers will be specific to the database that you are
+    connecting to. You only need one driver for each database type e.g.
+    MySQL, PostgresQL, SQLite Example drivers:
+
+    -   MySQL -
+        [mysql-connector-java-8.0.23.jar](https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.23/mysql-connector-java-8.0.23.jar)
+    -   SQLite -
+        [sqlite-jdbc-3.36.0.3.jar](https://repo1.maven.org/maven2/org/xerial/sqlite-jdbc/3.36.0.3/sqlite-jdbc-3.36.0.3.jar)
+    -   Postgresql -
+        [postgresql-42.7.1.jar](https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.1/postgresql-42.7.1.jar)
+
+    <div style="text-align: center">
+        <img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/DBDriversExample.png" alt="Database
+drivers example" />
+
+    </div>
+
+2.  Add the Connection details in "Manage Connections" -&gt; "Connections"
+    tab. The connection will be an instance to a specific database.
+
+    -   *Connection name* - user specified name for the connection
+    -   *Driver* - Pick the database driver needed to connect to the db
+    -   *Connection String* - It will contain the database type, host, port,
+        and name of the database in the format `jdbc:[database
+        name]://[host]:[port]/[database name]`
+    -   e.g. `jdbc:mysql://localhost:3306/employees` for mysql or
+        `jdbc:postgresql://localhost:5432/test` for postgres.
+    -   If the username and password are not required, leave them blank.
+
+        <img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/DBConnections.png" alt="Database Importer Connection example" />
 3.  Select the connection from the "Connection" drop-down in the main
     Import window.
 4.  Enter the username and password if the connection requires them.
 5.  Enter the SQL Query and Click the "Query" button to retrieve data.
 6.  Select your destination graph.
-7.  Drag and drop attributes from the bottom pane onto your columns.
+7.  Drag and drop attributes from the bottom pane onto your columns (Shown in the image below).
 8.  Right click an attribute for more options.
 9.  Click on the "Import" button to import the data to your destination
     graph.
+
+    <img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/dragging_attributes_jdbc_import.png" alt="Database
+    Importer" />
 
 Hints:
 
 -   See all supported attributes using Options -> Show all schema
     attributes
 -   Hover over the attribute name for a tooltip.
--   Filter in the Configuration Pane by adding searches of the form
-    \<column_name> =="\<search text>" E.g. first_name=="Nick".
+-   Filter in the Configuration Pane by adding searches e.g. first_name=="Nick".
+
 
 ## Add and Remove Connections to Import Queries From
 

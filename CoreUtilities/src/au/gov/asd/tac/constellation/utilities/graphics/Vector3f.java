@@ -90,14 +90,17 @@ public final class Vector3f implements Serializable {
     }
 
     /**
-     * Add two vectors, store the result in this vector.
+     * Add one or more vectors, store the result in this vector.
      *
-     * @param u An existing Vector3f.
-     * @param v Another existing Vector3f.
-     * @return the sum of the 2 given vectors.
+     * @param vectors one or more number of existing Vector3f.
+     * @return the sum of the given vectors.
      */
-    public static Vector3f add(final Vector3f u, final Vector3f v) {
-        return new Vector3f(u.a[0] + v.a[0], u.a[1] + v.a[1], u.a[2] + v.a[2]);
+    public static Vector3f add(final Vector3f... vectors) {
+        final Vector3f result = new Vector3f();
+        for (final Vector3f vector : vectors){
+            result.add(vector);
+        }
+        return result;
     }
 
     /**
@@ -193,7 +196,7 @@ public final class Vector3f implements Serializable {
      */
     public static Vector3f subtract(final Vector3f u, final Vector3f v) {
         return new Vector3f(u.a[0] - v.a[0], u.a[1] - v.a[1], u.a[2] - v.a[2]);
-    }
+        }
 
     /**
      * Calculate u-v, store the result in result.
@@ -207,7 +210,7 @@ public final class Vector3f implements Serializable {
         result.a[1] = u.a[1] - v.a[1];
         result.a[2] = u.a[2] - v.a[2];
     }
-
+    
     /**
      * The cross product is the vector perpendicular to the vectors being
      * multiplied and normal to the plane containing them.
@@ -220,7 +223,7 @@ public final class Vector3f implements Serializable {
         a[1] = -u.a[0] * v.a[2] + v.a[0] * u.a[2];
         a[2] = u.a[0] * v.a[1] - v.a[0] * u.a[1];
     }
-
+    
     /**
      * The dot product is the cosine of the angle between the vectors.
      *

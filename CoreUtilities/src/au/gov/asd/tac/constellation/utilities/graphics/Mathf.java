@@ -102,16 +102,72 @@ public final class Mathf {
 
     /**
      * Calculates the signed distance of a point to a plane (normalized).
+     * Equation : (Ax + By + Cz + D) / √(A^2 + b^2 + C^2)
+     * @param point a vector representing a point (x, y, z).
+     * @param plane a vector representing a normalized plane (A, B, C, D).
      *
-     * @param point a vector representing a point.
+     * @return the shortest distance between the given point and the given plane.
+     */
+    public static float distanceToPlane(final Vector3f point, final Vector4f plane) {
+        final float topHalf = point.a[0] * plane.a[0] + point.a[1] * plane.a[1] + point.a[2] * plane.a[2] + plane.a[3];
+        final double bottomHalf = Math.sqrt(Math.pow(plane.a[0], 2) + Math.pow(plane.a[1], 2) + Math.pow(plane.a[2], 2));
+        return (float) (topHalf / bottomHalf);
+    }
+    
+    /**
+     * Calculates the point at which a line between two points intersects a plane.
+     *
+     * @param initialEndPoint a vector representing a point.
+     * @param finalEndPoint a vector representing a point.
      * @param plane a vector representing a plane.
      *
      * @return the distance between the given point and the given plane.
      */
-    public static float distanceToPlane(final Vector3f point, final Vector4f plane) {
-        return point.a[0] * plane.a[0] + point.a[1] * plane.a[1] + point.a[2] * plane.a[2] + plane.a[3];
+    public static Vector3f planeIntersectionPoint(final Vector3f initialEndPoint, final Vector3f finalEndPoint, final Vector4f plane) {
+        
+        //Represents the distance from the initial point to the intersectionpoint
+        final float t;
+        
+        //calculate the eqation of the line 
+        final Vector3f pointOfIntrest = new Vector3f(initialEndPoint);
+        final Vector3f directionVector = new Vector3f();
+        
+        Vector3f.subtract(directionVector, finalEndPoint, initialEndPoint);
+        
+        final Vector3f planeNormal = plane.toVector3f();
+        final Vector3f planeNormalNeg = plane.toVector3f();
+        planeNormalNeg.scale(-1);
+        
+        final Vector3f planePoint = new Vector3f();
+        Mathf.getPointOnPlane(planePoint, plane);
+        
+        t = (Vector3f.dotProduct(planeNormalNeg, initialEndPoint) + Vector3f.dotProduct(planeNormal, planePoint))/Vector3f.dotProduct(planeNormal, directionVector);
+        directionVector.scale(t);
+        pointOfIntrest.add(directionVector);
+        return pointOfIntrest;
     }
 
+    /**
+     * Calculates a point guaranteed to be on a provided plane.
+     * @param planePoint
+     * @param plane 
+     */
+    public static void getPointOnPlane(final Vector3f planePoint, final Vector4f plane){
+        //The plane does not have a constant Z value and therefore coresses all points on the X-Y Axis. 
+        final float origin = 0F;
+        final float planePointX = origin;;
+        final float planePointY;
+        final float planePointZ;
+        if (plane.getZ() != 0){
+            planePointY = origin;
+            planePointZ = -((plane.getX()/plane.getZ())*planePointX) - ((plane.getY()/plane.getZ())*planePointY) - (plane.getW()/plane.getZ());  
+        } else {
+            planePointZ = origin;
+            planePointY = -((plane.getX()/plane.getY())*planePointX) - ((plane.getZ()/plane.getY())*planePointZ) - (plane.getW()/plane.getY());
+        }
+        
+        planePoint.set(planePointX, planePointY, planePointZ);
+    }
     /**
      * Get plane equation from three points.
      *

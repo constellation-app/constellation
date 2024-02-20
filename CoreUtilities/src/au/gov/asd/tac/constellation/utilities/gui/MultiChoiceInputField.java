@@ -95,7 +95,10 @@ public class MultiChoiceInputField<T extends Object> extends CheckComboBox<T> {
      * Enables selection option menu to be displayed when right clicking the parent input field.
      */
     public final void enablePopUp() {
-        this.setOnContextMenuRequested(event -> contextMenu.show(this, event.getScreenX(), event.getScreenY()));
+        this.setOnContextMenuRequested(event -> {
+            contextMenu.show(this, event.getScreenX(), event.getScreenY());
+            event.consume();
+        });
     }
     
     /**

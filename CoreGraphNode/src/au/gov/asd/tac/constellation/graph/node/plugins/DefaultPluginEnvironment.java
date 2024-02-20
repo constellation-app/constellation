@@ -126,7 +126,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
                     plugin.updateParameters(graph, parameters);
                 }
                 if (interactive && parameters != null) {
-                    if (interaction.prompt(plugin.getName(), parameters)) {
+                    if (interaction.prompt(plugin.getName(), parameters, plugin.getHelpCtx().getHelpID())) {
                         ThreadConstraints calledConstraints = ThreadConstraints.getConstraints();
                         calledConstraints.setAlwaysSilent(alwaysSilent);
                         try {
@@ -223,7 +223,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
                 plugin.updateParameters(graph, parameters);
             }
             if (interactive && parameters != null) {
-                if (interaction.prompt(plugin.getName(), parameters)) {
+                if (interaction.prompt(plugin.getName(), parameters, plugin.getHelpCtx().getHelpID())) {
                     plugin.run(graphs, interaction, parameters);
                 }
             } else {

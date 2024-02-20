@@ -72,6 +72,7 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.awt.StatusDisplayer;
 import org.openide.util.HelpCtx;
 
@@ -786,6 +787,8 @@ public final class PluginParametersPane extends GridPane {
         }
 
         public void linkParameterWidgetToTop(final PluginParameter<?> parameter) {
+            updateTop(parameter);
+            
             parameter.addListener((parameter1, change) -> {
                 switch (change) {
                     case ERROR:
@@ -796,15 +799,31 @@ public final class PluginParametersPane extends GridPane {
                         }
                         Platform.runLater(this::parameterHasChanged);
                         break;
-                    case VALUE:
+                    case VALUE: 
                         Platform.runLater(this::parameterHasChanged);
                         break;
                     default:
                         break;
                 }
+                updateTop(parameter);
             });
         }
-
+        
+        /**
+         * Notifies the listener of conditions relevant to the plugin is class.
+         * Top notified of changes in validity of parameters contained with the plugin parameters pane. 
+         * @param parameter 
+         */
+        private void updateTop(final PluginParameter<?> parameter){  
+            if (parameter != null & top != null){
+                if ((parameter.isRequired() && StringUtils.isBlank(parameter.getStringValue())) || parameter.getError() != null){
+                    top.notifyParameterValidityChange(parameter, false);
+                } else {
+                    top.notifyParameterValidityChange(parameter, true);
+                }
+            }
+        }
+            
         @Override
         @SuppressWarnings("unchecked") //All casts in this method are checked prior to casting.
         public final Pane buildParameterPane(final PluginParameter<?> parameter) {

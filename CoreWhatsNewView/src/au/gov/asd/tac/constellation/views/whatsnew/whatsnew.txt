@@ -1,10 +1,14 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
-== 2024-01-18 Colorblind Mode in Options
+== 2024-02-26 Colorblind Mode in Options
 <p>Colorblind mode options have been added and can be found through Setup -&gt; Options -&gt; CONSTELLATION -&gt; Application.</p>
 <p>The random generation of node colors has been adjusted based on the selected colorblind mode.</p>
 <p>Existing graphs can be displayed in a the selected colorblind scheme through the toolbar with Display -&gt; Apply Colorblind Schema to Open Graphs.</p>
+
+== 2024-02-02 Word Cloud View in Experimental
+<p>A Word Cloud View has been created and can be found under Experimental -&gt; Views -&gt; Word Cloud.</p>
+<p>This view allows you to create a Word Cloud based on words and phrases found in attributes in nodes and transactions.</p>
 
 == 2024-01-09 Data Access View Categories change
 <p>Added a new "Restore to Default" button to the Data Access View Categories </p>

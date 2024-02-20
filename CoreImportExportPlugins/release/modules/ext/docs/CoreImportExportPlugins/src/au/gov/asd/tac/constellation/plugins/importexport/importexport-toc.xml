@@ -3,7 +3,7 @@
 <toc version="2.0">
     <tocitem text="Import/Export">
         <tocitem text="Import From File" target="au.gov.asd.tac.constellation.plugins.importexport.delimited.DelimitedImportPane"/>
-        <tocitem text="Import from Database" target="au.gov.asd.tac.constellation.plugins.importexport.jdbc.JDBCImportPane"/>
+        <tocitem text="Import From Database" target="au.gov.asd.tac.constellation.plugins.importexport.jdbc.JDBCImportPane"/>
         <tocitem text="Export From Constellation" target="au.gov.asd.tac.constellation.plugins.importexport.export"/>
     </tocitem>
 </toc>

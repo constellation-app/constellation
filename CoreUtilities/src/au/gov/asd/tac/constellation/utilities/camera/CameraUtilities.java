@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.utilities.camera;
 import au.gov.asd.tac.constellation.utilities.graphics.Frame;
 import au.gov.asd.tac.constellation.utilities.graphics.Mathf;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
+import au.gov.asd.tac.constellation.utilities.visual.AxisConstants;
 
 /**
  *
@@ -34,21 +35,34 @@ public class CameraUtilities {
     }
 
     public static void refocusOnXAxis(final Camera camera, final BoundingBox bb, final boolean reverseDirection) {
-        refocus(camera, new Vector3f(reverseDirection ? -1 : 1, 0, 0), new Vector3f(0, 1, 0), bb);
+        refocus(camera, reverseDirection ? AxisConstants.X_NEGATIVE : AxisConstants.X_POSITIVE, bb);
     }
 
     public static void refocusOnYAxis(final Camera camera, final BoundingBox bb, final boolean reverseDirection) {
-        refocus(camera, new Vector3f(0, reverseDirection ? -1 : 1, 0), new Vector3f(0, 0, reverseDirection ? 1 : -1), bb);
+        refocus(camera, reverseDirection ? AxisConstants.Y_NEGATIVE : AxisConstants.Y_POSITIVE, bb);
     }
 
     public static void refocusOnZAxis(final Camera camera, final BoundingBox bb, final boolean reverseDirection) {
-        refocus(camera, new Vector3f(0, 0, reverseDirection ? -1 : 1), new Vector3f(0, 1, 0), bb);
+        refocus(camera, reverseDirection ? AxisConstants.Z_NEGATIVE : AxisConstants.Z_POSITIVE, bb);
     }
 
     public static void moveEyeToOrigin(final Camera camera) {
         camera.lookAtCentre.subtract(camera.lookAtEye);
         camera.lookAtCentre.normalize();
         camera.lookAtEye.set(0, 0, 0);
+    }
+    
+    /*
+     * A helper method to refocuses the camera to look in a default direction at a specified
+     * region.
+     *
+     * @param camera The camera object to refocus
+     * @param axis A constant reference to specify fixed axis alignment
+     * @param region The bounding box representing the region the camera should
+     * be looking at
+    */
+    public static void refocus(final Camera camera, final AxisConstants axis, final BoundingBox region) {
+        refocus(camera, axis.getForward(), axis.getUp(), region);
     }
 
     /**

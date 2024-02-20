@@ -67,10 +67,13 @@ public class ShowFileChooserDialog implements Runnable {
                     final JFileChooser jfc = fileChooserBuilder.createFileChooser();
                     final FileObject currentFileObject = getCurrentFileObject();
                     if (currentFileObject != null) {
-                        jfc.setSelectedFile(new File(currentFileObject.getNameExt()));
+                        jfc.setSelectedFile(new File(currentFileObject.getName()));
                     }
-                    jfc.showSaveDialog(WindowManager.getDefault().getMainWindow());                        
-                    selectedFiles = new File[] {jfc.getSelectedFile()};   
+                    final int returnState = jfc.showSaveDialog(WindowManager.getDefault().getMainWindow());   
+                    //The showSaveDialog returns a file object at the location of the application source files when cancel is selected 
+                    if (returnState != JFileChooser.CANCEL_OPTION){
+                        selectedFiles = new File[] {jfc.getSelectedFile()};
+                    }
                     break;
                 case MULTI:
                     selectedFiles = fileChooserBuilder.showMultiOpenDialog();

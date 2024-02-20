@@ -21,7 +21,7 @@ package au.gov.asd.tac.constellation.utilities.graphics;
  * @author algol
  */
 public final class Vector4f {
-
+    
     /**
      * The length of a vector.
      */
@@ -133,6 +133,16 @@ public final class Vector4f {
         result.a[1] = a.a[1] - b.a[1];
         result.a[2] = a.a[2] - b.a[2];
         result.a[3] = a.a[3] - b.a[3];
+    }
+    
+    public static void reflect(final Vector4f result, final Vector4f referencePoint, final Vector4f reflectionPoint) {
+        
+        // Determine the distance between the reference point and reflection point
+        final Vector4f distance = new Vector4f();
+        Vector4f.subtract(distance, reflectionPoint, referencePoint);
+        
+        // Add the distance to the reflecton point
+        Vector4f.add(result, reflectionPoint, distance);
     }
 
     public void getMatrixColumn(final Vector4f dst, final int column) {
