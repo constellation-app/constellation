@@ -115,8 +115,18 @@ public final class FlyingAnimation extends Animation {
 
                 camera.lookAtEye.set(eye[0], eye[1], eye[2]);
                 camera.lookAtCentre.set(centre[0], centre[1], centre[2]);
+                
+                // The cameras up direction must be updated at each frame
+                // This ensures the camera doesnt look in the default up direction causing perspective.
+                Vector3f forward = Vector3f.subtract(camera.lookAtEye, camera.lookAtCentre);
+                forward.normalize();
+                
+                Vector3f right = new Vector3f();
+                right.crossProduct(forward, camera.lookAtUp);
+                
+                camera.lookAtUp.crossProduct(right, forward);
+               
                 wg.setObjectValue(cameraAttribute, 0, camera);
-
                 step++;
             }
         }
