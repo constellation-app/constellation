@@ -199,9 +199,7 @@ public final class FlyingAnimation extends Animation {
             y = Graphics3DUtilities.mix(y, y2, mix);
             z = Graphics3DUtilities.mix(z, z2, mix);
         }
-
-        final float r = rAttr != Graph.NOT_FOUND ? rg.getFloatValue(rAttr, currentVxId) : 1;
-        xyz = new Vector3f(x + r * 1.5F, y + r * 1.5F, z + r * 1.5F);
+        xyz = new Vector3f(x, y, z);
 
         return xyz;
     }
