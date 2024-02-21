@@ -111,7 +111,6 @@ public class HashmodCSVImportFileParserNGTest {
         final List<String[]> expResult2 = list;
         final List<String[]> result2 = instance.parse(hashmodInputSourceMock, pluginParametersMock);
 
-        assertEquals(result2.get(0), expResult2.get(0));
         assertThat(result2).usingRecursiveComparison().isEqualTo(expResult2);
     }
 
