@@ -18,6 +18,8 @@ package au.gov.asd.tac.constellation.graph.interaction.animation;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
@@ -83,7 +85,7 @@ public final class FlyingAnimation extends Animation {
     public void initialise(final GraphWriteMethods wg) {
         // dont initilise the animation if there is less than 2 nodes
         if (wg.getVertexCount() <= 1) {
-            stopAnimation();
+            stop();
         } else {
             xAttr = VisualConcept.VertexAttribute.X.get(wg);
             yAttr = VisualConcept.VertexAttribute.Y.get(wg);
@@ -118,7 +120,7 @@ public final class FlyingAnimation extends Animation {
             
             // Stop the animation if the camera has been changed externaly 
             if (camera != wg.getObjectValue(cameraAttribute, 0)){
-                stopAnimation();
+                stop();
             } else {
                 camera = new Camera(camera);
 
@@ -170,7 +172,7 @@ public final class FlyingAnimation extends Animation {
 
     @Override
     public void reset(final GraphWriteMethods wg) {
-        Animation.startAnimation(new PanAnimation("Reset View", wg.getObjectValue(cameraAttribute, 0), initialPosition, true));
+        AnimationUtilities.startAnimation(new PanAnimation("Reset View", wg.getObjectValue(cameraAttribute, 0), initialPosition, true), GraphNode.getGraph(graphID));
     }
 
     @Override

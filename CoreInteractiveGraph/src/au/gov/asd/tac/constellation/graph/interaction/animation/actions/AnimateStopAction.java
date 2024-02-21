@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.animation.actions;
 
-import au.gov.asd.tac.constellation.graph.interaction.animation.Animation;
+import au.gov.asd.tac.constellation.graph.interaction.animation.AnimationUtilities;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -45,6 +45,6 @@ public final class AnimateStopAction implements ActionListener {
 
     @Override
     public void actionPerformed(final ActionEvent ev) {
-        Animation.stopAllAnimation();
+        AnimationUtilities.stopAllAnimations(context.getGraph());
     }
 }

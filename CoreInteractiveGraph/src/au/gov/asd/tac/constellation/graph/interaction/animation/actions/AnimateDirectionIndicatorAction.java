@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.graph.interaction.animation.actions;
 
 import au.gov.asd.tac.constellation.graph.interaction.animation.Animation;
+import au.gov.asd.tac.constellation.graph.interaction.animation.AnimationUtilities;
 import au.gov.asd.tac.constellation.graph.interaction.animation.DirectionIndicatorAnimation;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.gui.MenuBaseAction;
@@ -42,16 +43,15 @@ public final class AnimateDirectionIndicatorAction extends MenuBaseAction implem
     @Override
     protected void updateValue() {
         if (menuButton.isSelected()) {
-            Animation.startAnimation(new DirectionIndicatorAnimation(), this.getContext().getGraph());
+            AnimationUtilities.startAnimation(new DirectionIndicatorAnimation(), this.getContext().getGraph());
         } else {
-            Animation.stopAnimation(DirectionIndicatorAnimation.NAME);
+            AnimationUtilities.stopAnimation(DirectionIndicatorAnimation.NAME, this.getContext().getGraph());
         }
         
     }
 
     @Override
     protected void displayValue() {
-        final String id = GraphManager.getDefault().getActiveGraph().getId();
-        menuButton.setSelected(Animation.isAnimating(DirectionIndicatorAnimation.NAME, id));
+        menuButton.setSelected(AnimationUtilities.isAnimating(DirectionIndicatorAnimation.NAME, this.getContext().getGraph()));
     }
 }

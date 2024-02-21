@@ -31,7 +31,7 @@ public final class DirectionIndicatorAnimation extends Animation {
     public void initialise(final GraphWriteMethods wg) {
         // Don't initilise the animation if there is less than 2 nodes
         if (wg.getVertexCount() <= 1) {
-            stopAnimation();
+            stop();
         } else {
             motionAtt = VisualConcept.GraphAttribute.CONNECTION_MOTION.ensure(wg);
             

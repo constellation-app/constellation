@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins.zoom;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.interaction.animation.Animation;
+import au.gov.asd.tac.constellation.graph.interaction.animation.AnimationUtilities;
 import au.gov.asd.tac.constellation.graph.interaction.animation.PanAnimation;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
@@ -111,7 +111,7 @@ public final class ResetViewPlugin extends SimpleEditPlugin {
             final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
             if (activeGraph != null && activeGraph.getId().equals(graph.getId())) {
                 // Only do the camera animation if the edited graph is currently active
-                Animation.startAnimation(new PanAnimation("Reset View", oldCamera, camera, parameters.getBooleanValue(SIGNIFICANT_PARAMETER_ID)));
+                AnimationUtilities.startAnimation(new PanAnimation("Reset View", oldCamera, camera, parameters.getBooleanValue(SIGNIFICANT_PARAMETER_ID)), activeGraph);
             } else {
                 // Skip the animation, just set the new camera position
                 graph.setObjectValue(cameraAttribute, 0, camera);
