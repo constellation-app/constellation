@@ -100,35 +100,37 @@ public class GaussianBlur {
 
     public static void gaussianBlurBox(final float[] sourceChannel, float[] targetChannel,
             final int width, final int height, final int radius, final int passes, final BoxBlurType type) {
-
-        if (sourceChannel.length == width * height) {
-            if (sourceChannel.length <= targetChannel.length) {
-                float[] tempChannel = Arrays.copyOf(sourceChannel, sourceChannel.length);
-                final int[] boxes = boxesForGauss(radius, passes);
-                for (int i = 0; i < passes; i++) {
-                    switch (type) {
-                        case STANDARD:
-                            boxBlur(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
-                            break;
-                        case FAST:
-                            //targetChannel = ArrayUtils.addAll(tempChannel);
-                            boxBlurFH(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
-                            boxBlurFT(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
-                            break;
-                        case FASTEST:
-                            //targetChannel = ArrayUtils.addAll(tempChannel);
-                            boxBlurFFH(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
-                            boxBlurFFT(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));       
-                            break;
-                    }
-                    tempChannel = targetChannel;
-                }
-            } else {
-                throw new IllegalArgumentException(TARGET_SMALLER_THAN_SOURCE);
+        
+        // Error Handling
+        if (sourceChannel.length != width * height) {
+            throw new IllegalArgumentException("Source channel does not have the dimensions provided."); 
+        } 
+        
+        if (sourceChannel.length > targetChannel.length) {
+            throw new IllegalArgumentException(TARGET_SMALLER_THAN_SOURCE);
+        }
+        
+        
+        float[] tempChannel = Arrays.copyOf(sourceChannel, sourceChannel.length);
+        final int[] boxes = boxesForGauss(radius, passes);
+        for (int i = 0; i < passes; i++) {
+            switch (type) {
+                case STANDARD:
+                    boxBlur(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
+                    break;
+                case FAST:
+                    //targetChannel = ArrayUtils.addAll(tempChannel);
+                    boxBlurFH(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
+                    boxBlurFT(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
+                    break;
+                case FASTEST:
+                    //targetChannel = ArrayUtils.addAll(tempChannel);
+                    boxBlurFFH(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
+                    boxBlurFFT(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));       
+                    break;
             }
-        } else {
-            throw new IllegalArgumentException("Source channel does not have the dimensions provided.");
-        }        
+            tempChannel = targetChannel;
+        }
     }
 
     private static int[] boxesForGauss(final float sigma, final int n) {

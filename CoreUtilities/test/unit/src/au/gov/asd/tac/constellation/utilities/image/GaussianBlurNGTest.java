@@ -180,12 +180,6 @@ public class GaussianBlurNGTest {
         final int passes = 1;
         
         GaussianBlur.gaussianBlurBox(sourceChannel, targetChannel, width, height, radius, passes, BoxBlurType.FASTEST);
-//        // print array
-//        System.out.println("Returned array FASTEST");
-//        for(int currentElem = 0; currentElem < targetChannel.length; currentElem++ ){
-//            System.out.print(targetChannel[currentElem] + " ");
-//        }
-//        System.out.println("");
         
         final float[] expResult = {1.8571429F, 2.857143F, 1.8571429F, 2.857143F, 1.8571429F, 2.857143F};
         assertEquals(targetChannel, expResult);
