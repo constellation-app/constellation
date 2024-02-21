@@ -1203,8 +1203,8 @@ public class ShapeNGTest {
                 }
 
                 // check that only one expected feature was generated
-                ArgumentCaptor<DefaultFeatureCollection> captor
-                        = ArgumentCaptor.forClass(DefaultFeatureCollection.class);
+                ArgumentCaptor<List<SimpleFeature>> captor
+                        = ArgumentCaptor.forClass(List.class);
                 verify(mockFeatures.constructed().get(0)).addAll((Collection<SimpleFeature>) captor.capture());
                 final List<SimpleFeature> features = (List) captor.getValue();
                 assertEquals(features.size(), 1);
