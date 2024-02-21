@@ -31,7 +31,6 @@
                   <Component id="webserverPanel" alignment="0" max="32767" attributes="0"/>
                   <Component id="notebookPanel" alignment="0" max="32767" attributes="0"/>
                   <Component id="fontPanel" alignment="0" max="32767" attributes="0"/>
-                  <Component id="openAndSaveLocationPanel" alignment="0" max="32767" attributes="0"/>
                   <Component id="notebookPanel" alignment="0" max="32767" attributes="0"/>
                   <Component id="colorblindPanel" alignment="0" max="32767" attributes="0"/>
               </Group>
