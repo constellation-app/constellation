@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.graph.schema.visual.plugins;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.schema.visual.utilities.ColorblindUtilities;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
@@ -26,7 +27,6 @@ import au.gov.asd.tac.constellation.plugins.reporting.PluginReportUtilities;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
-import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.util.prefs.Preferences;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
@@ -63,7 +63,7 @@ public class CompleteSchemaPlugin extends SimpleEditPlugin {
             final int txColorblindAttr = VisualConcept.TransactionAttribute.COLORBLIND_LAYER.ensure(graph);
             
             if (!"None".equals(colorMode)) {
-                setColorRef(graph, graph.getAttributeName(vxColorblindAttr), graph.getAttributeName(txColorblindAttr));
+                ColorblindUtilities.setColorRef(graph, graph.getAttributeName(vxColorblindAttr), graph.getAttributeName(txColorblindAttr));
             } else {
                 graph.removeAttribute(vxColorblindAttr);
                 graph.removeAttribute(txColorblindAttr);
@@ -116,11 +116,4 @@ public class CompleteSchemaPlugin extends SimpleEditPlugin {
         }
     }
 
-    public static void setColorRef(final GraphWriteMethods wg, final String vxColorAttrName, final String txColorAttrName) {
-        final int vxColorRef = VisualConcept.GraphAttribute.NODE_COLOR_REFERENCE.ensure(wg);
-        final int txColorRef = VisualConcept.GraphAttribute.TRANSACTION_COLOR_REFERENCE.ensure(wg);
-
-        wg.setStringValue(vxColorRef, 0, vxColorAttrName);
-        wg.setStringValue(txColorRef, 0, txColorAttrName);
-    }
 }

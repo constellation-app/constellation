@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttributeUtilit
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept.ConstellationViewsConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.schema.visual.utilities.ColorblindUtilities;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
@@ -355,7 +356,7 @@ public class VisualSchemaFactory extends SchemaFactory {
                 final ConstellationColor vxColorblindAlpha = graph.getObjectValue(vxColorblindAttr, vertexId);
 
                 if (vertexColor != null && (vxColorblindAlpha == null || vxColorblindAlpha.getAlpha() == 0.99F)) {
-                    final ConstellationColor newColor = calcColorBrightness(vertexColor);
+                    final ConstellationColor newColor = ColorblindUtilities.calcColorBrightness(vertexColor);
                     graph.setObjectValue(vxColorblindAttr, vertexId, newColor);
                 }
             }
@@ -373,71 +374,10 @@ public class VisualSchemaFactory extends SchemaFactory {
                 final ConstellationColor txColorblindAlpha = graph.getObjectValue(txColorblindAttr, transactionId);
 
                 if (transactionColor != null && (txColorblindAlpha == null || txColorblindAlpha.getAlpha() == 0.99F)) {
-                    final ConstellationColor newColor = calcColorBrightness(transactionColor);
+                    final ConstellationColor newColor = ColorblindUtilities.calcColorBrightness(transactionColor);
                     graph.setObjectValue(txColorblindAttr, transactionId, newColor);
                 }
             }
-        }
-
-        /*Adjust RGB values using the to-be removed RGB value as a proportion of the calculation, acting as contrast booster for brightness adjustments.  
-        Evaluate the selected colorblind mode and adjust contrast if RGB value is high enough; prevents new color from being too dark, then remove imperceivable colors. 
-        Primary colors for the modes are then adjusted at different strengths to improve contrast. I.E. remove 50% red in deut, remove 18% blue for prot.*/
-        public final ConstellationColor calcColorBrightness(final ConstellationColor color) {
-            colorMode = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
-
-            float adjustedRed = color.getRed();
-            float adjustedGreen = color.getGreen();
-            float adjustedBlue = color.getBlue();
-            final float minPrimaryRGBVal = 0.15f;
-            final float minimumRGBVal = 0.25f;
-            final float minimumAdjustedVal = 0.35f;
-            final float minimumCombinedRGB = 0.70f;
-            final float brightenRGB = 0.1f;
-
-            switch (colorMode) {
-                case "None":
-                    //do nothing
-                    break;
-                case DEUTERANOPIA:
-                    //If the constellation color is primarily composed of a single rgb shade (e.g. Blue) do not adjust the value
-                    if (color.getRed() + color.getBlue() <= minimumCombinedRGB || color.getBlue() <= minPrimaryRGBVal) {
-                        break;
-                    }
-
-                    if (color.getRed() >= minimumRGBVal) {
-                        adjustedRed = color.getRed() * color.getGreen();
-                        adjustedRed = adjustedRed <= minimumAdjustedVal ? adjustedRed + brightenRGB : adjustedRed;
-                        adjustedBlue = color.getBlue() / 1.2f;
-                    }
-                    break;
-                case PROTANOPIA:
-                    if (color.getGreen() + color.getBlue() < minimumCombinedRGB || color.getRed() <= minPrimaryRGBVal) {
-                        break;
-                    }
-
-                    if (color.getGreen() >= minimumRGBVal) {
-                        adjustedGreen = color.getGreen() * color.getRed();
-                        adjustedGreen = adjustedGreen <= minimumAdjustedVal ? adjustedGreen + brightenRGB : adjustedGreen;
-                        adjustedRed = color.getRed() / 1.8f;
-                    }
-                    break;
-                case TRITANOPIA:
-                    if (color.getBlue() + color.getRed() <= minimumCombinedRGB || color.getGreen() <= minPrimaryRGBVal) {
-                        break;
-                    }
-
-                    if (color.getBlue() >= minimumRGBVal) {
-                        adjustedBlue = color.getBlue() * color.getRed();
-                        adjustedBlue = adjustedBlue <= minimumAdjustedVal ? adjustedBlue + brightenRGB : adjustedBlue;
-                        adjustedGreen = color.getGreen() / 1.05f;
-                    }
-                    break;
-                default:
-                    //do nothing
-                    break;
-            }
-            final ConstellationColor newColor = ConstellationColor.getColorValue(adjustedRed, adjustedGreen, adjustedBlue, 0.99F);
-            return newColor;
         }
     }
 }

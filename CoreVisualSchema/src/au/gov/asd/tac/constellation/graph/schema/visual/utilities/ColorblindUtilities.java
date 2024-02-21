@@ -13,7 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
  */
-package au.gov.asd.tac.constellation.graph.visual.plugins.colorblind;
+package au.gov.asd.tac.constellation.graph.schema.visual.utilities;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
