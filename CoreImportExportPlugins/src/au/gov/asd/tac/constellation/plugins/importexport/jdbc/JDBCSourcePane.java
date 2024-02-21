@@ -22,7 +22,6 @@ import au.gov.asd.tac.constellation.plugins.importexport.SourcePane;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
-import au.gov.asd.tac.constellation.utilities.text.SpellCheckingTextArea;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
@@ -51,6 +50,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
@@ -296,8 +296,8 @@ public class JDBCSourcePane extends SourcePane {
         final Label queryLabel = new Label("Query:");
         GridPane.setConstraints(queryLabel, 0, 3, 1, 1, HPos.LEFT, VPos.TOP);
 
-        final SpellCheckingTextArea query = new SpellCheckingTextArea(true);
-        query.setPrefHeight(80);
+        final TextArea query = new TextArea();
+        query.setPrefRowCount(5);
 
         GridPane.setConstraints(query, 1, 3, 2, 1, HPos.LEFT, VPos.TOP);
 
