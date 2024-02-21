@@ -26,7 +26,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
-import javafx.scene.control.Separator;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
@@ -150,6 +149,7 @@ public final class SpellChecker {
 
             if (isWordUnderCursorMisspelled()) {
                 suggestionsList.clear();
+                suggestions.getSelectionModel().clearSelection();
                 suggestionsList.addAll(matches.get(indexOfMisspelledTextUnderCursor).getSuggestedReplacements());
                 if (suggestionsList.isEmpty()) {
                     return;
@@ -172,7 +172,7 @@ public final class SpellChecker {
 
                 // Temporary check to remove ignore button on non spelling errors
                 if (specificRuleId.equals("MORFOLOGIK_RULE_EN_AU")) {
-                    popupContent.getChildren().addAll(suggestions, new Separator(), ignoreButton);
+                    popupContent.getChildren().addAll(suggestions, ignoreButton);
                 } else {
                     popupContent.getChildren().addAll(suggestions);
                 }

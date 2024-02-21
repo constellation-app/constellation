@@ -54,19 +54,15 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
     private final Insets insets = new Insets(4, 8, 4, 8);
     public static final double EXTRA_HEIGHT = 3;
 
-    private final String underlineAndHighlightStyle = "-rtfx-background-color:derive(yellow,-30%);"
+    private static final String UNDERLINE_AND_HIGHLIGHT_STYLE = "-rtfx-background-color:derive(yellow,-30%);"
             + "-rtfx-underline-color: red; "
             + "-rtfx-underline-dash-array: 2 2;"
             + "-rtfx-underline-width: 2.0;"
             + "-fx-fill: black;";
 
-    private final String clearStyle = "-rtfx-background-color: transparent;"
+    private static final String CLEAR_STYLE = "-rtfx-background-color: transparent;"
             + "-rtfx-underline-color: transparent;";
 
-
-    /**
-     * Default constructor.
-     */
     public SpellCheckingTextArea(final boolean isSpellCheckEnabled) {
         final boolean enableSpellChecking = PREFERENCES.getBoolean(ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING, ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING_DEFAULT) && isSpellCheckEnabled;
         spellChecker.turnOffSpellChecking(!enableSpellChecking);
@@ -95,9 +91,6 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
         this.setContextMenu(contextMenu);
     }
 
-    /**
-     * Constructor with input text.
-     */
     public SpellCheckingTextArea(final boolean isSpellCheckEnabled, final String text) {
         this(isSpellCheckEnabled);
         setText(text);
@@ -111,18 +104,18 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
      * underline and highlight the text from start to end.
      */
     public void highlightText(final int start, final int end) {
-        this.setStyle(start, end, underlineAndHighlightStyle);
+        this.setStyle(start, end, UNDERLINE_AND_HIGHLIGHT_STYLE);
     }
 
     /**
      * Clear any previous highlighting.
      */
     public void clearStyles() {
-        this.setStyle(0, this.getText().length(), clearStyle);
+        this.setStyle(0, this.getText().length(), CLEAR_STYLE);
     }
 
     public boolean isWordUnderCursorHighlighted(final int index) {
-        return this.getStyleOfChar(index) == underlineAndHighlightStyle;
+        return this.getStyleOfChar(index) == UNDERLINE_AND_HIGHLIGHT_STYLE;
     }
 
 
@@ -181,7 +174,7 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
         copyMenuItem.disableProperty().bind(getSelectionBinding());
         deleteMenuItem.disableProperty().bind(getSelectionBinding());
 
-        contextMenu.getItems().addAll(toggleSpellCheckMenuItem, new SeparatorMenuItem(), new SeparatorMenuItem(), undoMenuItem, redoMenuItem, cutMenuItem, copyMenuItem, pasteMenuItem, deleteMenuItem, selectAllMenuItem);
+        contextMenu.getItems().addAll(toggleSpellCheckMenuItem, new SeparatorMenuItem(), undoMenuItem, redoMenuItem, cutMenuItem, copyMenuItem, pasteMenuItem, deleteMenuItem, selectAllMenuItem);
         return contextMenu;
     }
 
@@ -234,5 +227,4 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
             }
         });
     }
-
 }
