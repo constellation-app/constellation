@@ -111,14 +111,14 @@ public class GaussianBlur {
                             boxBlur(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
                             break;
                         case FAST:
-                            targetChannel = ArrayUtils.addAll(tempChannel);
+                            //targetChannel = ArrayUtils.addAll(tempChannel);
                             boxBlurFH(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
                             boxBlurFT(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
                             break;
                         case FASTEST:
-                            targetChannel = ArrayUtils.addAll(tempChannel);
+                            //targetChannel = ArrayUtils.addAll(tempChannel);
                             boxBlurFFH(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
-                            boxBlurFFT(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
+                            boxBlurFFT(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));       
                             break;
                     }
                     tempChannel = targetChannel;
@@ -128,8 +128,7 @@ public class GaussianBlur {
             }
         } else {
             throw new IllegalArgumentException("Source channel does not have the dimensions provided.");
-        }
-
+        }        
     }
 
     private static int[] boxesForGauss(final float sigma, final int n) {

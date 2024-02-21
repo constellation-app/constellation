@@ -141,7 +141,7 @@ public class GaussianBlurNGTest {
         final int passes = 1;
 
         GaussianBlur.gaussianBlurBox(sourceChannel, targetChannel, width, height, radius, passes, BoxBlurType.STANDARD);
-
+        
         final float[] expResult = {3F, 3.2857144F, 3.5714285F, 3.4285715F, 3.7142856F, 4F, 0F, 0F};
         assertEquals(targetChannel, expResult);
     }
@@ -153,15 +153,15 @@ public class GaussianBlurNGTest {
     public void testGaussianBlurBoxFast() {
         System.out.println("gaussianBlurBoxFast");
         final float[] sourceChannel = {1F, 2F, 3F, 4F, 5F, 6F};
-        final float[] targetChannel = new float[8];
+        final float[] targetChannel = new float[6];
         final int width = 3;
         final int height = 2;
         final int radius = 2;
         final int passes = 1;
 
         GaussianBlur.gaussianBlurBox(sourceChannel, targetChannel, width, height, radius, passes, BoxBlurType.FAST);
-
-        final float[] expResult = {0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F};
+        
+        final float[] expResult = {2.2857144F, 3.2857144F, 4.285714F, 2.7142856F, 3.7142856F, 4.714286F};
         assertEquals(targetChannel, expResult);
     }
     
@@ -172,7 +172,7 @@ public class GaussianBlurNGTest {
     public void testGaussianBlurBoxFastest() {
         System.out.println("gaussianBlurBoxFastest");
         final float[] sourceChannel = {1F, 2F, 3F, 4F, 5F, 6F};
-        final float[] targetChannel = new float[8];
+        final float[] targetChannel = new float[6];
         //final float[] targetChannel = {0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f};
         final int width = 2;
         final int height = 3;
@@ -180,8 +180,14 @@ public class GaussianBlurNGTest {
         final int passes = 1;
         
         GaussianBlur.gaussianBlurBox(sourceChannel, targetChannel, width, height, radius, passes, BoxBlurType.FASTEST);
-
-        final float[] expResult = {0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F};
+//        // print array
+//        System.out.println("Returned array FASTEST");
+//        for(int currentElem = 0; currentElem < targetChannel.length; currentElem++ ){
+//            System.out.print(targetChannel[currentElem] + " ");
+//        }
+//        System.out.println("");
+        
+        final float[] expResult = {1.8571429F, 2.857143F, 1.8571429F, 2.857143F, 1.8571429F, 2.857143F};
         assertEquals(targetChannel, expResult);
     }
 
