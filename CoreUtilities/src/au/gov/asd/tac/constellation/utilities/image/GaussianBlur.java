@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.utilities.image;
 
 import java.util.Arrays;
-import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * Gaussian Blur.
@@ -97,20 +96,28 @@ public class GaussianBlur {
         FAST,
         FASTEST;
     }
-
+    /**
+     * Edits the targetChannel to be a blurred copy of the soruceChannel
+     * @param sourceChannel Float array containing image data
+     * @param targetChannel Empty float array with size greater than or equal to the size of sourceChannel
+     * @param width Width of image stored in float sourceChannel
+     * @param height Height of image stored in sourceChannel
+     * @param radius Radius of pixel blur
+     * @param passes Number of blur passes
+     * @param type Which blur algorithm to use: STANDARD, FAST or FASTEST
+     */
     public static void gaussianBlurBox(final float[] sourceChannel, float[] targetChannel,
             final int width, final int height, final int radius, final int passes, final BoxBlurType type) {
-        
+
         // Error Handling
         if (sourceChannel.length != width * height) {
-            throw new IllegalArgumentException("Source channel does not have the dimensions provided."); 
-        } 
-        
+            throw new IllegalArgumentException("Source channel does not have the dimensions provided.");
+        }
+
         if (sourceChannel.length > targetChannel.length) {
             throw new IllegalArgumentException(TARGET_SMALLER_THAN_SOURCE);
         }
-        
-        
+
         float[] tempChannel = Arrays.copyOf(sourceChannel, sourceChannel.length);
         final int[] boxes = boxesForGauss(radius, passes);
         for (int i = 0; i < passes; i++) {
@@ -126,7 +133,7 @@ public class GaussianBlur {
                 case FASTEST:
                     //targetChannel = ArrayUtils.addAll(tempChannel);
                     boxBlurFFH(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
-                    boxBlurFFT(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));       
+                    boxBlurFFT(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
                     break;
             }
             tempChannel = targetChannel;

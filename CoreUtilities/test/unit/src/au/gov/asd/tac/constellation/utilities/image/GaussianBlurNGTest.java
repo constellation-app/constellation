@@ -49,7 +49,8 @@ public class GaussianBlurNGTest {
     }
 
     /**
-     * Test of gaussianBlurReal method, of class GaussianBlur. When the dimensions of the source channel is not equal to height x width
+     * Test of gaussianBlurReal method, of class GaussianBlur. When the
+     * dimensions of the source channel is not equal to height x width
      */
     @Test(expectedExceptions = {IllegalArgumentException.class}, expectedExceptionsMessageRegExp = "Source channel does not have the dimensions provided.")
     public void testGaussianBlurRealBadSourceChannelDimensions() {
@@ -61,7 +62,8 @@ public class GaussianBlurNGTest {
     }
 
     /**
-     * Test of gaussianBlurReal method, of class GaussianBlur. When target channel is smaller than the source channel
+     * Test of gaussianBlurReal method, of class GaussianBlur. When target
+     * channel is smaller than the source channel
      */
     @Test(expectedExceptions = {IllegalArgumentException.class}, expectedExceptionsMessageRegExp = "Target channel is smaller than source channel.")
     public void testGaussianBlurRealBadTargetChannelSize() {
@@ -90,7 +92,8 @@ public class GaussianBlurNGTest {
     }
 
     /**
-     * Test of gaussianBlurBox method, of class GaussianBlur. When the dimensions of the source channel is not equal to height x width
+     * Test of gaussianBlurBox method, of class GaussianBlur. When the
+     * dimensions of the source channel is not equal to height x width
      */
     @Test(expectedExceptions = {IllegalArgumentException.class}, expectedExceptionsMessageRegExp = "Source channel does not have the dimensions provided.")
     public void testGaussianBlurBoxBadSourceChannelDimensions() {
@@ -102,7 +105,8 @@ public class GaussianBlurNGTest {
     }
 
     /**
-     * Test of gaussianBlurBox method, of class GaussianBlur. When target channel is smaller than the source channel
+     * Test of gaussianBlurBox method, of class GaussianBlur. When target
+     * channel is smaller than the source channel
      */
     @Test(expectedExceptions = {IllegalArgumentException.class}, expectedExceptionsMessageRegExp = "Target channel is smaller than source channel.")
     public void testGaussianBlurBoxBadTargetChannelSize() {
@@ -128,7 +132,8 @@ public class GaussianBlurNGTest {
     }
 
     /**
-     * Test of gaussianBlurBox method, of class GaussianBlur. Standard BoxBlurType
+     * Test of gaussianBlurBox method, of class GaussianBlur. Standard
+     * BoxBlurType
      */
     @Test
     public void testGaussianBlurBoxStandard() {
@@ -141,7 +146,7 @@ public class GaussianBlurNGTest {
         final int passes = 1;
 
         GaussianBlur.gaussianBlurBox(sourceChannel, targetChannel, width, height, radius, passes, BoxBlurType.STANDARD);
-        
+
         final float[] expResult = {3F, 3.2857144F, 3.5714285F, 3.4285715F, 3.7142856F, 4F, 0F, 0F};
         assertEquals(targetChannel, expResult);
     }
@@ -160,13 +165,13 @@ public class GaussianBlurNGTest {
         final int passes = 1;
 
         GaussianBlur.gaussianBlurBox(sourceChannel, targetChannel, width, height, radius, passes, BoxBlurType.FAST);
-        
+
         final float[] expResult = {2.2857144F, 3.2857144F, 4.285714F, 2.7142856F, 3.7142856F, 4.714286F};
         assertEquals(targetChannel, expResult);
     }
-    
+
     /**
-     * Test of gaussianBlurBox method, of class GaussianBlur. Fast BoxBlurType
+     * Test of gaussianBlurBox method, of class GaussianBlur. Fastest BoxBlurType
      */
     @Test
     public void testGaussianBlurBoxFastest() {
@@ -178,9 +183,9 @@ public class GaussianBlurNGTest {
         final int height = 3;
         final int radius = 2;
         final int passes = 1;
-        
+
         GaussianBlur.gaussianBlurBox(sourceChannel, targetChannel, width, height, radius, passes, BoxBlurType.FASTEST);
-        
+
         final float[] expResult = {1.8571429F, 2.857143F, 1.8571429F, 2.857143F, 1.8571429F, 2.857143F};
         assertEquals(targetChannel, expResult);
     }
@@ -220,7 +225,8 @@ public class GaussianBlurNGTest {
     }
 
     /**
-     * Test of colorise method, of class GaussianBlur. Target channel smaller than source channel
+     * Test of colorise method, of class GaussianBlur. Target channel smaller
+     * than source channel
      */
     @Test(expectedExceptions = {IllegalArgumentException.class}, expectedExceptionsMessageRegExp = "Target channel is smaller than source channel.")
     public void testColoriseBadTargetChannelSize() {
@@ -246,7 +252,6 @@ public class GaussianBlurNGTest {
         // since the result numbers don't really say much 
         // (due to using the using the signed bit as part of the ARGB value), 
         // we'll compare the expected alpha and color values contained within
-
         // alpha
         assertEquals(targetChannel[0] >>> 24, 0);
         assertEquals(targetChannel[1] >>> 24, 0);
@@ -260,5 +265,5 @@ public class GaussianBlurNGTest {
         assertEquals(targetChannel[2] & 0xFFFFFF, 0xB2C01A);
         assertEquals(targetChannel[3] & 0xFFFFFF, 0xFFA413);
         assertEquals(targetChannel[4] & 0xFFFFFF, 0xFF2A00);
-    }   
+    }
 }
