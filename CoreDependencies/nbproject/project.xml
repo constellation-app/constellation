@@ -735,50 +735,6 @@
                 <package>nl.jqno.equalsverifier.internal.checkers</package>
                 <package>nl.jqno.equalsverifier.internal.checkers.fieldchecks</package>
                 <package>nl.jqno.equalsverifier.internal.exceptions</package>
-                <package>nl.jqno.equalsverifier.internal.lib.bytebuddy</package>
-                <package>nl.jqno.equalsverifier.internal.lib.bytebuddy.asm</package>
-                <package>nl.jqno.equalsverifier.internal.lib.bytebuddy.build</package>
-                <package>nl.jqno.equalsverifier.internal.lib.bytebuddy.description</package>
-                <package>nl.jqno.equalsverifier.internal.lib.bytebuddy.description.annotation</package>
-                <package>nl.jqno.equalsverifier.internal.lib.bytebuddy.description.enumeration</package>
-                <package>nl.jqno.equalsverifier.internal.lib.bytebuddy.description.field</package>
-                <package>nl.jqno.equalsverifier.internal.lib.bytebuddy.description.method</package>
-                <package>nl.jqno.equalsverifier.internal.lib.bytebuddy.description.modifier</package>
-                <package>nl.jqno.equalsverifier.internal.lib.bytebuddy.description.type</package>
-                <package>nl.jqno.equalsverifier.internal.lib.bytebuddy.dynamic</package>
-                <package>nl.jqno.equalsverifier.internal.lib.bytebuddy.dynamic.loading</package>
-                <package>nl.jqno.equalsverifier.internal.lib.bytebuddy.dynamic.scaffold</package>
-                <package>nl.jqno.equalsverifier.internal.lib.bytebuddy.dynamic.scaffold.inline</package>
-                <package>nl.jqno.equalsverifier.internal.lib.bytebuddy.dynamic.scaffold.subclass</package>
-                <package>nl.jqno.equalsverifier.internal.lib.bytebuddy.implementation</package>
-                <package>nl.jqno.equalsverifier.internal.lib.bytebuddy.implementation.attribute</package>
-                <package>nl.jqno.equalsverifier.internal.lib.bytebuddy.implementation.auxiliary</package>
-                <package>nl.jqno.equalsverifier.internal.lib.bytebuddy.implementation.bytecode</package>
-                <package>nl.jqno.equalsverifier.internal.lib.bytebuddy.implementation.bytecode.assign</package>
-                <package>nl.jqno.equalsverifier.internal.lib.bytebuddy.implementation.bytecode.assign.primitive</package>
-                <package>nl.jqno.equalsverifier.internal.lib.bytebuddy.implementation.bytecode.assign.reference</package>
-                <package>nl.jqno.equalsverifier.internal.lib.bytebuddy.implementation.bytecode.collection</package>
-                <package>nl.jqno.equalsverifier.internal.lib.bytebuddy.implementation.bytecode.constant</package>
-                <package>nl.jqno.equalsverifier.internal.lib.bytebuddy.implementation.bytecode.member</package>
-                <package>nl.jqno.equalsverifier.internal.lib.bytebuddy.jar.asm</package>
-                <package>nl.jqno.equalsverifier.internal.lib.bytebuddy.jar.asm.commons</package>
-                <package>nl.jqno.equalsverifier.internal.lib.bytebuddy.jar.asm.signature</package>
-                <package>nl.jqno.equalsverifier.internal.lib.bytebuddy.matcher</package>
-                <package>nl.jqno.equalsverifier.internal.lib.bytebuddy.pool</package>
-                <package>nl.jqno.equalsverifier.internal.lib.bytebuddy.utility</package>
-                <package>nl.jqno.equalsverifier.internal.lib.bytebuddy.utility.dispatcher</package>
-                <package>nl.jqno.equalsverifier.internal.lib.bytebuddy.utility.privilege</package>
-                <package>nl.jqno.equalsverifier.internal.lib.bytebuddy.utility.visitor</package>
-                <package>nl.jqno.equalsverifier.internal.lib.objenesis</package>
-                <package>nl.jqno.equalsverifier.internal.lib.objenesis.instantiator</package>
-                <package>nl.jqno.equalsverifier.internal.lib.objenesis.instantiator.android</package>
-                <package>nl.jqno.equalsverifier.internal.lib.objenesis.instantiator.annotations</package>
-                <package>nl.jqno.equalsverifier.internal.lib.objenesis.instantiator.basic</package>
-                <package>nl.jqno.equalsverifier.internal.lib.objenesis.instantiator.gcj</package>
-                <package>nl.jqno.equalsverifier.internal.lib.objenesis.instantiator.perc</package>
-                <package>nl.jqno.equalsverifier.internal.lib.objenesis.instantiator.sun</package>
-                <package>nl.jqno.equalsverifier.internal.lib.objenesis.instantiator.util</package>
-                <package>nl.jqno.equalsverifier.internal.lib.objenesis.strategy</package>
                 <package>nl.jqno.equalsverifier.internal.prefabvalues</package>
                 <package>nl.jqno.equalsverifier.internal.prefabvalues.factories</package>
                 <package>nl.jqno.equalsverifier.internal.prefabvalues.factoryproviders</package>

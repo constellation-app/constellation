@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doCallRealMethod;
@@ -111,6 +112,7 @@ public class HashmodCSVImportFileParserNGTest {
         final List<String[]> result2 = instance.parse(hashmodInputSourceMock, pluginParametersMock);
 
         assertEquals(result2.get(0), expResult2.get(0));
+        assertThat(result2).usingRecursiveComparison().isEqualTo(expResult2);
     }
 
     /**
@@ -154,7 +156,7 @@ public class HashmodCSVImportFileParserNGTest {
         final List<String[]> expResult2 = explist;
         final List<String[]> result2 = instance.preview(hashmodInputSourceMock, pluginParametersMock, 0);
 
-        assertEquals(result2.get(0), expResult2.get(0));
+        assertThat(result2).usingRecursiveComparison().isEqualTo(expResult2);
 
         // When there are 4 CSV records to be parsed in the file and the limit is 2
         doReturn(true, true, true, true, false).when(iteratorMock).hasNext();
@@ -166,6 +168,6 @@ public class HashmodCSVImportFileParserNGTest {
         final List<String[]> expResult3 = explist;
         final List<String[]> result3 = instance.preview(hashmodInputSourceMock, pluginParametersMock, 2);
 
-        assertEquals(result3.get(0), expResult3.get(0));
+        assertThat(result3).usingRecursiveComparison().isEqualTo(expResult3);
     }
 }

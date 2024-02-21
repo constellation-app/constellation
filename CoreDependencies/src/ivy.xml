@@ -71,19 +71,19 @@
         <dependency org="gov.nasa" name="worldwind" rev="2.0.0-986"/>
         <dependency org="javax.help" name="javahelp" rev="2.0.05"/>
         <dependency org="log4j" name="log4j" rev="1.2.17"/>
-        <dependency org="org.assertj" name="assertj-core" rev="3.25.3" />
         <dependency org="org.controlsfx" name="controlsfx" rev="11.1.2"/>
         <dependency org="org.eclipse.jetty" name="jetty-server" rev="11.0.6"/>
         <dependency org="org.eclipse.jetty" name="jetty-servlet" rev="11.0.20"/>
         <dependency org="org.ejml" name="ejml-all" rev="0.43.1"/>
         <dependency org="org.json" name="json" rev="20240205"/>
-        <dependency org="org.mockito" name="mockito-inline" rev="5.2.0"/>
         <dependency org="org.python" name="jython-standalone" rev="2.7.3"/>
         <dependency org="org.swinglabs" name="swingx" rev="1.6.1"/>
         <dependency org="org.fxmisc.richtext" name="richtextfx" rev="0.11.2"/>
         <dependency org="org.openjdk.nashorn" name="nashorn-core" rev="15.4"/>
                 
         <!-- Testing -->
+        <dependency org="org.assertj" name="assertj-core" rev="3.25.3" />
+        <dependency org="org.mockito" name="mockito-inline" rev="5.2.0"/>
         <dependency org="nl.jqno.equalsverifier" name="equalsverifier" rev="3.15.6"/>
         <dependency org="org.testfx" name="openjfx-monocle" rev="11.0.2" transitive="false" />
         <dependency org="org.testfx" name="testfx-core" rev="4.0.16-alpha" />

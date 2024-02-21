@@ -25,6 +25,7 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
@@ -47,8 +48,8 @@ public class UserTablePreferencesNGTest {
         final JsonNode expected = OBJECT_MAPPER.readTree(
                 new FileInputStream(getClass().getResource(JSON_RESOURCE).getPath()));
         final String column = "ColumnOrder";
-
-        assertEquals(expected.get(column), serialization.get(column));
+        
+        assertThat(expected).usingRecursiveComparison().isEqualTo(serialization);
     }
 
     @Test
