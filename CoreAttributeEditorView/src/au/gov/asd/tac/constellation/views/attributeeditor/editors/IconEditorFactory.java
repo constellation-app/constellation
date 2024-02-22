@@ -158,7 +158,7 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
         }
 
         @Override
-        public Boolean noValueCheckBoxAvailable() {
+        public boolean noValueCheckBoxAvailable() {
             return false;
         }
 

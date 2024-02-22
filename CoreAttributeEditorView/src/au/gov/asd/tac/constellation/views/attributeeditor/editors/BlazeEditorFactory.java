@@ -190,7 +190,7 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
         }
 
         @Override
-        public Boolean noValueCheckBoxAvailable() {
+        public boolean noValueCheckBoxAvailable() {
             return true;
         }
     }

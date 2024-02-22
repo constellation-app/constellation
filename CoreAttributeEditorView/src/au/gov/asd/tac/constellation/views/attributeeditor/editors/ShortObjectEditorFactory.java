@@ -79,7 +79,7 @@ public class ShortObjectEditorFactory extends AttributeValueEditorFactory<Short>
         }
 
         @Override
-        public Boolean noValueCheckBoxAvailable() {
+        public boolean noValueCheckBoxAvailable() {
             return true;
         }
     }

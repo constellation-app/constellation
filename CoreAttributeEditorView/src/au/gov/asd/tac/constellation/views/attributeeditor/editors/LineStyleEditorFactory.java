@@ -101,7 +101,7 @@ public class LineStyleEditorFactory extends AttributeValueEditorFactory<LineStyl
         }
 
         @Override
-        public Boolean noValueCheckBoxAvailable() {
+        public boolean noValueCheckBoxAvailable() {
             return false;
         }
     }

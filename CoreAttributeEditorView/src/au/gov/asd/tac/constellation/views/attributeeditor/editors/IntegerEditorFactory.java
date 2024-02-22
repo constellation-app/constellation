@@ -83,7 +83,7 @@ public class IntegerEditorFactory extends AttributeValueEditorFactory<Integer> {
         }
 
         @Override
-        public Boolean noValueCheckBoxAvailable() {
+        public boolean noValueCheckBoxAvailable() {
             return false;
         }
     }

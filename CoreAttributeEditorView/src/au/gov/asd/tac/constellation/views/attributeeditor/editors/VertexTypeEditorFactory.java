@@ -147,7 +147,7 @@ public class VertexTypeEditorFactory extends AttributeValueEditorFactory<SchemaV
         }
 
         @Override
-        public Boolean noValueCheckBoxAvailable() {
+        public boolean noValueCheckBoxAvailable() {
             return false;
         }
     }

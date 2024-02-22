@@ -110,7 +110,7 @@ public class TimeZoneEditorFactory extends AttributeValueEditorFactory<ZoneId> {
         }
 
         @Override
-        public Boolean noValueCheckBoxAvailable() {
+        public boolean noValueCheckBoxAvailable() {
             return false;
         }
     }

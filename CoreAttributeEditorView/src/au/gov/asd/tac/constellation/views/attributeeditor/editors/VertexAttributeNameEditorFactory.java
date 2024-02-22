@@ -133,7 +133,7 @@ public class VertexAttributeNameEditorFactory extends AttributeValueEditorFactor
         }
 
         @Override
-        public Boolean noValueCheckBoxAvailable() {
+        public boolean noValueCheckBoxAvailable() {
             return false;
         }
     }

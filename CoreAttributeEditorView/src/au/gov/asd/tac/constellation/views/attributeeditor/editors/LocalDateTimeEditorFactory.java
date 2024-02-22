@@ -192,7 +192,7 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
         }
 
         @Override
-        public Boolean noValueCheckBoxAvailable() {
+        public boolean noValueCheckBoxAvailable() {
             return true;
         }
     }

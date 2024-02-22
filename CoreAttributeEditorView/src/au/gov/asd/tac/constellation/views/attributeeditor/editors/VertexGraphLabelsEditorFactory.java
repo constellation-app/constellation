@@ -154,7 +154,7 @@ public class VertexGraphLabelsEditorFactory extends AttributeValueEditorFactory<
         }
 
         @Override
-        public Boolean noValueCheckBoxAvailable() {
+        public boolean noValueCheckBoxAvailable() {
             return false;
         }
 

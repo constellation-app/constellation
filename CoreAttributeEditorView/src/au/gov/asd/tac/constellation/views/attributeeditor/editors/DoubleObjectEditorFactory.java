@@ -79,7 +79,7 @@ public class DoubleObjectEditorFactory extends AttributeValueEditorFactory<Doubl
         }
 
         @Override
-        public Boolean noValueCheckBoxAvailable() {
+        public boolean noValueCheckBoxAvailable() {
             return true;
         }
     }

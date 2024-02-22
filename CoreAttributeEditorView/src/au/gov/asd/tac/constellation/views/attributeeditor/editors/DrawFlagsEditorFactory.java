@@ -107,7 +107,7 @@ public class DrawFlagsEditorFactory extends AttributeValueEditorFactory<DrawFlag
         }
 
         @Override
-        public Boolean noValueCheckBoxAvailable() {
+        public boolean noValueCheckBoxAvailable() {
             return false;
         }
     }

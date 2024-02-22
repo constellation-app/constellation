@@ -133,7 +133,7 @@ public class TransactionAttributeNameEditorFactory extends AttributeValueEditorF
         }
 
         @Override
-        public Boolean noValueCheckBoxAvailable() {
+        public boolean noValueCheckBoxAvailable() {
             return false;
         }
     }

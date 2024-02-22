@@ -78,7 +78,7 @@ public class FloatObjectEditorFactory extends AttributeValueEditorFactory<Float>
         }
 
         @Override
-        public Boolean noValueCheckBoxAvailable() {
+        public boolean noValueCheckBoxAvailable() {
             return true;
         }
     }

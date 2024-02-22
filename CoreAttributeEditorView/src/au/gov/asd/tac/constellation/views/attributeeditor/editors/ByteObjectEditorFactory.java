@@ -79,7 +79,7 @@ public class ByteObjectEditorFactory extends AttributeValueEditorFactory<Byte> {
         }
 
         @Override
-        public Boolean noValueCheckBoxAvailable() {
+        public boolean noValueCheckBoxAvailable() {
             return true;
         }
     }

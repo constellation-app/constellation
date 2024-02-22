@@ -129,7 +129,7 @@ public class DecoratorsEditorFactory extends AttributeValueEditorFactory<VertexD
         }
 
         @Override
-        public Boolean noValueCheckBoxAvailable() {
+        public boolean noValueCheckBoxAvailable() {
             return false;
         }
 

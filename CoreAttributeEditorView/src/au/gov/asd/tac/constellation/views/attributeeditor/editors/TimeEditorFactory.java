@@ -98,7 +98,7 @@ public class TimeEditorFactory extends AttributeValueEditorFactory<LocalTime> {
         }
 
         @Override
-        public Boolean noValueCheckBoxAvailable() {
+        public boolean noValueCheckBoxAvailable() {
             return true;
         }
 

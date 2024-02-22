@@ -154,7 +154,7 @@ public class TransactionGraphLabelsEditorFactory extends AttributeValueEditorFac
         }
 
         @Override
-        public Boolean noValueCheckBoxAvailable() {
+        public boolean noValueCheckBoxAvailable() {
             return false;
         }
 

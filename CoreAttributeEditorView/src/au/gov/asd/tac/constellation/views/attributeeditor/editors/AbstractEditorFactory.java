@@ -235,7 +235,7 @@ public abstract class AbstractEditorFactory<V> {
 
         protected abstract Node createEditorControls();
 
-        public abstract Boolean noValueCheckBoxAvailable();
+        public abstract boolean noValueCheckBoxAvailable();
     }
 
     /**

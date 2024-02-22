@@ -127,7 +127,7 @@ public class StringEditorFactory extends AttributeValueEditorFactory<String> {
         }
 
         @Override
-        public Boolean noValueCheckBoxAvailable() {
+        public boolean noValueCheckBoxAvailable() {
             return true;
         }
     }

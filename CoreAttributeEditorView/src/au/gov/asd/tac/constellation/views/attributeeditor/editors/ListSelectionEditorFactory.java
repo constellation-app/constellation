@@ -129,7 +129,7 @@ public class ListSelectionEditorFactory extends AbstractEditorFactory<List<Strin
         }
 
         @Override
-        public Boolean noValueCheckBoxAvailable() {
+        public boolean noValueCheckBoxAvailable() {
             return false;
         }
     }

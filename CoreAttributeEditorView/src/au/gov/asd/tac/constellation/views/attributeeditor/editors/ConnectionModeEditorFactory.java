@@ -101,7 +101,7 @@ public class ConnectionModeEditorFactory extends AttributeValueEditorFactory<Con
         }
 
         @Override
-        public Boolean noValueCheckBoxAvailable() {
+        public boolean noValueCheckBoxAvailable() {
             return false;
         }
     }

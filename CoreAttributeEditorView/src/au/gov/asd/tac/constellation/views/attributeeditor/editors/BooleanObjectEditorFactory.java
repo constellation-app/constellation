@@ -74,7 +74,7 @@ public class BooleanObjectEditorFactory extends AttributeValueEditorFactory<Bool
         }
 
         @Override
-        public Boolean noValueCheckBoxAvailable() {
+        public boolean noValueCheckBoxAvailable() {
             return true;
         }
     }

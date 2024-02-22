@@ -83,7 +83,7 @@ public class LongEditorFactory extends AttributeValueEditorFactory<Long> {
         }
 
         @Override
-        public Boolean noValueCheckBoxAvailable() {
+        public boolean noValueCheckBoxAvailable() {
             return false;
         }
     }

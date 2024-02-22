@@ -147,7 +147,7 @@ public class AttributeEditorFactory extends AbstractEditorFactory<AttributeProto
         }
 
         @Override
-        public Boolean noValueCheckBoxAvailable() {
+        public boolean noValueCheckBoxAvailable() {
             return false;
         }
 

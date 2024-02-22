@@ -80,7 +80,7 @@ public class HyperlinkEditorFactory extends AttributeValueEditorFactory<URI> {
         }
 
         @Override
-        public Boolean noValueCheckBoxAvailable() {
+        public boolean noValueCheckBoxAvailable() {
             return true;
         }
     }
