@@ -45,7 +45,6 @@ public class BooleanObjectEditorFactory extends AttributeValueEditorFactory<Bool
     public class BooleanObjectEditor extends AbstractEditor<Boolean> {
 
         private CheckBox checkBox;
-        protected CheckBox noValueCheckBox;
 
         protected BooleanObjectEditor(final EditOperation editOperation, final DefaultGetter<Boolean> defaultGetter, final ValueValidator<Boolean> validator, final String editedItemName, final Boolean initialValue) {
             super(editOperation, defaultGetter, validator, editedItemName, initialValue);
@@ -54,13 +53,12 @@ public class BooleanObjectEditorFactory extends AttributeValueEditorFactory<Bool
         @Override
         public void updateControlsWithValue(final Boolean value) {
             checkBox.setDisable(value == null);
-            noValueCheckBox.setSelected(false);
             checkBox.setSelected(value != null && value);
         }
 
         @Override
         protected Boolean getValueFromControls() {
-            return noValueCheckBox.isSelected() ? null : checkBox.isSelected();
+            return checkBox.isSelected();
         }
 
         @Override
@@ -68,21 +66,16 @@ public class BooleanObjectEditorFactory extends AttributeValueEditorFactory<Bool
             final GridPane controls = new GridPane();
             controls.setAlignment(Pos.CENTER);
             controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
-
             checkBox = new CheckBox("True:");
             checkBox.setAlignment(Pos.CENTER);
             checkBox.selectedProperty().addListener((v, o, n) -> update());
-
-            noValueCheckBox = new CheckBox(NO_VALUE_LABEL);
-            noValueCheckBox.setAlignment(Pos.CENTER);
-            noValueCheckBox.selectedProperty().addListener((v, o, n) -> {
-                checkBox.setDisable(noValueCheckBox.isSelected());
-                update();
-            });
-
             controls.addRow(0, checkBox);
-            controls.addRow(1, noValueCheckBox);
             return controls;
+        }
+
+        @Override
+        public boolean noValueCheckBoxAvailable() {
+            return true;
         }
     }
 }
