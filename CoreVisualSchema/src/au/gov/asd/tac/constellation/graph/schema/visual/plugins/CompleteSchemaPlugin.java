@@ -62,12 +62,6 @@ public class CompleteSchemaPlugin extends SimpleEditPlugin {
             final int vxColorblindAttr = VisualConcept.VertexAttribute.COLORBLIND_LAYER.ensure(graph);
             final int txColorblindAttr = VisualConcept.TransactionAttribute.COLORBLIND_LAYER.ensure(graph);
             
-            if (!"None".equals(colorMode)) {
-                ColorblindUtilities.setColorRef(graph, graph.getAttributeName(vxColorblindAttr), graph.getAttributeName(txColorblindAttr));
-            } else {
-                graph.removeAttribute(vxColorblindAttr);
-                graph.removeAttribute(txColorblindAttr);
-            }
 
             // Process Vertices
             maxProgress = vertexCount;
@@ -112,6 +106,14 @@ public class CompleteSchemaPlugin extends SimpleEditPlugin {
                     true
             );
           
+            
+            if (!"None".equals(colorMode)) {
+                ColorblindUtilities.setColorRef(graph, graph.getAttributeName(vxColorblindAttr), graph.getAttributeName(txColorblindAttr));
+            } else {
+                graph.removeAttribute(vxColorblindAttr);
+                graph.removeAttribute(txColorblindAttr);
+            }
+
             graph.getSchema().completeGraph(graph);
         }
     }
