@@ -18,12 +18,8 @@ package au.gov.asd.tac.constellation.graph.interaction.animation;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
-import au.gov.asd.tac.constellation.graph.interaction.gui.VisualGraphTopComponent;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Base class for animations as well as static utilities for running animations.
@@ -142,9 +138,11 @@ public abstract class Animation {
      * and creates the animation thread.
      * @param graph 
      */
-    public void run(final Graph graph) {
-        if (GraphNode.getGraphNode(graph) != null) {
-            graphID = graph.getId();
+    public void run(final String graphId) {
+        GraphNode gn = GraphNode.getGraphNode(graphId);
+        if (GraphNode.getGraphNode(graphId) != null) {
+            this.graphID = graphId;
+            Graph graph = gn.getGraph();
             // Chreate the Thread for this animaton
             animationThread = new Thread(() -> {
                 try {

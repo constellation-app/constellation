@@ -21,29 +21,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Base class for animations as well as static utilities for running animations.
- * <p>
- * The life-cycle of an animation is follows (this is a simplified version of
- * the logic that actually runs in an animation's thread):
- * <pre>
- * animation.initialise()
- * while (true) {
- *     animation.animate()
- *     // wait for this long
- *     animation.getIntervalInMillis()
- * }
- * animation.reset()
- * </pre>
- * </p>
- * All animations run on their own thread, enabling concurrent animations.
- * Each time an animation modifies the graph it must lock, modify and release the graph as quickly as possible. 
- *
+ * Responsible for managing animations on a {@link VisualGraph}. 
+ * Stores a reference to all running animations on the respective {@link VisualGraph}.
+ * 
  * @author twilight_sparkle
  * @author capricornunicorn123
  */
 public class AnimationManager {
 
     private final Map<String, Animation> animations = new HashMap<String, Animation>();
+    private final String graphId;
+    
+    public AnimationManager(final String graphId){
+        this.graphId = graphId;
+    }
 
     /**
      * Stop the requested animation running on this AnimationManagers Graph.
@@ -73,10 +64,10 @@ public class AnimationManager {
      * @param animation The animation to run
      * @param graph
      */
-    public void runAnimation(final Animation animation, final Graph graph) {
+    public void runAnimation(final Animation animation) {
         //The animation is not running on the current graph so it can be run and registered
         if (animations.get(animation.getName()) == null){
-            animation.run(graph);
+            animation.run(graphId);
             animations.put(animation.getName(), animation);
         }
     }
@@ -87,7 +78,7 @@ public class AnimationManager {
      * @param graphID
      * @return 
      */
-    public boolean isAnimating(String name) {
+    public boolean isAnimating(final String name) {
         return animations.get(name) != null;
     }
     
@@ -100,7 +91,7 @@ public class AnimationManager {
         });
     }
 
-    void notifyComplete(Animation animation) {
+    void notifyComplete(final Animation animation) {
         animations.remove(animation.getName());
     }
 }

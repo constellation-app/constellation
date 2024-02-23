@@ -111,7 +111,7 @@ public final class ResetViewPlugin extends SimpleEditPlugin {
             final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
             if (activeGraph != null && activeGraph.getId().equals(graph.getId())) {
                 // Only do the camera animation if the edited graph is currently active
-                AnimationUtilities.startAnimation(new PanAnimation("Reset View", oldCamera, camera, parameters.getBooleanValue(SIGNIFICANT_PARAMETER_ID)), activeGraph);
+                AnimationUtilities.startAnimation(new PanAnimation("Reset View", oldCamera, camera, parameters.getBooleanValue(SIGNIFICANT_PARAMETER_ID)), activeGraph.getId());
             } else {
                 // Skip the animation, just set the new camera position
                 graph.setObjectValue(cameraAttribute, 0, camera);

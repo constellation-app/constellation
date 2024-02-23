@@ -435,7 +435,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         content = new InstanceContent();
         init();
         MemoryManager.newObject(VisualGraphTopComponent.class);
-        animationManager = new AnimationManager();
+        animationManager = new AnimationManager(graph.getId());
     }
 
     /**
@@ -464,7 +464,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         content = new InstanceContent();
         init();
         MemoryManager.newObject(VisualGraphTopComponent.class);
-        animationManager = new AnimationManager();
+        animationManager = new AnimationManager(graph.getId());
     }
 
     @Override

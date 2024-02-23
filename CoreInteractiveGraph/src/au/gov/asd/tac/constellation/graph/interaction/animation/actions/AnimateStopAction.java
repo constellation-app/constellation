@@ -45,6 +45,6 @@ public final class AnimateStopAction implements ActionListener {
 
     @Override
     public void actionPerformed(final ActionEvent ev) {
-        AnimationUtilities.stopAllAnimations(context.getGraph());
+        AnimationUtilities.stopAllAnimations(context.getGraph().getId());
     }
 }

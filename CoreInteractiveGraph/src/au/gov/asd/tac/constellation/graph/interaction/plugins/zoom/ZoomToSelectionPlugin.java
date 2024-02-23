@@ -56,7 +56,7 @@ public final class ZoomToSelectionPlugin extends SimpleEditPlugin {
         final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
         if (activeGraph != null && activeGraph.getId().equals(graph.getId())) {
             // Only do the camera animation if the edited graph is currently active
-            AnimationUtilities.startAnimation(new PanAnimation("Zoom to Selection", oldCamera, camera, true), activeGraph);
+            AnimationUtilities.startAnimation(new PanAnimation("Zoom to Selection", oldCamera, camera, true), activeGraph.getId());
         } else {
             // Skip the animation, just set the new camera position
             VisualGraphUtilities.setCamera(graph, camera);

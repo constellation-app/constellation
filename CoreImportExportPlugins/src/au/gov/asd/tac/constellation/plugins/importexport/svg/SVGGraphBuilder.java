@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.utilities.svg.SVGObject;
 import au.gov.asd.tac.constellation.utilities.svg.SVGData;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.interaction.animation.Animation;
+import au.gov.asd.tac.constellation.graph.interaction.animation.AnimationUtilities;
 import au.gov.asd.tac.constellation.graph.interaction.animation.PanAnimation;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
@@ -262,7 +263,7 @@ public class SVGGraphBuilder {
         if (exportPerspective != null) {
             BoundingBoxUtilities.recalculateFromGraph(box, readableGraph, selectedElementsOnly);
             CameraUtilities.refocus(camera, exportPerspective, box);
-            Animation.startAnimation(new PanAnimation(String.format("Reset to %s View", exportPerspective), oldCamera, camera, true));
+            AnimationUtilities.startAnimation(new PanAnimation(String.format("Reset to %s View", exportPerspective), oldCamera, camera, true), this.readableGraph.getId());
         }
         
         // Determine the dimensions of the users InteractiveGraphView pane

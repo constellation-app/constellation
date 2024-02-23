@@ -15,10 +15,8 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.animation.actions;
 
-import au.gov.asd.tac.constellation.graph.interaction.animation.Animation;
 import au.gov.asd.tac.constellation.graph.interaction.animation.AnimationUtilities;
 import au.gov.asd.tac.constellation.graph.interaction.animation.ThrobbingNodeAnimation;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.gui.MenuBaseAction;
 import java.awt.event.ActionListener;
 import org.openide.awt.ActionID;
@@ -43,15 +41,15 @@ public final class AnimateThrobNodesAction extends MenuBaseAction implements Act
     @Override
     protected void updateValue() {
         if (menuButton.isSelected()) {
-            AnimationUtilities.startAnimation(new ThrobbingNodeAnimation(), this.getContext().getGraph());
+            AnimationUtilities.startAnimation(new ThrobbingNodeAnimation(), this.getContext().getGraph().getId());
         } else {
-            AnimationUtilities.stopAnimation(ThrobbingNodeAnimation.NAME, this.getContext().getGraph());
+            AnimationUtilities.stopAnimation(ThrobbingNodeAnimation.NAME, this.getContext().getGraph().getId());
         }
         
     }
 
     @Override
     protected void displayValue() {
-        menuButton.setSelected(AnimationUtilities.isAnimating(ThrobbingNodeAnimation.NAME, GraphManager.getDefault().getActiveGraph()));
+        menuButton.setSelected(AnimationUtilities.isAnimating(ThrobbingNodeAnimation.NAME, this.getContext().getGraph().getId()));
     }
 }

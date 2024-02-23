@@ -172,7 +172,7 @@ public final class FlyingAnimation extends Animation {
 
     @Override
     public void reset(final GraphWriteMethods wg) {
-        AnimationUtilities.startAnimation(new PanAnimation("Reset View", wg.getObjectValue(cameraAttribute, 0), initialPosition, true), GraphNode.getGraph(graphID));
+        AnimationUtilities.startAnimation(new PanAnimation("Reset View", wg.getObjectValue(cameraAttribute, 0), initialPosition, true), graphID);
     }
 
     @Override

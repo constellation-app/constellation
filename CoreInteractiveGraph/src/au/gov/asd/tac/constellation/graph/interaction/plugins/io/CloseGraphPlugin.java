@@ -74,7 +74,7 @@ public class CloseGraphPlugin extends SimplePlugin {
         final Graph g = graphs.getAllGraphs().get(parameters.getStringValue(GRAPH_PARAMETER_ID));
         final GraphNode gn = GraphNode.getGraphNode(g);
         final boolean forced = parameters.getBooleanValue(FORCED_PARAMETER_ID);
-        AnimationUtilities.interruptAllAnimations(g);
+        AnimationUtilities.interruptAllAnimations(g.getId());
         if (forced) {
             SwingUtilities.invokeLater(((VisualGraphTopComponent) gn.getTopComponent())::forceClose);
         } else {

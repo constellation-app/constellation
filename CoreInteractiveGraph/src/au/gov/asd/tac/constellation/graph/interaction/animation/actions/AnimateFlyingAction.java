@@ -15,10 +15,8 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.animation.actions;
 
-import au.gov.asd.tac.constellation.graph.interaction.animation.Animation;
 import au.gov.asd.tac.constellation.graph.interaction.animation.AnimationUtilities;
 import au.gov.asd.tac.constellation.graph.interaction.animation.FlyingAnimation;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.gui.MenuBaseAction;
 import java.awt.event.ActionListener;
 import org.openide.awt.ActionID;
@@ -43,15 +41,15 @@ public final class AnimateFlyingAction extends MenuBaseAction implements ActionL
     @Override
     protected void updateValue() {
         if (menuButton.isSelected()) {
-            AnimationUtilities.startAnimation(new FlyingAnimation(), this.getContext().getGraph());
+            AnimationUtilities.startAnimation(new FlyingAnimation(), this.getContext().getGraph().getId());
         } else {
-            AnimationUtilities.stopAnimation(FlyingAnimation.NAME, this.getContext().getGraph());
+            AnimationUtilities.stopAnimation(FlyingAnimation.NAME, this.getContext().getGraph().getId());
         }
         
     }
 
     @Override
     protected void displayValue() {
-        menuButton.setSelected(AnimationUtilities.isAnimating(FlyingAnimation.NAME, this.getContext().getGraph()));
+        menuButton.setSelected(AnimationUtilities.isAnimating(FlyingAnimation.NAME, this.getContext().getGraph().getId()));
     }
 }
