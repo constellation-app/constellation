@@ -126,12 +126,10 @@ public class GaussianBlur {
                     boxBlur(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
                     break;
                 case FAST:
-                    //targetChannel = ArrayUtils.addAll(tempChannel);
                     boxBlurFH(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
                     boxBlurFT(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
                     break;
                 case FASTEST:
-                    //targetChannel = ArrayUtils.addAll(tempChannel);
                     boxBlurFFH(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
                     boxBlurFFT(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
                     break;

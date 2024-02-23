@@ -175,7 +175,6 @@ public class GaussianBlurNGTest {
         System.out.println("gaussianBlurBoxFastest");
         final float[] sourceChannel = {1F, 2F, 3F, 4F, 5F, 6F};
         final float[] targetChannel = new float[6];
-        //final float[] targetChannel = {0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f};
         final int width = 2;
         final int height = 3;
         final int radius = 2;
