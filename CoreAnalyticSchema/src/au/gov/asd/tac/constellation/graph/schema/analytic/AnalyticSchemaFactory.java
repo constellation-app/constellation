@@ -251,6 +251,7 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
                     graph.setStringValue(vertexCountryAttribute, vertexId, country.getDisplayName());
                 }
             }
+            applyColorblindVertex(graph, vertexId);
         }
 
         @Override
@@ -372,6 +373,7 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
 
                 graph.removeTransaction(transactionId);
             }
+            applyColorblindTransaction(graph, transactionId);            
         }
 
         @Override

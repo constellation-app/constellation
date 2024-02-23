@@ -89,6 +89,7 @@ public class AttributeUtilitiesNGTest {
         expResult.put(VisualConcept.VertexAttribute.COLOR.getName(), graph.getAttribute(graphElementType, VisualConcept.VertexAttribute.COLOR.getName()));
         expResult.put(VisualConcept.VertexAttribute.FOREGROUND_ICON.getName(), graph.getAttribute(graphElementType, VisualConcept.VertexAttribute.FOREGROUND_ICON.getName()));
         expResult.put(VisualConcept.VertexAttribute.BACKGROUND_ICON.getName(), graph.getAttribute(graphElementType, VisualConcept.VertexAttribute.BACKGROUND_ICON.getName()));
+        expResult.put(VisualConcept.VertexAttribute.COLORBLIND_LAYER.getName(), graph.getAttribute(graphElementType, VisualConcept.VertexAttribute.COLORBLIND_LAYER.getName()));
 
         final Map<String, Integer> result = AttributeUtilities.getRegisteredAttributeIdsFromGraph(graph, graphElementType);
         assertEquals(result, expResult);

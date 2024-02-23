@@ -81,5 +81,10 @@ public class FloatEditorFactory extends AttributeValueEditorFactory<Float> {
             controls.getChildren().add(numberField);
             return controls;
         }
+
+        @Override
+        public boolean noValueCheckBoxAvailable() {
+            return false;
+        }
     }
 }

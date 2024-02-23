@@ -198,6 +198,10 @@ public class VisualConcept extends SchemaConcept {
                 .setDescription("The color of the vertex")
                 .create()
                 .build();
+        public static final SchemaAttribute COLORBLIND_LAYER = new SchemaAttribute.Builder(GraphElementType.VERTEX, ColorAttributeDescription.ATTRIBUTE_NAME, "colorblind_layer")
+                .setDescription("The colorblind value of the vertex")
+                .create()
+                .build();
         public static final SchemaAttribute DIMMED = new SchemaAttribute.Builder(GraphElementType.VERTEX, BooleanAttributeDescription.ATTRIBUTE_NAME, "dim")
                 .setDescription("Specifies whether the vertex is displayed in a dimmed state")
                 .setDefaultValue(false)
@@ -283,6 +287,10 @@ public class VisualConcept extends SchemaConcept {
                 .setDescription("The color of the transaction")
                 .create()
                 .build();
+        public static final SchemaAttribute COLORBLIND_LAYER = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, ColorAttributeDescription.ATTRIBUTE_NAME, "colorblind_layer")
+                .setDescription("The colorblind value of the transaction")
+                .create()
+                .build();
         public static final SchemaAttribute DIMMED = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, BooleanAttributeDescription.ATTRIBUTE_NAME, "dim")
                 .setDescription("Specified whether the transaction is displayed in a dimmed state")
                 .setDefaultValue(false)
@@ -307,7 +315,7 @@ public class VisualConcept extends SchemaConcept {
                 .create()
                 .build();
         public static final SchemaAttribute OVERLAY_COLOR = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, ColorAttributeDescription.ATTRIBUTE_NAME, "overlay_color")
-                .setDescription("The overlay colore of the transaction")
+                .setDescription("The overlay color of the transaction")
                 .build();
         public static final SchemaAttribute SELECTED = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, BooleanAttributeDescription.ATTRIBUTE_NAME, "selected")
                 .setDescription("Is the transaction selected?")
@@ -354,6 +362,7 @@ public class VisualConcept extends SchemaConcept {
         schemaAttributes.add(VertexAttribute.BACKGROUND_ICON);
         schemaAttributes.add(VertexAttribute.BLAZE);
         schemaAttributes.add(VertexAttribute.COLOR);
+        schemaAttributes.add(VertexAttribute.COLORBLIND_LAYER);
         schemaAttributes.add(VertexAttribute.DIMMED);
         schemaAttributes.add(VertexAttribute.FOREGROUND_ICON);
         schemaAttributes.add(VertexAttribute.IDENTIFIER);
@@ -371,6 +380,7 @@ public class VisualConcept extends SchemaConcept {
         schemaAttributes.add(VertexAttribute.Z2);
         schemaAttributes.add(VertexAttribute.PINNED);
         schemaAttributes.add(TransactionAttribute.COLOR);
+        schemaAttributes.add(TransactionAttribute.COLORBLIND_LAYER);
         schemaAttributes.add(TransactionAttribute.DIMMED);
         schemaAttributes.add(TransactionAttribute.DIRECTED);
         schemaAttributes.add(TransactionAttribute.IDENTIFIER);
