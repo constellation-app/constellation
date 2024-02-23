@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -477,7 +478,7 @@ public class XmlUtilities {
      * XML into a document.
      */
     public List<Map<String, String>> map(final String url) throws MalformedURLException, FileNotFoundException, UnsupportedEncodingException, TransformerException {       
-        return map(read(FileUtils.toFile(new URL(url))));
+        return map(read(FileUtils.toFile(URI.create(url).toURL())));
     }
 
     /**
@@ -496,7 +497,7 @@ public class XmlUtilities {
      * XML into a document.
      */
     public List<Map<String, String>> map(final String url, final String rowTag) throws MalformedURLException, FileNotFoundException, UnsupportedEncodingException, TransformerException {
-        final Document document = read(FileUtils.toFile(new URL(url)));
+        final Document document = read(FileUtils.toFile(URI.create(url).toURL()));
         return map(document, rowTag);
     }
 
@@ -585,7 +586,7 @@ public class XmlUtilities {
      * XML into a document.
      */
     public String[][] table(final String url, final boolean swap) throws MalformedURLException, FileNotFoundException, UnsupportedEncodingException, TransformerException {
-        return table(read(FileUtils.toFile(new URL(url))), swap);
+        return table(read(FileUtils.toFile(URI.create(url).toURL())), swap);
     }
 
     /**

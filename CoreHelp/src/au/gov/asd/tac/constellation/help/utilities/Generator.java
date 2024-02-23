@@ -124,17 +124,16 @@ public class Generator implements Runnable {
             splitUserDir = Arrays.copyOfRange(splitUserDir, 0, splitUserDir.length - 1);
 
             baseDirectory = String.join(sep, splitUserDir) + sep;
-        } catch (final URISyntaxException | MalformedURLException ex) {
+        } catch (final URISyntaxException | MalformedURLException | IllegalArgumentException ex) {
             LOGGER.log(Level.SEVERE, "There was a problem retrieving the base directory for launching Offline Help.", ex);
         }
         return baseDirectory;
     }
 
-    protected static String getResource() throws MalformedURLException, URISyntaxException {
+    protected static String getResource() throws MalformedURLException, URISyntaxException, IllegalArgumentException {
         final URL sourceLocation = Generator.class.getProtectionDomain().getCodeSource().getLocation();
         final String pathLoc = sourceLocation.getPath();
-        final URL url = new URL(pathLoc);
-        final URI uri = url.toURI();
+        final URI uri = URI.create(pathLoc);
         final Path path = Paths.get(uri);
         final int jarIx = path.toString().lastIndexOf(File.separator);
         final String newPath = jarIx > -1 ? path.toString().substring(0, jarIx) : "";

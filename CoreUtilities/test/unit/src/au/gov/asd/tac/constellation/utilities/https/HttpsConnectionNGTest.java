@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.Arrays;
 import javax.net.ssl.HostnameVerifier;
@@ -53,10 +54,7 @@ public class HttpsConnectionNGTest {
     // returns a URL object with a dummy location
     private static URL getDummyUrl(final boolean https) {
         try {
-            if (https) {
-                return new URL("https://dummy/secure");
-            }
-            return new URL("http://dummy/insecure");
+            return URI.create(https ? "https://dummy/secure" : "http://dummy/insecure").toURL();
         } catch (MalformedURLException e) {
             return null;
         }
