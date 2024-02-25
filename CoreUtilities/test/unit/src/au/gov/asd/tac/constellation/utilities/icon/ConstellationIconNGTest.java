@@ -364,24 +364,24 @@ public class ConstellationIconNGTest {
     /**
      * Test of clearCache method, of class ConstellationIcon.
      */
-//    @Test
-//    public void testClearCache() {
-//        ConstellationIcon.clearCache();
-//
-//        Icon icon = testIcon.buildIcon(ConstellationIcon.DEFAULT_ICON_SIZE, null);
-//        Image image = testIcon.buildImage(ConstellationIcon.DEFAULT_ICON_SIZE, null);
-//        BufferedImage bufferedImage = testIcon.buildBufferedImage(ConstellationIcon.DEFAULT_ICON_SIZE, null);
-//
-//        assertEquals(icon, testIcon.buildIcon(ConstellationIcon.DEFAULT_ICON_SIZE, null));
-//        assertEquals(image, testIcon.buildImage(ConstellationIcon.DEFAULT_ICON_SIZE, null));
-//        assertEquals(bufferedImage, testIcon.buildBufferedImage(ConstellationIcon.DEFAULT_ICON_SIZE, null));
-//
-//        ConstellationIcon.clearCache();
-//
-//        assertNotEquals(icon, testIcon.buildIcon(ConstellationIcon.DEFAULT_ICON_SIZE, null));
-//        assertNotEquals(image, testIcon.buildImage(ConstellationIcon.DEFAULT_ICON_SIZE, null));
-//        assertNotEquals(bufferedImage, testIcon.buildBufferedImage(ConstellationIcon.DEFAULT_ICON_SIZE, null));
-//    }
+    @Test
+    public void testClearCache() {
+        ConstellationIcon.clearCache();
+
+        Icon icon = testIcon.buildIcon(ConstellationIcon.DEFAULT_ICON_SIZE, null);
+        Image image = testIcon.buildImage(ConstellationIcon.DEFAULT_ICON_SIZE, null);
+        BufferedImage bufferedImage = testIcon.buildBufferedImage(ConstellationIcon.DEFAULT_ICON_SIZE, null);
+
+        assertEquals(icon, testIcon.buildIcon(ConstellationIcon.DEFAULT_ICON_SIZE, null));
+        assertEquals(image, testIcon.buildImage(ConstellationIcon.DEFAULT_ICON_SIZE, null));
+        assertEquals(bufferedImage, testIcon.buildBufferedImage(ConstellationIcon.DEFAULT_ICON_SIZE, null));
+
+        ConstellationIcon.clearCache();
+
+        assertNotEquals(icon, testIcon.buildIcon(ConstellationIcon.DEFAULT_ICON_SIZE, null));
+        assertNotEquals(image, testIcon.buildImage(ConstellationIcon.DEFAULT_ICON_SIZE, null));
+        assertNotEquals(bufferedImage, testIcon.buildBufferedImage(ConstellationIcon.DEFAULT_ICON_SIZE, null));
+    }
 
     /**
      * Test of toString method, of class ConstellationIcon.
