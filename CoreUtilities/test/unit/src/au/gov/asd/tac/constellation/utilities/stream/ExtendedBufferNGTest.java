@@ -38,8 +38,6 @@ public class ExtendedBufferNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-//        Arrays.stream(AutosaveUtilities.getAutosaves(FileExtensionConstants.STAR_AUTOSAVE))
-//                    .forEach(file -> file.delete());
     }
 
     @AfterClass

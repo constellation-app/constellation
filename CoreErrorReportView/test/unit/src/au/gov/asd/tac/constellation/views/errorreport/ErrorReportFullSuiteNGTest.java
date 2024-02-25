@@ -48,8 +48,8 @@ public class ErrorReportFullSuiteNGTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         try {
-            Arrays.stream(AutosaveUtilities.getAutosaves(FileExtensionConstants.STAR_AUTOSAVE))
-                    .forEach(file -> file.delete());
+//            Arrays.stream(AutosaveUtilities.getAutosaves(FileExtensionConstants.STAR_AUTOSAVE))
+//                    .forEach(file -> file.delete());
             if (!FxToolkit.isFXApplicationThreadRunning()) {
                 FxToolkit.registerPrimaryStage();
             }
