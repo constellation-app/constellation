@@ -23,7 +23,6 @@ import java.time.LocalTime;
 import java.time.ZoneOffset;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
@@ -62,7 +61,6 @@ public class TimeEditorFactory extends AttributeValueEditorFactory<LocalTime> {
         private Spinner<Integer> minSpinner;
         private Spinner<Integer> secSpinner;
         private Spinner<Integer> milliSpinner;
-        private CheckBox noValueCheckBox;
 
         protected TimeEditor(final EditOperation editOperation, final DefaultGetter<LocalTime> defaultGetter, final ValueValidator<LocalTime> validator, final String editedItemName, final LocalTime initialValue) {
             super(editOperation, defaultGetter, validator, editedItemName, initialValue);
@@ -70,7 +68,6 @@ public class TimeEditorFactory extends AttributeValueEditorFactory<LocalTime> {
 
         @Override
         public void updateControlsWithValue(final LocalTime value) {
-            noValueCheckBox.setSelected(false);
             if (value != null) {
                 hourSpinner.getValueFactory().setValue(value.getHour());
                 minSpinner.getValueFactory().setValue(value.getMinute());
@@ -81,13 +78,11 @@ public class TimeEditorFactory extends AttributeValueEditorFactory<LocalTime> {
 
         @Override
         protected LocalTime getValueFromControls() throws ControlsInvalidException {
-            if (noValueCheckBox.isSelected()) {
-                return null;
-            }
             if (hourSpinner.getValue() == null || minSpinner.getValue() == null
                     || secSpinner.getValue() == null || milliSpinner.getValue() == null) {
                 throw new ControlsInvalidException("Time spinners must have numeric values");
             }
+
             return LocalTime.of(hourSpinner.getValue(), minSpinner.getValue(),
                     secSpinner.getValue(), milliSpinner.getValue() * NANOSECONDS_IN_MILLISECOND);
         }
@@ -97,22 +92,14 @@ public class TimeEditorFactory extends AttributeValueEditorFactory<LocalTime> {
             final GridPane controls = new GridPane();
             controls.setAlignment(Pos.CENTER);
             controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
-
             final HBox timeSpinnerContainer = createTimeSpinners();
-
-            noValueCheckBox = new CheckBox(NO_VALUE_LABEL);
-            noValueCheckBox.setAlignment(Pos.CENTER);
-            noValueCheckBox.selectedProperty().addListener((v, o, n) -> {
-                hourSpinner.setDisable(noValueCheckBox.isSelected());
-                minSpinner.setDisable(noValueCheckBox.isSelected());
-                secSpinner.setDisable(noValueCheckBox.isSelected());
-                milliSpinner.setDisable(noValueCheckBox.isSelected());
-                update();
-            });
-
             controls.addRow(0, timeSpinnerContainer);
-            controls.addRow(1, noValueCheckBox);
             return controls;
+        }
+
+        @Override
+        public boolean noValueCheckBoxAvailable() {
+            return true;
         }
 
         private HBox createTimeSpinners() {

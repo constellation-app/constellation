@@ -25,6 +25,8 @@ import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttributeUtilit
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept.ConstellationViewsConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.schema.visual.utilities.ColorblindUtilities;
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
@@ -35,6 +37,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.prefs.Preferences;
+import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -44,6 +48,14 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = SchemaFactory.class, position = Integer.MAX_VALUE - 1)
 public class VisualSchemaFactory extends SchemaFactory {
+
+    private static final String DEUTERANOPIA = "Deuteranopia";
+    private static final String PROTANOPIA = "Protanopia";
+    private static final String TRITANOPIA = "Tritanopia";
+    public static final String NONE = "None";
+    private static final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+    //Retrieve colorblind mode selection preference 
+    public static String colorMode = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
 
     // Note: changing this value will break backwards compatibility!
     public static final String VISUAL_SCHEMA_ID = "au.gov.asd.tac.constellation.graph.schema.VisualSchemaFactory";
@@ -237,6 +249,7 @@ public class VisualSchemaFactory extends SchemaFactory {
             if (identifier != null && label == null) {
                 graph.setStringValue(vertexLabelAttribute, vertexId, identifier);
             }
+            applyColorblindVertex(graph, vertexId);
         }
 
         @Override
@@ -294,10 +307,77 @@ public class VisualSchemaFactory extends SchemaFactory {
             if (identifier != null && label == null) {
                 graph.setStringValue(transactionLabelAttribute, transactionId, identifier);
             }
+            applyColorblindTransaction(graph, transactionId);
         }
 
         private ConstellationColor randomColor() {
-            return ConstellationColor.getColorValue(random.nextFloat(), random.nextFloat(), random.nextFloat(), 1.0F);
+
+            final float brightenFloat = 0.10F; //Value to inflate low floats, prevents shades which are too dark from generating
+            final float lowFloat = 0.10F;
+            float randFloat1 = random.nextFloat();
+            float randFloat2 = random.nextFloat();
+            float randFloat3 = random.nextFloat();
+            colorMode = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
+
+            //Change node color randomiser based on colorblind mode selection
+            switch (colorMode) {
+                case NONE:
+                    return ConstellationColor.getColorValue(randFloat1, randFloat2, randFloat3, 1.0F);
+
+                case DEUTERANOPIA:
+                case PROTANOPIA:
+                    //Ensure randomised color does not generate an RGB value which is too dark 
+                    if (randFloat1 <= lowFloat && randFloat3 <= lowFloat) {
+                        randFloat1 += brightenFloat;
+                        randFloat3 += brightenFloat;
+                    }
+                    return ConstellationColor.getColorValue(randFloat1, 0F, randFloat3, 1.0F);
+
+                case TRITANOPIA:
+                    if (randFloat1 <= lowFloat && randFloat2 <= lowFloat) {
+                        randFloat1 += brightenFloat;
+                        randFloat2 += brightenFloat;
+                    }
+                    return ConstellationColor.getColorValue(randFloat1, randFloat2, 0F, 1.0F);
+                default:
+                    return null;
+            }
+        }
+
+        protected void applyColorblindVertex(final GraphWriteMethods graph, final int vertexId) {
+            // Retrieve colorblind preferences 
+            colorMode = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
+
+            final int vxColorblindAttr = VisualConcept.VertexAttribute.COLORBLIND_LAYER.ensure(graph);
+            final int vxColorAttr = VisualConcept.VertexAttribute.COLOR.ensure(graph);
+
+            if (!"None".equals(colorMode)) {
+                final ConstellationColor vertexColor = graph.getObjectValue(vxColorAttr, vertexId);
+                final ConstellationColor vxColorblindAlpha = graph.getObjectValue(vxColorblindAttr, vertexId);
+
+                if (vertexColor != null && (vxColorblindAlpha == null || vxColorblindAlpha.getAlpha() == 0.99F)) {
+                    final ConstellationColor newColor = ColorblindUtilities.calcColorBrightness(vertexColor);
+                    graph.setObjectValue(vxColorblindAttr, vertexId, newColor);
+                }
+            }
+        }
+
+        protected void applyColorblindTransaction(final GraphWriteMethods graph, final int transactionId) {
+            // Retrieve colorblind preferences 
+            colorMode = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
+
+            final int txColorblindAttr = VisualConcept.TransactionAttribute.COLORBLIND_LAYER.ensure(graph);
+            final int txColorAttr = VisualConcept.TransactionAttribute.COLOR.ensure(graph);
+
+            if (!"None".equals(colorMode)) {
+                final ConstellationColor transactionColor = graph.getObjectValue(txColorAttr, transactionId);
+                final ConstellationColor txColorblindAlpha = graph.getObjectValue(txColorblindAttr, transactionId);
+
+                if (transactionColor != null && (txColorblindAlpha == null || txColorblindAlpha.getAlpha() == 0.99F)) {
+                    final ConstellationColor newColor = ColorblindUtilities.calcColorBrightness(transactionColor);
+                    graph.setObjectValue(txColorblindAttr, transactionId, newColor);
+                }
+            }
         }
     }
 }
