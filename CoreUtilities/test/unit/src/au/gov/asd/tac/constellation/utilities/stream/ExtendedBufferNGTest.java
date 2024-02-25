@@ -144,7 +144,7 @@ public class ExtendedBufferNGTest {
     /**
      * Test of getInputStream method, of class ExtendedBuffer.
      */
-    @Test
+//    @Test
 //    public void testInputStreamReadByte() throws Exception {
 //        System.out.println("ExtendedBufferNGTest.testInputStreamReadByte");
 //        
