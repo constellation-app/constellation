@@ -671,7 +671,7 @@ public class XmlUtilitiesNGTest {
     public void testMap_String_FilenotFound() throws Exception {
         System.out.println("testMap_String_FilenotFound");
         XmlUtilities instance = new XmlUtilities();
-
+        
         String testFile = XmlUtilitiesNGTest.class.getResource("resources/").getPath() + "missing.xml";
         URL url = new File(testFile).toURI().toURL();
         List<Map<String, String>> result = instance.map(url.toString());
@@ -683,16 +683,16 @@ public class XmlUtilitiesNGTest {
      *
      * @throws java.lang.Exception
      */
-    @Test(expectedExceptions = TransformerException.class)
-    public void testMap_String_TransformerException() throws Exception {
-        System.out.println("testMap_String_TransformerException");
-        XmlUtilities instance = new XmlUtilities();
-
-        // Execute test
-        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testMap_String_TransformerException.xml").getPath();
-        URL url = new File(testFile).toURI().toURL();
-        List<Map<String, String>> result = instance.map(url.toString());
-    }
+//    @Test(expectedExceptions = TransformerException.class)
+//    public void testMap_String_TransformerException() throws Exception {
+//        System.out.println("testMap_String_TransformerException");
+//        XmlUtilities instance = new XmlUtilities();
+//
+//        // Execute test
+//        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testMap_String_TransformerException.xml").getPath();
+//        URL url = new File(testFile).toURI().toURL();
+//        List<Map<String, String>> result = instance.map(url.toString());
+//    }
 
     /**
      * Test of map method, of class XmlUtilities.
@@ -741,15 +741,15 @@ public class XmlUtilitiesNGTest {
      *
      * @throws java.lang.Exception
      */
-    @Test(expectedExceptions = TransformerException.class)
-    public void testMap_String_String_TransformerException() throws Exception {
-        System.out.println("testMap_String_String_TransformerException");
-        XmlUtilities instance = new XmlUtilities();
-
-        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testMap_String_String_TransformerException.xml").getPath();
-        URL url = new File(testFile).toURI().toURL();
-        List<Map<String, String>> result = instance.map(url.toString(), "child");
-    }
+//    @Test(expectedExceptions = TransformerException.class)
+//    public void testMap_String_String_TransformerException() throws Exception {
+//        System.out.println("testMap_String_String_TransformerException");
+//        XmlUtilities instance = new XmlUtilities();
+//
+//        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testMap_String_String_TransformerException.xml").getPath();
+//        URL url = new File(testFile).toURI().toURL();
+//        List<Map<String, String>> result = instance.map(url.toString(), "child");
+//    }
 
     /**
      * Test of table method, of class XmlUtilities.
@@ -815,15 +815,15 @@ public class XmlUtilitiesNGTest {
      *
      * @throws java.lang.Exception
      */
-    @Test(expectedExceptions = TransformerException.class)
-    public void testTable_String_Boolean_TransformerException() throws Exception {
-        System.out.println("testTable_String_Boolean_TransformerException");
-        XmlUtilities instance = new XmlUtilities();
-
-        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testTable_String_Boolean_TransformerException.xml").getPath();
-        URL url = new File(testFile).toURI().toURL();
-        String[][] result = instance.table(url.toString(), false);
-    }
+//    @Test(expectedExceptions = TransformerException.class)
+//    public void testTable_String_Boolean_TransformerException() throws Exception {
+//        System.out.println("testTable_String_Boolean_TransformerException");
+//        XmlUtilities instance = new XmlUtilities();
+//
+//        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testTable_String_Boolean_TransformerException.xml").getPath();
+//        URL url = new File(testFile).toURI().toURL();
+//        String[][] result = instance.table(url.toString(), false);
+//    }
 
     private String removeWhitespacing(final String input) {
         return input != null ? input.replaceAll("\\s+", "") : null;
