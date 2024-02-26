@@ -68,8 +68,7 @@ public class XmlUtilitiesNGTest {
     }
 
     /**
-     * Test of newDocument method, of class XmlUtilities. This effectively
-     * creates a new empty document.
+     * Test of newDocument method, of class XmlUtilities. This effectively creates a new empty document.
      */
     @Test
     public void testNewDocument() {
@@ -106,8 +105,8 @@ public class XmlUtilitiesNGTest {
 
         Document document = getXmlDocument("resources/testWrite_Document.xml", false);
         String results = new String(instance.write(document));
-        
-        assertEquals(removeWhitespacing(results),removeWhitespacing(expectedStr));
+
+        assertEquals(removeWhitespacing(results), removeWhitespacing(expectedStr));
     }
 
     /**
@@ -129,7 +128,7 @@ public class XmlUtilitiesNGTest {
         File outputFile = new File(outputFilename);
         instance.write(document, outputFile);
         String output = Files.readFile(outputFile);
-        
+
         assertEquals(removeWhitespacing(output), removeWhitespacing(expectedOutput));
     }
 
@@ -150,8 +149,8 @@ public class XmlUtilitiesNGTest {
         // Read the test file into a Document object
         Document document = getXmlDocument("resources/testWriteToString_Document.xml", false);
         String output = instance.writeToString(document);
-        
-        assertEquals(removeWhitespacing(output),removeWhitespacing(expectedOutput));
+
+        assertEquals(removeWhitespacing(output), removeWhitespacing(expectedOutput));
     }
 
     /**
@@ -168,7 +167,7 @@ public class XmlUtilitiesNGTest {
         String testFile = XmlUtilitiesNGTest.class.getResource("resources/testWriteToString_InputStream_int.xml").getPath();
         InputStream inputStream = new FileInputStream(new File(testFile));
         String output = instance.writeToString(inputStream, inputStream.available());
-        
+
         assertEquals(removeWhitespacing(output), removeWhitespacing(expectedOutput));
     }
 
@@ -662,8 +661,7 @@ public class XmlUtilitiesNGTest {
     }
 
     /**
-     * Test of map method, of class XmlUtilities, showing file not found
-     * exception thrown if file cant be found.
+     * Test of map method, of class XmlUtilities, showing file not found exception thrown if file cant be found.
      *
      * @throws java.lang.Exception
      */
@@ -671,15 +669,14 @@ public class XmlUtilitiesNGTest {
     public void testMap_String_FilenotFound() throws Exception {
         System.out.println("testMap_String_FilenotFound");
         XmlUtilities instance = new XmlUtilities();
-        
+
         String testFile = XmlUtilitiesNGTest.class.getResource("resources/").getPath() + "missing.xml";
         URL url = new File(testFile).toURI().toURL();
         List<Map<String, String>> result = instance.map(url.toString());
     }
 
     /**
-     * Test of map method, of class XmlUtilities, showing file not found
-     * exception thrown if file cant be found.
+     * Test of map method, of class XmlUtilities, showing file not found exception thrown if file cant be found.
      *
      * @throws java.lang.Exception
      */
@@ -693,7 +690,6 @@ public class XmlUtilitiesNGTest {
 //        URL url = new File(testFile).toURI().toURL();
 //        List<Map<String, String>> result = instance.map(url.toString());
 //    }
-
     /**
      * Test of map method, of class XmlUtilities.
      *
@@ -720,8 +716,7 @@ public class XmlUtilitiesNGTest {
     }
 
     /**
-     * Test of map method, of class XmlUtilities, showing file not found
-     * exception thrown if file cant be found.
+     * Test of map method, of class XmlUtilities, showing file not found exception thrown if file cant be found.
      *
      * @throws java.lang.Exception
      */
@@ -736,8 +731,7 @@ public class XmlUtilitiesNGTest {
     }
 
     /**
-     * Test of map method, of class XmlUtilities, showing file not found
-     * exception thrown if file cant be found.
+     * Test of map method, of class XmlUtilities, showing file not found exception thrown if file cant be found.
      *
      * @throws java.lang.Exception
      */
@@ -750,7 +744,6 @@ public class XmlUtilitiesNGTest {
 //        URL url = new File(testFile).toURI().toURL();
 //        List<Map<String, String>> result = instance.map(url.toString(), "child");
 //    }
-
     /**
      * Test of table method, of class XmlUtilities.
      *
@@ -794,8 +787,7 @@ public class XmlUtilitiesNGTest {
     }
 
     /**
-     * Test of table method, of class XmlUtilities, showing file not found
-     * exception thrown if file cant be found.
+     * Test of table method, of class XmlUtilities, showing file not found exception thrown if file cant be found.
      *
      * @throws java.lang.Exception
      */
@@ -810,20 +802,23 @@ public class XmlUtilitiesNGTest {
     }
 
     /**
-     * Test of table method, of class XmlUtilities, showing file not found
-     * exception thrown if file cant be found.
+     * Test of table method, of class XmlUtilities, showing file not found exception thrown if file cant be found.
      *
      * @throws java.lang.Exception
      */
-//    @Test(expectedExceptions = TransformerException.class)
-//    public void testTable_String_Boolean_TransformerException() throws Exception {
-//        System.out.println("testTable_String_Boolean_TransformerException");
-//        XmlUtilities instance = new XmlUtilities();
-//
-//        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testTable_String_Boolean_TransformerException.xml").getPath();
-//        URL url = new File(testFile).toURI().toURL();
-//        String[][] result = instance.table(url.toString(), false);
-//    }
+    @Test(expectedExceptions = TransformerException.class)
+    public void testTable_String_Boolean_TransformerException() throws Exception {
+        System.out.println("testTable_String_Boolean_TransformerException");
+        XmlUtilities instance = new XmlUtilities();
+
+        String testFile = XmlUtilitiesNGTest.class.getResource("resources/testTable_String_Boolean_TransformerException.xml").getPath();
+        URL url = new File(testFile).toURI().toURL();
+        try {
+            String[][] result = instance.table(url.toString(), false);
+        } catch (Throwable t){
+            throw t;
+        }
+    }
 
     private String removeWhitespacing(final String input) {
         return input != null ? input.replaceAll("\\s+", "") : null;
