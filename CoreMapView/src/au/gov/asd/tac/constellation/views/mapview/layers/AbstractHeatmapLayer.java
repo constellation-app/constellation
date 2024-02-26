@@ -84,14 +84,17 @@ public abstract class AbstractHeatmapLayer extends MapLayer {
         onScreenMarkers.forEach(marker -> {
             final ConstellationAbstractMarker constellationMarker = (ConstellationAbstractMarker) marker;
             final ScreenPosition markerPosition = map.getScreenPosition(constellationMarker.getLocation());
-            final float markerWeight = getWeight(constellationMarker);
-            final int markerPosX = ((int) markerPosition.x < width) ? (int) markerPosition.x : width - 1;
-            int markerPosImageElement = (int) markerPosition.y * width + markerPosX;
-            while (markerPosImageElement >= pointImage.length) {
-                markerPosImageElement -= width;
-            }
-            if (markerPosition != null && markerPosImageElement < pointImage.length && markerPosImageElement >= 0) {
-                pointImage[markerPosImageElement] = markerWeight;
+            
+            if (markerPosition != null) {
+                final float markerWeight = getWeight(constellationMarker);
+                final int markerPosX = ((int) markerPosition.x < width) ? (int) markerPosition.x : width - 1;
+                int markerPosImageElement = (int) markerPosition.y * width + markerPosX;
+                while (markerPosImageElement >= pointImage.length) {
+                    markerPosImageElement -= width;
+                }
+                if (markerPosImageElement < pointImage.length && markerPosImageElement >= 0) {
+                    pointImage[markerPosImageElement] = markerWeight;
+                }
             }
         });
 
