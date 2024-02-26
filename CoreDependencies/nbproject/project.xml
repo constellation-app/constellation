@@ -1536,8 +1536,16 @@
                 <package>org.geotools.xsd.impl.jxpath</package>
                 <package>org.geotools.xsd.ows</package>
                 <package>org.hamcrest</package>
+                <package>org.hamcrest.beans</package>
+                <package>org.hamcrest.collection</package>
+                <package>org.hamcrest.comparator</package>
                 <package>org.hamcrest.core</package>
                 <package>org.hamcrest.internal</package>
+                <package>org.hamcrest.io</package>
+                <package>org.hamcrest.number</package>
+                <package>org.hamcrest.object</package>
+                <package>org.hamcrest.text</package>
+                <package>org.hamcrest.xml</package>
                 <package>org.hsqldb</package>
                 <package>org.hsqldb.auth</package>
                 <package>org.hsqldb.dbinfo</package>
@@ -1891,6 +1899,27 @@
                 <package>org.openxmlformats.schemas.wordprocessingml.x2006.main.impl</package>
                 <package>org.openxmlformats.schemas.xpackage.x2006.digitalSignature</package>
                 <package>org.openxmlformats.schemas.xpackage.x2006.digitalSignature.impl</package>
+                <package>org.osgi.dto</package>
+                <package>org.osgi.framework</package>
+                <package>org.osgi.framework.dto</package>
+                <package>org.osgi.framework.hooks.bundle</package>
+                <package>org.osgi.framework.hooks.resolver</package>
+                <package>org.osgi.framework.hooks.service</package>
+                <package>org.osgi.framework.hooks.weaving</package>
+                <package>org.osgi.framework.launch</package>
+                <package>org.osgi.framework.namespace</package>
+                <package>org.osgi.framework.startlevel</package>
+                <package>org.osgi.framework.startlevel.dto</package>
+                <package>org.osgi.framework.wiring</package>
+                <package>org.osgi.framework.wiring.dto</package>
+                <package>org.osgi.resource</package>
+                <package>org.osgi.resource.dto</package>
+                <package>org.osgi.service.condpermadmin</package>
+                <package>org.osgi.service.packageadmin</package>
+                <package>org.osgi.service.permissionadmin</package>
+                <package>org.osgi.service.startlevel</package>
+                <package>org.osgi.service.url</package>
+                <package>org.osgi.util.tracker</package>
                 <package>org.picocontainer</package>
                 <package>org.picocontainer.alternatives</package>
                 <package>org.picocontainer.defaults</package>
@@ -2434,8 +2463,8 @@
                 <binary-origin>release/modules/ext/bigint-0.7.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/byte-buddy-1.14.11.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/byte-buddy-1.14.11.jar</binary-origin>
+                <runtime-relative-path>ext/byte-buddy-1.14.12.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/byte-buddy-1.14.12.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/byte-buddy-agent-1.14.1.jar</runtime-relative-path>
@@ -2538,8 +2567,8 @@
                 <binary-origin>release/modules/ext/ejml-zdense-0.43.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/equalsverifier-3.15.6.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/equalsverifier-3.15.6.jar</binary-origin>
+                <runtime-relative-path>ext/equalsverifier-3.15.7.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/equalsverifier-3.15.7.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/error_prone_annotations-2.23.0.jar</runtime-relative-path>
@@ -2656,6 +2685,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/guava-33.0.0-jre.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/guava-33.0.0-jre.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/hamcrest-2.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/hamcrest-2.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/hamcrest-core-1.3.jar</runtime-relative-path>
@@ -3026,8 +3059,8 @@
                 <binary-origin>release/modules/ext/objenesis-3.3.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/openjfx-monocle-11.0.2.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/openjfx-monocle-11.0.2.jar</binary-origin>
+                <runtime-relative-path>ext/openjfx-monocle-21.0.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/openjfx-monocle-21.0.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/org.eclipse.emf.common-2.15.0.jar</runtime-relative-path>
@@ -3044,6 +3077,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/org.eclipse.xsd-2.12.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/org.eclipse.xsd-2.12.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/org.osgi.core-6.0.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/org.osgi.core-6.0.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/org.w3.xlink-26.4.jar</runtime-relative-path>
@@ -3074,8 +3111,8 @@
                 <binary-origin>release/modules/ext/richtextfx-0.11.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/rsyntaxtextarea-3.3.4.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/rsyntaxtextarea-3.3.4.jar</binary-origin>
+                <runtime-relative-path>ext/rsyntaxtextarea-3.4.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/rsyntaxtextarea-3.4.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/si-quantity-2.0.1.jar</runtime-relative-path>
@@ -3110,8 +3147,8 @@
                 <binary-origin>release/modules/ext/systems-common-2.0.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/testfx-core-4.0.16-alpha.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/testfx-core-4.0.16-alpha.jar</binary-origin>
+                <runtime-relative-path>ext/testfx-core-4.0.18.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/testfx-core-4.0.18.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/txtmark-0.13.jar</runtime-relative-path>

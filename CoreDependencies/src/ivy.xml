@@ -10,30 +10,24 @@
     </configurations>
 
     <dependencies defaultconf="runtime">
-        <!-- OpenGL - uncomment when JOGL 2.4.0+ is available on Maven -->
+        <!-- OpenGL - uncomment when JOGL 2.5.0+ is available on Maven -->
          <!--<dependency org="org.jogamp.gluegen" name="gluegen-rt" rev="2.5.0" />-->
 <!--            <artifact name="gluegen-rt" type="jar" ext="jar"/>
             <artifact name="gluegen-rt" type="jar" ext="jar" e:classifier="natives-linux-amd64"/>
-            <artifact name="gluegen-rt" type="jar" ext="jar" e:classifier="natives-linux-i586"/>
             <artifact name="gluegen-rt" type="jar" ext="jar" e:classifier="natives-macosx-universal"/>
             <artifact name="gluegen-rt" type="jar" ext="jar" e:classifier="natives-windows-amd64"/>
-            <artifact name="gluegen-rt" type="jar" ext="jar" e:classifier="natives-windows-i586"/>
         </dependency>-->
         <!--<dependency org="org.jogamp.jocl" name="jocl" rev="2.5.0"/>-->
 <!--            <artifact name="jocl" type="jar" ext="jar"/>
             <artifact name="jocl" type="jar" ext="jar" e:classifier="natives-linux-amd64"/>
-            <artifact name="jocl" type="jar" ext="jar" e:classifier="natives-linux-i586"/>
             <artifact name="jocl" type="jar" ext="jar" e:classifier="natives-macosx-universal"/>
             <artifact name="jocl" type="jar" ext="jar" e:classifier="natives-windows-amd64"/>
-            <artifact name="jocl" type="jar" ext="jar" e:classifier="natives-windows-i586"/>
         </dependency>-->
         <!--<dependency org="org.jogamp.jogl" name="jogl-all" rev="2.5.0"/>-->
 <!--            <artifact name="jogl-all" type="jar" ext="jar"/>
             <artifact name="jogl-all" type="jar" ext="jar" e:classifier="natives-linux-amd64"/>
-            <artifact name="jogl-all" type="jar" ext="jar" e:classifier="natives-linux-i586"/>
             <artifact name="jogl-all" type="jar" ext="jar" e:classifier="natives-macosx-universal"/>
             <artifact name="jogl-all" type="jar" ext="jar" e:classifier="natives-windows-amd64"/>
-            <artifact name="jogl-all" type="jar" ext="jar" e:classifier="natives-windows-i586"/>
         </dependency> -->
 
         <!-- Geotools -->
@@ -66,13 +60,13 @@
         <dependency org="com.fasterxml.jackson.core" name="jackson-annotations" rev="2.16.1"/> 
         <dependency org="com.fasterxml.jackson.core" name="jackson-core" rev="2.16.1"/>
         <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.16.1"/>
-        <dependency org="com.fifesoft" name="rsyntaxtextarea" rev="3.3.4"/>
+        <dependency org="com.fifesoft" name="rsyntaxtextarea" rev="3.4.0"/>
         <dependency org="com.google.guava" name="guava" rev="33.0.0-jre" />
         <dependency org="gov.nasa" name="worldwind" rev="2.0.0-986"/>
         <dependency org="javax.help" name="javahelp" rev="2.0.05"/>
         <dependency org="log4j" name="log4j" rev="1.2.17"/>
         <dependency org="org.controlsfx" name="controlsfx" rev="11.1.2"/>
-        <dependency org="org.eclipse.jetty" name="jetty-server" rev="11.0.6"/>
+        <dependency org="org.eclipse.jetty" name="jetty-server" rev="11.0.20"/>
         <dependency org="org.eclipse.jetty" name="jetty-servlet" rev="11.0.20"/>
         <dependency org="org.ejml" name="ejml-all" rev="0.43.1"/>
         <dependency org="org.json" name="json" rev="20240205"/>
@@ -84,9 +78,9 @@
         <!-- Testing -->
         <dependency org="org.assertj" name="assertj-core" rev="3.25.3" />
         <dependency org="org.mockito" name="mockito-inline" rev="5.2.0"/>
-        <dependency org="nl.jqno.equalsverifier" name="equalsverifier" rev="3.15.6"/>
-        <dependency org="org.testfx" name="openjfx-monocle" rev="11.0.2" transitive="false" />
-        <dependency org="org.testfx" name="testfx-core" rev="4.0.16-alpha" />
+        <dependency org="nl.jqno.equalsverifier" name="equalsverifier" rev="3.15.7"/>
+        <dependency org="org.testfx" name="openjfx-monocle" rev="21.0.2" transitive="false" />
+        <dependency org="org.testfx" name="testfx-core" rev="4.0.18" />
         
         <!-- Downloaded Manually -->
         <!--<dependency org="unfolding" name="unfolding" rev="0.9.6"/>-->
