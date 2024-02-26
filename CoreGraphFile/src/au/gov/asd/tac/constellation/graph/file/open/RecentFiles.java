@@ -106,6 +106,12 @@ public final class RecentFiles {
      * Boundary for items count in history
      */
     private static final int MAX_HISTORY_ITEMS = 10;
+
+    /**
+     * This is the system property that is set to true in order to make the AWT
+     * thread run in headless mode for tests, etc.
+     */
+    private static final String AWT_HEADLESS_PROPERTY = "java.awt.headless";
     
     /**
      * Flag to indicate if the init process has completed, 
@@ -118,18 +124,29 @@ public final class RecentFiles {
     }
 
     /**
-     * Starts to listen for recently closed files
+     * Will start a listener for recently closed files
      */
     public static void init() {
-        WindowManager.getDefault().invokeWhenUIReady(() -> {
-            final List<HistoryItem> loaded = load();
-            synchronized (HISTORY_LOCK) {
-                HISTORY.addAll(0, loaded);
-            }
-            TopComponent.getRegistry().
-                    addPropertyChangeListener(RECENT_FILE_SAVED);
-            decrementHistoryReadyLatch();
-        });
+        if (!Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(AWT_HEADLESS_PROPERTY))) {
+            WindowManager.getDefault().invokeWhenUIReady(() -> {
+                delayedInit();
+            });
+        } else {
+            // We are in HEADLESS mode ... do not wait for UI to be ready
+            delayedInit();
+        }
+    }
+
+    /**
+     * Starts the listener for recently closed files
+     */
+    private static void delayedInit() {
+        final List<HistoryItem> loaded = load();
+        synchronized (HISTORY_LOCK) {
+            HISTORY.addAll(0, loaded);
+        }
+        TopComponent.getRegistry().addPropertyChangeListener(RECENT_FILE_SAVED);
+        decrementHistoryReadyLatch();        
     }
 
     /**
@@ -174,8 +191,8 @@ public final class RecentFiles {
         if (historyReady.getCount() != 0) {
             try {
                 LOGGER.log(Level.WARNING, ">> Timing issue encountered: Recent Files data is being accessed before it has been initialised <<");
-                if (!historyReady.await(300, TimeUnit.SECONDS)) {
-                    LOGGER.log(Level.WARNING, ">> Recent Files did not initialise within 5 minutes <<", new Exception(NotifyDisplayer.BLOCK_POPUP_FLAG + "WARNING: Recent Files data did not initialise within a reasonable time"));
+                if (!historyReady.await(120, TimeUnit.SECONDS)) {
+                    LOGGER.log(Level.WARNING, ">> Recent Files did not initialise within 2 minutes <<", new Exception(NotifyDisplayer.BLOCK_POPUP_FLAG + "WARNING: Recent Files data did not initialise within a reasonable time"));
                 }
             } catch (final InterruptedException ex) {
                 LOGGER.log(Level.SEVERE, ex.toString(), ex);
