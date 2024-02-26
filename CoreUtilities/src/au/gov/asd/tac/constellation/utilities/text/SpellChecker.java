@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
@@ -51,7 +53,7 @@ public final class SpellChecker {
     private List<RuleMatch> matches = new ArrayList<>();
     private int indexOfMisspelledTextUnderCursor;       // position of the current misspelled text in misspells list
     private final ListView<String> suggestions = new ListView<>(FXCollections.observableArrayList());
-    private final JLanguageTool langTool;
+    private final AtomicReference<JLanguageTool> langTool;
     private static JLanguageTool langToolStatic;
     private SpellingCheckRule spellingCheckRule;
     private Popup popup;
@@ -78,20 +80,28 @@ public final class SpellChecker {
                 } catch (final IOException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                 }
+                return null;
             }
-        });
+        }, Executors.newSingleThreadExecutor());
     }
 
     public SpellChecker(final SpellCheckingTextArea spellCheckingTextArea) {
         textArea = spellCheckingTextArea;
-        langTool = new MultiThreadedJLanguageTool(language); //Can pass in the language when supporting multiple languages
-        initialize();
+        langTool = new AtomicReference<>();
+        while (true) {
+            LANGTOOL_LOAD.thenRun(() -> {
+                JLanguageTool langToolNew = new MultiThreadedJLanguageTool(language);
+                langTool.set(langToolNew);
+                initialize();
+            });
+            break;
+        }
     }
 
     private void initialize() {
-        for (final Rule rule : langTool.getAllRules()) {
+        for (final Rule rule : langTool.get().getAllRules()) {
             if (rule.getId().equals("UPPERCASE_SENTENCE_START")) {
-                langTool.disableRule(rule.getId());
+                langTool.get().disableRule(rule.getId());
             } else if (rule instanceof SpellingCheckRule) {
                 spellingCheckRule = (SpellingCheckRule) rule;
             }
@@ -120,7 +130,7 @@ public final class SpellChecker {
 
         if (!turnOffSpellChecking && StringUtils.isNotBlank(textArea.getText())) {
             try {
-                matches = langTool.check(textArea.getText());
+                matches = langTool.get().check(textArea.getText());
                 matches.forEach(match -> {
                     final int start = match.getFromPos();
                     final int end = match.getToPos();
