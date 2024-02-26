@@ -688,8 +688,9 @@ public class XmlUtilitiesNGTest {
         // Execute test
         String testFile = XmlUtilitiesNGTest.class.getResource("resources/testMap_String_TransformerException.xml").getPath();
         URL url = new File(testFile).toURI().toURL();
-        //List<Map<String, String>> result = instance.map(url.toString());
+        List<Map<String, String>> result = instance.map(url.toString());
     }
+
     /**
      * Test of map method, of class XmlUtilities.
      *
@@ -742,8 +743,9 @@ public class XmlUtilitiesNGTest {
 
         String testFile = XmlUtilitiesNGTest.class.getResource("resources/testMap_String_String_TransformerException.xml").getPath();
         URL url = new File(testFile).toURI().toURL();
-        //List<Map<String, String>> result = instance.map(url.toString(), "child");
+        List<Map<String, String>> result = instance.map(url.toString(), "child");
     }
+
     /**
      * Test of table method, of class XmlUtilities.
      *
@@ -813,7 +815,7 @@ public class XmlUtilitiesNGTest {
 
         String testFile = XmlUtilitiesNGTest.class.getResource("resources/testTable_String_Boolean_TransformerException.xml").getPath();
         URL url = new File(testFile).toURI().toURL();
-        //String[][] result = instance.table(url.toString(), false);
+        String[][] result = instance.table(url.toString(), false);
     }
 
     private String removeWhitespacing(final String input) {
