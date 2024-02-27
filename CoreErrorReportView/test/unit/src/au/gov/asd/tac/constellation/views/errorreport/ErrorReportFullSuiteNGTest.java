@@ -15,10 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.errorreport;
 
-import au.gov.asd.tac.constellation.graph.file.save.AutosaveUtilities;
-import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -48,8 +45,6 @@ public class ErrorReportFullSuiteNGTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         try {
-//            Arrays.stream(AutosaveUtilities.getAutosaves(FileExtensionConstants.STAR_AUTOSAVE))
-//                    .forEach(file -> file.delete());
             if (!FxToolkit.isFXApplicationThreadRunning()) {
                 FxToolkit.registerPrimaryStage();
             }
