@@ -83,6 +83,11 @@ public class ThrobbingNodeAnimation extends Animation {
     protected String getName() {
         return NAME;
     }
+    
+    @Override
+    public void setFinalFrame(final GraphWriteMethods wg){
+        //Do Nothing
+    }
 
     private void registerNode(final int vxId, final GraphWriteMethods wg) {
         originalNodeRadii.put(vxId, wg.getFloatValue(nodeRadiusAttribute, vxId));

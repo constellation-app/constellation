@@ -60,4 +60,9 @@ public final class DirectionIndicatorAnimation extends Animation {
     protected String getName() {
         return NAME;
     }
+
+    @Override
+    public void setFinalFrame(final GraphWriteMethods wg){
+        //Do Nothing
+    }
 }

@@ -139,10 +139,10 @@ public abstract class Animation {
      * @param graph 
      */
     public void run(final String graphId) {
-        GraphNode gn = GraphNode.getGraphNode(graphId);
+        final GraphNode gn = GraphNode.getGraphNode(graphId);
         if (GraphNode.getGraphNode(graphId) != null) {
             this.graphID = graphId;
-            Graph graph = gn.getGraph();
+            final Graph graph = gn.getGraph();
             // Chreate the Thread for this animaton
             animationThread = new Thread(() -> {
                 try {
@@ -218,4 +218,23 @@ public abstract class Animation {
     public void interrupt(){
         this.animationThread.interrupt();
     }
+
+    /**
+     * This method enables finite animations to execute when animations have been disabled.
+     * Essentially the animation occurs in one frame. 
+     * @param graphId 
+     */
+    public void skip(final String graphId){
+        final GraphNode gn = GraphNode.getGraphNode(graphId);
+        if (GraphNode.getGraphNode(graphId) != null) {
+            final Graph graph = gn.getGraph();
+            if (lockGraphSafely(graph)){
+                initialise(wg);
+                setFinalFrame(wg);
+                wg.commit();
+            }
+        }
+    };
+    
+    public abstract void setFinalFrame(GraphWriteMethods wg);
 }

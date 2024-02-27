@@ -95,4 +95,17 @@ public final class PanAnimation extends Animation {
     protected boolean isSignificant() {
         return isSignificant;
     }
+    
+    @Override
+    public void setFinalFrame(final GraphWriteMethods wg){
+        
+        camera = new Camera(camera);
+        camera.lookAtEye.set(to.lookAtEye);
+        camera.lookAtCentre.set(to.lookAtCentre);
+        camera.lookAtUp.set(to.lookAtUp);
+        camera.lookAtRotation.set(to.lookAtRotation);
+        wg.setObjectValue(cameraAttr, 0, camera);
+        
+    }
+        
 }

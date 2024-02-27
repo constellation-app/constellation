@@ -285,4 +285,9 @@ public final class FlyingAnimation extends Animation {
     protected String getName() {
         return NAME;
     }
+    
+        @Override
+    public void setFinalFrame(final GraphWriteMethods wg){
+        //Do Nothing
+    }
 }
