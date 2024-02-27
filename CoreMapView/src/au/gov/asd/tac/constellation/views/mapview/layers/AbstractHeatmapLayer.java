@@ -111,10 +111,6 @@ public abstract class AbstractHeatmapLayer extends MapLayer {
         final float[] gaussImage = new float[width * height];
         GaussianBlur.gaussianBlurBox(pointImage, gaussImage,
                 width, height, RADIUS, PASSES, GaussianBlur.BoxBlurType.FASTEST);
-        
-//        final ScreenPosition currentTopLeft = map.getScreenPosition(map.getTopLeftBorder());
-//        prevTopLeftX = currentTopLeft.x;
-//        prevTopLeftY = currentTopLeft.y;
 
         final PImage heatmapImage = renderer.createImage(width, height, PConstants.ARGB);
         heatmapImage.loadPixels();
