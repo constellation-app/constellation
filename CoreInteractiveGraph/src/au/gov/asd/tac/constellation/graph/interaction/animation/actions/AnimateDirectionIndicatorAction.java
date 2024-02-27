@@ -17,12 +17,12 @@ package au.gov.asd.tac.constellation.graph.interaction.animation.actions;
 
 import au.gov.asd.tac.constellation.graph.interaction.animation.AnimationUtilities;
 import au.gov.asd.tac.constellation.graph.interaction.animation.DirectionIndicatorAnimation;
-import au.gov.asd.tac.constellation.graph.node.gui.MenuBaseAction;
 import java.awt.event.ActionListener;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.lookup.ServiceProvider;
 
 /*
  * adding animation motion to graph elements
@@ -30,12 +30,12 @@ import org.openide.util.NbBundle.Messages;
 @ActionID(category = "Experimental", id = "au.gov.asd.tac.constellation.graph.interaction.animation.actions.AnimateDirectionIndicatorAction")
 @ActionRegistration(displayName = "#CTL_AnimateDirectionIndicatorAction", lazy = false)
 @ActionReference(path = "Menu/Experimental/Animations", position = 0)
-@Messages("CTL_AnimateDirectionIndicatorAction=Direction-Indicators")
-public final class AnimateDirectionIndicatorAction extends MenuBaseAction implements ActionListener {
+@Messages("CTL_AnimateDirectionIndicatorAction=Direction Indicators")
+@ServiceProvider(service = AnimationMenuBaseAction.class)
+public final class AnimateDirectionIndicatorAction extends AnimationMenuBaseAction implements ActionListener {
 
     public AnimateDirectionIndicatorAction() {
-        super();
-        this.initCheckBox(Bundle.CTL_AnimateDirectionIndicatorAction(), false);
+        super(Bundle.CTL_AnimateDirectionIndicatorAction());
     }
     
     @Override
@@ -43,13 +43,17 @@ public final class AnimateDirectionIndicatorAction extends MenuBaseAction implem
         if (menuButton.isSelected()) {
             AnimationUtilities.startAnimation(new DirectionIndicatorAnimation(), this.getContext().getGraph().getId());
         } else {
-            AnimationUtilities.stopAnimation(DirectionIndicatorAnimation.NAME, this.getContext().getGraph().getId());
+            stopAnimation(this.getContext().getGraph().getId());
         }
-        
     }
 
     @Override
     protected void displayValue() {
         menuButton.setSelected(AnimationUtilities.isAnimating(DirectionIndicatorAnimation.NAME, this.getContext().getGraph().getId()));
+    }
+    
+    @Override
+    public void stopAnimation(final String graphId) {
+        AnimationUtilities.stopAnimation(DirectionIndicatorAnimation.NAME, graphId);
     }
 }

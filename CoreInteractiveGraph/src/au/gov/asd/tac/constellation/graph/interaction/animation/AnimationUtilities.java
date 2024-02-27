@@ -15,10 +15,11 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.animation;
 
-import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.interaction.gui.VisualGraphTopComponent;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
+import au.gov.asd.tac.constellation.preferences.GraphPreferenceKeys;
+import org.openide.util.NbPreferences;
 
 /**
  * Provides static methods to start and stop animations.
@@ -72,8 +73,10 @@ public class AnimationUtilities {
      * @param graph The graph to run the animation on.
      */
     public static final void startAnimation(final Animation animation, final String graphId) {
-        AnimationManager am = getGraphAnimationManager(graphId);
-        am.runAnimation(animation);
+        if (animationsEnabled()){
+            AnimationManager am = getGraphAnimationManager(graphId);
+            am.runAnimation(animation);
+        }
     }
     
     /**
@@ -85,6 +88,10 @@ public class AnimationUtilities {
     public static boolean isAnimating(final String name, final String graphId) {
         AnimationManager am = getGraphAnimationManager(graphId);
         return am.isAnimating(name);
+    }
+    
+    public static boolean animationsEnabled(){
+        return GraphPreferenceKeys.isAnimatable(NbPreferences.forModule(GraphPreferenceKeys.class));
     }
     
     /**

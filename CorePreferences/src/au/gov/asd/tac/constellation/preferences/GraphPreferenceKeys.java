@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.preferences;
 
+import java.util.prefs.Preferences;
+
 /**
  * Keys used to access graph preferences.
  *
@@ -46,6 +48,13 @@ public final class GraphPreferenceKeys {
     //
     public static final String LEFT_COLOR_DEFAULT = "Green";
     public static final String RIGHT_COLOR_DEFAULT = "Magenta";
+    
+    public static final String ENABLE_ANIMATIONS = "enableAnimations";
+    public static final boolean ENABLE_ANIMATIONS_DEFAULT = true;
+    
+    public static boolean isAnimatable (final Preferences prefs) {
+        return prefs.getBoolean(ENABLE_ANIMATIONS, ENABLE_ANIMATIONS_DEFAULT);
+    }
 
     private GraphPreferenceKeys() {
     }

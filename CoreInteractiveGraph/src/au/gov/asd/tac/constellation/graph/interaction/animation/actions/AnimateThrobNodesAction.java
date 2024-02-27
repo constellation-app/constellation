@@ -17,12 +17,12 @@ package au.gov.asd.tac.constellation.graph.interaction.animation.actions;
 
 import au.gov.asd.tac.constellation.graph.interaction.animation.AnimationUtilities;
 import au.gov.asd.tac.constellation.graph.interaction.animation.ThrobbingNodeAnimation;
-import au.gov.asd.tac.constellation.graph.node.gui.MenuBaseAction;
 import java.awt.event.ActionListener;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.lookup.ServiceProvider;
 
 /*
  * adding animation motion to graph elements
@@ -31,11 +31,11 @@ import org.openide.util.NbBundle.Messages;
 @ActionRegistration(displayName = "#CTL_AnimateThrobNodesAction", lazy = false)
 @ActionReference(path = "Menu/Experimental/Animations", position = 0)
 @Messages("CTL_AnimateThrobNodesAction=Throb Nodes")
-public final class AnimateThrobNodesAction extends MenuBaseAction implements ActionListener {
+@ServiceProvider(service = AnimationMenuBaseAction.class)
+public final class AnimateThrobNodesAction extends AnimationMenuBaseAction implements ActionListener {
 
     public AnimateThrobNodesAction() {
-        super();
-        this.initCheckBox(Bundle.CTL_AnimateThrobNodesAction(), false);
+        super(Bundle.CTL_AnimateThrobNodesAction());
     }
     
     @Override
@@ -43,7 +43,7 @@ public final class AnimateThrobNodesAction extends MenuBaseAction implements Act
         if (menuButton.isSelected()) {
             AnimationUtilities.startAnimation(new ThrobbingNodeAnimation(), this.getContext().getGraph().getId());
         } else {
-            AnimationUtilities.stopAnimation(ThrobbingNodeAnimation.NAME, this.getContext().getGraph().getId());
+            stopAnimation(this.getContext().getGraph().getId());
         }
         
     }
@@ -51,5 +51,10 @@ public final class AnimateThrobNodesAction extends MenuBaseAction implements Act
     @Override
     protected void displayValue() {
         menuButton.setSelected(AnimationUtilities.isAnimating(ThrobbingNodeAnimation.NAME, this.getContext().getGraph().getId()));
+    }
+    
+    @Override
+    public void stopAnimation(final String graphId){
+        AnimationUtilities.stopAnimation(ThrobbingNodeAnimation.NAME, graphId);
     }
 }

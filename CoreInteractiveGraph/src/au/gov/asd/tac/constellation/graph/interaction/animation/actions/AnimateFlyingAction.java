@@ -17,12 +17,12 @@ package au.gov.asd.tac.constellation.graph.interaction.animation.actions;
 
 import au.gov.asd.tac.constellation.graph.interaction.animation.AnimationUtilities;
 import au.gov.asd.tac.constellation.graph.interaction.animation.FlyingAnimation;
-import au.gov.asd.tac.constellation.graph.node.gui.MenuBaseAction;
 import java.awt.event.ActionListener;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.lookup.ServiceProvider;
 
 /*
  * adding animation motion to graph elements
@@ -30,12 +30,12 @@ import org.openide.util.NbBundle.Messages;
 @ActionID(category = "Experimental", id = "au.gov.asd.tac.constellation.graph.interaction.animation.actions.AnimateFlyingAction")
 @ActionRegistration(displayName = "#CTL_AnimateFlyingAction", lazy = false)
 @ActionReference(path = "Menu/Experimental/Animations", position = 0)
-@Messages("CTL_AnimateFlyingAction=Fly-through")
-public final class AnimateFlyingAction extends MenuBaseAction implements ActionListener {
+@Messages("CTL_AnimateFlyingAction=Fly Through")
+@ServiceProvider(service = AnimationMenuBaseAction.class)
+public final class AnimateFlyingAction extends AnimationMenuBaseAction implements ActionListener {
 
     public AnimateFlyingAction() {
-        super();
-        this.initCheckBox(Bundle.CTL_AnimateFlyingAction(), false);
+        super(Bundle.CTL_AnimateFlyingAction());
     }
     
     @Override
@@ -43,7 +43,7 @@ public final class AnimateFlyingAction extends MenuBaseAction implements ActionL
         if (menuButton.isSelected()) {
             AnimationUtilities.startAnimation(new FlyingAnimation(), this.getContext().getGraph().getId());
         } else {
-            AnimationUtilities.stopAnimation(FlyingAnimation.NAME, this.getContext().getGraph().getId());
+            stopAnimation(this.getContext().getGraph().getId());
         }
         
     }
@@ -51,5 +51,10 @@ public final class AnimateFlyingAction extends MenuBaseAction implements ActionL
     @Override
     protected void displayValue() {
         menuButton.setSelected(AnimationUtilities.isAnimating(FlyingAnimation.NAME, this.getContext().getGraph().getId()));
+    }
+    
+    @Override
+    public void stopAnimation(final String graphId){
+        AnimationUtilities.stopAnimation(FlyingAnimation.NAME, graphId);
     }
 }
