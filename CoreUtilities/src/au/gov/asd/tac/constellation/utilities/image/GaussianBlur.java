@@ -96,8 +96,10 @@ public class GaussianBlur {
         FAST,
         FASTEST;
     }
+
     /**
      * Edits the targetChannel to be a blurred copy of the soruceChannel
+     *
      * @param sourceChannel Float array containing image data
      * @param targetChannel Empty float array with size greater than or equal to the size of sourceChannel
      * @param width Width of image stored in float sourceChannel
@@ -255,7 +257,7 @@ public class GaussianBlur {
             final float lv = sourceChannel[ti + width * (height - 1)];
             float val = (radius + 1) * fv;
             for (int j = 0; j < radius; j++) {
-                if (ti + j < sourceChannel.length) {
+                if ((ti + j * width) < sourceChannel.length) {
                     val += sourceChannel[ti + j * width];
                 }
             }

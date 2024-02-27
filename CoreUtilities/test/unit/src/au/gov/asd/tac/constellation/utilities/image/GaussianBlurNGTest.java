@@ -151,21 +151,21 @@ public class GaussianBlurNGTest {
     /**
      * Test of gaussianBlurBox method, of class GaussianBlur. Fast BoxBlurType
      */
-//    @Test
-//    public void testGaussianBlurBoxFast() {
-//        System.out.println("gaussianBlurBoxFast");
-//        final float[] sourceChannel = {1F, 2F, 3F, 4F, 5F, 6F};
-//        final float[] targetChannel = new float[6];
-//        final int width = 3;
-//        final int height = 2;
-//        final int radius = 2;
-//        final int passes = 1;
-//
-//        GaussianBlur.gaussianBlurBox(sourceChannel, targetChannel, width, height, radius, passes, BoxBlurType.FAST);
-//
-//        final float[] expResult = {2.2857144F, 3.2857144F, 4.285714F, 2.7142856F, 3.7142856F, 4.714286F};
-//        assertEquals(targetChannel, expResult);
-//    }
+    @Test
+    public void testGaussianBlurBoxFast() {
+        System.out.println("gaussianBlurBoxFast");
+        final float[] sourceChannel = {1F, 2F, 3F, 4F, 5F, 6F};
+        final float[] targetChannel = new float[6];
+        final int width = 3;
+        final int height = 2;
+        final int radius = 2;
+        final int passes = 1;
+
+        GaussianBlur.gaussianBlurBox(sourceChannel, targetChannel, width, height, radius, passes, BoxBlurType.FAST);
+
+        final float[] expResult = {2.2857144F, 3.2857144F, 4.285714F, 2.7142856F, 3.7142856F, 4.714286F};
+        assertEquals(targetChannel, expResult);
+    }
 
     /**
      * Test of gaussianBlurBox method, of class GaussianBlur. Fastest BoxBlurType
@@ -183,6 +183,41 @@ public class GaussianBlurNGTest {
         GaussianBlur.gaussianBlurBox(sourceChannel, targetChannel, width, height, radius, passes, BoxBlurType.FASTEST);
 
         final float[] expResult = {1.8571429F, 2.857143F, 1.8571429F, 2.857143F, 1.8571429F, 2.857143F};
+        assertEquals(targetChannel, expResult);
+    }
+
+    /**
+     * Test of gaussianBlurBox method, of class GaussianBlur. Fastest BoxBlurType
+     */
+    @Test
+    public void testGaussianBlurBoxFastestAgain() {
+        System.out.println("gaussianBlurBoxFastestAgain");
+        final float[] sourceChannel = {
+            1F, 2F, 3F, 4F, 5F, 6F,
+            1F, 2F, 3F, 4F, 5F, 6F,
+            1F, 2F, 3F, 4F, 5F, 6F,
+            1F, 2F, 3F, 4F, 5F, 6F,
+            1F, 2F, 3F, 4F, 5F, 6F,
+            1F, 2F, 3F, 4F, 5F, 6F,
+            1F, 2F, 3F, 4F, 5F, 6F,
+            1F, 2F, 3F, 4F, 5F, 6F};
+        final float[] targetChannel = new float[48];
+        final int width = 6;
+        final int height = 8;
+        final int radius = 16;
+        final int passes = 3;
+
+        GaussianBlur.gaussianBlurBox(sourceChannel, targetChannel, width, height, radius, passes, BoxBlurType.FASTEST);
+
+        final float[] expResult = {
+            1.1539671F, 1.156901F, 1.1569738F, 1.1579818F, 1.1601517F, 1.1623536F,
+            1.1539671F, 1.156901F, 1.1569738F, 1.1579818F, 1.1601517F, 1.1623536F,
+            1.1539671F, 1.156901F, 1.1569738F, 1.1579818F, 1.1601517F, 1.1623536F,
+            1.1539671F, 1.156901F, 1.1569738F, 1.1579818F, 1.1601517F, 1.1623536F,
+            1.1539671F, 1.156901F, 1.1569738F, 1.1579818F, 1.1601517F, 1.1623536F,
+            1.1539671F, 1.156901F, 1.1569738F, 1.1579818F, 1.1601517F, 1.1623536F,
+            1.1539671F, 1.156901F, 1.1569738F, 1.1579818F, 1.1601517F, 1.1623536F,
+            1.1539671F, 1.156901F, 1.1569738F, 1.1579818F, 1.1601517F, 1.1623536F};
         assertEquals(targetChannel, expResult);
     }
 
