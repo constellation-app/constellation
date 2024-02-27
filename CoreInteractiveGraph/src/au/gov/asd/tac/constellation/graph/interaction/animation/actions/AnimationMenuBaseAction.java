@@ -16,32 +16,29 @@
 package au.gov.asd.tac.constellation.graph.interaction.animation.actions;
 
 import au.gov.asd.tac.constellation.graph.interaction.animation.AnimationUtilities;
-import au.gov.asd.tac.constellation.graph.interaction.animation.DirectionIndicatorAnimation;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.node.gui.MenuBaseAction;
 import au.gov.asd.tac.constellation.preferences.GraphPreferenceKeys;
 import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilities;
 import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
-import java.util.prefs.Preferences;
 import org.openide.util.NbPreferences;
 
-/*
- * adding animation motion to graph elements
+/**
+ * An abstract class to provide action control functionality for Animations.
+ *
+ * @author capricornunicorn123
  */
-
 public abstract class AnimationMenuBaseAction extends MenuBaseAction implements PreferenceChangeListener{
-    
-    private final Preferences prefs = NbPreferences.forModule(GraphPreferenceKeys.class);
     
     public AnimationMenuBaseAction(final String actionLabel) {
         super();
         this.initCheckBox(actionLabel, false);
-        PreferenceUtilities.addPreferenceChangeListener(prefs.absolutePath(), this);
+        PreferenceUtilities.addPreferenceChangeListener(NbPreferences.forModule(GraphPreferenceKeys.class).absolutePath(), this);
     }
     
     @Override
-    public final boolean getEnabled(){
+    public final boolean getEnabled() {
         final boolean animationsEnabled = AnimationUtilities.animationsEnabled();
         setEnabled(animationsEnabled);
         return animationsEnabled;

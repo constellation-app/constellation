@@ -21,21 +21,27 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * Case the node radius to throb larger and smaller than the actual node radius. 
+ * This Animation is infinite so will not animate when animations are disabled.
+ * 
  * @author twilight_sparkle
+ * @author capricornunicorn123
  */
 public class ThrobbingNodeAnimation extends Animation {
+    
     public static String NAME = "Throbbing Node Animation";
-    private int nodeRadiusAttribute;
     private static final float LOWER_LIMIT = 0.5F;
     private static final float UPPER_LIMIT = 1.5F;
+    
+    private int nodeRadiusAttribute;
     private float currentDirection = 0.05F;
     private float currentRadius = 1F;
-
+    
     final Map<Integer, Float> originalNodeRadii = new HashMap<>();
 
     @Override
     public void initialise(final GraphWriteMethods wg) {
+        
         // dont initialise if there is 0 nodes present
         if (wg.getVertexCount() == 0) {
             stop();
@@ -55,11 +61,12 @@ public class ThrobbingNodeAnimation extends Animation {
             if (currentRadius > UPPER_LIMIT || currentRadius < LOWER_LIMIT) {
                 currentDirection = -currentDirection;
             }
+            
             currentRadius += currentDirection;
             for (int pos = 0; pos < wg.getVertexCount(); pos++) {
                 final int vxId = wg.getVertex(pos);
                 
-                // If a NOde is added during animation its original radius needs to be captured. 
+                // If a node is added during animation its original radius needs to be captured. 
                 if (originalNodeRadii.get(vxId) == null){
                     registerNode(vxId, wg);
                 }

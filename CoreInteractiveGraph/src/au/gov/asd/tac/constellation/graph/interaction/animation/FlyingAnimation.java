@@ -18,8 +18,6 @@ package au.gov.asd.tac.constellation.graph.interaction.animation;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
@@ -30,15 +28,13 @@ import java.util.ArrayDeque;
 import java.util.Iterator;
 
 /**
- * Fly around the graph using a succession of Catmull-Rom splines to generate a
- * smooth path between vertices.
- * <p>
- * A Catmull-Rom spline uses four control points (p0, p1, p2, p3) to generate a
- * C1 continuous spline that passes through all of the points. By using
- * successive control points (remove the first point and add a new point to the
+ * Cause the camera to move around the graph on smooth path between nodes.
+ * A Catmull-Rom spline is used to generate a smooth path between vertices.
+ * By using successive control points (remove the first point and add a new point to the
  * end), a smooth path can be generated using the p1 &rarr; p2 segment.
  *
  * @author algol
+ * @author capricornunicorn123
  */
 public final class FlyingAnimation extends Animation {
     
@@ -75,14 +71,13 @@ public final class FlyingAnimation extends Animation {
 
     public FlyingAnimation() {
         random = new SecureRandom();
-
         xyzQueue = new ArrayDeque<>(VERTICES_PER_SPLINE);
-
         prevLinks = new ArrayDeque<>();
     }
 
     @Override
     public void initialise(final GraphWriteMethods wg) {
+        
         // dont initilise the animation if there is less than 2 nodes
         if (wg.getVertexCount() <= 1) {
             stop();
@@ -119,8 +114,9 @@ public final class FlyingAnimation extends Animation {
         if (wg.getVertexCount() > 1) {
             
             // Stop the animation if the camera has been changed externaly 
-            if (camera != wg.getObjectValue(cameraAttribute, 0)){
+            if (camera != wg.getObjectValue(cameraAttribute, 0)) {
                 stop();
+                
             } else {
                 camera = new Camera(camera);
 
@@ -154,8 +150,8 @@ public final class FlyingAnimation extends Animation {
                 camera.lookAtEye.set(eye[0], eye[1], eye[2]);
                 camera.lookAtCentre.set(centre[0], centre[1], centre[2]);
                 
-                // The cameras up direction must be updated at each frame
-                // This ensures the camera doesnt look in the default up direction causing perspective.
+                // The camera's up direction must be updated at each frame
+                // This ensures the camera doesnt look in the default up direction causing perspective warping.
                 Vector3f forward = Vector3f.subtract(camera.lookAtEye, camera.lookAtCentre);
                 forward.normalize();
                 
@@ -193,6 +189,7 @@ public final class FlyingAnimation extends Animation {
         float x = rg.getFloatValue(xAttr, currentVxId);
         float y = rg.getFloatValue(yAttr, currentVxId);
         float z = rg.getFloatValue(zAttr, currentVxId);
+        
         if (doMixing) {
             final float x2 = rg.getFloatValue(x2Attr, currentVxId);
             final float y2 = rg.getFloatValue(y2Attr, currentVxId);
@@ -202,12 +199,12 @@ public final class FlyingAnimation extends Animation {
             y = Graphics3DUtilities.mix(y, y2, mix);
             z = Graphics3DUtilities.mix(z, z2, mix);
         }
-        xyz = new Vector3f(x, y, z);
 
-        return xyz;
+        return new Vector3f(x, y, z);
     }
 
     private int getNextVertexId(final GraphReadMethods rg) {
+        
         if (currentVxId != Graph.NOT_FOUND) {
             // Go through the links connected to the current vertex in a random order.
             final int nLinks = rg.getVertexLinkCount(currentVxId);
@@ -286,7 +283,7 @@ public final class FlyingAnimation extends Animation {
         return NAME;
     }
     
-        @Override
+    @Override
     public void setFinalFrame(final GraphWriteMethods wg){
         //Do Nothing
     }

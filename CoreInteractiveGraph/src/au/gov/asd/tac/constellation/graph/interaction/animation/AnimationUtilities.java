@@ -19,10 +19,12 @@ import au.gov.asd.tac.constellation.graph.interaction.gui.VisualGraphTopComponen
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.preferences.GraphPreferenceKeys;
+import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.NbPreferences;
 
 /**
- * Provides static methods to start and stop animations.
+ * Provides static utilities for running animations.
  * This utility class enables animations to be started and stopped 
  * without the need of references to their specific managers.
  * 
@@ -41,7 +43,8 @@ public class AnimationUtilities {
     
     /**
      * Stops all running animations on the specified.
-     * @param graph
+     * 
+     * @param graphId
      */
     public static final void stopAllAnimations(final String graphId) {
         getGraphAnimationManager(graphId).stopAllAnimations();
@@ -49,14 +52,22 @@ public class AnimationUtilities {
     
     /**
      * Stops all running animations on the specified.
-     * @param graph
+     * 
+     * @param animationName
+     * @param graphId
      */
     public static final void stopAnimation(final String animationName, final String graphId) {
         getGraphAnimationManager(graphId).stopAnimation(animationName);
     }
 
+    /**
+     * Gets the animationManager for a specific graph.
+     * 
+     * @param graphId
+     * @return 
+     */
     private static AnimationManager getGraphAnimationManager(final String graphId){
-        if (!graphId.isBlank()){
+        if (StringUtils.isNotBlank(graphId)){
             return ((VisualGraphTopComponent) GraphNode.getGraphNode(graphId).getTopComponent()).getAnimationManager();
         } else {
             return null;
@@ -65,10 +76,12 @@ public class AnimationUtilities {
     
     /**
      * Start the specified animation on the specified graph.
-     * if the specified animation is already running, nothing will occur.
+     * If the specified animation is already running, nothing will occur.
+     * If animations have ben disabled, the animation may skip and 
+     * update the graph to the final frame of the animation.
      *
      * @param animation The animation to run
-     * @param graph The graph to run the animation on.
+     * @param graphId The graph to run the animation on.
      */
     public static final void startAnimation(final Animation animation, final String graphId) {
         if (animationsEnabled()){
@@ -80,15 +93,21 @@ public class AnimationUtilities {
     
     /**
      * Checks if an animation is animating on the a graph.
+     * 
      * @param name
-     * @param graphID
+     * @param graphId
      * @return 
      */
     public static boolean isAnimating(final String name, final String graphId) {
         return getGraphAnimationManager(graphId).isAnimating(name);
     }
     
-    public static boolean animationsEnabled(){
+    /**
+     * Checks if the user settings currently have animations enabled.
+     * 
+     * @return 
+     */
+    public static boolean animationsEnabled() {
         return GraphPreferenceKeys.isAnimatable(NbPreferences.forModule(GraphPreferenceKeys.class));
     }
     
@@ -102,12 +121,19 @@ public class AnimationUtilities {
     }
     
     /**
-     * Interrupt all running animations on all animated graphs.
+     * Interrupt all running animations on the specified graph animated graphs.
+     * 
+     * @param graphId
      */
     public static final synchronized void interruptAllAnimations(final String graphId) {
         getGraphAnimationManager(graphId).interruptAllAnimations();
     }
 
+    /**
+     * Notify the relevant graph manager that the specified animation has completed.
+     * 
+     * @param animation 
+     */
     public static void notifyComplete(final Animation animation) {
         AnimationUtilities.getGraphAnimationManager(animation.graphID).notifyComplete(animation);
     }

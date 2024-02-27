@@ -20,28 +20,34 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.framework.VisualGraphDefaults;
 
 /**
- * Cause the graph to animate all connections to indicate the direction of each connection.
+ * Cause the graph to animate all connections to indicate their direction.
+ * This animation is an infinite animation and will not update the graph
+ * when animations are disabled.
  *
- * @author algol
+ * @author capricornunicorn123
  */
-public final class DirectionIndicatorAnimation extends Animation {
+public final class DirectionIndicatorAnimation extends Animation { 
+    
     public static final String NAME = "Direction Indicators Animation";
+    
     private int motionAtt;
+    
     @Override
     public void initialise(final GraphWriteMethods wg) {
-        // Don't initilise the animation if there is less than 2 nodes
-        if (wg.getVertexCount() <= 1) {
+        
+        // Don't initilise the animation if there are no transactions
+        if (wg.getTransactionCount() < 1) {
             stop();
         } else {
             motionAtt = VisualConcept.GraphAttribute.CONNECTION_MOTION.ensure(wg);
-            
         }
     }
 
     @Override
     public void animate(final GraphWriteMethods wg) {
-        // Don't animate unless there is more than 1 node
-        if (wg.getVertexCount() > 1) {
+        
+        // Don't animate unless there are transactions
+        if (wg.getTransactionCount() > 0) {
             wg.setFloatValue(motionAtt, 0, wg.getFloatValue(motionAtt, 0) + 0.5F);
         }
     }

@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.animation;
 
-import au.gov.asd.tac.constellation.graph.Graph;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,7 +30,7 @@ public class AnimationManager {
     private final Map<String, Animation> animations = new HashMap<String, Animation>();
     private final String graphId;
     
-    public AnimationManager(final String graphId){
+    public AnimationManager(final String graphId) {
         this.graphId = graphId;
     }
 
@@ -41,7 +39,7 @@ public class AnimationManager {
      * 
      * @param animationName
      */
-    public final synchronized void stopAnimation(final String animationName) {
+    public final void stopAnimation(final String animationName) {
         Animation removedAnimation = animations.remove(animationName);
         if (removedAnimation != null) {
             removedAnimation.setFinished();
@@ -51,7 +49,7 @@ public class AnimationManager {
     /**
      * Stops animating all animations on an 
      */
-    public void stopAllAnimations(){
+    public void stopAllAnimations() {
         animations.values().forEach(animation -> {
             animation.setFinished();
         });
@@ -60,22 +58,22 @@ public class AnimationManager {
 
     /**
      * Run the specified animation on the specified graph.
+     * If the animation this attempt to run is ignored.
      *
      * @param animation The animation to run
-     * @param graph
      */
     public void runAnimation(final Animation animation) {
-        //The animation is not running on the current graph so it can be run and registered
-        if (animations.get(animation.getName()) == null){
+        
+        if (animations.get(animation.getName()) == null) {
             animation.run(graphId);
             animations.put(animation.getName(), animation);
         }
     }
     
     /**
-     * Checks if an animation is animating on the a graph.
+     * Checks if an animation is animating.
+     * 
      * @param name
-     * @param graphID
      * @return 
      */
     public boolean isAnimating(final String name) {
@@ -85,12 +83,18 @@ public class AnimationManager {
     /**
      * Interrupt this animation.
      */
-    public void interruptAllAnimations(){
+    public void interruptAllAnimations() {
         animations.values().forEach(animation -> {
             animation.interrupt();
         });
     }
 
+    /**
+     * Notify the AnimationManger the animation has complete.
+     * The animation manager will de-register the animation.
+     * 
+     * @param animation 
+     */
     void notifyComplete(final Animation animation) {
         animations.remove(animation.getName());
     }

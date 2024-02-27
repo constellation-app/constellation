@@ -25,8 +25,10 @@ import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
-/*
- * Developer tool for interrupting animations
+/**
+ * An developer tool action for interrupting all animations.
+ * 
+ * @author capricornunicorn123
  */
 @ActionID(category = "Experimental", id = "au.gov.asd.tac.constellation.graph.interaction.animation.actions.AnimateInterruptAction")
 @ActionRegistration(displayName = "#CTL_AnimateInterruptAction", surviveFocusChange = true)
@@ -43,7 +45,7 @@ public final class AnimateInterruptAction implements ActionListener {
     }
 
     @Override
-    public void actionPerformed(final ActionEvent ev) {
+    public void actionPerformed(final ActionEvent event) {
         AnimationUtilities.interruptAllAnimations();
     }
 }

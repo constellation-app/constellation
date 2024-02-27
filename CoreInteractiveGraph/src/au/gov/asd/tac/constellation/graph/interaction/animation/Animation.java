@@ -19,32 +19,27 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor;
 
 /**
- * Base class for animations as well as static utilities for running animations.
- * <p>
- * The life-cycle of an animation is follows (this is a simplified version of
- * the logic that actually runs in an animation's thread):
- * <pre>
- * animation.initialise()
- * while (true) {
- *     animation.animate()
- *     // wait for this long
- *     animation.getIntervalInMillis()
- * }
- * animation.reset()
- * </pre>
- * </p>
- * All animations run on their own thread, enabling concurrent animations.
- * Each time an animation modifies the graph it must lock, modify and release the graph as quickly as possible. 
+ * Base class for animations.
  *
+ * The flow of an animation is as follows: 
+ * <ol><li> Animations initialize themselves by ensuring that the graph is in a state that the animation can modify.
+ * Animations may check for specific attributes or node and transaction quantities. </li>
+ * <li> Animations run in frames. With each frame obtaining a graph lock modifying the graph and releasing 
+ * its lock to then wait a predefined amount of time before the next frame. </li>
+ * <li> When an animation finishes, It may reset the graph to a particular state or trigger another animation. 
+ * </li></ol>
+ * All animations run on their own thread, enabling concurrent animations.
+ * Animations may be disabled by an application option. In these cases animations with a finite number of 
+ * steps can simply skip and perform the required graph modification in a single frame.
+ * 
  * @author twilight_sparkle
  * @author capricornunicorn123
  */
 public abstract class Animation {
 
-    private WritableGraph wg;;
+    private WritableGraph wg;
     public String graphID;
     private boolean finished = false;
     private Thread animationThread;
@@ -55,7 +50,6 @@ public abstract class Animation {
 
     /**
      * Initialize this animation.
-     * <p>
      * This method is called prior to any calls to {@link #animate} and allows
      * the animation to store any data that it will use over the course of the
      * animation. This method may also store initial state data for resetting 
@@ -63,45 +57,40 @@ public abstract class Animation {
      *
      * @param wg A write lock on the graph to initialize the animation with.
      */
-    public abstract void initialise(GraphWriteMethods wg);
+    public abstract void initialise(final GraphWriteMethods wg);
 
     /**
      * Run one frame of the animation.
-     * <p>
-     * This method should modify the graph as necessary and return a list of
-     * visual changes that allow the relevant {@link VisualProcessor} to respond
-     * quickly to these changes (without having to wait until the lock on the
-     * graph is released).
+     * This method should modify the graph as necessary writing any changes 
+     * to the provided grapj.
      *
      * @param wg A write lock on the graph the animation is running on.
      * @return
      */
-    public abstract void animate(GraphWriteMethods wg);
+    public abstract void animate(final GraphWriteMethods wg);
 
     /**
      * Reset any ephemeral changes made by the animation.
-     * <p>
      * This method is called after all calls to {@link #animate} and allows the
      * animation to clean up any changes it made to the graph that should not
      * persist after the animation has concluded.
      *
      * @param wg A write lock on the graph to reset the animation on.
      */
-    public abstract void reset(GraphWriteMethods wg);
+    public abstract void reset(final GraphWriteMethods wg);
 
     /**
      * Get the interval in milliseconds between each frame of the animation.
-     * Note: Standard film frame rate is 24 fps which equates to 40 milliseconds per frame  
+     * Note: Standard film frame rate is 24 fps which equates to 41.6 milliseconds per frame  
      *
      * @return The interval between frames for this animation.
      */
-    public long getIntervalInMillis(){
+    public long getIntervalInMillis() {
         return 40;
     }
 
     /**
      * Get the name of this animation.
-     * <p>
      * This name will be used to retrieve the write lock on the graph, and
      * consequentially if this animation is also significant, the name by which
      * the result of the animation can be undone/redone.
@@ -112,7 +101,6 @@ public abstract class Animation {
 
     /**
      * Get whether or not this animation is 'significant'.
-     * <p>
      * Significant animations will make significant edits on the graph, meaning
      * that their results can be undone/redone atomically.
      *
@@ -125,8 +113,7 @@ public abstract class Animation {
     /**
      * Marks this animation as finished, indicating that the next (or current)
      * call to animate will be the last.
-     * <p>
-     * This method is often called by {@link #animate} in implementations with a
+     * This method is called by {@link #animate} in implementations with a
      * finite number of frames.
      */
     protected final void setFinished() {
@@ -136,37 +123,35 @@ public abstract class Animation {
     /**
      * Handles the variables that persist for the life-cycle of the animation
      * and creates the animation thread.
-     * @param graph 
+     * 
+     * @param graphId
      */
     public void run(final String graphId) {
         final GraphNode gn = GraphNode.getGraphNode(graphId);
+        
         if (GraphNode.getGraphNode(graphId) != null) {
             this.graphID = graphId;
             final Graph graph = gn.getGraph();
             // Chreate the Thread for this animaton
             animationThread = new Thread(() -> {
                 try {
-                    // Intialise the animation
-                    if (lockGraphSafely(graph)){
+                    if (lockGraphSafely(graph)) {
                         initialise(wg);
                         wg.commit();
-                        // Perform the animation
                         editGraph(graph);
                     } 
+                    
                 } catch (InterruptedException ex) {
-                    // Do nothing here
-                    // Idealy woud throw a PluginException explaining why it was interrupted 
-                    // but can't do this in a thread
+
                 } finally {
                     if (lockGraphSafely(graph)) {                    
                         reset(wg);
                         wg.commit();
                     }
-                    
                     AnimationUtilities.notifyComplete(this);
-
                 }    
             });
+            
             animationThread.start();
         }
     }
@@ -178,12 +163,11 @@ public abstract class Animation {
      * @param graph
      * @throws InterruptedException 
      */
-    private void editGraph(final Graph graph) throws InterruptedException{
-        
+    private void editGraph(final Graph graph) throws InterruptedException {
         while (!finished) {
                 
             // Animate a frame
-            if (lockGraphSafely(graph)){
+            if (lockGraphSafely(graph)) {
                 animate(wg);
                 wg.commit();
             }
@@ -199,7 +183,7 @@ public abstract class Animation {
      * @param graph
      * @return 
      */
-    private boolean lockGraphSafely(final Graph graph){
+    private boolean lockGraphSafely(final Graph graph) {
         try {
             wg = graph.getWritableGraph(getName(), isSignificant());
             return true;
@@ -215,7 +199,7 @@ public abstract class Animation {
     /**
      * Interrupt this animation.
      */
-    public void interrupt(){
+    public void interrupt() {
         this.animationThread.interrupt();
     }
 
@@ -224,11 +208,13 @@ public abstract class Animation {
      * Essentially the animation occurs in one frame. 
      * @param graphId 
      */
-    public void skip(final String graphId){
+    public void skip(final String graphId) {
         final GraphNode gn = GraphNode.getGraphNode(graphId);
+        
         if (GraphNode.getGraphNode(graphId) != null) {
             final Graph graph = gn.getGraph();
-            if (lockGraphSafely(graph)){
+            
+            if (lockGraphSafely(graph)) {
                 initialise(wg);
                 setFinalFrame(wg);
                 wg.commit();
@@ -236,5 +222,5 @@ public abstract class Animation {
         }
     };
     
-    public abstract void setFinalFrame(GraphWriteMethods wg);
+    public abstract void setFinalFrame(final GraphWriteMethods wg);
 }

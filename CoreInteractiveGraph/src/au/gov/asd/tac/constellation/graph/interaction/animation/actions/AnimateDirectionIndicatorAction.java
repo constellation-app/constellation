@@ -24,8 +24,10 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
-/*
- * adding animation motion to graph elements
+/**
+ * An action for triggering a {@link DirectionIndiciatorAnimation}.
+ * 
+ * @author capricornunicorn123
  */
 @ActionID(category = "Experimental", id = "au.gov.asd.tac.constellation.graph.interaction.animation.actions.AnimateDirectionIndicatorAction")
 @ActionRegistration(displayName = "#CTL_AnimateDirectionIndicatorAction", lazy = false)

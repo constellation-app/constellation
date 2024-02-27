@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.graph.node.gui;
 
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
@@ -41,26 +40,24 @@ import org.openide.util.actions.Presenter;
  * in the menu bar. These actions are only required for each toolbar action.
  *
  * @author altair
+ * @author capricornuncorn123
  */
-public abstract class MenuBaseAction extends AbstractAction implements Presenter.Menu, ActionListener, LookupListener, GraphChangeListener{
+public abstract class MenuBaseAction extends AbstractAction implements Presenter.Menu, ActionListener, LookupListener, GraphChangeListener {
 
-    protected Lookup.Result<GraphNode> graphNodeSet;
-    protected Lookup.Result<GraphOptionsPanelController> graphOptionsSet;
-    protected Lookup lookup;
+    protected final Lookup.Result<GraphNode> graphNodeSet;
+    protected final Lookup lookup;
     protected JMenuItem menuButton;
     private GraphNode currentGraphNode;
-    private static final Logger LOGGER = Logger.getLogger(MenuBaseAction.class.getName());
 
     /**
-     * constructor This method must be called by each child class to ensure that
-     * the lookups are properly initialised
+     * This constructor must be called by each child class to ensure that
+     * the look-ups are properly initialized
      */
     protected MenuBaseAction() {
         lookup = Utilities.actionsGlobalContext();
         graphNodeSet = Utilities.actionsGlobalContext().lookupResult(GraphNode.class);
         graphNodeSet.addLookupListener(WeakListeners.create(LookupListener.class, this, graphNodeSet));
         resultChanged(new LookupEvent(graphNodeSet));
-
     }
 
     /**
@@ -73,46 +70,44 @@ public abstract class MenuBaseAction extends AbstractAction implements Presenter
     }
 
     /**
-     * Method override for {@link ActionListener}.
-     * Occurs when an action is initiated by a user by clicking the menu item.
-     *
+     * Occurs when an action is initiated by a user.
+     * For {@link ActionListener} implementation.
+     * 
      * @param event 
      */
     @Override
     public void actionPerformed(final ActionEvent event) {
-        LOGGER.log(Level.SEVERE, "!!!!!!!!!!!!!! An action was performed");
         if (menuButton != null && isEnabled()) {
             this.updateValue();
         }
     }
+    
+    /**
+     * Update the value of the widget based on the specific action.
+     * This method may trigger a plugin to do the "work" of the action.
+     */
+    protected abstract void updateValue();
 
     /**
-     * Method override for {@link GraphChangeListener}.
-     * This is called whenever a change occurs to a graph or if a graph is changed.
-     *
+     * Occurs when a change to a graph is made.
+     * For {@link GraphChangeListener} implementation.
+     * 
      * @param event 
      */
     @Override
     public void graphChanged(final GraphChangeEvent event) {
-        LOGGER.log(Level.SEVERE, "!!!!!!!!!!!!!!The graph has chaged");
         if (menuButton != null && isEnabled()) {
             this.displayValue();
         }
     }
 
     /**
-     * This method will update the value of the widget.
-     */
-    protected abstract void updateValue();
-
-    /**
-     * This method will update the display of the menu widget based on the value
-     * in the graph visual object
+     * Update the displayed value of the widget.
      */
     protected abstract void displayValue();
 
     /**
-     * create a new radio button widget
+     * Create a new radio button widget
      *
      * @param label string
      * @param group button group
@@ -126,7 +121,7 @@ public abstract class MenuBaseAction extends AbstractAction implements Presenter
     }
 
     /**
-     * create a new checkbox widget
+     * Create a new checkbox widget
      *
      * @param label string
      * @param defaultValue value
@@ -146,8 +141,8 @@ public abstract class MenuBaseAction extends AbstractAction implements Presenter
 
     /**
      * Checks if a MenuBaseAction is enabled.
-     * Updates the menu button if the button exists
-     * by default 
+     * Updates the menuButton if the button exists.
+     * For {@link AbstractAction} extension.
      * @return 
      */
     @Override
@@ -161,7 +156,8 @@ public abstract class MenuBaseAction extends AbstractAction implements Presenter
     
     /**
      * An method that can be overwritten to check if the menu button is enabled
-     * based n implementation specific requirements.  
+     * based on action specific requirements.  
+     * 
      * @return 
      */
     public boolean getEnabled(){
@@ -169,12 +165,12 @@ public abstract class MenuBaseAction extends AbstractAction implements Presenter
     }
 
     /**
-     * Method override for {@link LookupListener}
+     * For {@link LookupListener} implementation.
+     * 
      * @param le 
      */
     @Override
     public void resultChanged(final LookupEvent le) {
-        LOGGER.log(Level.SEVERE, "!!!!!!!!!!!!!!The result has chaged");
         if (currentGraphNode != null) {
             currentGraphNode.getGraph().removeGraphChangeListener(this);
             currentGraphNode = null;

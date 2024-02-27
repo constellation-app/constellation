@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.preferences;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -172,11 +171,11 @@ final class GraphOptionsPanel extends javax.swing.JPanel {
         rightEyeColor.setSelectedItem(color);
     }
     
-    public boolean getAnimationsEnabled(){
+    public boolean getAnimationsEnabled() {
         return this.enableAnimationsCheckBox.isSelected();
     }
     
-    public void setAnimationsEnabled(final boolean selected){
+    public void setAnimationsEnabled(final boolean selected) {
         this.enableAnimationsCheckBox.setSelected(selected);
     }
 

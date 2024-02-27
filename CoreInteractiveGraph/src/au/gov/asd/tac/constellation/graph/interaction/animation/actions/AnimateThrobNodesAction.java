@@ -24,8 +24,10 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
-/*
- * adding animation motion to graph elements
+/**
+ * An action for triggering a {@link ThrobNodesAnimation}.
+ * 
+ * @author capricornunicorn123
  */
 @ActionID(category = "Experimental", id = "au.gov.asd.tac.constellation.graph.interaction.animation.actions.AnimateThrobNodesAction")
 @ActionRegistration(displayName = "#CTL_AnimateThrobNodesAction", lazy = false)
@@ -45,7 +47,6 @@ public final class AnimateThrobNodesAction extends AnimationMenuBaseAction imple
         } else {
             stopAnimation(this.getContext().getGraph().getId());
         }
-        
     }
 
     @Override
@@ -54,7 +55,7 @@ public final class AnimateThrobNodesAction extends AnimationMenuBaseAction imple
     }
     
     @Override
-    public void stopAnimation(final String graphId){
+    public void stopAnimation(final String graphId) {
         AnimationUtilities.stopAnimation(ThrobbingNodeAnimation.NAME, graphId);
     }
 }

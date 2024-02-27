@@ -21,11 +21,12 @@ import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
 
 /**
- * Pan (and translate) the camera from one position to another.
- * <p>
- * (Easing algorithms taken from d3 transitions.)
+ * Cause the camera to pan (and translate) the from one position to another.
+ * This animation is finite so will update the graph to the final camera position when
+ * animations are disabled.
  *
  * @author algol
+ * @author capricornunicorn123
  */
 public final class PanAnimation extends Animation {
 
@@ -104,8 +105,6 @@ public final class PanAnimation extends Animation {
         camera.lookAtCentre.set(to.lookAtCentre);
         camera.lookAtUp.set(to.lookAtUp);
         camera.lookAtRotation.set(to.lookAtRotation);
-        wg.setObjectValue(cameraAttr, 0, camera);
-        
-    }
-        
+        wg.setObjectValue(cameraAttr, 0, camera); 
+    }    
 }

@@ -25,8 +25,10 @@ import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
-/*
- * stop the animation
+/**
+ * An action for stopping all animations.
+ * 
+ * @author capricornunicorn123
  */
 @ActionID(category = "Experimental", id = "au.gov.asd.tac.constellation.graph.interaction.animation.actions.AnimateStopAction")
 @ActionRegistration(displayName = "#CTL_AnimateStopAction", surviveFocusChange = true)
@@ -44,7 +46,7 @@ public final class AnimateStopAction implements ActionListener {
     }
 
     @Override
-    public void actionPerformed(final ActionEvent ev) {
+    public void actionPerformed(final ActionEvent event) {
         AnimationUtilities.stopAllAnimations(context.getGraph().getId());
     }
 }
