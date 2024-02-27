@@ -37,11 +37,20 @@ public abstract class AbstractHeatmapLayer extends MapLayer {
     private static final float SEVERITY = 2F;
 
     private int onScreenMarkerCount = 0;
+    private float prevTopLeftX = 0;
+    private float prevTopLeftY = 0;
 
     @Override
     public boolean requiresUpdate() {
         final ScreenPosition topLeft = map.getScreenPosition(map.getTopLeftBorder());
         final ScreenPosition bottomRight = map.getScreenPosition(map.getBottomRightBorder());
+
+        if (topLeft.x != prevTopLeftX || topLeft.y != prevTopLeftY) {
+            prevTopLeftX = topLeft.x;
+            prevTopLeftY = topLeft.y;
+            return true;
+        }
+
         return onScreenMarkerCount != renderer.getMarkerCache().keys().stream()
                 .filter(marker -> {
                     final ScreenPosition markerPosition = map.getScreenPosition(marker.getLocation());
@@ -102,11 +111,16 @@ public abstract class AbstractHeatmapLayer extends MapLayer {
         final float[] gaussImage = new float[width * height];
         GaussianBlur.gaussianBlurBox(pointImage, gaussImage,
                 width, height, RADIUS, PASSES, GaussianBlur.BoxBlurType.FASTEST);
+        
+//        final ScreenPosition currentTopLeft = map.getScreenPosition(map.getTopLeftBorder());
+//        prevTopLeftX = currentTopLeft.x;
+//        prevTopLeftY = currentTopLeft.y;
 
         final PImage heatmapImage = renderer.createImage(width, height, PConstants.ARGB);
         heatmapImage.loadPixels();
         GaussianBlur.colorise(gaussImage, heatmapImage.pixels, THRESHOLD, SEVERITY);
         heatmapImage.updatePixels();
+
         return heatmapImage;
     }
 
