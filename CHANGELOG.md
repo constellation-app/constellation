@@ -1,9 +1,14 @@
 # Constellation Changes
+
+## Changes in Febraury 2024
+-   Updated the `constellationapplication/netbeans-runner` docker image
+    to `21.0.0` to include Netbeans 21 and Azul JDK 21.
+
 ## Changes in December 2023
--  Updated GraphML error messaging for invalid nodes and edges. Transaction Identifiers added as UUIDs if none are found.
+-   Updated GraphML error messaging for invalid nodes and edges. Transaction Identifiers added as UUIDs if none are found.
 
 ## Changes in July 2023
--  Replaced FindView to express the new interface build in JavaFX and removed the old Swing implementation
+-   Replaced FindView to express the new interface build in JavaFX and removed the old Swing implementation
 
 ## Changes in June 2023
 -   Changed LookupPluginsTask to implement Supplier<Map<String, Pair<Integer, List<DataAccessPlugin>>>>.

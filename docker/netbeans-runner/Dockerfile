@@ -1,7 +1,7 @@
 FROM ubuntu:bionic
 
 LABEL \
-  IMAGE="netbeans-runner:12" \
+  IMAGE="netbeans-runner:21" \
   SOURCE="ubuntu:bionic"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -39,24 +39,24 @@ RUN cd "${SONAR_DOWNLOAD_DIR}" \
     && mv "${SONAR_FILENAME}" "${SONAR_HOME}" \
     && echo "Installation completed successfully." 
 
-ENV ZULU_VERSION="zulu11.37.19-ca-fx-jdk11.0.6-linux_x64"
-ENV ZULU_CHECKSUM="f7720d2f3973c230f81b35dc9b36f72009416cf418a724f298c4513268b9e9e313744ff45f646e43a5e313ee1ef780cc3aa0232c22f36a30c8cde3db37427172  ${ZULU_VERSION}.tar.gz"
+ENV ZULU_VERSION="zulu21.32.17-ca-fx-jdk21.0.2-linux_x64"
+ENV ZULU_CHECKSUM="08433694c8f264b592d6d05c4b5b414d4c41c00cb35b7beba515855554855466"
 
 RUN wget -q "https://cdn.azul.com/zulu/bin/${ZULU_VERSION}.tar.gz" \
-    && echo "${ZULU_CHECKSUM}" | sha512sum -c \
+    && echo "${ZULU_CHECKSUM}" | sha256sum -c \
     && tar -xf "${ZULU_VERSION}.tar.gz" \
     && mkdir -p /usr/java/ \
     && mv "${ZULU_VERSION}" /usr/java/ \
     && rm "${ZULU_VERSION}.tar.gz"
 
-ENV NETBEANS_VERSION="12.0" \
+ENV NETBEANS_VERSION="21" \
     NETBEANS_HOME="/usr/local/netbeans" \
     NETBEANS_HELP_GITHUB="https://github.com/constellation-app/third-party-dependencies/blob/master/NetBeans%20Help"
-ENV NETBEANS_CHECKSUM="91030c9628a08acd85f1a58a7f71eec2e57dc85841c1c475cc6311335b5d8cdc10c1198274b9668b7f61a28d04b07661247dc1c3e36b8e29214aec3748e499e4  netbeans-${NETBEANS_VERSION}-bin.zip"
+ENV NETBEANS_CHECKSUM="1bd5695755eb9547d88a5539a6e43884d787dba4da6ecadc1b261e07c1dda56d0a03986a66755c5d3a358216711c0393ac8fdd649e15c953bdfe380cb564ca65  netbeans-${NETBEANS_VERSION}-bin.zip"
 
 COPY common.xml.modified ./
 
-RUN wget -q "http://apache.mirror.amaze.com.au/netbeans/netbeans/${NETBEANS_VERSION}/netbeans-${NETBEANS_VERSION}-bin.zip" \
+RUN wget -q "https://www.apache.org/dyn/closer.lua/netbeans/netbeans/${NETBEANS_VERSION}/netbeans-${NETBEANS_VERSION}-bin.zip" \
     && echo "${NETBEANS_CHECKSUM}" | sha512sum -c \
     && unzip -q "netbeans-${NETBEANS_VERSION}-bin.zip" \
     && wget -q "${NETBEANS_HELP_GITHUB}/org-netbeans-modules-javahelp.jar?raw=true" -O netbeans/platform/modules/org-netbeans-modules-javahelp.jar \
