@@ -40,7 +40,7 @@ RUN cd "${SONAR_DOWNLOAD_DIR}" \
     && echo "Installation completed successfully." 
 
 ENV ZULU_VERSION="zulu21.32.17-ca-fx-jdk21.0.2-linux_x64"
-ENV ZULU_CHECKSUM="08433694c8f264b592d6d05c4b5b414d4c41c00cb35b7beba515855554855466"
+ENV ZULU_CHECKSUM="08433694c8f264b592d6d05c4b5b414d4c41c00cb35b7beba515855554855466  ${ZULU_VERSION}.tar.gz"
 
 RUN wget -q "https://cdn.azul.com/zulu/bin/${ZULU_VERSION}.tar.gz" \
     && echo "${ZULU_CHECKSUM}" | sha256sum -c \
