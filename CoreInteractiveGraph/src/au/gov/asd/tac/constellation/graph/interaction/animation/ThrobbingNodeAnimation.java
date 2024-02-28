@@ -41,12 +41,11 @@ public class ThrobbingNodeAnimation extends Animation {
 
     @Override
     public void initialise(final GraphWriteMethods wg) {
-        
+        nodeRadiusAttribute = VisualConcept.VertexAttribute.NODE_RADIUS.get(wg);
         // dont initialise if there is 0 nodes present
         if (wg.getVertexCount() == 0) {
             stop();
         } else {
-            nodeRadiusAttribute = VisualConcept.VertexAttribute.NODE_RADIUS.get(wg);
             for (int pos = 0; pos < wg.getVertexCount(); pos++) {
                 registerNode(wg.getVertex(pos), wg);
             }

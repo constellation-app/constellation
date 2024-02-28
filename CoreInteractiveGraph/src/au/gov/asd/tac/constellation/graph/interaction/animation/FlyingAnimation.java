@@ -77,20 +77,22 @@ public final class FlyingAnimation extends Animation {
 
     @Override
     public void initialise(final GraphWriteMethods wg) {
-        
+        xAttr = VisualConcept.VertexAttribute.X.get(wg);
+        yAttr = VisualConcept.VertexAttribute.Y.get(wg);
+        zAttr = VisualConcept.VertexAttribute.Z.get(wg);
+        x2Attr = VisualConcept.VertexAttribute.X2.get(wg);
+        y2Attr = VisualConcept.VertexAttribute.Y2.get(wg);
+        z2Attr = VisualConcept.VertexAttribute.Z2.get(wg);
+        selectedAttr = VisualConcept.VertexAttribute.SELECTED.get(wg);
+        cameraAttribute = VisualConcept.GraphAttribute.CAMERA.get(wg);
+         
         // dont initilise the animation if there is less than 2 nodes
         if (wg.getVertexCount() <= 1) {
             stop();
         } else {
-            xAttr = VisualConcept.VertexAttribute.X.get(wg);
-            yAttr = VisualConcept.VertexAttribute.Y.get(wg);
-            zAttr = VisualConcept.VertexAttribute.Z.get(wg);
-            x2Attr = VisualConcept.VertexAttribute.X2.get(wg);
-            y2Attr = VisualConcept.VertexAttribute.Y2.get(wg);
-            z2Attr = VisualConcept.VertexAttribute.Z2.get(wg);
-            selectedAttr = VisualConcept.VertexAttribute.SELECTED.get(wg);
+            
             doMixing = x2Attr != Graph.NOT_FOUND && y2Attr != Graph.NOT_FOUND && z2Attr != Graph.NOT_FOUND;
-            cameraAttribute = VisualConcept.GraphAttribute.CAMERA.get(wg);
+           
             camera = wg.getObjectValue(cameraAttribute, 0);
             initialPosition = new Camera(camera);
             stepsPerLink = STEPS_PER_LINK * (int) Math.sqrt(1 + (wg.getVertexCount() / 2000));

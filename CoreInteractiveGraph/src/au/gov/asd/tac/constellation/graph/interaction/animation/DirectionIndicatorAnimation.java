@@ -34,12 +34,10 @@ public final class DirectionIndicatorAnimation extends Animation {
     
     @Override
     public void initialise(final GraphWriteMethods wg) {
-        
+        motionAtt = VisualConcept.GraphAttribute.CONNECTION_MOTION.ensure(wg);
         // Don't initilise the animation if there are no transactions
         if (wg.getTransactionCount() < 1) {
             stop();
-        } else {
-            motionAtt = VisualConcept.GraphAttribute.CONNECTION_MOTION.ensure(wg);
         }
     }
 
