@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.mapview.layers;
 
 import au.gov.asd.tac.constellation.utilities.image.GaussianBlur;
 import au.gov.asd.tac.constellation.views.mapview.markers.ConstellationAbstractMarker;
+import de.fhpotsdam.unfolding.geo.Location;
 import de.fhpotsdam.unfolding.marker.Marker;
 import de.fhpotsdam.unfolding.utils.ScreenPosition;
 import java.util.List;
@@ -37,17 +38,19 @@ public abstract class AbstractHeatmapLayer extends MapLayer {
     private static final float SEVERITY = 2F;
 
     private int onScreenMarkerCount = 0;
-    private float prevTopLeftX = 0;
-    private float prevTopLeftY = 0;
+    private float prevCentreX = 0;
+    private float prevCentreY = 0;
 
     @Override
     public boolean requiresUpdate() {
         final ScreenPosition topLeft = map.getScreenPosition(map.getTopLeftBorder());
         final ScreenPosition bottomRight = map.getScreenPosition(map.getBottomRightBorder());
 
-        if (topLeft.x != prevTopLeftX || topLeft.y != prevTopLeftY) {
-            prevTopLeftX = topLeft.x;
-            prevTopLeftY = topLeft.y;
+        final ScreenPosition centreOfMapOnScreen = map.getScreenPosition(new Location(0, 0));
+
+        if (centreOfMapOnScreen.x != prevCentreX || centreOfMapOnScreen.y != prevCentreY) {
+            prevCentreX = centreOfMapOnScreen.x;
+            prevCentreY = centreOfMapOnScreen.y;
             return true;
         }
 
