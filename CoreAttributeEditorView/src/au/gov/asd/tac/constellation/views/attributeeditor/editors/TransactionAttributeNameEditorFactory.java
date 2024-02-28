@@ -131,5 +131,10 @@ public class TransactionAttributeNameEditorFactory extends AttributeValueEditorF
             controls.addRow(2, attributeList);
             return controls;
         }
+
+        @Override
+        public boolean noValueCheckBoxAvailable() {
+            return false;
+        }
     }
 }

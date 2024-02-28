@@ -215,26 +215,20 @@ public class SVGGraphBuilder {
      * Builds an SVGGraphObject representing the provided graph.
      * @return SVGData
      */
-    public SVGData build() throws InterruptedException {
+    public SVGData build() throws InterruptedException, IllegalArgumentException{
         
         final SVGObject svgGraph = SVGTemplateConstants.LAYOUT.getSVGObject();
-        
-        try{
+        try {
             preBuild();
-        } catch (final IllegalArgumentException ex){
-            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-            return null;
+            // Build the SVG image
+            buildHeader(svgGraph);
+            buildNodes(svgGraph);
+            buildConnections(svgGraph);            
+            buildLayout(svgGraph);
+        } finally {
+            // Clean up the builder
+            postBuild();     
         }
-        
-        // Build the SVG image
-        buildHeader(svgGraph);
-        buildNodes(svgGraph);
-        buildConnections(svgGraph);            
-        buildLayout(svgGraph);
-        
-        // Clean up the builder
-        postBuild();
-        
         return svgGraph.toSVGData();
     }       
 
@@ -243,18 +237,18 @@ public class SVGGraphBuilder {
      */
     private void preBuild() throws IllegalArgumentException {
         
+        // Initialise the VisualGraphAccess
+        access.beginUpdate();
+        access.updateInternally();
+        
         // Thorw errors if attributes without default values have not been set
         if (readableGraph == null ) {
-            throw new IllegalArgumentException("SVGGraphBuilder requires GraphReadMethodsto build");
+            throw new IllegalArgumentException("SVGGraphBuilder requires GraphReadMethods to build");
         } else if (interaction == null) {
             throw new IllegalArgumentException("SVGGraphBuilder requires a PluginInteraction to build");
         } else if (graphTitle == null) {
             throw new IllegalArgumentException("SVGGraphBuilder requires a Graph Title to build");
         }
-        
-        // Initialise the VisualGraphAccess
-        access.beginUpdate();
-        access.updateInternally();
         
         // Set the camera position and add repositioning animation 
         this.camera = access.getCamera();
