@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.graph.interaction.gui.VisualGraphTopComponen
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.preferences.GraphPreferenceKeys;
-import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.util.NbPreferences;
 
@@ -68,10 +67,12 @@ public class AnimationUtilities {
      */
     private static AnimationManager getGraphAnimationManager(final String graphId){
         if (StringUtils.isNotBlank(graphId)){
-            return ((VisualGraphTopComponent) GraphNode.getGraphNode(graphId).getTopComponent()).getAnimationManager();
-        } else {
-            return null;
+            GraphNode gn = GraphNode.getGraphNode(graphId);
+            if (gn != null) {
+             return ((VisualGraphTopComponent) gn.getTopComponent()).getAnimationManager();
+            }
         }
+        return null; 
     }
     
     /**
@@ -85,10 +86,12 @@ public class AnimationUtilities {
      */
     public static final void startAnimation(final Animation animation, final String graphId) {
         if (animationsEnabled()){
-            getGraphAnimationManager(graphId).runAnimation(animation);
-        } else {
-            animation.skip(graphId);
+            AnimationManager am = getGraphAnimationManager(graphId);
+            if (am != null){
+                    am.runAnimation(animation);
+            }
         }
+        animation.skip(graphId);
     }
     
     /**
