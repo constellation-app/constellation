@@ -95,7 +95,7 @@ public class GraphVisualAccessNGTest {
         final List<VisualChange> changes = instance.getIndigenousChanges();
         instance.endUpdate();
 
-        assertEquals(changes.size(), 37);
+        assertEquals(changes.size(), 38);
     }
 
     /**
