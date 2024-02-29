@@ -28,7 +28,7 @@ import org.openide.util.NbBundle;
 
 /**
  * Zoom the camera inwards
- * 
+ *
  * @author Quasar985
  */
 @ActionID(category = "Display", id = "au.gov.asd.tac.constellation.functionality.zoom.ZoomIn")
@@ -44,7 +44,7 @@ public final class ZoomInAction implements ActionListener {
     private final GraphNode context;
 
     /**
-     * Construct a new ZoomToSelectionAction.
+     * Construct a new ZoomInAction.
      *
      * @param context GraphNode.
      */
