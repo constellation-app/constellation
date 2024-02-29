@@ -41,7 +41,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -284,7 +283,7 @@ public class SVGGraphBuilderNGTest {
      * Test of build method, of class SVGGraphBuilder.
      */
     @Test
-    public void testBuild() throws Exception {
+    public void testBuild() throws IllegalArgumentException, InterruptedException {
         System.out.println("build");
         final SVGGraphBuilder instance = new SVGGraphBuilder()
                 .withInteraction(interactionMock)
@@ -306,7 +305,7 @@ public class SVGGraphBuilderNGTest {
      * Test of build method, of class SVGGraphBuilder.
      * @throws java.lang.InterruptedException
      */
-    @Test
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void testBuild_withoutReadableGraph() throws InterruptedException {
         System.out.println("build");
         final SVGGraphBuilder instance = new SVGGraphBuilder()
@@ -319,14 +318,14 @@ public class SVGGraphBuilderNGTest {
                 .includeConnections(true)
                 .includeConnectionLabels(false)
                 .includeBlazes(false); 
-        assertNull(instance.build());
+        instance.build();
     }
     
     /**
      * Test of build method, of class SVGGraphBuilder.
      * @throws java.lang.InterruptedException
      */
-    @Test
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void testBuild_withoutInteraction() throws InterruptedException {
         System.out.println("build");
         final SVGGraphBuilder instance = new SVGGraphBuilder()
@@ -339,15 +338,15 @@ public class SVGGraphBuilderNGTest {
                 .includeConnections(true)
                 .includeConnectionLabels(false)
                 .includeBlazes(false); 
-        assertNull(instance.build());
+        instance.build();
     }
     
     /**
      * Test of build method, of class SVGGraphBuilder.
      * @throws java.lang.InterruptedException
      */
-    @Test
-    public void testBuild_graphTitle() throws InterruptedException {
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testBuild_withoutGraphTitle() throws InterruptedException {
         System.out.println("build");
         final SVGGraphBuilder instance = new SVGGraphBuilder()
                 .withInteraction(interactionMock)
@@ -359,7 +358,7 @@ public class SVGGraphBuilderNGTest {
                 .includeConnections(true)
                 .includeConnectionLabels(false)
                 .includeBlazes(false); 
-        assertNull(instance.build());
+        instance.build();
     }
     
     private Graph buildTestableGraph() throws InterruptedException{

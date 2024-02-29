@@ -81,6 +81,7 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
         applicationOptionsPanel.setCurrentFont(prefs.get(ApplicationPreferenceKeys.FONT_FAMILY, ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT));
         applicationOptionsPanel.setFontSize(prefs.get(ApplicationPreferenceKeys.FONT_SIZE, ApplicationPreferenceKeys.FONT_SIZE_DEFAULT));
         applicationOptionsPanel.setEnableSpellChecking(prefs.getBoolean(ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING, ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING_DEFAULT));
+        applicationOptionsPanel.setColorModeSelection(prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT));
     }
 
     @Override
@@ -106,6 +107,7 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
                 prefs.put(ApplicationPreferenceKeys.FONT_FAMILY, applicationOptionsPanel.getCurrentFont());
                 prefs.put(ApplicationPreferenceKeys.FONT_SIZE, applicationOptionsPanel.getFontSize());
                 prefs.putBoolean(ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING, applicationOptionsPanel.isEnableSpellCheckingSelected());
+                prefs.put(ApplicationPreferenceKeys.COLORBLIND_MODE, applicationOptionsPanel.getColorModeSelection());
             }
         }
     }
@@ -125,7 +127,8 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
                 && applicationOptionsPanel.getNotebookDirectory() != null
                 && applicationOptionsPanel.getRestDirectory() != null
                 && applicationOptionsPanel.getCurrentFont() != null
-                && applicationOptionsPanel.getFontSize() != null;
+                && applicationOptionsPanel.getFontSize() != null
+                && applicationOptionsPanel.getColorModeSelection() != null;
     }
 
     @Override
@@ -145,6 +148,7 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
                 && applicationOptionsPanel.getCurrentFont().equals(prefs.get(ApplicationPreferenceKeys.FONT_FAMILY, ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT))
                 && applicationOptionsPanel.getFontSize().equals(prefs.get(ApplicationPreferenceKeys.FONT_SIZE, ApplicationPreferenceKeys.FONT_SIZE_DEFAULT))
                 && applicationOptionsPanel.isEnableSpellCheckingSelected() == prefs.getBoolean(ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING, ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING_DEFAULT));
+                && applicationOptionsPanel.getColorModeSelection().equals(prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT)));
     }
 
     @Override

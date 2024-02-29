@@ -81,5 +81,10 @@ public class ShortEditorFactory extends AttributeValueEditorFactory<Short> {
             controls.getChildren().add(numberField);
             return controls;
         }
+
+        @Override
+        public boolean noValueCheckBoxAvailable() {
+            return false;
+        }
     }
 }

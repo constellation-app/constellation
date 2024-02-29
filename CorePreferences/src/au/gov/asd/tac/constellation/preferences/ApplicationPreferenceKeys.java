@@ -198,6 +198,12 @@ public final class ApplicationPreferenceKeys {
     public static String FONT_FAMILY_DEFAULT = "Arial";
     public static final String FONT_SIZE = "fontSize";
     public static String FONT_SIZE_DEFAULT = "12";
+    
+    /**
+     * Colorblind mode.
+     */
+    public static final String COLORBLIND_MODE_DEFAULT = "None";
+    public static final String COLORBLIND_MODE = "colorblindMode";
 
     private ApplicationPreferenceKeys() {
     }

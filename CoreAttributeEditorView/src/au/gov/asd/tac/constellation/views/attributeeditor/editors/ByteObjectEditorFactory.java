@@ -18,12 +18,10 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 import au.gov.asd.tac.constellation.graph.attribute.ByteObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import static au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor.CONTROLS_DEFAULT_VERTICAL_SPACING;
-import static au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor.NO_VALUE_LABEL;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import org.openide.util.lookup.ServiceProvider;
@@ -46,8 +44,8 @@ public class ByteObjectEditorFactory extends AttributeValueEditorFactory<Byte> {
     }
 
     public class ByteObjectEditor extends AbstractEditor<Byte> {
+
         private TextField numberField;
-        private CheckBox noValueCheckBox;
 
         protected ByteObjectEditor(final EditOperation editOperation, final DefaultGetter<Byte> defaultGetter, final ValueValidator<Byte> validator, final String editedItemName, final Byte initialValue) {
             super(editOperation, defaultGetter, validator, editedItemName, initialValue);
@@ -55,7 +53,6 @@ public class ByteObjectEditorFactory extends AttributeValueEditorFactory<Byte> {
 
         @Override
         public void updateControlsWithValue(final Byte value) {
-            noValueCheckBox.setSelected(false);
             if (value != null) {
                 numberField.setText(String.valueOf(value));
             }
@@ -63,9 +60,6 @@ public class ByteObjectEditorFactory extends AttributeValueEditorFactory<Byte> {
 
         @Override
         protected Byte getValueFromControls() throws ControlsInvalidException {
-            if (noValueCheckBox.isSelected()) {
-                return null;
-            }
             try {
                 return Byte.parseByte(numberField.getText());
             } catch (final NumberFormatException ex) {
@@ -78,20 +72,15 @@ public class ByteObjectEditorFactory extends AttributeValueEditorFactory<Byte> {
             final GridPane controls = new GridPane();
             controls.setAlignment(Pos.CENTER);
             controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
-
             numberField = new TextField();
             numberField.textProperty().addListener((o, n, v) -> update());
-
-            noValueCheckBox = new CheckBox(NO_VALUE_LABEL);
-            noValueCheckBox.setAlignment(Pos.CENTER);
-            noValueCheckBox.selectedProperty().addListener((v, o, n) -> {
-                numberField.setDisable(noValueCheckBox.isSelected());
-                update();
-            });
-
             controls.addRow(0, numberField);
-            controls.addRow(1, noValueCheckBox);
             return controls;
+        }
+
+        @Override
+        public boolean noValueCheckBoxAvailable() {
+            return true;
         }
     }
 }
