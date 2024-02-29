@@ -92,8 +92,8 @@ public class InteractiveGraphPluginRegistry {
     public static final String TOGGLE_DRAW_FLAG = ToggleDrawFlagPlugin.class.getName();
     public static final String TOGGLE_DRAW_DIRECTED = ToggleDrawDirectedPlugin.class.getName();
     public static final String TOGGLE_SELECTION_MODE = ToggleSelectionModePlugin.class.getName();
-    public static final String ZOOM_TO_SELECTION = ZoomToSelectionPlugin.class.getName();
-    public static final String ZOOM_TO_VERTICES = ZoomToVerticesPlugin.class.getName();
     public static final String ZOOM_IN = ZoomInPlugin.class.getName();
     public static final String ZOOM_OUT = ZoomOutPlugin.class.getName();
+    public static final String ZOOM_TO_SELECTION = ZoomToSelectionPlugin.class.getName();
+    public static final String ZOOM_TO_VERTICES = ZoomToVerticesPlugin.class.getName();
 }
