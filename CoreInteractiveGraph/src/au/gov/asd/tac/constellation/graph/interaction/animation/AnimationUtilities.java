@@ -85,13 +85,17 @@ public class AnimationUtilities {
      * @param graphId The graph to run the animation on.
      */
     public static final void startAnimation(final Animation animation, final String graphId) {
+        // Run the animation
         if (animationsEnabled()){
             AnimationManager am = getGraphAnimationManager(graphId);
             if (am != null){
                     am.runAnimation(animation);
+            } else {
+                animation.skip(graphId);
             }
+        } else {
+            animation.skip(graphId);
         }
-        animation.skip(graphId);
     }
     
     /**
