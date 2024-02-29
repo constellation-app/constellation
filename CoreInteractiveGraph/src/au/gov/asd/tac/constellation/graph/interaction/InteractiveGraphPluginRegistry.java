@@ -47,6 +47,8 @@ import au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.PreviousViewP
 import au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.ResetViewPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.RotateCameraPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.SetCameraVisibilityRange;
+import au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.ZoomInPlugin;
+import au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.ZoomOutPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.ZoomToSelectionPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.ZoomToVerticesPlugin;
 
@@ -92,4 +94,6 @@ public class InteractiveGraphPluginRegistry {
     public static final String TOGGLE_SELECTION_MODE = ToggleSelectionModePlugin.class.getName();
     public static final String ZOOM_TO_SELECTION = ZoomToSelectionPlugin.class.getName();
     public static final String ZOOM_TO_VERTICES = ZoomToVerticesPlugin.class.getName();
+    public static final String ZOOM_IN = ZoomInPlugin.class.getName();
+    public static final String ZOOM_OUT = ZoomOutPlugin.class.getName();
 }
