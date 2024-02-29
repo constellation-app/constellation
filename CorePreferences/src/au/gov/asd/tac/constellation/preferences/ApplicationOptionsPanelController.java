@@ -147,8 +147,8 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
                 && applicationOptionsPanel.isDownloadPythonClientSelected() == prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT)
                 && applicationOptionsPanel.getCurrentFont().equals(prefs.get(ApplicationPreferenceKeys.FONT_FAMILY, ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT))
                 && applicationOptionsPanel.getFontSize().equals(prefs.get(ApplicationPreferenceKeys.FONT_SIZE, ApplicationPreferenceKeys.FONT_SIZE_DEFAULT))
-                && applicationOptionsPanel.isEnableSpellCheckingSelected() == prefs.getBoolean(ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING, ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING_DEFAULT));
-                && applicationOptionsPanel.getColorModeSelection().equals(prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT)));
+                && applicationOptionsPanel.isEnableSpellCheckingSelected() == prefs.getBoolean(ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING, ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING_DEFAULT))
+                && applicationOptionsPanel.getColorModeSelection().equals(prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT));
     }
 
     @Override
