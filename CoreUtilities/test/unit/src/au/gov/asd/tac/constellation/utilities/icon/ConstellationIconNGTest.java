@@ -16,11 +16,9 @@
 package au.gov.asd.tac.constellation.utilities.icon;
 
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.svg.SVGAttributeConstants;
 import au.gov.asd.tac.constellation.utilities.svg.SVGObject;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.image.Image;
@@ -38,7 +36,7 @@ import org.testng.annotations.Test;
 
 /**
  * Tests ConstelationIcon
- * 
+ *
  * @author Delphinus8821
  * @author capricornunicorn123
  */
@@ -58,14 +56,14 @@ public class ConstellationIconNGTest {
         categories.add("category1");
         categories.add("category2");
         testIcon = new ConstellationIcon.Builder("Test1",
-        new ImageIconData((BufferedImage) ImageUtilities.mergeImages(
-                DefaultIconProvider.FLAT_SQUARE.buildBufferedImage(16, ConstellationColor.BLUEBERRY.getJavaColor()),
-                AnalyticIconProvider.STAR.buildBufferedImage(16), 0, 0)))
-        .addAliases(aliases)
-        .addCategories(categories)
-        .build();
+                new ImageIconData((BufferedImage) ImageUtilities.mergeImages(
+                        DefaultIconProvider.FLAT_SQUARE.buildBufferedImage(16, ConstellationColor.BLUEBERRY.getJavaColor()),
+                        AnalyticIconProvider.STAR.buildBufferedImage(16), 0, 0)))
+                .addAliases(aliases)
+                .addCategories(categories)
+                .build();
         testIcon.setEditable(true);
-    
+
     }
 
     @AfterClass
@@ -79,7 +77,6 @@ public class ConstellationIconNGTest {
     @AfterMethod
     public void tearDownMethod() throws Exception {
     }
-
 
     /**
      * Test of getCategories method, of class ConstellationIcon.
@@ -303,7 +300,7 @@ public class ConstellationIconNGTest {
         assertEquals(Math.round(result.getHeight()), size);
         assertEquals(Math.round(result.getWidth()), size);
     }
-    
+
     /**
      * Test of buildSVG method, of class ConstellationIcon.
      */
@@ -370,22 +367,22 @@ public class ConstellationIconNGTest {
     @Test
     public void testClearCache() {
         ConstellationIcon.clearCache();
-        
+
         Icon icon = testIcon.buildIcon(ConstellationIcon.DEFAULT_ICON_SIZE, null);
         Image image = testIcon.buildImage(ConstellationIcon.DEFAULT_ICON_SIZE, null);
         BufferedImage bufferedImage = testIcon.buildBufferedImage(ConstellationIcon.DEFAULT_ICON_SIZE, null);
-        
+
         assertEquals(icon, testIcon.buildIcon(ConstellationIcon.DEFAULT_ICON_SIZE, null));
         assertEquals(image, testIcon.buildImage(ConstellationIcon.DEFAULT_ICON_SIZE, null));
         assertEquals(bufferedImage, testIcon.buildBufferedImage(ConstellationIcon.DEFAULT_ICON_SIZE, null));
-        
+
         ConstellationIcon.clearCache();
-        
+
         assertNotEquals(icon, testIcon.buildIcon(ConstellationIcon.DEFAULT_ICON_SIZE, null));
         assertNotEquals(image, testIcon.buildImage(ConstellationIcon.DEFAULT_ICON_SIZE, null));
         assertNotEquals(bufferedImage, testIcon.buildBufferedImage(ConstellationIcon.DEFAULT_ICON_SIZE, null));
     }
-    
+
     /**
      * Test of toString method, of class ConstellationIcon.
      */
