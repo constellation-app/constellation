@@ -17,8 +17,6 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins.zoom;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.interaction.animation.Animation;
-import au.gov.asd.tac.constellation.graph.interaction.animation.PanAnimation;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;
 import au.gov.asd.tac.constellation.plugins.Plugin;
@@ -44,24 +42,19 @@ import org.openide.util.lookup.ServiceProvider;
 @PluginInfo(minLogInterval = 5000, pluginType = PluginType.VIEW, tags = {PluginTags.VIEW})
 public final class ZoomInPlugin extends SimpleEditPlugin {
 
-    final Vector3f ZOOM_DIRECTION = new Vector3f(0, 0, 1);
-    final int ZOOM_AMOUNT = 10;
+    static private final Vector3f ZOOM_DIRECTION = new Vector3f(0, 0, 1);
+    static private final int ZOOM_AMOUNT = 10;
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         final Camera oldCamera = VisualGraphUtilities.getCamera(graph);
         final Camera camera = new Camera(oldCamera);
-
-        CameraUtilities.zoom(camera, ZOOM_AMOUNT, ZOOM_DIRECTION, 0F);
+        final Vector3f closest = CameraUtilities.getFocusVector(camera);
+        CameraUtilities.zoom(camera, ZOOM_AMOUNT, ZOOM_DIRECTION, closest.getLength());
 
         final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-        if (activeGraph != null && activeGraph.getId().equals(graph.getId())) {
-            // Only do the camera animation if the edited graph is currently active
-            Animation.startAnimation(new PanAnimation("Zoom to Selection", oldCamera, camera, true));
-        } else {
-            // Skip the animation, just set the new camera position
-            VisualGraphUtilities.setCamera(graph, camera);
-        }
-
+        
+        // Skip the animation, just set the new camera position
+        VisualGraphUtilities.setCamera(graph, camera);
     }
 }
