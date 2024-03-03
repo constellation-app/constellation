@@ -29,8 +29,11 @@ import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javax.swing.JButton;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.DialogDescriptor;
@@ -52,6 +55,7 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
     private static final Logger LOGGER = Logger.getLogger(PluginParametersSwingDialog.class.getName());
     
     private final String[] acceptanceButtonLabels = {"OK", "Import", "Export", "Save", "Open", "Build", "Create", "Load", "Rename", "Add", "Remove"};
+    private final String disclaimer;
     public static final String CANCEL = "Cancel";
     public static final String OK = "OK";
 
@@ -73,7 +77,7 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
      * @param parameters The plugin parameters.
      */
     public PluginParametersSwingDialog(final String title, final PluginParameters parameters) {
-        this(title, parameters, null, null, null);
+        this(title, parameters, null, null, null, null);
     }
 
     /**
@@ -89,7 +93,7 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
      * box.
      */
     public PluginParametersSwingDialog(final String title, final PluginParameters parameters, final Set<String> excludedParameters) {
-        this(title, parameters, excludedParameters, null, null);
+        this(title, parameters, excludedParameters, null, null, null);
     }
 
     /**
@@ -104,7 +108,7 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
      * @param helpID The JavaHelp ID of the help.
      */
     public PluginParametersSwingDialog(final String title, final PluginParameters parameters, final String helpID) {
-        this(title, parameters, null, null, helpID);
+        this(title, parameters, null, null, null, helpID);
     }
 
     /**
@@ -119,22 +123,38 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
      * @param excludedParameters Plugin parameters to exclude from the dialog
      * box.
      * @param acceptanceText acceptance Button text
+     * @param disclaimer
      * @param helpID The JavaHelp ID of the help.
      */
-    public PluginParametersSwingDialog(final String title, final PluginParameters parameters, final Set<String> excludedParameters, final String acceptanceText, final String helpID) {
+    public PluginParametersSwingDialog(final String title, final PluginParameters parameters, final Set<String> excludedParameters, final String acceptanceText, final String disclaimer, final String helpID) {
         this.title = title;
+        this.disclaimer = disclaimer;
         this.acceptanceOption = new JButton(getAcceptanceButton(acceptanceText));
         final CountDownLatch latch = new CountDownLatch(1);
         xp = helpID != null ? new JFXPanelWithHelp(helpID) : new JFXPanel();
         Platform.runLater(() -> {
             final BorderPane root = new BorderPane();
-            root.setPadding(new Insets(10));
 
             // Attempt to give the window a sensible width and/or height.
             root.setMinWidth(500);
 
             final PluginParametersPane parametersPane = PluginParametersPane.buildPane(parameters, this, excludedParameters);
+            parametersPane.setPadding(new Insets(10));
             root.setCenter(parametersPane);
+            
+            
+            if (StringUtils.isNotBlank(disclaimer)){
+                Label disclaimerText = new Label("");
+                disclaimerText.setWrapText(true);
+
+                VBox disclaimerPane = new VBox(disclaimerText);
+                disclaimerPane.setStyle("-fx-background-color: #3C3F41;");
+                disclaimerPane.setAlignment(Pos.CENTER_LEFT);
+                disclaimerPane.setPadding(new Insets(10));
+                disclaimerPane.setPrefWidth(root.getWidth());
+                disclaimerPane.setMinHeight(disclaimerText.getHeight());
+                root.setBottom(disclaimerPane);
+            }            
             final Scene scene = new Scene(root);
             scene.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
 
