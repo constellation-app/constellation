@@ -22,8 +22,6 @@ import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -31,14 +29,19 @@ import java.util.logging.Logger;
  */
 public class ZoomUtilities {
 
-    private static final Logger LOGGER = Logger.getLogger(ZoomUtilities.class.getName());
+    /**
+     * Function for zooming a camera's view by a given amount in a given direction.
+     *
+     * @param graph the graph that holds the camera
+     * @param zoomAmount the amount of units to zoom by
+     * @param zoomDirection the direction to zoom to as a 3d vector
+     * @param distanceToClosestNode the distance to the closest node, used to influence zoom amount
+     * @throws InterruptedException
+     * @throws PluginException
+     */
+    static public void zoom(final GraphWriteMethods graph, final int zoomAmount, final Vector3f zoomDirection, float distanceToClosestNode) throws InterruptedException, PluginException {
 
-    static public void zoom(final GraphWriteMethods graph, final int zoomAmount, final Vector3f zoomDirection) throws InterruptedException, PluginException {
-        final Camera oldCamera = VisualGraphUtilities.getCamera(graph);
-        final Camera camera = new Camera(oldCamera);
-
-        final float dist = closestNodeDistance(graph, camera.lookAtCentre);
-        final float distanceToClosestNode = (dist != Float.MAX_VALUE) ? dist : CameraUtilities.getFocusVector(camera).getLength();
+        final Camera camera = VisualGraphUtilities.getCamera(graph);
 
         // Distance is devidied by 5 to closer match scrolling zoom
         CameraUtilities.zoom(camera, zoomAmount, zoomDirection, distanceToClosestNode / 5);
@@ -47,13 +50,41 @@ public class ZoomUtilities {
         VisualGraphUtilities.setCamera(graph, camera);
     }
 
+    /**
+     * Function for zooming a camera's view by a given amount in a given direction. Variation of zoom that calculates
+     * the distanceToClosestNode itself
+     *
+     * @param graph the graph that holds the camera
+     * @param zoomAmount the amount of units to zoom by
+     * @param zoomDirection the direction to zoom to as a 3d vector
+     * @throws InterruptedException
+     * @throws PluginException
+     */
+    static public void zoom(final GraphWriteMethods graph, final int zoomAmount, final Vector3f zoomDirection) throws InterruptedException, PluginException {
+
+        final Camera camera = VisualGraphUtilities.getCamera(graph);
+
+        final float dist = closestNodeDistance(graph, camera.lookAtCentre);
+        final float distanceToClosestNode = (dist != Float.MAX_VALUE) ? dist : CameraUtilities.getFocusVector(camera).getLength();
+
+        zoom(graph, zoomAmount, zoomDirection, distanceToClosestNode);
+
+    }
+
+    /**
+     * Function that finds the distance of the closest node to the given point
+     *
+     * @param graph the graph that the nodes are on
+     * @param point the point on the graph that you want to find the closest node to
+     * @return
+     */
     static public float closestNodeDistance(final GraphWriteMethods graph, Vector3f point) {
         float closestDist = Float.MAX_VALUE;
 
         final int vertexCount = graph.getVertexCount();
         for (int position = 0; position < vertexCount; position++) {
             final int vertexId = graph.getVertex(position);
-            
+
             // Get attribute id for each coord
             final int xId = graph.getAttribute(GraphElementType.VERTEX, "x");
             final int yId = graph.getAttribute(GraphElementType.VERTEX, "y");
@@ -63,7 +94,7 @@ public class ZoomUtilities {
             final float dx = point.getX() - graph.getFloatValue(xId, vertexId);
             final float dy = point.getY() - graph.getFloatValue(yId, vertexId);
             final float dz = point.getZ() - graph.getFloatValue(zId, vertexId);
-            
+
             // Calculate distance between current vertex and given point
             final float currentDistance = (float) Math.sqrt(dx * dx + dy * dy + dz * dz);
 
