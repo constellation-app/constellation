@@ -74,6 +74,15 @@ public final class ExportToSVGAction implements ActionListener {
         
         //The graph has visual data so export it
         } else {
+            
+            //This plugin is not performant so warn users when exporting large graphs. 
+            final String disclaimer;
+            if (graph.getVertexCount() + graph.getTransactionCount() > 5000){
+                disclaimer = "This export plugin is processor and memory intensive and is likely to take more than 3 minutes. Please consider saving your graph before running this plugin.";     
+            } else {
+                disclaimer = null;
+            }
+            
             PluginExecution.withPlugin(ImportExportPluginRegistry.EXPORT_SVG)
                     .withParameter(ExportToSVGPlugin.GRAPH_TITLE_PARAMETER_ID, graphName)
                     .withParameter(ExportToSVGPlugin.SELECTED_ELEMENTS_PARAMETER_ID, false)
@@ -83,7 +92,7 @@ public final class ExportToSVGAction implements ActionListener {
                     .withParameter(ExportToSVGPlugin.SHOW_CONNECTION_LABELS_PARAMETER_ID, flags.drawConnectionLabels())
                     .withParameter(ExportToSVGPlugin.SHOW_BLAZES_PARAMETER_ID, flags.drawBlazes())
                     .withParameter(ExportToSVGPlugin.BACKGROUND_COLOR_PARAMETER_ID, color)
-                    .interactively(true)
+                    .interactively(true, disclaimer)
                     .executeLater(context.getGraph());
         }
         

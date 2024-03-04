@@ -63,7 +63,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
 
     @Override
     public Future<?> executePluginLater(final Graph graph, final Plugin plugin,
-            final PluginParameters parameters, final boolean interactive,
+            final PluginParameters parameters, final boolean interactive, final String disclaimer,
             final List<Future<?>> async, final PluginSynchronizer synchronizer) {
 
         if (graph == null) {
@@ -126,7 +126,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
                     plugin.updateParameters(graph, parameters);
                 }
                 if (interactive && parameters != null) {
-                    if (interaction.prompt(plugin.getName(), parameters, plugin.getHelpCtx().getHelpID())) {
+                    if (interaction.prompt(plugin.getName(), parameters, disclaimer, plugin.getHelpCtx().getHelpID())) {
                         ThreadConstraints calledConstraints = ThreadConstraints.getConstraints();
                         calledConstraints.setAlwaysSilent(alwaysSilent);
                         try {
