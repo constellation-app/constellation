@@ -15,10 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.plugins.zoom;
 
-import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
@@ -27,8 +24,6 @@ import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.utilities.camera.Camera;
-import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -47,15 +42,6 @@ public final class ZoomOutPlugin extends SimpleEditPlugin {
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-        final Camera oldCamera = VisualGraphUtilities.getCamera(graph);
-        final Camera camera = new Camera(oldCamera);
-        final Vector3f closest = CameraUtilities.getFocusVector(camera);
-        CameraUtilities.zoom(camera, ZOOM_AMOUNT, ZOOM_DIRECTION, closest.getLength());
-
-        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-
-        // Skip the animation, just set the new camera position
-        VisualGraphUtilities.setCamera(graph, camera);
-
+        ZoomUtilities.zoom(graph, ZOOM_AMOUNT, ZOOM_DIRECTION);
     }
 }
