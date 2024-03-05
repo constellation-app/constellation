@@ -38,10 +38,10 @@ import org.openide.util.lookup.ServiceProvider;
 public final class ZoomOutPlugin extends SimpleEditPlugin {
 
     static private final Vector3f ZOOM_DIRECTION = new Vector3f(0, 0, -1);
-    static private final int ZOOM_AMOUNT = 10;
+    static private final int ZOOM_MAGNITUDE = 2;
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-        ZoomUtilities.zoom(graph, ZOOM_AMOUNT, ZOOM_DIRECTION);
+        ZoomUtilities.zoom(graph, ZOOM_MAGNITUDE, ZOOM_DIRECTION);
     }
 }
