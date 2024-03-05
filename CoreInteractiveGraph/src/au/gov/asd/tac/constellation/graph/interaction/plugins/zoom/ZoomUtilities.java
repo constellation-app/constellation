@@ -72,7 +72,12 @@ public class ZoomUtilities {
 
         zoom(graph, zoomMagnitude, zoomDirection, distanceToClosestNode);
     }
-
+    
+    /**
+     * Function for finding the closest node to the camera in a given graph
+     *
+     * @param graph the graph that holds the camera
+     */
     static public Vector3f closestNodeCameraCoordinates(GraphReadMethods graph) {
 
         if (graph == null) {
