@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -43,6 +44,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javax.swing.JButton;
+import javax.swing.UIManager;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -167,6 +169,8 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
             root.setMinWidth(PREFERED_WIDTH); /// Ensures parameters are not compressed too small
             scrollableContent.setFitToWidth(true);  // Encourages verticle scrolling only
             parametersPane.setPadding(new Insets(10)); //Padding makes the lyout more readable
+            Color optionsPanelColor = UIManager.getLookAndFeel().getDefaults().getColor("OptionPane.background");
+            disclaimerPane.setStyle(String.format("-fx-background-color: %06X;", 0xFFFFFF & optionsPanelColor.getRGB()));
             
             // Conditionaly style the disclaimer pane.
             if (StringUtils.isNotBlank(disclaimer)){
@@ -186,7 +190,6 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
                 
                 // Style the disclaimer
                 disclaimerPane.getChildren().addAll(icon, disclaimerText);
-                disclaimerPane.setStyle("-fx-background-color: #3C3F41;");
                 disclaimerPane.setAlignment(Pos.CENTER_LEFT);
                 disclaimerPane.setPadding(new Insets(10, 0, 0, 0));
                 disclaimerPane.setPrefWidth(PREFERED_WIDTH); // The root width has been set based on the ParameterPane and we want to keep it that way.
@@ -199,7 +202,6 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
             
             final Scene scene = new Scene(root);
             scene.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
-            root.setStyle("-fx-background-color: #3C3F41;");
 
             xp.setScene(scene);
             xp.setPreferredSize(new Dimension((int) scene.getWidth(), (int) scene.getHeight()));
