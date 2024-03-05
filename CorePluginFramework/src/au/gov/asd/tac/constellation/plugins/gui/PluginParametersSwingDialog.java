@@ -169,7 +169,7 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
             root.setMinWidth(PREFERED_WIDTH); /// Ensures parameters are not compressed too small
             scrollableContent.setFitToWidth(true);  // Encourages verticle scrolling only
             parametersPane.setPadding(new Insets(10)); //Padding makes the lyout more readable
-            Color optionsPanelColor = UIManager.getLookAndFeel().getDefaults().getColor("OptionPane.background");
+            final Color optionsPanelColor = UIManager.getLookAndFeel().getDefaults().getColor("OptionPane.background");
             disclaimerPane.setStyle(String.format("-fx-background-color: #%06X;", 0xFFFFFF & optionsPanelColor.getRGB()));
             
             // Conditionaly style the disclaimer pane.
@@ -177,7 +177,7 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
                 
                 // The text for the disclaimer
                 final Label disclaimerText = new Label(disclaimer);
-                Font font = FontUtilities.getOutputFont();
+                final Font font = FontUtilities.getOutputFont();
                 disclaimerText.setWrapText(true);
                 disclaimerText.setStyle("-fx-font-style: italic; -fx-font-family: " + font.getFamily());
                 

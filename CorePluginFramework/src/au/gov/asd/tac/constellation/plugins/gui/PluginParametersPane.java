@@ -572,7 +572,7 @@ public final class PluginParametersPane extends GridPane {
 
                     final Pane paramPane = child.getFormatter().getParamPane(child);
                     if (paramPane != null) {
-                        VBox cell = new VBox(paramPane);
+                        final VBox cell = new VBox(paramPane);
                         cell.setAlignment(Pos.CENTER_LEFT);
                         cell.setStyle("-fx-padding: " + PADDING);
                         GridPane.setFillHeight(cell, true);
