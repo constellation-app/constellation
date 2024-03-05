@@ -80,11 +80,12 @@ public class ZoomUtilities {
      * @return
      */
     static public float closestNodeToCamera(final GraphWriteMethods graph) {
-
-        if (graph == null) {
-            return Float.MAX_VALUE;
-        }
         float closestDist = Float.MAX_VALUE;
+        
+        // Null Checking
+        if (graph == null) {
+            return closestDist;
+        }
         final Camera camera = VisualGraphUtilities.getCamera(graph);
         if (camera == null) {
             return closestDist;
