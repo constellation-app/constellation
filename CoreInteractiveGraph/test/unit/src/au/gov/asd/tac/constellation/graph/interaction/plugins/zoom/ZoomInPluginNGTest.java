@@ -71,7 +71,6 @@ public class ZoomInPluginNGTest {
     @Test
     public void testEdit() throws Exception {
         System.out.println("Zoom In");
-        System.setProperty("java.awt.headless", "true");
 
         final PluginInteraction interaction = null;
         final PluginParameters parameters = null;
@@ -83,14 +82,13 @@ public class ZoomInPluginNGTest {
         graph.setObjectValue(cameraAttribute, 0, originalCamera);
         assertTrue(originalCamera.areSame(graph.getObjectValue(cameraAttribute, 0)));
 
-        // Create a plugin and run it, asserting that the camera has moved 10 units
+        // Create a plugin and run it, asserting that the camera has moved 2 units
         final ZoomInPlugin instance = new ZoomInPlugin();
         instance.edit(graph, interaction, parameters);
 
         final Camera c = graph.getObjectValue(cameraAttribute, 0);
         // Compare coords, as float arrays
         assertEquals(c.lookAtCentre.a, expectedVec.a);
-        System.clearProperty("java.awt.headless");
     }
 
 }

@@ -55,9 +55,11 @@ import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 /**
- * An extension of the {@link GLVisualProcessor} that adds support for user interaction through implementing {@link VisualInteraction} and {@link VisualAnnotator}.
+ * An extension of the {@link GLVisualProcessor} that adds support for user interaction through implementing
+ * {@link VisualInteraction} and {@link VisualAnnotator}.
  * <p>
- * This provides the same basic visualisation of a graph as {@link GLVisualProcessor} does, adding renderables for a new line, a selection box, overlay planes, and hit testing.
+ * This provides the same basic visualisation of a graph as {@link GLVisualProcessor} does, adding renderables for a new
+ * line, a selection box, overlay planes, and hit testing.
  *
  * @author twilight_sparkle
  */
@@ -102,7 +104,8 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
     /**
      * Set the specified {@link InteractionEventHandler} to use this processor.
      * <p>
-     * This method adds the event handler as a listener (of all the relevant gesture types) to this processor's AWT component.
+     * This method adds the event handler as a listener (of all the relevant gesture types) to this processor's AWT
+     * component.
      *
      * @param handler The handler using this processor.
      */
@@ -317,7 +320,7 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
         }
     }
 
-    private static class NodeCameraDistance {
+    public static class NodeCameraDistance {
 
         final Vector3f nodeLocation;
         final Float distanceFromCamera;
@@ -332,7 +335,11 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
             this.distanceFromCamera = getDistanceFromCamera(nodeLocation, horizontalScale, verticalScale);
         }
 
-        static NodeCameraDistance getClosestNode(NodeCameraDistance ncd1, NodeCameraDistance ncd2) {
+        public Vector3f GetNodeLocation() {
+            return nodeLocation;
+        }
+
+        static public NodeCameraDistance getClosestNode(NodeCameraDistance ncd1, NodeCameraDistance ncd2) {
             NodeCameraDistance closest = null;
             if (ncd1.distanceFromCamera == null) {
                 closest = ncd2;

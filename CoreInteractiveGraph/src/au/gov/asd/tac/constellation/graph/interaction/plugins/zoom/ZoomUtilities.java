@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.plugins.zoom;
 
+import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.interaction.visual.InteractiveGLVisualProcessor;
 import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;
@@ -25,6 +26,7 @@ import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.awt.Point;
 import java.util.prefs.Preferences;
+import java.util.stream.Stream;
 import org.openide.util.NbPreferences;
 
 /**
@@ -49,8 +51,6 @@ public class ZoomUtilities {
         // Graph wont update for some reason unless you do this
         final Camera camera = new Camera(oldCamera);
 
-        // Distance is divided by 5 to closer match scrolling zoom
-        //CameraUtilities.zoom(camera, zoomAmount, zoomDirection, distanceToClosestNode / 5);
         CameraUtilities.zoom(camera, zoomMagnitude, zoomDirection, distanceToClosestNode);
 
         // Skip the animation, just set the new camera position
@@ -71,8 +71,8 @@ public class ZoomUtilities {
 
         final Camera camera = VisualGraphUtilities.getCamera(graph);
 
-        final float dist = closestNodeToCamera(graph);
-        final float distanceToClosestNode = (dist != Float.MAX_VALUE) ? dist : CameraUtilities.getFocusVector(camera).getLength();
+        final Vector3f dist = closestNodeCameraCoordinates(graph);
+        final float distanceToClosestNode = (dist != null) ? dist.getLength() : CameraUtilities.getFocusVector(camera).getLength();
 
         zoom(graph, zoomMagnitude, zoomDirection, distanceToClosestNode);
     }
@@ -147,5 +147,32 @@ public class ZoomUtilities {
         final Vector3f closest = processor.closestNodeCameraCoordinates(graph, camera, new Point(0, 0));
 
         return closest == null ? Float.MAX_VALUE : closest.getLength();
+    }
+
+    static public Vector3f closestNodeCameraCoordinates(GraphReadMethods graph) {
+        
+        if (graph == null) {
+            return null;
+        }
+        
+        final Camera camera = VisualGraphUtilities.getCamera(graph);
+
+        if (camera == null) {
+            return null;
+        }
+        
+        // Calculate the height and width of the viewing frustrum as a function of distance from the camera
+        final float verticalScale = (float) (Math.tan(Math.toRadians(Camera.FIELD_OF_VIEW / 2.0)));
+//        final float horizontalScale = verticalScale * getCanvas().getWidth() / getCanvas().getHeight();
+        final float horizontalScale = verticalScale;
+
+        // Iterate through the camera locations of each node in the graph
+        final Stream<InteractiveGLVisualProcessor.NodeCameraDistance> nodeCameraDistances = VisualGraphUtilities.streamVertexSceneLocations(graph, camera)
+                .parallel()
+                .map(vector -> new InteractiveGLVisualProcessor.NodeCameraDistance(vector, horizontalScale, verticalScale));
+
+        final InteractiveGLVisualProcessor.NodeCameraDistance closest = nodeCameraDistances.parallel().reduce(new InteractiveGLVisualProcessor.NodeCameraDistance(), (ncd1, ncd2) -> InteractiveGLVisualProcessor.NodeCameraDistance.getClosestNode(ncd1, ncd2));
+
+        return closest.GetNodeLocation();
     }
 }
