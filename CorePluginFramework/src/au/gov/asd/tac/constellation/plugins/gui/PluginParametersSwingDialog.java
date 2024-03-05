@@ -170,7 +170,7 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
             scrollableContent.setFitToWidth(true);  // Encourages verticle scrolling only
             parametersPane.setPadding(new Insets(10)); //Padding makes the lyout more readable
             Color optionsPanelColor = UIManager.getLookAndFeel().getDefaults().getColor("OptionPane.background");
-            disclaimerPane.setStyle(String.format("-fx-background-color: %06X;", 0xFFFFFF & optionsPanelColor.getRGB()));
+            disclaimerPane.setStyle(String.format("-fx-background-color: #%06X;", 0xFFFFFF & optionsPanelColor.getRGB()));
             
             // Conditionaly style the disclaimer pane.
             if (StringUtils.isNotBlank(disclaimer)){
