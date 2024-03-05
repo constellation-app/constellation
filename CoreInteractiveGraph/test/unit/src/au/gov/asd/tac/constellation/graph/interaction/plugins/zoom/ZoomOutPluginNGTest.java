@@ -71,6 +71,7 @@ public class ZoomOutPluginNGTest {
     @Test
     public void testEdit() throws Exception {
         System.out.println("Zoom out");
+        System.setProperty("java.awt.headless", "true");
 
         final PluginInteraction interaction = null;
         final PluginParameters parameters = null;
@@ -88,6 +89,7 @@ public class ZoomOutPluginNGTest {
         final Camera c = graph.getObjectValue(cameraAttribute, 0);
         // Compare coords, as float arrays
         assertEquals(c.lookAtCentre.a, expectedVec.a);
+        System.clearProperty("java.awt.headless");
     }
 
 }
