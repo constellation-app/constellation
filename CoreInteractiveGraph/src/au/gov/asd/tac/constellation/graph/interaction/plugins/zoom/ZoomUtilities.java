@@ -44,7 +44,7 @@ public class ZoomUtilities {
     static public void zoom(final GraphWriteMethods graph, final int zoomMagnitude, final Vector3f zoomDirection, float distanceToClosestNode) throws InterruptedException, PluginException {
 
         final Camera oldCamera = VisualGraphUtilities.getCamera(graph);
-        // Graph wont update for some reason unless you do this
+        // Screen wont update for some reason unless you do this
         final Camera camera = new Camera(oldCamera);
 
         CameraUtilities.zoom(camera, zoomMagnitude, zoomDirection, distanceToClosestNode);
@@ -72,11 +72,11 @@ public class ZoomUtilities {
 
         zoom(graph, zoomMagnitude, zoomDirection, distanceToClosestNode);
     }
-    
+
     /**
      * Function for finding the closest node to the camera in a given graph
      *
-     * @param graph the graph that holds the camera
+     * @param graph the graph that holds the camera and nodes
      */
     static public Vector3f closestNodeCameraCoordinates(GraphReadMethods graph) {
 
