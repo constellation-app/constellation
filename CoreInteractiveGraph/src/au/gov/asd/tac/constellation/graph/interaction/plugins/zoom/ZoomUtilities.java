@@ -15,17 +15,13 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.plugins.zoom;
 
+import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.interaction.visual.InteractiveGLVisualProcessor;
 import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;
 import au.gov.asd.tac.constellation.plugins.PluginException;
-import au.gov.asd.tac.constellation.preferences.DeveloperPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
-import java.awt.Point;
-import java.util.prefs.Preferences;
-import org.openide.util.NbPreferences;
 
 /**
  *
@@ -88,25 +84,36 @@ public class ZoomUtilities {
         if (graph == null) {
             return Float.MAX_VALUE;
         }
-
+        float closestDist = Float.MAX_VALUE;
         final Camera camera = VisualGraphUtilities.getCamera(graph);
         if (camera == null) {
-            return Float.MAX_VALUE;
+            return closestDist;
         }
 
-        // Creates object responsible for getting closest node to camera, relative to point (0, 0) on the screen (top left corner of graph view)
-        final Preferences prefs = NbPreferences.forModule(DeveloperPreferenceKeys.class);
-        if (prefs == null) {
-            return Float.MAX_VALUE;
+        final Vector3f point = camera.lookAtCentre;
+
+        final int vertexCount = graph.getVertexCount();
+        for (int position = 0; position < vertexCount; position++) {
+            final int vertexId = graph.getVertex(position);
+
+            // Get attribute id for each coord
+            final int xId = graph.getAttribute(GraphElementType.VERTEX, "x");
+            final int yId = graph.getAttribute(GraphElementType.VERTEX, "y");
+            final int zId = graph.getAttribute(GraphElementType.VERTEX, "z");
+
+            // Calculate difference between each coord of current vertex and given point
+            final float dx = point.getX() - graph.getFloatValue(xId, vertexId);
+            final float dy = point.getY() - graph.getFloatValue(yId, vertexId);
+            final float dz = point.getZ() - graph.getFloatValue(zId, vertexId);
+
+            // Calculate distance between current vertex and given point
+            final float currentDistance = (float) Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+            if (currentDistance < closestDist || closestDist == Float.MAX_VALUE) {
+                closestDist = currentDistance;
+            }
+
         }
-
-        final InteractiveGLVisualProcessor processor = new InteractiveGLVisualProcessor(prefs.getBoolean(DeveloperPreferenceKeys.DEBUG_GL, DeveloperPreferenceKeys.DEBUG_GL_DEFAULT), prefs.getBoolean(DeveloperPreferenceKeys.PRINT_GL_CAPABILITIES, DeveloperPreferenceKeys.PRINT_GL_CAPABILITIES_DEFAULT));
-        if (processor == null) {
-            return Float.MAX_VALUE;
-        }
-
-        final Vector3f closest = processor.closestNodeCameraCoordinates(graph, camera, new Point(0, 0));
-
-        return closest == null ? Float.MAX_VALUE : closest.getLength();
+        return closestDist;
     }
 }
