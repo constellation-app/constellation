@@ -80,6 +80,7 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
         applicationOptionsPanel.setDownloadPythonClient(prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT));
         applicationOptionsPanel.setCurrentFont(prefs.get(ApplicationPreferenceKeys.FONT_FAMILY, ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT));
         applicationOptionsPanel.setFontSize(prefs.get(ApplicationPreferenceKeys.FONT_SIZE, ApplicationPreferenceKeys.FONT_SIZE_DEFAULT));
+        applicationOptionsPanel.setColorModeSelection(prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT));
     }
 
     @Override
@@ -104,6 +105,7 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
                 prefs.putBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, applicationOptionsPanel.isDownloadPythonClientSelected());
                 prefs.put(ApplicationPreferenceKeys.FONT_FAMILY, applicationOptionsPanel.getCurrentFont());
                 prefs.put(ApplicationPreferenceKeys.FONT_SIZE, applicationOptionsPanel.getFontSize());
+                prefs.put(ApplicationPreferenceKeys.COLORBLIND_MODE, applicationOptionsPanel.getColorModeSelection());
             }
         }
     }
@@ -123,7 +125,8 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
                 && applicationOptionsPanel.getNotebookDirectory() != null
                 && applicationOptionsPanel.getRestDirectory() != null
                 && applicationOptionsPanel.getCurrentFont() != null
-                && applicationOptionsPanel.getFontSize() != null;
+                && applicationOptionsPanel.getFontSize() != null
+                && applicationOptionsPanel.getColorModeSelection() != null;
     }
 
     @Override
@@ -141,7 +144,8 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
                 && applicationOptionsPanel.getRestDirectory().equals(prefs.get(ApplicationPreferenceKeys.REST_DIR, ApplicationPreferenceKeys.REST_DIR_DEFAULT))
                 && applicationOptionsPanel.isDownloadPythonClientSelected() == prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT)
                 && applicationOptionsPanel.getCurrentFont().equals(prefs.get(ApplicationPreferenceKeys.FONT_FAMILY, ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT))
-                && applicationOptionsPanel.getFontSize().equals(prefs.get(ApplicationPreferenceKeys.FONT_SIZE, ApplicationPreferenceKeys.FONT_SIZE_DEFAULT)));
+                && applicationOptionsPanel.getFontSize().equals(prefs.get(ApplicationPreferenceKeys.FONT_SIZE, ApplicationPreferenceKeys.FONT_SIZE_DEFAULT))
+                && applicationOptionsPanel.getColorModeSelection().equals(prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT)));
     }
 
     @Override

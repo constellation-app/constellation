@@ -41,7 +41,10 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
     public static final ConstellationColor BLACK = new ConstellationColor("Black", Color.BLACK);
     public static final ConstellationColor BLUE = new ConstellationColor("Blue", Color.BLUE);
     public static final ConstellationColor BLUEBERRY = new ConstellationColor("Blueberry", 153, 179, 255, 255);
+    public static final ConstellationColor BLUSH = new ConstellationColor("Blush", 240, 212, 212, 255);
     public static final ConstellationColor BROWN = new ConstellationColor("Brown", 0.5F, 0.25F, 0.25F, 1.0F);
+    public static final ConstellationColor BURGUNDY = new ConstellationColor("Burgundy", 135, 0, 32, 255);
+    public static final ConstellationColor BUTTERMILK = new ConstellationColor("Buttermilk", 255, 255, 200, 255);
     public static final ConstellationColor CARROT = new ConstellationColor("Carrot", 230, 126, 34, 255);
     public static final ConstellationColor CHERRY = new ConstellationColor("Cherry", 222, 36, 70, 255);
     public static final ConstellationColor CHOCOLATE = new ConstellationColor("Chocolate", 119, 95, 77, 255);
@@ -50,15 +53,18 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
     public static final ConstellationColor DARK_GREEN = new ConstellationColor("DarkGreen", 0.0F, 0.5F, 0.0F, 1.0F);
     public static final ConstellationColor DARK_GREY = new ConstellationColor("DarkGrey", Color.DARK_GRAY);
     public static final ConstellationColor DARK_ORANGE = new ConstellationColor("DarkOrange", 1.0F, 0.5F, 0.25F, 1.0F);
+    public static final ConstellationColor DARK_PURPLE = new ConstellationColor("DarkPurple", 51, 26, 128, 255);
     public static final ConstellationColor EMERALD = new ConstellationColor("Emerald", 46, 204, 79, 255);
     public static final ConstellationColor GOLDEN_ROD = new ConstellationColor("GoldenRod", 1.0F, 0.75F, 0.0F, 1.0F);
     public static final ConstellationColor GREEN = new ConstellationColor("Green", Color.GREEN);
     public static final ConstellationColor GREY = new ConstellationColor("Grey", Color.GRAY);
     public static final ConstellationColor LIGHT_BLUE = new ConstellationColor("LightBlue", 0.0F, 0.5F, 1.0F, 1.0F);
     public static final ConstellationColor LIGHT_GREEN = new ConstellationColor("LightGreen", 0.5F, 1.0F, 0.0F, 1.0F);
+    public static final ConstellationColor LIME = new ConstellationColor("Lime", 57, 255, 20, 255);
     public static final ConstellationColor MAGENTA = new ConstellationColor("Magenta", Color.MAGENTA);
     public static final ConstellationColor MANILLA = new ConstellationColor("Manilla", 255, 230, 153, 255);
     public static final ConstellationColor MELON = new ConstellationColor("Melon", 179, 230, 179, 255);
+    public static final ConstellationColor MIDNIGHT = new ConstellationColor("Midnight", 48, 74, 113, 255);
     public static final ConstellationColor MUSK = new ConstellationColor("Musk", 255, 116, 147, 255);
     public static final ConstellationColor NAVY = new ConstellationColor("Navy", 0.0F, 0.0F, 0.5F, 1.0F);
     public static final ConstellationColor NIGHT_SKY = new ConstellationColor("Night Sky", 27, 30, 36, 255);
@@ -82,8 +88,11 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
                     BANANA,
                     BLACK,
                     BLUE,
+                    BLUSH, 
                     BLUEBERRY,
                     BROWN,
+                    BURGUNDY, 
+                    BUTTERMILK,
                     CARROT,
                     CHERRY,
                     CHOCOLATE,
@@ -92,15 +101,18 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
                     DARK_GREEN,
                     DARK_GREY,
                     DARK_ORANGE,
+                    DARK_PURPLE,
                     EMERALD,
                     GOLDEN_ROD,
                     GREEN,
                     GREY,
                     LIGHT_BLUE,
                     LIGHT_GREEN,
+                    LIME,
                     MAGENTA,
                     MANILLA,
                     MELON,
+                    MIDNIGHT,
                     MUSK,
                     NAVY,
                     NIGHT_SKY,
