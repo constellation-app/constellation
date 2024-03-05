@@ -85,19 +85,26 @@ public class ZoomUtilities {
      */
     static public float closestNodeToCamera(final GraphWriteMethods graph) {
 
+        if (graph == null) {
+            return Float.MAX_VALUE;
+        }
+
         final Camera camera = VisualGraphUtilities.getCamera(graph);
-        
+        if (camera == null) {
+            return Float.MAX_VALUE;
+        }
+
         // Creates object responsible for getting closest node to camera, relative to point (0, 0) on the screen (top left corner of graph view)
         final Preferences prefs = NbPreferences.forModule(DeveloperPreferenceKeys.class);
         if (prefs == null) {
             return Float.MAX_VALUE;
         }
-        
+
         final InteractiveGLVisualProcessor processor = new InteractiveGLVisualProcessor(prefs.getBoolean(DeveloperPreferenceKeys.DEBUG_GL, DeveloperPreferenceKeys.DEBUG_GL_DEFAULT), prefs.getBoolean(DeveloperPreferenceKeys.PRINT_GL_CAPABILITIES, DeveloperPreferenceKeys.PRINT_GL_CAPABILITIES_DEFAULT));
         if (processor == null) {
             return Float.MAX_VALUE;
         }
-        
+
         final Vector3f closest = processor.closestNodeCameraCoordinates(graph, camera, new Point(0, 0));
 
         return closest == null ? Float.MAX_VALUE : closest.getLength();
