@@ -69,11 +69,14 @@ public class ZoomUtilitiesNGTest {
     @Test
     public void testClosestNodeToCameraNoGraph() {
         System.out.println("closestNodeToCameraNoGraph");
+        System.setProperty("java.awt.headless", "true");
+        
         GraphWriteMethods graph = null;
 
         float expResult = Float.MAX_VALUE;
         float result = ZoomUtilities.closestNodeToCamera(graph);
         assertEquals(result, expResult, 0.0);
+        System.clearProperty("java.awt.headless");
     }
 
     /**
@@ -82,11 +85,14 @@ public class ZoomUtilitiesNGTest {
     @Test
     public void testClosestNodeToCameraGraphNoCamera() {
         System.out.println("closestNodeToCameraGraphNoCamera");
+        System.setProperty("java.awt.headless", "true");
+        
         graph.setObjectValue(cameraAttribute, 0, null);
 
         float expResult = Float.MAX_VALUE;
         float result = ZoomUtilities.closestNodeToCamera(graph);
         assertEquals(result, expResult, 0.0);
+        System.clearProperty("java.awt.headless");
     }
 
     /**
@@ -96,6 +102,7 @@ public class ZoomUtilitiesNGTest {
     @Test
     public void testClosestNodeToCameraEmptyGraph() {
         System.out.println("closestNodeToCameraEmptyGraph");
+        System.setProperty("java.awt.headless", "true");
 
         final Camera originalCamera = new Camera();
         graph.setObjectValue(cameraAttribute, 0, originalCamera);
@@ -103,6 +110,7 @@ public class ZoomUtilitiesNGTest {
         float expResult = Float.MAX_VALUE;
         float result = ZoomUtilities.closestNodeToCamera(graph);
         assertEquals(result, expResult, 0.0);
+        System.clearProperty("java.awt.headless");
     }
 
 }
