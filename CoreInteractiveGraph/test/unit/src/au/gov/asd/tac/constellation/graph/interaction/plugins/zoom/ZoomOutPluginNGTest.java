@@ -75,7 +75,7 @@ public class ZoomOutPluginNGTest {
         final PluginInteraction interaction = null;
         final PluginParameters parameters = null;
 
-        final Vector3f expectedVec = new Vector3f(0F, 0F, 10F);
+        final Vector3f expectedVec = new Vector3f(0F, 0F, 2F);
         // Start with a default camera
         final Camera originalCamera = new Camera();
         graph.setObjectValue(cameraAttribute, 0, originalCamera);
