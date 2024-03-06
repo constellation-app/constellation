@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.views.qualitycontrol.widget;
 
 import au.gov.asd.tac.constellation.graph.StoreGraph;
-import au.gov.asd.tac.constellation.graph.file.save.AutosaveUtilities;
+import au.gov.asd.tac.constellation.utilities.file.autosave.AutosaveUtilities;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
