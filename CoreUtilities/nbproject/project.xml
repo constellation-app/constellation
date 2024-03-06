@@ -170,6 +170,7 @@
                 <package>au.gov.asd.tac.constellation.utilities.csv</package>
                 <package>au.gov.asd.tac.constellation.utilities.datastructure</package>
                 <package>au.gov.asd.tac.constellation.utilities.file</package>
+                <package>au.gov.asd.tac.constellation.utilities.file.autosave</package>
                 <package>au.gov.asd.tac.constellation.utilities.font</package>
                 <package>au.gov.asd.tac.constellation.utilities.genericjsonio</package>
                 <package>au.gov.asd.tac.constellation.utilities.geospatial</package>

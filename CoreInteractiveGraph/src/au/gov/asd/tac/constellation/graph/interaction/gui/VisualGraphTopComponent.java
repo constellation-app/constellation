@@ -24,7 +24,7 @@ import au.gov.asd.tac.constellation.graph.file.GraphObjectUtilities;
 import au.gov.asd.tac.constellation.graph.file.SaveNotification;
 import au.gov.asd.tac.constellation.graph.file.io.GraphJsonWriter;
 import au.gov.asd.tac.constellation.graph.file.nebula.NebulaDataObject;
-import au.gov.asd.tac.constellation.graph.file.save.AutosaveUtilities;
+import au.gov.asd.tac.constellation.utilities.file.autosave.AutosaveUtilities;
 import au.gov.asd.tac.constellation.graph.interaction.framework.GraphVisualManagerFactory;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.CopyToClipboardAction;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.CutToClipboardAction;

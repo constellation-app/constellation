@@ -15,16 +15,31 @@
  */
 package au.gov.asd.tac.constellation.utilities.graphics;
 
+import au.gov.asd.tac.constellation.utilities.file.autosave.AutosaveUtilities;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
+import java.util.Arrays;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.testfx.api.FxToolkit;
 import org.testng.annotations.Test;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.assertFalse;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 
 /**
  * @author groombridge34a
  */
 public class MathfNGTest {
 
+    private static final Logger LOGGER = Logger.getLogger(MathfNGTest.class.getName());
+    
     private static final float F1 = 1.23F;
     private static final float F2 = 3.21F;
     private static final float F3 = 4.56F;
@@ -44,12 +59,56 @@ public class MathfNGTest {
     private static final float F17 = 80.88F;
     private static final float F18 = 90.99F;
     
+    
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        // This is a bit of dodgy hack (better way needed). Basically there is an auto save thread
+        // that is getting initialized and running in the background as the tests
+        // run.
+        // Sometimes it looks (and finds) files to perform UI auto save operations
+        // that cause issues in a headless environment.
+        // This following deletes those files before the thread can find them.
+        // See AutosaveStartup for the Runnable.
+        // My guess is that there is a test generating these files and not cleaning
+        // up which is why this test is consistently failing when run on CI. Its that
+        // file cleanup that should be fixed!!!
+        Arrays.stream(AutosaveUtilities.getAutosaves(FileExtensionConstants.STAR_AUTOSAVE))
+                .forEach(file -> file.delete());
+
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+        }
+    }
+
+    @BeforeMethod
+    public void setUpMethod() throws Exception {
+    }
+
+    @AfterMethod
+    public void tearDownMethod() throws Exception {
+    }
+    
     /**
      * Can convert degrees to radians.
      */
     @Test
     public void testDegToRad() {
         assertEquals(Mathf.degToRad(90.99D), 1.5880750863896405D);
+        try{
+            final CountDownLatch waiter = new CountDownLatch(1); 
+            waiter.await(60, TimeUnit.SECONDS);
+        } catch (InterruptedException ex){
+            
+        }
     }
     
     /**

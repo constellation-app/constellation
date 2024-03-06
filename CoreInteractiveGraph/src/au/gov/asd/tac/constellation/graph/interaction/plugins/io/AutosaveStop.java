@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.graph.interaction.plugins.io;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.file.save.AutosaveUtilities;
+import au.gov.asd.tac.constellation.utilities.file.autosave.AutosaveUtilities;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import java.util.Map;
 import java.util.logging.Logger;
