@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.mapview.layers;
 
 import au.gov.asd.tac.constellation.utilities.image.GaussianBlur;
 import au.gov.asd.tac.constellation.views.mapview.markers.ConstellationAbstractMarker;
+import de.fhpotsdam.unfolding.geo.Location;
 import de.fhpotsdam.unfolding.marker.Marker;
 import de.fhpotsdam.unfolding.utils.ScreenPosition;
 import java.util.List;
@@ -37,11 +38,22 @@ public abstract class AbstractHeatmapLayer extends MapLayer {
     private static final float SEVERITY = 2F;
 
     private int onScreenMarkerCount = 0;
+    private float prevCentreX = 0;
+    private float prevCentreY = 0;
 
     @Override
     public boolean requiresUpdate() {
         final ScreenPosition topLeft = map.getScreenPosition(map.getTopLeftBorder());
         final ScreenPosition bottomRight = map.getScreenPosition(map.getBottomRightBorder());
+
+        final ScreenPosition centreOfMapOnScreen = map.getScreenPosition(new Location(0, 0));
+
+        if (centreOfMapOnScreen.x != prevCentreX || centreOfMapOnScreen.y != prevCentreY) {
+            prevCentreX = centreOfMapOnScreen.x;
+            prevCentreY = centreOfMapOnScreen.y;
+            return true;
+        }
+
         return onScreenMarkerCount != renderer.getMarkerCache().keys().stream()
                 .filter(marker -> {
                     final ScreenPosition markerPosition = map.getScreenPosition(marker.getLocation());
@@ -84,9 +96,17 @@ public abstract class AbstractHeatmapLayer extends MapLayer {
         onScreenMarkers.forEach(marker -> {
             final ConstellationAbstractMarker constellationMarker = (ConstellationAbstractMarker) marker;
             final ScreenPosition markerPosition = map.getScreenPosition(constellationMarker.getLocation());
-            final float markerWeight = getWeight(constellationMarker);
+
             if (markerPosition != null) {
-                pointImage[(int) markerPosition.y * width + (int) markerPosition.x] = markerWeight;
+                final float markerWeight = getWeight(constellationMarker);
+                final int markerPosX = ((int) markerPosition.x < width) ? (int) markerPosition.x : width - 1;
+                int markerPosImageElement = (int) markerPosition.y * width + markerPosX;
+                while (markerPosImageElement >= pointImage.length) {
+                    markerPosImageElement -= width;
+                }
+                if (markerPosImageElement < pointImage.length && markerPosImageElement >= 0) {
+                    pointImage[markerPosImageElement] = markerWeight;
+                }
             }
         });
 
@@ -99,6 +119,7 @@ public abstract class AbstractHeatmapLayer extends MapLayer {
         heatmapImage.loadPixels();
         GaussianBlur.colorise(gaussImage, heatmapImage.pixels, THRESHOLD, SEVERITY);
         heatmapImage.updatePixels();
+
         return heatmapImage;
     }
 
