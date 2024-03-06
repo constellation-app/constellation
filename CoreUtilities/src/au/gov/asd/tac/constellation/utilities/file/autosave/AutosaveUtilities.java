@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.NbPreferences;
+import org.testng.Reporter;
 
 /**
  *
@@ -218,6 +219,7 @@ public final class AutosaveUtilities {
      * rid of dangling files.
      */
     public static void cleanup() {
+        Reporter.log("A CLEANUP OCCURED!!!!!!", true);
         // Find .star files aithout a .star_auto.
         for (final File star : getAutosaves(FileExtensionConstants.STAR)) {
             final File auto = new File(star.getPath() + "_auto");
