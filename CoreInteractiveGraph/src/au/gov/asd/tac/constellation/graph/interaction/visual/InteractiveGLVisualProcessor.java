@@ -339,7 +339,7 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
             return nodeLocation;
         }
 
-        static public NodeCameraDistance getClosestNode(NodeCameraDistance ncd1, NodeCameraDistance ncd2) {
+        public static NodeCameraDistance getClosestNode(final NodeCameraDistance ncd1, final NodeCameraDistance ncd2) {
             NodeCameraDistance closest = null;
             if (ncd1.distanceFromCamera == null) {
                 closest = ncd2;

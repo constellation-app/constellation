@@ -37,8 +37,8 @@ import org.openide.util.lookup.ServiceProvider;
 @PluginInfo(minLogInterval = 5000, pluginType = PluginType.VIEW, tags = {PluginTags.VIEW})
 public final class ZoomOutPlugin extends SimpleEditPlugin {
 
-    static private final Vector3f ZOOM_DIRECTION = new Vector3f(0, 0, -1);
-    static private final int ZOOM_MAGNITUDE = 2;
+    private static final Vector3f ZOOM_DIRECTION = new Vector3f(0, 0, -1);
+    private static final int ZOOM_MAGNITUDE = 2;
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {

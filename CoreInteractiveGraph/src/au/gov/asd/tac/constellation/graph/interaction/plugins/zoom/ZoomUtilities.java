@@ -41,7 +41,7 @@ public class ZoomUtilities {
      * @throws InterruptedException
      * @throws PluginException
      */
-    static public void zoom(final GraphWriteMethods graph, final int zoomMagnitude, final Vector3f zoomDirection, float distanceToClosestNode) throws InterruptedException, PluginException {
+    public static void zoom(final GraphWriteMethods graph, final int zoomMagnitude, final Vector3f zoomDirection, final float distanceToClosestNode) throws InterruptedException, PluginException {
 
         final Camera oldCamera = VisualGraphUtilities.getCamera(graph);
         // Screen wont update for some reason unless you do this
@@ -63,7 +63,7 @@ public class ZoomUtilities {
      * @throws InterruptedException
      * @throws PluginException
      */
-    static public void zoom(final GraphWriteMethods graph, final int zoomMagnitude, final Vector3f zoomDirection) throws InterruptedException, PluginException {
+    public static void zoom(final GraphWriteMethods graph, final int zoomMagnitude, final Vector3f zoomDirection) throws InterruptedException, PluginException {
 
         final Camera camera = VisualGraphUtilities.getCamera(graph);
 
@@ -78,7 +78,7 @@ public class ZoomUtilities {
      *
      * @param graph the graph that holds the camera and nodes
      */
-    static public Vector3f closestNodeCameraCoordinates(GraphReadMethods graph) {
+    public static Vector3f closestNodeCameraCoordinates(final GraphReadMethods graph) {
 
         if (graph == null) {
             return null;
