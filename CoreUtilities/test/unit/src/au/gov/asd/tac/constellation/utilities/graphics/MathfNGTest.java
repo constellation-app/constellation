@@ -30,13 +30,15 @@ import org.testng.annotations.Test;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.assertFalse;
+import org.testng.Reporter;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import testing.TestLogger;
 
 /**
  * @author groombridge34a
  */
-public class MathfNGTest {
+public class MathfNGTest extends TestLogger{
 
     private static final Logger LOGGER = Logger.getLogger(MathfNGTest.class.getName());
     
@@ -103,12 +105,15 @@ public class MathfNGTest {
     @Test
     public void testDegToRad() {
         assertEquals(Mathf.degToRad(90.99D), 1.5880750863896405D);
+        log("testDegToRad started");
         try{
             final CountDownLatch waiter = new CountDownLatch(1); 
             waiter.await(60, TimeUnit.SECONDS);
         } catch (InterruptedException ex){
-            
+            log("testDegToRad interrupted");
+            assertFalse(true);
         }
+        log("testDegToRad finished");
     }
     
     /**
