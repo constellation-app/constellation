@@ -120,4 +120,18 @@ public interface PluginInteraction {
      * "Cancel".
      */
     boolean prompt(final String promptName, final PluginParameters parameters, final String helpID);
+    
+    /**
+     * Presents a dialog box to the user showing an auto-generated form for the
+     * specified parameters.This allows the user to set the values for these
+     * parameters.
+     *
+     * @param promptName the name of the dialog box.
+     * @param parameters the parameters to be displayed and edited.
+     * @param disclaimer the disclaimer text for interactively executed plugins.
+     * @param helpID the help ID of the plugin.
+     * @return true if the user selected "OK" or false if the user selected
+     * "Cancel".
+     */
+    boolean prompt(final String promptName, final PluginParameters parameters, final String disclaimer, final String helpID);
 }

@@ -567,19 +567,19 @@ public final class PluginParametersPane extends GridPane {
                         GridPane.setHgrow(label, Priority.ALWAYS);
                         GridPane.setFillHeight(label, false);
 
-                        label.bindDescriptionToProperty(descriptionWidth);
                         maxLabelWidth = label.updateBindingWithLabelWidth(maxLabelWidth);
                     }
 
                     final Pane paramPane = child.getFormatter().getParamPane(child);
                     if (paramPane != null) {
-                        paramPane.setStyle("-fx-padding: " + PADDING);
-                        GridPane.setValignment(paramPane, VPos.TOP);
-                        GridPane.setFillHeight(paramPane, false);
+                        final VBox cell = new VBox(paramPane);
+                        cell.setAlignment(Pos.CENTER_LEFT);
+                        cell.setStyle("-fx-padding: " + PADDING);
+                        GridPane.setFillHeight(cell, true);
                         if (label == null) {
-                            paramGroupPane.add(paramPane, 0, row, 2, 1);
+                            paramGroupPane.add(cell, 0, row, 2, 1);
                         } else {
-                            paramGroupPane.add(paramPane, 1, row);
+                            paramGroupPane.add(cell, 1, row);
                         }
                     }
 
@@ -696,10 +696,6 @@ public final class PluginParametersPane extends GridPane {
 
         public void bindDescriptionToLabel() {
             description.maxWidthProperty().bind(Bindings.max(50, label.widthProperty()));
-        }
-
-        public void bindDescriptionToProperty(final DoubleProperty property) {
-            description.maxWidthProperty().bind(property);
         }
 
         public DoubleProperty updateBindingWithLabelWidth(final DoubleProperty property) {
