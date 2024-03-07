@@ -106,13 +106,13 @@ public class MathfNGTest extends TestLogger{
     public void testDegToRad() {
         assertEquals(Mathf.degToRad(90.99D), 1.5880750863896405D);
         log("testDegToRad started");
-        try{
-            final CountDownLatch waiter = new CountDownLatch(1); 
-            waiter.await(60, TimeUnit.SECONDS);
-        } catch (InterruptedException ex){
-            log("testDegToRad interrupted");
-            assertFalse(true);
-        }
+//        try{
+//            final CountDownLatch waiter = new CountDownLatch(1); 
+//            waiter.await(60, TimeUnit.SECONDS);
+//        } catch (InterruptedException ex){
+//            log("testDegToRad interrupted");
+//            assertFalse(true);
+//        }
         log("testDegToRad finished");
     }
     
@@ -121,13 +121,13 @@ public class MathfNGTest extends TestLogger{
      */
     @Test
     public void testRadToDeg() {
-        try{
-            final CountDownLatch waiter = new CountDownLatch(1); 
-            waiter.await(60, TimeUnit.SECONDS);
-        } catch (InterruptedException ex){
-            log("testDegToRad interrupted");
-            assertFalse(true);
-        }
+//        try{
+//            final CountDownLatch waiter = new CountDownLatch(1); 
+//            waiter.await(60, TimeUnit.SECONDS);
+//        } catch (InterruptedException ex){
+//            log("testDegToRad interrupted");
+//            assertFalse(true);
+//        }
         assertEquals(Mathf.radToDeg(1.87D), 107.14310768946395D);
     }
     
@@ -136,13 +136,13 @@ public class MathfNGTest extends TestLogger{
      */
     @Test
     public void testIsPowerOfTwo() {
-        try{
-            final CountDownLatch waiter = new CountDownLatch(1); 
-            waiter.await(60, TimeUnit.SECONDS);
-        } catch (InterruptedException ex){
-            log("testDegToRad interrupted");
-            assertFalse(true);
-        }
+//        try{
+//            final CountDownLatch waiter = new CountDownLatch(1); 
+//            waiter.await(60, TimeUnit.SECONDS);
+//        } catch (InterruptedException ex){
+//            log("testDegToRad interrupted");
+//            assertFalse(true);
+//        }
         assertEquals(Mathf.isPowerOfTwo(1), 1);
         assertEquals(Mathf.isPowerOfTwo(2), 2);
         assertEquals(Mathf.isPowerOfTwo(3), 4);
@@ -153,13 +153,13 @@ public class MathfNGTest extends TestLogger{
      */
     @Test
     public void testDistanceSquared() {
-        try{
-            final CountDownLatch waiter = new CountDownLatch(1); 
-            waiter.await(60, TimeUnit.SECONDS);
-        } catch (InterruptedException ex){
-            log("testDegToRad interrupted");
-            assertFalse(true);
-        }
+//        try{
+//            final CountDownLatch waiter = new CountDownLatch(1); 
+//            waiter.await(60, TimeUnit.SECONDS);
+//        } catch (InterruptedException ex){
+//            log("testDegToRad interrupted");
+//            assertFalse(true);
+//        }
         assertEquals(Mathf.distanceSquared(
                 new Vector3f(F1, F2, F3), new Vector3f(F4, F5, F6)), 
                 78.2946F);
