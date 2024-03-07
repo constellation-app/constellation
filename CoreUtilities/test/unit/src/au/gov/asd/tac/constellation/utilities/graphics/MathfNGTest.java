@@ -74,12 +74,12 @@ public class MathfNGTest extends TestLogger{
         // My guess is that there is a test generating these files and not cleaning
         // up which is why this test is consistently failing when run on CI. Its that
         // file cleanup that should be fixed!!!
-        Arrays.stream(AutosaveUtilities.getAutosaves(FileExtensionConstants.STAR_AUTOSAVE))
-                .forEach(file -> file.delete());
-
-        if (!FxToolkit.isFXApplicationThreadRunning()) {
-            FxToolkit.registerPrimaryStage();
-        }
+//        Arrays.stream(AutosaveUtilities.getAutosaves(FileExtensionConstants.STAR_AUTOSAVE))
+//                .forEach(file -> file.delete());
+//
+//        if (!FxToolkit.isFXApplicationThreadRunning()) {
+//            FxToolkit.registerPrimaryStage();
+//        }
     }
 
     @AfterClass
