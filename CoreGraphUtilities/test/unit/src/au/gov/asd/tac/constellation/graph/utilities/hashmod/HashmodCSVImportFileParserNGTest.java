@@ -41,7 +41,8 @@ import org.testng.annotations.Test;
  *
  * @author sol695510
  */
-public class HashmodCSVImportFileParserNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class HashmodCSVImportFileParserNGTest extends ConstellationTest {
 
     private static HashmodInputSource hashmodInputSourceMock;
     private static PluginParameters pluginParametersMock;

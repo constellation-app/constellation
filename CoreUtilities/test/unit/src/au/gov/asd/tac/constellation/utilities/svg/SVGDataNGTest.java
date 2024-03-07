@@ -32,7 +32,8 @@ import org.testng.annotations.Test;
  * 
  * @author capricornunicorn123
  */
-public class SVGDataNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class SVGDataNGTest extends ConstellationTest {
 
     SVGData svgObjectBlank1;
     SVGData svgObjectBlank2;

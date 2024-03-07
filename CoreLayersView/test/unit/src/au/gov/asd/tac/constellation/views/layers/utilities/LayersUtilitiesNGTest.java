@@ -41,7 +41,8 @@ import org.testng.annotations.Test;
  *
  * @author Delphinus8821
  */
-public class LayersUtilitiesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class LayersUtilitiesNGTest extends ConstellationTest {
 
    private int layerMaskV, layerMaskT, layerVisibilityV, layerVisibilityT;
     private StoreGraph graph;

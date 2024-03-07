@@ -31,9 +31,11 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class FilterPluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class FilterPluginNGTest extends ConstellationTest {
 
-    public class FilterPluginImpl extends FilterPlugin {
+    import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class FilterPluginImpl extends FilterPlugin {
 
         @Override
         protected void edit(GraphWriteMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {

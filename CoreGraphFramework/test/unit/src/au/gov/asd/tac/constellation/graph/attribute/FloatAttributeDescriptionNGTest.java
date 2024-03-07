@@ -36,7 +36,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class FloatAttributeDescriptionNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class FloatAttributeDescriptionNGTest extends ConstellationTest {
 
     FloatAttributeDescription instance;
 

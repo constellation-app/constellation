@@ -31,7 +31,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class SchemaElementTypeNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class SchemaElementTypeNGTest extends ConstellationTest {
 
     public SchemaElementTypeNGTest() {
     }
@@ -208,7 +209,8 @@ public class SchemaElementTypeNGTest {
         assertEquals(result, expResult);
     }
 //
-//    public class SchemaElementTypeImpl extends SchemaElementType {
+//    import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class SchemaElementTypeImpl extends SchemaElementType {
 //
 //        public SchemaElementTypeImpl() {
 //            super("", "", null, null, null, null, false);

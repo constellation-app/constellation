@@ -32,7 +32,8 @@ import org.testng.annotations.Test;
  *
  * @author Delphinus8821
  */
-public class HelpMapperNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class HelpMapperNGTest extends ConstellationTest {
 
     public HelpMapperNGTest() {
     }

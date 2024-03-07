@@ -25,7 +25,8 @@ import org.testng.annotations.Test;
  *
  * @author algol
  */
-public class LabelUtilitiesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class LabelUtilitiesNGTest extends ConstellationTest {
 
     @Test
     public void ellipsisIsSingleChar() {

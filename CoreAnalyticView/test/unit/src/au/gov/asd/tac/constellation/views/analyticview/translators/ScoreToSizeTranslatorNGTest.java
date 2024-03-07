@@ -49,7 +49,8 @@ import org.testng.annotations.Test;
  * 
  * @author Delphinus8821
  */
-public class ScoreToSizeTranslatorNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ScoreToSizeTranslatorNGTest extends ConstellationTest {
 
     private static final Logger LOGGER = Logger.getLogger(ScoreToSizeTranslatorNGTest.class.getName());
     private Graph graph;

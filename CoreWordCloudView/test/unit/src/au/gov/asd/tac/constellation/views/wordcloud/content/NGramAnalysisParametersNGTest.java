@@ -29,7 +29,8 @@ import org.testng.annotations.Test;
  * 
  * @author Delphinus8821
  */
-public class NGramAnalysisParametersNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class NGramAnalysisParametersNGTest extends ConstellationTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {

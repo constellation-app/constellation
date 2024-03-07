@@ -27,7 +27,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class RawDataNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class RawDataNGTest extends ConstellationTest {
 
     public RawDataNGTest() {
     }

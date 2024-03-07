@@ -39,7 +39,8 @@ import static org.testng.Assert.assertTrue;
 /**
  * @author groombridge34a
  */
-public class DownloadImageUtilitiesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DownloadImageUtilitiesNGTest extends ConstellationTest {
     
     private static final String TEST_IMAGE = "pixel.png";
     

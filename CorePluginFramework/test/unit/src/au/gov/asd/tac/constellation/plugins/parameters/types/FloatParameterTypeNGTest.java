@@ -32,7 +32,8 @@ import org.testng.annotations.Test;
  *
  * @author Atlas139mkm
  */
-public class FloatParameterTypeNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class FloatParameterTypeNGTest extends ConstellationTest {
 
     public FloatParameterTypeNGTest() {
     }

@@ -27,7 +27,8 @@ import org.testng.annotations.Test;
  * @author cygnus_x-1
  * @author antares
  */
-public class DistanceNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DistanceNGTest extends ConstellationTest {
     
     public DistanceNGTest() {
     }

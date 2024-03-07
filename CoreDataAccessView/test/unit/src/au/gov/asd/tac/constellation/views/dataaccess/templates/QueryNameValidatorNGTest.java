@@ -30,7 +30,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class QueryNameValidatorNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class QueryNameValidatorNGTest extends ConstellationTest {
 
     /**
      * Test of validatePreQuery method, of class QueryNameValidator.

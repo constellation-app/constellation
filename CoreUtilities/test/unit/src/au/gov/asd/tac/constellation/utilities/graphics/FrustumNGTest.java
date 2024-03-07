@@ -40,7 +40,8 @@ import static org.testng.Assert.assertFalse;
  * 
  * @author groombridge34a
  */
-public class FrustumNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class FrustumNGTest extends ConstellationTest {
     
     /* Convenience method to assert the projection matrix and transformed 
     planes created by the symmetric perspective frustum tests. */

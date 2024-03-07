@@ -49,8 +49,8 @@ import org.testng.annotations.Test;
  * 
  * @author Delphinus8821
  */
-@Listeners(ConstellationTestListener.class)
-public class AnalyticViewStateNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class AnalyticViewStateNGTest extends ConstellationTest {
 
     private static final Logger LOGGER = Logger.getLogger(AnalyticViewStateNGTest.class.getName());
     

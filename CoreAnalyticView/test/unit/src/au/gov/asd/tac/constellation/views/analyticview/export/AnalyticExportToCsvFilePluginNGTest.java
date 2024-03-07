@@ -42,7 +42,8 @@ import org.testng.annotations.Test;
  *
  * @author Delphinus8821
  */
-public class AnalyticExportToCsvFilePluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class AnalyticExportToCsvFilePluginNGTest extends ConstellationTest {
 
     private static final Logger LOGGER = Logger.getLogger(AnalyticExportToCsvFilePluginNGTest.class.getName());
 

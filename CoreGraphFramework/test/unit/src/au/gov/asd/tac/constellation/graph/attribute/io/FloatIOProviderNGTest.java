@@ -38,7 +38,8 @@ import org.testng.annotations.Test;
  *
  * @author serpens24
  */
-public class FloatIOProviderNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class FloatIOProviderNGTest extends ConstellationTest {
 
     // Create object under test
     FloatIOProvider instance;

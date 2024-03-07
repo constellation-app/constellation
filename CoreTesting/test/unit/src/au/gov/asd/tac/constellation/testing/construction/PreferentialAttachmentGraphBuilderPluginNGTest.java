@@ -41,7 +41,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class PreferentialAttachmentGraphBuilderPluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class PreferentialAttachmentGraphBuilderPluginNGTest extends ConstellationTest {
     
     private StoreGraph graph;
     

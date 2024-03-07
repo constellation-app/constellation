@@ -46,7 +46,8 @@ import org.testng.annotations.Test;
  * @author arcturus
  * @author sol695510
  */
-public class SupportPackageNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class SupportPackageNGTest extends ConstellationTest {
 
     private static MockedStatic<Places> placesStaticMock;
 

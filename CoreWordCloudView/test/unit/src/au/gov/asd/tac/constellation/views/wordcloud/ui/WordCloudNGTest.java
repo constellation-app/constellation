@@ -38,7 +38,8 @@ import org.testng.annotations.Test;
  * 
  * @author Delphinus8821
  */
-public class WordCloudNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class WordCloudNGTest extends ConstellationTest {
     
     private final Map<String, Integer> wordsToHashes = new HashMap<>();
     private final Map<Integer, Set<Integer>> hashedWordSets = new HashMap<>();

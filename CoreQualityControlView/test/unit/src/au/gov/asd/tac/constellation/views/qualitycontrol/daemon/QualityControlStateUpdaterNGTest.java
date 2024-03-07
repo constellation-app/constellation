@@ -46,8 +46,8 @@ import org.testng.annotations.Test;
  *
  * @author aldebaran30701
  */
-@Listeners(ConstellationTestListener.class)
-public class QualityControlStateUpdaterNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class QualityControlStateUpdaterNGTest extends ConstellationTest {
 
     private int attrX, attrY, attrZ;
     private int vxId1, vxId2;

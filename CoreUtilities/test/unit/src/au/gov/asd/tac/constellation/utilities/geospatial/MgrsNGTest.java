@@ -23,7 +23,8 @@ import org.testng.annotations.Test;
  *
  * @author cygnus_x-1
  */
-public class MgrsNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class MgrsNGTest extends ConstellationTest {
 
     @Test
     public void testEncodeMgrs() {

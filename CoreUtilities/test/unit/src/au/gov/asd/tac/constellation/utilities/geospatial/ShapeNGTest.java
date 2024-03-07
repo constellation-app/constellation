@@ -81,7 +81,8 @@ import org.xml.sax.SAXException;
 /**
  * @author groombridge34a
  */
-public class ShapeNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ShapeNGTest extends ConstellationTest {
 
     /**
      * An IOException is thrown if a FactoryException is thrown by CRS.

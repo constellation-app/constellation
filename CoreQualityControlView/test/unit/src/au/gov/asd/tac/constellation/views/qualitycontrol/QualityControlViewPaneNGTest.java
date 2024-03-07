@@ -62,7 +62,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class QualityControlViewPaneNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class QualityControlViewPaneNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(QualityControlViewPaneNGTest.class.getName());
 
     private int vertexIdentifierAttribute;

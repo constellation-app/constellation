@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.utilities;
 
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest;
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTestListener;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -32,6 +34,7 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 /**
@@ -39,7 +42,9 @@ import org.testng.annotations.Test;
  *
  * @author groombridge34a
  */
-public class GraphicsCardUtilitiesNGTest {
+
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class GraphicsCardUtilitiesNGTest {
 
     private static final String DXDIAG_ABSOLUTE_PATH = System.getProperty("user.home") + "/dxdiag.txt";
     private static final String CARD_NAME = "testGraphicsCard";

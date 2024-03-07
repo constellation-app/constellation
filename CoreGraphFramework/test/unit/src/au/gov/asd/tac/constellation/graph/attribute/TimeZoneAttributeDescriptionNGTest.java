@@ -28,7 +28,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class TimeZoneAttributeDescriptionNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class TimeZoneAttributeDescriptionNGTest extends ConstellationTest {
 
     TimeZoneAttributeDescription instance;
 

@@ -23,7 +23,8 @@ import org.testng.annotations.Test;
 /**
  * @author groombridge34a
  */
-public class Matrix44dNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class Matrix44dNGTest extends ConstellationTest {
 
     private static final double D[] = {
         101.1D, 102.2D, 103.3D, 104.4D,

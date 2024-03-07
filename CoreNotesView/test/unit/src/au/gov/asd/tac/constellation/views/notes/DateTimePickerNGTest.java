@@ -33,7 +33,8 @@ import org.testng.annotations.Test;
  *
  * @author altair1673
  */
-public class DateTimePickerNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DateTimePickerNGTest extends ConstellationTest {
 
     private static final Logger LOGGER = Logger.getLogger(DateTimePickerNGTest.class.getName());
 

@@ -45,7 +45,8 @@ import org.testng.annotations.Test;
  *
  * @author sol695510
  */
-public class CSVImportFileParserNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class CSVImportFileParserNGTest extends ConstellationTest {
 
     private static InputSource inputSourceMock;
     private static PluginParameters pluginParametersMock;

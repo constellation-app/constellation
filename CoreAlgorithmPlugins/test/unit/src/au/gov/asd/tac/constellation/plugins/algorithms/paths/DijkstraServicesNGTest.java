@@ -34,7 +34,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class DijkstraServicesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DijkstraServicesNGTest extends ConstellationTest {
 
     private StoreGraph graph;
 

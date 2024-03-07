@@ -61,7 +61,8 @@ import org.testng.annotations.Test;
  *
  * @author Auriga2
  */
-public class JMultiChoiceComboBoxMenuNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class JMultiChoiceComboBoxMenuNGTest extends ConstellationTest {
 
     private final List<String> items = new ArrayList<>();
     private static MockedStatic<InstalledFileLocator> installedFileLocatorMockedStatic;

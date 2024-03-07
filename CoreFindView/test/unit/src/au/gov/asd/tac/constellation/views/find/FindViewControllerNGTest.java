@@ -54,7 +54,8 @@ import org.testng.annotations.Test;
  *
  * @author Atlas139mkm
  */
-public class FindViewControllerNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class FindViewControllerNGTest extends ConstellationTest {
 
     private Map<String, Graph> graphMap = new HashMap<>();
     private Graph graph;

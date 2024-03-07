@@ -35,7 +35,8 @@ import org.testng.annotations.Test;
  *
  * @author cygnus_x-1
  */
-public class JaccardIndexPluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class JaccardIndexPluginNGTest extends ConstellationTest {
 
     private int transactionJaccardAttribute, vertexSelectedAttribute, transactionIdentifier;
     private int vxId0, vxId1, vxId2, vxId3, vxId4;

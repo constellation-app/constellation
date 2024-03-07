@@ -70,7 +70,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class ColumnVisibilityContextMenuNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ColumnVisibilityContextMenuNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(ColumnVisibilityContextMenuNGTest.class.getName());
 
     private TableViewTopComponent tableViewTopComponent;

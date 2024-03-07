@@ -65,7 +65,8 @@ import org.testng.annotations.Test;
  *
  * @author mimosa2
  */
-public class DataAccessParametersIoProviderNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DataAccessParametersIoProviderNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(DataAccessParametersIoProviderNGTest.class.getName());
 
     @BeforeClass

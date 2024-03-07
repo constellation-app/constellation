@@ -27,7 +27,8 @@ import org.testng.annotations.Test;
  * 
  * @author Delphinus8821
  */
-public class ThreadAllocatorNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ThreadAllocatorNGTest extends ConstellationTest {
     
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -167,7 +168,8 @@ public class ThreadAllocatorNGTest {
 
     }
 
-    public class ThreadAllocatorImpl extends ThreadAllocator {
+    import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ThreadAllocatorImpl extends ThreadAllocator {
 
         @Override
         public int calculateNumberOfThreads() {

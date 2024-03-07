@@ -34,7 +34,8 @@ import org.testng.annotations.Test;
  *
  * @author sirius
  */
-public class PrimaryKeyUnitNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class PrimaryKeyUnitNGTest extends ConstellationTest {
 
     /**
      * When a graph has no schema, it will also have no element merger which

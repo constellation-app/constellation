@@ -36,7 +36,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class VertexTypeIOProviderNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class VertexTypeIOProviderNGTest extends ConstellationTest {
 
     public VertexTypeIOProviderNGTest() {
     }

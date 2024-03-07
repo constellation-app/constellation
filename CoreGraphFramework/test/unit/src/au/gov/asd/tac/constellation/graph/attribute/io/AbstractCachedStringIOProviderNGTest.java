@@ -39,7 +39,8 @@ import org.testng.annotations.Test;
  *
  * @author serpens24
  */
-public class AbstractCachedStringIOProviderNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class AbstractCachedStringIOProviderNGTest extends ConstellationTest {
         
     // Create object under test
     StringIOProvider instance = new StringIOProvider();

@@ -36,7 +36,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class DoubleAttributeDescriptionNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DoubleAttributeDescriptionNGTest extends ConstellationTest {
 
     DoubleAttributeDescription instance;
 

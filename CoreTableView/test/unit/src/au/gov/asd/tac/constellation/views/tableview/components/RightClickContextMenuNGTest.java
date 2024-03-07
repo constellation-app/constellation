@@ -48,7 +48,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class RightClickContextMenuNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class RightClickContextMenuNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(RightClickContextMenuNGTest.class.getName());
 
     private Table table;

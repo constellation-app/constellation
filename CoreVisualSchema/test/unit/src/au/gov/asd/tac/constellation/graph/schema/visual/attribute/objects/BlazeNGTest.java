@@ -32,7 +32,8 @@ import org.testng.annotations.Test;
  *
  * @author serpens24
  */
-public class BlazeNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class BlazeNGTest extends ConstellationTest {
     
     public BlazeNGTest() {
     }

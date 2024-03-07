@@ -47,7 +47,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class TableSelectionListenerNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class TableSelectionListenerNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(TableSelectionListenerNGTest.class.getName());
 
     private TableSelectionListener tableSelectionListener;

@@ -46,7 +46,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class JsonIODialogNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class JsonIODialogNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(JsonIODialogNGTest.class.getName());
 
     private final FxRobot robot = new FxRobot();

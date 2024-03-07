@@ -34,7 +34,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class LocalDateParameterTypeNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class LocalDateParameterTypeNGTest extends ConstellationTest {
     
     @BeforeClass
     public static void setUpClass() throws Exception {

@@ -39,7 +39,8 @@ import org.testng.annotations.Test;
  *
  * @author serpens24
  */
-public class DrawFlagsIOProviderNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DrawFlagsIOProviderNGTest extends ConstellationTest {
         
     // Create object under test
     DrawFlagsIOProvider instance = new DrawFlagsIOProvider();

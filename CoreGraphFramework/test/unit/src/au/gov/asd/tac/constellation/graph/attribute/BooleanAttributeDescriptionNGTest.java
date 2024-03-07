@@ -36,7 +36,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class BooleanAttributeDescriptionNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class BooleanAttributeDescriptionNGTest extends ConstellationTest {
 
     BooleanAttributeDescription instance;
 

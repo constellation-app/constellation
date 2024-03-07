@@ -32,7 +32,8 @@ import org.testng.annotations.Test;
 /**
  * Split Nodes Plugin Split Logic Test.
  */
-public class SplitNodesPluginSplitLogicNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class SplitNodesPluginSplitLogicNGTest extends ConstellationTest {
 
     private int vertexIdentifierAttribute, vertexTypeAttribute, vertexLatitudeAttribute, vertexLongitudeAttribute, vertexSelectedAttribute,
             vertexAttributeX, vertexAttributeY, vertexAttributeZ;

@@ -45,7 +45,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class GlobalParametersPaneNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class GlobalParametersPaneNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(GlobalParametersPaneNGTest.class.getName());
 
     private static MockedStatic<PluginParametersPane> pluginParametersPaneMockedStatic;

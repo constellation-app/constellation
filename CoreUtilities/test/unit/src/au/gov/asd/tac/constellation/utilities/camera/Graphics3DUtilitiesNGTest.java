@@ -27,7 +27,8 @@ import org.testng.annotations.Test;
 /**
  * @author groombridge34a
  */
-public class Graphics3DUtilitiesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class Graphics3DUtilitiesNGTest extends ConstellationTest {
 
     private static final Vector3f ZERO_V = new Vector3f(0F, 0F, 0F);
     private static final Vector3f V3_1 = new Vector3f(1.1F, 1.2F, 1.3F);

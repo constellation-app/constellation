@@ -43,7 +43,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class ShowDataAccessPluginTaskNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ShowDataAccessPluginTaskNGTest extends ConstellationTest {
     private static final String PLUGIN_NAME = "pluginName";
     
     private static MockedStatic<DataAccessUtilities> dataAccessUtilsMockedStatic;

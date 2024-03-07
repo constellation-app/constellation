@@ -34,7 +34,8 @@ import org.testng.annotations.Test;
  * 
  * @author Delphinus8821
  */
-public class ContentAnalysisOptionsNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ContentAnalysisOptionsNGTest extends ConstellationTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {

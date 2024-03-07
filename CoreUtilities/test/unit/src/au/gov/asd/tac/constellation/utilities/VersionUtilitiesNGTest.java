@@ -27,7 +27,8 @@ import org.testng.annotations.Test;
  *
  * @author aquila
  */
-public class VersionUtilitiesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class VersionUtilitiesNGTest extends ConstellationTest {
 
     public VersionUtilitiesNGTest() {
     }

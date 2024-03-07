@@ -45,7 +45,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class GlobalParametersNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class GlobalParametersNGTest extends ConstellationTest {
 
     private static MockedStatic<Lookup> lookupStaticMock;
 

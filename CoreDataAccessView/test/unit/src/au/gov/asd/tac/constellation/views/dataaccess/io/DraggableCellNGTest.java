@@ -38,7 +38,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class DraggableCellNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DraggableCellNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(DraggableCellNGTest.class.getName());
 
     @BeforeClass

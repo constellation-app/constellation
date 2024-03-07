@@ -35,7 +35,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class StringAttributeDescriptionNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class StringAttributeDescriptionNGTest extends ConstellationTest {
 
     StringAttributeDescription instance;
 

@@ -30,7 +30,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class ProgressBarNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ProgressBarNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(ProgressBarNGTest.class.getName());
 
     @BeforeClass

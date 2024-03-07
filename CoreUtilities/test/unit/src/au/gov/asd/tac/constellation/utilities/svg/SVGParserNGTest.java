@@ -31,7 +31,8 @@ import org.testng.annotations.Test;
  * 
  * @author capricornunicorn123
  */
-public class SVGParserNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class SVGParserNGTest extends ConstellationTest {
        
     public SVGParserNGTest() {
         

@@ -33,7 +33,8 @@ import org.testng.annotations.Test;
  *
  * @author CrucisGamma
  */
-public class ResetViewContextMenuNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ResetViewContextMenuNGTest extends ConstellationTest {
 
     private StoreGraph graph;
 

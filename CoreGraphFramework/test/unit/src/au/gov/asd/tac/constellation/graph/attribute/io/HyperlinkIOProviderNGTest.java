@@ -27,7 +27,8 @@ import org.testng.annotations.Test;
  *
  * @author serpens24
  */
-public class HyperlinkIOProviderNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class HyperlinkIOProviderNGTest extends ConstellationTest {
     
     public HyperlinkIOProviderNGTest() {
     }

@@ -44,7 +44,8 @@ import org.testng.annotations.Test;
 /**
  * @author aldebaran30701
  */
-public class GeneratorNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class GeneratorNGTest extends ConstellationTest {
 
     public GeneratorNGTest() {
     }

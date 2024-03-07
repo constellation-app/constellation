@@ -29,7 +29,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class TabularRecordStoreNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class TabularRecordStoreNGTest extends ConstellationTest {
 
     TabularRecordStore instance = null;
 

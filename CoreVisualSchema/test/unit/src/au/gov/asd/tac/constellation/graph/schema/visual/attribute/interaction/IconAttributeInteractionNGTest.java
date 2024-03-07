@@ -32,7 +32,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class IconAttributeInteractionNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class IconAttributeInteractionNGTest extends ConstellationTest {
 
     public IconAttributeInteractionNGTest() {
     }

@@ -29,7 +29,8 @@ import org.testng.annotations.Test;
  *
  * @author serpens24
  */
-public class ExtendedBufferNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ExtendedBufferNGTest extends ConstellationTest {
     
     private final int size = 10;
     

@@ -32,7 +32,8 @@ import org.testng.annotations.Test;
  *
  * @author cygnus_x-1
  */
-public class MatrixUtilitiesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class MatrixUtilitiesNGTest extends ConstellationTest {
 
     private int vxId0, vxId1, vxId2, vxId3, vxId4;
     private int txId0, txId1, txId2, txId3, txId4;

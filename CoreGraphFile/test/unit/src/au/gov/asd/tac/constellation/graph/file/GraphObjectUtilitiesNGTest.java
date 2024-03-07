@@ -28,7 +28,8 @@ import org.testng.annotations.Test;
  *
  * @author GCHQDeveloper601
  */
-public class GraphObjectUtilitiesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class GraphObjectUtilitiesNGTest extends ConstellationTest {
 
     // This is the in-memory filesystem we use to store files for DataObjects.
     private static final FileSystem FILE_SYSTEM = FileUtil.createMemoryFileSystem();

@@ -35,7 +35,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class HttpsUtilitiesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class HttpsUtilitiesNGTest extends ConstellationTest {
     
     public HttpsUtilitiesNGTest() {
     }

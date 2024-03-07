@@ -33,7 +33,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class DateTimeRangeParameterTypeNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DateTimeRangeParameterTypeNGTest extends ConstellationTest {
     
     @BeforeClass
     public static void setUpClass() throws Exception {

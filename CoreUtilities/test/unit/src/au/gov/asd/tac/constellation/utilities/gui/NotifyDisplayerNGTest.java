@@ -55,7 +55,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class NotifyDisplayerNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class NotifyDisplayerNGTest extends ConstellationTest {
 
     private static final Logger LOGGER = Logger.getLogger(NotifyDisplayerNGTest.class.getName());
 

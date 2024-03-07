@@ -40,7 +40,8 @@ import org.testng.annotations.Test;
  *
  * @author serpens24
  */
-public class DoubleObjectIOProviderNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DoubleObjectIOProviderNGTest extends ConstellationTest {
 
     // Create object under test
     DoubleObjectIOProvider instance;

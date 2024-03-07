@@ -58,7 +58,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class JsonIONGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class JsonIONGTest extends ConstellationTest {
     private static final Optional<String> SUB_DIRECTORY = Optional.of("test");
     private static final Optional<String> FILE_PREFIX = Optional.of("my-");
 

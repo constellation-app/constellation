@@ -27,7 +27,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class LineStyleAttributeDescriptionNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class LineStyleAttributeDescriptionNGTest extends ConstellationTest {
 
     public LineStyleAttributeDescriptionNGTest() {
     }

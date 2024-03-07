@@ -35,7 +35,8 @@ import org.testng.annotations.Test;
  *
  * @author cygnus_x-1
  */
-public class MergeNodesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class MergeNodesNGTest extends ConstellationTest {
 
     private int vertexIdentifierAttribute, vertexTypeAttribute, vertexLatitudeAttribute, vertexLongitudeAttribute, vertexShapeAttribute, vertexSelectedAttribute;
     private int vxId1, vxId2, vxId3, vxId4;

@@ -43,7 +43,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class GraphRecordStoreUtilitiesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class GraphRecordStoreUtilitiesNGTest extends ConstellationTest {
 
     StoreGraph graph;
 

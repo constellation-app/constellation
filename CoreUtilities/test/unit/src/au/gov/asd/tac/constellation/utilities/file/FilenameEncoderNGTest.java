@@ -23,7 +23,8 @@ import org.testng.annotations.Test;
  *
  * @author serpens24
  */
-public class FilenameEncoderNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class FilenameEncoderNGTest extends ConstellationTest {
 
     @Test
     public void testDecode1() {

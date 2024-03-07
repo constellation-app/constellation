@@ -84,7 +84,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class PreferenceMenuNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class PreferenceMenuNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(PreferenceMenuNGTest.class.getName());
 
     private TableViewTopComponent tableViewTopComponent;

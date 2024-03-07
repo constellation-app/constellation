@@ -36,7 +36,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class MultiPartNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class MultiPartNGTest extends ConstellationTest {
 
     MultiPart multiPart;
 

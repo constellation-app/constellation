@@ -58,11 +58,13 @@ public class ConstellationTestListener implements ITestListener {
 
     @Override
     public void onStart(ITestContext arg0) {
-        System.out.println(String.format("onStart of %s, Environment is headless: %s", arg0.getClass(), GraphicsEnvironment.isHeadless()));
         
-        System.out.println(String.format("onStart of %s, is FX Application Thread Running: %s", arg0.getClass(), FxToolkit.isFXApplicationThreadRunning()));
+        System.out.println(String.format("ON START of %s, Environment is Headless: %s", arg0.getCurrentXmlTest().getClasses().stream().findFirst().get().getName(), GraphicsEnvironment.isHeadless()));
+        
+        System.out.println(String.format("ON START of %s, FX Application Thread is Running: %s", arg0.getCurrentXmlTest().getClasses().stream().findFirst().get().getName(), FxToolkit.isFXApplicationThreadRunning()));
         
         File dir = AutosaveUtilities.getAutosaveDir();
+        System.out.println(String.format("ON START of %s, Austosave File Count: %s", arg0.getCurrentXmlTest().getClasses().stream().findFirst().get().getName(), dir.length()));
         if (dir != null){
             File[] files = dir.listFiles();
             if (files.length > 0){
@@ -76,11 +78,12 @@ public class ConstellationTestListener implements ITestListener {
 
     @Override
     public void onFinish(ITestContext arg0) {
-        System.out.println(String.format("onFinnish of %s, Environment is headless: %s", arg0.getClass(), GraphicsEnvironment.isHeadless()));
+        System.out.println(String.format("ON FINISH of %s, Environment is Headless: %s", arg0.getCurrentXmlTest().getClasses().stream().findFirst().get().getName(), GraphicsEnvironment.isHeadless()));
         
-        System.out.println(String.format("onFinnish of %s, is FX Application Thread Running: %s", arg0.getClass(), FxToolkit.isFXApplicationThreadRunning()));
+        System.out.println(String.format("ON FINISH of %s, FX Application Thread is Running: %s", arg0.getCurrentXmlTest().getClasses().stream().findFirst().get().getName(), FxToolkit.isFXApplicationThreadRunning()));
         
         File dir = AutosaveUtilities.getAutosaveDir();
+        System.out.println(String.format("ON FINISH of %s, Austosave File Count: %s", arg0.getCurrentXmlTest().getClasses().stream().findFirst().get().getName(), dir.length()));
         if (dir != null){
             File[] files = dir.listFiles();
             if (files.length > 0){

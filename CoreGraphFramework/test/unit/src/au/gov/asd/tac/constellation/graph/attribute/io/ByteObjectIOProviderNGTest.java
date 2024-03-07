@@ -39,7 +39,8 @@ import org.testng.annotations.Test;
  *
  * @author serpens24
  */
-public class ByteObjectIOProviderNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ByteObjectIOProviderNGTest extends ConstellationTest {
     
     // Create object under test
     ByteObjectIOProvider instance;

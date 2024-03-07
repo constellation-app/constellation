@@ -33,7 +33,8 @@ import org.testng.annotations.Test;
  *
  * @author serpens24
  */
-public class LayerNameIOProviderNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class LayerNameIOProviderNGTest extends ConstellationTest {
         
     // Create object under test
     LayerNameIOProvider instance;

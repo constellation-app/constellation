@@ -36,8 +36,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-@Listeners(ConstellationTestListener.class)
-public class StartupNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class StartupNGTest extends ConstellationTest {
 
     @Test
     public void runInHeadless() {

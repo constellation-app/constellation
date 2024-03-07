@@ -76,7 +76,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class ExportMenuNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ExportMenuNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(ExportMenuNGTest.class.getName());
 
     private static final String GRAPH_ID = "graphId";

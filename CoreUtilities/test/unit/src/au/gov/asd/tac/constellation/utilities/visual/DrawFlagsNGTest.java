@@ -26,7 +26,8 @@ import org.testng.annotations.Test;
  *
  * @author aldebaran30701
  */
-public class DrawFlagsNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DrawFlagsNGTest extends ConstellationTest {
     
     public DrawFlagsNGTest() {
     }

@@ -29,7 +29,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class TimeAttributeDescriptionNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class TimeAttributeDescriptionNGTest extends ConstellationTest {
 
     TimeAttributeDescription instance;
 

@@ -43,7 +43,8 @@ import org.testng.annotations.Test;
  * 
  * @author Delphinus8821
  */
-public class ColorVisualisationNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ColorVisualisationNGTest extends ConstellationTest {
 
     private static final Logger LOGGER = Logger.getLogger(ColorVisualisationNGTest.class.getName());
     

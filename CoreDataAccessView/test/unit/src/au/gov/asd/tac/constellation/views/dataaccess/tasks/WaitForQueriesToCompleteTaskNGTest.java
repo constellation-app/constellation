@@ -44,7 +44,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class WaitForQueriesToCompleteTaskNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class WaitForQueriesToCompleteTaskNGTest extends ConstellationTest {
     private static final String GRAPH_ID = "graphId";
     
     private static MockedStatic<DataAccessPaneState> paneStateMockedStatic;

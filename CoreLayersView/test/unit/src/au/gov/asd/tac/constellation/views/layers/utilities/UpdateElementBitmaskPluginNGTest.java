@@ -30,7 +30,8 @@ import org.testng.annotations.Test;
  *
  * @author aldebaran30701
  */
-public class UpdateElementBitmaskPluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class UpdateElementBitmaskPluginNGTest extends ConstellationTest {
 
     private int layerMaskV, layerMaskT, layerVisibilityV, layerVisibilityT, selectedV, selectedT;
     private int vxId1, vxId2, txId1, txId2;

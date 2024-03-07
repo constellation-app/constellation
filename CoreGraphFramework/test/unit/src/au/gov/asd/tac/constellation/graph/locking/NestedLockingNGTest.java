@@ -25,7 +25,8 @@ import org.testng.annotations.Test;
  *
  * @author twilight_sparkle
  */
-public class NestedLockingNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class NestedLockingNGTest extends ConstellationTest {
 
     @Test
     public void unmodifiedRollbackControlTest() {

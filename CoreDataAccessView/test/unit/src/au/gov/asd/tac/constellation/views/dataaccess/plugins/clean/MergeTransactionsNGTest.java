@@ -45,7 +45,8 @@ import static org.testng.internal.junit.ArrayAsserts.assertArrayEquals;
  * @author arcturus
  * @author antares
  */
-public class MergeTransactionsNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class MergeTransactionsNGTest extends ConstellationTest {
 
     private int vertexIdentifierAttribute, vertexTypeAttribute, transactionDateTimeAttribute, transactionTypeAttribute, transactionIdentifierAttribute, transactionSelectedAttribute;
     private int vxId1, vxId2;

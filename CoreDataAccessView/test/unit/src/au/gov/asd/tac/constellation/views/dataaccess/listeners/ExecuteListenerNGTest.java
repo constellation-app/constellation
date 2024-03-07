@@ -80,7 +80,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class ExecuteListenerNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ExecuteListenerNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(ExecuteListenerNGTest.class.getName());
     
     private static final String GRAPH_ID = "graphId";

@@ -33,7 +33,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class BlazeAttributeInteractionNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class BlazeAttributeInteractionNGTest extends ConstellationTest {
 
     public BlazeAttributeInteractionNGTest() {
     }

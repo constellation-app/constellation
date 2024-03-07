@@ -41,7 +41,8 @@ import org.testng.annotations.Test;
  *
  * @author Auriga2
  */
-public class DelimitedImportControllerNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DelimitedImportControllerNGTest extends ConstellationTest {
     private static MockedStatic<NotifyDisplayer> notifyDisplayerMockedStatic;
     private DelimitedImportController delimitedImportController;
 

@@ -41,7 +41,8 @@ import org.testng.annotations.Test;
  *
  * @author algol
  */
-public class IONGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class IONGTest extends ConstellationTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {

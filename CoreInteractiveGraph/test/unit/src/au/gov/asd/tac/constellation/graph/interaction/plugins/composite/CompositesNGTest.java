@@ -50,7 +50,8 @@ import org.testng.annotations.Test;
  *
  * @author twilight_sparkle
  */
-public class CompositesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class CompositesNGTest extends ConstellationTest {
 
     private Graph graph;
 

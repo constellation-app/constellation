@@ -27,7 +27,8 @@ import org.testng.annotations.Test;
  *
  * @author Atlas139mkm
  */
-public class FindCriteriaValuesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class FindCriteriaValuesNGTest extends ConstellationTest {
 
     private final String typeString = "Type";
     private final String attributeString = "Attribute";

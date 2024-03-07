@@ -34,7 +34,8 @@ import org.testng.annotations.Test;
  *
  * @author sol695510
  */
-public class XMLImportFileParserNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class XMLImportFileParserNGTest extends ConstellationTest {
 
     public XMLImportFileParserNGTest() {
     }

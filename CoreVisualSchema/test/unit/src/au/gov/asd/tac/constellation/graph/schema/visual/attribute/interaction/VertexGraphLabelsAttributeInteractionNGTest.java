@@ -32,7 +32,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class VertexGraphLabelsAttributeInteractionNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class VertexGraphLabelsAttributeInteractionNGTest extends ConstellationTest {
 
     public VertexGraphLabelsAttributeInteractionNGTest() {
     }

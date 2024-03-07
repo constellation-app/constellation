@@ -26,7 +26,8 @@ import static org.testng.Assert.assertTrue;
 /**
  * @author groombridge34a
  */
-public class FloatArrayNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class FloatArrayNGTest extends ConstellationTest {
     
     private static final float F1 = 1F;
     private static final float F2 = 2F;

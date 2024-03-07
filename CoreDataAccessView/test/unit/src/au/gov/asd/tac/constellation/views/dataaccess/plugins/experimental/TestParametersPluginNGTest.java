@@ -46,7 +46,8 @@ import org.testng.annotations.Test;
  *
  * @author aldebaran30701
  */
-public class TestParametersPluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class TestParametersPluginNGTest extends ConstellationTest {
 
     /**
      * Test of getType method, of class TestParametersPlugin.

@@ -31,7 +31,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class IpAddressUtilitiesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class IpAddressUtilitiesNGTest extends ConstellationTest {
 
     public IpAddressUtilitiesNGTest() {
     }

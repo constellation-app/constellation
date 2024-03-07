@@ -35,7 +35,8 @@ import org.w3c.dom.NodeList;
  *
  * @author antares
  */
-public class GraphMLUtilitiesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class GraphMLUtilitiesNGTest extends ConstellationTest {
     
     public GraphMLUtilitiesNGTest() {
     }

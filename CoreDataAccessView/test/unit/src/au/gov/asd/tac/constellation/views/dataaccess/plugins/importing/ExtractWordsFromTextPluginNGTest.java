@@ -49,7 +49,8 @@ import org.testng.annotations.Test;
  *
  * @author canis_majorus
  */
-public class ExtractWordsFromTextPluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ExtractWordsFromTextPluginNGTest extends ConstellationTest {
 
     private StoreGraph graph;
 

@@ -43,7 +43,8 @@ import org.testng.annotations.Test;
  *
  * @author serpens24
  */
-public class RestClientNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class RestClientNGTest extends ConstellationTest {
     
     StringBuilder outputStreamString;  // This value is manipulated by the test
                                         // rest interface implementation
@@ -333,7 +334,8 @@ public class RestClientNGTest {
      * precanned responseCode, ResponseMessage, and header values which
      * Mockito uses in mocks to return to calling test.
      */
-    public class RestClientImpl extends RestClient {
+
+ public class RestClientImpl extends RestClient {
         // Values to be returned by Mockito for mocked HttpsURLConnection
         // objecxt calls to getResponseCode, getResponseMessage, and
         // getHeaderFields

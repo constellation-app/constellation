@@ -38,7 +38,8 @@ import testing.TestLogger;
 /**
  * @author groombridge34a
  */
-public class MathfNGTest extends TestLogger{
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class MathfNGTest extends TestLogger{
 
     private static final Logger LOGGER = Logger.getLogger(MathfNGTest.class.getName());
     

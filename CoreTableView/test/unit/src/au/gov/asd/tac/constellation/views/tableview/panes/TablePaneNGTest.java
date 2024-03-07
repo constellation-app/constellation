@@ -57,7 +57,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class TablePaneNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class TablePaneNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(TablePaneNGTest.class.getName());
 
     private TableViewTopComponent tableViewTopComponent;

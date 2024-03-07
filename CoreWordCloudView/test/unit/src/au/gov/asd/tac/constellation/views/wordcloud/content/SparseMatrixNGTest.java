@@ -35,7 +35,8 @@ import org.testng.annotations.Test;
  * 
  * @author Delphinus8821
  */
-public class SparseMatrixNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class SparseMatrixNGTest extends ConstellationTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {

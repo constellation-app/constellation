@@ -49,7 +49,8 @@ import org.testng.annotations.Test;
  *
  * @author serpens24
  */
-public class PlaneStateIOProviderNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class PlaneStateIOProviderNGTest extends ConstellationTest {
         
     // Create object under test
     PlaneStateIOProvider instance;

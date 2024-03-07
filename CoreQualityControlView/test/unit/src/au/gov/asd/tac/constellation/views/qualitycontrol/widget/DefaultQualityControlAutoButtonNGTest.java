@@ -46,8 +46,8 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
-@Listeners(ConstellationTestListener.class)
-public class DefaultQualityControlAutoButtonNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DefaultQualityControlAutoButtonNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(DefaultQualityControlAutoButtonNGTest.class.getName());
 
     private StoreGraph graph;

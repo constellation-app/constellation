@@ -28,7 +28,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class TimeZoneAttributeInteractionNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class TimeZoneAttributeInteractionNGTest extends ConstellationTest {
     
     public TimeZoneAttributeInteractionNGTest() {
     }

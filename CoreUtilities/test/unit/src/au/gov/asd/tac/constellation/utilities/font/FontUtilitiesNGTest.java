@@ -45,7 +45,8 @@ import org.testng.annotations.Test;
 /**
  * @author groombridge34a
  */
-public class FontUtilitiesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class FontUtilitiesNGTest extends ConstellationTest {
     
     private static final Logger LOGGER = Logger.getLogger(FontUtilities.class.getName());
     private static OutputStream logCapturingStream;
@@ -575,7 +576,8 @@ public class FontUtilitiesNGTest {
     /**
      * Broken Preferences implementation to facilitate Exception testing.
      */
-    public class BorkedPreferences extends Preferences {
+
+ public class BorkedPreferences extends Preferences {
         @Override
         public void put(String string, String string1) {
             throw new UnsupportedOperationException("Not supported yet.");

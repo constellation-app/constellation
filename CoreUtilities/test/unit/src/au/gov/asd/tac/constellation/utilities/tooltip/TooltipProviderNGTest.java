@@ -38,7 +38,8 @@ import org.testng.annotations.Test;
  *
  * @author aldebaran30701
  */
-public class TooltipProviderNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class TooltipProviderNGTest extends ConstellationTest {
     
     public TooltipProviderNGTest() {
     }

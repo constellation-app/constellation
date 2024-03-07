@@ -36,7 +36,8 @@ import org.testng.annotations.Test;
  *
  * @author OrionsGuardian
  */
-public class ConstellationLAFSettingsNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ConstellationLAFSettingsNGTest extends ConstellationTest {
     
     private static final Logger LOGGER = Logger.getLogger(ConstellationLAFSettingsNGTest.class.getName());
     final static PseudoLookAndFeel pseudoLAF = new PseudoLookAndFeel();

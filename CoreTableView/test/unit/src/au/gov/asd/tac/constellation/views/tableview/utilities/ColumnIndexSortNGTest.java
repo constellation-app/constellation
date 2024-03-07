@@ -30,7 +30,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class ColumnIndexSortNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ColumnIndexSortNGTest extends ConstellationTest {
 
     @Test
     public void compare() {

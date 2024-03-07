@@ -40,7 +40,8 @@ import org.testng.annotations.Test;
  * 
  * @author Delphinus8821
  */
-public class AnalyticViewPaneNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class AnalyticViewPaneNGTest extends ConstellationTest {
 
     private static final Logger LOGGER = Logger.getLogger(AnalyticViewPaneNGTest.class.getName());
     

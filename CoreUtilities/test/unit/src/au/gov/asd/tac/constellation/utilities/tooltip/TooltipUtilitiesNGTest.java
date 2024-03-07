@@ -52,7 +52,8 @@ import org.testng.annotations.Test;
  *
  * @author aldebaran30701
  */
-public class TooltipUtilitiesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class TooltipUtilitiesNGTest extends ConstellationTest {
     
     private static final Logger LOGGER = Logger.getLogger(TooltipUtilitiesNGTest.class.getName());
     

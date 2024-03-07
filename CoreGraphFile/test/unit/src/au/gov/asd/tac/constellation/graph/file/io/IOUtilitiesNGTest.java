@@ -34,7 +34,8 @@ import static org.testng.internal.junit.ArrayAsserts.assertArrayEquals;
  *
  * @author algol
  */
-public class IOUtilitiesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class IOUtilitiesNGTest extends ConstellationTest {
 
     static final SimpleDateFormat SDF_DT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
     static final SimpleDateFormat SDF_DT_MS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ");

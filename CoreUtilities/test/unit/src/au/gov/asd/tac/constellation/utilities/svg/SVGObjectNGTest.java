@@ -34,7 +34,8 @@ import static org.testng.Assert.assertTrue;
  * 
  * @author capricornunicorn123
  */
-public class SVGObjectNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class SVGObjectNGTest extends ConstellationTest {
 
     final SVGTypeConstants typeSVG = SVGTypeConstants.SVG;
     

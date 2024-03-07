@@ -28,7 +28,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class LineStyleAttributeInteractionNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class LineStyleAttributeInteractionNGTest extends ConstellationTest {
 
     public LineStyleAttributeInteractionNGTest() {
     }

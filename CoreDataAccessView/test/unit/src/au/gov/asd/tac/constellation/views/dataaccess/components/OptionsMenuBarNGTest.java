@@ -57,7 +57,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class OptionsMenuBarNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class OptionsMenuBarNGTest extends ConstellationTest {
 
     private static final Logger LOGGER = Logger.getLogger(OptionsMenuBarNGTest.class.getName());
 

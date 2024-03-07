@@ -37,7 +37,8 @@ import org.testng.annotations.Test;
  *
  * @author algol
  */
-public class MiscNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class MiscNGTest extends ConstellationTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {

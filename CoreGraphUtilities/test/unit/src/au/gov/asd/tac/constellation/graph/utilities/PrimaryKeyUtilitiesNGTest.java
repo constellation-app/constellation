@@ -32,7 +32,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class PrimaryKeyUtilitiesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class PrimaryKeyUtilitiesNGTest extends ConstellationTest {
 
     public PrimaryKeyUtilitiesNGTest() {
     }

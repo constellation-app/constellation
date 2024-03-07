@@ -29,7 +29,8 @@ import org.testng.annotations.Test;
  *
  * @author cygnus_x-1
  */
-public class GeohashNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class GeohashNGTest extends ConstellationTest {
 
     private double latitude;
     private double longitude;

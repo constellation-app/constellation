@@ -27,7 +27,8 @@ import org.testng.annotations.Test;
  *
  * @author serpens24
  */
-public class VertexGraphLabelsIOProviderNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class VertexGraphLabelsIOProviderNGTest extends ConstellationTest {
     
     // Create object under test
     VertexGraphLabelsIOProvider instance;

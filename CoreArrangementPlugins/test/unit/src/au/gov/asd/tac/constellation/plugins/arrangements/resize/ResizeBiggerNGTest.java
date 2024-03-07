@@ -34,7 +34,8 @@ import org.testng.annotations.Test;
  *
  * @author altair
  */
-public class ResizeBiggerNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ResizeBiggerNGTest extends ConstellationTest {
 
     private int attrX, attrY, attrZ, attrSelected;
     private int vxId1, vxId2;

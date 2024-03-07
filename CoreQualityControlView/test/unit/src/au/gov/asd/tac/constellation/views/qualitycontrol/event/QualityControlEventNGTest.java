@@ -30,7 +30,8 @@ import org.testng.annotations.Test;
  *
  * @author aldebaran30701
  */
-public class QualityControlEventNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class QualityControlEventNGTest extends ConstellationTest {
 
     private final static QualityControlEvent.QualityCategory OK = QualityControlEvent.QualityCategory.OK;
     private final static QualityControlEvent.QualityCategory MINOR = QualityControlEvent.QualityCategory.MINOR;

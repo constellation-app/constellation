@@ -32,7 +32,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class GraphAttributeParameterValueNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class GraphAttributeParameterValueNGTest extends ConstellationTest {
     
     GraphAttribute graphAttribute;
     

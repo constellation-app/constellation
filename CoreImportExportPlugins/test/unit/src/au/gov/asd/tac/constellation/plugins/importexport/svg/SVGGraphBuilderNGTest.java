@@ -51,7 +51,8 @@ import org.testng.annotations.Test;
  * Test for{@link SVGGraphBuilder}
  * @author capricornunicorn123
  */
-public class SVGGraphBuilderNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class SVGGraphBuilderNGTest extends ConstellationTest {
     private MockedStatic<GraphManager> graphManagerStaticMock;
     private MockedStatic<GraphNode> graphNodeStaticMock;
     private VisualManager visualManagerMock;

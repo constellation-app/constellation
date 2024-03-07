@@ -36,7 +36,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class RecentFilesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class RecentFilesNGTest extends ConstellationTest {
     
     public RecentFilesNGTest() {
     }

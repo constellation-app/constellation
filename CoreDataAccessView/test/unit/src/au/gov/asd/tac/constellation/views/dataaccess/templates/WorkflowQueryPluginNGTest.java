@@ -35,7 +35,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class WorkflowQueryPluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class WorkflowQueryPluginNGTest extends ConstellationTest {
 
     /**
      * Test of execute method, of class WorkflowQueryPlugin.
@@ -135,7 +136,8 @@ public class WorkflowQueryPluginNGTest {
         assertEquals(result, expResult);
     }
 
-    public class WorkflowQueryPluginImpl extends WorkflowQueryPlugin {
+    import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class WorkflowQueryPluginImpl extends WorkflowQueryPlugin {
 
         public List<String> getWorkflow() {
             return Collections.emptyList();

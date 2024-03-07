@@ -31,7 +31,8 @@ import org.testng.annotations.Test;
  *
  * @author serpens24
  */
-public class PlaneStateNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class PlaneStateNGTest extends ConstellationTest {
 
     // Create object under test
     final BufferedImage bufferedImage = new BufferedImage(1, 2, 3);

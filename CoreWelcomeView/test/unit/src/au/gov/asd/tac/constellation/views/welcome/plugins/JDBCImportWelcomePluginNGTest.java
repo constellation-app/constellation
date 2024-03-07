@@ -30,7 +30,8 @@ import org.testng.annotations.Test;
  *
  * @author Delphinus8821
  */
-public class JDBCImportWelcomePluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class JDBCImportWelcomePluginNGTest extends ConstellationTest {
 
     private static final Logger LOGGER = Logger.getLogger(JDBCImportWelcomePluginNGTest.class.getName());
 

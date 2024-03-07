@@ -39,7 +39,8 @@ import org.testng.annotations.Test;
  *
  * @author altair
  */
-public class BlazeNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class BlazeNGTest extends ConstellationTest {
 
     private StoreGraph graph;
     private int vxId4;

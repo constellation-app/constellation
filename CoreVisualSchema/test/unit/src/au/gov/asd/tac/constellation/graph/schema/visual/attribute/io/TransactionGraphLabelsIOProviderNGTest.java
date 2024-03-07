@@ -27,7 +27,8 @@ import org.testng.annotations.Test;
  *
  * @author serpens24
  */
-public class TransactionGraphLabelsIOProviderNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class TransactionGraphLabelsIOProviderNGTest extends ConstellationTest {
     
     // Create object under test
     TransactionGraphLabelsIOProvider instance;

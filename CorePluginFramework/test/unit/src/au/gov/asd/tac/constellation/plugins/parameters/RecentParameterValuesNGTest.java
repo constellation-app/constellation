@@ -37,7 +37,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class RecentParameterValuesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class RecentParameterValuesNGTest extends ConstellationTest {
 
     private String recentValues;
 

@@ -39,7 +39,8 @@ import org.testng.annotations.Test;
  * Testing for the ConstellationErrorManager class
  * @author OrionsGuardian
  */
-public class ConstellationErrorManagerNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ConstellationErrorManagerNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(ConstellationErrorManagerNGTest.class.getName());
     
     @Test

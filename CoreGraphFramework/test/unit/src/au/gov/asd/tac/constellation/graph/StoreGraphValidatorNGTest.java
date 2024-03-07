@@ -25,7 +25,8 @@ import org.testng.annotations.Test;
  *
  * @author sirius
  */
-public class StoreGraphValidatorNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class StoreGraphValidatorNGTest extends ConstellationTest {
 
     private static final boolean VERBOSE = false;
 

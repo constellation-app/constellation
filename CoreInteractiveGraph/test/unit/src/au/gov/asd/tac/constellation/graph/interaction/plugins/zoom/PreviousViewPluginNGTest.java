@@ -33,7 +33,8 @@ import org.testng.annotations.Test;
  *
  * @author aldebaran30701
  */
-public class PreviousViewPluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class PreviousViewPluginNGTest extends ConstellationTest {
     
     private int vertexIdentifierAttribute, cameraAttribute;
     private int vxId1, vxId2;

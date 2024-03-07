@@ -43,7 +43,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class TableComparatorListenerNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class TableComparatorListenerNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(TableComparatorListenerNGTest.class.getName());
 
     private TableComparatorListener tableComparatorListener;

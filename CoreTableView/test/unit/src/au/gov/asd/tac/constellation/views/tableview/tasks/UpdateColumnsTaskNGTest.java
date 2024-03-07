@@ -64,7 +64,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class UpdateColumnsTaskNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class UpdateColumnsTaskNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(UpdateColumnsTaskNGTest.class.getName());
 
     private TableViewTopComponent tableViewTopComponent;

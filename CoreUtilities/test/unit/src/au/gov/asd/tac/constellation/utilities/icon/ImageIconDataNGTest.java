@@ -27,7 +27,8 @@ import org.testng.annotations.Test;
  * Test for {@link ImageIconData} 
  * @author capricornunicorn123
  */
-public class ImageIconDataNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ImageIconDataNGTest extends ConstellationTest {
     
     public ImageIconDataNGTest() {
     }

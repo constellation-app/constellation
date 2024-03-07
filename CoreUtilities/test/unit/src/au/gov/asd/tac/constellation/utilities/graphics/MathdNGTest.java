@@ -25,7 +25,8 @@ import org.testng.annotations.BeforeClass;
 /**
  * @author groombridge34a
  */
-public class MathdNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class MathdNGTest extends ConstellationTest {
     
     private static final double D1 = 1.23D;
     private static final double D2 = 3.21D;

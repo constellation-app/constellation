@@ -90,7 +90,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class DataAccessTabPaneNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DataAccessTabPaneNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(DataAccessTabPaneNGTest.class.getName());
     private static final String newStepCaption = "New Caption - Step 1";
     

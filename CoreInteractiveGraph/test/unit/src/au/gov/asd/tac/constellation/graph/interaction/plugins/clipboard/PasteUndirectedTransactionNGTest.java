@@ -23,7 +23,8 @@ import org.testng.annotations.BeforeClass;
  *
  * @author algol
  */
-public class PasteUndirectedTransactionNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class PasteUndirectedTransactionNGTest extends ConstellationTest {
 
     public PasteUndirectedTransactionNGTest() {
     }

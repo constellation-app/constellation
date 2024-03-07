@@ -40,7 +40,8 @@ import org.testng.annotations.Test;
  *
  * @author altair
  */
-public class HopHalfNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class HopHalfNGTest extends ConstellationTest {
 
     private int attrX, attrY, attrZ;
     private int vxId1, vxId2, vxId3, vxId4, vxId5, vxId6, vxId7;

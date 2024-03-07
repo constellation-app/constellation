@@ -29,7 +29,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class HyperlinkAttributeInteractionNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class HyperlinkAttributeInteractionNGTest extends ConstellationTest {
     
     public HyperlinkAttributeInteractionNGTest() {
     }

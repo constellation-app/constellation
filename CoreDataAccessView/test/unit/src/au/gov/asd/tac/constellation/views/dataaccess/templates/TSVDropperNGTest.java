@@ -45,7 +45,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class TSVDropperNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class TSVDropperNGTest extends ConstellationTest {
 
     /**
      * Test of drop method, of class TSVDropper.

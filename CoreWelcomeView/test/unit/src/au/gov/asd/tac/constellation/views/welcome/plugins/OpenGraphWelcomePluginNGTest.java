@@ -31,7 +31,8 @@ import org.testng.annotations.Test;
  *
  * @author Delphinus8821
  */
-public class OpenGraphWelcomePluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class OpenGraphWelcomePluginNGTest extends ConstellationTest {
 
     private static final Logger LOGGER = Logger.getLogger(OpenGraphWelcomePluginNGTest.class.getName());
 

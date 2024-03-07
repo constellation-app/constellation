@@ -40,7 +40,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class QualityControlAutoVetterNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class QualityControlAutoVetterNGTest extends ConstellationTest {
 
     private Graph graph;
 

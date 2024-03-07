@@ -32,7 +32,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class MultiChoiceParameterTypeNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class MultiChoiceParameterTypeNGTest extends ConstellationTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {

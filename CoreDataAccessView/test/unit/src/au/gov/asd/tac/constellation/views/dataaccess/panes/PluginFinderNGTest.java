@@ -51,7 +51,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class PluginFinderNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class PluginFinderNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(PluginFinderNGTest.class.getName());
 
     private final QueryPhasePane queryPhasePane = mock(QueryPhasePane.class);

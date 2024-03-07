@@ -47,7 +47,8 @@ import org.testng.annotations.Test;
  *
  * @author aldebaran30701
  */
-public class VisualManagerNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class VisualManagerNGTest extends ConstellationTest {
     
     public VisualManagerNGTest() {
     }

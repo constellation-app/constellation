@@ -61,7 +61,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class CompareGraphPluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class CompareGraphPluginNGTest extends ConstellationTest {
 
     public static final ConstellationColor ADDED_COLOR = ConstellationColor.DARK_GREEN;
     public static final ConstellationColor REMOVED_COLOR = ConstellationColor.RED;

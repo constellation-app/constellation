@@ -34,7 +34,8 @@ import org.testng.annotations.Test;
  *
  * @author cygnus_x-1
  */
-public class EccentricityPluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class EccentricityPluginNGTest extends ConstellationTest {
 
     private int vertexEccentricityAttribute;
     private int vxId0, vxId1, vxId2, vxId3, vxId4;

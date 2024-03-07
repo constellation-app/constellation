@@ -33,7 +33,8 @@ import org.testng.annotations.Test;
  *
  * @author sirius
  */
-public class UpdateNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class UpdateNGTest extends ConstellationTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {

@@ -31,7 +31,8 @@ import org.testng.annotations.Test;
  *
  * @author Atlas139mkm
  */
-public class StringParameterTypeNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class StringParameterTypeNGTest extends ConstellationTest {
 
     public StringParameterTypeNGTest() {
     }

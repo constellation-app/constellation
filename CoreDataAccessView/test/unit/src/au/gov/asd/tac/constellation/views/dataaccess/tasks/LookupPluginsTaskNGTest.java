@@ -44,7 +44,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class LookupPluginsTaskNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class LookupPluginsTaskNGTest extends ConstellationTest {
 
     private Lookup defaultLookup;
     private static MockedStatic<Lookup> lookupMockedStatic;

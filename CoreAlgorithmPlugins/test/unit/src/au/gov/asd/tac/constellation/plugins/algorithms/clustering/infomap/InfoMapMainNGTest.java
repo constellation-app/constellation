@@ -37,7 +37,8 @@ import org.testng.annotations.Test;
  *
  * @author algol
  */
-public class InfoMapMainNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class InfoMapMainNGTest extends ConstellationTest {
 
     public InfoMapMainNGTest() {
     }

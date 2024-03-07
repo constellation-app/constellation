@@ -24,7 +24,8 @@ import org.testng.annotations.Test;
 /**
  * @author groombridge34a
  */
-public class ImmutableObjectCacheNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ImmutableObjectCacheNGTest extends ConstellationTest {
     
     private static final String TO_STRING_PREFIX = "ImmutableObjectCache[entries = ";
     

@@ -68,7 +68,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class ActiveTableReferenceNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ActiveTableReferenceNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(ActiveTableReferenceNGTest.class.getName());
 
     private SortedList<ObservableList<String>> sortedRowList;

@@ -44,7 +44,8 @@ import org.testng.annotations.Test;
  *
  * @author serpens24
  */
-public class CameraIOProviderNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class CameraIOProviderNGTest extends ConstellationTest {
 
     // Create object under test
     CameraIOProvider instance;

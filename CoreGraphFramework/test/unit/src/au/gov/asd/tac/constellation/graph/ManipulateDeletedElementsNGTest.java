@@ -24,7 +24,8 @@ import org.testng.annotations.Test;
  *
  * @author cygnus_x-1
  */
-public class ManipulateDeletedElementsNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ManipulateDeletedElementsNGTest extends ConstellationTest {
 
     @Test
     public void setIndexedAttributeValueOfDeletedVertexTest() {

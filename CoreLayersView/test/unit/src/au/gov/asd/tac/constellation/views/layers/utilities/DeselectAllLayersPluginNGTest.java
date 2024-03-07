@@ -33,7 +33,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaut69
  */
-public class DeselectAllLayersPluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DeselectAllLayersPluginNGTest extends ConstellationTest {
 
     private int layerMaskV, layerMaskT, layerVisibilityV, layerVisibilityT;
     private StoreGraph graph;

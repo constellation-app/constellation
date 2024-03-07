@@ -29,7 +29,8 @@ import org.testng.annotations.Test;
  *
  * @author algol
  */
-public class ZonedDateTimeAttributeDescriptionNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ZonedDateTimeAttributeDescriptionNGTest extends ConstellationTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {

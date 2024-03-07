@@ -29,7 +29,8 @@ import org.testng.annotations.Test;
  *
  * @author Delphinus8821
  */
-public class AnalyticTranslatorUtilitiesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class AnalyticTranslatorUtilitiesNGTest extends ConstellationTest {
     
     public AnalyticTranslatorUtilitiesNGTest() {
     }

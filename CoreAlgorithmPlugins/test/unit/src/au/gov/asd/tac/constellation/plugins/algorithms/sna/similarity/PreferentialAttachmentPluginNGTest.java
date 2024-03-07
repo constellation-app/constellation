@@ -35,7 +35,8 @@ import org.testng.annotations.Test;
  *
  * @author canis_majoris
  */
-public class PreferentialAttachmentPluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class PreferentialAttachmentPluginNGTest extends ConstellationTest {
 
     private int transactionPAAttribute, vertexSelectedAttribute;
     private int vxId0, vxId1, vxId2, vxId3, vxId4;

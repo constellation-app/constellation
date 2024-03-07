@@ -24,7 +24,8 @@ import org.testng.annotations.Test;
 /**
  * @author groombridge34a
  */
-public class Vector3fNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class Vector3fNGTest extends ConstellationTest {
 
     private static final float F1 = 123F;
     private static final float F2 = 321F;

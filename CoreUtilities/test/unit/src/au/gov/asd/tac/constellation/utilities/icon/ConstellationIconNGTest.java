@@ -40,7 +40,8 @@ import org.testng.annotations.Test;
  * @author Delphinus8821
  * @author capricornunicorn123
  */
-public class ConstellationIconNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ConstellationIconNGTest extends ConstellationTest {
 
     private static ConstellationIcon testIcon;
     private final static List<String> aliases = new ArrayList<>();

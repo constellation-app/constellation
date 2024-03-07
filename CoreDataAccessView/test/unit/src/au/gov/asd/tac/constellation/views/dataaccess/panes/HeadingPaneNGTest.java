@@ -44,7 +44,8 @@ import org.testng.annotations.Test;
  *
  * @author Auriga2
  */
-public class HeadingPaneNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class HeadingPaneNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(HeadingPaneNGTest.class.getName());
 
     private static MockedStatic<DataAccessPreferenceUtilities> dataAccessPreferenceUtilitiesMockedStatic;

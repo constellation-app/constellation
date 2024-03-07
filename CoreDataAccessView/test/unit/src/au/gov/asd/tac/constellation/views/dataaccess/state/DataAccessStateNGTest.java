@@ -29,7 +29,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class DataAccessStateNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DataAccessStateNGTest extends ConstellationTest {
 
     private DataAccessState dataAccessState;
 

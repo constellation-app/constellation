@@ -29,7 +29,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class GraphRecordStoreNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class GraphRecordStoreNGTest extends ConstellationTest {
 
     public GraphRecordStoreNGTest() {
     }

@@ -39,7 +39,8 @@ import org.testng.annotations.Test;
  *
  * @author serpens24
  */
-public class ShortObjectIOProviderNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ShortObjectIOProviderNGTest extends ConstellationTest {
 
     // Create object under test
     ShortObjectIOProvider instance;

@@ -30,7 +30,8 @@ import org.testng.annotations.Test;
  *
  * @author Delphinus8821
  */
-public class SelectionModeWelcomePluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class SelectionModeWelcomePluginNGTest extends ConstellationTest {
 
     private static final Logger LOGGER = Logger.getLogger(SelectionModeWelcomePluginNGTest.class.getName());
 

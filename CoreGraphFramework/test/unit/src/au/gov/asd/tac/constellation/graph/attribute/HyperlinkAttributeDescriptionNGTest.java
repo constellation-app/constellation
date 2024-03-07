@@ -32,7 +32,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class HyperlinkAttributeDescriptionNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class HyperlinkAttributeDescriptionNGTest extends ConstellationTest {
 
     HyperlinkAttributeDescription instance;
 

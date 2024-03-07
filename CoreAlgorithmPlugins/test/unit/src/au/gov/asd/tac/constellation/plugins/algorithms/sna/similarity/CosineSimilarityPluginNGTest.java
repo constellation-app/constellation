@@ -35,7 +35,8 @@ import org.testng.annotations.Test;
  *
  * @author cygnus_x-1
  */
-public class CosineSimilarityPluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class CosineSimilarityPluginNGTest extends ConstellationTest {
 
     private int transactionCosineAttribute, vertexSelectedAttribute, transactionIdentifier;
     private int vxId0, vxId1, vxId2, vxId3, vxId4;

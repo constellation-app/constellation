@@ -35,7 +35,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class UpdateTableSelectionTaskNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class UpdateTableSelectionTaskNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(UpdateTableSelectionTaskNGTest.class.getName());
 
     @BeforeClass

@@ -34,7 +34,8 @@ import org.testng.annotations.Test;
  *
  * @author canis_majorus
  */
-public class LevenshteinDistancePluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class LevenshteinDistancePluginNGTest extends ConstellationTest {
 
     private StoreGraph graph;
 

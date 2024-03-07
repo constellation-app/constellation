@@ -27,7 +27,8 @@ import org.testng.annotations.Test;
  *
  * @author altair1673
  */
-public class ImportSingletonNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ImportSingletonNGTest extends ConstellationTest {
 
     public ImportSingletonNGTest() {
     }

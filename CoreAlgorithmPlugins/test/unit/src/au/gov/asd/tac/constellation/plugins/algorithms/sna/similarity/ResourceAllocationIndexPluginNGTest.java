@@ -35,7 +35,8 @@ import org.testng.annotations.Test;
  *
  * @author canis_majoris
  */
-public class ResourceAllocationIndexPluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ResourceAllocationIndexPluginNGTest extends ConstellationTest {
 
     private int transactionRaiAttribute, vertexSelectedAttribute;
     private int vxId0, vxId1, vxId2, vxId3, vxId4;

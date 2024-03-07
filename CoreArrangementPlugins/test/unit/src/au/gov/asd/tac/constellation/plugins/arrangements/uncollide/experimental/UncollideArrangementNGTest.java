@@ -24,7 +24,8 @@ import org.testng.annotations.Test;
  *
  * @author Nova
  */
-public class UncollideArrangementNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class UncollideArrangementNGTest extends ConstellationTest {
 
     /**
      * Test of arrange method, of class UncollideArrangement.

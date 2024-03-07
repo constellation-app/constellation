@@ -65,7 +65,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class QueryPhasePaneNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class QueryPhasePaneNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(QueryPhasePaneNGTest.class.getName());
 
     private MenuItem item1;

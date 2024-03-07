@@ -29,7 +29,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class LeadNodeSelectionDialogNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class LeadNodeSelectionDialogNGTest extends ConstellationTest {
 
     @Test
     public void selectedRows() throws InterruptedException {

@@ -30,7 +30,8 @@ import org.testng.annotations.Test;
  *
  * @author aldebaran30701
  */
-public class ExpressionParserNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ExpressionParserNGTest extends ConstellationTest {
 
     public ExpressionParserNGTest() {
     }

@@ -29,7 +29,8 @@ import org.testng.annotations.Test;
  *
  * @author algol
  */
-public class BBoxNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class BBoxNGTest extends ConstellationTest {
 
     public BBoxNGTest() {
     }

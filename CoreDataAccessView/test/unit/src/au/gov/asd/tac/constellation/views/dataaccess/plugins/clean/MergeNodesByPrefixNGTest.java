@@ -47,7 +47,8 @@ import org.testng.annotations.Test;
  *
  * @author sol695510
  */
-public class MergeNodesByPrefixNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class MergeNodesByPrefixNGTest extends ConstellationTest {
 
     private Schema schema;
     private StoreGraph graph;

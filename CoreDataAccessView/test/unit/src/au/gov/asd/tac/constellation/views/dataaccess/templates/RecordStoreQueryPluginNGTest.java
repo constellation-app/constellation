@@ -42,7 +42,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class RecordStoreQueryPluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class RecordStoreQueryPluginNGTest extends ConstellationTest {
 
     /**
      * Test of getResult method, of class RecordStoreQueryPlugin.

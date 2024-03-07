@@ -40,7 +40,8 @@ import org.testng.annotations.Test;
  *
  * @author Atlas139mkm
  */
-public class AdvancedSearchParametersNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class AdvancedSearchParametersNGTest extends ConstellationTest {
 
     private AdvancedSearchParameters paramatersOne;
     private AdvancedSearchParameters paramatersTwo;

@@ -37,7 +37,8 @@ import org.testng.annotations.Test;
  *
  * @author sol695510
  */
-public class IconChooserNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class IconChooserNGTest extends ConstellationTest {
 
     public IconChooserNGTest() {
     }

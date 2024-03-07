@@ -27,7 +27,8 @@ import org.testng.annotations.Test;
  * 
  * @author capricornunicorn123
  */
-public class SVGTemplateConstantsNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class SVGTemplateConstantsNGTest extends ConstellationTest {
     
     public SVGTemplateConstantsNGTest() {
     }
