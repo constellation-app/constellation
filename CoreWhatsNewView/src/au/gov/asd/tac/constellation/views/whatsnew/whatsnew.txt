@@ -2,7 +2,7 @@
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
 == 2024-02-29 Spell checking in Constellation
-<p>Spell checking in now available in text areas of Constellation. E.g. Data access view (Extract Types and Extract Words Plugins). It can be added in other text areas as requested.</p>
+<p>Spell checking is available in text areas of Constellation. E.g. Data access view (Extract Types and Extract Words Plugins). It can be added in other text areas as requested.</p>
 <p>When enabled, incorrect spellings and some grammar errors are highlighted and underlined. 
 Left Clicking on a highlighted word/phrase will popup a suggestions list to choose from. An "Ignore All" button is available for spelling errors which will ignore the same error in the current text area.</p>
 <p>Constellation Option "Enable spell checking in specified text areas" (Enabled by default) is used to enable/disable spell checking. 

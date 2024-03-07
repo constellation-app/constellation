@@ -76,7 +76,7 @@ public final class SpellChecker {
                 langToolStatic = new MultiThreadedJLanguageTool(language);
                 try {
                     //perform a check here to prevent the spell checking being too slow at the first word after loading costy
-                    List<RuleMatch> initMatches = langToolStatic.check("random text");
+                    final List<RuleMatch> initMatches = langToolStatic.check("random text");
                 } catch (final IOException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                 }
@@ -166,10 +166,9 @@ public final class SpellChecker {
                 }
 
                 suggestions.setItems(suggestionsList.size() > 5 ? FXCollections.observableArrayList(suggestionsList.subList(0, 5)) : suggestionsList);
-                Button ignoreButton = new Button("Ignore All");
-                VBox popupContent = new VBox(); //StackPane();
+                final Button ignoreButton = new Button("Ignore All");
+                final VBox popupContent = new VBox();
                 ignoreButton.setOnAction(e -> this.addWordsToIgnore());
-
                 suggestions.setPrefHeight(POPUP_HEIGHT);
 
                 popup.getContent().clear();
