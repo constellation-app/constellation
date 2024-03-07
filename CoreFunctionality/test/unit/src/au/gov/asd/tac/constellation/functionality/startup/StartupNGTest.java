@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.functionality.startup;
 import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
 import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
-import au.gov.asd.tac.constellation.utilities.testing.TestListener;
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTestListener;
 import javax.swing.JFrame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.isNull;
@@ -36,7 +36,7 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-@Listeners(TestListener.class)
+@Listeners(ConstellationTestListener.class)
 public class StartupNGTest {
 
     @Test

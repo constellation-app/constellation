@@ -20,7 +20,7 @@ import au.gov.asd.tac.constellation.utilities.file.autosave.AutosaveUtilities;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
-import au.gov.asd.tac.constellation.utilities.testing.TestListener;
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTestListener;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlEvent;
 import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlEvent.QualityCategory;
@@ -46,7 +46,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
-@Listeners(TestListener.class)
+@Listeners(ConstellationTestListener.class)
 public class DefaultQualityControlAutoButtonNGTest {
     private static final Logger LOGGER = Logger.getLogger(DefaultQualityControlAutoButtonNGTest.class.getName());
 

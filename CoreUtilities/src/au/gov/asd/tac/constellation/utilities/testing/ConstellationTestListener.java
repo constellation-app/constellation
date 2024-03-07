@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.utilities.testing;
 import au.gov.asd.tac.constellation.utilities.file.autosave.AutosaveUtilities;
 import java.awt.GraphicsEnvironment;
 import java.io.File;
+import org.testfx.api.FxToolkit;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
@@ -26,7 +27,7 @@ import org.testng.ITestResult;
  * A class that can be used to debug testing environments
  * @author capricornunicorn123
  */
-public class TestListener implements ITestListener {
+public class ConstellationTestListener implements ITestListener {
 
     @Override
     public void onTestStart(ITestResult arg0) {
@@ -58,7 +59,10 @@ public class TestListener implements ITestListener {
     @Override
     public void onStart(ITestContext arg0) {
         System.out.println(String.format("onStart, Environment is headless: %s", GraphicsEnvironment.isHeadless()));
-                File dir = AutosaveUtilities.getAutosaveDir();
+        
+        System.out.println(String.format("onFinnish, is FX Application Thread Running:", FxToolkit.isFXApplicationThreadRunning()));
+        
+        File dir = AutosaveUtilities.getAutosaveDir();
         if (dir != null){
             File[] files = dir.listFiles();
             if (files.length > 0){
@@ -73,7 +77,10 @@ public class TestListener implements ITestListener {
     @Override
     public void onFinish(ITestContext arg0) {
         System.out.println(String.format("onFinnish, Environment is headless: %s", GraphicsEnvironment.isHeadless()));
-                File dir = AutosaveUtilities.getAutosaveDir();
+        
+        System.out.println(String.format("onFinnish, is FX Application Thread Running:", FxToolkit.isFXApplicationThreadRunning()));
+        
+        File dir = AutosaveUtilities.getAutosaveDir();
         if (dir != null){
             File[] files = dir.listFiles();
             if (files.length > 0){

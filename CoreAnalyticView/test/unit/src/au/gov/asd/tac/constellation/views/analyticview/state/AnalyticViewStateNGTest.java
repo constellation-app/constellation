@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.analyticview.state;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTestListener;
 import au.gov.asd.tac.constellation.views.analyticview.AnalyticConfigurationPane;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestion;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestionDescription;
@@ -40,6 +41,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 /**
@@ -47,6 +49,7 @@ import org.testng.annotations.Test;
  * 
  * @author Delphinus8821
  */
+@Listeners(ConstellationTestListener.class)
 public class AnalyticViewStateNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(AnalyticViewStateNGTest.class.getName());
