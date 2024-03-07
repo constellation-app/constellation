@@ -72,9 +72,9 @@ public class DefaultQualityControlAutoButtonNGTest {
 //        Arrays.stream(AutosaveUtilities.getAutosaves(FileExtensionConstants.STAR_AUTOSAVE))
 //                .forEach(file -> file.delete());
 //
-//        if (!FxToolkit.isFXApplicationThreadRunning()) {
-//            FxToolkit.registerPrimaryStage();
-//        }
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
