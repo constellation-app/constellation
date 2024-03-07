@@ -58,9 +58,9 @@ public class ConstellationTestListener implements ITestListener {
 
     @Override
     public void onStart(ITestContext arg0) {
-        System.out.println(String.format("onStart, Environment is headless: %s", GraphicsEnvironment.isHeadless()));
+        System.out.println(String.format("onStart of %s, Environment is headless: %s", arg0.getClass(), GraphicsEnvironment.isHeadless()));
         
-        System.out.println(String.format("onStart, is FX Application Thread Running: %s", FxToolkit.isFXApplicationThreadRunning()));
+        System.out.println(String.format("onStart of %s, is FX Application Thread Running: %s", arg0.getClass(), FxToolkit.isFXApplicationThreadRunning()));
         
         File dir = AutosaveUtilities.getAutosaveDir();
         if (dir != null){
@@ -76,9 +76,9 @@ public class ConstellationTestListener implements ITestListener {
 
     @Override
     public void onFinish(ITestContext arg0) {
-        System.out.println(String.format("onFinnish, Environment is headless: %s", GraphicsEnvironment.isHeadless()));
+        System.out.println(String.format("onFinnish of %s, Environment is headless: %s", arg0.getClass(), GraphicsEnvironment.isHeadless()));
         
-        System.out.println(String.format("onFinnish, is FX Application Thread Running: %s", FxToolkit.isFXApplicationThreadRunning()));
+        System.out.println(String.format("onFinnish of %s, is FX Application Thread Running: %s", arg0.getClass(), FxToolkit.isFXApplicationThreadRunning()));
         
         File dir = AutosaveUtilities.getAutosaveDir();
         if (dir != null){
