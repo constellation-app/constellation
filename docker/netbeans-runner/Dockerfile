@@ -1,7 +1,7 @@
 FROM ubuntu:bionic
 
 LABEL \
-  IMAGE="netbeans-runner:21" \
+  IMAGE="netbeans-runner:12" \
   SOURCE="ubuntu:bionic"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]

@@ -10,7 +10,7 @@ build() {
 }
 
 images=(
-  "Dockerfile=21"
+  "Dockerfile=12"
 )
 
 for image in "${images[@]}"; do
