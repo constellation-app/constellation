@@ -91,7 +91,7 @@ public class ExportToSVGActionNGTest {
         doReturn(pluginExecutionMock).when(pluginExecutionMock).withParameter(any(String.class), any(String.class));
         doReturn(pluginExecutionMock).when(pluginExecutionMock).withParameter(any(String.class), anyBoolean());
         doReturn(pluginExecutionMock).when(pluginExecutionMock).withParameter(any(String.class), any(ConstellationColor.class));
-        doReturn(pluginExecutionMock).when(pluginExecutionMock).interactively(anyBoolean());
+        doReturn(pluginExecutionMock).when(pluginExecutionMock).interactively(anyBoolean(), any(String.class));
         doReturn(graphMock).when(contextMock).getGraph();
         doReturn(readableGraphMock).when(graphMock).getReadableGraph();
         
@@ -142,7 +142,7 @@ public class ExportToSVGActionNGTest {
         final ExportToSVGAction instance = new ExportToSVGAction(contextMock);
         final ActionEvent e = null;
 
-        doReturn(2).when(readableGraphMock).getVertexCount();
+        doReturn(6000).when(readableGraphMock).getVertexCount();
 
         instance.actionPerformed(e);
         

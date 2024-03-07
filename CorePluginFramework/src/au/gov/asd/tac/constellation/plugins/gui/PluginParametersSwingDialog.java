@@ -17,8 +17,13 @@ package au.gov.asd.tac.constellation.plugins.gui;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
@@ -29,9 +34,17 @@ import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javax.swing.JButton;
+import javax.swing.UIManager;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -54,7 +67,9 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
     private final String[] acceptanceButtonLabels = {"OK", "Import", "Export", "Save", "Open", "Build", "Create", "Load", "Rename", "Add", "Remove"};
     public static final String CANCEL = "Cancel";
     public static final String OK = "OK";
-
+    public static final Image WARNING_IMAGE = UserInterfaceIconProvider.WARNING.buildImage(ConstellationColor.DARK_ORANGE.getJavaColor());
+    public static final int PREFERED_WIDTH = 500;
+    
     private volatile String result;
     private final String title;
     private final JFXPanel xp;
@@ -73,7 +88,7 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
      * @param parameters The plugin parameters.
      */
     public PluginParametersSwingDialog(final String title, final PluginParameters parameters) {
-        this(title, parameters, null, null, null);
+        this(title, parameters, null, null, null, null);
     }
 
     /**
@@ -89,7 +104,7 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
      * box.
      */
     public PluginParametersSwingDialog(final String title, final PluginParameters parameters, final Set<String> excludedParameters) {
-        this(title, parameters, excludedParameters, null, null);
+        this(title, parameters, excludedParameters, null, null, null);
     }
 
     /**
@@ -104,7 +119,22 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
      * @param helpID The JavaHelp ID of the help.
      */
     public PluginParametersSwingDialog(final String title, final PluginParameters parameters, final String helpID) {
-        this(title, parameters, null, null, helpID);
+        this(title, parameters, null, null, null, helpID);
+    }
+    
+        /**
+     * Display a dialog box containing the parameters that allows the user to
+     * enter values.
+     * <p>
+     * Acceptance Button displayed as "OK" or "Import" or "Export" or "Save" or "Open" or "Build" or "Create" or "Load" or "Rename"
+     * Rejection Button displayed as "Cancel".
+     *
+     * @param title The dialog box title.
+     * @param parameters The plugin parameters.
+     * @param helpID The JavaHelp ID of the help.
+     */
+    public PluginParametersSwingDialog(final String title, final PluginParameters parameters, final String disclaimer, final String helpID) {
+        this(title, parameters, null, null, disclaimer, helpID);
     }
 
     /**
@@ -119,22 +149,57 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
      * @param excludedParameters Plugin parameters to exclude from the dialog
      * box.
      * @param acceptanceText acceptance Button text
+     * @param disclaimer
      * @param helpID The JavaHelp ID of the help.
      */
-    public PluginParametersSwingDialog(final String title, final PluginParameters parameters, final Set<String> excludedParameters, final String acceptanceText, final String helpID) {
+    public PluginParametersSwingDialog(final String title, final PluginParameters parameters, final Set<String> excludedParameters, final String acceptanceText, final String disclaimer, final String helpID) {
         this.title = title;
         this.acceptanceOption = new JButton(getAcceptanceButton(acceptanceText));
         final CountDownLatch latch = new CountDownLatch(1);
         xp = helpID != null ? new JFXPanelWithHelp(helpID) : new JFXPanel();
         Platform.runLater(() -> {
+            
+            // Create the panes
             final BorderPane root = new BorderPane();
-            root.setPadding(new Insets(10));
-
-            // Attempt to give the window a sensible width and/or height.
-            root.setMinWidth(500);
-
+            final ScrollPane scrollableContent = new ScrollPane();
             final PluginParametersPane parametersPane = PluginParametersPane.buildPane(parameters, this, excludedParameters);
-            root.setCenter(parametersPane);
+            final HBox disclaimerPane = new HBox();
+            
+            // Style the panes
+            root.setMinWidth(PREFERED_WIDTH); /// Ensures parameters are not compressed too small
+            scrollableContent.setFitToWidth(true);  // Encourages verticle scrolling only
+            parametersPane.setPadding(new Insets(10)); //Padding makes the lyout more readable
+            final Color optionsPanelColor = UIManager.getLookAndFeel().getDefaults().getColor("OptionPane.background");
+            disclaimerPane.setStyle(String.format("-fx-background-color: #%06X;", 0xFFFFFF & optionsPanelColor.getRGB()));
+            
+            // Conditionaly style the disclaimer pane.
+            if (StringUtils.isNotBlank(disclaimer)){
+                
+                // The text for the disclaimer
+                final Label disclaimerText = new Label(disclaimer);
+                final Font font = FontUtilities.getOutputFont();
+                disclaimerText.setWrapText(true);
+                disclaimerText.setStyle("-fx-font-style: italic; -fx-font-family: " + font.getFamily());
+                
+                // The icon for the disclaimer
+                final ImageView iv = new ImageView(WARNING_IMAGE);
+                iv.setFitHeight(50);
+                iv.setPreserveRatio(true);
+                final VBox icon = new VBox(iv);
+                icon.setPadding(new Insets(0, 20, 0, 20));
+                
+                // Style the disclaimer
+                disclaimerPane.getChildren().addAll(icon, disclaimerText);
+                disclaimerPane.setAlignment(Pos.CENTER_LEFT);
+                disclaimerPane.setPadding(new Insets(10, 0, 0, 0));
+                disclaimerPane.setPrefWidth(PREFERED_WIDTH); // The root width has been set based on the ParameterPane and we want to keep it that way.
+            }     
+            
+            //Construct the pane
+            root.setCenter(scrollableContent);
+            scrollableContent.setContent(parametersPane);
+            root.setBottom(disclaimerPane);
+            
             final Scene scene = new Scene(root);
             scene.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
 
