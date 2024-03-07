@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.utilities.gui;
 
 import java.awt.EventQueue;
+import java.awt.GraphicsEnvironment;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
@@ -78,7 +79,7 @@ public class NotifyDisplayerNGTest {
         // TODO: This test throws errors in headless due to 
         // the implementation of the NotifyDisplayer.display(NotifyDescriptor).
         // See the NotifyDisplayer.display(NotifyDescriptor) method for information on OS compatability issues.
-        if (!Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty("java.awt.headless"))){
+        if (!GraphicsEnvironment.isHeadless()) {
             //Tests throw errors in headless
             display(true, true, true);
             display(true, false, true);
@@ -92,7 +93,7 @@ public class NotifyDisplayerNGTest {
         // TODO: This test throws errors in headless due to 
         // the implementation of the NotifyDisplayer.display(String, Icon, String).
         // See the NotifyDisplayer.display(String, Icon, String) method for information on OS compatability issues.
-        if (!Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty("java.awt.headless"))){
+       if (!GraphicsEnvironment.isHeadless()) {
             displayWithIcon(true, true, true);
             displayWithIcon(true, false, true);
             displayWithIcon(false, true, true);
