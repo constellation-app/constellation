@@ -15,7 +15,9 @@
  */
 package au.gov.asd.tac.constellation.utilities.testing;
 
+import au.gov.asd.tac.constellation.utilities.file.autosave.AutosaveUtilities;
 import java.awt.GraphicsEnvironment;
+import java.io.File;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
@@ -28,18 +30,18 @@ public class TestListener implements ITestListener {
 
     @Override
     public void onTestStart(ITestResult arg0) {
-        System.out.println(String.format("onTestStart, Environment is headless: %s", !GraphicsEnvironment.isHeadless()));
+        System.out.println(String.format("onTestStart, Environment is headless: %s", GraphicsEnvironment.isHeadless()));
     }
 
     @Override
     public void onTestSuccess(ITestResult arg0) {
-                System.out.println(String.format("onTestSuccess, Environment is headless: %s", !GraphicsEnvironment.isHeadless()));
+                System.out.println(String.format("onTestSuccess, Environment is headless: %s", GraphicsEnvironment.isHeadless()));
         //
     }
 
     @Override
     public void onTestFailure(ITestResult arg0) {
-        System.out.println(String.format("onTestFailure, Environment is headless: %s", !GraphicsEnvironment.isHeadless()));
+        System.out.println(String.format("onTestFailure, Environment is headless: %s", GraphicsEnvironment.isHeadless()));
         //
     }
 
@@ -55,12 +57,32 @@ public class TestListener implements ITestListener {
 
     @Override
     public void onStart(ITestContext arg0) {
-        System.out.println(String.format("onStart, Environment is headless: %s", !GraphicsEnvironment.isHeadless()));
+        System.out.println(String.format("onStart, Environment is headless: %s", GraphicsEnvironment.isHeadless()));
+                File dir = AutosaveUtilities.getAutosaveDir();
+        if (dir != null){
+            File[] files = dir.listFiles();
+            if (files.length > 0){
+                System.out.println(String.format("Files Found in Dir: %s", dir.getAbsolutePath()));
+                for (File file : files){
+                    System.out.println(file.getAbsolutePath());
+                }
+            }
+        }
     }
 
     @Override
     public void onFinish(ITestContext arg0) {
-        System.out.println(String.format("onFinnish, Environment is headless: %s", !GraphicsEnvironment.isHeadless()));
+        System.out.println(String.format("onFinnish, Environment is headless: %s", GraphicsEnvironment.isHeadless()));
+                File dir = AutosaveUtilities.getAutosaveDir();
+        if (dir != null){
+            File[] files = dir.listFiles();
+            if (files.length > 0){
+                System.out.println(String.format("Files Found in Dir: %s", dir.getAbsolutePath()));
+                for (File file : files){
+                    System.out.println(file.getAbsolutePath());
+                }
+            }
+        }
     }
     
 }
