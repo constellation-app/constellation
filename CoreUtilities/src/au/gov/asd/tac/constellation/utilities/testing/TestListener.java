@@ -13,7 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
  */
-package au.gov.asd.tac.constellation.testing;
+package au.gov.asd.tac.constellation.utilities.testing;
 
 import java.awt.GraphicsEnvironment;
 import org.testng.ITestContext;
@@ -28,16 +28,18 @@ public class TestListener implements ITestListener {
 
     @Override
     public void onTestStart(ITestResult arg0) {
-        System.out.println(String.format("Environment is headless: %s", !GraphicsEnvironment.isHeadless()));
+        System.out.println(String.format("onTestStart, Environment is headless: %s", !GraphicsEnvironment.isHeadless()));
     }
 
     @Override
     public void onTestSuccess(ITestResult arg0) {
+                System.out.println(String.format("onTestSuccess, Environment is headless: %s", !GraphicsEnvironment.isHeadless()));
         //
     }
 
     @Override
     public void onTestFailure(ITestResult arg0) {
+        System.out.println(String.format("onTestFailure, Environment is headless: %s", !GraphicsEnvironment.isHeadless()));
         //
     }
 
@@ -53,12 +55,12 @@ public class TestListener implements ITestListener {
 
     @Override
     public void onStart(ITestContext arg0) {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.println(String.format("onStart, Environment is headless: %s", !GraphicsEnvironment.isHeadless()));
     }
 
     @Override
     public void onFinish(ITestContext arg0) {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.println(String.format("onFinnish, Environment is headless: %s", !GraphicsEnvironment.isHeadless()));
     }
     
 }
