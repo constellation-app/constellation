@@ -81,7 +81,8 @@ public class WordCloudPane extends BorderPane {
 
     private final ProgressIndicator spinner = new ProgressIndicator();
     private final WordCloudParametersPane paramPane;
-
+    private final ScrollPane sPane;
+    
     private static final int CONTENT_SPACING = 25;
     private static final int CLOUD_SPACING = 5;
     private static final int CLOUD_HEIGHT = 400;
@@ -221,7 +222,15 @@ public class WordCloudPane extends BorderPane {
 
         // Create the pane allowing the word cloud analytic to be run
         paramPane = new WordCloudParametersPane(this);
-        content.getChildren().add(paramPane);
+        sPane = new ScrollPane();
+        // This makes scroll wheel appear, try to get it to only appear when pane is going off the bottom of window
+        sPane.setMinHeight(CLOUD_HEIGHT);
+        sPane.setContent(paramPane);
+        sPane.setFitToWidth(true);
+        sPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        //content.getChildren().add(paramPane);
+        content.getChildren().add(sPane);
+        
         everything.getChildren().add(content);
         everything.getChildren().add(tipsPane);
 
