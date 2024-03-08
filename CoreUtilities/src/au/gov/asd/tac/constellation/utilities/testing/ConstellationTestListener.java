@@ -33,60 +33,48 @@ public class ConstellationTestListener implements ITestListener {
     //Called prior to test start up.
     @Override
     public void onTestStart(ITestResult arg0) {
-        System.out.println(String.format("ON TEST START onTestStart of test: %s, Environment is headless: %s", arg0.getName(), GraphicsEnvironment.isHeadless()));
+        logStuffForMe("onTestStart", arg0.getName());
     }
 
     @Override
     public void onTestSuccess(ITestResult arg0) {
-                System.out.println(String.format("onTestSuccess, Environment is headless: %s", GraphicsEnvironment.isHeadless()));
-        //
+        logStuffForMe("onTestSuccess", arg0.getName());
     }
 
     @Override
     public void onTestFailure(ITestResult arg0) {
-        System.out.println(String.format("onTestFailure, Environment is headless: %s", GraphicsEnvironment.isHeadless()));
-        //
+        logStuffForMe("onTestFailure", arg0.getName());
     }
 
     @Override
     public void onTestSkipped(ITestResult arg0) {
-        //
+        logStuffForMe("onTestSkipped", arg0.getName());
     }
 
     @Override
     public void onTestFailedButWithinSuccessPercentage(ITestResult arg0) {
-        //
+        logStuffForMe("onTestFailedButWithinSuccessPercentage", arg0.getName());
     }
 
     @Override
     public void onStart(ITestContext arg0) {
-        
-        System.out.println(String.format("ON START of %s, Environment is Headless: %s", arg0.getCurrentXmlTest().getClasses().stream().findFirst().get().getName(), GraphicsEnvironment.isHeadless()));
-        
-        System.out.println(String.format("ON START of %s, FX Application Thread is Running: %s", arg0.getCurrentXmlTest().getClasses().stream().findFirst().get().getName(), FxToolkit.isFXApplicationThreadRunning()));
-        
-        File dir = AutosaveUtilities.getAutosaveDir();
-        System.out.println(String.format("ON START of %s, Austosave File Count: %s", arg0.getCurrentXmlTest().getClasses().stream().findFirst().get().getName(), dir.length()));
-        if (dir != null){
-            File[] files = dir.listFiles();
-            if (files.length > 0){
-                System.out.println(String.format("Files Found in Dir: %s", dir.getAbsolutePath()));
-                for (File file : files){
-                    System.out.println(file.getAbsolutePath());
-                }
-            }
-        }
+        logStuffForMe("onStart", arg0.getCurrentXmlTest().getClasses().stream().findFirst().get().getName());
     }
 
     @Override
     public void onFinish(ITestContext arg0) {
-        System.out.println(String.format("ON FINISH of %s, Environment is Headless: %s", arg0.getCurrentXmlTest().getClasses().stream().findFirst().get().getName(), GraphicsEnvironment.isHeadless()));
+        logStuffForMe("onFinish", arg0.getCurrentXmlTest().getClasses().stream().findFirst().get().getName());
+    }
+    
+    private void logStuffForMe(final String step, final String reference){
+        System.out.println(String.format("At step %s of %s, Environment is Headless: %s", step, reference, GraphicsEnvironment.isHeadless()));
         
-        System.out.println(String.format("ON FINISH of %s, FX Application Thread is Running: %s", arg0.getCurrentXmlTest().getClasses().stream().findFirst().get().getName(), FxToolkit.isFXApplicationThreadRunning()));
+        System.out.println(String.format("At step %s of %s, FX Application Thread is Running: %s", step, reference, FxToolkit.isFXApplicationThreadRunning()));
         
         File dir = AutosaveUtilities.getAutosaveDir();
-        System.out.println(String.format("ON FINISH of %s, Austosave File Count: %s", arg0.getCurrentXmlTest().getClasses().stream().findFirst().get().getName(), dir.length()));
+        
         if (dir != null){
+            System.out.println(String.format("At step %s of %s, Austosave File Count: %s", step, reference, dir.length()));  
             File[] files = dir.listFiles();
             if (files.length > 0){
                 System.out.println(String.format("Files Found in Dir: %s", dir.getAbsolutePath()));
@@ -94,7 +82,10 @@ public class ConstellationTestListener implements ITestListener {
                     System.out.println(file.getAbsolutePath());
                 }
             }
+        } else {
+            System.out.println(String.format("At step %s of %s, Austosave Directory could not be found", step, reference)); 
         }
+        
     }
     
 }
