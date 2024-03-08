@@ -27,9 +27,8 @@ import org.testng.annotations.Test;
 /**
  *
  * @author aldebaran30701
- */
-import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
- public class TreeNodeNGTest extends ConstellationTest {
+ */ 
+ public class TreeNodeNGTest {
 
     public TreeNodeNGTest() {
     }

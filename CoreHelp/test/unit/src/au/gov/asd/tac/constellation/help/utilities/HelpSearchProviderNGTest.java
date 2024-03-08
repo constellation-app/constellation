@@ -34,8 +34,7 @@ import org.testng.annotations.Test;
  *
  * @author Delphinus8821
  */
-import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
- public class HelpSearchProviderNGTest extends ConstellationTest {
+ public class HelpSearchProviderNGTest {
 
     SearchResponse response;
     SearchRequest request;

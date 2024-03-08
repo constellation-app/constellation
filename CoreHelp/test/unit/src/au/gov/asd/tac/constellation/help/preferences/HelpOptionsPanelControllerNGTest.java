@@ -39,8 +39,8 @@ import org.testng.annotations.Test;
  *
  * @author aldebaran30701
  */
-import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
- public class HelpOptionsPanelControllerNGTest extends ConstellationTest {
+
+ public class HelpOptionsPanelControllerNGTest {
 
     Preferences prefs;
 

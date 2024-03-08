@@ -60,8 +60,8 @@ import org.testng.annotations.Test;
  *
  * @author aldebaran30701
  */
-import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
- public class ConstellationHelpDisplayerNGTest extends ConstellationTest {
+
+ public class ConstellationHelpDisplayerNGTest {
 
     public ConstellationHelpDisplayerNGTest() {
     }

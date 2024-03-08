@@ -24,14 +24,16 @@ import org.testng.ITestListener;
 import org.testng.ITestResult;
 
 /**
+ * A Test Listener that is able to simplify test creation and test debugging.
  * A class that can be used to debug testing environments
  * @author capricornunicorn123
  */
 public class ConstellationTestListener implements ITestListener {
 
+    //Called prior to test start up.
     @Override
     public void onTestStart(ITestResult arg0) {
-        System.out.println(String.format("onTestStart, Environment is headless: %s", GraphicsEnvironment.isHeadless()));
+        System.out.println(String.format("ON TEST START onTestStart of test: %s, Environment is headless: %s", arg0.getName(), GraphicsEnvironment.isHeadless()));
     }
 
     @Override
