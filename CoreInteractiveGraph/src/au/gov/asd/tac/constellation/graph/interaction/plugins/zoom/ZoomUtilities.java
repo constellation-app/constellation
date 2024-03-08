@@ -29,6 +29,10 @@ import java.util.stream.Stream;
  *
  * @author Quasar985
  */
+/**
+ * Class for shared functionality of Zoom plugins. Contains functionality for gathering parameters needed to call
+ * CameraUtiltities.zoom with what info plugins are able to access.
+ */
 public class ZoomUtilities {
 
     /**
