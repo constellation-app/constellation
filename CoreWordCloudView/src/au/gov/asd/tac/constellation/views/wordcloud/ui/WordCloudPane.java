@@ -52,8 +52,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
 /**
- * The main JavaFx Pane with which to visualise word clouds and run the plugin
- * to generate them
+ * The main JavaFx Pane with which to visualise word clouds and run the plugin to generate them
  *
  * @author twilight_sparkle
  */
@@ -82,11 +81,12 @@ public class WordCloudPane extends BorderPane {
     private final ProgressIndicator spinner = new ProgressIndicator();
     private final WordCloudParametersPane paramPane;
     private final ScrollPane sPane;
-    
+
     private static final int CONTENT_SPACING = 25;
     private static final int CLOUD_SPACING = 5;
     private static final int CLOUD_HEIGHT = 400;
     private static final int CLOUD_WIDTH = 500;
+    private static final int EVERYTHING_HEIGHT = 850;
     private static final int HGAP_BETWEEN_WORDS = 4;
     private static final int VGAP_BETWEEN_WORDS = 2;
     private static final double BUTTON_INSET = 2.0;
@@ -99,7 +99,7 @@ public class WordCloudPane extends BorderPane {
     protected CheckBox showTooltipsCheckbox;
 
     private final Hyperlink noWord;
-    
+
     // The mutliplicative size difference between the smallest and largest words in the cloud 
     private static final int FONT_EXPANSION_FACTOR = 3;
 
@@ -121,6 +121,8 @@ public class WordCloudPane extends BorderPane {
         cloudStackPane.getChildren().add(theCloud);
         content.getChildren().add(cloudStackPane);
         setTop(everything);
+
+        everything.setMaxHeight(EVERYTHING_HEIGHT);
 
         // Create the label used to give information about the parameters used to generate the word cloud 
         queryInfoLabel = new Label("");
@@ -156,7 +158,7 @@ public class WordCloudPane extends BorderPane {
                     controller.setIsUnionSelect(false);
                 }
             }
-            
+
             // Disallow deselection
             if (t1 == null) {
                 modeButtons.selectToggle(t);
@@ -179,7 +181,7 @@ public class WordCloudPane extends BorderPane {
                     controller.setIsSizeSorted(true);
                 }
             }
-            
+
             // Disallow deselection
             if (t1 == null) {
                 sortingButtons.selectToggle(t);
@@ -194,9 +196,9 @@ public class WordCloudPane extends BorderPane {
         sortingButtonBar.getChildren().addAll(alphabetical, frequency);
         showTooltipsCheckbox = new CheckBox("Hovering translations");
         showTooltipsCheckbox.setSelected(true);
-        showTooltipsCheckbox.setOnAction((final ActionEvent t) -> 
-            tipsPane.setEnabled(showTooltipsCheckbox.isSelected()));
-        
+        showTooltipsCheckbox.setOnAction((final ActionEvent t)
+                -> tipsPane.setEnabled(showTooltipsCheckbox.isSelected()));
+
         showTooltipsCheckbox.setStyle("fx-text-fill: white; -fx-padding: 2;");
         buttonBar.getChildren().addAll(modeButtonBar, showTooltipsCheckbox, sortingButtonBar);
         AnchorPane.setLeftAnchor(modeButtonBar, BUTTON_INSET);
@@ -223,14 +225,12 @@ public class WordCloudPane extends BorderPane {
         // Create the pane allowing the word cloud analytic to be run
         paramPane = new WordCloudParametersPane(this);
         sPane = new ScrollPane();
-        // This makes scroll wheel appear, try to get it to only appear when pane is going off the bottom of window
-        sPane.setMinHeight(CLOUD_HEIGHT);
         sPane.setContent(paramPane);
         sPane.setFitToWidth(true);
         sPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         //content.getChildren().add(paramPane);
         content.getChildren().add(sPane);
-        
+
         everything.getChildren().add(content);
         everything.getChildren().add(tipsPane);
 
@@ -239,27 +239,27 @@ public class WordCloudPane extends BorderPane {
         noWord = new Hyperlink();
         noWord.setMaxSize(0, 0);
     }
-    
+
     protected StackPane getCloudStackPane() {
         return cloudStackPane;
     }
-    
+
     protected ProgressIndicator getSpinner() {
         return spinner;
     }
-    
+
     protected VBox getTheCloud() {
         return theCloud;
     }
-    
+
     protected AnchorPane getSliderBar() {
         return sliderBar;
     }
-    
+
     protected Map<String, Hyperlink> getWordButtons() {
         return wordButtons;
     }
-    
+
     protected FlowPane getWords() {
         return words;
     }
@@ -275,9 +275,8 @@ public class WordCloudPane extends BorderPane {
     }
 
     /**
-     * Displays and correctly sizes the actual word cloud panes so that the
-     * parameters pane is beneath it. Called by the controller when it begins
-     * managing a word cloud.
+     * Displays and correctly sizes the actual word cloud panes so that the parameters pane is beneath it. Called by the
+     * controller when it begins managing a word cloud.
      */
     public void enableTheCloud(final boolean unionButtonSelected, final boolean frequencyButtonSelected, final boolean hasSignificances) {
         content.setSpacing(CONTENT_SPACING);
@@ -302,16 +301,16 @@ public class WordCloudPane extends BorderPane {
     }
 
     /**
-     * Calculates the absolute font size for a word in this cloud based on its
-     * "relative size" and the current user font size
+     * Calculates the absolute font size for a word in this cloud based on its "relative size" and the current user font
+     * size
      */
     private static int getFontSize(final float relativeSize, final int baseFontSize) {
         return (int) (baseFontSize * (1 + relativeSize * FONT_EXPANSION_FACTOR));
     }
 
     /**
-     * Hides the actual word cloud panes so that the parameters pane is at the
-     * top. Called by the controller when it is not managing a word cloud.
+     * Hides the actual word cloud panes so that the parameters pane is at the top. Called by the controller when it is
+     * not managing a word cloud.
      */
     public void disableTheCloud() {
         content.setSpacing(0);
@@ -321,26 +320,23 @@ public class WordCloudPane extends BorderPane {
     }
 
     /**
-     * Sets whether the attribute parameters combo-box is enabled on the
-     * parameter pane
+     * Sets whether the attribute parameters combo-box is enabled on the parameter pane
      */
     public void setAttributeSelectionEnabled(final boolean val) {
         paramPane.setAttributeSelectionEnabled(val);
     }
 
     /**
-     * Request to run the word cloud analytic itself. Called from within
-     * parameters pane, this method simple passes the request up to the
-     * controller
+     * Request to run the word cloud analytic itself. Called from within parameters pane, this method simple passes the
+     * request up to the controller
      */
     public void runPlugin(final PluginParameters params) {
         controller.runPlugin(params);
     }
 
     /**
-     * Request to update the parameters on the parameters pane. Called by the
-     * controller upon graph attribute changes, this method simple passes the
-     * request down to the parameters pane
+     * Request to update the parameters on the parameters pane. Called by the controller upon graph attribute changes,
+     * this method simple passes the request down to the parameters pane
      */
     public void updateParameters(final List<String> vertTextAttributes, final List<String> transTextAttributes) {
         paramPane.updateParameters(vertTextAttributes, transTextAttributes);
@@ -364,12 +360,12 @@ public class WordCloudPane extends BorderPane {
             // Set the word's font based on its prescribed size 
             final Font f = Font.font("Arial", FontWeight.BOLD, getFontSize(wordListWithSizes.get(word), baseFontSize));
             h.setFont(f);
-            
+
             // Set the context menu for copying 
             final ContextMenu menu = new ContextMenu();
             final MenuItem copy = new MenuItem("copy");
-            copy.setOnAction((final ActionEvent event) -> 
-                ClipboardUtilities.copyToClipboard(word));
+            copy.setOnAction((final ActionEvent event)
+                    -> ClipboardUtilities.copyToClipboard(word));
             menu.getItems().add(copy);
             h.setContextMenu(menu);
             // Add the event handler for clicking the word. This handler tells the controller to add teh wrod to its word cloud's currently selected word list 
@@ -395,21 +391,20 @@ public class WordCloudPane extends BorderPane {
     }
 
     public void updateSelection(final Set<String> selectedWords) {
-        wordButtons.values().forEach(h -> 
-            h.setVisited(false));
+        wordButtons.values().forEach(h
+                -> h.setVisited(false));
 
         if (selectedWords == null) {
             return;
         }
 
         // Display the word as selected if necessary
-        selectedWords.stream().filter(word -> (selectedWords.contains(word))).forEachOrdered(word -> 
-            wordButtons.get(word).setVisited(true)); 
+        selectedWords.stream().filter(word -> (selectedWords.contains(word))).forEachOrdered(word
+                -> wordButtons.get(word).setVisited(true));
     }
 
     /**
-     * Removes and then adds again all words from the flow pane in the specified
-     * order
+     * Removes and then adds again all words from the flow pane in the specified order
      */
     public void updateWords(final SortedSet<String> wordsToDisplay, final boolean reapplySort) {
         // Delete any existing words from the word cloud flow pane 
