@@ -168,7 +168,7 @@ public class ThreadAllocatorNGTest extends ConstellationTest {
 
     }
     
- public class ThreadAllocatorImpl extends ThreadAllocator {
+    public class ThreadAllocatorImpl extends ThreadAllocator {
 
         @Override
         public int calculateNumberOfThreads() {
