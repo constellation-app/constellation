@@ -45,7 +45,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -164,29 +163,30 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         }
         
         final File imageFile = new File(fnam);  
-       
-        // Build a SVG representation of the graph
-        final SVGData svg = new SVGGraphBuilder()
-                .withInteraction(interaction)
-                .withTitle(title)
-                .withReadableGraph(graph)
-                .withBackground(color)
-                .withSelectedElementsOnly(selectedElements)
-                .includeNodes(showNodes)
-                .includeConnections(showConnections)
-                .includeNodeLabels(showNodeLabels)
-                .includeConnectionLabels(showConnectionLabels)
-                .includeBlazes(showBlazes)
-                .fromPerspective(AxisConstants.getReference(exportPerspective))
-                .build();
+        
         try {
+            // Build a SVG representation of the graph
+            final SVGData svg = new SVGGraphBuilder()
+                    .withInteraction(interaction)
+                    .withTitle(title)
+                    .withReadableGraph(graph)
+                    .withBackground(color)
+                    .withSelectedElementsOnly(selectedElements)
+                    .includeNodes(showNodes)
+                    .includeConnections(showConnections)
+                    .includeNodeLabels(showNodeLabels)
+                    .includeConnectionLabels(showConnectionLabels)
+                    .includeBlazes(showBlazes)
+                    .fromPerspective(AxisConstants.getReference(exportPerspective))
+                    .build();
             interaction.setExecutionStage(0, -1, "Exporting Graph", "Writing data to file", true);
             exportToSVG(imageFile, svg, interaction);
-        } catch (final IOException ex) {
-            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            interaction.setProgress(1, 0, "Finished", true);
+        
+        // Catch exceptions for mising paramter values and issues writing to files
+        } catch (final IllegalArgumentException | IOException ex) {
+            throw new PluginException(PluginNotificationLevel.ERROR, ex.getLocalizedMessage());
         }
-
-        interaction.setProgress(1, 0, "Finished", true);
     }   
     
     /**

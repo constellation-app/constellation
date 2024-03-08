@@ -157,6 +157,11 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
             return controls;
         }
 
+        @Override
+        public boolean noValueCheckBoxAvailable() {
+            return false;
+        }
+
         private void reloadUserDefinedIcons(final String iconFile) {
             final IconNode userNode = new IconNode("(User-defined)", IconManager.getIconNames(true));
             final TreeItem<IconNode> userItem = new TreeItem<>(userNode);
@@ -173,6 +178,7 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
 
         /**
          * Search for all valid icons, starting at the supplied path.
+         *
          * @param path Path to search for icons.
          * @return List of all icon files found.
          */
@@ -185,9 +191,11 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
         /**
          * Navigate through all files in path and its subdirectories, adding any
          * files found to match icon file types to the list of icons returned.
+         *
          * @param path Path to search for icons.
          * @param files Files already found.
-         * @return Complete list of all icon files found (new + those passed in).
+         * @return Complete list of all icon files found (new + those passed
+         * in).
          */
         private List<File> iconWalk(final File path, final List<File> files) {
             final List<File> addedFiles = new ArrayList<>();
@@ -195,9 +203,9 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
                 if (f.isDirectory()) {
                     addedFiles.add(f);
                 } else {
-                    if (StringUtils.endsWithIgnoreCase(f.getAbsolutePath(), FileExtensionConstants.JPG) ||
-                        StringUtils.endsWithIgnoreCase(f.getAbsolutePath(), FileExtensionConstants.GIF) ||
-                        StringUtils.endsWithIgnoreCase(f.getAbsolutePath(), FileExtensionConstants.PNG)) {
+                    if (StringUtils.endsWithIgnoreCase(f.getAbsolutePath(), FileExtensionConstants.JPG)
+                            || StringUtils.endsWithIgnoreCase(f.getAbsolutePath(), FileExtensionConstants.GIF)
+                            || StringUtils.endsWithIgnoreCase(f.getAbsolutePath(), FileExtensionConstants.PNG)) {
                         addedFiles.add(f);
                     }
                 }
@@ -323,10 +331,9 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
                         @Override
                         public boolean accept(final File file) {
                             final String name = file.getName();
-                            final boolean imageFilename = (
-                                    StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.JPG) ||
-                                    StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.GIF) ||
-                                    StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.PNG));
+                            final boolean imageFilename = (StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.JPG)
+                                    || StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.GIF)
+                                    || StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.PNG));
                             return ((file.isFile() && imageFilename) || file.isDirectory());
                         }
 
