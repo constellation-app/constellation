@@ -65,9 +65,9 @@ RUN wget -q "https://dlcdn.apache.org/netbeans/netbeans/{NETBEANS_VERSION}/netbe
     && mv netbeans "${NETBEANS_HOME}" \
     && rm "netbeans-${NETBEANS_VERSION}-bin.zip"
 
-ENV JACOCO_VERSION="0.8.5" \
+ENV JACOCO_VERSION="0.8.11" \
     JACOCO_HOME="/opt/jacoco"
-ENV JACOCO_CHECKSUM="2be070c33da2b9152ec9cd9f42f39190e6cbe9f245627cbd1a6750a07fb380be113b1e63da47738377d76d3f739f75d94b60b618a8c17a5c7581312ffdf2dfc3  jacoco-${JACOCO_VERSION}.zip"
+ENV JACOCO_CHECKSUM="facd1b38b44225871de5312b0d3ecd9ded009790512e32ee17fc3605c12171400b1dc8467c399757e0c00399a2913206a4a1d977555734e84af9fa2c0225e90a  jacoco-${JACOCO_VERSION}.zip"
 
 RUN mkdir -p ${JACOCO_HOME}/ \
     && wget -q "http://search.maven.org/remotecontent?filepath=org/jacoco/jacoco/${JACOCO_VERSION}/jacoco-${JACOCO_VERSION}.zip" -O jacoco-${JACOCO_VERSION}.zip \
