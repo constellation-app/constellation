@@ -1,12 +1,12 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
- * 
+ * Copyright 2010-2024 Australian Signals Directorate
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.find.components.advanced.criteriavalues;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -44,7 +43,7 @@ public class StringCriteriaValues extends FindCriteriaValues {
     // secondary constructor takes a list of text values
     public StringCriteriaValues(final String attributeType, final String attribute, final String filter, final List<String> textList, final boolean ignoreCase, final boolean useList) {
         super(attributeType, attribute, filter);
-        Collections.copy(this.textList, textList);
+        this.textList.addAll(textList);
         this.ignoreCase = ignoreCase;
         this.useList = useList;
     }
@@ -64,8 +63,7 @@ public class StringCriteriaValues extends FindCriteriaValues {
      * @return
      */
     public List<String> getTextList() {
-        List<String> textListCopy = new ArrayList<>();
-        Collections.copy(textListCopy, textList);
+        List<String> textListCopy = new ArrayList<>(textList);
         return textListCopy;
     }
 
