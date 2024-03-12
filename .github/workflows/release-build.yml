@@ -6,7 +6,7 @@ jobs:
   create-release-build:
     runs-on: ubuntu-latest
     env:
-      RUNNER_IMAGE: "constellationapplication/netbeans-runner:21.0.0"
+      RUNNER_IMAGE: "constellationapplication/netbeans-runner:21"
       ADAPTORS_VERSION: "v2.11.0"
     container:
       image: docker://pandoc/latex:2.9
