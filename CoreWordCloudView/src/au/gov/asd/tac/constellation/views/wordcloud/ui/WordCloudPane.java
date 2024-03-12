@@ -86,7 +86,6 @@ public class WordCloudPane extends BorderPane {
     private static final int CLOUD_SPACING = 5;
     private static final int CLOUD_HEIGHT = 400;
     private static final int CLOUD_WIDTH = 500;
-    private static final int EVERYTHING_HEIGHT = 850;
     private static final int HGAP_BETWEEN_WORDS = 4;
     private static final int VGAP_BETWEEN_WORDS = 2;
     private static final double BUTTON_INSET = 2.0;
@@ -122,8 +121,6 @@ public class WordCloudPane extends BorderPane {
         content.getChildren().add(cloudStackPane);
         setTop(everything);
 
-        everything.setMaxHeight(EVERYTHING_HEIGHT);
-
         // Create the label used to give information about the parameters used to generate the word cloud 
         queryInfoLabel = new Label("");
         queryInfoLabel.prefWidthProperty().bind(theCloud.widthProperty());
@@ -133,7 +130,7 @@ public class WordCloudPane extends BorderPane {
 
         // Create a flow pane to display the words themselves, and a scroll pane to allow scrolling on the flow pane. Set and bind widths and heights correctly
         wordHolder = new ScrollPane();
-        wordHolder.setMaxHeight(CLOUD_HEIGHT);
+        wordHolder.setPrefHeight(CLOUD_HEIGHT);
         words = new FlowPane(HGAP_BETWEEN_WORDS, VGAP_BETWEEN_WORDS);
         words.setPrefWrapLength(CLOUD_WIDTH);
         wordHolder.setContent(words);
@@ -238,6 +235,11 @@ public class WordCloudPane extends BorderPane {
         wordButtons = new HashMap<>();
         noWord = new Hyperlink();
         noWord.setMaxSize(0, 0);
+    }
+
+    public void setEverythingHeight(int h) {
+        everything.setPrefHeight(h);
+        return;
     }
 
     protected StackPane getCloudStackPane() {
