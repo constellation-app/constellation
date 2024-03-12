@@ -80,7 +80,7 @@ public class WordCloudPane extends BorderPane {
 
     private final ProgressIndicator spinner = new ProgressIndicator();
     private final WordCloudParametersPane paramPane;
-    private final ScrollPane sPane;
+    private final ScrollPane scrollPane;
 
     private static final int CONTENT_SPACING = 25;
     private static final int CLOUD_SPACING = 5;
@@ -221,12 +221,11 @@ public class WordCloudPane extends BorderPane {
 
         // Create the pane allowing the word cloud analytic to be run
         paramPane = new WordCloudParametersPane(this);
-        sPane = new ScrollPane();
-        sPane.setContent(paramPane);
-        sPane.setFitToWidth(true);
-        sPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        //content.getChildren().add(paramPane);
-        content.getChildren().add(sPane);
+        scrollPane = new ScrollPane();
+        scrollPane.setContent(paramPane);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        content.getChildren().add(scrollPane);
 
         everything.getChildren().add(content);
         everything.getChildren().add(tipsPane);
