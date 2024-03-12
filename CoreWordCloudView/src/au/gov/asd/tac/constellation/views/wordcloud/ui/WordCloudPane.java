@@ -236,10 +236,9 @@ public class WordCloudPane extends BorderPane {
         noWord = new Hyperlink();
         noWord.setMaxSize(0, 0);
     }
-
+    
     public void setEverythingHeight(int h) {
         everything.setPrefHeight(h);
-        return;
     }
 
     protected StackPane getCloudStackPane() {
