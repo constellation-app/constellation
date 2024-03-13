@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.find.components.advanced.criteriavalues;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -63,8 +64,7 @@ public class StringCriteriaValues extends FindCriteriaValues {
      * @return
      */
     public List<String> getTextList() {
-        List<String> textListCopy = new ArrayList<>(textList);
-        return textListCopy;
+        return Collections.unmodifiableList(textList);
     }
 
     /**
