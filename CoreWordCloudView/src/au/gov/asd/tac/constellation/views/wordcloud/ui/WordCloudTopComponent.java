@@ -77,7 +77,6 @@ public final class WordCloudTopComponent extends JavaFxTopComponent<WordCloudPan
         setToolTipText(Bundle.HINT_WordCloudTopComponent());
 
         setPreferredSize(new Dimension(PREF_WIDTH, PREF_HEIGHT));
-        setMinimumSize(new Dimension(PREF_WIDTH, PREF_HEIGHT));
         setLayout(new BorderLayout());
         add(panel, BorderLayout.CENTER);
 

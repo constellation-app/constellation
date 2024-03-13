@@ -61,7 +61,7 @@ public class WordCloudPane extends BorderPane {
     private final WordCloudController controller;
 
     private final VBox content;
-    private final StackPane everything;
+    private final BorderPane everything;
     private final VBox theCloud;
     private final Label queryInfoLabel;
     private final ScrollPane wordHolder;
@@ -106,7 +106,7 @@ public class WordCloudPane extends BorderPane {
      * Constructs a WordCloudPane to be controlled by the specified controller
      */
     public WordCloudPane(final WordCloudController controller) {
-        everything = new StackPane();
+        everything = new BorderPane();
         this.controller = controller;
         setPadding(WORDCLOUD_PADDING);
 
@@ -226,9 +226,9 @@ public class WordCloudPane extends BorderPane {
         scrollPane.setFitToWidth(true);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         content.getChildren().add(scrollPane);
-
-        everything.getChildren().add(content);
-        everything.getChildren().add(tipsPane);
+        
+        everything.setCenter(content);
+        everything.setTop(tipsPane);
 
         spinner.setMaxSize(50, 50);
         wordButtons = new HashMap<>();
@@ -236,8 +236,10 @@ public class WordCloudPane extends BorderPane {
         noWord.setMaxSize(0, 0);
     }
     
-    public void setEverythingHeight(int h) {
+    public void setEverythingHeight(final int h) {
         everything.setPrefHeight(h);
+        scrollPane.setPrefHeight(h/2);
+        wordHolder.setPrefHeight(h/2);
     }
 
     protected StackPane getCloudStackPane() {
