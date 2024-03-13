@@ -27,6 +27,7 @@ import java.util.SortedSet;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
@@ -37,6 +38,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
@@ -61,7 +63,7 @@ public class WordCloudPane extends BorderPane {
     private final WordCloudController controller;
 
     private final VBox content;
-    private final BorderPane everything;
+    private final SplitPane everything;
     private final VBox theCloud;
     private final Label queryInfoLabel;
     private final ScrollPane wordHolder;
@@ -80,9 +82,10 @@ public class WordCloudPane extends BorderPane {
 
     private final ProgressIndicator spinner = new ProgressIndicator();
     private final WordCloudParametersPane paramPane;
-    private final ScrollPane scrollPane;
+    private final ScrollPane paramScrollPane;
 
-    private static final int CONTENT_SPACING = 25;
+    //private static final int CONTENT_SPACING = 25;
+    private static final int CONTENT_SPACING = 0;// dont even use content anymore
     private static final int CLOUD_SPACING = 5;
     private static final int CLOUD_HEIGHT = 400;
     private static final int CLOUD_WIDTH = 500;
@@ -106,7 +109,9 @@ public class WordCloudPane extends BorderPane {
      * Constructs a WordCloudPane to be controlled by the specified controller
      */
     public WordCloudPane(final WordCloudController controller) {
-        everything = new BorderPane();
+        everything = new SplitPane();
+        everything.setOrientation(Orientation.VERTICAL);
+        everything.setDividerPositions(0.5f);
         this.controller = controller;
         setPadding(WORDCLOUD_PADDING);
 
@@ -220,27 +225,25 @@ public class WordCloudPane extends BorderPane {
 
         // Create the pane allowing the word cloud analytic to be run
         paramPane = new WordCloudParametersPane(this);
-        scrollPane = new ScrollPane();
-        scrollPane.setContent(paramPane);
-        scrollPane.setFitToWidth(true);
-        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        content.getChildren().add(scrollPane);
-        
-        everything.setCenter(content);
-        everything.setTop(tipsPane);
+        paramScrollPane = new ScrollPane();
+        paramScrollPane.setContent(paramPane);
+        paramScrollPane.setFitToWidth(true);
+        paramScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        content.getChildren().add(paramScrollPane);
+
+        // Add params and cloud to split pane
+        everything.getItems().addAll(cloudStackPane, paramScrollPane);//, tipsPane);
 
         spinner.setMaxSize(50, 50);
         wordButtons = new HashMap<>();
         noWord = new Hyperlink();
         noWord.setMaxSize(0, 0);
     }
-    
-    public void setEverythingHeight(final int h) {
-        content.setMaxHeight(h);
-        scrollPane.setMinHeight(h/2);
-        scrollPane.setPrefHeight(h);
-        wordHolder.setMinHeight(h/2);
-        wordHolder.setPrefHeight(h);
+
+    public void setContentHeight(final int h) {
+        everything.setMaxHeight(h);
+        paramScrollPane.setPrefHeight(h);
+        theCloud.setPrefHeight(h);
     }
 
     protected StackPane getCloudStackPane() {
