@@ -130,7 +130,6 @@ public class WordCloudPane extends BorderPane {
 
         // Create a flow pane to display the words themselves, and a scroll pane to allow scrolling on the flow pane. Set and bind widths and heights correctly
         wordHolder = new ScrollPane();
-        wordHolder.setPrefHeight(CLOUD_HEIGHT);
         words = new FlowPane(HGAP_BETWEEN_WORDS, VGAP_BETWEEN_WORDS);
         words.setPrefWrapLength(CLOUD_WIDTH);
         wordHolder.setContent(words);
@@ -237,9 +236,11 @@ public class WordCloudPane extends BorderPane {
     }
     
     public void setEverythingHeight(final int h) {
-        everything.setPrefHeight(h);
-        scrollPane.setPrefHeight(h/2);
-        wordHolder.setPrefHeight(h/2);
+        content.setMaxHeight(h);
+        scrollPane.setMinHeight(h/2);
+        scrollPane.setPrefHeight(h);
+        wordHolder.setMinHeight(h/2);
+        wordHolder.setPrefHeight(h);
     }
 
     protected StackPane getCloudStackPane() {
@@ -282,7 +283,6 @@ public class WordCloudPane extends BorderPane {
      */
     public void enableTheCloud(final boolean unionButtonSelected, final boolean frequencyButtonSelected, final boolean hasSignificances) {
         content.setSpacing(CONTENT_SPACING);
-        wordHolder.setMinHeight(CLOUD_HEIGHT);
         theCloud.setVisible(true);
         theCloud.setManaged(true);
         if (unionButtonSelected) {
