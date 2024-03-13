@@ -81,4 +81,20 @@ public class BlazeEditorFactoryNGTest {
         assertEquals(result, BlazeAttributeDescription.ATTRIBUTE_NAME);
     }
 
+    /**
+     * Test of
+     */
+    @Test
+    public void testNoValueCheckBoxAvailable() {
+        System.out.println("noValueCheckBoxAvailable");
+
+        final AbstractEditorFactory.AbstractEditor instance = new BlazeEditorFactory().createEditor(
+                mock(EditOperation.class),
+                mock(DefaultGetter.class),
+                mock(ValueValidator.class),
+                "",
+                mock(Blaze.class));
+
+        assertEquals(instance.noValueCheckBoxAvailable(), true);
+    }
 }
