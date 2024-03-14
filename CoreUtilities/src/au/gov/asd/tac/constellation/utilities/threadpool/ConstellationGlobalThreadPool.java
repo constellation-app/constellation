@@ -71,8 +71,20 @@ public class ConstellationGlobalThreadPool {
         if (fixedThreadPool == null) {
             fixedThreadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         }
-
+        
         return fixedThreadPool;
+    }
+    
+    /**
+     * Instantiates exactly 1 FixedThreadPool containing all available threads.
+     * This fixed thread pool will not be referenced by this utility class.
+     * It is the responsibility fo the calling class to monitor and shutdown this ExecutrService as needed
+     *
+     * @param poolName
+     * @return a FixedThreadPool objects
+     */
+    public ExecutorService getFixedThreadPool(final String poolName) {
+        return Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), new ConstellationThreadFactory(poolName));
     }
 
     /**

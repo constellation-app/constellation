@@ -89,6 +89,7 @@ public class SVGGraphBuilder {
     private Camera camera = new Camera();
     private Frustum viewFrustum;
     private int[] viewPort;    
+    private ExecutorService threadPool;
      
     /**
     * Builder that generates the the output SVG file.
@@ -249,6 +250,7 @@ public class SVGGraphBuilder {
         frame.setOrigin(camera.lookAtEye); //Reposition the viewing position from the origin to the camera eye location
         camera.setObjectFrame(frame); //Store the frame in the camera for easy access in other methods of this class.
         viewFrustum.transform(camera.getObjectFrame());
+        threadPool = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool("SVG Export");
     }
     
     /**
@@ -256,6 +258,7 @@ public class SVGGraphBuilder {
      */
     private void postBuild(){
         access.endUpdate();
+        threadPool.shutdown();
     }
 
     
@@ -277,8 +280,6 @@ public class SVGGraphBuilder {
             interaction.setProgress(1, 1, "Created 0 nodes", true);
             return new ArrayList<>();
         }  
-        
-        final ExecutorService threadPool = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool();
         
         // Get a unique sub list of vertex indicies for each available thread 
         final List<List<Integer>> threadInputLists = createSubListsOfRange(0, access.getVertexCount(), Runtime.getRuntime().availableProcessors());
@@ -329,8 +330,6 @@ public class SVGGraphBuilder {
             interaction.setProgress(1, 1, "Created 0 connections", true);
             return new ArrayList<>();
         }      
-           
-        final ExecutorService threadPool = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool();
                 
         // Get a unique sub list of vertex indicies for each available thread 
         final List<List<Integer>> threadInputLists = createSubListsOfRange(0, access.getLinkCount(), Runtime.getRuntime().availableProcessors());
@@ -378,9 +377,7 @@ public class SVGGraphBuilder {
             interaction.setProgress(1, 1, "Created 0 blazes", true);
             return new ArrayList<>();
         }  
-        
-        final ExecutorService threadPool = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool();
-                
+              
         // Get a unique sub list of vertex indicies for each available thread 
         final List<List<Integer>> threadInputLists = createSubListsOfRange(0, access.getVertexCount(), Runtime.getRuntime().availableProcessors());
         final List<List<SVGObject>> threadOuputLists = new ArrayList<>();
