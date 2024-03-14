@@ -110,11 +110,12 @@ public class WordCloudPane extends BorderPane {
         this.controller = controller;
         setPadding(WORDCLOUD_PADDING);
 
-        // Create some containers for vertical spacing
+        // Create container for vertical spacing
         theCloud = new VBox();
 
-        // add the tips pane and the cloud to content. Place this container at the top
+        // add the tips pane and the cloud to a stack pane
         cloudStackPane.getChildren().add(theCloud);
+        cloudStackPane.getChildren().add(tipsPane);
         setTop(everything);
 
         // Create the label used to give information about the parameters used to generate the word cloud 
@@ -222,7 +223,7 @@ public class WordCloudPane extends BorderPane {
         paramScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
         // Add params and cloud to split pane
-        everything.getItems().addAll(cloudStackPane, paramScrollPane);//, tipsPane);
+        everything.getItems().addAll(cloudStackPane, paramScrollPane);
 
         spinner.setMaxSize(50, 50);
         wordButtons = new HashMap<>();
