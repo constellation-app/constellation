@@ -62,7 +62,6 @@ public class WordCloudPane extends BorderPane {
 
     private final WordCloudController controller;
 
-    private final VBox content;
     private final SplitPane everything;
     private final VBox theCloud;
     private final Label queryInfoLabel;
@@ -84,10 +83,6 @@ public class WordCloudPane extends BorderPane {
     private final WordCloudParametersPane paramPane;
     private final ScrollPane paramScrollPane;
 
-    //private static final int CONTENT_SPACING = 25;
-    private static final int CONTENT_SPACING = 0;// dont even use content anymore
-    private static final int CLOUD_SPACING = 5;
-    private static final int CLOUD_HEIGHT = 400;
     private static final int CLOUD_WIDTH = 500;
     private static final int HGAP_BETWEEN_WORDS = 4;
     private static final int VGAP_BETWEEN_WORDS = 2;
@@ -116,14 +111,10 @@ public class WordCloudPane extends BorderPane {
         setPadding(WORDCLOUD_PADDING);
 
         // Create some containers for vertical spacing
-        content = new VBox();
-        content.setSpacing(CONTENT_SPACING);
         theCloud = new VBox();
-        theCloud.setSpacing(CLOUD_SPACING);
 
         // add the tips pane and the cloud to content. Place this container at the top
         cloudStackPane.getChildren().add(theCloud);
-        content.getChildren().add(cloudStackPane);
         setTop(everything);
 
         // Create the label used to give information about the parameters used to generate the word cloud 
@@ -229,7 +220,6 @@ public class WordCloudPane extends BorderPane {
         paramScrollPane.setContent(paramPane);
         paramScrollPane.setFitToWidth(true);
         paramScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        content.getChildren().add(paramScrollPane);
 
         // Add params and cloud to split pane
         everything.getItems().addAll(cloudStackPane, paramScrollPane);//, tipsPane);
@@ -285,7 +275,6 @@ public class WordCloudPane extends BorderPane {
      * controller when it begins managing a word cloud.
      */
     public void enableTheCloud(final boolean unionButtonSelected, final boolean frequencyButtonSelected, final boolean hasSignificances) {
-        content.setSpacing(CONTENT_SPACING);
         theCloud.setVisible(true);
         theCloud.setManaged(true);
         if (unionButtonSelected) {
@@ -318,7 +307,6 @@ public class WordCloudPane extends BorderPane {
      * not managing a word cloud.
      */
     public void disableTheCloud() {
-        content.setSpacing(0);
         wordHolder.setMinHeight(0);
         theCloud.setVisible(false);
         theCloud.setManaged(false);
