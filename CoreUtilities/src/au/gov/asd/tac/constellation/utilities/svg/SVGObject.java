@@ -518,4 +518,10 @@ public class SVGObject {
             return null;
         }
     }
+
+    public void setChildren(List<SVGObject> children) {
+        if (children != null && !children.isEmpty()){
+            svgDataReference.setChildren(children);
+        }
+    }
 }

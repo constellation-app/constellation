@@ -40,6 +40,7 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.visual.AxisConstants;
+import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -172,13 +173,10 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
                     .withReadableGraph(graph)
                     .withBackground(color)
                     .withSelectedElementsOnly(selectedElements)
-                    .includeNodes(showNodes)
-                    .includeConnections(showConnections)
-                    .includeNodeLabels(showNodeLabels)
-                    .includeConnectionLabels(showConnectionLabels)
-                    .includeBlazes(showBlazes)
+                    .withDrawFlags(new DrawFlags(showNodes, showConnections, showNodeLabels, showConnectionLabels, showBlazes))
                     .fromPerspective(AxisConstants.getReference(exportPerspective))
                     .build();
+            
             interaction.setExecutionStage(0, -1, "Exporting Graph", "Writing data to file", true);
             exportToSVG(imageFile, svg, interaction);
             interaction.setProgress(1, 0, "Finished", true);

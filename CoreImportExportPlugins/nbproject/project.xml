@@ -214,6 +214,7 @@
                 <package>au.gov.asd.tac.constellation.plugins.importexport.delimited.parser</package>
                 <package>au.gov.asd.tac.constellation.plugins.importexport.geospatial</package>
                 <package>au.gov.asd.tac.constellation.plugins.importexport.jdbc</package>
+                <package>au.gov.asd.tac.constellation.plugins.importexport.svg.tasks</package>
                 <package>au.gov.asd.tac.constellation.plugins.importexport.text</package>
             </public-packages>
         </data>

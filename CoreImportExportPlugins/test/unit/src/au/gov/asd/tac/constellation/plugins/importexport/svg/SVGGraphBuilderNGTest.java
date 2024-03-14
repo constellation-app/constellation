@@ -32,6 +32,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.svg.SVGObject;
 import au.gov.asd.tac.constellation.utilities.visual.AxisConstants;
+import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import java.awt.Component;
 import java.util.ArrayList;
@@ -60,6 +61,7 @@ public class SVGGraphBuilderNGTest {
     private PluginInteraction interactionMock;
     private GraphNode contextMock;
     private Component visualComponentMock;
+    private final DrawFlags flags = new DrawFlags(true, true, true, false, false);
     private final String graphName = "Test Graph 1";
     
     // Positional Attributes
@@ -211,62 +213,13 @@ public class SVGGraphBuilderNGTest {
      * Test of includeNodes method, of class SVGGraphBuilder.
      */
     @Test
-    public void testIncludeNodes() {
-        System.out.println("includeNodes");
-        final Boolean showNodes = true;
+    public void testWithDrawFlagsNodes() {
+        System.out.println("drawFlags");
         final SVGGraphBuilder instance = new SVGGraphBuilder();
-        final SVGGraphBuilder result = instance.includeNodes(showNodes);
-        assertEquals(result, instance);
-    }
-    
-    /**
-     * Test of includeConnections method, of class SVGGraphBuilder.
-     */
-    @Test
-    public void testIncludeConnections() {
-        System.out.println("includeConnections");
-        final Boolean showConnections = true;
-        final SVGGraphBuilder instance = new SVGGraphBuilder();
-        final SVGGraphBuilder result = instance.includeConnections(showConnections);
+        final SVGGraphBuilder result = instance.withDrawFlags(flags);
         assertEquals(result, instance);
     }
 
-    /**
-     * Test of includeNodeLabels method, of class SVGGraphBuilder.
-     */
-    @Test
-    public void testIncludeNodeLabels() {
-        System.out.println("includeNodeLabels");
-        final Boolean showNodeLabels = true;
-        final SVGGraphBuilder instance = new SVGGraphBuilder();
-        final SVGGraphBuilder result = instance.includeNodeLabels(showNodeLabels);
-        assertEquals(result, instance);
-    }
-
-    /**
-     * Test of includeConnectionLabels method, of class SVGGraphBuilder.
-     */
-    @Test
-    public void testIncludeConnectionLabels() {
-        System.out.println("includeConnectionLabels");
-        final Boolean showConnectionLabels = true;
-        final SVGGraphBuilder instance = new SVGGraphBuilder();
-        final SVGGraphBuilder result = instance.includeConnectionLabels(showConnectionLabels);
-        assertEquals(result, instance);
-    }
-
-     /**
-     * Test of includeBlazes method, of class SVGGraphBuilder.
-     */
-    @Test
-    public void testIncludeBlazes() {
-        System.out.println("includeBlazes");
-        final Boolean showBlazes = true;
-        final SVGGraphBuilder instance = new SVGGraphBuilder();
-        final SVGGraphBuilder result = instance.includeBlazes(showBlazes);
-        assertEquals(result, instance);
-    }
-    
     /**
      * Test of fromPerspective method, of class SVGGraphBuilder.
      */
@@ -291,11 +244,7 @@ public class SVGGraphBuilderNGTest {
                 .withTitle(graphName)
                 .fromPerspective(AxisConstants.Z_POSITIVE)
                 .withSelectedElementsOnly(false)
-                .includeNodes(true)
-                .includeNodeLabels(true)
-                .includeConnections(true)
-                .includeConnectionLabels(false)
-                .includeBlazes(false);
+                .withDrawFlags(flags);
         
         final SVGObject result = new SVGObject(instance.build());
         assertNotNull(result.getChild(String.format("node-%s",vertexId2)));
@@ -313,11 +262,7 @@ public class SVGGraphBuilderNGTest {
                 .withTitle(graphName)
                 .fromPerspective(AxisConstants.Z_POSITIVE)
                 .withSelectedElementsOnly(false)
-                .includeNodes(true)
-                .includeNodeLabels(true)
-                .includeConnections(true)
-                .includeConnectionLabels(false)
-                .includeBlazes(false); 
+                .withDrawFlags(flags);
         instance.build();
     }
     
@@ -333,11 +278,7 @@ public class SVGGraphBuilderNGTest {
                 .withTitle(graphName)
                 .fromPerspective(AxisConstants.Z_POSITIVE)
                 .withSelectedElementsOnly(false)
-                .includeNodes(true)
-                .includeNodeLabels(true)
-                .includeConnections(true)
-                .includeConnectionLabels(false)
-                .includeBlazes(false); 
+                .withDrawFlags(flags);
         instance.build();
     }
     
@@ -353,11 +294,7 @@ public class SVGGraphBuilderNGTest {
                 .withReadableGraph(graph.getReadableGraph())
                 .fromPerspective(AxisConstants.Z_POSITIVE)
                 .withSelectedElementsOnly(false)
-                .includeNodes(true)
-                .includeNodeLabels(true)
-                .includeConnections(true)
-                .includeConnectionLabels(false)
-                .includeBlazes(false); 
+                .withDrawFlags(flags);
         instance.build();
     }
     
