@@ -93,7 +93,7 @@ public final class WordCloudTopComponent extends JavaFxTopComponent<WordCloudPan
 
             // Update word cloud pane's size when window size changes
             scene.heightProperty().addListener((obv, oldVal, newVal) -> {
-                wordCloudPane.setContentHeight((int) (double) newVal);
+                wordCloudPane.setContentHeight(newVal.intValue());
             });
         });
     }

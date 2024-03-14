@@ -230,9 +230,10 @@ public class WordCloudPane extends BorderPane {
         noWord = new Hyperlink();
         noWord.setMaxSize(0, 0);
     }
-    
+
     /**
-     * Sets the height of the whole word cloud pane and adjustes elements to fit
+     * Sets the height of the whole word cloud pane and adjusts elements to fit
+     *
      * @param height the new height of the pane
      */
     public void setContentHeight(final int height) {
@@ -282,6 +283,7 @@ public class WordCloudPane extends BorderPane {
     public void enableTheCloud(final boolean unionButtonSelected, final boolean frequencyButtonSelected, final boolean hasSignificances) {
         theCloud.setVisible(true);
         theCloud.setManaged(true);
+        everything.setDividerPositions(0.5f);
         if (unionButtonSelected) {
             modeButtons.selectToggle(union);
         } else {
@@ -315,6 +317,7 @@ public class WordCloudPane extends BorderPane {
         wordHolder.setMinHeight(0);
         theCloud.setVisible(false);
         theCloud.setManaged(false);
+        everything.setDividerPositions(0.0f);
     }
 
     /**
