@@ -56,7 +56,7 @@ ENV NETBEANS_CHECKSUM="1bd5695755eb9547d88a5539a6e43884d787dba4da6ecadc1b261e07c
 
 COPY common.xml.modified ./
 
-RUN wget -q "https://dlcdn.apache.org/netbeans/netbeans/{NETBEANS_VERSION}/netbeans-${NETBEANS_VERSION}-bin.zip" \
+RUN wget -q "https://dlcdn.apache.org/netbeans/netbeans/${NETBEANS_VERSION}/netbeans-${NETBEANS_VERSION}-bin.zip" \
     && echo "${NETBEANS_CHECKSUM}" | sha512sum -c \
     && unzip -q "netbeans-${NETBEANS_VERSION}-bin.zip" \
     && wget -q "${NETBEANS_HELP_GITHUB}/org-netbeans-modules-javahelp.jar?raw=true" -O netbeans/platform/modules/org-netbeans-modules-javahelp.jar \
