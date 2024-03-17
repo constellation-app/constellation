@@ -34,12 +34,13 @@ ant \
   -Dnbplatform.default.netbeans.dest.dir="${NETBEANS_HOME}" \
   -Dnbplatform.default.harness.dir="${NETBEANS_HOME}"/harness \
   -Dtest.run.args="-javaagent:${JACOCO_AGENT} \
-    --add-opens=java.base/java.net=ALL-UNNAMED \ 
+    --add-opens=java.base/java.net=ALL-UNNAMED \
     --add-opens=javafx.graphics/com.sun.glass.ui=ALL-UNNAMED \
     --add-exports=javafx.graphics/com.sun.javafx.util=ALL-UNNAMED \
-    --add-exports=javafx.base/com.sun.javafx.event=ALL-UNNAMED \ 
-    --add-exports=javafx.base/com.sun.javafx.logging=ALL-UNNAMED \ 
+    --add-exports=javafx.base/com.sun.javafx.event=ALL-UNNAMED \
+    --add-exports=javafx.base/com.sun.javafx.logging=ALL-UNNAMED \
     --add-exports=javafx.base/com.sun.javafx.beans=ALL-UNNAMED \
+    --add-exports=javafx.graphics/com.sun.glass.ui.delegate=ALL-UNNAMED \
   -Djava.awt.headless=true -Dtestfx.robot=glass -Dtestfx.headless=true -Dprism.order=sw -Dprism.text=t2k" test
 
 title "Run Jacoco Processing"
