@@ -19,9 +19,12 @@ import au.gov.asd.tac.constellation.plugins.importexport.svg.GraphVisualisationR
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGObjectConstants;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGTemplateConstants;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.file.FileNameCleaner;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
+import au.gov.asd.tac.constellation.utilities.icon.FileIconData;
+import au.gov.asd.tac.constellation.utilities.icon.IconData;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.utilities.svg.SVGAttributeConstants;
 import au.gov.asd.tac.constellation.utilities.svg.SVGData;
@@ -230,40 +233,53 @@ public class GenerateSVGNodesTask implements Runnable, ThreadWithCommonPluginInt
         if (DefaultIconProvider.isVisable(icon)){
             svgIcon = icon.buildSVG(color);
             
-            // The SVGIcon built by the ConstellationIcon should be used ina ll cases except or then an external image directory is provided and the icon has an imbedded raster image.
+            // The SVGIcon built by the ConstellationIcon should be used in all cases except or then an external image directory is provided and the icon has an imbedded raster image.
             if (graph.directory.exists() && svgIcon.getType().equals(SVGTypeConstants.IMAGE.getTypeString())){
 
                 // Build the name of the referenced Raster Image
-                final StringBuilder fileName = new StringBuilder();
-                fileName.append(SVGParser.sanitisePlanText(icon.getExtendedName()));
+                final StringBuilder fileNameBuilder = new StringBuilder();                
+                
                 if (color != null) {
-                    fileName.append(" ");
-                    fileName.append(ConstellationColor.fromJavaColor(color).getHtmlColor().substring(1, 7));
+                    fileNameBuilder.append(ConstellationColor.fromJavaColor(color).getHtmlColor().substring(1, 7));
+                    fileNameBuilder.append(" ");
                 }
-                fileName.append(".png");
+                
+                if (icon.getIconData() instanceof FileIconData){
+                    FileIconData iconData = (FileIconData) icon.getIconData();
+                    fileNameBuilder.append(new File(iconData.getFilePath()).getName());
+                    
+                } else { 
+                    fileNameBuilder.append(icon.getExtendedName());
+                    fileNameBuilder.append(".png");
+                }
+                
+
+                
+                
+                final String fileName = FileNameCleaner.cleanFileName(fileNameBuilder.toString());
                 
                 // As the raster image refwerence will have a parent folder that sits in the same folder as the output svg file, a relative path can be generated.
-                final StringBuilder relativePath = new StringBuilder();
-                relativePath.append(".");
-                relativePath.append(File.separator);
-                relativePath.append(graph.directory.getName());
-                relativePath.append(File.separator);
-                relativePath.append(fileName.toString());
+                final StringBuilder relativePathBuilder = new StringBuilder();
+                relativePathBuilder.append(".");
+                relativePathBuilder.append(File.separator);
+                relativePathBuilder.append(graph.directory.getName());
+                relativePathBuilder.append(File.separator);
+                relativePathBuilder.append(SVGParser.sanitisePlanText(fileName));
 
                 // Update the svgIcons image reference to be the realitive path to th image. 
-                svgIcon.setAttribute(SVGAttributeConstants.HREF, relativePath.toString());
+                svgIcon.setAttribute(SVGAttributeConstants.HREF, relativePathBuilder.toString());
                 
                 // Build the complete path to the raster image reference.
-                final StringBuilder completePath = new StringBuilder();
-                completePath.append(graph.directory.getAbsolutePath());
-                completePath.append(File.separator);
-                completePath.append(fileName.toString());
+                final StringBuilder completePathBuilder = new StringBuilder();
+                completePathBuilder.append(graph.directory.getAbsolutePath());
+                completePathBuilder.append(File.separator);
+                completePathBuilder.append(fileName);
  
                 // Save the reference image file.
                 try {
                     
                     // Other threads or nodes may have already saved this file so only save the file if it does not already exist.  
-                    final File outputFile = new File(completePath.toString());
+                    final File outputFile = new File(completePathBuilder.toString());
                     if (!outputFile.exists()){
                         ImageIO.write(icon.buildBufferedImage(color), "png", outputFile);
                     }
