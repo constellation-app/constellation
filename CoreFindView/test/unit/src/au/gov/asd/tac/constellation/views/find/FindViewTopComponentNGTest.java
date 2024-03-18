@@ -147,7 +147,7 @@ public class FindViewTopComponentNGTest {
 
         doCallRealMethod().when(findViewTopComponent).createStyle();
 
-        assertEquals(null, findViewTopComponent.createStyle());
+        assertEquals("resources/find-view-light.css", findViewTopComponent.createStyle());
     }
 
     /**
