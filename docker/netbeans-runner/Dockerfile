@@ -20,8 +20,8 @@ RUN apt-get -y update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ENV SONAR_ZIP_FILENAME="sonar-scanner-cli-4.0.0.1744-linux.zip" \
-    SONAR_FILENAME="sonar-scanner-4.0.0.1744-linux" \
+ENV SONAR_ZIP_FILENAME="sonar-scanner-cli-5.0.1.3006-linux.zip" \
+    SONAR_FILENAME="sonar-scanner-5.0.1.3006-linux" \
     SONAR_DOWNLOAD_DIR="/tmp" \
     SONAR_HOME="/var/opt/sonar-scanner" 
 ENV SONAR_DOWNLOAD_URL="https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/${SONAR_ZIP_FILENAME}"
@@ -29,7 +29,7 @@ ENV SONAR_DOWNLOAD_URL="https://binaries.sonarsource.com/Distribution/sonar-scan
 RUN cd "${SONAR_DOWNLOAD_DIR}" \
     && echo "Downloading sonar-scanner....." \
     && if [ -d "/tmp/${SONAR_ZIP_FILENAME}" ] ; then sudo rm "${SONAR_DOWNLOAD_DIR}"/"${SONAR_ZIP_FILENAME}" ; fi \
-    && wget -q "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.0.0.1744-linux.zip" \
+    && wget -q "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip" \
     && echo "Download completed. Unziping downloaded file..." \
     && unzip "${SONAR_ZIP_FILENAME}" \
     && echo "Unzip completed." \
