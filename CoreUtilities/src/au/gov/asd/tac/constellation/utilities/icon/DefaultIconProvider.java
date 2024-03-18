@@ -146,4 +146,14 @@ public class DefaultIconProvider implements ConstellationIconProvider {
 
         return 2.0F * Math.max(Math.abs(0.5F - x), Math.abs(0.5F - y));
     }
+    
+    /**
+     * Determines if the provided Icon is visible to the user.
+     * Some icons, although they have image assets are totally transparent and are therefore not visible to the user.
+     * @param icon
+     * @return 
+     */
+    public static boolean isVisable(final ConstellationIcon icon){
+        return !(icon == null || EMPTY.getName().equals(icon.getName()) || TRANSPARENT.getName().equals(icon.getName()));
+    }
 }

@@ -37,6 +37,7 @@ public enum SVGAttributeConstants {
     FILTER("filter"),
     FONT_SIZE("font-size"),
     HEIGHT("height"),
+    HREF("xlink:href"),
     ID("id"),
     NAME_SPACE("xmlns"),
     OPACITY("opacity"),

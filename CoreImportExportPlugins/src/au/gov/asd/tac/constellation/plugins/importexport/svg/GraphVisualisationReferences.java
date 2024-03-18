@@ -16,9 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.importexport.svg;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.visual.framework.GraphVisualAccess;
 import au.gov.asd.tac.constellation.graph.visual.framework.VisualGraphDefaults;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
@@ -31,6 +29,7 @@ import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess.ConnectionDirection;
+import java.io.File;
 import org.bouncycastle.util.Arrays;
 
 /**
@@ -48,6 +47,7 @@ public class GraphVisualisationReferences {
     private final Camera camera;
     private final DrawFlags drawFlags;
     public final boolean selectedElementsOnly;
+    public final File directory;
     
     public GraphVisualisationReferences(final Frustum frustum, final Matrix44f modelViewProjectionMatrix, 
             final int[] viewPort, final Camera camera, final DrawFlags drawFlags, final boolean selectedElementsOnly) {
@@ -61,6 +61,25 @@ public class GraphVisualisationReferences {
         
         final Graph currentGraph = GraphManager.getDefault().getActiveGraph();
         this.access = new GraphVisualAccess(currentGraph);
+        directory = null;
+    }
+    
+    public GraphVisualisationReferences(final Frustum frustum, final Matrix44f modelViewProjectionMatrix, 
+            final int[] viewPort, final Camera camera, final DrawFlags drawFlags, final boolean selectedElementsOnly, final File directory) {
+        
+        this.viewFrustum = frustum.getCopy();
+        this.modelViewProjectionMatrix.set(modelViewProjectionMatrix);
+        this.viewPort = Arrays.clone(viewPort);
+        this.camera = new Camera(camera);
+        this.drawFlags = new DrawFlags(drawFlags.drawNodes(), drawFlags.drawConnections(), drawFlags.drawNodeLabels(), drawFlags.drawConnectionLabels(), drawFlags.drawBlazes());
+        this.selectedElementsOnly = selectedElementsOnly;
+        final Graph currentGraph = GraphManager.getDefault().getActiveGraph();
+        this.access = new GraphVisualAccess(currentGraph);
+        if (directory != null){
+            this.directory = new File(directory.getAbsolutePath());
+        } else {
+            this.directory = null;
+        }
     }
     
     public void initialise(){

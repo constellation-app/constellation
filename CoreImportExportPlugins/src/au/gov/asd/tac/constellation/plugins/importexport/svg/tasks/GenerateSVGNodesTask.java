@@ -21,12 +21,18 @@ import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGTempla
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
+import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
+import au.gov.asd.tac.constellation.utilities.svg.SVGAttributeConstants;
 import au.gov.asd.tac.constellation.utilities.svg.SVGData;
 import au.gov.asd.tac.constellation.utilities.svg.SVGObject;
+import au.gov.asd.tac.constellation.utilities.svg.SVGParser;
+import au.gov.asd.tac.constellation.utilities.svg.SVGTypeConstants;
+import java.awt.Color;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 
 /**
  * A runnable task designed to build SVG assets representing graph nodes.
@@ -37,8 +43,7 @@ import java.util.logging.Logger;
  */
 public class GenerateSVGNodesTask implements Runnable, ThreadWithCommonPluginInteraction {
 
-    private static final Logger LOGGER = Logger.getLogger(GenerateSVGNodesTask.class.getName());
-    private GraphVisualisationReferences graph;
+    private final GraphVisualisationReferences graph;
     private final List<Integer> vertexIndicies;
     private final List<SVGObject> output;
     private final int totalSteps;
@@ -84,12 +89,20 @@ public class GenerateSVGNodesTask implements Runnable, ThreadWithCommonPluginInt
                     }          
 
                     // Add background image to the node
-                    final SVGData svgBackgroundImageimage = backgroundIcon.buildSVG(color.getJavaColor());
-                    svgBackgroundImageimage.setParent(SVGObjectConstants.BACKGROUND_IMAGE.findIn(svgNode));
+                    final SVGData svgBackgroundImage = getSVGIcon(backgroundIcon, color.getJavaColor()); 
+                    if (svgBackgroundImage != null) {
+                        svgBackgroundImage.setParent(SVGObjectConstants.BACKGROUND_IMAGE.findIn(svgNode));
+                    } else {
+                        SVGObjectConstants.BACKGROUND_IMAGE.removeFrom(svgNode);
+                    }
 
                     // Add foreground image to the node
-                    final SVGData svgForegroundImage = foregroundIcon.buildSVG();
-                    svgForegroundImage.setParent(SVGObjectConstants.FOREGROUND_IMAGE.findIn(svgNode));
+                    final SVGData svgForegroundImage = getSVGIcon(foregroundIcon, null);
+                    if (svgForegroundImage != null) {
+                        svgForegroundImage.setParent(SVGObjectConstants.FOREGROUND_IMAGE.findIn(svgNode));
+                    } else {
+                        SVGObjectConstants.FOREGROUND_IMAGE.removeFrom(svgNode);
+                    }
 
                     // Add decorators to the node       
                     this.buildDecorator(SVGObjectConstants.NORTH_WEST_DECORATOR.findIn(svgNode), graph.getNWDecorator(vertexIndex));
@@ -120,8 +133,8 @@ public class GenerateSVGNodesTask implements Runnable, ThreadWithCommonPluginInt
         
         // Do not build a decorator if the decorator is for a Pinned attribute value of false.
         if (decoratorName != null && !"false_pinned".equals(decoratorName) && IconManager.iconExists(decoratorName)) {
-            final SVGData icon = IconManager.getIcon(decoratorName).buildSVG();
-            icon.setParent(svgDecorator);
+            final SVGData svgIcon = getSVGIcon(IconManager.getIcon(decoratorName), null);
+            svgIcon.setParent(svgDecorator);
         } else {
             svgDecorator.getParent().removeChild(svgDecorator.getID());
         }
@@ -202,5 +215,66 @@ public class GenerateSVGNodesTask implements Runnable, ThreadWithCommonPluginInt
     @Override
     public boolean isComplete() {
         return complete;
+    }
+    
+    /**
+     * Generates an SVG Icon with either a SVG asset, an embedded image or an externally referenced image.
+     * @param icon
+     * @param color
+     * @return 
+     */
+    private SVGData getSVGIcon(ConstellationIcon icon, Color color){
+        final SVGData svgIcon;
+        
+        // Some common icons are not visable and should not be exported
+        if (DefaultIconProvider.isVisable(icon)){
+            svgIcon = icon.buildSVG(color);
+            
+            // The SVGIcon built by the ConstellationIcon should be used ina ll cases except or then an external image directory is provided and the icon has an imbedded raster image.
+            if (graph.directory.exists() && svgIcon.getType().equals(SVGTypeConstants.IMAGE.getTypeString())){
+
+                // Build the name of the referenced Raster Image
+                final StringBuilder fileName = new StringBuilder();
+                fileName.append(SVGParser.sanitisePlanText(icon.getExtendedName()));
+                if (color != null) {
+                    fileName.append(" ");
+                    fileName.append(ConstellationColor.fromJavaColor(color).getHtmlColor().substring(1, 7));
+                }
+                fileName.append(".png");
+                
+                // As the raster image refwerence will have a parent folder that sits in the same folder as the output svg file, a relative path can be generated.
+                final StringBuilder relativePath = new StringBuilder();
+                relativePath.append(".");
+                relativePath.append(File.separator);
+                relativePath.append(graph.directory.getName());
+                relativePath.append(File.separator);
+                relativePath.append(fileName.toString());
+
+                // Update the svgIcons image reference to be the realitive path to th image. 
+                svgIcon.setAttribute(SVGAttributeConstants.HREF, relativePath.toString());
+                
+                // Build the complete path to the raster image reference.
+                final StringBuilder completePath = new StringBuilder();
+                completePath.append(graph.directory.getAbsolutePath());
+                completePath.append(File.separator);
+                completePath.append(fileName.toString());
+ 
+                // Save the reference image file.
+                try {
+                    
+                    // Other threads or nodes may have already saved this file so only save the file if it does not already exist.  
+                    final File outputFile = new File(completePath.toString());
+                    if (!outputFile.exists()){
+                        ImageIO.write(icon.buildBufferedImage(color), "png", outputFile);
+                    }
+                } catch (IOException ex) {
+                    //TODO: throw an exception here
+                }
+
+            }
+        } else {
+            svgIcon = null;
+        }
+        return svgIcon;
     }
 }

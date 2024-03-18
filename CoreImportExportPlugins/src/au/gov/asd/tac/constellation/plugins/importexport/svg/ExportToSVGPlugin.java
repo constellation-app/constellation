@@ -41,16 +41,21 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.visual.AxisConstants;
 import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javafx.stage.FileChooser;
 import org.apache.commons.lang3.StringUtils;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -67,6 +72,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class ExportToSVGPlugin extends SimpleReadPlugin {
     public static final String FILE_NAME_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "file_name");
     public static final String GRAPH_TITLE_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "graph_title");
+    public static final String IMAGE_MODE_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "image_mode");
     public static final String BACKGROUND_COLOR_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "background_color");
     public static final String SELECTED_ELEMENTS_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "selected_elements");
     public static final String CONNECTION_MODE_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "connection_mode");
@@ -95,6 +101,16 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         graphTitleParam.setDescription("Title of the graph");
         graphTitleParam.setRequired(true);
         parameters.addParameter(graphTitleParam);
+        
+        final PluginParameter<SingleChoiceParameterValue> imageModeParam = SingleChoiceParameterType.build(IMAGE_MODE_PARAMETER_ID);
+        imageModeParam.setName("Image Mode");
+        imageModeParam.setDescription("How do wou want raster images to be handled?\n Embedded = Single File, Large Size\n Linked = File & folder of image assets, Small Size ");
+        final List<String> imageModeOptions = new ArrayList<>();
+        imageModeOptions.add("Embedded");
+        imageModeOptions.add("Linked");
+        SingleChoiceParameterType.setOptions(imageModeParam, imageModeOptions);
+        SingleChoiceParameterType.setChoice(imageModeParam, "Embedded");
+        parameters.addParameter(imageModeParam);
         
         final PluginParameter<ColorParameterValue> backgroundColorParam = ColorParameterType.build(BACKGROUND_COLOR_PARAMETER_ID);
         backgroundColorParam.setName("Background Color");
@@ -134,10 +150,10 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         final PluginParameter<SingleChoiceParameterValue> exportPerspectiveParam = SingleChoiceParameterType.build(EXPORT_PERSPECTIVE_PARAMETER_ID);
         exportPerspectiveParam.setName("Export Perspective");
         exportPerspectiveParam.setDescription("The perspective the exported graph will be viewed from");
-        final List<String> options = new ArrayList<>();
-        options.add("Current Perspective");
-        options.addAll(Stream.of(AxisConstants.values()).map(AxisConstants::toString).collect(Collectors.toList()));
-        SingleChoiceParameterType.setOptions(exportPerspectiveParam, options);
+        final List<String> exportPerspectiveOptions = new ArrayList<>();
+        exportPerspectiveOptions.add("Current Perspective");
+        exportPerspectiveOptions.addAll(Stream.of(AxisConstants.values()).map(AxisConstants::toString).collect(Collectors.toList()));
+        SingleChoiceParameterType.setOptions(exportPerspectiveParam, exportPerspectiveOptions);
         SingleChoiceParameterType.setChoice(exportPerspectiveParam, "Current Perspective");
         parameters.addParameter(exportPerspectiveParam);
         
@@ -150,6 +166,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         // Get Parameter Values
         final String fnam = parameters.getStringValue(FILE_NAME_PARAMETER_ID);
         final String title = parameters.getStringValue(GRAPH_TITLE_PARAMETER_ID);
+        final String imageMode = parameters.getStringValue(IMAGE_MODE_PARAMETER_ID);
         final ConstellationColor color = parameters.getColorValue(BACKGROUND_COLOR_PARAMETER_ID);
         final boolean selectedElements = parameters.getBooleanValue(SELECTED_ELEMENTS_PARAMETER_ID);
         final boolean showNodes = parameters.getBooleanValue(SHOW_NODES_PARAMETER_ID);
@@ -163,7 +180,28 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
             throw new PluginException(PluginNotificationLevel.ERROR, "File location has not been specified.");
         }
         
-        final File imageFile = new File(fnam);  
+        // The output SVG File
+        final File exportedGraph = new File(fnam);  
+        
+        final StringBuilder assetDirectoryPath = new StringBuilder();
+        assetDirectoryPath.append(exportedGraph.getParentFile().getAbsolutePath());
+        assetDirectoryPath.append(File.separator);
+        assetDirectoryPath.append(exportedGraph.getName().replace(".svg", " - Image Assets"));
+
+        // The output reference image assets
+        final File assetDirectory = new File(assetDirectoryPath.toString());
+        assetDirectory.mkdir();
+        
+        // A directory of image assets may have already been created for a graph of the same name.
+        // This export will overwire these assets, so empty the directory.
+        for (File file : assetDirectory.listFiles()){
+            file.delete();
+        }
+            
+        // If the user has not selected a linked export he asset fdirectoy can now be deleted. 
+        if (!imageMode.equals("Linked")){
+            assetDirectory.delete();
+        }
         
         try {
             // Build a SVG representation of the graph
@@ -175,10 +213,11 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
                     .withSelectedElementsOnly(selectedElements)
                     .withDrawFlags(new DrawFlags(showNodes, showConnections, showNodeLabels, showConnectionLabels, showBlazes))
                     .fromPerspective(AxisConstants.getReference(exportPerspective))
+                    .atDirectory(assetDirectory)
                     .build();
             
             interaction.setExecutionStage(0, -1, "Exporting Graph", "Writing data to file", true);
-            exportToSVG(imageFile, svg, interaction);
+            exportToSVG(exportedGraph, svg, interaction);
             interaction.setProgress(1, 0, "Finished", true);
         
         // Catch exceptions for mising paramter values and issues writing to files

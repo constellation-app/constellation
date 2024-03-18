@@ -47,9 +47,12 @@ import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThre
 import au.gov.asd.tac.constellation.utilities.visual.AxisConstants;
 import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
+import java.io.File;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.logging.Logger;
@@ -90,6 +93,7 @@ public class SVGGraphBuilder {
     private Frustum viewFrustum;
     private int[] viewPort;    
     private ExecutorService threadPool;
+    private File directory;
      
     /**
     * Builder that generates the the output SVG file.
@@ -101,6 +105,10 @@ public class SVGGraphBuilder {
         access = new GraphVisualAccess(currentGraph);
    }
 
+    public SVGGraphBuilder atDirectory(final File directory){
+        this.directory = directory;
+        return this;
+    }
     /**
      * Specifies the {@link GraphReadMethods} representing the current active graph.
      * @param graph used to define the bounding box of the graph
@@ -281,13 +289,21 @@ public class SVGGraphBuilder {
             return new ArrayList<>();
         }  
         
+        // An arbitrary task count of 4 times the number of processors was chosen.
+        // It is difficult to know how may processors are available to run for this export plugin.
+        // Too few and the plugin runs slowely for no reason. 
+        // (3 tasks across 8 cores only uses 3 cores)
+        // slightly to many and the final stages fo the esxport run slowley as the final task is processed on only one core. 
+        // (9 tasks across 8 cores couls see 50% of the time concumed by the final task runninf on a single core)
+        final int taskCount = Runtime.getRuntime().availableProcessors() * 4;
+        
         // Get a unique sub list of vertex indicies for each available thread 
-        final List<List<Integer>> threadInputLists = createSubListsOfRange(0, access.getVertexCount(), Runtime.getRuntime().availableProcessors());
+        final List<List<Integer>> threadInputLists = createSubListsOfRange(0, access.getVertexCount(), taskCount);
         final List<List<SVGObject>> threadOuputLists = new ArrayList<>();
         
         // Create a task for each set of inputLists with an array list for their generated output
         for (int threadInput = 0; threadInput < threadInputLists.size(); threadInput++){
-            final GraphVisualisationReferences graph = new GraphVisualisationReferences(viewFrustum, modelViewProjectionMatrix, viewPort, camera, drawFlags, selectedElementsOnly);
+            final GraphVisualisationReferences graph = new GraphVisualisationReferences(viewFrustum, modelViewProjectionMatrix, viewPort, camera, drawFlags, selectedElementsOnly, directory);
             final ArrayList<SVGObject> output = new ArrayList<>();
             final GenerateSVGNodesTask task = new GenerateSVGNodesTask(graph, threadInputLists.get(threadInput), output);
             mti.addThread(task);
@@ -295,7 +311,7 @@ public class SVGGraphBuilder {
             CompletableFuture.runAsync(task, threadPool);
         }    
 
-        // Wait until all tasks are complete
+        // Wait until all tasks are complete.
         while (!mti.isComplete()){
             mti.setProgress(true);
         }
@@ -306,7 +322,7 @@ public class SVGGraphBuilder {
             nodes.addAll(outputList);
         }); 
         
-        // Update the PluginInteraction of the Nodes generated 
+        // Update the PluginInteraction of the Nodes generated.
         interaction.setProgress(1, 1, String.format("Created %s nodes", nodes.size()), true);
         return nodes;
         
