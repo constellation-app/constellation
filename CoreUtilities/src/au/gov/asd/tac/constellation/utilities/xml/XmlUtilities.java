@@ -27,7 +27,6 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -519,17 +518,14 @@ public class XmlUtilities {
         final NodeList rowList = document.getElementsByTagName(rowTag);
         for (int r = 0; r < rowList.getLength(); r++) {
             final Node rowNode = rowList.item(r);
-            if (rowNode instanceof Element) {
-                final Element rowElement = (Element) rowNode;
-
+            if (rowNode instanceof Element rowElement) {
                 final Map<String, String> row = new HashMap<>();
                 table.add(row);
 
                 final NodeList cellList = rowElement.getChildNodes();
                 for (int c = 0; c < cellList.getLength(); c++) {
                     final Node cellNode = cellList.item(c);
-                    if (cellNode instanceof Element) {
-                        final Element cellElement = (Element) cellNode;
+                    if (cellNode instanceof Element cellElement) {
                         row.put(cellElement.getTagName(), cellElement.getTextContent());
                     }
                 }
@@ -554,8 +550,7 @@ public class XmlUtilities {
         final NodeList rowList = tableElement.getChildNodes();
         for (int r = 0; r < rowList.getLength(); r++) {
             final Node rowNode = rowList.item(r);
-            if (rowNode instanceof Element) {
-                final Element rowElement = (Element) rowNode;
+            if (rowNode instanceof Element rowElement) {
 
                 final Map<String, String> row = new HashMap<>();
                 table.add(row);
@@ -563,8 +558,7 @@ public class XmlUtilities {
                 final NodeList cellList = rowElement.getChildNodes();
                 for (int c = 0; c < cellList.getLength(); c++) {
                     Node cellNode = cellList.item(c);
-                    if (cellNode instanceof Element) {
-                        final Element cellElement = (Element) cellNode;
+                    if (cellNode instanceof Element cellElement) {
                         row.put(cellElement.getTagName(), cellElement.getTextContent());
                     }
                 }
@@ -604,15 +598,13 @@ public class XmlUtilities {
         int rowIndex = 0;
         for (int r = 0; r < rowList.getLength(); r++) {
             final Node rowNode = rowList.item(r);
-            if (rowNode instanceof Element) {
-                final Element rowElement = (Element) rowNode;
+            if (rowNode instanceof Element rowElement) {
 
                 int columnIndex = 0;
                 final NodeList cellList = rowElement.getChildNodes();
                 for (int c = 0; c < cellList.getLength(); c++) {
                     final Node cellNode = cellList.item(c);
-                    if (cellNode instanceof Element) {
-                        final Element cellElement = (Element) cellNode;
+                    if (cellNode instanceof Element cellElement) {
                         setCell(table, rowIndex, columnIndex, cellElement.getTextContent(), swap);
                         columnIndex++;
                     }

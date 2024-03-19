@@ -128,9 +128,7 @@ public final class RecentFiles {
      */
     public static void init() {
         if (!Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(AWT_HEADLESS_PROPERTY))) {
-            WindowManager.getDefault().invokeWhenUIReady(() -> {
-                delayedInit();
-            });
+            WindowManager.getDefault().invokeWhenUIReady(() -> delayedInit());
         } else {
             // We are in HEADLESS mode ... do not wait for UI to be ready
             delayedInit();
@@ -439,8 +437,8 @@ public final class RecentFiles {
 
         @Override
         public boolean equals(final Object obj) {
-            if (obj instanceof HistoryItem) {
-                return ((HistoryItem) obj).getPath().equals(path);
+            if (obj instanceof HistoryItem historyItem) {
+                return historyItem.getPath().equals(path);
             }
             return false;
         }
