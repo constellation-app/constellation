@@ -44,7 +44,8 @@ import org.testng.annotations.Test;
  *
  * @author serpens24
  */
-public final class ColorIOProviderNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public final class ColorIOProviderNGTest extends ConstellationTest {
         
     // Create object under test
     ColorIOProvider instance;

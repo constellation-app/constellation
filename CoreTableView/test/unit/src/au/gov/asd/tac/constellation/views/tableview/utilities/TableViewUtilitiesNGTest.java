@@ -54,7 +54,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class TableViewUtilitiesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class TableViewUtilitiesNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(TableViewUtilitiesNGTest.class.getName());
 
     @BeforeClass

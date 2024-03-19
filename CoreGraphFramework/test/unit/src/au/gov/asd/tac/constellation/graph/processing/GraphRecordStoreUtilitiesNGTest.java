@@ -34,7 +34,8 @@ import org.testng.annotations.Test;
  *
  * @author algol
  */
-public class GraphRecordStoreUtilitiesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class GraphRecordStoreUtilitiesNGTest extends ConstellationTest {
 
     private static final int NUMBER_OF_VERTICES = 6;
     private static final int NUMBER_OF_TRANSACTIONS = 2;

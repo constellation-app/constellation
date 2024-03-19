@@ -57,7 +57,8 @@ import org.testng.annotations.Test;
  *
  * @author aldebaran30701
  */
-public class TooltipMouseEnteredHandlerNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class TooltipMouseEnteredHandlerNGTest extends ConstellationTest {
 
     private static final Logger LOGGER = Logger.getLogger(TooltipMouseEnteredHandlerNGTest.class.getName());
 

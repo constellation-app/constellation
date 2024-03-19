@@ -21,7 +21,8 @@ import org.testng.annotations.Test;
 /**
  * @author groombridge34a
  */
-public class Vector2dNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class Vector2dNGTest extends ConstellationTest {
 
     private static final double D1 = 123D;
     private static final double D2 = 321D;

@@ -21,7 +21,8 @@ import org.testng.annotations.Test;
 /**
  * @author groombridge34a
  */
-public class Matrix33fNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class Matrix33fNGTest extends ConstellationTest {
 
     private static final float F1 = 123F;
     private static final float F2 = 321F;

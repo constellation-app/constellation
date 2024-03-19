@@ -44,7 +44,8 @@ import org.testng.annotations.Test;
  *
  * @author aldebaran30701
  */
-public class LayersDualGraphSyncNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class LayersDualGraphSyncNGTest extends ConstellationTest {
 
     private int layerMaskV, layerMaskT, layerVisibilityV, layerVisibilityT, selectedV, selectedT, colorV, colorT;
     private int vxId1, vxId2, vxId3;

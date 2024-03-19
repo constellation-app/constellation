@@ -35,7 +35,8 @@ import org.testng.annotations.Test;
  * 
  * @author Delphinus8821
  */
-public class WelcomeViewPaneNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class WelcomeViewPaneNGTest extends ConstellationTest {
 
     private static final Logger LOGGER = Logger.getLogger(WelcomeViewPaneNGTest.class.getName());
 

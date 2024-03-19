@@ -33,7 +33,8 @@ import org.testng.annotations.Test;
  *
  * @author altair1673
  */
-public class ConfigurationPaneNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ConfigurationPaneNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(ConfigurationPaneNGTest.class.getName());
     public ConfigurationPaneNGTest() {
     }

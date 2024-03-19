@@ -48,7 +48,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class MergeNodesPluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class MergeNodesPluginNGTest extends ConstellationTest {
 
     private MergeNodesPlugin mergeNodesPlugin;
     private GraphWriteMethods graph;

@@ -31,7 +31,8 @@ import org.testng.annotations.Test;
  *
  * @author cygnus_x-1
  */
-public class AnalyticConceptNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class AnalyticConceptNGTest extends ConstellationTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {

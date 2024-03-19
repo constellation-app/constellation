@@ -33,7 +33,8 @@ import org.testng.annotations.Test;
  *
  * @author Nova
  */
-public class GlyphRectangleBufferNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class GlyphRectangleBufferNGTest extends ConstellationTest {
 
     private GlyphRectangleBuffer instance;
     private static final BufferedImage img1 = new BufferedImage(40, 5, DEFAULT_BUFFER_TYPE);

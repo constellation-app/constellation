@@ -36,7 +36,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class ByteAttributeDescriptionNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ByteAttributeDescriptionNGTest extends ConstellationTest {
 
     ByteAttributeDescription instance;
 

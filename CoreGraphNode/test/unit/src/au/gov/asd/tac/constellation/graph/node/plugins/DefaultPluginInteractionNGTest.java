@@ -41,7 +41,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class DefaultPluginInteractionNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DefaultPluginInteractionNGTest extends ConstellationTest {
 
     private PluginManager manager;
     private PluginReport report;

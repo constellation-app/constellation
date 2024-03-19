@@ -52,7 +52,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class TableCellFactoryNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class TableCellFactoryNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(TableCellFactoryNGTest.class.getName());
 
     private Table table;

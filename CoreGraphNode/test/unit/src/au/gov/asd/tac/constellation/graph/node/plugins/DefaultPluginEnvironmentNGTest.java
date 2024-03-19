@@ -63,7 +63,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class DefaultPluginEnvironmentNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DefaultPluginEnvironmentNGTest extends ConstellationTest {
 
     private static final Logger LOGGER = Logger.getLogger(DefaultPluginEnvironmentNGTest.class.getName());
 

@@ -48,7 +48,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus, serpens24
  */
-public class SaveResultsFileWriterNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class SaveResultsFileWriterNGTest extends ConstellationTest {
 
     // Mocked dependencies
     private MockedStatic<DataAccessPreferenceUtilities> mockedDataAccessPreferenceKeys;

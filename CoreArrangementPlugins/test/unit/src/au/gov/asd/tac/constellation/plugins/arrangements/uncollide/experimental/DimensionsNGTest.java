@@ -24,7 +24,8 @@ import org.testng.annotations.Test;
  *
  * @author Nova
  */
-public class DimensionsNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DimensionsNGTest extends ConstellationTest {
 
     /**
      * Test of getOptions method, of class Dimensions.

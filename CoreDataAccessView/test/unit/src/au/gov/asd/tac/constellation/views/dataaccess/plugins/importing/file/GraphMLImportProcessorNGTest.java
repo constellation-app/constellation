@@ -43,7 +43,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class GraphMLImportProcessorNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class GraphMLImportProcessorNGTest extends ConstellationTest {
     
     public GraphMLImportProcessorNGTest() {
     }

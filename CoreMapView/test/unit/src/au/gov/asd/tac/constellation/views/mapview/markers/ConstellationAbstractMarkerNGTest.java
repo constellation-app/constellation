@@ -28,7 +28,8 @@ import org.testng.annotations.Test;
  *
  * @author cygnus_x-1
  */
-public class ConstellationAbstractMarkerNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ConstellationAbstractMarkerNGTest extends ConstellationTest {
 
     private static final Logger LOGGER = Logger.getLogger(ConstellationAbstractMarkerNGTest.class.getName());
 

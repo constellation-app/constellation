@@ -32,7 +32,8 @@ import org.testng.annotations.Test;
  *
  * @author aldebaran30701
  */
-public class UnknownTypeRuleNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class UnknownTypeRuleNGTest extends ConstellationTest {
 
     public UnknownTypeRuleNGTest() {
     }

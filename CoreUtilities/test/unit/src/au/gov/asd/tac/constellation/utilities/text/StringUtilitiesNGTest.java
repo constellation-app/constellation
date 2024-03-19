@@ -28,7 +28,8 @@ import org.testng.annotations.Test;
  *
  * @author algol
  */
-public class StringUtilitiesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class StringUtilitiesNGTest extends ConstellationTest {
 
     private static final String DELIM = ",";
 

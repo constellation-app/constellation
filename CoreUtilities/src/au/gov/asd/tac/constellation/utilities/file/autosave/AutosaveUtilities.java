@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.graph.file.save;
+package au.gov.asd.tac.constellation.utilities.file.autosave;
 
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.NbPreferences;
+import org.testng.Reporter;
 
 /**
  *
@@ -218,6 +219,7 @@ public final class AutosaveUtilities {
      * rid of dangling files.
      */
     public static void cleanup() {
+        Reporter.log("A CLEANUP OCCURED!!!!!!", true);
         // Find .star files aithout a .star_auto.
         for (final File star : getAutosaves(FileExtensionConstants.STAR)) {
             final File auto = new File(star.getPath() + "_auto");

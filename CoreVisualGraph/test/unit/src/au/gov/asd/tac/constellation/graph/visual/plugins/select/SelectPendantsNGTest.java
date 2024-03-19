@@ -38,7 +38,8 @@ import org.testng.annotations.Test;
  *
  * @author altair
  */
-public class SelectPendantsNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class SelectPendantsNGTest extends ConstellationTest {
 
     private int attrX, attrY, attrZ;
     private int vxId1, vxId2, vxId3, vxId4, vxId5;

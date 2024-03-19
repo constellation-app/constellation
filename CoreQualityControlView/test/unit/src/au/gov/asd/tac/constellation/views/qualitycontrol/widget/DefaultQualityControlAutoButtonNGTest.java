@@ -16,10 +16,11 @@
 package au.gov.asd.tac.constellation.views.qualitycontrol.widget;
 
 import au.gov.asd.tac.constellation.graph.StoreGraph;
-import au.gov.asd.tac.constellation.graph.file.save.AutosaveUtilities;
+import au.gov.asd.tac.constellation.utilities.file.autosave.AutosaveUtilities;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTestListener;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlEvent;
 import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlEvent.QualityCategory;
@@ -42,9 +43,11 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
-public class DefaultQualityControlAutoButtonNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DefaultQualityControlAutoButtonNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(DefaultQualityControlAutoButtonNGTest.class.getName());
 
     private StoreGraph graph;
@@ -69,9 +72,9 @@ public class DefaultQualityControlAutoButtonNGTest {
         // My guess is that there is a test generating these files and not cleaning
         // up which is why this test is consistently failing when run on CI. Its that
         // file cleanup that should be fixed!!!
-        Arrays.stream(AutosaveUtilities.getAutosaves(FileExtensionConstants.STAR_AUTOSAVE))
-                .forEach(file -> file.delete());
-
+//        Arrays.stream(AutosaveUtilities.getAutosaves(FileExtensionConstants.STAR_AUTOSAVE))
+//                .forEach(file -> file.delete());
+//
         if (!FxToolkit.isFXApplicationThreadRunning()) {
             FxToolkit.registerPrimaryStage();
         }

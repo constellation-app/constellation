@@ -60,7 +60,8 @@ import org.testng.annotations.Test;
  *
  * @author Delphinus8821
  */
-public class AnalyticViewControllerNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class AnalyticViewControllerNGTest extends ConstellationTest {
 
     private static final Logger LOGGER = Logger.getLogger(AnalyticViewControllerNGTest.class.getName());
     private final AnalyticViewTopComponent topComponent = mock(AnalyticViewTopComponent.class);

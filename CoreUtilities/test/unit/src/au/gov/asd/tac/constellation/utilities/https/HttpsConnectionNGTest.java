@@ -45,7 +45,8 @@ import static org.mockito.Mockito.mock;
 /**
  * @author groombridge34a
  */
-public class HttpsConnectionNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class HttpsConnectionNGTest extends ConstellationTest {
     
     private static final URL DUMMY_HTTP_URL = getDummyUrl(false);
     private static final URL DUMMY_HTTPS_URL = getDummyUrl(true);

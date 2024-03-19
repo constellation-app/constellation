@@ -34,7 +34,8 @@ import org.testng.annotations.Test;
  *
  * @author cygnus_x-1
  */
-public class HitsCentralityPluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class HitsCentralityPluginNGTest extends ConstellationTest {
 
     private int vertexHitsAuthorityAttribute, vertexHitsHubAttribute;
     private int vxId0, vxId1, vxId2, vxId3, vxId4;

@@ -40,7 +40,8 @@ import org.testng.annotations.Test;
  *
  * @author Delphinus8821
  */
-public class PluginReporterPaneNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class PluginReporterPaneNGTest extends ConstellationTest {
 
     private static final Logger LOGGER = Logger.getLogger(PluginReporterPaneNGTest.class.getName());
 

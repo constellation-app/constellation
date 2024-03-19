@@ -38,7 +38,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class FileParameterTypeNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class FileParameterTypeNGTest extends ConstellationTest {
     
     @BeforeClass
     public static void setUpClass() throws Exception {

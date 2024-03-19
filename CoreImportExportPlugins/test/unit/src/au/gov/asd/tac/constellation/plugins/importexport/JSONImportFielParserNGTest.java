@@ -35,7 +35,8 @@ import org.testng.annotations.Test;
  *
  * @author serpens24
  */
-public class JSONImportFielParserNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class JSONImportFielParserNGTest extends ConstellationTest {
 
     // Refelction used to view private fields in class under test.
     static JSONImportFileParser instance = new JSONImportFileParser();

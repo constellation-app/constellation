@@ -34,7 +34,8 @@ import org.testng.annotations.Test;
  *
  * @author canis_majoris
  */
-public class ClusteringCoefficientNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ClusteringCoefficientNGTest extends ConstellationTest {
 
     private int ccAttribute;
     private int triaAttribute;

@@ -32,7 +32,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class SchemaVertexTypeNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class SchemaVertexTypeNGTest extends ConstellationTest {
 
     public SchemaVertexTypeNGTest() {
     }

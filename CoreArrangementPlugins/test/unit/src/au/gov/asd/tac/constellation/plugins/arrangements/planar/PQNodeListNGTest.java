@@ -27,7 +27,8 @@ import org.testng.annotations.Test;
  *
  * @author twilight_sparkle
  */
-public class PQNodeListNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class PQNodeListNGTest extends ConstellationTest {
 
     PQNodeListTest tester = new PQNodeListTest();
 

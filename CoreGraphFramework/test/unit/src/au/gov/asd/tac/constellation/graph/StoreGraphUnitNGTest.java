@@ -23,7 +23,8 @@ import org.testng.annotations.Test;
  *
  * @author sirius
  */
-public class StoreGraphUnitNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class StoreGraphUnitNGTest extends ConstellationTest {
 
     @Test
     public void singleEdgeTest() {

@@ -22,7 +22,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class TableViewStateAttributeDescriptionNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class TableViewStateAttributeDescriptionNGTest extends ConstellationTest {
 
     @Test
     public void confirmInitialNameOfAttrDescription() {

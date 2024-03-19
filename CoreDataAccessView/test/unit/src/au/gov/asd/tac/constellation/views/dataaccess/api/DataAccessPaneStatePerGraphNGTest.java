@@ -25,7 +25,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class DataAccessPaneStatePerGraphNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DataAccessPaneStatePerGraphNGTest extends ConstellationTest {
     
     @Test
     public void equality() {

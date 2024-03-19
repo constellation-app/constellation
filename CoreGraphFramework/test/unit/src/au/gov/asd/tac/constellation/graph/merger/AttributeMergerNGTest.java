@@ -29,7 +29,8 @@ import org.testng.annotations.Test;
  *
  * @author sirius
  */
-public class AttributeMergerNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class AttributeMergerNGTest extends ConstellationTest {
 
     /**
      * Tests that getting an attribute merger returns the merger that was

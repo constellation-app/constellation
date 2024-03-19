@@ -38,7 +38,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class VisualConceptNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class VisualConceptNGTest extends ConstellationTest {
     
     public VisualConceptNGTest() {
     }

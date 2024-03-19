@@ -38,7 +38,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class ResponseNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ResponseNGTest extends ConstellationTest {
 
     public ResponseNGTest() {
     }

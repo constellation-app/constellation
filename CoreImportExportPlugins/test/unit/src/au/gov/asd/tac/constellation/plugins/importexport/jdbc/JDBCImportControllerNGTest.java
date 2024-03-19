@@ -28,7 +28,8 @@ import org.testng.annotations.Test;
  *
  * @author altair1673
  */
-public class JDBCImportControllerNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class JDBCImportControllerNGTest extends ConstellationTest {
 
     public JDBCImportControllerNGTest() {
     }

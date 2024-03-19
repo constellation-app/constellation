@@ -40,7 +40,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class AttributeUtilitiesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class AttributeUtilitiesNGTest extends ConstellationTest {
 
     public AttributeUtilitiesNGTest() {
     }

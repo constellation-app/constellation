@@ -32,7 +32,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class MissingTypeRuleNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class MissingTypeRuleNGTest extends ConstellationTest {
 
     public MissingTypeRuleNGTest() {
     }

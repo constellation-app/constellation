@@ -27,7 +27,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class LongAttributeInteractionNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class LongAttributeInteractionNGTest extends ConstellationTest {
     
     public LongAttributeInteractionNGTest() {
     }

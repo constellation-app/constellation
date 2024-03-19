@@ -29,7 +29,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class CameraAttributeDescriptionNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class CameraAttributeDescriptionNGTest extends ConstellationTest {
 
     public CameraAttributeDescriptionNGTest() {
     }

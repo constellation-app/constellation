@@ -39,7 +39,8 @@ import org.testng.annotations.Test;
  *
  * @author Delphinus8821
  */
-public class DefaultCustomIconProviderNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DefaultCustomIconProviderNGTest extends ConstellationTest {
 
     final static String TEST_ICON_NAME = "Category1.TestIcon1";
 

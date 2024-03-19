@@ -37,7 +37,8 @@ import org.testng.annotations.Test;
  *
  * @author capricornunicorn123
  */
-public class MultiChoiceInputFieldNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class MultiChoiceInputFieldNGTest extends ConstellationTest {
     
     static final Logger LOGGER = Logger.getLogger(MultiChoiceInputFieldNGTest.class.getName());
 

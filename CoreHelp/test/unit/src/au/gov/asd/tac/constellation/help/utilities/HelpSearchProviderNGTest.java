@@ -34,7 +34,7 @@ import org.testng.annotations.Test;
  *
  * @author Delphinus8821
  */
-public class HelpSearchProviderNGTest {
+ public class HelpSearchProviderNGTest {
 
     SearchResponse response;
     SearchRequest request;

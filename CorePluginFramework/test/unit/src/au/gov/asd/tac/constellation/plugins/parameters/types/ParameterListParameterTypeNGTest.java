@@ -46,7 +46,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class ParameterListParameterTypeNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ParameterListParameterTypeNGTest extends ConstellationTest {
 
     private static final Logger LOGGER = Logger.getLogger(ParameterListParameterTypeNGTest.class.getName());
     

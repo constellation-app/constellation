@@ -30,7 +30,8 @@ import org.testng.annotations.Test;
  *
  * @author algol
  */
-public class AttributeSetGetNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class AttributeSetGetNGTest extends ConstellationTest {
 
     public AttributeSetGetNGTest() {
     }

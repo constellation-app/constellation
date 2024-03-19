@@ -49,7 +49,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class DataSourceTitledPaneNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DataSourceTitledPaneNGTest extends ConstellationTest {
     
     private static final String PLUGIN_NAME = "plugin name";
     private static final String GLOBAL_PARAM_1 = "global param 1";

@@ -29,7 +29,8 @@ import org.testng.annotations.Test;
  * Test {@link AcisConstants}
  * @author capricornunicorn123
  */
-public class AxisConstantsNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class AxisConstantsNGTest extends ConstellationTest {
     
     public AxisConstantsNGTest() {
     }

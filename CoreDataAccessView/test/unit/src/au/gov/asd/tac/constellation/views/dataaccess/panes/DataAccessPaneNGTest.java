@@ -67,7 +67,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class DataAccessPaneNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DataAccessPaneNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(DataAccessPaneNGTest.class.getName());
     
     private DataAccessViewTopComponent dataAccessViewTopComponent;

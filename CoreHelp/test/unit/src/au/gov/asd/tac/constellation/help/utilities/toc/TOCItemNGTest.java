@@ -26,7 +26,7 @@ import org.testng.annotations.Test;
  *
  * @author aldebaran30701
  */
-public class TOCItemNGTest {
+ public class TOCItemNGTest {
 
     public TOCItemNGTest() {
     }

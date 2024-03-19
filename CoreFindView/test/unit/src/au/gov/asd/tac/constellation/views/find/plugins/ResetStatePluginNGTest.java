@@ -42,7 +42,8 @@ import org.testng.annotations.Test;
  *
  * @author Atlas139mkm
  */
-public class ResetStatePluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ResetStatePluginNGTest extends ConstellationTest {
 
     private Graph graph;
     private static final Logger LOGGER = Logger.getLogger(ResetStatePluginNGTest.class.getName());

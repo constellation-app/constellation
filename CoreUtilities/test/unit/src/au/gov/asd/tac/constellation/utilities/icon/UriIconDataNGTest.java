@@ -40,7 +40,8 @@ import org.testng.annotations.Test;
  *
  * @author sol695510
  */
-public class UriIconDataNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class UriIconDataNGTest extends ConstellationTest {
 
     private static MockedStatic<HttpsUtilities> httpsUtilitiesStaticMock;
     private static MockedStatic<HttpsConnection> httpsConnectionStaticMock;

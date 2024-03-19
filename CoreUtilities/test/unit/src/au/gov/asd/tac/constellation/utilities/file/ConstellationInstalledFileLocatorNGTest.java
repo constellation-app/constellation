@@ -38,7 +38,8 @@ import org.testng.annotations.Test;
 /**
  * @author groombridge34a
  */
-public class ConstellationInstalledFileLocatorNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ConstellationInstalledFileLocatorNGTest extends ConstellationTest {
 
     /**
      * The file is returned if it is successfully located by

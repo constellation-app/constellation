@@ -26,7 +26,8 @@ import org.testng.annotations.Test;
  *
  * @author sirius
  */
-public class SchemaAttributeMergerNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class SchemaAttributeMergerNGTest extends ConstellationTest {
 
     /**
      * Tests that when an attribute merger is specified on a schema attribute is

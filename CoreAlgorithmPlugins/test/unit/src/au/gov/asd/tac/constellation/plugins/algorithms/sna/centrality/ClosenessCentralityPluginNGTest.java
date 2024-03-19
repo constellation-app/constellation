@@ -35,7 +35,8 @@ import org.testng.annotations.Test;
  *
  * @author cygnus_x-1
  */
-public class ClosenessCentralityPluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ClosenessCentralityPluginNGTest extends ConstellationTest {
 
     private int vertexClosenessAttribute, vertexInClosenessAttribute, vertexOutClosenessAttribute;
     private int vertexHarmonicClosenessAttribute, vertexInHarmonicClosenessAttribute, vertexOutHarmonicClosenessAttribute;

@@ -43,7 +43,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class IconManagerNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class IconManagerNGTest extends ConstellationTest {
     
     private static final Logger LOGGER = Logger.getLogger(IconManagerNGTest.class.getName());
 

@@ -32,7 +32,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class ColorAttributeInteractionNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ColorAttributeInteractionNGTest extends ConstellationTest {
 
     public ColorAttributeInteractionNGTest() {
     }

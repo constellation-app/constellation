@@ -27,7 +27,8 @@ import org.testng.annotations.Test;
  *
  * @author Auriga2
  */
-public class JNumberedTextAreaNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class JNumberedTextAreaNGTest extends ConstellationTest {
 
     public JNumberedTextAreaNGTest() {
     }

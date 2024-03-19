@@ -38,7 +38,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class DirectedShortestPathsPluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DirectedShortestPathsPluginNGTest extends ConstellationTest {
     
     private StoreGraph graph;
     

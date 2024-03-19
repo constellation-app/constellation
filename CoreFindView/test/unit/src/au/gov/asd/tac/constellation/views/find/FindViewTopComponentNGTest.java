@@ -63,7 +63,8 @@ import org.testng.annotations.Test;
  *
  * @author Atlas139mkm
  */
-public class FindViewTopComponentNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class FindViewTopComponentNGTest extends ConstellationTest {
 
     private Graph graph;
     private Map<String, Graph> graphMap = new HashMap<>();

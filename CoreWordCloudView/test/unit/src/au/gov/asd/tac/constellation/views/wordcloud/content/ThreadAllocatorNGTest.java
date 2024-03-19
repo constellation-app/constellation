@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.wordcloud.content;
 
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -27,7 +28,7 @@ import org.testng.annotations.Test;
  * 
  * @author Delphinus8821
  */
-public class ThreadAllocatorNGTest {
+public class ThreadAllocatorNGTest extends ConstellationTest {
     
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -166,7 +167,7 @@ public class ThreadAllocatorNGTest {
         assertEquals(result.numberOfElements, numOfElements);
 
     }
-
+    
     public class ThreadAllocatorImpl extends ThreadAllocator {
 
         @Override

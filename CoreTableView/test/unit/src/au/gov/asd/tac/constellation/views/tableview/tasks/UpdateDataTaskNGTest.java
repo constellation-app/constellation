@@ -65,7 +65,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class UpdateDataTaskNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class UpdateDataTaskNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(UpdateDataTaskNGTest.class.getName());
 
     private TablePane tablePane;

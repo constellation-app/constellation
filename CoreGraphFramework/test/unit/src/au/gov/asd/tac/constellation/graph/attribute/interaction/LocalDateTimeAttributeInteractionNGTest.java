@@ -28,7 +28,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class LocalDateTimeAttributeInteractionNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class LocalDateTimeAttributeInteractionNGTest extends ConstellationTest {
     
     public LocalDateTimeAttributeInteractionNGTest() {
     }

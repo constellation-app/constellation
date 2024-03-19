@@ -54,7 +54,8 @@ import org.testng.annotations.Test;
 /**
  * @author groombridge34a
  */
-public class StyleGeneratorNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class StyleGeneratorNGTest extends ConstellationTest {
     
     private static final Logger LOGGER = Logger.getLogger(StyleGenerator.class.getName());
     private static OutputStream logCapturingStream;
@@ -118,25 +119,29 @@ public class StyleGeneratorNGTest {
        Point. It will return styles for any Geometry type class that is 
        assignable to any of the four aforementioned types. Test this by using
        dummy subclasses of each type. */
-    public class TestPolygon extends Polygon {
+
+ public class TestPolygon extends Polygon {
         public TestPolygon(final LinearRing shell, final LinearRing[] holes, 
                 final GeometryFactory factory) {
             super(shell, holes, factory);
         }
     }
-    public class TestMultiPolygon extends MultiPolygon {
+ 
+ public class TestMultiPolygon extends MultiPolygon {
         public TestMultiPolygon(final Polygon[] polygons, 
                 final GeometryFactory factory) {
             super(polygons, factory);
         }
     }
-    public class TestLineString extends LineString {
+
+ public class TestLineString extends LineString {
         public TestLineString(final CoordinateSequence points, 
                 final GeometryFactory factory) {
             super(points, factory);
         }
     }
-    public class TestPoint extends Point {
+
+ public class TestPoint extends Point {
         public TestPoint(final CoordinateSequence coordinates, 
                 final GeometryFactory factory) {
             super(coordinates, factory);

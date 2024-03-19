@@ -40,7 +40,8 @@ import org.testng.annotations.Test;
  *
  * @author altair
  */
-public class SelectAllNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class SelectAllNGTest extends ConstellationTest {
 
     private int attr1;
     private int attr2;

@@ -44,7 +44,8 @@ import org.testng.annotations.Test;
  *
  * @author Delphinus8821
  */
-public class HelpServletNGTest {
+
+ public class HelpServletNGTest {
 
     public HelpServletNGTest() {
     }

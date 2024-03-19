@@ -34,7 +34,8 @@ import org.testng.annotations.Test;
  * 
  * @author Delphinus8821
  */
-public class ClusterDocumentsParametersNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ClusterDocumentsParametersNGTest extends ConstellationTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {

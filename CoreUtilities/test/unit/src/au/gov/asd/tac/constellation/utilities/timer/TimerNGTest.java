@@ -26,7 +26,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class TimerNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class TimerNGTest extends ConstellationTest {
     
     public TimerNGTest() {
     }

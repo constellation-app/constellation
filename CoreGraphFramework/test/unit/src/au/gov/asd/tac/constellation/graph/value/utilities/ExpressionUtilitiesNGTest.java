@@ -29,7 +29,8 @@ import org.testng.annotations.Test;
  *
  * @author aldebaran30701
  */
-public class ExpressionUtilitiesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ExpressionUtilitiesNGTest extends ConstellationTest {
     
     public ExpressionUtilitiesNGTest() {
     }

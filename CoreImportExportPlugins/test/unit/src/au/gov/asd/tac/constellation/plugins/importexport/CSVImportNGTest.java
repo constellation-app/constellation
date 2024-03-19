@@ -33,7 +33,8 @@ import org.testng.annotations.Test;
  *
  * @author altair
  */
-public class CSVImportNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class CSVImportNGTest extends ConstellationTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {

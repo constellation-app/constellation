@@ -45,7 +45,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class RecordStoreDropperNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class RecordStoreDropperNGTest extends ConstellationTest {
 
     /**
      * Test of drop method, of class RecordStoreDropper.

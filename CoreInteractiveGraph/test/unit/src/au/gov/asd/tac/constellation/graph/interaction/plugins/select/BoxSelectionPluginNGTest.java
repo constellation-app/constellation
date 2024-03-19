@@ -33,7 +33,8 @@ import org.testng.annotations.Test;
  *
  * @author aldebaran30701
  */
-public class BoxSelectionPluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class BoxSelectionPluginNGTest extends ConstellationTest {
 
     BoxSelectionPlugin boxSelect;
     Camera camera;

@@ -34,7 +34,8 @@ import org.testng.annotations.Test;
  *
  * @author canis_majoris
  */
-public class ConnectivityDegreePluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ConnectivityDegreePluginNGTest extends ConstellationTest {
 
     private int connectivityDegreeAttribute;
     private int componentSizeAttribute;

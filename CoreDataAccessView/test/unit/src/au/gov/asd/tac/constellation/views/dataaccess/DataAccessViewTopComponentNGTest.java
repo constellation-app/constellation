@@ -47,7 +47,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class DataAccessViewTopComponentNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DataAccessViewTopComponentNGTest extends ConstellationTest {
     private static MockedStatic<ProxyUtilities> proxyUtilsMockedStatic;
     
     private List<DataAccessPane> constructedDataAccessPanes;

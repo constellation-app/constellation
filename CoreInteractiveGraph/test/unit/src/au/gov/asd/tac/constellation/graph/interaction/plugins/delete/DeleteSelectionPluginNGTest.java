@@ -31,7 +31,8 @@ import org.testng.annotations.Test;
  *
  * @author Delphinus8821
  */
-public class DeleteSelectionPluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DeleteSelectionPluginNGTest extends ConstellationTest {
 
     private int attrX, attrY;
     private int vxId1, vxId2, vxId3, vxId4, vxId5, vxId6, vxId7;

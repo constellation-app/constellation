@@ -39,7 +39,8 @@ import org.testng.annotations.Test;
  *
  * @author aldebaran30701
  */
-public class HelpOptionsPanelControllerNGTest {
+
+ public class HelpOptionsPanelControllerNGTest {
 
     Preferences prefs;
 

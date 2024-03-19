@@ -31,7 +31,8 @@ import org.testng.annotations.Test;
  *
  * @author Delphinus8821
  */
-public class WhatsNewWelcomePluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class WhatsNewWelcomePluginNGTest extends ConstellationTest {
 
     private static final Logger LOGGER = Logger.getLogger(WhatsNewWelcomePluginNGTest.class.getName());
 

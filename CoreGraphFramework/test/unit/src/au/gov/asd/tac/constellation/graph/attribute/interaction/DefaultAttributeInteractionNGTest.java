@@ -27,7 +27,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class DefaultAttributeInteractionNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DefaultAttributeInteractionNGTest extends ConstellationTest {
     
     public DefaultAttributeInteractionNGTest() {
     }

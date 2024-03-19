@@ -34,7 +34,8 @@ import org.testng.annotations.Test;
  *
  * @author canis_majoris
  */
-public class AverageDegreeNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class AverageDegreeNGTest extends ConstellationTest {
 
     private int graphAttribute;
     private int vxId0, vxId1, vxId2, vxId3, vxId4;

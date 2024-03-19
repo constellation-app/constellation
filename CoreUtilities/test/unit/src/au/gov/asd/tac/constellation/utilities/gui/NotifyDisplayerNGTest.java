@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.utilities.gui;
 
 import java.awt.EventQueue;
+import java.awt.GraphicsEnvironment;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
@@ -47,13 +48,15 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 /**
  *
  * @author formalhaunt
  */
-public class NotifyDisplayerNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class NotifyDisplayerNGTest extends ConstellationTest {
 
     private static final Logger LOGGER = Logger.getLogger(NotifyDisplayerNGTest.class.getName());
 
@@ -78,7 +81,7 @@ public class NotifyDisplayerNGTest {
         // TODO: This test throws errors in headless due to 
         // the implementation of the NotifyDisplayer.display(NotifyDescriptor).
         // See the NotifyDisplayer.display(NotifyDescriptor) method for information on OS compatability issues.
-        if (!Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty("java.awt.headless"))){
+        if (!GraphicsEnvironment.isHeadless()) {
             //Tests throw errors in headless
             display(true, true, true);
             display(true, false, true);
@@ -92,7 +95,7 @@ public class NotifyDisplayerNGTest {
         // TODO: This test throws errors in headless due to 
         // the implementation of the NotifyDisplayer.display(String, Icon, String).
         // See the NotifyDisplayer.display(String, Icon, String) method for information on OS compatability issues.
-        if (!Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty("java.awt.headless"))){
+       if (!GraphicsEnvironment.isHeadless()) {
             displayWithIcon(true, true, true);
             displayWithIcon(true, false, true);
             displayWithIcon(false, true, true);

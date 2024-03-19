@@ -43,7 +43,7 @@ ENV ZULU_VERSION="zulu11.37.19-ca-fx-jdk11.0.6-linux_x64"
 ENV ZULU_CHECKSUM="f7720d2f3973c230f81b35dc9b36f72009416cf418a724f298c4513268b9e9e313744ff45f646e43a5e313ee1ef780cc3aa0232c22f36a30c8cde3db37427172  ${ZULU_VERSION}.tar.gz"
 
 RUN wget -q "https://cdn.azul.com/zulu/bin/${ZULU_VERSION}.tar.gz" \
-    && echo "${ZULU_CHECKSUM}" | sha512sum -c \
+    && echo "${ZULU_CHECKSUM}" | sha256sum -c \
     && tar -xf "${ZULU_VERSION}.tar.gz" \
     && mkdir -p /usr/java/ \
     && mv "${ZULU_VERSION}" /usr/java/ \

@@ -34,7 +34,8 @@ import org.testng.annotations.Test;
  *
  * @author canis_majoris
  */
-public class GraphDistanceNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class GraphDistanceNGTest extends ConstellationTest {
 
     private int dAttribute, rAttribute, aAttribute;
     private int vxId0, vxId1, vxId2, vxId3, vxId4, vxId5;

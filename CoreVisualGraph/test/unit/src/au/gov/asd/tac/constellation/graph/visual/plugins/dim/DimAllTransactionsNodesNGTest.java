@@ -38,7 +38,8 @@ import org.testng.annotations.Test;
  *
  * @author altair
  */
-public class DimAllTransactionsNodesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DimAllTransactionsNodesNGTest extends ConstellationTest {
 
     private int attr1;
     private int attr2;

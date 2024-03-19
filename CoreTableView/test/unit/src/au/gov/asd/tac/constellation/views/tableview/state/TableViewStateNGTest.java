@@ -26,7 +26,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class TableViewStateNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class TableViewStateNGTest extends ConstellationTest {
 
     @Test
     public void comlumnAttributesTransactionElements() {

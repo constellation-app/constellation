@@ -54,7 +54,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class PluginParameterNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class PluginParameterNGTest extends ConstellationTest {
     
     @BeforeClass
     public static void setUpClass() throws Exception {

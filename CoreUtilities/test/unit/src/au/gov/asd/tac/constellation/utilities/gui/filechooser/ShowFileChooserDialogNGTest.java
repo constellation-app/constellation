@@ -37,7 +37,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class ShowFileChooserDialogNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ShowFileChooserDialogNGTest extends ConstellationTest {
     
     @Test
     public void run_open_save() {

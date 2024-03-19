@@ -28,7 +28,8 @@ import org.testng.annotations.Test;
  *
  * @author algol
  */
-public class ElementCreationandConnectivityNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ElementCreationandConnectivityNGTest extends ConstellationTest {
 
     public ElementCreationandConnectivityNGTest() {
     }

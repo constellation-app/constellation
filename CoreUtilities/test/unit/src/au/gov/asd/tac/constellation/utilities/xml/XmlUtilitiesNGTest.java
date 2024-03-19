@@ -43,7 +43,8 @@ import org.xml.sax.SAXException;
  *
  * @author serpens24
  */
-public class XmlUtilitiesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class XmlUtilitiesNGTest extends ConstellationTest {
 
     private static final String OUTPUT_FILE = "testOutputFile.xml";
     private static final String XML_HDR = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";

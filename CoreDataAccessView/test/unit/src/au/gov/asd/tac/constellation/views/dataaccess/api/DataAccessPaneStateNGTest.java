@@ -39,7 +39,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class DataAccessPaneStateNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DataAccessPaneStateNGTest extends ConstellationTest {
     private static final String CURRENT_GRAPH_ID = "currentGraphId";
     private static final String GRAPH_ID = "graphId";
 

@@ -30,7 +30,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class LongObjectAttributeDescriptionNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class LongObjectAttributeDescriptionNGTest extends ConstellationTest {
 
     LongObjectAttributeDescription instance;
 

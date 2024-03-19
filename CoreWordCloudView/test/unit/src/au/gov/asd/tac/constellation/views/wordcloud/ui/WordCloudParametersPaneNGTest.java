@@ -39,7 +39,8 @@ import org.testng.annotations.Test;
  * 
  * @author Delphinus8821
  */
-public class WordCloudParametersPaneNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class WordCloudParametersPaneNGTest extends ConstellationTest {
 
     private static final Logger LOGGER = Logger.getLogger(WordCloudParametersPaneNGTest.class.getName());
     private final WordCloudTopComponent topComponent = mock(WordCloudTopComponent.class);

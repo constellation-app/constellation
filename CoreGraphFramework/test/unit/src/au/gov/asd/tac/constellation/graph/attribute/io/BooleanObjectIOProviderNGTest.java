@@ -40,7 +40,8 @@ import org.testng.annotations.Test;
  *
  * @author serpens24
  */
-public class BooleanObjectIOProviderNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class BooleanObjectIOProviderNGTest extends ConstellationTest {
     
     // Create object under test
     BooleanObjectIOProvider instance;

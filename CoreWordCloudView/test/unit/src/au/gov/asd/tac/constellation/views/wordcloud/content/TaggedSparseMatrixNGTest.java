@@ -30,7 +30,8 @@ import org.testng.annotations.Test;
  * 
  * @author Delphinus8821
  */
-public class TaggedSparseMatrixNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class TaggedSparseMatrixNGTest extends ConstellationTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {

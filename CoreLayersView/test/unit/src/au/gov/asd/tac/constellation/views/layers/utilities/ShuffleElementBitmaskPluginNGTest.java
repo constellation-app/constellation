@@ -34,7 +34,8 @@ import org.testng.annotations.Test;
  *
  * @author aldebaran30701
  */
-public class ShuffleElementBitmaskPluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ShuffleElementBitmaskPluginNGTest extends ConstellationTest {
 
     private int layerMaskV, layerMaskT, layerVisibilityV, layerVisibilityT, selectedV, selectedT;
     private int vxId1, vxId2, vxId3, vxId4, vxId5, vxId6, vxId7, txId1, txId2, txId3;

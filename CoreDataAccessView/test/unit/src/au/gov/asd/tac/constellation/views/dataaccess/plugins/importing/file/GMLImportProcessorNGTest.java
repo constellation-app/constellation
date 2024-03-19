@@ -41,7 +41,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class GMLImportProcessorNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class GMLImportProcessorNGTest extends ConstellationTest {
     
     public GMLImportProcessorNGTest() {
     }

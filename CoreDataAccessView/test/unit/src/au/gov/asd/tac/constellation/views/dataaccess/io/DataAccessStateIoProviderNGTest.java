@@ -44,7 +44,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class DataAccessStateIoProviderNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DataAccessStateIoProviderNGTest extends ConstellationTest {
 
     private static final int ATTRIBUTE_ID = 55;
     private static final int ELEMENT_ID = 77;

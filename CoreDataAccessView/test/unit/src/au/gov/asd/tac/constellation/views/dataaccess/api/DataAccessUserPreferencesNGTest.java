@@ -42,7 +42,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class DataAccessUserPreferencesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DataAccessUserPreferencesNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(DataAccessUserPreferencesNGTest.class.getName());
 
     @BeforeClass

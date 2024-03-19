@@ -29,7 +29,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class ConstellationColorNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ConstellationColorNGTest extends ConstellationTest {
     
     public ConstellationColorNGTest() {
     }

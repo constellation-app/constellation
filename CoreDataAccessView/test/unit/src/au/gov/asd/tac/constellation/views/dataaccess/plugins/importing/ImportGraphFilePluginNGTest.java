@@ -40,7 +40,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class ImportGraphFilePluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ImportGraphFilePluginNGTest extends ConstellationTest {
     
     public ImportGraphFilePluginNGTest() {
     }

@@ -69,7 +69,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class TableToolbarNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class TableToolbarNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(TableToolbarNGTest.class.getName());
 
     private TableViewTopComponent tableTopComponent;

@@ -35,7 +35,8 @@ import org.testng.annotations.Test;
  *
  * @author cygnus_x-1
  */
-public class BetweennessCentralityPluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class BetweennessCentralityPluginNGTest extends ConstellationTest {
 
     private int vertexBetweennessAttribute, vertexInBetweennessAttribute, vertexOutBetweennessAttribute;
     private int vertexSelectedAttribute;

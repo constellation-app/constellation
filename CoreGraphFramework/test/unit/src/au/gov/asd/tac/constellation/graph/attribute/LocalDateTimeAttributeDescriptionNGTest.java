@@ -27,7 +27,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class LocalDateTimeAttributeDescriptionNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class LocalDateTimeAttributeDescriptionNGTest extends ConstellationTest {
 
     LocalDateTimeAttributeDescription instance;
 

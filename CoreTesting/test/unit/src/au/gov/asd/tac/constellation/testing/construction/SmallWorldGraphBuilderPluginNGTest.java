@@ -44,7 +44,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class SmallWorldGraphBuilderPluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class SmallWorldGraphBuilderPluginNGTest extends ConstellationTest {
     
     private StoreGraph graph;
     

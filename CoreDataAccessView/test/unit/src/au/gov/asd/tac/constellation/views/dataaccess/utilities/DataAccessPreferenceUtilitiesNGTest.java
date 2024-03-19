@@ -29,7 +29,8 @@ import org.testng.annotations.Test;
  *
  * @author aldebaran30701
  */
-public class DataAccessPreferenceUtilitiesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DataAccessPreferenceUtilitiesNGTest extends ConstellationTest {
     private static final String TITLE = "a test title";
     
     private Preferences preferences;

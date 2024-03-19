@@ -33,7 +33,8 @@ import org.testng.annotations.Test;
  *
  * @author algol
  */
-public class RecordStoreUtilitiesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class RecordStoreUtilitiesNGTest extends ConstellationTest {
 
     public RecordStoreUtilitiesNGTest() {
     }

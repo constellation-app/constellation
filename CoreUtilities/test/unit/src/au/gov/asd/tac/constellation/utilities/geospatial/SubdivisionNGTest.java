@@ -22,7 +22,8 @@ import org.testng.annotations.Test;
  *
  * @author cygnus_x-1
  */
-public class SubdivisionNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class SubdivisionNGTest extends ConstellationTest {
 
     @Test
     public void testLookupSubdivisionByDisplayName() {

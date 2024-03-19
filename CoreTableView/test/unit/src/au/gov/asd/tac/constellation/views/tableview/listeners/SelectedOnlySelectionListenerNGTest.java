@@ -45,7 +45,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class SelectedOnlySelectionListenerNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class SelectedOnlySelectionListenerNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(SelectedOnlySelectionListenerNGTest.class.getName());
 
     private SelectedOnlySelectionListener selectedOnlySelectionListener;

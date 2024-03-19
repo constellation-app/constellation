@@ -51,7 +51,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class TableViewPreferencesIoProviderNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class TableViewPreferencesIoProviderNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(TableViewPreferencesIoProviderNGTest.class.getName());
 
     private static MockedStatic<JsonIO> jsonIOStaticMock;

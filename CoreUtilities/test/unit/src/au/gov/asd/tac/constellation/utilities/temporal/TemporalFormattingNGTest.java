@@ -35,7 +35,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class TemporalFormattingNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class TemporalFormattingNGTest extends ConstellationTest {
 
     private static final Logger LOGGER = Logger.getLogger(TemporalFormattingNGTest.class.getName());
     private static final DateTimeFormatter MY_DATETIME_FORMATTER1 = DateTimeFormatter.ofPattern("E MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);

@@ -43,7 +43,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class QueryListDialogNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class QueryListDialogNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(QueryListDialogNGTest.class.getName());
     
     private final FxRobot robot = new FxRobot();

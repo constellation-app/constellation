@@ -32,7 +32,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class ObjectCacheNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ObjectCacheNGTest extends ConstellationTest {
 
     private static final String KEY1 = "key1";
     private static final String KEY2 = "key2";

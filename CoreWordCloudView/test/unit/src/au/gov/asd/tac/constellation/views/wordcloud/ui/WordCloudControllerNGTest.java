@@ -45,7 +45,8 @@ import org.testng.annotations.Test;
  * 
  * @author Delphinus8821
  */
-public class WordCloudControllerNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class WordCloudControllerNGTest extends ConstellationTest {
 
     private static final Logger LOGGER = Logger.getLogger(WordCloudControllerNGTest.class.getName());
     private final WordCloudTopComponent topComponent = mock(WordCloudTopComponent.class);

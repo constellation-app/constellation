@@ -32,7 +32,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class SubgraphUtilitiesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class SubgraphUtilitiesNGTest extends ConstellationTest {
 
     public SubgraphUtilitiesNGTest() {
     }

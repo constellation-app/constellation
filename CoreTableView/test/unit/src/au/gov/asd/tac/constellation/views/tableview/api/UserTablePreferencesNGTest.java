@@ -35,7 +35,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class UserTablePreferencesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class UserTablePreferencesNGTest extends ConstellationTest {
 
     private static final String JSON_RESOURCE = "resources/table-preferences.json";
 

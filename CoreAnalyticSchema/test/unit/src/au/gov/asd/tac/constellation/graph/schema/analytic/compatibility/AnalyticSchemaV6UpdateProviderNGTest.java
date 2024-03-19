@@ -34,7 +34,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class AnalyticSchemaV6UpdateProviderNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class AnalyticSchemaV6UpdateProviderNGTest extends ConstellationTest {
     
     public AnalyticSchemaV6UpdateProviderNGTest() {
     }

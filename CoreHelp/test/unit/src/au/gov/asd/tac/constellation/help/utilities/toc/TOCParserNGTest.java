@@ -33,7 +33,7 @@ import org.xml.sax.SAXException;
  *
  * @author aldebaran30701
  */
-public class TOCParserNGTest {
+ public class TOCParserNGTest {
 
     public TOCParserNGTest() {
     }

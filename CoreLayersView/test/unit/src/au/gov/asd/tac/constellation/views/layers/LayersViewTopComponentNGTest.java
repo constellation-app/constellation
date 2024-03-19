@@ -35,7 +35,8 @@ import org.testng.annotations.Test;
  *
  * @author aldebaran30701
  */
-public class LayersViewTopComponentNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class LayersViewTopComponentNGTest extends ConstellationTest {
     
     private LayersViewTopComponent layersViewTopComponent;
     

@@ -27,7 +27,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class TupleNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class TupleNGTest extends ConstellationTest {
 
     public TupleNGTest() {
     }

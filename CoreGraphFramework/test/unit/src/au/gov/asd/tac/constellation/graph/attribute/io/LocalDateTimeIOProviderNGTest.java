@@ -27,7 +27,8 @@ import org.testng.annotations.Test;
  *
  * @author serpens24
  */
-public class LocalDateTimeIOProviderNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class LocalDateTimeIOProviderNGTest extends ConstellationTest {
     
     public LocalDateTimeIOProviderNGTest() {
     }

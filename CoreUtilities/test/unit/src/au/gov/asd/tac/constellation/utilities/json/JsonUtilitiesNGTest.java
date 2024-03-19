@@ -41,7 +41,8 @@ import org.testng.annotations.Test;
  *
  * @author aldebaran30701
  */
-public class JsonUtilitiesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class JsonUtilitiesNGTest extends ConstellationTest {
 
     private static final JsonFactory FACTORY = new MappingJsonFactory();
     private final Map<String, String> map = new HashMap<>();

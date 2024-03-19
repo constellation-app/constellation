@@ -52,7 +52,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class CopyMenuNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class CopyMenuNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(CopyMenuNGTest.class.getName());
 
     private TablePane tablePane;

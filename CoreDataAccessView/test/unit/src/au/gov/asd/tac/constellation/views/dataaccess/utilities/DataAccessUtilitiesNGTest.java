@@ -64,7 +64,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class DataAccessUtilitiesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DataAccessUtilitiesNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(DataAccessUtilitiesNGTest.class.getName());
 
     private static MockedStatic<SwingUtilities> swingUtilitiesStaticMock;

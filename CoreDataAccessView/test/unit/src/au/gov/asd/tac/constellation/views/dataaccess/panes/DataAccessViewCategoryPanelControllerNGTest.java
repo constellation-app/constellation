@@ -37,7 +37,8 @@ import org.testng.annotations.Test;
  *
  * @author mimosa
  */
-public class DataAccessViewCategoryPanelControllerNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DataAccessViewCategoryPanelControllerNGTest extends ConstellationTest {
 
     public DataAccessViewCategoryPanelControllerNGTest() {
     }

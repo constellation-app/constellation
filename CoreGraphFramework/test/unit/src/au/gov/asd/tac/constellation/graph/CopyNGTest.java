@@ -27,7 +27,8 @@ import org.testng.annotations.Test;
  *
  * @author algol
  */
-public class CopyNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class CopyNGTest extends ConstellationTest {
 
     public CopyNGTest() {
     }

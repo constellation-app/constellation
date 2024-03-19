@@ -29,7 +29,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class DateAttributeInteractionNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DateAttributeInteractionNGTest extends ConstellationTest {
     
     public DateAttributeInteractionNGTest() {
     }

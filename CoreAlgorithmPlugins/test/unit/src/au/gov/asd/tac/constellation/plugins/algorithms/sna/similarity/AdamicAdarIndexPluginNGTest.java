@@ -35,7 +35,8 @@ import org.testng.annotations.Test;
  *
  * @author canis_majoris
  */
-public class AdamicAdarIndexPluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class AdamicAdarIndexPluginNGTest extends ConstellationTest {
 
     private int transactionAaiAttribute, vertexSelectedAttribute;
     private int vxId0, vxId1, vxId2, vxId3, vxId4;

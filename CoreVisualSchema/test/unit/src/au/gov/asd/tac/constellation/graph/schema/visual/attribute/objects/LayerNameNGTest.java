@@ -28,7 +28,8 @@ import org.testng.annotations.Test;
  *
  * @author serpens24
  */
-public class LayerNameNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class LayerNameNGTest extends ConstellationTest {
     
     final String name = "layer-name";
     final int layer = 23;

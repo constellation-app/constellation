@@ -36,7 +36,8 @@ import org.testng.annotations.Test;
  *
  * @author Delphinus8821
  */
-public class MergeTransactionsPluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class MergeTransactionsPluginNGTest extends ConstellationTest {
 
     private int vertexIdentifierAttribute, vertexTypeAttribute, transactionDateTimeAttribute, transactionTypeAttribute, transactionIdentifierAttribute, transactionSelectedAttribute;
     private int vxId1, vxId2;

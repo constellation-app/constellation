@@ -28,7 +28,8 @@ import org.testng.annotations.Test;
 /**
  * @author groombridge34a
  */
-public class BoundingBoxNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class BoundingBoxNGTest extends ConstellationTest {
 
     private static final Vector3f MIN = new Vector3f(1.1F, 1.2F, 1.3F);
     private static final Vector3f MAX = new Vector3f(9.1F, 9.2F, 9.3F);

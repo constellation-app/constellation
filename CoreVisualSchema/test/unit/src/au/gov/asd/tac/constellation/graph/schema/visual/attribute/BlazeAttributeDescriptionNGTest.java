@@ -29,7 +29,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class BlazeAttributeDescriptionNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class BlazeAttributeDescriptionNGTest extends ConstellationTest {
 
     public BlazeAttributeDescriptionNGTest() {
     }

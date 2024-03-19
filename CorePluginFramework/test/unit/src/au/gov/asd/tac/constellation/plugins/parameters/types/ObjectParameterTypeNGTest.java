@@ -30,7 +30,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class ObjectParameterTypeNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ObjectParameterTypeNGTest extends ConstellationTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {

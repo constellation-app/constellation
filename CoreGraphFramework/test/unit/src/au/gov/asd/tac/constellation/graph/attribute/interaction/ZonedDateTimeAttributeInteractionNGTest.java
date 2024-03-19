@@ -29,7 +29,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class ZonedDateTimeAttributeInteractionNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ZonedDateTimeAttributeInteractionNGTest extends ConstellationTest {
     
     public ZonedDateTimeAttributeInteractionNGTest() {
     }

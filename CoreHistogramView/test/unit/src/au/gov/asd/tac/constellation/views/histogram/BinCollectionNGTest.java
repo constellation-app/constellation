@@ -29,7 +29,8 @@ import org.testng.annotations.Test;
  *
  * @author aldebaran30701
  */
-public class BinCollectionNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class BinCollectionNGTest extends ConstellationTest {
 
     public BinCollectionNGTest() {
     }

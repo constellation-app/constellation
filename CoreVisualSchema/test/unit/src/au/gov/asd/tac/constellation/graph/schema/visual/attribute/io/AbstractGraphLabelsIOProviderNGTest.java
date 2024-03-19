@@ -46,7 +46,8 @@ import org.testng.annotations.Test;
  *
  * @author serpens24
  */
-public final class AbstractGraphLabelsIOProviderNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public final class AbstractGraphLabelsIOProviderNGTest extends ConstellationTest {
     
     // Create object under test
     VertexGraphLabelsIOProvider instance;

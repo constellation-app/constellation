@@ -23,7 +23,8 @@ import org.testng.annotations.Test;
 /**
  * @author groombridge34a
  */
-public class AnaglyphCameraNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class AnaglyphCameraNGTest extends ConstellationTest {
 
     private static final float F1 = -471.78F;
     private static final float F2 = -105.53F;

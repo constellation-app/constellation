@@ -51,7 +51,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class BlazeUtilitiesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class BlazeUtilitiesNGTest extends ConstellationTest {
     
     private static final Logger LOGGER = Logger.getLogger(BlazeUtilitiesNGTest.class.getName());
     

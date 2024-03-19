@@ -29,7 +29,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class ColumnNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ColumnNGTest extends ConstellationTest {
 
     @Test
     public void init() {

@@ -32,7 +32,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class CopyGraphUtilitiesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class CopyGraphUtilitiesNGTest extends ConstellationTest {
 
     private static final String META_ATTRIBUTE_1_LABEL = "meta1 label";
     private static final String META_ATTRIBUTE_2_LABEL = "meta2 label";

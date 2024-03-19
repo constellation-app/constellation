@@ -62,7 +62,8 @@ import org.testng.annotations.Test;
  *
  * @author twilight_sparkle
  */
-public class ModCountNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ModCountNGTest extends ConstellationTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {

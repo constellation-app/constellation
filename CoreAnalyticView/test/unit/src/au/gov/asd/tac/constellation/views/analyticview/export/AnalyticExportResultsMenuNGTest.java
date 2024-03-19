@@ -71,7 +71,8 @@ import org.testng.annotations.Test;
  *
  * @author Delphinus8821
  */
-public class AnalyticExportResultsMenuNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class AnalyticExportResultsMenuNGTest extends ConstellationTest {
 
     private static final Logger LOGGER = Logger.getLogger(AnalyticExportResultsMenuNGTest.class.getName());
 

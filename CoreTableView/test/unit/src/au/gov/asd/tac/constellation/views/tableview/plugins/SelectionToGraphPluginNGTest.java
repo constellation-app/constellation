@@ -40,7 +40,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class SelectionToGraphPluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class SelectionToGraphPluginNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(SelectionToGraphPluginNGTest.class.getName());
 
     @BeforeClass

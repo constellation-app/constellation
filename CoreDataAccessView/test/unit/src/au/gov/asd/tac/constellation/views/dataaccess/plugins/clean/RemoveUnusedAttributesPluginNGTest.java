@@ -38,7 +38,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class RemoveUnusedAttributesPluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class RemoveUnusedAttributesPluginNGTest extends ConstellationTest {
 
     GraphWriteMethods graph = new StoreGraph();
     int vertex1, vertex2, vertex3;

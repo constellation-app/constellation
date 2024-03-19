@@ -28,7 +28,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class UtilitiesHelpProviderNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class UtilitiesHelpProviderNGTest extends ConstellationTest {
 
     public UtilitiesHelpProviderNGTest() {
     }

@@ -22,7 +22,8 @@ import static org.testng.Assert.assertNull;
 /**
  * @author groombridge34a
  */
-public class BidirectionalTextUtilitiesNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class BidirectionalTextUtilitiesNGTest extends ConstellationTest {
     
     private static final String LTR_TEXT = "left to right text";
     private static final String RTL_TEXT1 = "لك نأ كل حضوأ نأ دب ال نكل";

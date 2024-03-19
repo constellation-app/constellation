@@ -34,7 +34,8 @@ import org.testng.annotations.Test;
  *
  * @author CrucisGamma
  */
-public class SelectionContextMenuNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class SelectionContextMenuNGTest extends ConstellationTest {
 
     private StoreGraph graph;
     private DualGraph dgraph;

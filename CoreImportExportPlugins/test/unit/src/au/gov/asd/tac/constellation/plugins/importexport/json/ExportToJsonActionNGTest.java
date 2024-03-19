@@ -48,7 +48,8 @@ import org.testng.annotations.Test;
  *
  * @author sol695510
  */
-public class ExportToJsonActionNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ExportToJsonActionNGTest extends ConstellationTest {
 
     private static MockedStatic<FileChooser> fileChooserStaticMock;
     private static MockedStatic<PluginExecution> pluginExecutionStaticMock;

@@ -27,7 +27,8 @@ import org.testng.annotations.Test;
  *
  * @author serpens24
  */
-public class IconIOProviderNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class IconIOProviderNGTest extends ConstellationTest {
     
     public IconIOProviderNGTest() {
     }

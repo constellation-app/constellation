@@ -24,7 +24,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class DataAccessPluginTypeNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DataAccessPluginTypeNGTest extends ConstellationTest {
 
     /**
      * Test of getTypes method, of class DataAccessPluginType.

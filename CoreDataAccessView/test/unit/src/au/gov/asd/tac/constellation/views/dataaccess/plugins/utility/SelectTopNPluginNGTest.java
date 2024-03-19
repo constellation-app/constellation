@@ -39,7 +39,8 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class SelectTopNPluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class SelectTopNPluginNGTest extends ConstellationTest {
     
     /**
      * Test of edit method, of class SelectTopNPlugin.

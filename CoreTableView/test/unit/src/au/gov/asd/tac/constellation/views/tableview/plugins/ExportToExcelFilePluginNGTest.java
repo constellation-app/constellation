@@ -52,7 +52,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class ExportToExcelFilePluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ExportToExcelFilePluginNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(ExportToExcelFilePluginNGTest.class.getName());
 
     @BeforeClass

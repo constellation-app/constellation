@@ -28,7 +28,8 @@ import org.testng.annotations.Test;
  *
  * @author Nova
  */
-public class QuadTreeNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class QuadTreeNGTest extends ConstellationTest {
 
     private static QuadTree twoTwinsQT;
     private static int twoTwinsSubject;

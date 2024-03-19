@@ -26,7 +26,8 @@ import static org.testng.Assert.assertTrue;
 /**
  * @author groombridge34a
  */
-public class IntArrayNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class IntArrayNGTest extends ConstellationTest {
     
     private static final int I1 = 1;
     private static final int I2 = 2;

@@ -32,7 +32,8 @@ import org.testng.annotations.Test;
  *
  * @author Delphinus8821
  */
-public class HelpMapperNGTest {
+
+ public class HelpMapperNGTest {
 
     public HelpMapperNGTest() {
     }

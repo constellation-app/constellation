@@ -27,7 +27,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class TableViewConceptNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class TableViewConceptNGTest extends ConstellationTest {
 
     private TableViewConcept tableViewConcept;
 

@@ -22,7 +22,8 @@ import org.testng.annotations.Test;
  *
  * @author OrionsGuardian
  */
-public class TableDataComparatorNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class TableDataComparatorNGTest extends ConstellationTest {
     
     @Test
     public void testNumberStrings() {

@@ -48,7 +48,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class FileChooserNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class FileChooserNGTest extends ConstellationTest {
 
     private static final Logger LOGGER = Logger.getLogger(FileChooserNGTest.class.getName());
 

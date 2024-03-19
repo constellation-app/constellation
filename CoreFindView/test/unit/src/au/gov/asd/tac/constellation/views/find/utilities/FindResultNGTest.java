@@ -30,7 +30,8 @@ import org.testng.annotations.Test;
  *
  * @author Atlas139mkm
  */
-public class FindResultNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class FindResultNGTest extends ConstellationTest {
 
     FindResult findResult;
 

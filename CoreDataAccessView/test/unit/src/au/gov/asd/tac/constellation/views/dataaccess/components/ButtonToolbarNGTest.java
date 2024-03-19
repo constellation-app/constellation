@@ -74,7 +74,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class ButtonToolbarNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ButtonToolbarNGTest extends ConstellationTest {
 
     private static final Logger LOGGER = Logger.getLogger(ButtonToolbarNGTest.class.getName());
 

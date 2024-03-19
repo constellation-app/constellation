@@ -35,7 +35,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class SingleChoiceParameterTypeNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class SingleChoiceParameterTypeNGTest extends ConstellationTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {

@@ -26,7 +26,8 @@ import org.testng.annotations.Test;
  *
  * @author Nova
  */
-public class BoundingBox2DNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class BoundingBox2DNGTest extends ConstellationTest {
 
     private static StoreGraph baseGraph;
 

@@ -35,7 +35,8 @@ import org.testng.annotations.Test;
  *
  * @author altair1673
  */
-public class NewNotePaneNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class NewNotePaneNGTest extends ConstellationTest {
 
     private static final Logger LOGGER = Logger.getLogger(NewNotePaneNGTest.class.getName());
 

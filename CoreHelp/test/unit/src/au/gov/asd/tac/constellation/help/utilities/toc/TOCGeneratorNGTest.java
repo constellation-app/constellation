@@ -37,7 +37,7 @@ import org.testng.annotations.Test;
  *
  * @author aldebaran30701
  */
-public class TOCGeneratorNGTest {
+ public class TOCGeneratorNGTest {
 
     public TOCGeneratorNGTest() {
     }

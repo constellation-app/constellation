@@ -32,7 +32,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class TransactionGraphLabelsAttributeInteractionNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class TransactionGraphLabelsAttributeInteractionNGTest extends ConstellationTest {
 
     public TransactionGraphLabelsAttributeInteractionNGTest() {
     }

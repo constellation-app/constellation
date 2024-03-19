@@ -49,7 +49,8 @@ import org.testng.annotations.Test;
  *
  * @author aldebaran30701
  */
-public class SelectAllPluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class SelectAllPluginNGTest extends ConstellationTest {
 
     private static MockedStatic<NotifyDisplayer> notifyDisplayerMockedStatic;
     private static MockedStatic<NotificationDisplayer> notificationDisplayerMockedStatic;

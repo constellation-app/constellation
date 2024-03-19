@@ -52,7 +52,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class TabContextMenuNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class TabContextMenuNGTest extends ConstellationTest {
     private static final Logger LOGGER = Logger.getLogger(TabContextMenuNGTest.class.getName());
     
     private DataAccessTabPane dataAccessTabPane;

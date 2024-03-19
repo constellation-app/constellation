@@ -28,7 +28,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class MemoryManagerNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class MemoryManagerNGTest extends ConstellationTest {
     
     TestMemoryManagerListener testListener;
     

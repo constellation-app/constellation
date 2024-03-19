@@ -33,7 +33,8 @@ import org.testng.annotations.Test;
  *
  * @author elnath
  */
-public class SelectBlazesPluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class SelectBlazesPluginNGTest extends ConstellationTest {
 
     private StoreGraph graph;
 

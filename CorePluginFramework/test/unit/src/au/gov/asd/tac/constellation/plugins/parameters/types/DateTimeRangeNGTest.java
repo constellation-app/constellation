@@ -38,7 +38,8 @@ import org.testng.annotations.Test;
  *
  * @author ruby_crucis
  */
-public class DateTimeRangeNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class DateTimeRangeNGTest extends ConstellationTest {
 
     private static final long SECONDS_IN_ONE_DAY = 60 * 60 * 24;
     private static final long MILLISECONDS_IN_ONE_DAY = 1000 * 60 * 60 * 24;

@@ -35,7 +35,8 @@ import org.testng.annotations.Test;
  *
  * @author serpens24
  */
-public class VisualSchemaV6UpdateProviderNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class VisualSchemaV6UpdateProviderNGTest extends ConstellationTest {
     
     StoreGraph mockStoreGraph;
     SchemaFactoryUtilities mockSchemaFactory;

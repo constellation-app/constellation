@@ -37,7 +37,8 @@ import org.testng.annotations.Test;
  * 
  * @author Delphinus8821
  */
-public class ContentAnalysisManagerNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ContentAnalysisManagerNGTest extends ConstellationTest {
     
     private final Graph graph = mock(Graph.class);
     private final int[] performOnElements = {0, 1, 2, 3, 4};

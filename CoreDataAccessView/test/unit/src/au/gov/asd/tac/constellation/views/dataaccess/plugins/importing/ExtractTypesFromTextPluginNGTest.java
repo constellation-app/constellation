@@ -37,7 +37,8 @@ import org.testng.annotations.Test;
  *
  * @author Delphinus8821
  */
-public class ExtractTypesFromTextPluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ExtractTypesFromTextPluginNGTest extends ConstellationTest {
     private StoreGraph graph;
     
     @BeforeMethod

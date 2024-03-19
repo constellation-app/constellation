@@ -34,7 +34,8 @@ import org.testng.annotations.Test;
  *
  * @author formalhaunt
  */
-public class ShowInTableViewContextMenuProviderNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ShowInTableViewContextMenuProviderNGTest extends ConstellationTest {
 
     @Test
     public void getMenuPath() {

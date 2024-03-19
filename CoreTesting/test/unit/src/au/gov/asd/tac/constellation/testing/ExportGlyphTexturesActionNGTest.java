@@ -45,7 +45,8 @@ import org.testng.annotations.Test;
  *
  * @author sol695510
  */
-public class ExportGlyphTexturesActionNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class ExportGlyphTexturesActionNGTest extends ConstellationTest {
 
     private static MockedStatic<FileChooser> fileChooserStaticMock;
     private static MockedStatic<SharedDrawable> sharedDrawableStaticMock;

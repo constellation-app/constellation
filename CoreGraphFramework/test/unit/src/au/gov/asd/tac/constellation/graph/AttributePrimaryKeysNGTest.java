@@ -31,7 +31,8 @@ import org.testng.annotations.Test;
  *
  * @author algol
  */
-public class AttributePrimaryKeysNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class AttributePrimaryKeysNGTest extends ConstellationTest {
 
     private int attr1;
     private int attr2;

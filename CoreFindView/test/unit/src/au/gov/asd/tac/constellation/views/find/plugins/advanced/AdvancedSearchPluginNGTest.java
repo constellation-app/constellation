@@ -58,7 +58,8 @@ import org.testng.annotations.Test;
  *
  * @author Atlas139mkm
  */
-public class AdvancedSearchPluginNGTest {
+import au.gov.asd.tac.constellation.utilities.testing.ConstellationTest; 
+ public class AdvancedSearchPluginNGTest extends ConstellationTest {
 
     private Map<String, Graph> graphMap = new HashMap<>();
     private Graph graph;
