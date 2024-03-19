@@ -30,8 +30,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 
 /**
- * A helper to write result data to a file when the "Save Results" option is
- * checked
+ * A helper to write result data to a file when the "Save Results" option is checked
  *
  * @author arcturus
  */
@@ -43,8 +42,7 @@ public class SaveResultsFileWriter {
      * @param plugin the plugin that generated the {@link RecordStore}.
      * @param recordstore the {@link RecordStore} to save.
      *
-     * @throws PluginException if an anticipated exception occurs during plugin
-     * execution.
+     * @throws PluginException if an anticipated exception occurs during plugin execution.
      */
     public static void writeRecordStore(final Plugin plugin, final RecordStore recordstore) throws PluginException {
         final File outputDir = DataAccessPreferenceUtilities.getDataAccessResultsDir();

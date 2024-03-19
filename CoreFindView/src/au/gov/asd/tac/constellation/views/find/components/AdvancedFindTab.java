@@ -272,7 +272,7 @@ public class AdvancedFindTab extends Tab {
         final List<AdvancedCriteriaBorderPane> criteriaList = getCorrespondingCriteriaList(type);
 
         for (final AdvancedCriteriaBorderPane criteriaPane : criteriaList) {
-            criteriaPane.setStyle(i % 2 == 0 ? "-fx-background-color: #4d4d4d;" : "-fx-background-color: #222222;");
+            criteriaPane.setStyle(i % 2 == 0 ? "-fx-background-color: -criteria-grid;" : "-fx-background-color: -criteria-grid-alt;");
             i++;
         }
     }
