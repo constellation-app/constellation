@@ -307,10 +307,8 @@ public class WordCloudPane extends BorderPane {
             sortingButtons.selectToggle(alphabetical);
         }
         if (hasSignificances && !theCloud.getChildren().contains(sliderBarPane)) {
-            //theCloud.getChildren().add(sliderBar);
             theCloud.getChildren().add(sliderBarPane);
         } else if (!hasSignificances && theCloud.getChildren().contains(sliderBarPane)) {
-            //theCloud.getChildren().remove(sliderBar);
             theCloud.getChildren().remove(sliderBarPane);
         }
     }
