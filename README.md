@@ -125,7 +125,7 @@ To build Constellation from source code do the following:
     bit](https://cdn.azul.com/zulu/bin/zulu21.32.17-ca-fx-jdk21.0.2-macosx_x64.tar.gz)
 
 -   Download [NetBeans
-    20](https://netbeans.apache.org/front/main/download/nb21/)
+    21](https://netbeans.apache.org/front/main/download/nb21/)
 
 -   Update `netbeans_jdkhome` in netbeans.conf 
     (e.g. `C:\Program Files\NetBeans-12\netbeans\etc`) to point to the Azul Zulu
