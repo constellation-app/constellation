@@ -87,6 +87,7 @@ public class WordCloudPane extends BorderPane {
     private static final int HGAP_BETWEEN_WORDS = 4;
     private static final int VGAP_BETWEEN_WORDS = 2;
     private static final Insets WORDCLOUD_PADDING = new Insets(10, 5, 10, 5);
+    private static final int CLOUD_SPACING = 10;
 
     private final TooltipPane tipsPane = new TooltipPane();
     private final StackPane cloudStackPane = new StackPane();
@@ -114,7 +115,7 @@ public class WordCloudPane extends BorderPane {
         topPart.setFitToWidth(true);
 
         // Create container for vertical spacing, holds wordHolder, buttons and sliders
-        theCloud = new VBox();
+        theCloud = new VBox(CLOUD_SPACING);
 
         // add the tips pane and the cloud to a stack pane
         cloudStackPane.getChildren().add(theCloud);
