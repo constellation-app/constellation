@@ -1,8 +1,8 @@
-FROM ubuntu:bionic
+FROM ubuntu:focal
 
 LABEL \
   IMAGE="netbeans-runner:21" \
-  SOURCE="ubuntu:bionic"
+  SOURCE="ubuntu:focal"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
