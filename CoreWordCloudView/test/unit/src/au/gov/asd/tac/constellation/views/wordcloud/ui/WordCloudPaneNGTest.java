@@ -122,16 +122,16 @@ public class WordCloudPaneNGTest {
             boolean unionButtonSelected = true;
             boolean frequencyButtonSelected = false;
             boolean hasSignificances = false;
-            instance.getTheCloud().getChildren().add(instance.getSliderBar());
+            instance.getTheCloud().getChildren().add(instance.getSliderBarPane());
             
             instance.enableTheCloud(unionButtonSelected, frequencyButtonSelected, hasSignificances);
-            assertFalse(instance.getTheCloud().getChildren().contains(instance.getSliderBar()));
+            assertFalse(instance.getTheCloud().getChildren().contains(instance.getSliderBarPane()));
             
             unionButtonSelected = false;
             frequencyButtonSelected = true;
             hasSignificances = true;
             instance.enableTheCloud(unionButtonSelected, frequencyButtonSelected, hasSignificances);
-            assertTrue(instance.getTheCloud().getChildren().contains(instance.getSliderBar()));
+            assertTrue(instance.getTheCloud().getChildren().contains(instance.getSliderBarPane()));
         }
     }
 
