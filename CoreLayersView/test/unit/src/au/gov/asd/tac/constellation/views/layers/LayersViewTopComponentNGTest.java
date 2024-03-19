@@ -20,9 +20,9 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.views.layers.components.LayersViewPane;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.testng.annotations.AfterClass;
@@ -36,8 +36,6 @@ import org.testng.annotations.Test;
  * @author aldebaran30701
  */
 public class LayersViewTopComponentNGTest {
-    
-    private LayersViewTopComponent layersViewTopComponent;
     
     public LayersViewTopComponentNGTest() {
     }
@@ -141,31 +139,25 @@ public class LayersViewTopComponentNGTest {
     @Test
     public void testSetPaneStatus() {
         System.out.println("setPaneStatus");
-        System.out.println("^^ SKIP this test. It hangs (waits indefinitely) trying to access the DISPLAY");
-        // TODO: Fix test to avoid hanging issue
         
-//        boolean headlessness = Boolean.getBoolean(System.getProperty("java.awt.headless"));
-//        System.setProperty("java.awt.headless", "false");
-//        layersViewTopComponent = new LayersViewTopComponent();
-//        final GraphManager graphManager = mock(GraphManager.class);
-//        
-//        when(graphManager.getActiveGraph()).thenReturn(null);
-//
-//        final LayersViewTopComponent spiedTopComponent = spy(layersViewTopComponent);
-//        final LayersViewPane lvp = mock(LayersViewPane.class);
-//        doNothing().when(lvp).setEnabled(Mockito.anyBoolean());
-//        
-//        when(spiedTopComponent.createContent()).thenReturn(lvp);
-//        
-//        try (final MockedStatic<GraphManager> graphManagerMockedStatic = Mockito.mockStatic(GraphManager.class);) {
-//            graphManagerMockedStatic.when(GraphManager::getDefault).thenReturn(graphManager);
-//            
-//            spiedTopComponent.setPaneStatus();
-//            
-//            verify(spiedTopComponent).createContent();
-//            verify(lvp).setEnabled(Mockito.eq(false));
-//        }
-//        System.setProperty("java.awt.headless", Boolean.toString(headlessness));
+        final GraphManager graphManager = mock(GraphManager.class);
+        when(graphManager.getActiveGraph()).thenReturn(null);
+
+        final LayersViewTopComponent mockedTopComponent = mock(LayersViewTopComponent.class);
+        final LayersViewPane lvp = mock(LayersViewPane.class);
+        doNothing().when(lvp).setEnabled(Mockito.anyBoolean());
+        
+        doCallRealMethod().when(mockedTopComponent).setPaneStatus();
+        when(mockedTopComponent.createContent()).thenReturn(lvp);
+        
+        try (final MockedStatic<GraphManager> graphManagerMockedStatic = Mockito.mockStatic(GraphManager.class);) {
+            graphManagerMockedStatic.when(GraphManager::getDefault).thenReturn(graphManager);
+            
+            mockedTopComponent.setPaneStatus();
+            
+            verify(mockedTopComponent).createContent();
+            verify(lvp).setEnabled(Mockito.eq(false));
+        }
     }
     
     /**
@@ -174,32 +166,26 @@ public class LayersViewTopComponentNGTest {
     @Test
     public void testSetPaneStatusTrue() {
         System.out.println("setPaneStatusTrue");
-        System.out.println("^^ SKIP this test. It hangs (waits indefinitely) trying to access the DISPLAY");
-        // TODO: Fix test to avoid hanging issue
         
-//        boolean headlessness = Boolean.getBoolean(System.getProperty("java.awt.headless"));
-//        System.setProperty("java.awt.headless", "false");
-//        layersViewTopComponent = new LayersViewTopComponent();
-//        final GraphManager graphManager = mock(GraphManager.class);
-//        
-//        final Graph graph = mock(Graph.class);
-//        when(graphManager.getActiveGraph()).thenReturn(graph);
-//
-//        final LayersViewTopComponent spiedTopComponent = spy(layersViewTopComponent);
-//        final LayersViewPane lvp = mock(LayersViewPane.class);
-//        doNothing().when(lvp).setEnabled(Mockito.anyBoolean());
-//        
-//        when(spiedTopComponent.createContent()).thenReturn(lvp);
-//        
-//        try (final MockedStatic<GraphManager> graphManagerMockedStatic = Mockito.mockStatic(GraphManager.class);) {
-//            graphManagerMockedStatic.when(GraphManager::getDefault).thenReturn(graphManager);
-//            
-//            spiedTopComponent.setPaneStatus();
-//            
-//            verify(spiedTopComponent).createContent();
-//            verify(lvp).setEnabled(Mockito.eq(true));
-//        }
-//        System.setProperty("java.awt.headless", Boolean.toString(headlessness));
+        final GraphManager graphManager = mock(GraphManager.class);
+        final Graph graph = mock(Graph.class);
+        when(graphManager.getActiveGraph()).thenReturn(graph);
+
+        final LayersViewTopComponent mockedTopComponent = mock(LayersViewTopComponent.class);
+        final LayersViewPane lvp = mock(LayersViewPane.class);
+        doNothing().when(lvp).setEnabled(Mockito.anyBoolean());
+        
+        doCallRealMethod().when(mockedTopComponent).setPaneStatus();
+        when(mockedTopComponent.createContent()).thenReturn(lvp);
+        
+        try (final MockedStatic<GraphManager> graphManagerMockedStatic = Mockito.mockStatic(GraphManager.class);) {
+            graphManagerMockedStatic.when(GraphManager::getDefault).thenReturn(graphManager);
+            
+            mockedTopComponent.setPaneStatus();
+            
+            verify(mockedTopComponent).createContent();
+            verify(lvp).setEnabled(Mockito.eq(true));
+        }
     }
     
 }
