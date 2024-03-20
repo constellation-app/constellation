@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGTempla
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.utilities.svg.SVGObject;
 import java.util.List;
+import au.gov.asd.tac.constellation.plugins.MultiTaskInteraction.SharedInteractionRunnable;
 
 /**
  * A runnable task designed to build SVG assets representing graph blazes.
@@ -28,7 +29,7 @@ import java.util.List;
  * 
  * @author capricornunicorn123
  */
-public class GenerateSVGBlazesTask implements Runnable, ThreadWithCommonPluginInteraction {
+public class GenerateSVGBlazesTask implements SharedInteractionRunnable {
 
     private final GraphVisualisationReferences graph;
     private final List<Integer> vertexIndicies;

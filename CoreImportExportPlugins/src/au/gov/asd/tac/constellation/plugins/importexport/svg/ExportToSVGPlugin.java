@@ -41,21 +41,16 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.visual.AxisConstants;
 import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javafx.stage.FileChooser;
 import org.apache.commons.lang3.StringUtils;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -176,10 +171,10 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         final boolean showBlazes = parameters.getBooleanValue(SHOW_BLAZES_PARAMETER_ID);
         final String exportPerspective = parameters.getStringValue(EXPORT_PERSPECTIVE_PARAMETER_ID);
         
-        if (StringUtils.isBlank(fnam)){
+        if (StringUtils.isBlank(fnam)) {
             throw new PluginException(PluginNotificationLevel.ERROR, "File location has not been specified.");
         }
-        
+                
         // The output SVG File
         final File exportedGraph = new File(fnam);  
         

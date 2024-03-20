@@ -24,7 +24,6 @@ import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.FileIconData;
-import au.gov.asd.tac.constellation.utilities.icon.IconData;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.utilities.svg.SVGAttributeConstants;
 import au.gov.asd.tac.constellation.utilities.svg.SVGData;
@@ -36,6 +35,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import javax.imageio.ImageIO;
+import au.gov.asd.tac.constellation.plugins.MultiTaskInteraction.SharedInteractionRunnable;
 
 /**
  * A runnable task designed to build SVG assets representing graph nodes.
@@ -44,7 +44,7 @@ import javax.imageio.ImageIO;
  * 
  * @author capricornunicorn123
  */
-public class GenerateSVGNodesTask implements Runnable, ThreadWithCommonPluginInteraction {
+public class GenerateSVGNodesTask implements Runnable, SharedInteractionRunnable {
 
     private final GraphVisualisationReferences graph;
     private final List<Integer> vertexIndicies;
@@ -252,9 +252,6 @@ public class GenerateSVGNodesTask implements Runnable, ThreadWithCommonPluginInt
                     fileNameBuilder.append(icon.getExtendedName());
                     fileNameBuilder.append(".png");
                 }
-                
-
-                
                 
                 final String fileName = FileNameCleaner.cleanFileName(fileNameBuilder.toString());
                 

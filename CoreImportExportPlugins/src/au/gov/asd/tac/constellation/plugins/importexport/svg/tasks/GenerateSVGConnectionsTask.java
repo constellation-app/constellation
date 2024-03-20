@@ -28,6 +28,7 @@ import au.gov.asd.tac.constellation.utilities.svg.SVGObject;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess.ConnectionDirection;
 import java.util.List;
+import au.gov.asd.tac.constellation.plugins.MultiTaskInteraction.SharedInteractionRunnable;
 
 
 /**
@@ -37,7 +38,7 @@ import java.util.List;
  * 
  * @author capricornunicorn123
  */
-public class GenerateSVGConnectionsTask implements Runnable, ThreadWithCommonPluginInteraction {
+public class GenerateSVGConnectionsTask implements Runnable, SharedInteractionRunnable {
     
     private final GraphVisualisationReferences graph;
     private final List<Integer> connectionIndicies;

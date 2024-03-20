@@ -32,7 +32,7 @@ import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGObject
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGTemplateConstants;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.tasks.GenerateSVGBlazesTask;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.tasks.GenerateSVGConnectionsTask;
-import au.gov.asd.tac.constellation.plugins.importexport.svg.tasks.MultiThreadInteraction;
+import au.gov.asd.tac.constellation.plugins.MultiTaskInteraction;
 import au.gov.asd.tac.constellation.utilities.camera.BoundingBox;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
@@ -189,13 +189,16 @@ public class SVGGraphBuilder {
             preBuild();
             // Build the SVG image
             buildHeader(svgGraph);
-            
             final SVGObject svgContent = SVGObjectConstants.CONTENT.findIn(svgGraph);
             svgContent.setChildren(buildNodes());
             svgContent.setChildren(buildConnections());
             svgContent.setChildren(buildBlazes());
 
             buildLayout(svgGraph);
+        } catch (InterruptedException ex){
+            threadPool.shutdownNow();
+            throw ex;
+            
         } finally {
             // Clean up the builder
             postBuild();     
@@ -279,10 +282,11 @@ public class SVGGraphBuilder {
      * @param svgGraph The SVGObject holding all generated SVG data 
      */
     private List<SVGObject> buildNodes() throws InterruptedException {
-        
+        final List<SVGObject> nodes = new ArrayList<>();
+
         // Initate plugin report information
         interaction.setExecutionStage(0, -1, "Building Graph", "Building Nodes", true);
-        final MultiThreadInteraction mti = new MultiThreadInteraction(interaction);
+        final MultiTaskInteraction mti = new MultiTaskInteraction(interaction);
         
         if (!drawFlags.drawNodes()) {
             interaction.setProgress(1, 1, "Created 0 nodes", true);
@@ -306,7 +310,7 @@ public class SVGGraphBuilder {
             final GraphVisualisationReferences graph = new GraphVisualisationReferences(viewFrustum, modelViewProjectionMatrix, viewPort, camera, drawFlags, selectedElementsOnly, directory);
             final ArrayList<SVGObject> output = new ArrayList<>();
             final GenerateSVGNodesTask task = new GenerateSVGNodesTask(graph, threadInputLists.get(threadInput), output);
-            mti.addThread(task);
+            mti.addTask(task);
             threadOuputLists.add(output);
             CompletableFuture.runAsync(task, threadPool);
         }    
@@ -317,15 +321,14 @@ public class SVGGraphBuilder {
         }
         
         // Combine the generated nodes into a single list.
-        final List<SVGObject> nodes = new ArrayList<>();
         threadOuputLists.forEach(outputList -> {
             nodes.addAll(outputList);
         }); 
         
         // Update the PluginInteraction of the Nodes generated.
         interaction.setProgress(1, 1, String.format("Created %s nodes", nodes.size()), true);
-        return nodes;
         
+        return nodes;
     }
 
     /**
@@ -339,7 +342,7 @@ public class SVGGraphBuilder {
 
         // Initate plugin report information
         interaction.setExecutionStage(0, -1 , "Building Graph", "Building Connections", false);
-        final MultiThreadInteraction mti = new MultiThreadInteraction(interaction);
+        final MultiTaskInteraction mti = new MultiTaskInteraction(interaction);
         
         // Do not export any connections if the show connections parameter is disabled
         if (!drawFlags.drawConnections()) {
@@ -355,7 +358,7 @@ public class SVGGraphBuilder {
             final GraphVisualisationReferences giu = new GraphVisualisationReferences(viewFrustum, modelViewProjectionMatrix, viewPort, camera, drawFlags, selectedElementsOnly);
             final ArrayList<SVGObject> output = new ArrayList<>();
             final GenerateSVGConnectionsTask task = new GenerateSVGConnectionsTask(giu, threadInputLists.get(linkIndex), output);
-            mti.addThread(task);
+            mti.addTask(task);
             threadOuputLists.add(output);
             CompletableFuture.runAsync(task, threadPool);
         }      
@@ -387,7 +390,7 @@ public class SVGGraphBuilder {
         
         // Initate plugin report information
         interaction.setExecutionStage(0, -1, "Building Graph", "Building Blazes", true);
-        final MultiThreadInteraction mti = new MultiThreadInteraction(interaction);
+        final MultiTaskInteraction mti = new MultiTaskInteraction(interaction);
         
         if (!drawFlags.drawBlazes()) {
             interaction.setProgress(1, 1, "Created 0 blazes", true);
@@ -403,7 +406,7 @@ public class SVGGraphBuilder {
             final GraphVisualisationReferences graph = new GraphVisualisationReferences(viewFrustum, modelViewProjectionMatrix, viewPort, camera, drawFlags, selectedElementsOnly);
             final ArrayList<SVGObject> output = new ArrayList<>();
             final GenerateSVGBlazesTask task = new GenerateSVGBlazesTask(graph, threadInputLists.get(threadInput), output);
-            mti.addThread(task);
+            mti.addTask(task);
             threadOuputLists.add(output);
             CompletableFuture.runAsync(task, threadPool);
         }    
