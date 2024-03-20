@@ -18,12 +18,15 @@ package au.gov.asd.tac.constellation.views.errorreport;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.io.File;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.embed.swing.JFXPanel;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -72,6 +75,8 @@ public class ErrorReportDialog {
     protected double mouseOrigY = 0;
     private ErrorReportEntry currentError = null;
     private boolean showingDetails = false;
+    
+    private static final Logger LOGGER = Logger.getLogger(ErrorReportDialog.class.getName());
 
     /**
      * Construct the Error Report Dialog for a supplied Error Report Entry
@@ -96,7 +101,9 @@ public class ErrorReportDialog {
         }
 
         root = new BorderPane();
-        root.setStyle("-fx-background-color: #DDDDDD;");
+        //root.setStyle("-fx-background-color: #DDDDDD;");
+//        root.setStyle("-fx-background-color: #FF00FF;");
+
         root.setPadding(BORDERPANE_PADDING);
 
         final Label imageLabel = new Label(" \n ");
@@ -133,8 +140,8 @@ public class ErrorReportDialog {
         final Label occurrenceDesc = new Label(" " + errorEntry.getOccurrences() + " Occurrences ");
         headerSeverityPane.getChildren().add(severityDesc);
         final Font outputFont = FontUtilities.getOutputFont();
-        final Text messageDesc = new Text(errorEntry.getHeading());
-        messageDesc.setStyle("-fx-font-family: " + outputFont.getFamily());
+        // Text just needs some better formatting
+        final Label messageDesc = new Label(errorEntry.getHeading());
         errorHeadingText.getChildren().add(messageDesc);
         errorHeadingText.setPadding(new Insets(3, 0, 0, 0));
 
@@ -143,12 +150,12 @@ public class ErrorReportDialog {
         if (showOccs) {
             headerSeverityPane.setPadding(new Insets(4, 0, 0, 0));
             occurrenceDesc.setTooltip(new Tooltip("Repeated Occurrences of this Exception"));
-            occurrenceDesc.setStyle("-fx-border-color:#808080; -fx-background-color: #e0e0e0");
+            //occurrenceDesc.setStyle("-fx-border-color:#808080; -fx-background-color: #e0e0e0");
             occurrenceDesc.setTextAlignment(TextAlignment.CENTER);
             occurrenceDesc.setPadding(new Insets(0));
             final BorderPane occBox = new BorderPane();
             occBox.setCenter(occurrenceDesc);
-            occBox.setStyle("-fx-background-color: #bcbcbc");
+            //occBox.setStyle("-fx-background-color: #bcbcbc");
             detailsBox.getChildren().add(occBox);
         }
 
@@ -178,6 +185,7 @@ public class ErrorReportDialog {
         buttonPane.setCenter(blockRepeatsCheckbox);
         buttonPane.setRight(closeButton);
         final Scene scene = new Scene(root);
+        scene.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         fxPanel.setScene(scene);
     }
 

@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.gui;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -74,8 +75,8 @@ public class PluginParametersDialog extends Stage {
 
         final BorderPane root = new BorderPane();
         root.setPadding(new Insets(10));
-        root.setStyle("-fx-background-color: #DDDDDD;");
         final Scene scene = new Scene(root);
+        scene.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         setScene(scene);
 
         final PluginParametersPane parametersPane = PluginParametersPane.buildPane(parameters, null);

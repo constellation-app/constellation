@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.functionality.dialog;
 
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +85,7 @@ public class ConsolidatedDialog<K, V> extends ConstellationDialog {
      */
     public ConsolidatedDialog(final String title, final Map<String, ObservableList<Container<K, V>>> observableMap, final String message, final int listItemHeight) {
         final BorderPane root = new BorderPane();
-        root.setStyle("-fx-background-color: #DDDDDD;-fx-border-color: #3a3e43;-fx-border-width: 4px;");
+        //root.setStyle("-fx-background-color: #DDDDDD;-fx-border-color: #3a3e43;-fx-border-width: 4px;");
 
         // Create title
         final Label titleLabel = new Label();
@@ -150,6 +151,7 @@ public class ConsolidatedDialog<K, V> extends ConstellationDialog {
 
         final Scene scene = new Scene(root);
         fxPanel.setScene(scene);
+        scene.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         fxPanel.setPreferredSize(new Dimension(500, 500));
     }
 

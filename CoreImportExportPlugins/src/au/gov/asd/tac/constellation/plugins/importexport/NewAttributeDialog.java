@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.plugins.importexport;
 
 import au.gov.asd.tac.constellation.functionality.dialog.ConstellationDialog;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeRegistry;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -57,7 +58,6 @@ public class NewAttributeDialog extends ConstellationDialog {
 
     public NewAttributeDialog() {
         final BorderPane root = new BorderPane();
-        root.setStyle("-fx-background-color: #DDDDDD;");
 
         final GridPane fieldPane = new GridPane();
         fieldPane.setHgap(GRIDPANE_GAP);
@@ -110,6 +110,7 @@ public class NewAttributeDialog extends ConstellationDialog {
         buttonPane.getChildren().add(cancelButton);
 
         final Scene scene = new Scene(root);
+        scene.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         fxPanel.setScene(scene);
     }
 
