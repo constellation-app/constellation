@@ -173,11 +173,13 @@ No blank line after the function definition or before the closing brace.
 
 ## New lines
 
--   Keep code under 80 columns where appropriate. Break up statements if you must.
+-   Keep code under 80 columns where readability isn't sacrificed doing so. 
+    Break up statements if you must.
 
     -   There are some exceptions (the `PreferencesFrame` class, for
         instance) where breaking things up is even uglier, so the 80
-        column limit is occasionally ignored.
+        column limit is occasionally ignored. In these instances, try as best
+        as you can to limit the code to 120 columns.
 
 -   Avoid the chaining madness that has afflicted Java programming of
     late, where dots are placed at the end (or even beginning) of
