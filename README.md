@@ -116,21 +116,21 @@ OpenGL.
 
 To build Constellation from source code do the following:
 
--   Download Azul’s Zulu distribution of JDK 11 with JFX 11, either the
+-   Download Azul’s Zulu distribution of JDK 21 with JFX 21, either the
     [Windows 64
-    bit](https://cdn.azul.com/zulu/bin/zulu11.37.19-ca-fx-jdk11.0.6-win_x64.zip),
+    bit](https://cdn.azul.com/zulu/bin/zulu21.32.17-ca-fx-jdk21.0.2-win_x64.zip),
     [Linux 64
-    bit](https://cdn.azul.com/zulu/bin/zulu11.37.19-ca-fx-jdk11.0.6-linux_x64.tar.gz)
+    bit](https://cdn.azul.com/zulu/bin/zulu21.32.17-ca-fx-jdk21.0.2-linux_x64.tar.gz)
     or [MacOSX 64
-    bit](https://cdn.azul.com/zulu/bin/zulu11.37.19-ca-fx-jdk11.0.6-macosx_x64.tar.gz)
+    bit](https://cdn.azul.com/zulu/bin/zulu21.32.17-ca-fx-jdk21.0.2-macosx_x64.tar.gz)
 
 -   Download [NetBeans
-    12](https://netbeans.apache.org/download/nb120/nb120.html)
+    21](https://netbeans.apache.org/front/main/download/nb21/)
 
 -   Update `netbeans_jdkhome` in netbeans.conf 
     (e.g. `C:\Program Files\NetBeans-12\netbeans\etc`) to point to the Azul Zulu
     JDK you downloaded
-    (e.g. `C:\Program Files\Azul\zulu11.37.19-ca-fx-jdk11.0.6-win_x64`)
+    (e.g. `C:\Program Files\Azul\zulu21.32.17-ca-fx-jdk21.0.2-win_x64`)
 
 -   Clone this repository
 
@@ -155,7 +155,7 @@ To package Constellation in a zip bundle do the following:
 -   Navigate to the `dist` folder to get `constellation.zip` file
 
 -   If you want to use a specific JRE
-    (e.g. `zulu11.37.19-ca-fx-jre11.0.6-win_x64`) then copy this to the
+    (e.g. `zulu21.32.17-ca-fx-jre21.0.2-win_x64`) then copy this to the
     same level as the `bin` folder and call it `jre`. This is the
     default folder name Constellation expects but you can change this
     from `etc\constellation.conf`.
@@ -187,9 +187,8 @@ guide](CONTRIBUTING.md).
 
 ## Training
 
--   Basics (Buttonology) *(coming later)*
-
--   Social Network Analysis *(coming later)*
+-   [Constellation 
+    Training](https://github.com/constellation-app/constellation-training/tree/master/Analyst%20Training)
 
 -   [Developer
     Guide](https://github.com/constellation-app/constellation-training/tree/master/Developer%20Training)

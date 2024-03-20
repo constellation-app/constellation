@@ -339,7 +339,8 @@ public class ExecuteListenerNGTest {
         // checks we have to manually add this into the preferences.
         final File tmpDir = new File("/SOMETHING_THAT_WOULD_NEVER_EXIST");
         Preferences prefs = NbPreferences.forModule(DataAccessPreferenceUtilities.class);
-        prefs.put("saveDataDir", tmpDir.getAbsolutePath());
+        final String filePath = tmpDir.getAbsolutePath();
+        prefs.put("saveDataDir", filePath);
         
         // Set this preference to false so that plugins are not de-selected at the end
         DataAccessPreferenceUtilities.setDeselectPluginsOnExecute(false);
@@ -378,7 +379,7 @@ public class ExecuteListenerNGTest {
             verify(notificationDisplayer).notify(
                     "Save raw results",
                     UserInterfaceIconProvider.ERROR.buildIcon(16, ConstellationColor.CHERRY.getJavaColor()),
-                    "Results directory /SOMETHING_THAT_WOULD_NEVER_EXIST does not exist",
+                    "Results directory " + filePath + " does not exist",
                     null
             );
             

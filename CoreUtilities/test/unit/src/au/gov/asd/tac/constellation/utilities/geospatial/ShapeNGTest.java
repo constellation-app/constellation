@@ -69,11 +69,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.referencing.FactoryException;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertFalse;
-import static org.testng.AssertJUnit.assertSame;
-import static org.testng.AssertJUnit.assertTrue;
-import static org.testng.AssertJUnit.fail;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 import org.testng.annotations.AfterGroups;
 import org.testng.annotations.Test;
 import org.xml.sax.SAXException;
@@ -1203,8 +1203,8 @@ public class ShapeNGTest {
                 }
 
                 // check that only one expected feature was generated
-                ArgumentCaptor<DefaultFeatureCollection> captor
-                        = ArgumentCaptor.forClass(DefaultFeatureCollection.class);
+                ArgumentCaptor<List<SimpleFeature>> captor
+                        = ArgumentCaptor.forClass(List.class);
                 verify(mockFeatures.constructed().get(0)).addAll((Collection<SimpleFeature>) captor.capture());
                 final List<SimpleFeature> features = (List) captor.getValue();
                 assertEquals(features.size(), 1);
