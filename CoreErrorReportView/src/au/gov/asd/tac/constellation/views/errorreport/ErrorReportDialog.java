@@ -15,17 +15,14 @@
  */
 package au.gov.asd.tac.constellation.views.errorreport;
 
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.io.File;
 import java.util.Date;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.embed.swing.JFXPanel;
 import javafx.event.ActionEvent;
@@ -40,7 +37,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import javax.swing.BoxLayout;
@@ -75,7 +71,7 @@ public class ErrorReportDialog {
     protected double mouseOrigY = 0;
     private ErrorReportEntry currentError = null;
     private boolean showingDetails = false;
-    
+
     private static final Logger LOGGER = Logger.getLogger(ErrorReportDialog.class.getName());
 
     /**
@@ -101,8 +97,6 @@ public class ErrorReportDialog {
         }
 
         root = new BorderPane();
-        //root.setStyle("-fx-background-color: #DDDDDD;");
-//        root.setStyle("-fx-background-color: #FF00FF;");
 
         root.setPadding(BORDERPANE_PADDING);
 
@@ -139,23 +133,21 @@ public class ErrorReportDialog {
         severityDesc.setPadding(new Insets(0, 0, 0, 0));
         final Label occurrenceDesc = new Label(" " + errorEntry.getOccurrences() + " Occurrences ");
         headerSeverityPane.getChildren().add(severityDesc);
-        final Font outputFont = FontUtilities.getOutputFont();
-        // Text just needs some better formatting
+
+        // Text just needs some better formatting, spacing is good, just wrapping or something
         final Label messageDesc = new Label(errorEntry.getHeading());
         errorHeadingText.getChildren().add(messageDesc);
-        errorHeadingText.setPadding(new Insets(3, 0, 0, 0));
+        errorHeadingText.setPadding(new Insets(3, 0, 3, 0));
 
         final BorderPane headingSection = new BorderPane();
 
         if (showOccs) {
             headerSeverityPane.setPadding(new Insets(4, 0, 0, 0));
             occurrenceDesc.setTooltip(new Tooltip("Repeated Occurrences of this Exception"));
-            //occurrenceDesc.setStyle("-fx-border-color:#808080; -fx-background-color: #e0e0e0");
             occurrenceDesc.setTextAlignment(TextAlignment.CENTER);
             occurrenceDesc.setPadding(new Insets(0));
             final BorderPane occBox = new BorderPane();
             occBox.setCenter(occurrenceDesc);
-            //occBox.setStyle("-fx-background-color: #bcbcbc");
             detailsBox.getChildren().add(occBox);
         }
 
@@ -244,18 +236,18 @@ public class ErrorReportDialog {
             hideDialog();
         }
     }
-    
+
     public void finaliseSessionSettings() {
         ErrorReportSessionData.getInstance().updateDisplayedEntryScreenSettings(currentError.getEntryId(), new Date(), blockRepeatsCheckbox.isSelected(), null, this);
         ErrorReportDialogManager.getInstance().removeActivePopupId(currentError.getEntryId());
         ErrorReportDialogManager.getInstance().setLatestPopupDismissDate(new Date());
-        ErrorReportSessionData.requestScreenUpdate(true);        
+        ErrorReportSessionData.requestScreenUpdate(true);
     }
-    
+
     public JDialog getMainDialog() {
         return dialog;
     }
-    
+
     /**
      * Hides this dialog.
      */
