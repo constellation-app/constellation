@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import org.testfx.api.FxToolkit;
-import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;

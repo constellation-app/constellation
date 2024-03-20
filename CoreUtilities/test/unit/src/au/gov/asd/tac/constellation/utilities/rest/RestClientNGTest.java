@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.utilities.log.ConnectionLogging;
 import au.gov.asd.tac.constellation.utilities.log.LogPreferences;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -76,7 +77,7 @@ public class RestClientNGTest {
         String url = "https://testurl.tst/testEndpoint";
         List<Tuple<String, String>> params = null;
         URL result = RestClient.generateUrl(url, params);
-        assertEquals(result, new URL(url));
+        assertEquals(result, URI.create(url).toURL());
     }
 
     /**
@@ -89,7 +90,7 @@ public class RestClientNGTest {
         String url = "https://testurl.tst/testEndpoint";
         List<Tuple<String, String>> params = new ArrayList<>();
         URL result = RestClient.generateUrl(url, params);
-        assertEquals(result, new URL(url));
+        assertEquals(result, URI.create(url).toURL());
     }
 
     /**
@@ -102,7 +103,7 @@ public class RestClientNGTest {
         List<Tuple<String, String>> params = new ArrayList<>();
         params.add(new Tuple("", "value"));
         URL result = RestClient.generateUrl(url, params);
-        assertEquals(result, new URL(url));
+        assertEquals(result, URI.create(url).toURL());
     }
 
     /**
@@ -116,7 +117,7 @@ public class RestClientNGTest {
         params.add(new Tuple("param 1", "value1 with spaces"));
         params.add(new Tuple("param+2", "value2+with+plusses"));
         URL result = RestClient.generateUrl(url, params);
-        assertEquals(result, new URL(String.format("%s?param%%201=value1%%20with%%20spaces&param%%2B2=value2%%2Bwith%%2Bplusses", url)));
+        assertEquals(result, URI.create(String.format("%s?param%%201=value1%%20with%%20spaces&param%%2B2=value2%%2Bwith%%2Bplusses", url)).toURL());
     }
 
     /**
