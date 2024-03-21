@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.utilities.gui;
 
 import javax.swing.JTextArea;
-import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;

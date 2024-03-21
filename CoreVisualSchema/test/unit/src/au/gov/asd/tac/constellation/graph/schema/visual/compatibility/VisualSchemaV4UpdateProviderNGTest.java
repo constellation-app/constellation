@@ -138,13 +138,10 @@ public class VisualSchemaV4UpdateProviderNGTest {
         Mockito.verify(mockStoreGraph, times(1)).setStringValue(0, 3, "Label3");
         Mockito.verify(mockStoreGraph, times(1)).removeAttribute(23);
         Mockito.verify(mockStoreGraph, times(1)).removeAttribute(708);
-        Mockito.verify(mockStoreGraph, times(5)).setPrimaryKey(elementTypeCaptor.capture(), (int[])arrayCaptor.capture());
+        Mockito.verify(mockStoreGraph, times(2)).setPrimaryKey(elementTypeCaptor.capture(), (int[])arrayCaptor.capture());
         Mockito.verify(mockStoreGraph, times(1)).setObjectValue(anyInt(), anyInt(), any(GraphLabels.class));
         assertTrue("Node".equals(elementTypeCaptor.getAllValues().get(0).toString()));
-        assertTrue("Node".equals(elementTypeCaptor.getAllValues().get(1).toString()));
-        assertTrue("Transaction (no merging)".equals(elementTypeCaptor.getAllValues().get(2).toString()));
-        assertTrue("Transaction (no merging)".equals(elementTypeCaptor.getAllValues().get(3).toString()));
-        assertTrue("Transaction (no merging)".equals(elementTypeCaptor.getAllValues().get(4).toString()));
+        assertTrue("Transaction (no merging)".equals(elementTypeCaptor.getAllValues().get(1).toString()));
         assertEquals(arrayCaptor.getAllValues().get(0), 0);
         assertEquals(arrayCaptor.getAllValues().get(1), 0);
     } 

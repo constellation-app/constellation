@@ -51,6 +51,7 @@ public class PluginExecution {
     private final Plugin plugin;
 
     private boolean interactive = false;
+    private String disclaimer = null;
     private PluginParameters parameters = null;
     private List<Future<?>> futures = null;
     private PluginSynchronizer synchronizer = null;
@@ -138,6 +139,22 @@ public class PluginExecution {
      */
     public PluginExecution interactively(final boolean interactive) {
         this.interactive = interactive;
+        return this;
+    }
+    
+    /**
+     * Sets the interactivity of this PluginExecution.When the PluginExecutor
+     * executes its plugin on the {@link PluginEnvironment} it will pass this
+     * value as the interactive parameter with the provided disclaimer.
+     *
+     * @param interactive the new interactive value for this PluginExecutor.
+     * @param discalimer
+     *
+     * @return this to allow chaining of configuration calls.
+     */
+    public PluginExecution interactively(final boolean interactive, final String discalimer) {
+        this.interactive = interactive;
+        disclaimer = discalimer;
         return this;
     }
 
@@ -286,7 +303,7 @@ public class PluginExecution {
         if (parameters == null) {
             parameters = DefaultPluginParameters.getDefaultParameters(plugin);
         }
-        return environment.executePluginLater(graph, plugin, parameters, interactive, futures, synchronizer);
+        return environment.executePluginLater(graph, plugin, parameters, interactive, disclaimer, futures, synchronizer);
     }
 
     /**

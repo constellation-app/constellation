@@ -30,6 +30,7 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -106,7 +107,7 @@ public abstract class RestClient {
                 } 
             }
         }
-        return new URL(url + (query.length() > 0 ? "?" + query : ""));
+        return URI.create(url + (query.length() > 0 ? "?" + query : "")).toURL();
     }
 
     /**

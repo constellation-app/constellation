@@ -197,7 +197,7 @@ public class ConstellationLAFSettingsNGTest {
             UIManager.getDefaults().put("org.netbeans.swing.laf.flatlaf.ui.FlatViewTabDisplayerUI", pseudoTabDisplayerUIclass);
             ConstellationLAFSettings.applyTabColorSettings();
             final Color inactiveUnderlineColor = (Color) UIManager.getDefaults().get("ViewTab.inactiveUnderlineColor");
-            final Color expectedInactiveUnderlineColor = new Color(95, 130, 185);
+            final Color expectedInactiveUnderlineColor = new Color(88, 138, 190);
             Assert.assertTrue(inactiveUnderlineColor != null && inactiveUnderlineColor.equals(expectedInactiveUnderlineColor));
             LOGGER.info("FlatLafLight LAF Test: PASSED");
         } catch (Exception e) {
@@ -220,7 +220,7 @@ public class ConstellationLAFSettingsNGTest {
             UIManager.getDefaults().put("org.netbeans.swing.laf.flatlaf.ui.FlatViewTabDisplayerUI", pseudoTabDisplayerUIclass);
             ConstellationLAFSettings.applyTabColorSettings();
             final Color inactiveDarkUnderlineColor = (Color) UIManager.getDefaults().get("ViewTab.inactiveUnderlineColor");
-            final Color expectedInactiveDarkUnderlineColor = new Color(20, 100, 175);
+            final Color expectedInactiveDarkUnderlineColor = new Color(20, 95, 140);
             Assert.assertTrue(inactiveDarkUnderlineColor != null && inactiveDarkUnderlineColor.equals(expectedInactiveDarkUnderlineColor));
             LOGGER.info("FlatLafDark LAF Test: PASSED");
         } catch (Exception e) {

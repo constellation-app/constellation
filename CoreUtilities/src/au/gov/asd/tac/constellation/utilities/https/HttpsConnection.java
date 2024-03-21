@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
+import java.net.URI;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -87,7 +88,7 @@ public class HttpsConnection {
      */
     public static HttpsConnection withUrl(String url) throws IOException {
         LOGGER.log(Level.FINE, "Connecting to url {0}", url);
-        return new HttpsConnection(new URL(url), true);
+        return new HttpsConnection(URI.create(url).toURL(), true);
     }
 
     /**
@@ -100,7 +101,7 @@ public class HttpsConnection {
      */
     public static HttpsConnection withInsecureUrl(String url) throws IOException {
         LOGGER.log(Level.FINE, "Connecting to url {0}", url);
-        return new HttpsConnection(new URL(url), false);
+        return new HttpsConnection(URI.create(url).toURL(), false);
     }
 
     /**

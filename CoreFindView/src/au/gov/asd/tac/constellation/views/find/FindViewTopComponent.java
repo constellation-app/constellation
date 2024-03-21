@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.find.components.FindViewPane;
 import au.gov.asd.tac.constellation.views.find.components.advanced.AdvancedCriteriaBorderPane;
@@ -73,9 +74,8 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
         setToolTipText(Bundle.HINT_FindViewTopComponent());
 
         /**
-         * initialize the FindViewController, initialize the Components of the
-         * topComponenet, set pane to a new FindViewPane and initialize the
-         * content.
+         * initialize the FindViewController, initialize the Components of the topComponenet, set pane to a new
+         * FindViewPane and initialize the content.
          */
         FindViewController.getDefault().init(this);
         initComponents();
@@ -89,10 +89,8 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
         disableFindView();
 
         /**
-         * This is called whenever a node or transaction is added or deleted. It
-         * resets the searching index back to the default to avoid index out of
-         * bounds issues when trying to find a node or transaction that no
-         * longer exists.
+         * This is called whenever a node or transaction is added or deleted. It resets the searching index back to the
+         * default to avoid index out of bounds issues when trying to find a node or transaction that no longer exists.
          */
         addStructureChangeHandler(graph -> {
             final ResetStatePlugin resetState = new ResetStatePlugin();
@@ -100,8 +98,7 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
         });
 
         /**
-         * This updates the attribute list UI element when a attribute is added
-         * or removed from the graph.
+         * This updates the attribute list UI element when a attribute is added or removed from the graph.
          */
         addAttributeCountChangeHandler(graph -> UpdateUI());
 
@@ -124,13 +121,12 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
      */
     @Override
     protected String createStyle() {
-        return null;
+        return JavafxStyleManager.isDarkTheme() ? "resources/find-view-dark.css" : "resources/find-view-light.css";
     }
 
     /**
-     * Handles what occurs when the find view is closed. This updates the UI, to
-     * ensure its current and toggles the findview to set it to enabled or
-     * disabled based on if a graph is open.
+     * Handles what occurs when the find view is closed. This updates the UI, to ensure its current and toggles the
+     * findview to set it to enabled or disabled based on if a graph is open.
      */
     @Override
     protected void handleComponentClosed() {
@@ -140,11 +136,10 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
     }
 
     /**
-     * Handles what occurs when the component is opened. This updates the UI to
-     * ensure its current, toggles the find view to set it to enabled or
-     * disabled based on if a graph is open, focuses the findTextBox for UX
-     * quality, ensures the view window is floating. It also sets the size and
-     * location of the view to be in the top right of the users screen.
+     * Handles what occurs when the component is opened. This updates the UI to ensure its current, toggles the find
+     * view to set it to enabled or disabled based on if a graph is open, focuses the findTextBox for UX quality,
+     * ensures the view window is floating. It also sets the size and location of the view to be in the top right of the
+     * users screen.
      */
     @Override
     protected void handleComponentOpened() {
@@ -157,9 +152,8 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
         this.setRequestFocusEnabled(true);
 
         /**
-         * This loops through all the current windows and compares this top
-         * components top level ancestor with the windows parent. If they match
-         * the window is the find view so we set the size of the window.
+         * This loops through all the current windows and compares this top components top level ancestor with the
+         * windows parent. If they match the window is the find view so we set the size of the window.
          */
         for (final Window window : Window.getWindows()) {
             if (this.getTopLevelAncestor() != null && this.getTopLevelAncestor().getName().equals(window.getName())) {
@@ -212,8 +206,7 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
     }
 
     /**
-     * Toggles the disabled state of the findView based on if any graphs are
-     * open.
+     * Toggles the disabled state of the findView based on if any graphs are open.
      */
     public void disableFindView() {
         getFindViewPane().setDisable(GraphManager.getDefault().getAllGraphs().isEmpty());
@@ -227,8 +220,8 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
     }
 
     /**
-     * This calls all the necessary functions for each tab to update the
-     * attributes list based on what attributes are available for the user.
+     * This calls all the necessary functions for each tab to update the attributes list based on what attributes are
+     * available for the user.
      */
     public void UpdateUI() {
         // Update the basic find tab
@@ -247,9 +240,8 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
         final GraphElementType advancedType = GraphElementType.getValue(getFindViewPane().getTabs().getAdvancedFindTab().getLookForChoiceBox().getSelectionModel().getSelectedItem());
         for (final AdvancedCriteriaBorderPane criteriaPane : getFindViewPane().getTabs().getAdvancedFindTab().getCorrespondingCriteriaList(advancedType)) {
             /**
-             * set the updateUI variable to true. This avoids the change
-             * criteria pane function from occurring when re selecting the
-             * currently selected element after updating the attribute list
+             * set the updateUI variable to true. This avoids the change criteria pane function from occurring when re
+             * selecting the currently selected element after updating the attribute list
              */
             criteriaPane.setUpdateUI(true);
             criteriaPane.updateAttributesList(advancedType);
