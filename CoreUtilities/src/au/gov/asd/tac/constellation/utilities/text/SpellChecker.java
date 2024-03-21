@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
@@ -56,13 +57,15 @@ public final class SpellChecker {
     private final AtomicReference<JLanguageTool> langTool;
     private static JLanguageTool langToolStatic;
     private SpellingCheckRule spellingCheckRule;
-    private Popup popup;
+    private Popup popup = new Popup();
+    private Label labelMessage = new Label();
     private boolean turnOffSpellChecking = false;
     private int startOfMisspelledTextUnderCursor;
     private int endOfMisspelledTextUnderCursor;
     private String specificRuleId;
     private static final Logger LOGGER = Logger.getLogger(SpellChecker.class.getName());
-    private static final double POPUP_HEIGHT = 108;
+    private static final double POPUP_PADDING = 5;
+    private static final double ITEM_HEIGHT = 24;
     private static Language language;
 
     protected static final CompletableFuture<Void> LANGTOOL_LOAD;
@@ -108,7 +111,6 @@ public final class SpellChecker {
         }
 
         //initialize popup
-        popup = new Popup();
         suggestions.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
             if (newValue != null) {
                 final StringBuilder builder = new StringBuilder(textArea.getText());
@@ -158,35 +160,34 @@ public final class SpellChecker {
             popup.setHideOnEscape(true);
 
             if (isWordUnderCursorMisspelled()) {
-                suggestionsList.clear();
-                suggestions.getSelectionModel().clearSelection();
-                suggestionsList.addAll(matches.get(indexOfMisspelledTextUnderCursor).getSuggestedReplacements());
-                if (suggestionsList.isEmpty()) {
-                    return;
-                }
-
-                suggestions.setItems(suggestionsList.size() > 5 ? FXCollections.observableArrayList(suggestionsList.subList(0, 5)) : suggestionsList);
                 final Button ignoreButton = new Button("Ignore All");
-                final VBox popupContent = new VBox();
-                ignoreButton.setOnAction(e -> this.addWordsToIgnore());
-                suggestions.setPrefHeight(POPUP_HEIGHT);
-
-                popup.getContent().clear();
-                popupContent.getChildren().clear();
-
+                final VBox popupContent = new VBox(POPUP_PADDING);
                 popupContent.setStyle(
                         "-fx-background-color: black;"
                         + "-fx-text-fill: white;"
-                        + "-fx-padding: 5;");
+                        + "-fx-padding: " + POPUP_PADDING + ";");
+                popupContent.getChildren().clear();
+                suggestionsList.clear();
+                popup.getContent().clear();
+                suggestions.getSelectionModel().clearSelection();
 
-                // Temporary check to remove ignore button on non spelling errors
-                if (specificRuleId.equals("MORFOLOGIK_RULE_EN_AU")) {
-                    popupContent.getChildren().addAll(suggestions, ignoreButton);
+                suggestionsList.addAll(matches.get(indexOfMisspelledTextUnderCursor).getSuggestedReplacements());
+                if (suggestionsList.isEmpty()) {
+                    labelMessage.setText("No matching suggestions available");
+                    popupContent.getChildren().addAll(labelMessage);
                 } else {
-                    popupContent.getChildren().addAll(suggestions);
+                    suggestions.setItems(suggestionsList.size() > 5 ? FXCollections.observableArrayList(suggestionsList.subList(0, 5)) : suggestionsList);
+                    ignoreButton.setOnAction(e -> this.addWordsToIgnore());
+                    suggestions.setPrefHeight(suggestions.getItems().size() * ITEM_HEIGHT);
+
+                    // Temporary check to remove ignore button on non spelling errors
+                    if (specificRuleId.equals("MORFOLOGIK_RULE_EN_AU")) {
+                        popupContent.getChildren().addAll(suggestions, ignoreButton, labelMessage);
+                    } else {
+                        popupContent.getChildren().addAll(suggestions, labelMessage);
+                    }
                 }
 
-                popupContent.autosize();
                 popup.getContent().add(popupContent);
                 popup.setAutoFix(true);
                 popup.show(textArea, event.getScreenX(), event.getScreenY() + 10);
@@ -215,6 +216,7 @@ public final class SpellChecker {
                 startOfMisspelledTextUnderCursor = start;
                 endOfMisspelledTextUnderCursor = end;
                 specificRuleId = match.getSpecificRuleId();
+                labelMessage.setText(match.getMessage());
                 return true;
             }
         }

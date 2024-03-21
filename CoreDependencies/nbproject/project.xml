@@ -3571,6 +3571,10 @@
                 <package>tech.uom.lib.common.util</package>
             </public-packages>
             <class-path-extension>
+                <runtime-relative-path>ext/FastInfoset-1.2.13.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/FastInfoset-1.2.13.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/FastInfoset-1.2.15.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/FastInfoset-1.2.15.jar</binary-origin>
             </class-path-extension>
@@ -3755,6 +3759,10 @@
                 <binary-origin>release/modules/ext/byte-buddy-agent-1.11.3.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/checker-qual-3.5.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/checker-qual-3.5.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/checker-qual-3.8.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/checker-qual-3.8.0.jar</binary-origin>
             </class-path-extension>
@@ -3819,6 +3827,10 @@
                 <binary-origin>release/modules/ext/commons-text-1.10.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/commons-text-1.9.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/commons-text-1.9.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/commons-validator-1.7.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/commons-validator-1.7.jar</binary-origin>
             </class-path-extension>
@@ -3881,6 +3893,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/error_prone_annotations-2.14.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/error_prone_annotations-2.14.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/error_prone_annotations-2.5.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/error_prone_annotations-2.5.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/failureaccess-1.0.1.jar</runtime-relative-path>
@@ -4039,6 +4055,10 @@
                 <binary-origin>release/modules/ext/gt-xsd-ows-25.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/guava-30.1-jre.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/guava-30.1-jre.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/guava-30.1.1-jre.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/guava-30.1.1-jre.jar</binary-origin>
             </class-path-extension>
@@ -4079,6 +4099,14 @@
                 <binary-origin>release/modules/ext/indriya-1.3.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/indriya-2.0.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/indriya-2.0.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/istack-commons-runtime-3.0.5.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/istack-commons-runtime-3.0.5.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/istack-commons-runtime-3.0.7.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/istack-commons-runtime-3.0.7.jar</binary-origin>
             </class-path-extension>
@@ -4087,12 +4115,24 @@
                 <binary-origin>release/modules/ext/j2objc-annotations-1.3.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/jackson-annotations-2.12.3.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jackson-annotations-2.12.3.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/jackson-annotations-2.13.4.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/jackson-annotations-2.13.4.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/jackson-core-2.12.3.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jackson-core-2.12.3.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/jackson-core-2.13.4.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/jackson-core-2.13.4.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jackson-databind-2.12.3.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jackson-databind-2.12.3.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jackson-databind-2.13.4.2.jar</runtime-relative-path>
@@ -4127,8 +4167,24 @@
                 <binary-origin>release/modules/ext/javax.annotation-api-1.3.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/javax.inject-1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/javax.inject-1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jaxb-api-2.3.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jaxb-api-2.3.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/jaxb-api-2.4.0-b180830.0359.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/jaxb-api-2.4.0-b180830.0359.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jaxb-core-2.3.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jaxb-core-2.3.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jaxb-runtime-2.3.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jaxb-runtime-2.3.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jaxb-runtime-2.4.0-b180830.0438.jar</runtime-relative-path>
@@ -4225,6 +4281,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/jogl-all.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/jogl-all.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/json-20210307.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/json-20210307.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/json-20220924.jar</runtime-relative-path>
@@ -4615,12 +4675,20 @@
                 <binary-origin>release/modules/ext/simpleclient_tracer_otel_agent-0.12.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/slf4j-api-1.7.30.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/slf4j-api-1.7.30.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/slf4j-api-2.0.0-alpha1.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/slf4j-api-2.0.0-alpha1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/sqlite-jdbc-3.34.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/sqlite-jdbc-3.34.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/stax-ex-1.7.8.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/stax-ex-1.7.8.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/stax-ex-1.8.jar</runtime-relative-path>
@@ -4655,6 +4723,10 @@
                 <binary-origin>release/modules/ext/txtmark-0.13.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/txw2-2.3.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/txw2-2.3.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/txw2-2.4.0-b180830.0438.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/txw2-2.4.0-b180830.0438.jar</binary-origin>
             </class-path-extension>
@@ -4667,12 +4739,20 @@
                 <binary-origin>release/modules/ext/unfolding-master-20171010.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/unit-api-1.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/unit-api-1.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/unit-api-2.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/unit-api-2.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/uom-lib-common-1.1.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/uom-lib-common-1.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/uom-lib-common-2.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/uom-lib-common-2.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/vavr-0.10.2.jar</runtime-relative-path>
