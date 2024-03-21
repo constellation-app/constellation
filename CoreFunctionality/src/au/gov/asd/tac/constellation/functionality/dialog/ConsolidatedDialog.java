@@ -85,7 +85,6 @@ public class ConsolidatedDialog<K, V> extends ConstellationDialog {
      */
     public ConsolidatedDialog(final String title, final Map<String, ObservableList<Container<K, V>>> observableMap, final String message, final int listItemHeight) {
         final BorderPane root = new BorderPane();
-        //root.setStyle("-fx-background-color: #DDDDDD;-fx-border-color: #3a3e43;-fx-border-width: 4px;");
 
         // Create title
         final Label titleLabel = new Label();
@@ -161,5 +160,9 @@ public class ConsolidatedDialog<K, V> extends ConstellationDialog {
 
     public void setUseButtonAction(final EventHandler<ActionEvent> event) {
         useButton.setOnAction(event);
+    }
+    
+    public EventHandler<ActionEvent> getUseButtonAction() {
+        return useButton.getOnAction();
     }
 }

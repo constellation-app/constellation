@@ -162,8 +162,16 @@ public class ItemsDialog<T> extends ConstellationDialog {
     public void setOkButtonAction(final EventHandler<ActionEvent> event) {
         okButton.setOnAction(event);
     }
-
+    
+    public EventHandler<ActionEvent> getOkButtonAction() {
+        return okButton.getOnAction();
+    }
+    
     public void setCancelButtonAction(final EventHandler<ActionEvent> event) {
         cancelButton.setOnAction(event);
+    }
+    
+    public EventHandler<ActionEvent> getCancelButtonAction() {
+        return cancelButton.getOnAction();
     }
 }
