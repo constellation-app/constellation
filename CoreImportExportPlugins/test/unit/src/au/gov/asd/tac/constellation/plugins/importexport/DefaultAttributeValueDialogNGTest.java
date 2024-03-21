@@ -15,8 +15,13 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport;
 
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import javafx.application.Platform;
 import javafx.stage.Window;
+import static org.geotools.referencing.factory.ReferencingFactory.LOGGER;
 import static org.mockito.Mockito.mock;
+import org.testfx.api.FxToolkit;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -35,10 +40,18 @@ public class DefaultAttributeValueDialogNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
-
+ 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+        }
     }
 
     @BeforeMethod
@@ -55,9 +68,12 @@ public class DefaultAttributeValueDialogNGTest {
     @Test
     public void testGetDefaultValue() {
         System.out.println("getDefaultValue");
-        DefaultAttributeValueDialog instance = new DefaultAttributeValueDialog(mock(Window.class), "", "");
+        Platform.runLater(() -> {
+            DefaultAttributeValueDialog instance = new DefaultAttributeValueDialog(mock(Window.class), "", "");
         String result = instance.getDefaultValue();
         assertEquals(result.getClass(), String.class);
+        });
+        
     }
 
 }
