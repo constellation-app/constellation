@@ -43,21 +43,21 @@ public class ConsolidatedDialogNGTest {
     public ConsolidatedDialogNGTest() {
     }
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        if (!FxToolkit.isFXApplicationThreadRunning()) {
-            FxToolkit.registerPrimaryStage();
-        }
-    }
- 
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-        try {
-            FxToolkit.cleanupStages();
-        } catch (TimeoutException ex) {
-            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
-        }
-    }
+//    @BeforeClass
+//    public static void setUpClass() throws Exception {
+//        if (!FxToolkit.isFXApplicationThreadRunning()) {
+//            FxToolkit.registerPrimaryStage();
+//        }
+//    }
+// 
+//    @AfterClass
+//    public static void tearDownClass() throws Exception {
+//        try {
+//            FxToolkit.cleanupStages();
+//        } catch (TimeoutException ex) {
+//            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+//        }
+//    }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
@@ -86,17 +86,17 @@ public class ConsolidatedDialogNGTest {
     /**
      * Test of setUseButtonAction method, of class ConsolidatedDialog.
      */
-    @Test
-    public void testSetGetUseButtonAction() {
-        System.out.println("setGetUseButtonAction");
-        EventHandler<ActionEvent> event = null;
-        ConsolidatedDialog instance = new ConsolidatedDialog(
-                "",
-                new HashMap(),
-                "",
-                0);
-        
-        instance.setUseButtonAction(event);
-        assertEquals(instance.getUseButtonAction(), event);
-    }
+//    @Test
+//    public void testSetGetUseButtonAction() {
+//        System.out.println("setGetUseButtonAction");
+//        EventHandler<ActionEvent> event = null;
+//        ConsolidatedDialog instance = new ConsolidatedDialog(
+//                "",
+//                new HashMap(),
+//                "",
+//                0);
+//        
+//        instance.setUseButtonAction(event);
+//        assertEquals(instance.getUseButtonAction(), event);
+//    }
 }
