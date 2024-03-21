@@ -79,9 +79,6 @@
         <!-- Dependency for languagetool using indriya v1.3 -->
         <dependency  org="org.languagetool" name="language-en" rev="6.0" conf="languagetoolconf->default" />
         <dependency org="tech.units" name="indriya" rev="1.3" conf="languagetoolconf->default" />
-
-        <!-- Dependency for indriya v2.0.2, used by the constellation -->
-        <dependency org="tech.units" name="indriya" rev="2.0.2"/>
                 
         <!-- Testing -->
         <dependency org="org.assertj" name="assertj-core" rev="3.25.3" />
