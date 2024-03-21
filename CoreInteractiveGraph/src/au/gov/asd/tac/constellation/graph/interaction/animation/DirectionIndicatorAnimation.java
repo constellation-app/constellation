@@ -15,9 +15,13 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.animation;
 
+import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.framework.VisualGraphDefaults;
+import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Cause the graph to animate all connections to indicate their direction.
@@ -42,12 +46,14 @@ public final class DirectionIndicatorAnimation extends Animation {
     }
 
     @Override
-    public void animate(final GraphWriteMethods wg) {
-        
+    public List<ThreeTuple<Integer, Integer, Object>> animate(final GraphReadMethods wg) {
+        List<ThreeTuple<Integer, Integer, Object>> graphWrites = new ArrayList<>();
         // Don't animate unless there are transactions
         if (wg.getTransactionCount() > 0) {
-            wg.setFloatValue(motionAtt, 0, wg.getFloatValue(motionAtt, 0) + 0.5F);
+            graphWrites.add(new ThreeTuple<>(motionAtt, 0, wg.getFloatValue(motionAtt, 0) + 0.5F));
         }
+        
+        return graphWrites;
     }
 
     @Override

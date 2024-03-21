@@ -16,9 +16,16 @@
 package au.gov.asd.tac.constellation.graph.interaction.animation;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
+import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.openide.explorer.ExplorerManager;
+import org.openide.windows.TopComponent;
 
 /**
  * Base class for animations.
@@ -37,15 +44,20 @@ import au.gov.asd.tac.constellation.graph.node.GraphNode;
  * @author twilight_sparkle
  * @author capricornunicorn123
  */
-public abstract class Animation {
+public abstract class Animation implements Runnable{
 
     private WritableGraph wg;
-    public String graphID;
+    private String graphId;
     private boolean finished = false;
     private Thread animationThread;
+    private static final Logger LOGGER = Logger.getLogger(Animation.class.getName());
     
     public void setGraphID(final String graphID){
-        this.graphID = graphID;
+        this.graphId = graphID;
+    }
+    
+    public final String getGraphID(){
+        return this.graphId;
     }
 
     /**
@@ -61,13 +73,14 @@ public abstract class Animation {
 
     /**
      * Run one frame of the animation.
-     * This method should modify the graph as necessary writing any changes 
-     * to the provided grapj.
+     * This method should read from the fraph and make any calculations to modify atributes of graph elements. 
+     * These modification sshowuld not be made modify the graph as necessary writing any changes 
+     * to the provided graph.
      *
      * @param wg A write lock on the graph the animation is running on.
      * @return
      */
-    public abstract void animate(final GraphWriteMethods wg);
+    public abstract List<ThreeTuple<Integer, Integer, Object>> animate(final GraphReadMethods wg);
 
     /**
      * Reset any ephemeral changes made by the animation.
@@ -121,38 +134,32 @@ public abstract class Animation {
     }
 
     /**
-     * Handles the variables that persist for the life-cycle of the animation
-     * and creates the animation thread.
+     * Handles the variables that persist for the life-cycle of the animation.
      * 
-     * @param graphId
      */
-    public void run(final String graphId) {
+    @Override
+    public void run() {
+        Thread.currentThread().setPriority(1);
         final GraphNode gn = GraphNode.getGraphNode(graphId);
-        
-        if (GraphNode.getGraphNode(graphId) != null) {
-            this.graphID = graphId;
-            final Graph graph = gn.getGraph();
-            // Chreate the Thread for this animaton
-            animationThread = new Thread(() -> {
-                try {
-                    if (lockGraphSafely(graph)) {
-                        initialise(wg);
-                        wg.commit();
-                        editGraph(graph);
-                    } 
-                    
-                } catch (InterruptedException ex) {
 
-                } finally {
-                    if (lockGraphSafely(graph)) {                    
-                        reset(wg);
-                        wg.commit();
-                    }
-                    AnimationUtilities.notifyComplete(this);
-                }    
-            });
-            
-            animationThread.start();
+        if (gn != null) {
+            final Graph graph = gn.getGraph();
+            try {
+                if (lockGraphSafely(graph)) {
+                    initialise(wg);
+                    wg.commit();
+                    editGraph(graph);
+                } 
+
+            } catch (InterruptedException ex) {
+
+            } finally {
+                if (lockGraphSafely(graph)) {                    
+                    reset(wg);
+                    wg.commit();
+                }
+                AnimationUtilities.notifyComplete(this);
+            }               
         }
     }
 
@@ -165,7 +172,13 @@ public abstract class Animation {
      */
     private void editGraph(final Graph graph) throws InterruptedException {
         while (!finished) {
-                
+            
+//            Thread.getAllStackTraces().keySet().stream().forEach(thread -> {
+//                LOGGER.log(Level.SEVERE, String.format("Thread Name: %s", thread.getName()));
+//                LOGGER.log(Level.SEVERE, String.format("Thread priority: %s", thread.getPriority()));
+//                LOGGER.log(Level.SEVERE, String.format("Thread Sate: %s", thread.getState()));
+//            });
+//            LOGGER.log(Level.SEVERE, String.format("--------"));
             // Animate a frame
             if (lockGraphSafely(graph)) {
                 animate(wg);

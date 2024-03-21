@@ -15,9 +15,13 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.animation;
 
+import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -53,7 +57,8 @@ public class ThrobbingNodeAnimation extends Animation {
     }
 
     @Override
-    public void animate(final GraphWriteMethods wg) {
+    public List<ThreeTuple<Integer, Integer, Object>> animate(final GraphReadMethods wg) {
+        List<ThreeTuple<Integer, Integer, Object>> graphWrites = new ArrayList<>();
         // if there is at least 1 node on the graph
         if (wg.getVertexCount() > 0) {
 
@@ -70,9 +75,11 @@ public class ThrobbingNodeAnimation extends Animation {
                     registerNode(vxId, wg);
                 }
                 
-                wg.setFloatValue(nodeRadiusAttribute, vxId, currentRadius * originalNodeRadii.get(vxId));
+                graphWrites.add(new ThreeTuple<>(nodeRadiusAttribute, vxId, currentRadius * originalNodeRadii.get(vxId)));
             }
+            return graphWrites;
         }
+        return null;
     }
 
     @Override
@@ -95,7 +102,7 @@ public class ThrobbingNodeAnimation extends Animation {
         //Do Nothing
     }
 
-    private void registerNode(final int vxId, final GraphWriteMethods wg) {
+    private void registerNode(final int vxId, final GraphReadMethods wg) {
         originalNodeRadii.put(vxId, wg.getFloatValue(nodeRadiusAttribute, vxId));
     }
 
