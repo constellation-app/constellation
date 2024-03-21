@@ -86,17 +86,17 @@ public class ConsolidatedDialogNGTest {
     /**
      * Test of setUseButtonAction method, of class ConsolidatedDialog.
      */
-//    @Test
-//    public void testSetGetUseButtonAction() {
-//        System.out.println("setGetUseButtonAction");
-//        EventHandler<ActionEvent> event = null;
-//        ConsolidatedDialog instance = new ConsolidatedDialog(
-//                "",
-//                new HashMap(),
-//                "",
-//                0);
-//        
-//        instance.setUseButtonAction(event);
-//        assertEquals(instance.getUseButtonAction(), event);
-//    }
+    @Test
+    public void testSetGetUseButtonAction() {
+        System.out.println("setGetUseButtonAction");
+        EventHandler<ActionEvent> event = null;
+        ConsolidatedDialog instance = new ConsolidatedDialog(
+                "",
+                new HashMap(),
+                "",
+                0);
+        
+        instance.setUseButtonAction(event);
+        assertEquals(instance.getUseButtonAction(), event);
+    }
 }
