@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package au.gov.asd.tac.constellation.views.tableview.components;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.Test;
 
 /**
