@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import static org.geotools.referencing.factory.ReferencingFactory.LOGGER;
@@ -83,6 +84,7 @@ public class ConsolidatedDialogNGTest {
     @Test
     public void testConstructor(){
         System.out.println("testConstructor");
+        Platform.runLater(() -> {
         ConsolidatedDialog instance = new ConsolidatedDialog(
                 "",
                 new HashMap(),
@@ -90,6 +92,7 @@ public class ConsolidatedDialogNGTest {
                 0);
         
         assertEquals(instance.getClass(), ConsolidatedDialog.class);
+        });
     }
 
     /**
