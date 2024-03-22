@@ -15,20 +15,12 @@
  */
 package au.gov.asd.tac.constellation.functionality.dialog;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import static org.mockito.Mockito.mock;
-import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /**
@@ -37,35 +29,35 @@ import org.testng.annotations.Test;
  */
 public class ConsolidatedDialogNGTest {
     
-    private static final Logger LOGGER = Logger.getLogger(ConsolidatedDialogNGTest.class.getName());
-    
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        try {
-            if (!FxToolkit.isFXApplicationThreadRunning()) {
-                FxToolkit.registerPrimaryStage();
-            }
-        } catch (Exception e) {
-            System.out.println("\n**** SETUP ERROR: " + e);
-            throw e;
-        }
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-        try {
-            FxToolkit.cleanupStages();
-        } catch (TimeoutException ex) {
-            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
-        } catch (Exception e) {
-            if (e.toString().contains("HeadlessException")) {
-                System.out.println("\n**** EXPECTED TEARDOWN ERROR: " + e.toString());
-            } else {
-                System.out.println("\n**** UN-EXPECTED TEARDOWN ERROR: " + e.toString());
-                throw e;
-            }
-        }
-    }
+//    private static final Logger LOGGER = Logger.getLogger(ConsolidatedDialogNGTest.class.getName());
+//    
+//    @BeforeClass
+//    public static void setUpClass() throws Exception {
+//        try {
+//            if (!FxToolkit.isFXApplicationThreadRunning()) {
+//                FxToolkit.registerPrimaryStage();
+//            }
+//        } catch (Exception e) {
+//            System.out.println("\n**** SETUP ERROR: " + e);
+//            throw e;
+//        }
+//    }
+//
+//    @AfterClass
+//    public static void tearDownClass() throws Exception {
+//        try {
+//            FxToolkit.cleanupStages();
+//        } catch (TimeoutException ex) {
+//            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+//        } catch (Exception e) {
+//            if (e.toString().contains("HeadlessException")) {
+//                System.out.println("\n**** EXPECTED TEARDOWN ERROR: " + e.toString());
+//            } else {
+//                System.out.println("\n**** UN-EXPECTED TEARDOWN ERROR: " + e.toString());
+//                throw e;
+//            }
+//        }
+//    }
 
     /**
      * Test of ConsolidatedDialog constructor, of class ConsolidatedDialog.
