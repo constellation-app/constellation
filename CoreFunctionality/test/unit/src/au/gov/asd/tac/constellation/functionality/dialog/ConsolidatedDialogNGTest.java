@@ -77,22 +77,27 @@ public class ConsolidatedDialogNGTest {
     @AfterMethod
     public void tearDownMethod() throws Exception {
     }
-    
+
     /**
      * Test of ConsolidatedDialog constructor, of class ConsolidatedDialog.
      */
     @Test
-    public void testConstructor(){
+    public void testConstructor() {
         System.out.println("testConstructor");
-        Platform.runLater(() -> {
-        ConsolidatedDialog instance = new ConsolidatedDialog(
-                "",
-                new HashMap(),
-                "",
-                0);
-        
-        assertEquals(instance.getClass(), ConsolidatedDialog.class);
-        });
+        try {
+            System.setProperty("java.awt.headless", "true");
+            Platform.runLater(() -> {
+                ConsolidatedDialog instance = new ConsolidatedDialog(
+                        "",
+                        new HashMap(),
+                        "",
+                        0);
+
+                assertEquals(instance.getClass(), ConsolidatedDialog.class);
+            });
+        } finally {
+            System.clearProperty("java.awt.headless");
+        }
     }
 
     /**
@@ -128,7 +133,7 @@ public class ConsolidatedDialogNGTest {
 //        
 //        instance.setUseButtonAction(event);
 //        assertEquals(instance.getUseButtonAction(), event);
-        
+
         ConsolidatedDialog instance = mock(ConsolidatedDialog.class);
         EventHandler<ActionEvent> event = null;
         instance.setUseButtonAction(event);
