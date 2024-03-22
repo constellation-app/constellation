@@ -19,7 +19,9 @@ import java.util.LinkedList;
 import java.util.List;
 import static org.mockito.Mockito.mock;
 import static org.testng.Assert.*;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -32,21 +34,21 @@ public class ConsolidatedDialogNGTest {
     public ConsolidatedDialogNGTest() {
     }
 
-//    @BeforeClass
-//    public static void setUpClass() throws Exception {
+    @BeforeClass
+    public static void setUpClass() throws Exception {
 //        if (!FxToolkit.isFXApplicationThreadRunning()) {
 //            FxToolkit.registerPrimaryStage();
 //        }
-//    }
-// 
-//    @AfterClass
-//    public static void tearDownClass() throws Exception {
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
 //        try {
 //            FxToolkit.cleanupStages();
 //        } catch (TimeoutException ex) {
 //            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
 //        }
-//    }
+    }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {

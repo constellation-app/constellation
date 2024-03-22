@@ -15,17 +15,9 @@
  */
 package au.gov.asd.tac.constellation.functionality.dialog;
 
-import java.util.ArrayList;
-import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
-import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.stage.Window;
-import static org.geotools.referencing.factory.ReferencingFactory.LOGGER;
 import static org.mockito.Mockito.mock;
-import org.testfx.api.FxToolkit;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -42,21 +34,21 @@ public class ItemsDialogNGTest {
     public ItemsDialogNGTest() {
     }
 
-//    @BeforeClass
-//    public static void setUpClass() throws Exception {
+    @BeforeClass
+    public static void setUpClass() throws Exception {
 //        if (!FxToolkit.isFXApplicationThreadRunning()) {
 //            FxToolkit.registerPrimaryStage();
 //        }
-//    }
-// 
-//    @AfterClass
-//    public static void tearDownClass() throws Exception {
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
 //        try {
 //            FxToolkit.cleanupStages();
 //        } catch (TimeoutException ex) {
 //            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
 //        }
-//    }
+    }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
@@ -69,9 +61,9 @@ public class ItemsDialogNGTest {
     /**
      * Test of setOkButtonAction method, of class ItemsDialog.
      */
-//    @Test
-//    public void testSetGetOkButtonAction() {
-//        System.out.println("setGetOkButtonAction");
+    @Test
+    public void testSetGetOkButtonAction() {
+        System.out.println("setGetOkButtonAction");
 //        Platform.runLater(() -> {
 //        EventHandler<ActionEvent> event = null;
 //        ItemsDialog instance = new ItemsDialog(
@@ -85,14 +77,18 @@ public class ItemsDialogNGTest {
 //        instance.setOkButtonAction(event);
 //        assertEquals(instance.getOkButtonAction(), event);
 //        });
-//    }
+        ItemsDialog instance = mock(ItemsDialog.class);
+        EventHandler<ActionEvent> event = null;
+        instance.setOkButtonAction(event);
+        assertEquals(instance.getOkButtonAction(), event);
+    }
 
     /**
      * Test of setCancelButtonAction method, of class ItemsDialog.
      */
-//    @Test
-//    public void testSetGetCancelButtonAction() {
-//        System.out.println("setGetCancelButtonAction");
+    @Test
+    public void testSetGetCancelButtonAction() {
+        System.out.println("setGetCancelButtonAction");
 //        Platform.runLater(() -> {
 //        EventHandler<ActionEvent> event = null;
 //        ItemsDialog instance = new ItemsDialog(
@@ -105,6 +101,10 @@ public class ItemsDialogNGTest {
 //        instance.setCancelButtonAction(event);
 //        assertEquals(instance.getCancelButtonAction(), event);
 //        });
-//    }
+        ItemsDialog instance = mock(ItemsDialog.class);
+        EventHandler<ActionEvent> event = null;
+        instance.setCancelButtonAction(event);
+        assertEquals(instance.getCancelButtonAction(), event);
+    }
 
 }
