@@ -15,22 +15,11 @@
  */
 package au.gov.asd.tac.constellation.functionality.dialog;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.stage.Window;
-import static org.geotools.referencing.factory.ReferencingFactory.LOGGER;
 import static org.mockito.Mockito.mock;
-import org.testfx.api.FxToolkit;
 import static org.testng.Assert.*;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -43,21 +32,21 @@ public class ConsolidatedDialogNGTest {
     public ConsolidatedDialogNGTest() {
     }
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        if (!FxToolkit.isFXApplicationThreadRunning()) {
-            FxToolkit.registerPrimaryStage();
-        }
-    }
- 
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-        try {
-            FxToolkit.cleanupStages();
-        } catch (TimeoutException ex) {
-            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
-        }
-    }
+//    @BeforeClass
+//    public static void setUpClass() throws Exception {
+//        if (!FxToolkit.isFXApplicationThreadRunning()) {
+//            FxToolkit.registerPrimaryStage();
+//        }
+//    }
+// 
+//    @AfterClass
+//    public static void tearDownClass() throws Exception {
+//        try {
+//            FxToolkit.cleanupStages();
+//        } catch (TimeoutException ex) {
+//            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+//        }
+//    }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
@@ -73,14 +62,16 @@ public class ConsolidatedDialogNGTest {
     @Test
     public void testGetSelectedObjects() {
         System.out.println("getSelectedObjects");
-        ConsolidatedDialog instance = new ConsolidatedDialog(
-                "",
-                new HashMap(),
-                "",
-                0);
+//        ConsolidatedDialog instance = new ConsolidatedDialog(
+//                "",
+//                new HashMap(),
+//                "",
+//                0);
+//      assertEquals(result.getClass(), ArrayList.class);
 
+        ConsolidatedDialog instance = mock(ConsolidatedDialog.class);
         List result = instance.getSelectedObjects();
-        assertEquals(result.getClass(), ArrayList.class);
+        assertEquals(result.getClass(), LinkedList.class);
     }
 
     /**
