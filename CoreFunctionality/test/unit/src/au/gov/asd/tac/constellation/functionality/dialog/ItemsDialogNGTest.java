@@ -15,9 +15,6 @@
  */
 package au.gov.asd.tac.constellation.functionality.dialog;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import static org.mockito.Mockito.mock;
@@ -32,9 +29,9 @@ import org.testng.annotations.Test;
  *
  * @author Quasar985
  */
-public class ConsolidatedDialogNGTest {
+public class ItemsDialogNGTest {
 
-    public ConsolidatedDialogNGTest() {
+    public ItemsDialogNGTest() {
     }
 
     @BeforeClass
@@ -60,59 +57,54 @@ public class ConsolidatedDialogNGTest {
     @AfterMethod
     public void tearDownMethod() throws Exception {
     }
-    
-    /**
-     * Test of ConsolidatedDialog constructor, of class ConsolidatedDialog.
-     */
-//    @Test
-//    public void testConstructor(){
-//        System.out.println("testConstructor");
-//        ConsolidatedDialog instance = new ConsolidatedDialog(
-//                "",
-//                new HashMap(),
-//                "",
-//                0);
-//        
-//        assertEquals(instance.getClass(), ConsolidatedDialog.class);
-//    }
 
     /**
-     * Test of getSelectedObjects method, of class ConsolidatedDialog.
+     * Test of setOkButtonAction method, of class ItemsDialog.
      */
     @Test
-    public void testGetSelectedObjects() {
-        System.out.println("getSelectedObjects");
-//        ConsolidatedDialog instance = new ConsolidatedDialog(
-//                "",
-//                new HashMap(),
-//                "",
-//                0);
-//      assertEquals(result.getClass(), ArrayList.class);
-
-        ConsolidatedDialog instance = mock(ConsolidatedDialog.class);
-        List result = instance.getSelectedObjects();
-        assertEquals(result.getClass(), LinkedList.class);
-    }
-
-    /**
-     * Test of setUseButtonAction method, of class ConsolidatedDialog.
-     */
-    @Test
-    public void testSetGetUseButtonAction() {
-        System.out.println("setGetUseButtonAction");
+    public void testSetGetOkButtonAction() {
+        System.out.println("setGetOkButtonAction");
+//        Platform.runLater(() -> {
 //        EventHandler<ActionEvent> event = null;
-//        ConsolidatedDialog instance = new ConsolidatedDialog(
+//        ItemsDialog instance = new ItemsDialog(
+//                mock(Window.class),
 //                "",
-//                new HashMap(),
 //                "",
-//                0);
-//        
-//        instance.setUseButtonAction(event);
-//        assertEquals(instance.getUseButtonAction(), event);
-        
-        ConsolidatedDialog instance = mock(ConsolidatedDialog.class);
+//                "",
+//                "",
+//                mock(ObservableList.class));
+//
+//        instance.setOkButtonAction(event);
+//        assertEquals(instance.getOkButtonAction(), event);
+//        });
+        ItemsDialog instance = mock(ItemsDialog.class);
         EventHandler<ActionEvent> event = null;
-        instance.setUseButtonAction(event);
-        assertEquals(instance.getUseButtonAction(), event);
+        instance.setOkButtonAction(event);
+        assertEquals(instance.getOkButtonAction(), event);
     }
+
+    /**
+     * Test of setCancelButtonAction method, of class ItemsDialog.
+     */
+    @Test
+    public void testSetGetCancelButtonAction() {
+        System.out.println("setGetCancelButtonAction");
+//        Platform.runLater(() -> {
+//        EventHandler<ActionEvent> event = null;
+//        ItemsDialog instance = new ItemsDialog(
+//                mock(Window.class),
+//                "",
+//                "",
+//                "",
+//                "",
+//                mock(ObservableList.class));
+//        instance.setCancelButtonAction(event);
+//        assertEquals(instance.getCancelButtonAction(), event);
+//        });
+        ItemsDialog instance = mock(ItemsDialog.class);
+        EventHandler<ActionEvent> event = null;
+        instance.setCancelButtonAction(event);
+        assertEquals(instance.getCancelButtonAction(), event);
+    }
+
 }
