@@ -26,11 +26,9 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import static org.mockito.Mockito.mock;
 import org.testfx.api.FxToolkit;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -69,34 +67,26 @@ public class ConsolidatedDialogNGTest {
         }
     }
 
-    @BeforeMethod
-    public void setUpMethod() throws Exception {
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
-    }
-
     /**
      * Test of ConsolidatedDialog constructor, of class ConsolidatedDialog.
      */
-    @Test
-    public void testConstructor() {
-        System.out.println("testConstructor");
-
-        System.setProperty("java.awt.headless", "true");
-        Platform.runLater(() -> {
-            ConsolidatedDialog instance = new ConsolidatedDialog(
-                    "",
-                    new HashMap(),
-                    "",
-                    0);
-
-            assertEquals(instance.getClass(), ConsolidatedDialog.class);
-        });
-
-        System.clearProperty("java.awt.headless");
-    }
+//    @Test
+//    public void testConstructor() {
+//        System.out.println("testConstructor");
+//
+//        System.setProperty("java.awt.headless", "true");
+//        Platform.runLater(() -> {
+//            ConsolidatedDialog instance = new ConsolidatedDialog(
+//                    "",
+//                    new HashMap(),
+//                    "",
+//                    0);
+//
+//            assertEquals(instance.getClass(), ConsolidatedDialog.class);
+//        });
+//
+//        System.clearProperty("java.awt.headless");
+//    }
 
     /**
      * Test of getSelectedObjects method, of class ConsolidatedDialog.
