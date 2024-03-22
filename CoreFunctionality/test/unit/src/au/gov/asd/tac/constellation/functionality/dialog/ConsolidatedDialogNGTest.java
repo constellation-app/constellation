@@ -15,8 +15,11 @@
  */
 package au.gov.asd.tac.constellation.functionality.dialog;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import static org.mockito.Mockito.mock;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
@@ -57,6 +60,21 @@ public class ConsolidatedDialogNGTest {
     @AfterMethod
     public void tearDownMethod() throws Exception {
     }
+    
+    /**
+     * Test of ConsolidatedDialog constructor, of class ConsolidatedDialog.
+     */
+    @Test
+    public void testConstructor(){
+        System.out.println("testConstructor");
+        ConsolidatedDialog instance = new ConsolidatedDialog(
+                "",
+                new HashMap(),
+                "",
+                0);
+        
+        assertEquals(instance.getClass(), ConsolidatedDialog.class);
+    }
 
     /**
      * Test of getSelectedObjects method, of class ConsolidatedDialog.
@@ -79,9 +97,9 @@ public class ConsolidatedDialogNGTest {
     /**
      * Test of setUseButtonAction method, of class ConsolidatedDialog.
      */
-//    @Test
-//    public void testSetGetUseButtonAction() {
-//        System.out.println("setGetUseButtonAction");
+    @Test
+    public void testSetGetUseButtonAction() {
+        System.out.println("setGetUseButtonAction");
 //        EventHandler<ActionEvent> event = null;
 //        ConsolidatedDialog instance = new ConsolidatedDialog(
 //                "",
@@ -91,5 +109,10 @@ public class ConsolidatedDialogNGTest {
 //        
 //        instance.setUseButtonAction(event);
 //        assertEquals(instance.getUseButtonAction(), event);
-//    }
+        
+        ConsolidatedDialog instance = mock(ConsolidatedDialog.class);
+        EventHandler<ActionEvent> event = null;
+        instance.setUseButtonAction(event);
+        assertEquals(instance.getUseButtonAction(), event);
+    }
 }
