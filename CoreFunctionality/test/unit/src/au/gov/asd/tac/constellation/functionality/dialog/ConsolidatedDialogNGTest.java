@@ -18,9 +18,13 @@ package au.gov.asd.tac.constellation.functionality.dialog;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import static org.geotools.referencing.factory.ReferencingFactory.LOGGER;
 import static org.mockito.Mockito.mock;
+import org.testfx.api.FxToolkit;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -39,18 +43,30 @@ public class ConsolidatedDialogNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-//        if (!FxToolkit.isFXApplicationThreadRunning()) {
-//            FxToolkit.registerPrimaryStage();
-//        }
+        try {
+            if (!FxToolkit.isFXApplicationThreadRunning()) {
+                FxToolkit.registerPrimaryStage();
+            }
+        } catch (Exception e) {
+            System.out.println("\n**** SETUP ERROR: " + e);
+            throw e;
+        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-//        try {
-//            FxToolkit.cleanupStages();
-//        } catch (TimeoutException ex) {
-//            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
-//        }
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+        } catch (Exception e) {
+            if (e.toString().contains("HeadlessException")) {
+                System.out.println("\n**** EXPECTED TEARDOWN ERROR: " + e.toString());
+            } else {
+                System.out.println("\n**** UN-EXPECTED TEARDOWN ERROR: " + e.toString());
+                throw e;
+            }
+        }
     }
 
     @BeforeMethod
@@ -64,17 +80,17 @@ public class ConsolidatedDialogNGTest {
     /**
      * Test of ConsolidatedDialog constructor, of class ConsolidatedDialog.
      */
-//    @Test
-//    public void testConstructor(){
-//        System.out.println("testConstructor");
-//        ConsolidatedDialog instance = new ConsolidatedDialog(
-//                "",
-//                new HashMap(),
-//                "",
-//                0);
-//        
-//        assertEquals(instance.getClass(), ConsolidatedDialog.class);
-//    }
+    @Test
+    public void testConstructor(){
+        System.out.println("testConstructor");
+        ConsolidatedDialog instance = new ConsolidatedDialog(
+                "",
+                new HashMap(),
+                "",
+                0);
+        
+        assertEquals(instance.getClass(), ConsolidatedDialog.class);
+    }
 
     /**
      * Test of getSelectedObjects method, of class ConsolidatedDialog.
