@@ -20,10 +20,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import static org.geotools.referencing.factory.ReferencingFactory.LOGGER;
 import static org.mockito.Mockito.mock;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.*;
@@ -38,10 +38,9 @@ import org.testng.annotations.Test;
  * @author Quasar985
  */
 public class ConsolidatedDialogNGTest {
-
-    public ConsolidatedDialogNGTest() {
-    }
-
+    
+    private static final Logger LOGGER = Logger.getLogger(ConsolidatedDialogNGTest.class.getName());
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         try {
@@ -84,20 +83,19 @@ public class ConsolidatedDialogNGTest {
     @Test
     public void testConstructor() {
         System.out.println("testConstructor");
-        try {
-            System.setProperty("java.awt.headless", "true");
-            Platform.runLater(() -> {
-                ConsolidatedDialog instance = new ConsolidatedDialog(
-                        "",
-                        new HashMap(),
-                        "",
-                        0);
 
-                assertEquals(instance.getClass(), ConsolidatedDialog.class);
-            });
-        } finally {
-            System.clearProperty("java.awt.headless");
-        }
+        System.setProperty("java.awt.headless", "true");
+        Platform.runLater(() -> {
+            ConsolidatedDialog instance = new ConsolidatedDialog(
+                    "",
+                    new HashMap(),
+                    "",
+                    0);
+
+            assertEquals(instance.getClass(), ConsolidatedDialog.class);
+        });
+
+        System.clearProperty("java.awt.headless");
     }
 
     /**
