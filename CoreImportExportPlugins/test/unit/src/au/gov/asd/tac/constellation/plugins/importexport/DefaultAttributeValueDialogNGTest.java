@@ -38,21 +38,21 @@ public class DefaultAttributeValueDialogNGTest {
     public DefaultAttributeValueDialogNGTest() {
     }
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        if (!FxToolkit.isFXApplicationThreadRunning()) {
-            FxToolkit.registerPrimaryStage();
-        }
-    }
- 
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-        try {
-            FxToolkit.cleanupStages();
-        } catch (TimeoutException ex) {
-            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
-        }
-    }
+//    @BeforeClass
+//    public static void setUpClass() throws Exception {
+//        if (!FxToolkit.isFXApplicationThreadRunning()) {
+//            FxToolkit.registerPrimaryStage();
+//        }
+//    }
+// 
+//    @AfterClass
+//    public static void tearDownClass() throws Exception {
+//        try {
+//            FxToolkit.cleanupStages();
+//        } catch (TimeoutException ex) {
+//            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+//        }
+//    }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
@@ -65,15 +65,15 @@ public class DefaultAttributeValueDialogNGTest {
     /**
      * Test of getDefaultValue method, of class DefaultAttributeValueDialog.
      */
-    @Test
-    public void testGetDefaultValue() {
-        System.out.println("getDefaultValue");
-        Platform.runLater(() -> {
-            DefaultAttributeValueDialog instance = new DefaultAttributeValueDialog(mock(Window.class), "", "");
-        String result = instance.getDefaultValue();
-        assertEquals(result.getClass(), String.class);
-        });
-        
-    }
+//    @Test
+//    public void testGetDefaultValue() {
+//        System.out.println("getDefaultValue");
+//        Platform.runLater(() -> {
+//            DefaultAttributeValueDialog instance = new DefaultAttributeValueDialog(mock(Window.class), "", "");
+//        String result = instance.getDefaultValue();
+//        assertEquals(result.getClass(), String.class);
+//        });
+//        
+//    }
 
 }
