@@ -70,9 +70,11 @@ public class NewAttributeDialogNGTest {
     public void testGetType() {
         System.out.println("getType");
         Platform.runLater(() -> {
+            System.setProperty("java.awt.headless", "true");
             NewAttributeDialog instance = new NewAttributeDialog();
             String result = instance.getType();
             assertEquals(result.getClass(), String.class);
+            System.clearProperty("java.awt.headless");
         });
     }
 
@@ -83,9 +85,11 @@ public class NewAttributeDialogNGTest {
     public void testGetLabel() {
         System.out.println("getLabel");
         Platform.runLater(() -> {
+            System.setProperty("java.awt.headless", "true");
             NewAttributeDialog instance = new NewAttributeDialog();
             String result = instance.getLabel();
             assertEquals(result.getClass(), String.class);
+            System.clearProperty("java.awt.headless");
         });
     }
 
@@ -96,9 +100,11 @@ public class NewAttributeDialogNGTest {
     public void testGetDescription() {
         System.out.println("getDescription");
         Platform.runLater(() -> {
+            System.setProperty("java.awt.headless", "true");
             NewAttributeDialog instance = new NewAttributeDialog();
             String result = instance.getDescription();
             assertEquals(result.getClass(), String.class);
+            System.clearProperty("java.awt.headless");
         });
     }
 
@@ -109,11 +115,13 @@ public class NewAttributeDialogNGTest {
     public void testSetGetOkButtonAction() {
         System.out.println("setOkButtonAction");
         Platform.runLater(() -> {
+            System.setProperty("java.awt.headless", "true");
             EventHandler<ActionEvent> event = null;
             NewAttributeDialog instance = new NewAttributeDialog();
 
             instance.setOkButtonAction(event);
             assertEquals(instance.getOkButtonAction(), event);
+            System.clearProperty("java.awt.headless");
         });
     }
 
