@@ -150,12 +150,12 @@ public class ErrorReportDialog {
         if (showOccs) {
             headerSeverityPane.setPadding(new Insets(4, 0, 0, 0));
             occurrenceDesc.setTooltip(new Tooltip("Repeated Occurrences of this Exception"));
-            occurrenceDesc.setStyle("-fx-border-color:#black; -fx-background-color: #333333");
+            occurrenceDesc.setId("errorDialog");
             occurrenceDesc.setTextAlignment(TextAlignment.CENTER);
             occurrenceDesc.setPadding(new Insets(0));
             final BorderPane occBox = new BorderPane();
             occBox.setCenter(occurrenceDesc);
-            occBox.setStyle("-fx-background-color: #444444");
+            occBox.setId("errorDialogOccBox");
             detailsBox.getChildren().add(occBox);
         }
 
