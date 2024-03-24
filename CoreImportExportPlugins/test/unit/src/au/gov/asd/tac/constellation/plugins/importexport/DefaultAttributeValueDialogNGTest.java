@@ -15,12 +15,16 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport;
 
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Platform;
+import javafx.stage.Window;
 import static org.mockito.Mockito.mock;
-import static org.testng.Assert.*;
+import org.testfx.api.FxToolkit;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -29,31 +33,46 @@ import org.testng.annotations.Test;
  */
 public class DefaultAttributeValueDialogNGTest {
 
-    public DefaultAttributeValueDialogNGTest() {
-    }
+    private static final Logger LOGGER = Logger.getLogger(DefaultAttributeValueDialogNGTest.class.getName());
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-//        if (!FxToolkit.isFXApplicationThreadRunning()) {
-//            FxToolkit.registerPrimaryStage();
-//        }
+        try {
+            if (!FxToolkit.isFXApplicationThreadRunning()) {
+                FxToolkit.registerPrimaryStage();
+            }
+        } catch (Exception e) {
+            System.out.println("\n**** SETUP ERROR: " + e);
+            throw e;
+        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-//        try {
-//            FxToolkit.cleanupStages();
-//        } catch (TimeoutException ex) {
-//            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
-//        }
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+        } catch (Exception e) {
+            if (e.toString().contains("HeadlessException")) {
+                System.out.println("\n**** EXPECTED TEARDOWN ERROR: " + e.toString());
+            } else {
+                System.out.println("\n**** UN-EXPECTED TEARDOWN ERROR: " + e.toString());
+                throw e;
+            }
+        }
     }
 
-    @BeforeMethod
-    public void setUpMethod() throws Exception {
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
+    /**
+     * Test of constructor method, of class DefaultAttributeValueDialog.
+     */
+    @Test
+    public void testConstructor() {
+        System.out.println("testConstructor");
+        Platform.runLater(() -> {
+            DefaultAttributeValueDialog instance = new DefaultAttributeValueDialog(mock(Window.class), "", "");
+            assertEquals(instance.getClass(), DefaultAttributeValueDialog.class);
+        });
     }
 
     /**
