@@ -68,10 +68,8 @@ public class NewAttributeDialogNGTest {
     @Test
     public void testConstructor() {
         System.out.println("testConstructor");
-        //Platform.runLater(() -> {
         NewAttributeDialog instance = new NewAttributeDialog();
         assertEquals(instance.getClass(), NewAttributeDialog.class);
-        // });
     }
 
     /**
@@ -80,11 +78,9 @@ public class NewAttributeDialogNGTest {
     @Test
     public void testGetType() {
         System.out.println("getType");
-
         NewAttributeDialog instance = mock(NewAttributeDialog.class);
-        String result = instance.getType();
         // Null because it's a mocked string
-        assertNull(result);
+        assertNull(instance.getType());
 
     }
 
@@ -94,11 +90,9 @@ public class NewAttributeDialogNGTest {
     @Test
     public void testGetLabel() {
         System.out.println("getLabel");
-
         NewAttributeDialog instance = mock(NewAttributeDialog.class);
-        String result = instance.getLabel();
         // Null because it's a mocked string
-        assertNull(result);
+        assertNull(instance.getLabel());
 
     }
 
@@ -108,12 +102,9 @@ public class NewAttributeDialogNGTest {
     @Test
     public void testGetDescription() {
         System.out.println("getDescription");
-
         NewAttributeDialog instance = mock(NewAttributeDialog.class);
-        String result = instance.getDescription();
         // Null because it's a mocked string
-        assertNull(result);
-
+        assertNull(instance.getDescription());
     }
 
 }

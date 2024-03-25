@@ -82,15 +82,9 @@ public class DefaultAttributeValueDialogNGTest {
     @Test
     public void testGetDefaultValue() {
         System.out.println("getDefaultValue");
-//        Platform.runLater(() -> {
-//            DefaultAttributeValueDialog instance = new DefaultAttributeValueDialog(mock(Window.class), "", "");
-//        String result = instance.getDefaultValue();
-//        assertEquals(result.getClass(), String.class);
-//        });
         DefaultAttributeValueDialog instance = mock(DefaultAttributeValueDialog.class);
-        String result = instance.getDefaultValue();
         // Null because it's a mocked string
-        assertNull(result);
+        assertNull(instance.getDefaultValue());
     }
 
 }

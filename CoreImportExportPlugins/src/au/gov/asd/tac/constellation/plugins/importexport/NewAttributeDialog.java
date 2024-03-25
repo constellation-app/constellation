@@ -126,10 +126,6 @@ public class NewAttributeDialog extends ConstellationDialog {
         okButton.setOnAction(event);
     }
     
-    public EventHandler<ActionEvent> getOkButtonAction() {
-        return okButton.getOnAction();
-    }
-    
     /**
      * Get the attribute type
      *
