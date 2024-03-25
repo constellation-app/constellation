@@ -53,7 +53,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
 /**
- * The main JavaFx Pane with which to visualise word clouds and run the plugin to generate them
+ * The main JavaFx Pane with which to visualise word clouds and run the plugin
+ * to generate them
  *
  * @author twilight_sparkle
  */
@@ -209,7 +210,6 @@ public class WordCloudPane extends BorderPane {
         theCloud.getChildren().add(buttonBarPane);
 
         // Create a slider beneath the buttons to be displayed when significance levels are in play 
-        //sliderBar = new AnchorPane();
         sliderBarPane = new BorderPane();
 
         slider = new Slider(0, 1, 0.5);
@@ -226,7 +226,6 @@ public class WordCloudPane extends BorderPane {
         // Add label and slider to pane
         sliderBarPane.setLeft(significanceLabel);
         sliderBarPane.setRight(slider);
-        //theCloud.getChildren().add(sliderBarPane);
 
         // Create the pane allowing the word cloud analytic to be run
         paramPane = new WordCloudParametersPane(this);
@@ -253,6 +252,10 @@ public class WordCloudPane extends BorderPane {
         everything.setMaxHeight(height - 10);// need 10 pixels for scroll bar on bottom
         paramScrollPane.setPrefHeight(height);
         theCloud.setPrefHeight(height);
+    }
+
+    public double getContentHeight() {
+        return everything.getMaxHeight();
     }
 
     protected StackPane getCloudStackPane() {
@@ -290,8 +293,9 @@ public class WordCloudPane extends BorderPane {
     }
 
     /**
-     * Displays and correctly sizes the actual word cloud panes so that the parameters pane is beneath it. Called by the
-     * controller when it begins managing a word cloud.
+     * Displays and correctly sizes the actual word cloud panes so that the
+     * parameters pane is beneath it. Called by the controller when it begins
+     * managing a word cloud.
      */
     public void enableTheCloud(final boolean unionButtonSelected, final boolean frequencyButtonSelected, final boolean hasSignificances) {
         theCloud.setVisible(true);
@@ -315,16 +319,16 @@ public class WordCloudPane extends BorderPane {
     }
 
     /**
-     * Calculates the absolute font size for a word in this cloud based on its "relative size" and the current user font
-     * size
+     * Calculates the absolute font size for a word in this cloud based on its
+     * "relative size" and the current user font size
      */
     private static int getFontSize(final float relativeSize, final int baseFontSize) {
         return (int) (baseFontSize * (1 + relativeSize * FONT_EXPANSION_FACTOR));
     }
 
     /**
-     * Hides the actual word cloud panes so that the parameters pane is at the top. Called by the controller when it is
-     * not managing a word cloud.
+     * Hides the actual word cloud panes so that the parameters pane is at the
+     * top. Called by the controller when it is not managing a word cloud.
      */
     public void disableTheCloud() {
         wordHolder.setMinHeight(0);
@@ -335,23 +339,26 @@ public class WordCloudPane extends BorderPane {
     }
 
     /**
-     * Sets whether the attribute parameters combo-box is enabled on the parameter pane
+     * Sets whether the attribute parameters combo-box is enabled on the
+     * parameter pane
      */
     public void setAttributeSelectionEnabled(final boolean val) {
         paramPane.setAttributeSelectionEnabled(val);
     }
 
     /**
-     * Request to run the word cloud analytic itself. Called from within parameters pane, this method simple passes the
-     * request up to the controller
+     * Request to run the word cloud analytic itself. Called from within
+     * parameters pane, this method simple passes the request up to the
+     * controller
      */
     public void runPlugin(final PluginParameters params) {
         controller.runPlugin(params);
     }
 
     /**
-     * Request to update the parameters on the parameters pane. Called by the controller upon graph attribute changes,
-     * this method simple passes the request down to the parameters pane
+     * Request to update the parameters on the parameters pane. Called by the
+     * controller upon graph attribute changes, this method simple passes the
+     * request down to the parameters pane
      */
     public void updateParameters(final List<String> vertTextAttributes, final List<String> transTextAttributes) {
         paramPane.updateParameters(vertTextAttributes, transTextAttributes);
@@ -419,7 +426,8 @@ public class WordCloudPane extends BorderPane {
     }
 
     /**
-     * Removes and then adds again all words from the flow pane in the specified order
+     * Removes and then adds again all words from the flow pane in the specified
+     * order
      */
     public void updateWords(final SortedSet<String> wordsToDisplay, final boolean reapplySort) {
         // Delete any existing words from the word cloud flow pane 
