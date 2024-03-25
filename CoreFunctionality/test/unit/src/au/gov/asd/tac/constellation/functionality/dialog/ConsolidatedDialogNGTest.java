@@ -35,35 +35,35 @@ import org.testng.annotations.Test;
  */
 public class ConsolidatedDialogNGTest {
 
-    private static final Logger LOGGER = Logger.getLogger(ConsolidatedDialogNGTest.class.getName());
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        try {
-            if (!FxToolkit.isFXApplicationThreadRunning()) {
-                FxToolkit.registerPrimaryStage();
-            }
-        } catch (Exception e) {
-            System.out.println("\n**** SETUP ERROR: " + e);
-            throw e;
-        }
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-        try {
-            FxToolkit.cleanupStages();
-        } catch (TimeoutException ex) {
-            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
-        } catch (Exception e) {
-            if (e.toString().contains("HeadlessException")) {
-                System.out.println("\n**** EXPECTED TEARDOWN ERROR: " + e.toString());
-            } else {
-                System.out.println("\n**** UN-EXPECTED TEARDOWN ERROR: " + e.toString());
-                throw e;
-            }
-        }
-    }
+//    private static final Logger LOGGER = Logger.getLogger(ConsolidatedDialogNGTest.class.getName());
+//
+//    @BeforeClass
+//    public static void setUpClass() throws Exception {
+//        try {
+//            if (!FxToolkit.isFXApplicationThreadRunning()) {
+//                FxToolkit.registerPrimaryStage();
+//            }
+//        } catch (Exception e) {
+//            System.out.println("\n**** SETUP ERROR: " + e);
+//            throw e;
+//        }
+//    }
+//
+//    @AfterClass
+//    public static void tearDownClass() throws Exception {
+//        try {
+//            FxToolkit.cleanupStages();
+//        } catch (TimeoutException ex) {
+//            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+//        } catch (Exception e) {
+//            if (e.toString().contains("HeadlessException")) {
+//                System.out.println("\n**** EXPECTED TEARDOWN ERROR: " + e.toString());
+//            } else {
+//                System.out.println("\n**** UN-EXPECTED TEARDOWN ERROR: " + e.toString());
+//                throw e;
+//            }
+//        }
+//    }
 
     /**
      * Test of ConsolidatedDialog constructor, of class ConsolidatedDialog.
