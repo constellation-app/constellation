@@ -74,8 +74,6 @@ public class ErrorReportDialog {
     private ErrorReportEntry currentError = null;
     private boolean showingDetails = false;
 
-    private static final Logger LOGGER = Logger.getLogger(ErrorReportDialog.class.getName());
-
     /**
      * Construct the Error Report Dialog for a supplied Error Report Entry
      *
@@ -138,10 +136,8 @@ public class ErrorReportDialog {
 
         // Text just needs some better formatting, spacing is good, just wrapping or something
         final Label messageDesc = new Label(errorEntry.getHeading());
-        //final Font outputFont = FontUtilities.getOutputFont();
-        //messageDesc.setStyle("-fx-font-family: " + outputFont.getFamily());
         messageDesc.setStyle("-fx-font-weight: bold; ");
-        
+
         errorHeadingText.getChildren().add(messageDesc);
         errorHeadingText.setPadding(new Insets(3, 0, 10, 0));
 
