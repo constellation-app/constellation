@@ -20,7 +20,7 @@ import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult.Eleme
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;

@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.tableview.state;
 
-import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
 
 /**

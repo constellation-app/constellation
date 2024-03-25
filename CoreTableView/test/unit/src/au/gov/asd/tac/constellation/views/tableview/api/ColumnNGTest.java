@@ -21,8 +21,8 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
-import static org.testng.AssertJUnit.assertNull;
-import static org.testng.AssertJUnit.assertSame;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertSame;
 import org.testng.annotations.Test;
 
 /**

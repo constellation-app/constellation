@@ -30,7 +30,7 @@ import au.gov.asd.tac.constellation.views.dataaccess.panes.DataSourceTitledPane;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.GlobalParametersPane;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.QueryPhasePane;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
-import au.gov.asd.tac.constellation.views.dataaccess.tasks.WaitForQueriesToCompleteTask;
+import java.lang.reflect.Field;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -265,12 +265,21 @@ public class DataAccessTabPaneNGTest {
                     .runAsync(any(Runnable.class), any(ExecutorService.class))
             )
                     .thenAnswer(iom ->{
-                        WaitForQueriesToCompleteTask task = iom.getArgument(0);
+                        // We can no longer cast the task to WaitForQueriesToCompleteTask
+                        // It is now being seen as a $$lambda##hashcode## class, so we need to
+                        // refer to internal Field definitions of the returned class
+                        Object task = iom.getArgument(0);
+                        Field datpField =  task.getClass().getDeclaredFields()[0];
+                        datpField.setAccessible(true);
+                        Field gidField =  task.getClass().getDeclaredFields()[1];
+                        gidField.setAccessible(true);
+                        DataAccessTabPane datp = (DataAccessTabPane) datpField.get(task);
+                        String gid = (String) gidField.get(task);
                         
-                        assertEquals(task.getDataAccessPane(), dataAccessPane);
-                        assertEquals(task.getGraphId(), graphId);
+                        assertEquals(datp.getDataAccessPane(), dataAccessPane);
+                        assertEquals(gid, graphId);
                         
-                        return null;
+                    return null;
             });
             
             dataAccessTabPane.runTabs(1, 3);

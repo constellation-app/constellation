@@ -1,0 +1,8 @@
+/* Find View 2 */
+.root{ 
+    /* Colours used in advanced find view. Criteria's background will cycle 
+     * between these two colours, similar to a table.
+     */
+    -criteria-grid: #999999;
+    -criteria-grid-alt: #ffffff;
+}

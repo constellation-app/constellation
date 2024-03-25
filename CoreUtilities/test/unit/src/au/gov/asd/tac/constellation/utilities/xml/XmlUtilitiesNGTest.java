@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,11 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -46,7 +50,7 @@ import org.xml.sax.SAXException;
 public class XmlUtilitiesNGTest {
 
     private static final String OUTPUT_FILE = "testOutputFile.xml";
-    private static final String XML_HDR = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+    private static final String XML_HDR = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>";
 
     public XmlUtilitiesNGTest() {
     }
