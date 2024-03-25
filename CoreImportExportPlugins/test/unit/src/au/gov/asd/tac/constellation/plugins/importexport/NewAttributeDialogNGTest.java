@@ -72,7 +72,7 @@ public class NewAttributeDialogNGTest {
         System.out.println("testConstructor");
         Platform.runLater(() -> {
             NewAttributeDialog instance = new NewAttributeDialog();
-            assertEquals(instance.getClass(), DefaultAttributeValueDialog.class);
+            assertEquals(instance.getClass(), NewAttributeDialog.class);
         });
     }
 
