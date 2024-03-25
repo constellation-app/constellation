@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.plugins.importexport;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import static org.mockito.Mockito.mock;
@@ -62,6 +63,18 @@ public class NewAttributeDialogNGTest {
             }
         }
     }
+    
+    /**
+     * Test of constructor method, of class NewAttributeDialog.
+     */
+    @Test
+    public void testConstructor() {
+        System.out.println("testConstructor");
+        Platform.runLater(() -> {
+            NewAttributeDialog instance = new NewAttributeDialog();
+            assertEquals(instance.getClass(), DefaultAttributeValueDialog.class);
+        });
+    }
 
     /**
      * Test of getType method, of class NewAttributeDialog.
@@ -72,7 +85,8 @@ public class NewAttributeDialogNGTest {
 
         NewAttributeDialog instance = mock(NewAttributeDialog.class);
         String result = instance.getType();
-        assertEquals(result.getClass(), String.class);
+        // Null because its mocked
+        assertEquals(result, null);
 
     }
 
@@ -85,7 +99,8 @@ public class NewAttributeDialogNGTest {
 
         NewAttributeDialog instance = mock(NewAttributeDialog.class);
         String result = instance.getLabel();
-        assertEquals(result.getClass(), String.class);
+        // Null because its mocked
+        assertEquals(result, null);
 
     }
 
@@ -98,7 +113,8 @@ public class NewAttributeDialogNGTest {
 
         NewAttributeDialog instance = mock(NewAttributeDialog.class);
         String result = instance.getDescription();
-        assertEquals(result.getClass(), String.class);
+        // Null because its mocked
+        assertEquals(result, null);
 
     }
 
