@@ -18,9 +18,6 @@ package au.gov.asd.tac.constellation.plugins.importexport;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import static org.mockito.Mockito.mock;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
@@ -64,17 +61,17 @@ public class NewAttributeDialogNGTest {
             }
         }
     }
-    
+
     /**
      * Test of constructor method, of class NewAttributeDialog.
      */
     @Test
     public void testConstructor() {
         System.out.println("testConstructor");
-        Platform.runLater(() -> {
-            NewAttributeDialog instance = new NewAttributeDialog();
-            assertEquals(instance.getClass(), NewAttributeDialog.class);
-        });
+        //Platform.runLater(() -> {
+        NewAttributeDialog instance = new NewAttributeDialog();
+        assertEquals(instance.getClass(), NewAttributeDialog.class);
+        // });
     }
 
     /**
