@@ -161,8 +161,4 @@ public class ConsolidatedDialog<K, V> extends ConstellationDialog {
     public void setUseButtonAction(final EventHandler<ActionEvent> event) {
         useButton.setOnAction(event);
     }
-    
-    public EventHandler<ActionEvent> getUseButtonAction() {
-        return useButton.getOnAction();
-    }
 }
