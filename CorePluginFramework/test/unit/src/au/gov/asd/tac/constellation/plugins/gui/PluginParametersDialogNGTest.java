@@ -72,6 +72,18 @@ public class PluginParametersDialogNGTest {
     public void testConstructor() {
         System.out.println("testConstructorPluginParametersDialog");
         Platform.runLater(() -> {
+            PluginParametersDialog instance = new PluginParametersDialog(mock(Window.class), "", new PluginParameters());
+            assertEquals(instance.getClass(), PluginParametersDialog.class);
+        });
+    }
+    
+    /**
+     * Test of constructor method, with null PluginParameters, of class PluginParametersDialog.
+     */
+    @Test
+    public void testConstructorNullPluginParameters() {
+        System.out.println("testConstructorPluginParametersDialogNullPluginParameters");
+        Platform.runLater(() -> {
             PluginParametersDialog instance = new PluginParametersDialog(mock(Window.class), "", null);
             assertEquals(instance.getClass(), PluginParametersDialog.class);
         });
