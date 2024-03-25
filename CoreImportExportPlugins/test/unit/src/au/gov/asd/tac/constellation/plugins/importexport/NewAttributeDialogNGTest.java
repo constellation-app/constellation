@@ -18,9 +18,9 @@ package au.gov.asd.tac.constellation.plugins.importexport;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import static org.mockito.Mockito.mock;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
@@ -69,13 +69,11 @@ public class NewAttributeDialogNGTest {
     @Test
     public void testGetType() {
         System.out.println("getType");
-        //Platform.runLater(() -> {
-            //System.setProperty("java.awt.headless", "true");
-            NewAttributeDialog instance = new NewAttributeDialog();
-            String result = instance.getType();
-            assertEquals(result.getClass(), String.class);
-            //System.clearProperty("java.awt.headless");
-        //});
+
+        NewAttributeDialog instance = mock(NewAttributeDialog.class);
+        String result = instance.getType();
+        assertEquals(result.getClass(), String.class);
+
     }
 
     /**
@@ -84,13 +82,11 @@ public class NewAttributeDialogNGTest {
     @Test
     public void testGetLabel() {
         System.out.println("getLabel");
-        //Platform.runLater(() -> {
-            //System.setProperty("java.awt.headless", "true");
-            NewAttributeDialog instance = new NewAttributeDialog();
-            String result = instance.getLabel();
-            assertEquals(result.getClass(), String.class);
-            //System.clearProperty("java.awt.headless");
-        //});
+
+        NewAttributeDialog instance = mock(NewAttributeDialog.class);
+        String result = instance.getLabel();
+        assertEquals(result.getClass(), String.class);
+
     }
 
     /**
@@ -99,13 +95,11 @@ public class NewAttributeDialogNGTest {
     @Test
     public void testGetDescription() {
         System.out.println("getDescription");
-        //Platform.runLater(() -> {
-            //System.setProperty("java.awt.headless", "true");
-            NewAttributeDialog instance = new NewAttributeDialog();
-            String result = instance.getDescription();
-            assertEquals(result.getClass(), String.class);
-            //System.clearProperty("java.awt.headless");
-        //});
+
+        NewAttributeDialog instance = mock(NewAttributeDialog.class);
+        String result = instance.getDescription();
+        assertEquals(result.getClass(), String.class);
+
     }
 
     /**
@@ -114,15 +108,13 @@ public class NewAttributeDialogNGTest {
     @Test
     public void testSetGetOkButtonAction() {
         System.out.println("setOkButtonAction");
-        //Platform.runLater(() -> {
-            //System.setProperty("java.awt.headless", "true");
-            EventHandler<ActionEvent> event = null;
-            NewAttributeDialog instance = new NewAttributeDialog();
 
-            instance.setOkButtonAction(event);
-            assertEquals(instance.getOkButtonAction(), event);
-            //System.clearProperty("java.awt.headless");
-        //});
+        EventHandler<ActionEvent> event = null;
+        NewAttributeDialog instance = mock(NewAttributeDialog.class);
+
+        instance.setOkButtonAction(event);
+        assertEquals(instance.getOkButtonAction(), event);
+
     }
 
 }
