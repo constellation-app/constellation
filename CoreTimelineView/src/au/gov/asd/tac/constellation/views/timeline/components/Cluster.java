@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,10 +73,7 @@ public class Cluster extends Group {
     private final EventHandler<Event> clusterMouseHandler = new EventHandler<Event>() {
         @Override
         public void handle(final Event t) {
-            if (t instanceof MouseEvent) {
-                // Register the event as a MouseEvent:
-                final MouseEvent me = (MouseEvent) t;
-
+            if (t instanceof MouseEvent me) {
                 if (me.getEventType() == MouseEvent.MOUSE_ENTERED) {
                     final Cluster current = (Cluster) rect.getParent();
                     current.toFront();
@@ -94,8 +91,6 @@ public class Cluster extends Group {
                     isDragging = false;
                 } else if (me.getEventType() == MouseEvent.MOUSE_DRAGGED) {
                     isDragging = true;
-                } else {
-                    // Do nothing
                 }
             }
         }
@@ -119,10 +114,8 @@ public class Cluster extends Group {
      * which are also 'selected' on the graph.
      * @param anyNodesSelected ???
      */
-    public Cluster(final long lowerBound, final long upperBound,
-            final long lowerDisplayPos, final long upperDisplayPos, final int count,
-            final int selectedCount, final boolean anyNodesSelected) {
-        // Set attributes:
+    public Cluster(final long lowerBound, final long upperBound, final long lowerDisplayPos, final long upperDisplayPos, 
+            final int count, final int selectedCount, final boolean anyNodesSelected) {
         this.lowerBound = lowerBound;
         this.upperBound = upperBound;
         this.lowerDisplayPos = lowerDisplayPos;

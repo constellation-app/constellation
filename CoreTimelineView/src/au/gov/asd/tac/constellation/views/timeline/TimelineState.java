@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,8 +37,8 @@ public class TimelineState {
      * The name of the graph attribute used to hold the instance.
      */
     private int exclusionState = 0;
-    private boolean isShowingLabels = false;
-    private boolean isShowingSelectedOnly;
+    private boolean showingLabels = false;
+    private boolean showingSelectedOnly;
     private double lowerTimeExtent;
     private double upperTimeExtent;
     private String dateTimeAttr;
@@ -51,7 +51,7 @@ public class TimelineState {
     public TimelineState() {
         lowerTimeExtent = 0;
         upperTimeExtent = 0;
-        isShowingSelectedOnly = false;
+        showingSelectedOnly = false;
     }
 
     /**
@@ -71,17 +71,15 @@ public class TimelineState {
      * @param nodeLabelsAttr The attribute being shown for node labels (if any).
      * @param timeZone the time zone to use when showing events.
      */
-    public TimelineState(
-            final double lowerTimeExtent, final double upperTimeExtent,
-            final int exclusionState, final boolean isShowingSelectedOnly,
-            final String dateTimeAttr,
-            final boolean isShowingLabels, final String nodeLabelsAttr, final ZoneId timeZone) {
+    public TimelineState(final double lowerTimeExtent, final double upperTimeExtent,
+            final int exclusionState, final boolean showingSelectedOnly,final String dateTimeAttr,
+            final boolean showingLabels, final String nodeLabelsAttr, final ZoneId timeZone) {
         this.lowerTimeExtent = lowerTimeExtent;
         this.upperTimeExtent = upperTimeExtent;
         this.exclusionState = exclusionState;
-        this.isShowingSelectedOnly = isShowingSelectedOnly;
+        this.showingSelectedOnly = showingSelectedOnly;
         this.dateTimeAttr = dateTimeAttr;
-        this.isShowingLabels = isShowingLabels;
+        this.showingLabels = showingLabels;
         this.nodeLabelsAttr = nodeLabelsAttr;
         this.timeZone = timeZone;
     }
@@ -93,7 +91,7 @@ public class TimelineState {
      * @return 1 if dimming external events, 2 if hiding external events, else
      * show external events
      */
-    public int exclusionState() {
+    public int getExclusionState() {
         return exclusionState;
     }
 
@@ -113,7 +111,7 @@ public class TimelineState {
      * @return True if only selected transactions being shown, false otherwise.
      */
     public boolean isShowingSelectedOnly() {
-        return isShowingSelectedOnly;
+        return showingSelectedOnly;
     }
 
     /**
@@ -122,8 +120,8 @@ public class TimelineState {
      * @param isShowingSelectedOnly True to only show selected transactions,
      * false to show all transactions.
      */
-    public void setIsShowingSelectedOnly(final boolean isShowingSelectedOnly) {
-        this.isShowingSelectedOnly = isShowingSelectedOnly;
+    public void setShowingSelectedOnly(final boolean showingSelectedOnly) {
+        this.showingSelectedOnly = showingSelectedOnly;
     }
 
     /**
@@ -133,7 +131,7 @@ public class TimelineState {
      * <code>false</code> if not.
      */
     public boolean isShowingNodeLabels() {
-        return isShowingLabels;
+        return showingLabels;
     }
 
     /**
@@ -142,8 +140,8 @@ public class TimelineState {
      * @param isShowingNodeLabels <code>true</code> if node labels are being
      * displayed, <code>false</code> if not.
      */
-    public void setIsShowingNodeLabels(final boolean isShowingNodeLabels) {
-        this.isShowingLabels = isShowingNodeLabels;
+    public void setShowingNodeLabels(final boolean showingNodeLabels) {
+        this.showingLabels = showingNodeLabels;
     }
 
     /**
@@ -241,8 +239,7 @@ public class TimelineState {
      *
      * @param timeZone The time-zone which the timeline should use.
      */
-    public void setTimeZone(ZoneId timeZone) {
+    public void setTimeZone(final ZoneId timeZone) {
         this.timeZone = timeZone;
     }
-
 }
