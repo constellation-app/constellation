@@ -37,6 +37,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
@@ -65,7 +66,8 @@ import javax.swing.WindowConstants;
 public class NewNotePane {
 
     private boolean isFirstTime = true;
-    private final Pane dialogPane;
+    //private final Pane dialogPane;
+    private final BorderPane dialogPane;
     private static final String FONT_SIZE_STRING = "-fx-font-size:%d;";
     private final String fontStyle = String.format(FONT_SIZE_STRING, FontUtilities.getApplicationFontSize());
     private static final double WIDTH = 500;
@@ -102,11 +104,14 @@ public class NewNotePane {
     public NewNotePane(final String userChosenColour) {
         this.userChosenColour = userChosenColour;
 
-        dialogPane = new Pane();
-        dialogPane.setMinHeight(HEIGHT);
-        dialogPane.setMaxHeight(HEIGHT);
-        dialogPane.setMinWidth(WIDTH);
-        dialogPane.setMaxWidth(WIDTH);
+//        dialogPane = new Pane();
+//        dialogPane.setMinHeight(HEIGHT);
+//        dialogPane.setMaxHeight(HEIGHT);
+//        dialogPane.setMinWidth(WIDTH);
+//        dialogPane.setMaxWidth(WIDTH);
+        dialogPane = new BorderPane();
+        dialogPane.setPrefHeight(HEIGHT);
+        dialogPane.setPrefWidth(WIDTH);
 
         // TextField to enter new note title.
         titleField.setPromptText("Type a title...");
@@ -198,12 +203,17 @@ public class NewNotePane {
         noteHBox.setAlignment(Pos.CENTER_RIGHT);
 
         final HBox cbHBox = new HBox(30, applyToSelection, enableMarkdown);
-        final VBox addNoteVBox = new VBox(5, tabPane, cbHBox, noteHBox);
-        addNoteVBox.setAlignment(Pos.CENTER_LEFT);
-        addNoteVBox.setStyle(fontStyle + "-fx-padding: 5px;");
-        addNoteVBox.setMinHeight(220);
+        //final VBox addNoteVBox = new VBox(5, tabPane, cbHBox, noteHBox);
 
-        dialogPane.getChildren().add(addNoteVBox);
+//        addNoteVBox.setAlignment(Pos.CENTER_LEFT);
+//        addNoteVBox.setStyle(fontStyle + "-fx-padding: 5px;");
+//        addNoteVBox.setMinHeight(220);
+
+        final VBox paramVBox = new VBox(cbHBox, noteHBox);
+        paramVBox.setStyle(fontStyle + "-fx-padding: 5px;");
+        //dialogPane.getChildren().add(addNoteVBox);
+        dialogPane.setCenter(tabPane);
+        dialogPane.setBottom(paramVBox);
 
         inEditMode.addListener((obj, old, newVal) -> {
             noteHBox.getChildren().clear();
@@ -230,7 +240,8 @@ public class NewNotePane {
     }
 
     /**
-     * Instantiate stage for the pop up and set event handler to close it when consty closes
+     * Instantiate stage for the pop up and set event handler to close it when
+     * consty closes
      */
     public void showPopUp() {
         if (isFirstTime) {
@@ -250,7 +261,8 @@ public class NewNotePane {
             stage.setTitle("Create new note");
             stage.setMinHeight(HEIGHT);
             stage.setMinWidth(WIDTH);
-            stage.setResizable(false);
+            //stage.setResizable(false);
+            stage.setResizable(true);
 
             final Scene s = new Scene(dialogPane);
             s.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
