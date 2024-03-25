@@ -23,6 +23,7 @@ import javafx.stage.Window;
 import static org.mockito.Mockito.mock;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -88,8 +89,8 @@ public class DefaultAttributeValueDialogNGTest {
 //        });
         DefaultAttributeValueDialog instance = mock(DefaultAttributeValueDialog.class);
         String result = instance.getDefaultValue();
-        // Null because its mocked
-        assertEquals(result, null);
+        // Null because it's a mocked string
+        assertNull(result);
     }
 
 }

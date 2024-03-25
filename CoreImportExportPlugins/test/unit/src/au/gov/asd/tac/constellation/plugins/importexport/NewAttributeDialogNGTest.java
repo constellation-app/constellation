@@ -24,6 +24,7 @@ import javafx.event.EventHandler;
 import static org.mockito.Mockito.mock;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -85,8 +86,8 @@ public class NewAttributeDialogNGTest {
 
         NewAttributeDialog instance = mock(NewAttributeDialog.class);
         String result = instance.getType();
-        // Null because its mocked
-        assertEquals(result, null);
+        // Null because it's a mocked string
+        assertNull(result);
 
     }
 
@@ -99,8 +100,8 @@ public class NewAttributeDialogNGTest {
 
         NewAttributeDialog instance = mock(NewAttributeDialog.class);
         String result = instance.getLabel();
-        // Null because its mocked
-        assertEquals(result, null);
+        // Null because it's a mocked string
+        assertNull(result);
 
     }
 
@@ -113,23 +114,8 @@ public class NewAttributeDialogNGTest {
 
         NewAttributeDialog instance = mock(NewAttributeDialog.class);
         String result = instance.getDescription();
-        // Null because its mocked
-        assertEquals(result, null);
-
-    }
-
-    /**
-     * Test of setOkButtonAction method, of class NewAttributeDialog.
-     */
-    @Test
-    public void testSetGetOkButtonAction() {
-        System.out.println("setOkButtonAction");
-
-        EventHandler<ActionEvent> event = null;
-        NewAttributeDialog instance = mock(NewAttributeDialog.class);
-
-        instance.setOkButtonAction(event);
-        assertEquals(instance.getOkButtonAction(), event);
+        // Null because it's a mocked string
+        assertNull(result);
 
     }
 
