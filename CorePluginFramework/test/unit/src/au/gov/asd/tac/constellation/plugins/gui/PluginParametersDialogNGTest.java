@@ -70,9 +70,9 @@ public class PluginParametersDialogNGTest {
      */
     @Test
     public void testConstructor() {
-        System.out.println("testConstructor");
+        System.out.println("testConstructorPluginParametersDialog");
         Platform.runLater(() -> {
-            PluginParametersDialog instance = new PluginParametersDialog(mock(Window.class), "", mock(PluginParameters.class));
+            PluginParametersDialog instance = new PluginParametersDialog(mock(Window.class), "", null);
             assertEquals(instance.getClass(), PluginParametersDialog.class);
         });
     }

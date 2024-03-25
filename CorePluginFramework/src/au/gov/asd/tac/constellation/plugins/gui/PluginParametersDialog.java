@@ -79,9 +79,10 @@ public class PluginParametersDialog extends Stage {
         scene.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         setScene(scene);
 
-        final PluginParametersPane parametersPane = PluginParametersPane.buildPane(parameters, null);
-        root.setCenter(parametersPane);
-
+        if (parameters != null) {
+            final PluginParametersPane parametersPane = PluginParametersPane.buildPane(parameters, null);
+            root.setCenter(parametersPane);
+        }
         final FlowPane buttonPane = new FlowPane();
         buttonPane.setAlignment(Pos.BOTTOM_RIGHT);
         buttonPane.setPadding(new Insets(5));
