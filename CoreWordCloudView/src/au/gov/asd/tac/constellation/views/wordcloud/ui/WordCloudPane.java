@@ -328,6 +328,7 @@ public class WordCloudPane extends BorderPane {
      */
     public void disableTheCloud() {
         wordHolder.setMinHeight(0);
+        topPart.setMinHeight(0);
         theCloud.setVisible(false);
         theCloud.setManaged(false);
         everything.setDividerPositions(0.0f);
