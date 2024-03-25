@@ -26,7 +26,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -477,7 +477,7 @@ public class XmlUtilities {
      * XML into a document.
      */
     public List<Map<String, String>> map(final String url) throws MalformedURLException, FileNotFoundException, UnsupportedEncodingException, TransformerException {       
-        return map(read(FileUtils.toFile(new URL(url))));
+        return map(read(FileUtils.toFile(URI.create(url).toURL())));
     }
 
     /**
@@ -496,7 +496,7 @@ public class XmlUtilities {
      * XML into a document.
      */
     public List<Map<String, String>> map(final String url, final String rowTag) throws MalformedURLException, FileNotFoundException, UnsupportedEncodingException, TransformerException {
-        final Document document = read(FileUtils.toFile(new URL(url)));
+        final Document document = read(FileUtils.toFile(URI.create(url).toURL()));
         return map(document, rowTag);
     }
 
@@ -518,17 +518,14 @@ public class XmlUtilities {
         final NodeList rowList = document.getElementsByTagName(rowTag);
         for (int r = 0; r < rowList.getLength(); r++) {
             final Node rowNode = rowList.item(r);
-            if (rowNode instanceof Element) {
-                final Element rowElement = (Element) rowNode;
-
+            if (rowNode instanceof Element rowElement) {
                 final Map<String, String> row = new HashMap<>();
                 table.add(row);
 
                 final NodeList cellList = rowElement.getChildNodes();
                 for (int c = 0; c < cellList.getLength(); c++) {
                     final Node cellNode = cellList.item(c);
-                    if (cellNode instanceof Element) {
-                        final Element cellElement = (Element) cellNode;
+                    if (cellNode instanceof Element cellElement) {
                         row.put(cellElement.getTagName(), cellElement.getTextContent());
                     }
                 }
@@ -553,8 +550,7 @@ public class XmlUtilities {
         final NodeList rowList = tableElement.getChildNodes();
         for (int r = 0; r < rowList.getLength(); r++) {
             final Node rowNode = rowList.item(r);
-            if (rowNode instanceof Element) {
-                final Element rowElement = (Element) rowNode;
+            if (rowNode instanceof Element rowElement) {
 
                 final Map<String, String> row = new HashMap<>();
                 table.add(row);
@@ -562,8 +558,7 @@ public class XmlUtilities {
                 final NodeList cellList = rowElement.getChildNodes();
                 for (int c = 0; c < cellList.getLength(); c++) {
                     Node cellNode = cellList.item(c);
-                    if (cellNode instanceof Element) {
-                        final Element cellElement = (Element) cellNode;
+                    if (cellNode instanceof Element cellElement) {
                         row.put(cellElement.getTagName(), cellElement.getTextContent());
                     }
                 }
@@ -585,7 +580,7 @@ public class XmlUtilities {
      * XML into a document.
      */
     public String[][] table(final String url, final boolean swap) throws MalformedURLException, FileNotFoundException, UnsupportedEncodingException, TransformerException {
-        return table(read(FileUtils.toFile(new URL(url))), swap);
+        return table(read(FileUtils.toFile(URI.create(url).toURL())), swap);
     }
 
     /**
@@ -603,15 +598,13 @@ public class XmlUtilities {
         int rowIndex = 0;
         for (int r = 0; r < rowList.getLength(); r++) {
             final Node rowNode = rowList.item(r);
-            if (rowNode instanceof Element) {
-                final Element rowElement = (Element) rowNode;
+            if (rowNode instanceof Element rowElement) {
 
                 int columnIndex = 0;
                 final NodeList cellList = rowElement.getChildNodes();
                 for (int c = 0; c < cellList.getLength(); c++) {
                     final Node cellNode = cellList.item(c);
-                    if (cellNode instanceof Element) {
-                        final Element cellElement = (Element) cellNode;
+                    if (cellNode instanceof Element cellElement) {
                         setCell(table, rowIndex, columnIndex, cellElement.getTextContent(), swap);
                         columnIndex++;
                     }

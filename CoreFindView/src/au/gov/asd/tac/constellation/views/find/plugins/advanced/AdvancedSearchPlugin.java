@@ -1,12 +1,12 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
- * 
+ * Copyright 2010-2024 Australian Signals Directorate
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -46,9 +46,7 @@ import au.gov.asd.tac.constellation.views.find.utilities.FindViewUtilities;
 import static au.gov.asd.tac.constellation.views.find.utilities.FindViewUtilities.clearSelection;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -136,8 +134,6 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
 
         final int selectedAttribute = graph.getAttribute(elementType, VisualConcept.VertexAttribute.SELECTED.getName());
 
-        final Set<FindResult> findResultSet = new HashSet<>();
-
         /**
          * This loops through all existing graph elements, then loops through
          * all criteria values, then determines what data type the criteria
@@ -198,15 +194,13 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                         // increase the matchesAllCount by 1
                         matchesAllCount++;
 
-                        // If the search is select all and match critera = any
-                        if (selectAll && ANY.equals(allOrAny)) {
-
-                            // If the current selection = ignore or add to
-                            if ((REPLACE.equals(postSearchAction) && !(CURRENT_SELECTION.equals(searchInLocation))) || ADD_TO.equals(postSearchAction)) {
+                        if (ANY.equals(allOrAny)) {
+                            if (!selectAll) {
+                                foundResult.add(new FindResult(currElement, uid, elementType, graph.getId()));
+                            } else if ((REPLACE.equals(postSearchAction) && !(CURRENT_SELECTION.equals(searchInLocation))) || ADD_TO.equals(postSearchAction)) {
+                                // If the current selection = ignore or add to
                                 // set the elements selection attribute to true
                                 graph.setBooleanValue(selectedAttribute, currElement, true);
-                                // add a new find result to the found results list
-                                // of the element
                                 foundResult.add(new FindResult(currElement, uid, elementType, graph.getId()));
 
                                 // if the current selection = find in and the graph element is already selected
@@ -222,12 +216,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                                 // of the element
                                 removeFromCurrentSelectionList.add(new FindResult(currElement, uid, elementType, graph.getId()));
                             }
-                        } else if (ANY.equals(allOrAny)) {
-                            // if not select all and the match criteria = any
-                            // add a new find result to the found results list
-                            // of the element
-                            foundResult.add(new FindResult(currElement, uid, elementType, graph.getId()));
-                        } 
+                        }
                     }
                 }
 
@@ -236,11 +225,9 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                  * of the criteria.
                  */
                 if (allOrAny.contains(ALL) && matchesAllCount == criteriaList.size()) {
-
                     // add a new find result to the found results list
                     // of the element
                     foundResult.add(new FindResult(currElement, uid, elementType, graph.getId()));
-                    findResultSet.add(new FindResult(currElement, uid, elementType, graph.getId()));
                     // if the attribute is already selected
                     if (graph.getBooleanValue(selectedAttribute, currElement)) {
                         // add it to the find in current selection list
@@ -251,7 +238,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
             }
         }
 
-        findAllMatchingResultsList.addAll(findResultSet);
+        findAllMatchingResultsList.addAll(foundResult);
 
         // if Find in select all the find in results
         if (CURRENT_SELECTION.equals(searchInLocation) && REPLACE.equals(postSearchAction)) {
@@ -277,7 +264,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
         foundResult.clear();
         foundResult.addAll(distinctValues);
 
-        // If the results list is null, has different parameters to the current list, and is not searching all graphs, then create a new results list 
+        // If the results list is null, has different parameters to the current list, and is not searching all graphs, then create a new results list
         if (ActiveFindResultsList.getAdvancedResultsList() == null || !ActiveFindResultsList.getAdvancedResultsList().getAdvancedSearchParameters().equals(this.parameters)
                 || (!this.parameters.getSearchInLocation().equals(ALL_OPEN_GRAPHS) && !ActiveFindResultsList.getAdvancedResultsList().isEmpty()
                 && !ActiveFindResultsList.getAdvancedResultsList().get(0).getGraphId().equals(graph.getId()))) {
@@ -337,7 +324,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
             // loop through the list selecting all find results
             for (final FindResult fr : findInCurrentSelectionList) {
                 graph.setBooleanValue(selectedAttribute, fr.getID(), true);
-            }  
+            }
         }
     }
 

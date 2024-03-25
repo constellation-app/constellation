@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.welcome;
 
+import au.gov.asd.tac.constellation.graph.file.open.RecentFiles;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,6 +44,8 @@ public class WelcomeViewPaneNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        System.setProperty("java.awt.headless", "true");
+        RecentFiles.init();
         if (!FxToolkit.isFXApplicationThreadRunning()) {
             FxToolkit.registerPrimaryStage();
         }
@@ -54,6 +57,8 @@ public class WelcomeViewPaneNGTest {
             FxToolkit.cleanupStages();
         } catch (TimeoutException ex) {
             LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+        } finally {
+            System.clearProperty("java.awt.headless");
         }
     }
 
