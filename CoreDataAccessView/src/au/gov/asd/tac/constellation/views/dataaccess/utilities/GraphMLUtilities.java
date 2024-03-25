@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,24 +67,12 @@ public class GraphMLUtilities {
      */
     public static void addAttribute(final RecordStore result, final String element, final String attrType, final String attrName, final String value) {
         switch (attrType) {
-            case "boolean":
-                result.set(element + attrName, Boolean.parseBoolean(value));
-                break;
-            case "int":
-                result.set(element + attrName, Integer.parseInt(value));
-                break;
-            case "long":
-                result.set(element + attrName, Long.parseLong(value));
-                break;
-            case "float":
-                result.set(element + attrName, Float.parseFloat(value));
-                break;
-            case "double":
-                result.set(element + attrName, Double.parseDouble(value));
-                break;
-            default:
-                result.set(element + attrName, value);
-                break;
+            case "boolean" -> result.set(element + attrName, Boolean.parseBoolean(value));
+            case "int" -> result.set(element + attrName, Integer.parseInt(value));
+            case "long" -> result.set(element + attrName, Long.parseLong(value));
+            case "float" -> result.set(element + attrName, Float.parseFloat(value));
+            case "double" -> result.set(element + attrName, Double.parseDouble(value));
+            default -> result.set(element + attrName, value);
         }
     }
 

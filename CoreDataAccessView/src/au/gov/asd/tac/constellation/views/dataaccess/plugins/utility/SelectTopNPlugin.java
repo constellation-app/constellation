@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -135,22 +135,21 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
                 if (mode != null) {
                     final List<String> types = new ArrayList<>();
                     switch (mode) {
-                        case NODE:
+                        case NODE -> {
                             for (final SchemaVertexType type : SchemaVertexTypeUtilities.getTypes()) {
                                 if (type.isTopLevelType()) {
                                     types.add(type.getName());
                                 }
                             }
-                            break;
-                        case TRANSACTION:
+                        }
+                        case TRANSACTION -> {
                             for (final SchemaTransactionType type : SchemaTransactionTypeUtilities.getTypes()) {
                                 if (type.isTopLevelType()) {
                                     types.add(type.getName());
                                 }
                             }
-                            break;
-                        default:
-                            LOGGER.severe("Invalid mode provided. Mode values accepted are " + NODE + " or " + TRANSACTION);
+                        }
+                        default -> LOGGER.severe("Invalid mode provided. Mode values accepted are " + NODE + " or " + TRANSACTION);
                     }
 
                     @SuppressWarnings("unchecked") //TYPE_CATEGORY_PARAMETER will always be of type SingleChoiceParameter
@@ -172,24 +171,24 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
 
                     final List<String> types = new ArrayList<>();
                     switch (mode) {
-                        case NODE:
+                        case NODE -> {
                             final SchemaVertexType typeCategoryVertexType = SchemaVertexTypeUtilities.getType(typeCategory);
                             for (final SchemaVertexType type : SchemaVertexTypeUtilities.getTypes()) {
                                 if (type.getSuperType().equals(typeCategoryVertexType)) {
                                     types.add(type.getName());
                                 }
                             }
-                            break;
-                        case TRANSACTION:
+                        }
+                        case TRANSACTION -> {
                             final SchemaTransactionType typeCategoryTransactionType = SchemaTransactionTypeUtilities.getType(typeCategory);
                             for (final SchemaTransactionType type : SchemaTransactionTypeUtilities.getTypes()) {
                                 if (type.getSuperType().equals(typeCategoryTransactionType)) {
                                     types.add(type.getName());
                                 }
                             }
-                            break;
-                        default:
-                            break;
+                        }
+                        default -> {
+                        }
                     }
                     // update the sub level types
                     @SuppressWarnings("unchecked") //TYPE_PARAMETER will always be of type MultiChoiceParameter
@@ -289,7 +288,7 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
 
                 //Tally the number of transactions between the current node and nodes sharing a transaction
                 switch (mode) {
-                    case NODE:
+                    case NODE -> {
                         final SchemaVertexType destinationVertexType = graph.getObjectValue(vertexTypeAttribute, targetVxId);
                         if (destinationVertexType != null && subTypes.contains(destinationVertexType.getName())) {
                             if (!occurrences.containsKey(targetVxId)) {
@@ -298,8 +297,8 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
 
                             occurrences.put(targetVxId, occurrences.get(targetVxId) + 1);
                         }
-                        break;
-                    case TRANSACTION:
+                    }
+                    case TRANSACTION -> {
                         final SchemaTransactionType transactionType = graph.getObjectValue(transactionTypeAttribute, txId);
                         if (transactionType != null && subTypes.contains(transactionType.getName())) {
                             if (!occurrences.containsKey(targetVxId)) {
@@ -308,9 +307,9 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
 
                             occurrences.put(targetVxId, occurrences.get(targetVxId) + 1);
                         }
-                        break;
-                    default:
-                        break;
+                    }
+                    default -> {
+                    }
                 }
             }
 

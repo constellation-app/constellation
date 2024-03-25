@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -403,16 +403,12 @@ public class BasicFindTab extends Tab {
      */
     public List<Attribute> getMatchingAttributeList(final GraphElementType type) {
         // based on the element type return the matching list
-        switch (type) {
-            case VERTEX:
-                return selectedNodeAttributes;
-            case TRANSACTION:
-                return selectedTransAttributes;
-            case EDGE:
-                return selectedEdgeAttributes;
-            default:
-                return selectedLinkAttributes;
-        }
+        return switch (type) {
+            case VERTEX -> selectedNodeAttributes;
+            case TRANSACTION -> selectedTransAttributes;
+            case EDGE -> selectedEdgeAttributes;
+            default -> selectedLinkAttributes;
+        };
     }
 
 
@@ -478,31 +474,19 @@ public class BasicFindTab extends Tab {
         // retrieves the currently selected index, setting the relevent boolean
         // to true
         switch (postSearchChoiceBox.getSelectionModel().getSelectedIndex()) {
-            case 0:
-                replaceSelection = true;
-                break;
-            case 1:
-                addTo = true;
-                break;
-            case 2:
-                removeFrom = true;
-                break;
-            default:
-                break;
+            case 0 -> replaceSelection = true;
+            case 1 -> addTo = true;
+            case 2 -> removeFrom = true;
+            default -> {
+            }
         }
 
         switch (searchInChoiceBox.getSelectionModel().getSelectedIndex()) {
-            case 0:
-                currentGraph = true;
-                break;
-            case 1:
-                currentSelection = true;
-                break;
-            case 2:
-                searchAllGraphs = true;
-                break;
-            default:
-                break;
+            case 0 -> currentGraph = true;
+            case 1 -> currentSelection = true;
+            case 2 -> searchAllGraphs = true;
+            default -> {
+            }
         }
 
         // creates a new basicFindReplaceParameter with the currently selected
