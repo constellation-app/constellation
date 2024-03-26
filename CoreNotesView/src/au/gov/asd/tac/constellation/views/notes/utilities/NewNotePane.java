@@ -200,7 +200,6 @@ public class NewNotePane {
 
         final VBox paramVBox = new VBox(cbHBox, noteHBox);
         paramVBox.setStyle(fontStyle + "-fx-padding: 5px;");
-        //dialogPane.getChildren().add(addNoteVBox);
         dialogPane.setCenter(tabPane);
         dialogPane.setBottom(paramVBox);
 
@@ -250,7 +249,6 @@ public class NewNotePane {
             stage.setTitle("Create new note");
             stage.setMinHeight(HEIGHT);
             stage.setMinWidth(WIDTH);
-            stage.setResizable(true);
 
             final Scene s = new Scene(dialogPane);
             s.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
