@@ -19,6 +19,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.scene.control.Button;
 import static org.mockito.Mockito.mock;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
@@ -71,6 +72,19 @@ public class NotesViewPaneNGTest {
         Platform.runLater(() -> {
             NotesViewPane instance = new NotesViewPane(mock(NotesViewController.class));
             assertEquals(instance.getClass(), NotesViewPane.class);
+        });
+    }
+    
+    /**
+     * Test of getCreateNewNoteButton method, of class NotesViewPane.
+     */
+    @Test
+    public void testGetCreateNewNoteButton() {
+        System.out.println("getCreateNewNoteButton");
+        Platform.runLater(() -> {
+            NotesViewPane instance = new NotesViewPane(mock(NotesViewController.class));
+            instance.updateNotesUI();
+            assertEquals(instance.getCreateNewNoteButton(), Button.class);
         });
     }
 
@@ -178,18 +192,19 @@ public class NotesViewPaneNGTest {
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
 //    }
-//
-//    /**
-//     * Test of updateNotesUI method, of class NotesViewPane.
-//     */
-//    @Test
-//    public void testUpdateNotesUI() {
-//        System.out.println("updateNotesUI");
-//        NotesViewPane instance = null;
-//        instance.updateNotesUI();
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
+
+    /**
+     * Test of updateNotesUI method, of class NotesViewPane.
+     */
+    @Test
+    public void testUpdateNotesUI() {
+        System.out.println("updateNotesUI");
+        Platform.runLater(() -> {
+            NotesViewPane instance = new NotesViewPane(mock(NotesViewController.class));
+            instance.updateNotesUI();
+            assertEquals(instance.getClass(), NotesViewController.class);
+        });
+    }
 //
 //    /**
 //     * Test of updateFilters method, of class NotesViewPane.
@@ -319,17 +334,4 @@ public class NotesViewPaneNGTest {
 //        fail("The test case is a prototype.");
 //    }
 //
-//    /**
-//     * Test of getCreateNewNoteButton method, of class NotesViewPane.
-//     */
-//    @Test
-//    public void testGetCreateNewNoteButton() {
-//        System.out.println("getCreateNewNoteButton");
-//        NotesViewPane instance = null;
-//        Button expResult = null;
-//        Button result = instance.getCreateNewNoteButton();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
 }
