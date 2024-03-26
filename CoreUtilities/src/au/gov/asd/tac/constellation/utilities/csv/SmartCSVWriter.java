@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ public class SmartCSVWriter implements AutoCloseable {
      *
      * @param out the Writer thar will receive the output.
      */
-    public SmartCSVWriter(Writer out) {
+    public SmartCSVWriter(final Writer out) {
         this(out, ',', false);
     }
 
@@ -57,7 +57,7 @@ public class SmartCSVWriter implements AutoCloseable {
      * @param escapeAlways should the writer surround all fields with quotes or
      * just those that contain escaped characters.
      */
-    public SmartCSVWriter(Writer out, boolean escapeAlways) {
+    public SmartCSVWriter(final Writer out, final boolean escapeAlways) {
         this(out, ',', escapeAlways);
     }
 
@@ -68,7 +68,7 @@ public class SmartCSVWriter implements AutoCloseable {
      * @param out the Writer thar will receive the output.
      * @param separator the separator between fields.
      */
-    public SmartCSVWriter(Writer out, char separator) {
+    public SmartCSVWriter(final Writer out, final char separator) {
         this(out, separator, false);
     }
 
@@ -80,7 +80,7 @@ public class SmartCSVWriter implements AutoCloseable {
      * @param escapeAlways should the writer surround all fields with quotes or
      * just those that contain escaped characters.
      */
-    public SmartCSVWriter(Writer out, char separator, boolean escapeAlways) {
+    public SmartCSVWriter(final Writer out, final char separator, final boolean escapeAlways) {
         this.out = out;
         this.separator = separator;
         this.escapeAlways = escapeAlways;
@@ -92,11 +92,9 @@ public class SmartCSVWriter implements AutoCloseable {
      * @param row the fields of the new row.
      * @throws IOException if the underlying Writer throws an IOException.
      */
-    public void writeNext(String[] row) throws IOException {
-
+    public void writeNext(final String[] row) throws IOException {
         boolean needsDelimiter = false;
-        for (String field : row) {
-
+        for (final String field : row) {
             if (needsDelimiter) {
                 out.write(separator);
             } else {

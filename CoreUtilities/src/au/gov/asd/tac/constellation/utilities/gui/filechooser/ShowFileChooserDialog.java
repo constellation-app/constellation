@@ -46,8 +46,7 @@ public class ShowFileChooserDialog implements Runnable {
      *     file chooser to open
      * @param fileChooserMode the mode to open the file chooser in
      */
-    public ShowFileChooserDialog(final FileChooserBuilder fileChooserBuilder,
-                                 final FileChooserMode fileChooserMode) {
+    public ShowFileChooserDialog(final FileChooserBuilder fileChooserBuilder, final FileChooserMode fileChooserMode) {
         this.fileChooserBuilder = fileChooserBuilder;
         this.fileChooserMode = fileChooserMode;
     }
@@ -60,26 +59,22 @@ public class ShowFileChooserDialog implements Runnable {
     public void run() {
         if (fileChooserMode != null) {
             switch (fileChooserMode) {
-                case OPEN:
-                    selectedFiles = new File[] {fileChooserBuilder.showOpenDialog()};
-                    break;
-                case SAVE:
+                case OPEN -> selectedFiles = new File[] {fileChooserBuilder.showOpenDialog()};
+                case SAVE -> {
                     final JFileChooser jfc = fileChooserBuilder.createFileChooser();
                     final FileObject currentFileObject = getCurrentFileObject();
                     if (currentFileObject != null) {
                         jfc.setSelectedFile(new File(currentFileObject.getName()));
                     }
-                    final int returnState = jfc.showSaveDialog(WindowManager.getDefault().getMainWindow());   
+                    final int returnState = jfc.showSaveDialog(WindowManager.getDefault().getMainWindow());
                     //The showSaveDialog returns a file object at the location of the application source files when cancel is selected 
                     if (returnState != JFileChooser.CANCEL_OPTION){
                         selectedFiles = new File[] {jfc.getSelectedFile()};
                     }
-                    break;
-                case MULTI:
-                    selectedFiles = fileChooserBuilder.showMultiOpenDialog();
-                    break;
-                default:
-                    break;
+                }
+                case MULTI -> selectedFiles = fileChooserBuilder.showMultiOpenDialog();
+                default -> {
+                }
             }
         }
     }
@@ -91,7 +86,7 @@ public class ShowFileChooserDialog implements Runnable {
      */
     public Optional<List<File>> getSelectedFiles() {
         return Optional.ofNullable(selectedFiles == null || selectedFiles.length == 0
-                || (selectedFiles.length == 1 && selectedFiles[0] == null)
+                || (selectedFiles.length == 1 && selectedFiles[0] == null) 
                 ? null : Arrays.stream(selectedFiles).collect(Collectors.toList()));
     }
     

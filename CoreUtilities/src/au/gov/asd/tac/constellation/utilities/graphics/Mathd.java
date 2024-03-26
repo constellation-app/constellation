@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ public final class Mathd {
     }
 
     public static double getAngleBetweenVectors(final Vector3d u, final Vector3d v) {
-        double tmp = dotProduct(u, v);
+        final double tmp = dotProduct(u, v);
         return Math.acos(tmp);
     }
 
@@ -160,26 +160,7 @@ public final class Mathd {
     }
 
     public static void makeRotationMatrix(final Matrix33d m, final double angle, double x, double y, double z) {
-
-        double mag;
-        double s;
-        double c;
-        double xx;
-        double yy;
-        double zz;
-        double xy;
-        double yz;
-        double zx;
-        double xs;
-        double ys;
-        double zs;
-        double one_c;
-
-        s = Math.sin(angle);
-        c = Math.cos(angle);
-
-        mag = Math.sqrt(x * x + y * y + z * z);
-
+        final double mag = Math.sqrt(x * x + y * y + z * z);
         // Identity matrix
         if (mag == 0.0F) {
             m.identity();
@@ -190,29 +171,32 @@ public final class Mathd {
         x /= mag;
         y /= mag;
         z /= mag;
+        
+        final double s = Math.sin(angle);
+        final double c = Math.cos(angle);
+        
+        final double xx = x * x;
+        final double yy = y * y;
+        final double zz = z * z;
+        final double xy = x * y;
+        final double yz = y * z;
+        final double zx = z * x;
+        final double xs = x * s;
+        final double ys = y * s;
+        final double zs = z * s;
+        final double oneC = 1.0F - c;
 
-        xx = x * x;
-        yy = y * y;
-        zz = z * z;
-        xy = x * y;
-        yz = y * z;
-        zx = z * x;
-        xs = x * s;
-        ys = y * s;
-        zs = z * s;
-        one_c = 1.0F - c;
+        m.getA()[index33(0, 0)] = (oneC * xx) + c;
+        m.getA()[index33(0, 1)] = (oneC * xy) - zs;
+        m.getA()[index33(0, 2)] = (oneC * zx) + ys;
 
-        m.getA()[index33(0, 0)] = (one_c * xx) + c;
-        m.getA()[index33(0, 1)] = (one_c * xy) - zs;
-        m.getA()[index33(0, 2)] = (one_c * zx) + ys;
+        m.getA()[index33(1, 0)] = (oneC * xy) + zs;
+        m.getA()[index33(1, 1)] = (oneC * yy) + c;
+        m.getA()[index33(1, 2)] = (oneC * yz) - xs;
 
-        m.getA()[index33(1, 0)] = (one_c * xy) + zs;
-        m.getA()[index33(1, 1)] = (one_c * yy) + c;
-        m.getA()[index33(1, 2)] = (one_c * yz) - xs;
-
-        m.getA()[index33(2, 0)] = (one_c * zx) - ys;
-        m.getA()[index33(2, 1)] = (one_c * yz) + xs;
-        m.getA()[index33(2, 2)] = (one_c * zz) + c;
+        m.getA()[index33(2, 0)] = (oneC * zx) - ys;
+        m.getA()[index33(2, 1)] = (oneC * yz) + xs;
+        m.getA()[index33(2, 2)] = (oneC * zz) + c;
     }
 
     /**
@@ -225,25 +209,7 @@ public final class Mathd {
      * @param z
      */
     public static void makeRotationMatrix(final Matrix44d m, final double angle, double x, double y, double z) {
-        double mag;
-        double s;
-        double c;
-        double xx;
-        double yy;
-        double zz;
-        double xy;
-        double yz;
-        double zx;
-        double xs;
-        double ys;
-        double zs;
-        double one_c;
-
-        s = Math.sin(angle);
-        c = Math.cos(angle);
-
-        mag = Math.sqrt(x * x + y * y + z * z);
-
+        final double mag = Math.sqrt(x * x + y * y + z * z);       
         // Identity matrix
         if (mag == 0.0) {
             m.identity();
@@ -255,30 +221,33 @@ public final class Mathd {
         y /= mag;
         z /= mag;
 
-        xx = x * x;
-        yy = y * y;
-        zz = z * z;
-        xy = x * y;
-        yz = y * z;
-        zx = z * x;
-        xs = x * s;
-        ys = y * s;
-        zs = z * s;
-        one_c = 1.0F - c;
+        final double s = Math.sin(angle);
+        final double c = Math.cos(angle);
+        
+        final double xx = x * x;
+        final double yy = y * y;
+        final double zz = z * z;
+        final double xy = x * y;
+        final double yz = y * z;
+        final double zx = z * x;
+        final double xs = x * s;
+        final double ys = y * s;
+        final double zs = z * s;
+        final double oneC = 1.0F - c;
 
-        m.getA()[index44(0, 0)] = (one_c * xx) + c;
-        m.getA()[index44(0, 1)] = (one_c * xy) - zs;
-        m.getA()[index44(0, 2)] = (one_c * zx) + ys;
+        m.getA()[index44(0, 0)] = (oneC * xx) + c;
+        m.getA()[index44(0, 1)] = (oneC * xy) - zs;
+        m.getA()[index44(0, 2)] = (oneC * zx) + ys;
         m.getA()[index44(0, 3)] = 0.0F;
 
-        m.getA()[index44(1, 0)] = (one_c * xy) + zs;
-        m.getA()[index44(1, 1)] = (one_c * yy) + c;
-        m.getA()[index44(1, 2)] = (one_c * yz) - xs;
+        m.getA()[index44(1, 0)] = (oneC * xy) + zs;
+        m.getA()[index44(1, 1)] = (oneC * yy) + c;
+        m.getA()[index44(1, 2)] = (oneC * yz) - xs;
         m.getA()[index44(1, 3)] = 0.0F;
 
-        m.getA()[index44(2, 0)] = (one_c * zx) - ys;
-        m.getA()[index44(2, 1)] = (one_c * yz) + xs;
-        m.getA()[index44(2, 2)] = (one_c * zz) + c;
+        m.getA()[index44(2, 0)] = (oneC * zx) - ys;
+        m.getA()[index44(2, 1)] = (oneC * yz) + xs;
+        m.getA()[index44(2, 2)] = (oneC * zz) + c;
         m.getA()[index44(2, 3)] = 0.0F;
 
         m.getA()[index44(3, 0)] = 0.0F;
@@ -287,7 +256,7 @@ public final class Mathd {
         m.getA()[index44(3, 3)] = 1.0F;
     }
 
-    public static void makeTranslationMatrix(Matrix44d m, final double x, final double y, final double z) {
+    public static void makeTranslationMatrix(final Matrix44d m, final double x, final double y, final double z) {
         m.identity();
         m.getA()[12] = x;
         m.getA()[13] = y;
@@ -295,30 +264,21 @@ public final class Mathd {
     }
 
     private static double detIJ(final Matrix44d m, final int i, final int j) {
-        int x;
-        int y;
-        int ii;
-        int jj;
-        double ret;
-        double[][] mat = new double[3][3];
+        final double[][] mat = new double[3][3];
 
-        x = 0;
-        for (ii = 0; ii < 4; ii++) {
+        for (int ii = 0; ii < 4; ii++) {
             if (ii == i) {
                 continue;
             }
-            y = 0;
-            for (jj = 0; jj < 4; jj++) {
+            for (int jj = 0; jj < 4; jj++) {
                 if (jj == j) {
                     continue;
                 }
-                mat[x][y] = m.getA()[(ii * 4) + jj];
-                y++;
+                mat[ii][jj] = m.getA()[(ii * 4) + jj];
             }
-            x++;
         }
 
-        ret = mat[0][0] * (mat[1][1] * mat[2][2] - mat[2][1] * mat[1][2]);
+        double ret = mat[0][0] * (mat[1][1] * mat[2][2] - mat[2][1] * mat[1][2]);
         ret -= mat[0][1] * (mat[1][0] * mat[2][2] - mat[2][0] * mat[1][2]);
         ret += mat[0][2] * (mat[1][0] * mat[2][1] - mat[2][0] * mat[1][1]);
 
@@ -326,11 +286,8 @@ public final class Mathd {
     }
 
     public static void invertMatrix(final Matrix44d mInverse, final Matrix44d m) {
-        double det;
-        double detij;
-
         // calculate 4x4 determinant
-        det = 0.0;
+        double det = 0.0;
         for (int i = 0; i < 4; i++) {
             det += (i & 0x1) == 1 ? (-m.getA()[i] * detIJ(m, 0, i)) : (m.getA()[i] * detIJ(m, 0, i));
         }
@@ -339,7 +296,7 @@ public final class Mathd {
         // calculate inverse
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                detij = detIJ(m, j, i);
+                final double detij = detIJ(m, j, i);
                 mInverse.getA()[(i * 4) + j] = ((i + j) & 0x1) == 1 ? (-detij * det) : (detij * det);
             }
         }
@@ -351,8 +308,8 @@ public final class Mathd {
 
     public static void getPlaneEquation(final Vector4d planeEq, final Vector3d p1, final Vector3d p2, final Vector3d p3) {
         // Get two vectors; do the cross product.
-        Vector3d v1 = new Vector3d();
-        Vector3d v2 = new Vector3d();
+        final Vector3d v1 = new Vector3d();
+        final Vector3d v2 = new Vector3d();
 
         // V1 = p3 - p1
         v1.a[0] = p3.a[0] - p1.a[0];
@@ -365,7 +322,7 @@ public final class Mathd {
         v2.a[2] = p2.a[2] - p1.a[2];
 
         // Unit normal to plane - Not sure which is the best way here.
-        Vector3d tmp = new Vector3d();
+        final Vector3d tmp = new Vector3d();
         crossProduct(tmp, v1, v2);
         tmp.normalize();
 
@@ -420,8 +377,8 @@ public final class Mathd {
      * @param t the interpolation parameter.
      */
     public static void catmullRom(final double[] vOut, final double[] vP0, final double[] vP1, final double[] vP2, final double[] vP3, double t) {
-        double t2 = t * t;
-        double t3 = t2 * t;
+        final double t2 = t * t;
+        final double t3 = t2 * t;
 
         // X
         vOut[0] = 0.5 * ((2.0 * vP1[0])
@@ -463,16 +420,12 @@ public final class Mathd {
      * @return
      */
     public static double m3dSmoothStep(final double edge1, final double edge2, final double x) {
-        double t;
-        t = (x - edge1) / (edge2 - edge1);
+        double t = (x - edge1) / (edge2 - edge1);
         if (t > 1.0) {
             t = 1.0;
-        }
-
-        if (t < 0.0) {
+        } else if (t < 0.0) {
             t = 0.0F;
         }
-
         return t * t * (3.0 - 2.0 * t);
     }
 
@@ -487,14 +440,14 @@ public final class Mathd {
     public static void m3dMakePlanarShadowMatrix(final double[] proj, final double[] planeEq, final double[] vLightPos) {
         // These just make the code below easier to read. They will be
         // removed by the optimizer.
-        double a = planeEq[0];
-        double b = planeEq[1];
-        double c = planeEq[2];
-        double d = planeEq[3];
+        final double a = planeEq[0];
+        final double b = planeEq[1];
+        final double c = planeEq[2];
+        final double d = planeEq[3];
 
-        double dx = -vLightPos[0];
-        double dy = -vLightPos[1];
-        double dz = -vLightPos[2];
+        final double dx = -vLightPos[0];
+        final double dy = -vLightPos[1];
+        final double dz = -vLightPos[2];
 
         // Now build the projection matrix
         proj[0] = b * dy + c * dz;

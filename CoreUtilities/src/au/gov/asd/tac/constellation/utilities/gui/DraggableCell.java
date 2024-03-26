@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,17 +37,17 @@ public class DraggableCell<T> extends ListCell<T> {
     }
 
     public DraggableCell() {
-        ListCell<T> thisCell = this;
+        final ListCell<T> thisCell = this;
 
         setOnDragDetected(event -> {
             if (getItem() == null) {
                 return;
             }
 
-            ObservableList<T> items = getListView().getItems();
+            final ObservableList<T> items = getListView().getItems();
 
-            Dragboard dragboard = startDragAndDrop(TransferMode.MOVE);
-            ClipboardContent content = new ClipboardContent();
+            final Dragboard dragboard = startDragAndDrop(TransferMode.MOVE);
+            final ClipboardContent content = new ClipboardContent();
             content.putString(String.valueOf(items.indexOf(getItem())));
             if (getCellDragImage() != null) {
                 dragboard.setDragView(getCellDragImage());
@@ -81,12 +81,11 @@ public class DraggableCell<T> extends ListCell<T> {
             }
 
             boolean success = false;
-            if (event.getGestureSource() instanceof Node && ((Node) event.getGestureSource()).getParent() == getListView()) {
-
-                Dragboard dragboard = event.getDragboard();
+            if (event.getGestureSource() instanceof Node nodeEvent && nodeEvent.getParent() == getListView()) {
+                final Dragboard dragboard = event.getDragboard();
 
                 if (dragboard.hasString()) {
-                    ObservableList<T> items = getListView().getItems();
+                    final ObservableList<T> items = getListView().getItems();
                     final int draggedIndex = Integer.parseInt(dragboard.getString());
                     final int thisIndex = items.indexOf(getItem());
 
@@ -106,11 +105,7 @@ public class DraggableCell<T> extends ListCell<T> {
     @Override
     protected void updateItem(T item, boolean empty) {
         super.updateItem(item, empty);
-        if (item != null) {
-            setText(item.toString());
-        } else {
-            setText(null);
-        }
+        setText(item != null ? item.toString() : null);
     }
 
 }

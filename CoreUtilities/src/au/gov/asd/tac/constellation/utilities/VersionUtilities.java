@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,32 +30,28 @@ public class VersionUtilities {
      * version meets the minimum required version. For example, 3.5.2 and 4.2
      *
      * @param current The current OpenGL version
-     * @param minimum_version The minimum OpenGL version
+     * @param minimumVersion The minimum OpenGL version
      *
      * @return True if current is at least minimum_version, false otherwise.
      */
-    public static boolean doesVersionMeetMinimum(String current, String minimum_version) {
-        final String[] current_split = current.replaceAll(" .*", "").trim().split("\\.");
-        final String[] minimum_version_split = minimum_version.replaceAll(" .*", "").trim().split("\\.");
+    public static boolean doesVersionMeetMinimum(final String current, final String minimumVersion) {
+        final String[] currentSplit = current.replaceAll(" .*", "").trim().split("\\.");
+        final String[] minimumVersionSplit = minimumVersion.replaceAll(" .*", "").trim().split("\\.");
 
-        int length = Math.max(current_split.length, minimum_version_split.length);
+        final int length = Math.max(currentSplit.length, minimumVersionSplit.length);
         for (int i = 0; i < length; i++) {
             int thisPart;
             try {
-                thisPart = i < current_split.length ? Integer.parseInt(current_split[i]) : 0;
-            } catch (NumberFormatException ex) {
+                thisPart = i < currentSplit.length ? Integer.parseInt(currentSplit[i]) : 0;
+            } catch (final NumberFormatException ex) {
                 thisPart = 0;
             }
 
             int min;
             try {
-                min = i < minimum_version_split.length ? Integer.parseInt(minimum_version_split[i]) : 0;
-            } catch (NumberFormatException ex) {
+                min = i < minimumVersionSplit.length ? Integer.parseInt(minimumVersionSplit[i]) : 0;
+            } catch (final NumberFormatException ex) {
                 min = 0;
-            }
-
-            if (thisPart > min) {
-                return true;
             }
 
             if (thisPart < min) {
@@ -63,7 +59,7 @@ public class VersionUtilities {
             }
         }
 
-        //The strings are identical, so that meets the minimum requirement
+        // The current is equal or greater, so that meets the minimum requirement
         return true;
     }
 }
