@@ -948,11 +948,11 @@ public class NotesViewPane extends BorderPane {
 
         if (newNote.isUserCreated()) {
             noteBodyBorderPane.setStyle(PADDING_BG_COLOUR_STYLE + newNote.getNodeColour() + BG_RADIUS_STYLE);
-            notesListVBox.getChildren().add(noteBodyBorderPane);
         } else {
-            noteBodyBorderPane.setStyle(PADDING_BG_COLOUR_STYLE + AUTO_COLOR + BG_RADIUS_STYLE);
-            notesListVBox.getChildren().add(noteBodyBorderPane);;
+            noteBodyBorderPane.setStyle(PADDING_BG_COLOUR_STYLE + AUTO_COLOR + BG_RADIUS_STYLE); 
         }
+        
+        notesListVBox.getChildren().add(noteBodyBorderPane);
 
         noteBody.prefWidthProperty().bind(this.widthProperty());
         newNote.getContentTextFlow().prefWidthProperty().bind(noteBody.widthProperty().subtract(10));
