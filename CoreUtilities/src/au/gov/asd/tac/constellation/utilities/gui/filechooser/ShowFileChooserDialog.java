@@ -87,7 +87,7 @@ public class ShowFileChooserDialog implements Runnable {
     public Optional<List<File>> getSelectedFiles() {
         return Optional.ofNullable(selectedFiles == null || selectedFiles.length == 0
                 || (selectedFiles.length == 1 && selectedFiles[0] == null) 
-                ? null : Arrays.stream(selectedFiles).collect(Collectors.toList()));
+                ? null : Arrays.stream(selectedFiles).toList());
     }
     
     private FileObject getCurrentFileObject() {
