@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -116,7 +116,7 @@ public final class VisualChange implements Comparable<VisualChange> {
      * equal.
      */
     public boolean hasSameChangeList(final VisualChange other) {
-        if(other == null){
+        if (other == null) {
             return false;
         }
         if (changeList == null) {
@@ -142,10 +142,7 @@ public final class VisualChange implements Comparable<VisualChange> {
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj instanceof VisualChange) {
-            return id == ((VisualChange) obj).id;
-        }
-        return false;
+        return obj instanceof VisualChange visualChangeObj && id == visualChangeObj.id;
     }
 
     @Override

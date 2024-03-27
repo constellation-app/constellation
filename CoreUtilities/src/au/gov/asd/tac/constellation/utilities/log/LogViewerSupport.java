@@ -92,7 +92,6 @@ public class LogViewerSupport implements Runnable {
      * @param ioName name of the output window tab to use
      */
     public LogViewerSupport(final File fileName, final String ioName) {
-
         this.fileName = fileName;
         this.ioName = ioName;
     }
@@ -191,7 +190,7 @@ public class LogViewerSupport implements Runnable {
             anchor = new LinkedList<>();
         }
 
-        public String add(String line) {
+        public String add(final String line) {
             if (StringUtils.isBlank(line)) { // NOI18N
                 return null;
             } // end of if (line == null || line.equals(""))
@@ -207,13 +206,13 @@ public class LogViewerSupport implements Runnable {
             return line;
         }
 
-        public void setMaxCount(int newMax) {
+        public void setMaxCount(final int newMax) {
             maxCount = newMax;
         }
 
         public int output() {
             int i = 0;
-            for (String s : anchor) {
+            for (final String s : anchor) {
                 io.getOut().println(s);
                 i++;
             }

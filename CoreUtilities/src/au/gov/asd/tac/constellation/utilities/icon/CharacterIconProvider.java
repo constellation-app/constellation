@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -331,7 +331,7 @@ public class CharacterIconProvider implements ConstellationIconProvider {
 
     @Override
     public List<ConstellationIcon> getIcons() {
-        List<ConstellationIcon> characterIcons = new ArrayList<>();
+        final List<ConstellationIcon> characterIcons = new ArrayList<>();
         characterIcons.add(CHAR_0020);
         characterIcons.add(CHAR_0021);
         characterIcons.add(CHAR_0022);

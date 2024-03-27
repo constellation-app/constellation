@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -101,7 +101,7 @@ public class JsonUtilities {
             }
             current = current.get(key);
         }
-        Iterator<JsonNode> nodeIter = current.iterator();
+        final Iterator<JsonNode> nodeIter = current.iterator();
         return new Iterator<String>() {
             @Override
             public boolean hasNext() {
@@ -181,7 +181,7 @@ public class JsonUtilities {
             }
             current = current.get(key);
         }
-        Iterator<JsonNode> nodeIter = current.iterator();
+        final Iterator<JsonNode> nodeIter = current.iterator();
         return new Iterator<Integer>() {
             @Override
             public boolean hasNext() {
@@ -231,7 +231,7 @@ public class JsonUtilities {
             }
             current = current.get(key);
         }
-        Iterator<JsonNode> nodeIter = current.iterator();
+        final Iterator<JsonNode> nodeIter = current.iterator();
         return new Iterator<Boolean>() {
             @Override
             public boolean hasNext() {
@@ -296,10 +296,7 @@ public class JsonUtilities {
      * @return a {@code String} or null if not found
      */
     public static String getTextValue(final String attribute, final JsonNode node) {
-        if (node.has(attribute)) {
-            return getNodeText(node.get(attribute));
-        }
-        return null;
+        return node.has(attribute) ? getNodeText(node.get(attribute)) : null;
     }
 
     /**
@@ -315,7 +312,7 @@ public class JsonUtilities {
         final StringBuilder sb = new StringBuilder();
 
         if (node.has(attribute)) {
-            for (JsonNode entry : node.get(attribute)) {
+            for (final JsonNode entry : node.get(attribute)) {
                 if (sb.length() > 0) {
                     sb.append(delimiter);
                 }
@@ -340,16 +337,9 @@ public class JsonUtilities {
      * @return a {@code String} or null if not found
      */
     public static String getTextValueOfFirstSubElement(final String attribute, final String innerAttribute, final JsonNode node) {
-
-        if (node.has(attribute)) {
-            if (node.get(attribute).has(0) && node.get(attribute).get(0).has(innerAttribute)) {
-                return getNodeText(node.get(attribute).get(0).get(innerAttribute));
-            } else {
-                return null;
-            }
-        } else {
-            return null;
-        }
+        return node.has(attribute) && node.get(attribute).has(0) && node.get(attribute).get(0).has(innerAttribute) 
+                ? getNodeText(node.get(attribute).get(0).get(innerAttribute)) 
+                : null;
     }
 
     /**
