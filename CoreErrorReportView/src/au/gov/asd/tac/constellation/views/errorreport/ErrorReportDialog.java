@@ -15,17 +15,14 @@
  */
 package au.gov.asd.tac.constellation.views.errorreport;
 
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.io.File;
 import java.util.Date;
-import java.util.logging.Logger;
 import javafx.embed.swing.JFXPanel;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
