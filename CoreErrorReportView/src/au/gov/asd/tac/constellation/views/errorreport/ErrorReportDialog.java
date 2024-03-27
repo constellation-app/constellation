@@ -96,6 +96,7 @@ public class ErrorReportDialog {
         root = new BorderPane();
 
         root.setPadding(BORDERPANE_PADDING);
+        root.getStyleClass().add("errorBoxBG");
 
         final Label imageLabel = new Label(" \n ");
         final Color errorIconColor;

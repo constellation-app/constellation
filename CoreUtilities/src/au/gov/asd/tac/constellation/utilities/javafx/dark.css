@@ -292,5 +292,9 @@
 }
 
 #errorDialogOccBox{
-    -fx-background-color: #111111;
+    -fx-background-color: #222222;
+}
+
+.errorBoxBG{
+    -fx-background: #333333;
 }
