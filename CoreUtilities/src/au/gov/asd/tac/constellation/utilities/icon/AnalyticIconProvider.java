@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -631,8 +631,7 @@ public class AnalyticIconProvider implements ConstellationIconProvider {
 
     @Override
     public List<ConstellationIcon> getIcons() {
-        List<ConstellationIcon> analyticIcons = new ArrayList<>();
-
+        final List<ConstellationIcon> analyticIcons = new ArrayList<>();
         analyticIcons.add(CALL);
         analyticIcons.add(CELL_TOWER);
         analyticIcons.add(CHAT);

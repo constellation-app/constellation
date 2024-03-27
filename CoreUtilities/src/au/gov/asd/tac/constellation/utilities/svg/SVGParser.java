@@ -1,5 +1,5 @@
 /*
-* Copyright 2010-2023 Australian Signals Directorate
+* Copyright 2010-2024 Australian Signals Directorate
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -57,8 +57,7 @@ public class SVGParser {
      * @return SVGData
      * @throws IOException 
      */
-    public static SVGData parse(final InputStream inputStream) throws IOException {
-        
+    public static SVGData parse(final InputStream inputStream) throws IOException {        
         if (inputStream == null) {
             throw new IOException("An input stream has not been provided");
         }
@@ -82,11 +81,8 @@ public class SVGParser {
 
                 // Create a new SVGData with the current SVGData as the parent 
                 if (openTag) {
-                    final SVGData newObject = new SVGData(
-                            SVGParser.getElementType(svgElement), 
-                            currentElement, 
-                            SVGParser.getElementAttributes(svgElement)
-                    );
+                    final SVGData newObject = new SVGData(SVGParser.getElementType(svgElement), currentElement, 
+                            SVGParser.getElementAttributes(svgElement));
                     currentElement = newObject;
                 }
 

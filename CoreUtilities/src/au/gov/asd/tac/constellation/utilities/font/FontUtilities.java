@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -196,7 +196,6 @@ public class FontUtilities {
      */
     public static int getOutputFontSize() {
         int fontSize;
-
         try {
             final Preferences p = NbPreferences.root();
             if (p.nodeExists(ApplicationPreferenceKeys.OUTPUT2_PREFERENCE)) {
@@ -225,7 +224,6 @@ public class FontUtilities {
      */
     public static String getOutputFontFamily() {
         String fontFamily;
-
         try {
             final Preferences p = NbPreferences.root();
             if (p.nodeExists(ApplicationPreferenceKeys.OUTPUT2_PREFERENCE)) {

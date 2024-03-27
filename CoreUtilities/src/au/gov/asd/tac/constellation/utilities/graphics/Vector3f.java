@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -145,9 +145,9 @@ public final class Vector3f implements Serializable {
      * @param m A rotation matrix
      */
     public void rotate(final Matrix33f m) {
-        float x = m.a[0] * a[0] + m.a[3] * a[1] + m.a[6] * a[2];
-        float y = m.a[1] * a[0] + m.a[4] * a[1] + m.a[7] * a[2];
-        float z = m.a[2] * a[0] + m.a[5] * a[1] + m.a[8] * a[2];
+        final float x = m.a[0] * a[0] + m.a[3] * a[1] + m.a[6] * a[2];
+        final float y = m.a[1] * a[0] + m.a[4] * a[1] + m.a[7] * a[2];
+        final float z = m.a[2] * a[0] + m.a[5] * a[1] + m.a[8] * a[2];
         a[0] = x;
         a[1] = y;
         a[2] = z;
@@ -323,7 +323,7 @@ public final class Vector3f implements Serializable {
      * @return An array of Vector3f instances with the specified length.
      */
     public static Vector3f[] createArray(final int length) {
-        Vector3f[] array = new Vector3f[length];
+        final Vector3f[] array = new Vector3f[length];
         for (int i = 0; i < length; i++) {
             array[i] = new Vector3f();
         }

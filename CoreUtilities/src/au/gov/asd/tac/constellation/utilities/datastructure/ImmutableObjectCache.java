@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ public class ImmutableObjectCache {
      * 
      * @param verbose true to enable verbose mode, false otherwise.
      */
-    public void setVerbose(boolean verbose) {
+    public void setVerbose(final boolean verbose) {
         this.verbose = verbose;
         if (verbose) {
             results = new HashMap<>();
@@ -90,8 +90,8 @@ public class ImmutableObjectCache {
                     classResult[1]++;
                 } else {
                     classResult[2]++;
-                    if (immutableObject instanceof String) {
-                        savedStringBytes += 8 + 2 + ((String) immutableObject).length() * 2;
+                    if (immutableObject instanceof String immutableString) {
+                        savedStringBytes += 8 + 2 + immutableString.length() * 2;
                     }
                 }
                 return (T) cachedInstance;
@@ -113,7 +113,7 @@ public class ImmutableObjectCache {
         if (verbose) {
             final StringBuilder out = new StringBuilder();
             out.append("ImmutableObjectCache[entries = ").append(cache.size()).append("]\n");
-            for (Entry<Class<?>, int[]> e : results.entrySet()) {
+            for (final Entry<Class<?>, int[]> e : results.entrySet()) {
                 out.append("    ").append(e.getKey().getCanonicalName()).append(SeparatorConstants.COLON);
                 out.append(" new = ").append(e.getValue()[0]);
                 out.append(", old = ").append(e.getValue()[1]);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -159,8 +159,6 @@ public class StringUtilities {
                 } else if (delimiter.contains(character)) {
                     splits.add(unescape(escapedString.substring(part0, i), delimiter));
                     part0 = i + 1;
-                } else {
-                    // Do nothing
                 }
             }
 
@@ -239,7 +237,6 @@ public class StringUtilities {
      * @return the labels string split into individual labels.
      */
     public static List<String> splitLabelsWithEscapeCharacters(final String labelsString, final Set<Character> toSplitOn) {
-
         // Split up the components of the graph labels and decorators string by
         // toSplitOn, checking for escaped toSplitOns in attribute names.
         final List<String> decoratorsAndLabelsComponentsList = new ArrayList<>();
@@ -399,6 +396,9 @@ public class StringUtilities {
     /**
      * Returns list of tuples of all found hits of a search string (Start
      * position and End position) within the supplied text.
+     * @param text the text to search
+     * @param searchStr the string to search within the text
+     * @return A list of tuples of all found hits
      */
     public static List<Tuple<Integer, Integer>> searchRange(final String text, final String searchStr) {
         final List<Tuple<Integer, Integer>> expected = new ArrayList<>();

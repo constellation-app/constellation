@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,7 +62,7 @@ public final class Vector2f {
     }
 
     public static Vector2f[] createArray(final int length) {
-        Vector2f[] array = new Vector2f[length];
+        final Vector2f[] array = new Vector2f[length];
         for (int i = 0; i < length; i++) {
             array[i] = new Vector2f();
         }

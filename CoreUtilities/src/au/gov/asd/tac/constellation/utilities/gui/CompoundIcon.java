@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -137,27 +137,31 @@ public class CompoundIcon implements Icon {
 
     @Override
     public final void paintIcon(final Component c, final Graphics g, int x, int y) {
-        if (axis == Axis.X_AXIS) {
-            final int height = getIconHeight();
-            for (final Icon icon : icons) {
-                final int iconY = getOffset(height, icon.getIconHeight(), alignmentY);
-                icon.paintIcon(c, g, x, y + iconY);
-                x += icon.getIconWidth() + gap;
+        switch (axis) {
+            case X_AXIS -> {
+                final int height = getIconHeight();
+                for (final Icon icon : icons) {
+                    final int iconY = getOffset(height, icon.getIconHeight(), alignmentY);
+                    icon.paintIcon(c, g, x, y + iconY);
+                    x += icon.getIconWidth() + gap;
+                }                      
             }
-        } else if (axis == Axis.Y_AXIS) {
-            final int width = getIconWidth();
-            for (final Icon icon : icons) {
-                final int iconX = getOffset(width, icon.getIconWidth(), alignmentX);
-                icon.paintIcon(c, g, x + iconX, y);
-                y += icon.getIconHeight() + gap;
+            case Y_AXIS -> {
+                final int width = getIconWidth();
+                for (final Icon icon : icons) {
+                    final int iconX = getOffset(width, icon.getIconWidth(), alignmentX);
+                    icon.paintIcon(c, g, x + iconX, y);
+                    y += icon.getIconHeight() + gap;
+                }                      
             }
-        } else {
-            final int width = getIconWidth();
-            final int height = getIconHeight();
-            for (final Icon icon : icons) {
-                final int iconX = getOffset(width, icon.getIconWidth(), alignmentX);
-                final int iconY = getOffset(height, icon.getIconHeight(), alignmentY);
-                icon.paintIcon(c, g, x + iconX, y + iconY);
+            case null, default -> {
+                final int width = getIconWidth();
+                final int height = getIconHeight();
+                for (final Icon icon : icons) {
+                    final int iconX = getOffset(width, icon.getIconWidth(), alignmentX);
+                    final int iconY = getOffset(height, icon.getIconHeight(), alignmentY);
+                    icon.paintIcon(c, g, x + iconX, y + iconY);
+                }                      
             }
         }
     }

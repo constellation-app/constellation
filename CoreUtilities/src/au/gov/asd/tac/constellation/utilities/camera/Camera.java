@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -126,7 +126,7 @@ public final class Camera implements Serializable {
         return objectFrame;
     }
 
-    public void setObjectFrame(Frame objectFrame) {
+    public void setObjectFrame(final Frame objectFrame) {
         this.objectFrame = objectFrame;
     }
 
@@ -134,7 +134,7 @@ public final class Camera implements Serializable {
         return visibilityLow;
     }
 
-    public void setVisibilityLow(float visibilityLow) {
+    public void setVisibilityLow(final float visibilityLow) {
         this.visibilityLow = visibilityLow;
     }
 
@@ -142,7 +142,7 @@ public final class Camera implements Serializable {
         return visibilityHigh;
     }
 
-    public void setVisibilityHigh(float visibilityHigh) {
+    public void setVisibilityHigh(final float visibilityHigh) {
         this.visibilityHigh = visibilityHigh;
     }
 
@@ -150,7 +150,7 @@ public final class Camera implements Serializable {
         return mixRatio;
     }
 
-    public void setMixRatio(int mixRatio) {
+    public void setMixRatio(final int mixRatio) {
         this.mixRatio = mixRatio;
     }
 

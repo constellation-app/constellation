@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -124,17 +124,15 @@ public class GaussianBlur {
         final int[] boxes = boxesForGauss(radius, passes);
         for (int i = 0; i < passes; i++) {
             switch (type) {
-                case STANDARD:
-                    boxBlur(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
-                    break;
-                case FAST:
+                case STANDARD -> boxBlur(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
+                case FAST -> {
                     boxBlurFH(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
                     boxBlurFT(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
-                    break;
-                case FASTEST:
+                }
+                case FASTEST -> {
                     boxBlurFFH(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
                     boxBlurFFT(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
-                    break;
+                }
             }
             tempChannel = targetChannel;
         }

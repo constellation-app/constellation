@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,9 +56,9 @@ public class Distance {
 
         assert dmsComponents.length == 3 : "DMS should always have 3 components";
 
-        return Double.valueOf(!dmsComponents[0].isEmpty() ? dmsComponents[0] : "0")
-                + (Double.valueOf(!dmsComponents[1].isEmpty() ? dmsComponents[1] : "0") / 60)
-                + (Double.valueOf(!dmsComponents[2].isEmpty() ? dmsComponents[2] : "0") / 3600);
+        return Double.parseDouble(!dmsComponents[0].isEmpty() ? dmsComponents[0] : "0")
+                + (Double.parseDouble(!dmsComponents[1].isEmpty() ? dmsComponents[1] : "0") / 60)
+                + (Double.parseDouble(!dmsComponents[2].isEmpty() ? dmsComponents[2] : "0") / 3600);
     }
 
     /**

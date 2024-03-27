@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -107,8 +107,12 @@ public class HttpsUtilities {
             }
 
             throw new IOException(
-                    String.format("An error occurred with the %s service: %d %s\n\n"
-                            + "If problems persist, contact support via Help -> Support\n\nTechnical Error: %s",
+                    String.format("""
+                                  An error occurred with the %s service: %d %s
+                                  
+                                  If problems persist, contact support via Help -> Support
+                                  
+                                  Technical Error: %s""",
                             system,
                             connection.getResponseCode(),
                             connection.getResponseMessage(),

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ public final class SupportPackageAction implements ActionListener {
     private static final String TITLE = "Select Folder";
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(final ActionEvent e) {
         FileChooser.openSaveDialog(getSupportPackageFileChooser()).thenAccept(optionalFolder -> optionalFolder.ifPresent(folder -> {
             final Date now = new Date();
             final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
@@ -61,7 +61,7 @@ public final class SupportPackageAction implements ActionListener {
                 try {
                     supportPackage.createSupportPackage(new File(SupportPackage.getUserLogDirectory()), destination);
                     NotifyDisplayer.display("Support package saved successfully to " + destination.getPath(), NotifyDescriptor.INFORMATION_MESSAGE);
-                } catch (IOException ex) {
+                } catch (final IOException ex) {
                     NotifyDisplayer.display("Failed to save support package. The error was " + ex.getLocalizedMessage(), NotifyDescriptor.ERROR_MESSAGE);
                 }
             });

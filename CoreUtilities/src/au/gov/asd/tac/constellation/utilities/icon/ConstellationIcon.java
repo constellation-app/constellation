@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -426,9 +426,8 @@ public class ConstellationIcon {
      * @param color A {@link Color} representing the color of the icon.
      * @return A {@link SVGData} of the specified size.
      */
-    public SVGData buildSVG(final int size, final Color color) {
-        
-        //Attempt to export the Constelation icon using a stored SVG image.
+    public SVGData buildSVG(final int size, final Color color) {       
+        // Attempt to export the Constelation icon using a stored SVG image.
         final SVGData vectorImage = this.iconData.getSVGData(size, color);
         if (vectorImage != null) {
             return vectorImage;

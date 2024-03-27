@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -147,7 +147,6 @@ public class ExtendedBuffer {
     }
 
     private final InputStream inputStream = new InputStream() {
-
         /**
          * Read values byte by byte from buffer. As buffers are read from <code>queue</code>
          * they are stored one at a time in <code>inputBuffer</code>.
@@ -181,7 +180,7 @@ public class ExtendedBuffer {
                     // note - when buffers are added to thew queue their position is set to 0
                     available.getAndDecrement();
                     return inputBuffer.data[inputBuffer.position++] & 0xFF;
-                } catch (InterruptedException ex) {
+                } catch (final InterruptedException ex) {
                     Thread.currentThread().interrupt();
                     throw new IOException(ex);
                 }
@@ -201,7 +200,7 @@ public class ExtendedBuffer {
          * @param len Number of bytes to read.
          */
         @Override
-        public int read(byte[] b, int off, int len) throws IOException {
+        public int read(final byte[] b, int off, int len) throws IOException {
 
             // Offset into destination array must reside within array
             if (off >= b.length) {
@@ -214,17 +213,15 @@ public class ExtendedBuffer {
             int byteCount = 0;
 
             while (len > 0) {
-
                 // If this buffer has been exhausted then attempt to get the next buffer
                 if (inputBuffer.position == inputBuffer.length) {
-
                     // If this buffer is the last buffer then return
                     if (inputBuffer.length < bufferSize) {
                         return byteCount == 0 ? -1 : byteCount;
                     } else {
                         try {
                             inputBuffer = queue.take();
-                        } catch (InterruptedException ex) {
+                        } catch (final InterruptedException ex) {
                             Thread.currentThread().interrupt();
                             throw new IOException(ex);
                         }
@@ -251,8 +248,7 @@ public class ExtendedBuffer {
      * After stream is closed all content will have been written into ExtendedBuffer.queue
      * and will contain potentially multiple buffers of size bufferSize.
      */
-    private final OutputStream outputStream = new OutputStream() {
-        
+    private final OutputStream outputStream = new OutputStream() {        
         /**
          * Writes the 8 low-order bits (lowest order byte) of <code>b</code> to the end of
          * the currently active <code>outputBuffer</code>. The 24 high order bits are
@@ -264,8 +260,7 @@ public class ExtendedBuffer {
          * @param b The integer to extract lowest 8 bits from.
          */
         @Override
-        public void write(int b) throws IOException {
-            
+        public void write(final int b) throws IOException {            
             // Append the lowest order byte from supplied integer to outputBuffer.
             outputBuffer.data[outputBuffer.position++] = (byte) b;
             
@@ -290,8 +285,7 @@ public class ExtendedBuffer {
          * @param len The maximum number of bytes to read from the source byte array.
          */
         @Override
-        public void write(byte[] b, int off, int len) throws IOException {
-
+        public void write(final byte[] b, int off, int len) throws IOException {
             // Offset into source array must reside within array
             if (off >= b.length) {
                 throw new IOException("Source offset outside of range");
@@ -340,7 +334,7 @@ public class ExtendedBuffer {
          * 
          * @param buffer The buffer being added to <code>ExtendedBuffer.queue</code>.
          */
-        private void addBufferToQueue(Buffer buffer) {
+        private void addBufferToQueue(final Buffer buffer) {
             // Set the size of content in the buffer and reset buffer position to start of buffer.
             // Add the buffer to the queue.
             buffer.length = buffer.position;

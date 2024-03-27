@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -153,28 +153,11 @@ public class NifiClient extends RestClient {
     private String getFullFilename(final String fileName) {
         return DEFAULT_CONFIG.getNifiUri() + fileName;
     }
-
-    private void storeFile(final String fileName, final InputStream is) throws IOException {
-        final String fileOnServer = DEFAULT_CONFIG.getNifiUri() + fileName;
-        final File file = new File(fileOnServer);
-
-        if (!file.getParentFile().exists() && !file.getParentFile().mkdirs()) {
-            throw new IOException("Parent directory doesn't exist and couldn't create it: " + file.getParentFile());
-        }
-
-        java.nio.file.Files.copy(is, new File(fileOnServer).toPath(), StandardCopyOption.REPLACE_EXISTING);
-    }
-
+    
     private void copyFile(final String fileName, final String newFileName) throws IOException {
         final String fileOnServer = DEFAULT_CONFIG.getNifiUri() + fileName;
         final String newFileOnServer = DEFAULT_CONFIG.getNifiUri() + newFileName;
         java.nio.file.Files.copy(new File(fileOnServer).toPath(), new File(newFileOnServer).toPath());
-    }
-
-    private void moveFile(final String fileName, final String newFileName) throws IOException {
-        final String fileOnServer = DEFAULT_CONFIG.getNifiUri() + fileName;
-        final String newFileOnServer = DEFAULT_CONFIG.getNifiUri() + newFileName;
-        java.nio.file.Files.move(new File(fileOnServer).toPath(), new File(newFileOnServer).toPath());
     }
 
     private void deleteFile(final String fileName) throws IOException {

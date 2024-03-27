@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,8 +79,8 @@ public class IconManager {
      * @return A {@link Set} of {@link String} objects representing icon names.
      */
     public static Set<String> getIconNames(final Boolean editable) {
-        return getCache().values().stream().filter(icon -> editable == null || editable == icon.isEditable()).map(icon -> icon.getExtendedName()
-        ).collect(Collectors.toSet());
+        return getCache().values().stream().filter(icon -> editable == null || editable == icon.isEditable()).map(icon -> icon.getExtendedName())
+                .collect(Collectors.toSet());
     }
 
     /**

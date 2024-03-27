@@ -1,5 +1,8 @@
 # Constellation Changes
 
+## Changes in March 2024
+-   Update `VideoFrame` to be a record.
+
 ## Changes in February 2024
 -   Updated the `constellationapplication/netbeans-runner` docker image
     to `21` to include updates to Netbeans, Azul JDK, and other tools used as part of image.

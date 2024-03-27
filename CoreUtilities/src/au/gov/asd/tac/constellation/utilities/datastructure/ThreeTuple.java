@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -127,9 +127,9 @@ public class ThreeTuple<F, S, T> implements Serializable, Comparable<ThreeTuple<
     public int compareTo(final ThreeTuple<F, S, T> o) {
         int compare;
 
-        if (first instanceof Comparable && o.first instanceof Comparable) {
+        if (first instanceof Comparable compFirst && o.first instanceof Comparable compOFirst) {
             // compare the first using Comparable
-            compare = ((Comparable) first).compareTo((Comparable) o.first);
+            compare = compFirst.compareTo(compOFirst);
             if (compare != 0) {
                 return compare;
             }
@@ -141,9 +141,9 @@ public class ThreeTuple<F, S, T> implements Serializable, Comparable<ThreeTuple<
             }
         }
 
-        if (second instanceof Comparable && o.second instanceof Comparable) {
+        if (second instanceof Comparable compSecond && o.second instanceof Comparable compOSecond) {
             // compare the second using Comparable
-            compare = ((Comparable) second).compareTo((Comparable) o.second);
+            compare = compSecond.compareTo(compOSecond);
             if (compare != 0) {
                 return compare;
             }
@@ -155,9 +155,9 @@ public class ThreeTuple<F, S, T> implements Serializable, Comparable<ThreeTuple<
             }
         }
 
-        if (third instanceof Comparable && o.third instanceof Comparable) {
+        if (third instanceof Comparable compThird && o.third instanceof Comparable compOThird) {
             // compare the third using Comparable
-            compare = ((Comparable) third).compareTo((Comparable) o.third);
+            compare = compThird.compareTo(compOThird);
             if (compare != 0) {
                 return compare;
             }
