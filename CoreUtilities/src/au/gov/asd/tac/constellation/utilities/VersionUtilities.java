@@ -53,6 +53,10 @@ public class VersionUtilities {
             } catch (final NumberFormatException ex) {
                 min = 0;
             }
+            
+            if (thisPart > min) {
+                return true;
+            }
 
             if (thisPart < min) {
                 return false;

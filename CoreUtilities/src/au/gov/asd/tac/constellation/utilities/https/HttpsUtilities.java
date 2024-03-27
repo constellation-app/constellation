@@ -112,8 +112,7 @@ public class HttpsUtilities {
                                   
                                   If problems persist, contact support via Help -> Support
                                   
-                                  Technical Error: %s
-                                  """,
+                                  Technical Error: %s""",
                             system,
                             connection.getResponseCode(),
                             connection.getResponseMessage(),

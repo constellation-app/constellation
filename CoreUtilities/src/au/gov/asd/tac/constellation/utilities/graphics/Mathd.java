@@ -266,16 +266,20 @@ public final class Mathd {
     private static double detIJ(final Matrix44d m, final int i, final int j) {
         final double[][] mat = new double[3][3];
 
+        int x = 0;
         for (int ii = 0; ii < 4; ii++) {
             if (ii == i) {
                 continue;
             }
+            int y = 0;
             for (int jj = 0; jj < 4; jj++) {
                 if (jj == j) {
                     continue;
                 }
-                mat[ii][jj] = m.getA()[(ii * 4) + jj];
+                mat[x][y] = m.getA()[(ii * 4) + jj];
+                y++;
             }
+            x++;
         }
 
         double ret = mat[0][0] * (mat[1][1] * mat[2][2] - mat[2][1] * mat[1][2]);

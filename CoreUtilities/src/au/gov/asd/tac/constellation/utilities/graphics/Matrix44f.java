@@ -297,16 +297,20 @@ public final class Matrix44f {
     private static float detIJ(final Matrix44f m, final int i, final int j) {
         final float[][] mat = new float[3][3];
 
+        int x = 0;
         for (int ii = 0; ii < 4; ii++) {
             if (ii == i) {
                 continue;
             }
+            int y = 0;
             for (int jj = 0; jj < 4; jj++) {
                 if (jj == j) {
                     continue;
                 }
-                mat[ii][jj] = m.a[(ii * 4) + jj];
+                mat[x][y] = m.a[(ii * 4) + jj];
+                y++;
             }
+            x++;
         }
 
         float ret = mat[0][0] * (mat[1][1] * mat[2][2] - mat[2][1] * mat[1][2]);
