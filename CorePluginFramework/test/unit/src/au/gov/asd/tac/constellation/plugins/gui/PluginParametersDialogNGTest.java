@@ -25,6 +25,7 @@ import static org.mockito.Mockito.mock;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertThrows;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -81,11 +82,11 @@ public class PluginParametersDialogNGTest {
      * Test of constructor method, with null PluginParameters, of class PluginParametersDialog.
      */
     @Test
-    public void testConstructorNullPluginParameters() {
+    public void testConstructorNullPluginParameters() throws IllegalArgumentException {
         System.out.println("testConstructorPluginParametersDialogNullPluginParameters");
         Platform.runLater(() -> {
             PluginParametersDialog instance = new PluginParametersDialog(mock(Window.class), "", null);
-            assertEquals(instance.getClass(), PluginParametersDialog.class);
+            assertThrows(IllegalArgumentException.class, () -> new PluginParametersDialog(mock(Window.class), "", null));
         });
     }
 

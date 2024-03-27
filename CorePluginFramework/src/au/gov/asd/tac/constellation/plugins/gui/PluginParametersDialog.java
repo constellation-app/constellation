@@ -66,7 +66,12 @@ public class PluginParametersDialog extends Stage {
      * @param parameters The plugin parameters.
      * @param options The dialog box button labels, one for each button.
      */
-    public PluginParametersDialog(final Window owner, final String title, final PluginParameters parameters, final String... options) {
+    public PluginParametersDialog(final Window owner, final String title, final PluginParameters parameters, final String... options) throws IllegalArgumentException {
+
+        if (parameters == null) {
+            throw new IllegalArgumentException("Parameters must not be null");
+        }
+        
         initStyle(StageStyle.UTILITY);
         initModality(Modality.WINDOW_MODAL);
         initOwner(owner);
@@ -79,10 +84,9 @@ public class PluginParametersDialog extends Stage {
         scene.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         setScene(scene);
 
-        if (parameters != null) {
-            final PluginParametersPane parametersPane = PluginParametersPane.buildPane(parameters, null);
-            root.setCenter(parametersPane);
-        }
+        final PluginParametersPane parametersPane = PluginParametersPane.buildPane(parameters, null);
+        root.setCenter(parametersPane);
+
         final FlowPane buttonPane = new FlowPane();
         buttonPane.setAlignment(Pos.BOTTOM_RIGHT);
         buttonPane.setPadding(new Insets(5));
