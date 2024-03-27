@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -163,7 +163,7 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
                         final Node childNode = children.item(childIndex);
                         if (childNode != null) {
                             switch (childNode.getNodeName()) {
-                                case NODE_TAG: {
+                                case NODE_TAG ->  {
                                     final NamedNodeMap attributes = childNode.getAttributes();
                                     final Node id = attributes.getNamedItem(ID_TAG);
                                     if (id == null){
@@ -191,9 +191,8 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
                                     if (retrieveTransactions) {
                                         nodeIdToType.put(stringID, nodeRecords.get(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE));
                                     }
-                                    break;
                                 }
-                                case EDGE_TAG: {
+                                case EDGE_TAG ->  {
                                     if (retrieveTransactions) {
                                         final NamedNodeMap attributes = childNode.getAttributes();
                                         final Node id = attributes.getNamedItem(ID_TAG);
@@ -242,10 +241,9 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
                                             GraphMLUtilities.addAttributes(childNode, transactionAttributes, edgeRecords, GraphRecordStoreUtilities.TRANSACTION);
                                         }
                                     }
-                                    break;
                                 }
-                                default:
-                                    break;
+                                default -> {
+                                }
                             }
                         }
                     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -186,20 +186,20 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
         final HBox hboxTop = buttonToolbar.getRabRegionExectueHBoxTop();
         final HBox hboxBottom = buttonToolbar.getRabRegionExectueHBoxBottom();
         for (final Object button : hboxTop.getChildren()) {
-            if (button instanceof DefaultQualityControlAutoButton) {
+            if (button instanceof DefaultQualityControlAutoButton autoButton) {
                 if (add) {
-                    ((DefaultQualityControlAutoButton) button).addQCListener();
+                    autoButton.addQCListener();
                 } else {
-                    ((DefaultQualityControlAutoButton) button).removeQCListener();
+                    autoButton.removeQCListener();
                 }
             }
         }
         for (final Object button : hboxBottom.getChildren()) {
-            if (button instanceof DefaultQualityControlAutoButton) {
+            if (button instanceof DefaultQualityControlAutoButton autoButton) {
                 if (add) {
-                    ((DefaultQualityControlAutoButton) button).addQCListener();
+                    autoButton.addQCListener();
                 } else {
-                    ((DefaultQualityControlAutoButton) button).removeQCListener();
+                    autoButton.removeQCListener();
                 }
             }
         }

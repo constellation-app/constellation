@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -443,26 +443,14 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         
         final PluginNotificationLevel pnInteractionLevel;
         if (interactionLevel != null) {
-            switch (interactionLevel) {
-                case DEBUG:
-                    pnInteractionLevel = PluginNotificationLevel.DEBUG;
-                    break;
-                case INFO:
-                    pnInteractionLevel = PluginNotificationLevel.INFO;
-                    break;
-                case WARNING:
-                    pnInteractionLevel = PluginNotificationLevel.WARNING;
-                    break;
-                case ERROR:
-                    pnInteractionLevel = PluginNotificationLevel.ERROR;
-                    break;
-                case FATAL:
-                    pnInteractionLevel = PluginNotificationLevel.FATAL;
-                    break;
-                default:
-                    pnInteractionLevel = null;
-                    break;
-            }
+            pnInteractionLevel = switch (interactionLevel) {
+                case DEBUG -> PluginNotificationLevel.DEBUG;
+                case INFO -> PluginNotificationLevel.INFO;
+                case WARNING -> PluginNotificationLevel.WARNING;
+                case ERROR -> PluginNotificationLevel.ERROR;
+                case FATAL -> PluginNotificationLevel.FATAL;
+                default -> null;
+            };
 
             if (pnInteractionLevel != null) {
                 interaction.notify(pnInteractionLevel, "Interaction from plugin");
@@ -471,26 +459,14 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         
         final PluginNotificationLevel pnExceptionLevel;
         if (exceptionLevel != null) {
-            switch (exceptionLevel) {
-                case DEBUG:
-                    pnExceptionLevel = PluginNotificationLevel.DEBUG;
-                    break;
-                case INFO:
-                    pnExceptionLevel = PluginNotificationLevel.INFO;
-                    break;
-                case WARNING:
-                    pnExceptionLevel = PluginNotificationLevel.WARNING;
-                    break;
-                case ERROR:
-                    pnExceptionLevel = PluginNotificationLevel.ERROR;
-                    break;
-                case FATAL:
-                    pnExceptionLevel = PluginNotificationLevel.FATAL;
-                    break;
-                default:
-                    pnExceptionLevel = null;
-                    break;
-            }
+            pnExceptionLevel = switch (exceptionLevel) {
+                case DEBUG -> PluginNotificationLevel.DEBUG;
+                case INFO -> PluginNotificationLevel.INFO;
+                case WARNING -> PluginNotificationLevel.WARNING;
+                case ERROR -> PluginNotificationLevel.ERROR;
+                case FATAL -> PluginNotificationLevel.FATAL;
+                default -> null;
+            };
 
             if (pnExceptionLevel != null) {
                 throw new PluginException(pnExceptionLevel, "Exception thrown from plugin");
@@ -583,8 +559,8 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
             final GraphElementType newElementType;
             if (o == null) {
                 newElementType = null;
-            } else if (o instanceof GraphElementType) {
-                newElementType = (GraphElementType) o;
+            } else if (o instanceof GraphElementType graphElementType) {
+                newElementType = graphElementType;
             } else {
                 throw new IllegalArgumentException(String.format("Unexpected class %s", o.getClass()));
             }

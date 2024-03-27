@@ -198,9 +198,8 @@ public class DataAccessStateIoProviderNGTest {
         jsonGenerator.flush();
 
         final ObjectMapper objectMapper = new ObjectMapper();
-        final JsonNode expected = objectMapper.readTree(
-                "{\"ATTR NAME\": null}"
-        );
+        final JsonNode expected = objectMapper.readTree("""
+                                                        {"ATTR NAME": null}""");
 
         final JsonNode actual = objectMapper.readTree(new String(output.toByteArray(), StandardCharsets.UTF_8));
 

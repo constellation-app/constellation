@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -83,8 +83,8 @@ public class RecordStoreDropper implements GraphDropper {
             final Transferable transferable = dtde.getTransferable();
             if (transferable.isDataFlavorSupported(RECORD_STORE_FLAVOR)) {
                 final Object data = transferable.getTransferData(RECORD_STORE_FLAVOR);
-                if (data instanceof InputStream) {
-                    try (final InputStream in = (InputStream) data) {
+                if (data instanceof InputStream inputStream) {
+                    try (final InputStream in = inputStream) {
 
                         final byte[] buffer = new byte[RECORD_STORE_BYTES.length];
                         if (in.read(buffer) == buffer.length && Arrays.equals(buffer, RECORD_STORE_BYTES)) {
