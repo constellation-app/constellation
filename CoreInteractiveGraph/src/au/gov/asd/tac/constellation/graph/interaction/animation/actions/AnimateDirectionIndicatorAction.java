@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.graph.interaction.animation.actions;
 
 import au.gov.asd.tac.constellation.graph.interaction.animation.AnimationUtilities;
-import au.gov.asd.tac.constellation.graph.interaction.animation.ThrobbingNodeAnimation;
+import au.gov.asd.tac.constellation.graph.interaction.animation.DirectionIndicatorAnimation;
 import java.awt.event.ActionListener;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -25,25 +25,25 @@ import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * An action for triggering a {@link ThrobNodesAnimation}.
+ * An action for triggering a {@link DirectionIndiciatorAnimation}.
  * 
  * @author capricornunicorn123
  */
-@ActionID(category = "Experimental", id = "au.gov.asd.tac.constellation.graph.interaction.animation.actions.AnimateThrobNodesAction")
-@ActionRegistration(displayName = "#CTL_AnimateThrobNodesAction", lazy = false)
+@ActionID(category = "Experimental", id = "au.gov.asd.tac.constellation.graph.interaction.animation.actions.AnimateDirectionIndicatorAction")
+@ActionRegistration(displayName = "#CTL_AnimateDirectionIndicatorAction", lazy = false)
 @ActionReference(path = "Menu/Experimental/Animations", position = 0)
-@Messages("CTL_AnimateThrobNodesAction=Throb Nodes")
+@Messages("CTL_AnimateDirectionIndicatorAction=Direction Indicators")
 @ServiceProvider(service = AnimationMenuBaseAction.class)
-public final class AnimateThrobNodesAction extends AnimationMenuBaseAction implements ActionListener {
+public final class AnimateDirectionIndicatorAction extends AnimationMenuBaseAction implements ActionListener {
 
-    public AnimateThrobNodesAction() {
-        super(Bundle.CTL_AnimateThrobNodesAction());
+    public AnimateDirectionIndicatorAction() {
+        super(Bundle.CTL_AnimateDirectionIndicatorAction());
     }
     
     @Override
     protected void updateValue() {
         if (menuButton.isSelected()) {
-            AnimationUtilities.startAnimation(new ThrobbingNodeAnimation(), this.getContext().getGraph().getId());
+            AnimationUtilities.startAnimation(new DirectionIndicatorAnimation(), this.getContext().getGraph().getId());
         } else {
             stopAnimation(this.getContext().getGraph().getId());
         }
@@ -51,11 +51,11 @@ public final class AnimateThrobNodesAction extends AnimationMenuBaseAction imple
 
     @Override
     protected void displayValue() {
-        menuButton.setSelected(AnimationUtilities.isAnimating(ThrobbingNodeAnimation.NAME, this.getContext().getGraph().getId()));
+        menuButton.setSelected(AnimationUtilities.isAnimating(DirectionIndicatorAnimation.NAME, this.getContext().getGraph().getId()));
     }
     
     @Override
     public void stopAnimation(final String graphId) {
-        AnimationUtilities.stopAnimation(ThrobbingNodeAnimation.NAME, graphId);
+        AnimationUtilities.stopAnimation(DirectionIndicatorAnimation.NAME, graphId);
     }
 }

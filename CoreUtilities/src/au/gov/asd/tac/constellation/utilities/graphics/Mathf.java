@@ -232,6 +232,8 @@ public final class Mathf {
      * This function does a three dimensional Catmull-Rom "spline" interpolation
      * between p1 and p2.
      * <p>
+     * A Catmull-Rom spline uses four control points (p0, p1, p2, p3) to generate a
+     * C1 continuous spline that passes through all of the points. 
      * Pass four points, and a floating point number between 0.0 and 1.0. The
      * curve is interpolated between the middle two points.
      *

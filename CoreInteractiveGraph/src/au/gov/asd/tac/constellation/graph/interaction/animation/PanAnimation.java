@@ -15,33 +15,31 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.animation;
 
+import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
-import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
-import au.gov.asd.tac.constellation.utilities.visual.VisualChangeBuilder;
-import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
-import java.util.Arrays;
-import java.util.Collections;
+import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Pan (and translate) the camera from one position to another.
- * <p>
- * (Easing algorithms taken from d3 transitions.)
+ * Cause the camera to pan (and translate) the from one position to another.
+ * This animation is finite so will update the graph to the final camera position when
+ * animations are disabled.
  *
  * @author algol
+ * @author capricornunicorn123
  */
 public final class PanAnimation extends Animation {
 
-    private static final int STEPS = 12;
+    private static final int STEPS = 24;
 
     private final String name;
     private final Camera from;
     private final Camera to;
     private final boolean isSignificant;
-    private final long panAnimationId = VisualChangeBuilder.generateNewId();
 
     private Camera camera;
     private int cameraAttr;
@@ -64,13 +62,13 @@ public final class PanAnimation extends Animation {
     }
 
     @Override
-    public void initialise(GraphWriteMethods wg) {
+    public void initialise(final GraphWriteMethods wg) {
         cameraAttr = VisualConcept.GraphAttribute.CAMERA.ensure(wg);
         camera = wg.getObjectValue(cameraAttr, 0);
     }
 
-    @Override
-    public List<VisualChange> animate(GraphWriteMethods wg) {
+    public List<ThreeTuple<Integer, Integer, Object>> animate(final GraphReadMethods wg) {
+        List<ThreeTuple<Integer, Integer, Object>> graphWrites = new ArrayList<>();
         if (step <= STEPS) {
             final float t = step / (float) STEPS;
             final float mix = reflect(t);
@@ -81,23 +79,19 @@ public final class PanAnimation extends Animation {
             camera.lookAtUp.set(Graphics3DUtilities.mix(from.lookAtUp, to.lookAtUp, mix));
             camera.lookAtRotation.set(Graphics3DUtilities.mix(from.lookAtRotation, to.lookAtRotation, mix));
 
-            wg.setObjectValue(cameraAttr, 0, camera);
+            graphWrites.add(new ThreeTuple<>(cameraAttr, 0, camera));
             step++;
-            return Arrays.asList(new VisualChangeBuilder(VisualProperty.CAMERA).forItems(1).withId(panAnimationId).build());
+            return graphWrites;
         } else {
             setFinished();
-            return Collections.emptyList();
+            return null;
         }
+        
     }
 
     @Override
-    public void reset(GraphWriteMethods wg) {
+    public void reset(final GraphWriteMethods wg) {
         // Method override required, intentionally left blank
-    }
-
-    @Override
-    public long getIntervalInMillis() {
-        return 15;
     }
 
     @Override
@@ -109,4 +103,15 @@ public final class PanAnimation extends Animation {
     protected boolean isSignificant() {
         return isSignificant;
     }
+    
+    @Override
+    public void setFinalFrame(final GraphWriteMethods wg){
+        
+        camera = new Camera(camera);
+        camera.lookAtEye.set(to.lookAtEye);
+        camera.lookAtCentre.set(to.lookAtCentre);
+        camera.lookAtUp.set(to.lookAtUp);
+        camera.lookAtRotation.set(to.lookAtRotation);
+        wg.setObjectValue(cameraAttr, 0, camera); 
+    }    
 }
