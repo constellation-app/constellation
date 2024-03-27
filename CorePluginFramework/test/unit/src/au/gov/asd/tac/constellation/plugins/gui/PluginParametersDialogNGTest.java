@@ -85,7 +85,6 @@ public class PluginParametersDialogNGTest {
     public void testConstructorNullPluginParameters() throws IllegalArgumentException {
         System.out.println("testConstructorPluginParametersDialogNullPluginParameters");
         Platform.runLater(() -> {
-            PluginParametersDialog instance = new PluginParametersDialog(mock(Window.class), "", null);
             assertThrows(IllegalArgumentException.class, () -> new PluginParametersDialog(mock(Window.class), "", null));
         });
     }
