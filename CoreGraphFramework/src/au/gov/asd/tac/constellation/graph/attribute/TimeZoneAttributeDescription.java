@@ -63,8 +63,9 @@ public final class TimeZoneAttributeDescription extends AbstractObjectAttributeD
             return getDefault();
         } else {
             try {
-                final String offsetId = string.substring(0, 6);
-                final String regionId = string.length() > 6 ? string.substring(8, string.length() - 1) : null;
+                final String timeString = (string.equals("UTC") || string.equals("UT")) ? "+ 00:00 UTC" : string;
+                final String offsetId = timeString.substring(0, 6);
+                final String regionId = timeString.length() > 6 ? timeString.substring(8, timeString.length() - 1) : null;
                 return regionId == null ? ZoneOffset.of(offsetId) : ZoneId.of(regionId);
             } catch (final StringIndexOutOfBoundsException | NumberFormatException ex) {
                 throw new IllegalArgumentException(String.format(
