@@ -22,17 +22,17 @@ jobs:
         run: |
               mkdir -p ./workspace
       - name: Checkout Constellation repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           repository: constellation-app/constellation
           path: ./workspace/constellation
       - name: Checkout Constellation Adaptors repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           repository: constellation-app/constellation-adaptors
           path: ./workspace/constellation-adaptors
       - name: Checkout Constellation Applications repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           repository: constellation-app/constellation-applications
           path: ./workspace/constellation-applications
@@ -52,19 +52,19 @@ jobs:
             constellationapplication/netbeans-runner:21.0.1 \
             ./build-zip.sh -a constellation -m "constellation constellation-adaptors"
       - name: Upload Linux Build
-        uses: actions/upload-artifact@v2.3.0
+        uses: actions/upload-artifact@v3
         with:
           name: Linux Release Build
           path: ./workspace/constellation-applications/constellation/dist/constellation-linux**
           retention-days: 2
       - name: Upload MacOS Build
-        uses: actions/upload-artifact@v2.3.0
+        uses: actions/upload-artifact@v3
         with:
           name: MacOSX Release Build
           path: ./workspace/constellation-applications/constellation/dist/constellation-macosx**
           retention-days: 2
       - name: Upload Windows Build
-        uses: actions/upload-artifact@v2.3.0
+        uses: actions/upload-artifact@v3
         with:
           name: Windows Release Build
           path: ./workspace/constellation-applications/constellation/dist/constellation-win**.zip
