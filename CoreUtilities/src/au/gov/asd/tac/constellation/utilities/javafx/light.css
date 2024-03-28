@@ -105,3 +105,12 @@
     -fx-background-color: #8a1d1d;
     -fx-control-inner-background: #8a1d1d;
 }
+
+#errorDialog{
+    -fx-border-color: #808080;
+    -fx-background-color: #e0e0e0;
+}
+
+#errorDialogOccBox{
+    -fx-background-color: #bcbcbc;
+}

@@ -285,3 +285,16 @@
 #valid {
     -fx-background-color: -fx-focus-color, -fx-text-box-border, -fx-control-inner-background;
 }
+
+#errorDialog{
+    -fx-border-color: #000000;
+    -fx-background-color: #333333;
+}
+
+#errorDialogOccBox{
+    -fx-background-color: #222222;
+}
+
+.errorBoxBG{
+    -fx-background: #333333;
+}
