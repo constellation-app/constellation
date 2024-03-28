@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.openide.nodes.Node;
 import org.openide.util.Lookup;
@@ -117,8 +118,8 @@ public class GraphManager implements LookupListener {
         this.datetimeAttr = datetimeAttr;
     }
 
-    public ArrayList<String> getVertexAttributeNames() {
-        final ArrayList<String> attrNames = new ArrayList<>();
+    public List<String> getVertexAttributeNames() {
+        final List<String> attrNames = new ArrayList<>();
 
         if (graphNode != null) {
             final ReadableGraph rg = graphNode.getGraph().getReadableGraph();
@@ -149,20 +150,15 @@ public class GraphManager implements LookupListener {
         }
 
         // We are entering a new graph, so set up accordingly:
-        if (node != null) {
-            graphNode = node;
-        } else { // No active graphs
-            graphNode = null;
-        }
+        // if node is null, there are no active graphs
+        graphNode = node != null ? node : null;
     }
 
     @Override
     public void resultChanged(final LookupEvent lev) {
         final Node[] activatedNodes = TopComponent.getRegistry().getActivatedNodes();
         if (activatedNodes != null && activatedNodes.length == 1
-                && activatedNodes[0] instanceof GraphNode) {
-            final GraphNode gnode = ((GraphNode) activatedNodes[0]);
-
+                && activatedNodes[0] instanceof GraphNode gnode) {
             if (gnode != graphNode) {
                 setNode(gnode);
             }

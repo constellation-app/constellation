@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,23 +16,9 @@
 package au.gov.asd.tac.constellation.views.timeline;
 
 /**
- * Helper class used for passing time extents as a result of method operations.
+ * Helper record used for passing time extents as a result of method operations.
  *
  * @author betelgeuse
  */
-public class TimeExtents {
-
-    public final long lowerTimeExtent;
-    public final long upperTimeExtent;
-
-    /**
-     * Constructs a new <code>TimeExtents</code> instance.
-     *
-     * @param lowerTimeExtent the lower time extent.
-     * @param upperTimeExtent the upper time extent.
-     */
-    public TimeExtents(final long lowerTimeExtent, final long upperTimeExtent) {
-        this.lowerTimeExtent = lowerTimeExtent;
-        this.upperTimeExtent = upperTimeExtent;
-    }
+public record TimeExtents (long lowerTimeExtent, long upperTimeExtent) {
 }

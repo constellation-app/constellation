@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -176,7 +176,7 @@ public class OverviewPanel extends Pane {
             final boolean selectedOnly) {
         final int transactionCount = graph.getTransactionCount();
         final int datetimeAttributeId = graph.getAttribute(GraphElementType.TRANSACTION, datetimeAttribute);
-        final int selectedTransAttributeId = graph.getAttribute(GraphElementType.TRANSACTION, VisualConcept.TransactionAttribute.SELECTED.getName());
+        final int selectedTransAttributeId = VisualConcept.TransactionAttribute.SELECTED.get(graph);
 
         range = highestTimeExtent - lowestTimeExtent;
         this.lowestTimeExtent = lowestTimeExtent;
@@ -256,8 +256,6 @@ public class OverviewPanel extends Pane {
                         histogram.getData().add(new XYChart.Series<>());
                     } else if (histogram.getData().size() > 1) {
                         histogram.getData().remove(1);
-                    } else {
-                        // Do nothing
                     }
                     histogram.getData().add(selectedSeries);
                 }
@@ -265,8 +263,7 @@ public class OverviewPanel extends Pane {
             xAxis.setLowerBound(0);
             xAxis.setUpperBound(intervals);
 
-            setExtentPOV(coordinator.getTimelineLowerTimeExtent(),
-                    coordinator.getTimelineUpperTimeExtent());
+            setExtentPOV(coordinator.getTimelineLowerTimeExtent(), coordinator.getTimelineUpperTimeExtent());
         }
     }
     // </editor-fold>
@@ -403,14 +400,11 @@ public class OverviewPanel extends Pane {
                 handleResizing(t);
             } else if (t.getEventType() == MouseEvent.MOUSE_PRESSED) {
                 origin = t.getX(); // Set the origin on all mouse presses.
-
                 handleResizing(t);
             } else if (t.getEventType() == MouseEvent.MOUSE_RELEASED) {
                 handleRelease(t);
             } else if (t.getEventType() == MouseEvent.MOUSE_DRAGGED) {
                 handleDragging(t);
-            } else {
-                // Do nothing
             }
         }
 
@@ -426,8 +420,8 @@ public class OverviewPanel extends Pane {
          * @see MouseEvent
          */
         private void handleResizing(final MouseEvent t) {
-            // Determine if the cursor is currently hovering over the left border:
-            if ((rect.getX() - BUFFER) <= t.getX() && t.getX() <= (rect.getX() + BUFFER)) {
+            // Determine if the cursor is currently hovering over a border
+            if ((rect.getX() - BUFFER) <= t.getX() && t.getX() <= (rect.getX() + BUFFER)) { // left border
                 rect.setCursor(Cursor.W_RESIZE);
 
                 // Switch on resizing left flags if is a primary mouse:
@@ -435,9 +429,8 @@ public class OverviewPanel extends Pane {
                     isResizingLeft = true;
                     isResizingRight = false;
                 }
-            } // Determine if the cursor is currently hovering over the right border:
-            else if ((rect.getX() + rect.getWidth() - BUFFER) <= t.getX()
-                    && t.getX() <= (rect.getX() + rect.getWidth() + BUFFER)) {
+            } else if ((rect.getX() + rect.getWidth() - BUFFER) <= t.getX()
+                    && t.getX() <= (rect.getX() + rect.getWidth() + BUFFER)) { // right border
                 rect.setCursor(Cursor.E_RESIZE);
 
                 // Switch on resizing right flags if is a primary mouse click:
@@ -445,8 +438,7 @@ public class OverviewPanel extends Pane {
                     isResizingLeft = false;
                     isResizingRight = true;
                 }
-            } // Not hovering over a border:
-            else {
+            } else { // Not hovering over a border
                 rect.setCursor(Cursor.NONE);
             }
         }
@@ -495,8 +487,8 @@ public class OverviewPanel extends Pane {
             // Determine any change in the mouse position:
             final double delta = origin - t.getX();
 
-            // Determine if the cursor is currently hovering over the left border:
-            if (isResizingLeft) {
+            // Determine if the cursor is currently hovering over a border:
+            if (isResizingLeft) { // left border
                 final double width = rect.getWidth() + delta;
                 final double x = rect.getX() - delta;
 
@@ -515,13 +507,11 @@ public class OverviewPanel extends Pane {
                     // Update the origin as we have had some movement:
                     origin = t.getX();
                 }
-            } // Determine if the cursor is currently hovering over the right border:
-            else if (isResizingRight) {
+            } else if (isResizingRight) { // right border
                 final double width = rect.getWidth() - delta;
 
                 // Only resize if the new width is not too small, and it won't go off the right hand boundary:
-                if (width >= 2.0 * BUFFER
-                        && ((rect.getX() + width) < histogram.getWidth())) {
+                if (width >= 2.0 * BUFFER && ((rect.getX() + width) < histogram.getWidth())) {
                     rect.setWidth(width);
 
                     // Update the timeline's extents:
@@ -534,8 +524,6 @@ public class OverviewPanel extends Pane {
                     // Update the origin as we have had some movement:
                     origin = t.getX();
                 }
-            } else {
-                // Do nothing
             }
         }
 
@@ -556,8 +544,7 @@ public class OverviewPanel extends Pane {
             final double newX = rect.getX() - delta;
 
             // Only perform drag if it is within the bounds of the histogram:
-            if (0.0 <= newX && (newX + rect.getWidth())
-                    < histogram.getWidth()) {
+            if (newX >= 0.0 && (newX + rect.getWidth()) < histogram.getWidth()) {
                 rect.setX(newX);
 
                 // Update the timeline's extents:
