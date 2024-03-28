@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,17 +36,10 @@ public class ConstellationAbstractFeature {
     public ConstellationAbstractFeature(Feature feature) {
         this.id = feature.getId();
         switch (feature.getType()) {
-            case POINT:
-                this.type = ConstellationFeatureType.POINT;
-                break;
-            case LINES:
-                this.type = ConstellationFeatureType.LINE;
-                break;
-            case POLYGON:
-                this.type = ConstellationFeatureType.POLYGON;
-                break;
-            default:
-                this.type = ConstellationFeatureType.MULTI;
+            case POINT -> this.type = ConstellationFeatureType.POINT;
+            case LINES -> this.type = ConstellationFeatureType.LINE;
+            case POLYGON -> this.type = ConstellationFeatureType.POLYGON;
+            default -> this.type = ConstellationFeatureType.MULTI;
         }
         this.properties = feature.getProperties();
     }
@@ -77,8 +70,8 @@ public class ConstellationAbstractFeature {
 
     public String getStringProperty(final String key) {
         final Object value = properties.get(key);
-        if (value instanceof String) {
-            return (String) value;
+        if (value instanceof String string ) {
+            return string;
         } else {
             return null;
         }
