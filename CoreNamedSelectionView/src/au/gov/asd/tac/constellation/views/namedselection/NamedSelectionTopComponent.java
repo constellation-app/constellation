@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -133,19 +133,15 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
         @Override
         public void keyPressed(final KeyEvent e) {
             switch (e.getKeyCode()) {
-                case KeyEvent.VK_ENTER:
-                    // On enter, retrieve the selection:
+                case KeyEvent.VK_ENTER -> // On enter, retrieve the selection:
                     retrieveSelection();
-                    break;
-                case KeyEvent.VK_F2:
-                    // On F2, rename the selection:
+                case KeyEvent.VK_F2 -> // On F2, rename the selection:
                     renameElement();
-                    break;
-                default:
-                    // Do nothing
-                    break;
+                default -> {
+                }
             }
-        }
+            // Do nothing
+                    }
     };
 
     /**
