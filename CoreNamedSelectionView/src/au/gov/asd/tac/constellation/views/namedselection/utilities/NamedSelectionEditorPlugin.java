@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -194,26 +194,16 @@ public class NamedSelectionEditorPlugin extends SimpleEditPlugin {
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         switch (operation) {
-            case INTERSECTION:
-                performIntersection(graph);
-                break;
-            case RECALL:
-                recallSelection(graph);
-                break;
-            case SAVE:
-                saveSelection(graph);
-                break;
-            case UNION:
-                performUnion(graph);
-                break;
-            case CUSTOM_SAVE:
-                saveCustomSelection(graph);
-                break;
-            default:
-                // No default case.
-                break;
+            case INTERSECTION -> performIntersection(graph);
+            case RECALL -> recallSelection(graph);
+            case SAVE -> saveSelection(graph);
+            case UNION -> performUnion(graph);
+            case CUSTOM_SAVE -> saveCustomSelection(graph);
+            default -> {
+            }
         }
-    }
+        // No default case.
+            }
 
     /**
      * Performs a union operation on the graph using one or more existing Named

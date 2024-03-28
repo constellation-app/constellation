@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -470,13 +470,13 @@ public class MapViewTileRenderer extends PApplet {
                 && mouseY < overlay.getY() + overlay.getHeight());
 
         switch (event.getButton()) {
-            case PConstants.CENTER:
+            case PConstants.CENTER -> {
                 // zoom to box
                 boxZoomEnabled = true;
                 boxDeltaX = event.getX();
                 boxDeltaY = event.getY();
-                break;
-            case PConstants.RIGHT:
+            }
+            case PConstants.RIGHT -> {
                 // select markers
                 boxSelectionEnabled = false;
 
@@ -491,16 +491,16 @@ public class MapViewTileRenderer extends PApplet {
                     dispatcher.fireMapEvent(panMapEvent);
                     dispatcher.unregister(map, PanMapEvent.TYPE_PAN, map.getId());
                 }
-                break;
-            case PConstants.LEFT:
+            }
+            case PConstants.LEFT -> {
                 if (!isInteractionWithOverlay && !isOverlayActive) {
                     boxSelectionEnabled = true;
                     boxDeltaX = event.getX();
                     boxDeltaY = event.getY();
                 }
-                break;
-            default:
-                break;
+            }
+            default -> {
+            }
         }
 
         layers.forEach(layer -> layer.mouseDragged(event));
