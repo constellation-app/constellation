@@ -140,8 +140,7 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
                 default -> {
                 }
             }
-            // Do nothing
-                    }
+        }
     };
 
     /**

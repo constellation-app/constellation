@@ -35,12 +35,12 @@ public class ConstellationAbstractFeature {
 
     public ConstellationAbstractFeature(Feature feature) {
         this.id = feature.getId();
-        switch (feature.getType()) {
-            case POINT -> this.type = ConstellationFeatureType.POINT;
-            case LINES -> this.type = ConstellationFeatureType.LINE;
-            case POLYGON -> this.type = ConstellationFeatureType.POLYGON;
-            default -> this.type = ConstellationFeatureType.MULTI;
-        }
+        this.type = switch (feature.getType()) {
+            case POINT -> ConstellationFeatureType.POINT;
+            case LINES -> ConstellationFeatureType.LINE;
+            case POLYGON -> ConstellationFeatureType.POLYGON;
+            default -> ConstellationFeatureType.MULTI;
+        };
         this.properties = feature.getProperties();
     }
 
@@ -70,7 +70,7 @@ public class ConstellationAbstractFeature {
 
     public String getStringProperty(final String key) {
         final Object value = properties.get(key);
-        if (value instanceof String string ) {
+        if (value instanceof String string) {
             return string;
         } else {
             return null;

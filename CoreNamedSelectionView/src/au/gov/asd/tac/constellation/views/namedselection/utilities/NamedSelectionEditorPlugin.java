@@ -202,8 +202,7 @@ public class NamedSelectionEditorPlugin extends SimpleEditPlugin {
             default -> {
             }
         }
-        // No default case.
-            }
+    }
 
     /**
      * Performs a union operation on the graph using one or more existing Named
