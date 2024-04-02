@@ -161,27 +161,28 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                     final ReadableGraph readableGraph = activeGraph.getReadableGraph();
                     try {
                         final ParameterValue pv = params.get(master.getId()).getSingleChoice();
-                        assert (pv instanceof ElementTypeParameterValue);
-                        final GraphElementType elementType = ((ElementTypeParameterValue) pv).getGraphElementType();
-                        switch (elementType) {
-                            case TRANSACTION:
-                                final int transactionAttributeCount = readableGraph.getAttributeCount(GraphElementType.TRANSACTION);
-                                for (int attributePosition = 0; attributePosition < transactionAttributeCount; attributePosition++) {
-                                    final int attributeId = readableGraph.getAttribute(GraphElementType.TRANSACTION, attributePosition);
-                                    final GraphAttribute graphAttribute = new GraphAttribute(readableGraph, attributeId);
-                                    attributeOptions.add(new GraphAttributeParameterValue(graphAttribute));
-                                }
-                            // fall through
-                            case VERTEX:
-                                final int vertexAttributeCount = readableGraph.getAttributeCount(GraphElementType.VERTEX);
-                                for (int attributePosition = 0; attributePosition < vertexAttributeCount; attributePosition++) {
-                                    final int attributeId = readableGraph.getAttribute(GraphElementType.VERTEX, attributePosition);
-                                    final GraphAttribute graphAttribute = new GraphAttribute(readableGraph, attributeId);
-                                    attributeOptions.add(new GraphAttributeParameterValue(graphAttribute));
-                                }
-                                break;
-                            default:
-                                return;
+                        if (pv instanceof ElementTypeParameterValue elementTypeParameterValue){
+                            final GraphElementType elementType = elementTypeParameterValue.getGraphElementType();
+                            switch (elementType) {
+                                case TRANSACTION:
+                                    final int transactionAttributeCount = readableGraph.getAttributeCount(GraphElementType.TRANSACTION);
+                                    for (int attributePosition = 0; attributePosition < transactionAttributeCount; attributePosition++) {
+                                        final int attributeId = readableGraph.getAttribute(GraphElementType.TRANSACTION, attributePosition);
+                                        final GraphAttribute graphAttribute = new GraphAttribute(readableGraph, attributeId);
+                                        attributeOptions.add(new GraphAttributeParameterValue(graphAttribute));
+                                    }
+                                // fall through
+                                case VERTEX:
+                                    final int vertexAttributeCount = readableGraph.getAttributeCount(GraphElementType.VERTEX);
+                                    for (int attributePosition = 0; attributePosition < vertexAttributeCount; attributePosition++) {
+                                        final int attributeId = readableGraph.getAttribute(GraphElementType.VERTEX, attributePosition);
+                                        final GraphAttribute graphAttribute = new GraphAttribute(readableGraph, attributeId);
+                                        attributeOptions.add(new GraphAttributeParameterValue(graphAttribute));
+                                    }
+                                    break;
+                                default:
+                                    return;
+                            }
                         }
                     } finally {
                         readableGraph.release();

@@ -244,7 +244,7 @@ public class RowFilter {
             }
 
             final Object result = compiledScript.eval(bindings);
-            return result instanceof Boolean && ((Boolean) result);
+            return result instanceof Boolean booleanResult && booleanResult;
 
         } catch (final ScriptException ex) {
             return false;

@@ -451,8 +451,8 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         visualManager.startProcessing();
 
         Schema schema = graph.getSchema();
-        if (schema instanceof GraphNodeFactory) {
-            graphNode = ((GraphNodeFactory) schema).createGraphNode(graph, gdo, this, visualManager);
+        if (schema instanceof GraphNodeFactory graphNodeFactory) {
+            graphNode = graphNodeFactory.createGraphNode(graph, gdo, this, visualManager);
         } else {
             graphNode = new GraphNode(graph, gdo, this, visualManager);
         }

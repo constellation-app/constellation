@@ -38,7 +38,7 @@ public class RawTypeFormatter extends BinFormatter {
 
     @Override
     public boolean appliesToBin(Bin bin) {
-        return bin instanceof AttributeBin && ((AttributeBin) bin).getAttributeType().equals(RawAttributeDescription.ATTRIBUTE_NAME);
+        return bin instanceof AttributeBin attributeBin && attributeBin.getAttributeType().equals(RawAttributeDescription.ATTRIBUTE_NAME);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class RawTypeFormatter extends BinFormatter {
         @Override
         public void setKey(GraphReadMethods graph, int attribute, int element) {
             bin.setKey(graph, attribute, element);
-            key = bin.getKeyAsObject() instanceof RawData ? ((RawData) bin.getKeyAsObject()).getRawType() : null;
+            key = bin.getKeyAsObject() instanceof RawData rawData ? rawData.getRawType() : null;
         }
 
         @Override

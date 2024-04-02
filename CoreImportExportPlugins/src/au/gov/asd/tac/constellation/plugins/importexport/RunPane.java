@@ -400,12 +400,9 @@ public final class RunPane extends BorderPane implements KeyListener {
         double offset = 0;
         final Set<Node> nodes = sampleDataView.lookupAll(".scroll-bar");
         for (final Node node : nodes) {
-            if (node instanceof ScrollBar) {
-                final ScrollBar scrollBar = (ScrollBar) node;
-                if (scrollBar.getOrientation() == Orientation.HORIZONTAL) {
-                    offset = scrollBar.getValue();
-                    break;
-                }
+            if (node instanceof ScrollBar scrollBar && scrollBar.getOrientation() == Orientation.HORIZONTAL) {
+                offset = scrollBar.getValue();
+                break;
             }
         }
         return offset;

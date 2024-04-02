@@ -47,8 +47,8 @@ public enum BinIconMode {
     ICON(1.5F) {
         @Override
         public void draw(Graphics2D graphics, Bin bin, int left, int top, int height) {
-            if (bin instanceof ObjectBin) {
-                Object key = ((ObjectBin) bin).getKeyAsObject();
+            if (bin instanceof ObjectBin objectBin) {
+                Object key = objectBin.getKeyAsObject();
 
                 if (key != null) {
                     String iconLabel = ((ConstellationIcon) key).getName();
@@ -75,8 +75,8 @@ public enum BinIconMode {
     COLOR(1.5F) {
         @Override
         public void draw(Graphics2D graphics, Bin bin, int left, int top, int height) {
-            if (bin instanceof ObjectBin) {
-                Object key = ((ObjectBin) bin).getKeyAsObject();
+            if (bin instanceof ObjectBin objectBin) {
+                Object key = objectBin.getKeyAsObject();
                 ConstellationColor colorValue = (ConstellationColor) key;
                 if (colorValue != null) {
                     graphics.setColor(colorValue.getJavaColor());
