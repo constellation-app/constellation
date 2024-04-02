@@ -341,7 +341,7 @@ public class GraphUpdateController {
         }
 
         @Override
-        protected boolean update(GraphReadMethods updateState) {
+        public boolean update(GraphReadMethods updateState) {
             return true;
         }
     }
@@ -483,7 +483,7 @@ public class GraphUpdateController {
         }
 
         @Override
-        protected boolean update(GraphReadMethods updateState) {
+        public boolean update(GraphReadMethods updateState) {
             return true;
         }
 

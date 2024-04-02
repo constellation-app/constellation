@@ -64,39 +64,38 @@ import org.openide.windows.TopComponent;
 })
 public final class ConversationViewTopComponent extends JavaFxTopComponent<ConversationBox> {
 
-    private final Conversation conversation = new Conversation();
-    private final ConversationBox conversationBox;
+    private final ConversationController controller;
 
     public ConversationViewTopComponent() {
         initComponents();
         setName(Bundle.CTL_ConversationViewTopComponent());
         setToolTipText(Bundle.HINT_ConversationViewTopComponent());
         Platform.setImplicitExit(false);
-        conversationBox = new ConversationBox(conversation);
-        conversation.getGraphUpdateManager().setManaged(true);
+        controller = ConversationController.getDefault();  
+        controller.getConversation().getGraphUpdateManager().setManaged(true);
         initContent();
     }
 
     @Override
     protected void handleComponentOpened() {
         super.handleComponentOpened();
-        conversation.getGraphUpdateManager().setManaged(true);
+        controller.getConversation().getGraphUpdateManager().setManaged(true);
     }
 
     @Override
     protected void handleComponentClosed() {
         super.handleComponentClosed();
-        conversation.getGraphUpdateManager().setManaged(false);
+        controller.getConversation().getGraphUpdateManager().setManaged(false);
     }
 
     @Override
     protected void componentActivated() {
-        conversation.getGraphUpdateManager().setManaged(needsUpdate());
+        controller.getConversation().getGraphUpdateManager().setManaged(needsUpdate());
     }
 
     @Override
     protected void componentDeactivated() {
-        conversation.getGraphUpdateManager().setManaged(needsUpdate());
+        controller.getConversation().getGraphUpdateManager().setManaged(needsUpdate());
     }
 
     void writeProperties(java.util.Properties p) {
@@ -114,7 +113,7 @@ public final class ConversationViewTopComponent extends JavaFxTopComponent<Conve
 
     @Override
     protected ConversationBox createContent() {
-        return conversationBox;
+        return controller.getConversationBox();
     }
 
     /**

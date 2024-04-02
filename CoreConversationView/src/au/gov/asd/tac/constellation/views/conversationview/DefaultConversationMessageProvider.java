@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.utilities.GraphIndexUtilities;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 
 /**
@@ -35,8 +37,12 @@ import javax.swing.SwingUtilities;
  */
 public class DefaultConversationMessageProvider implements ConversationMessageProvider {
 
+    private static final Logger LOGGER = Logger.getLogger(DefaultConversationMessageProvider.class.getName());
+    
+    private int totalMessageCount = 0;
+
     @Override
-    public void getMessages(GraphReadMethods graph, List<ConversationMessage> messages) {
+    public void getMessages(final GraphReadMethods graph, final List<ConversationMessage> messages, final int pageNumber) {
         assert !SwingUtilities.isEventDispatchThread();
         messages.clear();
         if (graph == null) {
@@ -44,18 +50,23 @@ public class DefaultConversationMessageProvider implements ConversationMessagePr
         }
         final int vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
         if (vertexSelectedAttribute != Graph.NOT_FOUND) {
+            totalMessageCount = 0;
             final GraphIndexResult selectedVertices = GraphIndexUtilities.filterElements(graph, vertexSelectedAttribute, true);
             final int vertex = selectedVertices.getNextElement();
             if (vertex != Graph.NOT_FOUND) {
                 final int secondVertex = selectedVertices.getNextElement();
                 if (secondVertex == Graph.NOT_FOUND) {
                     final int transactionCount = graph.getVertexTransactionCount(vertex);
-                    for (int position = 0; position < transactionCount; position++) {
+                    totalMessageCount = transactionCount;
+                    final int minPosition = pageNumber * 20;
+                    final int maxCount = minPosition + 20 > transactionCount ? transactionCount : minPosition + 20;
+                    for (int position = minPosition; position < maxCount; position++) {
                         final int transaction = graph.getVertexTransaction(vertex, position);
                         if (graph.getTransactionDirection(transaction) != Graph.UNDIRECTED) {
                             final int sender = graph.getTransactionSourceVertex(transaction);
                             final ConversationSide conversationSide = sender == vertex ? ConversationSide.LEFT : ConversationSide.RIGHT;
                             final ConversationMessage message = new ConversationMessage(transaction, sender, conversationSide);
+                            LOGGER.log(Level.SEVERE, message.toString());
                             messages.add(message);
                         }
                     }
@@ -66,6 +77,7 @@ public class DefaultConversationMessageProvider implements ConversationMessagePr
 
         final int transactionSelectedAttribute = VisualConcept.TransactionAttribute.SELECTED.get(graph);
         if (transactionSelectedAttribute != Graph.NOT_FOUND) {
+            totalMessageCount = 0;
             final GraphIndexResult transactionResult = GraphIndexUtilities.filterElements(graph, transactionSelectedAttribute, true);
 
             int transactionCount = 0;
@@ -105,8 +117,14 @@ public class DefaultConversationMessageProvider implements ConversationMessagePr
                     final ConversationSide conversationSide = sender == leftSender ? ConversationSide.LEFT : ConversationSide.RIGHT;
                     final ConversationMessage message = new ConversationMessage(transaction, sender, conversationSide);
                     messages.add(message);
+                    totalMessageCount++;
                 }
             }
         }
+    }
+    
+    @Override
+    public int getTotalMessageCount() {
+        return totalMessageCount;
     }
 }

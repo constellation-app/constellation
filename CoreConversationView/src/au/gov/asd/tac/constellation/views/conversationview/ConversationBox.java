@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.conversationview;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -40,7 +41,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ListChangeListener.Change;
@@ -59,6 +62,7 @@ import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Pagination;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToolBar;
@@ -73,16 +77,16 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Callback;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.util.HelpCtx;
 
 /**
  * The ConversationBox represents the entire GUI for the conversation view.
  * <p>
- * It contains a Conversation, the model for the dynamically generated content
- * based on the current graph selection, as well as a list view of Bubbles to
- * display this dynamic content, and some static controls used to interact with
- * and alter the content that is displayed.
+ * It contains a Conversation, the model for the dynamically generated content based on the current graph selection, as
+ * well as a list view of Bubbles to display this dynamic content, and some static controls used to interact with and
+ * alter the content that is displayed.
  *
  * @see Conversation
  * @see ConversationBubble
@@ -93,12 +97,14 @@ import org.openide.util.HelpCtx;
  */
 public final class ConversationBox extends StackPane {
 
+    private static final Logger LOGGER = Logger.getLogger(ConversationBox.class.getName());
+    
     public static final double PADDING = 5;
 
     private final Conversation conversation;
 
-    private final ListView<ConversationMessage> bubbles;
-    private final BorderPane contributionsPane;
+    private ListView<ConversationMessage> bubbles;
+    private BorderPane contributionsPane;
 
     private TooltipPane tipsPane = new TooltipPane();
     private CheckBox showToolTip = new CheckBox("Hovering translations");
@@ -130,11 +136,12 @@ public final class ConversationBox extends StackPane {
     private final Button prevButton = new Button("Previous");
     private final HBox searchHBox = new HBox();
 
+    private final Pagination pagination = new Pagination(0);
+
     /**
      * Create a ConversationBox with the given Conversation.
      *
-     * @param conversation The Conversation that this ConversationBox will
-     * display.
+     * @param conversation The Conversation that this ConversationBox will display.
      */
     public ConversationBox(final Conversation conversation) {
         this.conversation = conversation;
@@ -147,143 +154,177 @@ public final class ConversationBox extends StackPane {
         final VBox content = new VBox();
         content.setStyle(CSS_BACKGROUND_COLOR_TRANSPARENT);
 
-        showToolTip.setSelected(true);
-        showToolTip.setOnAction((ActionEvent t) -> tipsPane.setEnabled(showToolTip.isSelected()));
+        pagination.setPageCount(1);
+        pagination.setMaxPageIndicatorCount(1);
 
-        conversation.setSenderAttributeListener((possibleSenderAttributes, senderAttributes) -> {
-            isAdjustingSenderLabels = true;
-            senderAttributesMultiChoiceInput.getCheckModel().clearChecks();
-            possibleSenderAttributes = possibleSenderAttributes.stream().filter(Objects::nonNull).collect(Collectors.toList());
-            senderAttributesChoices.setAll(possibleSenderAttributes);
-            for (final String senderAttribute : senderAttributes) {
-                senderAttributesMultiChoiceInput.getCheckModel().check(senderAttribute);
-            }
-            isAdjustingSenderLabels = false;
-        });
-
-        senderAttributesMultiChoiceInput.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change<? extends String> c) -> {
-            if (!isAdjustingSenderLabels) {
-                updateSenderAttributes(senderAttributesMultiChoiceInput.getCheckModel().getCheckedItems());
-            }
-        });
-
-        final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor()));
-        final Button helpButton = new Button("", helpImage);
-        helpButton.setStyle("-fx-border-color: transparent; -fx-background-color: transparent; -fx-effect: null; ");
-        helpButton.setOnAction(event
-                -> new HelpCtx(this.getClass().getName()).display());
-
-        final Button addAttributesButton = new Button("Add Content Attributes");
-        addAttributesButton.setOnAction(event
-                -> PluginExecution.withPlugin(new AddContentAttributesPlugin()).executeLater(GraphManager.getDefault().getActiveGraph()));
-        final Tooltip aabt = new Tooltip("Adds content related transaction attributes to the graph.");
-        addAttributesButton.setTooltip(aabt);
-        
-        optionsPane.getItems().addAll(senderAttributesMultiChoiceInput, showToolTip, addAttributesButton, helpButton);
-
-        contributionsPane = new BorderPane();
-        contributionsPane.setPadding(new Insets(PADDING));
-
-        togglesPane = new HBox();
-        togglesPane.getStylesheets().add(
-                JavafxStyleManager.class.getResource("pillbutton/PillButton.css").toExternalForm()
-        );
-        togglesPane.setAlignment(Pos.CENTER);
-        contributionsPane.setCenter(togglesPane);
-
-        // Create toggle buttons that allow the user to turn on and off the content contributors.
-        conversation.setContributorListener(contributors -> {
-            isAdjustingContributionProviders = true;
-            try {
-                togglesPane.getChildren().clear();
-                int buttonCount = 0;
-                for (final Entry<String, Boolean> contributor : contributors.entrySet()) {
-                    final ToggleButton button = new ToggleButton(contributor.getKey());
-                    button.setSelected(contributor.getValue());
-                    if (contributors.size() == 1) {
-                        button.getStyleClass().add("center-pill");
-                    } else if (buttonCount == 0) {
-                        button.getStyleClass().add("left-pill");
-                    } else if (buttonCount == contributors.size() - 1) {
-                        button.getStyleClass().add("right-pill");
-                    } else {
-                        button.getStyleClass().add("center-pill");
-                    }
-                    button.setOnAction(event -> {
-                        if (!isAdjustingContributionProviders) {
-                            updateContributionProviderVisibility(contributor.getKey(), button.isSelected());
-                        }
-                    });
-                    togglesPane.getChildren().add(button);
-                    buttonCount++;
+        pagination.setPageFactory(new Callback<Integer, Node>() {
+            public Node call(final Integer pageIndex) {
+                
+                // Hook up the bubbles pane to the conversation.
+                ObservableList<ConversationMessage> messages = FXCollections.observableArrayList();
+                // Create the bubbles pane.
+                bubbles = new ListView<>();
+                bubbles.setStyle(CSS_BACKGROUND_COLOR_TRANSPARENT);
+                bubbles.setCellFactory(callback -> new BubbleCell());
+                VBox.setVgrow(bubbles, Priority.ALWAYS);
+                bubbles.setItems(messages);
+                conversation.setResultList(messages);  
+                
+                // When the list updates like during a selection, if there is any text
+                // in the search field then highlight the text after the bubbles show
+                // and update the found count label
+                messages.addListener((Change<? extends ConversationMessage> c) -> {
+                    updatePages(conversation.getTotalPages());
+                    highlightRegions();
+                    refreshCountUI(false);
+                });
+                
+                // Update the view to the next page and load new messages
+                final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+                if (activeGraph != null && conversation.getPageNumber() != pageIndex) {
+                    final ReadableGraph graph = activeGraph.getReadableGraph();
+                    conversation.setPageNumber(pageIndex);
+                    messages.clear();
+                    messages.addAll(conversation.updateMessages(graph));
+                    updatePages(conversation.getTotalPages());
+                    graph.release();
                 }
-            } finally {
-                isAdjustingContributionProviders = false;
+                
+                content.getChildren().clear();
+                showToolTip.setSelected(true);
+                showToolTip.setOnAction((final ActionEvent t) -> tipsPane.setEnabled(showToolTip.isSelected()));
+
+                conversation.setSenderAttributeListener((possibleSenderAttributes, senderAttributes) -> {
+                    isAdjustingSenderLabels = true;
+                    senderAttributesMultiChoiceInput.getCheckModel().clearChecks();
+                    possibleSenderAttributes = possibleSenderAttributes.stream().filter(Objects::nonNull).collect(Collectors.toList());
+                    senderAttributesChoices.setAll(possibleSenderAttributes);
+                    for (final String senderAttribute : senderAttributes) {
+                        senderAttributesMultiChoiceInput.getCheckModel().check(senderAttribute);
+                    }
+                    isAdjustingSenderLabels = false;
+                });
+
+                senderAttributesMultiChoiceInput.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change<? extends String> c) -> {
+                    if (!isAdjustingSenderLabels) {
+                        updateSenderAttributes(senderAttributesMultiChoiceInput.getCheckModel().getCheckedItems());
+                    }
+                });
+
+                // Create controls to allow the user to search and highlight text within contributions.
+                searchTextField.setPromptText("Type to search...");
+                searchTextField.setStyle("-fx-padding: 5 5 5 5;");
+                searchTextField.setOnKeyTyped(e -> {
+                    foundLabel.setText("searching...");
+                    foundLabel.setStyle(FOUND_PASS_COLOR);
+
+                    // If they hit enter iterate through the results
+                    searchCount = "\r".equals(e.getCharacter()) && foundCount > 0 ? (searchCount + 1) % foundCount : 0;
+
+                    highlightRegions();
+                    refreshCountUI(false);
+                });
+
+                prevButton.setOnAction(event -> {
+                    if (foundCount > 0) {
+                        searchCount = searchCount <= 0 ? foundCount - 1 : (searchCount - 1) % foundCount;
+                        highlightRegions();
+                        foundLabel.setText(StringUtils.isBlank(searchTextField.getText()) ? "" : FOUND_TEXT + (searchCount + 1) + " of " + foundCount);
+                    }
+                });
+                nextButton.setOnAction(event -> {
+                    if (foundCount > 0) {
+                        searchCount = Math.abs((searchCount + 1) % foundCount);
+                        highlightRegions();
+                        foundLabel.setText(StringUtils.isBlank(searchTextField.getText()) ? "" : FOUND_TEXT + (searchCount + 1) + " of " + foundCount);
+                    }
+                });
+                searchTextField.setPrefWidth(300);
+
+                foundLabel.setPadding(new Insets(4, 8, 4, 8));
+                searchHBox.setSpacing(6);
+                searchHBox.getChildren().clear();
+                searchHBox.getChildren().addAll(searchTextField, prevButton, nextButton, foundLabel);
+
+                final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor()));
+                final Button helpButton = new Button("", helpImage);
+                helpButton.setStyle("-fx-border-color: transparent; -fx-background-color: transparent; -fx-effect: null; ");
+                helpButton.setOnAction(event
+                        -> new HelpCtx("ConversationBox").display());
+
+                final Button addAttributesButton = new Button("Add Content Attributes");
+                addAttributesButton.setOnAction(event
+                        -> PluginExecution.withPlugin(new AddContentAttributesPlugin()).executeLater(GraphManager.getDefault().getActiveGraph()));
+                final Tooltip aabt = new Tooltip("Adds content related transaction attributes to the graph.");
+                addAttributesButton.setTooltip(aabt);
+
+                optionsPane.getItems().clear();
+                optionsPane.getItems().addAll(senderAttributesMultiChoiceInput, showToolTip, addAttributesButton, helpButton);
+
+                contributionsPane = new BorderPane();
+                contributionsPane.setPadding(new Insets(PADDING));
+
+                togglesPane = new HBox();
+                togglesPane.getStylesheets().add(
+                        JavafxStyleManager.class.getResource("pillbutton/PillButton.css").toExternalForm()
+                );
+                togglesPane.setAlignment(Pos.CENTER);
+                contributionsPane.setCenter(togglesPane);
+
+                // Create toggle buttons that allow the user to turn on and off the content contributors.
+                conversation.setContributorListener(contributors -> {
+                    isAdjustingContributionProviders = true;
+                    try {
+                        togglesPane.getChildren().clear();
+                        int buttonCount = 0;
+                        for (final Entry<String, Boolean> contributor : contributors.entrySet()) {
+                            final ToggleButton button = new ToggleButton(contributor.getKey());
+                            button.setSelected(contributor.getValue());
+                            if (contributors.size() == 1) {
+                                button.getStyleClass().add("center-pill");
+                            } else if (buttonCount == 0) {
+                                button.getStyleClass().add("left-pill");
+                            } else if (buttonCount == contributors.size() - 1) {
+                                button.getStyleClass().add("right-pill");
+                            } else {
+                                button.getStyleClass().add("center-pill");
+                            }
+                            button.setOnAction(event -> {
+                                if (!isAdjustingContributionProviders) {
+                                    updateContributionProviderVisibility(contributor.getKey(), button.isSelected());
+                                }
+                            });
+                            togglesPane.getChildren().add(button);
+                            buttonCount++;
+                        }
+                    } finally {
+                        isAdjustingContributionProviders = false;
+                    }
+                });     
+
+                content.getChildren().addAll(optionsPane, searchHBox, contributionsPane, bubbles);
+                return content;
             }
         });
 
-        // Create the bubbles pane.
-        bubbles = new ListView<>();
-        bubbles.setStyle(CSS_BACKGROUND_COLOR_TRANSPARENT);
-        bubbles.setCellFactory(callback -> new BubbleCell());
-        VBox.setVgrow(bubbles, Priority.ALWAYS);
-
-        // Hook up the bubbles pane to the conversation.
-        final ObservableList<ConversationMessage> messages = FXCollections.observableArrayList();
-        bubbles.setItems(messages);
-        conversation.setResultList(messages);
-
-        // When the list updates like during a selection, if there is any text
-        // in the search field then highlight the text after the bubbles show
-        // and update the found count label
-        messages.addListener((Change<? extends ConversationMessage> c) -> {
-            highlightRegions();
-            refreshCountUI(false);
+        getChildren().addAll(pagination, tipsPane);
+    }
+    
+    public Pagination getPagination() {
+        return pagination;
+    }
+    
+    public void updatePages(final int totalPages) {
+        Platform.runLater(() -> {
+            pagination.setPageCount(totalPages);
+            pagination.setMaxPageIndicatorCount(totalPages);
         });
-
-        // Create controls to allow the user to search and highlight text within contributions.
-        searchTextField.setPromptText("Type to search...");
-        searchTextField.setStyle("-fx-padding: 5 5 5 5;");
-        searchTextField.setOnKeyTyped(e -> {
-            foundLabel.setText("searching...");
-            foundLabel.setStyle(FOUND_PASS_COLOR);
-
-            // If they hit enter iterate through the results
-            searchCount = "\r".equals(e.getCharacter()) && foundCount > 0 ? (searchCount + 1) % foundCount : 0;
-
-            highlightRegions();
-            refreshCountUI(false);
-        });
-
-        prevButton.setOnAction(event -> {
-            if (foundCount > 0) {
-                searchCount = searchCount <= 0 ? foundCount - 1 : (searchCount - 1) % foundCount;
-                highlightRegions();
-                foundLabel.setText(StringUtils.isBlank(searchTextField.getText()) ? "" : FOUND_TEXT + (searchCount + 1) + " of " + foundCount);
-            }
-        });
-        nextButton.setOnAction(event -> {
-            if (foundCount > 0) {
-                searchCount = Math.abs((searchCount + 1) % foundCount);
-                highlightRegions();
-                foundLabel.setText(StringUtils.isBlank(searchTextField.getText()) ? "" : FOUND_TEXT + (searchCount + 1) + " of " + foundCount);
-            }
-        });
-        searchTextField.setPrefWidth(300);
-
-        foundLabel.setPadding(new Insets(4, 8, 4, 8));
-        searchHBox.setSpacing(6);
-        searchHBox.getChildren().addAll(searchTextField, prevButton, nextButton, foundLabel);
-
-        content.getChildren().addAll(optionsPane, searchHBox, contributionsPane, bubbles);
-        getChildren().addAll(content, tipsPane);
     }
 
     /**
      * Refresh the UI for the count of 'found'.
      *
-     * @param resetCount True if foundCount is to be set to 0, otherwise False
-     * to leave foundCount unchanged.
+     * @param resetCount True if foundCount is to be set to 0, otherwise False to leave foundCount unchanged.
      */
     protected void refreshCountUI(final boolean resetCount) {
         if (resetCount) {
@@ -300,8 +341,8 @@ public final class ConversationBox extends StackPane {
     }
 
     /**
-     * Highlights the currently visible regions in the Conversation View based
-     * on the text currently present in the searchTextField.
+     * Highlights the currently visible regions in the Conversation View based on the text currently present in the
+     * searchTextField.
      */
     private void highlightRegions() {
         foundCount = 0;
@@ -354,12 +395,10 @@ public final class ConversationBox extends StackPane {
             spaceColumn.setMinWidth(50);
             spaceColumn.setPrefWidth(50);
 
-
             final ColumnConstraints contentColumn = new ColumnConstraints();
             contentColumn.setHalignment(message.getConversationSide() == ConversationSide.LEFT ? HPos.LEFT : HPos.RIGHT);
             contentColumn.setFillWidth(false);
             contentColumn.setHgrow(Priority.NEVER);
-
 
             final RowConstraints contentRow = new RowConstraints();
             contentRow.setFillHeight(true);
@@ -423,14 +462,14 @@ public final class ConversationBox extends StackPane {
         }
 
         @Override
-        protected double computePrefHeight(double width) {
+        protected double computePrefHeight(final double width) {
             final Node graphic = getGraphic();
             if (graphic == null) {
                 return super.computePrefHeight(width);
             } else {
                 final Insets padding = getPadding();
-                width -= padding.getLeft() + padding.getRight();
-                return graphic.prefHeight(width) + padding.getTop() + padding.getBottom();
+                final double newWidth = width - padding.getLeft() + padding.getRight();
+                return graphic.prefHeight(newWidth) + padding.getTop() + padding.getBottom();
             }
         }
 
@@ -468,14 +507,13 @@ public final class ConversationBox extends StackPane {
     }
 
     /**
-     * Sets the visibility of a contribution provider for the Conversation and
-     * updates the display of the Conversation accordingly.
+     * Sets the visibility of a contribution provider for the Conversation and updates the display of the Conversation
+     * accordingly.
      * <p>
      * The update will be run as a plugin.
      *
      * @param contributionProviderName The name of the contribution to update
-     * @param visible The desired visibility of the specified contribution
-     * provider.
+     * @param visible The desired visibility of the specified contribution provider.
      */
     private void updateContributionProviderVisibility(final String contributionProviderName, final boolean visible) {
         final Graph graph = conversation.getGraphUpdateManager().getActiveGraph();
@@ -485,13 +523,12 @@ public final class ConversationBox extends StackPane {
     }
 
     /**
-     * Sets the list of attributes to show for the sender in a Conversation and
-     * updates the display of the Conversation accordingly.
+     * Sets the list of attributes to show for the sender in a Conversation and updates the display of the Conversation
+     * accordingly.
      * <p>
      * The update will be run as a plugin.
      *
-     * @param senderAttributes The list of String labels of graph attributes to
-     * show for the sender
+     * @param senderAttributes The list of String labels of graph attributes to show for the sender
      */
     private void updateSenderAttributes(final List<String> senderAttributes) {
         final Graph graph = conversation.getGraphUpdateManager().getActiveGraph();

@@ -60,7 +60,7 @@ public class MultiAttributeUpdateComponent extends UpdateComponent<GraphReadMeth
     }
 
     @Override
-    protected boolean update(GraphReadMethods updateState) {
+    public boolean update(GraphReadMethods updateState) {
         return true;
     }
 

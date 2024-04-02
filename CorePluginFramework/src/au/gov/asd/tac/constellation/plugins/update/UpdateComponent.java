@@ -216,7 +216,7 @@ public abstract class UpdateComponent<U> implements Comparable<UpdateComponent<U
      * @return true if this component needed to change anything as a result of
      * the update, False if no action was required.
      */
-    protected abstract boolean update(U updateState);
+    public abstract boolean update(U updateState);
 
     @Override
     public String toString() {

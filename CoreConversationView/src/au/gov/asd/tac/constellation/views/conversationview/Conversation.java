@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -106,6 +106,9 @@ public class Conversation {
     private final List<ConversationMessage> temporalMessages = new ArrayList<>();
     private final List<ConversationMessage> senderMessages = new ArrayList<>();
     private final List<ConversationMessage> visibleMessages = new ArrayList<>();
+    private int pageNumber = 0;
+    private int totalMessageCount = 0;
+    private int totalPages = 0;
 
     private ObservableList<ConversationMessage> resultMessages = null;
     private ConversationContributionProviderListener contributorListener = null;
@@ -162,6 +165,46 @@ public class Conversation {
         contributorUpdater.dependOn(resultUpdater);
     }
 
+    public int getPageNumber() {
+        return pageNumber;
+    }
+
+    public void setPageNumber(final int pageNumber) {
+        this.pageNumber = pageNumber;
+    }
+    
+    public int getTotalMessageCount() {
+        return totalMessageCount;
+    }
+
+    public void setTotalMessageCount(final int totalMessageCount) {
+        this.totalMessageCount = totalMessageCount;
+    }
+    
+    public int getTotalPages() {
+        return totalPages;
+    }
+
+    public void setTotalPages(final int totalPages) {
+        this.totalPages = totalPages;
+    }
+
+    public ObservableList updateMessages(final GraphReadMethods graph) {
+        allMessages.clear();
+        Platform.runLater(() -> {
+            messageUpdater.update(graph);
+            contributionUpdater.update(graph);
+            datetimeUpdater.update(graph);
+            senderUpdater.update(graph);
+            backgroundUpdater.update(graph);
+            colorUpdater.update(graph);
+            visibilityUpdater.update(graph);
+            resultUpdater.update(graph);
+        });
+
+        return resultMessages;
+    }
+    
     /**
      * Sets the listener in the GUI for changes to the list of attributes that
      * can be displayed for the sender.
@@ -169,7 +212,7 @@ public class Conversation {
      * @param senderAttributeListener The listener to the list of sender
      * attributes
      */
-    public void setSenderAttributeListener(ConversationSenderAttributeListener senderAttributeListener) {
+    public void setSenderAttributeListener(final ConversationSenderAttributeListener senderAttributeListener) {
         updateController.lock();
         this.senderAttributeListener = senderAttributeListener;
         updateController.release();
@@ -191,7 +234,7 @@ public class Conversation {
     private UpdateComponent<GraphReadMethods> conversationExistanceUpdater = new UpdateComponent<GraphReadMethods>("Existance State", LOCK_STAGE) {
 
         @Override
-        protected boolean update(GraphReadMethods graph) {
+        public boolean update(final GraphReadMethods graph) {
             return graph == null;
         }
     };
@@ -202,7 +245,7 @@ public class Conversation {
     private UpdateComponent<GraphReadMethods> conversationStateUpdater = new UpdateComponent<GraphReadMethods>("Conversation State", LOCK_STAGE) {
 
         @Override
-        protected boolean update(GraphReadMethods graph) {
+        public boolean update(final GraphReadMethods graph) {
             ConversationState newConversationState;
             if (graph != null) {
                 final int conversationStateAttribute = ConversationViewConcept.MetaAttribute.CONVERSATION_VIEW_STATE.get(graph);
@@ -244,7 +287,7 @@ public class Conversation {
     private UpdateComponent<GraphReadMethods> possibleSenderAttributeUpdater = new UpdateComponent<GraphReadMethods>("Possible Senders", LOCK_STAGE) {
 
         @Override
-        protected boolean update(GraphReadMethods graph) {
+        public boolean update(final GraphReadMethods graph) {
             possibleSenderAttributes.clear();
             if (graph != null) {
                 final int attributeCount = graph.getAttributeCount(GraphElementType.VERTEX);
@@ -269,7 +312,7 @@ public class Conversation {
     private UpdateComponent<GraphReadMethods> senderAttributeUpdater = new UpdateComponent<GraphReadMethods>("Sender Attribute", JAVAFX_STAGE) {
 
         @Override
-        public boolean updateThread(Runnable runnable) {
+        public boolean updateThread(final Runnable runnable) {
             if (Platform.isFxApplicationThread()) {
                 return false;
             } else {
@@ -279,7 +322,7 @@ public class Conversation {
         }
 
         @Override
-        protected boolean update(GraphReadMethods graph) {
+        public boolean update(final GraphReadMethods graph) {
             if (senderAttributeListener != null) {
                 senderAttributeListener.senderAttributesChanged(possibleSenderAttributes, conversationState.getSenderAttributes());
             }
@@ -293,7 +336,7 @@ public class Conversation {
      */
     private UpdateComponent<GraphReadMethods> contributionProviderUpdater = new UpdateComponent<GraphReadMethods>("Contribution Providers", LOCK_STAGE) {
         @Override
-        protected boolean update(GraphReadMethods graph) {
+        public boolean update(final GraphReadMethods graph) {
             compatibleContributionProviders = ConversationContributionProvider.getCompatibleProviders(graph);
             return true;
         }
@@ -305,14 +348,21 @@ public class Conversation {
      */
     private UpdateComponent<GraphReadMethods> messageUpdater = new UpdateComponent<GraphReadMethods>("Messages", LOCK_STAGE) {
         @Override
-        protected boolean update(GraphReadMethods graph) {
+        public boolean update(GraphReadMethods graph) {
             try {
                 final CountDownLatch latch = new CountDownLatch(1);
 
                 final Thread thread = new Thread(CONVERSATION_VIEW_UPDATE_MESSAGE_THREAD_NAME) {
                     @Override
                     public void run() {
-                        messageProvider.getMessages(graph, allMessages);
+                        messageProvider.getMessages(graph, allMessages, pageNumber);
+                        totalMessageCount = messageProvider.getTotalMessageCount();
+                        if (totalMessageCount != 0) {
+                            totalPages = totalMessageCount / 20;
+                            if (totalPages > 1) {
+                                //ConversationController.getDefault().getConversationBox().updatePages(totalPages);                                
+                            } 
+                        }
                         latch.countDown();
                     }
                 };
@@ -335,7 +385,7 @@ public class Conversation {
      */
     private UpdateComponent<GraphReadMethods> contributionUpdater = new UpdateComponent<GraphReadMethods>("Contributions", LOCK_STAGE) {
         @Override
-        protected boolean update(GraphReadMethods graph) {
+        public boolean update(final GraphReadMethods graph) {
             try {
                 final CountDownLatch latch = new CountDownLatch(1);
 
@@ -384,7 +434,7 @@ public class Conversation {
      */
     private UpdateComponent<GraphReadMethods> datetimeUpdater = new UpdateComponent<GraphReadMethods>("Datetime", LOCK_STAGE) {
         @Override
-        protected boolean update(GraphReadMethods graph) {
+        public boolean update(final GraphReadMethods graph) {
             try {
                 final CountDownLatch latch = new CountDownLatch(1);
 
@@ -437,7 +487,7 @@ public class Conversation {
      */
     private UpdateComponent<GraphReadMethods> senderUpdater = new UpdateComponent<GraphReadMethods>("Senders", LOCK_STAGE) {
         @Override
-        protected boolean update(GraphReadMethods graph) {
+        public boolean update(final GraphReadMethods graph) {
             try {
                 final CountDownLatch latch = new CountDownLatch(1);
 
@@ -476,7 +526,7 @@ public class Conversation {
      */
     private UpdateComponent<GraphReadMethods> backgroundUpdater = new UpdateComponent<GraphReadMethods>("Backgrounds", LOCK_STAGE) {
         @Override
-        protected boolean update(GraphReadMethods graph) {
+        public boolean update(final GraphReadMethods graph) {
             backgroundProvider.updateMessageBackgrounds(graph, senderMessages);
             return true;
         }
@@ -488,7 +538,7 @@ public class Conversation {
      */
     private UpdateComponent<GraphReadMethods> colorUpdater = new UpdateComponent<GraphReadMethods>(LOCK_STAGE) {
         @Override
-        protected boolean update(GraphReadMethods graph) {
+        public boolean update(final GraphReadMethods graph) {
             try {
                 final CountDownLatch latch = new CountDownLatch(1);
 
@@ -519,7 +569,7 @@ public class Conversation {
     private UpdateComponent<GraphReadMethods> visibilityUpdater = new UpdateComponent<GraphReadMethods>("Visibility", UPDATE_STAGE) {
 
         @Override
-        public boolean updateThread(Runnable runnable) {
+        public boolean updateThread(final Runnable runnable) {
             if (CONVERSATION_VIEW_VISIBILITY_THREAD_NAME.equals(Thread.currentThread().getName())) {
                 return false;
             } else {
@@ -529,12 +579,12 @@ public class Conversation {
         }
 
         @Override
-        protected boolean update(GraphReadMethods graph) {
+        public boolean update(final GraphReadMethods graph) {
             visibleMessages.clear();
 
             for (final ConversationMessage message : senderMessages) {
                 message.filterContributions(conversationState.getHiddenContributionProviders());
-                if (!message.getVisibleContributions().isEmpty()) {
+                if (!message.getVisibleContributions().isEmpty() && visibleMessages.size() < 20) {
                     visibleMessages.add(message);
                 }
             }
@@ -550,7 +600,7 @@ public class Conversation {
     private UpdateComponent<GraphReadMethods> resultUpdater = new UpdateComponent<GraphReadMethods>("Results", JAVAFX_STAGE) {
 
         @Override
-        public boolean updateThread(Runnable runnable) {
+        public boolean updateThread(final Runnable runnable) {
             if (Platform.isFxApplicationThread()) {
                 return false;
             } else {
@@ -560,7 +610,7 @@ public class Conversation {
         }
 
         @Override
-        protected boolean update(GraphReadMethods graph) {
+        public boolean update(final GraphReadMethods graph) {
             if (resultMessages != null) {
                 resultMessages.setAll(visibleMessages);
             }
@@ -576,7 +626,7 @@ public class Conversation {
     private final UpdateComponent<GraphReadMethods> contributorUpdater = new UpdateComponent<GraphReadMethods>("Contributors", JAVAFX_STAGE) {
 
         @Override
-        public boolean updateThread(Runnable runnable) {
+        public boolean updateThread(final Runnable runnable) {
             if (Platform.isFxApplicationThread()) {
                 return false;
             } else {
@@ -586,7 +636,7 @@ public class Conversation {
         }
 
         @Override
-        protected boolean update(GraphReadMethods graph) {
+        public boolean update(final GraphReadMethods graph) {
             if (contributorListener != null) {
                 final Map<String, Boolean> contributors = new TreeMap<>();
                 for (ConversationContributionProvider contributor : contributingContributionProviders) {
@@ -604,7 +654,7 @@ public class Conversation {
      *
      * @param resultMessageList An ObservableList of messages.
      */
-    public void setResultList(ObservableList<ConversationMessage> resultMessageList) {
+    public void setResultList(final ObservableList<ConversationMessage> resultMessageList) {
         updateController.lock();
         this.resultMessages = resultMessageList;
         updateController.release();
@@ -620,7 +670,7 @@ public class Conversation {
      * @param contributorListener The listener to the currently active
      * contributors.
      */
-    public void setContributorListener(ConversationContributionProviderListener contributorListener) {
+    public void setContributorListener(final ConversationContributionProviderListener contributorListener) {
         updateController.lock();
         this.contributorListener = contributorListener;
         updateController.release();
