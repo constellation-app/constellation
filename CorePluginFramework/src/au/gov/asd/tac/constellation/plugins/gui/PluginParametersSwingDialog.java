@@ -76,6 +76,7 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
     
     private final HashMap<PluginParameter<?>, Boolean> parameterValidity = new HashMap();
     private final JButton acceptanceOption;
+    private final PluginParameters parameters;
 
     /**
      * Display a dialog box containing the parameters that allows the user to
@@ -155,6 +156,7 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
     public PluginParametersSwingDialog(final String title, final PluginParameters parameters, final Set<String> excludedParameters, final String acceptanceText, final String disclaimer, final String helpID) {
         this.title = title;
         this.acceptanceOption = new JButton(getAcceptanceButton(acceptanceText));
+        this.parameters = parameters;
         final CountDownLatch latch = new CountDownLatch(1);
         xp = helpID != null ? new JFXPanelWithHelp(helpID) : new JFXPanel();
         Platform.runLater(() -> {
@@ -162,7 +164,7 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
             // Create the panes
             final BorderPane root = new BorderPane();
             final ScrollPane scrollableContent = new ScrollPane();
-            final PluginParametersPane parametersPane = PluginParametersPane.buildPane(parameters, this, excludedParameters);
+            final PluginParametersPane parametersPane = PluginParametersPane.buildPane(this.parameters, this, excludedParameters);
             final HBox disclaimerPane = new HBox();
             
             // Style the panes
@@ -235,6 +237,7 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
         if (r == DialogDescriptor.CANCEL_OPTION){
             result = CANCEL;
         } else if (r == DialogDescriptor.OK_OPTION){
+            parameters.storeRecentValues();
             result = OK;
         } else {
             result = null;
@@ -256,6 +259,7 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
         if (r == DialogDescriptor.CANCEL_OPTION){
             result = CANCEL;
         } else if (r == DialogDescriptor.OK_OPTION){
+            parameters.storeRecentValues();
             result = OK;
         } else {
             result = null;
