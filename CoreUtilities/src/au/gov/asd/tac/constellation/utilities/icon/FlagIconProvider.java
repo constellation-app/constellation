@@ -129,7 +129,7 @@ public class FlagIconProvider implements ConstellationIconProvider {
             .addAlias(Country.BRAZIL.getDigraph())
             .addCategory(FLAG_CATEGORY)
             .build();
-    public static final ConstellationIcon BRUNEI = new ConstellationIcon.Builder("Brunei", new FileIconData("modules/ext/icons/flags/brunei.png", CODE_NAME_BASE))
+    public static final ConstellationIcon BRUNEI = new ConstellationIcon.Builder("Brunei", new FileIconData("modules/ext/icons/flags/brunei_darussalam.png", CODE_NAME_BASE))
             .addAlias(Country.BRUNEI_DARUSSALAM.getDigraph())
             .addAlias("Brunei Darussalam")
             .addCategory(FLAG_CATEGORY)
@@ -158,7 +158,7 @@ public class FlagIconProvider implements ConstellationIconProvider {
             .addAlias(Country.CANADA.getDigraph())
             .addCategory(FLAG_CATEGORY)
             .build();
-    public static final ConstellationIcon CAPE_VERDE = new ConstellationIcon.Builder("Cape Verde", new FileIconData("modules/ext/icons/flags/cape_verde.png", CODE_NAME_BASE))
+    public static final ConstellationIcon CAPE_VERDE = new ConstellationIcon.Builder("Cape Verde", new FileIconData("modules/ext/icons/flags/cabo_verde.png", CODE_NAME_BASE))
             .addAlias(Country.CABO_VERDE.getDigraph())
             .addCategory(FLAG_CATEGORY)
             .build();
@@ -186,11 +186,11 @@ public class FlagIconProvider implements ConstellationIconProvider {
             .addAlias(Country.COMOROS.getDigraph())
             .addCategory(FLAG_CATEGORY)
             .build();
-    public static final ConstellationIcon CONGO_DEMOCRATIC = new ConstellationIcon.Builder("Congo (Democratic)", new FileIconData("modules/ext/icons/flags/congo_democratic.png", CODE_NAME_BASE))
+    public static final ConstellationIcon CONGO_DEMOCRATIC = new ConstellationIcon.Builder("Congo (Democratic)", new FileIconData("modules/ext/icons/flags/congo_the_democratic_republic_of_the.png", CODE_NAME_BASE))
             .addAlias(Country.CONGO_DEMOCRATIC_REPUBLIC.getDigraph())
             .addCategory(FLAG_CATEGORY)
             .build();
-    public static final ConstellationIcon CONGO_REPUBLIC = new ConstellationIcon.Builder("Congo (Republic)", new FileIconData("modules/ext/icons/flags/congo_republic.png", CODE_NAME_BASE))
+    public static final ConstellationIcon CONGO_REPUBLIC = new ConstellationIcon.Builder("Congo (Republic)", new FileIconData("modules/ext/icons/flags/congo.png", CODE_NAME_BASE))
             .addAlias(Country.CONGO.getDigraph())
             .addCategory(FLAG_CATEGORY)
             .build();
@@ -235,7 +235,7 @@ public class FlagIconProvider implements ConstellationIconProvider {
             .addAlias(Country.DOMINICAN_REPUBLIC.getDigraph())
             .addCategory(FLAG_CATEGORY)
             .build();
-    public static final ConstellationIcon EAST_TIMOR = new ConstellationIcon.Builder("East Timor", new FileIconData("modules/ext/icons/flags/east_timor.png", CODE_NAME_BASE))
+    public static final ConstellationIcon EAST_TIMOR = new ConstellationIcon.Builder("East Timor", new FileIconData("modules/ext/icons/flags/timor-leste.png", CODE_NAME_BASE))
             .addAlias(Country.TIMOR_LESTE.getDigraph())
             .addAlias("Timor-Leste")
             .addCategory(FLAG_CATEGORY)
@@ -316,7 +316,7 @@ public class FlagIconProvider implements ConstellationIconProvider {
             .addAlias(Country.GUINEA.getDigraph())
             .addCategory(FLAG_CATEGORY)
             .build();
-    public static final ConstellationIcon GUINEA_BISSAU = new ConstellationIcon.Builder("Guinea Bissau", new FileIconData("modules/ext/icons/flags/guinea_bissau.png", CODE_NAME_BASE))
+    public static final ConstellationIcon GUINEA_BISSAU = new ConstellationIcon.Builder("Guinea Bissau", new FileIconData("modules/ext/icons/flags/guinea-bissau.png", CODE_NAME_BASE))
             .addAlias(Country.GUINEA_BISSAU.getDigraph())
             .addAlias("Guinea-Bissau")
             .addCategory(FLAG_CATEGORY)
@@ -393,11 +393,11 @@ public class FlagIconProvider implements ConstellationIconProvider {
             .addAlias(Country.KIRIBATI.getDigraph())
             .addCategory(FLAG_CATEGORY)
             .build();
-    public static final ConstellationIcon KOREA_NORTH = new ConstellationIcon.Builder("North Koread", new FileIconData("modules/ext/icons/flags/korea_north.png", CODE_NAME_BASE))
+    public static final ConstellationIcon KOREA_NORTH = new ConstellationIcon.Builder("North Korea", new FileIconData("modules/ext/icons/flags/north_korea.png", CODE_NAME_BASE))
             .addAlias(Country.KOREA_NORTH.getDigraph())
             .addCategory(FLAG_CATEGORY)
             .build();
-    public static final ConstellationIcon KOREA_SOUTH = new ConstellationIcon.Builder("South Korea", new FileIconData("modules/ext/icons/flags/korea_south.png", CODE_NAME_BASE))
+    public static final ConstellationIcon KOREA_SOUTH = new ConstellationIcon.Builder("South Korea", new FileIconData("modules/ext/icons/flags/south_korea.png", CODE_NAME_BASE))
             .addAlias(Country.KOREA_SOUTH.getDigraph())
             .addCategory(FLAG_CATEGORY)
             .build();
@@ -492,7 +492,7 @@ public class FlagIconProvider implements ConstellationIconProvider {
             .addAlias(Country.MEXICO.getDigraph())
             .addCategory(FLAG_CATEGORY)
             .build();
-    public static final ConstellationIcon MICRONESIA = new ConstellationIcon.Builder("Micronesia", new FileIconData("modules/ext/icons/flags/micronesia_federated.png", CODE_NAME_BASE))
+    public static final ConstellationIcon MICRONESIA = new ConstellationIcon.Builder("Micronesia", new FileIconData("modules/ext/icons/flags/federated_states_of_micronesia.png", CODE_NAME_BASE))
             .addAlias(Country.MICRONESIA.getDigraph())
             .addAlias("Micronesia, Federated States of")
             .addCategory(FLAG_CATEGORY)
@@ -537,7 +537,7 @@ public class FlagIconProvider implements ConstellationIconProvider {
             .addAlias(Country.NEPAL.getDigraph())
             .addCategory(FLAG_CATEGORY)
             .build();
-    public static final ConstellationIcon NETHERLANDS = new ConstellationIcon.Builder("Netherlands", new FileIconData("modules/ext/icons/flags/netherlands.png", CODE_NAME_BASE))
+    public static final ConstellationIcon NETHERLANDS = new ConstellationIcon.Builder("Netherlands", new FileIconData("modules/ext/icons/flags/the_netherlands.png", CODE_NAME_BASE))
             .addAlias(Country.NETHERLANDS.getDigraph())
             .addCategory(FLAG_CATEGORY)
             .build();
@@ -704,7 +704,7 @@ public class FlagIconProvider implements ConstellationIconProvider {
             .addAlias(Country.SURINAME.getDigraph())
             .addCategory(FLAG_CATEGORY)
             .build();
-    public static final ConstellationIcon ESWATINI = new ConstellationIcon.Builder("Swaziland", new FileIconData("modules/ext/icons/flags/swaziland.png", CODE_NAME_BASE))
+    public static final ConstellationIcon ESWATINI = new ConstellationIcon.Builder("Swaziland", new FileIconData("modules/ext/icons/flags/eswatini.png", CODE_NAME_BASE))
             .addAlias(Country.ESWATINI.getDigraph())
             .addCategory(FLAG_CATEGORY)
             .build();
@@ -716,7 +716,7 @@ public class FlagIconProvider implements ConstellationIconProvider {
             .addAlias(Country.SWITZERLAND.getDigraph())
             .addCategory(FLAG_CATEGORY)
             .build();
-    public static final ConstellationIcon SYRIA = new ConstellationIcon.Builder("Syria", new FileIconData("modules/ext/icons/flags/syria.png", CODE_NAME_BASE))
+    public static final ConstellationIcon SYRIA = new ConstellationIcon.Builder("Syria", new FileIconData("modules/ext/icons/flags/syrian_arab_republic.png", CODE_NAME_BASE))
             .addAlias(Country.SYRIA.getDigraph())
             .addCategory(FLAG_CATEGORY)
             .build();
@@ -728,7 +728,7 @@ public class FlagIconProvider implements ConstellationIconProvider {
             .addAlias(Country.TAJIKISTAN.getDigraph())
             .addCategory(FLAG_CATEGORY)
             .build();
-    public static final ConstellationIcon TANZANIA = new ConstellationIcon.Builder("Tanzania", new FileIconData("modules/ext/icons/flags/tanzania.png", CODE_NAME_BASE))
+    public static final ConstellationIcon TANZANIA = new ConstellationIcon.Builder("Tanzania", new FileIconData("modules/ext/icons/flags/united_republic_of_tanzania.png", CODE_NAME_BASE))
             .addAlias(Country.TANZANIA.getDigraph())
             .addCategory(FLAG_CATEGORY)
             .build();
@@ -752,7 +752,7 @@ public class FlagIconProvider implements ConstellationIconProvider {
             .addAlias(Country.TUNISIA.getDigraph())
             .addCategory(FLAG_CATEGORY)
             .build();
-    public static final ConstellationIcon TURKEY = new ConstellationIcon.Builder("Turkey", new FileIconData("modules/ext/icons/flags/turkey.png", CODE_NAME_BASE))
+    public static final ConstellationIcon TURKEY = new ConstellationIcon.Builder("Turkey", new FileIconData("modules/ext/icons/flags/republic_of_türkiye.png", CODE_NAME_BASE))
             .addAlias(Country.TURKEY.getDigraph())
             .addCategory(FLAG_CATEGORY)
             .build();
@@ -802,7 +802,7 @@ public class FlagIconProvider implements ConstellationIconProvider {
             .addAlias("Holy See")
             .addCategory(FLAG_CATEGORY)
             .build();
-    public static final ConstellationIcon VENEZUELA = new ConstellationIcon.Builder("Venezuela", new FileIconData("modules/ext/icons/flags/venezuela.png", CODE_NAME_BASE))
+    public static final ConstellationIcon VENEZUELA = new ConstellationIcon.Builder("Venezuela", new FileIconData("modules/ext/icons/flags/bolivarian_republic_of_venezuela.png", CODE_NAME_BASE))
             .addAlias(Country.VENEZUELA.getDigraph())
             .addAlias("Venezuela, Bolivarian Republic of")
             .addCategory(FLAG_CATEGORY)
@@ -824,7 +824,7 @@ public class FlagIconProvider implements ConstellationIconProvider {
             .addCategory(FLAG_CATEGORY)
             .build();
 
-    public static final ConstellationIcon ALAND_ISLANDS = new ConstellationIcon.Builder("Aland Islands", new FileIconData("modules/ext/icons/flags/aland.png", CODE_NAME_BASE))
+    public static final ConstellationIcon ALAND_ISLANDS = new ConstellationIcon.Builder("Aland Islands", new FileIconData("modules/ext/icons/flags/åland_islands.png", CODE_NAME_BASE))
             .addAlias(Country.ALAND_ISLANDS.getDigraph())
             .addAlias("Aland")
             .addCategory(FLAG_CATEGORY)
@@ -845,7 +845,7 @@ public class FlagIconProvider implements ConstellationIconProvider {
             .addAlias(Country.BERMUDA.getDigraph())
             .addCategory(FLAG_CATEGORY)
             .build();
-    public static final ConstellationIcon VIRGIN_ISLANDS_BRITISH = new ConstellationIcon.Builder("British Virgin Islands", new FileIconData("modules/ext/icons/flags/british_virgin_islands.png", CODE_NAME_BASE))
+    public static final ConstellationIcon VIRGIN_ISLANDS_BRITISH = new ConstellationIcon.Builder("British Virgin Islands", new FileIconData("modules/ext/icons/flags/virgin_islands_(british).png", CODE_NAME_BASE))
             .addAlias(Country.VIRGIN_ISLANDS_BRITISH.getDigraph())
             .addCategory(FLAG_CATEGORY)
             .build();
@@ -857,7 +857,7 @@ public class FlagIconProvider implements ConstellationIconProvider {
             .addAlias(Country.COOK_ISLANDS.getDigraph())
             .addCategory(FLAG_CATEGORY)
             .build();
-    public static final ConstellationIcon CURACAO = new ConstellationIcon.Builder("Curacao", new FileIconData("modules/ext/icons/flags/curacao.png", CODE_NAME_BASE))
+    public static final ConstellationIcon CURACAO = new ConstellationIcon.Builder("Curacao", new FileIconData("modules/ext/icons/flags/curaçao.png", CODE_NAME_BASE))
             .addAlias(Country.CURACAO.getDigraph())
             .addCategory(FLAG_CATEGORY)
             .build();
@@ -917,12 +917,11 @@ public class FlagIconProvider implements ConstellationIconProvider {
             .addAlias(Country.TOKELAU.getDigraph())
             .addCategory(FLAG_CATEGORY)
             .build();
-
-    @Override
-    public List<ConstellationIcon> getIcons() {
-        final List<ConstellationIcon> flagIcons = new ArrayList<>();
-
-        // Iterate over country enums
+    
+    private final List<ConstellationIcon> flagIcons = new ArrayList<>();
+     
+    public FlagIconProvider(){
+        // Iterate over country enums and add flag to list
         for (Country c : Country.values()) {
             try {
                 final ConstellationIcon country_icon = new ConstellationIcon.Builder(c.getDisplayName(), new FileIconData("modules/ext/icons/flags/" + c.getDisplayName().replaceAll(" ", "_").toLowerCase() + ".png", CODE_NAME_BASE))
@@ -936,7 +935,10 @@ public class FlagIconProvider implements ConstellationIconProvider {
                 LOGGER.log(Level.WARNING, "Unable to find file: {0}", "modules/ext/icons/flags/" + c.getDisplayName().replaceAll(" ", "_").toLowerCase() + ".png");
             }
         }
+    }
 
+    @Override
+    public List<ConstellationIcon> getIcons() {
         return flagIcons;
 
 //        flagIcons.add(AFGHANISTAN);
