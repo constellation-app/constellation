@@ -20,10 +20,17 @@ import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
+import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilitiesNGTest;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import org.testfx.api.FxToolkit;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /**
@@ -32,6 +39,24 @@ import org.testng.annotations.Test;
  */
 public class QueryNameValidatorNGTest {
 
+    private static final Logger LOGGER = Logger.getLogger(QueryNameValidatorNGTest.class.getName());
+    
+    @BeforeClass
+    public void setUpClass() throws Exception {
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
+    }
+
+    @AfterClass
+    public void tearDownClass() throws Exception {
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+        }
+    }
+    
     /**
      * Test of validatePreQuery method, of class QueryNameValidator.
      */

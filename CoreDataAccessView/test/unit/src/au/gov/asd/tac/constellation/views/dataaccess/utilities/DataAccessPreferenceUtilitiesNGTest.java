@@ -19,9 +19,15 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import org.openide.util.NbPreferences;
+import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -31,9 +37,26 @@ import org.testng.annotations.Test;
  */
 public class DataAccessPreferenceUtilitiesNGTest {
     private static final String TITLE = "a test title";
+    private static final Logger LOGGER = Logger.getLogger(DataAccessPreferenceUtilitiesNGTest.class.getName());
     
     private Preferences preferences;
+  
+    @BeforeClass
+    public void setUpClass() throws Exception {
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
+    }
 
+    @AfterClass
+    public void tearDownClass() throws Exception {
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+        }
+    }
+    
     @BeforeMethod
     public void setUpMethod() throws Exception {
         preferences = NbPreferences.forModule(DataAccessPreferenceUtilities.class);

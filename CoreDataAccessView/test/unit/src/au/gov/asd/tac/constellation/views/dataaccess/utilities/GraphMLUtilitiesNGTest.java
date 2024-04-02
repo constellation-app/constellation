@@ -19,8 +19,12 @@ import au.gov.asd.tac.constellation.graph.processing.GraphRecordStore;
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -36,16 +40,23 @@ import org.w3c.dom.NodeList;
  * @author antares
  */
 public class GraphMLUtilitiesNGTest {
-    
-    public GraphMLUtilitiesNGTest() {
-    }
 
+    private static final Logger LOGGER = Logger.getLogger(GraphMLUtilitiesNGTest.class.getName());
+    
     @BeforeClass
-    public static void setUpClass() throws Exception {
+    public void setUpClass() throws Exception {
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
-    public static void tearDownClass() throws Exception {
+    public void tearDownClass() throws Exception {
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+        }
     }
 
     @BeforeMethod
