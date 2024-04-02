@@ -237,7 +237,7 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
         if (r == DialogDescriptor.CANCEL_OPTION){
             result = CANCEL;
         } else if (r == DialogDescriptor.OK_OPTION){
-            this.parameters.storeRecentValues();
+            parameters.storeRecentValues();
             result = OK;
         } else {
             result = null;
@@ -259,7 +259,7 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
         if (r == DialogDescriptor.CANCEL_OPTION){
             result = CANCEL;
         } else if (r == DialogDescriptor.OK_OPTION){
-            this.parameters.storeRecentValues();
+            parameters.storeRecentValues();
             result = OK;
         } else {
             result = null;
