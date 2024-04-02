@@ -218,12 +218,18 @@ public abstract class ImportController<D> {
      */
     public boolean hasAttribute(final GraphElementType elementType, final String label) {
         switch (elementType) {
-            case VERTEX:
+            
+            case VERTEX -> {
                 return autoAddedVertexAttributes.containsKey(label);
-            case TRANSACTION:
+            }
+            
+            case TRANSACTION -> {
                 return autoAddedTransactionAttributes.containsKey(label);
-            default:
+            }
+            
+            default -> {
                 throw new IllegalArgumentException("Element type must be VERTEX or TRANSACTION");
+            }
         }
     }
 

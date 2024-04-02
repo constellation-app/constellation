@@ -465,7 +465,7 @@ public class PointSelectionPluginNGTest {
             assertEquals(storeGraph.getBooleanValue(tAttrId, txId3), selectAll);
         } else {
             switch (type) {
-                case VERTEX:
+                case VERTEX -> {
                     storeGraph.setBooleanValue(vAttrId, vxId1, selectAll);
                     storeGraph.setBooleanValue(vAttrId, vxId2, selectAll);
                     storeGraph.setBooleanValue(vAttrId, vxId3, selectAll);
@@ -481,8 +481,8 @@ public class PointSelectionPluginNGTest {
                     assertEquals(storeGraph.getBooleanValue(tAttrId, txId1), !selectAll);
                     assertEquals(storeGraph.getBooleanValue(tAttrId, txId2), !selectAll);
                     assertEquals(storeGraph.getBooleanValue(tAttrId, txId3), !selectAll);
-                    break;
-                case TRANSACTION:
+                }
+                case TRANSACTION -> {
                     storeGraph.setBooleanValue(vAttrId, vxId1, !selectAll);
                     storeGraph.setBooleanValue(vAttrId, vxId2, !selectAll);
                     storeGraph.setBooleanValue(vAttrId, vxId3, !selectAll);
@@ -498,9 +498,9 @@ public class PointSelectionPluginNGTest {
                     assertEquals(storeGraph.getBooleanValue(tAttrId, txId1), selectAll);
                     assertEquals(storeGraph.getBooleanValue(tAttrId, txId2), selectAll);
                     assertEquals(storeGraph.getBooleanValue(tAttrId, txId3), selectAll);
-                    break;
-                default:
-                    break;
+                }
+                default -> {
+                }
             }
         }
     }

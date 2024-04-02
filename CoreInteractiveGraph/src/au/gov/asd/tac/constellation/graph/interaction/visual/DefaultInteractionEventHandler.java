@@ -419,7 +419,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                     final Point to;
                     boolean cameraChange = false;
                     switch (eventState.getCurrentAction()) {
-                        case ROTATING:
+                        case ROTATING -> {
                             from = eventState.getFirstValidPoint(EventState.DRAG_POINT, EventState.REFERENCE_POINT);
                             to = point;
                             final boolean zAxisRotation = !VisualGraphUtilities.isDisplayModeIn3D(wg) || (event.isControlDown() && event.isShiftDown());
@@ -429,29 +429,29 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                                 CameraUtilities.rotate(camera, event.isShiftDown() ? 0 : (from.y - to.y) / 2.0F, event.isControlDown() ? 0 : (from.x - to.x) / 2.0F);
                             }
                             cameraChange = true;
-                            break;
-                        case PANNING:
+                        }
+                        case PANNING -> {
                             from = eventState.getFirstValidPoint(EventState.DRAG_POINT, EventState.REFERENCE_POINT);
                             to = point;
                             final Vector3f panReferencePoint = eventState.hasClosestNode() ? eventState.getClosestNode() : CameraUtilities.getFocusVector(camera);
                             final Vector3f translation = visualInteraction.convertTranslationToPan(from, to, panReferencePoint);
                             CameraUtilities.pan(camera, translation.getX(), translation.getY());
                             cameraChange = true;
-                            break;
-                        case DRAG_NODES:
+                        }
+                        case DRAG_NODES -> {
                             from = eventState.getFirstValidPoint(EventState.DRAG_POINT, EventState.REFERENCE_POINT);
                             to = point;
                             performDrag(wg, camera, from, to);
-                            break;
-                        case SELECTING:
+                        }
+                        case SELECTING  -> {
                             updateSelectionBoxModel(new SelectionBoxModel(eventState.getPoint(EventState.PRESSED_POINT), point));
-                            break;
-                        case FREEFORM_SELECTING:
+                        }
+                        case FREEFORM_SELECTING -> {
                             freeformModel.addPoint(point);
                             updateSelectionFreeformModel(freeformModel);
-                            break;
-                        default:
-                            break;
+                        }
+                        default -> {
+                        }
                     }
                     updateCameraAndNewLine(wg, point, cameraChange ? camera : VisualGraphUtilities.getCamera(wg), cameraChange);
 
@@ -616,11 +616,11 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
 
     private void setCurrentCreationMode(final Camera camera, final Point point, final GraphWriteMethods wg, final MouseEvent event) {
         switch (eventState.getCurrentCreationMode()) {
-            case CREATING_VERTEX:
+            case CREATING_VERTEX -> {
                 createVertex(camera, point);
                 eventState.setCurrentCreationMode(CreationMode.NONE);
-                break;
-            case FINISHING_TRANSACTION:
+            }
+            case FINISHING_TRANSACTION -> {
                 createTransaction(eventState.getAddTransactionSourceVertex(), eventState.getAddTransactionDestinationVertex(), VisualGraphUtilities.isDrawingDirectedTransactions(wg));
                 if (event.isShiftDown()) {
                     eventState.setCurrentCreationMode(CreationMode.CREATING_TRANSACTION);
@@ -631,9 +631,9 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                     eventState.setCurrentCreationMode(CreationMode.NONE);
                     clearNewLineModel(camera);
                 }
-                break;
-            default:
-                break;
+            }
+            default -> {
+            }
         }
     }
 
@@ -669,17 +669,17 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                 if (eventState.isMousePressed() && !wheelPoint.equals(eventState.getPoint(EventState.REFERENCE_POINT))) {
                     final Point from;
                     switch (eventState.getCurrentAction()) {
-                        case PANNING:
+                        case PANNING -> {
                             from = eventState.getFirstValidPoint(EventState.DRAG_POINT, EventState.REFERENCE_POINT);
                             final Vector3f translation = visualInteraction.convertTranslationToPan(from, wheelPoint, zoomReferencePoint);
                             CameraUtilities.pan(camera, translation.getX(), translation.getY());
-                            break;
-                        case DRAG_NODES:
+                        }
+                        case DRAG_NODES -> {
                             from = eventState.getPoint(EventState.DRAG_POINT);
                             performDrag(wg, camera, from, wheelPoint);
-                            break;
-                        default:
-                            break;
+                        }
+                        default -> {
+                        }
                     }
                 }
 
@@ -824,14 +824,10 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
         };
 
         switch (mode) {
-            case HANDLE_SYNCHRONOUSLY:
-                handleResult.run();
-                break;
-            case HANDLE_ASYNCHRONOUSLY:
-                new Thread(handleResult).start();
-                break;
-            default:
-                break;
+            case HANDLE_SYNCHRONOUSLY -> handleResult.run();
+            case HANDLE_ASYNCHRONOUSLY -> new Thread(handleResult).start();
+            default -> {
+            }
         }
     }
 
@@ -952,16 +948,16 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
      */
     private void beginCreateTransaction() {
         switch (eventState.getCurrentCreationMode()) {
-            case NONE:
+            case NONE -> {
                 eventState.setAddTransactionSourceVertex(eventState.getCurrentHitId());
                 eventState.setCurrentCreationMode(CreationMode.CREATING_TRANSACTION);
-                break;
-            case CREATING_TRANSACTION:
+            }
+            case CREATING_TRANSACTION -> {
                 eventState.setAddTransactionDestinationVertex(eventState.getCurrentHitId());
                 eventState.setCurrentCreationMode(CreationMode.FINISHING_TRANSACTION);
-                break;
-            default:
-                break;
+            }
+            default -> {
+            }
         }
     }
 
@@ -1069,14 +1065,10 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
         final IntArray txIds = new IntArray();
 
         switch (elementType) {
-            case VERTEX:
-                vxIds.add(elementId);
-                break;
-            case TRANSACTION:
-                txIds.add(elementId);
-                break;
-            default:
-                break;
+            case VERTEX -> vxIds.add(elementId);
+            case TRANSACTION -> txIds.add(elementId);
+            default -> {
+            }
         }
 
         if (!(vxIds.isEmpty() && txIds.isEmpty() && !clearSelection)) {

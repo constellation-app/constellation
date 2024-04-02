@@ -407,17 +407,19 @@ public class JSONImportFileParser extends ImportFileParser {
             // Maps newline delimited JSON to valid JSON in the format
             // {"results": [<ndjson>]}
             switch(counter){
-                case(0):
+                case 0 -> {
                     throw new IOException(WARN_NO_VALID_LIST);
-                case(1):
+                }
+                case 1 -> {
                     root = node;
-                    break;
-                default:
+                }
+                default -> {
                     // Changes the ndJSON to valid JSON
                     final ObjectMapper newJSON = new ObjectMapper();
                     final ObjectNode rootNode = newJSON.createObjectNode();
                     rootNode.set("results", childNode);
                     root = rootNode;
+                }
             }
             lookForChildArrays(root, "", 0);
 

@@ -78,27 +78,28 @@ public enum AttributeType {
         public void addBinCreators(GraphReadMethods graph, GraphElementType elementType, Map<String, BinCreator> binCreators) {
             binCreators.put("", DefaultBinCreators.NULL_BIN_CREATOR);
             switch (elementType) {
-                case VERTEX:
+                case VERTEX -> {
                     binCreators.put("Neighbour Count", DefaultBinCreators.NEIGHBOUR_COUNT_BIN_CREATOR);
                     binCreators.put(AttributeTypeConstants.TRANSACTION_COUNT, DefaultBinCreators.TRANSACTION_COUNT_BIN_CREATOR);
                     binCreators.put("Outgoing Transaction Count", DefaultBinCreators.OUTGOING_TRANSACTION_COUNT_BIN_CREATOR);
                     binCreators.put("Incoming Transaction Count", DefaultBinCreators.INCOMING_TRANSACTION_COUNT_BIN_CREATOR);
                     binCreators.put("Undirected Transaction Count", DefaultBinCreators.UNDIRECTED_TRANSACTION_COUNT_BIN_CREATOR);
-                    break;
+                }
 
-                case LINK:
+                case LINK -> {
                     binCreators.put(AttributeTypeConstants.TRANSACTION_COUNT, DefaultBinCreators.LINK_TRANSACTION_COUNT_BIN_CREATOR);
-                    break;
+                }
 
-                case EDGE:
+                case EDGE -> {
                     binCreators.put(AttributeTypeConstants.TRANSACTION_COUNT, DefaultBinCreators.EDGE_TRANSACTION_COUNT_BIN_CREATOR);
-                    break;
+                }
 
-                case TRANSACTION:
+                case TRANSACTION -> {
                     binCreators.put("Transaction Direction", DefaultBinCreators.TRANSACTION_DIRECTION_BIN_CREATOR);
-                    break;
-                default:
-                    break;
+                }
+                
+                default -> {
+                }
             }
         }
 

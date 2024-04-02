@@ -243,7 +243,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
         final Map<String, Map<String, Object>> attributes = new HashMap<>();
 
         switch (elementType) {
-            case VERTEX:
+            case VERTEX -> {
                 final int vertexCount = graph.getVertexCount();
                 for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
                     final int vertexId = graph.getVertex(vertexPosition);
@@ -284,8 +284,8 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                         attributes.put(vertexIdentifier, attributeMap);
                     }
                 }
-                break;
-            case TRANSACTION:
+            }
+            case TRANSACTION -> {
                 final int transactionCount = graph.getTransactionCount();
                 for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
                     final int transactionId = graph.getTransaction(transactionPosition);
@@ -457,9 +457,10 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                         attributes.put(destinationVertexIdentifier, attributeMap);
                     }
                 }
-                break;
-            default:
+            }
+            default -> {
                 throw new PluginException(PluginNotificationLevel.ERROR, "Invalid element type");
+            }       
         }
 
         try {            

@@ -237,23 +237,22 @@ public class ExcelImportFileParser extends ImportFileParser {
 
         try {
             switch (type) {
-                case STRING:
+                case STRING -> {
                     result = cell.getStringCellValue();
-                    break;
-                case NUMERIC:
-                case FORMULA:
+                }
+                case NUMERIC, FORMULA -> {
                     final Double temp = cell.getNumericCellValue();
                     result = temp % 1 == 0 ? Long.toString(temp.longValue()) : Double.toString(temp);
-                    break;
-                case BLANK:
+                }
+                case BLANK -> {
                     result = "";
-                    break;
-                case BOOLEAN:
+                }
+                case BOOLEAN -> {
                     result = Boolean.toString(cell.getBooleanCellValue());
-                    break;
-                default:
+                }
+                default -> {
                     result = "";
-                    break;
+                }
             }
         } catch (IllegalStateException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage() + " with value " + cell.getStringCellValue(), ex);
