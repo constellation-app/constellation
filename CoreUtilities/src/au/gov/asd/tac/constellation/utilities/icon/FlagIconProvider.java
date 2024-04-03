@@ -444,7 +444,6 @@ public class FlagIconProvider implements ConstellationIconProvider {
             .addAlias(Country.LITHUANIA.getDigraph())
             .addCategory(FLAG_CATEGORY)
             .build();
-    
     public static final ConstellationIcon LUXEMBOURG = new ConstellationIcon.Builder("Luxembourg", new FileIconData("modules/ext/icons/flags/luxembourg.png", CODE_NAME_BASE))
             .addAlias(Country.LUXEMBOURG.getDigraph())
             .addCategory(FLAG_CATEGORY)
@@ -924,13 +923,13 @@ public class FlagIconProvider implements ConstellationIconProvider {
         // Iterate over country enums and add flag to list
         for (Country c : Country.values()) {
             try {
-                final ConstellationIcon country_icon = new ConstellationIcon.Builder(c.getDisplayName(), new FileIconData("modules/ext/icons/flags/" + c.getDisplayName().replaceAll(" ", "_").replaceAll(",", "").toLowerCase() + ".png", CODE_NAME_BASE))
+                final ConstellationIcon countryIcon = new ConstellationIcon.Builder(c.getDisplayName(), new FileIconData("modules/ext/icons/flags/" + c.getDisplayName().replaceAll(" ", "_").replaceAll(",", "").toLowerCase() + ".png", CODE_NAME_BASE))
                         .addAlias(c.getDigraph())
                         .addAlias(c.getTrigraph())
                         .addAliases(Arrays.asList(c.getAlternateNames()))
                         .addCategory(FLAG_CATEGORY)
                         .build();
-                flagIcons.add(country_icon);
+                flagIcons.add(countryIcon);
             } catch (Exception e) {
                 LOGGER.log(Level.WARNING, "Unable to find file: {0}", "modules/ext/icons/flags/" + c.getDisplayName().replaceAll(" ", "_").toLowerCase() + ".png");
             }
