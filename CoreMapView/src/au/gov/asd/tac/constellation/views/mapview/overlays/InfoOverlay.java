@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -288,8 +288,7 @@ public class InfoOverlay extends MapOverlay implements MapEventListener {
             scopedListenersList.forEach(scopedListeners -> {
                 if (scopedListeners.isInScope(mapEvent)) {
                     scopedListeners.listeners.forEach(listener -> {
-                        if (listener instanceof UnfoldingMap) {
-                            final UnfoldingMap listeningMap = (UnfoldingMap) listener;
+                        if (listener instanceof UnfoldingMap listeningMap) {
                             if (map.getId().equals(listeningMap.getId())) {
                                 if (mapEvent.getSubType().equals(PanMapEvent.PAN_BY)) {
                                     panByListened = 1;

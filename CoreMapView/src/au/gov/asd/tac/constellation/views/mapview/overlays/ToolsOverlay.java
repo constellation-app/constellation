@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -307,13 +307,11 @@ public class ToolsOverlay extends MapOverlay {
             renderer.fill(BACKGROUND_COLOR);
             renderer.rect(x, yOffset - 1, width, drawDescriptionHeight);
 
-            final String drawDescription = " > Click on the map to draw a point marker.\n"
-                    + " > Click on the map while holding shift to begin drawing a circle"
-                    + "  marker, click again with or without shift to complete it.\n"
-                    + " > Click on the map while holding control to begin drawing a polygon"
-                    + "  marker, continue clicking while holding control to draw edges,"
-                    + "  then release control and click once more to complete it.\n"
-                    + " > Click on a drawn marker to remove it.";
+            final String drawDescription = """
+                                            > Click on the map to draw a point marker.
+                                            > Click on the map while holding shift to begin drawing a circle  marker, click again with or without shift to complete it.
+                                            > Click on the map while holding control to begin drawing a polygon  marker, continue clicking while holding control to draw edges,  then release control and click once more to complete it.
+                                            > Click on a drawn marker to remove it.""";
             drawInfo(drawDescription, yOffset - (PADDING * 2), width - (MARGIN * 2) - (PADDING * 2), true);
         } else {
             drawValue(DISABLED, drawToolX, yOffset, drawToolWidth, false, false);
