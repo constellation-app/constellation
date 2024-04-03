@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,16 +70,16 @@ public class MdsArranger implements Arranger {
         final BitSet verticesToArrange = ArrangementUtilities.vertexBits(wg);
 
         // Parameter setup.
-        int maxTrialsPerStage = params.maxTrialsPerStage;
-        int minTrialsPerStage = params.minTrialsPerStage;
+        final int maxTrialsPerStage = params.maxTrialsPerStage;
+        final int minTrialsPerStage = params.minTrialsPerStage;
         int iterationsPerStageTrial = params.iterationsPerStageTrial;
-        boolean usingExtents = params.linkWeight == LinkWeight.USE_EXTENTS;
+        final boolean usingExtents = params.linkWeight == LinkWeight.USE_EXTENTS;
 
         boolean showIterations = false;
-        int startSetSizeMax = 8;
-        int smallGraphSize = 20;
-        int iterationsPerStageSmallGraph = 25;
-        int numTrialsForSmallGraph = 4;
+        final int startSetSizeMax = 8;
+        final int smallGraphSize = 20;
+        final int iterationsPerStageSmallGraph = 25;
+        final int numTrialsForSmallGraph = 4;
 
         final boolean setMinByRadii = params.tryToAvoidOverlap;
         final float radiusInflation = RADIUS_INFLATION_AT_100_PERCENT * (params.overlapAvoidance / 100.0F);
@@ -417,11 +417,8 @@ public class MdsArranger implements Arranger {
      * The list is made by taking every kth element, then every k/2 elements
      * (skipping those already taken), then k/4, etc.
      */
-    private static int fillOrderToIntroduceVerticesVector(
-            final int[] vxsToDo,
-            final int[] vxsToArrangeLater,
-            final int numVxsLater,
-            final int startSetSizeMax) {
+    private static int fillOrderToIntroduceVerticesVector(final int[] vxsToDo, final int[] vxsToArrangeLater,
+            final int numVxsLater, final int startSetSizeMax) {
         int skipFactor = 1;
         int numThisSubset = numVxsLater;
 
@@ -489,13 +486,8 @@ public class MdsArranger implements Arranger {
      * nextClosestVertices, and gammas. Note that numVxsToInfluence is changing
      * each time it is called.
      */
-    private static void initialPositioningInfoThisVertex(
-            final GraphWriteMethods graph,
-            final BitSet verticesToArrange,
-            final int vxId,
-            final float[][] distanceMatrix,
-            final int[] closestVertices,
-            final int[] nextClosestVertices,
+    private static void initialPositioningInfoThisVertex(final GraphWriteMethods graph, final BitSet verticesToArrange,
+            final int vxId, final float[][] distanceMatrix, final int[] closestVertices, final int[] nextClosestVertices,
             final float[] gammas) {
         // Find the vertex closest to vxId.
         int closestVxId = Graph.NOT_FOUND;
@@ -538,13 +530,8 @@ public class MdsArranger implements Arranger {
         }
     }
 
-    private static void fillGainVector(
-            final float[][] distanceMatrix,
-            final float[] gains,
-            final int[] vxsToArrange,
-            final int numVxsToArrange,
-            final int[] vxsToInfluence,
-            final int numVxsToInfluence) throws InterruptedException {
+    private static void fillGainVector(final float[][] distanceMatrix, final float[] gains, final int[] vxsToArrange,
+            final int numVxsToArrange, final int[] vxsToInfluence, final int numVxsToInfluence) throws InterruptedException {
         for (int i = 0; i < numVxsToArrange; i++) {
             if (Thread.interrupted()) {
                 throw new InterruptedException();
@@ -577,16 +564,9 @@ public class MdsArranger implements Arranger {
      * corresponding entries of closestVertices, nextClosestVertices, and
      * gammas.
      */
-    private static void positionVertices(
-            final int firstOne,
-            final int lastOne,
-            final int[] verticesToPosition,
-            final float[] currentX,
-            final float[] currentY,
-            final int[] closestVertices,
-            final int[] nextClosestVertices,
-            final float[] gammas,
-            final float scaleFactor,
+    private static void positionVertices(final int firstOne, final int lastOne, final int[] verticesToPosition,
+            final float[] currentX, final float[] currentY, final int[] closestVertices,
+            final int[] nextClosestVertices, final float[] gammas, final float scaleFactor,
             final float perturbationSize) throws InterruptedException {
         for (int i = firstOne; i <= lastOne; i++) {
             if (Thread.interrupted()) {
@@ -625,21 +605,12 @@ public class MdsArranger implements Arranger {
      * <p>
      * Minimization of semiproportional stress is done.
      */
-    private static void directMin(
-            final float[] currentX,
-            final float[] currentY,
-            final float[][] distanceMatrix,
-            final float[] gains,
-            final float[] radii,
-            final int[] vxsToArrange,
-            final int numVxsToArrange,
-            final int[] vxsToInfluence,
-            final int numVxsToInfluence,
-            final int numIterations,
-            final boolean setMinByRadii,
-            final float radiusInflation) throws InterruptedException {
-        float[] newX = new float[currentX.length];
-        float[] newY = new float[currentY.length];
+    private static void directMin(final float[] currentX, final float[] currentY, final float[][] distanceMatrix,
+            final float[] gains, final float[] radii, final int[] vxsToArrange, final int numVxsToArrange,
+            final int[] vxsToInfluence, final int numVxsToInfluence, final int numIterations, 
+            final boolean setMinByRadii, final float radiusInflation) throws InterruptedException {
+        final float[] newX = new float[currentX.length];
+        final float[] newY = new float[currentY.length];
 
         for (int iteration = 0; iteration < numIterations; iteration++) {
             // Begin loop for vertex to move.
@@ -711,13 +682,8 @@ public class MdsArranger implements Arranger {
      * Measures proportional stress, based on current and target positions, only
      * using specified vertices.
      */
-    private static float measureStress(
-            final float[] currentX,
-            final float[] currentY,
-            final float[][] distanceMatrix,
-            final int[] vxsToArrange,
-            final int numVxsToArrange,
-            final int[] vxsToInfluence,
+    private static float measureStress(final float[] currentX, final float[] currentY, final float[][] distanceMatrix,
+            final int[] vxsToArrange, final int numVxsToArrange, final int[] vxsToInfluence,
             final int numVxsToInfluence) throws InterruptedException {
         float stress = 0;
         int numContributions = 0;

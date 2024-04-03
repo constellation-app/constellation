@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,18 +64,10 @@ public class GatherNodesContextMenu implements ContextMenuProvider {
     @Override
     public void selectItem(final String item, final Graph graph, final GraphElementType elementType, final int element, final Vector3f unprojected) {
         switch (elementType) {
-            case GRAPH:
+            case GRAPH ->
                 PluginExecution.withPlugin(new GatherNodesForGraphContextMenuPlugin(unprojected)).executeLater(graph);
-                break;
-            case VERTEX:
+            case VERTEX ->
                 PluginExecution.withPlugin(new GatherNodesForVertexContextMenuPlugin(element)).executeLater(graph);
-                break;
-            case META:
-            case LINK:
-            case EDGE:
-            case TRANSACTION:
-            default:
-                break;
         }
     }
 
