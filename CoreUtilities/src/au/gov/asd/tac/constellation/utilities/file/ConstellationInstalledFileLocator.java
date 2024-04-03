@@ -20,6 +20,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.security.ProtectionDomain;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.modules.InstalledFileLocator;
 
 /**
@@ -32,6 +34,8 @@ import org.openide.modules.InstalledFileLocator;
  * @author arcturus
  */
 public class ConstellationInstalledFileLocator {
+    
+    private static final Logger LOGGER = Logger.getLogger(ConstellationInstalledFileLocator.class.getName());
 
     /**
      * A wrapper for {@code InstalledFileLocator.locate()}
@@ -46,8 +50,10 @@ public class ConstellationInstalledFileLocator {
      * @return the requested {@code File}, if it can be found, else {@code null}
      */
     public static File locate(final String relativePath, final String codeNameBase, final ProtectionDomain protectedDomain) {
+        //LOGGER.log(Level.WARNING, "TRYING {0} {1}", new Object[]{relativePath, codeNameBase});
         File locatedFile = InstalledFileLocator.getDefault().locate(relativePath, codeNameBase, false);
         if (locatedFile == null) {
+            LOGGER.log(Level.WARNING, "THIS ONE FAILS {0} {1}", new Object[]{relativePath, codeNameBase});
             
             //The below code causes the aplication to hang due to fialing quietly when a file is not at the expected location.
             //Have deactivated the code when looking for .svg file as svg equivlents to raster images is not ensured.
