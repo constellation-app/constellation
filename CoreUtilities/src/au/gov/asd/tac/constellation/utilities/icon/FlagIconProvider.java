@@ -824,7 +824,7 @@ public class FlagIconProvider implements ConstellationIconProvider {
             .addAlias(Country.ZIMBABWE.getDigraph())
             .addCategory(FLAG_CATEGORY)
             .build();
-    public static final ConstellationIcon ALAND_ISLANDS = new ConstellationIcon.Builder("Aland Islands", new FileIconData("modules/ext/icons/flags/åland_islands.png", CODE_NAME_BASE))
+    public static final ConstellationIcon ALAND_ISLANDS = new ConstellationIcon.Builder("Aland Islands", new FileIconData("modules/ext/icons/flags/aland_islands.png", CODE_NAME_BASE))
             .addAlias(Country.ALAND_ISLANDS.getDigraph())
             .addAlias("Aland")
             .addCategory(FLAG_CATEGORY)

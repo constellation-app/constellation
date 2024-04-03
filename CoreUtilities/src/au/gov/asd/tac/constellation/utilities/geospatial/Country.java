@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 public enum Country {
 
     AFGHANISTAN("AF", "AFG", "Afghan", "Afghanistan"),
-    ALAND_ISLANDS("AX", "ALA", null, "Åland Islands"),
+    ALAND_ISLANDS("AX", "ALA", null, "Aland Islands"),
     ALBANIA("AL", "ALB", "Albanian", "Albania"),
     ALGERIA("DZ", "DZA", "Algerian", "Algeria"),
     AMERICAN_SAMOA("AS", "ASM", "American Samoan", "American Samoa"),
