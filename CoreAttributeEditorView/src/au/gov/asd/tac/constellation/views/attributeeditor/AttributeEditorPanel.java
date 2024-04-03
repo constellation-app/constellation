@@ -202,7 +202,7 @@ public class AttributeEditorPanel extends BorderPane {
 
         titledPaneHeadingsContainer = new VBox();
         for (final String heading : HEADING_TITLES) {
-            VBox temp = new VBox();
+            final VBox temp = new VBox();
             temp.setPadding(Insets.EMPTY);
             valueTitledPaneContainers.add(temp);
         }

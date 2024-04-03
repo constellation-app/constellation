@@ -40,7 +40,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ListChangeListener.Change;
@@ -153,7 +152,7 @@ public final class ConversationBox extends StackPane {
         conversation.setSenderAttributeListener((possibleSenderAttributes, senderAttributes) -> {
             isAdjustingSenderLabels = true;
             senderAttributesMultiChoiceInput.getCheckModel().clearChecks();
-            possibleSenderAttributes = possibleSenderAttributes.stream().filter(Objects::nonNull).collect(Collectors.toList());
+            possibleSenderAttributes = possibleSenderAttributes.stream().filter(Objects::nonNull).toList();
             senderAttributesChoices.setAll(possibleSenderAttributes);
             for (final String senderAttribute : senderAttributes) {
                 senderAttributesMultiChoiceInput.getCheckModel().check(senderAttribute);
@@ -315,15 +314,15 @@ public final class ConversationBox extends StackPane {
             visibleContributions.forEach(contribution -> {
                 final Region region = contribution.getContent(tipsPane);
 
-                if (region instanceof EnhancedTextArea) {
-                    foundCount += ((EnhancedTextArea) region).highlightText(searchTextField.getText());
+                if (region instanceof EnhancedTextArea enhancedTextArea) {
+                    foundCount += enhancedTextArea.highlightText(searchTextField.getText());
                     matches.put(foundCount, message);
                 }
 
-                if (region instanceof GridPane) {
-                    ((GridPane) region).getChildren().forEach(child -> {
-                        if (child instanceof EnhancedTextArea) {
-                            foundCount += ((EnhancedTextArea) child).highlightText(searchTextField.getText());
+                if (region instanceof GridPane gridPane) {
+                    gridPane.getChildren().forEach(child -> {
+                        if (child instanceof EnhancedTextArea textArea) {
+                            foundCount += textArea.highlightText(searchTextField.getText());
                             matches.put(foundCount, message);
                         }
                     });
