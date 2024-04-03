@@ -753,7 +753,7 @@ public class FlagIconProvider implements ConstellationIconProvider {
             .addAlias(Country.TUNISIA.getDigraph())
             .addCategory(FLAG_CATEGORY)
             .build();
-    public static final ConstellationIcon TURKEY = new ConstellationIcon.Builder("Turkey", new FileIconData("modules/ext/icons/flags/republic_of_türkiye.png", CODE_NAME_BASE))
+    public static final ConstellationIcon TURKEY = new ConstellationIcon.Builder("Turkey", new FileIconData("modules/ext/icons/flags/republic_of_turkiye.png", CODE_NAME_BASE))
             .addAlias(Country.TURKEY.getDigraph())
             .addCategory(FLAG_CATEGORY)
             .build();
@@ -857,7 +857,7 @@ public class FlagIconProvider implements ConstellationIconProvider {
             .addAlias(Country.COOK_ISLANDS.getDigraph())
             .addCategory(FLAG_CATEGORY)
             .build();
-    public static final ConstellationIcon CURACAO = new ConstellationIcon.Builder("Curacao", new FileIconData("modules/ext/icons/flags/curaçao.png", CODE_NAME_BASE))
+    public static final ConstellationIcon CURACAO = new ConstellationIcon.Builder("Curacao", new FileIconData("modules/ext/icons/flags/curacao.png", CODE_NAME_BASE))
             .addAlias(Country.CURACAO.getDigraph())
             .addCategory(FLAG_CATEGORY)
             .build();
