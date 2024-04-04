@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.ConcurrentHashMap;
@@ -193,7 +194,7 @@ public class DijkstraServices {
         //Loop over the map and for each vertex get the paths that it is connected to
         final int vxSelectedAttr = VisualConcept.VertexAttribute.SELECTED.get(graph);
 
-        for (final Map.Entry<Integer, List<ArrayList<Integer>>> vertex : paths.entrySet()) {
+        for (final Entry<Integer, List<ArrayList<Integer>>> vertex : paths.entrySet()) {
             //For each path, get the first vertex and establish which link it corresponds to
             for (final ArrayList<Integer> path : vertex.getValue()) {
                 for (int i = 0; i < path.size(); i++) {
@@ -324,17 +325,14 @@ public class DijkstraServices {
         public void run() {
             try {
                 switch (type) {
-                    case "Distance":
+                    case "Distance" -> {
                         Thread.currentThread().setName("Find.FindServices.Thread.Distance." + threadID);
                         queryDistance();
-                        break;
-                    case "Path":
+                    }
+                    case "Path" -> {
                         Thread.currentThread().setName("Find.FindServices.Thread.Path." + threadID);
                         queryPath();
-                        break;
-                    //Not Handled
-                    default:
-                        break;
+                    }
                 }
             } catch (final InterruptedException ex) {
                 LOGGER.log(Level.SEVERE, THREAD_INTERRUPTED, ex);

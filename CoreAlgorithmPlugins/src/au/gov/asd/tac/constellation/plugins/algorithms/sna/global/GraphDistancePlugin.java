@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,7 +57,7 @@ public class GraphDistancePlugin extends SimpleEditPlugin {
         float maxEccentricity = Float.MIN_VALUE;
         float minEccentricity = Float.MAX_VALUE;
         float sum = 0F;
-        for (float eccentricity : ecc) {
+        for (final float eccentricity : ecc) {
             if (minEccentricity > eccentricity) {
                 minEccentricity = eccentricity;
             }
