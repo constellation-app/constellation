@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,21 +62,12 @@ public class AnalyticSchemaV6UpdateProvider extends SchemaUpdateProvider {
                 final SchemaVertexType vertexType = graph.getObjectValue(typeAttributeId, vertexId);
                 if (vertexType != null) {
                     switch (vertexType.getName()) {
-                        case "IPv4 Address":
-                            graph.setObjectValue(typeAttributeId, vertexId, AnalyticConcept.VertexType.IPV4);
-                            break;
-                        case "IPv6 Address":
-                            graph.setObjectValue(typeAttributeId, vertexId, AnalyticConcept.VertexType.IPV6);
-                            break;
-                        case "Email":
-                            graph.setObjectValue(typeAttributeId, vertexId, AnalyticConcept.VertexType.EMAIL_ADDRESS);
-                            break;
-                        case "MGRS":
-                            graph.setObjectValue(typeAttributeId, vertexId, AnalyticConcept.VertexType.MGRS);
-                            break;
-                        default:
-                            //do nothing, type doesn't require updating
-                            break;
+                        case "IPv4 Address" -> graph.setObjectValue(typeAttributeId, vertexId, AnalyticConcept.VertexType.IPV4);
+                        case "IPv6 Address" -> graph.setObjectValue(typeAttributeId, vertexId, AnalyticConcept.VertexType.IPV6);
+                        case "Email" -> graph.setObjectValue(typeAttributeId, vertexId, AnalyticConcept.VertexType.EMAIL_ADDRESS);
+                        case "MGRS" -> graph.setObjectValue(typeAttributeId, vertexId, AnalyticConcept.VertexType.MGRS);
+                        default -> {
+                        }
                     }
                 }
             }
