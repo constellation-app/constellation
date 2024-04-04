@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -162,7 +162,7 @@ public class ScoreToHideTranslator extends AbstractHideTranslator<ScoreResult, E
                     final float elementMeanScore = scoreResult.getNamedScores().values().stream()
                             .reduce((x, y) -> x + y).get() / scoreResult.getNamedScores().size();
                     switch (elementType) {
-                        case VERTEX:
+                        case VERTEX -> {
                             final float vertexVisibility = graph.getFloatValue(vertexVisibilityAttribute, elementId);
                             vertexHideValues.put(elementId, vertexVisibility); 
                             if (elementMeanScore >= normalisedThreshold) {
@@ -170,8 +170,8 @@ public class ScoreToHideTranslator extends AbstractHideTranslator<ScoreResult, E
                             } else {
                                 graph.setFloatValue(vertexVisibilityAttribute, elementId, -1.0F);
                             }
-                            break;
-                        case TRANSACTION:
+                        }
+                        case TRANSACTION -> {
                             final float transactionVisibility = graph.getFloatValue(transactionVisibilityAttribute, elementId);
                             transactionHideValues.put(elementId, transactionVisibility); 
                             if (elementMeanScore >= normalisedThreshold) {
@@ -179,9 +179,8 @@ public class ScoreToHideTranslator extends AbstractHideTranslator<ScoreResult, E
                             } else {
                                 graph.setFloatValue(transactionVisibilityAttribute, elementId, -1.0F);
                             }
-                            break;
-                        default:
-                            throw new InvalidElementTypeException("'Hide Elements' is not supported "
+                        }
+                        default -> throw new InvalidElementTypeException("'Hide Elements' is not supported "
                                     + "for the element type associated with this analytic question.");
                     }
                 }

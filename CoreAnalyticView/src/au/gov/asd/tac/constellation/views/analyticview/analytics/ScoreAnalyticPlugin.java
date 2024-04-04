@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -99,16 +99,16 @@ public abstract class ScoreAnalyticPlugin extends AnalyticPlugin<ScoreResult> {
         final Set<GraphElementType> graphElementTypes = getAnalyticAttributes(parameters).stream().map(attribute -> attribute.getElementType()).collect(Collectors.toSet());
         for (final GraphElementType graphElementType : graphElementTypes) {
             switch (graphElementType) {
-                case VERTEX:
+                case VERTEX -> {
                     graphElementCount = graph.getVertexCount();
                     identifierAttributeId = VisualConcept.VertexAttribute.IDENTIFIER.get(graph);
-                    break;
-                case TRANSACTION:
+                }
+                case TRANSACTION -> {
                     graphElementCount = graph.getTransactionCount();
                     identifierAttributeId = VisualConcept.TransactionAttribute.IDENTIFIER.get(graph);
-                    break;
-                default:
-                    break;
+                }
+                default -> {
+                }
             }
 
             for (int graphElementPosition = 0; graphElementPosition < graphElementCount; graphElementPosition++) {

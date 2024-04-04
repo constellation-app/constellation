@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache
 import au.gov.asd.tac.constellation.views.analyticview.AnalyticConfigurationPane;
 import au.gov.asd.tac.constellation.views.analyticview.AnalyticConfigurationPane.SelectableAnalyticPlugin;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestionDescription;
-import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticUtilities;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;

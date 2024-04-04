@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -320,7 +320,7 @@ public class AnalyticViewController {
             final ReadableGraph readableGraph = graph.getReadableGraph();
             try {
                 switch (elementType) {
-                    case VERTEX:
+                    case VERTEX -> {
                         final int vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(readableGraph);
                         final int vertexCount = readableGraph.getVertexCount();
                         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
@@ -330,8 +330,8 @@ public class AnalyticViewController {
                                 selected.add(vertexId);
                             }
                         }
-                        break;
-                    case TRANSACTION:
+                    }
+                    case TRANSACTION -> {
                         final int transactionSelectedAttribute = VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
                         final int transactionCount = readableGraph.getTransactionCount();
                         for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
@@ -341,9 +341,9 @@ public class AnalyticViewController {
                                 selected.add(transactionId);
                             }
                         }
-                        break;
-                    default:
-                        break;
+                    }
+                    default -> {
+                    }
                 }
             } finally {
                 readableGraph.release();
