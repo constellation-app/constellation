@@ -33,6 +33,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -87,6 +89,8 @@ public class ColumnVisibilityContextMenu {
     private CustomMenuItem showDefaultColumnsMenu;
     private CustomMenuItem showPrimaryColumnsMenu;
     private CustomMenuItem hideAllColumnsMenu;
+    
+     private static final Logger LOGGER = Logger.getLogger(ColumnVisibilityContextMenu.class.getName());
 
     /**
      * Creates a new column visibility context menu.

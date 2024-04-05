@@ -57,6 +57,8 @@ public class TableToolbar {
     private static final ImageView ALL_VISIBLE_ICON = new ImageView(UserInterfaceIconProvider.VISIBLE.buildImage(16));
     private static final ImageView VERTEX_ICON = new ImageView(UserInterfaceIconProvider.NODES.buildImage(16));
     private static final ImageView TRANSACTION_ICON = new ImageView(UserInterfaceIconProvider.TRANSACTIONS.buildImage(16));
+    private static final ImageView EDGE_ICON = new ImageView(UserInterfaceIconProvider.EDGES.buildImage(16));
+    private static final ImageView LINK_ICON = new ImageView(UserInterfaceIconProvider.LINKS.buildImage(16));
     private static final ImageView HELP_ICON = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.WHITE.getJavaColor()));
 
     private static final int WIDTH = 120;
@@ -91,7 +93,7 @@ public class TableToolbar {
     public void init() {
         columnVisibilityButton = createButton(COLUMNS_ICON, COLUMN_VISIBILITY, e -> {
             final ColumnVisibilityContextMenu columnVisibilityMenu
-                    = createColumnVisibilityContextMenu();           
+                    = createColumnVisibilityContextMenu();
             columnVisibilityMenu.getContextMenu()
                     .show(columnVisibilityButton, Side.RIGHT, 0, 0);
 
@@ -121,12 +123,34 @@ public class TableToolbar {
             if (getTableViewTopComponent().getCurrentState() != null) {
                 final TableViewState newState = new TableViewState(getTableViewTopComponent().getCurrentState());
 
-                newState.setElementType(getTableViewTopComponent().getCurrentState().getElementType() == GraphElementType.TRANSACTION
-                        ? GraphElementType.VERTEX : GraphElementType.TRANSACTION);
+                newState.setElementType(
+                        switch (getTableViewTopComponent().getCurrentState().getElementType()) {
+                    case GraphElementType.TRANSACTION ->
+                        GraphElementType.VERTEX;
+                    case GraphElementType.VERTEX ->
+                        GraphElementType.EDGE;
+                    case GraphElementType.EDGE ->
+                        GraphElementType.LINK;
+                    case GraphElementType.LINK ->
+                        GraphElementType.TRANSACTION;
+                    default ->
+                        GraphElementType.TRANSACTION;
+                }
+                );
 
                 elementTypeButton.setGraphic(
-                        newState.getElementType() == GraphElementType.TRANSACTION
-                        ? TRANSACTION_ICON : VERTEX_ICON
+                        switch (newState.getElementType()) {
+                    case GraphElementType.TRANSACTION ->
+                        TRANSACTION_ICON;
+                    case GraphElementType.VERTEX ->
+                        VERTEX_ICON;
+                    case GraphElementType.EDGE ->
+                        EDGE_ICON;
+                    case GraphElementType.LINK ->
+                        LINK_ICON;
+                    default ->
+                        TRANSACTION_ICON;
+                }
                 );
 
                 PluginExecution.withPlugin(
@@ -167,8 +191,22 @@ public class TableToolbar {
                 getSelectedOnlyButton().setSelected(state.isSelectedOnly());
                 getSelectedOnlyButton().setGraphic(state.isSelectedOnly()
                         ? SELECTED_VISIBLE_ICON : ALL_VISIBLE_ICON);
-                getElementTypeButton().setGraphic(state.getElementType() == GraphElementType.TRANSACTION
-                        ? TRANSACTION_ICON : VERTEX_ICON);
+//                getElementTypeButton().setGraphic(state.getElementType() == GraphElementType.TRANSACTION
+//                        ? TRANSACTION_ICON : VERTEX_ICON);
+                getElementTypeButton().setGraphic(
+                        switch (state.getElementType()) {
+                    case GraphElementType.TRANSACTION ->
+                        TRANSACTION_ICON;
+                    case GraphElementType.VERTEX ->
+                        VERTEX_ICON;
+                    case GraphElementType.EDGE ->
+                        EDGE_ICON;
+                    case GraphElementType.LINK ->
+                        LINK_ICON;
+                    default ->
+                        TRANSACTION_ICON;
+                }
+                );
             }
         });
     }
