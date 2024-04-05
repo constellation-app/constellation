@@ -342,8 +342,6 @@ public class AnalyticViewController {
                             }
                         }
                     }
-                    default -> {
-                    }
                 }
             } finally {
                 readableGraph.release();

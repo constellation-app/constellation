@@ -32,7 +32,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class AlgorithmPluginsHelpProvider extends HelpPageProvider {
 
     private static final String CODEBASE_NAME = "constellation";
-    final String SEP = File.separator;
+    private static final String SEP = File.separator;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file name

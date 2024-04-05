@@ -107,8 +107,6 @@ public abstract class ScoreAnalyticPlugin extends AnalyticPlugin<ScoreResult> {
                     graphElementCount = graph.getTransactionCount();
                     identifierAttributeId = VisualConcept.TransactionAttribute.IDENTIFIER.get(graph);
                 }
-                default -> {
-                }
             }
 
             for (int graphElementPosition = 0; graphElementPosition < graphElementCount; graphElementPosition++) {

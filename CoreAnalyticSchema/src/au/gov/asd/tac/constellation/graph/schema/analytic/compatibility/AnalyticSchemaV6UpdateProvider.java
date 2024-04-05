@@ -66,8 +66,6 @@ public class AnalyticSchemaV6UpdateProvider extends SchemaUpdateProvider {
                         case "IPv6 Address" -> graph.setObjectValue(typeAttributeId, vertexId, AnalyticConcept.VertexType.IPV6);
                         case "Email" -> graph.setObjectValue(typeAttributeId, vertexId, AnalyticConcept.VertexType.EMAIL_ADDRESS);
                         case "MGRS" -> graph.setObjectValue(typeAttributeId, vertexId, AnalyticConcept.VertexType.MGRS);
-                        default -> {
-                        }
                     }
                 }
             }
