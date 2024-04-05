@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,14 +86,13 @@ public class PhraseAnalysisModelLoader {
             }
 
             switch (currentMode) {
-                case ADD_SET_OF_SETS:
+                case ADD_SET_OF_SETS -> {
                     line = line.substring(line.indexOf(OPEN_SET) + 1, line.indexOf(CLOSE_SET));
                     currentSet.addAll(map.get(line));
-                    break;
-                case ADD_CHARACTERS:
+                }
+                case ADD_CHARACTERS -> 
                     currentSet.add(singleCharacterLines ? line.substring(0, 1) : line);
-                    break;
-                case LOOK_FOR_MODE_TOKEN:
+                case LOOK_FOR_MODE_TOKEN -> {
                     final String token_type = line.substring(0, 2);
                     if (!token_type.equals(COMMENT_TOKEN)) {
                         currentSet = new HashSet<>();
@@ -101,7 +100,7 @@ public class PhraseAnalysisModelLoader {
                         currentMode = token_type.equals(SET_TOKEN) ? Mode.ADD_CHARACTERS : Mode.ADD_SET_OF_SETS;
                         map.put(currentString, currentSet);
                     }
-                    break;
+                }
             }
         }
     }

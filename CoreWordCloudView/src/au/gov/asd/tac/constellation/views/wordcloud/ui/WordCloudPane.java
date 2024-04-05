@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -105,7 +105,7 @@ public class WordCloudPane extends BorderPane {
     public WordCloudPane(final WordCloudController controller) {
         everything = new SplitPane();
         everything.setOrientation(Orientation.VERTICAL);
-        everything.setDividerPositions(0.5f);
+        everything.setDividerPositions(0.5F);
         this.controller = controller;
         setPadding(WORDCLOUD_PADDING);
         setTop(everything);
@@ -300,7 +300,7 @@ public class WordCloudPane extends BorderPane {
     public void enableTheCloud(final boolean unionButtonSelected, final boolean frequencyButtonSelected, final boolean hasSignificances) {
         theCloud.setVisible(true);
         theCloud.setManaged(true);
-        everything.setDividerPositions(0.5f);
+        everything.setDividerPositions(0.5F);
         if (unionButtonSelected) {
             modeButtons.selectToggle(union);
         } else {
@@ -335,7 +335,7 @@ public class WordCloudPane extends BorderPane {
         topPart.setMinHeight(0);
         theCloud.setVisible(false);
         theCloud.setManaged(false);
-        everything.setDividerPositions(0.0f);
+        everything.setDividerPositions(0.0F);
     }
 
     /**
@@ -378,7 +378,6 @@ public class WordCloudPane extends BorderPane {
             // Create a hyperlink for the word
             final Hyperlink h = new Hyperlink(word);
             h.setWrapText(true);
-            //h.setMaxWidth(CLOUD_WIDTH);
             // Set the word's font based on its prescribed size 
             final Font f = Font.font("Arial", FontWeight.BOLD, getFontSize(wordListWithSizes.get(word), baseFontSize));
             h.setFont(f);

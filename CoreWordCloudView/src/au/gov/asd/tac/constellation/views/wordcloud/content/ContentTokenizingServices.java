@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,13 +82,11 @@ public class ContentTokenizingServices {
     public static void createDocumentClusteringTokenizingService(final TokenHandler handler, final ClusterDocumentsParameters clusterDocumentsParams, final ThreadAllocator allocator) {
         final ContentTokenizingServices cts = new ContentTokenizingServices();
         switch (clusterDocumentsParams.getTokenizingMethod()) {
-            case NWORDS:
+            case NWORDS -> 
                 cts.tokenizer = new NWordTokenizer(handler, clusterDocumentsParams.getDelimiter().getChar(), clusterDocumentsParams.getTokenLength());
-                break;
-            case DELIMITED_NGRAMS:
+            case DELIMITED_NGRAMS -> 
                 cts.tokenizer = new DelimitedNGramTokenizer(handler, clusterDocumentsParams.getTokenLength(), clusterDocumentsParams.getDelimiter().getChar());
-                break;
-            case NGRAMS:
+            case NGRAMS -> 
                 cts.tokenizer = new NGramTokenizer(handler, clusterDocumentsParams.getTokenLength());
         }
         cts.sanitizer = new FilteringSanitizer(clusterDocumentsParams.getDelimiter().getChar(), clusterDocumentsParams.getToFilterSet()).setInnerSanitizer(new CaseSanitizer(clusterDocumentsParams.isCaseSensitive()));
