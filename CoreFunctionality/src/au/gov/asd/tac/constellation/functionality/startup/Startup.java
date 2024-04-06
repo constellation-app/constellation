@@ -19,6 +19,10 @@ import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
 import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
+import au.gov.asd.tac.constellation.utilities.log.ConstellationLogFormatter;
+import au.gov.asd.tac.constellation.utilities.log.LogPreferences;
+import java.util.logging.Handler;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import org.openide.windows.OnShowing;
 import org.openide.windows.WindowManager;
@@ -44,8 +48,19 @@ public class Startup implements Runnable {
      */
     private static final String AWT_HEADLESS_PROPERTY = "java.awt.headless";
 
+    private static final Logger LOGGER = Logger.getLogger(LogPreferences.class.getName());
+
     @Override
     public void run() {
+
+        // Setup the logging format
+        if( LOGGER.getUseParentHandlers() ){
+            final Handler[] parentHandlers = LOGGER.getParent().getHandlers();
+            for (final Handler handler : parentHandlers) {
+                handler.setFormatter(new ConstellationLogFormatter());
+            }
+        }
+
         ConstellationSecurityManager.startSecurityLater(null);
 
         // application environment

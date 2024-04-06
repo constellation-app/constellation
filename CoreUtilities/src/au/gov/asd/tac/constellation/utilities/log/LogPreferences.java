@@ -31,17 +31,7 @@ public class LogPreferences {
     private static final Preferences PREFERENCES = NbPreferences.forModule(LogPreferences.class);
     private static final String CONNECTION_LOG_DATE_PREF = "connectionLogDate";
     private static final long LOGGING_TIMEOUT = 151*60*1000L; // 2.5 hours
-    private static final Logger LOGGER = Logger.getLogger(LogPreferences.class.getName());
     
-    
-    static {
-        if( LOGGER.getUseParentHandlers() ){
-            final Handler[] parentHandlers = LOGGER.getParent().getHandlers();
-            for (final Handler handler : parentHandlers) {
-                handler.setFormatter(new ConstellationLogFormatter());
-            }
-        }
-    }
     
     private LogPreferences(){
         throw new IllegalStateException("Utility class");
