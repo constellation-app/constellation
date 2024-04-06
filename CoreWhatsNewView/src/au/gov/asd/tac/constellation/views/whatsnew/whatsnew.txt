@@ -1,6 +1,26 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2024-03-08 More Ways to Zoom In and Out
+<p>Keyboard shortcuts have been added for zooming in and out of the graph view (CTRL-ALT-UP and CTRL-ALT-DOWN respectively).</p>
+<p>Toolbar buttons have been added for zooming in and out of the graph view.</p>
+
+== 2024-02-26 Colorblind Mode in Options
+<p>Colorblind mode options have been added and can be found through Setup -&gt; Options -&gt; CONSTELLATION -&gt; Application.</p>
+<p>The random generation of node colors has been adjusted based on the selected colorblind mode.</p>
+<p>Existing graphs can be displayed in a the selected colorblind scheme through the toolbar with Display -&gt; Apply Colorblind Schema to Open Graphs.</p>
+
+== 2024-02-02 Word Cloud View in Experimental
+<p>A Word Cloud View has been created and can be found under Experimental -&gt; Views -&gt; Word Cloud.</p>
+<p>This view allows you to create a Word Cloud based on words and phrases found in attributes in nodes and transactions.</p>
+
+== 2024-01-09 Data Access View Categories change
+<p>Added a new "Restore to Default" button to the Data Access View Categories </p>
+
+== 2024-01-08 Light and dark mode support
+<p>Light/Dark mode themes have been reworked and now comprehensively cover most of the application.</p>
+<p>The modes can be accessed via SetUp -&gt; Options -&gt; Appearance -&gt; Look and Feel -&gt; FlatLaf Light/FlatLaf Dark respectively.</p>
+
 == 2023-11-15 Rename graphs through REST API and Jupyter Notebooks
 <p>Jupyter notebook users can now specify or change Constellation graph title names within scripts using the client.</p>
 <p>When creating a new graph <strong>new_graph</strong> the graph name can be specified as an optional parameter. There's also a separate function to rename a graph specified by the graph ID <strong>rename_graph</strong>. If a graph ID is not specified, the current active graph will be renamed.</p> 
@@ -10,6 +30,7 @@
 <p>The Attribute Editor view now allows for empty (null) attributes to be hidden to de-clutter the view.</p>
 <p>The heading of each attribute category has replaced the "Show all" toggle with a "Show Hidden" toggle and a new "Show Empty" toggle has been added. The "Show Empty" toggle is enabled each time Constellation is restarted to ensure users make a conscious decision to hide them.</p>
 <p>Attributes that are marked as hidden will only be shown if the "Show Hidden" toggle is enabled while attributes that have no value set (and are empty) will only be shown if the "Show Empty" toggle is enabled. Hidden and empty attributes require both toggles to be enabled.</p>
+
 
 == 2023-08-28 Markdown support in the Notes View
 <p>The notes can now optionally render markdown text. You can now italicise, bold and strikethrough text. Headings can be added to the note as well as lists and sub lists.</p>

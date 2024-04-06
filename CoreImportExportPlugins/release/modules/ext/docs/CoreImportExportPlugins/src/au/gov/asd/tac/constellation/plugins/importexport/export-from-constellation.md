@@ -17,30 +17,36 @@
 <td style="text-align: center;"><img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/exportToImage.png" alt="Export to Screenshot Image Icon" /></td>
 </tr>
 <tr class="even">
+<td>Export to SVG</td>
+<td></td>
+<td>File -&gt; Export -&gt; To SVG...</td>
+<td style="text-align: center;"><img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/exportToSVG.png" alt="Export to SVG Image Icon" /></td>
+</tr>
+<tr class="odd">
 <td>Export to JSON</td>
 <td></td>
 <td>File -&gt; Export -&gt; To JSON...</td>
 <td style="text-align: center;"><img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/exportToJSON.png" alt="Export to JSON Icon" /></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Export to GeoJSON</td>
 <td></td>
 <td>File -&gt; Export -&gt; To GeoJSON...</td>
 <td style="text-align: center;"><img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/exportToGeoJSON.png" alt="Export to GeoJSON Icon" /></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Export to GeoPackage</td>
 <td></td>
 <td>File -&gt; Export -&gt; To GeoPackage...</td>
 <td style="text-align: center;"><img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/exportToGeoPackage.png" alt="Export to GeoPackage Icon" /></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Export to Shapefile</td>
 <td></td>
 <td>File -&gt; Export -&gt; To Shapefile...</td>
 <td style="text-align: center;"><img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/exportToShapeFile.png" alt="Export to Shapefile Icon" /></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Export to KML</td>
 <td></td>
 <td>File -&gt; Export -&gt; To KML...</td>
@@ -55,6 +61,8 @@ this page:
 
 -   *Screenshot Image* - Export a screenshot of the graph window as a
     .png
+-   *SVG Image* - Export a screenshot of the graph window as a
+    .svg
 -   *JSON* - Export a JSON representation of the graph (described in
     detail
     [here](../ext/docs/CoreGraphFramework/src/au/gov/asd/tac/constellation/graph/constellation-file-format.md))
@@ -62,6 +70,28 @@ this page:
 -   *GeoPackage* - Export the graph as a GeoPackage file
 -   *Shapefile* - Export the graph as a Shapefile file
 -   *KML* - Export the graph as a KML file
+
+## Export to SVG
+<div style="text-align: center;">
+    <a href="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/exportToSVGParameters.png">
+        <img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/exportToSVGParameters.png" alt="Export to SVG Example"  width="573"/>
+    </a>
+</div>
+### Parameters
+
+-   *File Location* (Required) - the name and location of the output file
+-   *Graph Title* - the title of the graph 
+-   *Background Color* - the color of the graph background
+-   *Selected Elements* - only export the selected nodes
+-   *Show Nodes* - include nodes in the export
+-   *Show Connections* - include connections in the export
+-   *Show Node Labels* - include node labels in the export
+-   *Show Connection Labels* - include connections labels in the export
+-   *Show Blazes* - include blazes in the export
+-   *Perspective* - set the camera perspective to export the graph from
+
+Note: When this plugin is executed, parameters will automatically reflect the state of the current graph. 
+Users may modify these parameters during the export stage to include or exclude information from the export.  
 
 ## Export to GeoJSON
 

@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.plugins.gui;
 
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+
 /**
  * An interface for listening to changes in the validity of the parameter values
  * that are being set in one or more {@link PluginParametersPane}. Often these
@@ -34,15 +36,24 @@ public interface PluginParametersPaneListener {
      *
      * @param valid Whether or not the objec
      */
-    public void validityChanged(boolean valid);
+    public void validityChanged(final boolean valid);
 
     /**
      * Called to indicate that a change registered by a given listener means an
      * update throughout its hierarchy of listeners is required. This is used by
      * the data access view as changes to the validity of a given plugin's
      * parameters have ramifications for the entire view - whenever all selected
-     * plugins are in a valid state, the data access view's go button beceomes
+     * plugins are in a valid state, the data access view's go button becomes
      * active.
      */
     public void hierarchicalUpdate();
+
+    /**
+     * Called to notify listeners that a parameter being listened too has changed its validity. 
+     * Can be triggered by a missing required parameter or by a parameter having a value that is invalid.
+     * @param parameter
+     * @param currentlySatisfied 
+     */
+    public void notifyParameterValidityChange(final PluginParameter<?> parameter, final boolean currentlySatisfied);
+     
 }

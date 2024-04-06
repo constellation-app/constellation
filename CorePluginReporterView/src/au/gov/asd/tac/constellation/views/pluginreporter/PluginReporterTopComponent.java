@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReportListener;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.pluginreporter.panes.PluginReporterPane;
 import javafx.application.Platform;
@@ -151,7 +152,9 @@ public final class PluginReporterTopComponent extends JavaFxTopComponent<PluginR
 
     @Override
     protected String createStyle() {
-        return "resources/plugin-reporter.css";
+        return JavafxStyleManager.isDarkTheme() 
+                ? "resources/plugin-reporter-dark.css" 
+                : "resources/plugin-reporter-light.css";
     }
 
     @Override

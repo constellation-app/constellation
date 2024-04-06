@@ -151,7 +151,7 @@ public final class WhatsNewTopComponent extends JavaFxTopComponent<WhatsNewViewP
 
     @Override
     protected String createStyle() {
-        return "resources/tutorial.css";
+        return null;
     }
 
     @Override

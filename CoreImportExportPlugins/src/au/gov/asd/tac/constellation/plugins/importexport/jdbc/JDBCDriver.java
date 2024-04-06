@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
@@ -68,7 +69,7 @@ public class JDBCDriver {
                             }
                         }
                     } else {
-                        final URL[] searchPath = new URL[]{new URL("file:///" + jarFile.getAbsolutePath())};
+                        final URL[] searchPath = new URL[]{jarFile.toURI().toURL()};
                         try (final URLClassLoader clloader = new URLClassLoader(searchPath)) {
                             for (final Enumeration<JarEntry> e = jf.entries(); e.hasMoreElements();) {
                                 final JarEntry je = e.nextElement();
@@ -115,7 +116,7 @@ public class JDBCDriver {
     }
 
     public Driver getDriver() throws MalformedURLException, ClassNotFoundException, NoSuchMethodException, NoSuchMethodException, InstantiationException, InstantiationException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        final URL[] searchPath = new URL[]{new URL("file:///" + jarFile.getAbsolutePath())};
+        final URL[] searchPath = new URL[]{jarFile.toURI().toURL()};
         final ClassLoader clloader = URLClassLoader.newInstance(searchPath);
 
         // Note: we can't use DriverManager here: it only uses classes that have been loaded by the system class loader.

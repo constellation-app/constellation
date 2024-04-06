@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.conversationview;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoField;
@@ -33,7 +34,7 @@ public class DefaultConversationBackgroundProvider implements ConversationBackgr
     @Override
     public void updateMessageBackgrounds(GraphReadMethods graph, List<ConversationMessage> messages) {
 
-        String[] colors = new String[]{"transparent", "rgb(60, 60, 60)"};
+        final String[] colors = new String[]{"transparent", JavafxStyleManager.isDarkTheme() ? "rgb(60, 60, 60)" : "rgb(200, 200, 200)"};
         int currentColor = 1;
         int currentDay = -1;
 

@@ -34,7 +34,12 @@ public class ByteIconData extends IconData {
     }
 
     @Override
-    protected InputStream createInputStream() throws IOException {
+    protected InputStream createRasterInputStream() throws IOException {
         return new ByteArrayInputStream(bytes);
+    }
+
+    @Override
+    protected InputStream createVectorInputStream() throws IOException {
+        throw new UnsupportedOperationException("Byte data can not be converted to vector input stream.");
     }
 }

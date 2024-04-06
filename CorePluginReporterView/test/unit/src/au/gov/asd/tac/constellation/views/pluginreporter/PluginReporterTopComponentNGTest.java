@@ -29,7 +29,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
-import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -116,6 +116,6 @@ public class PluginReporterTopComponentNGTest {
         final PluginReporterTopComponent instance = mock(PluginReporterTopComponent.class);
         doCallRealMethod().when(instance).createStyle();
 
-        assertEquals("resources/plugin-reporter.css", instance.createStyle());
+        assertEquals("resources/plugin-reporter-light.css", instance.createStyle());
     }
 }

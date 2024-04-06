@@ -1,0 +1,116 @@
+/*******************************************************************************
+ *                                                                             *
+ * Label                                                                       *
+ *                                                                             *
+ ******************************************************************************/
+.label {
+    -fx-text-fill: #000000;
+}
+
+.text {
+    -fx-text-fill: #000000;
+}
+
+.text-field {
+    -fx-prompt-text-fill: gray;
+}
+
+.text-area {
+    -fx-prompt-text-fill: gray;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Menu                                                                        *
+ *                                                                             *
+ ******************************************************************************/
+.menu-button {
+    -fx-background-color: #0093FF;
+    -fx-border-color: #999999;
+    -fx-border-radius: 4px;
+    -fx-mark-color: white;
+}
+
+.menu-button .label {
+    -fx-text-fill: white;
+}
+
+.menu-button:hover {
+    -fx-color: -fx-hover-base;
+    -fx-background-color: #009eff;
+}
+
+.menu-bar .label {
+    -fx-text-fill: #ffffff;
+}
+
+.menu-item .label {
+    -fx-text-fill: black;
+}
+
+.menu-item:hover .label {
+    -fx-text-fill: white;
+}
+
+.menu:hover {
+    -fx-background-color: #009eff;
+}
+
+.menu-item:focused .label {
+    -fx-text-fill: white;
+}
+
+.context-menu {
+    -fx-background-color: white;
+    -fx-mark-color: black;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Button                                                                      *
+ *                                                                             *
+ ******************************************************************************/
+.button {
+    -fx-base: #0093FF;
+    -fx-text-fill: #ffffff;
+}
+
+.button:hover {
+    -fx-color: -fx-hover-base;
+    -fx-text-fill: #ffffff;
+    -fx-background-color: #009eff;
+}
+
+.toggle-button {
+    -fx-text-fill: #ffffff;
+    -fx-background-color: #999999;
+}
+
+.toggle-button:focused {
+    -fx-background-color: #999999;
+}
+
+
+.toggle-button:selected {
+    -fx-background-color: #009eff;
+}
+
+.toggle-button:selected:focused {
+    -fx-background-color: #009eff;
+}
+
+/* Uncategorised */
+
+#invalid {
+    -fx-background-color: #8a1d1d;
+    -fx-control-inner-background: #8a1d1d;
+}
+
+#errorDialog{
+    -fx-border-color: #808080;
+    -fx-background-color: #e0e0e0;
+}
+
+#errorDialogOccBox{
+    -fx-background-color: #bcbcbc;
+}

@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.utilities.genericjsonio;
 
 import au.gov.asd.tac.constellation.utilities.gui.DraggableCell;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.util.List;
 import java.util.Optional;
 import javafx.collections.FXCollections;
@@ -63,6 +64,7 @@ public class JsonIODialog {
             final Optional<String> loadDir,
             final Optional<String> filePrefix) {
         final Alert dialog = new Alert(Alert.AlertType.CONFIRMATION);
+        dialog.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
 
         final ObservableList<String> observableNamesList = FXCollections.observableArrayList(names);
 
@@ -125,6 +127,7 @@ public class JsonIODialog {
         final TextInputDialog td = new TextInputDialog();
         td.setTitle(PREFERENCE_NAME_DIALOG_TITLE);
         td.setHeaderText(PREFERENCE_NAME_DIALOG_HEADER_TEXT);
+        td.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
 
         return td.showAndWait();
     }

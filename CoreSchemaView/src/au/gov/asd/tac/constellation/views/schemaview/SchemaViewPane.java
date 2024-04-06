@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThre
 import au.gov.asd.tac.constellation.views.schemaview.providers.SchemaViewNodeProvider;
 import java.util.Collection;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import javafx.application.Platform;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;

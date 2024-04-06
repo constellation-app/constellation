@@ -19,7 +19,7 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import java.util.ArrayList;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
-import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
 
 /**

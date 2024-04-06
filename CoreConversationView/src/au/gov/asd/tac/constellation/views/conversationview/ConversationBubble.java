@@ -42,7 +42,7 @@ import javafx.scene.shape.Rectangle;
  */
 public class ConversationBubble extends VBox {
 
-    public static final double CORNER_RADIUS = 30;
+    public static final double CORNER_RADIUS = 20;
     public static final double PADDING = 10;
     public static final double TAIL_OFFSET = 40;
     public static final double TAIL_WIDTH = 10;

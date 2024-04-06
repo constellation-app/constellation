@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,21 +61,15 @@ public abstract class EsriMapProvider extends MapProvider {
     @Override
     public String[] getTileUrls(final Coordinate coordinate) {
         final String url;
-        switch (getMapServerType()) {
-            case TILE:
-                url = String.format(
-                        "%s/tile/%s",
-                        getMapServer(), getZoomString(coordinate));
-                break;
-            case EXPORT:
-                url = String.format(
-                        "%s/export?f=image&format=png&size=256,256&imagesr=3857&bbox=%s",
-                        getMapServer(), getBoundingBox(coordinate));
-                break;
-            default:
-                url = "";
-                break;
-        }
+        url = switch (getMapServerType()) {
+            case TILE -> String.format(
+                    "%s/tile/%s",
+                    getMapServer(), getZoomString(coordinate));
+            case EXPORT -> String.format(
+                    "%s/export?f=image&format=png&size=256,256&imagesr=3857&bbox=%s",
+                    getMapServer(), getBoundingBox(coordinate));
+            default -> "";
+        };
 
         if (StringUtils.isBlank(url)) {
             LOGGER.log(Level.WARNING, "Tile URL, {0}, is invalid", url);

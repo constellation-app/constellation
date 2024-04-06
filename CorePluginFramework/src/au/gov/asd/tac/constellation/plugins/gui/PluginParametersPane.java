@@ -72,6 +72,7 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.awt.StatusDisplayer;
 import org.openide.util.HelpCtx;
 
@@ -566,19 +567,19 @@ public final class PluginParametersPane extends GridPane {
                         GridPane.setHgrow(label, Priority.ALWAYS);
                         GridPane.setFillHeight(label, false);
 
-                        label.bindDescriptionToProperty(descriptionWidth);
                         maxLabelWidth = label.updateBindingWithLabelWidth(maxLabelWidth);
                     }
 
                     final Pane paramPane = child.getFormatter().getParamPane(child);
                     if (paramPane != null) {
-                        paramPane.setStyle("-fx-padding: " + PADDING);
-                        GridPane.setValignment(paramPane, VPos.TOP);
-                        GridPane.setFillHeight(paramPane, false);
+                        final VBox cell = new VBox(paramPane);
+                        cell.setAlignment(Pos.CENTER_LEFT);
+                        cell.setStyle("-fx-padding: " + PADDING);
+                        GridPane.setFillHeight(cell, true);
                         if (label == null) {
-                            paramGroupPane.add(paramPane, 0, row, 2, 1);
+                            paramGroupPane.add(cell, 0, row, 2, 1);
                         } else {
-                            paramGroupPane.add(paramPane, 1, row);
+                            paramGroupPane.add(cell, 1, row);
                         }
                     }
 
@@ -697,10 +698,6 @@ public final class PluginParametersPane extends GridPane {
             description.maxWidthProperty().bind(Bindings.max(50, label.widthProperty()));
         }
 
-        public void bindDescriptionToProperty(final DoubleProperty property) {
-            description.maxWidthProperty().bind(property);
-        }
-
         public DoubleProperty updateBindingWithLabelWidth(final DoubleProperty property) {
             final DoubleProperty newBinding = new SimpleDoubleProperty();
             newBinding.bind(Bindings.max(property, label.widthProperty()));
@@ -709,7 +706,7 @@ public final class PluginParametersPane extends GridPane {
     }
 
     private static Button buildHelpButton(final String helpId, final String helpForLabel) {
-        final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
+        final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor())));
         helpButton.paddingProperty().set(HELP_INSETS);
         helpButton.setTooltip(new Tooltip(String.format("Display help for %s", helpForLabel)));
         helpButton.setOnAction(event -> {
@@ -719,7 +716,7 @@ public final class PluginParametersPane extends GridPane {
         });
 
         // Get rid of the ugly button look so the icon stands alone.
-        helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
+        helpButton.setStyle("-fx-border-color: transparent; -fx-background-color: transparent; -fx-effect: null; ");
         return helpButton;
     }
 
@@ -747,11 +744,11 @@ public final class PluginParametersPane extends GridPane {
             final Label description = new Label(parameter.getDescription());
             label.setMinWidth(145);
             label.setWrapText(true);
-            label.setStyle("-fx-font-weight: bold"); // TODO: temporary fix until the main and dynamic style sheets are loaded
-            description.setId("smallInfoText"); // TODO: this is not being used because the style sheets are not loaded
-            description.getStyleClass().add("description-label"); // TODO: this is not being used because the style sheets are not loaded
+            label.setStyle("-fx-font-weight: bold");
+            description.setId("smallInfoText"); 
+            description.getStyleClass().add("description-label");
             description.setWrapText(true);
-            description.setStyle("-fx-font-size: smaller"); // TODO: temporary fix until the main and dynamic style sheets are loaded
+            description.setStyle("-fx-font-size: smaller"); 
             final LabelDescriptionBox labels = new LabelDescriptionBox(label, description);
             labels.setVisible(parameter.isVisible());
             labels.setManaged(parameter.isVisible());
@@ -786,6 +783,8 @@ public final class PluginParametersPane extends GridPane {
         }
 
         public void linkParameterWidgetToTop(final PluginParameter<?> parameter) {
+            updateTop(parameter);
+            
             parameter.addListener((parameter1, change) -> {
                 switch (change) {
                     case ERROR:
@@ -796,15 +795,31 @@ public final class PluginParametersPane extends GridPane {
                         }
                         Platform.runLater(this::parameterHasChanged);
                         break;
-                    case VALUE:
+                    case VALUE: 
                         Platform.runLater(this::parameterHasChanged);
                         break;
                     default:
                         break;
                 }
+                updateTop(parameter);
             });
         }
-
+        
+        /**
+         * Notifies the listener of conditions relevant to the plugin is class.
+         * Top notified of changes in validity of parameters contained with the plugin parameters pane. 
+         * @param parameter 
+         */
+        private void updateTop(final PluginParameter<?> parameter){  
+            if (parameter != null & top != null){
+                if ((parameter.isRequired() && StringUtils.isBlank(parameter.getStringValue())) || parameter.getError() != null){
+                    top.notifyParameterValidityChange(parameter, false);
+                } else {
+                    top.notifyParameterValidityChange(parameter, true);
+                }
+            }
+        }
+            
         @Override
         @SuppressWarnings("unchecked") //All casts in this method are checked prior to casting.
         public final Pane buildParameterPane(final PluginParameter<?> parameter) {

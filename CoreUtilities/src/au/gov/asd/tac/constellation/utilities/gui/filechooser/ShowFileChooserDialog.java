@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.swing.JFileChooser;
 import org.openide.filesystems.FileChooserBuilder;
+import org.openide.filesystems.FileObject;
+import org.openide.loaders.DataObject;
+import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
 /**
@@ -58,12 +61,19 @@ public class ShowFileChooserDialog implements Runnable {
         if (fileChooserMode != null) {
             switch (fileChooserMode) {
                 case OPEN:
-                    selectedFiles = new File[] { fileChooserBuilder.showOpenDialog() };
+                    selectedFiles = new File[] {fileChooserBuilder.showOpenDialog()};
                     break;
                 case SAVE:
                     final JFileChooser jfc = fileChooserBuilder.createFileChooser();
-                    jfc.showSaveDialog(WindowManager.getDefault().getMainWindow());                        
-                    selectedFiles = new File[] { jfc.getSelectedFile() };   
+                    final FileObject currentFileObject = getCurrentFileObject();
+                    if (currentFileObject != null) {
+                        jfc.setSelectedFile(new File(currentFileObject.getName()));
+                    }
+                    final int returnState = jfc.showSaveDialog(WindowManager.getDefault().getMainWindow());   
+                    //The showSaveDialog returns a file object at the location of the application source files when cancel is selected 
+                    if (returnState != JFileChooser.CANCEL_OPTION){
+                        selectedFiles = new File[] {jfc.getSelectedFile()};
+                    }
                     break;
                 case MULTI:
                     selectedFiles = fileChooserBuilder.showMultiOpenDialog();
@@ -83,5 +93,16 @@ public class ShowFileChooserDialog implements Runnable {
         return Optional.ofNullable(selectedFiles == null || selectedFiles.length == 0
                 || (selectedFiles.length == 1 && selectedFiles[0] == null)
                 ? null : Arrays.stream(selectedFiles).collect(Collectors.toList()));
+    }
+    
+    private FileObject getCurrentFileObject() {
+        final TopComponent tc = TopComponent.getRegistry().getActivated();
+        if (tc != null) {
+            final DataObject dob = tc.getLookup().lookup(DataObject.class);
+            if (dob != null) {
+                return dob.getPrimaryFile();
+            }
+        }
+        return null;
     }
 }
