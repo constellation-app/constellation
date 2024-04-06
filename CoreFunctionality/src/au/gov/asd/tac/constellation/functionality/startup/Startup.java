@@ -48,7 +48,7 @@ public class Startup implements Runnable {
      */
     private static final String AWT_HEADLESS_PROPERTY = "java.awt.headless";
 
-    private static final Logger LOGGER = Logger.getLogger(LogPreferences.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Startup.class.getName());
 
     @Override
     public void run() {

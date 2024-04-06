@@ -34,28 +34,28 @@ public class ConstellationLogFormatter extends Formatter {
     private String logMessage = "";
     
     @Override
-    public final String format(final LogRecord record) {
+    public final String format(final LogRecord logRecord) {
         final StringBuilder sb = new StringBuilder();
         sb.append("[");
         sb.append(LocalDateTime.now().toString().substring(0,22).replace("T"," "));
         sb.append("Z] - ");
-        sb.append(record.getLevel());
+        sb.append(logRecord.getLevel());
         sb.append(" [");
-        sb.append(record.getLoggerName());
+        sb.append(logRecord.getLoggerName());
         sb.append("]: ");
         
         final String formattedMessage;
 
-        if (record.getMessage() != null && record.getParameters() != null) {
-            formattedMessage = MessageFormat.format(record.getMessage(), record.getParameters());
+        if (logRecord.getMessage() != null && logRecord.getParameters() != null) {
+            formattedMessage = MessageFormat.format(logRecord.getMessage(), logRecord.getParameters());
         } else {
-            formattedMessage = record.getMessage();
+            formattedMessage = logRecord.getMessage();
         }
         if(formattedMessage == null ? logMessage == null : formattedMessage.equals(logMessage)){
             sb.append("Last record repeated again.");
             return sb.toString();
         }
-        final Throwable error = record.getThrown();
+        final Throwable error = logRecord.getThrown();
         if (error != null && StringUtils.isNotBlank(error.getMessage())) {
             sb.append(error.toString());
             sb.append(SeparatorConstants.NEWLINE);

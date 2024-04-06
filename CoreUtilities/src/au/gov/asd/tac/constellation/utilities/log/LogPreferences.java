@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.utilities.log;
 
-import java.util.logging.Handler;
-import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import org.openide.util.NbPreferences;
 
