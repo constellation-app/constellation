@@ -78,7 +78,7 @@ public class SingleChoiceInputPane extends HBox {
                 assert (scParameter.getParameterValue() instanceof SingleChoiceParameterValue);
                 final SingleChoiceParameterValue scParameterValue = (SingleChoiceParameterValue) scParameter.getParameterValue();
                 switch (change) {
-                    case VALUE:
+                    case VALUE -> {
                         // Don't change the value if it isn't necessary.
                         final List<ParameterValue> param = scParameterValue.getOptionsData();
                         final ParameterValue value = field.getSelectionModel().getSelectedItem();
@@ -91,8 +91,8 @@ public class SingleChoiceInputPane extends HBox {
                         // give a visual indicator if a required parameter is empty
                         field.setId(scParameter.isRequired() && field.getSelectionModel().isEmpty() ? "invalid selection" : "");
                         field.setStyle("invalid selection".equals(field.getId()) ? "-fx-color: #8A1D1D" : "");
-                        break;
-                    case PROPERTY:
+                    }
+                    case PROPERTY -> {
                         final ObservableList<ParameterValue> options = FXCollections.observableArrayList();
                         final EventHandler<ActionEvent> handler = field.getOnAction();
                         field.setOnAction(null);
@@ -118,21 +118,16 @@ public class SingleChoiceInputPane extends HBox {
                         } else {
                             field.getSelectionModel().clearSelection();
                         }
+                    }
 
-                        break;
-
-                    case ENABLED:
-                        field.setDisable(!scParameter.isEnabled());
-                        break;
-                    case VISIBLE:
+                    case ENABLED -> field.setDisable(!scParameter.isEnabled());
+                    case VISIBLE -> {
                         field.setManaged(scParameter.isVisible());
                         field.setVisible(scParameter.isVisible());
                         this.setVisible(scParameter.isVisible());
                         this.setManaged(scParameter.isVisible());
-                        break;
-                    default:
-                        LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
-                        break;
+                    }
+                    default -> LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
                 }
             }));
 
