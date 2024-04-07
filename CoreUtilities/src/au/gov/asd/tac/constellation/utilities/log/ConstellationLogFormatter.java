@@ -32,6 +32,7 @@ import org.apache.commons.lang3.StringUtils;
 public class ConstellationLogFormatter extends Formatter {
     
     private String logMessage = "";
+    private Integer logCount = 0;
     
     @Override
     public final String format(final LogRecord logRecord) {
@@ -51,9 +52,18 @@ public class ConstellationLogFormatter extends Formatter {
         } else {
             formattedMessage = logRecord.getMessage();
         }
-        if(formattedMessage == null ? logMessage == null : formattedMessage.equals(logMessage)){
-            sb.append("Last record repeated again.");
+        if(formattedMessage != null && logMessage != null && formattedMessage.equals(logMessage)){
+            if(logCount == 10){
+                sb.append("Last record repeated more than 10 times, further logs of this record are ignored until the log record changes.");
+            }else if(logCount > 10){
+                return ""; // Do not log messages until it changes
+            }else{
+                sb.append("Last record repeated again.");
+            }
+            logCount += 1;
             return sb.toString();
+        }else {
+            logCount = 0;            
         }
         final Throwable error = logRecord.getThrown();
         if (error != null && StringUtils.isNotBlank(error.getMessage())) {
