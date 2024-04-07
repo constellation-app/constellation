@@ -36,6 +36,9 @@ public class ConstellationLogFormatter extends Formatter {
     
     @Override
     public final String format(final LogRecord logRecord) {
+        
+        final Throwable error = logRecord.getThrown();
+        
         final StringBuilder sb = new StringBuilder();
         sb.append("[");
         sb.append(LocalDateTime.now().toString().substring(0,22).replace("T"," "));
@@ -49,9 +52,13 @@ public class ConstellationLogFormatter extends Formatter {
 
         if (logRecord.getMessage() != null && logRecord.getParameters() != null) {
             formattedMessage = MessageFormat.format(logRecord.getMessage(), logRecord.getParameters());
+        } else if (error != null && StringUtils.isNotBlank(error.getMessage())) {
+            formattedMessage = error.getClass().getSimpleName();
+            System.out.println(formattedMessage);
         } else {
             formattedMessage = logRecord.getMessage();
         }
+
         if(formattedMessage != null && logMessage != null && formattedMessage.equals(logMessage)){
             if(logCount == 10){
                 sb.append("Last record repeated more than 10 times, further logs of this record are ignored until the log record changes.");
@@ -65,7 +72,7 @@ public class ConstellationLogFormatter extends Formatter {
         }else {
             logCount = 0;            
         }
-        final Throwable error = logRecord.getThrown();
+        
         if (error != null && StringUtils.isNotBlank(error.getMessage())) {
             sb.append(error.toString());
             sb.append(SeparatorConstants.NEWLINE);
@@ -79,7 +86,7 @@ public class ConstellationLogFormatter extends Formatter {
             sb.append(SeparatorConstants.NEWLINE);
         }else{
             sb.append(formattedMessage);
-            sb.append(SeparatorConstants.NEWLINE);
+            sb.append(SeparatorConstants.NEWLINE);         
         }
         logMessage = formattedMessage;
         return sb.toString();
