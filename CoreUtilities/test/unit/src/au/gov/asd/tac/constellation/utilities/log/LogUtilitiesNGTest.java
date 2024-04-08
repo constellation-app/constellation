@@ -21,14 +21,11 @@ import java.io.OutputStream;
 import org.testng.annotations.Test;
 import java.util.logging.Handler;
 import java.util.logging.Level;
-import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.StreamHandler;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 /**
  *
@@ -147,19 +144,15 @@ public class LogUtilitiesNGTest {
     @Test
     public void testLogWithThrowable() throws IOException {
         LOGGER.log(Level.INFO, "Test message", new Exception("Example exception"));
-        
         final String out = getCapturedLog();
-        
         assertTrue(out.contains("java.lang.Exception: Example exception"));
     }
     
     @Test
     public void testLogWithNullThrowable() throws IOException {
         LOGGER.log(Level.INFO, "Test message", new Exception());
-        
         final String out = getCapturedLog();
-        
-        assertTrue(out.contains("Test message"));
+        assertTrue(out.contains("]: Exception"));
     }
     
 }
