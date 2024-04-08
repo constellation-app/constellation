@@ -85,8 +85,8 @@ public final class TableViewState {
     }
 
     public List<Tuple<String, Attribute>> getColumnAttributes() {
-        return elementType == GraphElementType.TRANSACTION
-                ? transactionColumnAttributes : vertexColumnAttributes;
+        return elementType == GraphElementType.VERTEX
+                ? vertexColumnAttributes : transactionColumnAttributes;
     }
 
     public void setColumnAttributes(final List<Tuple<String, Attribute>> columnAttributes) {

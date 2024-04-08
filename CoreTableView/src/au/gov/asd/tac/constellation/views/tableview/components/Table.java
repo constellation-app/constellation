@@ -607,22 +607,20 @@ public class Table {
             final Object attributeValue;
             if (attributeId != Graph.NOT_FOUND) {
                 switch (column.getAttributeNamePrefix()) {
-                    case GraphRecordStoreUtilities.SOURCE:
+                    case GraphRecordStoreUtilities.SOURCE -> {
                         //LOGGER.log(Level.WARNING, "Transaction SOURCE: {0} {1}", new Object[]{ column.getAttribute().getElementType(), column.getAttribute().getName()});
                         final int sourceVertexId = readableGraph.getTransactionSourceVertex(transactionId);
                         attributeValue = readableGraph.getObjectValue(attributeId, sourceVertexId);
-                        break;
-                    case GraphRecordStoreUtilities.TRANSACTION:
+                    }
+                    case GraphRecordStoreUtilities.TRANSACTION -> 
                         //LOGGER.log(Level.WARNING, "Transaction TRANSACTION: {0} {1}", new Object[]{ column.getAttribute().getElementType(), column.getAttribute().getName()});
                         attributeValue = readableGraph.getObjectValue(attributeId, transactionId);
-                        break;
-                    case GraphRecordStoreUtilities.DESTINATION:
+                    case GraphRecordStoreUtilities.DESTINATION -> {
                         //LOGGER.log(Level.WARNING, "Transaction DESTINATION: {0} {1}", new Object[]{ column.getAttribute().getElementType(), column.getAttribute().getName()});
                         final int destinationVertexId = readableGraph.getTransactionDestinationVertex(transactionId);
                         attributeValue = readableGraph.getObjectValue(attributeId, destinationVertexId);
-                        break;
-                    default:
-                        attributeValue = null;
+                    }
+                    default -> attributeValue = null;
                 }
             } else {
                 attributeValue = null;
@@ -663,22 +661,20 @@ public class Table {
             final Object attributeValue;
             if (attributeId != Graph.NOT_FOUND) {
                 switch (column.getAttributeNamePrefix()) {
-                    case GraphRecordStoreUtilities.SOURCE:
+                    case GraphRecordStoreUtilities.SOURCE -> {
                         //LOGGER.log(Level.WARNING, "Edge SOURCE: {0} {1}", new Object[]{ column.getAttribute().getElementType(), column.getAttribute().getName()});
                         final int sourceVertexId = readableGraph.getEdgeSourceVertex(edgeId);
                         attributeValue = readableGraph.getObjectValue(attributeId, sourceVertexId);
-                        break;
-                    case GraphRecordStoreUtilities.TRANSACTION:
+                    }
+                    case GraphRecordStoreUtilities.TRANSACTION -> 
                         //LOGGER.log(Level.WARNING, "Edge TRANSACTION: {0} {1}", new Object[]{ column.getAttribute().getElementType(), column.getAttribute().getName()});
                         attributeValue = readableGraph.getObjectValue(attributeId, edgeId);
-                        break;
-                    case GraphRecordStoreUtilities.DESTINATION:
+                    case GraphRecordStoreUtilities.DESTINATION -> {
                         //LOGGER.log(Level.WARNING, "Edge DESTINATION: {0} {1}", new Object[]{ column.getAttribute().getElementType(), column.getAttribute().getName()});
                         final int destinationVertexId = readableGraph.getEdgeDestinationVertex(edgeId);
                         attributeValue = readableGraph.getObjectValue(attributeId, destinationVertexId);
-                        break;
-                    default:
-                        attributeValue = null;
+                    }
+                    default -> attributeValue = null;
                 }
             } else {
                 attributeValue = null;
@@ -720,22 +716,20 @@ public class Table {
             final Object attributeValue;
             if (attributeId != Graph.NOT_FOUND) {
                 switch (column.getAttributeNamePrefix()) {
-                    case GraphRecordStoreUtilities.SOURCE:
+                    case GraphRecordStoreUtilities.SOURCE -> {
                         //LOGGER.log(Level.WARNING, "Edge SOURCE: {0} {1}", new Object[]{ column.getAttribute().getElementType(), column.getAttribute().getName()});
                         final int sourceVertexId = readableGraph.getEdgeSourceVertex(linkId);
                         attributeValue = readableGraph.getObjectValue(attributeId, sourceVertexId);
-                        break;
-                    case GraphRecordStoreUtilities.TRANSACTION:
+                    }
+                    case GraphRecordStoreUtilities.TRANSACTION -> 
                         //LOGGER.log(Level.WARNING, "Edge TRANSACTION: {0} {1}", new Object[]{ column.getAttribute().getElementType(), column.getAttribute().getName()});
                         attributeValue = readableGraph.getObjectValue(attributeId, linkId);
-                        break;
-                    case GraphRecordStoreUtilities.DESTINATION:
+                    case GraphRecordStoreUtilities.DESTINATION -> {
                         //LOGGER.log(Level.WARNING, "Edge DESTINATION: {0} {1}", new Object[]{ column.getAttribute().getElementType(), column.getAttribute().getName()});
                         final int destinationVertexId = readableGraph.getEdgeDestinationVertex(linkId);
                         attributeValue = readableGraph.getObjectValue(attributeId, destinationVertexId);
-                        break;
-                    default:
-                        attributeValue = null;
+                    }
+                    default -> attributeValue = null;
                 }
             } else {
                 attributeValue = null;
@@ -779,6 +773,7 @@ public class Table {
             final GraphElementType elementType,
             final String attributeNamePrefix,
             final Map<String, TableColumn<ObservableList<String>, String>> columnReferenceMap) {
+        LOGGER.log(Level.WARNING, "Called createColumnIndexPart()");
         final List<Column> tmpColumnIndex = new CopyOnWriteArrayList<>();
 
         final int attributeCount = readableGraph.getAttributeCount(elementType);
