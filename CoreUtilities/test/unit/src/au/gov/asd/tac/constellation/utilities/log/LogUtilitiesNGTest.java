@@ -152,7 +152,7 @@ public class LogUtilitiesNGTest {
     public void testLogWithNullThrowable() throws IOException {
         LOGGER.log(Level.INFO, "Test message", new Exception());
         final String out = getCapturedLog();
-        assertTrue(out.contains("]: Exception"));
+        assertTrue(out.contains("Test message"));
     }
     
 }

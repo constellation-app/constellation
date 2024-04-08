@@ -50,9 +50,7 @@ public class ConstellationLogFormatter extends Formatter {
         
         final String formattedMessage;
         
-        if (error != null){
-            formattedMessage = error.getClass().getSimpleName();  // If an error is thrown compare the Exception type, not the message
-        }else if (logRecord.getMessage() != null && logRecord.getParameters() != null) {
+        if (logRecord.getMessage() != null && logRecord.getParameters() != null) {
             formattedMessage = MessageFormat.format(logRecord.getMessage(), logRecord.getParameters());
         } else {
             formattedMessage = logRecord.getMessage();
