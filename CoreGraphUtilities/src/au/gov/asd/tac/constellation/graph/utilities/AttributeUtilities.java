@@ -133,9 +133,8 @@ public class AttributeUtilities {
 
             final Attribute attr = new GraphAttribute(graph, graph.getAttribute(GraphElementType.VERTEX, i));
 
-            if (attr != null) {
-                attributeIds.put(attr.getName(), attr.getId());
-            }
+            attributeIds.put(attr.getName(), attr.getId());
+            
         }
 
         return attributeIds;
