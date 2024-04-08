@@ -130,7 +130,7 @@ public final class TableViewState {
     @Override
     public String toString() {
         return new ToStringBuilder(this)
-                .append("slelectedOnly", isSelectedOnly())
+                .append("selectedOnly", isSelectedOnly())
                 .append("elementType", getElementType())
                 .append("transactionColumnAttributes", getTransactionColumnAttributes())
                 .append("vertexColumnAttributes", getVertexColumnAttributes())

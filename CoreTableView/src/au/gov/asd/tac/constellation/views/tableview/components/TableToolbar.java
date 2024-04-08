@@ -358,6 +358,7 @@ public class TableToolbar {
      * @return the initial icon to place on the element type button
      */
     protected ImageView getElementTypeInitialIcon() {
+        // Might need to update this
         return getTableViewTopComponent().getCurrentState() != null
                 && getTableViewTopComponent().getCurrentState().getElementType() == GraphElementType.VERTEX
                 ? VERTEX_ICON : TRANSACTION_ICON;

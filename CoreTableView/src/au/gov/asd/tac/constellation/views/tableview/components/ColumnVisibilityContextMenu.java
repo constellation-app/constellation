@@ -89,8 +89,8 @@ public class ColumnVisibilityContextMenu {
     private CustomMenuItem showDefaultColumnsMenu;
     private CustomMenuItem showPrimaryColumnsMenu;
     private CustomMenuItem hideAllColumnsMenu;
-    
-     private static final Logger LOGGER = Logger.getLogger(ColumnVisibilityContextMenu.class.getName());
+
+    private static final Logger LOGGER = Logger.getLogger(ColumnVisibilityContextMenu.class.getName());
 
     /**
      * Creates a new column visibility context menu.
@@ -109,6 +109,7 @@ public class ColumnVisibilityContextMenu {
         contextMenu = new ContextMenu();
 
         showAllColumnsMenu = createCustomMenu(ALL_COLUMNS, e -> {
+            LOGGER.log(Level.WARNING, "Calling createCustomMenu");
             getActiveTableReference().updateVisibleColumns(
                     getTableViewTopComponent().getCurrentGraph(),
                     getTableViewTopComponent().getCurrentState(),
@@ -119,6 +120,7 @@ public class ColumnVisibilityContextMenu {
         });
 
         showDefaultColumnsMenu = createCustomMenu(DEFAULT_COLUMNS, e -> {
+            LOGGER.log(Level.WARNING, "Calling showDefaultColumnsMenu");
             getActiveTableReference().updateVisibleColumns(
                     getTableViewTopComponent().getCurrentGraph(),
                     getTableViewTopComponent().getCurrentState(),
@@ -133,6 +135,7 @@ public class ColumnVisibilityContextMenu {
         });
 
         showPrimaryColumnsMenu = createCustomMenu(KEY_COLUMNS, e -> {
+            LOGGER.log(Level.WARNING, "Calling showPrimaryColumnsMenu");
             if (getTableViewTopComponent().getCurrentGraph() != null) {
                 final Set<GraphAttribute> keyAttributes = new HashSet<>();
                 final ReadableGraph readableGraph = getTableViewTopComponent().getCurrentGraph().getReadableGraph();
@@ -165,6 +168,7 @@ public class ColumnVisibilityContextMenu {
         });
 
         hideAllColumnsMenu = createCustomMenu(NO_COLUMNS, e -> {
+            LOGGER.log(Level.WARNING, "Calling hideAllColumnsMenu");
             table.getColumnIndex().forEach(column -> column.getTableColumn().setVisible(false));
             getActiveTableReference().updateVisibleColumns(
                     getTableViewTopComponent().getCurrentGraph(),
@@ -204,17 +208,15 @@ public class ColumnVisibilityContextMenu {
             final String columnHeading = columnTuple.getAttributeNamePrefix();
             if (columnHeading != null) {
                 switch (columnHeading) {
-                    case GraphRecordStoreUtilities.SOURCE:
+                    case GraphRecordStoreUtilities.SOURCE ->
                         columnCheckboxesSource.add(createColumnVisibilityMenu(columnTuple));
-                        break;
-                    case GraphRecordStoreUtilities.DESTINATION:
+                    case GraphRecordStoreUtilities.DESTINATION ->
                         columnCheckboxesDestination.add(createColumnVisibilityMenu(columnTuple));
-                        break;
-                    case GraphRecordStoreUtilities.TRANSACTION:
+                    case GraphRecordStoreUtilities.TRANSACTION ->
                         columnCheckboxesTransaction.add(createColumnVisibilityMenu(columnTuple));
-                        break;
-                    default:
-                        break;
+                    default -> {
+                        // Do nothing
+                    }
                 }
             }
         });
