@@ -358,6 +358,8 @@ public class GraphNode extends AbstractNode {
     /**
      * method to check whether the file name is already used in any opened graph
      * (saved or in-memory)
+     * @param name name of file
+     * @return whether file exists or not
      */
     public static boolean fileNameExists(final String name) {
         final Iterator<Graph> iter = GraphNode.getAllGraphs().values().iterator();

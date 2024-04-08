@@ -486,21 +486,13 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             } else {
                 final String message = String.format("Unexpected exception caught in %s", pluginName);
                 switch (level) {
-                    case FATAL:
-                    case ERROR:
-                        LOGGER.log(Level.SEVERE, message, ex);
-                        break;
-                    case WARNING:
-                        LOGGER.log(Level.WARNING, message, ex);
-                        break;
-                    case INFO:
-                        LOGGER.log(Level.INFO, message, ex);
-                        break;
-                    case DEBUG:
-                        LOGGER.log(Level.FINE, message, ex);
-                        break;
-                    default:
-                        break;
+                    case FATAL, ERROR -> LOGGER.log(Level.SEVERE, message, ex);
+                    case WARNING -> LOGGER.log(Level.WARNING, message, ex);
+                    case INFO -> LOGGER.log(Level.INFO, message, ex);
+                    case DEBUG -> LOGGER.log(Level.FINE, message, ex);
+                    default -> {
+                        // Do Nothing
+                    }
                 }
             }
         }

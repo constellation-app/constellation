@@ -202,7 +202,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
     public void notify(final PluginNotificationLevel level, final String message) {
         final String title = pluginManager.getPlugin().getName();
         switch (level) {
-            case FATAL:
+            case FATAL -> {
                 NotifyDisplayer.display(new NotifyDescriptor(
                         "Fatal Error:\n" + message,
                         title,
@@ -212,9 +212,9 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
                         NotifyDescriptor.OK_OPTION
                 ));
                 LOGGER.log(Level.SEVERE, LOGGING_FORMAT, new Object[]{title, message});
-                break;
+            }
 
-            case ERROR:
+            case ERROR -> {
                 NotifyDisplayer.display(new NotifyDescriptor(
                         "Error:\n" + message,
                         title,
@@ -224,30 +224,29 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
                         NotifyDescriptor.OK_OPTION
                 ));
                 LOGGER.log(Level.SEVERE, LOGGING_FORMAT, new Object[]{title, message});
-                break;
+            }
 
-            case WARNING:
+            case WARNING -> {
                 NotificationDisplayer.getDefault().notify(title,
                         UserInterfaceIconProvider.WARNING.buildIcon(16, ConstellationColor.DARK_ORANGE.getJavaColor()),
                         message,
                         null
                 );
                 LOGGER.log(Level.WARNING, LOGGING_FORMAT, new Object[]{title, message});
-                break;
+            }
 
-            case INFO:
+            case INFO -> {
                 final String statusText = String.format(STRING_FORMAT, title, message);
                 final Message statusMessage = StatusDisplayer.getDefault().setStatusText(statusText, 10);
                 statusMessage.clear(5000);
                 LOGGER.log(Level.INFO, LOGGING_FORMAT, new Object[]{title, message});
-                break;
+            }
 
-            case DEBUG:
-                LOGGER.log(Level.FINE, LOGGING_FORMAT, new Object[]{title, message});
-                break;
+            case DEBUG -> LOGGER.log(Level.FINE, LOGGING_FORMAT, new Object[]{title, message});
 
-            default:
-                break;
+            default -> {
+                // Do Nothing
+            }
         }
     }
 
