@@ -607,8 +607,6 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
                             hiddenErrors.add(entry);
                         }
                     }
-                    default -> {
-                    }
                 }
             }
         }

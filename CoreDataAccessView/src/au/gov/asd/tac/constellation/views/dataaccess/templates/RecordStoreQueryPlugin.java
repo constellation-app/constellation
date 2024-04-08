@@ -113,8 +113,6 @@ public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
             case GraphRecordStoreUtilities.SOURCE -> queryRecordStore = GraphRecordStoreUtilities.getSelectedVertices(graph);
             case GraphRecordStoreUtilities.TRANSACTION -> queryRecordStore = GraphRecordStoreUtilities.getSelectedTransactions(graph);
             case GraphRecordStoreUtilities.ALL -> queryRecordStore = GraphRecordStoreUtilities.getAllSelected(graph);
-            default -> {
-            }
         }
     }
 

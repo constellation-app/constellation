@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -256,8 +256,6 @@ public class DateTimeCriteriaPanel extends AdvancedCriteriaBorderPane {
                 case LAST_3_MONTHS -> dateString = calculatedDate.minusMonths(3).toString();
                 case LAST_6_MONTHS -> dateString = calculatedDate.minusMonths(6).toString();
                 case LAST_YEAR -> dateString = calculatedDate.minusYears(1).toString();
-                default -> {
-                }
             }
             // set the button texts to represent the current date, time and
             // timeZones

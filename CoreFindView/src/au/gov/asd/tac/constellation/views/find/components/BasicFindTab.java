@@ -477,16 +477,12 @@ public class BasicFindTab extends Tab {
             case 0 -> replaceSelection = true;
             case 1 -> addTo = true;
             case 2 -> removeFrom = true;
-            default -> {
-            }
         }
 
         switch (searchInChoiceBox.getSelectionModel().getSelectedIndex()) {
             case 0 -> currentGraph = true;
             case 1 -> currentSelection = true;
             case 2 -> searchAllGraphs = true;
-            default -> {
-            }
         }
 
         // creates a new basicFindReplaceParameter with the currently selected

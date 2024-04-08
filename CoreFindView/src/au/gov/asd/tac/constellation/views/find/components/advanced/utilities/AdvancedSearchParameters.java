@@ -234,8 +234,6 @@ public class AdvancedSearchParameters {
                                 return false;
                             }
                         }
-                        default -> {
-                        }
                     }
                 }
                 i++;

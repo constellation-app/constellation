@@ -120,8 +120,6 @@ public class ReplaceTab extends BasicFindTab {
             case 0 -> currentGraph = true;
             case 1 -> currentSelection = true;
             case 2 -> searchAllGraphs = true;
-            default -> {
-            }
         }
         // Create the paramters with the current UI selections
         final BasicFindReplaceParameters parameters = new BasicFindReplaceParameters(findTextField.getText(), replaceTextField.getText(),

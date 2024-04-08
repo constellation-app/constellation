@@ -187,8 +187,6 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
                                 }
                             }
                         }
-                        default -> {
-                        }
                     }
                     // update the sub level types
                     @SuppressWarnings("unchecked") //TYPE_PARAMETER will always be of type MultiChoiceParameter
@@ -307,8 +305,6 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
 
                             occurrences.put(targetVxId, occurrences.get(targetVxId) + 1);
                         }
-                    }
-                    default -> {
                     }
                 }
             }
