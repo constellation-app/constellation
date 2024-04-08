@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -180,17 +180,8 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
         assert m >= 1 && m < n : String.format("[Number of edges to attach '%s' must be at least 1 and less than the number of nodes '%s']", m, n);
 
         // Random countries to put in the graph
-        final List<String> countries = new ArrayList<>();
-        countries.add("Australia");
-        countries.add("Brazil");
-        countries.add("China");
-        countries.add("France");
-        countries.add("Japan");
-        countries.add("New Zealand");
-        countries.add("South Africa");
-        countries.add("United Arab Emirates");
-        countries.add("United Kingdom");
-        countries.add("United States");
+        final List<String> countries = Arrays.asList("Australia", "Brazil", "China", "France", "Japan", "New Zealand", 
+                "South Africa", "United Arab Emirates", "United Kingdom", "United States");
 
         final int vxIdentifierAttr = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
         final int vxTypeAttr = AnalyticConcept.VertexAttribute.TYPE.ensure(graph);
@@ -205,8 +196,8 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
 
         final int[] startVxIds = new int[m];
 
-        final VertexDecorators decorators;
-        decorators = new VertexDecorators(graph.getAttributeName(vxCountryAttr), graph.getAttributeName(vxPinnedAttr), null, graph.getAttributeName(vxIsGoodAttr));
+        final VertexDecorators decorators = new VertexDecorators(graph.getAttributeName(vxCountryAttr), 
+                graph.getAttributeName(vxPinnedAttr), null, graph.getAttributeName(vxIsGoodAttr));
         final int decoratorsAttr = VisualConcept.GraphAttribute.DECORATORS.ensure(graph);
         graph.setObjectValue(decoratorsAttr, 0, decorators);
 
@@ -259,27 +250,20 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
                     int dxId = destination;
                     if (randomWeights) {
                         switch (reciprocity) {
-                            case 0:
+                            case 0 -> {
                                 final boolean random0 = r.nextBoolean();
                                 if (random0) {
                                     sxId = destination;
                                     dxId = vxId;
                                 }
-                                break;
-                            case 1:
-                                final int random1 = r.nextInt(5);
-                                if (random1 == 0) {
-                                    sxId = destination;
-                                    dxId = vxId;
-                                }
-                                break;
-                            default:
+                            }
+                            default -> {
                                 final int randomDefault = r.nextInt(5);
                                 if (randomDefault != 0) {
                                     sxId = destination;
                                     dxId = vxId;
                                 }
-                                break;
+                            }
                         }
                     }
                     final int e = graph.addTransaction(sxId, dxId, true);
