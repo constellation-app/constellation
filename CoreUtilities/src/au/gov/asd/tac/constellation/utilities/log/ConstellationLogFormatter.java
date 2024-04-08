@@ -49,12 +49,11 @@ public class ConstellationLogFormatter extends Formatter {
         sb.append("]: ");
         
         final String formattedMessage;
-
-        if (logRecord.getMessage() != null && logRecord.getParameters() != null) {
+        
+        if (error != null){
+            formattedMessage = error.getClass().getSimpleName();  // If an error is thrown compare the Exception type, not the message
+        }else if (logRecord.getMessage() != null && logRecord.getParameters() != null) {
             formattedMessage = MessageFormat.format(logRecord.getMessage(), logRecord.getParameters());
-        } else if (error != null && StringUtils.isNotBlank(error.getMessage())) {
-            formattedMessage = error.getClass().getSimpleName();
-            System.out.println(formattedMessage);
         } else {
             formattedMessage = logRecord.getMessage();
         }
