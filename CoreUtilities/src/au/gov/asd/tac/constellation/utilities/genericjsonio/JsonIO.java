@@ -19,12 +19,14 @@ import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.keyboardshortcut.RecordKeyboardShortcut;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Instant;
@@ -39,6 +41,7 @@ import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.StatusDisplayer;
@@ -117,13 +120,15 @@ public class JsonIO {
      * @param rootNode the root object representing the preferences to be
      * written
      * @param filePrefix prefix to be pre-pended to the file name the user
+     * @param keyboardShortcut
      * provides or empty if no prefix to be provided
      *
      */
     public static void saveJsonPreferences(final Optional<String> saveDir,
             final Optional<String> filePrefix,
             final Object rootNode,
-            final ObjectMapper mapper) {
+            final ObjectMapper mapper,
+            Optional<Boolean> keyboardShortcut) {
         final File preferenceDirectory = getPrefereceFileDirectory(saveDir);
 
         // If the preference directory cannot be accessed then return
@@ -154,11 +159,23 @@ public class JsonIO {
                 : userInput.get();
 
         // Pre-pend filePrefix
-        final String prefixedFileName = filePrefix.orElse("").concat(fileName);
+        final String prefixedFileName = filePrefix.orElse("").concat(fileName);       
 
+        //Record keyboard shortcut
+        Optional<String>  ks = Optional.empty();
+        if(keyboardShortcut.get() != null && keyboardShortcut.get().booleanValue()) {
+           ks = getDefaultKeyboardShortcut(preferenceDirectory);
+           if(ks.isEmpty()) {
+               //Ask for user defined shortcut
+               ks = JsonIODialog.getKeyboardShortcut();
+           }           
+        }
+        
+        final String fileNameWithKeyboardShortcut = ks.orElse("").concat(prefixedFileName);
+        
         final File preferenceFile = new File(
                 preferenceDirectory,
-                FilenameEncoder.encode(prefixedFileName + FileExtensionConstants.JSON)
+                FilenameEncoder.encode(fileNameWithKeyboardShortcut + FileExtensionConstants.JSON)
         );
 
         boolean go = true;
@@ -169,7 +186,7 @@ public class JsonIO {
             alert.setHeaderText(PREFERENCE_FILE_EXISTS_ALERT_TITLE);
             alert.setContentText(String.format(
                     PREFERENCE_FILE_EXISTS_ALERT_ERROR_MSG_FORMAT,
-                    prefixedFileName
+                    fileNameWithKeyboardShortcut
             ));
 
             final Optional<ButtonType> option = alert.showAndWait();
@@ -199,6 +216,21 @@ public class JsonIO {
         }
     }
 
+    private static Optional<String> getDefaultKeyboardShortcut(File preferenceDirectory) {
+        
+        for(int index = 1; index <= 5;) {
+            
+            FilenameFilter filenameFilter = (d, s) -> {
+             return s.endsWith("Ctrl "+index + " "+FileExtensionConstants.JSON);
+            };
+            
+            if(ArrayUtils.isEmpty(preferenceDirectory.list(filenameFilter))) {
+                return Optional.of("Ctrl "+index + " ");
+            }            
+        }        
+         
+         return Optional.empty();
+    }
     /**
      * Save the supplied JSON data in a file, within an allocated subdirectory
      * of the users configuration directory.
@@ -213,7 +245,7 @@ public class JsonIO {
     public static void saveJsonPreferences(final Optional<String> saveDir,
             final Object rootNode,
             final ObjectMapper mapper) {
-        saveJsonPreferences(saveDir, Optional.empty(), rootNode, mapper);
+        saveJsonPreferences(saveDir, Optional.empty(), rootNode, mapper, Optional.empty());
     }
 
     /**
@@ -228,7 +260,12 @@ public class JsonIO {
      */
     public static void saveJsonPreferences(final Optional<String> saveDir,
             final Object rootNode) {
-        saveJsonPreferences(saveDir, Optional.empty(), rootNode, OBJECT_MAPPER);
+        saveJsonPreferences(saveDir, Optional.empty(), rootNode, OBJECT_MAPPER, Optional.empty());
+    }
+    
+    public static void saveJsonPreferencesWithKeyboardShortcut(final Optional<String> saveDir,
+            final Object rootNode) {
+        saveJsonPreferences(saveDir, Optional.empty(), rootNode, OBJECT_MAPPER, Optional.of(true));
     }
 
     /**
@@ -246,7 +283,7 @@ public class JsonIO {
     public static void saveJsonPreferences(final Optional<String> saveDir,
             final Optional<String> filePrefix,
             final Object rootNode) {
-        saveJsonPreferences(saveDir, filePrefix, rootNode, OBJECT_MAPPER);
+        saveJsonPreferences(saveDir, filePrefix, rootNode, OBJECT_MAPPER, Optional.empty());
     }
 
     /**
@@ -356,6 +393,58 @@ public class JsonIO {
         return loadJsonPreferences(loadDir, Optional.empty(), expectedFormat, OBJECT_MAPPER);
     }
 
+     public static <T> T loadJsonPreferencesWithFilePrefix(final Optional<String> loadDir,Optional<String> filePrefix,
+            final TypeReference<T> expectedFormat) {
+         
+         return loadJsonPreferencesForFile(loadDir, filePrefix, file -> {
+            try {
+                return OBJECT_MAPPER.readValue(file, expectedFormat);
+            } catch (final IOException ioe) {
+                LOGGER.log(
+                        Level.WARNING,
+                        String.format(
+                                "An error occured reading file %s",
+                                file.getName()
+                        ),
+                        ioe
+                );
+            }
+            return null;
+        });      
+        
+    }
+     
+     protected static <T> T loadJsonPreferencesForFile(final Optional<String> loadDir,
+            final Optional<String> filePrefix,
+            final Function<File, T> deserializationFunction) {
+        final File preferenceDirectory = getPrefereceFileDirectory(loadDir);
+
+        // List the files in the supplied directory that have the required file extension
+        // and if filePrefix was supplied, start with the provided prefix.
+        final String[] names;
+        if (preferenceDirectory.isDirectory()) {
+            names = preferenceDirectory.list((File dir, String name)
+                    -> StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.JSON)
+                    && (filePrefix.isEmpty() || StringUtils.startsWithIgnoreCase(name, filePrefix.get()))
+            );
+        } else {
+            // Nothing to select from - return an empty array
+            names = new String[0];
+        }
+
+        // Remove the prefix and suffix from the names and pass to the selection dialog        
+        final Optional<String> selectedFileName =ArrayUtils.isEmpty(names) ? Optional.empty() : Optional.of(names[0]);
+
+        // Re-add the prefix and suffix, then serialize the preferences to the file
+        if (selectedFileName.isPresent()) {            
+            return deserializationFunction.apply(new File(
+                            preferenceDirectory,
+                            FilenameEncoder.encode(selectedFileName.get())
+                    )
+            );
+        }
+        return null;
+    }   
     /**
      * Allow user to select a preference file to load from the supplied
      * directory. If filePrefix was provided, then only files prefixed with this
@@ -468,8 +557,9 @@ public class JsonIO {
             );
         }
         return null;
-    }
-
+    }  
+    
+     
     /**
      * Gets the preference file directory and appends the passed sub directory
      * path to it. If the complete directory path is not present, it will

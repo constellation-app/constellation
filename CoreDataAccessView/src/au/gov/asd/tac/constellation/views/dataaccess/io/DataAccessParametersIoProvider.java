@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.views.dataaccess.panes.DataSourceTitledPane;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.QueryPhasePane;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -79,7 +80,7 @@ public class DataAccessParametersIoProvider {
         }
 
         // Can now save the preferences even if no query name parameter is present
-        JsonIO.saveJsonPreferences(Optional.of(DATA_ACCESS_DIR), dataAccessUserPreferenceses);
+        JsonIO.saveJsonPreferencesWithKeyboardShortcut(Optional.of(DATA_ACCESS_DIR), dataAccessUserPreferenceses);
     }
 
     /**
@@ -90,7 +91,53 @@ public class DataAccessParametersIoProvider {
      * @param dataAccessPane the pane to load the JSON parameter file into
      * @see JsonIO#loadJsonPreferences(Optional, TypeReference) 
      */
+    
+    public static void loadParameters(final DataAccessPane dataAccessPane, String keyboardShortcut) {
+            final List<DataAccessUserPreferences> loadedParameters = JsonIO
+                .loadJsonPreferencesWithFilePrefix(
+                        Optional.of(DATA_ACCESS_DIR), Optional.of(keyboardShortcut),
+                        new TypeReference<List<DataAccessUserPreferences>>() {}
+                );
+            
+            if (loadedParameters != null) {
+            dataAccessPane.getDataAccessTabPane().removeTabs();
+
+            loadedParameters.forEach(loadedParameter -> {
+                final QueryPhasePane pluginPane = dataAccessPane.getDataAccessTabPane().newTab(loadedParameter.getStepCaption());
+
+                // If an existing global parameter is in the JSON then update it,
+                // otherwise ignore it
+                pluginPane.getGlobalParametersPane().getParams().getParameters().entrySet().stream()
+                        .filter(param -> loadedParameter.getGlobalParameters().containsKey(param.getKey()))
+                        .forEach(param -> 
+                            param.getValue().setStringValue(
+                                    loadedParameter.getGlobalParameters().get(param.getKey())
+                            )
+                        );
+
+                // Groups all the parameters in to the plugin groups. Common parameters
+                // are based on the plugin name that is before the first '.' in the key values
+
+                pluginPane.getDataAccessPanes().stream()
+                        // Plugins are disabled by defult. Only load and enable from
+                        // the JSON if the JSON contains data for this plugin and it's
+                        // enabled.
+                        .filter(pane ->
+                                loadedParameter.getPluginParameters().containsKey(pane.getPlugin().getClass().getSimpleName())
+                                        && loadedParameter.getPluginParameters().get(pane.getPlugin().getClass().getSimpleName()).containsKey(getEnabledPluginKey(pane))
+                                        && Boolean.valueOf(
+                                                loadedParameter.getPluginParameters().get(pane.getPlugin().getClass().getSimpleName()).get(
+                                                        getEnabledPluginKey(pane)
+                                                ))
+                        )
+                        .forEach(pane -> pane.setParameterValues(
+                                loadedParameter.getPluginParameters().get(pane.getPlugin().getClass().getSimpleName())
+                        ));
+            });
+        }
+    }
     public static void loadParameters(final DataAccessPane dataAccessPane) {
+        
         final List<DataAccessUserPreferences> loadedParameters = JsonIO
                 .loadJsonPreferences(
                         Optional.of(DATA_ACCESS_DIR),

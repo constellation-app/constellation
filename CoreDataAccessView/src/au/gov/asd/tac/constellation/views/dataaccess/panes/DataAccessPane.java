@@ -26,12 +26,17 @@ import au.gov.asd.tac.constellation.views.dataaccess.components.ButtonToolbar;
 import au.gov.asd.tac.constellation.views.dataaccess.components.ButtonToolbar.ExecuteButtonState;
 import au.gov.asd.tac.constellation.views.dataaccess.components.DataAccessTabPane;
 import au.gov.asd.tac.constellation.views.dataaccess.components.OptionsMenuBar;
+import au.gov.asd.tac.constellation.views.dataaccess.io.DataAccessParametersIoProvider;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetterListener;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -114,6 +119,15 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                     );
             contextMenuEvent.consume();
         });
+        
+        //read keyboard shortcut to load templates
+        addEventHandler(KeyEvent.KEY_PRESSED, event -> {            
+            if (!event.getCode().isModifierKey()) {                
+                System.out.println(" ================= event text: " + createCombo(event).getDisplayText().replace('+', ' '));
+                DataAccessParametersIoProvider.loadParameters(this, createCombo(event).getDisplayText().replace('+', ' '));
+            }
+        });
+        
         // Refresh all the status of menu items, execute buttons etc.
         // based on the current state of the data access view
         update();
@@ -370,5 +384,22 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         // in the pane has no selected plugin, an invalid time range,
         // or the selected plugins contain invalid parameter values.
         return !queryIsRunning && !canExecuteTabPane;
+    }
+    
+    private KeyCombination createCombo(KeyEvent event) {
+        var modifiers = new ArrayList<KeyCombination.Modifier>();
+        if (event.isControlDown()) {
+            modifiers.add(KeyCombination.CONTROL_DOWN);
+        }
+        if (event.isMetaDown()) {
+            modifiers.add(KeyCombination.META_DOWN);
+        }
+        if (event.isAltDown()) {
+            modifiers.add(KeyCombination.ALT_DOWN);
+        }
+        if (event.isShiftDown()) {
+            modifiers.add(KeyCombination.SHIFT_DOWN);
+        }
+        return new KeyCodeCombination(event.getCode(), modifiers.toArray(KeyCombination.Modifier[]::new));
     }
 }
