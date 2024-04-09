@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.utilities.icon;
 
 import au.gov.asd.tac.constellation.utilities.geospatial.Country;
+import java.nio.file.FileSystemNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,7 +43,7 @@ public class FlagIconProvider implements ConstellationIconProvider {
      
     public FlagIconProvider(){
         // Iterate over country enums and add flag to list
-        for (Country c : Country.values()) {
+        for (final Country c : Country.values()) {
             try {
                 final ConstellationIcon countryIcon = new ConstellationIcon.Builder(c.getDisplayName(), new FileIconData("modules/ext/icons/flags/" + c.getDisplayName().replaceAll(" ", "_").replaceAll(",", "").toLowerCase() + ".png", CODE_NAME_BASE))
                         .addAlias(c.getDigraph())
@@ -51,7 +52,7 @@ public class FlagIconProvider implements ConstellationIconProvider {
                         .addCategory(FLAG_CATEGORY)
                         .build();
                 flagIcons.add(countryIcon);
-            } catch (Exception e) {
+            } catch (FileSystemNotFoundException e) {
                 LOGGER.log(Level.WARNING, "Unable to find file: {0}", "modules/ext/icons/flags/" + c.getDisplayName().replaceAll(" ", "_").toLowerCase() + ".png");
             }
         }
