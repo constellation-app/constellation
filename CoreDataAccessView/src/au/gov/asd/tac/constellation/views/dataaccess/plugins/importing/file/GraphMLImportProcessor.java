@@ -242,6 +242,9 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
                                         }
                                     }
                                 }
+                                default -> {
+                                    // Do nothing
+                                }
                             }
                         }
                     }

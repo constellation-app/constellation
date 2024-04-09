@@ -121,6 +121,9 @@ public class PluginFinder {
                     result = listView.getSelectionModel().getSelectedItem();
                     dialog.setResult(ButtonType.OK);
                 }
+                default -> {
+                    // Do nothing
+                }
             }
         }
 

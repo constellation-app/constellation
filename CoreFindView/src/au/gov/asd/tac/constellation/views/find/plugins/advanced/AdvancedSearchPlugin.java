@@ -174,6 +174,9 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                         case ColorAttributeDescription.ATTRIBUTE_NAME -> matches = searchAsColor(values, attributeInt, currElement, graph);
                         case ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME -> matches = searchAsDateTime(values, attributeInt, currElement, graph);
                         case IconAttributeDescription.ATTRIBUTE_NAME -> matches = searchAsIcon(values, attributeInt, currElement, graph);
+                        default -> {
+                            // Do nothing
+                        }
                     }
                     // if a match was found
                     if (matches) {
@@ -426,6 +429,9 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                         matches = match.find();
                     }
                 }
+            }
+            default -> {
+                // Do nothing
             }
         }
         return matches;

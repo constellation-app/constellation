@@ -256,6 +256,9 @@ public class DateTimeCriteriaPanel extends AdvancedCriteriaBorderPane {
                 case LAST_3_MONTHS -> dateString = calculatedDate.minusMonths(3).toString();
                 case LAST_6_MONTHS -> dateString = calculatedDate.minusMonths(6).toString();
                 case LAST_YEAR -> dateString = calculatedDate.minusYears(1).toString();
+                default -> {
+                    // Do nothing
+                }
             }
             // set the button texts to represent the current date, time and
             // timeZones
