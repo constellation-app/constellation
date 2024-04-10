@@ -70,7 +70,8 @@ public class GraphRecordStoreUtilities {
     public static final String DIRECTED_KEY = "[directed]<string>";
     public static final String COMPLETE_WITH_SCHEMA_KEY = "[complete_with_schema]<string>";
     public static final String DELETE_KEY = "[delete]<string>";
-    public static final String EDGE = "edge.";
+    public static final String LINK_LOW = "low.";
+    public static final String LINK_HIGH = "high.";
     
     private static final String SELECTED_ATTRIBUTE_NAME = "selected";
     private static final String FALSE = "false";
@@ -87,7 +88,13 @@ public class GraphRecordStoreUtilities {
             "destination.Identifier",
             "destination.Label",
             "source.Type",
-            "destination.Type"
+            "destination.Type",
+            "low.Identifier",
+            "low.Type",
+            "low.Label",
+            "high.Identifier",
+            "high.Type",
+            "high.Label"
     );
     private static final List<String> ApprovedTypes = SchemaVertexTypeUtilities.getTypes().stream().map(i -> i.getName()).collect(Collectors.toList());
 

@@ -90,9 +90,23 @@ public class SelectionToGraphPlugin extends SimpleEditPlugin {
 
         // iterates over the graph elements and sets its selected attribute to true
         // if the element also exists in the selectedElements set
-        elements.forEach(element
-                -> graph.setBooleanValue(selectedAttributeId, element, selectedElements.contains(element))
-        );
+        if (elementType == GraphElementType.EDGE || elementType == GraphElementType.LINK) {
+            final boolean isEdge = elementType == GraphElementType.EDGE;
+            // For each edge/link
+            elements.forEach(element -> {
+                // For each transaction in edge/link
+                final int numTransactions = isEdge ? graph.getEdgeTransactionCount(element) : graph.getLinkTransactionCount(element);
+                for (int i = 0; i < numTransactions; i++) {
+                    final int tran = isEdge ? graph.getEdgeTransaction(element, i) : graph.getLinkTransaction(element, i);
+                    graph.setBooleanValue(selectedAttributeId, tran, selectedElements.contains(element));
+                }
+            }
+            );
+        } else {
+            elements.forEach(element
+                    -> graph.setBooleanValue(selectedAttributeId, element, selectedElements.contains(element))
+            );
+        }
     }
 
     @Override

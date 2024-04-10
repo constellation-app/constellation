@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.tableview.plugins.SelectionToGraphPlugin;
 import au.gov.asd.tac.constellation.views.tableview.state.TableViewState;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -40,7 +41,7 @@ import javafx.scene.input.ClipboardContent;
  * @author cygnus_x-1
  */
 public class TableViewUtilities {
-    
+
     private TableViewUtilities() {
         throw new IllegalStateException("Utility class");
     }
@@ -157,16 +158,41 @@ public class TableViewUtilities {
             final int selectedAttributeId = isVertex
                     ? VisualConcept.VertexAttribute.SELECTED.get(readableGraph)
                     : VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
+
             final int elementCount = isVertex
                     ? readableGraph.getVertexCount()
                     : readableGraph.getTransactionCount();
+
+            final Map<Integer, Integer> edgeOrLinkmap = new HashMap<>();
+
             for (int elementPosition = 0; elementPosition < elementCount; elementPosition++) {
                 final int elementId = isVertex
                         ? readableGraph.getVertex(elementPosition)
                         : readableGraph.getTransaction(elementPosition);
+
                 if (selectedAttributeId != Graph.NOT_FOUND
                         && readableGraph.getBooleanValue(selectedAttributeId, elementId)) {
-                    selectedIds.add(elementId);
+                    // Edges and Links handled differently
+                    if (state.getElementType() == GraphElementType.EDGE || state.getElementType() == GraphElementType.LINK) {
+                        // This code keeps track of which transactions are selected in and edge/link
+                        final boolean isEdge = state.getElementType() == GraphElementType.EDGE;
+                        final int key = isEdge ? readableGraph.getTransactionEdge(elementId) : readableGraph.getTransactionLink(elementId);
+
+                        // If edge/link has been seen before by another transaction
+                        if (edgeOrLinkmap.containsKey(key)) {
+                            edgeOrLinkmap.put(key, edgeOrLinkmap.get(key) - 1);
+                        } else {
+                            // Add to hashmap, with number remaining transactions to be seen
+                            edgeOrLinkmap.put(key, (isEdge ? readableGraph.getEdgeTransactionCount(key) : readableGraph.getLinkTransactionCount(key)) - 1);
+                        }
+
+                        // If all selected transactions have been seen by an edge/link, mark edge/link as selected
+                        if (edgeOrLinkmap.get(key) == 0) {
+                            selectedIds.add(key);
+                        }
+                    } else {
+                        selectedIds.add(elementId);
+                    }
                 }
             }
             return selectedIds;

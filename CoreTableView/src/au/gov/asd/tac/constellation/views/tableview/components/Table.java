@@ -188,7 +188,7 @@ public class Table {
                     getColumnIndex().addAll(createColumnIndexPart(readableGraph, GraphElementType.VERTEX,
                             GraphRecordStoreUtilities.SOURCE, columnReferenceMap));
 
-                    if (state.getElementType() == GraphElementType.TRANSACTION || state.getElementType() == GraphElementType.EDGE || state.getElementType() == GraphElementType.LINK) {
+                    if (state.getElementType() == GraphElementType.TRANSACTION || state.getElementType() == GraphElementType.EDGE|| state.getElementType() == GraphElementType.LINK) {
                         // Creates "transaction." columns from transaction attributes
                         getColumnIndex().addAll(createColumnIndexPart(readableGraph, GraphElementType.TRANSACTION,
                                 GraphRecordStoreUtilities.TRANSACTION, columnReferenceMap));
@@ -197,20 +197,12 @@ public class Table {
                         getColumnIndex().addAll(createColumnIndexPart(readableGraph, GraphElementType.VERTEX,
                                 GraphRecordStoreUtilities.DESTINATION, columnReferenceMap));
                     } 
-//                    else if (state.getElementType() == GraphElementType.EDGE) {
-//                        LOGGER.log(Level.WARNING, "Update columns EDGE");
-//                        // Creates "destination." columns from vertex attributes
-////                        getColumnIndex().addAll(createColumnIndexPart(readableGraph, GraphElementType.VERTEX,
-////                                GraphRecordStoreUtilities.DESTINATION, columnReferenceMap));
-//                        getColumnIndex().addAll(createColumnIndexPart(readableGraph, GraphElementType.EDGE,
-//                                GraphRecordStoreUtilities.EDGE, columnReferenceMap));
+                    // If Link
+//                    if (state.getElementType() == GraphElementType.LINK) {
 //                        getColumnIndex().addAll(createColumnIndexPart(readableGraph, GraphElementType.VERTEX,
-//                                GraphRecordStoreUtilities.DESTINATION, columnReferenceMap));
-//                    } // If Link
-//                    else if (state.getElementType() == GraphElementType.LINK) {
-//                        LOGGER.log(Level.WARNING, "Update columns LINK");
+//                                GraphRecordStoreUtilities.LINK_LOW, columnReferenceMap));
 //                        getColumnIndex().addAll(createColumnIndexPart(readableGraph, GraphElementType.VERTEX,
-//                                GraphRecordStoreUtilities.DESTINATION, columnReferenceMap));
+//                                GraphRecordStoreUtilities.LINK_HIGH, columnReferenceMap));
 //                    }
                 } finally {
                     readableGraph.release();
@@ -297,6 +289,8 @@ public class Table {
                 final ReadableGraph readableGraph = graph.getReadableGraph();
                 try {
                     LOGGER.log(Level.WARNING, "State {0}", state);
+                    LOGGER.log(Level.WARNING, "State vert attr {0}", state.getVertexColumnAttributes());
+                    LOGGER.log(Level.WARNING, "State trans attr {0}", state.getTransactionColumnAttributes());
                     if (state.getElementType() == GraphElementType.TRANSACTION) {
                         final int selectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
                         final int transactionCount = readableGraph.getTransactionCount();
@@ -363,7 +357,7 @@ public class Table {
                             // If it is not in selected only mode then just add every row but if it is
                             // in selected only mode, only add the ones that are selected in the graph
                             if (!state.isSelectedOnly() || isSelected) {
-                                //LOGGER.log(Level.WARNING, "Link id {0}", linkId);
+                                LOGGER.log(Level.WARNING, "Link id {0}", linkId);
                                 rows.add(getRowDataForLink(readableGraph, linkId));
                             }
                         });
@@ -428,6 +422,7 @@ public class Table {
      */
     public void updateSelection(final Graph graph,
             final TableViewState state) {
+        LOGGER.log(Level.WARNING, "getSelectedIds state: {0}", state.getElementType());
         synchronized (TABLE_LOCK) {
             if (graph != null && state != null) {
 
@@ -441,6 +436,7 @@ public class Table {
 
                 // get graph selection
                 if (!state.isSelectedOnly()) {
+                    LOGGER.log(Level.WARNING, "About to call getSelectedIds");
                     final List<Integer> selectedIds = TableViewUtilities.getSelectedIds(graph, state);
 
                     // update table selection
@@ -714,19 +710,19 @@ public class Table {
                     .getInteraction(column.getAttribute().getAttributeType());
 
             final Object attributeValue;
+            // TODO link needs different column names
             if (attributeId != Graph.NOT_FOUND) {
                 switch (column.getAttributeNamePrefix()) {
                     case GraphRecordStoreUtilities.SOURCE -> {
                         //LOGGER.log(Level.WARNING, "Edge SOURCE: {0} {1}", new Object[]{ column.getAttribute().getElementType(), column.getAttribute().getName()});
-                        final int sourceVertexId = readableGraph.getEdgeSourceVertex(linkId);
+                        final int sourceVertexId = readableGraph.getLinkLowVertex(linkId);
                         attributeValue = readableGraph.getObjectValue(attributeId, sourceVertexId);
                     }
                     case GraphRecordStoreUtilities.TRANSACTION -> 
                         //LOGGER.log(Level.WARNING, "Edge TRANSACTION: {0} {1}", new Object[]{ column.getAttribute().getElementType(), column.getAttribute().getName()});
                         attributeValue = readableGraph.getObjectValue(attributeId, linkId);
                     case GraphRecordStoreUtilities.DESTINATION -> {
-                        //LOGGER.log(Level.WARNING, "Edge DESTINATION: {0} {1}", new Object[]{ column.getAttribute().getElementType(), column.getAttribute().getName()});
-                        final int destinationVertexId = readableGraph.getEdgeDestinationVertex(linkId);
+                        final int destinationVertexId = readableGraph.getLinkHighVertex(linkId);
                         attributeValue = readableGraph.getObjectValue(attributeId, destinationVertexId);
                     }
                     default -> attributeValue = null;
