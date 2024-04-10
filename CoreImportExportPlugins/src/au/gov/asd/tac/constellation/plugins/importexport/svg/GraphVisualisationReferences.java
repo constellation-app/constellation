@@ -30,7 +30,6 @@ import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess.ConnectionDirection;
 import java.io.File;
-import org.bouncycastle.util.Arrays;
 
 /**
  * Provides a number fo methods required to interpret visual aspects of the graph. 
@@ -54,7 +53,8 @@ public class GraphVisualisationReferences {
         
         this.viewFrustum = frustum.getCopy();
         this.modelViewProjectionMatrix.set(modelViewProjectionMatrix);
-        this.viewPort = Arrays.clone(viewPort);
+        this.viewPort = new int[viewPort.length]; 
+        System.arraycopy(viewPort, 0, this.viewPort, 0, viewPort.length);
         this.camera = new Camera(camera);
         this.drawFlags = new DrawFlags(drawFlags.drawNodes(), drawFlags.drawConnections(), drawFlags.drawNodeLabels(), drawFlags.drawConnectionLabels(), drawFlags.drawBlazes());
         this.selectedElementsOnly = selectedElementsOnly;
@@ -69,7 +69,8 @@ public class GraphVisualisationReferences {
         
         this.viewFrustum = frustum.getCopy();
         this.modelViewProjectionMatrix.set(modelViewProjectionMatrix);
-        this.viewPort = Arrays.clone(viewPort);
+        this.viewPort = new int[viewPort.length]; 
+        System.arraycopy(viewPort, 0, this.viewPort, 0, viewPort.length);
         this.camera = new Camera(camera);
         this.drawFlags = new DrawFlags(drawFlags.drawNodes(), drawFlags.drawConnections(), drawFlags.drawNodeLabels(), drawFlags.drawConnectionLabels(), drawFlags.drawBlazes());
         this.selectedElementsOnly = selectedElementsOnly;

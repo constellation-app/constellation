@@ -228,8 +228,7 @@ public class SVGData {
      * directly to an output file.
      * @return String in an SVG format.
      */
-    @Override
-    public final String toString() {
+    public final ArrayList<String> toLines() {
         cleanAttributes();
         return toString(null);
     }
@@ -249,20 +248,20 @@ public class SVGData {
      * @param prefix
      * @return String representation of the current element and all of it's child elements.
      */
-    private String toString(final String prefix) {
-        final StringBuilder svgString = new StringBuilder();
+    private ArrayList<String> toString(final String prefix) {
+        final ArrayList<String> svgString = new ArrayList<>();
         if (this.children.isEmpty() && this.content == null) {
-            svgString.append(elementToSVG(prefix));
+            svgString.add(elementToSVG(prefix));
         } else {
-            svgString.append(elementHeaderToSVG(prefix));
+            svgString.add(elementHeaderToSVG(prefix));
             if (this.children.isEmpty()) {
-                svgString.append(content);
+                svgString.add(content);
             } else {
-                svgString.append(elementChildrenToSVG(prefix));
+                svgString.addAll(elementChildrenToSVG(prefix));
             }
-            svgString.append(elementFooterToSVG(prefix));
+            svgString.add(elementFooterToSVG(prefix));
         }
-        return svgString.toString();
+        return svgString;
     }
     /**
      * Generates an "inline" SVG element.
@@ -320,16 +319,16 @@ public class SVGData {
      * @param prefix
      * @return 
      */
-    private String elementChildrenToSVG (final String prefix) {
-        final StringBuilder childSVGString = new StringBuilder();
+    private ArrayList<String> elementChildrenToSVG (final String prefix) {
+        final ArrayList<String> childSVGString = new ArrayList<>();
         final StringBuilder childPrefix = new StringBuilder(SeparatorConstants.TAB); 
         if (prefix != null) {
             childPrefix.append(prefix);
         }
         for (final SVGData child : this.getAllChildren()) {
-            childSVGString.append(child.toString(childPrefix.toString()));
+            childSVGString.addAll(child.toString(childPrefix.toString()));
         }
-        return childSVGString.toString();
+        return childSVGString;
     }
     
     /**

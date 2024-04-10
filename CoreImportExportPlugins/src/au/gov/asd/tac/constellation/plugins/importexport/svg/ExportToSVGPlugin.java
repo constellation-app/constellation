@@ -211,7 +211,6 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
                     .atDirectory(assetDirectory)
                     .build();
             
-            interaction.setExecutionStage(0, -1, "Exporting Graph", "Writing data to file", true);
             exportToSVG(exportedGraph, svg, interaction);
             interaction.setProgress(1, 0, "Finished", true);
         
@@ -230,7 +229,13 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
     private void exportToSVG(final File file, final SVGData data, final PluginInteraction interaction) throws IOException, InterruptedException {
         final boolean fileOverwritten = file.createNewFile();
         try (final FileWriter writer = new FileWriter(file)) {
-            writer.write(data.toString());
+            final ArrayList<String> lines = data.toLines();
+            final int totalLines = lines.size();
+            interaction.setExecutionStage(0, totalLines, "Exporting Graph", "Writing data to file", true);
+            for (int i = 0; i < totalLines; i++){
+                writer.write(lines.get(i));
+                interaction.setProgress(i, totalLines, true);
+            }
             writer.flush();        
             if (fileOverwritten){
                 interaction.setProgress(0, -1, String.format("File %s has been overwritten", file.getName()), false);
