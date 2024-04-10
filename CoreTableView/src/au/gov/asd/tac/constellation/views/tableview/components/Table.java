@@ -288,9 +288,9 @@ public class Table {
                 final List<ObservableList<String>> rows = new ArrayList<>();
                 final ReadableGraph readableGraph = graph.getReadableGraph();
                 try {
-                    LOGGER.log(Level.WARNING, "State {0}", state);
-                    LOGGER.log(Level.WARNING, "State vert attr {0}", state.getVertexColumnAttributes());
-                    LOGGER.log(Level.WARNING, "State trans attr {0}", state.getTransactionColumnAttributes());
+//                    LOGGER.log(Level.WARNING, "State {0}", state);
+//                    LOGGER.log(Level.WARNING, "State vert attr {0}", state.getVertexColumnAttributes());
+//                    LOGGER.log(Level.WARNING, "State trans attr {0}", state.getTransactionColumnAttributes());
                     if (state.getElementType() == GraphElementType.TRANSACTION) {
                         final int selectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
                         final int transactionCount = readableGraph.getTransactionCount();
@@ -357,7 +357,7 @@ public class Table {
                             // If it is not in selected only mode then just add every row but if it is
                             // in selected only mode, only add the ones that are selected in the graph
                             if (!state.isSelectedOnly() || isSelected) {
-                                LOGGER.log(Level.WARNING, "Link id {0}", linkId);
+                                //LOGGER.log(Level.WARNING, "Link id {0}", linkId);
                                 rows.add(getRowDataForLink(readableGraph, linkId));
                             }
                         });
@@ -422,7 +422,6 @@ public class Table {
      */
     public void updateSelection(final Graph graph,
             final TableViewState state) {
-        LOGGER.log(Level.WARNING, "getSelectedIds state: {0}", state.getElementType());
         synchronized (TABLE_LOCK) {
             if (graph != null && state != null) {
 
@@ -436,7 +435,6 @@ public class Table {
 
                 // get graph selection
                 if (!state.isSelectedOnly()) {
-                    LOGGER.log(Level.WARNING, "About to call getSelectedIds");
                     final List<Integer> selectedIds = TableViewUtilities.getSelectedIds(graph, state);
 
                     // update table selection

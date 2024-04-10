@@ -88,12 +88,22 @@ public final class TableViewState {
         return elementType == GraphElementType.VERTEX
                 ? vertexColumnAttributes : transactionColumnAttributes;
     }
-
+    
     public void setColumnAttributes(final List<Tuple<String, Attribute>> columnAttributes) {
-        if (elementType == GraphElementType.TRANSACTION) {
-            this.transactionColumnAttributes = columnAttributes;
-        } else {
-            this.vertexColumnAttributes = columnAttributes;
+        switch (elementType) {
+            case GraphElementType.TRANSACTION:
+                this.transactionColumnAttributes = columnAttributes;
+                break;
+            case GraphElementType.VERTEX:
+                this.vertexColumnAttributes = columnAttributes;
+                break;
+            case LINK: // TODO if I can get custom link columns
+            case EDGE:
+                this.transactionColumnAttributes = columnAttributes;
+                break;
+            default:
+                this.transactionColumnAttributes = columnAttributes;
+                break;
         }
     }
 

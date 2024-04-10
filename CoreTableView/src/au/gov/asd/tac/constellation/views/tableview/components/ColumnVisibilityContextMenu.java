@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -135,7 +135,7 @@ public class ColumnVisibilityContextMenu {
         });
 
         showPrimaryColumnsMenu = createCustomMenu(KEY_COLUMNS, e -> {
-            LOGGER.log(Level.WARNING, "Calling showPrimaryColumnsMenu");
+            LOGGER.log(Level.WARNING, "CALLING showPrimaryColumnsMenu");
             if (getTableViewTopComponent().getCurrentGraph() != null) {
                 final Set<GraphAttribute> keyAttributes = new HashSet<>();
                 final ReadableGraph readableGraph = getTableViewTopComponent().getCurrentGraph().getReadableGraph();
