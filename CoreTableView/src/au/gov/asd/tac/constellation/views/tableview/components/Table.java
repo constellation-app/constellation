@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -184,11 +184,15 @@ public class Table {
                 final ReadableGraph readableGraph = graph.getReadableGraph();
                 try {
 
-                    // Creates "source." columns from vertex attributes
-                    getColumnIndex().addAll(createColumnIndexPart(readableGraph, GraphElementType.VERTEX,
-                            GraphRecordStoreUtilities.SOURCE, columnReferenceMap));
+                    // Links dont need vertex columns
+                    if (state.getElementType() != GraphElementType.LINK) {
+                        // Creates "source." columns from vertex attributes
+                        getColumnIndex().addAll(createColumnIndexPart(readableGraph, GraphElementType.VERTEX,
+                                GraphRecordStoreUtilities.SOURCE, columnReferenceMap));
+                    }
 
-                    if (state.getElementType() == GraphElementType.TRANSACTION || state.getElementType() == GraphElementType.EDGE|| state.getElementType() == GraphElementType.LINK) {
+                    // Transactions and edges need extra info
+                    if (state.getElementType() == GraphElementType.TRANSACTION || state.getElementType() == GraphElementType.EDGE) {
                         // Creates "transaction." columns from transaction attributes
                         getColumnIndex().addAll(createColumnIndexPart(readableGraph, GraphElementType.TRANSACTION,
                                 GraphRecordStoreUtilities.TRANSACTION, columnReferenceMap));
@@ -196,14 +200,16 @@ public class Table {
                         // Creates "destination." columns from vertex attributes
                         getColumnIndex().addAll(createColumnIndexPart(readableGraph, GraphElementType.VERTEX,
                                 GraphRecordStoreUtilities.DESTINATION, columnReferenceMap));
-                    } 
-                    // If Link
-//                    if (state.getElementType() == GraphElementType.LINK) {
-//                        getColumnIndex().addAll(createColumnIndexPart(readableGraph, GraphElementType.VERTEX,
-//                                GraphRecordStoreUtilities.LINK_LOW, columnReferenceMap));
-//                        getColumnIndex().addAll(createColumnIndexPart(readableGraph, GraphElementType.VERTEX,
-//                                GraphRecordStoreUtilities.LINK_HIGH, columnReferenceMap));
-//                    }
+                    }
+                    // Link has it's own unique columns
+                    if (state.getElementType() == GraphElementType.LINK) {
+                        getColumnIndex().addAll(createColumnIndexPart(readableGraph, GraphElementType.VERTEX,
+                                GraphRecordStoreUtilities.LINK_LOW, columnReferenceMap));
+                        getColumnIndex().addAll(createColumnIndexPart(readableGraph, GraphElementType.TRANSACTION,
+                                GraphRecordStoreUtilities.TRANSACTION, columnReferenceMap));
+                        getColumnIndex().addAll(createColumnIndexPart(readableGraph, GraphElementType.VERTEX,
+                                GraphRecordStoreUtilities.LINK_HIGH, columnReferenceMap));
+                    }
                 } finally {
                     readableGraph.release();
                 }
@@ -213,7 +219,7 @@ public class Table {
                     openColumnVisibilityMenu();
                     return;
                 }
-                
+
                 // Sort columns in columnIndex by state, prefix and attribute name
                 getColumnIndex().sort(new ColumnIndexSort(state));
 
@@ -242,7 +248,7 @@ public class Table {
                     // reset some fields each time before it is run.
                     updateColumnsTask.reset(columnReferenceMap, state);
                     Platform.runLater(updateColumnsTask);
-                }           
+                }
             }
         }
     }
@@ -288,81 +294,7 @@ public class Table {
                 final List<ObservableList<String>> rows = new ArrayList<>();
                 final ReadableGraph readableGraph = graph.getReadableGraph();
                 try {
-//                    LOGGER.log(Level.WARNING, "State {0}", state);
-//                    LOGGER.log(Level.WARNING, "State vert attr {0}", state.getVertexColumnAttributes());
-//                    LOGGER.log(Level.WARNING, "State trans attr {0}", state.getTransactionColumnAttributes());
-                    if (state.getElementType() == GraphElementType.TRANSACTION) {
-                        final int selectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
-                        final int transactionCount = readableGraph.getTransactionCount();
-
-                        IntStream.range(0, transactionCount).forEach(transactionPosition -> {
-                            final int transactionId = readableGraph.getTransaction(transactionPosition);
-                            boolean isSelected = false;
-
-                            if (selectedAttributeId != Graph.NOT_FOUND) {
-                                isSelected = readableGraph.getBooleanValue(selectedAttributeId, transactionId);
-                            }
-
-                            // If it is not in selected only mode then just add every row but if it is
-                            // in selected only mode, only add the ones that are selected in the graph
-                            if (!state.isSelectedOnly() || isSelected) {
-                                rows.add(getRowDataForTransaction(readableGraph, transactionId));
-                            }
-                        });
-                    } else if (state.getElementType() == GraphElementType.EDGE) {
-                        final int selectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
-                        final int edgeCount = readableGraph.getEdgeCount();
-                        //LOGGER.log(Level.WARNING, "Edge count {0}", edgeCount);
-                        IntStream.range(0, edgeCount).forEach(edgePosition -> {
-                            final int edgeId = readableGraph.getEdge(edgePosition);
-                            boolean isSelected = true;
-
-                            if (selectedAttributeId != Graph.NOT_FOUND) {
-                                for (int i = 0; i < readableGraph.getEdgeTransactionCount(edgeId); i++) {
-                                    // If just one of the transactions isn't selected, set to false and break loop
-                                    if (!readableGraph.getBooleanValue(selectedAttributeId, readableGraph.getEdgeTransaction(edgeId, i))) {
-                                        isSelected = false;
-                                        break;
-                                    }
-                                }
-                                //isSelected = readableGraph.getBooleanValue(selectedAttributeId, edgeId);
-                            }
-                            //LOGGER.log(Level.WARNING, "IS selected {0}", isSelected);
-                            // If it is not in selected only mode then just add every row but if it is
-                            // in selected only mode, only add the ones that are selected in the graph
-                            if (!state.isSelectedOnly() || isSelected) {
-                                //LOGGER.log(Level.WARNING, "Edge id {0}", edgeId);
-                                rows.add(getRowDataForEdge(readableGraph, edgeId));
-                            }
-                        });
-
-                    } else if (state.getElementType() == GraphElementType.LINK) {
-                        final int selectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
-                        final int linkCount = readableGraph.getLinkCount();
-                        //LOGGER.log(Level.WARNING, "Link count {0}", linkCount);
-                        IntStream.range(0, linkCount).forEach(linkPosition -> {
-                            final int linkId = readableGraph.getLink(linkPosition);
-                            boolean isSelected = true;
-
-                            if (selectedAttributeId != Graph.NOT_FOUND) {
-                                for (int i = 0; i < readableGraph.getLinkTransactionCount(linkId); i++) {
-                                    // If just one of the transactions isn't selected, set to false and break loop
-                                    if (!readableGraph.getBooleanValue(selectedAttributeId, readableGraph.getLinkTransaction(linkId, i))) {
-                                        isSelected = false;
-                                        break;
-                                    }
-                                }
-                            }
-                            //LOGGER.log(Level.WARNING, "IS selected {0}", isSelected);
-                            // If it is not in selected only mode then just add every row but if it is
-                            // in selected only mode, only add the ones that are selected in the graph
-                            if (!state.isSelectedOnly() || isSelected) {
-                                //LOGGER.log(Level.WARNING, "Link id {0}", linkId);
-                                rows.add(getRowDataForLink(readableGraph, linkId));
-                            }
-                        });
-
-                    } else {
+                    if (null == state.getElementType()) {
                         final int selectedAttributeId = VisualConcept.VertexAttribute.SELECTED.get(readableGraph);
                         final int vertexCount = readableGraph.getVertexCount();
 
@@ -373,13 +305,102 @@ public class Table {
                             if (selectedAttributeId != Graph.NOT_FOUND) {
                                 isSelected = readableGraph.getBooleanValue(selectedAttributeId, vertexId);
                             }
-                            //LOGGER.log(Level.WARNING, "IS selected VERTEX {0}", isSelected);
                             // If it is not in selected only mode then just add every row but if it is
                             // in selected only mode, only add the ones that are selected in the graph
                             if (!state.isSelectedOnly() || isSelected) {
                                 rows.add(getRowDataForVertex(readableGraph, vertexId));
                             }
                         });
+                    } else {
+                        switch (state.getElementType()) {
+                            case TRANSACTION: {
+                                final int selectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
+                                final int transactionCount = readableGraph.getTransactionCount();
+                                IntStream.range(0, transactionCount).forEach(transactionPosition -> {
+                                    final int transactionId = readableGraph.getTransaction(transactionPosition);
+                                    boolean isSelected = false;
+
+                                    if (selectedAttributeId != Graph.NOT_FOUND) {
+                                        isSelected = readableGraph.getBooleanValue(selectedAttributeId, transactionId);
+                                    }
+
+                                    // If it is not in selected only mode then just add every row but if it is
+                                    // in selected only mode, only add the ones that are selected in the graph
+                                    if (!state.isSelectedOnly() || isSelected) {
+                                        rows.add(getRowDataForTransaction(readableGraph, transactionId));
+                                    }
+                                });
+                                break;
+                            }
+                            case EDGE: {
+                                final int selectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
+                                final int edgeCount = readableGraph.getEdgeCount();
+                                IntStream.range(0, edgeCount).forEach(edgePosition -> {
+                                    final int edgeId = readableGraph.getEdge(edgePosition);
+                                    boolean isSelected = true;
+
+                                    if (selectedAttributeId != Graph.NOT_FOUND) {
+                                        for (int i = 0; i < readableGraph.getEdgeTransactionCount(edgeId); i++) {
+                                            // If just one of the transactions isn't selected, set to false and break loop
+                                            if (!readableGraph.getBooleanValue(selectedAttributeId, readableGraph.getEdgeTransaction(edgeId, i))) {
+                                                isSelected = false;
+                                                break;
+                                            }
+                                        }
+                                        //isSelected = readableGraph.getBooleanValue(selectedAttributeId, edgeId);
+                                    }
+                                    // If it is not in selected only mode then just add every row but if it is
+                                    // in selected only mode, only add the ones that are selected in the graph
+                                    if (!state.isSelectedOnly() || isSelected) {
+                                        //LOGGER.log(Level.WARNING, "Edge id {0}", edgeId);
+                                        rows.add(getRowDataForEdge(readableGraph, edgeId));
+                                    }
+                                });
+                                break;
+                            }
+                            case LINK: {
+                                final int selectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
+                                final int linkCount = readableGraph.getLinkCount();
+                                IntStream.range(0, linkCount).forEach(linkPosition -> {
+                                    final int linkId = readableGraph.getLink(linkPosition);
+                                    boolean isSelected = true;
+
+                                    if (selectedAttributeId != Graph.NOT_FOUND) {
+                                        for (int i = 0; i < readableGraph.getLinkTransactionCount(linkId); i++) {
+                                            // If just one of the transactions isn't selected, set to false and break loop
+                                            if (!readableGraph.getBooleanValue(selectedAttributeId, readableGraph.getLinkTransaction(linkId, i))) {
+                                                isSelected = false;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    // If it is not in selected only mode then just add every row but if it is
+                                    // in selected only mode, only add the ones that are selected in the graph
+                                    if (!state.isSelectedOnly() || isSelected) {
+                                        rows.add(getRowDataForLink(readableGraph, linkId));
+                                    }
+                                });
+                                break;
+                            }
+                            default: {
+                                final int selectedAttributeId = VisualConcept.VertexAttribute.SELECTED.get(readableGraph);
+                                final int vertexCount = readableGraph.getVertexCount();
+                                IntStream.range(0, vertexCount).forEach(vertexPosition -> {
+                                    final int vertexId = readableGraph.getVertex(vertexPosition);
+                                    boolean isSelected = false;
+
+                                    if (selectedAttributeId != Graph.NOT_FOUND) {
+                                        isSelected = readableGraph.getBooleanValue(selectedAttributeId, vertexId);
+                                    }
+                                    // If it is not in selected only mode then just add every row but if it is
+                                    // in selected only mode, only add the ones that are selected in the graph
+                                    if (!state.isSelectedOnly() || isSelected) {
+                                        rows.add(getRowDataForVertex(readableGraph, vertexId));
+                                    }
+                                });
+                                break;
+                            }
+                        }
                     }
                 } finally {
                     readableGraph.release();
@@ -602,19 +623,17 @@ public class Table {
             if (attributeId != Graph.NOT_FOUND) {
                 switch (column.getAttributeNamePrefix()) {
                     case GraphRecordStoreUtilities.SOURCE -> {
-                        //LOGGER.log(Level.WARNING, "Transaction SOURCE: {0} {1}", new Object[]{ column.getAttribute().getElementType(), column.getAttribute().getName()});
                         final int sourceVertexId = readableGraph.getTransactionSourceVertex(transactionId);
                         attributeValue = readableGraph.getObjectValue(attributeId, sourceVertexId);
                     }
-                    case GraphRecordStoreUtilities.TRANSACTION -> 
-                        //LOGGER.log(Level.WARNING, "Transaction TRANSACTION: {0} {1}", new Object[]{ column.getAttribute().getElementType(), column.getAttribute().getName()});
+                    case GraphRecordStoreUtilities.TRANSACTION ->
                         attributeValue = readableGraph.getObjectValue(attributeId, transactionId);
                     case GraphRecordStoreUtilities.DESTINATION -> {
-                        //LOGGER.log(Level.WARNING, "Transaction DESTINATION: {0} {1}", new Object[]{ column.getAttribute().getElementType(), column.getAttribute().getName()});
                         final int destinationVertexId = readableGraph.getTransactionDestinationVertex(transactionId);
                         attributeValue = readableGraph.getObjectValue(attributeId, destinationVertexId);
                     }
-                    default -> attributeValue = null;
+                    default ->
+                        attributeValue = null;
                 }
             } else {
                 attributeValue = null;
@@ -656,19 +675,17 @@ public class Table {
             if (attributeId != Graph.NOT_FOUND) {
                 switch (column.getAttributeNamePrefix()) {
                     case GraphRecordStoreUtilities.SOURCE -> {
-                        //LOGGER.log(Level.WARNING, "Edge SOURCE: {0} {1}", new Object[]{ column.getAttribute().getElementType(), column.getAttribute().getName()});
                         final int sourceVertexId = readableGraph.getEdgeSourceVertex(edgeId);
                         attributeValue = readableGraph.getObjectValue(attributeId, sourceVertexId);
                     }
-                    case GraphRecordStoreUtilities.TRANSACTION -> 
-                        //LOGGER.log(Level.WARNING, "Edge TRANSACTION: {0} {1}", new Object[]{ column.getAttribute().getElementType(), column.getAttribute().getName()});
+                    case GraphRecordStoreUtilities.TRANSACTION ->
                         attributeValue = readableGraph.getObjectValue(attributeId, edgeId);
                     case GraphRecordStoreUtilities.DESTINATION -> {
-                        //LOGGER.log(Level.WARNING, "Edge DESTINATION: {0} {1}", new Object[]{ column.getAttribute().getElementType(), column.getAttribute().getName()});
                         final int destinationVertexId = readableGraph.getEdgeDestinationVertex(edgeId);
                         attributeValue = readableGraph.getObjectValue(attributeId, destinationVertexId);
                     }
-                    default -> attributeValue = null;
+                    default ->
+                        attributeValue = null;
                 }
             } else {
                 attributeValue = null;
@@ -684,8 +701,7 @@ public class Table {
 
         return rowData;
     }
-    
-    
+
     /**
      * For a given edge
      *
@@ -711,19 +727,18 @@ public class Table {
             // TODO link needs different column names
             if (attributeId != Graph.NOT_FOUND) {
                 switch (column.getAttributeNamePrefix()) {
-                    case GraphRecordStoreUtilities.SOURCE -> {
-                        //LOGGER.log(Level.WARNING, "Edge SOURCE: {0} {1}", new Object[]{ column.getAttribute().getElementType(), column.getAttribute().getName()});
+                    case GraphRecordStoreUtilities.LINK_LOW -> {
                         final int sourceVertexId = readableGraph.getLinkLowVertex(linkId);
                         attributeValue = readableGraph.getObjectValue(attributeId, sourceVertexId);
                     }
-                    case GraphRecordStoreUtilities.TRANSACTION -> 
-                        //LOGGER.log(Level.WARNING, "Edge TRANSACTION: {0} {1}", new Object[]{ column.getAttribute().getElementType(), column.getAttribute().getName()});
+                    case GraphRecordStoreUtilities.TRANSACTION ->
                         attributeValue = readableGraph.getObjectValue(attributeId, linkId);
-                    case GraphRecordStoreUtilities.DESTINATION -> {
+                    case GraphRecordStoreUtilities.LINK_HIGH -> {
                         final int destinationVertexId = readableGraph.getLinkHighVertex(linkId);
                         attributeValue = readableGraph.getObjectValue(attributeId, destinationVertexId);
                     }
-                    default -> attributeValue = null;
+                    default ->
+                        attributeValue = null;
                 }
             } else {
                 attributeValue = null;

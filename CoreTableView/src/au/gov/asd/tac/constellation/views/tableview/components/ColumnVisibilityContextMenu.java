@@ -90,8 +90,6 @@ public class ColumnVisibilityContextMenu {
     private CustomMenuItem showPrimaryColumnsMenu;
     private CustomMenuItem hideAllColumnsMenu;
 
-    private static final Logger LOGGER = Logger.getLogger(ColumnVisibilityContextMenu.class.getName());
-
     /**
      * Creates a new column visibility context menu.
      *
@@ -109,7 +107,6 @@ public class ColumnVisibilityContextMenu {
         contextMenu = new ContextMenu();
 
         showAllColumnsMenu = createCustomMenu(ALL_COLUMNS, e -> {
-            LOGGER.log(Level.WARNING, "Calling createCustomMenu");
             getActiveTableReference().updateVisibleColumns(
                     getTableViewTopComponent().getCurrentGraph(),
                     getTableViewTopComponent().getCurrentState(),
@@ -120,7 +117,6 @@ public class ColumnVisibilityContextMenu {
         });
 
         showDefaultColumnsMenu = createCustomMenu(DEFAULT_COLUMNS, e -> {
-            LOGGER.log(Level.WARNING, "Calling showDefaultColumnsMenu");
             getActiveTableReference().updateVisibleColumns(
                     getTableViewTopComponent().getCurrentGraph(),
                     getTableViewTopComponent().getCurrentState(),
@@ -135,7 +131,6 @@ public class ColumnVisibilityContextMenu {
         });
 
         showPrimaryColumnsMenu = createCustomMenu(KEY_COLUMNS, e -> {
-            LOGGER.log(Level.WARNING, "CALLING showPrimaryColumnsMenu");
             if (getTableViewTopComponent().getCurrentGraph() != null) {
                 final Set<GraphAttribute> keyAttributes = new HashSet<>();
                 final ReadableGraph readableGraph = getTableViewTopComponent().getCurrentGraph().getReadableGraph();
@@ -168,7 +163,6 @@ public class ColumnVisibilityContextMenu {
         });
 
         hideAllColumnsMenu = createCustomMenu(NO_COLUMNS, e -> {
-            LOGGER.log(Level.WARNING, "Calling hideAllColumnsMenu");
             table.getColumnIndex().forEach(column -> column.getTableColumn().setVisible(false));
             getActiveTableReference().updateVisibleColumns(
                     getTableViewTopComponent().getCurrentGraph(),

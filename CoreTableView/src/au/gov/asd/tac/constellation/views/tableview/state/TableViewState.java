@@ -34,12 +34,16 @@ public final class TableViewState {
     private GraphElementType elementType;
     private List<Tuple<String, Attribute>> vertexColumnAttributes;
     private List<Tuple<String, Attribute>> transactionColumnAttributes;
+    private List<Tuple<String, Attribute>> edgeColumnAttributes;
+    private List<Tuple<String, Attribute>> linkColumnAttributes;
 
     public TableViewState() {
         this.selectedOnly = false;
         this.elementType = GraphElementType.TRANSACTION;
         this.transactionColumnAttributes = null;
         this.vertexColumnAttributes = null;
+        this.edgeColumnAttributes = null;
+        this.linkColumnAttributes = null;
     }
 
     public TableViewState(final TableViewState state) {
@@ -50,6 +54,10 @@ public final class TableViewState {
                 ? null : state.transactionColumnAttributes;
         this.vertexColumnAttributes = state == null
                 ? null : state.vertexColumnAttributes;
+        this.edgeColumnAttributes = state == null
+                ? null : state.edgeColumnAttributes;
+        this.linkColumnAttributes = state == null
+                ? null : state.linkColumnAttributes;
     }
 
     public boolean isSelectedOnly() {
@@ -85,10 +93,20 @@ public final class TableViewState {
     }
 
     public List<Tuple<String, Attribute>> getColumnAttributes() {
-        return elementType == GraphElementType.VERTEX
-                ? vertexColumnAttributes : transactionColumnAttributes;
+        return switch (elementType) {
+            case GraphElementType.TRANSACTION ->
+                transactionColumnAttributes;
+            case GraphElementType.VERTEX ->
+                vertexColumnAttributes;
+            case GraphElementType.LINK ->
+                linkColumnAttributes;
+            case GraphElementType.EDGE ->
+                edgeColumnAttributes;
+            default ->
+                transactionColumnAttributes;
+        };
     }
-    
+
     public void setColumnAttributes(final List<Tuple<String, Attribute>> columnAttributes) {
         switch (elementType) {
             case GraphElementType.TRANSACTION:
@@ -97,9 +115,11 @@ public final class TableViewState {
             case GraphElementType.VERTEX:
                 this.vertexColumnAttributes = columnAttributes;
                 break;
-            case LINK: // TODO if I can get custom link columns
-            case EDGE:
-                this.transactionColumnAttributes = columnAttributes;
+            case GraphElementType.LINK: 
+                this.linkColumnAttributes = columnAttributes;
+                break;
+            case GraphElementType.EDGE:
+                this.edgeColumnAttributes = columnAttributes;
                 break;
             default:
                 this.transactionColumnAttributes = columnAttributes;

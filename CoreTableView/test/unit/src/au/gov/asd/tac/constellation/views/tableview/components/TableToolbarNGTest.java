@@ -221,10 +221,18 @@ public class TableToolbarNGTest {
                 "Element Type"
         );
 
-        elementTypeChangeActionChecks(GraphElementType.VERTEX, GraphElementType.TRANSACTION,
+        elementTypeChangeActionChecks(GraphElementType.VERTEX, GraphElementType.EDGE,
+                new ImageView(UserInterfaceIconProvider.EDGES.buildImage(16)).getImage());
+        
+        elementTypeChangeActionChecks(GraphElementType.EDGE, GraphElementType.LINK,
+                new ImageView(UserInterfaceIconProvider.LINKS.buildImage(16)).getImage());
+        
+        elementTypeChangeActionChecks(GraphElementType.LINK, GraphElementType.TRANSACTION,
                 new ImageView(UserInterfaceIconProvider.TRANSACTIONS.buildImage(16)).getImage());
+        
         elementTypeChangeActionChecks(GraphElementType.META, GraphElementType.TRANSACTION,
                 new ImageView(UserInterfaceIconProvider.TRANSACTIONS.buildImage(16)).getImage());
+        
         elementTypeChangeActionChecks(GraphElementType.TRANSACTION, GraphElementType.VERTEX,
                 new ImageView(UserInterfaceIconProvider.NODES.buildImage(16)).getImage());
 
@@ -362,6 +370,8 @@ public class TableToolbarNGTest {
             final Image expectedIcon,
             final String expectedToolTip) {
         final ImageView buttonIcon = (ImageView) button.getGraphic();
+        System.out.println("Expected: " + expectedIcon + " Got: " + buttonIcon.getImage());
+        System.out.println("Expected tooltip: " + expectedToolTip + " Got: " + button.getTooltip().getText());
         assertTrue(isImageEqual(expectedIcon, buttonIcon.getImage()));
         assertEquals(120.0d, button.getMaxWidth());
         assertEquals(new Insets(5), button.getPadding());

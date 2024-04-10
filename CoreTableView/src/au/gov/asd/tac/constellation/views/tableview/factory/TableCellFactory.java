@@ -34,6 +34,8 @@ public class TableCellFactory extends TableCell<ObservableList<String>, String> 
     private static final String ELEMENT_SOURCE_CLASS = "element-source";
     private static final String ELEMENT_DESTINATION_CLASS = "element-destination";
     private static final String ELEMENT_TRANSACTION_CLASS = "element-transaction";
+    private static final String ELEMENT_LOW_CLASS = "element-low";
+    private static final String ELEMENT_HIGH_CLASS = "element-high";
     private static final String NULL_VALUE_CLASS = "null-value";
 
     private static final String NO_VALUE_TEXT = "<No Value>";
@@ -80,6 +82,8 @@ public class TableCellFactory extends TableCell<ObservableList<String>, String> 
             this.getStyleClass().remove(ELEMENT_SOURCE_CLASS);
             this.getStyleClass().remove(ELEMENT_TRANSACTION_CLASS);
             this.getStyleClass().remove(ELEMENT_DESTINATION_CLASS);
+            this.getStyleClass().remove(ELEMENT_LOW_CLASS);
+            this.getStyleClass().remove(ELEMENT_HIGH_CLASS);
 
             // based on the column name prefixes ".source", ".destination" and
             // ".transaction" set the appropriate style class
@@ -96,6 +100,12 @@ public class TableCellFactory extends TableCell<ObservableList<String>, String> 
                     break;
                 case GraphRecordStoreUtilities.DESTINATION:
                     this.getStyleClass().add(ELEMENT_DESTINATION_CLASS);
+                    break;
+                case GraphRecordStoreUtilities.LINK_LOW:
+                    this.getStyleClass().add(ELEMENT_LOW_CLASS);
+                    break;
+                case GraphRecordStoreUtilities.LINK_HIGH:
+                    this.getStyleClass().add(ELEMENT_HIGH_CLASS);
                     break;
                 default:
                     // Code can't make it to here
