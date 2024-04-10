@@ -91,6 +91,22 @@ public final class TableViewState {
     public void setVertexColumnAttributes(final List<Tuple<String, Attribute>> vertexColumnAttributes) {
         this.vertexColumnAttributes = vertexColumnAttributes;
     }
+    
+    public List<Tuple<String, Attribute>> getEdgeColumnAttributes() {
+        return edgeColumnAttributes;
+    }
+
+    public void setEdgeColumnAttributes(final List<Tuple<String, Attribute>> edgeColumnAttributes) {
+        this.edgeColumnAttributes = edgeColumnAttributes;
+    }
+    
+    public List<Tuple<String, Attribute>> getLinkColumnAttributes() {
+        return linkColumnAttributes;
+    }
+
+    public void setLinkColumnAttributes(final List<Tuple<String, Attribute>> linkColumnAttributes) {
+        this.linkColumnAttributes = linkColumnAttributes;
+    }
 
     public List<Tuple<String, Attribute>> getColumnAttributes() {
         return switch (elementType) {
@@ -144,6 +160,8 @@ public final class TableViewState {
                 .append(getElementType(), rhs.getElementType())
                 .append(getTransactionColumnAttributes(), rhs.getTransactionColumnAttributes())
                 .append(getVertexColumnAttributes(), rhs.getVertexColumnAttributes())
+                .append(getEdgeColumnAttributes(), rhs.getEdgeColumnAttributes())
+                .append(getLinkColumnAttributes(), rhs.getLinkColumnAttributes())
                 .isEquals();
     }
 
@@ -154,6 +172,8 @@ public final class TableViewState {
                 .append(getElementType())
                 .append(getVertexColumnAttributes())
                 .append(getTransactionColumnAttributes())
+                .append(getEdgeColumnAttributes())
+                .append(getLinkColumnAttributes())
                 .toHashCode();
     }
 
@@ -164,6 +184,8 @@ public final class TableViewState {
                 .append("elementType", getElementType())
                 .append("transactionColumnAttributes", getTransactionColumnAttributes())
                 .append("vertexColumnAttributes", getVertexColumnAttributes())
+                .append("edgeColumnAttributes", getEdgeColumnAttributes())
+                .append("linkColumnAttributes", getLinkColumnAttributes())
                 .toString();
     }
 }

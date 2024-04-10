@@ -370,8 +370,6 @@ public class TableToolbarNGTest {
             final Image expectedIcon,
             final String expectedToolTip) {
         final ImageView buttonIcon = (ImageView) button.getGraphic();
-        System.out.println("Expected: " + expectedIcon + " Got: " + buttonIcon.getImage());
-        System.out.println("Expected tooltip: " + expectedToolTip + " Got: " + button.getTooltip().getText());
         assertTrue(isImageEqual(expectedIcon, buttonIcon.getImage()));
         assertEquals(120.0d, button.getMaxWidth());
         assertEquals(new Insets(5), button.getPadding());
