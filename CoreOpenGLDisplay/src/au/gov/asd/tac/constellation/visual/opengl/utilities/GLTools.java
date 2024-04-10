@@ -590,7 +590,11 @@ public final class GLTools {
         glCurrent.glGetIntegerv(GL2ES3.GL_MAX_ARRAY_TEXTURE_LAYERS, v, 0);
         final int maxIcons = v[0] * 64;
         if (icons.size() > maxIcons) {
-            final String log = String.format("****\n**** Warning: nIcons %d > GL_MAX_ARRAY_TEXTURE_LAYERS %d\n****\n", icons.size(), maxIcons);
+            final String log = """
+                               ****
+                               **** Warning: nIcons %d > GL_MAX_ARRAY_TEXTURE_LAYERS %d
+                               ****
+                               """.formatted(icons.size(), maxIcons);
             LOGGER.log(Level.INFO, log);
         }
 
