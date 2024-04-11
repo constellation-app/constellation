@@ -24,8 +24,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.input.MouseButton;
 
 /**
- * A {@link TableCell} that updates the cells text and style classes on change.
- * It also sets up the right click context menu for cell clicks.
+ * A {@link TableCell} that updates the cells text and style classes on change. It also sets up the right click context
+ * menu for cell clicks.
  *
  * @author formalhaunt
  */
@@ -58,12 +58,11 @@ public class TableCellFactory extends TableCell<ObservableList<String>, String> 
     }
 
     /**
-     * Sets the cells text to the passed item and then updates the cells style
-     * classes based on the cells column attributes.
+     * Sets the cells text to the passed item and then updates the cells style classes based on the cells column
+     * attributes.
      *
      * @param item the string to set the cells text to
-     * @param empty true and the item will not be set to the cells text, false
-     * and it will
+     * @param empty true and the item will not be set to the cells text, false and it will
      */
     @Override
     public void updateItem(final String item, final boolean empty) {
@@ -126,9 +125,8 @@ public class TableCellFactory extends TableCell<ObservableList<String>, String> 
     }
 
     /**
-     * Gets a initialized {@link RightClickContextMenu}. If the context menu has
-     * already been initialized it will use that otherwise it will create and
-     * initialize the menu.
+     * Gets a initialized {@link RightClickContextMenu}. If the context menu has already been initialized it will use
+     * that otherwise it will create and initialize the menu.
      *
      * @return the right click context menu for this cell
      */

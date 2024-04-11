@@ -59,9 +59,8 @@ import javax.swing.SwingUtilities;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
- * Representation of the table. This wraps the JavaFX UI {@link TableView}
- * component and provides methods for performing updates based on the current
- * state and graph.
+ * Representation of the table. This wraps the JavaFX UI {@link TableView} component and provides methods for performing
+ * updates based on the current state and graph.
  *
  * @author formalhaunt
  */
@@ -79,8 +78,8 @@ public class Table {
     private final ListChangeListener selectedOnlySelectionListener;
 
     /**
-     * Cache strings used in table cells to significantly reduce memory used by
-     * the same string repeated in columns and rows.
+     * Cache strings used in table cells to significantly reduce memory used by the same string repeated in columns and
+     * rows.
      */
     private final ImmutableObjectCache displayTextCache;
 
@@ -132,25 +131,21 @@ public class Table {
     }
 
     /**
-     * Update the columns in the table using the graph and state. This will
-     * clear and refresh the column index and then trigger a refresh of the
-     * table view, populating from the new column index.
+     * Update the columns in the table using the graph and state. This will clear and refresh the column index and then
+     * trigger a refresh of the table view, populating from the new column index.
      * <p/>
-     * If the table's state has an element type of VERTEX then all the columns
-     * will be prefixed with ".source".
+     * If the table's state has an element type of VERTEX then all the columns will be prefixed with ".source".
      * <p/>
-     * If the element type is TRANSACTION then the attributes belonging to
-     * transactions will be prefixed with ".transaction". The vertex attributes
-     * will also be added as columns in this case. When the state's element type
-     * is TRANSACTION the vertex attributes will be prefixed with both ".source"
-     * and ".destination" so that it is distinguishable on which end of the
-     * transaction those values are present.
+     * If the element type is TRANSACTION then the attributes belonging to transactions will be prefixed with
+     * ".transaction". The vertex attributes will also be added as columns in this case. When the state's element type
+     * is TRANSACTION the vertex attributes will be prefixed with both ".source" and ".destination" so that it is
+     * distinguishable on which end of the transaction those values are present.
      * <p/>
-     * Note that column references are reused where possible to ensure certain
-     * toolbar/menu operations to work correctly.
+     * Note that column references are reused where possible to ensure certain toolbar/menu operations to work
+     * correctly.
      * <p/>
-     * The entire method is synchronized so it should be thread safe and keeps
-     * the locking logic simpler. Maybe this method could be broken out further.
+     * The entire method is synchronized so it should be thread safe and keeps the locking logic simpler. Maybe this
+     * method could be broken out further.
      *
      * @param graph the graph to retrieve data from.
      * @param state the current table view state.
@@ -256,15 +251,14 @@ public class Table {
     /**
      * Update the data in the table using the graph and state.
      * <p/>
-     * If the table is in "Selection Only" mode then only the elements on the
-     * graph that are selected will be loaded into the table, otherwise they all
-     * will.
+     * If the table is in "Selection Only" mode then only the elements on the graph that are selected will be loaded
+     * into the table, otherwise they all will.
      * <p/>
-     * Which elements are loaded also depends on which element type the table
-     * state is currently set to, vertex or transaction.
+     * Which elements are loaded also depends on which element type the table state is currently set to, vertex or
+     * transaction.
      * <p/>
-     * The entire method is synchronized so it should be thread safe and keeps
-     * the locking logic simpler. Maybe this method could be broken out further.
+     * The entire method is synchronized so it should be thread safe and keeps the locking logic simpler. Maybe this
+     * method could be broken out further.
      *
      * @param graph the graph to retrieve data from.
      * @param state the current table view state.
@@ -423,14 +417,13 @@ public class Table {
     }
 
     /**
-     * Update the table selection using the graph and state. The selection will
-     * only be updated if the graph and state are not null.
+     * Update the table selection using the graph and state. The selection will only be updated if the graph and state
+     * are not null.
      * <p/>
-     * The table selection will only be updated if it <b>IS NOT</b> in "Selected
-     * Only Mode" because the selection is extracted from the graph.
+     * The table selection will only be updated if it <b>IS NOT</b> in "Selected Only Mode" because the selection is
+     * extracted from the graph.
      * <p/>
-     * An illegal state will be created if this method is called by either the
-     * JavaFX or Swing Event threads.
+     * An illegal state will be created if this method is called by either the JavaFX or Swing Event threads.
      * <p/>
      * The entire method is synchronized to ensure thread safety.
      *
@@ -484,8 +477,7 @@ public class Table {
     }
 
     /**
-     * If the sort has been saved in the currently loaded table preferences,
-     * then re-apply it to the table.
+     * If the sort has been saved in the currently loaded table preferences, then re-apply it to the table.
      *
      */
     public void updateSortOrder() {
@@ -505,9 +497,8 @@ public class Table {
     }
 
     /**
-     * Gets a listener that listens for table selections and updates the
-     * selection in the graph if "Selected Only Mode" <b>IS NOT</b> active.
-     * Otherwise this listener does nothing.
+     * Gets a listener that listens for table selections and updates the selection in the graph if "Selected Only Mode"
+     * <b>IS NOT</b> active. Otherwise this listener does nothing.
      *
      * @return the table selection listener
      * @see TableSelectionListener
@@ -518,9 +509,8 @@ public class Table {
 
     /**
      * Gets a listener that listens for table selections and updates the
-     * {@link ActiveTableReference#selectedOnlySelectedRows} list with the
-     * current selection. This listener only does this if the "Selected Only
-     * Mode" <b>IS</>
+     * {@link ActiveTableReference#selectedOnlySelectedRows} list with the current selection. This listener only does
+     * this if the "Selected Only Mode" <b>IS</>
      * active.
      *
      * @return the "Selected Only Mode" selection listener
@@ -558,9 +548,8 @@ public class Table {
     }
 
     /**
-     * For a given vertex on the graph construct a row for the table give the
-     * current column settings. If the column is a transaction column then a
-     * null value will be inserted for that element of the row.
+     * For a given vertex on the graph construct a row for the table give the current column settings. If the column is
+     * a transaction column then a null value will be inserted for that element of the row.
      *
      * @param readableGraph the graph to build the row from
      * @param vertexId the ID of the vertex in the graph to build the row from
@@ -590,17 +579,15 @@ public class Table {
     }
 
     /**
-     * For a given transaction on the graph construct a row for the table given
-     * the current column settings. In the case of source and destination
-     * columns the value entered will be sourced from the source and destination
-     * vertices respectively.
+     * For a given transaction on the graph construct a row for the table given the current column settings. In the case
+     * of source and destination columns the value entered will be sourced from the source and destination vertices
+     * respectively.
      * <p/>
      * During this the {@link ActiveTableReference#elementIdToRowIndex} and
      * {@link ActiveTableReference#rowToElementIdIndex} maps are populated.
      *
      * @param readableGraph the graph to build the row from
-     * @param transactionId the ID of the transaction in the graph to build the
-     * row from
+     * @param transactionId the ID of the transaction in the graph to build the row from
      * @return the built row
      */
     protected ObservableList<String> getRowDataForTransaction(final ReadableGraph readableGraph,
@@ -647,17 +634,15 @@ public class Table {
     }
 
     /**
-     * For a given edge on the graph construct a row for the table given
-     * the current column settings. In the case of source and destination
-     * columns the value entered will be sourced from the source and destination
-     * vertices respectively.
+     * For a given edge on the graph construct a row for the table given the current column settings. In the case of
+     * source and destination columns the value entered will be sourced from the source and destination vertices
+     * respectively.
      * <p/>
      * During this the {@link ActiveTableReference#elementIdToRowIndex} and
      * {@link ActiveTableReference#rowToElementIdIndex} maps are populated.
      *
      * @param readableGraph the graph to build the row from
-     * @param edgeId the ID of the edge in the graph to build the row
-     * from
+     * @param edgeId the ID of the edge in the graph to build the row from
      * @return the built row
      */
     protected ObservableList<String> getRowDataForEdge(final ReadableGraph readableGraph,
@@ -705,17 +690,14 @@ public class Table {
     }
 
     /**
-     * For a given link on the graph construct a row for the table given
-     * the current column settings. In the case of low and high
-     * columns the value entered will be sourced from the low and high
-     * vertices respectively.
+     * For a given link on the graph construct a row for the table given the current column settings. In the case of low
+     * and high columns the value entered will be sourced from the low and high vertices respectively.
      * <p/>
      * During this the {@link ActiveTableReference#elementIdToRowIndex} and
      * {@link ActiveTableReference#rowToElementIdIndex} maps are populated.
      *
      * @param readableGraph the graph to build the row from
-     * @param linkId the ID of the link in the graph to build the row
-     * from
+     * @param linkId the ID of the link in the graph to build the row from
      * @return the built row
      */
     protected ObservableList<String> getRowDataForLink(final ReadableGraph readableGraph,
@@ -764,27 +746,22 @@ public class Table {
     }
 
     /**
-     * For the specified element type (vertex or transaction), iterates through
-     * that element types attributes in the graph and generates columns for each
-     * one.
+     * For the specified element type (vertex or transaction), iterates through that element types attributes in the
+     * graph and generates columns for each one.
      * <p/>
-     * The column name will be the attribute name prefixed by the passed
-     * {@code attributeNamePrefix} parameter. This parameter will be one of
-     * "source.", "destination." or "transaction.".
+     * The column name will be the attribute name prefixed by the passed {@code attributeNamePrefix} parameter. This
+     * parameter will be one of "source.", "destination." or "transaction.".
      * <p/>
-     * The column reference map contains previously generated columns and is
-     * used as a reference so that new column objects are not created
-     * needlessly.
+     * The column reference map contains previously generated columns and is used as a reference so that new column
+     * objects are not created needlessly.
      *
      * @param readableGraph the graph to extract the attributes from
-     * @param elementType the type of elements that the attributes will be
-     * extracted from, {@link GraphElementType#VERTEX} or
-     * {@link GraphElementType#TRANSACTION}
-     * @param attributeNamePrefix the string that will prefix the attribute name
-     * in the column name, will be one of "source.", "destination." or
-     * "transaction."
-     * @param columnReferenceMap a map of existing columns that can be used
-     * instead of creating new ones if the column names match up
+     * @param elementType the type of elements that the attributes will be extracted from,
+     * {@link GraphElementType#VERTEX} or {@link GraphElementType#TRANSACTION}
+     * @param attributeNamePrefix the string that will prefix the attribute name in the column name, will be one of
+     * "source.", "destination." or "transaction."
+     * @param columnReferenceMap a map of existing columns that can be used instead of creating new ones if the column
+     * names match up
      */
     protected List<Column> createColumnIndexPart(final ReadableGraph readableGraph,
             final GraphElementType elementType,
@@ -814,9 +791,8 @@ public class Table {
     }
 
     /**
-     * Creates a new column with the given name. This has been primarily created
-     * for unit testing to allow the insertion of mocked versions into the
-     * calling code.
+     * Creates a new column with the given name. This has been primarily created for unit testing to allow the insertion
+     * of mocked versions into the calling code.
      *
      * @param attributeName the name of the column
      * @return the newly created column
@@ -828,9 +804,8 @@ public class Table {
     }
 
     /**
-     * Gets the context menu describing the columns that make a vertex or
-     * transaction unique. In other words the primary columns. Then manually
-     * triggers a click event causing those columns to be made visible.
+     * Gets the context menu describing the columns that make a vertex or transaction unique. In other words the primary
+     * columns. Then manually triggers a click event causing those columns to be made visible.
      *
      * @see ColumnVisibilityContextMenu#getShowPrimaryColumnsMenu()
      */

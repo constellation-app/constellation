@@ -91,7 +91,7 @@ public final class TableViewState {
     public void setVertexColumnAttributes(final List<Tuple<String, Attribute>> vertexColumnAttributes) {
         this.vertexColumnAttributes = vertexColumnAttributes;
     }
-    
+
     public List<Tuple<String, Attribute>> getEdgeColumnAttributes() {
         return edgeColumnAttributes;
     }
@@ -99,7 +99,7 @@ public final class TableViewState {
     public void setEdgeColumnAttributes(final List<Tuple<String, Attribute>> edgeColumnAttributes) {
         this.edgeColumnAttributes = edgeColumnAttributes;
     }
-    
+
     public List<Tuple<String, Attribute>> getLinkColumnAttributes() {
         return linkColumnAttributes;
     }
@@ -131,7 +131,7 @@ public final class TableViewState {
             case GraphElementType.VERTEX:
                 this.vertexColumnAttributes = columnAttributes;
                 break;
-            case GraphElementType.LINK: 
+            case GraphElementType.LINK:
                 this.linkColumnAttributes = columnAttributes;
                 break;
             case GraphElementType.EDGE:

@@ -87,8 +87,7 @@ public class TableToolbar {
     }
 
     /**
-     * Initializes the export menu. Until this method is called, all menu UI
-     * components will be null.
+     * Initializes the export menu. Until this method is called, all menu UI components will be null.
      */
     public void init() {
         columnVisibilityButton = createButton(COLUMNS_ICON, COLUMN_VISIBILITY, e -> {
@@ -178,8 +177,8 @@ public class TableToolbar {
     }
 
     /**
-     * Gets the tool bar UI component that will be added to the table and
-     * contains all the other UI buttons etc that are created and added to it.
+     * Gets the tool bar UI component that will be added to the table and contains all the other UI buttons etc that are
+     * created and added to it.
      *
      * @return the table tool bar
      */
@@ -188,8 +187,8 @@ public class TableToolbar {
     }
 
     /**
-     * Gets the column visibility button on the tool bar. This button will, when
-     * clicked generate a context menu with more options to select from.
+     * Gets the column visibility button on the tool bar. This button will, when clicked generate a context menu with
+     * more options to select from.
      *
      * @return the column visibility button on the tool bar
      * @see ColumnVisibilityContextMenu
@@ -199,11 +198,9 @@ public class TableToolbar {
     }
 
     /**
-     * Gets the "Element Type" button from the tool bar that toggles between the
-     * currently displayed element types.
+     * Gets the "Element Type" button from the tool bar that toggles between the currently displayed element types.
      * <p/>
-     * The table displays either nodes or edges. This button is what toggles
-     * between the two.
+     * The table displays either nodes or edges. This button is what toggles between the two.
      *
      * @return the element type button on the tool bar
      */
@@ -223,14 +220,12 @@ public class TableToolbar {
     /**
      * Gets the "Selected Only Mode" toggle button on the tool bar.
      * <p/>
-     * When "Selected Only Mode" is <b>ON</b>, selection in the table does not
-     * effect selection in the graph and vice versa. This is because the
-     * contents of the table is only what is selected in the graph and of the
-     * active table element type.
+     * When "Selected Only Mode" is <b>ON</b>, selection in the table does not effect selection in the graph and vice
+     * versa. This is because the contents of the table is only what is selected in the graph and of the active table
+     * element type.
      * <p/>
-     * When "Selected Only Mode" is <b>OFF</b> then selection in the table
-     * effects selection in the graph and vice versa because the contents of the
-     * table is all elements of the active table element type in the graph.
+     * When "Selected Only Mode" is <b>OFF</b> then selection in the table effects selection in the graph and vice versa
+     * because the contents of the table is all elements of the active table element type in the graph.
      *
      * @return the "Selected Only Mode" toggle button
      */
@@ -239,8 +234,8 @@ public class TableToolbar {
     }
 
     /**
-     * Gets the {@link ExportMenu} associated to the tool bar. The export menu
-     * will allow for the export of the table data into different formats.
+     * Gets the {@link ExportMenu} associated to the tool bar. The export menu will allow for the export of the table
+     * data into different formats.
      *
      * @return the export menu on the tool bar
      * @see ExportMenu
@@ -250,8 +245,8 @@ public class TableToolbar {
     }
 
     /**
-     * Gets the {@link CopyMenu} associated to the tool bar. The copy menu will
-     * allow for the loading of CSV table data into the OS clipboard.
+     * Gets the {@link CopyMenu} associated to the tool bar. The copy menu will allow for the loading of CSV table data
+     * into the OS clipboard.
      *
      * @return the copy menu on the tool bar
      * @see CopyMenu
@@ -316,9 +311,8 @@ public class TableToolbar {
     }
 
     /**
-     * Gets the initial icon for the element type button. If the current state
-     * is null or has the element type set to {@link GraphElementType#VERTEX}
-     * then the {@link #VERTEX_ICON} will be returned, other wise the
+     * Gets the initial icon for the element type button. If the current state is null or has the element type set to
+     * {@link GraphElementType#VERTEX} then the {@link #VERTEX_ICON} will be returned, other wise the
      * {@link #TRANSACTION_ICON} will be returned.
      *
      * @return the initial icon to place on the element type button
@@ -343,10 +337,9 @@ public class TableToolbar {
     }
 
     /**
-     * Gets the initial icon for the selected only button. If the current state
-     * is null or has the selected only flag set to true then the
-     * {@link #SELECTED_VISIBLE_ICON} will be returned, otherwise the
-     * {@link #ALL_VISIBLE_ICON} will be returned.
+     * Gets the initial icon for the selected only button. If the current state is null or has the selected only flag
+     * set to true then the {@link #SELECTED_VISIBLE_ICON} will be returned, otherwise the {@link #ALL_VISIBLE_ICON}
+     * will be returned.
      *
      * @return the initial icon to place on the selected only button
      */
