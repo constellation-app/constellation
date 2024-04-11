@@ -90,6 +90,9 @@ public class TableCellFactory extends TableCell<ObservableList<String>, String> 
                 case GraphRecordStoreUtilities.SOURCE -> this.getStyleClass().add(ELEMENT_SOURCE_CLASS);
                 case GraphRecordStoreUtilities.TRANSACTION -> this.getStyleClass().add(ELEMENT_TRANSACTION_CLASS);
                 case GraphRecordStoreUtilities.DESTINATION -> this.getStyleClass().add(ELEMENT_DESTINATION_CLASS);
+                default -> {
+                    // do nothing
+                }
             }
 
             // enable context menu on right-click

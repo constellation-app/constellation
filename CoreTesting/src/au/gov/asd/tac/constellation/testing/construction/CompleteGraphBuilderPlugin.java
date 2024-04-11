@@ -224,20 +224,17 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
                     int sxId = x;
                     int dxId = y;
                     if (randomWeights) {
-                        switch (reciprocity) {
-                            case 0 -> {
-                                final boolean random0 = r.nextBoolean();
-                                if (random0) {
-                                    sxId = y;
-                                    dxId = x;
-                                }
+                        if (reciprocity == 0) {
+                            final boolean random0 = r.nextBoolean();
+                            if (random0) {
+                                sxId = y;
+                                dxId = x;
                             }
-                            default -> {
-                                final int randomDefault = r.nextInt(5);
-                                if (randomDefault != 0) {
-                                    sxId = y;
-                                    dxId = x;
-                                }
+                        } else {
+                            final int randomDefault = r.nextInt(5);
+                            if (randomDefault != 0) {
+                                sxId = y;
+                                dxId = x;
                             }
                         }
                     }

@@ -347,20 +347,17 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
                     int sxId = graph.getTransactionSourceVertex(txId);
                     int dxId = graph.getTransactionDestinationVertex(txId);
                     if (randomWeights) {
-                        switch (reciprocity) {
-                            case 0 -> {
-                                final boolean random0 = r.nextBoolean();
-                                if (random0) {
-                                    sxId = graph.getTransactionDestinationVertex(txId);
-                                    dxId = graph.getTransactionSourceVertex(txId);
-                                }
+                        if (reciprocity == 0) {
+                            final boolean random0 = r.nextBoolean();
+                            if (random0) {
+                                sxId = graph.getTransactionDestinationVertex(txId);
+                                dxId = graph.getTransactionSourceVertex(txId);
                             }
-                            default -> {
-                                final int randomDefault = r.nextInt(5);
-                                if (randomDefault != 0) {
-                                    sxId = graph.getTransactionDestinationVertex(txId);
-                                    dxId = graph.getTransactionSourceVertex(txId);
-                                }
+                        } else {
+                            final int randomDefault = r.nextInt(5);
+                            if (randomDefault != 0) {
+                                sxId = graph.getTransactionDestinationVertex(txId);
+                                dxId = graph.getTransactionSourceVertex(txId);
                             }
                         }
                     }
