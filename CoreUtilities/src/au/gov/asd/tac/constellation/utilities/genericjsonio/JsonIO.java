@@ -221,7 +221,7 @@ public class JsonIO {
         for(int index = 1; index <= 5;) {
             
             FilenameFilter filenameFilter = (d, s) -> {
-             return s.endsWith("Ctrl "+index + " "+FileExtensionConstants.JSON);
+             return s.startsWith("Ctrl "+index + " "+FileExtensionConstants.JSON);
             };
             
             if(ArrayUtils.isEmpty(preferenceDirectory.list(filenameFilter))) {
