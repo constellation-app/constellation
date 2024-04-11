@@ -32,7 +32,7 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualAccess.ConnectionDire
 import java.io.File;
 
 /**
- * Provides a number fo methods required to interpret visual aspects of the graph. 
+ * Provides a number of methods required to interpret visual aspects of the graph. 
  * Creates a local copy of components required to interpret the graph for thread save usage.
  * 
  * @author capricornunicorn123

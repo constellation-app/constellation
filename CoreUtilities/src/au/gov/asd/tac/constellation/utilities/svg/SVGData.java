@@ -226,7 +226,7 @@ public class SVGData {
      * Generates a string representation of SVG data captured within this object.
      * will be formatted with indentations and line breaks to be written 
      * directly to an output file.
-     * @return String in an SVG format.
+     * @return an ArrayList<String> of lines in an SVG format.
      */
     public final ArrayList<String> toLines() {
         cleanAttributes();
@@ -246,7 +246,7 @@ public class SVGData {
      * Recursive function to generate a string equivalent of complex SVG data 
      * captured within this object.
      * @param prefix
-     * @return String representation of the current element and all of it's child elements.
+     * @return an ArrayList<String> representation of the current element and all of it's child elements.
      */
     private ArrayList<String> toString(final String prefix) {
         final ArrayList<String> svgString = new ArrayList<>();
@@ -317,7 +317,7 @@ public class SVGData {
      * manages the indented of child elements
      * 
      * @param prefix
-     * @return 
+     * @return an ArrayList<String>
      */
     private ArrayList<String> elementChildrenToSVG (final String prefix) {
         final ArrayList<String> childSVGString = new ArrayList<>();

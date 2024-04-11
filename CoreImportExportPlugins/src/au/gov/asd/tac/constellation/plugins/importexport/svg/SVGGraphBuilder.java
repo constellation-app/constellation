@@ -234,10 +234,13 @@ public class SVGGraphBuilder {
             Animation.startAnimation(new PanAnimation(String.format("Reset to %s View", exportPerspective), oldCamera, camera, true));
         }
         
+        final Frame frame = new Frame(camera.lookAtEye, camera.lookAtCentre, camera.lookAtUp);
+        frame.setOrigin(camera.lookAtEye); //Reposition the viewing position from the origin to the camera eye location
+        camera.setObjectFrame(frame); //Store the frame in the camera for easy access in other methods of this class.
+        
         // Determine the dimensions of the users InteractiveGraphView pane
         final int paneHeight = visualManager.getVisualComponent().getHeight();   
         final int paneWidth = visualManager.getVisualComponent().getWidth();
-        viewPort = new int[] {Math.round(camera.lookAtEye.getX()),  Math.round(camera.lookAtEye.getY()), paneWidth, paneHeight};
 
         // Define the view frustum in local units
         final float fieldOfView = Camera.FIELD_OF_VIEW; //Increase the field of view to ensure that objects near the end are rendered corretly.
@@ -254,13 +257,17 @@ public class SVGGraphBuilder {
         final Matrix44f scaleMatrix = new Matrix44f();
         scaleMatrix.makeScalingMatrix(new Vector3f(1.0F, -1.0F, 1.0F)); //invert the Y-axis for translation from OpenGL cardinality to SVG cardinality
         projectionMatrix.multiply(projectionMatrix, scaleMatrix);
-        modelViewProjectionMatrix.multiply(projectionMatrix, Graphics3DUtilities.getModelViewMatrix(camera));   
+        final Matrix44f modelViewMatrix = Graphics3DUtilities.getModelViewMatrix(camera);
+        modelViewProjectionMatrix.multiply(projectionMatrix, modelViewMatrix);   
         
         // Translate the frustum from local units to world units
-        final Frame frame = new Frame(camera.lookAtEye, camera.lookAtCentre, camera.lookAtUp);
-        frame.setOrigin(camera.lookAtEye); //Reposition the viewing position from the origin to the camera eye location
-        camera.setObjectFrame(frame); //Store the frame in the camera for easy access in other methods of this class.
         viewFrustum.transform(camera.getObjectFrame());
+        
+        // Translate and rotate the camera to get acurate x and y values for the view port 
+        Vector3f transformedCameraEye = new Vector3f();
+        transformedCameraEye.transform(camera.lookAtEye, modelViewMatrix);
+        viewPort = new int[] {Math.round(transformedCameraEye.getX()), Math.round(transformedCameraEye.getY()), paneWidth, paneHeight};
+        
         threadPool = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool("SVG Export");
     }
     
