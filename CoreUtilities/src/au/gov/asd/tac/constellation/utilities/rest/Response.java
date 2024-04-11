@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -105,7 +105,7 @@ public abstract class Response {
      * @return True if the HTTP response status code begins with 2 or 4, false
      * otherwise.
      */
-    public static boolean isCodeSuccess(int code) {
+    public static boolean isCodeSuccess(final int code) {
         final int range = code / 100;
         return range == 2 || range == 4;
     }
