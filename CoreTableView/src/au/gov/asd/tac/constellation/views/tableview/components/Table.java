@@ -647,10 +647,16 @@ public class Table {
     }
 
     /**
-     * For a given edge
+     * For a given edge on the graph construct a row for the table given
+     * the current column settings. In the case of source and destination
+     * columns the value entered will be sourced from the source and destination
+     * vertices respectively.
+     * <p/>
+     * During this the {@link ActiveTableReference#elementIdToRowIndex} and
+     * {@link ActiveTableReference#rowToElementIdIndex} maps are populated.
      *
      * @param readableGraph the graph to build the row from
-     * @param edgeId the ID of the transaction in the graph to build the row
+     * @param edgeId the ID of the edge in the graph to build the row
      * from
      * @return the built row
      */
@@ -699,10 +705,16 @@ public class Table {
     }
 
     /**
-     * For a given edge
+     * For a given link on the graph construct a row for the table given
+     * the current column settings. In the case of low and high
+     * columns the value entered will be sourced from the low and high
+     * vertices respectively.
+     * <p/>
+     * During this the {@link ActiveTableReference#elementIdToRowIndex} and
+     * {@link ActiveTableReference#rowToElementIdIndex} maps are populated.
      *
      * @param readableGraph the graph to build the row from
-     * @param linkId the ID of the transaction in the graph to build the row
+     * @param linkId the ID of the link in the graph to build the row
      * from
      * @return the built row
      */
