@@ -490,15 +490,14 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
                 options.clear();
                 choice = null;
                 valueChanged = true;
-            } else if (o instanceof SingleChoiceParameterValue) {
-                final SingleChoiceParameterValue sc = (SingleChoiceParameterValue) o;
-                if (!Objects.equals(options, sc.options)) {
+            } else if (o instanceof SingleChoiceParameterValue singleChoiceParameterValue) {
+                if (!Objects.equals(options, singleChoiceParameterValue.options)) {
                     options.clear();
-                    options.addAll(sc.options);
+                    options.addAll(singleChoiceParameterValue.options);
                     valueChanged = true;
                 }
-                if (!Objects.equals(choice, sc.choice)) {
-                    choice = sc.choice;
+                if (!Objects.equals(choice, singleChoiceParameterValue.choice)) {
+                    choice = singleChoiceParameterValue.choice;
                     valueChanged = true;
                 }
             } else if (o instanceof ParameterValue) {

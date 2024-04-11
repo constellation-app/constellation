@@ -151,8 +151,8 @@ public class BooleanParameterType extends PluginParameterType<BooleanParameterVa
             final boolean newb;
             if (o == null) {
                 newb = false;
-            } else if (o instanceof Boolean) {
-                newb = (Boolean) o;
+            } else if (o instanceof Boolean aBoolean) {
+                newb = aBoolean;
             } else {
                 throw new IllegalArgumentException(String.format("Unexpected class %s", o.getClass()));
             }

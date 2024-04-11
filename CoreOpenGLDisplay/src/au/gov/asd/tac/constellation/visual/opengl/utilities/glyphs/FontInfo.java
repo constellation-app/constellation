@@ -225,19 +225,11 @@ public class FontInfo {
                             messages.add(String.format("Line %d: Blank font description", lineno));
                         } else {
                             switch (part) {
-                                case "PLAIN":
-                                    fontStyle = Font.PLAIN;
-                                    break;
-                                case "BOLD":
-                                    fontStyle = Font.BOLD;
-                                    break;
-                                case "ITALIC":
-                                    fontStyle = Font.ITALIC;
-                                    break;
-                                case "BOLD_ITALIC":
-                                    fontStyle = Font.BOLD | Font.ITALIC;
-                                    break;
-                                default:
+                                case "PLAIN" -> fontStyle = Font.PLAIN;
+                                case "BOLD" -> fontStyle = Font.BOLD;
+                                case "ITALIC" -> fontStyle = Font.ITALIC;
+                                case "BOLD_ITALIC" -> fontStyle = Font.BOLD | Font.ITALIC;
+                                default -> {
                                     final boolean mustNot = part.startsWith("!");
                                     if (mustNot) {
                                         part = part.substring(1);
@@ -250,7 +242,7 @@ public class FontInfo {
                                         ok = false;
                                         messages.add(String.format("Line %d: Font style or unicode script '%s' does not exist", lineno, part));
                                     }
-                                    break;
+                                }
                             }
                         }
                     }

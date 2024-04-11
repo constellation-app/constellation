@@ -219,8 +219,8 @@ public class NewNotePane {
 
     private void resizeTextFlows(final TextFlow textFlow, final double scale) {
         for (int i = 0; i < textFlow.getChildren().size(); ++i) {
-            if (textFlow.getChildren().get(i) instanceof TextFlow) {
-                resizeTextFlows((TextFlow) textFlow.getChildren().get(i), scale + 0.5);
+            if (textFlow.getChildren().get(i) instanceof TextFlow textFlowChild) {
+                resizeTextFlows(textFlowChild, scale + 0.5);
             }
         }
         textFlow.setMaxHeight(textFlow.getMaxHeight() / scale);

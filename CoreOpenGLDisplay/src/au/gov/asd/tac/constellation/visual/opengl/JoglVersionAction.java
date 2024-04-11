@@ -57,9 +57,17 @@ public final class JoglVersionAction implements ActionListener {
         final GL gl = drawable.getGL().getGL3();
 
         final StringBuilder sb = new StringBuilder();
-        sb.append(String.format("OpenGL version: %s\n", gl.glGetString(GL.GL_VERSION)));
-        sb.append(String.format("Vendor: %s\n", gl.glGetString(GL.GL_VENDOR)));
-        sb.append(String.format("Renderer: %s\n", gl.glGetString(GL.GL_RENDERER)));
+        sb.append("""
+                  OpenGL version: %s
+                  Vendor: %s
+                  Renderer: %s
+                  """
+                .formatted(
+                        gl.glGetString(GL.GL_VERSION), 
+                        gl.glGetString(GL.GL_VENDOR), 
+                        gl.glGetString(GL.GL_RENDERER)
+                )
+        );
         if (gl instanceof GL2ES2) {
             sb.append(String.format("Shading language version: %s\n", gl.glGetString(GL2ES2.GL_SHADING_LANGUAGE_VERSION)));
         }
