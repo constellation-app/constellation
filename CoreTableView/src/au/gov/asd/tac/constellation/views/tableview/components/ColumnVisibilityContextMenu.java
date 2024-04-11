@@ -74,6 +74,8 @@ public class ColumnVisibilityContextMenu {
     private static final ImageView SPLIT_SOURCE_ICON = new ImageView(UserInterfaceIconProvider.MENU.buildImage(16));
     private static final ImageView SPLIT_DESTINATION_ICON = new ImageView(UserInterfaceIconProvider.MENU.buildImage(16));
     private static final ImageView SPLIT_TRANSACTION_ICON = new ImageView(UserInterfaceIconProvider.MENU.buildImage(16));
+    private static final ImageView SPLIT_LOW_ICON = new ImageView(UserInterfaceIconProvider.MENU.buildImage(16));
+    private static final ImageView SPLIT_HIGH_ICON = new ImageView(UserInterfaceIconProvider.MENU.buildImage(16));
 
     private static final int WIDTH = 120;
 
@@ -84,6 +86,8 @@ public class ColumnVisibilityContextMenu {
     private CustomMenuItem sourceVertexColumnsMenu;
     private CustomMenuItem destinationVertexColumnMenu;
     private CustomMenuItem tansactionColumnMenu;
+    private CustomMenuItem lowVertexColumnMenu;
+    private CustomMenuItem highVertexColumnMenu;
 
     private CustomMenuItem showAllColumnsMenu;
     private CustomMenuItem showDefaultColumnsMenu;
@@ -183,19 +187,27 @@ public class ColumnVisibilityContextMenu {
         final MenuButton sourceVertexColumnsButton = createMenuButton(SPLIT_SOURCE, SPLIT_SOURCE_ICON);
         final MenuButton destinationVertexColumnsButton = createMenuButton(SPLIT_DESTINATION, SPLIT_DESTINATION_ICON);
         final MenuButton transactionColumnsButton = createMenuButton(SPLIT_TRANSACTION, SPLIT_TRANSACTION_ICON);
+        final MenuButton lowVertexColumnsButton = createMenuButton(SPLIT_LOW, SPLIT_LOW_ICON);
+        final MenuButton highVertexColumnsButton = createMenuButton(SPLIT_HIGH, SPLIT_HIGH_ICON);
 
         final List<CustomMenuItem> columnCheckboxesSource = new ArrayList<>();
         final List<CustomMenuItem> columnCheckboxesDestination = new ArrayList<>();
         final List<CustomMenuItem> columnCheckboxesTransaction = new ArrayList<>();
+        final List<CustomMenuItem> columnCheckboxesLow = new ArrayList<>();
+        final List<CustomMenuItem> columnCheckboxesHigh = new ArrayList<>();
 
         // Create the filter items and add them to the button
         final CustomMenuItem columnFilterSource = createColumnFilterMenu(columnCheckboxesSource);
         final CustomMenuItem columnFilterDestination = createColumnFilterMenu(columnCheckboxesDestination);
         final CustomMenuItem columnFilterTransaction = createColumnFilterMenu(columnCheckboxesTransaction);
+        final CustomMenuItem columnFilterLow = createColumnFilterMenu(columnCheckboxesLow);
+        final CustomMenuItem columnFilterHigh = createColumnFilterMenu(columnCheckboxesHigh);
 
         sourceVertexColumnsButton.getItems().add(columnFilterSource);
         destinationVertexColumnsButton.getItems().add(columnFilterDestination);
         transactionColumnsButton.getItems().add(columnFilterTransaction);
+        lowVertexColumnsButton.getItems().add(columnFilterLow);
+        highVertexColumnsButton.getItems().add(columnFilterHigh);
 
         // Generate check boxes for each column and separate them into their groups
         table.getColumnIndex().forEach(columnTuple -> {
@@ -208,6 +220,10 @@ public class ColumnVisibilityContextMenu {
                         columnCheckboxesDestination.add(createColumnVisibilityMenu(columnTuple));
                     case GraphRecordStoreUtilities.TRANSACTION ->
                         columnCheckboxesTransaction.add(createColumnVisibilityMenu(columnTuple));
+                    case GraphRecordStoreUtilities.LINK_LOW ->
+                        columnCheckboxesLow.add(createColumnVisibilityMenu(columnTuple));
+                    case GraphRecordStoreUtilities.LINK_HIGH ->
+                        columnCheckboxesHigh.add(createColumnVisibilityMenu(columnTuple));
                     default -> {
                         // Do nothing
                     }
@@ -220,10 +236,14 @@ public class ColumnVisibilityContextMenu {
         sourceVertexColumnsMenu = createDynamicColumnMenu(sourceVertexColumnsButton, columnCheckboxesSource);
         destinationVertexColumnMenu = createDynamicColumnMenu(destinationVertexColumnsButton, columnCheckboxesDestination);
         tansactionColumnMenu = createDynamicColumnMenu(transactionColumnsButton, columnCheckboxesTransaction);
+        lowVertexColumnMenu = createDynamicColumnMenu(lowVertexColumnsButton, columnCheckboxesLow);
+        highVertexColumnMenu = createDynamicColumnMenu(highVertexColumnsButton, columnCheckboxesHigh);
 
         Optional.ofNullable(sourceVertexColumnsMenu).ifPresent(menu -> contextMenu.getItems().add(menu));
         Optional.ofNullable(destinationVertexColumnMenu).ifPresent(menu -> contextMenu.getItems().add(menu));
         Optional.ofNullable(tansactionColumnMenu).ifPresent(menu -> contextMenu.getItems().add(menu));
+        Optional.ofNullable(lowVertexColumnMenu).ifPresent(menu -> contextMenu.getItems().add(menu));
+        Optional.ofNullable(highVertexColumnMenu).ifPresent(menu -> contextMenu.getItems().add(menu));
     }
 
     /**
@@ -303,6 +323,26 @@ public class ColumnVisibilityContextMenu {
      */
     public CustomMenuItem getTransactionColumnMenu() {
         return tansactionColumnMenu;
+    }
+    
+    /**
+     * Get the menu item that holds check boxes for all the low vertex
+     * related columns.
+     *
+     * @return the destination vertex columns menu item
+     */
+    public CustomMenuItem getLowVertexColumnMenu() {
+        return lowVertexColumnMenu;
+    }
+    
+    /**
+     * Get the menu item that holds check boxes for all the high vertex
+     * related columns.
+     *
+     * @return the destination vertex columns menu item
+     */
+    public CustomMenuItem getHighVertexColumnMenu() {
+        return highVertexColumnMenu;
     }
 
     /**
