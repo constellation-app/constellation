@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,8 +59,8 @@ public class ProxyOptionsPanel extends javax.swing.JPanel {
 
     private void setProxyPanelEnabled(final boolean useDefaultSettings) {
         for (final Component c : proxySettingsPanel.getComponents()) {
-            if (c instanceof JScrollPane) {
-                ((JScrollPane) c).getViewport().getView().setEnabled(useDefaultSettings);
+            if (c instanceof JScrollPane jsp) {
+                jsp.getViewport().getView().setEnabled(useDefaultSettings);
             } else {
                 c.setEnabled(useDefaultSettings);
             }

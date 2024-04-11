@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,9 +61,7 @@ public class ConstellationSecurityManager {
      * effect.
      */
     public static synchronized void startSecurity() {
-
         if (securityProviders == null) {
-
             LOGGER.log(LEVEL, "Starting security");
 
             final List<ConstellationSecurityProvider> providers = new ArrayList<>(Lookup.getDefault().lookupAll(ConstellationSecurityProvider.class));
@@ -89,7 +87,7 @@ public class ConstellationSecurityManager {
                 LOGGER.log(LEVEL, "No preferred security provider specified");
             }
 
-            securityProviders = providers.toArray(new ConstellationSecurityProvider[providers.size()]);
+            securityProviders = providers.toArray(ConstellationSecurityProvider[]::new);
             securityContexts = new ConstellationSecurityContext[securityProviders.length][];
 
             for (int i = 0; i < securityProviders.length; i++) {
@@ -97,8 +95,8 @@ public class ConstellationSecurityManager {
                 
                 final List<ConstellationSecurityContext> contexts = securityProviders[i].getContexts();
                 if (contexts != null) {
-                    securityContexts[i] = contexts.toArray(new ConstellationSecurityContext[contexts.size()]);
-                    for (ConstellationSecurityContext context : securityContexts[i]) {
+                    securityContexts[i] = contexts.toArray(ConstellationSecurityContext[]::new);
+                    for (final ConstellationSecurityContext context : securityContexts[i]) {
                         try {
                             final SSLContext sslContext = context.getSSLContext();
                             if (sslContext != null) {

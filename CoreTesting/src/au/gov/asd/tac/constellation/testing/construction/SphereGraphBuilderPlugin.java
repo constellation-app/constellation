@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,6 +44,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
@@ -122,12 +123,10 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         IntegerParameterType.setMinimum(t, 0);
         params.addParameter(t);
 
-        ArrayList<String> modes = new ArrayList<>();
-        modes.add("Random vertices");
-        modes.add("1 path, next neighbour");
-        modes.add("1 path, random vertices");
+        final List<String> modes = Arrays.asList("Random vertices", 
+                "1 path, next neighbour", "1 path, random vertices");
 
-        final PluginParameter<SingleChoiceParameterType.SingleChoiceParameterValue> option = SingleChoiceParameterType.build(OPTION_PARAMETER_ID);
+        final PluginParameter<SingleChoiceParameterValue> option = SingleChoiceParameterType.build(OPTION_PARAMETER_ID);
         option.setName("Transaction options");
         option.setDescription("How to add transactions to the graph");
         SingleChoiceParameterType.setOptions(option, modes);
@@ -149,19 +148,16 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         final PluginParameter<BooleanParameterValue> allChars = BooleanParameterType.build(USE_ALL_DISPLAYABLE_CHARS_PARAMETER_ID);
         allChars.setName("All displayable chars");
         allChars.setDescription("Use all displayable chars in labels");
-        allChars.setBooleanValue(false);
         params.addParameter(allChars);
 
         final PluginParameter<BooleanParameterValue> drawManyTx = BooleanParameterType.build(DRAW_MANY_TX_PARAMETER_ID);
         drawManyTx.setName("Draw many transactions");
         drawManyTx.setDescription("Draw lots of transactions between nodes");
-        drawManyTx.setBooleanValue(false);
         params.addParameter(drawManyTx);
 
         final PluginParameter<BooleanParameterValue> drawManyDeco = BooleanParameterType.build(DRAW_MANY_DECORATORS_PARAMETER_ID);
         drawManyDeco.setName("Draw many decorators");
         drawManyDeco.setDescription("Draw lots of decorators on nodes");
-        drawManyDeco.setBooleanValue(false);
         params.addParameter(drawManyDeco);
 
         final PluginParameter<BooleanParameterValue> randomIcons = BooleanParameterType.build(USE_RANDOM_ICONS_PARAMETER_ID);
@@ -226,7 +222,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
                 .stream()
                 .filter(icon -> icon.getExtendedName().startsWith("Flag."))
                 .map(icon -> icon.getName())
-                .collect(Collectors.toUnmodifiableList());
+                .toList();
 
         final int maxTxId = VisualConcept.GraphAttribute.MAX_TRANSACTIONS.ensure(graph);
         if (drawManyTx) {
@@ -681,7 +677,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
      *
      * @return A random RGB color.
      */
-    private static ConstellationColor randomColor3(SecureRandom r) {
+    private static ConstellationColor randomColor3(final SecureRandom r) {
         return ConstellationColor.getColorValue(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1F);
     }
 }

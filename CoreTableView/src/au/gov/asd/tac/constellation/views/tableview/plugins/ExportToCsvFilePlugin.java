@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,10 +58,8 @@ public class ExportToCsvFilePlugin extends SimplePlugin {
      * @param selectedOnly true if the export should only include selected rows,
      * false otherwise
      */
-    public ExportToCsvFilePlugin(final File file,
-            final TableView<ObservableList<String>> table,
-            final Pagination pagination,
-            final boolean selectedOnly) {
+    public ExportToCsvFilePlugin(final File file, final TableView<ObservableList<String>> table,
+            final Pagination pagination, final boolean selectedOnly) {
         this.file = file;
         this.table = table;
         this.pagination = pagination;
@@ -69,8 +67,7 @@ public class ExportToCsvFilePlugin extends SimplePlugin {
     }
 
     @Override
-    public void execute(final PluginGraphs graphs,
-            final PluginInteraction interaction,
+    public void execute(final PluginGraphs graphs, final PluginInteraction interaction, 
             final PluginParameters parameters) throws InterruptedException, PluginException {
 
         // Extract all the rows from the table as CSV
