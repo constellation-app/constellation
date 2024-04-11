@@ -333,6 +333,9 @@ public class DijkstraServices {
                         Thread.currentThread().setName("Find.FindServices.Thread.Path." + threadID);
                         queryPath();
                     }
+                    default -> {
+                        // Do nothing 
+                    }
                 }
             } catch (final InterruptedException ex) {
                 LOGGER.log(Level.SEVERE, THREAD_INTERRUPTED, ex);

@@ -76,6 +76,9 @@ public abstract class ClusterAnalyticPlugin extends AnalyticPlugin<ClusterResult
                     graphElementCount = graph.getTransactionCount();
                     identifierAttributeId = VisualConcept.TransactionAttribute.IDENTIFIER.get(graph);
                 }
+                default -> {
+                    // Do nothing 
+                }
             }
 
             for (int graphElementPosition = 0; graphElementPosition < graphElementCount; graphElementPosition++) {
