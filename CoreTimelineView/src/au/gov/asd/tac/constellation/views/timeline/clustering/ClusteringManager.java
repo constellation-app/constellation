@@ -159,7 +159,7 @@ public class ClusteringManager {
             } else {
                 final TreeNode node = (TreeNode) te;
 
-                final double gap = node.lastChild.getLowerTimeExtent() - node.firstChild.getUpperTimeExtent();
+                final double gap = (double) node.lastChild.getLowerTimeExtent() - node.firstChild.getUpperTimeExtent();
                 if (gap <= pixelsPerTransaction && (node.getLowerTimeExtent() < node.getUpperTimeExtent())) {
                     elementsToDraw.add(node);
                 } else {

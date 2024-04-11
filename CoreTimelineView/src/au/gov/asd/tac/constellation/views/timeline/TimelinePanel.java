@@ -485,9 +485,8 @@ public class TimelinePanel extends Region {
 
         // Handle
         btnShowLabels = new ToggleButton(Bundle.ShowLabels());
-        btnShowLabels.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            coordinator.setIsShowingNodeLabels(newValue);
-        });
+        btnShowLabels.selectedProperty().addListener((observable, oldValue, newValue) 
+                -> coordinator.setIsShowingNodeLabels(newValue));
 
         btnZoomToSelection = new Button(Bundle.ZoomtoSelection());
         btnZoomToSelection.setOnAction(e -> {
