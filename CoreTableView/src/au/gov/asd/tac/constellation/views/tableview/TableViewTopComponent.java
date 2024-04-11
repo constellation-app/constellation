@@ -143,7 +143,9 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
         // the selection. The table also needs to have its element type set to TRANSACTION
         addAttributeValueChangeHandler(VisualConcept.TransactionAttribute.SELECTED, graph -> {
             if (needsUpdate() && currentState != null
-                    && currentState.getElementType() == GraphElementType.TRANSACTION) {
+                    && (currentState.getElementType() == GraphElementType.TRANSACTION
+                    || currentState.getElementType() == GraphElementType.EDGE
+                    || currentState.getElementType() == GraphElementType.LINK)) {
                 if (currentState.isSelectedOnly()) {
                     executorService.submit(new TriggerDataUpdateTask(pane, graph, getCurrentState()));
                 } else {
@@ -343,9 +345,9 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
 
     @Override
     protected String createStyle() {
-        return JavafxStyleManager.isDarkTheme() 
-            ? "resources/table-view-dark.css" 
-            : "resources/table-view-light.css";
+        return JavafxStyleManager.isDarkTheme()
+                ? "resources/table-view-dark.css"
+                : "resources/table-view-light.css";
     }
 
     @Override

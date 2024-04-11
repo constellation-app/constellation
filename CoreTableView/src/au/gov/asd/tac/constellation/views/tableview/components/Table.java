@@ -313,7 +313,7 @@ public class Table {
                         });
                     } else {
                         switch (state.getElementType()) {
-                            case TRANSACTION: {
+                            case TRANSACTION -> {
                                 final int selectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
                                 final int transactionCount = readableGraph.getTransactionCount();
                                 IntStream.range(0, transactionCount).forEach(transactionPosition -> {
@@ -330,9 +330,8 @@ public class Table {
                                         rows.add(getRowDataForTransaction(readableGraph, transactionId));
                                     }
                                 });
-                                break;
                             }
-                            case EDGE: {
+                            case EDGE -> {
                                 final int selectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
                                 final int edgeCount = readableGraph.getEdgeCount();
                                 IntStream.range(0, edgeCount).forEach(edgePosition -> {
@@ -356,9 +355,8 @@ public class Table {
                                         rows.add(getRowDataForEdge(readableGraph, edgeId));
                                     }
                                 });
-                                break;
                             }
-                            case LINK: {
+                            case LINK -> {
                                 final int selectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
                                 final int linkCount = readableGraph.getLinkCount();
                                 IntStream.range(0, linkCount).forEach(linkPosition -> {
@@ -380,9 +378,8 @@ public class Table {
                                         rows.add(getRowDataForLink(readableGraph, linkId));
                                     }
                                 });
-                                break;
                             }
-                            default: {
+                            default -> {
                                 final int selectedAttributeId = VisualConcept.VertexAttribute.SELECTED.get(readableGraph);
                                 final int vertexCount = readableGraph.getVertexCount();
                                 IntStream.range(0, vertexCount).forEach(vertexPosition -> {
@@ -398,7 +395,6 @@ public class Table {
                                         rows.add(getRowDataForVertex(readableGraph, vertexId));
                                     }
                                 });
-                                break;
                             }
                         }
                     }
@@ -782,7 +778,6 @@ public class Table {
             final GraphElementType elementType,
             final String attributeNamePrefix,
             final Map<String, TableColumn<ObservableList<String>, String>> columnReferenceMap) {
-        LOGGER.log(Level.WARNING, "Called createColumnIndexPart()");
         final List<Column> tmpColumnIndex = new CopyOnWriteArrayList<>();
 
         final int attributeCount = readableGraph.getAttributeCount(elementType);

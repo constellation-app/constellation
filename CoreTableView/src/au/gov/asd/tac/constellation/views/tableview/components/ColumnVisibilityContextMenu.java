@@ -61,6 +61,8 @@ public class ColumnVisibilityContextMenu {
     private static final String SPLIT_SOURCE = "Source";
     private static final String SPLIT_DESTINATION = "Destination";
     private static final String SPLIT_TRANSACTION = "Transaction";
+    private static final String SPLIT_LOW = "Low";
+    private static final String SPLIT_HIGH = "High";
 
     private static final String ALL_COLUMNS = "Show All Columns";
     private static final String DEFAULT_COLUMNS = "Show Default Columns";
