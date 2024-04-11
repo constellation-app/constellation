@@ -123,7 +123,7 @@ public class TableToolbar {
             final ElementTypeContextMenu elementMenu
                     = createElementTypeContextMenu();
             elementMenu.getContextMenu()
-                    .show(columnVisibilityButton, Side.RIGHT, 0, 0);
+                    .show(elementTypeButton, Side.RIGHT, 0, 0);
 
             e.consume();
         });

@@ -70,6 +70,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class TableToolbarNGTest {
+
     private static final Logger LOGGER = Logger.getLogger(TableToolbarNGTest.class.getName());
 
     private TableViewTopComponent tableTopComponent;
@@ -82,6 +83,7 @@ public class TableToolbarNGTest {
     private ExportMenu exportMenu;
     private PreferencesMenu preferencesMenu;
     private ColumnVisibilityContextMenu columnVisibilityContextMenu;
+    private ElementTypeContextMenu elementTypeContextMenu;
 
     private MenuButton copyMenuButton;
     private MenuButton exportMenuButton;
@@ -118,6 +120,7 @@ public class TableToolbarNGTest {
         exportMenu = mock(ExportMenu.class);
         preferencesMenu = mock(PreferencesMenu.class);
         columnVisibilityContextMenu = mock(ColumnVisibilityContextMenu.class);
+        elementTypeContextMenu = mock(ElementTypeContextMenu.class);
 
         copyMenuButton = mock(MenuButton.class);
         exportMenuButton = mock(MenuButton.class);
@@ -130,6 +133,7 @@ public class TableToolbarNGTest {
         doReturn(exportMenu).when(tableToolbar).createExportMenu();
         doReturn(preferencesMenu).when(tableToolbar).createPreferencesMenu();
         doReturn(columnVisibilityContextMenu).when(tableToolbar).createColumnVisibilityContextMenu();
+        doReturn(elementTypeContextMenu).when(tableToolbar).createElementTypeContextMenu();
 
         when(tablePane.getTable()).thenReturn(table);
         when(tablePane.getParentComponent()).thenReturn(tableTopComponent);
@@ -139,7 +143,8 @@ public class TableToolbarNGTest {
         when(exportMenu.getExportButton()).thenReturn(exportMenuButton);
         when(preferencesMenu.getPreferencesButton()).thenReturn(preferencesMenuButton);
         when(columnVisibilityContextMenu.getContextMenu()).thenReturn(contextMenu);
-
+        when(elementTypeContextMenu.getContextMenu()).thenReturn(contextMenu);
+        
         when(tableTopComponent.getCurrentGraph()).thenReturn(graph);
     }
 
@@ -220,21 +225,8 @@ public class TableToolbarNGTest {
                 UserInterfaceIconProvider.TRANSACTIONS.buildImage(16),
                 "Element Type"
         );
-
-        elementTypeChangeActionChecks(GraphElementType.VERTEX, GraphElementType.EDGE,
-                new ImageView(UserInterfaceIconProvider.EDGES.buildImage(16)).getImage());
         
-        elementTypeChangeActionChecks(GraphElementType.EDGE, GraphElementType.LINK,
-                new ImageView(UserInterfaceIconProvider.LINKS.buildImage(16)).getImage());
-        
-        elementTypeChangeActionChecks(GraphElementType.LINK, GraphElementType.TRANSACTION,
-                new ImageView(UserInterfaceIconProvider.TRANSACTIONS.buildImage(16)).getImage());
-        
-        elementTypeChangeActionChecks(GraphElementType.META, GraphElementType.TRANSACTION,
-                new ImageView(UserInterfaceIconProvider.TRANSACTIONS.buildImage(16)).getImage());
-        
-        elementTypeChangeActionChecks(GraphElementType.TRANSACTION, GraphElementType.VERTEX,
-                new ImageView(UserInterfaceIconProvider.NODES.buildImage(16)).getImage());
+        elementTypeActionCheck();
 
         // Help Button
         buttonChecks(
@@ -464,36 +456,17 @@ public class TableToolbarNGTest {
      * @param expectedNewIcon the expected image to be now on the element type
      * change button
      */
-    private void elementTypeChangeActionChecks(final GraphElementType elementTypeInitialState,
-            final GraphElementType elementTypeEndState,
-            final Image expectedNewIcon) {
-        try (MockedStatic<PluginExecution> pluginExecutionMockedStatic
-                = Mockito.mockStatic(PluginExecution.class)) {
-            final PluginExecution pluginExecution = mock(PluginExecution.class);
-            final ActionEvent actionEvent = mock(ActionEvent.class);
+    private void elementTypeActionCheck() {
+        final ActionEvent actionEvent = mock(ActionEvent.class);
 
-            final TableViewState tableViewState = new TableViewState();
-            tableViewState.setElementType(elementTypeInitialState);
+        tableToolbar.getElementTypeButton().getOnAction().handle(actionEvent);
+        
+        System.out.println("contextMenu:");
+        System.out.println(contextMenu.toString());
 
-            when(tableTopComponent.getCurrentState()).thenReturn(tableViewState);
 
-            final ArgumentCaptor<UpdateStatePlugin> captor
-                    = ArgumentCaptor.forClass(UpdateStatePlugin.class);
-
-            pluginExecutionMockedStatic.when(() -> PluginExecution
-                    .withPlugin(captor.capture())).thenReturn(pluginExecution);
-
-            tableToolbar.getElementTypeButton().getOnAction().handle(actionEvent);
-
-            final UpdateStatePlugin updatePlugin = captor.getValue();
-
-            final ImageView buttonIcon = (ImageView) tableToolbar.getElementTypeButton().getGraphic();
-            assertTrue(isImageEqual(expectedNewIcon, buttonIcon.getImage()));
-
-            assertEquals(elementTypeEndState, updatePlugin.getTableViewState().getElementType());
-            verify(pluginExecution).executeLater(graph);
-            verify(actionEvent).consume();
-        }
+        verify(contextMenu).show(tableToolbar.getElementTypeButton(), Side.RIGHT, 0, 0);
+        verify(actionEvent).consume();
     }
 
     /**
