@@ -216,19 +216,17 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
             parameter.setEnclosingParameter(enclosingParameter);
             parameter.addListener((final PluginParameter<?> parameter1, final ParameterChange change) -> {
                 switch (change) {
-                    case ERROR:
+                    case ERROR -> {
                         if (parameter1.getError() == null) {
                             validParams++;
                         } else {
                             validParams--;
                         }
                         parameterHasChanged();
-                        break;
-                    case VALUE:
-                        parameterHasChanged();
-                        break;
-                    default:
-                        break;
+                    }
+                    case VALUE -> parameterHasChanged();
+                    default -> {
+                    }
                 }
             });
         }

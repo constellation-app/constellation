@@ -590,7 +590,11 @@ public final class GLTools {
         glCurrent.glGetIntegerv(GL2ES3.GL_MAX_ARRAY_TEXTURE_LAYERS, v, 0);
         final int maxIcons = v[0] * 64;
         if (icons.size() > maxIcons) {
-            final String log = String.format("****\n**** Warning: nIcons %d > GL_MAX_ARRAY_TEXTURE_LAYERS %d\n****\n", icons.size(), maxIcons);
+            final String log = """
+                               ****
+                               **** Warning: nIcons %d > GL_MAX_ARRAY_TEXTURE_LAYERS %d
+                               ****
+                               """.formatted(icons.size(), maxIcons);
             LOGGER.log(Level.INFO, log);
         }
 
@@ -828,26 +832,14 @@ public final class GLTools {
                 return;
             }
             String errtext;
-            switch (err) {
-                case GL.GL_INVALID_ENUM:
-                    errtext = "invalid enum";
-                    break;
-                case GL.GL_INVALID_VALUE:
-                    errtext = "invalid value";
-                    break;
-                case GL.GL_INVALID_OPERATION:
-                    errtext = "invalid operation";
-                    break;
-                case GL.GL_OUT_OF_MEMORY:
-                    errtext = "out of memory";
-                    break;
-                case GL.GL_INVALID_FRAMEBUFFER_OPERATION:
-                    errtext = "invalid framebuffer operation";
-                    break;
-                default:
-                    errtext = Integer.toString(err);
-                    break;
-            }
+            errtext = switch (err) {
+                case GL.GL_INVALID_ENUM -> "invalid enum";
+                case GL.GL_INVALID_VALUE -> "invalid value";
+                case GL.GL_INVALID_OPERATION -> "invalid operation";
+                case GL.GL_OUT_OF_MEMORY -> "out of memory";
+                case GL.GL_INVALID_FRAMEBUFFER_OPERATION -> "invalid framebuffer operation";
+                default -> Integer.toString(err);
+            };
             LOGGER.log(Level.SEVERE, "OpenGL error {0}: {1} ({2})", new Object[]{msg, errtext, err});
         }
     }

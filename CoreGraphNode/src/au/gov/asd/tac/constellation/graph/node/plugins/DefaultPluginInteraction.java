@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.graph.node.plugins;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
-import au.gov.asd.tac.constellation.plugins.gui.PluginParametersDialog;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersSwingDialog;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
@@ -27,7 +26,6 @@ import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
@@ -202,7 +200,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
     public void notify(final PluginNotificationLevel level, final String message) {
         final String title = pluginManager.getPlugin().getName();
         switch (level) {
-            case FATAL:
+            case FATAL -> {
                 NotifyDisplayer.display(new NotifyDescriptor(
                         "Fatal Error:\n" + message,
                         title,
@@ -212,9 +210,9 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
                         NotifyDescriptor.OK_OPTION
                 ));
                 LOGGER.log(Level.SEVERE, LOGGING_FORMAT, new Object[]{title, message});
-                break;
+            }
 
-            case ERROR:
+            case ERROR -> {
                 NotifyDisplayer.display(new NotifyDescriptor(
                         "Error:\n" + message,
                         title,
@@ -224,30 +222,29 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
                         NotifyDescriptor.OK_OPTION
                 ));
                 LOGGER.log(Level.SEVERE, LOGGING_FORMAT, new Object[]{title, message});
-                break;
+            }
 
-            case WARNING:
+            case WARNING -> {
                 NotificationDisplayer.getDefault().notify(title,
                         UserInterfaceIconProvider.WARNING.buildIcon(16, ConstellationColor.DARK_ORANGE.getJavaColor()),
                         message,
                         null
                 );
                 LOGGER.log(Level.WARNING, LOGGING_FORMAT, new Object[]{title, message});
-                break;
+            }
 
-            case INFO:
+            case INFO -> {
                 final String statusText = String.format(STRING_FORMAT, title, message);
                 final Message statusMessage = StatusDisplayer.getDefault().setStatusText(statusText, 10);
                 statusMessage.clear(5000);
                 LOGGER.log(Level.INFO, LOGGING_FORMAT, new Object[]{title, message});
-                break;
+            }
 
-            case DEBUG:
-                LOGGER.log(Level.FINE, LOGGING_FORMAT, new Object[]{title, message});
-                break;
+            case DEBUG -> LOGGER.log(Level.FINE, LOGGING_FORMAT, new Object[]{title, message});
 
-            default:
-                break;
+            default -> {
+                // Do Nothing
+            }
         }
     }
 

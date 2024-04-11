@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -100,24 +100,13 @@ public class ErrorReportDialog {
 
         final Label imageLabel = new Label(" \n ");
         final Color errorIconColor;
-        switch (errorEntry.getErrorLevel().getName()) {
-            case "SEVERE":
-                errorIconColor = new Color(215, 95, 95);
-                break;
-            case "WARNING":
-                errorIconColor = new Color(210, 130, 65);
-                break;
-            case "INFO":
-                errorIconColor = new Color(170, 170, 65);
-                break;
-            case "FINE":
-            case "FINER":
-            case "FINEST":
-                errorIconColor = new Color(50, 160, 160);
-                break;
-            default:
-                errorIconColor = new Color(200, 120, 150);
-        }
+        errorIconColor = switch (errorEntry.getErrorLevel().getName()) {
+            case "SEVERE" -> new Color(215, 95, 95);
+            case "WARNING" -> new Color(210, 130, 65);
+            case "INFO" -> new Color(170, 170, 65);
+            case "FINE", "FINER", "FINEST" -> new Color(50, 160, 160);
+            default -> new Color(200, 120, 150);
+        };
         final ImageView errorImage = new ImageView(UserInterfaceIconProvider.ERROR.buildImage(36, errorIconColor));
         imageLabel.setGraphic(errorImage);
         imageLabel.setPadding(new Insets(2 + (showOccs ? 4 : 0), 0, 0, 0));

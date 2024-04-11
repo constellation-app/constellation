@@ -53,8 +53,7 @@ public class GraphAttributeParameterValue extends ParameterValue implements Comp
 
     @Override
     public boolean setObjectValue(final Object o) {
-        if (o instanceof GraphAttribute) {
-            final GraphAttribute objectAttribute = (GraphAttribute) o;
+        if (o instanceof GraphAttribute objectAttribute) {
             final boolean equal = Objects.equals(objectAttribute, attribute);
             if (!equal) {
                 attribute = objectAttribute;
