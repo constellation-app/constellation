@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -157,23 +157,13 @@ public class UseListInputWindow extends Stage {
     private void splitLinesAction() {
         final String selectedSplitChoice = splitLinesChoiceBox.getSelectionModel().getSelectedItem();
         final String splitAt;
-        switch (selectedSplitChoice) {
-            case COMMA:
-                splitAt = SeparatorConstants.COMMA;
-                break;
-            case TAB:
-                splitAt = SeparatorConstants.TAB;
-                break;
-            case SEMI_COLON:
-                splitAt = SeparatorConstants.SEMICOLON;
-                break;
-            case STRING_STRING:
-                splitAt = splitStringTextField.getText();
-                break;
-            default:
-                splitAt = SeparatorConstants.COMMA;
-                break;
-        }
+        splitAt = switch (selectedSplitChoice) {
+            case COMMA -> SeparatorConstants.COMMA;
+            case TAB -> SeparatorConstants.TAB;
+            case SEMI_COLON -> SeparatorConstants.SEMICOLON;
+            case STRING_STRING -> splitStringTextField.getText();
+            default -> SeparatorConstants.COMMA;
+        };
         final String[] splitTextField = textArea.getText().split(splitAt);
         textArea.clear();
         final StringBuilder sb = new StringBuilder();
