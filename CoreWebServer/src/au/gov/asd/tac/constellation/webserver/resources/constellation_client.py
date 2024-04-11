@@ -536,7 +536,7 @@ class Constellation:
         r = self.call_service('get_graph_values', args=params)
         content = r.content
         if isinstance(content, bytes):
-        content = content.decode('utf8')
+            content = content.decode('utf8')
         df = pd.read_json(content, orient='split', dtype=False, convert_dates=False)
         df, self.types = self._fix_types(df)
 
