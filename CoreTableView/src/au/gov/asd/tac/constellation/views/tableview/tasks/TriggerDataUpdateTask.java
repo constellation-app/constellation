@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,9 +43,7 @@ public class TriggerDataUpdateTask implements Runnable {
      * @param graph the current graph
      * @param tableViewState the current table state
      */
-    public TriggerDataUpdateTask(final TablePane tablePane,
-            final Graph graph,
-            final TableViewState tableViewState) {
+    public TriggerDataUpdateTask(final TablePane tablePane, final Graph graph, final TableViewState tableViewState) {
         this.tablePane = tablePane;
         this.graph = graph;
         this.tableViewState = tableViewState;
@@ -55,5 +53,4 @@ public class TriggerDataUpdateTask implements Runnable {
     public void run() {
         tablePane.getTable().updateData(graph, tableViewState, tablePane.getProgressBar());
     }
-
 }

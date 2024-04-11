@@ -6,6 +6,7 @@
 -   Renamed `exclusionState()`, `setIsShowingSelectedOnly()`, and `setIsShowingNodeLabels()` in `TimelineState` 
     to `getExclusionState()`, `setShowingSelectedOnly()`, and `setShowingNodeLabels()` to follow naming convention.
 -   Updated `TimeExtents` to be a record instead of a class.
+-   Updated `VideoFrame` to be a record.
 
 ## Changes in February 2024
 -   Updated the `constellationapplication/netbeans-runner` docker image

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -579,36 +579,34 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
             final SeverityCode entryCode = SeverityCode.getSeverityCodeEntry(entry.getErrorLevel().getName());
             if (entryCode != null) {
                 switch (entryCode) {
-                    case SEVERE:
+                    case SEVERE -> {
                         if (severeRepCheckBox.isSelected()) {
                             sessionErrors.add(entry);
                         } else {
                             hiddenErrors.add(entry);
                         }
-                        break;
-                    case WARNING:
+                    }
+                    case WARNING -> {
                         if (warningRepCheckBox.isSelected()) {
                             sessionErrors.add(entry);
                         } else {
                             hiddenErrors.add(entry);
                         }
-                        break;
-                    case INFO:
+                    }
+                    case INFO -> {
                         if (infoRepCheckBox.isSelected()) {
                             sessionErrors.add(entry);
                         } else {
                             hiddenErrors.add(entry);
                         }
-                        break;
-                    case FINE:
+                    }
+                    case FINE -> {
                         if (fineRepCheckBox.isSelected()) {
                             sessionErrors.add(entry);
                         } else {
                             hiddenErrors.add(entry);
                         }
-                        break;
-                    default:
-                        break;
+                    }
                 }
             }
         }

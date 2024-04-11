@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -171,7 +171,7 @@ public class ContentAnalysisManager {
         ContentTokenizingServices.createDocumentClusteringTokenizingService(th, clusterDocumentsParams, allocator);
 
        final  ContentVectorClusteringServices cvcs = ContentVectorClusteringServices.createKMeansClusteringService(th, clusterDocumentsParams, querySize);
-        cvcs.createAndRunThreads(allocator);
+       cvcs.createAndRunThreads(allocator);
 
         final ContentAnalysisGraphProcessing gp = new ContentAnalysisGraphProcessing(graph, cvcs, elementType, clusterDocumentsParams.getFollowUpChoice());
         gp.performFollowUp();

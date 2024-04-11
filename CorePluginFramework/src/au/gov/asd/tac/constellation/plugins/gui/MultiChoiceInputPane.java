@@ -88,7 +88,7 @@ public class MultiChoiceInputPane extends HBox {
                 @SuppressWarnings("unchecked") //mcPluginParameter is a MultiChoiceParameter
                 final PluginParameter<MultiChoiceParameterValue> mcPluginParameter = (PluginParameter<MultiChoiceParameterValue>) pluginParameter;
                 switch (change) {
-                    case VALUE:
+                    case VALUE -> {
                         isAdjusting = true;
                         field.getCheckModel().clearChecks(); //The order matters here- this should be called before clearing the options.
                         options.clear();
@@ -106,19 +106,15 @@ public class MultiChoiceInputPane extends HBox {
                         field.setStyle("invalid selection".equals(field.getId()) ? "-fx-color: #8A1D1D" : "");
 
                         isAdjusting = false;
-                        break;
-                    case ENABLED:
-                        field.setDisable(!pluginParameter.isEnabled());
-                        break;
-                    case VISIBLE:
+                    }
+                    case ENABLED -> field.setDisable(!pluginParameter.isEnabled());
+                    case VISIBLE -> {
                         field.setManaged(parameter.isVisible());
                         field.setVisible(parameter.isVisible());
                         this.setVisible(parameter.isVisible());
                         this.setManaged(parameter.isVisible());
-                        break;
-                    default:
-                        LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
-                        break;
+                    }
+                    default -> LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
                 }
             }));
 

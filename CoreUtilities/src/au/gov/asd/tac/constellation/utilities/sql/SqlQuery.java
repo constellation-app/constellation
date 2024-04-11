@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,17 +63,17 @@ public class SqlQuery {
         MATCH_WORDS,;
     }
 
-    public void addArgument(String argument) {
+    public void addArgument(final String argument) {
         query.append("?");
         stringArguments.put(++currentArgument, argument);
     }
 
-    public void addArgument(int argument) {
+    public void addArgument(final int argument) {
         query.append("?");
         integerArguments.put(++currentArgument, argument);
     }
 
-    public void addArgument(double argument) {
+    public void addArgument(final double argument) {
         query.append("?");
         doubleArguments.put(++currentArgument, argument);
     }
@@ -99,14 +99,14 @@ public class SqlQuery {
         }
 
         // prepare the statement and add the arguments of various types.
-        try (PreparedStatement statement = connection.prepareStatement(s)) {
-            for (Entry<Integer, String> arg : stringArguments.entrySet()) {
+        try (final PreparedStatement statement = connection.prepareStatement(s)) {
+            for (final Entry<Integer, String> arg : stringArguments.entrySet()) {
                 statement.setString(arg.getKey(), arg.getValue());
             }
-            for (Entry<Integer, Integer> arg : integerArguments.entrySet()) {
+            for (final Entry<Integer, Integer> arg : integerArguments.entrySet()) {
                 statement.setInt(arg.getKey(), arg.getValue());
             }
-            for (Entry<Integer, Double> arg : doubleArguments.entrySet()) {
+            for (final Entry<Integer, Double> arg : doubleArguments.entrySet()) {
                 statement.setDouble(arg.getKey(), arg.getValue());
             }
 
@@ -125,7 +125,7 @@ public class SqlQuery {
     // Helper method to qualify an SQL column name with the name of the table it belongs to,
     // in order to avoid naming conflicts when performing joins.
     public static String qualifyColumnWithTableName(final String tableName, final String columnName, final boolean addAsClause) {
-        StringBuilder qualifiedName = new StringBuilder(tableName);
+        final StringBuilder qualifiedName = new StringBuilder(tableName);
         qualifiedName.append(SeparatorConstants.PERIOD);
         qualifiedName.append(columnName);
         if (addAsClause) {
@@ -138,8 +138,8 @@ public class SqlQuery {
     // Helper method to qualify a list of SQL column names with the name of the table they belong to,
     // in order to avoid naming conflicts when performing joins.
     public static List<String> qualifyColumnsWithTableName(final String tableName, final List<String> columnNames, final boolean addAsClause) {
-        List<String> qualifiedNames = new ArrayList<>(columnNames.size());
-        for (String columnName : columnNames) {
+        final List<String> qualifiedNames = new ArrayList<>(columnNames.size());
+        for (final String columnName : columnNames) {
             qualifiedNames.add(qualifyColumnWithTableName(tableName, columnName, addAsClause));
         }
         return qualifiedNames;
@@ -183,14 +183,14 @@ public class SqlQuery {
     // Note that the table name, column names and type definitions are assumed not to be user input and hence
     // are not sanitized.
     public void appendCreateTableCaluse(final String tableName, final Map<String, String> columnNamesAndTypes, final boolean isTemporary) {
-        if (isTemporary) {
-            query.append("CREATE TEMPORARY TABLE ");
-        } else {
-            query.append("CREATE TABLE ");
-        }
-        query.append(tableName).append("(");
-        for (Entry<String, String> columnDefinition : columnNamesAndTypes.entrySet()) {
-            query.append(columnDefinition.getKey()).append(" ").append(columnDefinition.getValue()).append(",");
+        query.append(isTemporary ? "CREATE TEMPORARY TABLE " : "CREATE TABLE ")
+                .append(tableName)
+                .append("(");
+        for (final Entry<String, String> columnDefinition : columnNamesAndTypes.entrySet()) {
+            query.append(columnDefinition.getKey())
+                    .append(" ")
+                    .append(columnDefinition.getValue())
+                    .append(",");
         }
         // remove the last comma
         query.replace(query.length() - 1, query.length(), "");
@@ -202,11 +202,7 @@ public class SqlQuery {
     // Note that the table name is assumed not to be user input and hence
     // is not sanitized.
     public void appendDropTableClause(final String tableName, final boolean isTemporary) {
-        if (isTemporary) {
-            query.append("DROP TEMPORARY TABLE ");
-        } else {
-            query.append("DROP TABLE ");
-        }
+        query.append(isTemporary ? "DROP TEMPORARY TABLE " : "DROP TABLE ");
         query.append(tableName);
     }
 
@@ -215,8 +211,11 @@ public class SqlQuery {
     // are not sanitized. The data being inserted is santized.
     public void appendInsertIntoSingleColumnCaluse(final String tableName, final String columnName, final List<String> data) {
         query.append("INSERT INTO ");
-        query.append(tableName).append("(").append(columnName).append(") VALUES");
-        for (String value : data) {
+        query.append(tableName)
+                .append("(")
+                .append(columnName)
+                .append(") VALUES");
+        for (final String value : data) {
             query.append("(");
             addArgument(value);
             query.append("),");
@@ -228,13 +227,13 @@ public class SqlQuery {
     // Used to append a select clause to this sql query.
     // Note that the column names are assumed not to be user input and hence
     // are not sanitized.
-    public void appendSelectClause(List<String> selectionColumns, boolean distinct) {
+    public void appendSelectClause(final Iterable<String> selectionColumns, final boolean distinct) {
         query.append("SELECT ");
         if (distinct) {
             query.append("DISTINCT ");
         }
         // Add all the columns we want to query
-        for (String column : selectionColumns) {
+        for (final String column : selectionColumns) {
             query.append(column);
             query.append(", ");
         }
@@ -245,10 +244,10 @@ public class SqlQuery {
     // Used to append a from clause to this sql query.
     // Note that the table name is assumed not to be user input and hence is not
     // sanitized.
-    public void appendFromClause(String tableName) {
-        query.append("FROM ");
-        query.append(tableName);
-        query.append(" ");
+    public void appendFromClause(final String tableName) {
+        query.append("FROM ")
+                .append(tableName)
+                .append(" ");
     }
 
     // Used to append an empty where clause to this sql query.
@@ -268,14 +267,14 @@ public class SqlQuery {
     // Used to append a simple join clause to this sql query where two columns are joined on equality.
     // Note that the table and column names are assumed not to be user input and hence are not
     // sanitized.
-    public void appendJoinOnEqualClause(String joinTable, String leftColumn, String rightColumn) {
-        query.append("JOIN ");
-        query.append(joinTable);
-        query.append(" ON ");
-        query.append(leftColumn);
-        query.append(" = ");
-        query.append(rightColumn);
-        query.append(" ");
+    public void appendJoinOnEqualClause(final String joinTable, final String leftColumn, final String rightColumn) {
+        query.append("JOIN ")
+                .append(joinTable)
+                .append(" ON ")
+                .append(leftColumn)
+                .append(" = ")
+                .append(rightColumn)
+                .append(" ");
     }
 
     // Used to append a logical disjunction clause to this sql query
@@ -287,24 +286,27 @@ public class SqlQuery {
             appendDisjunctiveComparisonClause(columnName, values, MatchType.MATCH_EXACT, lastClause);
             return;
         }
-        query.append("MATCH(");
-        query.append(columnName);
-        query.append(") AGAINST (");
-        StringBuilder matchCondition = new StringBuilder();
-        for (String value : values) {
+        query.append("MATCH(")
+                .append(columnName)
+                .append(") AGAINST (");
+        final StringBuilder matchCondition = new StringBuilder();
+        for (final String value : values) {
             matchCondition.append("(");
             switch (matchType) {
-                case MATCH_PHRASE:
-                    matchCondition.append("\"").append(value).append("\"");
-                    break;
-                case MATCH_WORDS:
-                    String[] words = value.split(" ");
-                    for (String word : words) {
-                        matchCondition.append("+").append(word).append(" ");
+                case MATCH_PHRASE -> matchCondition.append("\"")
+                        .append(value)
+                        .append("\"");
+                case MATCH_WORDS -> {
+                    final String[] words = value.split(" ");
+                    for (final String word : words) {
+                        matchCondition.append("+")
+                                .append(word)
+                                .append(" ");
                     }
-                    break;
-                default:
-                    break;
+                }
+                default -> {
+                    // do nothing
+                }
             }
             matchCondition.append(")");
         }
@@ -327,26 +329,20 @@ public class SqlQuery {
             query.append(matchType == MatchType.MATCH_EXACT ? " = " : " LIKE ");
             
             switch (matchType) {
-                case MATCH_BEGINS_WITH:
-                    value = value + "%";
-                    break;
-                case MATCH_ENDS_WITH:
-                    value = "%" + value;
-                    break;
-                case MATCH_CONTAINS:
-                    value = "%" + value + "%";
-                    break;
-                default:
-                    break;
+                case MATCH_BEGINS_WITH -> value = value + "%";
+                case MATCH_ENDS_WITH -> value = "%" + value;
+                case MATCH_CONTAINS -> value = "%" + value + "%";
+                default -> {
+                    // do nothing
+                }
             }
-            if (value instanceof String) {
-                addArgument((String) value);
-            } else if (value instanceof Integer) {
-                addArgument((Integer) value);
-            } else if (value instanceof Double) {
-                addArgument((Double) value);
-            } else {
-                // Do nothing
+            switch (value) {
+                case String stringValue -> addArgument(stringValue);
+                case Integer integerValue -> addArgument(integerValue);
+                case Double doubleValue -> addArgument(doubleValue);
+                default -> {
+                    // do nothing
+                }
             }
             query.append(" UNION ");
             query.append(currentQuery);
@@ -365,26 +361,20 @@ public class SqlQuery {
             query.append(matchType == MatchType.MATCH_EXACT ? " = " : " LIKE ");
             
             switch (matchType) {
-                case MATCH_BEGINS_WITH:
-                    value = value + "%";
-                    break;
-                case MATCH_ENDS_WITH:
-                    value = "%" + value;
-                    break;
-                case MATCH_CONTAINS:
-                    value = "%" + value + "%";
-                    break;
-                default:
-                    break;
+                case MATCH_BEGINS_WITH -> value = value + "%";
+                case MATCH_ENDS_WITH -> value = "%" + value;
+                case MATCH_CONTAINS -> value = "%" + value + "%";
+                default -> {
+                    // do nothing
+                }
             }
-            if (value instanceof String) {
-                addArgument((String) value);
-            } else if (value instanceof Integer) {
-                addArgument((Integer) value);
-            } else if (value instanceof Double) {
-                addArgument((Double) value);
-            } else {
-                // Do nothing
+            switch (value) {
+                case String stringValue -> addArgument(stringValue);
+                case Integer integerValue -> addArgument(integerValue);
+                case Double doubleValue -> addArgument(doubleValue);
+                default -> {
+                    // do nothing
+                }
             }
             query.append(" OR ");
         }
@@ -404,5 +394,4 @@ public class SqlQuery {
             query.append(" DESC");
         }
     }
-
 }
