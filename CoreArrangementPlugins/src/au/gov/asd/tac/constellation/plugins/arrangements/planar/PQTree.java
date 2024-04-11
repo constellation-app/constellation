@@ -201,6 +201,9 @@ class PQTree {
                     frontier.add(node.getRealNum());
                 }
             }
+            default -> {
+                // Do nothing 
+            }
         }
     }
 

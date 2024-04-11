@@ -683,6 +683,9 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                     graph.setObjectValue(attr, toId, value);
                 }   
             }
+            default -> {
+                // Do nothing 
+            }
         }
     }
 

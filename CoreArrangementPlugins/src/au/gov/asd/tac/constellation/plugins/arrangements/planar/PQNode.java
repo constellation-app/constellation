@@ -333,6 +333,9 @@ class PQNode {
                         reverseCount += grandchild.numLeafDescendants;
                     }
                 }
+                default -> {
+                    // Do nothing 
+                }
             }
             if (count > maxCount) {
                 maxCount = count;
@@ -389,6 +392,9 @@ class PQNode {
                             count += grandchild.numLeafDescendants;
                         }
                     }
+                }
+                default -> {
+                    // Do nothing 
                 }
             }
             if (count <= countAtAnchor) {
