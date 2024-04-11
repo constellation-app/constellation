@@ -19,7 +19,6 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import javax.swing.JFileChooser;
 import org.openide.filesystems.FileChooserBuilder;
 import org.openide.filesystems.FileObject;
@@ -74,6 +73,7 @@ public class ShowFileChooserDialog implements Runnable {
                 }
                 case MULTI -> selectedFiles = fileChooserBuilder.showMultiOpenDialog();
                 default -> {
+                    // do nothing
                 }
             }
         }

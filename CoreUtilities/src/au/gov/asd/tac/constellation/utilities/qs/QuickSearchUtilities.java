@@ -74,6 +74,7 @@ public class QuickSearchUtilities {
                 case '8' -> subscriptId.append('\u2088');
                 case '9' -> subscriptId.append('\u2089');
                 default -> {
+                    // do nothing
                 }
             }
         }
@@ -96,6 +97,7 @@ public class QuickSearchUtilities {
                 case '\u2088' -> subscriptId.append('8');
                 case '\u2089' -> subscriptId.append('9');
                 default -> {
+                    // do nothing
                 }
             }
         }

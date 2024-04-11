@@ -63,7 +63,7 @@ public class SqlQuery {
         MATCH_WORDS,;
     }
 
-    public void addArgument(String argument) {
+    public void addArgument(final String argument) {
         query.append("?");
         stringArguments.put(++currentArgument, argument);
     }
@@ -227,7 +227,7 @@ public class SqlQuery {
     // Used to append a select clause to this sql query.
     // Note that the column names are assumed not to be user input and hence
     // are not sanitized.
-    public void appendSelectClause(final List<String> selectionColumns, final boolean distinct) {
+    public void appendSelectClause(final Iterable<String> selectionColumns, final boolean distinct) {
         query.append("SELECT ");
         if (distinct) {
             query.append("DISTINCT ");
@@ -305,6 +305,7 @@ public class SqlQuery {
                     }
                 }
                 default -> {
+                    // do nothing
                 }
             }
             matchCondition.append(")");
@@ -332,6 +333,7 @@ public class SqlQuery {
                 case MATCH_ENDS_WITH -> value = "%" + value;
                 case MATCH_CONTAINS -> value = "%" + value + "%";
                 default -> {
+                    // do nothing
                 }
             }
             switch (value) {
@@ -339,6 +341,7 @@ public class SqlQuery {
                 case Integer integerValue -> addArgument(integerValue);
                 case Double doubleValue -> addArgument(doubleValue);
                 default -> {
+                    // do nothing
                 }
             }
             query.append(" UNION ");
@@ -362,6 +365,7 @@ public class SqlQuery {
                 case MATCH_ENDS_WITH -> value = "%" + value;
                 case MATCH_CONTAINS -> value = "%" + value + "%";
                 default -> {
+                    // do nothing
                 }
             }
             switch (value) {
@@ -369,6 +373,7 @@ public class SqlQuery {
                 case Integer integerValue -> addArgument(integerValue);
                 case Double doubleValue -> addArgument(doubleValue);
                 default -> {
+                    // do nothing
                 }
             }
             query.append(" OR ");

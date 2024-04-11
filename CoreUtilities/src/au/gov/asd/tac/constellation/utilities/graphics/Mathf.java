@@ -307,9 +307,9 @@ public final class Mathf {
         vTangent.scale(M);  // This potentially changes the direction of the vector
         vTangent.normalize();
 
-        final Vector3f B = new Vector3f();
-        B.crossProduct(N, vTangent);
-        vTangent.crossProduct(B, N);
+        final Vector3f b = new Vector3f();
+        b.crossProduct(N, vTangent);
+        vTangent.crossProduct(b, N);
         vTangent.normalize();
     }
 
