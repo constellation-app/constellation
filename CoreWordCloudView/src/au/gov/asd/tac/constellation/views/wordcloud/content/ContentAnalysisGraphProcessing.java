@@ -94,6 +94,9 @@ public class ContentAnalysisGraphProcessing {
                 followUpPlugins.add(new ClusterElementsPlugin(cvcs.getClusters()));
                 followUpPlugins.add(new ShowClustersOnHistogramPlugin());
             }
+            default -> {
+                // Do nothing 
+            }
         }
     }
 
