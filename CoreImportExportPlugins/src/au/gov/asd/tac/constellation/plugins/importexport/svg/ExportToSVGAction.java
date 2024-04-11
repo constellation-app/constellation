@@ -78,7 +78,7 @@ public final class ExportToSVGAction implements ActionListener {
             //This plugin is not performant so warn users when exporting large graphs. 
             final String disclaimer;
             if (graph.getVertexCount() + graph.getTransactionCount() > 5000){
-                disclaimer = "This export plugin is processor and memory intensive and is likely to take more than 3 minutes. Please consider saving your graph before running this plugin.";     
+                disclaimer = "This export plugin is processor and memory intensive and is likely cause Constellation and your machine to respond slowly. Please consider saving your graph before running this plugin.";     
             } else {
                 disclaimer = null;
             }
