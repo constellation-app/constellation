@@ -120,43 +120,10 @@ public class TableToolbar {
         });
 
         elementTypeButton = createButton(getElementTypeInitialIcon(), ELEMENT_TYPE, e -> {
-            if (getTableViewTopComponent().getCurrentState() != null) {
-                final TableViewState newState = new TableViewState(getTableViewTopComponent().getCurrentState());
-
-                newState.setElementType(
-                        switch (getTableViewTopComponent().getCurrentState().getElementType()) {
-                    case GraphElementType.TRANSACTION ->
-                        GraphElementType.VERTEX;
-                    case GraphElementType.VERTEX ->
-                        GraphElementType.EDGE;
-                    case GraphElementType.EDGE ->
-                        GraphElementType.LINK;
-                    case GraphElementType.LINK ->
-                        GraphElementType.TRANSACTION;
-                    default ->
-                        GraphElementType.TRANSACTION;
-                }
-                );
-
-                elementTypeButton.setGraphic(
-                        switch (newState.getElementType()) {
-                    case GraphElementType.TRANSACTION ->
-                        TRANSACTION_ICON;
-                    case GraphElementType.VERTEX ->
-                        VERTEX_ICON;
-                    case GraphElementType.EDGE ->
-                        EDGE_ICON;
-                    case GraphElementType.LINK ->
-                        LINK_ICON;
-                    default ->
-                        TRANSACTION_ICON;
-                }
-                );
-
-                PluginExecution.withPlugin(
-                        new UpdateStatePlugin(newState)
-                ).executeLater(getTableViewTopComponent().getCurrentGraph());
-            }
+            final ElementTypeContextMenu elementMenu
+                    = createElementTypeContextMenu();
+            elementMenu.getContextMenu()
+                    .show(columnVisibilityButton, Side.RIGHT, 0, 0);
 
             e.consume();
         });
@@ -191,8 +158,7 @@ public class TableToolbar {
                 getSelectedOnlyButton().setSelected(state.isSelectedOnly());
                 getSelectedOnlyButton().setGraphic(state.isSelectedOnly()
                         ? SELECTED_VISIBLE_ICON : ALL_VISIBLE_ICON);
-//                getElementTypeButton().setGraphic(state.getElementType() == GraphElementType.TRANSACTION
-//                        ? TRANSACTION_ICON : VERTEX_ICON);
+
                 getElementTypeButton().setGraphic(
                         switch (state.getElementType()) {
                     case GraphElementType.TRANSACTION ->
@@ -401,6 +367,19 @@ public class TableToolbar {
         newColumnVisibilityMenu.init();
 
         return newColumnVisibilityMenu;
+    }
+
+    /**
+     * Creates a new {@link ElementTypeContextMenu} and initializes it.
+     *
+     * @return the new element type context menu
+     */
+    protected ElementTypeContextMenu createElementTypeContextMenu() {
+        final ElementTypeContextMenu newElementTypeMenu
+                = new ElementTypeContextMenu(getTable());
+        newElementTypeMenu.init();
+
+        return newElementTypeMenu;
     }
 
     /**
