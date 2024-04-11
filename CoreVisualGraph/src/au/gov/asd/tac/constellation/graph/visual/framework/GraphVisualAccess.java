@@ -786,12 +786,12 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public synchronized float getBlazeSize() {
+    public float getBlazeSize() {
         return graphBlazeSize != Graph.NOT_FOUND ? accessGraph.getObjectValue(graphBlazeSize, 0) : VisualGraphDefaults.DEFAULT_BLAZE_SIZE;
     }
 
     @Override
-    public synchronized float getBlazeOpacity() {
+    public float getBlazeOpacity() {
         return graphBlazeOpacity != Graph.NOT_FOUND ? accessGraph.getObjectValue(graphBlazeOpacity, 0) : VisualGraphDefaults.DEFAULT_BLAZE_OPACITY;
     }
 
@@ -801,12 +801,12 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public synchronized int getTopLabelCount() {
+    public int getTopLabelCount() {
         return topLabelAttrs.length;
     }
 
     @Override
-    public synchronized int getBottomLabelCount() {
+    public int getBottomLabelCount() {
         return bottomLabelAttrs.length;
     }
 
@@ -826,12 +826,12 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public synchronized ConstellationColor getTopLabelColor(final int labelNum) {
+    public ConstellationColor getTopLabelColor(final int labelNum) {
         return topLabelColors[labelNum];
     }
 
     @Override
-    public synchronized ConstellationColor getBottomLabelColor(final int labelNum) {
+    public ConstellationColor getBottomLabelColor(final int labelNum) {
         return bottomLabelColors[labelNum];
     }
 
@@ -841,12 +841,12 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public synchronized float getTopLabelSize(final int labelNum) {
+    public float getTopLabelSize(final int labelNum) {
         return topLabelSizes[labelNum];
     }
 
     @Override
-    public synchronized float getBottomLabelSize(final int labelNum) {
+    public float getBottomLabelSize(final int labelNum) {
         return bottomLabelSizes[labelNum];
     }
 
@@ -946,7 +946,7 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public synchronized int getVertexId(final int vertex) {
+    public int getVertexId(final int vertex) {
         return accessGraph.getVertex(vertex);
     }
 
@@ -981,7 +981,7 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public synchronized ConstellationColor getVertexColor(final int vertex) {
+    public ConstellationColor getVertexColor(final int vertex) {
         ConstellationColor color = null;
         if (vertexColor != Graph.NOT_FOUND) {
             color = accessGraph.getObjectValue(vertexColor, accessGraph.getVertex(vertex));
@@ -990,12 +990,12 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public synchronized String getBackgroundIcon(final int vertex) {
+    public String getBackgroundIcon(final int vertex) {
         return vertexBackgroundIcon != Graph.NOT_FOUND ? accessGraph.getStringValue(vertexBackgroundIcon, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_BACKGROUND_ICON;
     }
 
     @Override
-    public synchronized String getForegroundIcon(final int vertex) {
+    public String getForegroundIcon(final int vertex) {
         return vertexForegroundIcon != Graph.NOT_FOUND ? accessGraph.getStringValue(vertexForegroundIcon, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_FOREGROUND_ICON;
     }
 
@@ -1011,7 +1011,7 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public synchronized boolean isVertexDimmed(final int vertex) {
+    public boolean isVertexDimmed(final int vertex) {
         return vertexDimmed != Graph.NOT_FOUND ? accessGraph.getBooleanValue(vertexDimmed, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_DIMMED;
     }
 
@@ -1021,19 +1021,19 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public synchronized boolean isBlazed(final int vertex) {
+    public boolean isBlazed(final int vertex) {
         final Blaze blaze = vertexBlaze != Graph.NOT_FOUND ? accessGraph.getObjectValue(vertexBlaze, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_BLAZE;
         return blaze != null;
     }
 
     @Override
-    public synchronized int getBlazeAngle(final int vertex) {
+    public int getBlazeAngle(final int vertex) {
         final Blaze blaze = vertexBlaze != Graph.NOT_FOUND ? accessGraph.getObjectValue(vertexBlaze, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_BLAZE;
         return blaze == null ? VisualGraphDefaults.DEFAULT_BLAZE_ANGLE : blaze.getAngle();
     }
 
     @Override
-    public synchronized ConstellationColor getBlazeColor(final int vertex) {
+    public ConstellationColor getBlazeColor(final int vertex) {
         final Blaze blaze = accessGraph.getObjectValue(vertexBlaze, accessGraph.getVertex(vertex));
         return blaze == null ? VisualGraphDefaults.DEFAULT_BLAZE_COLOR : blaze.getColor();
     }
@@ -1082,22 +1082,22 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public synchronized String getNWDecorator(final int vertex) {
+    public String getNWDecorator(final int vertex) {
         return getDecoratorStr(nwDecorator, vertex);
     }
 
     @Override
-    public synchronized String getNEDecorator(final int vertex) {
+    public String getNEDecorator(final int vertex) {
         return getDecoratorStr(neDecorator, vertex);
     }
 
     @Override
-    public synchronized String getSEDecorator(final int vertex) {
+    public String getSEDecorator(final int vertex) {
         return getDecoratorStr(seDecorator, vertex);
     }
 
     @Override
-    public synchronized String getSWDecorator(final int vertex) {
+    public String getSWDecorator(final int vertex) {
         return getDecoratorStr(swDecorator, vertex);
     }
 
@@ -1388,12 +1388,12 @@ public final class GraphVisualAccess implements VisualAccess {
     }
 
     @Override
-    public synchronized String getVertexTopLabelText(final int vertex, final int labelNum) {
+    public String getVertexTopLabelText(final int vertex, final int labelNum) {
         return topLabelAttrs[labelNum] != Graph.NOT_FOUND ? accessGraph.getStringValue(topLabelAttrs[labelNum], accessGraph.getVertex(vertex)) : "";
     }
 
     @Override
-    public synchronized String getVertexBottomLabelText(final int vertex, final int labelNum) {
+    public String getVertexBottomLabelText(final int vertex, final int labelNum) {
         return bottomLabelAttrs[labelNum] != Graph.NOT_FOUND ? accessGraph.getStringValue(bottomLabelAttrs[labelNum], accessGraph.getVertex(vertex)) : "";
     }
 
