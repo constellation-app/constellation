@@ -278,7 +278,6 @@ public class SVGGraphBuilder {
         access.endUpdate();
         threadPool.shutdown();
     }
-
     
     /**
      * Generates SVG Nodes from the graph and assigns them as children to the Content element.
@@ -296,7 +295,7 @@ public class SVGGraphBuilder {
         final MultiTaskInteraction mti = new MultiTaskInteraction(interaction);
         
         if (!drawFlags.drawNodes()) {
-            interaction.setProgress(1, 1, "Created 0 nodes", true);
+            interaction.setProgress(0, -1, "Created 0 nodes", true);
             return new ArrayList<>();
         }  
         
@@ -333,7 +332,7 @@ public class SVGGraphBuilder {
         }); 
         
         // Update the PluginInteraction of the Nodes generated.
-        interaction.setProgress(1, 1, String.format("Created %s nodes", nodes.size()), true);
+        interaction.setProgress(0, -1, String.format("Created %s nodes", nodes.size()), true);
         
         return nodes;
     }
@@ -353,7 +352,7 @@ public class SVGGraphBuilder {
         
         // Do not export any connections if the show connections parameter is disabled
         if (!drawFlags.drawConnections()) {
-            interaction.setProgress(1, 1, "Created 0 connections", true);
+            interaction.setProgress(0, -1, "Created 0 connections", true);
             return new ArrayList<>();
         }      
                 
@@ -381,7 +380,7 @@ public class SVGGraphBuilder {
             connections.addAll(outputList);
         }); 
         
-        interaction.setProgress(1, 1, String.format("Created %s links", connections.size()), true);
+        interaction.setProgress(0, -1, String.format("Created %s connections", connections.size()), true);
         return connections;
     }    
     
@@ -400,7 +399,7 @@ public class SVGGraphBuilder {
         final MultiTaskInteraction mti = new MultiTaskInteraction(interaction);
         
         if (!drawFlags.drawBlazes()) {
-            interaction.setProgress(1, 1, "Created 0 blazes", true);
+            interaction.setProgress(0, -1, "Created 0 blazes", true);
             return new ArrayList<>();
         }  
               
@@ -430,7 +429,7 @@ public class SVGGraphBuilder {
         }); 
         
         // Update the PluginInteraction of the Nodes generated 
-        interaction.setProgress(1, 1, String.format("Created %s blazes", blazes.size()), true);
+        interaction.setProgress(0, -1, String.format("Created %s blazes", blazes.size()), true);
         return blazes;
         
     }
