@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,7 +60,6 @@ public final class AutosaveUtilities {
         } else if (!saveDir.isDirectory()) {
             final String msg = String.format("Autosave directory '%s' is not a directory", AUTOSAVE_DIR);
             LOGGER.warning(msg);
-
             return null;
         } else {
             return saveDir;
@@ -120,8 +119,6 @@ public final class AutosaveUtilities {
             f2 = new File(path + "_auto");
         } else if (path.endsWith(FileExtensionConstants.STAR_AUTOSAVE)) {
             f2 = new File(path.substring(0, path.length() - 5));
-        } else {
-            // Do nothing
         }
 
         if (f2 != null) {
@@ -145,7 +142,7 @@ public final class AutosaveUtilities {
         for (final File autosave : getAutosaves(FileExtensionConstants.STAR_AUTOSAVE)) {
             try {
                 final Properties p = new Properties();
-                try (InputStream in = new FileInputStream(autosave)) {
+                try (final InputStream in = new FileInputStream(autosave)) {
                     p.load(in);
                 }
 
