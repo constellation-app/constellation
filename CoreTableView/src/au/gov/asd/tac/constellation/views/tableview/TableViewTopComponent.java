@@ -263,15 +263,12 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
      * @return a set of column attributes that are present in the old state but
      * not the new one
      */
-    protected Set<Tuple<String, Attribute>> getRemovedAttributes(final TableViewState oldState,
-            final TableViewState newState) {
-        return new HashSet<>(
-                CollectionUtils.subtract(
-                        oldState != null && oldState.getColumnAttributes() != null
-                        ? oldState.getColumnAttributes() : new HashSet<>(),
-                        newState != null && newState.getColumnAttributes() != null
-                        ? newState.getColumnAttributes() : new HashSet<>()
-                )
+    protected Set<Tuple<String, Attribute>> getRemovedAttributes(final TableViewState oldState, final TableViewState newState) {
+        return new HashSet<>(CollectionUtils.subtract(
+                        oldState != null && oldState.getColumnAttributes() != null 
+                                ? oldState.getColumnAttributes() : new HashSet<>(),
+                        newState != null && newState.getColumnAttributes() != null 
+                                ? newState.getColumnAttributes() : new HashSet<>())
         );
     }
 
@@ -284,15 +281,12 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
      * @return a set of column attributes that were not present in the old state
      * but are present in the new state
      */
-    protected Set<Tuple<String, Attribute>> getAddedAttributes(final TableViewState oldState,
-            final TableViewState newState) {
-        return new HashSet<>(
-                CollectionUtils.subtract(
-                        newState != null && newState.getColumnAttributes() != null
-                        ? newState.getColumnAttributes() : new HashSet<>(),
-                        oldState != null && oldState.getColumnAttributes() != null
-                        ? oldState.getColumnAttributes() : new HashSet<>()
-                )
+    protected Set<Tuple<String, Attribute>> getAddedAttributes(final TableViewState oldState, final TableViewState newState) {
+        return new HashSet<>(CollectionUtils.subtract(
+                        newState != null && newState.getColumnAttributes() != null 
+                                ? newState.getColumnAttributes() : new HashSet<>(),
+                        oldState != null && oldState.getColumnAttributes() != null 
+                                ? oldState.getColumnAttributes() : new HashSet<>())
         );
     }
 
@@ -326,9 +320,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
                 }
 
                 if (newState) {
-                    PluginExecution.withPlugin(
-                            new UpdateStatePlugin(state)
-                    ).executeLater(getCurrentGraph());
+                    PluginExecution.withPlugin(new UpdateStatePlugin(state)).executeLater(getCurrentGraph());
                 }
             } finally {
                 readableGraph.release();
@@ -378,10 +370,8 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
         updateState(graph);
 
         // Determine the visible column changes
-        final Set<Tuple<String, Attribute>> removedColumnAttributes
-                = getRemovedAttributes(previousState, currentState);
-        final Set<Tuple<String, Attribute>> addedColumnAttributes
-                = getAddedAttributes(previousState, currentState);
+        final Set<Tuple<String, Attribute>> removedColumnAttributes = getRemovedAttributes(previousState, currentState);
+        final Set<Tuple<String, Attribute>> addedColumnAttributes = getAddedAttributes(previousState, currentState);
 
         // Remove attribute handlers for columns in the table that will no longer be visible
         // with the state associated with the new graph
@@ -405,8 +395,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
         // Add attribute handlers that detect changes to the graph attributes that
         // represent visible columns in the table. When these attributes change,
         // the table should have its data refreshed
-        if (currentState != null && currentState.getColumnAttributes() != null
-                && !addedColumnAttributes.isEmpty()) {
+        if (currentState != null && currentState.getColumnAttributes() != null && !addedColumnAttributes.isEmpty()) {
             addedColumnAttributes.forEach(attributeTuple
                     -> columnAttributeMonitors.add(addAttributeValueChangeHandler(attributeTuple.getSecond().getElementType(),
                             attributeTuple.getSecond().getName(),

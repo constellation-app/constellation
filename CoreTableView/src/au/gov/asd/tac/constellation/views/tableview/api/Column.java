@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ public final class Column {
      * Creates a new column.
      */
     public Column() {
-
+        //DO NOTHING
     }
 
     /**
@@ -64,8 +64,7 @@ public final class Column {
      * @param attribute the attribute the column represents
      * @param tableColumn the actual JavaFX column in the table
      */
-    public Column(final String attributeNamePrefix,
-            final Attribute attribute,
+    public Column(final String attributeNamePrefix, final Attribute attribute,
             final TableColumn<ObservableList<String>, String> tableColumn) {
         this.attributeNamePrefix = attributeNamePrefix;
         this.attribute = attribute;

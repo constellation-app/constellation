@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -182,7 +182,7 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
          * @param path Path to search for icons.
          * @return List of all icon files found.
          */
-        private List<File> iconWalk(File path) {
+        private List<File> iconWalk(final File path) {
             final List<File> files = new ArrayList<>();
             iconWalk(path, files);
             return files;
@@ -221,12 +221,12 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
             return files;
         }
 
-        private TreeItem<IconNode> findIconNode(TreeItem<IconNode> node, String value) {
+        private TreeItem<IconNode> findIconNode(final TreeItem<IconNode> node, final String value) {
             final IconNode iconNode = node.getValue();
             if (iconNode.iconExists(value)) {
                 return node;
             } else {
-                for (TreeItem<IconNode> child : node.getChildren()) {
+                for (final TreeItem<IconNode> child : node.getChildren()) {
                     final TreeItem<IconNode> result = findIconNode(child, value);
                     if (result != null) {
                         return result;
@@ -260,11 +260,11 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
             }
         }
 
-        private void addNode(TreeItem<IconNode> item, IconNode node) {
+        private void addNode(final TreeItem<IconNode> item, final IconNode node) {
             if (node.getChildren().length == 0) {
                 return;
             }
-            for (IconNode childNode : node.getChildren()) {
+            for (final IconNode childNode : node.getChildren()) {
                 final TreeItem<IconNode> childItem = new TreeItem<>(childNode);
                 item.getChildren().add(childItem);
                 addNode(childItem, childNode);
@@ -363,7 +363,7 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
         private static final double SPACING = 20;
 
         @Override
-        public void updateItem(String item, boolean empty) {
+        public void updateItem(final String item, final boolean empty) {
             super.updateItem(item, empty);
             if (item != null) {
                 final GridPane gridPane = new GridPane();
@@ -424,7 +424,7 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
             this.parent = parent;
         }
 
-        public IconNode(String name, Set<String> iconLabels) {
+        public IconNode(final String name, final Set<String> iconLabels) {
             this.name = name;
             this.parent = null;
             for (final String iconName : iconLabels) {
@@ -468,7 +468,7 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
             return children.values().toArray(type);
         }
 
-        public IconNode addChild(IconNode child) {
+        public IconNode addChild(final IconNode child) {
             return children.get(child.getName()) == null ? children.put(child.getName(), child) : children.get(child.getName());
         }
 
@@ -480,7 +480,7 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
         }
 
         @Override
-        public boolean equals(Object obj) {
+        public boolean equals(final Object obj) {
             if (obj == null) {
                 return false;
             }
@@ -503,7 +503,7 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
             return name;
         }
 
-        public boolean iconExists(String iconName) {
+        public boolean iconExists(final String iconName) {
             return icons.contains(iconName);
         }
     }

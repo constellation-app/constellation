@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,13 +57,11 @@ public class TableViewUtilities {
      * table will be included in the output.
      * @return a String of comma-separated values representing the table.
      */
-    public static String getTableData(final TableView<ObservableList<String>> table,
-            final Pagination pagination,
-            final boolean includeHeader,
-            final boolean selectedOnly) {
+    public static String getTableData(final TableView<ObservableList<String>> table, final Pagination pagination,
+            final boolean includeHeader, final boolean selectedOnly) {
         final List<Integer> visibleIndices = table.getVisibleLeafColumns().stream()
                 .map(column -> table.getColumns().indexOf(column))
-                .collect(Collectors.toList());
+                .toList();
 
         final StringBuilder data = new StringBuilder();
         if (includeHeader) {
@@ -129,16 +127,8 @@ public class TableViewUtilities {
      * @param graph the graph to copy to.
      */
     public static void copySelectionToGraph(final TableView<ObservableList<String>> table,
-            final Map<ObservableList<String>, Integer> index,
-            final GraphElementType elementType,
-            final Graph graph) {
-        PluginExecution.withPlugin(
-                new SelectionToGraphPlugin(
-                        table,
-                        index,
-                        elementType
-                )
-        ).executeLater(graph);
+            final Map<ObservableList<String>, Integer> index, final GraphElementType elementType, final Graph graph) {
+        PluginExecution.withPlugin(new SelectionToGraphPlugin(table, index, elementType)).executeLater(graph);
     }
 
     /**
@@ -149,11 +139,9 @@ public class TableViewUtilities {
      * @param state the current table state
      * @return the IDs of the selected elements
      */
-    public static List<Integer> getSelectedIds(final Graph graph,
-            final TableViewState state) {
+    public static List<Integer> getSelectedIds(final Graph graph, final TableViewState state) {
         final List<Integer> selectedIds = new ArrayList<>();
-        final ReadableGraph readableGraph = graph.getReadableGraph();
-        try {
+        try (final ReadableGraph readableGraph = graph.getReadableGraph()) {
             final boolean isVertex = state.getElementType() == GraphElementType.VERTEX;
             final int selectedAttributeId = isVertex
                     ? VisualConcept.VertexAttribute.SELECTED.get(readableGraph)
@@ -196,8 +184,6 @@ public class TableViewUtilities {
                 }
             }
             return selectedIds;
-        } finally {
-            readableGraph.release();
         }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,7 +86,7 @@ public class HttpsConnection {
      * @throws MalformedURLException if the given URL is malformed.
      * @throws IOException if an error occurs while making the connection.
      */
-    public static HttpsConnection withUrl(String url) throws IOException {
+    public static HttpsConnection withUrl(final String url) throws IOException {
         LOGGER.log(Level.FINE, "Connecting to url {0}", url);
         return new HttpsConnection(URI.create(url).toURL(), true);
     }
@@ -99,7 +99,7 @@ public class HttpsConnection {
      * @throws MalformedURLException if the given URL is malformed.
      * @throws IOException if an error occurs while making the connection.
      */
-    public static HttpsConnection withInsecureUrl(String url) throws IOException {
+    public static HttpsConnection withInsecureUrl(final String url) throws IOException {
         LOGGER.log(Level.FINE, "Connecting to url {0}", url);
         return new HttpsConnection(URI.create(url).toURL(), false);
     }
@@ -150,7 +150,7 @@ public class HttpsConnection {
      *
      * @see java.net.URLConnection#setRequestProperty(String, String)
      */
-    public HttpsConnection addRequestProperty(String key, String value) {
+    public HttpsConnection addRequestProperty(final String key, final String value) {
         if (value != null) {
             httpConnection.setRequestProperty(key, value);
         }
@@ -169,7 +169,7 @@ public class HttpsConnection {
      *
      * @see java.net.URLConnection#setRequestProperty(String, String)
      */
-    public HttpsConnection withConnectionTimeout(int timeout) {
+    public HttpsConnection withConnectionTimeout(final int timeout) {
         httpConnection.setConnectTimeout(timeout);
         return this;
     }
@@ -186,7 +186,7 @@ public class HttpsConnection {
      *
      * @see java.net.URLConnection#setReadTimeout(int)
      */
-    public HttpsConnection withReadTimeout(int timeout) {
+    public HttpsConnection withReadTimeout(final int timeout) {
         httpConnection.setReadTimeout(timeout);
         return this;
     }
@@ -200,7 +200,7 @@ public class HttpsConnection {
      * @see
      * javax.net.ssl.HttpsURLConnection#setHostnameVerifier(javax.net.ssl.HostnameVerifier)
      */
-    public HttpsConnection withHostnameVerifier(HostnameVerifier hostnameVerifier) {
+    public HttpsConnection withHostnameVerifier(final HostnameVerifier hostnameVerifier) {
         ((HttpsURLConnection) httpConnection).setHostnameVerifier(hostnameVerifier);
         return this;
     }

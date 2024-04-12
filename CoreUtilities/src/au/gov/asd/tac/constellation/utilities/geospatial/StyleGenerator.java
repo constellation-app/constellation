@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -106,17 +106,11 @@ public class StyleGenerator {
         final FilterFactory filterFactory = CommonFactoryFinder.getFilterFactory();
 
         // create a partially opaque outline stroke
-        final Stroke stroke = styleFactory.createStroke(
-                filterFactory.literal(Color.WHITE),
-                filterFactory.literal(1),
-                filterFactory.literal(.5)
-        );
+        final Stroke stroke = styleFactory.createStroke(filterFactory.literal(Color.WHITE),
+                filterFactory.literal(1), filterFactory.literal(.5));
 
         // create a partially opaque fill
-        final Fill fill = styleFactory.createFill(
-                filterFactory.literal(Color.RED),
-                filterFactory.literal(.25)
-        );
+        final Fill fill = styleFactory.createFill( filterFactory.literal(Color.RED), filterFactory.literal(.25));
 
         // setting the geometryPropertyName arg to null signals that we want to draw the default geometry of features
         final PolygonSymbolizer sym = styleFactory.createPolygonSymbolizer(stroke, fill, null);
@@ -135,7 +129,7 @@ public class StyleGenerator {
 
     private static Style createPointStyle() {
         final StyleFactory styleFactory = CommonFactoryFinder.getStyleFactory();
-        org.opengis.filter.FilterFactory filterFactory = CommonFactoryFinder.getFilterFactory();
+        final FilterFactory filterFactory = CommonFactoryFinder.getFilterFactory();
 
         final Mark mark = styleFactory.getCircleMark();
         mark.setStroke(styleFactory.createStroke(filterFactory.literal(Color.BLUE), filterFactory.literal(1)));
@@ -191,9 +185,9 @@ public class StyleGenerator {
                     if (!hasNext()) {
                         throw new NoSuchElementException();
                     }
-                    double currColorValue = counter.getAndAdd(1D);
-                    double num = (currColorValue - 1.0) * 0.618033988749895;
-                    double fmod = num - Math.floor(num);
+                    final double currColorValue = counter.getAndAdd(1D);
+                    final double num = (currColorValue - 1.0) * 0.618033988749895;
+                    final double fmod = num - Math.floor(num);
                     return Color.getHSBColor((float) num, (float) Math.sqrt(fmod), 0.8F);
                 }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,12 +73,13 @@ public class ClusterToTableTranslator extends AbstractTableTranslator<ClusterRes
             return null;
         }
         switch (columnName) {
-            case IDENTIFIER_COLUMN_NAME:
+            case IDENTIFIER_COLUMN_NAME -> {
                 return cellValue.getIdentifier();
-            case CLUSTER_COLUMN_NAME:
+            }
+            case CLUSTER_COLUMN_NAME -> {
                 return cellValue.getClusterNumber();
-            default:
-                throw new UnrecognisedColumnException(columnName);
+            }
+            default -> throw new UnrecognisedColumnException(columnName);
         }
     }
 
@@ -88,11 +89,10 @@ public class ClusterToTableTranslator extends AbstractTableTranslator<ClusterRes
             return null;
         }
         switch (columnName) {
-            case IDENTIFIER_COLUMN_NAME:
-            case CLUSTER_COLUMN_NAME:
+            case IDENTIFIER_COLUMN_NAME, CLUSTER_COLUMN_NAME -> {
                 return cellItem.toString();
-            default:
-                throw new UnrecognisedColumnException(columnName);
+            }
+            default -> throw new UnrecognisedColumnException(columnName);
         }
     }
 

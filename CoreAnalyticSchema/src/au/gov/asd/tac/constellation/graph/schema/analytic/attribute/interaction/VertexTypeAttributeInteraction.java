@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,8 +35,8 @@ public class VertexTypeAttributeInteraction extends AbstractAttributeInteraction
     @Override
     @SuppressWarnings("unchecked") // cast is manually checked.
     public String getDisplayText(final Object value) {
-        if (value instanceof SchemaVertexType) {
-            return ((SchemaVertexType) value).getName();
+        if (value instanceof SchemaVertexType type) {
+            return type.getName();
         }
         return value == null ? null : value.toString();
     }

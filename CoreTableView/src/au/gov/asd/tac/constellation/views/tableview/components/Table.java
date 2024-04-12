@@ -166,13 +166,8 @@ public class Table {
                 // Clear current columnIndex, but cache the column objects for reuse
                 final Map<String, TableColumn<ObservableList<String>, String>> columnReferenceMap
                         = getColumnIndex().stream()
-                                .collect(
-                                        Collectors.toMap(
-                                                column -> column.getTableColumn().getText(),
-                                                column -> column.getTableColumn(),
-                                                (e1, e2) -> e1
-                                        )
-                                );
+                                .collect(Collectors.toMap(column -> column.getTableColumn().getText(), 
+                                        column -> column.getTableColumn(), (e1, e2) -> e1));
                 getColumnIndex().clear();
 
                 // Update columnIndex based on graph attributes
@@ -195,6 +190,7 @@ public class Table {
                         getColumnIndex().addAll(createColumnIndexPart(readableGraph, GraphElementType.VERTEX,
                                 GraphRecordStoreUtilities.DESTINATION, columnReferenceMap));
                     }
+
                     // Link has it's own unique columns
                     if (state.getElementType() == GraphElementType.LINK) {
                         getColumnIndex().addAll(createColumnIndexPart(readableGraph, GraphElementType.VERTEX,
@@ -260,12 +256,9 @@ public class Table {
      * @param graph the graph to retrieve data from.
      * @param state the current table view state.
      */
-    public void updateData(final Graph graph,
-            final TableViewState state,
-            final ProgressBar progressBar) {
+    public void updateData(final Graph graph, final TableViewState state, final ProgressBar progressBar) {
         synchronized (TABLE_LOCK) {
             if (graph != null && state != null) {
-
                 if (Platform.isFxApplicationThread()) {
                     throw new IllegalStateException(ATTEMPT_PROCESS_JAVAFX);
                 }
@@ -405,11 +398,9 @@ public class Table {
      * @param graph the graph to read the element/row selection from
      * @param state the current table state
      */
-    public void updateSelection(final Graph graph,
-            final TableViewState state) {
+    public void updateSelection(final Graph graph, final TableViewState state) {
         synchronized (TABLE_LOCK) {
             if (graph != null && state != null) {
-
                 if (Platform.isFxApplicationThread()) {
                     throw new IllegalStateException(ATTEMPT_PROCESS_JAVAFX);
                 }
@@ -530,18 +521,15 @@ public class Table {
      * @param vertexId the ID of the vertex in the graph to build the row from
      * @return the built row
      */
-    protected ObservableList<String> getRowDataForVertex(final ReadableGraph readableGraph,
-            final int vertexId) {
+    protected ObservableList<String> getRowDataForVertex(final ReadableGraph readableGraph, final int vertexId) {
         final ObservableList<String> rowData = FXCollections.observableArrayList();
 
         getColumnIndex().forEach(column -> {
             final int attributeId = readableGraph
-                    .getAttribute(column.getAttribute().getElementType(),
-                            column.getAttribute().getName());
+                    .getAttribute(column.getAttribute().getElementType(), column.getAttribute().getName());
             final AbstractAttributeInteraction<?> interaction = AbstractAttributeInteraction
                     .getInteraction(column.getAttribute().getAttributeType());
-            final Object attributeValue = readableGraph
-                    .getObjectValue(attributeId, vertexId);
+            final Object attributeValue = readableGraph.getObjectValue(attributeId, vertexId);
             final String displayableValue = interaction.getDisplayText(attributeValue);
 
             rowData.add(displayableValue);
@@ -565,8 +553,7 @@ public class Table {
      * @param transactionId the ID of the transaction in the graph to build the row from
      * @return the built row
      */
-    protected ObservableList<String> getRowDataForTransaction(final ReadableGraph readableGraph,
-            final int transactionId) {
+    protected ObservableList<String> getRowDataForTransaction(final ReadableGraph readableGraph, final int transactionId) {
         final ObservableList<String> rowData = FXCollections.observableArrayList();
 
         getColumnIndex().forEach(column -> {
@@ -579,20 +566,20 @@ public class Table {
 
             final Object attributeValue;
             if (attributeId != Graph.NOT_FOUND) {
-                switch (column.getAttributeNamePrefix()) {
+
+                attributeValue = switch (column.getAttributeNamePrefix()) {
                     case GraphRecordStoreUtilities.SOURCE -> {
                         final int sourceVertexId = readableGraph.getTransactionSourceVertex(transactionId);
-                        attributeValue = readableGraph.getObjectValue(attributeId, sourceVertexId);
+                        yield readableGraph.getObjectValue(attributeId, sourceVertexId);
                     }
-                    case GraphRecordStoreUtilities.TRANSACTION ->
-                        attributeValue = readableGraph.getObjectValue(attributeId, transactionId);
+                    case GraphRecordStoreUtilities.TRANSACTION -> readableGraph.getObjectValue(attributeId, transactionId);
                     case GraphRecordStoreUtilities.DESTINATION -> {
                         final int destinationVertexId = readableGraph.getTransactionDestinationVertex(transactionId);
-                        attributeValue = readableGraph.getObjectValue(attributeId, destinationVertexId);
+                        yield readableGraph.getObjectValue(attributeId, destinationVertexId);
                     }
-                    default ->
-                        attributeValue = null;
-                }
+                    default -> null;
+                };
+
             } else {
                 attributeValue = null;
             }
@@ -738,28 +725,20 @@ public class Table {
      * @param columnReferenceMap a map of existing columns that can be used instead of creating new ones if the column
      * names match up
      */
-    protected List<Column> createColumnIndexPart(final ReadableGraph readableGraph,
-            final GraphElementType elementType,
-            final String attributeNamePrefix,
+    protected List<Column> createColumnIndexPart(final ReadableGraph readableGraph, final GraphElementType elementType,
+            final String attributeNamePrefix, 
             final Map<String, TableColumn<ObservableList<String>, String>> columnReferenceMap) {
         final List<Column> tmpColumnIndex = new CopyOnWriteArrayList<>();
 
         final int attributeCount = readableGraph.getAttributeCount(elementType);
 
         IntStream.range(0, attributeCount).forEach(attributePosition -> {
-            final int attributeId = readableGraph
-                    .getAttribute(elementType, attributePosition);
-            final String attributeName = attributeNamePrefix
-                    + readableGraph.getAttributeName(attributeId);
+            final int attributeId = readableGraph.getAttribute(elementType, attributePosition);
+            final String attributeName = attributeNamePrefix + readableGraph.getAttributeName(attributeId);
             final TableColumn<ObservableList<String>, String> column = columnReferenceMap.containsKey(attributeName)
                     ? columnReferenceMap.get(attributeName) : createColumn(attributeName);
 
-            tmpColumnIndex.add(new Column(
-                    attributeNamePrefix,
-                    new GraphAttribute(readableGraph, attributeId),
-                    column
-            ));
-
+            tmpColumnIndex.add(new Column(attributeNamePrefix,new GraphAttribute(readableGraph, attributeId), column));
         });
 
         return tmpColumnIndex;
@@ -773,7 +752,7 @@ public class Table {
      * @return the newly created column
      */
     protected TableColumn<ObservableList<String>, String> createColumn(final String attributeName) {
-        TableColumn<ObservableList<String>, String> newColumn = new TableColumn<>(attributeName);
+        final TableColumn<ObservableList<String>, String> newColumn = new TableColumn<>(attributeName);
         newColumn.setComparator(new TableDataComparator());
         return newColumn;
     }
@@ -785,8 +764,7 @@ public class Table {
      * @see ColumnVisibilityContextMenu#getShowPrimaryColumnsMenu()
      */
     protected void openColumnVisibilityMenu() {
-        final ColumnVisibilityContextMenu columnVisibilityContextMenu
-                = new ColumnVisibilityContextMenu(this);
+        final ColumnVisibilityContextMenu columnVisibilityContextMenu = new ColumnVisibilityContextMenu(this);
         columnVisibilityContextMenu.init();
 
         final MenuItem keyColumns = columnVisibilityContextMenu.getShowPrimaryColumnsMenu();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -218,13 +218,13 @@ class PQNodeList implements Iterable<PQNode> {
 
         public void testAdd() {
 
-            PQNodeList list = new PQNodeList();
+            final PQNodeList list = new PQNodeList();
             ListItem first;
             ListItem second;
             ListItem third;
-            PQNode node1 = makeNode();
-            PQNode node2 = makeNode();
-            PQNode node3 = makeNode();
+            final PQNode node1 = makeNode();
+            final PQNode node2 = makeNode();
+            final PQNode node3 = makeNode();
 
             // Test that the list is initially empty
             assert list.size == 0;
@@ -276,14 +276,14 @@ class PQNodeList implements Iterable<PQNode> {
 
         public void testRemove() {
 
-            PQNodeList list = new PQNodeList();
+            final PQNodeList list = new PQNodeList();
             ListItem first;
             ListItem second;
             ListItem third;
-            PQNode node1 = makeNode();
-            PQNode node2 = makeNode();
-            PQNode node3 = makeNode();
-            PQNode node4 = makeNode();
+            final PQNode node1 = makeNode();
+            final PQNode node2 = makeNode();
+            final PQNode node3 = makeNode();
+            final PQNode node4 = makeNode();
 
             list.addLast(node1);
             list.addLast(node2);
@@ -353,16 +353,16 @@ class PQNodeList implements Iterable<PQNode> {
 
         public void testReplace() {
 
-            PQNodeList list = new PQNodeList();
+            final PQNodeList list = new PQNodeList();
             ListItem first;
             ListItem second;
             ListItem third;
-            PQNode node1 = makeNode();
-            PQNode node2 = makeNode();
-            PQNode node3 = makeNode();
-            PQNode replacement1 = makeNode();
-            PQNode replacement2 = makeNode();
-            PQNode replacement3 = makeNode();
+            final PQNode node1 = makeNode();
+            final PQNode node2 = makeNode();
+            final PQNode node3 = makeNode();
+            final PQNode replacement1 = makeNode();
+            final PQNode replacement2 = makeNode();
+            final PQNode replacement3 = makeNode();
 
             list.addLast(node1);
             list.addLast(node2);
@@ -423,13 +423,13 @@ class PQNodeList implements Iterable<PQNode> {
 
         public void testReverse() {
 
-            PQNodeList list = new PQNodeList();
+            final PQNodeList list = new PQNodeList();
             ListItem first;
             ListItem second;
             ListItem third;
-            PQNode node1 = makeNode();
-            PQNode node2 = makeNode();
-            PQNode node3 = makeNode();
+            final PQNode node1 = makeNode();
+            final PQNode node2 = makeNode();
+            final PQNode node3 = makeNode();
 
             // Test reversing an empty list
             list.reverse();
@@ -487,17 +487,17 @@ class PQNodeList implements Iterable<PQNode> {
 
         public void testConcatenate() {
 
-            PQNodeList list = new PQNodeList();
-            PQNodeList list2 = new PQNodeList();
-            PQNodeList empty = new PQNodeList();
+            final PQNodeList list = new PQNodeList();
+            final PQNodeList list2 = new PQNodeList();
+            final PQNodeList empty = new PQNodeList();
             ListItem first;
             ListItem second;
             ListItem third;
             ListItem fourth;
-            PQNode node1 = makeNode();
-            PQNode node2 = makeNode();
-            PQNode node3 = makeNode();
-            PQNode node4 = makeNode();
+            final PQNode node1 = makeNode();
+            final PQNode node2 = makeNode();
+            final PQNode node3 = makeNode();
+            final PQNode node4 = makeNode();
 
             list.addLast(node1);
             list.addLast(node2);
