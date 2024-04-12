@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.utilities.svg;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
+import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -487,6 +488,16 @@ public class SVGObject {
      */
     public void setOpacity(final float opacity) {
         setAttribute(SVGAttributeConstants.OPACITY, opacity);
+    }
+    
+    public void setFeColor(Color color) {
+        final float red = 255F - (color.getRed() / 255F);
+        final float green = 255F - (color.getGreen() / 255F);
+        final float blue = 255F - (color.getBlue() / 255F );
+        
+        String matrix = String.format("%s 0 0 0 0 0 %s 0 0 0 0 0 %s 0 0 0 0 0 1 0", red, green, blue);
+        
+        setAttribute(SVGAttributeConstants.VALUES, matrix);
     }
     
     /**

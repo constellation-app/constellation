@@ -47,6 +47,7 @@ public enum SVGAttributeConstants {
     SOURCE_Y("y1"),
     STROKE_COLOR("stroke"),
     TRANSFORM("transform"),
+    VALUES("values"),
     VIEW_BOX("viewBox"),
     WIDTH("width"),
     X("x"),

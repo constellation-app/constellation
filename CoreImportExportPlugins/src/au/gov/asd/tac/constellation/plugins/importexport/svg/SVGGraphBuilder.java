@@ -42,6 +42,7 @@ import au.gov.asd.tac.constellation.utilities.graphics.Frame;
 import au.gov.asd.tac.constellation.utilities.graphics.Frustum;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
+import au.gov.asd.tac.constellation.utilities.svg.SVGTypeConstants;
 import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
 import au.gov.asd.tac.constellation.utilities.visual.AxisConstants;
@@ -50,9 +51,7 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import java.io.File;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.logging.Logger;
@@ -195,9 +194,8 @@ public class SVGGraphBuilder {
         try {
             preBuild();
             // Build the SVG image
-            buildHeader(svgGraph);
             final SVGObject svgContent = SVGObjectConstants.CONTENT.findIn(svgGraph);
-            svgContent.setChildren(buildNodes());
+            buildNodes(svgContent, SVGObjectConstants.DEFINITIONS.findIn(svgGraph));
             svgContent.setChildren(buildConnections());
             svgContent.setChildren(buildBlazes());
 
@@ -292,8 +290,9 @@ public class SVGGraphBuilder {
      * The template file Node.svg is used to build the node.
      * @param svgGraph The SVGObject holding all generated SVG data 
      */
-    private List<SVGObject> buildNodes() throws InterruptedException {
+    private void buildNodes(final SVGObject nodesContainer, final SVGObject definitionsContainer) throws InterruptedException {
         final List<SVGObject> nodes = new ArrayList<>();
+        final List<SVGObject> filters = new ArrayList<>();
 
         // Initate plugin report information
         interaction.setExecutionStage(0, -1, "Building Graph", "Building Nodes", true);
@@ -301,7 +300,6 @@ public class SVGGraphBuilder {
         
         if (!drawFlags.drawNodes()) {
             interaction.setProgress(0, -1, "Created 0 nodes", true);
-            return new ArrayList<>();
         }  
         
         // An arbitrary task count of 4 times the number of processors was chosen.
@@ -333,13 +331,20 @@ public class SVGGraphBuilder {
         
         // Combine the generated nodes into a single list.
         threadOuputLists.forEach(outputList -> {
-            nodes.addAll(outputList);
+            outputList.forEach(svgObject -> {
+                if (SVGTypeConstants.FILTER.getTypeString().equals(svgObject.toSVGData().getType())){
+                    filters.add(svgObject);
+                } else {
+                    nodes.add(svgObject);
+                }
+            });
         }); 
+        
+        definitionsContainer.setChildren(filters);
+        nodesContainer.setChildren(nodes);
         
         // Update the PluginInteraction of the Nodes generated.
         interaction.setProgress(0, -1, String.format("Created %s nodes", nodes.size()), true);
-        
-        return nodes;
     }
 
     /**

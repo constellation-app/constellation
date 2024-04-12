@@ -36,6 +36,10 @@ import java.io.IOException;
 import java.util.List;
 import javax.imageio.ImageIO;
 import au.gov.asd.tac.constellation.plugins.MultiTaskInteraction.SharedInteractionRunnable;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A runnable task designed to build SVG assets representing graph nodes.
@@ -49,9 +53,12 @@ public class GenerateSVGNodesTask implements Runnable, SharedInteractionRunnable
     private final GraphVisualisationReferences graph;
     private final List<Integer> vertexIndicies;
     private final List<SVGObject> output;
+    private final Map<String, SVGObject> colorFilters = new HashMap<>();
     private final int totalSteps;
     private int currentStep;
     private boolean complete = false;
+    private static final Logger LOGGER = Logger.getLogger(GenerateSVGNodesTask.class.getName());
+    
     
     public GenerateSVGNodesTask(final GraphVisualisationReferences graph, final List<Integer> vertexIndicies, final List<SVGObject> output){
         this.graph = graph;
@@ -125,6 +132,10 @@ public class GenerateSVGNodesTask implements Runnable, SharedInteractionRunnable
             });
         } finally {
             graph.terminate();
+            
+            // Add all of the color filters to the output
+            output.addAll(colorFilters.values());
+            
             complete = true;
         }
     }
@@ -234,19 +245,13 @@ public class GenerateSVGNodesTask implements Runnable, SharedInteractionRunnable
         if (DefaultIconProvider.isVisable(icon)){
             svgIcon = icon.buildSVG(color);
             
-            // The SVGIcon built by the ConstellationIcon should be used in all cases except or then an external image directory is provided and the icon has an imbedded raster image.
+            // The SVGIcon built by the ConstellationIcon should be used in all cases except for when an external image directory is provided and the icon has an imbedded raster image.
             if (graph.directory.exists() && svgIcon.getType().equals(SVGTypeConstants.IMAGE.getTypeString())){
 
                 // Build the name of the referenced Raster Image
                 final StringBuilder fileNameBuilder = new StringBuilder();                
                 
-                if (color != null) {
-                    fileNameBuilder.append(ConstellationColor.fromJavaColor(color).getHtmlColor().substring(1, 7));
-                    fileNameBuilder.append(" ");
-                }
-                
-                if (icon.getIconData() instanceof FileIconData){
-                    FileIconData iconData = (FileIconData) icon.getIconData();
+                if (icon.getIconData() instanceof FileIconData iconData){
                     fileNameBuilder.append(new File(iconData.getFilePath()).getName());
                     
                 } else { 
@@ -267,6 +272,11 @@ public class GenerateSVGNodesTask implements Runnable, SharedInteractionRunnable
                 // Update the svgIcons image reference to be the realitive path to th image. 
                 svgIcon.setAttribute(SVGAttributeConstants.HREF, relativePathBuilder.toString());
                 
+                // Generate and apply a reference of the color filter in the filter attribute of this SVG.
+                if (color != null) {
+                    svgIcon.setAttribute(SVGAttributeConstants.FILTER, this.generateSVGColorFilterReference(color));
+                }
+
                 // Build the complete path to the raster image reference.
                 final StringBuilder completePathBuilder = new StringBuilder();
                 completePathBuilder.append(graph.directory.getAbsolutePath());
@@ -279,8 +289,9 @@ public class GenerateSVGNodesTask implements Runnable, SharedInteractionRunnable
                     // Other threads or nodes may have already saved this file so only save the file if it does not already exist.  
                     final File outputFile = new File(completePathBuilder.toString());
                     if (!outputFile.exists()){
-                        ImageIO.write(icon.buildBufferedImage(color), "png", outputFile);
+                        ImageIO.write(icon.buildBufferedImage(), "png", outputFile);
                     }
+                    
                 } catch (IOException ex) {
                     //TODO: throw an exception here
                 }
@@ -290,5 +301,23 @@ public class GenerateSVGNodesTask implements Runnable, SharedInteractionRunnable
             svgIcon = null;
         }
         return svgIcon;
+    }
+
+    /**
+     * Creates a SVG Filter for the icons color and returns the reference the the id of that filter.
+     * @param color
+     * @return 
+     */
+    private String generateSVGColorFilterReference(Color color) {
+        final ConstellationColor ccolor = ConstellationColor.fromJavaColor(color);
+        final String htmlColor = ccolor.getHtmlColor();
+        if (!colorFilters.containsKey(htmlColor)){
+            final SVGObject filter = SVGObject.loadFromTemplate(SVGTemplateConstants.FILTER);
+            filter.setID(htmlColor);
+            final SVGObject colorMatrix = SVGObjectConstants.COLOR_MATRIX.findIn(filter);
+            colorMatrix.setFeColor(color);
+            colorFilters.put(htmlColor, filter);
+        }
+        return String.format("url(#%s)", htmlColor);
     }
 }

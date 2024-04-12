@@ -46,6 +46,9 @@ public class SVGData {
 
     public SVGData(final SVGTypeConstants type, final SVGData parent, final Map<String, String> attributes) {
         if (type == null){
+            LOGGER.log(
+                    Level.SEVERE, String.format("type: %s, parent: %s, attributes: %s", type == null ? "null" : type.getTypeString(), parent == null ? "null" : parent.type.getTypeString(), attributes.toString())
+                    );
             throw new IllegalArgumentException("SVGData elements cannot have a type Null");
         }
         this.type = type;
@@ -192,6 +195,7 @@ public class SVGData {
      * @param attributeValue such as "100", "stroke-width:3", "rgb(0,0,255)".
      */
     public final void setAttribute(final SVGAttributeConstants attributeKey, final String attributeValue) {
+        LOGGER.log(Level.SEVERE, String.format("Attribute %s=\"%s\" added", attributeKey.getName(), attributeValue));
         this.attributes.put(attributeKey.getName(), attributeValue);
     }
         
