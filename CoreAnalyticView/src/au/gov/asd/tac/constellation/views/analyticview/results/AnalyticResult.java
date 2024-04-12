@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 /**
  * The result of an AnalyticPlugin, which will be supported by one or more
@@ -99,7 +98,7 @@ public abstract class AnalyticResult<D extends AnalyticData> {
     }
 
     public final List<D> get() {
-        return Collections.unmodifiableList(result.values().stream().collect(Collectors.toList()));
+        return Collections.unmodifiableList(result.values().stream().toList());
     }
 
     public final Map<IdentificationData, D> getResult() {

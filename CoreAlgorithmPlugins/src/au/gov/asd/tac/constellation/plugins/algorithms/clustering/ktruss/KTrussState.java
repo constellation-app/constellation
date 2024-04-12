@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,8 +30,8 @@ import java.util.Map;
  */
 public class KTrussState {
 
-    transient long modificationCounter;
-    transient long strucModificationCount;
+    public transient long modificationCounter;
+    public transient long strucModificationCount;
     // The value of k indidcating which k-trusses are being visualised.
     private int currentK;
     // The highest value of k available to be visualised (is set to one more than the heighest k-truss in the graph)
@@ -123,7 +123,12 @@ public class KTrussState {
         interactive = prevState.interactive;
     }
 
-    public KTrussState(final long modificationCounter, final long strucModificationCount, final int currentK, final int highestK, final boolean excludedElementsDimmed, final int displayOptionToggles, final boolean[] extantKTrusses, final int[] kTrussToIndex, final int[] indexToKTruss, final Map<Integer, Integer> nodeToComponent, final Map<Integer, Integer> linkToComponent, final Map<Integer, Integer> componentTree, final Map<Integer, Integer> componentSizes, final boolean isNestedTrussesVisible, final int highestComponentNum, final int totalVerts, final int totalVertsInTrusses, final boolean drawAllComponents, final boolean nestedTrussesColored, final boolean interactive) {
+    public KTrussState(final long modificationCounter, final long strucModificationCount, final int currentK, final int highestK, 
+            final boolean excludedElementsDimmed, final int displayOptionToggles, final boolean[] extantKTrusses, final int[] kTrussToIndex, 
+            final int[] indexToKTruss, final Map<Integer, Integer> nodeToComponent, final Map<Integer, Integer> linkToComponent, 
+            final Map<Integer, Integer> componentTree, final Map<Integer, Integer> componentSizes, final boolean isNestedTrussesVisible, 
+            final int highestComponentNum, final int totalVerts, final int totalVertsInTrusses, final boolean drawAllComponents, 
+            final boolean nestedTrussesColored, final boolean interactive) {
         this.modificationCounter = modificationCounter;
         this.strucModificationCount = strucModificationCount;
         this.currentK = currentK;
@@ -146,7 +151,9 @@ public class KTrussState {
     }
 
     // Sets all the information related to the connected components of the k-trusses
-    public void setComponentInformation(final Map<Integer, Integer> nodeToComponent, final Map<Integer, Integer> linkToComponent, final Map<Integer, Integer> componentTree, final Map<Integer, Integer> componentSizes, final int highestComponentNum, final int totalVerts, final int totalVertsInTrusses) {
+    public void setComponentInformation(final Map<Integer, Integer> nodeToComponent, final Map<Integer, Integer> linkToComponent, 
+            final Map<Integer, Integer> componentTree, final Map<Integer, Integer> componentSizes, final int highestComponentNum, 
+            final int totalVerts, final int totalVertsInTrusses) {
         this.nodeToComponent = nodeToComponent;
         this.linkToComponent = linkToComponent;
         this.componentTree = componentTree;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -164,18 +164,17 @@ public class FactToSizeTranslator extends AbstractSizeTranslator<FactResult, Ele
                     final float elementValue = factResult.getFactValue() ? 1F : 0F;
                     final float sizeIntensity = (float) Math.log(elementValue * graphEstimatedDiameter);
                     switch (elementType) {
-                        case VERTEX:
+                        case VERTEX -> {
                             final float vertexSize = graph.getFloatValue(vertexSizeAttribute, elementId);
                             vertexSizes.put(elementId, vertexSize);
                             graph.setFloatValue(vertexSizeAttribute, elementId, sizeIntensity > 1.0F ? sizeIntensity : 1.0F);
-                            break;
-                        case TRANSACTION:
+                        }
+                        case TRANSACTION -> {
                             final float transactionSize = graph.getFloatValue(transactionSizeAttribute, elementId);
                             transactionSizes.put(elementId, transactionSize);
                             graph.setFloatValue(transactionSizeAttribute, elementId, sizeIntensity > 1.0F ? sizeIntensity : 1.0F);
-                            break;
-                        default:
-                            throw new InvalidElementTypeException("'Size Elements' is not supported "
+                        }
+                        default -> throw new InvalidElementTypeException("'Size Elements' is not supported "
                                     + "for the element type associated with this analytic question.");
                     }
                 }
