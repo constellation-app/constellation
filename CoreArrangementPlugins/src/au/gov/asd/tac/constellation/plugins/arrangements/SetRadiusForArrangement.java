@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,12 +88,11 @@ public class SetRadiusForArrangement {
             }
 
             final Object obj = graph.getObjectValue(labelAttrArray[i], vxId);
-            float currentLabelWidth;
 
-            int characters = (obj == null || obj.toString() == null) ? 0 : obj.toString().length();
+            final int characters = (obj == null || obj.toString() == null) ? 0 : obj.toString().length();
 
             // Set the current label width, we do not allow room for characters to contribute more than 4 node radius units to the label width since wrapping should be implemented in the future
-            currentLabelWidth = Math.min(4, (characters / CHARACTERS_PER_NODE_RADIUS_UNIT)) * labelSizeArray[i];
+            final float currentLabelWidth = Math.min(4, (characters / CHARACTERS_PER_NODE_RADIUS_UNIT)) * labelSizeArray[i];
             if (currentLabelWidth > maxLabelWidth) {
                 maxLabelWidth = currentLabelWidth;
             }
