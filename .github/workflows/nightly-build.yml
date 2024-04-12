@@ -11,7 +11,7 @@ jobs:
   create-nightly-build:
     runs-on: ubuntu-latest
     env:
-      RUNNER_IMAGE: "constellationapplication/netbeans-runner:21.0.1"
+      RUNNER_IMAGE: "constellationapplication/netbeans-runner:21.0.2"
     container:
       image: docker://pandoc/latex:2.9
       options: --entrypoint=bash
