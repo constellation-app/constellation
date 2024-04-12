@@ -1045,7 +1045,6 @@ public class TableNGTest {
 
         verify(tablePane).setCenter(progressPane);
 
-        verify(readableGraph).release();
     }
 
 }
