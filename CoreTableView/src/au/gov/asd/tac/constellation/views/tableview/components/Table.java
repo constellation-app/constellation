@@ -284,108 +284,89 @@ public class Table {
                 // Build table data based on attribute values on the graph
                 final List<ObservableList<String>> rows = new ArrayList<>();
                 try (final ReadableGraph readableGraph = graph.getReadableGraph()) {
-                    if (null == state.getElementType()) {
-                        final int selectedAttributeId = VisualConcept.VertexAttribute.SELECTED.get(readableGraph);
-                        final int vertexCount = readableGraph.getVertexCount();
+                    switch (state.getElementType()) {
+                        case TRANSACTION -> {
+                            final int selectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
+                            final int transactionCount = readableGraph.getTransactionCount();
+                            IntStream.range(0, transactionCount).forEach(transactionPosition -> {
+                                final int transactionId = readableGraph.getTransaction(transactionPosition);
+                                boolean isSelected = false;
 
-                        IntStream.range(0, vertexCount).forEach(vertexPosition -> {
-                            final int vertexId = readableGraph.getVertex(vertexPosition);
-                            boolean isSelected = false;
+                                if (selectedAttributeId != Graph.NOT_FOUND) {
+                                    isSelected = readableGraph.getBooleanValue(selectedAttributeId, transactionId);
+                                }
 
-                            if (selectedAttributeId != Graph.NOT_FOUND) {
-                                isSelected = readableGraph.getBooleanValue(selectedAttributeId, vertexId);
-                            }
-                            // If it is not in selected only mode then just add every row but if it is
-                            // in selected only mode, only add the ones that are selected in the graph
-                            if (!state.isSelectedOnly() || isSelected) {
-                                rows.add(getRowDataForVertex(readableGraph, vertexId));
-                            }
-                        });
-                    } else {
-                        switch (state.getElementType()) {
-                            case TRANSACTION -> {
-                                final int selectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
-                                final int transactionCount = readableGraph.getTransactionCount();
-                                IntStream.range(0, transactionCount).forEach(transactionPosition -> {
-                                    final int transactionId = readableGraph.getTransaction(transactionPosition);
-                                    boolean isSelected = false;
+                                // If it is not in selected only mode then just add every row but if it is
+                                // in selected only mode, only add the ones that are selected in the graph
+                                if (!state.isSelectedOnly() || isSelected) {
+                                    rows.add(getRowDataForTransaction(readableGraph, transactionId));
+                                }
+                            });
+                        }
+                        case EDGE -> {
+                            final int selectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
+                            final int edgeCount = readableGraph.getEdgeCount();
+                            IntStream.range(0, edgeCount).forEach(edgePosition -> {
+                                final int edgeId = readableGraph.getEdge(edgePosition);
+                                boolean isSelected = true;
 
-                                    if (selectedAttributeId != Graph.NOT_FOUND) {
-                                        isSelected = readableGraph.getBooleanValue(selectedAttributeId, transactionId);
-                                    }
-
-                                    // If it is not in selected only mode then just add every row but if it is
-                                    // in selected only mode, only add the ones that are selected in the graph
-                                    if (!state.isSelectedOnly() || isSelected) {
-                                        rows.add(getRowDataForTransaction(readableGraph, transactionId));
-                                    }
-                                });
-                            }
-                            case EDGE -> {
-                                final int selectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
-                                final int edgeCount = readableGraph.getEdgeCount();
-                                IntStream.range(0, edgeCount).forEach(edgePosition -> {
-                                    final int edgeId = readableGraph.getEdge(edgePosition);
-                                    boolean isSelected = true;
-
-                                    if (selectedAttributeId != Graph.NOT_FOUND) {
-                                        for (int i = 0; i < readableGraph.getEdgeTransactionCount(edgeId); i++) {
-                                            // If just one of the transactions isn't selected, set to false and break loop
-                                            if (!readableGraph.getBooleanValue(selectedAttributeId, readableGraph.getEdgeTransaction(edgeId, i))) {
-                                                isSelected = false;
-                                                break;
-                                            }
-                                        }
-                                        //isSelected = readableGraph.getBooleanValue(selectedAttributeId, edgeId);
-                                    }
-                                    // If it is not in selected only mode then just add every row but if it is
-                                    // in selected only mode, only add the ones that are selected in the graph
-                                    if (!state.isSelectedOnly() || isSelected) {
-                                        //LOGGER.log(Level.WARNING, "Edge id {0}", edgeId);
-                                        rows.add(getRowDataForEdge(readableGraph, edgeId));
-                                    }
-                                });
-                            }
-                            case LINK -> {
-                                final int selectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
-                                final int linkCount = readableGraph.getLinkCount();
-                                IntStream.range(0, linkCount).forEach(linkPosition -> {
-                                    final int linkId = readableGraph.getLink(linkPosition);
-                                    boolean isSelected = true;
-
-                                    if (selectedAttributeId != Graph.NOT_FOUND) {
-                                        for (int i = 0; i < readableGraph.getLinkTransactionCount(linkId); i++) {
-                                            // If just one of the transactions isn't selected, set to false and break loop
-                                            if (!readableGraph.getBooleanValue(selectedAttributeId, readableGraph.getLinkTransaction(linkId, i))) {
-                                                isSelected = false;
-                                                break;
-                                            }
+                                if (selectedAttributeId != Graph.NOT_FOUND) {
+                                    for (int i = 0; i < readableGraph.getEdgeTransactionCount(edgeId); i++) {
+                                        // If just one of the transactions isn't selected, set to false and break loop
+                                        if (!readableGraph.getBooleanValue(selectedAttributeId, readableGraph.getEdgeTransaction(edgeId, i))) {
+                                            isSelected = false;
+                                            break;
                                         }
                                     }
-                                    // If it is not in selected only mode then just add every row but if it is
-                                    // in selected only mode, only add the ones that are selected in the graph
-                                    if (!state.isSelectedOnly() || isSelected) {
-                                        rows.add(getRowDataForLink(readableGraph, linkId));
-                                    }
-                                });
-                            }
-                            default -> {
-                                final int selectedAttributeId = VisualConcept.VertexAttribute.SELECTED.get(readableGraph);
-                                final int vertexCount = readableGraph.getVertexCount();
-                                IntStream.range(0, vertexCount).forEach(vertexPosition -> {
-                                    final int vertexId = readableGraph.getVertex(vertexPosition);
-                                    boolean isSelected = false;
+                                    //isSelected = readableGraph.getBooleanValue(selectedAttributeId, edgeId);
+                                }
+                                // If it is not in selected only mode then just add every row but if it is
+                                // in selected only mode, only add the ones that are selected in the graph
+                                if (!state.isSelectedOnly() || isSelected) {
+                                    //LOGGER.log(Level.WARNING, "Edge id {0}", edgeId);
+                                    rows.add(getRowDataForEdge(readableGraph, edgeId));
+                                }
+                            });
+                        }
+                        case LINK -> {
+                            final int selectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
+                            final int linkCount = readableGraph.getLinkCount();
+                            IntStream.range(0, linkCount).forEach(linkPosition -> {
+                                final int linkId = readableGraph.getLink(linkPosition);
+                                boolean isSelected = true;
 
-                                    if (selectedAttributeId != Graph.NOT_FOUND) {
-                                        isSelected = readableGraph.getBooleanValue(selectedAttributeId, vertexId);
+                                if (selectedAttributeId != Graph.NOT_FOUND) {
+                                    for (int i = 0; i < readableGraph.getLinkTransactionCount(linkId); i++) {
+                                        // If just one of the transactions isn't selected, set to false and break loop
+                                        if (!readableGraph.getBooleanValue(selectedAttributeId, readableGraph.getLinkTransaction(linkId, i))) {
+                                            isSelected = false;
+                                            break;
+                                        }
                                     }
-                                    // If it is not in selected only mode then just add every row but if it is
-                                    // in selected only mode, only add the ones that are selected in the graph
-                                    if (!state.isSelectedOnly() || isSelected) {
-                                        rows.add(getRowDataForVertex(readableGraph, vertexId));
-                                    }
-                                });
-                            }
+                                }
+                                // If it is not in selected only mode then just add every row but if it is
+                                // in selected only mode, only add the ones that are selected in the graph
+                                if (!state.isSelectedOnly() || isSelected) {
+                                    rows.add(getRowDataForLink(readableGraph, linkId));
+                                }
+                            });
+                        }
+                        default -> {
+                            final int selectedAttributeId = VisualConcept.VertexAttribute.SELECTED.get(readableGraph);
+                            final int vertexCount = readableGraph.getVertexCount();
+                            IntStream.range(0, vertexCount).forEach(vertexPosition -> {
+                                final int vertexId = readableGraph.getVertex(vertexPosition);
+                                boolean isSelected = false;
+
+                                if (selectedAttributeId != Graph.NOT_FOUND) {
+                                    isSelected = readableGraph.getBooleanValue(selectedAttributeId, vertexId);
+                                }
+                                // If it is not in selected only mode then just add every row but if it is
+                                // in selected only mode, only add the ones that are selected in the graph
+                                if (!state.isSelectedOnly() || isSelected) {
+                                    rows.add(getRowDataForVertex(readableGraph, vertexId));
+                                }
+                            });
                         }
                     }
                 }
