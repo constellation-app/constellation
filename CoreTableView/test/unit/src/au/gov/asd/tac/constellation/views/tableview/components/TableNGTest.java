@@ -85,6 +85,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class TableNGTest {
+
     private static final Logger LOGGER = Logger.getLogger(TableNGTest.class.getName());
 
     private TableViewTopComponent tableViewTopComponent;
@@ -196,8 +197,7 @@ public class TableNGTest {
     @Test
     public void updateSelectionThreadInterrupted() {
         try (
-                MockedStatic<TableViewUtilities> tableUtilsMockedStatic = Mockito.mockStatic(TableViewUtilities.class);
-                final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class);) {
+                MockedStatic<TableViewUtilities> tableUtilsMockedStatic = Mockito.mockStatic(TableViewUtilities.class); final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class);) {
             final TableViewState tableViewState = new TableViewState();
             tableViewState.setSelectedOnly(false);
 
@@ -772,7 +772,7 @@ public class TableNGTest {
         final ObservableList<String> row1 = FXCollections.observableList(List.of("row1Column1", "row1Column2"));
         final ObservableList<String> row2 = FXCollections.observableList(List.of("row2Column1", "row2Column2"));
 
-        testUpdateData(GraphElementType.TRANSACTION, false, row1, row2, null, null, List.of(row1, row2));
+        testUpdateData(GraphElementType.TRANSACTION, false, row1, row2, null, null, null, null, null, null, List.of(row1, row2));
     }
 
     @Test
@@ -780,7 +780,7 @@ public class TableNGTest {
         final ObservableList<String> row1 = FXCollections.observableList(List.of("row1Column1", "row1Column2"));
         final ObservableList<String> row2 = FXCollections.observableList(List.of("row2Column1", "row2Column2"));
 
-        testUpdateData(GraphElementType.TRANSACTION, true, row1, row2, null, null, List.of(row2));
+        testUpdateData(GraphElementType.TRANSACTION, true, row1, row2, null, null, null, null, null, null, List.of(row2));
     }
 
     @Test
@@ -788,7 +788,7 @@ public class TableNGTest {
         final ObservableList<String> row1 = FXCollections.observableList(List.of("row1Column1", "row1Column2"));
         final ObservableList<String> row2 = FXCollections.observableList(List.of("row2Column1", "row2Column2"));
 
-        testUpdateData(GraphElementType.VERTEX, false, null, null, row1, row2, List.of(row1, row2));
+        testUpdateData(GraphElementType.VERTEX, false, null, null, row1, row2, null, null, null, null, List.of(row1, row2));
     }
 
     @Test
@@ -796,7 +796,43 @@ public class TableNGTest {
         final ObservableList<String> row1 = FXCollections.observableList(List.of("row1Column1", "row1Column2"));
         final ObservableList<String> row2 = FXCollections.observableList(List.of("row2Column1", "row2Column2"));
 
-        testUpdateData(GraphElementType.VERTEX, true, null, null, row1, row2, List.of(row2));
+        testUpdateData(GraphElementType.VERTEX, true, null, null, row1, row2, null, null, null, null, List.of(row2));
+    }
+
+    @Test
+    public void updateDataEdgeStateNotSelectedOnly() {
+        System.out.println("Edge Not");
+        final ObservableList<String> row1 = FXCollections.observableList(List.of("row1Column1", "row1Column2"));
+        final ObservableList<String> row2 = FXCollections.observableList(List.of("row2Column1", "row2Column2"));
+
+        testUpdateData(GraphElementType.EDGE, false, null, null, null, null, row1, row2, null, null, List.of(row1, row2));
+    }
+
+    @Test
+    public void updateDataEdgeStateSelectedOnly() {
+        System.out.println("Edge");
+        final ObservableList<String> row1 = FXCollections.observableList(List.of("row1Column1", "row1Column2"));
+        final ObservableList<String> row2 = FXCollections.observableList(List.of("row2Column1", "row2Column2"));
+
+        testUpdateData(GraphElementType.EDGE, true, null, null, null, null, row1, row2, null, null, List.of(row1, row2));
+    }
+
+    @Test
+    public void updateDataLinkStateNotSelectedOnly() {
+        System.out.println("Link Not");
+        final ObservableList<String> row1 = FXCollections.observableList(List.of("row1Column1", "row1Column2"));
+        final ObservableList<String> row2 = FXCollections.observableList(List.of("row2Column1", "row2Column2"));
+
+        testUpdateData(GraphElementType.LINK, false, null, null, null, null, null, null, row1, row2, List.of(row1, row2));
+    }
+
+    @Test
+    public void updateDataLinkStateSelectedOnly() {
+        System.out.println("Link");
+        final ObservableList<String> row1 = FXCollections.observableList(List.of("row1Column1", "row1Column2"));
+        final ObservableList<String> row2 = FXCollections.observableList(List.of("row2Column1", "row2Column2"));
+
+        testUpdateData(GraphElementType.LINK, true, null, null, null, null, null, null, row1, row2, List.of(row1, row2));
     }
 
     @Test
@@ -947,17 +983,13 @@ public class TableNGTest {
     }
 
     /**
-     * Tests the update data method. If the initial state's element type is
-     * vertex, then the parameters transaction row 1 and 2 can be null. And vice
-     * versa.
+     * Tests the update data method. If the initial state's element type is vertex, then the parameters transaction row
+     * 1 and 2 can be null. And vice versa.
      *
      * @param stateElementType the initial element type in the table state
-     * @param isSelectedOnlyMode true if the table's initial state is in
-     * selected only mode, false otherwise
-     * @param transactionRow1 row 1 that represents a transaction element in the
-     * graph
-     * @param transactionRow2 row 2 that represents a transaction element in the
-     * graph
+     * @param isSelectedOnlyMode true if the table's initial state is in selected only mode, false otherwise
+     * @param transactionRow1 row 1 that represents a transaction element in the graph
+     * @param transactionRow2 row 2 that represents a transaction element in the graph
      * @param vertexRow1 row 1 that represents a vertex element in the graph
      * @param vertexRow2 row 2 that represents a vertex element in the graph
      * @param expectedRows the expected rows that will be added to the table
@@ -968,6 +1000,10 @@ public class TableNGTest {
             final ObservableList<String> transactionRow2,
             final ObservableList<String> vertexRow1,
             final ObservableList<String> vertexRow2,
+            final ObservableList<String> edgeRow1,
+            final ObservableList<String> edgeRow2,
+            final ObservableList<String> linkRow1,
+            final ObservableList<String> linkRow2,
             final List<ObservableList<String>> expectedRows) {
         final TableViewState tableViewState = new TableViewState();
         tableViewState.setElementType(stateElementType);
@@ -997,18 +1033,32 @@ public class TableNGTest {
 
         when(readableGraph.getTransactionCount()).thenReturn(2);
         when(readableGraph.getVertexCount()).thenReturn(2);
+        when(readableGraph.getEdgeCount()).thenReturn(2);
+        when(readableGraph.getLinkCount()).thenReturn(2);
 
         when(readableGraph.getTransaction(0)).thenReturn(101);
         when(readableGraph.getTransaction(1)).thenReturn(102);
 
         when(readableGraph.getVertex(0)).thenReturn(201);
         when(readableGraph.getVertex(1)).thenReturn(202);
-
+        
+        when(readableGraph.getEdge(0)).thenReturn(301);
+        when(readableGraph.getEdge(1)).thenReturn(302);
+        
+        when(readableGraph.getLink(0)).thenReturn(401);
+        when(readableGraph.getLink(1)).thenReturn(402);
+        
         when(readableGraph.getBooleanValue(22, 101)).thenReturn(false);
         when(readableGraph.getBooleanValue(22, 102)).thenReturn(true);
 
         when(readableGraph.getBooleanValue(22, 201)).thenReturn(false);
         when(readableGraph.getBooleanValue(22, 202)).thenReturn(true);
+        
+        when(readableGraph.getBooleanValue(22, 301)).thenReturn(false);
+        when(readableGraph.getBooleanValue(22, 302)).thenReturn(true);
+        
+        when(readableGraph.getBooleanValue(22, 401)).thenReturn(false);
+        when(readableGraph.getBooleanValue(22, 402)).thenReturn(true);
 
         // Mock the transaction row creation
         doReturn(transactionRow1).when(table).getRowDataForTransaction(readableGraph, 101);
@@ -1016,19 +1066,22 @@ public class TableNGTest {
 
         doReturn(vertexRow1).when(table).getRowDataForVertex(readableGraph, 201);
         doReturn(vertexRow2).when(table).getRowDataForVertex(readableGraph, 202);
+        
+        doReturn(edgeRow1).when(table).getRowDataForEdge(readableGraph, 301);
+        doReturn(edgeRow2).when(table).getRowDataForEdge(readableGraph, 302);
+        
+        doReturn(linkRow1).when(table).getRowDataForLink(readableGraph, 401);
+        doReturn(linkRow2).when(table).getRowDataForLink(readableGraph, 402);
 
         try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
             platformMockedStatic.when(() -> Platform.runLater(any(Runnable.class)))
                     .then(mockitoInvocation -> {
                         final Runnable runnable = (Runnable) mockitoInvocation.getArgument(0);
 
-                        if (runnable instanceof UpdateDataTask) {
-                            final UpdateDataTask updateDataTask = (UpdateDataTask) runnable;
-
+                        if (runnable instanceof UpdateDataTask updateDataTask) {
                             // If this is not called then the test will halt forever
                             updateDataTask.getUpdateDataLatch().countDown();
-
-                            assertEquals(expectedRows, updateDataTask.getRows());
+                            assertEquals(updateDataTask.getRows(), expectedRows);
                         } else {
                             // Progress Bar
                             runnable.run();
