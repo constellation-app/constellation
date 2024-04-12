@@ -48,16 +48,11 @@ public final class TableViewState {
 
     public TableViewState(final TableViewState state) {
         this.selectedOnly = state != null && state.selectedOnly;
-        this.elementType = state == null
-                ? GraphElementType.TRANSACTION : state.elementType;
-        this.transactionColumnAttributes = state == null
-                ? null : state.transactionColumnAttributes;
-        this.vertexColumnAttributes = state == null
-                ? null : state.vertexColumnAttributes;
-        this.edgeColumnAttributes = state == null
-                ? null : state.edgeColumnAttributes;
-        this.linkColumnAttributes = state == null
-                ? null : state.linkColumnAttributes;
+        this.elementType = state == null ? GraphElementType.TRANSACTION : state.elementType;
+        this.transactionColumnAttributes = state == null ? null : state.transactionColumnAttributes;
+        this.vertexColumnAttributes = state == null ? null : state.vertexColumnAttributes;
+        this.edgeColumnAttributes = state == null ? null : state.edgeColumnAttributes;
+        this.linkColumnAttributes = state == null ? null : state.linkColumnAttributes;
     }
 
     public boolean isSelectedOnly() {

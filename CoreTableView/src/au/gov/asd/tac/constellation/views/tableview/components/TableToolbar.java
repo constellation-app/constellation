@@ -91,10 +91,8 @@ public class TableToolbar {
      */
     public void init() {
         columnVisibilityButton = createButton(COLUMNS_ICON, COLUMN_VISIBILITY, e -> {
-            final ColumnVisibilityContextMenu columnVisibilityMenu
-                    = createColumnVisibilityContextMenu();
-            columnVisibilityMenu.getContextMenu()
-                    .show(columnVisibilityButton, Side.RIGHT, 0, 0);
+            final ColumnVisibilityContextMenu columnVisibilityMenu = createColumnVisibilityContextMenu();
+            columnVisibilityMenu.getContextMenu().show(columnVisibilityButton, Side.RIGHT, 0, 0);
 
             e.consume();
         });
@@ -119,10 +117,8 @@ public class TableToolbar {
         });
 
         elementTypeButton = createButton(getElementTypeInitialIcon(), ELEMENT_TYPE, e -> {
-            final ElementTypeContextMenu elementMenu
-                    = createElementTypeContextMenu();
-            elementMenu.getContextMenu()
-                    .show(elementTypeButton, Side.RIGHT, 0, 0);
+            final ElementTypeContextMenu elementMenu = createElementTypeContextMenu();
+            elementMenu.getContextMenu().show(elementTypeButton, Side.RIGHT, 0, 0);
 
             e.consume();
         });

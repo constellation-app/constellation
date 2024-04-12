@@ -91,24 +91,19 @@ public class TableCellFactory extends TableCell<ObservableList<String>, String> 
                     .map(column -> column.getAttributeNamePrefix())
                     .findFirst().orElse("");
             switch (columnPrefix) {
-                case GraphRecordStoreUtilities.SOURCE:
+                case GraphRecordStoreUtilities.SOURCE ->
                     this.getStyleClass().add(ELEMENT_SOURCE_CLASS);
-                    break;
-                case GraphRecordStoreUtilities.TRANSACTION:
+                case GraphRecordStoreUtilities.TRANSACTION ->
                     this.getStyleClass().add(ELEMENT_TRANSACTION_CLASS);
-                    break;
-                case GraphRecordStoreUtilities.DESTINATION:
+                case GraphRecordStoreUtilities.DESTINATION ->
                     this.getStyleClass().add(ELEMENT_DESTINATION_CLASS);
-                    break;
-                case GraphRecordStoreUtilities.LINK_LOW:
+                case GraphRecordStoreUtilities.LINK_LOW ->
                     this.getStyleClass().add(ELEMENT_LOW_CLASS);
-                    break;
-                case GraphRecordStoreUtilities.LINK_HIGH:
+                case GraphRecordStoreUtilities.LINK_HIGH ->
                     this.getStyleClass().add(ELEMENT_HIGH_CLASS);
-                    break;
-                default:
-                    // Code can't make it to here
-                    break;
+                default -> {
+                    // Do Nothing
+                }
             }
 
             // enable context menu on right-click

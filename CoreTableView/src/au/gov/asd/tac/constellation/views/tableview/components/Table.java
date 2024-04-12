@@ -176,8 +176,7 @@ public class Table {
                 getColumnIndex().clear();
 
                 // Update columnIndex based on graph attributes
-                final ReadableGraph readableGraph = graph.getReadableGraph();
-                try {
+                try (final ReadableGraph readableGraph = graph.getReadableGraph()) {
 
                     // Links dont need vertex columns
                     if (state.getElementType() != GraphElementType.LINK) {
@@ -205,8 +204,6 @@ public class Table {
                         getColumnIndex().addAll(createColumnIndexPart(readableGraph, GraphElementType.VERTEX,
                                 GraphRecordStoreUtilities.LINK_HIGH, columnReferenceMap));
                     }
-                } finally {
-                    readableGraph.release();
                 }
 
                 // If there are no visible columns specified, write the key columns to the state
@@ -286,8 +283,7 @@ public class Table {
 
                 // Build table data based on attribute values on the graph
                 final List<ObservableList<String>> rows = new ArrayList<>();
-                final ReadableGraph readableGraph = graph.getReadableGraph();
-                try {
+                try (final ReadableGraph readableGraph = graph.getReadableGraph()) {
                     if (null == state.getElementType()) {
                         final int selectedAttributeId = VisualConcept.VertexAttribute.SELECTED.get(readableGraph);
                         final int vertexCount = readableGraph.getVertexCount();
@@ -392,8 +388,6 @@ public class Table {
                             }
                         }
                     }
-                } finally {
-                    readableGraph.release();
                 }
 
                 // Don't want to trigger the UI update if the update has been cancelled
