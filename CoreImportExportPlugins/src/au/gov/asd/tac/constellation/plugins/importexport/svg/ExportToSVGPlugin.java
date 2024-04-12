@@ -31,6 +31,9 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType.ColorParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.NumberParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
@@ -70,6 +73,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
     public static final String IMAGE_MODE_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "image_mode");
     public static final String BACKGROUND_COLOR_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "background_color");
     public static final String SELECTED_ELEMENTS_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "selected_elements");
+    public static final String EXPORT_CORES_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "export_cores");
     public static final String CONNECTION_MODE_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "connection_mode");
     public static final String SHOW_NODES_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_nodes");
     public static final String SHOW_CONNECTIONS_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_connections");
@@ -97,9 +101,24 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         graphTitleParam.setRequired(true);
         parameters.addParameter(graphTitleParam);
         
+        final PluginParameter<IntegerParameterValue> exportCores = IntegerParameterType.build(EXPORT_CORES_PARAMETER_ID);
+        exportCores.setName("Export Processors");
+        exportCores.setDescription("""
+                                   How much processing power do you want to dedicate to this export?
+                                   Low Value = Slow Export, Maintained Application Responsiveness.
+                                   high Value = Fast Export, Reduced Application Responsiveness."""
+        );
+        IntegerParameterType.setMinimum(exportCores, 1);
+        IntegerParameterType.setMaximum(exportCores, Runtime.getRuntime().availableProcessors());
+        parameters.addParameter(exportCores);
+        
         final PluginParameter<SingleChoiceParameterValue> imageModeParam = SingleChoiceParameterType.build(IMAGE_MODE_PARAMETER_ID);
         imageModeParam.setName("Image Mode");
-        imageModeParam.setDescription("How do wou want raster images to be handled?\n Embedded = Single File, Large Size\n Linked = File & folder of image assets, Small Size ");
+        imageModeParam.setDescription("""
+                                      How do wou want raster images to be handled?
+                                      Embedded = Single File, Large Size
+                                      Linked = File & folder of Image Assets, Small Size"""
+        );
         final List<String> imageModeOptions = new ArrayList<>();
         imageModeOptions.add("Embedded");
         imageModeOptions.add("Linked");
@@ -161,6 +180,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         // Get Parameter Values
         final String fnam = parameters.getStringValue(FILE_NAME_PARAMETER_ID);
         final String title = parameters.getStringValue(GRAPH_TITLE_PARAMETER_ID);
+        final int cores = parameters.getIntegerValue(EXPORT_CORES_PARAMETER_ID);
         final String imageMode = parameters.getStringValue(IMAGE_MODE_PARAMETER_ID);
         final ConstellationColor color = parameters.getColorValue(BACKGROUND_COLOR_PARAMETER_ID);
         final boolean selectedElements = parameters.getBooleanValue(SELECTED_ELEMENTS_PARAMETER_ID);
@@ -209,6 +229,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
                     .withDrawFlags(new DrawFlags(showNodes, showConnections, showNodeLabels, showConnectionLabels, showBlazes))
                     .fromPerspective(AxisConstants.getReference(exportPerspective))
                     .atDirectory(assetDirectory)
+                    .withCores(cores)
                     .build();
             
             exportToSVG(exportedGraph, svg, interaction);

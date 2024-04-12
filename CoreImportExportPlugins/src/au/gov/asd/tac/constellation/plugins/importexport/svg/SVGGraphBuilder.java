@@ -109,6 +109,13 @@ public class SVGGraphBuilder {
         this.directory = directory;
         return this;
     }
+    
+    
+    public SVGGraphBuilder withCores(int cores) {
+        threadPool = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool("SVG Export", cores);
+        return this;
+    }
+    
     /**
      * Specifies the {@link GraphReadMethods} representing the current active graph.
      * @param graph used to define the bounding box of the graph
@@ -267,8 +274,6 @@ public class SVGGraphBuilder {
         Vector3f transformedCameraEye = new Vector3f();
         transformedCameraEye.transform(camera.lookAtEye, modelViewMatrix);
         viewPort = new int[] {Math.round(transformedCameraEye.getX()), Math.round(transformedCameraEye.getY()), paneWidth, paneHeight};
-        
-        threadPool = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool("SVG Export");
     }
     
     /**

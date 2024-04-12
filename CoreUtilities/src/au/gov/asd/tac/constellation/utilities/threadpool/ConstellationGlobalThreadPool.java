@@ -81,10 +81,15 @@ public class ConstellationGlobalThreadPool {
      * It is the responsibility fo the calling class to monitor and shutdown this ExecutrService as needed
      *
      * @param poolName
+     * @param requestedProcessors
      * @return a FixedThreadPool objects
      */
-    public ExecutorService getFixedThreadPool(final String poolName) {
-        return Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), new ConstellationThreadFactory(poolName));
+    public ExecutorService getFixedThreadPool(final String poolName, final int requestedProcessors) {
+        if (requestedProcessors > Runtime.getRuntime().availableProcessors()){
+            //Do something here probably
+            return Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), new ConstellationThreadFactory(poolName));
+        } 
+        return Executors.newFixedThreadPool(requestedProcessors, new ConstellationThreadFactory(poolName));
     }
 
     /**

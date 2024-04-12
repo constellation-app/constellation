@@ -80,7 +80,6 @@ public class GenerateSVGNodesTask implements Runnable, SharedInteractionRunnable
                     svgNode.setID(String.format("node-%s", graph.getVertexId(vertexIndex)));
                     svgNode.setSortOrderValue(position.getW());
                     svgNode.setDimension(radius * 2, radius * 2);
-                    output.add(svgNode);
 
                     // Add labels to the Node if required
                     if (graph.exportNodeLabels()) {
@@ -119,6 +118,8 @@ public class GenerateSVGNodesTask implements Runnable, SharedInteractionRunnable
                         SVGObjectConstants.NODE_IMAGES.findIn(svgNode).applyGrayScaleFilter();
                         SVGObjectConstants.BACKGROUND_IMAGE.findIn(svgNode).setOpacity(0.5F);
                     }
+                    
+                    output.add(svgNode);
                 }
                 currentStep++;
             });
