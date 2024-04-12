@@ -425,18 +425,13 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
                         final String keyType = attribute.substring(0, dividerPosition).toLowerCase();
                         final String keyAttribute = attribute.substring(dividerPosition + 1);
 
-                        switch (keyType) {
-                            case "source" -> {
-                                final String originalValue = original.get(originalVertexKeysToIndex.get(vertex), attribute);
-                                final String compareValue = compare.get(compareVertexKeysToIndex.get(vertex), attribute);
-                                if ((originalValue != null && !originalValue.equals(compareValue))
-                                        || (compareValue != null && !compareValue.equals(originalValue))) {
-                                    vertexChanged = true;
-                                    output.println(String.format("Changed node %s, '%s' value was '%s' and now '%s'", originalSource, keyAttribute, originalValue, compareValue));
-                                }
-                            }
-                            default -> {
-                                // do nothing
+                        if ("source".equals(keyType)) {
+                            final String originalValue = original.get(originalVertexKeysToIndex.get(vertex), attribute);
+                            final String compareValue = compare.get(compareVertexKeysToIndex.get(vertex), attribute);
+                            if ((originalValue != null && !originalValue.equals(compareValue))
+                                    || (compareValue != null && !compareValue.equals(originalValue))) {
+                                vertexChanged = true;
+                                output.println(String.format("Changed node %s, '%s' value was '%s' and now '%s'", originalSource, keyAttribute, originalValue, compareValue));
                             }
                         }
                     }
@@ -494,20 +489,15 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
                         final String keyType = attribute.substring(0, dividerPosition).toLowerCase();
                         final String keyAttribute = attribute.substring(dividerPosition + 1);
 
-                        switch (keyType) {
-                            case "transaction" -> {
-                                final Integer originalTransactionIndex = originalTransactionKeysToIndex.get(transaction);
-                                final Integer compareTransactionIndex = compareTransactionKeysToIndex.get(transaction);
-                                final String originalTransactionValue = original.get(originalTransactionIndex, GraphRecordStoreUtilities.TRANSACTION + keyAttribute);
-                                final String compareTransactionValue = compare.get(compareTransactionIndex, GraphRecordStoreUtilities.TRANSACTION + keyAttribute);
-                                if ((originalTransactionValue != null && !originalTransactionValue.equals(compareTransactionValue))
-                                        || (compareTransactionValue != null && !compareTransactionValue.equals(originalTransactionValue))) {
-                                    transactionChanged = true;
-                                    output.println(String.format("Changed transaction connecting %s to %s, attribute %s value was '%s' and now '%s'", originalSource, originalDestination, keyAttribute, originalTransactionValue, compareTransactionValue));
-                                }
-                            }
-                            default -> {
-                                // do nothing
+                        if ("transaction".equals(keyType)) {
+                            final Integer originalTransactionIndex = originalTransactionKeysToIndex.get(transaction);
+                            final Integer compareTransactionIndex = compareTransactionKeysToIndex.get(transaction);
+                            final String originalTransactionValue = original.get(originalTransactionIndex, GraphRecordStoreUtilities.TRANSACTION + keyAttribute);
+                            final String compareTransactionValue = compare.get(compareTransactionIndex, GraphRecordStoreUtilities.TRANSACTION + keyAttribute);
+                            if ((originalTransactionValue != null && !originalTransactionValue.equals(compareTransactionValue))
+                                    || (compareTransactionValue != null && !compareTransactionValue.equals(originalTransactionValue))) {
+                                transactionChanged = true;
+                                output.println(String.format("Changed transaction connecting %s to %s, attribute %s value was '%s' and now '%s'", originalSource, originalDestination, keyAttribute, originalTransactionValue, compareTransactionValue));
                             }
                         }
                     }
