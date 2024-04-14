@@ -30,6 +30,7 @@ import javafx.scene.control.Label;
  *
  * @author Quasar985
  */
+
 public class ElementTypeContextMenu {
 
     private static final String TRANSACTION = "Transactions";
@@ -40,11 +41,6 @@ public class ElementTypeContextMenu {
     private final Table table;
 
     private ContextMenu contextMenu;
-
-    private CustomMenuItem transactionsMenu;
-    private CustomMenuItem verticesMenu;
-    private CustomMenuItem edgesMenu;
-    private CustomMenuItem linksMenu;
 
     /**
      * Creates a new column visibility context menu.
@@ -62,7 +58,7 @@ public class ElementTypeContextMenu {
     public void init() {
         contextMenu = new ContextMenu();
 
-        transactionsMenu = createCustomMenu(TRANSACTION, e -> {
+        final CustomMenuItem transactionsMenu = createCustomMenu(TRANSACTION, e -> {
             if (getTableViewTopComponent().getCurrentState() != null) {
                 final TableViewState newState = new TableViewState(getTableViewTopComponent().getCurrentState());
                 newState.setElementType(GraphElementType.TRANSACTION);
@@ -74,7 +70,7 @@ public class ElementTypeContextMenu {
             e.consume();
         });
 
-        verticesMenu = createCustomMenu(VERTEX, e -> {
+        final CustomMenuItem verticesMenu = createCustomMenu(VERTEX, e -> {
             if (getTableViewTopComponent().getCurrentState() != null) {
                 final TableViewState newState = new TableViewState(getTableViewTopComponent().getCurrentState());
                 newState.setElementType(GraphElementType.VERTEX);
@@ -86,7 +82,7 @@ public class ElementTypeContextMenu {
             e.consume();
         });
 
-        edgesMenu = createCustomMenu(EDGE, e -> {
+        final CustomMenuItem edgesMenu = createCustomMenu(EDGE, e -> {
             if (getTableViewTopComponent().getCurrentState() != null) {
                 final TableViewState newState = new TableViewState(getTableViewTopComponent().getCurrentState());
                 newState.setElementType(GraphElementType.EDGE);
@@ -98,7 +94,7 @@ public class ElementTypeContextMenu {
             e.consume();
         });
 
-        linksMenu = createCustomMenu(LINK, e -> {
+        final CustomMenuItem linksMenu = createCustomMenu(LINK, e -> {
             if (getTableViewTopComponent().getCurrentState() != null) {
                 final TableViewState newState = new TableViewState(getTableViewTopComponent().getCurrentState());
                 newState.setElementType(GraphElementType.LINK);

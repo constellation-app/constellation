@@ -84,7 +84,7 @@ public class ColumnVisibilityContextMenu {
 
     private CustomMenuItem sourceVertexColumnsMenu;
     private CustomMenuItem destinationVertexColumnMenu;
-    private CustomMenuItem tansactionColumnMenu;
+    private CustomMenuItem transactionColumnMenu;
     private CustomMenuItem lowVertexColumnMenu;
     private CustomMenuItem highVertexColumnMenu;
 
@@ -228,13 +228,13 @@ public class ColumnVisibilityContextMenu {
         // and add the button to a new menu which can be added to the context menu
         sourceVertexColumnsMenu = createDynamicColumnMenu(sourceVertexColumnsButton, columnCheckboxesSource);
         destinationVertexColumnMenu = createDynamicColumnMenu(destinationVertexColumnsButton, columnCheckboxesDestination);
-        tansactionColumnMenu = createDynamicColumnMenu(transactionColumnsButton, columnCheckboxesTransaction);
+        transactionColumnMenu = createDynamicColumnMenu(transactionColumnsButton, columnCheckboxesTransaction);
         lowVertexColumnMenu = createDynamicColumnMenu(lowVertexColumnsButton, columnCheckboxesLow);
         highVertexColumnMenu = createDynamicColumnMenu(highVertexColumnsButton, columnCheckboxesHigh);
 
         Optional.ofNullable(sourceVertexColumnsMenu).ifPresent(menu -> contextMenu.getItems().add(menu));
         Optional.ofNullable(destinationVertexColumnMenu).ifPresent(menu -> contextMenu.getItems().add(menu));
-        Optional.ofNullable(tansactionColumnMenu).ifPresent(menu -> contextMenu.getItems().add(menu));
+        Optional.ofNullable(transactionColumnMenu).ifPresent(menu -> contextMenu.getItems().add(menu));
         Optional.ofNullable(lowVertexColumnMenu).ifPresent(menu -> contextMenu.getItems().add(menu));
         Optional.ofNullable(highVertexColumnMenu).ifPresent(menu -> contextMenu.getItems().add(menu));
     }
@@ -310,7 +310,7 @@ public class ColumnVisibilityContextMenu {
      * @return the transaction columns menu item
      */
     public CustomMenuItem getTransactionColumnMenu() {
-        return tansactionColumnMenu;
+        return transactionColumnMenu;
     }
 
     /**
