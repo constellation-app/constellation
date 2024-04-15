@@ -32,9 +32,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.scene.control.TableColumn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.*;
@@ -59,6 +61,7 @@ public class ElementTypeContextMenuNGTest {
     private Graph graph;
     private ReadableGraph readableGraph;
     private TableViewState tableViewState;
+    private ProgressBar progressBar;
 
     private String columnType1;
     private String columnType2;
@@ -106,6 +109,8 @@ public class ElementTypeContextMenuNGTest {
         readableGraph = mock(ReadableGraph.class);
 
         tableViewState = new TableViewState();
+
+        progressBar = mock(ProgressBar.class);
 
         when(graph.getReadableGraph()).thenReturn(readableGraph);
 
@@ -162,6 +167,7 @@ public class ElementTypeContextMenuNGTest {
 
         when(tableViewTopComponent.getCurrentGraph()).thenReturn(graph);
         when(tableViewTopComponent.getCurrentState()).thenReturn(tableViewState);
+        when(tablePane.getProgressBar()).thenReturn(progressBar);
 
         elementTypeContextMenu = spy(new ElementTypeContextMenu(table));
     }
@@ -191,6 +197,11 @@ public class ElementTypeContextMenuNGTest {
                         )
                 )
         );
+
+        // Verify handler actaully functions
+        final ActionEvent actionEvent = mock(ActionEvent.class);
+        elementTypeContextMenu.getTransactionsMenu().getOnAction().handle(actionEvent);
+        verify(actionEvent).consume();
     }
 
 }

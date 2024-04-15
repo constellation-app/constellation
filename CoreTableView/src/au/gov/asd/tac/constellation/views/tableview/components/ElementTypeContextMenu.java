@@ -62,50 +62,22 @@ public class ElementTypeContextMenu {
         contextMenu = new ContextMenu();
 
         transactionsMenu = createCustomMenu(TRANSACTION, e -> {
-            if (getTableViewTopComponent().getCurrentState() != null) {
-                final TableViewState newState = new TableViewState(getTableViewTopComponent().getCurrentState());
-                newState.setElementType(GraphElementType.TRANSACTION);
-
-                PluginExecution.withPlugin(
-                        new UpdateStatePlugin(newState)
-                ).executeLater(getTableViewTopComponent().getCurrentGraph());
-            }
+            handleStateChange(GraphElementType.TRANSACTION);
             e.consume();
         });
 
         verticesMenu = createCustomMenu(VERTEX, e -> {
-            if (getTableViewTopComponent().getCurrentState() != null) {
-                final TableViewState newState = new TableViewState(getTableViewTopComponent().getCurrentState());
-                newState.setElementType(GraphElementType.VERTEX);
-
-                PluginExecution.withPlugin(
-                        new UpdateStatePlugin(newState)
-                ).executeLater(getTableViewTopComponent().getCurrentGraph());
-            }
+            handleStateChange(GraphElementType.VERTEX);
             e.consume();
         });
 
         edgesMenu = createCustomMenu(EDGE, e -> {
-            if (getTableViewTopComponent().getCurrentState() != null) {
-                final TableViewState newState = new TableViewState(getTableViewTopComponent().getCurrentState());
-                newState.setElementType(GraphElementType.EDGE);
-
-                PluginExecution.withPlugin(
-                        new UpdateStatePlugin(newState)
-                ).executeLater(getTableViewTopComponent().getCurrentGraph());
-            }
+            handleStateChange(GraphElementType.EDGE);
             e.consume();
         });
 
         linksMenu = createCustomMenu(LINK, e -> {
-            if (getTableViewTopComponent().getCurrentState() != null) {
-                final TableViewState newState = new TableViewState(getTableViewTopComponent().getCurrentState());
-                newState.setElementType(GraphElementType.LINK);
-
-                PluginExecution.withPlugin(
-                        new UpdateStatePlugin(newState)
-                ).executeLater(getTableViewTopComponent().getCurrentGraph());
-            }
+            handleStateChange(GraphElementType.LINK);
             e.consume();
         });
 
@@ -128,6 +100,19 @@ public class ElementTypeContextMenu {
         menuItem.setOnAction(handler);
 
         return menuItem;
+    }
+
+    private void handleStateChange(GraphElementType graphElementType) {
+        System.out.println("handleStateChange " + graphElementType.toString());
+        if (getTableViewTopComponent().getCurrentState() != null) {
+            System.out.println("curretn state not null");
+            final TableViewState newState = new TableViewState(getTableViewTopComponent().getCurrentState());
+            newState.setElementType(graphElementType);
+
+            PluginExecution.withPlugin(
+                    new UpdateStatePlugin(newState)
+            ).executeLater(getTableViewTopComponent().getCurrentGraph());
+        }
     }
 
     /**
