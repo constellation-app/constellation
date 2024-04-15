@@ -51,10 +51,8 @@ public class TableViewUtilities {
      *
      * @param table the table to retrieve data from.
      * @param pagination the current pagination of the table
-     * @param includeHeader if true, the table headers will be included in the
-     * output.
-     * @param selectedOnly if true, only the data from selected rows in the
-     * table will be included in the output.
+     * @param includeHeader if true, the table headers will be included in the output.
+     * @param selectedOnly if true, only the data from selected rows in the table will be included in the output.
      * @return a String of comma-separated values representing the table.
      */
     public static String getTableData(final TableView<ObservableList<String>> table, final Pagination pagination,
@@ -132,8 +130,8 @@ public class TableViewUtilities {
     }
 
     /**
-     * Based on the tables current element type (vertex or transaction) get all
-     * selected elements of that type in the graph and return their element IDs.
+     * Based on the tables current element type (vertex or transaction) get all selected elements of that type in the
+     * graph and return their element IDs.
      *
      * @param graph the graph to read from
      * @param state the current table state
@@ -151,21 +149,26 @@ public class TableViewUtilities {
                     ? readableGraph.getVertexCount()
                     : readableGraph.getTransactionCount();
 
+            System.out.println("elementCount: " + elementCount);
+
             final Map<Integer, Integer> edgeOrLinkmap = new HashMap<>();
 
             for (int elementPosition = 0; elementPosition < elementCount; elementPosition++) {
                 final int elementId = isVertex
                         ? readableGraph.getVertex(elementPosition)
                         : readableGraph.getTransaction(elementPosition);
-
+                System.out.println("elementId: " + elementId);
+                System.out.println("selectedAttributeId: " + selectedAttributeId);
+                System.out.println("getBooleanValue: " + readableGraph.getBooleanValue(selectedAttributeId, elementId));
                 if (selectedAttributeId != Graph.NOT_FOUND
                         && readableGraph.getBooleanValue(selectedAttributeId, elementId)) {
+                    System.out.println("state: " + state.getElementType());
                     // Edges and Links handled differently
                     if (state.getElementType() == GraphElementType.EDGE || state.getElementType() == GraphElementType.LINK) {
                         // This code keeps track of which transactions are selected in and edge/link
                         final boolean isEdge = state.getElementType() == GraphElementType.EDGE;
                         final int key = isEdge ? readableGraph.getTransactionEdge(elementId) : readableGraph.getTransactionLink(elementId);
-
+                        System.out.println("key: " + key);
                         // If edge/link has been seen before by another transaction
                         if (edgeOrLinkmap.containsKey(key)) {
                             edgeOrLinkmap.put(key, edgeOrLinkmap.get(key) - 1);

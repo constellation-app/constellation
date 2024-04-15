@@ -235,4 +235,186 @@ public class TableViewUtilitiesNGTest {
 
         assertEquals(List.of(100, 102), TableViewUtilities.getSelectedIds(graph, tableViewState));
     }
+    
+    @Test
+    public void getSelectedIdsForEdges() {
+        final Graph graph = mock(Graph.class);
+        final ReadableGraph readableGraph = mock(ReadableGraph.class);
+        when(graph.getReadableGraph()).thenReturn(readableGraph);
+
+        when(readableGraph.getAttribute(GraphElementType.TRANSACTION, "selected")).thenReturn(5);
+        when(readableGraph.getTransactionCount()).thenReturn(3);
+
+        when(readableGraph.getTransaction(0)).thenReturn(100);
+        when(readableGraph.getTransaction(1)).thenReturn(101);
+        when(readableGraph.getTransaction(2)).thenReturn(102);
+
+        when(readableGraph.getBooleanValue(5, 100)).thenReturn(true);
+        when(readableGraph.getBooleanValue(5, 101)).thenReturn(true);
+        when(readableGraph.getBooleanValue(5, 102)).thenReturn(true);
+        
+        // Mock all transactions to have same edge id of 300
+        when(readableGraph.getTransactionEdge(100)).thenReturn(300);
+        when(readableGraph.getTransactionEdge(101)).thenReturn(300);
+        when(readableGraph.getTransactionEdge(102)).thenReturn(300);
+        // Say that edge of id 300 contains 3 transactions
+        when(readableGraph.getEdgeTransactionCount(300)).thenReturn(3);
+
+        final TableViewState tableViewState = new TableViewState();
+        tableViewState.setElementType(GraphElementType.EDGE);
+
+        assertEquals(TableViewUtilities.getSelectedIds(graph, tableViewState), List.of(300));
+    }
+    
+    @Test
+    public void getSelectedIdsForEdgesNotAllSelected() {
+        final Graph graph = mock(Graph.class);
+        final ReadableGraph readableGraph = mock(ReadableGraph.class);
+        when(graph.getReadableGraph()).thenReturn(readableGraph);
+
+        when(readableGraph.getAttribute(GraphElementType.TRANSACTION, "selected")).thenReturn(5);
+        when(readableGraph.getTransactionCount()).thenReturn(3);
+
+        when(readableGraph.getTransaction(0)).thenReturn(100);
+        when(readableGraph.getTransaction(1)).thenReturn(101);
+        when(readableGraph.getTransaction(2)).thenReturn(102);
+
+        when(readableGraph.getBooleanValue(5, 100)).thenReturn(true);
+        when(readableGraph.getBooleanValue(5, 101)).thenReturn(true);
+        when(readableGraph.getBooleanValue(5, 102)).thenReturn(false);
+        
+        // Mock all but one transactions to have same edge id of 300
+        when(readableGraph.getTransactionEdge(100)).thenReturn(300);
+        when(readableGraph.getTransactionEdge(101)).thenReturn(300);
+        when(readableGraph.getTransactionEdge(102)).thenReturn(300);
+        // Say that edge of id 300 contains 3 transactions
+        when(readableGraph.getEdgeTransactionCount(300)).thenReturn(3);
+
+        final TableViewState tableViewState = new TableViewState();
+        tableViewState.setElementType(GraphElementType.EDGE);
+
+        assertEquals(TableViewUtilities.getSelectedIds(graph, tableViewState), List.of());
+    }
+    
+    @Test
+    public void getSelectedIdsForEdgesInvalid() {
+        final Graph graph = mock(Graph.class);
+        final ReadableGraph readableGraph = mock(ReadableGraph.class);
+        when(graph.getReadableGraph()).thenReturn(readableGraph);
+
+        when(readableGraph.getAttribute(GraphElementType.TRANSACTION, "selected")).thenReturn(5);
+        when(readableGraph.getTransactionCount()).thenReturn(3);
+
+        when(readableGraph.getTransaction(0)).thenReturn(100);
+        when(readableGraph.getTransaction(1)).thenReturn(101);
+        when(readableGraph.getTransaction(2)).thenReturn(102);
+
+        when(readableGraph.getBooleanValue(5, 100)).thenReturn(true);
+        when(readableGraph.getBooleanValue(5, 101)).thenReturn(true);
+        when(readableGraph.getBooleanValue(5, 102)).thenReturn(true);
+        
+        // Mock all but one transactions to have same edge id of 300
+        when(readableGraph.getTransactionEdge(100)).thenReturn(300);
+        when(readableGraph.getTransactionEdge(101)).thenReturn(300);
+        // This transaction is different edge
+        when(readableGraph.getTransactionEdge(102)).thenReturn(333);
+        // Say that edge of id 300 contains 3 transactions
+        when(readableGraph.getEdgeTransactionCount(300)).thenReturn(3);
+
+        final TableViewState tableViewState = new TableViewState();
+        tableViewState.setElementType(GraphElementType.EDGE);
+
+        assertEquals(TableViewUtilities.getSelectedIds(graph, tableViewState), List.of());
+    }
+    
+    @Test
+    public void getSelectedIdsForLinks() {
+        final Graph graph = mock(Graph.class);
+        final ReadableGraph readableGraph = mock(ReadableGraph.class);
+        when(graph.getReadableGraph()).thenReturn(readableGraph);
+
+        when(readableGraph.getAttribute(GraphElementType.TRANSACTION, "selected")).thenReturn(5);
+        when(readableGraph.getTransactionCount()).thenReturn(3);
+
+        when(readableGraph.getTransaction(0)).thenReturn(100);
+        when(readableGraph.getTransaction(1)).thenReturn(101);
+        when(readableGraph.getTransaction(2)).thenReturn(102);
+
+        when(readableGraph.getBooleanValue(5, 100)).thenReturn(true);
+        when(readableGraph.getBooleanValue(5, 101)).thenReturn(true);
+        when(readableGraph.getBooleanValue(5, 102)).thenReturn(true);
+        
+        // Mock all transactions to have same link id of 300
+        when(readableGraph.getTransactionLink(100)).thenReturn(300);
+        when(readableGraph.getTransactionLink(101)).thenReturn(300);
+        when(readableGraph.getTransactionLink(102)).thenReturn(300);
+        // Say that link of id 300 contains 3 transactions
+        when(readableGraph.getLinkTransactionCount(300)).thenReturn(3);
+
+        final TableViewState tableViewState = new TableViewState();
+        tableViewState.setElementType(GraphElementType.LINK);
+
+        assertEquals(TableViewUtilities.getSelectedIds(graph, tableViewState), List.of(300));
+    }
+    
+    @Test
+    public void getSelectedIdsForLinksNotAllSelected() {
+        final Graph graph = mock(Graph.class);
+        final ReadableGraph readableGraph = mock(ReadableGraph.class);
+        when(graph.getReadableGraph()).thenReturn(readableGraph);
+
+        when(readableGraph.getAttribute(GraphElementType.TRANSACTION, "selected")).thenReturn(5);
+        when(readableGraph.getTransactionCount()).thenReturn(3);
+
+        when(readableGraph.getTransaction(0)).thenReturn(100);
+        when(readableGraph.getTransaction(1)).thenReturn(101);
+        when(readableGraph.getTransaction(2)).thenReturn(102);
+
+        when(readableGraph.getBooleanValue(5, 100)).thenReturn(true);
+        when(readableGraph.getBooleanValue(5, 101)).thenReturn(true);
+        when(readableGraph.getBooleanValue(5, 102)).thenReturn(false);
+        
+        // Mock all but one transactions to have same edge id of 300
+        when(readableGraph.getTransactionLink(100)).thenReturn(300);
+        when(readableGraph.getTransactionLink(101)).thenReturn(300);
+        when(readableGraph.getTransactionLink(102)).thenReturn(300);
+        // Say that edge of id 300 contains 3 transactions
+        when(readableGraph.getLinkTransactionCount(300)).thenReturn(3);
+
+        final TableViewState tableViewState = new TableViewState();
+        tableViewState.setElementType(GraphElementType.LINK);
+
+        assertEquals(TableViewUtilities.getSelectedIds(graph, tableViewState), List.of());
+    }
+    
+    @Test
+    public void getSelectedIdsForLinksInvalid() {
+        final Graph graph = mock(Graph.class);
+        final ReadableGraph readableGraph = mock(ReadableGraph.class);
+        when(graph.getReadableGraph()).thenReturn(readableGraph);
+
+        when(readableGraph.getAttribute(GraphElementType.TRANSACTION, "selected")).thenReturn(5);
+        when(readableGraph.getTransactionCount()).thenReturn(3);
+
+        when(readableGraph.getTransaction(0)).thenReturn(100);
+        when(readableGraph.getTransaction(1)).thenReturn(101);
+        when(readableGraph.getTransaction(2)).thenReturn(102);
+
+        when(readableGraph.getBooleanValue(5, 100)).thenReturn(true);
+        when(readableGraph.getBooleanValue(5, 101)).thenReturn(true);
+        when(readableGraph.getBooleanValue(5, 102)).thenReturn(true);
+        
+        // Mock all but one transactions to have same edge id of 300
+        when(readableGraph.getTransactionLink(100)).thenReturn(300);
+        when(readableGraph.getTransactionLink(101)).thenReturn(300);
+        // This transaction is different edge
+        when(readableGraph.getTransactionLink(102)).thenReturn(333);
+        // Say that edge of id 300 contains 3 transactions
+        when(readableGraph.getLinkTransactionCount(300)).thenReturn(3);
+
+        final TableViewState tableViewState = new TableViewState();
+        tableViewState.setElementType(GraphElementType.LINK);
+
+        assertEquals(TableViewUtilities.getSelectedIds(graph, tableViewState), List.of());
+    }
 }
