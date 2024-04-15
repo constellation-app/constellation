@@ -172,5 +172,11 @@ public class ElementTypeContextMenuNGTest {
     public void allUIComponentsNullBeforeInit() {
         assertNull(elementTypeContextMenu.getContextMenu());
     }
+    
+    @Test
+    public void testInit(){
+        elementTypeContextMenu.init();
+        assertNotNull(elementTypeContextMenu.getContextMenu());
+    }
 
 }

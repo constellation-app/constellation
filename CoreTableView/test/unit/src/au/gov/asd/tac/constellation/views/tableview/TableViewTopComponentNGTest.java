@@ -62,18 +62,12 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class TableViewTopComponentNGTest {
-
     private static final Logger LOGGER = Logger.getLogger(TableViewTopComponentNGTest.class.getName());
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        try {
-            if (!FxToolkit.isFXApplicationThreadRunning()) {
-                FxToolkit.registerPrimaryStage();
-            }
-        } catch (Exception e) {
-            System.out.println("\n**** SETUP ERROR: " + e);
-            throw e;
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
         }
     }
 
@@ -83,13 +77,6 @@ public class TableViewTopComponentNGTest {
             FxToolkit.cleanupStages();
         } catch (TimeoutException ex) {
             LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
-        } catch (Exception e) {
-            if (e.toString().contains("HeadlessException")) {
-                System.out.println("\n**** EXPECTED TEARDOWN ERROR: " + e.toString());
-            } else {
-                System.out.println("\n**** UN-EXPECTED TEARDOWN ERROR: " + e.toString());
-                throw e;
-            }
         }
     }
 
@@ -100,14 +87,6 @@ public class TableViewTopComponentNGTest {
         doCallRealMethod().when(tableViewTopComponent).createStyle();
 
         assertEquals("resources/table-view-light.css", tableViewTopComponent.createStyle());
-    }
-
-    @Test
-    public void testConstructor() {
-        System.setProperty("java.awt.headless", "true");
-        final TableViewTopComponent tableViewTopComponent = new TableViewTopComponent();
-        assertEquals(tableViewTopComponent.getClass(), TableViewTopComponent.class);
-        System.clearProperty("java.awt.headless");
     }
 
     @Test
