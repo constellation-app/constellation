@@ -166,7 +166,7 @@ public class Table {
                 // Clear current columnIndex, but cache the column objects for reuse
                 final Map<String, TableColumn<ObservableList<String>, String>> columnReferenceMap
                         = getColumnIndex().stream()
-                                .collect(Collectors.toMap(column -> column.getTableColumn().getText(), 
+                                .collect(Collectors.toMap(column -> column.getTableColumn().getText(),
                                         column -> column.getTableColumn(), (e1, e2) -> e1));
                 getColumnIndex().clear();
 
@@ -258,125 +258,129 @@ public class Table {
      */
     public void updateData(final Graph graph, final TableViewState state, final ProgressBar progressBar) {
         synchronized (TABLE_LOCK) {
-            if (graph != null && state != null) {
-                if (Platform.isFxApplicationThread()) {
-                    throw new IllegalStateException(ATTEMPT_PROCESS_JAVAFX);
-                }
+            if (graph == null || state == null) {
+                return;
+            }
 
-                if (SwingUtilities.isEventDispatchThread()) {
-                    throw new IllegalStateException(ATTEMPT_PROCESS_EDT);
-                }
+            if (Platform.isFxApplicationThread()) {
+                throw new IllegalStateException(ATTEMPT_PROCESS_JAVAFX);
+            }
 
-                // Set progress indicator
-                Platform.runLater(() -> getParentComponent().setCenter(progressBar.getProgressPane()));
+            if (SwingUtilities.isEventDispatchThread()) {
+                throw new IllegalStateException(ATTEMPT_PROCESS_EDT);
+            }
 
-                // Clear the current row and element mappings
-                getActiveTableReference().getElementIdToRowIndex().clear();
-                getActiveTableReference().getRowToElementIdIndex().clear();
+            // Set progress indicator
+            Platform.runLater(() -> getParentComponent().setCenter(progressBar.getProgressPane()));
 
-                // Build table data based on attribute values on the graph
-                final List<ObservableList<String>> rows = new ArrayList<>();
-                try (final ReadableGraph readableGraph = graph.getReadableGraph()) {
-                    switch (state.getElementType()) {
-                        case TRANSACTION -> {
-                            final int selectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
-                            final int transactionCount = readableGraph.getTransactionCount();
-                            IntStream.range(0, transactionCount).forEach(transactionPosition -> {
-                                final int transactionId = readableGraph.getTransaction(transactionPosition);
-                                boolean isSelected = false;
+            // Clear the current row and element mappings
+            getActiveTableReference().getElementIdToRowIndex().clear();
+            getActiveTableReference().getRowToElementIdIndex().clear();
 
-                                if (selectedAttributeId != Graph.NOT_FOUND) {
-                                    isSelected = readableGraph.getBooleanValue(selectedAttributeId, transactionId);
-                                }
+            // Build table data based on attribute values on the graph
+            final List<ObservableList<String>> rows = new ArrayList<>();
+            try (final ReadableGraph readableGraph = graph.getReadableGraph()) {
+                switch (state.getElementType()) {
+                    case TRANSACTION -> {
+                        final int selectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
+                        final int transactionCount = readableGraph.getTransactionCount();
+                        IntStream.range(0, transactionCount).forEach(transactionPosition -> {
+                            final int transactionId = readableGraph.getTransaction(transactionPosition);
+                            boolean isSelected = false;
 
-                                // If it is not in selected only mode then just add every row but if it is
-                                // in selected only mode, only add the ones that are selected in the graph
-                                if (!state.isSelectedOnly() || isSelected) {
-                                    rows.add(getRowDataForTransaction(readableGraph, transactionId));
-                                }
-                            });
-                        }
-                        case EDGE -> {
-                            final int selectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
-                            final int edgeCount = readableGraph.getEdgeCount();
-                            IntStream.range(0, edgeCount).forEach(edgePosition -> {
-                                final int edgeId = readableGraph.getEdge(edgePosition);
-                                boolean isSelected = true;
+                            if (selectedAttributeId != Graph.NOT_FOUND) {
+                                isSelected = readableGraph.getBooleanValue(selectedAttributeId, transactionId);
+                            }
 
-                                if (selectedAttributeId != Graph.NOT_FOUND) {
-                                    for (int i = 0; i < readableGraph.getEdgeTransactionCount(edgeId); i++) {
-                                        // If just one of the transactions isn't selected, set to false and break loop
-                                        if (!readableGraph.getBooleanValue(selectedAttributeId, readableGraph.getEdgeTransaction(edgeId, i))) {
-                                            isSelected = false;
-                                            break;
-                                        }
+                            // If it is not in selected only mode then just add every row but if it is
+                            // in selected only mode, only add the ones that are selected in the graph
+                            if (!state.isSelectedOnly() || isSelected) {
+                                rows.add(getRowDataForTransaction(readableGraph, transactionId));
+                            }
+                        });
+                    }
+                    case EDGE -> {
+                        final int selectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
+                        final int edgeCount = readableGraph.getEdgeCount();
+                        IntStream.range(0, edgeCount).forEach(edgePosition -> {
+                            final int edgeId = readableGraph.getEdge(edgePosition);
+                            boolean isSelected = false;
+
+                            if (selectedAttributeId != Graph.NOT_FOUND) {
+                                isSelected = true;
+                                for (int i = 0; i < readableGraph.getEdgeTransactionCount(edgeId); i++) {
+                                    // If just one of the transactions isn't selected, set back to false and break loop
+                                    if (!readableGraph.getBooleanValue(selectedAttributeId, readableGraph.getEdgeTransaction(edgeId, i))) {
+                                        isSelected = false;
+                                        break;
                                     }
                                 }
-                                // If it is not in selected only mode then just add every row but if it is
-                                // in selected only mode, only add the ones that are selected in the graph
-                                if (!state.isSelectedOnly() || isSelected) {
-                                    rows.add(getRowDataForEdge(readableGraph, edgeId));
-                                }
-                            });
-                        }
-                        case LINK -> {
-                            final int selectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
-                            final int linkCount = readableGraph.getLinkCount();
-                            IntStream.range(0, linkCount).forEach(linkPosition -> {
-                                final int linkId = readableGraph.getLink(linkPosition);
-                                boolean isSelected = true;
+                            }
+                            // If it is not in selected only mode then just add every row but if it is
+                            // in selected only mode, only add the ones that are selected in the graph
+                            if (!state.isSelectedOnly() || isSelected) {
+                                rows.add(getRowDataForEdge(readableGraph, edgeId));
+                            }
+                        });
+                    }
+                    case LINK -> {
+                        final int selectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
+                        final int linkCount = readableGraph.getLinkCount();
+                        IntStream.range(0, linkCount).forEach(linkPosition -> {
+                            final int linkId = readableGraph.getLink(linkPosition);
+                            boolean isSelected = false;
 
-                                if (selectedAttributeId != Graph.NOT_FOUND) {
-                                    for (int i = 0; i < readableGraph.getLinkTransactionCount(linkId); i++) {
-                                        // If just one of the transactions isn't selected, set to false and break loop
-                                        if (!readableGraph.getBooleanValue(selectedAttributeId, readableGraph.getLinkTransaction(linkId, i))) {
-                                            isSelected = false;
-                                            break;
-                                        }
+                            if (selectedAttributeId != Graph.NOT_FOUND) {
+                                isSelected = true;
+                                for (int i = 0; i < readableGraph.getLinkTransactionCount(linkId); i++) {
+                                    // If just one of the transactions isn't selected, set back to false and break loop
+                                    if (!readableGraph.getBooleanValue(selectedAttributeId, readableGraph.getLinkTransaction(linkId, i))) {
+                                        isSelected = false;
+                                        break;
                                     }
                                 }
-                                // If it is not in selected only mode then just add every row but if it is
-                                // in selected only mode, only add the ones that are selected in the graph
-                                if (!state.isSelectedOnly() || isSelected) {
-                                    rows.add(getRowDataForLink(readableGraph, linkId));
-                                }
-                            });
-                        }
-                        default -> {
-                            final int selectedAttributeId = VisualConcept.VertexAttribute.SELECTED.get(readableGraph);
-                            final int vertexCount = readableGraph.getVertexCount();
-                            IntStream.range(0, vertexCount).forEach(vertexPosition -> {
-                                final int vertexId = readableGraph.getVertex(vertexPosition);
-                                boolean isSelected = false;
+                            }
+                            // If it is not in selected only mode then just add every row but if it is
+                            // in selected only mode, only add the ones that are selected in the graph
+                            if (!state.isSelectedOnly() || isSelected) {
+                                rows.add(getRowDataForLink(readableGraph, linkId));
+                            }
+                        });
+                    }
+                    default -> {
+                        final int selectedAttributeId = VisualConcept.VertexAttribute.SELECTED.get(readableGraph);
+                        final int vertexCount = readableGraph.getVertexCount();
+                        IntStream.range(0, vertexCount).forEach(vertexPosition -> {
+                            final int vertexId = readableGraph.getVertex(vertexPosition);
+                            boolean isSelected = false;
 
-                                if (selectedAttributeId != Graph.NOT_FOUND) {
-                                    isSelected = readableGraph.getBooleanValue(selectedAttributeId, vertexId);
-                                }
-                                // If it is not in selected only mode then just add every row but if it is
-                                // in selected only mode, only add the ones that are selected in the graph
-                                if (!state.isSelectedOnly() || isSelected) {
-                                    rows.add(getRowDataForVertex(readableGraph, vertexId));
-                                }
-                            });
-                        }
+                            if (selectedAttributeId != Graph.NOT_FOUND) {
+                                isSelected = readableGraph.getBooleanValue(selectedAttributeId, vertexId);
+                            }
+                            // If it is not in selected only mode then just add every row but if it is
+                            // in selected only mode, only add the ones that are selected in the graph
+                            if (!state.isSelectedOnly() || isSelected) {
+                                rows.add(getRowDataForVertex(readableGraph, vertexId));
+                            }
+                        });
                     }
                 }
+            }
 
-                // Don't want to trigger the UI update if the update has been cancelled
-                // The progress bare will remain in place as a result but the next update
-                // that cancelled this one will run through, complete and remove the progress
-                // bar.
-                if (!Thread.currentThread().isInterrupted()) {
-                    final UpdateDataTask updateDataTask = new UpdateDataTask(this, rows);
-                    Platform.runLater(updateDataTask);
+            // Don't want to trigger the UI update if the update has been cancelled
+            // The progress bare will remain in place as a result but the next update
+            // that cancelled this one will run through, complete and remove the progress
+            // bar.
+            if (!Thread.currentThread().isInterrupted()) {
+                final UpdateDataTask updateDataTask = new UpdateDataTask(this, rows);
+                Platform.runLater(updateDataTask);
 
-                    try {
-                        updateDataTask.getUpdateDataLatch().await();
-                    } catch (final InterruptedException ex) {
-                        LOGGER.log(Level.WARNING, "InterruptedException encountered while updating table data");
-                        updateDataTask.setInterrupted(true);
-                        Thread.currentThread().interrupt();
-                    }
+                try {
+                    updateDataTask.getUpdateDataLatch().await();
+                } catch (final InterruptedException ex) {
+                    LOGGER.log(Level.WARNING, "InterruptedException encountered while updating table data");
+                    updateDataTask.setInterrupted(true);
+                    Thread.currentThread().interrupt();
                 }
             }
         }
@@ -570,12 +574,14 @@ public class Table {
                         final int sourceVertexId = readableGraph.getTransactionSourceVertex(transactionId);
                         yield readableGraph.getObjectValue(attributeId, sourceVertexId);
                     }
-                    case GraphRecordStoreUtilities.TRANSACTION -> readableGraph.getObjectValue(attributeId, transactionId);
+                    case GraphRecordStoreUtilities.TRANSACTION ->
+                        readableGraph.getObjectValue(attributeId, transactionId);
                     case GraphRecordStoreUtilities.DESTINATION -> {
                         final int destinationVertexId = readableGraph.getTransactionDestinationVertex(transactionId);
                         yield readableGraph.getObjectValue(attributeId, destinationVertexId);
                     }
-                    default -> null;
+                    default ->
+                        null;
                 };
 
             } else {
@@ -674,7 +680,6 @@ public class Table {
                     .getInteraction(column.getAttribute().getAttributeType());
 
             final Object attributeValue;
-            // TODO link needs different column names
             if (attributeId != Graph.NOT_FOUND) {
                 switch (column.getAttributeNamePrefix()) {
                     case GraphRecordStoreUtilities.LINK_LOW -> {
@@ -724,7 +729,7 @@ public class Table {
      * names match up
      */
     protected List<Column> createColumnIndexPart(final ReadableGraph readableGraph, final GraphElementType elementType,
-            final String attributeNamePrefix, 
+            final String attributeNamePrefix,
             final Map<String, TableColumn<ObservableList<String>, String>> columnReferenceMap) {
         final List<Column> tmpColumnIndex = new CopyOnWriteArrayList<>();
 
@@ -736,7 +741,7 @@ public class Table {
             final TableColumn<ObservableList<String>, String> column = columnReferenceMap.containsKey(attributeName)
                     ? columnReferenceMap.get(attributeName) : createColumn(attributeName);
 
-            tmpColumnIndex.add(new Column(attributeNamePrefix,new GraphAttribute(readableGraph, attributeId), column));
+            tmpColumnIndex.add(new Column(attributeNamePrefix, new GraphAttribute(readableGraph, attributeId), column));
         });
 
         return tmpColumnIndex;

@@ -103,9 +103,7 @@ public class ElementTypeContextMenu {
     }
 
     private void handleStateChange(GraphElementType graphElementType) {
-        System.out.println("handleStateChange " + graphElementType.toString());
         if (getTableViewTopComponent().getCurrentState() != null) {
-            System.out.println("curretn state not null");
             final TableViewState newState = new TableViewState(getTableViewTopComponent().getCurrentState());
             newState.setElementType(graphElementType);
 
