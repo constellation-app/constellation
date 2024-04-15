@@ -400,27 +400,26 @@ public class ConstellationLAFSettings {
         List<Object> uiList = new ArrayList<>();
         uiList.addAll(UIManager.getDefaults().keySet());
         LOGGER.info(">> :: UIDefaults ::");
-        String msg = "";
-        for (Object uiKey : uiList) {
+        for (final Object uiKey : uiList) {
             // check each key stored in UIDefaults
             // filter out any keys which do not contain the keyFilter string
             // filter out any values which do not contain the valueFilter string
             if ( (keyFilter == null || uiKey.toString().contains(keyFilter)) && 
                  (valueFilter == null || UIManager.get(uiKey).toString().contains(valueFilter)) ) {
-                msg = ">> :: " + uiKey + " = " + UIManager.get(uiKey);
+                final String msg = ">> :: " + uiKey + " = " + UIManager.get(uiKey);
                 LOGGER.info(msg);                
             }
         }
         uiList.clear();
         uiList.addAll(UIManager.getLookAndFeelDefaults().keySet());
         LOGGER.info(">> :::: UILookAndFeelDefaults ::::");
-        for (Object uiKey : uiList) {
+        for (final Object uiKey : uiList) {
             // check each key stored in UILookAndFeelDefaults
             // filter out any keys which do not contain the keyFilter string
             // filter out any values which do not contain the valueFilter string
             if ( (keyFilter == null || uiKey.toString().contains(keyFilter)) &&
                  (valueFilter == null || UIManager.getLookAndFeelDefaults().get(uiKey).toString().contains(valueFilter)) ) {
-                msg = ">> :::: " + uiKey + " = " + UIManager.getLookAndFeelDefaults().get(uiKey);
+                final String msg = ">> :::: " + uiKey + " = " + UIManager.getLookAndFeelDefaults().get(uiKey);
                 LOGGER.info(msg);                
             }
         }
@@ -536,5 +535,4 @@ public class ConstellationLAFSettings {
             g.drawLine(w - 1, 1, w - 1, h - 1);
         }
     }
-
 }
