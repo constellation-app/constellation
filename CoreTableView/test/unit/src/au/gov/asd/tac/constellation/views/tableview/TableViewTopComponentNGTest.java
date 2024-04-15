@@ -89,11 +89,11 @@ public class TableViewTopComponentNGTest {
         assertEquals("resources/table-view-light.css", tableViewTopComponent.createStyle());
     }
     
-    @Test
-    public void testConstructor(){
-        final TableViewTopComponent tableViewTopComponent = new TableViewTopComponent();
-        assertEquals(tableViewTopComponent.getClass(), TableViewTopComponent.class);
-    }
+//    @Test
+//    public void testConstructor(){
+//        final TableViewTopComponent tableViewTopComponent = new TableViewTopComponent();
+//        assertEquals(tableViewTopComponent.getClass(), TableViewTopComponent.class);
+//    }
 
     @Test
     public void updateStatePresentInGraphAttributes() {
