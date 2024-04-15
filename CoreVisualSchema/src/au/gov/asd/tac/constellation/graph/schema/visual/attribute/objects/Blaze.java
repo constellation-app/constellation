@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -116,7 +116,7 @@ public final class Blaze implements Serializable, Comparable<Blaze> {
         if (s != null) {
             final Matcher m = BLAZE_PATTERN.matcher(s);
             if (m.matches()) {
-                final int angle = Integer.valueOf(m.group(1));
+                final int angle = Integer.parseInt(m.group(1));
                 final ConstellationColor color = ConstellationColor.getColorValue(m.group(2));
                 if (color == null) {
                     throw new IllegalBlazeFormatException("Undefined color for blaze.");

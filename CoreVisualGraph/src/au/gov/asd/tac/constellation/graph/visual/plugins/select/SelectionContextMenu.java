@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -83,25 +83,20 @@ public class SelectionContextMenu implements ContextMenuProvider {
     }
 
     @Override
-    public void selectItem(String item, Graph graph, GraphElementType elementType, int entity, Vector3f unprojected) {
-        if (SELECT_ALL.equals(item)) {
-            PluginExecution.withPlugin(VisualGraphPluginRegistry.SELECT_ALL).executeLater(graph);
-        } else if (DESELECT_ALL.equals(item)) {
-            PluginExecution.withPlugin(VisualGraphPluginRegistry.DESELECT_ALL).executeLater(graph);
-        } else if (DESELECT_VERTICES.equals(item)) {
-            PluginExecution.withPlugin(VisualGraphPluginRegistry.DESELECT_VERTICES).executeLater(graph);
-        } else if (DESELECT_TRANSACTIONS.equals(item)) {
-            PluginExecution.withPlugin(VisualGraphPluginRegistry.DESELECT_TRANSACTIONS).executeLater(graph);
-        } else if (INVERT_SELECTION.equals(item)) {
-            PluginExecution.withPlugin(VisualGraphPluginRegistry.INVERT_SELECTION).executeLater(graph);
-        } else if (SELECT_BLAZES.equals(item)) {
-            PluginExecution.withPlugin(VisualGraphPluginRegistry.SELECT_BLAZES).executeLater(graph);
-        } else if (DESELECT_BLAZES.equals(item)) {
-            PluginExecution.withPlugin(VisualGraphPluginRegistry.DESELECT_BLAZES).executeLater(graph);
-        } else if (SELECT_DIMMED.equals(item)) {
-            PluginExecution.withPlugin(VisualGraphPluginRegistry.SELECT_DIMMED).executeLater(graph);
-        } else if (SELECT_UNDIMMED.equals(item)) {
-            PluginExecution.withPlugin(VisualGraphPluginRegistry.SELECT_UNDIMMED).executeLater(graph);
+    public void selectItem(final String item, final Graph graph, final GraphElementType elementType, final int entity, final Vector3f unprojected) {
+        if (null != item) switch (item) {
+            case SELECT_ALL -> PluginExecution.withPlugin(VisualGraphPluginRegistry.SELECT_ALL).executeLater(graph);
+            case DESELECT_ALL -> PluginExecution.withPlugin(VisualGraphPluginRegistry.DESELECT_ALL).executeLater(graph);
+            case DESELECT_VERTICES -> PluginExecution.withPlugin(VisualGraphPluginRegistry.DESELECT_VERTICES).executeLater(graph);
+            case DESELECT_TRANSACTIONS -> PluginExecution.withPlugin(VisualGraphPluginRegistry.DESELECT_TRANSACTIONS).executeLater(graph);
+            case INVERT_SELECTION -> PluginExecution.withPlugin(VisualGraphPluginRegistry.INVERT_SELECTION).executeLater(graph);
+            case SELECT_BLAZES -> PluginExecution.withPlugin(VisualGraphPluginRegistry.SELECT_BLAZES).executeLater(graph);
+            case DESELECT_BLAZES -> PluginExecution.withPlugin(VisualGraphPluginRegistry.DESELECT_BLAZES).executeLater(graph);
+            case SELECT_DIMMED -> PluginExecution.withPlugin(VisualGraphPluginRegistry.SELECT_DIMMED).executeLater(graph);
+            case SELECT_UNDIMMED -> PluginExecution.withPlugin(VisualGraphPluginRegistry.SELECT_UNDIMMED).executeLater(graph);
+            default -> {
+                // Do nothing
+            }
         }
     }
 

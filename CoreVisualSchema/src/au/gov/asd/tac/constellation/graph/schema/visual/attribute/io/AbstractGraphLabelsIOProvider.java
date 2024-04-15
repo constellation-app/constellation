@@ -1,6 +1,5 @@
-
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,7 +63,7 @@ public abstract class AbstractGraphLabelsIOProvider extends AbstractGraphIOProvi
      * @throws java.io.IOException If there's a problem reading the document. 
      */
     @Override
-    public void readObject(final int attributeId, final int elementId, final JsonNode jnode, final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, final GraphByteReader byteReader, ImmutableObjectCache cache) throws IOException {
+    public void readObject(final int attributeId, final int elementId, final JsonNode jnode, final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, final GraphByteReader byteReader, final ImmutableObjectCache cache) throws IOException {
         final List<GraphLabel> labels = new ArrayList<>();
         if (!jnode.isNull() && jnode.isArray()) {
             for (int i = 0; i < jnode.size(); i++) {

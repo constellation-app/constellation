@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,35 +44,31 @@ public class SelectAllPlugin extends SimpleEditPlugin {
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-        Properties properties = new Properties();
-
-        int vxSelected = VisualConcept.VertexAttribute.SELECTED.get(graph);
+        final Properties properties = new Properties();
+        final int vxSelected = VisualConcept.VertexAttribute.SELECTED.get(graph);
         if (vxSelected != Graph.NOT_FOUND) {
-            SetBooleanValuesOperation selectVerticesOperation = new SetBooleanValuesOperation(graph, GraphElementType.VERTEX, vxSelected);
-            int vertexCount = graph.getVertexCount();
+            final SetBooleanValuesOperation selectVerticesOperation = new SetBooleanValuesOperation(graph, GraphElementType.VERTEX, vxSelected);
+            final int vertexCount = graph.getVertexCount();
             for (int position = 0; position < vertexCount; position++) {
-                int vertex = graph.getVertex(position);
+                final int vertex = graph.getVertex(position);
                 selectVerticesOperation.setValue(vertex, true);
             }
             graph.executeGraphOperation(selectVerticesOperation);
-
             properties.setProperty("vsize", String.valueOf(selectVerticesOperation.size()));
         }
 
-        int txSelected = VisualConcept.TransactionAttribute.SELECTED.get(graph);
+        final int txSelected = VisualConcept.TransactionAttribute.SELECTED.get(graph);
         if (txSelected != Graph.NOT_FOUND) {
-            SetBooleanValuesOperation selectTransactionsOperation = new SetBooleanValuesOperation(graph, GraphElementType.TRANSACTION, txSelected);
-            int transactionCount = graph.getTransactionCount();
+            final SetBooleanValuesOperation selectTransactionsOperation = new SetBooleanValuesOperation(graph, GraphElementType.TRANSACTION, txSelected);
+            final int transactionCount = graph.getTransactionCount();
             for (int position = 0; position < transactionCount; position++) {
-                int transaction = graph.getTransaction(position);
+                final int transaction = graph.getTransaction(position);
                 selectTransactionsOperation.setValue(transaction, true);
             }
             graph.executeGraphOperation(selectTransactionsOperation);
-
             properties.setProperty("tsize", String.valueOf(selectTransactionsOperation.size()));
         }
 
         ConstellationLogger.getDefault().pluginProperties(this, properties);
-
     }
 }
