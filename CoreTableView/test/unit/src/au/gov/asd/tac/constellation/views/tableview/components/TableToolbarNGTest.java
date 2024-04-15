@@ -144,7 +144,7 @@ public class TableToolbarNGTest {
         when(preferencesMenu.getPreferencesButton()).thenReturn(preferencesMenuButton);
         when(columnVisibilityContextMenu.getContextMenu()).thenReturn(contextMenu);
         when(elementTypeContextMenu.getContextMenu()).thenReturn(contextMenu);
-        
+
         when(tableTopComponent.getCurrentGraph()).thenReturn(graph);
     }
 
@@ -225,7 +225,7 @@ public class TableToolbarNGTest {
                 UserInterfaceIconProvider.TRANSACTIONS.buildImage(16),
                 "Element Type"
         );
-        
+
         elementTypeActionCheck();
 
         // Help Button
@@ -253,6 +253,27 @@ public class TableToolbarNGTest {
                 UserInterfaceIconProvider.VISIBLE.buildImage(16),
                 UserInterfaceIconProvider.NODES.buildImage(16)
         );
+
+        buttonChangeChecksOnToolbarUpdate(
+                false,
+                GraphElementType.EDGE,
+                UserInterfaceIconProvider.VISIBLE.buildImage(16),
+                UserInterfaceIconProvider.EDGES.buildImage(16)
+        );
+
+        buttonChangeChecksOnToolbarUpdate(
+                false,
+                GraphElementType.LINK,
+                UserInterfaceIconProvider.VISIBLE.buildImage(16),
+                UserInterfaceIconProvider.LINKS.buildImage(16)
+        );
+
+        buttonChangeChecksOnToolbarUpdate(
+                false,
+                GraphElementType.META,
+                UserInterfaceIconProvider.VISIBLE.buildImage(16),
+                UserInterfaceIconProvider.TRANSACTIONS.buildImage(16)
+        );
     }
 
     @Test
@@ -271,6 +292,14 @@ public class TableToolbarNGTest {
 
         state.setElementType(GraphElementType.VERTEX);
         assertTrue(isImageEqual(UserInterfaceIconProvider.NODES.buildImage(16),
+                tableToolbar.getElementTypeInitialIcon().getImage()));
+
+        state.setElementType(GraphElementType.EDGE);
+        assertTrue(isImageEqual(UserInterfaceIconProvider.EDGES.buildImage(16),
+                tableToolbar.getElementTypeInitialIcon().getImage()));
+
+        state.setElementType(GraphElementType.LINK);
+        assertTrue(isImageEqual(UserInterfaceIconProvider.LINKS.buildImage(16),
                 tableToolbar.getElementTypeInitialIcon().getImage()));
 
         when(tableTopComponent.getCurrentState()).thenReturn(null);
@@ -299,18 +328,20 @@ public class TableToolbarNGTest {
                 tableToolbar.getSelectedOnlyInitialIcon().getImage()));
     }
 
+    @Test
+    public void createElementTypeContextMenu() {
+        final ElementTypeContextMenu menu = tableToolbar.createElementTypeContextMenu();
+        assertEquals(menu.getClass(), ElementTypeContextMenu.class);
+    }
+
     /**
-     * Verifies that when the update tool bar method is called, the icons on the
-     * selected only button and element type buttons are changed. Also verifies
-     * the selected state of the selected only toggle button is changed.
+     * Verifies that when the update tool bar method is called, the icons on the selected only button and element type
+     * buttons are changed. Also verifies the selected state of the selected only toggle button is changed.
      *
-     * @param newSelectedOnlyState the new selected only state, true if it is
-     * on, false otherwise
+     * @param newSelectedOnlyState the new selected only state, true if it is on, false otherwise
      * @param newElementType the new element type to be displayed in the table
-     * @param expectedSelectedOnlyIcon the icon expected to be on the selected
-     * only button once update is called
-     * @param expectedElementTypeIcon the icon expected to be on the element
-     * type button once the update it called
+     * @param expectedSelectedOnlyIcon the icon expected to be on the selected only button once update is called
+     * @param expectedElementTypeIcon the icon expected to be on the element type button once the update it called
      */
     private void buttonChangeChecksOnToolbarUpdate(final boolean newSelectedOnlyState,
             final GraphElementType newElementType,
@@ -355,8 +386,7 @@ public class TableToolbarNGTest {
      *
      * @param button the button to check
      * @param expectedIcon the expected image to be present on the button
-     * @param expectedToolTip the expected tool tip to be associated with the
-     * button
+     * @param expectedToolTip the expected tool tip to be associated with the button
      */
     private void buttonChecks(final Button button,
             final Image expectedIcon,
@@ -373,8 +403,7 @@ public class TableToolbarNGTest {
      *
      * @param toggleButton the toggle button to check
      * @param expectedIcon the expected image to be present on the toggle button
-     * @param expectedToolTip the expected tool tip to be associated with the
-     * toggle button
+     * @param expectedToolTip the expected tool tip to be associated with the toggle button
      */
     private void toggleButtonChecks(final ToggleButton toggleButton,
             final Image expectedIcon,
@@ -387,8 +416,8 @@ public class TableToolbarNGTest {
     }
 
     /**
-     * Verifies that when the column visibility button is clicked, the
-     * {@link ColumnVisibilityContextMenu} is created, initialized and shown.
+     * Verifies that when the column visibility button is clicked, the {@link ColumnVisibilityContextMenu} is created,
+     * initialized and shown.
      */
     private void columnVisibilityButtonActionCheck() {
         final ActionEvent actionEvent = mock(ActionEvent.class);
@@ -400,16 +429,13 @@ public class TableToolbarNGTest {
     }
 
     /**
-     * When the selected only mode button is pressed, the table switches between
-     * "Selected Only Mode" ON and OFF. This verifies that as the button is
-     * pressed that transition between ON and OFF happens and the update state
-     * plugin is executed triggering the required changes.
+     * When the selected only mode button is pressed, the table switches between "Selected Only Mode" ON and OFF. This
+     * verifies that as the button is pressed that transition between ON and OFF happens and the update state plugin is
+     * executed triggering the required changes.
      *
-     * @param selectedOnlyModeInitialState the initial status of the "Selected
-     * Only Mode", the expected status after the button is pressed will be the
-     * inverse
-     * @param expectedNewIcon the new image that is expected to be on the button
-     * after it was clicked
+     * @param selectedOnlyModeInitialState the initial status of the "Selected Only Mode", the expected status after the
+     * button is pressed will be the inverse
+     * @param expectedNewIcon the new image that is expected to be on the button after it was clicked
      */
     private void selectedOnlyModeActionChecks(final boolean selectedOnlyModeInitialState,
             final Image expectedNewIcon) {
@@ -443,27 +469,21 @@ public class TableToolbarNGTest {
     }
 
     /**
-     * When the element type button is pressed the tables state is switched
-     * between VERTEX and TRANSACTION. This verifies that as the button is
-     * pressed that transition happens and the update state plugin is executed
-     * triggering the required changes. The buttons icon should also change to
-     * the element type now set in the state.
+     * When the element type button is pressed the tables state is switched between VERTEX and TRANSACTION. This
+     * verifies that as the button is pressed that transition happens and the update state plugin is executed triggering
+     * the required changes. The buttons icon should also change to the element type now set in the state.
      *
-     * @param elementTypeInitialState the initial element type in the state
-     * before the button is pressed
-     * @param elementTypeEndState the expected element type in the state after
-     * the button is pressed
-     * @param expectedNewIcon the expected image to be now on the element type
-     * change button
+     * @param elementTypeInitialState the initial element type in the state before the button is pressed
+     * @param elementTypeEndState the expected element type in the state after the button is pressed
+     * @param expectedNewIcon the expected image to be now on the element type change button
      */
     private void elementTypeActionCheck() {
         final ActionEvent actionEvent = mock(ActionEvent.class);
 
         tableToolbar.getElementTypeButton().getOnAction().handle(actionEvent);
-        
+
         System.out.println("contextMenu:");
         System.out.println(contextMenu.toString());
-
 
         verify(contextMenu).show(tableToolbar.getElementTypeButton(), Side.RIGHT, 0, 0);
         verify(actionEvent).consume();
@@ -486,8 +506,8 @@ public class TableToolbarNGTest {
     }
 
     /**
-     * Verifies that two JavaFX images are equal. Unfortunately they don't
-     * provide a nice way to do this so we check pixel by pixel.
+     * Verifies that two JavaFX images are equal. Unfortunately they don't provide a nice way to do this so we check
+     * pixel by pixel.
      *
      * @param firstImage the first image to compare
      * @param secondImage the second image to compare

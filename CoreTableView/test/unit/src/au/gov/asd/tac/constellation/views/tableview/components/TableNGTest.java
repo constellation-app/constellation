@@ -553,6 +553,119 @@ public class TableNGTest {
         verify(column2, times(1)).setCellFactory(any(Callback.class));
         verify(column3, times(1)).setCellFactory(any(Callback.class));
     }
+    
+    @Test
+    public void updateColumnsLink() {
+        final ChangeListener<ObservableList<String>> tableSelectionListener = mock(ChangeListener.class);
+        final ListChangeListener selectedOnlySelectionListener = mock(ListChangeListener.class);
+
+        doReturn(tableSelectionListener).when(table).getTableSelectionListener();
+        doReturn(selectedOnlySelectionListener).when(table).getSelectedOnlySelectionListener();
+
+        final ReadableGraph readableGraph = mock(ReadableGraph.class);
+        when(graph.getReadableGraph()).thenReturn(readableGraph);
+
+        // Set up the initial column index. Column 4 will not be found in the graph and
+        // dropped in the column index created by the update call
+        final String columnType1 = "low.";
+        final Attribute attribute1 = mock(Attribute.class);
+        final TableColumn<ObservableList<String>, String> column1 = mock(TableColumn.class);
+        when(column1.getText()).thenReturn("low.COLUMN_A");
+
+        final String columnType2 = "high.";
+        final Attribute attribute2 = mock(Attribute.class);
+        final TableColumn<ObservableList<String>, String> column2 = mock(TableColumn.class);
+        when(column2.getText()).thenReturn("high.COLUMN_A");
+
+        final String columnType3 = "transaction.";
+        final Attribute attribute3 = mock(Attribute.class);
+        final TableColumn<ObservableList<String>, String> column3 = mock(TableColumn.class);
+        when(column3.getText()).thenReturn("transaction.COLUMN_B");
+
+        final String columnType4 = "source.";
+        final Attribute attribute4 = mock(Attribute.class);
+        final TableColumn<ObservableList<String>, String> column4 = mock(TableColumn.class);
+        when(column4.getText()).thenReturn("source.COLUMN_C");
+
+        final CopyOnWriteArrayList<Column> columnIndex = new CopyOnWriteArrayList<>();
+        columnIndex.add(new Column(columnType1, attribute1, column1));
+        columnIndex.add(new Column(columnType2, attribute2, column2));
+        columnIndex.add(new Column(columnType3, attribute3, column3));
+        columnIndex.add(new Column(columnType4, attribute4, column4));
+
+        when(activeTableReference.getColumnIndex()).thenReturn(columnIndex);
+
+        // This is a reference of the old column index that will be used whilst the new
+        // index is being created. Because that creation is mocked this is used only as a
+        // vertification that the parameter is being correctly constructed.
+        final Map<String, TableColumn<ObservableList<String>, String>> columnReferenceMap = Map.of(
+                "low.COLUMN_A", column1,
+                "high.COLUMN_A", column2,
+                "transaction.COLUMN_B", column3,
+                "source.COLUMN_C", column4
+        );
+
+        // Mock out the re-population of the column index from the graph. This excludes column 4.
+        final CopyOnWriteArrayList<Column> sourceColumnIndex
+                = new CopyOnWriteArrayList<>();
+        sourceColumnIndex.add(new Column(columnType1, attribute1, column1));
+
+        final CopyOnWriteArrayList<Column> destinationColumnIndex
+                = new CopyOnWriteArrayList<>();
+        destinationColumnIndex.add(new Column(columnType2, attribute2, column2));
+
+        final CopyOnWriteArrayList<Column> transactionColumnIndex
+                = new CopyOnWriteArrayList<>();
+        transactionColumnIndex.add(new Column(columnType3, attribute3, column3));
+
+        doReturn(sourceColumnIndex).when(table)
+                .createColumnIndexPart(readableGraph, GraphElementType.VERTEX, "low.", columnReferenceMap);
+        doReturn(destinationColumnIndex).when(table)
+                .createColumnIndexPart(readableGraph, GraphElementType.VERTEX, "high.", columnReferenceMap);
+        doReturn(transactionColumnIndex).when(table)
+                .createColumnIndexPart(readableGraph, GraphElementType.TRANSACTION, "transaction.", columnReferenceMap);
+
+        // Set up the table state
+        final TableViewState tableViewState = new TableViewState();
+        tableViewState.setElementType(GraphElementType.LINK);
+
+        // This is used by the sort comparator. This will order the columnIndex
+        // in a certain way that we can then verify below
+        tableViewState.setColumnAttributes(List.of(
+                Tuple.create("low.", attribute1),
+                Tuple.create("transaction.", attribute3),
+                Tuple.create("high.", attribute2)
+        ));
+
+        try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
+            platformMockedStatic.when(Platform::isFxApplicationThread).thenReturn(false);
+
+            platformMockedStatic.when(() -> Platform.runLater(any(Runnable.class)))
+                    .then(mockInvocation -> {
+                        assertTrue(mockInvocation.getArgument(0) instanceof UpdateColumnsTask);
+                        return null;
+                    });
+
+            table.updateColumns(graph, tableViewState);
+        }
+
+        // Verify the new column index
+        final CopyOnWriteArrayList<Column> expectedColumnIndex
+                = new CopyOnWriteArrayList<>();
+        expectedColumnIndex.add(new Column(columnType1, attribute1, column1));
+        expectedColumnIndex.add(new Column(columnType3, attribute3, column3));
+        expectedColumnIndex.add(new Column(columnType2, attribute2, column2));
+
+        assertEquals(expectedColumnIndex, columnIndex);
+
+        verify(column1, times(1)).setCellValueFactory(any(Callback.class));
+        verify(column2, times(1)).setCellValueFactory(any(Callback.class));
+        verify(column3, times(1)).setCellValueFactory(any(Callback.class));
+
+        verify(column1, times(1)).setCellFactory(any(Callback.class));
+        verify(column2, times(1)).setCellFactory(any(Callback.class));
+        verify(column3, times(1)).setCellFactory(any(Callback.class));
+    }
 
     @Test
     public void updateColumnsStateColumnsNotSet() {
@@ -801,7 +914,6 @@ public class TableNGTest {
 
     @Test
     public void updateDataEdgeStateNotSelectedOnly() {
-        System.out.println("Edge Not");
         final ObservableList<String> row1 = FXCollections.observableList(List.of("row1Column1", "row1Column2"));
         final ObservableList<String> row2 = FXCollections.observableList(List.of("row2Column1", "row2Column2"));
 
@@ -810,7 +922,6 @@ public class TableNGTest {
 
     @Test
     public void updateDataEdgeStateSelectedOnly() {
-        System.out.println("Edge");
         final ObservableList<String> row1 = FXCollections.observableList(List.of("row1Column1", "row1Column2"));
         final ObservableList<String> row2 = FXCollections.observableList(List.of("row2Column1", "row2Column2"));
 
@@ -819,7 +930,6 @@ public class TableNGTest {
 
     @Test
     public void updateDataLinkStateNotSelectedOnly() {
-        System.out.println("Link Not");
         final ObservableList<String> row1 = FXCollections.observableList(List.of("row1Column1", "row1Column2"));
         final ObservableList<String> row2 = FXCollections.observableList(List.of("row2Column1", "row2Column2"));
 
@@ -828,7 +938,6 @@ public class TableNGTest {
 
     @Test
     public void updateDataLinkStateSelectedOnly() {
-        System.out.println("Link");
         final ObservableList<String> row1 = FXCollections.observableList(List.of("row1Column1", "row1Column2"));
         final ObservableList<String> row2 = FXCollections.observableList(List.of("row2Column1", "row2Column2"));
 

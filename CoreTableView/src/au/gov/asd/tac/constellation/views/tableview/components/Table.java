@@ -311,12 +311,10 @@ public class Table {
                                             break;
                                         }
                                     }
-                                    //isSelected = readableGraph.getBooleanValue(selectedAttributeId, edgeId);
                                 }
                                 // If it is not in selected only mode then just add every row but if it is
                                 // in selected only mode, only add the ones that are selected in the graph
                                 if (!state.isSelectedOnly() || isSelected) {
-                                    //LOGGER.log(Level.WARNING, "Edge id {0}", edgeId);
                                     rows.add(getRowDataForEdge(readableGraph, edgeId));
                                 }
                             });
