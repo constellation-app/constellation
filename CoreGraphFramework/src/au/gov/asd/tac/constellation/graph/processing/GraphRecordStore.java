@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 
 /**
@@ -60,18 +61,15 @@ public class GraphRecordStore extends TabularRecordStore {
      */
     @Override
     protected Object[][] getColumn(final String key) {
-        Object[][] values = typedRecords.get(key);
-        if (values == null) {
-            values = records.get(key);
-        }
-        return values;
+        final Object[][] values = typedRecords.get(key);
+        return values != null ? values : records.get(key);
     }
 
     @Override
     protected void createColumn(final String key, final Object[][] values) {
-        String typedKey;
-        String untypedKey;
-        int typeIndex = key.indexOf('<');
+        final String typedKey;
+        final String untypedKey;
+        final int typeIndex = key.indexOf('<');
         if (typeIndex == -1) {
             untypedKey = key;
             typedKey = key + "<string>";
@@ -94,7 +92,7 @@ public class GraphRecordStore extends TabularRecordStore {
 
         if (cache != null) {
             if (value != null) {
-                String unique = cache.get(value);
+                final String unique = cache.get(value);
                 if (unique != null) {
                     value = unique;
                 } else {
@@ -102,7 +100,7 @@ public class GraphRecordStore extends TabularRecordStore {
                 }
             }
 
-            String unique = cache.get(key);
+            final String unique = cache.get(key);
             if (unique != null) {
                 key = unique;
             } else {
@@ -121,8 +119,6 @@ public class GraphRecordStore extends TabularRecordStore {
         } else if (values.length <= record >>> BATCH_BITS) {
             values = Arrays.copyOf(values, capacity >>> BATCH_BITS);
             createColumn(key, values);
-        } else {
-            // Do nothing
         }
 
         Object[] batch = values[record >>> BATCH_BITS];
@@ -134,8 +130,8 @@ public class GraphRecordStore extends TabularRecordStore {
 
     @Override
     public List<String> values(final int record) {
-        List<String> values = new ArrayList<>(typedRecords.size());
-        for (Object[][] v : typedRecords.values()) {
+        final List<String> values = new ArrayList<>(typedRecords.size());
+        for (final Object[][] v : typedRecords.values()) {
             values.add(TabularRecordStore.getValue(v, record));
         }
         return values;
@@ -149,12 +145,11 @@ public class GraphRecordStore extends TabularRecordStore {
      */
     @Override
     public void add(final RecordStore recordStore) {
-        if (recordStore instanceof GraphRecordStore) {
-            final GraphRecordStore graphRecordStore = (GraphRecordStore) recordStore;
+        if (recordStore instanceof GraphRecordStore graphRecordStore) {
             for (int record = 0; record < graphRecordStore.size(); record++) {
-                int newRecord = add();
-                for (String key : graphRecordStore.keysWithType()) {
-                    String value = graphRecordStore.get(record, key);
+                final int newRecord = add();
+                for (final String key : graphRecordStore.keysWithType()) {
+                    final String value = graphRecordStore.get(record, key);
                     if (value != null) {
                         set(newRecord, key, value);
                     }
@@ -185,14 +180,11 @@ public class GraphRecordStore extends TabularRecordStore {
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj == null) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
+        
         final GraphRecordStore other = (GraphRecordStore) obj;
-
         if (this.typedRecords.size() != other.typedRecords.size()) {
             return false;
         }
@@ -204,8 +196,8 @@ public class GraphRecordStore extends TabularRecordStore {
             }
 
             for (int record = 0; record < size; record++) {
-                for (final Map.Entry<String, Object[][]> e : this.typedRecords.entrySet()) {
-                    if (!(TabularRecordStore.hasValue(e.getValue(), record) && TabularRecordStore.hasValue(other.typedRecords.get(e.getKey()), record))) {
+                for (final Entry<String, Object[][]> e : this.typedRecords.entrySet()) {
+                    if (!TabularRecordStore.hasValue(e.getValue(), record) || !TabularRecordStore.hasValue(other.typedRecords.get(e.getKey()), record)) {
                         return false;
                     } else if (TabularRecordStore.getValue(e.getValue(), record) == null && TabularRecordStore.getValue(other.typedRecords.get(e.getKey()), record) == null) {
                         // continue
@@ -213,8 +205,6 @@ public class GraphRecordStore extends TabularRecordStore {
                         return false;
                     } else if (!TabularRecordStore.getValue(e.getValue(), record).equals(TabularRecordStore.getValue(other.typedRecords.get(e.getKey()), record))) {
                         return false;
-                    } else {
-                        // Do nothing
                     }
                 }
             }
@@ -228,7 +218,7 @@ public class GraphRecordStore extends TabularRecordStore {
         final StringBuilder out = new StringBuilder();
         for (int record = 0; record < size; record++) {
             boolean first = true;
-            for (Map.Entry<String, Object[][]> e : typedRecords.entrySet()) {
+            for (final Entry<String, Object[][]> e : typedRecords.entrySet()) {
                 if (TabularRecordStore.hasValue(e.getValue(), record)) {
                     if (!first) {
                         out.append(", ");

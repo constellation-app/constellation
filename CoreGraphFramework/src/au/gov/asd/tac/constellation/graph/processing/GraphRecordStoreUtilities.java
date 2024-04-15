@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -103,10 +103,10 @@ public class GraphRecordStoreUtilities {
 
             // If the vertexIdAttributes is not null but empty then use all attributes of the vertex
             if (vertexIdAttributes.isEmpty()) {
-                for (Entry<String, String> e : values.entrySet()) {
+                for (final Entry<String, String> e : values.entrySet()) {
                     idBuilder.append(delimiter).append(e.getKey()).append("=");
                     if (e.getValue() != null) {
-                        for (byte b : e.getValue().getBytes(UTF8)) {
+                        for (final byte b : e.getValue().getBytes(UTF8)) {
                             int i = b;
                             if (i < 0) {
                                 i += 256;
@@ -118,15 +118,13 @@ public class GraphRecordStoreUtilities {
                         }
                         delimiter = ",";
                     }
-                }
-
-                // Otherwise use the specified attributes to create the idValue
-            } else {
-                for (String attribute : vertexIdAttributes) {
+                }               
+            } else { // Otherwise use the specified attributes to create the idValue
+                for (final String attribute : vertexIdAttributes) {
                     final String value = values.get(attribute);
                     if (value != null) {
                         idBuilder.append(delimiter).append(attribute).append("=");
-                        for (byte b : value.getBytes(UTF8)) {
+                        for (final byte b : value.getBytes(UTF8)) {
                             int i = b;
                             if (i < 0) {
                                 i += 256;
@@ -169,15 +167,15 @@ public class GraphRecordStoreUtilities {
         return vertex;
     }
 
-    private static int getVertex(final GraphWriteMethods graph, final String id,
-            final Map<String, Integer> vertexMap, final boolean initializeWithSchema, final List<Integer> newVertices) {
+    private static int getVertex(final GraphWriteMethods graph, final String id, final Map<String, Integer> vertexMap, 
+            final boolean initializeWithSchema, final List<Integer> newVertices) {
         if (StringUtils.isNotBlank(id)) {
             try {
-                Integer vertex = Integer.parseInt(id);
+                Integer vertex = Integer.valueOf(id);
                 if (graph.vertexExists(vertex)) {
                     return vertex;
                 }
-            } catch (NumberFormatException ex) {
+            } catch (final NumberFormatException ex) {
             }
 
             Integer vertex = vertexMap.get(id);
@@ -202,7 +200,7 @@ public class GraphRecordStoreUtilities {
             return vertex;
         }
 
-        int vertex = graph.addVertex();
+        final int vertex = graph.addVertex();
         if (initializeWithSchema) {
             graph.getSchema().newVertex(graph, vertex);
         }
@@ -211,8 +209,9 @@ public class GraphRecordStoreUtilities {
         return vertex;
     }
 
-    private static int addTransaction(final GraphWriteMethods graph, final int source, final int destination, final Map<String, String> values,
-            final Map<String, Integer> transactionMap, final boolean initializeWithSchema, boolean completeWithSchema) {
+    private static int addTransaction(final GraphWriteMethods graph, final int source, final int destination, 
+            final Map<String, String> values, final Map<String, Integer> transactionMap, 
+            final boolean initializeWithSchema, boolean completeWithSchema) {
         final String type = values.get(TYPE_KEY);
         final String directedValue = values.get(DIRECTED_KEY);
         boolean directed = true;
@@ -251,15 +250,16 @@ public class GraphRecordStoreUtilities {
         return transaction;
     }
 
-    private static int getTransaction(final GraphWriteMethods graph, final String id, final int source, final int destination,
-            final boolean directed, final Map<String, Integer> transactionMap, final boolean initializeWithSchema) {
+    private static int getTransaction(final GraphWriteMethods graph, final String id, final int source, 
+            final int destination, final boolean directed, final Map<String, Integer> transactionMap, 
+            final boolean initializeWithSchema) {
         if (StringUtils.isNotBlank(id)) {
             try {
-                final Integer transaction = Integer.parseInt(id);
+                final Integer transaction = Integer.valueOf(id);
                 if (graph.transactionExists(transaction)) {
                     return transaction;
                 }
-            } catch (NumberFormatException ex) {
+            } catch (final NumberFormatException ex) {
             }
 
             Integer transaction = transactionMap.get(id);
@@ -292,8 +292,8 @@ public class GraphRecordStoreUtilities {
         return transaction;
     }
 
-    private static void copyValues(final GraphWriteMethods graph,
-            final GraphElementType elementType, final int element, final Map<String, String> values) {
+    private static void copyValues(final GraphWriteMethods graph, final GraphElementType elementType, final int element, 
+            final Map<String, String> values) {
         /**
          * check whether a transaction type is inconsistent with the direction
          * attribute, if so make a custom type
@@ -308,8 +308,8 @@ public class GraphRecordStoreUtilities {
                     // if the requested direction is different to the type's direction then make a new type
                     if (currentType.isDirected() != directed) {
                         final String typeName = String.format("%s (%s)", currentType, directed ? "directed" : "undirected");
-                        SchemaTransactionType modifiedType = new SchemaTransactionType.Builder(currentType, typeName)
-                                .setDirected(Boolean.parseBoolean(requestedDirected))
+                        final SchemaTransactionType modifiedType = new SchemaTransactionType.Builder(currentType, typeName)
+                                .setDirected(Boolean.valueOf(requestedDirected))
                                 .build();
 
                         if (!SchemaTransactionTypeUtilities.containsType(modifiedType)) {
@@ -325,7 +325,7 @@ public class GraphRecordStoreUtilities {
             String key = entry.getKey();
             String type = "string";
             if (key.endsWith(">")) {
-                int typeStart = key.lastIndexOf('<');
+                final int typeStart = key.lastIndexOf('<');
                 if (typeStart > 0) {
                     type = key.substring(typeStart + 1, key.length() - 1);
                     key = key.substring(0, typeStart);
@@ -405,7 +405,8 @@ public class GraphRecordStoreUtilities {
         final Set<Integer> ghostVertices = new HashSet<>();
 
         recordStore.reset();
-        final List<String> keys = (recordStore instanceof GraphRecordStore) ? ((GraphRecordStore) recordStore).keysWithType() : recordStore.keys();
+        final List<String> keys = recordStore instanceof GraphRecordStore graphRecordStore 
+                ? graphRecordStore.keysWithType() : recordStore.keys();
 
         if (vertexMap == null) {
             vertexMap = new HashMap<>();
@@ -418,7 +419,7 @@ public class GraphRecordStoreUtilities {
             final Map<String, String> sourceValues = new TreeMap<>();
             final Map<String, String> destinationValues = new TreeMap<>();
             final Map<String, String> transactionValues = new TreeMap<>();
-            for (String key : keys) {
+            for (final String key : keys) {
                 if (recordStore.hasValue(key)) {
                     String value = recordStore.get(key);
                     final int dividerPosition = key.indexOf('.');
@@ -429,22 +430,17 @@ public class GraphRecordStoreUtilities {
                         final String[] parts = keyDescriptor.split("\\.");
                         final String label = key.split("<")[0];
                         
-                        if(LabelTypes.indexOf(label) > -1){
+                        if (LabelTypes.indexOf(label) > -1) {
                             value = normalizeType(value);
                         }
 
                         switch (parts[0]) {
-                            case "source":
-                                sourceValues.put(keyAttribute, value);
-                                break;
-                            case "destination":
-                                destinationValues.put(keyAttribute, value);
-                                break;
-                            case "transaction":
-                                transactionValues.put(keyAttribute, value);
-                                break;
-                            default:
-                                break;
+                            case "source" -> sourceValues.put(keyAttribute, value);
+                            case "destination" -> destinationValues.put(keyAttribute, value);
+                            case "transaction" -> transactionValues.put(keyAttribute, value);
+                            default -> {
+                                // do nothing
+                            }
                         }
                     }
                 }
@@ -461,8 +457,6 @@ public class GraphRecordStoreUtilities {
                 addVertex(graph, sourceValues, vertexMap, initializeWithSchema, completeWithSchema, newVertices, ghostVertices, vertexIdAttributes);
             } else if (!destinationValues.isEmpty()) {
                 addVertex(graph, destinationValues, vertexMap, initializeWithSchema, completeWithSchema, newVertices, ghostVertices, vertexIdAttributes);
-            } else {
-                // Do nothing
             }
         }
 
@@ -470,7 +464,7 @@ public class GraphRecordStoreUtilities {
         // vertex still exists in the graph (ie has not been merged with another vertex) then is should be removed.
         if (!ghostVertices.isEmpty()) {
             graph.validateKey(GraphElementType.VERTEX, true);
-            for (Integer vertex : ghostVertices) {
+            for (final Integer vertex : ghostVertices) {
                 if (graph.vertexExists(vertex)) {
                     graph.removeVertex(vertex);
                 }
@@ -514,8 +508,8 @@ public class GraphRecordStoreUtilities {
      * @return A {@link RecordStore} representing the graph's vertices and
      * transactions.
      */
-    public static GraphRecordStore getAll(final GraphReadMethods graph,
-            final boolean singletonsOnly, final boolean selectedOnly, final boolean disassociateIds) {
+    public static GraphRecordStore getAll(final GraphReadMethods graph, final boolean singletonsOnly, 
+            final boolean selectedOnly, final boolean disassociateIds) {
         final GraphRecordStore recordstore = getVertices(graph, singletonsOnly, selectedOnly, disassociateIds);
         recordstore.add(getTransactions(graph, selectedOnly, disassociateIds));
         return recordstore;
@@ -549,8 +543,8 @@ public class GraphRecordStoreUtilities {
      * elements on the graph.
      * @return A {@link RecordStore} representing the graph's vertices.
      */
-    public static GraphRecordStore getVertices(final GraphReadMethods graph,
-            final boolean singletonsOnly, final boolean selectedOnly, final boolean disassociateIds) {
+    public static GraphRecordStore getVertices(final GraphReadMethods graph, final boolean singletonsOnly, 
+            final boolean selectedOnly, final boolean disassociateIds) {
         return getVertices(graph, singletonsOnly, selectedOnly, disassociateIds, new int[]{0}, -1);
     }
 
@@ -707,7 +701,7 @@ public class GraphRecordStoreUtilities {
 
             if (graph.getBooleanValue(selected, vxId) || transactionEndPoints.get(vxId)) {
                 recordStore.add();
-                for (Attribute attribute : attributes) {
+                for (final Attribute attribute : attributes) {
                     sb.setLength(0);
                     sb.append(SOURCE)
                             .append(attribute.getName())
@@ -754,7 +748,7 @@ public class GraphRecordStoreUtilities {
         final StringBuilder sb = new StringBuilder();
 
         recordStore.add();
-        for (Attribute attribute : attributes) {
+        for (final Attribute attribute : attributes) {
             sb.setLength(0);
             sb.append(SOURCE)
                     .append(attribute.getName())
@@ -927,7 +921,7 @@ public class GraphRecordStoreUtilities {
                 final int source = graph.getTransactionSourceVertex(transaction);
                 final int destination = graph.getTransactionDestinationVertex(transaction);
 
-                for (Attribute transactionAttribute : transactionAttributes) {
+                for (final Attribute transactionAttribute : transactionAttributes) {
                     recordStore.set(TRANSACTION + transactionAttribute.getName() + "<" + transactionAttribute.getAttributeType() + ">", graph.getStringValue(transactionAttribute.getId(), transaction));
                 }
 
@@ -984,7 +978,7 @@ public class GraphRecordStoreUtilities {
 
             String sourceId = null;
             String destId = null;
-            String uniqueId;
+            final String uniqueId;
             if (compositeVxId == source) {
                 destId = String.valueOf(destination);
                 if (compositeTransactionId.isSourceContracted() && compositeTransactionId.getOriginalSourceNode() != null) {
@@ -1012,10 +1006,10 @@ public class GraphRecordStoreUtilities {
             final List<String> sourceIds = sourceId == null ? toIds : Arrays.asList(sourceId);
             final List<String> destIds = destId == null ? toIds : Arrays.asList(destId);
 
-            for (String srcId : sourceIds) {
-                for (String dstId : destIds) {
+            for (final String srcId : sourceIds) {
+                for (final String dstId : destIds) {
                     recordStore.add();
-                    for (Attribute transactionAttribute : transactionAttributes) {
+                    for (final Attribute transactionAttribute : transactionAttributes) {
                         final String value = transactionAttribute.getName().equals(uniqueIdAttr.getName()) ? uniqueId : graph.getStringValue(transactionAttribute.getId(), transaction);
                         recordStore.set(TRANSACTION + transactionAttribute.getName() + "<" + transactionAttribute.getAttributeType() + ">", value);
                     }
@@ -1075,7 +1069,7 @@ public class GraphRecordStoreUtilities {
 
             String sourceId = null;
             String destId = null;
-            String uniqueId;
+            final String uniqueId;
             if (expandedVxId == source) {
                 destId = String.valueOf(destination);
                 if (!compositeTransactionId.isSourceContracted() && compositeTransactionId.getOriginalSourceNode() != null) {
@@ -1103,7 +1097,7 @@ public class GraphRecordStoreUtilities {
             }
 
             recordStore.add();
-            for (Attribute transactionAttribute : transactionAttributes) {
+            for (final Attribute transactionAttribute : transactionAttributes) {
                 final String value = transactionAttribute.getName().equals(uniqueIdAttr.getName()) ? uniqueId : graph.getStringValue(transactionAttribute.getId(), transaction);
                 recordStore.set(TRANSACTION + transactionAttribute.getName() + "<" + transactionAttribute.getAttributeType() + ">", value);
             }
@@ -1150,7 +1144,7 @@ public class GraphRecordStoreUtilities {
                 final String sourceId = source == fromVxId ? fromId : toId;
                 final String destId = source == fromVxId ? toId : fromId;
                 recordStore.add();
-                for (Attribute transactionAttribute : transactionAttributes) {
+                for (final Attribute transactionAttribute : transactionAttributes) {
                     final String value = graph.getStringValue(transactionAttribute.getId(), transaction);
                     recordStore.set(TRANSACTION + transactionAttribute.getName() + "<" + transactionAttribute.getAttributeType() + ">", value);
                 }
@@ -1176,8 +1170,8 @@ public class GraphRecordStoreUtilities {
      * @param vertex An integer value representing the id of a vertex from which
      * to copy primary key values.
      */
-    public static void setSourceKeys(final GraphReadMethods graph, final RecordStore recordStore, int vertex) {
-        for (int key : graph.getPrimaryKey(GraphElementType.VERTEX)) {
+    public static void setSourceKeys(final GraphReadMethods graph, final RecordStore recordStore, final int vertex) {
+        for (final int key : graph.getPrimaryKey(GraphElementType.VERTEX)) {
             recordStore.set(SOURCE + graph.getAttributeName(key), graph.getStringValue(key, vertex));
         }
     }
@@ -1192,8 +1186,8 @@ public class GraphRecordStoreUtilities {
      * @param vertex An integer value representing the id of a vertex from which
      * to copy primary key values.
      */
-    public static void setDestinationKeys(final GraphReadMethods graph, final RecordStore recordStore, int vertex) {
-        for (int key : graph.getPrimaryKey(GraphElementType.VERTEX)) {
+    public static void setDestinationKeys(final GraphReadMethods graph, final RecordStore recordStore, final int vertex) {
+        for (final int key : graph.getPrimaryKey(GraphElementType.VERTEX)) {
             recordStore.set(DESTINATION + graph.getAttributeName(key), graph.getStringValue(key, vertex));
         }
     }
@@ -1211,8 +1205,8 @@ public class GraphRecordStoreUtilities {
         final String type = parts.length != 2 ? parts[0] : parts[1].substring(0, parts[1].length()-1);
         // Identify a type that is spelt the same regardless of case.
         if (ApprovedTypes.indexOf(type) == -1) {
-            Optional<String> foundType = ApprovedTypes.stream().filter(i -> i.equalsIgnoreCase(type)).findFirst();
-            if(foundType.isPresent()){
+            final Optional<String> foundType = ApprovedTypes.stream().filter(i -> i.equalsIgnoreCase(type)).findFirst();
+            if (foundType.isPresent()) {
                 return parts.length != 2 ? foundType.get() : parts[0] + "<"+ foundType.get()+">";
             }
         }
@@ -1230,10 +1224,10 @@ public class GraphRecordStoreUtilities {
      * @param transaction An integer value representing the id of a transaction
      * from which to copy primary key values.
      */
-    public static void setTransactionKeys(final GraphReadMethods graph, final RecordStore recordStore, int transaction) {
+    public static void setTransactionKeys(final GraphReadMethods graph, final RecordStore recordStore, final int transaction) {
         setSourceKeys(graph, recordStore, graph.getTransactionSourceVertex(transaction));
         setDestinationKeys(graph, recordStore, graph.getTransactionDestinationVertex(transaction));
-        for (int key : graph.getPrimaryKey(GraphElementType.TRANSACTION)) {
+        for (final int key : graph.getPrimaryKey(GraphElementType.TRANSACTION)) {
             recordStore.set(TRANSACTION + graph.getAttributeName(key), graph.getStringValue(key, transaction));
         }
     }
@@ -1308,25 +1302,13 @@ public class GraphRecordStoreUtilities {
                 transaction.entrySet().stream().forEach(entry -> {
                     final String ekey = entry.getKey();
                     final Object evalue = entry.getValue();
-                    final String key;
-                    if (ekey == null) {
-                        key = TRANSACTION + ekey;
-                    } else {
-                        switch (ekey) {
-                            case TX_SRC:
-                                key = SOURCE + ID;
-                                break;
-                            case TX_DST:
-                                key = DESTINATION + ID;
-                                break;
-                            case TX_DIR:
-                                key = TRANSACTION + DIRECTED_KEY;
-                                break;
-                            default:
-                                key = TRANSACTION + ekey;
-                                break;
-                        }
-                    }
+                    final String key = switch (ekey) {
+                        case TX_SRC -> SOURCE + ID;
+                        case TX_DST -> DESTINATION + ID;
+                        case TX_DIR -> TRANSACTION + DIRECTED_KEY;
+                        case null -> TRANSACTION + ekey;
+                        default -> TRANSACTION + ekey;
+                    };
                     rs.set(key, evalue != null ? evalue.toString() : null);
                 });
             }
