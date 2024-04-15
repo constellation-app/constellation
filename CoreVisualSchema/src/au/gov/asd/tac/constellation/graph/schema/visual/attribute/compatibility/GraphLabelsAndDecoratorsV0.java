@@ -285,18 +285,20 @@ public final class GraphLabelsAndDecoratorsV0 implements Serializable {
         if (null == ltype) {
             labels = connLabels;
             etype = GraphElementType.TRANSACTION;
-        } else switch (ltype) {
-            case BOTTOM -> {
-                labels = bottomLabels;
-                etype = GraphElementType.VERTEX;
-            }
-            case TOP -> {
-                labels = topLabels;
-                etype = GraphElementType.VERTEX;
-            }
-            default -> {
-                labels = connLabels;
-                etype = GraphElementType.TRANSACTION;
+        } else {
+            switch (ltype) {
+                case BOTTOM -> {
+                    labels = bottomLabels;
+                    etype = GraphElementType.VERTEX;
+                }
+                case TOP -> {
+                    labels = topLabels;
+                    etype = GraphElementType.VERTEX;
+                }
+                default -> {
+                    labels = connLabels;
+                    etype = GraphElementType.TRANSACTION;
+                }
             }
         }
 
@@ -323,18 +325,20 @@ public final class GraphLabelsAndDecoratorsV0 implements Serializable {
         if (null == ltype) {
             labels = connLabels;
             etype = GraphElementType.TRANSACTION;
-        } else switch (ltype) {
-            case BOTTOM -> {
-                labels = bottomLabels;
-                etype = GraphElementType.VERTEX;
-            }
-            case TOP -> {
-                labels = topLabels;
-                etype = GraphElementType.VERTEX;
-            }
-            default -> {
-                labels = connLabels;
-                etype = GraphElementType.TRANSACTION;
+        } else {
+            switch (ltype) {
+                case BOTTOM -> {
+                    labels = bottomLabels;
+                    etype = GraphElementType.VERTEX;
+                }
+                case TOP -> {
+                    labels = topLabels;
+                    etype = GraphElementType.VERTEX;
+                }
+                default -> {
+                    labels = connLabels;
+                    etype = GraphElementType.TRANSACTION;
+                }
             }
         }
 

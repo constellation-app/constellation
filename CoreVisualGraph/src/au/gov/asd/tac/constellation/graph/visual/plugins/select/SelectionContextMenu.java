@@ -84,18 +84,29 @@ public class SelectionContextMenu implements ContextMenuProvider {
 
     @Override
     public void selectItem(final String item, final Graph graph, final GraphElementType elementType, final int entity, final Vector3f unprojected) {
-        if (null != item) switch (item) {
-            case SELECT_ALL -> PluginExecution.withPlugin(VisualGraphPluginRegistry.SELECT_ALL).executeLater(graph);
-            case DESELECT_ALL -> PluginExecution.withPlugin(VisualGraphPluginRegistry.DESELECT_ALL).executeLater(graph);
-            case DESELECT_VERTICES -> PluginExecution.withPlugin(VisualGraphPluginRegistry.DESELECT_VERTICES).executeLater(graph);
-            case DESELECT_TRANSACTIONS -> PluginExecution.withPlugin(VisualGraphPluginRegistry.DESELECT_TRANSACTIONS).executeLater(graph);
-            case INVERT_SELECTION -> PluginExecution.withPlugin(VisualGraphPluginRegistry.INVERT_SELECTION).executeLater(graph);
-            case SELECT_BLAZES -> PluginExecution.withPlugin(VisualGraphPluginRegistry.SELECT_BLAZES).executeLater(graph);
-            case DESELECT_BLAZES -> PluginExecution.withPlugin(VisualGraphPluginRegistry.DESELECT_BLAZES).executeLater(graph);
-            case SELECT_DIMMED -> PluginExecution.withPlugin(VisualGraphPluginRegistry.SELECT_DIMMED).executeLater(graph);
-            case SELECT_UNDIMMED -> PluginExecution.withPlugin(VisualGraphPluginRegistry.SELECT_UNDIMMED).executeLater(graph);
-            default -> {
-                // Do nothing
+        if (null != item) {
+            switch (item) {
+                case SELECT_ALL ->
+                    PluginExecution.withPlugin(VisualGraphPluginRegistry.SELECT_ALL).executeLater(graph);
+                case DESELECT_ALL ->
+                    PluginExecution.withPlugin(VisualGraphPluginRegistry.DESELECT_ALL).executeLater(graph);
+                case DESELECT_VERTICES ->
+                    PluginExecution.withPlugin(VisualGraphPluginRegistry.DESELECT_VERTICES).executeLater(graph);
+                case DESELECT_TRANSACTIONS ->
+                    PluginExecution.withPlugin(VisualGraphPluginRegistry.DESELECT_TRANSACTIONS).executeLater(graph);
+                case INVERT_SELECTION ->
+                    PluginExecution.withPlugin(VisualGraphPluginRegistry.INVERT_SELECTION).executeLater(graph);
+                case SELECT_BLAZES ->
+                    PluginExecution.withPlugin(VisualGraphPluginRegistry.SELECT_BLAZES).executeLater(graph);
+                case DESELECT_BLAZES ->
+                    PluginExecution.withPlugin(VisualGraphPluginRegistry.DESELECT_BLAZES).executeLater(graph);
+                case SELECT_DIMMED ->
+                    PluginExecution.withPlugin(VisualGraphPluginRegistry.SELECT_DIMMED).executeLater(graph);
+                case SELECT_UNDIMMED ->
+                    PluginExecution.withPlugin(VisualGraphPluginRegistry.SELECT_UNDIMMED).executeLater(graph);
+                default -> {
+                    // Do nothing
+                }
             }
         }
     }
