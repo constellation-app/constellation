@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -215,31 +215,16 @@ public class GraphAttribute implements Attribute, Serializable {
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
         final GraphAttribute other = (GraphAttribute) obj;
-        if (!Objects.equals(this.attributeType, other.attributeType)) {
-            return false;
-        }
-        if (this.id != other.id) {
-            return false;
-        }
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        if (!Objects.equals(this.description, other.description)) {
-            return false;
-        }
-        if (this.elementType != other.elementType) {
-            return false;
-        }
-        if (!Objects.equals(this.dataType, other.dataType)) {
-            return false;
-        }
-        return Objects.equals(this.defaultValue, other.defaultValue);
+        return Objects.equals(this.attributeType, other.attributeType)
+                && this.id == other.id
+                && Objects.equals(this.name, other.name)
+                && Objects.equals(this.description, other.description)
+                && this.elementType == other.elementType
+                && Objects.equals(this.dataType, other.dataType)
+                && Objects.equals(this.defaultValue, other.defaultValue);
     }
 }

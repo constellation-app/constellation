@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,15 +72,14 @@ public final class AttributeRegistry implements Serializable {
 
     private void registerAttribute(final Class<? extends AttributeDescription> attributeDescription, final boolean onlyRegisterIfNewer) {
         try {
-            AttributeDescription attribute = attributeDescription.getDeclaredConstructor().newInstance();
+            final AttributeDescription attribute = attributeDescription.getDeclaredConstructor().newInstance();
             final String attrName = attribute.getName();
             if (!onlyRegisterIfNewer || !attributes.containsKey(attrName)
                     || attributes.get(attrName).getDeclaredConstructor().newInstance().getVersion() < attribute.getVersion()) {
                 attributes.put(attrName, attributeDescription);
             }
-        } catch (final IllegalAccessException | IllegalArgumentException
-                | InstantiationException | NoSuchMethodException
-                | SecurityException | InvocationTargetException ex) {
+        } catch (final IllegalAccessException | IllegalArgumentException | InstantiationException 
+                | NoSuchMethodException | SecurityException | InvocationTargetException ex) {
             throw new IllegalArgumentException("Error registering attribute description: "
                     + attributeDescription.getCanonicalName(), ex);
         }
@@ -90,9 +89,8 @@ public final class AttributeRegistry implements Serializable {
         try {
             final AttributeDescription attribute = attributeDescription.getDeclaredConstructor().newInstance();
             return attribute.getNativeClass();
-        } catch (final IllegalAccessException | IllegalArgumentException
-                | InstantiationException | NoSuchMethodException
-                | SecurityException | InvocationTargetException ex) {
+        } catch (final IllegalAccessException | IllegalArgumentException | InstantiationException 
+                | NoSuchMethodException | SecurityException | InvocationTargetException ex) {
             throw new IllegalArgumentException("Error getting type for attribute description: "
                     + attributeDescription.getCanonicalName(), ex);
         }

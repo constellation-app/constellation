@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,8 +26,9 @@ import java.util.Map;
  */
 public class TransactionExpansionBuilder extends GraphBuilder {
 
-    public static TransactionExpansionBuilder expandTransactionsInGraph(final GraphWriteMethods graph, final GraphReadMethods expansionGraph, final int sourceVertexToIdentify, final int destinationVertexToIdentify, int[] transactionsToExpand) {
-
+    public static TransactionExpansionBuilder expandTransactionsInGraph(final GraphWriteMethods graph, 
+            final GraphReadMethods expansionGraph, final int sourceVertexToIdentify, 
+            final int destinationVertexToIdentify, final int[] transactionsToExpand) {
         final int[][] expandedVertices = new int[transactionsToExpand.length][];
         final int[][] expandedTransactions = new int[transactionsToExpand.length][];
 
@@ -35,7 +36,7 @@ public class TransactionExpansionBuilder extends GraphBuilder {
             final Map<Integer, Integer> identificationMap = new HashMap<>();
             identificationMap.put(sourceVertexToIdentify, graph.getTransactionSourceVertex(transactionsToExpand[i]));
             identificationMap.put(destinationVertexToIdentify, graph.getTransactionDestinationVertex(transactionsToExpand[i]));
-            UnionBuilder u = UnionBuilder.unionGraph(graph, expansionGraph, identificationMap);
+            final UnionBuilder u = UnionBuilder.unionGraph(graph, expansionGraph, identificationMap);
             expandedVertices[i] = u.addedVerts;
             expandedTransactions[i] = u.allNewTransactions;
         }
@@ -57,5 +58,4 @@ public class TransactionExpansionBuilder extends GraphBuilder {
         this.expandedTransactions = expandedTransactions;
         transactions = squashGrouping(expandedTransactions);
     }
-
 }

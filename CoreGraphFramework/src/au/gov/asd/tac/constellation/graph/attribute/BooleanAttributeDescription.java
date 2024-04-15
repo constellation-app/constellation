@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,18 +63,23 @@ public final class BooleanAttributeDescription extends AbstractAttributeDescript
 
     @SuppressWarnings("unchecked") // Casts are manually checked
     private boolean convertFromObject(final Object object) throws IllegalArgumentException {
-        if (object == null) {
-            return (boolean) getDefault();
-        } else if (object instanceof Number) {
-            return ((Number) object).intValue() != 0;
-        } else if (object instanceof Boolean) {
-            return (Boolean) object;
-        } else if (object instanceof Character) {
-            return ((Character) object) != 0;
-        } else if (object instanceof String) {
-            return convertFromString((String) object);
-        } else {
-            throw new IllegalArgumentException(String.format(
+        switch (object) {
+            case Number number -> {
+                return number.intValue() != 0;
+            }       
+            case Boolean bool -> {
+                return bool;
+            }       
+            case Character character -> {
+                return character != 0;
+            }       
+            case String string -> {
+                return convertFromString(string);
+            }
+            case null -> {
+                return (boolean) getDefault();
+            }
+            default -> throw new IllegalArgumentException(String.format(
                     "Error converting Object '%s' to boolean", object.getClass()));
         }
     }
@@ -348,19 +353,19 @@ public final class BooleanAttributeDescription extends AbstractAttributeDescript
 
         @Override
         public void expandCapacity(final int newCapacity) {
-            int[] i2p = new int[newCapacity];
-            int[] p2i = new int[newCapacity];
+            final int[] i2p = new int[newCapacity];
+            final int[] p2i = new int[newCapacity];
             int nt = 0;
             int nf = newCapacity;
 
             for (int i = 0; i < nextTrue; i++) {
-                int element = position2id[i];
+                final int element = position2id[i];
                 i2p[element] = nt;
                 p2i[nt++] = element;
             }
 
             for (int i = nextFalse; i < position2id.length; i++) {
-                int element = position2id[i];
+                final int element = position2id[i];
                 i2p[element] = --nf;
                 p2i[nf] = element;
             }
@@ -397,12 +402,12 @@ public final class BooleanAttributeDescription extends AbstractAttributeDescript
     }
 
     @Override
-    public Object createReadObject(IntReadable indexReadable) {
+    public Object createReadObject(final IntReadable indexReadable) {
         return (BooleanReadable) () -> data[indexReadable.readInt()];
     }
 
     @Override
-    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+    public Object createWriteObject(final GraphWriteMethods graph, final int attribute, final IntReadable indexReadable) {
         return new BooleanVariable() {
             @Override
             public boolean readBoolean() {
@@ -410,7 +415,7 @@ public final class BooleanAttributeDescription extends AbstractAttributeDescript
             }
 
             @Override
-            public void writeBoolean(boolean value) {
+            public void writeBoolean(final boolean value) {
                 graph.setBooleanValue(attribute, indexReadable.readInt(), value);
             }
         };

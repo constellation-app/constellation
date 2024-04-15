@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,14 +59,14 @@ public enum NativeAttributeType {
 
         @Override
         public NativeValue create(final Object value) {
-            NativeValue nativeValue = new NativeValue();
+            final NativeValue nativeValue = new NativeValue();
             nativeValue.b = ((Number) value).byteValue();
             return nativeValue;
         }
 
         @Override
         public boolean addEdit(final GraphReadMethods graph, final GraphEdit edit, final int attribute, final int element, final NativeValue oldValue) {
-            byte currentValue = graph.getByteValue(attribute, element);
+            final byte currentValue = graph.getByteValue(attribute, element);
             if (currentValue != oldValue.b) {
                 edit.setByteValue(attribute, element, oldValue.b, currentValue);
                 return true;
@@ -102,14 +102,14 @@ public enum NativeAttributeType {
 
         @Override
         public NativeValue create(final Object value) {
-            NativeValue nativeValue = new NativeValue();
+            final NativeValue nativeValue = new NativeValue();
             nativeValue.s = ((Number) value).shortValue();
             return nativeValue;
         }
 
         @Override
         public boolean addEdit(final GraphReadMethods graph, final GraphEdit edit, final int attribute, final int element, final NativeValue oldValue) {
-            short currentValue = graph.getShortValue(attribute, element);
+            final short currentValue = graph.getShortValue(attribute, element);
             if (currentValue != oldValue.s) {
                 edit.setShortValue(attribute, element, oldValue.s, currentValue);
                 return true;
@@ -145,14 +145,14 @@ public enum NativeAttributeType {
 
         @Override
         public NativeValue create(final Object value) {
-            NativeValue nativeValue = new NativeValue();
+            final NativeValue nativeValue = new NativeValue();
             nativeValue.i = ((Number) value).intValue();
             return nativeValue;
         }
 
         @Override
         public boolean addEdit(final GraphReadMethods graph, final GraphEdit edit, final int attribute, final int element, final NativeValue oldValue) {
-            int currentValue = graph.getIntValue(attribute, element);
+            final int currentValue = graph.getIntValue(attribute, element);
             if (currentValue != oldValue.i) {
                 edit.setIntValue(attribute, element, oldValue.i, currentValue);
                 return true;
@@ -188,14 +188,14 @@ public enum NativeAttributeType {
 
         @Override
         public NativeValue create(final Object value) {
-            NativeValue nativeValue = new NativeValue();
+            final NativeValue nativeValue = new NativeValue();
             nativeValue.l = ((Number) value).longValue();
             return nativeValue;
         }
 
         @Override
         public boolean addEdit(final GraphReadMethods graph, final GraphEdit edit, final int attribute, final int element, final NativeValue oldValue) {
-            long currentValue = graph.getLongValue(attribute, element);
+            final long currentValue = graph.getLongValue(attribute, element);
             if (currentValue != oldValue.l) {
                 edit.setLongValue(attribute, element, oldValue.l, currentValue);
                 return true;
@@ -231,14 +231,14 @@ public enum NativeAttributeType {
 
         @Override
         public NativeValue create(final Object value) {
-            NativeValue nativeValue = new NativeValue();
+            final NativeValue nativeValue = new NativeValue();
             nativeValue.f = ((Number) value).floatValue();
             return nativeValue;
         }
 
         @Override
         public boolean addEdit(final GraphReadMethods graph, final GraphEdit edit, final int attribute, final int element, final NativeValue oldValue) {
-            float currentValue = graph.getFloatValue(attribute, element);
+            final float currentValue = graph.getFloatValue(attribute, element);
             if (currentValue != oldValue.f) {
                 edit.setFloatValue(attribute, element, oldValue.f, currentValue);
                 return true;
@@ -274,14 +274,14 @@ public enum NativeAttributeType {
 
         @Override
         public NativeValue create(final Object value) {
-            NativeValue nativeValue = new NativeValue();
+            final NativeValue nativeValue = new NativeValue();
             nativeValue.d = ((Number) value).doubleValue();
             return nativeValue;
         }
 
         @Override
         public boolean addEdit(final GraphReadMethods graph, final GraphEdit edit, final int attribute, final int element, final NativeValue oldValue) {
-            double currentValue = graph.getDoubleValue(attribute, element);
+            final double currentValue = graph.getDoubleValue(attribute, element);
             if (currentValue != oldValue.d) {
                 edit.setDoubleValue(attribute, element, oldValue.d, currentValue);
                 return true;
@@ -317,14 +317,14 @@ public enum NativeAttributeType {
 
         @Override
         public NativeValue create(final Object value) {
-            NativeValue nativeValue = new NativeValue();
+            final NativeValue nativeValue = new NativeValue();
             nativeValue.z = (Boolean) value;
             return nativeValue;
         }
 
         @Override
         public boolean addEdit(final GraphReadMethods graph, final GraphEdit edit, final int attribute, final int element, final NativeValue oldValue) {
-            boolean currentValue = graph.getBooleanValue(attribute, element);
+            final boolean currentValue = graph.getBooleanValue(attribute, element);
             if (currentValue != oldValue.z) {
                 edit.setBooleanValue(attribute, element, oldValue.z, currentValue);
                 return true;
@@ -360,14 +360,14 @@ public enum NativeAttributeType {
 
         @Override
         public NativeValue create(final Object value) {
-            NativeValue nativeValue = new NativeValue();
+            final NativeValue nativeValue = new NativeValue();
             nativeValue.c = (Character) value;
             return nativeValue;
         }
 
         @Override
         public boolean addEdit(final GraphReadMethods graph, final GraphEdit edit, final int attribute, final int element, final NativeValue oldValue) {
-            char currentValue = graph.getCharValue(attribute, element);
+            final char currentValue = graph.getCharValue(attribute, element);
             if (currentValue != oldValue.c) {
                 edit.setCharValue(attribute, element, oldValue.c, currentValue);
                 return true;
@@ -403,14 +403,14 @@ public enum NativeAttributeType {
 
         @Override
         public NativeValue create(final Object value) {
-            NativeValue nativeValue = new NativeValue();
+            final NativeValue nativeValue = new NativeValue();
             nativeValue.o = value;
             return nativeValue;
         }
 
         @Override
         public boolean addEdit(final GraphReadMethods graph, final GraphEdit edit, final int attribute, final int element, final NativeValue oldValue) {
-            Object currentValue = graph.getObjectValue(attribute, element);
+            final Object currentValue = graph.getObjectValue(attribute, element);
             if (currentValue != oldValue.o) {
                 edit.setObjectValue(attribute, element, oldValue.o, currentValue);
                 return true;
@@ -537,5 +537,4 @@ public enum NativeAttributeType {
         char c;
         Object o;
     }
-
 }

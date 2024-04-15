@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,14 +40,17 @@ public class IntegerObjectAttributeDescription extends AbstractObjectAttributeDe
         try {
             return super.convertFromObject(object);
         } catch (final IllegalArgumentException ex) {
-            if (object instanceof Number) {
-                return ((Number) object).intValue();
-            } else if (object instanceof Boolean) {
-                return ((Boolean) object) ? 1 : 0;
-            } else if (object instanceof Character) {
-                return (int) ((Character) object);
-            } else {
-                throw ex;
+            switch (object) {
+                case Number number -> {
+                    return number.intValue();
+                }
+                case Boolean bool -> {
+                    return bool ? 1 : 0;
+                }
+                case Character character -> {
+                    return (int) character;
+                }
+                default -> throw ex;
             }
         }
     }
@@ -57,7 +60,7 @@ public class IntegerObjectAttributeDescription extends AbstractObjectAttributeDe
         if (StringUtils.isBlank(string)) {
             return getDefault();
         } else {
-            return Integer.parseInt(string);
+            return Integer.valueOf(string);
         }
     }
 
