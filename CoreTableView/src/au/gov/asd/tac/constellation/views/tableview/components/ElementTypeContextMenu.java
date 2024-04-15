@@ -30,7 +30,6 @@ import javafx.scene.control.Label;
  *
  * @author Quasar985
  */
-
 public class ElementTypeContextMenu {
 
     private static final String TRANSACTION = "Transactions";
@@ -42,6 +41,11 @@ public class ElementTypeContextMenu {
 
     private ContextMenu contextMenu;
 
+    private CustomMenuItem transactionsMenu;
+    private CustomMenuItem verticesMenu;
+    private CustomMenuItem edgesMenu;
+    private CustomMenuItem linksMenu;
+
     /**
      * Creates a new column visibility context menu.
      *
@@ -52,13 +56,12 @@ public class ElementTypeContextMenu {
     }
 
     /**
-     * Initializes the column visibility context menu. Until this method is
-     * called, all menu UI components will be null.
+     * Initializes the column visibility context menu. Until this method is called, all menu UI components will be null.
      */
     public void init() {
         contextMenu = new ContextMenu();
 
-        final CustomMenuItem transactionsMenu = createCustomMenu(TRANSACTION, e -> {
+        transactionsMenu = createCustomMenu(TRANSACTION, e -> {
             if (getTableViewTopComponent().getCurrentState() != null) {
                 final TableViewState newState = new TableViewState(getTableViewTopComponent().getCurrentState());
                 newState.setElementType(GraphElementType.TRANSACTION);
@@ -70,7 +73,7 @@ public class ElementTypeContextMenu {
             e.consume();
         });
 
-        final CustomMenuItem verticesMenu = createCustomMenu(VERTEX, e -> {
+        verticesMenu = createCustomMenu(VERTEX, e -> {
             if (getTableViewTopComponent().getCurrentState() != null) {
                 final TableViewState newState = new TableViewState(getTableViewTopComponent().getCurrentState());
                 newState.setElementType(GraphElementType.VERTEX);
@@ -82,7 +85,7 @@ public class ElementTypeContextMenu {
             e.consume();
         });
 
-        final CustomMenuItem edgesMenu = createCustomMenu(EDGE, e -> {
+        edgesMenu = createCustomMenu(EDGE, e -> {
             if (getTableViewTopComponent().getCurrentState() != null) {
                 final TableViewState newState = new TableViewState(getTableViewTopComponent().getCurrentState());
                 newState.setElementType(GraphElementType.EDGE);
@@ -94,7 +97,7 @@ public class ElementTypeContextMenu {
             e.consume();
         });
 
-        final CustomMenuItem linksMenu = createCustomMenu(LINK, e -> {
+        linksMenu = createCustomMenu(LINK, e -> {
             if (getTableViewTopComponent().getCurrentState() != null) {
                 final TableViewState newState = new TableViewState(getTableViewTopComponent().getCurrentState());
                 newState.setElementType(GraphElementType.LINK);
@@ -110,13 +113,11 @@ public class ElementTypeContextMenu {
     }
 
     /**
-     * Create a custom menu item that will be added to menu buttons on the
-     * context menu. Sets the associated text and adds a listener for when it is
-     * clicked.
+     * Create a custom menu item that will be added to menu buttons on the context menu. Sets the associated text and
+     * adds a listener for when it is clicked.
      *
      * @param title the title to be associated to the menu item
-     * @param handler the action handler that will be called when the menu item
-     * is clicked
+     * @param handler the action handler that will be called when the menu item is clicked
      * @return the created menu item
      */
     private CustomMenuItem createCustomMenu(final String title,
@@ -145,5 +146,41 @@ public class ElementTypeContextMenu {
      */
     public ContextMenu getContextMenu() {
         return contextMenu;
+    }
+
+    /**
+     * Gets the transactions menu.
+     *
+     * @return the transactions menu
+     */
+    public CustomMenuItem getTransactionsMenu() {
+        return transactionsMenu;
+    }
+
+    /**
+     * Gets the vertices menu.
+     *
+     * @return the vertices menu
+     */
+    public CustomMenuItem getVerticesMenu() {
+        return verticesMenu;
+    }
+
+    /**
+     * Gets the edges menu.
+     *
+     * @return the edges menu
+     */
+    public CustomMenuItem getEdgesMenu() {
+        return edgesMenu;
+    }
+
+    /**
+     * Gets the links menu.
+     *
+     * @return the links menu
+     */
+    public CustomMenuItem getLinksMenu() {
+        return linksMenu;
     }
 }

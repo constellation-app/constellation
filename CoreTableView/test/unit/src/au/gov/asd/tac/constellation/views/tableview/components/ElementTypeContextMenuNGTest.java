@@ -25,12 +25,13 @@ import au.gov.asd.tac.constellation.views.tableview.api.ActiveTableReference;
 import au.gov.asd.tac.constellation.views.tableview.api.Column;
 import au.gov.asd.tac.constellation.views.tableview.panes.TablePane;
 import au.gov.asd.tac.constellation.views.tableview.state.TableViewState;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TableColumn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -48,6 +49,7 @@ import org.testng.annotations.Test;
  * @author Quasar985
  */
 public class ElementTypeContextMenuNGTest {
+
     private static final Logger LOGGER = Logger.getLogger(ElementTypeContextMenuNGTest.class.getName());
 
     private TableViewTopComponent tableViewTopComponent;
@@ -167,16 +169,28 @@ public class ElementTypeContextMenuNGTest {
     @AfterMethod
     public void tearDownMethod() throws Exception {
     }
-    
+
     @Test
     public void allUIComponentsNullBeforeInit() {
         assertNull(elementTypeContextMenu.getContextMenu());
     }
-    
+
     @Test
-    public void testInit(){
+    public void testInit() {
         elementTypeContextMenu.init();
         assertNotNull(elementTypeContextMenu.getContextMenu());
+
+        assertEquals(
+                elementTypeContextMenu.getContextMenu().getItems(),
+                FXCollections.observableList(
+                        List.of(
+                                elementTypeContextMenu.getTransactionsMenu(),
+                                elementTypeContextMenu.getVerticesMenu(),
+                                elementTypeContextMenu.getEdgesMenu(),
+                                elementTypeContextMenu.getLinksMenu()
+                        )
+                )
+        );
     }
 
 }
