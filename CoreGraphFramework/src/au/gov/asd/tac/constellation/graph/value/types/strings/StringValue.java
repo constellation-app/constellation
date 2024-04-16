@@ -44,7 +44,7 @@ public class StringValue implements Copyable, StringReadable, StringWritable {
     }
 
     @Override
-    public void writeString(String value) {
+    public void writeString(final String value) {
         this.value = value;
     }
 }

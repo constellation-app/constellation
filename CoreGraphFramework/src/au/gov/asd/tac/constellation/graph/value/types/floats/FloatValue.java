@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,8 +49,8 @@ public class FloatValue implements Copyable, FloatReadable, FloatWritable, Doubl
     }
 
     @Override
-    public void writeString(String value) {
-        this.value = Float.valueOf(value);
+    public void writeString(final String value) {
+        this.value = Float.parseFloat(value);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class FloatValue implements Copyable, FloatReadable, FloatWritable, Doubl
     }
 
     @Override
-    public void writeFloat(float value) {
+    public void writeFloat(final float value) {
         this.value = value;
     }
 
@@ -69,7 +69,7 @@ public class FloatValue implements Copyable, FloatReadable, FloatWritable, Doubl
     }
 
     @Override
-    public void writeDouble(double value) {
+    public void writeDouble(final double value) {
         this.value = (float) value;
     }
 
@@ -79,19 +79,13 @@ public class FloatValue implements Copyable, FloatReadable, FloatWritable, Doubl
     }
 
     @Override
-    public void writeInt(int value) {
+    public void writeInt(final int value) {
         this.value = value;
     }
 
     @Override
     public boolean equals(Object other) {
-        if (other == null) {
-            return false;
-        }
-        if (this.getClass() == other.getClass()) {
-            return value == ((FloatValue) other).value;
-        }
-        return false;
+        return other != null && this.getClass() == other.getClass() && value == ((FloatValue) other).value;
     }
 
     @Override
@@ -100,7 +94,7 @@ public class FloatValue implements Copyable, FloatReadable, FloatWritable, Doubl
     }
 
     @Override
-    public int compareTo(FloatValue value) {
+    public int compareTo(final FloatValue value) {
         return Float.compare(this.value, value.value);
     }
 

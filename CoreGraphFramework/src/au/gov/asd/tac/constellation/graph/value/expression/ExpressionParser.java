@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,7 +82,7 @@ public class ExpressionParser {
         private final int precedence;
         private final Map<Operator, Operator> combinations = new HashMap<>();
 
-        private Operator(char token, int precedence, Operator... combinations) {
+        private Operator(final char token, final int precedence, final Operator... combinations) {
             this.token = token;
             this.precedence = precedence;
 
@@ -156,14 +156,11 @@ public class ExpressionParser {
         }
 
         @Override
-        public boolean equals(Object obj) {
+        public boolean equals(final Object obj) {
             if (this == obj) {
                 return true;
             }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
+            if (obj == null || getClass() != obj.getClass()) {
                 return false;
             }
             return Objects.equals(this.parent, ((Expression) obj).parent);
@@ -171,7 +168,7 @@ public class ExpressionParser {
 
         private SequenceExpression parent;
 
-        private Expression(SequenceExpression parent) {
+        private Expression(final SequenceExpression parent) {
             this.parent = parent;
         }
 
@@ -179,7 +176,7 @@ public class ExpressionParser {
             return parent;
         }
 
-        protected abstract void print(String prefix, StringBuilder out);
+        protected abstract void print(final String prefix, final StringBuilder out);
 
         @Override
         public String toString() {
@@ -199,14 +196,11 @@ public class ExpressionParser {
         }
 
         @Override
-        public boolean equals(Object obj) {
+        public boolean equals(final Object obj) {
             if (this == obj) {
                 return true;
             }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
+            if (obj == null || getClass() != obj.getClass()) {
                 return false;
             }
             return Objects.equals(this.content, ((VariableExpression) obj).content);
@@ -214,7 +208,7 @@ public class ExpressionParser {
 
         private final String content;
 
-        protected VariableExpression(SequenceExpression parent, char[] content, int contentLength) {
+        protected VariableExpression(final SequenceExpression parent, final char[] content, final int contentLength) {
             super(parent);
             this.content = new String(content, 0, contentLength);
         }
@@ -224,7 +218,7 @@ public class ExpressionParser {
         }
 
         @Override
-        protected void print(String prefix, StringBuilder out) {
+        protected void print(final String prefix, final StringBuilder out) {
             out.append(prefix).append("VARIABLE: ").append(content).append("\n");
         }
     }
@@ -239,14 +233,11 @@ public class ExpressionParser {
         }
 
         @Override
-        public boolean equals(Object obj) {
+        public boolean equals(final Object obj) {
             if (this == obj) {
                 return true;
             }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
+            if (obj == null || getClass() != obj.getClass()) {
                 return false;
             }
             return Objects.equals(this.content, ((StringExpression) obj).content);
@@ -254,7 +245,7 @@ public class ExpressionParser {
 
         private final String content;
 
-        protected StringExpression(SequenceExpression parent, char[] content, int contentLength) {
+        protected StringExpression(final SequenceExpression parent, final char[] content, final int contentLength) {
             super(parent);
             this.content = new String(content, 0, contentLength);
         }
@@ -264,7 +255,7 @@ public class ExpressionParser {
         }
 
         @Override
-        protected void print(String prefix, StringBuilder out) {
+        protected void print(final String prefix, final StringBuilder out) {
             out.append(prefix).append("STRING: ").append(content).append("\n");
         }
     }
@@ -279,14 +270,11 @@ public class ExpressionParser {
         }
 
         @Override
-        public boolean equals(Object obj) {
+        public boolean equals(final Object obj) {
             if (this == obj) {
                 return true;
             }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
+            if (obj == null || getClass() != obj.getClass()) {
                 return false;
             }
             return this.operator == ((OperatorExpression) obj).operator;
@@ -294,7 +282,7 @@ public class ExpressionParser {
 
         private Operator operator;
 
-        OperatorExpression(SequenceExpression parent, Operator operator) {
+        OperatorExpression(final SequenceExpression parent, final Operator operator) {
             super(parent);
             this.operator = operator;
         }
@@ -304,7 +292,7 @@ public class ExpressionParser {
         }
 
         @Override
-        protected void print(String prefix, StringBuilder out) {
+        protected void print(final String prefix, final StringBuilder out) {
             out.append(prefix).append("OPERATOR").append(": ").append(operator).append("\n");
         }
     }
@@ -323,10 +311,7 @@ public class ExpressionParser {
             if (this == obj) {
                 return true;
             }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
+            if (obj == null || getClass() != obj.getClass()) {
                 return false;
             }
             return Objects.equals(this.children, ((SequenceExpression) obj).children);
@@ -345,28 +330,25 @@ public class ExpressionParser {
 
         protected void addChild(Expression expression) {
 
-            if (expression instanceof SequenceExpression) {
-                final SequenceExpression tokenSequence = (SequenceExpression) expression;
+            if (expression instanceof SequenceExpression tokenSequence) {
                 switch (tokenSequence.children.size()) {
-                    case 0:
+                    case 0 -> {
                         return;
-                    case 1:
-                        expression = tokenSequence.children.get(0);
-                        break;
-                    default:
+                    }
+                    case 1 -> expression = tokenSequence.children.get(0);
+                    default -> {
                         if (tokenSequence.children.get(tokenSequence.children.size() - 1) instanceof OperatorExpression) {
                             Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
                                     MALFORMED_QUERY, ENDS_WITH_OPERATOR_ERROR, Alert.AlertType.ERROR));
                             LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, ENDS_WITH_OPERATOR_ERROR);
                         }
+                    }
                 }
             }
 
-            if (expression instanceof OperatorExpression && !children.isEmpty()) {
+            if (expression instanceof OperatorExpression tokenOperator && !children.isEmpty()) {
                 final Expression lastChild = children.get(children.size() - 1);
-                if (lastChild instanceof OperatorExpression) {
-                    final OperatorExpression tokenOperator = (OperatorExpression) expression;
-                    final OperatorExpression lastChildOperator = (OperatorExpression) lastChild;
+                if (lastChild instanceof OperatorExpression lastChildOperator) {
                     final Operator combinedOperator = tokenOperator.operator.combinations.get(lastChildOperator.operator);
                     if (combinedOperator != null) {
                         children.remove(children.size() - 1);
@@ -389,8 +371,7 @@ public class ExpressionParser {
                         return;
                     }
                 } else {
-                    if (expression instanceof VariableExpression) {
-                        final VariableExpression tokenVariable = (VariableExpression) expression;
+                    if (expression instanceof VariableExpression tokenVariable) {
                         final Operator wordOperator = WORD_OPERATORS.get(tokenVariable.content.toLowerCase());
                         if (wordOperator != null) {
                             children.add(new OperatorExpression(this, wordOperator));
@@ -444,21 +425,21 @@ public class ExpressionParser {
         private void normalizeChildren() {
             for (int i = children.size() - 1; i >= 0; i--) {
                 final Expression child = children.get(i);
-                if (child instanceof SequenceExpression) {
-                    ((SequenceExpression) child).normalize();
+                if (child instanceof SequenceExpression sequenceExpression) {
+                    sequenceExpression.normalize();
                 }
             }
         }
 
         @Override
-        protected void print(String prefix, StringBuilder out) {
+        protected void print(final String prefix, final StringBuilder out) {
             out.append(prefix).append("(\n");
             children.forEach(child -> child.print(prefix + "  ", out));
             out.append(prefix).append(")\n");
         }
     }
 
-    public static SequenceExpression parse(String expression) {
+    public static SequenceExpression parse(final String expression) {
         if (expression == null) {
             LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, NULL_INPUT_ERROR);
             return null;
@@ -475,7 +456,7 @@ public class ExpressionParser {
             final char c = i < expression.length() ? expression.charAt(i) : 0;
 
             switch (state) {
-                case READING_WHITESPACE:
+                case READING_WHITESPACE -> {
                     if (c != ' ' && c != 0) {
                         if (isLetter(c) || isDigit(c) || isAllowable(c)) {
                             content[contentLength++] = c;
@@ -488,8 +469,9 @@ public class ExpressionParser {
                             currentExpression = new SequenceExpression(currentExpression);
                         } else if (c == ')') {
                             if (currentExpression == rootExpression) {
-                                final String errorMessage = "Found closing parenthesis ) within variable.\n"
-                                        + "parentheses must be used in pairs to enclose variables.";
+                                final String errorMessage = """
+                                                            Found closing parenthesis ) within variable.
+                                                            parentheses must be used in pairs to enclose variables.""";
                                 if (!isHeadless) {
                                     Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
                                             MALFORMED_QUERY, errorMessage, Alert.AlertType.ERROR));
@@ -512,9 +494,8 @@ public class ExpressionParser {
                             return null;
                         }
                     }
-                    break;
-
-                case READING_VARIABLE:
+                }
+                case READING_VARIABLE -> {
                     if (c == ' ' || c == 0) {
                         currentExpression.addChild(new VariableExpression(currentExpression, content, contentLength));
                         contentLength = 0;
@@ -527,8 +508,9 @@ public class ExpressionParser {
                         currentExpression = new SequenceExpression(currentExpression);
                     } else if (c == ')') {
                         if (currentExpression == rootExpression) {
-                            final String errorMessage = "Found closing parenthesis ) within variable.\n"
-                                    + "parentheses must be used in pairs to enclose variables.";
+                            final String errorMessage = """
+                                                        Found closing parenthesis ) within variable.
+                                                        parentheses must be used in pairs to enclose variables.""";
                             if (!isHeadless) {
                                 Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
                                         MALFORMED_QUERY, errorMessage, Alert.AlertType.ERROR));
@@ -556,49 +538,48 @@ public class ExpressionParser {
                         LOGGER.log(Level.WARNING, errorMessage);
                         return null;
                     }
-                    break;
-
-                case READING_SINGLE_STRING:
-                    if (c == '\'') {
-                        currentExpression.addChild(new StringExpression(currentExpression, content, contentLength));
-                        contentLength = 0;
-                        state = ParseState.READING_WHITESPACE;
-                    } else if (c == '\\') {
-                        state = ParseState.READING_SINGLE_ESCAPED;
-                    } else if (c == 0) {
-                        final String errorMessage = String.format(END_OF_QUOTED_STRING_ERROR, "'");
-                        if (!isHeadless) {
-                            Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
-                                    MALFORMED_QUERY, errorMessage, Alert.AlertType.ERROR));
+                }
+                case READING_SINGLE_STRING -> {
+                    switch (c) {
+                        case '\'' -> {
+                            currentExpression.addChild(new StringExpression(currentExpression, content, contentLength));
+                            contentLength = 0;
+                            state = ParseState.READING_WHITESPACE;
                         }
-                        LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, errorMessage);
-                        return null;
-                    } else {
-                        content[contentLength++] = c;
-                    }
-                    break;
-
-                case READING_DOUBLE_STRING:
-                    if (c == '"') {
-                        currentExpression.addChild(new StringExpression(currentExpression, content, contentLength));
-                        contentLength = 0;
-                        state = ParseState.READING_WHITESPACE;
-                    } else if (c == '\\') {
-                        state = ParseState.READING_DOUBLE_ESCAPED;
-                    } else if (c == 0) {
-                        final String errorMessage = String.format(END_OF_QUOTED_STRING_ERROR, '"');
-                        if (!isHeadless) {
-                            Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
-                                    MALFORMED_QUERY, errorMessage, Alert.AlertType.ERROR));
+                        case '\\' -> state = ParseState.READING_SINGLE_ESCAPED;
+                        case 0 -> {
+                            final String errorMessage = String.format(END_OF_QUOTED_STRING_ERROR, "'");
+                            if (!isHeadless) {
+                                Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
+                                        MALFORMED_QUERY, errorMessage, Alert.AlertType.ERROR));
+                            }
+                            LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, errorMessage);
+                            return null;
                         }
-                        LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, errorMessage);
-                        return null;
-                    } else {
-                        content[contentLength++] = c;
+                        default -> content[contentLength++] = c;
                     }
-                    break;
-
-                case READING_SINGLE_ESCAPED:
+                }
+                case READING_DOUBLE_STRING -> {
+                    switch (c) {
+                        case '"' -> {
+                            currentExpression.addChild(new StringExpression(currentExpression, content, contentLength));
+                            contentLength = 0;
+                            state = ParseState.READING_WHITESPACE;
+                        }
+                        case '\\' -> state = ParseState.READING_DOUBLE_ESCAPED;
+                        case 0 -> {
+                            final String errorMessage = String.format(END_OF_QUOTED_STRING_ERROR, '"');
+                            if (!isHeadless) {
+                                Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
+                                        MALFORMED_QUERY, errorMessage, Alert.AlertType.ERROR));
+                            }
+                            LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, errorMessage);
+                            return null;
+                        }
+                        default -> content[contentLength++] = c;
+                    }
+                }
+                case READING_SINGLE_ESCAPED -> {
                     if (c == 0) {
                         final String errorMessage = "Found escaped character ' at end of expression.";
                         if (!isHeadless) {
@@ -611,9 +592,8 @@ public class ExpressionParser {
                         content[contentLength++] = c;
                         state = ParseState.READING_SINGLE_STRING;
                     }
-                    break;
-
-                case READING_DOUBLE_ESCAPED:
+                }
+                case READING_DOUBLE_ESCAPED -> {
                     if (c == 0) {
                         final String errorMessage = "Found escaped character \" at end of expression.";
                         if (!isHeadless) {
@@ -626,7 +606,7 @@ public class ExpressionParser {
                         content[contentLength++] = c;
                         state = ParseState.READING_DOUBLE_STRING;
                     }
-                    break;
+                }
             }
         }
 
@@ -640,8 +620,8 @@ public class ExpressionParser {
         }
         if (rootExpression.children.size() == 1) {
             final Expression onlyChild = rootExpression.children.get(0);
-            if (onlyChild instanceof SequenceExpression) {
-                rootExpression = (SequenceExpression) onlyChild;
+            if (onlyChild instanceof SequenceExpression sequenceExpression) {
+                rootExpression = sequenceExpression;
             }
         }
         if (!currentExpression.children.isEmpty() && currentExpression.children.get(currentExpression.children.size() - 1) instanceof OperatorExpression) {
@@ -657,15 +637,15 @@ public class ExpressionParser {
         return rootExpression;
     }
 
-    private static boolean isLetter(char c) {
+    private static boolean isLetter(final char c) {
         return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
     }
 
-    private static boolean isAllowable(char c) {
+    private static boolean isAllowable(final char c) {
         return (c == '_' || c == '{' || c == '}');
     }
 
-    private static boolean isDigit(char c) {
+    private static boolean isDigit(final char c) {
         return c >= '0' && c <= '9';
     }
 }

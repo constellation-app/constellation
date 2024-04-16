@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ public class Operators {
 
     private final Map<String, OperatorRegistry> registries = new HashMap<>();
 
-    public final OperatorRegistry getRegistry(String name) {
+    public final OperatorRegistry getRegistry(final String name) {
         synchronized (registries) {
             OperatorRegistry registry = registries.get(name);
             if (registry == null) {
