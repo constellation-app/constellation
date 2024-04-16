@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
-import au.gov.asd.tac.constellation.utilities.keyboardshortcut.RecordKeyboardShortcut;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -218,16 +217,17 @@ public class JsonIO {
 
     private static Optional<String> getDefaultKeyboardShortcut(File preferenceDirectory) {
         
-        for(int index = 1; index <= 5;) {
+        for(int index = 1; index <= 5; index++) {
             
+            var fi = index;
             FilenameFilter filenameFilter = (d, s) -> {
-             return s.startsWith("Ctrl "+index + " "+FileExtensionConstants.JSON);
+             return s.startsWith("Ctrl "+ fi);
             };
             
             if(ArrayUtils.isEmpty(preferenceDirectory.list(filenameFilter))) {
                 return Optional.of("Ctrl "+index + " ");
-            }            
-        }        
+            }
+        } 
          
          return Optional.empty();
     }

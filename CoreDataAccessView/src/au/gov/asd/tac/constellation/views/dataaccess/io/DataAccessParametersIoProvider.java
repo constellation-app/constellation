@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.dataaccess.io;
 
 import au.gov.asd.tac.constellation.utilities.genericjsonio.JsonIO;
-import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.api.DataAccessUserPreferences;
 import au.gov.asd.tac.constellation.views.dataaccess.components.DataAccessTabPane;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
@@ -24,7 +23,6 @@ import au.gov.asd.tac.constellation.views.dataaccess.panes.DataSourceTitledPane;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.QueryPhasePane;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -92,7 +90,7 @@ public class DataAccessParametersIoProvider {
      * @see JsonIO#loadJsonPreferences(Optional, TypeReference) 
      */
     
-    public static void loadParameters(final DataAccessPane dataAccessPane, String keyboardShortcut) {
+    public static void loadParameters(final DataAccessPane dataAccessPane, final String keyboardShortcut) {
             final List<DataAccessUserPreferences> loadedParameters = JsonIO
                 .loadJsonPreferencesWithFilePrefix(
                         Optional.of(DATA_ACCESS_DIR), Optional.of(keyboardShortcut),

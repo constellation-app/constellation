@@ -34,8 +34,8 @@ import javafx.stage.Stage;
  */
 public class RecordKeyboardShortcut {
     
-    public Optional<String> start(Stage primaryStage) {
-        var label = new Label();
+    public Optional<String> start(final Stage primaryStage) {
+        final var label = new Label();
         label.setFont(Font.font("Segoe UI", 15));
         primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             if (!event.getCode().isModifierKey()) {
@@ -49,8 +49,8 @@ public class RecordKeyboardShortcut {
         return Optional.of(label.getText().replace('+', ' ') +" ");
     }
 
-    private KeyCombination createCombo(KeyEvent event) {
-        var modifiers = new ArrayList<Modifier>();
+    private KeyCombination createCombo(final KeyEvent event) {
+        final var modifiers = new ArrayList<Modifier>();
         if (event.isControlDown()) {
             modifiers.add(KeyCombination.CONTROL_DOWN);
         }

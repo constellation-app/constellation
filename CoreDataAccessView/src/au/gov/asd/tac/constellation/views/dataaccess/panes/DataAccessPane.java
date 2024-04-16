@@ -122,8 +122,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         
         //read keyboard shortcut to load templates
         addEventHandler(KeyEvent.KEY_PRESSED, event -> {            
-            if (!event.getCode().isModifierKey()) {                
-                System.out.println(" ================= event text: " + createCombo(event).getDisplayText().replace('+', ' '));
+            if (!event.getCode().isModifierKey()) {                                
                 DataAccessParametersIoProvider.loadParameters(this, createCombo(event).getDisplayText().replace('+', ' '));
             }
         });
@@ -386,7 +385,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         return !queryIsRunning && !canExecuteTabPane;
     }
     
-    private KeyCombination createCombo(KeyEvent event) {
+    private KeyCombination createCombo(final KeyEvent event) {
         var modifiers = new ArrayList<KeyCombination.Modifier>();
         if (event.isControlDown()) {
             modifiers.add(KeyCombination.CONTROL_DOWN);
