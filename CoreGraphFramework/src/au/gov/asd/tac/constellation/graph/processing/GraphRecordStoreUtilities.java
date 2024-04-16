@@ -261,6 +261,7 @@ public class GraphRecordStoreUtilities {
                     return transaction;
                 }
             } catch (final NumberFormatException ex) {
+                // it's a non-integer id being passed but that's ok, continue on
             }
 
             Integer transaction = transactionMap.get(id);
