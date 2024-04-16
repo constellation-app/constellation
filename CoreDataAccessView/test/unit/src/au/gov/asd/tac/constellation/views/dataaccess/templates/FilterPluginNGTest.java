@@ -22,15 +22,8 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.views.dataaccess.templates.FilterPlugin.FilterType;
 import au.gov.asd.tac.constellation.views.dataaccess.templates.FilterPlugin.FilterTypeParameterValue;
-import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilitiesNGTest;
-import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /**
@@ -39,24 +32,6 @@ import org.testng.annotations.Test;
  * @author arcturus
  */
 public class FilterPluginNGTest {
-    
-    private static final Logger LOGGER = Logger.getLogger(FilterPluginNGTest.class.getName());
-    
-    @BeforeClass
-    public void setUpClass() throws Exception {
-        if (!FxToolkit.isFXApplicationThreadRunning()) {
-            FxToolkit.registerPrimaryStage();
-        }
-    }
-
-    @AfterClass
-    public void tearDownClass() throws Exception {
-        try {
-            FxToolkit.cleanupStages();
-        } catch (TimeoutException ex) {
-            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
-        }
-    }
 
     public class FilterPluginImpl extends FilterPlugin {
 

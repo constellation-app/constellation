@@ -27,24 +27,17 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import static au.gov.asd.tac.constellation.views.dataaccess.templates.RecordStoreDropper.RECORD_STORE_FLAVOR;
 import au.gov.asd.tac.constellation.views.dataaccess.templates.RecordStoreDropper.RecordStoreDropperToGraphPlugin;
-import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilitiesNGTest;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DropTargetDropEvent;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.concurrent.TimeoutException;
 import java.util.function.BiConsumer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotEquals;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /**
@@ -54,24 +47,6 @@ import org.testng.annotations.Test;
  */
 public class RecordStoreDropperNGTest {
 
-    private static final Logger LOGGER = Logger.getLogger(RecordStoreDropperNGTest.class.getName());
-    
-    @BeforeClass
-    public void setUpClass() throws Exception {
-        if (!FxToolkit.isFXApplicationThreadRunning()) {
-            FxToolkit.registerPrimaryStage();
-        }
-    }
-
-    @AfterClass
-    public void tearDownClass() throws Exception {
-        try {
-            FxToolkit.cleanupStages();
-        } catch (TimeoutException ex) {
-            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
-        }
-    }
-    
     /**
      * Test of drop method, of class RecordStoreDropper.
      *
