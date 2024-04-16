@@ -575,6 +575,9 @@ public final class DateTimeRangeInputPane extends Pane {
         spinner.setEditable(true);
         final TextFormatter<Integer> timeFormatter = new TextFormatter<>(new IntegerStringConverter(), 0, filter);
         spinner.getEditor().setTextFormatter(timeFormatter);
+        
+        // Set spinner to enable value wrapping
+        spinner.getValueFactory().setWrapAround(true);
 
         final Label spinnerLabel = new Label(label);
         spinnerLabel.setLabelFor(spinner);
