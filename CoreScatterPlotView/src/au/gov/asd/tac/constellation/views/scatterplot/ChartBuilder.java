@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,16 +41,17 @@ public class ChartBuilder<X, Y> {
     private final Predicate<XYChart.Data<X, Y>> yNotGreaterThanZero = data -> ((float) data.getYValue() <= 0);
     private static final String INVALIDLOGWARNING = "Warning: Unable to apply log function to values <= 0";
 
-    public ChartBuilder(AxisBuilder<X> xAxis, AxisBuilder<Y> yAxis) {
+    public ChartBuilder(final AxisBuilder<X> xAxis, final AxisBuilder<Y> yAxis) {
         this.xAxisBuilder = xAxis;
         this.yAxisBuilder = yAxis;
     }
 
-    public ScatterChart<X, Y> build(GraphReadMethods graph, ScatterPlotState state, Set<ScatterData> currentData, Set<ScatterData> currentSelectedData) {
+    public ScatterChart<X, Y> build(final GraphReadMethods graph, final ScatterPlotState state, 
+            final Set<ScatterData> currentData, final Set<ScatterData> currentSelectedData) {
         currentData.clear();
         currentSelectedData.clear();
 
-        XYChart.Series<X, Y> series = new XYChart.Series<>();
+        final XYChart.Series<X, Y> series = new XYChart.Series<>();
         series.setName(state.getXAttribute() + " vs. " + state.getYAttribute());
 
         final int selectedAttribute = graph.getAttribute(state.getElementType(), VisualConcept.VertexAttribute.SELECTED.getName());
@@ -98,5 +99,4 @@ public class ChartBuilder<X, Y> {
 
         return scatterChart;
     }
-
 }
