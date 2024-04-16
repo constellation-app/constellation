@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,15 +34,14 @@ import java.util.logging.Logger;
 import org.openide.util.Lookup;
 
 /**
- * Quality control vetter which listens to graph changes and rates objects in a
- * graph for quality.
+ * Quality control vetter which listens to graph changes and rates objects in a graph for quality.
  * <p>
  * When the graph or graph quality control changes, listeners will be notified.
  *
  * @author algol
  */
 public final class QualityControlAutoVetter implements GraphManagerListener, GraphChangeListener {
-    
+
     private static final Logger LOGGER = Logger.getLogger(QualityControlAutoVetter.class.getName());
 
     private static QualityControlAutoVetter instance = null;
@@ -130,14 +129,11 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
     /**
      * The graph has changed, so we might have to re-vet quality control.
      * <p>
-     * Rather than just check the graph every time it changes, we do some
-     * optimisation; we only update quality control if something (possibly)
-     * relevant has changed. For instance, changing colors has no effect on
-     * quality control.
+     * Rather than just check the graph every time it changes, we do some optimisation; we only update quality control
+     * if something (possibly) relevant has changed. For instance, changing colors has no effect on quality control.
      * <p>
-     * <b>IMPORTANT</b>: the set of attributes checked here MUST contain the
-     * attributes that are checked in {@link #updateQualityControlState} below,
-     * otherwise changes of relevant values won't cause a quality control
+     * <b>IMPORTANT</b>: the set of attributes checked here MUST contain the attributes that are checked in
+     * {@link #updateQualityControlState} below, otherwise changes of relevant values won't cause a quality control
      * re-vet.
      *
      * @param event The graph change event.
@@ -181,8 +177,8 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
     }
 
     /**
-     * Triggers an update of the QualityControlEvent as well as notifies
-     * listeners. This is used when the priority of categories is changed.
+     * Triggers an update of the QualityControlEvent as well as notifies listeners. This is used when the priority of
+     * categories is changed.
      */
     public void updateQualityEvents() {
         final Graph graph = currentGraph;
@@ -198,11 +194,9 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
     }
 
     /**
-     * Build a new QualityControlState with an updated list of
-     * QualityControlEvent.
+     * Build a new QualityControlState with an updated list of QualityControlEvent.
      *
-     * @param graph The graph to vet for quality control, may be null if there
-     * is no current graph.
+     * @param graph The graph to vet for quality control, may be null if there is no current graph.
      */
     public static void updateQualityControlState(final Graph graph) {
         // notify listeners that rules are running
@@ -251,13 +245,12 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
     }
 
     /**
-     * Add a {@link QualityControlListener} which will be notified when the
-     * quality control state changes.
+     * Add a {@link QualityControlListener} which will be notified when the quality control state changes.
      * <p>
      * The listener will immediately be called back with the current state.
      * <p>
-     * When calling this method, a separate call to {@code init()} should also
-     * be made if you want the listener to pickup existing graphs.
+     * When calling this method, a separate call to {@code init()} should also be made if you want the listener to
+     * pickup existing graphs.
      *
      * @param listener The listener to register.
      */
