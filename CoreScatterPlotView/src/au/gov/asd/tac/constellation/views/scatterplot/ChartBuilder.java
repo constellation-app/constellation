@@ -22,7 +22,7 @@ import au.gov.asd.tac.constellation.views.scatterplot.axis.AxisBuilder;
 import au.gov.asd.tac.constellation.views.scatterplot.axis.LogarithmicAxisBuilder;
 import au.gov.asd.tac.constellation.views.scatterplot.axis.NumberAxisBuilder;
 import au.gov.asd.tac.constellation.views.scatterplot.state.ScatterPlotState;
-import java.util.Set;
+import java.util.Collection;
 import java.util.function.Predicate;
 import javafx.scene.chart.Axis;
 import javafx.scene.chart.ScatterChart;
@@ -47,7 +47,7 @@ public class ChartBuilder<X, Y> {
     }
 
     public ScatterChart<X, Y> build(final GraphReadMethods graph, final ScatterPlotState state, 
-            final Set<ScatterData> currentData, final Set<ScatterData> currentSelectedData) {
+            final Collection<ScatterData> currentData, final Collection<ScatterData> currentSelectedData) {
         currentData.clear();
         currentSelectedData.clear();
 
