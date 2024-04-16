@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,11 +26,9 @@ import au.gov.asd.tac.constellation.plugins.reporting.PluginReportFilter;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReportListener;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
-import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.io.CharArrayWriter;
 import java.io.PrintWriter;
-import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -334,7 +332,8 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
     }
 
     /**
-     * Updates the UI to reflect any new child plugin reports that have been added to this plugin report since the UI was last updated.
+     * Updates the UI to reflect any new child plugin reports that have been added to this plugin report since the UI
+     * was last updated.
      */
     public void updateChildren() {
         Platform.runLater(() -> {
