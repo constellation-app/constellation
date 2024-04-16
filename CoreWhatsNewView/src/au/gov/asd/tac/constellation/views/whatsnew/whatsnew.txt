@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2024-03-08 Edges and Links in Table View
+<p>Edges and Links can now be viewed in the Table View.</p>
+
 == 2024-03-08 More Ways to Zoom In and Out
 <p>Keyboard shortcuts have been added for zooming in and out of the graph view (CTRL-ALT-UP and CTRL-ALT-DOWN respectively).</p>
 <p>Toolbar buttons have been added for zooming in and out of the graph view.</p>
