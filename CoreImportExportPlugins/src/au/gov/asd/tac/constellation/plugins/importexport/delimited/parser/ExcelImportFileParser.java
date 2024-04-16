@@ -236,24 +236,24 @@ public class ExcelImportFileParser extends ImportFileParser {
         final CellType type = cell.getCellType();
 
         try {
-            switch (type) {
+            result = switch (type) {
                 case STRING -> {
-                    result = cell.getStringCellValue();
+                    yield cell.getStringCellValue();
                 }
                 case NUMERIC, FORMULA -> {
                     final Double temp = cell.getNumericCellValue();
-                    result = temp % 1 == 0 ? Long.toString(temp.longValue()) : Double.toString(temp);
+                    yield temp % 1 == 0 ? Long.toString(temp.longValue()) : Double.toString(temp);
                 }
                 case BLANK -> {
-                    result = "";
+                    yield "";
                 }
                 case BOOLEAN -> {
-                    result = Boolean.toString(cell.getBooleanCellValue());
+                    yield Boolean.toString(cell.getBooleanCellValue());
                 }
                 default -> {
-                    result = "";
+                    yield "";
                 }
-            }
+            };
         } catch (IllegalStateException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage() + " with value " + cell.getStringCellValue(), ex);
             result = "";

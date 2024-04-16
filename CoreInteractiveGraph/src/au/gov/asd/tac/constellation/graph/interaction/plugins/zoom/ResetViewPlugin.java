@@ -101,7 +101,6 @@ public final class ResetViewPlugin extends SimpleEditPlugin {
                 case "y"  -> {
                     CameraUtilities.refocusOnYAxis(camera, boundingBox, negative);
                 }
-
                 default  -> {
                     CameraUtilities.refocusOnZAxis(camera, boundingBox, negative);
                 }

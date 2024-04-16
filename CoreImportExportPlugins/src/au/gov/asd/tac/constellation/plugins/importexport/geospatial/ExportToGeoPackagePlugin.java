@@ -50,8 +50,8 @@ public class ExportToGeoPackagePlugin extends AbstractGeoExportPlugin {
     protected void exportGeo(final PluginParameters parameters, final String uuid, final Map<String, String> shapes, final Map<String, Map<String, Object>> attributes, final File output) throws IOException {
         final ParameterValue spatialReferencePV = parameters.getSingleChoice(SPATIAL_REFERENCE_PARAMETER_ID);
         if (spatialReferencePV instanceof SpatialReferenceParameterValue spatialReferenceParameterValue) {
-        final Shape.SpatialReference spatialReference = spatialReferenceParameterValue.getSpatialReference();
-        Shape.generateGeoPackage(uuid, shapes, attributes, output, spatialReference);
+            final Shape.SpatialReference spatialReference = spatialReferenceParameterValue.getSpatialReference();
+            Shape.generateGeoPackage(uuid, shapes, attributes, output, spatialReference);
         }
     }
 

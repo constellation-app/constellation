@@ -624,21 +624,17 @@ public class SVGGraphBuilder {
                     final Vector3f lowArrowShaftPosition = new Vector3f(lowFrustumEntryPoint);
                     final ConnectionDirection direction = access.getConnectionDirection(connection); 
                     switch (direction) {
-                        
                         //Bidirectional connections are Links with two link arrow heads
                         case BIDIRECTED -> {
-                            
                             // Generate new arrow base for diamond arrow heads
                             final Vector3f highArrowHeadBasePoint = offsetPosition(highEndPoint, 1.0F, highDirectionVector);
                             final Vector3f lowArowHeadBasePoint = offsetPosition(lowEndPoint, 1.0F, lowDirectionVector);
-                            
                             // Only build the high arrow head if the high arrow head has not been cropped
                             if (highFrustumEntryPoint.areSame(highEndPoint)) {
                                 buildArrowHead(svgArrowHeadHigh, highEndPoint, highArrowHeadBasePoint, highArowHeadConnectionPoint, vertexTagentDirection);
                                 svgArrowHeadHigh.setParent(svgConnection);
                                 highArrowShaftPosition.set(highArowHeadConnectionPoint);
                             }
-                            
                             // Only build the low arrow head if the low arrow head has not been cropped
                             if (lowFrustumEntryPoint.areSame(lowEndPoint)) {
                                 buildArrowHead(svgArrowHeadLow, lowEndPoint, lowArowHeadBasePoint, lowArowHeadConnectionPoint, vertexTagentDirection);
@@ -646,33 +642,26 @@ public class SVGGraphBuilder {
                                 lowArrowShaftPosition.set(lowArowHeadConnectionPoint);
                             }
                         }
-
                         // Unidirectional connectsions are Transactions, Edges and links with one transaction arrow head    
                         case LOW_TO_HIGH -> {
-                            
                             // Only build the high arrow head if the high arrow head has not been cropped
                             if (highFrustumEntryPoint.areSame(highEndPoint)) {
                                 buildArrowHead(svgArrowHeadHigh, highEndPoint, highArowHeadConnectionPoint, highArowHeadConnectionPoint, vertexTagentDirection);
                                 svgArrowHeadHigh.setParent(svgConnection);
                                 highArrowShaftPosition.set(highArowHeadConnectionPoint);
-                            }
-                            
+                            }   
                             // The high arrow head is not in view 
                         }
-
                         //Unidirectional connectsions are Transactions, Edges and links with one transaction arrow head
                         case HIGH_TO_LOW -> {
-                            
                             // Only build the low arrow head if the high arrow head has not been cropped
                             if (lowFrustumEntryPoint.areSame(lowEndPoint)) {
                                 buildArrowHead(svgArrowHeadLow, lowEndPoint, lowArowHeadConnectionPoint, lowArowHeadConnectionPoint, vertexTagentDirection);
                                 svgArrowHeadLow.setParent(svgConnection);
                                 lowArrowShaftPosition.set(lowArowHeadConnectionPoint);
                             }
-                            
                             // The low arrow head is not in view 
                         }
-
                         // Undirected connections are Transactions, Edges and Links with no arrow heads.
                         default  -> {
                         }

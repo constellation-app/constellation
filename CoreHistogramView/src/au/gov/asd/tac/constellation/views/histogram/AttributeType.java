@@ -85,19 +85,15 @@ public enum AttributeType {
                     binCreators.put("Incoming Transaction Count", DefaultBinCreators.INCOMING_TRANSACTION_COUNT_BIN_CREATOR);
                     binCreators.put("Undirected Transaction Count", DefaultBinCreators.UNDIRECTED_TRANSACTION_COUNT_BIN_CREATOR);
                 }
-
                 case LINK -> {
                     binCreators.put(AttributeTypeConstants.TRANSACTION_COUNT, DefaultBinCreators.LINK_TRANSACTION_COUNT_BIN_CREATOR);
                 }
-
                 case EDGE -> {
                     binCreators.put(AttributeTypeConstants.TRANSACTION_COUNT, DefaultBinCreators.EDGE_TRANSACTION_COUNT_BIN_CREATOR);
                 }
-
                 case TRANSACTION -> {
                     binCreators.put("Transaction Direction", DefaultBinCreators.TRANSACTION_DIRECTION_BIN_CREATOR);
                 }
-                
                 default -> {
                 }
             }
