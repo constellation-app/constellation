@@ -190,8 +190,8 @@ public class ElementTypeContextMenuNGTest {
                 elementTypeContextMenu.getContextMenu().getItems(),
                 FXCollections.observableList(
                         List.of(
-                                elementTypeContextMenu.getTransactionsMenu(),
                                 elementTypeContextMenu.getVerticesMenu(),
+                                elementTypeContextMenu.getTransactionsMenu(),
                                 elementTypeContextMenu.getEdgesMenu(),
                                 elementTypeContextMenu.getLinksMenu()
                         )

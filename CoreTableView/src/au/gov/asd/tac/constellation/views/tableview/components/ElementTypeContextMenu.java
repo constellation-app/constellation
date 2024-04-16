@@ -41,8 +41,8 @@ public class ElementTypeContextMenu {
 
     private ContextMenu contextMenu;
 
-    private CustomMenuItem transactionsMenu;
     private CustomMenuItem verticesMenu;
+    private CustomMenuItem transactionsMenu;
     private CustomMenuItem edgesMenu;
     private CustomMenuItem linksMenu;
 
@@ -61,13 +61,13 @@ public class ElementTypeContextMenu {
     public void init() {
         contextMenu = new ContextMenu();
 
-        transactionsMenu = createCustomMenu(TRANSACTION, e -> {
-            handleStateChange(GraphElementType.TRANSACTION);
+        verticesMenu = createCustomMenu(VERTEX, e -> {
+            handleStateChange(GraphElementType.VERTEX);
             e.consume();
         });
 
-        verticesMenu = createCustomMenu(VERTEX, e -> {
-            handleStateChange(GraphElementType.VERTEX);
+        transactionsMenu = createCustomMenu(TRANSACTION, e -> {
+            handleStateChange(GraphElementType.TRANSACTION);
             e.consume();
         });
 
@@ -81,7 +81,7 @@ public class ElementTypeContextMenu {
             e.consume();
         });
 
-        contextMenu.getItems().addAll(transactionsMenu, verticesMenu, edgesMenu, linksMenu);
+        contextMenu.getItems().addAll(verticesMenu, transactionsMenu, edgesMenu, linksMenu);
     }
 
     /**
