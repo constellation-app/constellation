@@ -282,23 +282,22 @@ public final class GraphLabelsAndDecoratorsV0 implements Serializable {
     public List<Integer> getReferencedAttributes(final GraphReadMethods rg, final GraphLabelsAndDecoratorsV0.LabelType ltype) {
         final List<GraphLabelV0> labels;
         final GraphElementType etype;
-        if (null == ltype) {
-            labels = connLabels;
-            etype = GraphElementType.TRANSACTION;
-        } else {
-            switch (ltype) {
-                case BOTTOM -> {
-                    labels = bottomLabels;
-                    etype = GraphElementType.VERTEX;
-                }
-                case TOP -> {
-                    labels = topLabels;
-                    etype = GraphElementType.VERTEX;
-                }
-                default -> {
-                    labels = connLabels;
-                    etype = GraphElementType.TRANSACTION;
-                }
+        switch (ltype) {
+            case null -> {
+                labels = connLabels;
+                etype = GraphElementType.TRANSACTION;
+            }
+            case BOTTOM -> {
+                labels = bottomLabels;
+                etype = GraphElementType.VERTEX;
+            }
+            case TOP -> {
+                labels = topLabels;
+                etype = GraphElementType.VERTEX;
+            }
+            default -> {
+                labels = connLabels;
+                etype = GraphElementType.TRANSACTION;
             }
         }
 
@@ -322,23 +321,22 @@ public final class GraphLabelsAndDecoratorsV0 implements Serializable {
     public Map<Integer, GraphLabelV0> getReferencedAttributesAndGraphLabels(final GraphReadMethods rg, final GraphLabelsAndDecoratorsV0.LabelType ltype) {
         final List<GraphLabelV0> labels;
         final GraphElementType etype;
-        if (null == ltype) {
-            labels = connLabels;
-            etype = GraphElementType.TRANSACTION;
-        } else {
-            switch (ltype) {
-                case BOTTOM -> {
-                    labels = bottomLabels;
-                    etype = GraphElementType.VERTEX;
-                }
-                case TOP -> {
-                    labels = topLabels;
-                    etype = GraphElementType.VERTEX;
-                }
-                default -> {
-                    labels = connLabels;
-                    etype = GraphElementType.TRANSACTION;
-                }
+        switch (ltype) {
+            case null -> {
+                labels = connLabels;
+                etype = GraphElementType.TRANSACTION;
+            }
+            case BOTTOM -> {
+                labels = bottomLabels;
+                etype = GraphElementType.VERTEX;
+            }
+            case TOP -> {
+                labels = topLabels;
+                etype = GraphElementType.VERTEX;
+            }
+            default -> {
+                labels = connLabels;
+                etype = GraphElementType.TRANSACTION;
             }
         }
 
