@@ -45,7 +45,7 @@ public class IntegerObjectAttributeDescription extends AbstractObjectAttributeDe
                     return number.intValue();
                 }
                 case Boolean bool -> {
-                    return bool ? 1 : 0;
+                    return Boolean.TRUE.equals(bool) ? 1 : 0;
                 }
                 case Character character -> {
                     return (int) character;

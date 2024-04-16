@@ -66,7 +66,7 @@ public final class LongAttributeDescription extends AbstractAttributeDescription
                 return bool ? 1L : 0L;
             }       
             case Character character -> {
-                return (long) character;
+                return character;
             }       
             case String string -> {
                 return convertFromString(string);

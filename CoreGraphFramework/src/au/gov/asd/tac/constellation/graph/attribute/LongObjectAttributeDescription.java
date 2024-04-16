@@ -45,7 +45,7 @@ public class LongObjectAttributeDescription extends AbstractObjectAttributeDescr
                     return number.longValue();
                 }
                 case Boolean bool -> {
-                    return bool ? 1L : 0L;
+                    return Boolean.TRUE.equals(bool) ? 1L : 0L;
                 }
                 case Character character -> {
                     return (long) character;

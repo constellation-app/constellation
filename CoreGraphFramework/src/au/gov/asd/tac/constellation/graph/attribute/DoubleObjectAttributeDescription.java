@@ -45,7 +45,7 @@ public class DoubleObjectAttributeDescription extends AbstractObjectAttributeDes
                     return number.doubleValue();
                 }
                 case Boolean bool -> {
-                    return bool ? 1.0 : 0.0;
+                    return Boolean.TRUE.equals(bool) ? 1.0 : 0.0;
                 }
                 case Character character -> {
                     return (double) character;

@@ -45,7 +45,7 @@ public class ByteObjectAttributeDescription extends AbstractObjectAttributeDescr
                     return number.byteValue();
                 }
                 case Boolean bool -> {
-                    return bool ? (byte) 1 : (byte) 0;
+                    return Boolean.TRUE.equals(bool) ? (byte) 1 : (byte) 0;
                 }
                 default -> throw ex;
             }

@@ -65,7 +65,7 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
                 return bool ? 1 : 0;
             }       
             case Character character -> {
-                return (int) character;
+                return character;
             }       
             case String string -> {
                 return convertFromString(string);

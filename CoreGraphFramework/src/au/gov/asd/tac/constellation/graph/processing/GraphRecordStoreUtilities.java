@@ -176,6 +176,7 @@ public class GraphRecordStoreUtilities {
                     return vertex;
                 }
             } catch (final NumberFormatException ex) {
+                // it's a non-integer id being passed but that's ok, continue on
             }
 
             Integer vertex = vertexMap.get(id);

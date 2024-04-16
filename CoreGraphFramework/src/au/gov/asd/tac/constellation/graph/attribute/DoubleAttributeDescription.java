@@ -65,7 +65,7 @@ public class DoubleAttributeDescription extends AbstractAttributeDescription {
                 return bool ? 1.0 : 0.0;
             }       
             case Character character -> {
-                return (double) character;
+                return character;
             }       
             case String string -> {
                 return convertFromString(string);

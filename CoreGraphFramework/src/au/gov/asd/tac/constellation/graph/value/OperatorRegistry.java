@@ -94,8 +94,6 @@ public class OperatorRegistry {
                 while (count < applicableRecords.size()) {
                     switch (biFunction.compareTo(applicableRecords.get(count))) {
                         case -1 -> insert = false;
-                        case 0 -> {
-                        }
                         case 1 -> {
                             applicableRecords.remove(count);
                             count -= 1;

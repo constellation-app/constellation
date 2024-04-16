@@ -65,7 +65,7 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
                 return bool ? 1.0F : 0.0F;
             }       
             case Character character -> {
-                return (float) character;
+                return character;
             }       
             case String string -> {
                 return convertFromString(string);

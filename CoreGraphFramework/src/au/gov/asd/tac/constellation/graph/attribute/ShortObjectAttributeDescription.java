@@ -45,7 +45,7 @@ public class ShortObjectAttributeDescription extends AbstractObjectAttributeDesc
                     return number.shortValue();
                 }
                 case Boolean bool -> {
-                    return bool ? (short) 1 : (short) 0;
+                    return Boolean.TRUE.equals(bool) ? (short) 1 : (short) 0;
                 }
                 default -> throw ex;
             }
