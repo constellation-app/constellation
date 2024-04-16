@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,17 +86,11 @@ public class VisualSchemaFactory extends SchemaFactory {
     @Override
     public List<SchemaAttribute> getKeyAttributes(final GraphElementType elementType) {
         final List<SchemaAttribute> keys;
-        switch (elementType) {
-            case VERTEX:
-                keys = Arrays.asList(VisualConcept.VertexAttribute.IDENTIFIER);
-                break;
-            case TRANSACTION:
-                keys = Arrays.asList(VisualConcept.TransactionAttribute.IDENTIFIER);
-                break;
-            default:
-                keys = Collections.emptyList();
-                break;
-        }
+        keys = switch (elementType) {
+            case VERTEX -> Arrays.asList(VisualConcept.VertexAttribute.IDENTIFIER);
+            case TRANSACTION -> Arrays.asList(VisualConcept.TransactionAttribute.IDENTIFIER);
+            default -> Collections.emptyList();
+        };
 
         return Collections.unmodifiableList(keys);
     }
@@ -240,10 +234,9 @@ public class VisualSchemaFactory extends SchemaFactory {
         @Override
         public void completeVertex(final GraphWriteMethods graph, final int vertexId) {
             super.completeVertex(graph, vertexId);
-
+            
             final int vertexIdentifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
             final int vertexLabelAttribute = VisualConcept.VertexAttribute.LABEL.ensure(graph);
-
             final String identifier = graph.getStringValue(vertexIdentifierAttribute, vertexId);
             final String label = graph.getStringValue(vertexLabelAttribute, vertexId);
             if (identifier != null && label == null) {
@@ -311,7 +304,6 @@ public class VisualSchemaFactory extends SchemaFactory {
         }
 
         private ConstellationColor randomColor() {
-
             final float brightenFloat = 0.10F; //Value to inflate low floats, prevents shades which are too dark from generating
             final float lowFloat = 0.10F;
             float randFloat1 = random.nextFloat();
@@ -321,26 +313,27 @@ public class VisualSchemaFactory extends SchemaFactory {
 
             //Change node color randomiser based on colorblind mode selection
             switch (colorMode) {
-                case NONE:
+                case NONE -> {
                     return ConstellationColor.getColorValue(randFloat1, randFloat2, randFloat3, 1.0F);
-
-                case DEUTERANOPIA:
-                case PROTANOPIA:
+                }
+                case DEUTERANOPIA, PROTANOPIA -> {
                     //Ensure randomised color does not generate an RGB value which is too dark 
                     if (randFloat1 <= lowFloat && randFloat3 <= lowFloat) {
                         randFloat1 += brightenFloat;
                         randFloat3 += brightenFloat;
                     }
                     return ConstellationColor.getColorValue(randFloat1, 0F, randFloat3, 1.0F);
-
-                case TRITANOPIA:
+                }
+                case TRITANOPIA -> {
                     if (randFloat1 <= lowFloat && randFloat2 <= lowFloat) {
                         randFloat1 += brightenFloat;
                         randFloat2 += brightenFloat;
                     }
                     return ConstellationColor.getColorValue(randFloat1, randFloat2, 0F, 1.0F);
-                default:
+                }
+                default -> {
                     return null;
+                }
             }
         }
 

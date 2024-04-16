@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -135,7 +135,7 @@ public final class HopActions extends AbstractAction implements Presenter.Toolba
         final PluginParameters parameters;
 
         switch (command) {
-            case HOP_OUT_HALF_ACTION:
+            case HOP_OUT_HALF_ACTION -> {
                 plugin = PluginRegistry.get(VisualGraphPluginRegistry.HOP_OUT);
                 parameters = DefaultPluginParameters.getDefaultParameters(plugin);
                 parameters.getParameters().get(HopOutPlugin.HOPS_PARAMETER_ID).setIntegerValue(HopUtilities.HOP_OUT_HALF);
@@ -143,8 +143,8 @@ public final class HopActions extends AbstractAction implements Presenter.Toolba
                 parameters.getParameters().get(HopOutPlugin.INCOMING_PARAMETER_ID).setBooleanValue(incoming.isSelected());
                 parameters.getParameters().get(HopOutPlugin.UNDIRECTED_PARAMETER_ID).setBooleanValue(undirected.isSelected());
                 PluginExecution.withPlugin(plugin).withParameters(parameters).executeLater(graph);
-                break;
-            case HOP_OUT_ONE_ACTION:
+            }
+            case HOP_OUT_ONE_ACTION -> {
                 plugin = PluginRegistry.get(VisualGraphPluginRegistry.HOP_OUT);
                 parameters = DefaultPluginParameters.getDefaultParameters(plugin);
                 parameters.getParameters().get(HopOutPlugin.HOPS_PARAMETER_ID).setIntegerValue(HopUtilities.HOP_OUT_ONE);
@@ -152,8 +152,8 @@ public final class HopActions extends AbstractAction implements Presenter.Toolba
                 parameters.getParameters().get(HopOutPlugin.INCOMING_PARAMETER_ID).setBooleanValue(incoming.isSelected());
                 parameters.getParameters().get(HopOutPlugin.UNDIRECTED_PARAMETER_ID).setBooleanValue(undirected.isSelected());
                 PluginExecution.withPlugin(plugin).withParameters(parameters).executeLater(graph);
-                break;
-            case HOP_OUT_FULL_ACTION:
+            }
+            case HOP_OUT_FULL_ACTION -> {
                 plugin = PluginRegistry.get(VisualGraphPluginRegistry.HOP_OUT);
                 parameters = DefaultPluginParameters.getDefaultParameters(plugin);
                 parameters.getParameters().get(HopOutPlugin.HOPS_PARAMETER_ID).setIntegerValue(HopUtilities.HOP_OUT_FULL);
@@ -161,9 +161,10 @@ public final class HopActions extends AbstractAction implements Presenter.Toolba
                 parameters.getParameters().get(HopOutPlugin.INCOMING_PARAMETER_ID).setBooleanValue(incoming.isSelected());
                 parameters.getParameters().get(HopOutPlugin.UNDIRECTED_PARAMETER_ID).setBooleanValue(undirected.isSelected());
                 PluginExecution.withPlugin(plugin).withParameters(parameters).executeLater(graph);
-                break;
-            default:
-                break;
+            }
+            default -> {
+                // Do nothing
+            }
         }
     }
 

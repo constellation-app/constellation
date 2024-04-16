@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
@@ -278,18 +279,26 @@ public final class GraphLabelsAndDecoratorsV0 implements Serializable {
      *
      * @return A list of attribute ids.
      */
-    public ArrayList<Integer> getReferencedAttributes(final GraphReadMethods rg, final GraphLabelsAndDecoratorsV0.LabelType ltype) {
+    public List<Integer> getReferencedAttributes(final GraphReadMethods rg, final GraphLabelsAndDecoratorsV0.LabelType ltype) {
         final List<GraphLabelV0> labels;
         final GraphElementType etype;
-        if (ltype == LabelType.BOTTOM) {
-            labels = bottomLabels;
-            etype = GraphElementType.VERTEX;
-        } else if (ltype == LabelType.TOP) {
-            labels = topLabels;
-            etype = GraphElementType.VERTEX;
-        } else {
-            labels = connLabels;
-            etype = GraphElementType.TRANSACTION;
+        switch (ltype) {
+            case null -> {
+                labels = connLabels;
+                etype = GraphElementType.TRANSACTION;
+            }
+            case BOTTOM -> {
+                labels = bottomLabels;
+                etype = GraphElementType.VERTEX;
+            }
+            case TOP -> {
+                labels = topLabels;
+                etype = GraphElementType.VERTEX;
+            }
+            default -> {
+                labels = connLabels;
+                etype = GraphElementType.TRANSACTION;
+            }
         }
 
         final ArrayList<Integer> attributes = new ArrayList<>();
@@ -309,18 +318,26 @@ public final class GraphLabelsAndDecoratorsV0 implements Serializable {
      *
      * @return A list of attribute ids.
      */
-    public HashMap<Integer, GraphLabelV0> getReferencedAttributesAndGraphLabels(final GraphReadMethods rg, final GraphLabelsAndDecoratorsV0.LabelType ltype) {
+    public Map<Integer, GraphLabelV0> getReferencedAttributesAndGraphLabels(final GraphReadMethods rg, final GraphLabelsAndDecoratorsV0.LabelType ltype) {
         final List<GraphLabelV0> labels;
         final GraphElementType etype;
-        if (ltype == LabelType.BOTTOM) {
-            labels = bottomLabels;
-            etype = GraphElementType.VERTEX;
-        } else if (ltype == LabelType.TOP) {
-            labels = topLabels;
-            etype = GraphElementType.VERTEX;
-        } else {
-            labels = connLabels;
-            etype = GraphElementType.TRANSACTION;
+        switch (ltype) {
+            case null -> {
+                labels = connLabels;
+                etype = GraphElementType.TRANSACTION;
+            }
+            case BOTTOM -> {
+                labels = bottomLabels;
+                etype = GraphElementType.VERTEX;
+            }
+            case TOP -> {
+                labels = topLabels;
+                etype = GraphElementType.VERTEX;
+            }
+            default -> {
+                labels = connLabels;
+                etype = GraphElementType.TRANSACTION;
+            }
         }
 
         final HashMap<Integer, GraphLabelV0> attributes = new HashMap<>();
@@ -372,7 +389,7 @@ public final class GraphLabelsAndDecoratorsV0 implements Serializable {
      * @return An int[] containing the ids of the attributes to be used as node
      * decorators.
      */
-    public EnumMap<Decorator, Integer> getDecoratorAttributes(final GraphReadMethods rg) {
+    public Map<Decorator, Integer> getDecoratorAttributes(final GraphReadMethods rg) {
         final EnumMap<Decorator, Integer> dec = new EnumMap<>(Decorator.class);
 
         dec.put(Decorator.NW, rg.getAttribute(GraphElementType.VERTEX, decoratorLabels[Decorator.NW.ordinal()]));
@@ -415,7 +432,7 @@ public final class GraphLabelsAndDecoratorsV0 implements Serializable {
         return buf.toString();
     }
 
-    public static GraphLabelsAndDecoratorsV0 fromString(String decoratorsAndLabelsString) {
+    public static GraphLabelsAndDecoratorsV0 fromString(final String decoratorsAndLabelsString) {
         GraphLabelsAndDecoratorsV0 thisGraphLabelsAndDecorators = new GraphLabelsAndDecoratorsV0();
 
         if (StringUtils.isNotBlank(decoratorsAndLabelsString)) {

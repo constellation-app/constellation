@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -226,11 +226,9 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
 
         if (colors != null) {
             int panelCounter = 0;
-            for (final JPanel panel : colorPanels) {
-                if (panelCounter < colors.size()) {
-                    if (colors.get(panelCounter) != null) {
-                        panel.setBackground(colors.get(panelCounter++).getJavaColor());
-                    }
+            for (final JPanel jpanel : colorPanels) {
+                if (panelCounter < colors.size() && colors.get(panelCounter) != null) {
+                    jpanel.setBackground(colors.get(panelCounter++).getJavaColor());
                 }
             }
         }
@@ -322,11 +320,9 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
 
         if (colors != null) {
             int panelCounter = 0;
-            for (final JPanel panel : colorPanels) {
-                if (panelCounter < colors.size()) {
-                    if (colors.get(panelCounter) != null) {
-                        panel.setBackground(colors.get(panelCounter).getJavaColor());
-                    }
+            for (final JPanel jpanel : colorPanels) {
+                if (panelCounter < colors.size() && colors.get(panelCounter) != null) {
+                    jpanel.setBackground(colors.get(panelCounter).getJavaColor());
                 }
                 panelCounter++;
             }
@@ -362,7 +358,6 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
                 blazeItems[BlazeUtilities.MAXIMUM_CUSTOM_BLAZE_COLORS - idx - 1].setIcon(generateCustomImage(javaColor));
                 idx++;
             }
-
         }
     }
 
@@ -418,7 +413,7 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
         final Pair<BitSet, ConstellationColor> selectionResult = BlazeUtilities.getSelection(graph, null);
 
         switch (command) {
-            case ADD_CUSTOM_BLAZE_ACTION:
+            case ADD_CUSTOM_BLAZE_ACTION -> {
                 final Pair<Boolean, ConstellationColor> colorResult = BlazeUtilities.colorDialog(selectionResult.getValue());
                 if (colorResult.getKey()) {
                     final ConstellationColor color = colorResult.getValue();
@@ -428,20 +423,16 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
                     parameters.getParameters().get(BlazeUtilities.COLOR_PARAMETER_ID).setColorValue(color);
                     PluginExecution.withPlugin(plugin).withParameters(parameters).executeLater(graph);
                 }
-                break;
-            case SELECT_BLAZES_ACTION:
-                PluginExecution.withPlugin(VisualGraphPluginRegistry.SELECT_BLAZES).executeLater(graph);
-                break;
-            case DESELECT_BLAZES_ACTION:
-                PluginExecution.withPlugin(VisualGraphPluginRegistry.DESELECT_BLAZES).executeLater(graph);
-                break;
-            case REMOVE_BLAZES_ACTION:
+            }
+            case SELECT_BLAZES_ACTION -> PluginExecution.withPlugin(VisualGraphPluginRegistry.SELECT_BLAZES).executeLater(graph);
+            case DESELECT_BLAZES_ACTION -> PluginExecution.withPlugin(VisualGraphPluginRegistry.DESELECT_BLAZES).executeLater(graph);
+            case REMOVE_BLAZES_ACTION -> {
                 plugin = PluginRegistry.get(VisualGraphPluginRegistry.REMOVE_BLAZE);
                 parameters = DefaultPluginParameters.getDefaultParameters(plugin);
                 parameters.getParameters().get(BlazeUtilities.VERTEX_IDS_PARAMETER_ID).setObjectValue(selectionResult.getKey());
                 PluginExecution.withPlugin(plugin).withParameters(parameters).executeLater(graph);
-                break;
-            default:
+            }
+            default -> {
                 // check for the overloaded command name. In this case the default action name
                 // ADD_PRESET_BLAZE_ACTION has the string representation of the color
                 if (command.startsWith(ADD_PRESET_BLAZE_ACTION)) {
@@ -455,7 +446,7 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
                     parameters.getParameters().get(BlazeUtilities.COLOR_PARAMETER_ID).setColorValue(color);
                     PluginExecution.withPlugin(plugin).withParameters(parameters).executeLater(graph);
                 }
-                break;
+            }
         }
     }
 
@@ -516,18 +507,18 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
         }
 
         @Override
-        public void processMouseEvent(MouseEvent event, MenuElement[] path, MenuSelectionManager manager) {
+        public void processMouseEvent(final MouseEvent event, final MenuElement[] path, final MenuSelectionManager manager) {
             processMouseMotionEvent(event);
             processMouseEvent(event);
         }
 
         @Override
-        public void processKeyEvent(KeyEvent event, MenuElement[] path, MenuSelectionManager manager) {
+        public void processKeyEvent(final KeyEvent event, final MenuElement[] path, final MenuSelectionManager manager) {
             // Required for MenuElement, intentionally left blank
         }
 
         @Override
-        public void menuSelectionChanged(boolean isIncluded) {
+        public void menuSelectionChanged(final boolean isIncluded) {
             // Required for MenuElement, intentionally left blank
         }
 
