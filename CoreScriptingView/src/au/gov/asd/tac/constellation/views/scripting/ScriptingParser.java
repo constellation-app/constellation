@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ public class ScriptingParser extends AbstractParser {
     }
 
     @Override
-    public ParseResult parse(RSyntaxDocument doc, String style) {
+    public ParseResult parse(final RSyntaxDocument doc, final String style) {
         final DefaultParseResult result = new DefaultParseResult(this);
         final int lineCount = doc.getDefaultRootElement().getElementCount();
         final long t0 = System.currentTimeMillis();

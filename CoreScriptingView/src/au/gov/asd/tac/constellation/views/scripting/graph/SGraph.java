@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.scripting.graph;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.script.ScriptContext;
@@ -58,8 +59,8 @@ public class SGraph {
     private ScriptEngine engine;
     private final Graph graphObject;
 
-    private final ArrayList<SReadableGraph> readableGraphs;
-    private final ArrayList<SWritableGraph> writableGraphs;
+    private final List<SReadableGraph> readableGraphs;
+    private final List<SWritableGraph> writableGraphs;
 
     public SGraph(final ScriptEngine engine, final Graph graph) {
         this.engine = engine;
@@ -115,7 +116,7 @@ public class SGraph {
                 try {
                     LOGGER.log(Level.INFO, "attempting to release {0}", readableGraph);
                     readableGraph.release();
-                } catch (IllegalMonitorStateException ex) {
+                } catch (final IllegalMonitorStateException ex) {
                     LOGGER.log(Level.WARNING, "error releasing {0}: {1}", new Object[]{readableGraph, ex.getMessage()});
                     break;
                 }
@@ -127,7 +128,7 @@ public class SGraph {
                 try {
                     LOGGER.log(Level.INFO, "attempting to rollback {0}", writableGraph);
                     writableGraph.rollback();
-                } catch (IllegalMonitorStateException ex) {
+                } catch (final IllegalMonitorStateException ex) {
                     LOGGER.log(Level.WARNING, "error rolling back {0}: {1}", new Object[]{writableGraph, ex.getMessage()});
                     break;
                 }
@@ -172,7 +173,7 @@ public class SGraph {
             context.setAttribute("__p1", readableGraph, ScriptContext.ENGINE_SCOPE);
             engine.eval("__func(__p1)");
             ok = true;
-        } catch (ScriptException ex) {
+        } catch (final ScriptException ex) {
             readableGraph.release();
             throw ex;
         } finally {
@@ -222,7 +223,7 @@ public class SGraph {
             context.setAttribute("__p1", writableGraph, ScriptContext.ENGINE_SCOPE);
             engine.eval("__func(__p1)");
             ok = true;
-        } catch (ScriptException ex) {
+        } catch (final ScriptException ex) {
             writableGraph.rollback();
             throw ex;
         } finally {

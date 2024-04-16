@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -133,14 +133,11 @@ public class ScriptingViewPane extends JPanel {
                 final boolean isCtrl = ke.isControlDown();
                 if (isCtrl) {
                     switch (ke.getKeyCode()) {
-                        case KeyEvent.VK_ENTER:
-                            executeScript();
-                            break;
-                        case KeyEvent.VK_S:
-                            saveScript();
-                            break;
-                        default:
-                            break;
+                        case KeyEvent.VK_ENTER -> executeScript();
+                        case KeyEvent.VK_S -> saveScript();
+                        default -> {
+                            // do nothing
+                        }
                     }
                 }
             }
@@ -151,7 +148,7 @@ public class ScriptingViewPane extends JPanel {
                 throw new FileNotFoundException("The file could not be located.");
             }
             try (final BufferedReader reader = new BufferedReader(new FileReader(new File(GET_STARTED_FILE.getPath())))) {
-                StringBuilder getStartedText = new StringBuilder();
+                final StringBuilder getStartedText = new StringBuilder();
                 reader.lines().forEach(line -> getStartedText.append(line).append(SeparatorConstants.NEWLINE));
                 scriptEditor.setText(getStartedText.toString());
             } catch (final IOException ex) {
@@ -357,8 +354,7 @@ public class ScriptingViewPane extends JPanel {
                         LOGGER.log(Level.SEVERE, "Cause of error is {0}", cause.getClass());
 
                         // If this is Jython, we can walk the traceback to find the line where things went bad.
-                        if (cause instanceof PyException) {
-                            final PyException pyex = (PyException) cause;
+                        if (cause instanceof PyException pyex) {
                             PyTraceback tb = pyex.traceback;
                             while (tb != null) {
                                 line = tb.tb_lineno - 1;
@@ -431,7 +427,7 @@ public class ScriptingViewPane extends JPanel {
         }
 
         @Override
-        protected void execute(final PluginGraphs _graphs, final PluginInteraction _interaction, final PluginParameters _parameters) throws InterruptedException, PluginException {
+        protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
             try {
                 try (final BufferedReader reader = new BufferedReader(new InputStreamReader(
                         new FileInputStream(fileChooser.getSelectedFile()), StandardCharsets.UTF_8.name()))) {
@@ -453,7 +449,5 @@ public class ScriptingViewPane extends JPanel {
                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         }
-
     }
-
 }
