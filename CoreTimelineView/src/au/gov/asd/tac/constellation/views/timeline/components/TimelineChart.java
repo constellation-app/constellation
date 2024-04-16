@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -117,9 +117,7 @@ public class TimelineChart extends XYChart<Number, Number> {
             final double range = upperTimeExtent - lowerTimeExtent;
             final double width = parent.getWidth();
 
-            if (t instanceof MouseEvent) {
-                // Register the event as a MouseEvent:
-                final MouseEvent me = (MouseEvent) t;
+            if (t instanceof MouseEvent me) {
                 final double mouseX = me.getX();
 
                 // Check for double click to remove selection
@@ -172,8 +170,6 @@ public class TimelineChart extends XYChart<Number, Number> {
                         selection.setLayoutX(0);
                         isSelecting = false;
                         mouseDistanceFromOrigin = 0;
-                    } else {
-                        // Do nothing
                     }
                 } else {
                     // We are starting a drag based temporal selection:
@@ -200,10 +196,7 @@ public class TimelineChart extends XYChart<Number, Number> {
 
                         // Update variables based on current mouse pointer position:
                         mouseOrigin = mouseX;
-                    } else {
-                        // Do nothing
                     }
-
                 }
 
                 // Consume the event so that no other listeners are interrupted:
@@ -302,14 +295,12 @@ public class TimelineChart extends XYChart<Number, Number> {
                     // update the scope window:
                     parent.coordinator.setExtents(lowerTimeExtent, upperTimeExtent);
                 }
-            } else { // We are zooming out:
-                if (quantum <= YEAR * 10D) {
-                    lowerTimeExtent = (long) (msMouse - ((msMouse - lowerTimeExtent) * 1.1)); // Zoom out by 10%
-                    upperTimeExtent = (long) (msMouse + ((upperTimeExtent - msMouse) * 1.1));
+            } else if (quantum <= YEAR * 10D) { // We are zooming out:
+                lowerTimeExtent = (long) (msMouse - ((msMouse - lowerTimeExtent) * 1.1)); // Zoom out by 10%
+                upperTimeExtent = (long) (msMouse + ((upperTimeExtent - msMouse) * 1.1));
 
-                    // update the scope window:
-                    parent.coordinator.setExtents((long) lowerTimeExtent, (long) upperTimeExtent);
-                }
+                // update the scope window:
+                parent.coordinator.setExtents((long) lowerTimeExtent, (long) upperTimeExtent);
             }
         }
     }
@@ -399,7 +390,8 @@ public class TimelineChart extends XYChart<Number, Number> {
      * @param lowestObservedDisplayPos Sets the lowest yAxis value.
      * @param highestObservedDisplayPos Sets the highest yAxis value.
      */
-    public void populate(final XYChart.Series<Number, Number> series, final long lowestObservedDisplayPos, final long highestObservedDisplayPos, final boolean selectedOnly, final ZoneId zoneId) {
+    public void populate(final XYChart.Series<Number, Number> series, final long lowestObservedDisplayPos, final long highestObservedDisplayPos, 
+            final boolean selectedOnly, final ZoneId zoneId) {
         this.selectedOnly = selectedOnly;
         this.currentTimezone = TimeZone.getTimeZone(zoneId);
         this.lowestObservedDisplayPos = lowestObservedDisplayPos;
@@ -611,12 +603,10 @@ public class TimelineChart extends XYChart<Number, Number> {
 
     // <editor-fold defaultstate="collapsed" desc="Chart Methods">
     @Override
-    protected void dataItemAdded(final Series<Number, Number> series,
-            final int itemIndex, final Data<Number, Number> item) {
-
+    protected void dataItemAdded(final Series<Number, Number> series, final int itemIndex, final Data<Number, Number> item) {
         final Node prospective;
-        if (item.getExtraValue() instanceof Interaction) {
-            prospective = (Interaction) item.getExtraValue();
+        if (item.getExtraValue() instanceof Interaction interaction) {
+            prospective = interaction;
         } else {
             prospective = (Cluster) item.getExtraValue();
         }
@@ -636,8 +626,7 @@ public class TimelineChart extends XYChart<Number, Number> {
     }
 
     @Override
-    protected void dataItemRemoved(final Data<Number, Number> item,
-            final Series<Number, Number> series) {
+    protected void dataItemRemoved(final Data<Number, Number> item, final Series<Number, Number> series) {
         final Node child = item.getNode();
 
         if (shouldAnimate()) {
@@ -663,8 +652,8 @@ public class TimelineChart extends XYChart<Number, Number> {
             final Data<Number, Number> item = series.getData().get(j);
 
             final Node prospective;
-            if (item.getExtraValue() instanceof Interaction) {
-                prospective = (Interaction) item.getExtraValue();
+            if (item.getExtraValue() instanceof Interaction interaction) {
+                prospective = interaction;
             } else {
                 prospective = (Cluster) item.getExtraValue();
             }
@@ -686,7 +675,6 @@ public class TimelineChart extends XYChart<Number, Number> {
 
     @Override
     protected void seriesRemoved(final Series<Number, Number> series) {
-
         final Node child = series.getNode();
         if (shouldAnimate()) {
             // fade out old item:
@@ -706,7 +694,6 @@ public class TimelineChart extends XYChart<Number, Number> {
      */
     @Override
     protected void layoutPlotChildren() {
-
         // We have nothing to layout if no data is present
         if (getData() == null) {
             return;
@@ -728,9 +715,7 @@ public class TimelineChart extends XYChart<Number, Number> {
                 double x = getXAxis().getDisplayPosition(getCurrentDisplayedXValue(item));
                 final Object itemNode = item.getExtraValue();
 
-                if (itemNode instanceof Interaction) {
-                    final Interaction interaction = (Interaction) itemNode;
-
+                if (itemNode instanceof Interaction interaction) {
                     final double topVertY = interaction.getTopVertex().getDisplayPos();
                     final double bottomVertY = interaction.getBottomVertex().getDisplayPos();
 
@@ -794,20 +779,14 @@ public class TimelineChart extends XYChart<Number, Number> {
             firstaxisUpdate = true;
             final Axis<Number> xa = getXAxis();
             final Axis<Number> ya = getYAxis();
-            List<Number> xData = null;
-            List<Number> yData = null;
+            final List<Number> xData = xa.isAutoRanging() ? new ArrayList<>() : null;
+            final List<Number> yData = ya.isAutoRanging() ? new ArrayList<>() : null;
 
-            if (xa.isAutoRanging()) {
-                xData = new ArrayList<>();
-            }
-            if (ya.isAutoRanging()) {
-                yData = new ArrayList<>();
-            }
             if (xData != null || yData != null) {
-                ObservableList<XYChart.Series<Number, Number>> list = getData();
+                final ObservableList<XYChart.Series<Number, Number>> list = getData();
                 if (list != null) {
-                    for (Series<Number, Number> series : list) {
-                        for (Data<Number, Number> data : series.getData()) {
+                    for (final Series<Number, Number> series : list) {
+                        for (final Data<Number, Number> data : series.getData()) {
                             if (xData != null) {
                                 xData.add(data.getXValue());
                             }

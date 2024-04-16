@@ -1,7 +1,12 @@
 # Constellation Changes
 
 ## Changes in March 2024
--   Update `VideoFrame` to be a record.
+-   Removed `dateTimeAttr` parameter from `ClusteringManager.InitDimOrHidePlugin` as it was unused.
+-   Removed `datetimeAtrr` parameter from `TimelinePanel.initExclusionState` as it was unused.
+-   Renamed `exclusionState()`, `setIsShowingSelectedOnly()`, and `setIsShowingNodeLabels()` in `TimelineState` 
+    to `getExclusionState()`, `setShowingSelectedOnly()`, and `setShowingNodeLabels()` to follow naming convention.
+-   Updated `TimeExtents` to be a record instead of a class.
+-   Updated `VideoFrame` to be a record.
 
 ## Changes in February 2024
 -   Updated the `constellationapplication/netbeans-runner` docker image

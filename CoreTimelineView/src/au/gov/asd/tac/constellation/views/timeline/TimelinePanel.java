@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,10 +34,8 @@ import au.gov.asd.tac.constellation.views.timeline.components.TimelineChart;
 import au.gov.asd.tac.constellation.views.timeline.components.Transaction;
 import au.gov.asd.tac.constellation.views.timeline.components.Vertex;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -87,8 +85,6 @@ public class TimelinePanel extends Region {
     private static final char ARROW_CHAR = 0x2192;
     
     private static final int MIN_CLUSTER_WIDTH = 14; // Min width of 14 pixels which matches the min label width.
-    long lowest = Long.MAX_VALUE;
-    long highest = Long.MIN_VALUE;
     public final TimelineTopComponent coordinator;
     private final AnchorPane innerPane = new AnchorPane();
     private final ToolBar toolbar;
@@ -202,8 +198,8 @@ public class TimelinePanel extends Region {
 
         if (te != null) {
             final double paddingFactor = 0.05;
-            double unadjustedLowerTimeExtent = te.lowerTimeExtent;
-            double unadjustedUpperTimeExtent = te.upperTimeExtent;
+            double unadjustedLowerTimeExtent = te.lowerTimeExtent();
+            double unadjustedUpperTimeExtent = te.upperTimeExtent();
             if (unadjustedLowerTimeExtent == unadjustedUpperTimeExtent) {
                 unadjustedLowerTimeExtent -= 5000;
                 unadjustedUpperTimeExtent += 5000;
@@ -211,8 +207,8 @@ public class TimelinePanel extends Region {
             final double deltaTimeExtent = unadjustedUpperTimeExtent - unadjustedLowerTimeExtent;
             final double padding = deltaTimeExtent * paddingFactor;
             // This is adding 1% padding on the left and right so that the data is actually visible.
-            double adjustedLowerTimeExtent = unadjustedLowerTimeExtent - padding;
-            double adjustedUpperTimeExtent = unadjustedUpperTimeExtent + padding;
+            final double adjustedLowerTimeExtent = unadjustedLowerTimeExtent - padding;
+            final double adjustedUpperTimeExtent = unadjustedUpperTimeExtent + padding;
             this.setTimelineExtent(graph, adjustedLowerTimeExtent, adjustedUpperTimeExtent, selectedOnly, zoneId);
 
         } else {
@@ -236,13 +232,12 @@ public class TimelinePanel extends Region {
         for (final TreeElement element : clusteringManager.getElementsToDraw()) {
             XYChart.Data<Number, Number> nodeItem = element.getNodeItem();
             if (nodeItem == null) {
-                if (element instanceof TreeLeaf) {
-                    final TreeLeaf leaf = (TreeLeaf) element;
+                if (element instanceof TreeLeaf leaf) {
                     final int transactionID = leaf.getId();
 
                     // Get the color for this transaction:
                     ConstellationColor col = ConstellationColor.getColorValue(graph.getStringValue(colorTransAttr, transactionID));
-                    final Color transColor = col != null ? new Color(col.getRed(), col.getGreen(), col.getBlue(), col.getAlpha()) : FALLBACK_COLOR;
+                    Color transColor = col != null ? col.getJavaFXColor() : FALLBACK_COLOR;
 
                     // Get the selection status for the transaction:
                     final boolean transSelected = graph.getBooleanValue(selectedTransAttr, transactionID);
@@ -253,9 +248,9 @@ public class TimelinePanel extends Region {
 
                     // Get the color for each vertex:
                     col = ConstellationColor.getColorValue(graph.getStringValue(colorVertAttr, sourceA));
-                    final Color sourceAColor = col != null ? new Color(col.getRed(), col.getGreen(), col.getBlue(), col.getAlpha()) : FALLBACK_COLOR;
+                    final Color sourceAColor = col != null ? col.getJavaFXColor() : FALLBACK_COLOR;
                     col = ConstellationColor.getColorValue(graph.getStringValue(colorVertAttr, sourceB));
-                    final Color sourceBColor = col != null ? new Color(col.getRed(), col.getGreen(), col.getBlue(), col.getAlpha()) : FALLBACK_COLOR;
+                    final Color sourceBColor = col != null ? col.getJavaFXColor() : FALLBACK_COLOR;
 
                     // Get the selection state for each vertex:
                     final boolean sourceASelected = graph.getBooleanValue(selectedVertAttr, sourceA);
@@ -286,14 +281,16 @@ public class TimelinePanel extends Region {
                         vertexB = new Vertex(sourceB, sourceB, sourceBLabel, sourceBColor,
                                 sourceBSelected, transSelected, btnShowLabels.isSelected());
 
-                        if (directionality == Graph.DOWNHILL) {
-                            final String label = labelMaker(sourceALabel, ARROW_CHAR, sourceBLabel);
-                            transaction = new Transaction(transactionID, transColor, label, Transaction.DIRECTED_UP, transSelected);
-                        } else if (directionality == Graph.UPHILL) {
-                            throw new IllegalArgumentException("source > dest is always downhill");
-                        } else { // Undirected / Bi-directional
-                            final String label = labelMaker(sourceALabel, '-', sourceBLabel);
-                            transaction = new Transaction(transactionID, transColor, label, transSelected);
+                        switch (directionality) {
+                            case Graph.DOWNHILL -> {
+                                final String label = labelMaker(sourceALabel, ARROW_CHAR, sourceBLabel);
+                                transaction = new Transaction(transactionID, transColor, label, Transaction.DIRECTED_UP, transSelected);
+                            }
+                            case Graph.UPHILL -> throw new IllegalArgumentException("source > dest is always downhill");
+                            default -> { // Undirected / Bi-directional
+                                final String label = labelMaker(sourceALabel, '-', sourceBLabel);
+                                transaction = new Transaction(transactionID, transColor, label, transSelected);
+                            }
                         }
                     } else if (sourceA < sourceB) {
                         vertexA = new Vertex(sourceB, sourceB, sourceBLabel, sourceBColor,
@@ -301,16 +298,16 @@ public class TimelinePanel extends Region {
                         vertexB = new Vertex(sourceA, sourceA, sourceALabel, sourceAColor,
                                 sourceASelected, transSelected, btnShowLabels.isSelected());
 
-                        if (directionality == Graph.DOWNHILL) {
-                            throw new IllegalArgumentException("source < dest is always uphill");
-//                                final String label = labelMaker(sourceBLabel, ARROW_CHAR, sourceALabel);
-//                                transaction = new Transaction(transactionID, transColor, label, Transaction.DIRECTED_UP, transSelected);
-                        } else if (directionality == Graph.UPHILL) {
-                            final String label = labelMaker(sourceALabel, ARROW_CHAR, sourceBLabel);
-                            transaction = new Transaction(transactionID, transColor, label, Transaction.DIRECTED_DOWN, transSelected);
-                        } else { // Undirected / Bi-directional
-                            final String label = labelMaker(sourceBLabel, '-', sourceALabel);
-                            transaction = new Transaction(transactionID, transColor, label, transSelected);
+                        switch (directionality) {
+                            case Graph.DOWNHILL -> throw new IllegalArgumentException("source < dest is always uphill");
+                            case Graph.UPHILL -> {
+                                final String label = labelMaker(sourceALabel, ARROW_CHAR, sourceBLabel);
+                                transaction = new Transaction(transactionID, transColor, label, Transaction.DIRECTED_DOWN, transSelected);
+                            }
+                            default -> { // Undirected / Bi-directional
+                                final String label = labelMaker(sourceBLabel, '-', sourceALabel);
+                                transaction = new Transaction(transactionID, transColor, label, transSelected);
+                            }
                         }
                     } else {
                         // Same source and destination: a loop.
@@ -324,36 +321,27 @@ public class TimelinePanel extends Region {
                     nodeItem = new XYChart.Data<>(leaf.getDatetime(),
                             (Math.max(sourceA, sourceB) - Math.min(sourceA, sourceB)),
                             new Interaction(vertexA, vertexB, transaction, btnShowLabels.isSelected()));
-                    element.setNodeItem(nodeItem);
                 } else {
-                    nodeItem = new XYChart.Data<>(element.getLowerTimeExtent(), element.getLowerDisplayPos(),
-                            new Cluster(element.getLowerTimeExtent(), element.getUpperTimeExtent(),
+                    nodeItem = new XYChart.Data<>(element.getLowerTimeExtent(), element.getLowerDisplayPos(), 
+                            new Cluster(element.getLowerTimeExtent(), element.getUpperTimeExtent(), 
                                     element.getLowerDisplayPos(), element.getUpperDisplayPos(), element.getCount(),
                                     element.getSelectedCount(), element.anyNodesSelected()));
-                    element.setNodeItem(nodeItem);
                 }
+                
+                element.setNodeItem(nodeItem);
             }
 
-            if (nodeItem != null) {
-                series.getData().add(nodeItem);
+            series.getData().add(nodeItem);
 
-                lowestObservedY = Math.min(element.getLowerDisplayPos(), lowestObservedY);
-                highestObservedY = Math.max(element.getUpperDisplayPos(), highestObservedY);
-            }
+            lowestObservedY = Math.min(element.getLowerDisplayPos(), lowestObservedY);
+            highestObservedY = Math.max(element.getUpperDisplayPos(), highestObservedY);
         }
 
         timeline.populate(series, lowestObservedY, highestObservedY, selectedOnly, zoneId);
     }
 
     private static String labelMaker(final String a, final char cxn, final String b) {
-        final String label;
-        if (a != null && b != null) {
-            label = String.format("%s %s %s", a, cxn, b);
-        } else {
-            label = null;
-        }
-
-        return label;
+        return a != null && b != null ? String.format("%s %s %s", a, cxn, b) : null;
     }
 
     /**
@@ -373,10 +361,10 @@ public class TimelinePanel extends Region {
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Extents">
-    protected void setTimelineExtent(final GraphReadMethods graph,
-            final double lowerTimeExtent, final double upperTimeExtent, final boolean showSelectedOnly, final ZoneId zoneId) {
+    protected void setTimelineExtent(final GraphReadMethods graph, final double lowerTimeExtent, final double upperTimeExtent, 
+            final boolean showSelectedOnly, final ZoneId zoneId) {
         final double millisPerPixel = (upperTimeExtent - lowerTimeExtent) / timeline.getWidth();
-        double pixelsPerTransaction = MIN_CLUSTER_WIDTH * millisPerPixel;
+        final double pixelsPerTransaction = MIN_CLUSTER_WIDTH * millisPerPixel;
 
         clusteringManager.filterTree(pixelsPerTransaction, (long) lowerTimeExtent, (long) upperTimeExtent);
 
@@ -386,12 +374,10 @@ public class TimelinePanel extends Region {
     }
 
     protected void setExclusionState(final int exclusionState) {
-        if (exclusionState == 1) {
-            cmbExcludedNodes.setValue(Bundle.DimNodesLabel());
-        } else if (exclusionState == 2) {
-            cmbExcludedNodes.setValue(Bundle.HideNodesLabel());
-        } else {
-            cmbExcludedNodes.setValue(Bundle.ShowNodesLabel());
+        switch (exclusionState) {
+            case 1 -> cmbExcludedNodes.setValue(Bundle.DimNodesLabel());
+            case 2 -> cmbExcludedNodes.setValue(Bundle.HideNodesLabel());
+            default -> cmbExcludedNodes.setValue(Bundle.ShowNodesLabel());
         }
     }
 
@@ -415,16 +401,17 @@ public class TimelinePanel extends Region {
         return actualVxModCount <= expectedvxMod && actualTxModCount <= expectedtxMod;
     }
 
-    protected void initExclusionState(final Graph graph, final String datetimeAttr,
-            final long lowerTimeExtent, final long upperTimeExtent, final int exclusionState) {
-        final Plugin initPlugin = clusteringManager.new InitDimOrHidePlugin(datetimeAttr, lowerTimeExtent, upperTimeExtent, exclusionState, (vxMod, txMod) -> {
+    protected void initExclusionState(final Graph graph, final long lowerTimeExtent, final long upperTimeExtent, 
+            final int exclusionState) {
+        final Plugin initPlugin = clusteringManager.new InitDimOrHidePlugin(lowerTimeExtent, upperTimeExtent, exclusionState, (vxMod, txMod) -> {
             expectedvxMod = vxMod;
             expectedtxMod = txMod;
         });
         PluginExecution.withPlugin(initPlugin).executeLater(graph);
     }
 
-    protected void updateExclusionState(final Graph graph, final long lowerTimeExtent, final long upperTimeExtent, final int exclusionState) {
+    protected void updateExclusionState(final Graph graph, final long lowerTimeExtent, final long upperTimeExtent, 
+            final int exclusionState) {
         final Plugin updatePlugin = clusteringManager.new UpdateDimOrHidePlugin(lowerTimeExtent, upperTimeExtent, exclusionState, (vxMod, txMod) -> {
             expectedvxMod = vxMod;
             expectedtxMod = txMod;
@@ -441,7 +428,7 @@ public class TimelinePanel extends Region {
 
         cmbDatetimeAttributes = new ComboBox<>();
         cmbDatetimeAttributes.setPrefWidth(150.0);
-        cmbDatetimeAttributes.valueProperty().addListener((final ObservableValue<? extends String> observable, final String oldValue, final String newValue) -> {
+        cmbDatetimeAttributes.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (oldValue != null && newValue != null && !newValue.equals(oldValue)) {
                 coordinator.setCurrentDatetimeAttr(newValue);
             }
@@ -457,7 +444,7 @@ public class TimelinePanel extends Region {
         final ObservableList<ZoneId> timeZones = FXCollections.observableArrayList();
         ZoneId.getAvailableZoneIds().forEach(id -> timeZones.add(ZoneId.of(id)));
         timeZoneComboBox.setItems(timeZones.sorted(TimeZoneUtilities.ZONE_ID_COMPARATOR));
-        final Callback<ListView<ZoneId>, ListCell<ZoneId>> cellFactory = (final ListView<ZoneId> p) -> new ListCell<ZoneId>() {
+        final Callback<ListView<ZoneId>, ListCell<ZoneId>> cellFactory = (final ListView<ZoneId> p) -> new ListCell<>() {
             @Override
             protected void updateItem(final ZoneId item, boolean empty) {
                 super.updateItem(item, empty);
@@ -484,7 +471,7 @@ public class TimelinePanel extends Region {
 
         cmbExcludedNodes.setItems(excludedNodeList);
         cmbExcludedNodes.setValue(excludedNodeList.get(0));
-        cmbExcludedNodes.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observable, final String oldValue, final String newValue) -> {
+        cmbExcludedNodes.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (!Objects.equals(oldValue, newValue) && coordinator != null) {
                 if (newValue.equals(Bundle.DimNodesLabel())) {
                     coordinator.setExclusionState(1);
@@ -498,9 +485,8 @@ public class TimelinePanel extends Region {
 
         // Handle
         btnShowLabels = new ToggleButton(Bundle.ShowLabels());
-        btnShowLabels.selectedProperty().addListener((final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue) -> {
-            coordinator.setIsShowingNodeLabels(newValue);
-        });
+        btnShowLabels.selectedProperty().addListener((observable, oldValue, newValue) 
+                -> coordinator.setIsShowingNodeLabels(newValue));
 
         btnZoomToSelection = new Button(Bundle.ZoomtoSelection());
         btnZoomToSelection.setOnAction(e -> {
@@ -550,9 +536,7 @@ public class TimelinePanel extends Region {
         newComboBox.setVisible(false);
         newComboBox.setPromptText(Bundle.SelectLabelAttribute());
         newComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (oldValue == null && newValue != null) {
-                coordinator.setNodeLabelsAttr(newValue);
-            } else if (oldValue != null && newValue != null && !oldValue.equals(newValue)) {
+            if (newValue != null && !newValue.equals(oldValue)) {
                 coordinator.setNodeLabelsAttr(newValue);
             }
         });
@@ -562,7 +546,6 @@ public class TimelinePanel extends Region {
             if (t.getDeltaY() < 0) {
                 newComboBox.getSelectionModel().selectNext();
             } else if (t.getDeltaY() > 0) {
-
                 newComboBox.getSelectionModel().selectPrevious();
             }
         });
@@ -572,7 +555,7 @@ public class TimelinePanel extends Region {
         return newComboBox;
     }
 
-    public void setNodeLabelAttributes(final ArrayList<String> attrList) {
+    public void setNodeLabelAttributes(final List<String> attrList) {
         if (attrList != null) {
             ObservableList<String> attrLabels = FXCollections.observableArrayList(attrList);
 
@@ -617,8 +600,7 @@ public class TimelinePanel extends Region {
         toolbar.setDisable(isDisabled);
     }
 
-    public void setDateTimeAttributes(final List<String> attrList,
-            final String currentDateTimeAttr) {
+    public void setDateTimeAttributes(final List<String> attrList, final String currentDateTimeAttr) {
         final ObservableList<String> attrs = FXCollections.observableArrayList(attrList);
 
         cmbDatetimeAttributes.setItems(attrs);

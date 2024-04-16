@@ -201,7 +201,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
             }
 
             timelinePanel.updateExclusionState(graphNode.getGraph(),
-                    (long) state.getLowerTimeExtent(), (long) state.getUpperTimeExtent(), state.exclusionState());
+                    (long) state.getLowerTimeExtent(), (long) state.getUpperTimeExtent(), state.getExclusionState());
             overviewPanel.setExtentPOV(state.getLowerTimeExtent(), state.getUpperTimeExtent());
         }
     }
@@ -254,7 +254,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
             }
 
             timelinePanel.updateExclusionState(graphNode.getGraph(),
-                    (long) state.getLowerTimeExtent(), (long) state.getUpperTimeExtent(), state.exclusionState());
+                    (long) state.getLowerTimeExtent(), (long) state.getUpperTimeExtent(), state.getExclusionState());
             overviewPanel.setExtentPOV(state.getLowerTimeExtent(), state.getUpperTimeExtent());
         }
     }
@@ -485,7 +485,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                                 if (state.getLowerTimeExtent() == 0) {
                                     setExtents(getTimelineLowerTimeExtent(), getTimelineUpperTimeExtent());
                                 }
-                                timelinePanel.setExclusionState(state.exclusionState());
+                                timelinePanel.setExclusionState(state.getExclusionState());
                             } else {
                                 // There is no state, so lets create a new one:
                                 state = new TimelineState(getTimelineLowerTimeExtent(), getTimelineUpperTimeExtent(),
@@ -553,14 +553,14 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
         if (state != null) {
             state.setExclusionState(exclusionState);
             // Enable dimming if just enabled:
-            timelinePanel.initExclusionState(graphNode.getGraph(), state.getDateTimeAttr(),
-                    (long) state.getLowerTimeExtent(), (long) state.getUpperTimeExtent(), exclusionState);
+            timelinePanel.initExclusionState(graphNode.getGraph(), (long) state.getLowerTimeExtent(), 
+                    (long) state.getUpperTimeExtent(), exclusionState);
         }
     }
 
     protected void setIsShowingSelectedOnly(final boolean isShowingSelectedOnly) {
         if (state != null) {
-            state.setIsShowingSelectedOnly(isShowingSelectedOnly);
+            state.setShowingSelectedOnly(isShowingSelectedOnly);
         }
 
         persistStateToGraph();
@@ -578,7 +578,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
 
     protected void setIsShowingNodeLabels(final boolean isShowingNodeLabels) {
         if (state != null) {
-            state.setIsShowingNodeLabels(isShowingNodeLabels);
+            state.setShowingNodeLabels(isShowingNodeLabels);
             persistStateToGraph();
 
             if (!isShowingNodeLabels || state.getNodeLabelsAttr() != null) {
