@@ -463,7 +463,7 @@ public class SVGObject {
     }
 
     public void applyGrayScaleFilter() {
-        this.setAttribute(SVGAttributeConstants.FILTER, "grayscale(1)");
+        this.setFilter("grayscale(1)");
     }
 
     public void setBaseline(final String baseline) {
@@ -491,9 +491,9 @@ public class SVGObject {
     }
     
     public void setFeColor(Color color) {
-        final float red = 255F - (color.getRed() / 255F);
-        final float green = 255F - (color.getGreen() / 255F);
-        final float blue = 255F - (color.getBlue() / 255F );
+        final float red = color.getRed() / 255F;
+        final float green = color.getGreen() / 255F;
+        final float blue = color.getBlue() / 255F;
         
         String matrix = String.format("%s 0 0 0 0 0 %s 0 0 0 0 0 %s 0 0 0 0 0 1 0", red, green, blue);
         
@@ -534,5 +534,13 @@ public class SVGObject {
         if (children != null && !children.isEmpty()){
             svgDataReference.setChildren(children);
         }
+    }
+
+    public void setExternalReference(String reference) {
+        this.setAttribute(SVGAttributeConstants.EXTERNAL_RESOURCE_REFERENCE, reference);
+    }
+
+    public void setFilter(String filterReference) {
+        this.setAttribute(SVGAttributeConstants.FILTER, filterReference);
     }
 }

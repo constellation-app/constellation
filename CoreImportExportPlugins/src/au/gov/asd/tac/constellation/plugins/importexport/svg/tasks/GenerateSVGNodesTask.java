@@ -239,68 +239,19 @@ public class GenerateSVGNodesTask implements Runnable, SharedInteractionRunnable
      * @return 
      */
     private SVGData getSVGIcon(ConstellationIcon icon, Color color){
-        final SVGData svgIcon;
         
         // Some common icons are not visable and should not be exported
-        if (DefaultIconProvider.isVisable(icon)){
-            svgIcon = icon.buildSVG(color);
+        if (!DefaultIconProvider.isVisable(icon)){
+            return null; 
+
+        // If there is not a external asset direcotory ConstellationIcon should be used to build an imbeded SVG assets with imbeded image data
+        } else if (!graph.directory.exists()){
+            return icon.buildSVG(color);
             
-            // The SVGIcon built by the ConstellationIcon should be used in all cases except for when an external image directory is provided and the icon has an imbedded raster image.
-            if (graph.directory.exists() && svgIcon.getType().equals(SVGTypeConstants.IMAGE.getTypeString())){
-
-                // Build the name of the referenced Raster Image
-                final StringBuilder fileNameBuilder = new StringBuilder();                
-                
-                if (icon.getIconData() instanceof FileIconData iconData){
-                    fileNameBuilder.append(new File(iconData.getFilePath()).getName());
-                    
-                } else { 
-                    fileNameBuilder.append(icon.getExtendedName());
-                    fileNameBuilder.append(".png");
-                }
-                
-                final String fileName = FileNameCleaner.cleanFileName(fileNameBuilder.toString());
-                
-                // As the raster image refwerence will have a parent folder that sits in the same folder as the output svg file, a relative path can be generated.
-                final StringBuilder relativePathBuilder = new StringBuilder();
-                relativePathBuilder.append(".");
-                relativePathBuilder.append(File.separator);
-                relativePathBuilder.append(graph.directory.getName());
-                relativePathBuilder.append(File.separator);
-                relativePathBuilder.append(SVGParser.sanitisePlanText(fileName));
-
-                // Update the svgIcons image reference to be the realitive path to th image. 
-                svgIcon.setAttribute(SVGAttributeConstants.HREF, relativePathBuilder.toString());
-                
-                // Generate and apply a reference of the color filter in the filter attribute of this SVG.
-                if (color != null) {
-                    svgIcon.setAttribute(SVGAttributeConstants.FILTER, this.generateSVGColorFilterReference(color));
-                }
-
-                // Build the complete path to the raster image reference.
-                final StringBuilder completePathBuilder = new StringBuilder();
-                completePathBuilder.append(graph.directory.getAbsolutePath());
-                completePathBuilder.append(File.separator);
-                completePathBuilder.append(fileName);
- 
-                // Save the reference image file.
-                try {
-                    
-                    // Other threads or nodes may have already saved this file so only save the file if it does not already exist.  
-                    final File outputFile = new File(completePathBuilder.toString());
-                    if (!outputFile.exists()){
-                        ImageIO.write(icon.buildBufferedImage(), "png", outputFile);
-                    }
-                    
-                } catch (IOException ex) {
-                    //TODO: throw an exception here
-                }
-
-            }
+        //    
         } else {
-            svgIcon = null;
+            return this.generateRasterImageRefrerence(icon, color);
         }
-        return svgIcon;
     }
 
     /**
@@ -319,5 +270,55 @@ public class GenerateSVGNodesTask implements Runnable, SharedInteractionRunnable
             colorFilters.put(htmlColor, filter);
         }
         return String.format("url(#%s)", htmlColor);
+    }
+    
+    private SVGData generateRasterImageRefrerence(ConstellationIcon icon, Color color){
+        
+        // Build the name of the referenced Raster Image
+        final StringBuilder fileNameBuilder = new StringBuilder();             
+        if (icon.getIconData() instanceof FileIconData iconData){
+            fileNameBuilder.append(new File(iconData.getFilePath()).getName());
+        } else { 
+            fileNameBuilder.append(icon.getExtendedName());
+            fileNameBuilder.append(".png");
+        }
+        final String fileName = FileNameCleaner.cleanFileName(fileNameBuilder.toString());
+
+        // Build the relative path between the svgGraphFile and the raster image reference.
+        final StringBuilder relativePathBuilder = new StringBuilder();
+        relativePathBuilder.append(".");
+        relativePathBuilder.append(File.separator);
+        relativePathBuilder.append(graph.directory.getName());
+        relativePathBuilder.append(File.separator);
+        relativePathBuilder.append(SVGParser.sanitisePlanText(fileName));
+
+        
+        // Build the complete path to the raster image reference.
+        final StringBuilder completePathBuilder = new StringBuilder();
+        completePathBuilder.append(graph.directory.getAbsolutePath());
+        completePathBuilder.append(File.separator);
+        completePathBuilder.append(fileName);
+        
+        // Build the image svg asset to reference th external asset
+        SVGObject svgIcon = SVGObject.loadFromTemplate(SVGTemplateConstants.IMAGE);
+        svgIcon.setExternalReference(relativePathBuilder.toString());
+
+        // Generate and apply a reference of the color filter in the filter attribute of this SVG.
+        if (color != null) {
+            svgIcon.setFilter(this.generateSVGColorFilterReference(color));
+        }
+
+        // Save the reference image file.
+        try {
+            // This image file may have already been saved so only do so if it does not already exist.  
+            final File outputFile = new File(completePathBuilder.toString());
+            if (!outputFile.exists()){
+                ImageIO.write(icon.buildBufferedImage(), "png", outputFile);
+            }
+        } catch (IOException ex) {
+            //TODO: throw an exception here
+        }
+        
+        return svgIcon.toSVGData();
     }
 }
