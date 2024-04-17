@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -157,7 +157,6 @@ public class MonitorManager implements GraphManagerListener, GraphChangeListener
     }
 
     public void addMonitorListener(final MonitorListener listener, final MonitorTransitionFilter filter, final Monitor... monitors) {
-
         // Find the listener entry or create a new one
         ListenerEntry listenerEntry = null;
         for (final ListenerEntry entry : listenerEntries) {

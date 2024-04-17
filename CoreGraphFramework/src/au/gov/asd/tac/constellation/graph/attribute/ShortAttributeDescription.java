@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,16 +57,20 @@ public class ShortAttributeDescription extends AbstractAttributeDescription {
 
     @SuppressWarnings("unchecked") // Casts are manually checked
     private short convertFromObject(final Object object) throws IllegalArgumentException {
-        if (object == null) {
-            return (short) getDefault();
-        } else if (object instanceof Number) {
-            return ((Number) object).shortValue();
-        } else if (object instanceof Boolean) {
-            return ((Boolean) object) ? (short) 1 : (short) 0;
-        } else if (object instanceof String) {
-            return convertFromString((String) object);
-        } else {
-            throw new IllegalArgumentException(String.format(
+        switch (object) {
+            case Number number -> {
+                return number.shortValue();
+            }       
+            case Boolean bool -> {
+                return bool ? (short) 1 : (short) 0;
+            }       
+            case String string -> {
+                return convertFromString(string);
+            }
+            case null -> {
+                return (short) getDefault();
+            }
+            default -> throw new IllegalArgumentException(String.format(
                     "Error converting Object '%s' to short", object.getClass()));
         }
     }

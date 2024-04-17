@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,18 +43,18 @@ public class ProductBuilder extends GraphBuilder {
         return formProduct(graph, g1, g2, PRODUCT_DEFAULT);
     }
 
-    public static ProductBuilder formProduct(final GraphReadMethods g1, final GraphReadMethods g2, ProductType productType) {
+    public static ProductBuilder formProduct(final GraphReadMethods g1, final GraphReadMethods g2, final ProductType productType) {
         return formProduct(new StoreGraph(), g1, g2, productType);
     }
 
-    public static ProductBuilder formProduct(final GraphWriteMethods graph, final GraphReadMethods g1, final GraphReadMethods g2, ProductType productType) {
-
+    public static ProductBuilder formProduct(final GraphWriteMethods graph, final GraphReadMethods g1, final GraphReadMethods g2, 
+            final ProductType productType) {
         // Record the original vertices of both operands before we change anything.
-        int[] g1Vertices = new int[g1.getVertexCount()];
+        final int[] g1Vertices = new int[g1.getVertexCount()];
         for (int i = 0; i < g1.getVertexCount(); i++) {
             g1Vertices[i] = g1.getVertex(i);
         }
-        int[] g2Vertices = new int[g2.getVertexCount()];
+        final int[] g2Vertices = new int[g2.getVertexCount()];
         for (int i = 0; i < g2.getVertexCount(); i++) {
             g2Vertices[i] = g2.getVertex(i);
         }
@@ -81,13 +81,11 @@ public class ProductBuilder extends GraphBuilder {
 
         // Iterate through each vertex in g1
         for (int i = 0; i < g1Vertices.length; i++) {
-
             // Form transactions where y~y'
             switch (productType) {
-                case CARTESIAN_PRODUCT:
+                case CARTESIAN_PRODUCT -> {
                     for (int k = 0; k < g2.getVertexCount(); k++) {
                         for (int l = 0; l < g2.getVertexNeighbourCount(g2Vertices[k]); l++) {
-
                             // We now have g2Vertices[k] ~ g2Vertices[pos2]
                             final int pos2 = g2.getVertexPosition(g2.getVertexNeighbour(g2Vertices[k], l));
 
@@ -95,11 +93,10 @@ public class ProductBuilder extends GraphBuilder {
                             addLinkProduct(graph, g1, g2, transactionsList, rightGraphs, g1Vertices, g2Vertices, i, k, i, pos2, false, true);
                         }
                     }
-                    break;
-                case STRONG_PRODUCT:
+                }
+                case STRONG_PRODUCT -> {
                     for (int k = 0; k < g2.getVertexCount(); k++) {
                         for (int l = 0; l < g2.getVertexNeighbourCount(g2Vertices[k]); l++) {
-
                             // We now have g2Vertices[k] ~ g2Vertices[pos2]
                             final int pos2 = g2.getVertexPosition(g2.getVertexNeighbour(g2Vertices[k], l));
 
@@ -107,12 +104,11 @@ public class ProductBuilder extends GraphBuilder {
                             addLinkProduct(graph, g1, g2, transactionsList, rightGraphs, g1Vertices, g2Vertices, i, k, i, pos2, false, true);
                         }
                     }
-                    break;
-                case RIGHT_COMPLETE_PRODUCT:
+                }
+                case RIGHT_COMPLETE_PRODUCT -> {
                     for (int j = i - 1; j >= 0; j--) {
                         for (int k = 0; k < g2.getVertexCount(); k++) {
                             for (int l = 0; l < g2.getVertexNeighbourCount(g2Vertices[k]); l++) {
-
                                 // We now have g2Vertices[k] ~ g2Vertices[pos2]
                                 final int pos2 = g2.getVertexPosition(g2.getVertexNeighbour(g2Vertices[k], l));
 
@@ -121,29 +117,27 @@ public class ProductBuilder extends GraphBuilder {
                             }
                         }
                     }
-                    break;
-                default:
-                    break;
+                }
+                default -> {
+                    // do nothing
+                }
             }
 
             for (int j = 0; j < g1.getVertexNeighbourCount(g1Vertices[i]); j++) {
-
                 // we now have g1Vertices[i] ~ g1Vertices[pos]
                 final int pos = g1.getVertexPosition(g1.getVertexNeighbour(g1Vertices[i], j));
 
                 //Form transactions where x~x'
                 switch (productType) {
-                    case CARTESIAN_PRODUCT:
+                    case CARTESIAN_PRODUCT -> {
                         for (int k = 0; k < g2.getVertexCount(); k++) {
-
                             // x~x' and y=y'
                             addLinkProduct(graph, g1, g2, transactionsList, rightGraphs, g1Vertices, g2Vertices, i, k, pos, k, true, false);
                         }
-                        break;
-                    case DIRECT_PRODUCT:
+                    }
+                    case DIRECT_PRODUCT -> {
                         for (int k = 0; k < g2.getVertexCount(); k++) {
                             for (int l = 0; l < g2.getVertexNeighbourCount(g2Vertices[k]); l++) {
-
                                 // We now have g2Vertices[k] ~ g2Vertices[pos2]
                                 final int pos2 = g2.getVertexPosition(g2.getVertexNeighbour(g2Vertices[k], l));
 
@@ -151,15 +145,13 @@ public class ProductBuilder extends GraphBuilder {
                                 addLinkProduct(graph, g1, g2, transactionsList, rightGraphs, g1Vertices, g2Vertices, i, k, pos, pos2, true, true);
                             }
                         }
-                        break;
-                    case STRONG_PRODUCT:
+                    }
+                    case STRONG_PRODUCT -> {
                         for (int k = 0; k < g2.getVertexCount(); k++) {
-
                             // x~x' and y=y'
                             addLinkProduct(graph, g1, g2, transactionsList, rightGraphs, g1Vertices, g2Vertices, i, k, pos, k, true, false);
 
                             for (int l = 0; l < g2.getVertexNeighbourCount(g2Vertices[k]); l++) {
-
                                 // We now have g2Vertices[k] ~ g2Vertices[pos2]
                                 final int pos2 = g2.getVertexPosition(g2.getVertexNeighbour(g2Vertices[k], l));
 
@@ -167,34 +159,32 @@ public class ProductBuilder extends GraphBuilder {
                                 addLinkProduct(graph, g1, g2, transactionsList, rightGraphs, g1Vertices, g2Vertices, i, k, pos, pos2, true, true);
                             }
                         }
-                        break;
-                    case LEFT_COMPLETE_PRODUCT:
+                    }
+                    case LEFT_COMPLETE_PRODUCT -> {
                         for (int k = 0; k < g2.getVertexCount(); k++) {
                             for (int l = k - 1; l >= 0; l--) {
-
                                 // x~x', y free
                                 addLinkProduct(graph, g1, g2, transactionsList, rightGraphs, g1Vertices, g2Vertices, i, k, pos, l, true, false);
                             }
                         }
-                        break;
-                    default:
-                        break;
+                    }
+                    default -> {
+                        // do nothing
+                    }
                 }
             }
         }
 
         final int[] transactions = new int[transactionsList.size()];
         int currentTrans = 0;
-        for (int transID : transactionsList) {
+        for (final int transID : transactionsList) {
             transactions[currentTrans++] = transID;
         }
 
         return new ProductBuilder(graph, leftGraphs, rightGraphs, transactions);
-
     }
 
     private static void addLinkProduct(final GraphWriteMethods graph, final GraphReadMethods g1, final GraphReadMethods g2, final List<Integer> transactions, final int[][] rightGraphs, final int[] g1Vertices, final int[] g2Vertices, final int x, final int y, final int x2, final int y2, final boolean g1Counts, final boolean g2Counts) {
-
         // we only consider neighbour relations from a vertex of lower index to a vertex of higher index
         if (g1Vertices[x2] < g1Vertices[x] || g2Vertices[y2] < g1Vertices[y]) {
             return;
@@ -265,5 +255,4 @@ public class ProductBuilder extends GraphBuilder {
         nodes = squashGrouping(leftGraphs);
         this.transactions = transactions;
     }
-
 }

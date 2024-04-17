@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -324,7 +324,7 @@ public interface GraphWriteMethods extends GraphReadMethods {
      */
     void updateAttributeDefaultValue(final int attribute, final Object newObject);
 
-    Object createWriteAttributeObject(final int attribute, IntReadable indexReadable);
+    Object createWriteAttributeObject(final int attribute, final IntReadable indexReadable);
 
     /**
      * Sets the value of the specified attribute for the specified element to

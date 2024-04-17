@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,6 @@ public class CompletePartiteGraphBuilder extends GraphBuilder {
     }
 
     public static CompletePartiteGraphBuilder addCompletePartiteGraph(final GraphWriteMethods graph, final int[] partitionSizes, final boolean directed) {
-
         final int numPartitions = partitionSizes.length;
 
         final int[] noJumps = new int[0];
@@ -42,20 +41,19 @@ public class CompletePartiteGraphBuilder extends GraphBuilder {
             final int size = partitionSizes[i];
 
             // Construct each partition (circulant graph with no jumps, ie. a graph of singletons)
-            CirculantGraphBuilder partition = CirculantGraphBuilder.addCirculant(size, noJumps, directed);
+            final CirculantGraphBuilder partition = CirculantGraphBuilder.addCirculant(size, noJumps, directed);
 
             // Add each partition to the graph
-            AddGraphBuilder union = AddGraphBuilder.addGraph(graph, partition.graph);
+            final AddGraphBuilder union = AddGraphBuilder.addGraph(graph, partition.graph);
 
             // Store the indices of the nodes in each partition as they are in graph.
             partitionVertices[i] = union.nodes;
-
         }
 
         // For each pair of partitions form and record the transactions between them
         for (int i = 0; i < numPartitions; i++) {
             for (int j = i + 1; j < numPartitions; j++) {
-                ConnectionBuilder connector = ConnectionBuilder.makeConnection(graph, partitionVertices[i], partitionVertices[j], directed ? ConnectionBuilder.ConnectionDirection.LEFT_TO_RIGHT : ConnectionBuilder.ConnectionDirection.UNDIRECTED);
+                final ConnectionBuilder connector = ConnectionBuilder.makeConnection(graph, partitionVertices[i], partitionVertices[j], directed ? ConnectionBuilder.ConnectionDirection.LEFT_TO_RIGHT : ConnectionBuilder.ConnectionDirection.UNDIRECTED);
                 partitionTransactions[i][j] = connector.connectingTransactions;
             }
         }

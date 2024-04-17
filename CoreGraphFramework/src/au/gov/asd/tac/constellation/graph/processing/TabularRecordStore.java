@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * An implementation of {@link RecordStore} which is structured like a table
@@ -73,11 +74,8 @@ public class TabularRecordStore implements RecordStore {
      * minimally created, effectively conserving memory.
      */
     protected Object[][] getColumn(final String key) {
-        Object[][] values = records.get(key);
-        if (values == null) {
-            values = records.get(key);
-        }
-        return values;
+        final Object[][] values = records.get(key);
+        return values != null ? values : records.get(key);
     }
 
     /**
@@ -109,10 +107,7 @@ public class TabularRecordStore implements RecordStore {
             return false;
         }
         final Object[] batch = values[record >>> BATCH_BITS];
-        if (batch == null) {
-            return false;
-        }
-        return batch[record & BATCH_MASK] != null;
+        return batch != null && batch[record & BATCH_MASK] != null;
     }
 
     /**
@@ -244,8 +239,6 @@ public class TabularRecordStore implements RecordStore {
         } else if (values.length <= record >>> BATCH_BITS) {
             values = Arrays.copyOf(values, capacity >>> BATCH_BITS);
             createColumn(key, values);
-        } else {
-            // Do nothing
         }
 
         Object[] batch = values[record >>> BATCH_BITS];
@@ -263,7 +256,7 @@ public class TabularRecordStore implements RecordStore {
     @Override
     public List<String> values(final int record) {
         final List<String> values = new ArrayList<>(records.size());
-        for (Object[][] v : records.values()) {
+        for (final Object[][] v : records.values()) {
             values.add(TabularRecordStore.getValue(v, record));
         }
         return values;
@@ -299,7 +292,7 @@ public class TabularRecordStore implements RecordStore {
         final StringBuilder out = new StringBuilder();
         for (int record = 0; record < size; record++) {
             boolean first = true;
-            for (final Map.Entry<String, Object[][]> e : records.entrySet()) {
+            for (final Entry<String, Object[][]> e : records.entrySet()) {
                 if (TabularRecordStore.hasValue(e.getValue(), record)) {
                     if (!first) {
                         out.append(", ");

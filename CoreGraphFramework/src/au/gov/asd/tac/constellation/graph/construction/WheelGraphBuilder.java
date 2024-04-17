@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,6 @@ public class WheelGraphBuilder extends GraphBuilder {
     }
 
     public static WheelGraphBuilder addWheel(final GraphWriteMethods graph, final int numSpokes, final StarGraphBuilder.StarDirection starDirection, final boolean directed) {
-
         final StarGraphBuilder star = StarGraphBuilder.addStar(graph, numSpokes, starDirection);
         final int[] circumferenceTransactions = new int[numSpokes];
 
@@ -71,5 +70,4 @@ public class WheelGraphBuilder extends GraphBuilder {
         System.arraycopy(circumferenceTransactions, 0, transactions, 0, circumferenceTransactions.length);
         System.arraycopy(spokes, 0, transactions, circumferenceTransactions.length, spokes.length);
     }
-
 }

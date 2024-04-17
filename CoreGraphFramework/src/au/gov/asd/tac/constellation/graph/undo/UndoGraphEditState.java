@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -408,7 +408,7 @@ public class UndoGraphEditState {
         final String log = String.format("STATS: OPERATIONS = " + operationCount + " BYTES = " + byteCount + " SHORTS = " + shortCount + " INTS = " + intCount + " LONGS = " + longCount + " OBJECTS = " + objectCount + " GRAPH_OPERATIONS = " + graphOperationCount + " TOTAL = " + total);
         LOGGER.log(Level.INFO, log);
         for (final UndoGraphEditOperation operation : UndoGraphEditOperation.values()) {
-            LOGGER.log(Level.INFO, "    " + operation.ordinal() + " " + operation.getName());
+            LOGGER.log(Level.INFO, "    {0} {1}", new Object[]{operation.ordinal(), operation.getName()});
             final int[] counts = stats[operation.ordinal()];
             for (int i = 0; i < 6; i++) {
                 LOGGER.log(Level.INFO, "{0}", counts[i]);
@@ -419,7 +419,6 @@ public class UndoGraphEditState {
     }
 
     public void execute(final GraphWriteMethods graph) {
-
         bytePointer = 0;
         shortPointer = 0;
         intPointer = 0;
@@ -443,7 +442,6 @@ public class UndoGraphEditState {
     }
 
     public void undo(final GraphWriteMethods graph) {
-
         bytePointer = byteCount;
         shortPointer = shortCount;
         intPointer = intCount;
