@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -106,8 +106,7 @@ public class ProjectUpdater extends Task {
                 final NodeList children = publicPackagesNode.getChildNodes();
                 while (children.getLength() > 0) {
                     final Node child = children.item(0);
-                    if (child instanceof Element) {
-                        final Element childElement = (Element) child;
+                    if (child instanceof Element childElement) {
                         if (childElement.getTagName().equals(PACKAGE_TAG)) {
                             publicPackages.add(childElement.getTextContent());
                         }
@@ -130,14 +129,12 @@ public class ProjectUpdater extends Task {
                 final Node classPathExtensionNode = classPathExtensionNodes.item(0);
                 if (classPathExtensionNode.getParentNode() == dataNode) {
                     Node nextNode = classPathExtensionNode.getNextSibling();
-                    while (nextNode instanceof Text) {
-                        final Node textNode = nextNode;
+                    while (nextNode instanceof Text textNode) {
                         nextNode = nextNode.getNextSibling();
                         dataNode.removeChild(textNode);
                     }
                     Node prevNode = classPathExtensionNode.getPreviousSibling();
-                    while (prevNode instanceof Text) {
-                        final Node textNode = prevNode;
+                    while (prevNode instanceof Text textNode) {
                         prevNode = prevNode.getPreviousSibling();
                         dataNode.removeChild(textNode);
                     }
@@ -205,7 +202,7 @@ public class ProjectUpdater extends Task {
 
             // Save the edited document to project.xml
             saveXMLFile(document, projectFile);
-        } catch (IOException | IllegalStateException | ParserConfigurationException | TransformerException | DOMException ex) {
+        } catch (final IOException | IllegalStateException | ParserConfigurationException | TransformerException | DOMException ex) {
             logMessage("Exception during update: " + ex.getClass() + " " + ex.getMessage() + " " + ex.getStackTrace()[0]);
         }
     }
@@ -236,8 +233,7 @@ public class ProjectUpdater extends Task {
 
         final TransformerFactory transformerFactory = TransformerFactory.newInstance();
         transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        // Ant's build.xml can not use this
-//        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
         final Transformer transformer = transformerFactory.newTransformer();
 
         // Create a document to work on
@@ -256,8 +252,7 @@ public class ProjectUpdater extends Task {
     private static void saveXMLFile(final Document document, final File xmlFile) throws IOException, TransformerException {
         final TransformerFactory transformerFactory = TransformerFactory.newInstance();
         transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        // Ant's build.xml can not use this
-//        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
         final Transformer transformer = transformerFactory.newTransformer();
 
         try (FileOutputStream out = new FileOutputStream(xmlFile)) {
@@ -290,11 +285,9 @@ public class ProjectUpdater extends Task {
                                     publicPackages.add(name);
                                     break;
                                 }
-                            } else {
-                                if (name.equals(expression)) {
-                                    publicPackages.add(name);
-                                    break;
-                                }
+                            } else if (name.equals(expression)) {
+                                publicPackages.add(name);
+                                break;
                             }
                         }
                     }
@@ -305,7 +298,7 @@ public class ProjectUpdater extends Task {
         }
     }
 
-    private void logMessage(String message) {
+    private void logMessage(final String message) {
         if (getProject() != null) {
             getProject().log(message);
         } else {
