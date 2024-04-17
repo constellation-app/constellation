@@ -702,7 +702,7 @@ public class Table {
                         final int sourceVertexId = readableGraph.getLinkLowVertex(linkId);
                         attributeValue = readableGraph.getObjectValue(attributeId, sourceVertexId);
                     }
-                    case GraphRecordStoreUtilities.TRANSACTION ->{
+                    case GraphRecordStoreUtilities.TRANSACTION -> {
                         attributeValue = readableGraph.getObjectValue(attributeId, 0);
                         final String displayText = interaction.getDisplayText(attributeValue);
                         // For each transaction in edge
