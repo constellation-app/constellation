@@ -77,6 +77,8 @@ public class Table {
     private final ChangeListener<ObservableList<String>> tableSelectionListener;
     private final ListChangeListener selectedOnlySelectionListener;
 
+    private static final String MULTI_VALUE = "<Multiple Values>";
+
     /**
      * Cache strings used in table cells to significantly reduce memory used by the same string repeated in columns and
      * rows.
@@ -625,14 +627,27 @@ public class Table {
                     .getInteraction(column.getAttribute().getAttributeType());
 
             final Object attributeValue;
+            Boolean isMultivalue = false;
             if (attributeId != Graph.NOT_FOUND) {
                 switch (column.getAttributeNamePrefix()) {
                     case GraphRecordStoreUtilities.SOURCE -> {
                         final int sourceVertexId = readableGraph.getEdgeSourceVertex(edgeId);
                         attributeValue = readableGraph.getObjectValue(attributeId, sourceVertexId);
                     }
-                    case GraphRecordStoreUtilities.TRANSACTION ->
-                        attributeValue = readableGraph.getObjectValue(attributeId, edgeId);
+                    case GraphRecordStoreUtilities.TRANSACTION -> {
+                        attributeValue = readableGraph.getObjectValue(attributeId, 0);
+                        final String displayText = interaction.getDisplayText(attributeValue);
+                        // For each transaction in edge
+                        for (int i = 0; i < readableGraph.getEdgeTransactionCount(edgeId); i++) {
+                            final int transactionId = readableGraph.getEdgeTransaction(edgeId, i);
+                            final String newText = interaction.getDisplayText(readableGraph.getObjectValue(attributeId, transactionId));
+                            // If display text of current element and the first element dont match, set flag to display MULTI_VALUE
+                            if (displayText == null ? newText != null : !displayText.equals(newText)) {
+                                isMultivalue = true;
+                                break;
+                            }
+                        }
+                    }
                     case GraphRecordStoreUtilities.DESTINATION -> {
                         final int destinationVertexId = readableGraph.getEdgeDestinationVertex(edgeId);
                         attributeValue = readableGraph.getObjectValue(attributeId, destinationVertexId);
@@ -645,7 +660,7 @@ public class Table {
             }
 
             // avoid duplicate strings objects and make a massivse saving on memory use
-            final String displayableValue = displayTextCache.deduplicate(interaction.getDisplayText(attributeValue));
+            final String displayableValue = isMultivalue ? MULTI_VALUE : displayTextCache.deduplicate(interaction.getDisplayText(attributeValue));
             rowData.add(displayableValue);
         });
 
@@ -680,14 +695,27 @@ public class Table {
                     .getInteraction(column.getAttribute().getAttributeType());
 
             final Object attributeValue;
+            Boolean isMultivalue = false;
             if (attributeId != Graph.NOT_FOUND) {
                 switch (column.getAttributeNamePrefix()) {
                     case GraphRecordStoreUtilities.LINK_LOW -> {
                         final int sourceVertexId = readableGraph.getLinkLowVertex(linkId);
                         attributeValue = readableGraph.getObjectValue(attributeId, sourceVertexId);
                     }
-                    case GraphRecordStoreUtilities.TRANSACTION ->
-                        attributeValue = readableGraph.getObjectValue(attributeId, linkId);
+                    case GraphRecordStoreUtilities.TRANSACTION ->{
+                        attributeValue = readableGraph.getObjectValue(attributeId, 0);
+                        final String displayText = interaction.getDisplayText(attributeValue);
+                        // For each transaction in edge
+                        for (int i = 0; i < readableGraph.getLinkTransactionCount(linkId); i++) {
+                            final int transactionId = readableGraph.getLinkTransaction(linkId, i);
+                            final String newText = interaction.getDisplayText(readableGraph.getObjectValue(attributeId, transactionId));
+                            // If display text of current element and the first element dont match, set flag to display MULTI_VALUE
+                            if (displayText == null ? newText != null : !displayText.equals(newText)) {
+                                isMultivalue = true;
+                                break;
+                            }
+                        }
+                    }
                     case GraphRecordStoreUtilities.LINK_HIGH -> {
                         final int destinationVertexId = readableGraph.getLinkHighVertex(linkId);
                         attributeValue = readableGraph.getObjectValue(attributeId, destinationVertexId);
@@ -700,7 +728,7 @@ public class Table {
             }
 
             // avoid duplicate strings objects and make a massivse saving on memory use
-            final String displayableValue = displayTextCache.deduplicate(interaction.getDisplayText(attributeValue));
+            final String displayableValue = isMultivalue ? MULTI_VALUE : displayTextCache.deduplicate(interaction.getDisplayText(attributeValue));
             rowData.add(displayableValue);
         });
 
