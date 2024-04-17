@@ -48,7 +48,7 @@ public class RecordKeyboardShortcut extends Dialog<String>  {
     
     public Optional<String> start(File preferenceDirectory) {       
         
-        KeyPressLabelDialog td = new KeyPressLabelDialog();
+        final KeyPressLabelDialog td = new KeyPressLabelDialog();
         td.setTitle(KEYBOARD_SHORTCUT_DIALOG_TITLE);
         td.setHeaderText(KEYBOARD_SHORTCUT_DIALOG_HEADER_TEXT);
         td.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
@@ -75,7 +75,7 @@ public class RecordKeyboardShortcut extends Dialog<String>  {
                 final Optional<ButtonType> option = alert.showAndWait();
                 go = option.isPresent() && option.get() == ButtonType.OK;
              
-                if(go) {
+                if (go) {
                     String rename = exisitngTemplateWithKs.getName().replaceAll(keyboardShortcut, StringUtils.EMPTY);
                     exisitngTemplateWithKs.renameTo( new File(
                             preferenceDirectory,

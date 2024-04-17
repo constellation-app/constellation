@@ -164,7 +164,7 @@ public class JsonIO {
         Optional<String>  ks = Optional.empty();
         if (keyboardShortcut.get() != null && keyboardShortcut.get().booleanValue()) {
            ks = getDefaultKeyboardShortcut(preferenceDirectory);
-           if(ks.isEmpty()) {
+           if (ks.isEmpty()) {
                //Ask for user defined shortcut
                ks = JsonIODialog.getKeyboardShortcut(preferenceDirectory);
            }           
