@@ -162,7 +162,7 @@ public class JsonIO {
 
         //Record keyboard shortcut
         Optional<String>  ks = Optional.empty();
-        if(keyboardShortcut.get() != null && keyboardShortcut.get().booleanValue()) {
+        if (keyboardShortcut.get() != null && keyboardShortcut.get().booleanValue()) {
            ks = getDefaultKeyboardShortcut(preferenceDirectory);
            if(ks.isEmpty()) {
                //Ask for user defined shortcut
