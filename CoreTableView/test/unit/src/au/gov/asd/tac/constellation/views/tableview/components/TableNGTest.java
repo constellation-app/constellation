@@ -95,6 +95,8 @@ public class TableNGTest {
 
     private Table table;
 
+    private static final String MULTI_VALUE = "<Multiple Values>";
+
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -1150,7 +1152,6 @@ public class TableNGTest {
             when(interaction.getDisplayText(destinationVertexCoulmnValue)).thenReturn("destinationVertex_COLUMN_1_Value");
             when(interaction.getDisplayText(transactionColumnValue)).thenReturn("transaction_COLUMN_2_Value");
 
-            System.out.println(table.getRowDataForEdge(readableGraph, edgeId));
             assertEquals(
                     table.getRowDataForEdge(readableGraph, edgeId),
                     FXCollections.observableArrayList(
@@ -1186,6 +1187,115 @@ public class TableNGTest {
         }
     }
 
+    @Test
+    public void getRowDataForEdgeMultipleValues() {
+        final ReadableGraph readableGraph = mock(ReadableGraph.class);
+
+        final Map<Integer, ObservableList<String>> elementIdToRowIndex = new HashMap<>();
+        final Map<ObservableList<String>, Integer> rowToElementIdIndex = new HashMap<>();
+
+        doReturn(elementIdToRowIndex).when(activeTableReference).getElementIdToRowIndex();
+        doReturn(rowToElementIdIndex).when(activeTableReference).getRowToElementIdIndex();
+
+        final int edgeId = 42;
+
+        final int sourceVertexId = 52;
+        final int destinationVertexId = 62;
+
+        // Set up the attributes for each column
+        when(readableGraph.getAttribute(GraphElementType.VERTEX, "COLUMN_1")).thenReturn(101);
+        when(readableGraph.getAttributeName(101)).thenReturn("COLUMN_1");
+        when(readableGraph.getAttributeElementType(101)).thenReturn(GraphElementType.VERTEX);
+        when(readableGraph.getAttributeType(101)).thenReturn("string");
+
+        final Attribute attribute1 = new GraphAttribute(readableGraph, 101);
+
+        when(readableGraph.getAttribute(GraphElementType.TRANSACTION, "COLUMN_2")).thenReturn(102);
+        when(readableGraph.getAttributeName(102)).thenReturn("COLUMN_2");
+        when(readableGraph.getAttributeElementType(102)).thenReturn(GraphElementType.TRANSACTION);
+        when(readableGraph.getAttributeType(102)).thenReturn("string");
+
+        final Attribute attribute2 = new GraphAttribute(readableGraph, 102);
+
+        // There are 2 columns. One called COLUMN_1 and the other COLUMN_2. COLUMN_1
+        // is present on source and destination verticies. COLUMN_2 is present on transactions
+        final CopyOnWriteArrayList<Column> columnIndex = new CopyOnWriteArrayList<>();
+        columnIndex.add(new Column("source.", attribute1, null));
+        columnIndex.add(new Column("destination.", attribute1, null));
+        columnIndex.add(new Column("transaction.", attribute2, null));
+
+        when(table.getColumnIndex()).thenReturn(columnIndex);
+
+        // When looking at a source vertex column, it gets the source vertex of
+        // the transaction and extracts the value for the column from that vertex
+        final Object sourceVertexCoulmnValue = new Object();
+        when(readableGraph.getEdgeSourceVertex(edgeId)).thenReturn(sourceVertexId);
+        when(readableGraph.getObjectValue(101, sourceVertexId)).thenReturn(sourceVertexCoulmnValue);
+
+        // When looking at a destination vertex column, it gets the destination vertex of
+        // the transaction and extracts the value for the column from that vertex
+        final Object destinationVertexCoulmnValue = new Object();
+        when(readableGraph.getEdgeDestinationVertex(edgeId)).thenReturn(destinationVertexId);
+        when(readableGraph.getObjectValue(101, destinationVertexId)).thenReturn(destinationVertexCoulmnValue);
+
+        // When looking at a transaction column, it extracts the value from the passed transaction
+        final Object transactionColumnValue1 = new Object();
+        final Object transactionColumnValue2 = new Object();
+        //when(readableGraph.getObjectValue(102, edgeId)).thenReturn(transactionColumnValue1);
+        when(readableGraph.getObjectValue(102, 0)).thenReturn(transactionColumnValue1);
+        when(readableGraph.getObjectValue(102, 1)).thenReturn(transactionColumnValue2);
+
+        when(readableGraph.getEdgeTransactionCount(edgeId)).thenReturn(2);
+        
+        when(readableGraph.getEdgeTransaction(edgeId, 0)).thenReturn(0);
+        when(readableGraph.getEdgeTransaction(edgeId, 1)).thenReturn(1);
+
+        try (final MockedStatic<AbstractAttributeInteraction> attrInteractionMockedStatic
+                = Mockito.mockStatic(AbstractAttributeInteraction.class)) {
+            final AbstractAttributeInteraction interaction = mock(AbstractAttributeInteraction.class);
+            attrInteractionMockedStatic.when(() -> AbstractAttributeInteraction.getInteraction("string")).thenReturn(interaction);
+
+            when(interaction.getDisplayText(sourceVertexCoulmnValue)).thenReturn("sourceVertex_COLUMN_1_Value");
+            when(interaction.getDisplayText(destinationVertexCoulmnValue)).thenReturn("destinationVertex_COLUMN_1_Value");
+            when(interaction.getDisplayText(transactionColumnValue1)).thenReturn("transaction_COLUMN_2_Value1");
+            when(interaction.getDisplayText(transactionColumnValue2)).thenReturn("transaction_COLUMN_2_Value2");
+            ObservableList<String> l = table.getRowDataForEdge(readableGraph, edgeId);
+            System.out.println(l);
+            assertEquals(
+                    l,
+                    FXCollections.observableArrayList(
+                            "sourceVertex_COLUMN_1_Value",
+                            "destinationVertex_COLUMN_1_Value",
+                            MULTI_VALUE
+                    )
+            );
+
+            assertEquals(
+                    elementIdToRowIndex,
+                    Map.of(
+                            edgeId,
+                            FXCollections.observableArrayList(
+                                    "sourceVertex_COLUMN_1_Value",
+                                    "destinationVertex_COLUMN_1_Value",
+                                    MULTI_VALUE
+                            )
+                    )
+            );
+
+            assertEquals(
+                    rowToElementIdIndex,
+                    Map.of(
+                            FXCollections.observableArrayList(
+                                    "sourceVertex_COLUMN_1_Value",
+                                    "destinationVertex_COLUMN_1_Value",
+                                    MULTI_VALUE
+                            ),
+                            edgeId
+                    )
+            );
+        }
+    }
+    
     @Test
     public void getRowDataForLink() {
         final ReadableGraph readableGraph = mock(ReadableGraph.class);
@@ -1279,6 +1389,113 @@ public class TableNGTest {
                                     "lowVertex_COLUMN_1_Value",
                                     "highVertex_COLUMN_1_Value",
                                     "transaction_COLUMN_2_Value"
+                            ),
+                            linkId
+                    )
+            );
+        }
+    }
+
+    @Test
+    public void getRowDataForLinkMultipleValues() {
+        final ReadableGraph readableGraph = mock(ReadableGraph.class);
+
+        final Map<Integer, ObservableList<String>> elementIdToRowIndex = new HashMap<>();
+        final Map<ObservableList<String>, Integer> rowToElementIdIndex = new HashMap<>();
+
+        doReturn(elementIdToRowIndex).when(activeTableReference).getElementIdToRowIndex();
+        doReturn(rowToElementIdIndex).when(activeTableReference).getRowToElementIdIndex();
+
+        final int linkId = 42;
+
+        final int lowVertexId = 52;
+        final int highVertexId = 62;
+
+        // Set up the attributes for each column
+        when(readableGraph.getAttribute(GraphElementType.VERTEX, "COLUMN_1")).thenReturn(101);
+        when(readableGraph.getAttributeName(101)).thenReturn("COLUMN_1");
+        when(readableGraph.getAttributeElementType(101)).thenReturn(GraphElementType.VERTEX);
+        when(readableGraph.getAttributeType(101)).thenReturn("string");
+
+        final Attribute attribute1 = new GraphAttribute(readableGraph, 101);
+
+        when(readableGraph.getAttribute(GraphElementType.TRANSACTION, "COLUMN_2")).thenReturn(102);
+        when(readableGraph.getAttributeName(102)).thenReturn("COLUMN_2");
+        when(readableGraph.getAttributeElementType(102)).thenReturn(GraphElementType.TRANSACTION);
+        when(readableGraph.getAttributeType(102)).thenReturn("string");
+
+        final Attribute attribute2 = new GraphAttribute(readableGraph, 102);
+
+        // There are 2 columns. One called COLUMN_1 and the other COLUMN_2. COLUMN_1
+        // is present on source and destination verticies. COLUMN_2 is present on transactions
+        final CopyOnWriteArrayList<Column> columnIndex = new CopyOnWriteArrayList<>();
+        columnIndex.add(new Column("low.", attribute1, null));
+        columnIndex.add(new Column("high.", attribute1, null));
+        columnIndex.add(new Column("transaction.", attribute2, null));
+
+        when(table.getColumnIndex()).thenReturn(columnIndex);
+
+        // When looking at a source vertex column, it gets the source vertex of
+        // the transaction and extracts the value for the column from that vertex
+        final Object lowVertexCoulmnValue = new Object();
+        when(readableGraph.getLinkLowVertex(linkId)).thenReturn(lowVertexId);
+        when(readableGraph.getObjectValue(101, lowVertexId)).thenReturn(lowVertexCoulmnValue);
+
+        // When looking at a destination vertex column, it gets the destination vertex of
+        // the transaction and extracts the value for the column from that vertex
+        final Object highVertexCoulmnValue = new Object();
+        when(readableGraph.getLinkHighVertex(linkId)).thenReturn(highVertexId);
+        when(readableGraph.getObjectValue(101, highVertexId)).thenReturn(highVertexCoulmnValue);
+
+        // When looking at a transaction column, it extracts the value from the passed transaction       
+        final Object transactionColumnValue1 = new Object();
+        final Object transactionColumnValue2 = new Object();
+        when(readableGraph.getObjectValue(102, 0)).thenReturn(transactionColumnValue1);
+        when(readableGraph.getObjectValue(102, 1)).thenReturn(transactionColumnValue2);
+
+        when(readableGraph.getLinkTransactionCount(linkId)).thenReturn(2);
+        
+        when(readableGraph.getLinkTransaction(linkId, 0)).thenReturn(0);
+        when(readableGraph.getLinkTransaction(linkId, 1)).thenReturn(1);
+        
+        try (final MockedStatic<AbstractAttributeInteraction> attrInteractionMockedStatic
+                = Mockito.mockStatic(AbstractAttributeInteraction.class)) {
+            final AbstractAttributeInteraction interaction = mock(AbstractAttributeInteraction.class);
+            attrInteractionMockedStatic.when(() -> AbstractAttributeInteraction.getInteraction("string")).thenReturn(interaction);
+
+            when(interaction.getDisplayText(lowVertexCoulmnValue)).thenReturn("lowVertex_COLUMN_1_Value");
+            when(interaction.getDisplayText(highVertexCoulmnValue)).thenReturn("highVertex_COLUMN_1_Value");
+            when(interaction.getDisplayText(transactionColumnValue1)).thenReturn("transaction_COLUMN_2_Value1");
+            when(interaction.getDisplayText(transactionColumnValue2)).thenReturn("transaction_COLUMN_2_Value2");
+            
+            assertEquals(
+                    table.getRowDataForLink(readableGraph, linkId),
+                    FXCollections.observableArrayList(
+                            "lowVertex_COLUMN_1_Value",
+                            "highVertex_COLUMN_1_Value",
+                            MULTI_VALUE
+                    )
+            );
+
+            assertEquals(
+                    elementIdToRowIndex,
+                    Map.of(
+                            linkId,
+                            FXCollections.observableArrayList(
+                                    "lowVertex_COLUMN_1_Value",
+                                    "highVertex_COLUMN_1_Value",
+                                    MULTI_VALUE
+                            )
+                    )
+            );
+
+            assertEquals(
+                    rowToElementIdIndex,
+                    Map.of(
+                            FXCollections.observableArrayList(
+                                    "lowVertex_COLUMN_1_Value",
+                                    "highVertex_COLUMN_1_Value",
+                                    MULTI_VALUE
                             ),
                             linkId
                     )
