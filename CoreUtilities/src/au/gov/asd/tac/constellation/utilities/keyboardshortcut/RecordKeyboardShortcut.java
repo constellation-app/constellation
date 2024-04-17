@@ -46,11 +46,7 @@ public class RecordKeyboardShortcut extends Dialog<String>  {
     private static final String KEYBOARD_SHORTCUT_EXISTS_ALERT_ERROR_MSG_FORMAT
             = "'%s' already assigned. Do you want to assign it to this template?";
     
-    public Optional<String> start(File preferenceDirectory) {
-        
-        super.setOnCloseRequest(event -> {
-            event.consume();
-        });
+    public Optional<String> start(File preferenceDirectory) {       
         
         KeyPressLabelDialog td = new KeyPressLabelDialog();
         td.setTitle(KEYBOARD_SHORTCUT_DIALOG_TITLE);
@@ -86,7 +82,7 @@ public class RecordKeyboardShortcut extends Dialog<String>  {
                             FilenameEncoder.encode(rename.trim())
                     ));                    
                 } else {
-                    return Optional.empty();
+                    return start(preferenceDirectory);
                 }
             }
         }
