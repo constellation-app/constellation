@@ -1096,7 +1096,7 @@ public class TableNGTest {
         doReturn(rowToElementIdIndex).when(activeTableReference).getRowToElementIdIndex();
 
         final int edgeId = 42;
-        
+
         final int sourceVertexId = 52;
         final int destinationVertexId = 62;
 
@@ -1139,9 +1139,7 @@ public class TableNGTest {
         // When looking at a transaction column, it extracts the value from the passed transaction
         final Object transactionColumnValue = new Object();
         when(readableGraph.getObjectValue(102, edgeId)).thenReturn(transactionColumnValue);
-
-        // When looking at a transaction column, it extracts the value from the passed edge
-        when(readableGraph.getObjectValue(102, edgeId)).thenReturn(transactionColumnValue);
+        when(readableGraph.getObjectValue(102, 0)).thenReturn(transactionColumnValue);
 
         try (final MockedStatic<AbstractAttributeInteraction> attrInteractionMockedStatic
                 = Mockito.mockStatic(AbstractAttributeInteraction.class)) {
@@ -1152,6 +1150,7 @@ public class TableNGTest {
             when(interaction.getDisplayText(destinationVertexCoulmnValue)).thenReturn("destinationVertex_COLUMN_1_Value");
             when(interaction.getDisplayText(transactionColumnValue)).thenReturn("transaction_COLUMN_2_Value");
 
+            System.out.println(table.getRowDataForEdge(readableGraph, edgeId));
             assertEquals(
                     table.getRowDataForEdge(readableGraph, edgeId),
                     FXCollections.observableArrayList(
@@ -1186,8 +1185,8 @@ public class TableNGTest {
             );
         }
     }
-    
-     @Test
+
+    @Test
     public void getRowDataForLink() {
         final ReadableGraph readableGraph = mock(ReadableGraph.class);
 
@@ -1198,7 +1197,7 @@ public class TableNGTest {
         doReturn(rowToElementIdIndex).when(activeTableReference).getRowToElementIdIndex();
 
         final int linkId = 42;
-        
+
         final int lowVertexId = 52;
         final int highVertexId = 62;
 
@@ -1241,9 +1240,7 @@ public class TableNGTest {
         // When looking at a transaction column, it extracts the value from the passed transaction
         final Object transactionColumnValue = new Object();
         when(readableGraph.getObjectValue(102, linkId)).thenReturn(transactionColumnValue);
-
-        // When looking at a transaction column, it extracts the value from the passed link
-        when(readableGraph.getObjectValue(102, linkId)).thenReturn(transactionColumnValue);
+        when(readableGraph.getObjectValue(102, 0)).thenReturn(transactionColumnValue);
 
         try (final MockedStatic<AbstractAttributeInteraction> attrInteractionMockedStatic
                 = Mockito.mockStatic(AbstractAttributeInteraction.class)) {
