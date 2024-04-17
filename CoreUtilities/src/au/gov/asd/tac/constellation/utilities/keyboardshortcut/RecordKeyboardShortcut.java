@@ -16,10 +16,22 @@
 
 package au.gov.asd.tac.constellation.utilities.keyboardshortcut;
 
+import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyCombination.Modifier;
@@ -27,30 +39,94 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
  * @author spica
  */
-public class RecordKeyboardShortcut {
+public class RecordKeyboardShortcut extends Dialog<String>  {
     
-    public Optional<String> start(final Stage primaryStage) {
-        final var label = new Label();
-        label.setFont(Font.font("Segoe UI", 15));
-        primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
-            if (!event.getCode().isModifierKey()) {
-                label.setText(createCombo(event).getDisplayText());
-            }
+    private static final String KEYBOARD_SHORTCUT_DIALOG_TITLE = "Keyboard Shortcut";
+    private static final String KEYBOARD_SHORTCUT_DIALOG_HEADER_TEXT = "Press keyboard shortcut for template";
+    
+    private static final String KEYBOARD_SHORTCUT_EXISTS_ALERT_TITLE = "Keyboard shortcut already assigned to other template";
+    private static final String KEYBOARD_SHORTCUT_EXISTS_ALERT_ERROR_MSG_FORMAT
+            = "'%s' already assigned. Do you want to assign it to this template?";
+    
+    public Optional<String> start(File preferenceDirectory) {
+        
+        setOnCloseRequest(event -> {
+            event.consume();
         });
+        
+        KeyPressLabelDialog td = new KeyPressLabelDialog();
+        td.setTitle(KEYBOARD_SHORTCUT_DIALOG_TITLE);
+        td.setHeaderText(KEYBOARD_SHORTCUT_DIALOG_HEADER_TEXT);
+        td.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
 
-        primaryStage.setScene(new Scene(new StackPane(label), 500, 300));
-        primaryStage.setResizable(false);
-        primaryStage.showAndWait();        
-        return Optional.of(label.getText().replace('+', ' ') +" ");
+        td.showAndWait();
+        
+        String keyboardShortcut = (td.getLabel().getText().replace('+', ' ') +" ").trim();      
+        
+        
+        if(StringUtils.isNotEmpty(keyboardShortcut)) {
+            boolean go = true;
+            
+            File exisitngTemplateWithKs = keyboardShortCutAlreadyAssigned(preferenceDirectory, keyboardShortcut);
+            
+            if(exisitngTemplateWithKs != null) {
+                
+                final Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setHeaderText(KEYBOARD_SHORTCUT_EXISTS_ALERT_TITLE);
+                alert.setContentText(String.format(
+                        KEYBOARD_SHORTCUT_EXISTS_ALERT_ERROR_MSG_FORMAT,
+                        keyboardShortcut
+                ));
+
+                final Optional<ButtonType> option = alert.showAndWait();
+                go = option.isPresent() && option.get() == ButtonType.OK;
+             
+                if(go) {
+                    String rename = exisitngTemplateWithKs.getName().replaceAll(keyboardShortcut, StringUtils.EMPTY);
+                    exisitngTemplateWithKs.renameTo( new File(
+                            preferenceDirectory,
+                            FilenameEncoder.encode(rename.trim())
+                    ));                    
+                } else {
+                    return Optional.empty();
+                }
+            }
+        }
+        
+        
+        return Optional.of(keyboardShortcut);
+    }   
+    
+    public File keyboardShortCutAlreadyAssigned(File preferenceDirectory, String keyboardShortcut) {
+        
+        File exisitngTemplateWithKs = null;
+        
+        FilenameFilter filenameFilter = (d, s) -> {            
+             return s.startsWith(keyboardShortcut);
+        };
+        
+        String[] fileNames = preferenceDirectory.list(filenameFilter);
+        
+        if(!ArrayUtils.isEmpty(fileNames)) {
+            exisitngTemplateWithKs = new File(
+                            preferenceDirectory,
+                            FilenameEncoder.encode(fileNames[0])
+                    );
+        }
+        
+        return exisitngTemplateWithKs;
+        
     }
-
-    private KeyCombination createCombo(final KeyEvent event) {
-        final var modifiers = new ArrayList<Modifier>();
+    
+    public static KeyCombination createCombo(final KeyEvent event) {
+        final List<Modifier> modifiers = new ArrayList();
         if (event.isControlDown()) {
             modifiers.add(KeyCombination.CONTROL_DOWN);
         }
@@ -66,4 +142,5 @@ public class RecordKeyboardShortcut {
         return new KeyCodeCombination(event.getCode(), modifiers.toArray(Modifier[]::new));
     }
 
+    
 }

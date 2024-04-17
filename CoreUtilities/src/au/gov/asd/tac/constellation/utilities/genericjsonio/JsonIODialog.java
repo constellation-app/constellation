@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.utilities.genericjsonio;
 import au.gov.asd.tac.constellation.utilities.gui.DraggableCell;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.keyboardshortcut.RecordKeyboardShortcut;
+import java.io.File;
 import java.util.List;
 import java.util.Optional;
 import javafx.collections.FXCollections;
@@ -47,10 +48,6 @@ public class JsonIODialog {
     private static final String PREFERENCE_NAME_DIALOG_TITLE = "Preference Name";
     private static final String PREFERENCE_NAME_DIALOG_HEADER_TEXT = "Enter a name for the preference";
     
-    
-    private static final String KEYBOARD_SHORTCUT_DIALOG_TITLE = "Keyboard Shortcut";
-    private static final String KEYBOARD_SHORTCUT_DIALOG_HEADER_TEXT = "Press keyboard shortcut for template";
-
     private JsonIODialog() {
     }
 
@@ -139,10 +136,10 @@ public class JsonIODialog {
     }
     
     
-     public static Optional<String> getKeyboardShortcut() {
+     public static Optional<String> getKeyboardShortcut(File preferenceDirectory) {
          
        final RecordKeyboardShortcut rk = new RecordKeyboardShortcut();
-       final Optional<String> ks = rk.start(new Stage());
+       final Optional<String> ks = rk.start(preferenceDirectory);
        
        return ks;
     }   

@@ -166,11 +166,11 @@ public class JsonIO {
            ks = getDefaultKeyboardShortcut(preferenceDirectory);
            if(ks.isEmpty()) {
                //Ask for user defined shortcut
-               ks = JsonIODialog.getKeyboardShortcut();
+               ks = JsonIODialog.getKeyboardShortcut(preferenceDirectory);
            }           
         }
         
-        final String fileNameWithKeyboardShortcut = ks.orElse("").concat(prefixedFileName);
+        final String fileNameWithKeyboardShortcut = ks.orElse("").concat(" " + prefixedFileName);
         
         final File preferenceFile = new File(
                 preferenceDirectory,
@@ -225,7 +225,7 @@ public class JsonIO {
             };
             
             if(ArrayUtils.isEmpty(preferenceDirectory.list(filenameFilter))) {
-                return Optional.of("Ctrl "+index + " ");
+                return Optional.of("Ctrl "+index);
             }
         } 
          

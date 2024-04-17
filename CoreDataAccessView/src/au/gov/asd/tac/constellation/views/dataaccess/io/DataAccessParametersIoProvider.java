@@ -98,10 +98,10 @@ public class DataAccessParametersIoProvider {
                 );
             
             if (loadedParameters != null) {
-            dataAccessPane.getDataAccessTabPane().removeTabs();
-
-            loadedParameters.forEach(loadedParameter -> {
-                final QueryPhasePane pluginPane = dataAccessPane.getDataAccessTabPane().newTab(loadedParameter.getStepCaption());
+                dataAccessPane.getDataAccessTabPane().removeTabs();
+                
+                loadedParameters.forEach(loadedParameter -> {
+                    final QueryPhasePane pluginPane = dataAccessPane.getDataAccessTabPane().newTab(loadedParameter.getStepCaption());
 
                 // If an existing global parameter is in the JSON then update it,
                 // otherwise ignore it
