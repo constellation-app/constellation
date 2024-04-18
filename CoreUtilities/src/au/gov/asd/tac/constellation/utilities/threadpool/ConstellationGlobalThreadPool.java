@@ -74,6 +74,17 @@ public class ConstellationGlobalThreadPool {
 
         return fixedThreadPool;
     }
+    
+    /**
+     * Instantiates exactly 1 FixedThreadPool containing all available threads
+     *
+     * @return a FixedThreadPool objects
+     */
+    public ExecutorService getFixedThreadPool(int count) {
+
+
+        return Executors.newFixedThreadPool(count);
+    }
 
     /**
      * Creates only 1 CachedThreadPool

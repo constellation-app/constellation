@@ -26,6 +26,8 @@ import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
@@ -113,6 +115,7 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
     private final Preferences prefs = NbPreferences.forModule(AttributePreferenceKey.class);
     private LinkedBlockingQueue<Object> queue = new LinkedBlockingQueue<>();
     private Thread refreshThread;
+    private static final Logger LOGGER = Logger.getLogger(AttributeEditorTopComponent.class.getName());
 
     public AttributeEditorTopComponent() {
         attributePanel = new AttributeEditorPanel(this);
@@ -168,6 +171,7 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
     // End of variables declaration//GEN-END:variables
     @Override
     protected void handleComponentOpened() {
+        LOGGER.log(Level.SEVERE, String.format("IVE OPENEEEEEDDDDDD"));
         super.handleComponentOpened();
         GraphManager.getDefault().addGraphManagerListener(this);
         newActiveGraph(GraphManager.getDefault().getActiveGraph());
