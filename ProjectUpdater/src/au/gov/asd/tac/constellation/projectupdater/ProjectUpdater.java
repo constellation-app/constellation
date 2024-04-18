@@ -106,10 +106,8 @@ public class ProjectUpdater extends Task {
                 final NodeList children = publicPackagesNode.getChildNodes();
                 while (children.getLength() > 0) {
                     final Node child = children.item(0);
-                    if (child instanceof Element childElement) {
-                        if (childElement.getTagName().equals(PACKAGE_TAG)) {
-                            publicPackages.add(childElement.getTextContent());
-                        }
+                    if (child instanceof Element childElement && childElement.getTagName().equals(PACKAGE_TAG)) {
+                        publicPackages.add(childElement.getTextContent());
                     }
                     publicPackagesNode.removeChild(child);
                 }
