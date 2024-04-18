@@ -451,6 +451,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                             updateSelectionFreeformModel(freeformModel);
                         }
                         default -> {
+                            //Do Nothing
                         }
                     }
                     updateCameraAndNewLine(wg, point, cameraChange ? camera : VisualGraphUtilities.getCamera(wg), cameraChange);
@@ -633,6 +634,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                 }
             }
             default -> {
+                //Do Nothing
             }
         }
     }
@@ -679,6 +681,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                             performDrag(wg, camera, from, wheelPoint);
                         }
                         default -> {
+                            //Do Nothing
                         }
                     }
                 }
@@ -827,6 +830,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
             case HANDLE_SYNCHRONOUSLY -> handleResult.run();
             case HANDLE_ASYNCHRONOUSLY -> new Thread(handleResult).start();
             default -> {
+                //Do Nothing
             }
         }
     }
@@ -957,6 +961,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                 eventState.setCurrentCreationMode(CreationMode.FINISHING_TRANSACTION);
             }
             default -> {
+                //Do Nothing
             }
         }
     }
@@ -1068,6 +1073,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
             case VERTEX -> vxIds.add(elementId);
             case TRANSACTION -> txIds.add(elementId);
             default -> {
+                //Do Nothing
             }
         }
 

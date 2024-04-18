@@ -72,9 +72,7 @@ public class TemplateUtilities {
             return jsonNode.get(fieldName);
         } else {
             //To handle npe when json parsor accessing missing required fields in the template
-            final String message = """
-                                   Missing field '%s' in the template. Add the missing field manually or use a new template."""
-                    .formatted(fieldName);
+            final String message = String.format("Missing field '%s' in the template. Add the missing field manually or use a new template.", fieldName);
             NotifyDisplayer.displayAlert(LOAD_TEMPLATE, "Template Error", message, Alert.AlertType.ERROR);
             throw new NoSuchElementException(NotifyDisplayer.BLOCK_POPUP_FLAG + message);
         }

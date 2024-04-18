@@ -664,6 +664,7 @@ public class SVGGraphBuilder {
                         }
                         // Undirected connections are Transactions, Edges and Links with no arrow heads.
                         default  -> {
+                            //Do Nothing
                         }
                     }
                     

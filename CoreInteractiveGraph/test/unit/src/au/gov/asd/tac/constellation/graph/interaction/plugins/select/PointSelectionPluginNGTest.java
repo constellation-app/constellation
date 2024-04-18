@@ -500,6 +500,7 @@ public class PointSelectionPluginNGTest {
                     assertEquals(storeGraph.getBooleanValue(tAttrId, txId3), selectAll);
                 }
                 default -> {
+                    //Do Nothing
                 }
             }
         }
