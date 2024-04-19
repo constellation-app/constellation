@@ -46,12 +46,12 @@ public enum BinIconMode {
      */
     ICON(1.5F) {
         @Override
-        public void draw(Graphics2D graphics, Bin bin, int left, int top, int height) {
-            if (bin instanceof ObjectBin) {
-                Object key = ((ObjectBin) bin).getKeyAsObject();
+        public void draw(final Graphics2D graphics, final Bin bin, final int left, final int top, final int height) {
+            if (bin instanceof ObjectBin objectBin) {
+                final Object key = objectBin.getKeyAsObject();
 
                 if (key != null) {
-                    String iconLabel = ((ConstellationIcon) key).getName();
+                    final String iconLabel = ((ConstellationIcon) key).getName();
                     BufferedImage icon = iconCache.get(iconLabel);
                     if (icon == null) {
                         try {
@@ -74,10 +74,10 @@ public enum BinIconMode {
      */
     COLOR(1.5F) {
         @Override
-        public void draw(Graphics2D graphics, Bin bin, int left, int top, int height) {
-            if (bin instanceof ObjectBin) {
-                Object key = ((ObjectBin) bin).getKeyAsObject();
-                ConstellationColor colorValue = (ConstellationColor) key;
+        public void draw(final Graphics2D graphics, final Bin bin, final int left, final int top, final int height) {
+            if (bin instanceof ObjectBin objectBin) {
+                final Object key = objectBin.getKeyAsObject();
+                final ConstellationColor colorValue = (ConstellationColor) key;
                 if (colorValue != null) {
                     graphics.setColor(colorValue.getJavaColor());
                 }
@@ -88,7 +88,7 @@ public enum BinIconMode {
 
     private final float width;
 
-    private BinIconMode(float width) {
+    private BinIconMode(final float width) {
         this.width = width;
     }
 
@@ -96,7 +96,7 @@ public enum BinIconMode {
         return width;
     }
 
-    public abstract void draw(Graphics2D graphics, Bin bin, int left, int top, int height);
+    public abstract void draw(final Graphics2D graphics, final Bin bin, final int left, final int top, final int height);
 
     private static Map<String, BufferedImage> iconCache = new HashMap<>();
 

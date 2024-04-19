@@ -60,14 +60,16 @@ import org.openide.util.lookup.ServiceProvider;
 public class JSONImportFileParser extends ImportFileParser {
 
     private static final String WARN_PARSING_PREFIX
-            = "Extracting data from JSON file failed.\n";
+            = """
+              Extracting data from JSON file failed.
+              """;
     private static final String WARN_INVALID_JSON
             = WARN_PARSING_PREFIX + "Unable to parse file, invalid JSON.";
     private static final String WARN_NO_VALID_LIST
-            = WARN_PARSING_PREFIX
-            + "No valid list found. Valid lists are not empty and will be one of the following:\n"
-            + " * A list of equal size lists, containing basic data types only (no nested lists or objects)\n"
-            + " * A list of objects. These objects may contain different data, with field names and path used to determine column names.";
+            = WARN_PARSING_PREFIX + """
+                                    No valid list found. Valid lists are not empty and will be one of the following:
+                                    * A list of equal size lists, containing basic data types only (no nested lists or objects)
+                                    * A list of objects. These objects may contain different data, with field names and path used to determine column names.""";
 
     // Flag to indicate that no suitable list has been found to extract via the
     // importer.
@@ -407,17 +409,15 @@ public class JSONImportFileParser extends ImportFileParser {
             // Maps newline delimited JSON to valid JSON in the format
             // {"results": [<ndjson>]}
             switch(counter){
-                case(0):
-                    throw new IOException(WARN_NO_VALID_LIST);
-                case(1):
-                    root = node;
-                    break;
-                default:
+                case 0 -> throw new IOException(WARN_NO_VALID_LIST);
+                case 1 -> root = node;
+                default -> {
                     // Changes the ndJSON to valid JSON
                     final ObjectMapper newJSON = new ObjectMapper();
                     final ObjectNode rootNode = newJSON.createObjectNode();
                     rootNode.set("results", childNode);
                     root = rootNode;
+                }
             }
             lookForChildArrays(root, "", 0);
 
