@@ -95,15 +95,9 @@ public final class ResetViewPlugin extends SimpleEditPlugin {
             final String axis = parameters.getStringValue(AXIS_PARAMETER_ID);
             final boolean negative = parameters.getBooleanValue(NEGATIVE_PARAMETER_ID);
             switch (axis.toLowerCase()) {
-                case "x" -> {
-                    CameraUtilities.refocusOnXAxis(camera, boundingBox, negative);
-                }
-                case "y"  -> {
-                    CameraUtilities.refocusOnYAxis(camera, boundingBox, negative);
-                }
-                default  -> {
-                    CameraUtilities.refocusOnZAxis(camera, boundingBox, negative);
-                }
+                case "x" -> CameraUtilities.refocusOnXAxis(camera, boundingBox, negative);
+                case "y"  -> CameraUtilities.refocusOnYAxis(camera, boundingBox, negative);
+                default  -> CameraUtilities.refocusOnZAxis(camera, boundingBox, negative);
             }
 
             // add an animation to the refocused camera so that it pans from the old position.

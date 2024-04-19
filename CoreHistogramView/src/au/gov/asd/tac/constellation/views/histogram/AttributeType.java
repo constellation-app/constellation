@@ -95,6 +95,7 @@ public enum AttributeType {
                     binCreators.put("Transaction Direction", DefaultBinCreators.TRANSACTION_DIRECTION_BIN_CREATOR);
                 }
                 default -> {
+                    //Do Nothing
                 }
             }
         }

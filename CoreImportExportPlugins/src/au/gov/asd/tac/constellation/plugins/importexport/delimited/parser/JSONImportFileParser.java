@@ -409,12 +409,8 @@ public class JSONImportFileParser extends ImportFileParser {
             // Maps newline delimited JSON to valid JSON in the format
             // {"results": [<ndjson>]}
             switch(counter){
-                case 0 -> {
-                    throw new IOException(WARN_NO_VALID_LIST);
-                }
-                case 1 -> {
-                    root = node;
-                }
+                case 0 -> throw new IOException(WARN_NO_VALID_LIST);
+                case 1 -> root = node;
                 default -> {
                     // Changes the ndJSON to valid JSON
                     final ObjectMapper newJSON = new ObjectMapper();

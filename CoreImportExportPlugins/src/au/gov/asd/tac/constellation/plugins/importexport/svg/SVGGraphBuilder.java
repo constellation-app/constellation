@@ -563,14 +563,10 @@ public class SVGGraphBuilder {
                     // Generate the SVG Loop Image
                     final SVGData svgloopImage;
                     final ConnectionDirection direction = access.getConnectionDirection(connection);
-                    switch (direction) { 
-                        case LOW_TO_HIGH, HIGH_TO_LOW -> {
-                            svgloopImage = DefaultIconProvider.LOOP_DIRECTED.buildSVG(access.getConnectionColor(connection).getJavaColor());
-                        }
-                        default -> {
-                            svgloopImage = DefaultIconProvider.LOOP_UNDIRECTED.buildSVG(access.getConnectionColor(connection).getJavaColor());
-                        }
-                    }
+                    svgloopImage = switch (direction) { 
+                        case LOW_TO_HIGH, HIGH_TO_LOW -> DefaultIconProvider.LOOP_DIRECTED.buildSVG(access.getConnectionColor(connection).getJavaColor());
+                        default -> DefaultIconProvider.LOOP_UNDIRECTED.buildSVG(access.getConnectionColor(connection).getJavaColor());
+                    };
                     svgloopImage.setParent(svgLoop);
                     
                     //Loop labels have not been implementd

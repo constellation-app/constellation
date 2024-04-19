@@ -459,9 +459,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                     }
                 }
             }
-            default -> {
-                throw new PluginException(PluginNotificationLevel.ERROR, "Invalid element type");
-            }       
+            default -> throw new PluginException(PluginNotificationLevel.ERROR, "Invalid element type");
         }
 
         try {            
