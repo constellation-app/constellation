@@ -70,9 +70,8 @@ public class WebServer {
         /**
          * The HTTP header that contains the REST secret.
          * <p>
-         * Note: RFC6648 has deprecated the use of "X-" because changing it when
-         * it becomes a standard is problematic. Since this header is highly
-         * unlikely to ever to be registered, using "X-" is fine.
+         * Note: RFC6648 has deprecated the use of "X-" because changing it when it becomes a standard is problematic.
+         * Since this header is highly unlikely to ever to be registered, using "X-" is fine.
          */
         public static final String SECRET_HEADER = "X-CONSTELLATION-SECRET";
 
@@ -81,10 +80,9 @@ public class WebServer {
         /**
          * Check that a request contains the correct secret.
          * <p>
-         * If the request does not contain the correct secret, send an
-         * SC_AUTHORIZED error to the client; the caller is expected to honor
-         * the return value and return immediately without doing any work if the
-         * return value is false.
+         * If the request does not contain the correct secret, send an SC_AUTHORIZED error to the client; the caller is
+         * expected to honor the return value and return immediately without doing any work if the return value is
+         * false.
          *
          * @param request The client request.
          * @param response The response.
@@ -148,17 +146,30 @@ public class WebServer {
                     }
                 }
 
+                // Also put rest file in notebook directory
+                final File restFileNotebook = new File(getNotebookDir(), REST_FILE);
+                if (restFileNotebook.exists()) {
+                    final boolean restFileIsDeleted = restFileNotebook.delete();
+                    if (!restFileIsDeleted) {
+                        //TODO: Handle case where file not successfully deleted
+                    }
+                }
+
                 // On Posix, we can use stricter file permissions.
                 // On Windows, we just create the new file.
                 final String os = System.getProperty("os.name");
                 if (!os.startsWith("Windows")) {
-                    final Path restPath = restFile.toPath();
                     final Set<PosixFilePermission> perms = EnumSet.of(PosixFilePermission.OWNER_READ, PosixFilePermission.OWNER_WRITE);
-                    Files.createFile(restPath, PosixFilePermissions.asFileAttribute(perms));
+                    Files.createFile(restFile.toPath(), PosixFilePermissions.asFileAttribute(perms));
+                    Files.createFile(restFileNotebook.toPath(), PosixFilePermissions.asFileAttribute(perms));
                 }
 
                 // Now write the file contents.
                 try (final PrintWriter pw = new PrintWriter(restFile)) {
+                    // Couldn't be bothered starting up a JSON writer for two simple values.
+                    pw.printf("{\"%s\":\"%s\", \"port\":%d}%n", ConstellationHttpServlet.SECRET_HEADER, ConstellationHttpServlet.SECRET, port);
+                }
+                try (final PrintWriter pw = new PrintWriter(restFileNotebook)) {
                     // Couldn't be bothered starting up a JSON writer for two simple values.
                     pw.printf("{\"%s\":\"%s\", \"port\":%d}%n", ConstellationHttpServlet.SECRET_HEADER, ConstellationHttpServlet.SECRET, port);
                 }
@@ -167,6 +178,7 @@ public class WebServer {
                 final boolean pythonRestClientDownload = prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT);
                 if (pythonRestClientDownload) {
                     downloadPythonClient();
+                    downloadPythonClientNotebookDir();
                 }
 
                 // Build the server.
@@ -237,18 +249,39 @@ public class WebServer {
         return ipython;
     }
 
+    static String getNotebookDir() {
+        final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+        final String dirPath = prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT);
+
+        return dirPath;
+    }
+
     /**
      * Download the Python REST API client to the user's ~/.ipython directory.
      * <p>
-     * The download is done only if the script doesn't exist, or the existing
-     * script needs updating.
+     * The download is done only if the script doesn't exist, or the existing script needs updating.
      * <p>
      * This is in the path for Jupyter notebooks, but not for standard Python.
      */
     public static void downloadPythonClient() {
         final File ipython = getScriptDir(true);
-        final File download = new File(ipython, CONSTELLATION_CLIENT);
-
+        downloadPythonClientToDir(ipython);
+    }
+    
+    /**
+     * Download the Python REST API client to the user's Jupyter Notebook directory.
+     * <p>
+     * The download is done only if the script doesn't exist, or the existing script needs updating.
+     * <p>
+     * This is in the path for Jupyter notebooks, but not for standard Python.
+     */
+    public static void downloadPythonClientNotebookDir() {
+        downloadPythonClientToDir(new File(getNotebookDir()));
+    }
+    
+    private static void downloadPythonClientToDir(final File directory) {
+        final File download = new File(directory, CONSTELLATION_CLIENT);
+        
         final boolean doDownload = !download.exists() || !equalScripts(download);
 
         if (doDownload) {
@@ -270,7 +303,7 @@ public class WebServer {
             }
 
             if (complete) {
-                final String msg = String.format("'%s' downloaded to %s", CONSTELLATION_CLIENT, ipython);
+                final String msg = String.format("'%s' downloaded to %s", CONSTELLATION_CLIENT, directory);
                 StatusDisplayer.getDefault().setStatusText(msg);
             }
         }
