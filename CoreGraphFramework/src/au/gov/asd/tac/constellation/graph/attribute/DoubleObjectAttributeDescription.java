@@ -71,7 +71,7 @@ public class DoubleObjectAttributeDescription extends AbstractObjectAttributeDes
 
     @Override
     public void setByte(final int id, final byte value) {
-        data[id] = value;
+        data[id] = (double) value;
     }
 
     @Override
@@ -81,7 +81,7 @@ public class DoubleObjectAttributeDescription extends AbstractObjectAttributeDes
 
     @Override
     public void setShort(final int id, final short value) {
-        data[id] = value;
+        data[id] = (double) value;
     }
 
     @Override
@@ -91,7 +91,7 @@ public class DoubleObjectAttributeDescription extends AbstractObjectAttributeDes
 
     @Override
     public void setInt(final int id, final int value) {
-        data[id] = value;
+        data[id] = (double) value;
     }
 
     @Override
@@ -101,7 +101,7 @@ public class DoubleObjectAttributeDescription extends AbstractObjectAttributeDes
 
     @Override
     public void setLong(final int id, final long value) {
-        data[id] = value;
+        data[id] = (double) value;
     }
 
     @Override
@@ -111,7 +111,7 @@ public class DoubleObjectAttributeDescription extends AbstractObjectAttributeDes
 
     @Override
     public void setFloat(final int id, final float value) {
-        data[id] = value;
+        data[id] = (double) value;
     }
 
     @Override
@@ -141,7 +141,7 @@ public class DoubleObjectAttributeDescription extends AbstractObjectAttributeDes
 
     @Override
     public void setChar(final int id, final char value) {
-        data[id] = value;
+        data[id] = (double) value;
     }
 
     @Override

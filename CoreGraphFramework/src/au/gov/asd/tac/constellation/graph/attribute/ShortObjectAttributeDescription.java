@@ -68,7 +68,7 @@ public class ShortObjectAttributeDescription extends AbstractObjectAttributeDesc
 
     @Override
     public void setByte(final int id, final byte value) {
-        data[id] = value;
+        data[id] = (short) value;
     }
 
     @Override

@@ -71,7 +71,7 @@ public class LongObjectAttributeDescription extends AbstractObjectAttributeDescr
 
     @Override
     public void setByte(final int id, final byte value) {
-        data[id] = value;
+        data[id] = (long) value;
     }
 
     @Override
@@ -81,7 +81,7 @@ public class LongObjectAttributeDescription extends AbstractObjectAttributeDescr
 
     @Override
     public void setShort(final int id, final short value) {
-        data[id] = value;
+        data[id] = (long) value;
     }
 
     @Override
@@ -91,7 +91,7 @@ public class LongObjectAttributeDescription extends AbstractObjectAttributeDescr
 
     @Override
     public void setInt(final int id, final int value) {
-        data[id] = value;
+        data[id] = (long) value;
     }
 
     @Override
@@ -141,7 +141,7 @@ public class LongObjectAttributeDescription extends AbstractObjectAttributeDescr
 
     @Override
     public void setChar(final int id, final char value) {
-        data[id] = value;
+        data[id] = (long) value;
     }
 
     @Override
