@@ -378,8 +378,8 @@ public final class GlyphManagerBI implements GlyphManager {
         //
         final float centre = (ligature.left + ligature.right) / 2F;
         for (final GlyphRectangle gr : ligature.glyphRectangles) {
-            final float cx = (gr.rect.x - centre) / (float) maxFontHeight - 0.1F;
-            final float cy = (gr.rect.y - (ligature.top + ligature.bottom) / 2F) / (float) (maxFontHeight) + 0.5F;
+            final float cx = (gr.rect.x - centre) / maxFontHeight - 0.1F;
+            final float cy = (gr.rect.y - (ligature.top + ligature.bottom) / 2F) / (maxFontHeight) + 0.5F;
             glyphStream.addGlyph(gr.position, cx, cy, context);
         }
     }

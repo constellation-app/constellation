@@ -170,7 +170,7 @@ public class JSONImportFileParser extends ImportFileParser {
         } else if (node.size() > 0) {
             // Top level node is not an array, go searching
             for (Iterator<Entry<String, JsonNode>> it = node.fields(); it.hasNext();) {
-                Map.Entry<String, JsonNode> entry = (Map.Entry<String, JsonNode>) it.next();
+                final Map.Entry<String, JsonNode> entry = it.next();
 
                 // We are only interested in arrays that contain at least one
                 // ObjectNode entry, an ObjectNode contains one or more fields
@@ -213,7 +213,7 @@ public class JSONImportFileParser extends ImportFileParser {
         if (node.isObject()) {
             // Iterate over each field in object and add its name if it doesnt already exist in results
             for (Iterator<Entry<String, JsonNode>> it = node.fields(); it.hasNext();) {
-                Map.Entry<String, JsonNode> entry = (Map.Entry<String, JsonNode>) it.next();
+                final Map.Entry<String, JsonNode> entry = it.next();
 
                 if (entry.getValue().isObject()) {
                     // If the entry node is an Object node then apply recursion to
@@ -320,7 +320,7 @@ public class JSONImportFileParser extends ImportFileParser {
             // lists will be converted to text, so if a list contains another list,
             // that second list is treated as a single object.
             for (Iterator<Entry<String, JsonNode>> it = node.fields(); it.hasNext();) {
-                Map.Entry<String, JsonNode> entry = (Map.Entry<String, JsonNode>) it.next();
+                final Map.Entry<String, JsonNode> entry = it.next();
 
                 if (entry.getValue().isObject()) {
                     line = getLineContent(entry.getValue(), columnMap, (prefix + entry.getKey() + SeparatorConstants.PERIOD), line);

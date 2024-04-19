@@ -137,7 +137,7 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
 
     @Override
     public void setByte(final int id, final byte value) {
-        data[id] = (float) value;
+        data[id] = value;
     }
 
     @Override
@@ -147,7 +147,7 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
 
     @Override
     public void setShort(final int id, final short value) {
-        data[id] = (float) value;
+        data[id] = value;
     }
 
     @Override
@@ -157,7 +157,7 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
 
     @Override
     public void setInt(final int id, final int value) {
-        data[id] = (float) value;
+        data[id] = value;
     }
 
     @Override
@@ -167,7 +167,7 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
 
     @Override
     public void setLong(final int id, final long value) {
-        data[id] = (float) value;
+        data[id] = value;
     }
 
     @Override
@@ -182,7 +182,7 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
 
     @Override
     public double getDouble(final int id) {
-        return (double) data[id];
+        return data[id];
     }
 
     @Override
@@ -207,7 +207,7 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
 
     @Override
     public void setChar(final int id, final char value) {
-        data[id] = (float) value;
+        data[id] = value;
     }
 
     @Override
