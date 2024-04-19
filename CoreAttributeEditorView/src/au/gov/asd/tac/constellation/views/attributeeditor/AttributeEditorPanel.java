@@ -148,10 +148,10 @@ public class AttributeEditorPanel extends BorderPane {
     private static final GraphElementType[] ELEMENT_TYPES = {GraphElementType.GRAPH, GraphElementType.VERTEX, GraphElementType.TRANSACTION};
     private static final String NO_VALUE_TEXT = "<No Value>";
 
-    private static final String PRIMARY_KEY_ATTRIBUTE_COLOR = "#8a1d1d";
-    private static final String CUSTOM_ATTRIBUTE_COLOR = "#1f4f8a";
-    private static final String HIDDEN_ATTRIBUTE_COLOR = "#999999";
-    private static final String SCHEMA_ATTRIBUTE_COLOR = JavafxStyleManager.isDarkTheme() ? "#333333" : "#777777";
+    private static final String PRIMARY_KEY_ATTRIBUTE_COLOR = JavafxStyleManager.isDarkTheme() ? "#8a1d1d" : "#e8a49c";
+    private static final String CUSTOM_ATTRIBUTE_COLOR = JavafxStyleManager.isDarkTheme() ? "#1f4f8a" : "#afc8ff";
+    private static final String HIDDEN_ATTRIBUTE_COLOR = JavafxStyleManager.isDarkTheme() ? "#999999" : "#b8b8b8";
+    private static final String SCHEMA_ATTRIBUTE_COLOR = JavafxStyleManager.isDarkTheme() ? "#333333" : "#d6d6d6";
 
     private StackPane root;
     private ArrayList<VBox> valueTitledPaneContainers = new ArrayList<>();
@@ -579,7 +579,7 @@ public class AttributeEditorPanel extends BorderPane {
             attributePane.setCollapsible(false);
 
             if (!JavafxStyleManager.isDarkTheme()) {
-                attributePane.setStyle("-fx-background-color: #FFFFFF; ");
+                //attributePane.setStyle("-fx-background-color: #FFFFFF; ");
             }
 
         } else {
@@ -594,7 +594,7 @@ public class AttributeEditorPanel extends BorderPane {
         if (JavafxStyleManager.isDarkTheme()) {
             attributeValueNode.setStyle("-fx-background-color: #111111; ");
         } else {
-            attributeValueNode.setStyle("-fx-background-color: #757575; -fx-text-fill: #FFFFFF; ");
+            attributeValueNode.setStyle("-fx-background-color: #f8f8f8; -fx-text-fill: #000000; ");
         }
 
         // Edit Functionality

@@ -1,5 +1,27 @@
 /*******************************************************************************
  *                                                                             *
+ * Fixed colour constants                                                      *
+ *                                                                             *
+ ******************************************************************************/
+
+* {
+    consty-ltblue: #51a5e8;
+    consty-blue: #4191d1;
+    consty-dkblue: #317fdd;
+}
+
+.list-view .list-cell:even {
+    -fx-background-color: #e8f1f4;
+}
+.list-view .list-cell:odd {
+    -fx-background-color: #e0eaec;
+}
+.list-view .list-cell:selected {
+    -fx-background-color: #90b0d0;
+}
+
+/*******************************************************************************
+ *                                                                             *
  * Label                                                                       *
  *                                                                             *
  ******************************************************************************/
@@ -25,9 +47,9 @@
  *                                                                             *
  ******************************************************************************/
 .menu-button {
-    -fx-background-color: #0093FF;
-    -fx-border-color: #999999;
-    -fx-border-radius: 4px;
+    -fx-background-color: consty-blue;
+    -fx-border-color: consty-dkblue;
+    -fx-border-radius: 3px;
     -fx-mark-color: white;
 }
 
@@ -37,7 +59,7 @@
 
 .menu-button:hover {
     -fx-color: -fx-hover-base;
-    -fx-background-color: #009eff;
+    -fx-background-color: consty-ltblue;
 }
 
 .menu-bar .label {
@@ -53,7 +75,7 @@
 }
 
 .menu:hover {
-    -fx-background-color: #009eff;
+    -fx-background-color: consty-ltblue;
 }
 
 .menu-item:focused .label {
@@ -65,20 +87,27 @@
     -fx-mark-color: black;
 }
 
+.context-menu .menu-item:hover {
+    -fx-background-color: consty-ltblue;
+}
+
+.context-menu .menu-item:focused {
+    -fx-background-color: consty-ltblue;
+}
 /*******************************************************************************
  *                                                                             *
  * Button                                                                      *
  *                                                                             *
  ******************************************************************************/
 .button {
-    -fx-base: #0093FF;
+    -fx-base: consty-blue;
     -fx-text-fill: #ffffff;
 }
 
 .button:hover {
     -fx-color: -fx-hover-base;
     -fx-text-fill: #ffffff;
-    -fx-background-color: #009eff;
+    -fx-background-color: consty-ltblue;
 }
 
 .toggle-button {
@@ -92,11 +121,11 @@
 
 
 .toggle-button:selected {
-    -fx-background-color: #009eff;
+    -fx-background-color: consty-blue;
 }
 
 .toggle-button:selected:focused {
-    -fx-background-color: #009eff;
+    -fx-background-color: consty-blue;
 }
 
 /* Uncategorised */

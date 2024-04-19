@@ -4,7 +4,7 @@
  *                                                                             *
  ******************************************************************************/
 .titled-pane > .title {
-    -fx-background-color: linear-gradient(to bottom, derive(#1f99f0,100%), derive(#1f99f0,0%) 5%, derive(#1f99f0,-25%) 95%, derive(#1f99f0,50%) 100%);
+    -fx-background-color: linear-gradient(to bottom, derive(#4191d1,100%), derive(#4191d1,0%) 5%, derive(#1f99f0,-25%) 95%, derive(#1f99f0,50%) 100%);
     -fx-font-weight:bold;
 }
 
