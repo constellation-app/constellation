@@ -17,17 +17,23 @@ package au.gov.asd.tac.constellation.utilities.gui.field;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
-//import javafx.scene.Group;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.IndexRange;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputControl;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.Border;
@@ -84,16 +90,15 @@ public class ConstellationInputField extends StackPane {
     final int centerCellMinWidth = 100;
     final int defaultCellHeight = 22;
     
-    private TextField field;
+    private GridPane gridPane;
+    private TextInputControl field;
     private final Label leftLabel = new Label();
     private final Label rightLabel = new Label();
     private final Rectangle rightButton = new Rectangle(endCellPrefWidth, defaultCellHeight); 
     private final Rectangle leftButton = new Rectangle(); 
     
     private final ReadOnlyDoubleProperty heightBinding;
-    
-
-    
+        
     final int corner = 7;
     
     final Color optionColor = Color.color(148/255D, 148/255D, 148/255D);
@@ -101,32 +106,32 @@ public class ConstellationInputField extends StackPane {
     final Color buttonColor = Color.color(34/255D, 96/255D, 168/255D);
    
     public ConstellationInputField(){
-        this(ConstellationInputFieldLayoutConstants.INPUT_POPUP);
+        this(ConstellationInputFieldLayoutConstants.INPUT, TextType.SINGLELINE);
     }
     
-    public ConstellationInputField(final ConstellationInputFieldLayoutConstants layout) {
-        field = this.createInputField();
+    public ConstellationInputField(final ConstellationInputFieldLayoutConstants layout, final TextType type) {
+        field = this.createInputField(type);
         this.heightBinding = field.heightProperty();
         
-        GridPane gridPane = getGridPaneWithChildCellPanes(layout);
+        gridPane = getGridPaneWithChildCellPanes(layout);
         
         this.setPrefWidth(500);
         this.setMinWidth(150);
         
-        Rectangle clippingMask = new Rectangle(300, 22);
+        final Rectangle clippingMask = new Rectangle(300, 22);
         clippingMask.setArcWidth(corner);
         clippingMask.setArcHeight(corner);        
         clippingMask.setFill(Color.BLACK);
         clippingMask.setStroke(Color.BLACK);
         clippingMask.widthProperty().bind(gridPane.widthProperty());
         
-        Rectangle background = new Rectangle(300, 22);
+        final Rectangle background = new Rectangle(300, 22);
         background.setArcWidth(corner);
         background.setArcHeight(corner);  
         background.setFill(fieldColor);
         background.widthProperty().bind(gridPane.widthProperty());
         
-        Rectangle foreground = new Rectangle(300, 22);
+        final Rectangle foreground = new Rectangle(300, 22);
         foreground.setArcWidth(corner);
         foreground.setArcHeight(corner);        
         foreground.setFill(Color.TRANSPARENT);
@@ -134,13 +139,13 @@ public class ConstellationInputField extends StackPane {
         foreground.widthProperty().bind(gridPane.widthProperty());
         this.bindFocusEffect(field, foreground);
         
-        for (ContentDisplay area : layout.getAreas()){
+        for (final ContentDisplay area : layout.getAreas()) {
             if (null != area) switch (area) {
                 case LEFT -> gridPane.add(this.getEndCellGroup(ContentDisplay.LEFT, optionColor, leftLabel), 0, 0);
                 case RIGHT -> gridPane.add(this.getEndCellGroup(ContentDisplay.RIGHT, layout.hasButton ? buttonColor : optionColor, rightLabel), layout.getAreas().length - 1, 0);
                 case CENTER -> {
                     
-                    insertBaseFieldIntoGrid(gridPane, field);
+                    insertBaseFieldIntoGrid(field);
                 }
                 default -> {
                     //Do Nothing
@@ -158,29 +163,30 @@ public class ConstellationInputField extends StackPane {
         this.setAlignment(Pos.CENTER);
     }
     
-    public TextField getBaseField(){
+    public TextInputControl getBaseField() {
         return this.field;
     }
     
-    public final void insertBaseFieldIntoGrid(GridPane gridPane, TextField field){
-        for (Node node : gridPane.getChildren()) {
-            if (ContentDisplay.CENTER.toString().equals(node.getId())) {
+        public final void insertBaseFieldIntoGrid(final TextInputControl field) {
+        for (final Node node : gridPane.getChildren()) {
+            if (!ContentDisplay.LEFT.toString().equals(node.getId()) && !ContentDisplay.RIGHT.toString().equals(node.getId())) {
                 gridPane.add(field, GridPane.getColumnIndex(node), GridPane.getRowIndex(node));
-                gridPane.getChildren().remove(node);
+                if (ContentDisplay.CENTER.toString().equals(node.getId())) {
+                    gridPane.getChildren().remove(node);
+                }
                 break;
             }
         }
     }
     
-    public final void registerLeftButon(final String labelText){
+    public final void registerLeftButon(final String labelText) {
         
     }
     
     private Pane getEndCellGroup(final ContentDisplay side, final Color color, final Label label) {
-        StackPane content = new StackPane();
+        final StackPane content = new StackPane();
         content.setId(side.toString());
-        Rectangle background;
-        background = switch (side) {
+        final Rectangle background = switch (side) {
             case LEFT -> leftButton;
             case RIGHT -> rightButton;
             default -> new Rectangle(); // never used but a noce way to get rid of errors
@@ -201,62 +207,74 @@ public class ConstellationInputField extends StackPane {
         
     }
     
-    private void addToGridCellGroup(final GridPane gridPane, final ContentDisplay groupID, final Node item) {
-        for (Node node : gridPane.getChildren()) {
+    protected void addToGridCellGroup(final ContentDisplay groupID, final Node item) {
+        for (final Node node : gridPane.getChildren()) {
             if (groupID.toString().equals(node.getId())) {
                 ((Pane) node).getChildren().add(item);
             }
         }
     }
 
-    private GridPane getGridPaneWithChildCellPanes(ConstellationInputFieldLayoutConstants layout) {
-        GridPane gridPane = new GridPane();
+    /**
+     * Constructs a grid pane according to the layout provided. 
+     * the grid pane will have the number of rows equal to the layouts number of areas.
+     * The
+     * @param layout
+     * @return 
+     */
+    private GridPane getGridPaneWithChildCellPanes(final ConstellationInputFieldLayoutConstants layout) {
+        final GridPane local = new GridPane();
         
-        ColumnConstraints leftConstraint = new ColumnConstraints(50);
+        final ColumnConstraints leftConstraint = new ColumnConstraints(50);
         
+        final ColumnConstraints rightConstraint = new ColumnConstraints(50);
         
-        ColumnConstraints rightConstraint = new ColumnConstraints(50);
-        
-        ColumnConstraints centerConstraint = new ColumnConstraints();
+        final ColumnConstraints centerConstraint = new ColumnConstraints();
         centerConstraint.setPrefWidth(400);
         centerConstraint.setMinWidth(100);
         
-        ColumnConstraints doubleConstraint = new ColumnConstraints();
+        final ColumnConstraints doubleConstraint = new ColumnConstraints();
         doubleConstraint.setPrefWidth(450);
         doubleConstraint.setMinWidth(100);
         
-        ColumnConstraints trippleConstraint = new ColumnConstraints();
+        final ColumnConstraints trippleConstraint = new ColumnConstraints();
         trippleConstraint.setPrefWidth(500);
         trippleConstraint.setMinWidth(100);
-        ContentDisplay[] areas = layout.getAreas();
-        for (ContentDisplay area : areas){
+        
+        final ContentDisplay[] areas = layout.getAreas();
+        for (final ContentDisplay area : areas) {
             switch (area) {
-                case LEFT -> gridPane.getColumnConstraints().add(leftConstraint);
+                case LEFT -> local.getColumnConstraints().add(leftConstraint);
                 case CENTER -> {
-                    switch (areas.length){
-                        case 1 -> gridPane.getColumnConstraints().add(trippleConstraint);
-                        case 2 -> gridPane.getColumnConstraints().add(doubleConstraint);
-                        case 3 -> gridPane.getColumnConstraints().add(centerConstraint);   
+                    switch (areas.length) {
+                        case 1 -> local.getColumnConstraints().add(trippleConstraint);
+                        case 2 -> local.getColumnConstraints().add(doubleConstraint);
+                        case 3 -> local.getColumnConstraints().add(centerConstraint);   
                     }
                 }
-                case RIGHT -> gridPane.getColumnConstraints().add(rightConstraint);
+                case RIGHT -> local.getColumnConstraints().add(rightConstraint);
                 default -> {
                     //Do Nothing
                 }
             }
         }
 
-        for (int i = 0 ; i< areas.length ; i++){
-            Pane group = new Pane();
+        for (int i = 0 ; i< areas.length ; i++) {
+            final Pane group = new Pane();
             group.setId(areas[i].toString());
-            gridPane.add(group, i, 0);
+            local.add(group, i, 0);
         }
         
-        return gridPane;
+        return local;
     }
 
-    private TextField createInputField() {
-        TextField local = new TextField("This is a test text field with lots of text that potensialy overflows");
+    protected final TextInputControl createInputField(final TextType type) {
+        
+        final TextInputControl local = switch (type) {
+            case SECRET -> new PasswordField();
+            case MULTILINE -> new TextArea();
+            default -> new TextField();
+        };
         local.setBackground(Background.fill(Color.TRANSPARENT));
         local.setBorder(Border.stroke(Color.TRANSPARENT));
         
@@ -264,11 +282,11 @@ public class ConstellationInputField extends StackPane {
         
     }
     
-    private void bindFocusEffect(final TextField local, final Rectangle foreground){
+    private void bindFocusEffect(final TextInputControl local, final Rectangle foreground) {
         //Change the border color of the firld to show that it is focused
         local.setOnMouseClicked(event -> {
             foreground.setStroke(Color.CYAN);
-            Scene scene = this.getScene();
+            final Scene scene = this.getScene();
             
             //Register an event handeler so that the boarder is changed back to black on the next mouse press
             scene.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
@@ -283,20 +301,84 @@ public class ConstellationInputField extends StackPane {
         });
     }
     
-    public void setRightLabel(final String label){
+    public void setRightLabel(final String label) {
         this.rightLabel.setText(label);
     };
     
-    public void setLeftLabel(final String label){
+    public void setLeftLabel(final String label) {
         this.leftLabel.setText(label);
     };
     
-    public void registerRightButtonEvent(EventHandler<MouseEvent> event){
+    public void registerRightButtonEvent(final EventHandler<MouseEvent> event) {
         this.rightButton.setOnMouseClicked(event);
     }
     
-    public void registerleftButtonEvent(EventHandler<MouseEvent> event){
+    public void registerleftButtonEvent(final EventHandler<MouseEvent> event) {
         this.leftButton.setOnMouseClicked(event);
+    }
+
+    public void setPromptText(final String description) {
+        this.field.setPromptText(description);
+    }
+
+    public void setText(final String stringValue) {
+        this.field.setText(stringValue);
+    }
+
+    public void setEditable(final boolean enabled) {
+        this.field.setEditable(enabled);
+    }
+
+    public StringProperty textProperty() {
+        return this.field.textProperty();
+    }
+
+    public String getText() {
+        return this.field.getText();
+    }
+
+    public void setTooltip(Tooltip tooltip) {
+        this.field.setTooltip(tooltip);
+    }
+
+    public void selectAll() {
+        this.field.selectAll();
+    }
+
+    public void selectBackward() {
+        this.field.selectBackward();
+    }
+
+    public void selectForward() {
+        this.field.selectForward();
+    }
+
+    public void previousWord() {
+        this.field.previousWord();
+    }
+
+    public void nextWord() {
+        this.field.nextWord();
+    }
+
+    public void selectPreviousWord() {
+       this.field.selectPreviousWord();
+    }
+
+    public void selectNextWord() {
+        this.field.selectNextWord();
+    }
+
+    public void deleteText(final IndexRange selection) {
+        this.field.deleteText(selection);
+    }
+
+    public void deleteNextChar() {
+        this.field.deleteNextChar();
+    }
+
+    public IndexRange getSelection() {
+        return this.field.getSelection();
     }
     
     public enum ConstellationInputFieldLayoutConstants {
@@ -314,14 +396,19 @@ public class ConstellationInputField extends StackPane {
         private final ContentDisplay[] areas;
         private final boolean hasButton;
 
-        private ConstellationInputFieldLayoutConstants(final boolean hasButton, final ContentDisplay... areas){
+        private ConstellationInputFieldLayoutConstants(final boolean hasButton, final ContentDisplay... areas) {
             this.areas = areas;
             this.hasButton = hasButton;
         }
         
-        public ContentDisplay[] getAreas(){
+        public ContentDisplay[] getAreas() {
             return this.areas;
         }
     }
-
+    
+    public enum TextType {
+        SECRET,
+        SINGLELINE,
+        MULTILINE;
+    }
 }

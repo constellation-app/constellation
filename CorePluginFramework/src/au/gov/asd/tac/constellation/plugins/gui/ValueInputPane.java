@@ -21,6 +21,10 @@ import au.gov.asd.tac.constellation.plugins.parameters.RecentValuesChangeEvent;
 import au.gov.asd.tac.constellation.plugins.parameters.RecentValuesListener;
 import au.gov.asd.tac.constellation.plugins.parameters.types.PasswordParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputField;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputField.TextType;
+import au.gov.asd.tac.constellation.utilities.gui.field.PasswordInputField;
+import au.gov.asd.tac.constellation.utilities.gui.field.TextInputField;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.Collections;
 import java.util.List;
@@ -67,7 +71,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
 
     private final ChangeListener<Number> recentValueSelectionListener;
     private final ComboBox<String> recentValuesCombo;
-    private final TextInputControl field;
+    private final ConstellationInputField field; //TextInputControl field;
     private final String parameterId;
     private final boolean required;
     private int comboBoxWidth = EMPTY_WIDTH;
@@ -174,14 +178,14 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
             }
 
             if (isPassword) {
-                field = new PasswordField();
+                field = new PasswordInputField();
+                
             } else if (suggestedHeight > 1) {
-                field = new TextArea();
-                ((TextArea) field).setWrapText(true);
-                ((TextArea) field).setPrefRowCount(suggestedHeight);
+                field = new TextInputField(TextType.MULTILINE);
             } else {
-                field = new TextField();
-                Platform.runLater(() -> TextFields.bindAutoCompletion((TextField) field, recentValuesCombo.getItems()));
+               field = new TextInputField(TextType.SINGLELINE);
+                Platform.runLater(() -> TextFields.bindAutoCompletion((TextField) field.getBaseField(), recentValuesCombo.getItems()));
+
             }
 
             field.setPromptText(parameter.getDescription());
@@ -204,7 +208,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
             }
 
             if (parameter.getParameterValue().getGuiInit() != null) {
-                parameter.getParameterValue().getGuiInit().init(field);
+                parameter.getParameterValue().getGuiInit().init(field.getBaseField());
             }
             // If parameter is enabled, ensure widget is both enabled and editable.
             field.setEditable(parameter.isEnabled());
