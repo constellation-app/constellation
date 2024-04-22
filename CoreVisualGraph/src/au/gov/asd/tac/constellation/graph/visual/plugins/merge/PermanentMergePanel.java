@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -398,7 +399,7 @@ public final class PermanentMergePanel extends JPanel {
     private javax.swing.JLabel selectedNodesLabel;
     // End of variables declaration//GEN-END:variables
 
-    private class AttributeComparator implements Comparator<Attribute> {
+    private class AttributeComparator implements Comparator<Attribute>, Serializable {
 
         @Override
         public int compare(final Attribute a1, final Attribute a2) {
