@@ -33,6 +33,7 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.security.MessageDigest;
@@ -139,18 +140,20 @@ public class WebServer {
                 final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
                 final File restFile = new File(userDir, REST_FILE);
                 if (restFile.exists()) {
-                    final boolean restFileIsDeleted = restFile.delete();
-                    if (!restFileIsDeleted) {
-                        //TODO: Handle case where file not successfully deleted
+                    try {
+                        Files.delete(Path.of(restFile.getPath()));
+                    } catch (IOException e) {
+                        LOGGER.log(Level.WARNING, "{0}", e);
                     }
                 }
 
                 // Also put rest file in notebook directory
                 final File restFileNotebook = new File(getNotebookDir(), REST_FILE);
                 if (restFileNotebook.exists()) {
-                    final boolean restFileIsDeleted = restFileNotebook.delete();
-                    if (!restFileIsDeleted) {
-                        //TODO: Handle case where file not successfully deleted
+                    try {
+                        Files.delete(Path.of(restFileNotebook.getPath()));
+                    } catch (IOException e) {
+                        LOGGER.log(Level.WARNING, "{0}", e);
                     }
                 }
 
@@ -250,9 +253,8 @@ public class WebServer {
 
     static String getNotebookDir() {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-        final String dirPath = prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT);
-
-        return dirPath;
+        // Return path to directory
+        return prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT);
     }
 
     /**
@@ -266,7 +268,7 @@ public class WebServer {
         final File ipython = getScriptDir(true);
         downloadPythonClientToDir(ipython);
     }
-    
+
     /**
      * Download the Python REST API client to the user's Jupyter Notebook directory.
      * <p>
@@ -277,10 +279,10 @@ public class WebServer {
     public static void downloadPythonClientNotebookDir() {
         downloadPythonClientToDir(new File(getNotebookDir()));
     }
-    
+
     public static void downloadPythonClientToDir(final File directory) {
         final File download = new File(directory, CONSTELLATION_CLIENT);
-        
+
         final boolean doDownload = !download.exists() || !equalScripts(download);
 
         if (doDownload) {

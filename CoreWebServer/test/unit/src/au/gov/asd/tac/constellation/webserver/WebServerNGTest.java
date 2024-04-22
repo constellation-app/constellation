@@ -16,18 +16,21 @@
 package au.gov.asd.tac.constellation.webserver;
 
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
-import static au.gov.asd.tac.constellation.webserver.WebServer.getScriptDir;
+import static au.gov.asd.tac.constellation.webserver.WebServer.getNotebookDir;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
+import java.util.EnumSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import org.openide.util.NbPreferences;
 import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -44,6 +47,7 @@ public class WebServerNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(WebServerNGTest.class.getName());
     private static final String IPYTHON = ".ipython";
+    private static final String REST_FILE = "rest.json";
 
     public WebServerNGTest() {
     }
@@ -62,6 +66,31 @@ public class WebServerNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Clean up created files from this test
+        final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+        final String[] filesArray = {WebServer.CONSTELLATION_CLIENT, REST_FILE};
+        for (String file : filesArray) {
+            // Delete in home directory
+            final String homeDir = System.getProperty("user.home");
+            final Path filePath = Path.of(homeDir, IPYTHON).resolve(file);
+            if (Files.exists(filePath)) {
+                try {
+                    Files.delete(filePath);
+                } catch (IOException e) {
+                    LOGGER.log(Level.WARNING, "Error deleting file {0} at {1}", new Object[]{file, filePath});
+                }
+            }
+
+            // Delete in notebook directory
+            final Path filePathNotebook = Path.of(prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT)).resolve(file);
+            if (Files.exists(filePathNotebook)) {
+                try {
+                    Files.delete(filePathNotebook);
+                } catch (IOException e) {
+                    LOGGER.log(Level.WARNING, "Error deleting file {0} at {1}", new Object[]{file, filePath});
+                }
+            }
+        }
     }
 
     /**
@@ -85,24 +114,54 @@ public class WebServerNGTest {
         int expResult = 1517;
         int result = WebServer.start();
         assertEquals(expResult, result);
+    }
 
-        final String homeDir = System.getProperty("user.home");
-        final Path filePath = Path.of(homeDir, IPYTHON).resolve(WebServer.CONSTELLATION_CLIENT);
+    /**
+     * Test of start method, of class WebServer.
+     */
+    @Test
+    public void testStartExistingRest() {
+        System.out.println("testStartExistingRest");
 
+        // Make rest files first
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-        final Path filePathNotebook = Path.of(prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT)).resolve(WebServer.CONSTELLATION_CLIENT);
+        final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
+        final File restFile = new File(userDir, REST_FILE);
+        final File restFileNotebook = new File(getNotebookDir(), REST_FILE);
+        // Unix
+        final String os = System.getProperty("os.name");
+        if (!os.startsWith("Windows")) {
+            final Set<PosixFilePermission> perms = EnumSet.of(PosixFilePermission.OWNER_READ, PosixFilePermission.OWNER_WRITE);
+            try {
+                Files.createFile(restFile.toPath(), PosixFilePermissions.asFileAttribute(perms));
+            } catch (IOException e) {
+                LOGGER.log(Level.WARNING, "Error making file");
+            }
+            try {
+                Files.createFile(restFileNotebook.toPath(), PosixFilePermissions.asFileAttribute(perms));
+            } catch (IOException e) {
+                LOGGER.log(Level.WARNING, "Error making file");
+            }
+        }
+        // Windows
+        try (final PrintWriter pw = new PrintWriter(restFile)) {
+            // Couldn't be bothered starting up a JSON writer for two simple values.
+            pw.printf("TEST FILE");
+        } catch (IOException e) {
+            LOGGER.log(Level.WARNING, "Error making file");
+        }
 
-        // Delete files
-        try {
-            Files.delete(filePath);
+        try (final PrintWriter pw = new PrintWriter(restFileNotebook)) {
+            // Couldn't be bothered starting up a JSON writer for two simple values.
+            pw.printf("TEST FILE");
         } catch (IOException e) {
-            LOGGER.log(Level.WARNING, "Error deleting file");
+            LOGGER.log(Level.WARNING, "Error making file");
         }
-        try {
-            Files.delete(filePathNotebook);
-        } catch (IOException e) {
-            LOGGER.log(Level.WARNING, "Error deleting file");
-        }
+
+        // Run start
+        int expResult = 1517;
+        int result = WebServer.start();
+        assertEquals(expResult, result);
     }
 
     /**
@@ -140,15 +199,6 @@ public class WebServerNGTest {
 
         WebServer.downloadPythonClient();
         assertTrue(Files.exists(filePath));
-        
-        // Delete file
-        try {
-            Files.delete(filePath);
-        } catch (IOException e) {
-            LOGGER.log(Level.WARNING, "Error deleting file");
-        }
-        // Make sure it's deleted
-        assertFalse(Files.exists(filePath));
     }
 
     /**
@@ -162,15 +212,6 @@ public class WebServerNGTest {
 
         WebServer.downloadPythonClientNotebookDir();
         assertTrue(Files.exists(filePath));
-        
-        // Delete file
-        try {
-            Files.delete(filePath);
-        } catch (IOException e) {
-            LOGGER.log(Level.WARNING, "Error deleting file");
-        }
-        // Make sure it's deleted
-        assertFalse(Files.exists(filePath));
     }
 
     /**
@@ -186,14 +227,5 @@ public class WebServerNGTest {
         assertTrue(Files.exists(filePath));
         // Validate file contents
         assertTrue(WebServer.equalScripts(new File(pathString + File.separator + WebServer.CONSTELLATION_CLIENT)));
-        
-        // Delete file
-        try {
-            Files.delete(filePath);
-        } catch (IOException e) {
-            LOGGER.log(Level.WARNING, "Error deleting file");
-        }
-        // Make sure it's deleted
-        assertFalse(Files.exists(filePath));
     }
 }
