@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -117,10 +117,10 @@ public final class BlazeAttributeDescriptionV0 extends AbstractAttributeDescript
     private static BlazeV0 setObject(final Object value) {
         if (value == null) {
             return null;
-        } else if (value instanceof BlazeV0) {
-            return (BlazeV0) value;
-        } else if (value instanceof String) {
-            return BlazeV0.valueOf((String) value);
+        } else if (value instanceof BlazeV0 blaze) {
+            return blaze;
+        } else if (value instanceof String string) {
+            return BlazeV0.valueOf(string);
         } else {
             final String msg = String.format("Error converting Object '%s' to Blaze", value.getClass());
             throw new IllegalArgumentException(msg);
@@ -238,12 +238,12 @@ public final class BlazeAttributeDescriptionV0 extends AbstractAttributeDescript
     }
 
     @Override
-    public Object createReadObject(IntReadable indexReadable) {
+    public Object createReadObject(final IntReadable indexReadable) {
         return (ObjectReadable) () -> data[indexReadable.readInt()];
     }
 
     @Override
-    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+    public Object createWriteObject(final GraphWriteMethods graph, final int attribute, final IntReadable indexReadable) {
         return new ObjectVariable() {
             @Override
             public Object readObject() {
@@ -251,7 +251,7 @@ public final class BlazeAttributeDescriptionV0 extends AbstractAttributeDescript
             }
 
             @Override
-            public void writeObject(Object value) {
+            public void writeObject(final Object value) {
                 graph.setObjectValue(attribute, indexReadable.readInt(), value);
             }
         };

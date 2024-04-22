@@ -290,7 +290,7 @@ public final class DateTimeRangeInputPane extends Pane {
         // Set up the parameter listener.
         parameter.addListener((final PluginParameter<?> pluginParameter, final ParameterChange change) -> Platform.runLater(() -> {
             switch (change) {
-                case VALUE:
+                case VALUE -> {
                     if (!isAdjusting) {
                         // don't change the value if it isn't necessary.
                         final DateTimeRange param = pluginParameter.getDateTimeRangeValue();
@@ -303,17 +303,13 @@ public final class DateTimeRangeInputPane extends Pane {
                             absPane.setExpanded(true);
                         }
                     }
-                    break;
-                case ENABLED:
-                    setDisable(!pluginParameter.isEnabled());
-                    break;
-                case VISIBLE:
+                }
+                case ENABLED -> setDisable(!pluginParameter.isEnabled());
+                case VISIBLE -> {
                     setManaged(parameter.isVisible());
                     setVisible(parameter.isVisible());
-                    break;
-                default:
-                    LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
-                    break;
+                }
+                default -> LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
             }
         }));
     }
@@ -579,6 +575,9 @@ public final class DateTimeRangeInputPane extends Pane {
         spinner.setEditable(true);
         final TextFormatter<Integer> timeFormatter = new TextFormatter<>(new IntegerStringConverter(), 0, filter);
         spinner.getEditor().setTextFormatter(timeFormatter);
+        
+        // Set spinner to enable value wrapping
+        spinner.getValueFactory().setWrapAround(true);
 
         final Label spinnerLabel = new Label(label);
         spinnerLabel.setLabelFor(spinner);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -89,19 +89,19 @@ public class DefaultIconProvider implements ConstellationIconProvider {
         return defaultIcons;
     }
 
-    private static BufferedImage getHighlightImage(int size, float radius, int samples) {
+    private static BufferedImage getHighlightImage(final int size, final float radius, final int samples) {
         final BufferedImage highlightImage = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
 
         final float sampleSize = 1.0F / (size * samples);
         final float sampleOffset = sampleSize * 0.5F;
 
         for (int x = 0; x < size; x++) {
-            float xMin = (float) x / size + sampleOffset;
-            float xMax = (float) (x + 1) / size + sampleOffset;
+            final float xMin = (float) x / size + sampleOffset;
+            final float xMax = (float) (x + 1) / size + sampleOffset;
 
             for (int y = 0; y < size; y++) {
-                float yMin = (float) y / size + sampleOffset;
-                float yMax = (float) (y + 1) / size + sampleOffset;
+                final float yMin = (float) y / size + sampleOffset;
+                final float yMax = (float) (y + 1) / size + sampleOffset;
 
                 float alpha = 0.0F;
                 for (float xx = xMin; xx < xMax; xx += sampleSize) {
@@ -112,7 +112,7 @@ public class DefaultIconProvider implements ConstellationIconProvider {
 
                 alpha /= samples * samples;
 
-                int colorInt = (((255 << 8) + 255) << 8) + 255;
+                final int colorInt = (((255 << 8) + 255) << 8) + 255;
                 highlightImage.setRGB(x, y, ((int) (alpha * 255) << 24) + colorInt);
             }
         }
@@ -128,16 +128,12 @@ public class DefaultIconProvider implements ConstellationIconProvider {
             xDiameter = radius - x;
         } else if (x > 1.0F - radius) {
             xDiameter = x - (1.0F - radius);
-        } else {
-            // Do nothing
         }
 
         if (y < radius) {
             yDiameter = radius - y;
         } else if (y > 1.0F - radius) {
             yDiameter = y - (1.0F - radius);
-        } else {
-            // Do nothing
         }
 
         if (xDiameter * xDiameter + yDiameter * yDiameter > radius * radius) {

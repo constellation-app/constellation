@@ -77,8 +77,8 @@ final class LabelFontsOptionsPanel extends javax.swing.JPanel {
 
     private void setLabelFontsPanelEnabled(final boolean useDefaultSettings) {
         for (final Component c : labelFontsPanel.getComponents()) {
-            if (c instanceof JScrollPane) {
-                ((JScrollPane) c).getViewport().getView().setEnabled(useDefaultSettings);
+            if (c instanceof JScrollPane scrollPane) {
+                scrollPane.getViewport().getView().setEnabled(useDefaultSettings);
             } else {
                 c.setEnabled(useDefaultSettings);
             }

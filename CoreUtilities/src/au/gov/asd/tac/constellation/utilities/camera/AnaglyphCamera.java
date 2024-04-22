@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,13 +68,8 @@ public class AnaglyphCamera {
      * @param nearClippingDistance
      * @param farClippingDistance
      */
-    public AnaglyphCamera(
-            final float convergence,
-            final float eyeSeparation,
-            final float aspectRatio,
-            final float fov,
-            final float nearClippingDistance,
-            final float farClippingDistance) {
+    public AnaglyphCamera(final float convergence, final float eyeSeparation, final float aspectRatio,
+            final float fov, final float nearClippingDistance, final float farClippingDistance) {
         this.convergence = convergence;
         this.eyeSeparation = eyeSeparation;
         this.aspectRatio = aspectRatio;
@@ -99,13 +94,12 @@ public class AnaglyphCamera {
         final float right = b * nearClippingDistance / convergence;
 
         // Set the projection.
-        //
         frustum = new Frustum(fov, aspectRatio, left, right, bottom, top, nearClippingDistance, farClippingDistance);
 
         // Displace the world to the left.
         translation = new Matrix44f();
         translation.makeTranslationMatrix(-sep, 0, 0);
-        Matrix44f t2 = new Matrix44f();
+        final Matrix44f t2 = new Matrix44f();
         t2.multiply(mv, translation);
 
         return t2;
@@ -126,14 +120,12 @@ public class AnaglyphCamera {
         final float right = c * nearClippingDistance / convergence;
 
         // Set the projection.
-        //
         frustum = new Frustum(fov, aspectRatio, left, right, bottom, top, nearClippingDistance, farClippingDistance);
 
         // Displace the world to the right.
-        //
         translation = new Matrix44f();
         translation.makeTranslationMatrix(sep, 0, 0);
-        Matrix44f t2 = new Matrix44f();
+        final Matrix44f t2 = new Matrix44f();
         t2.multiply(translation, mv);
 
         return t2;
@@ -154,9 +146,9 @@ public class AnaglyphCamera {
      * @return the model-view-projection matrix for current eye.
      */
     public Matrix44f getMvpMatrix(final Matrix44f mv) {
-        Matrix44f t2 = new Matrix44f();
+        final Matrix44f t2 = new Matrix44f();
         t2.multiply(translation, mv);
-        Matrix44f mvp = new Matrix44f();
+        final Matrix44f mvp = new Matrix44f();
         mvp.multiply(frustum.getProjectionMatrix(), t2);
 
         return mvp;

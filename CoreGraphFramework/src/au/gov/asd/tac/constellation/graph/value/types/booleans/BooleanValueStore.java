@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ public class BooleanValueStore implements ValueStore<BooleanValue> {
     public BooleanValueStore() {
     }
 
-    public BooleanValueStore(boolean[] values) {
+    public BooleanValueStore(final boolean[] values) {
         this.values = values;
     }
 
@@ -44,17 +44,17 @@ public class BooleanValueStore implements ValueStore<BooleanValue> {
     }
 
     @Override
-    public void setCapacity(int capacity) {
+    public void setCapacity(final int capacity) {
         values = Arrays.copyOf(values, capacity);
     }
 
     @Override
-    public void write(int id, BooleanValue value) {
+    public void write(final int id, final BooleanValue value) {
         values[id] = value.readBoolean();
     }
 
     @Override
-    public void read(int id, BooleanValue value) {
+    public void read(final int id, final BooleanValue value) {
         value.writeBoolean(values[id]);
     }
 }

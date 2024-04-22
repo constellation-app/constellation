@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ public class TreeGraphBuilder extends GraphBuilder {
     }
 
     public static TreeGraphBuilder addTree(final GraphWriteMethods graph, final int childrenPerNode, final int numLevels, final TreeDirection direction) {
-        int[] childrenPerNodeAtDepths = new int[numLevels];
+        final int[] childrenPerNodeAtDepths = new int[numLevels];
         for (int i = 0; i < numLevels; i++) {
             childrenPerNodeAtDepths[i] = childrenPerNode;
         }
@@ -69,7 +69,7 @@ public class TreeGraphBuilder extends GraphBuilder {
             nodesAtLevels[i] = new int[nodesAtLevel];
             transactionsAtLevels[i - 1] = new int[nodesAtLevel];
             int currentNode = 0;
-            for (int node : nodesAtLevels[i - 1]) {
+            for (final int node : nodesAtLevels[i - 1]) {
                 for (int j = 0; j < childrenPerNodeAtDepths[i - 1]; j++) {
                     nodesAtLevels[i][currentNode] = constructVertex(graph);
                     transactionsAtLevels[i - 1][currentNode] = constructTransaction(graph, node, nodesAtLevels[i][currentNode], directed, reverse);
@@ -93,5 +93,4 @@ public class TreeGraphBuilder extends GraphBuilder {
         this.transactionsAtLevels = transactionsAtLevels;
         transactions = squashGrouping(transactionsAtLevels);
     }
-
 }

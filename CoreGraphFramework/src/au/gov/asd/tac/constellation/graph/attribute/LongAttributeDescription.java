@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,18 +58,23 @@ public final class LongAttributeDescription extends AbstractAttributeDescription
 
     @SuppressWarnings("unchecked") // Casts are manually checked
     private long convertFromObject(final Object object) throws IllegalArgumentException {
-        if (object == null) {
-            return (long) getDefault();
-        } else if (object instanceof Number) {
-            return ((Number) object).longValue();
-        } else if (object instanceof Boolean) {
-            return ((Boolean) object) ? 1L : 0L;
-        } else if (object instanceof Character) {
-            return (long) ((Character) object);
-        } else if (object instanceof String) {
-            return convertFromString((String) object);
-        } else {
-            throw new IllegalArgumentException(String.format(
+        switch (object) {
+            case Number number -> {
+                return number.longValue();
+            }       
+            case Boolean bool -> {
+                return bool ? 1L : 0L;
+            }       
+            case Character character -> {
+                return character;
+            }       
+            case String string -> {
+                return convertFromString(string);
+            }
+            case null -> {
+                return (long) getDefault();
+            }
+            default -> throw new IllegalArgumentException(String.format(
                     "Error converting Object '%s' to long", object.getClass()));
         }
     }

@@ -451,8 +451,8 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         visualManager.startProcessing();
 
         Schema schema = graph.getSchema();
-        if (schema instanceof GraphNodeFactory) {
-            graphNode = ((GraphNodeFactory) schema).createGraphNode(graph, gdo, this, visualManager);
+        if (schema instanceof GraphNodeFactory graphNodeFactory) {
+            graphNode = graphNodeFactory.createGraphNode(graph, gdo, this, visualManager);
         } else {
             graphNode = new GraphNode(graph, gdo, this, visualManager);
         }
@@ -641,17 +641,10 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             toggleDrawDirectedAction.setEnabled(isDrawingMode);
 
             switch (connectionMode) {
-                case LINK:
-                    drawLinksAction.putValue(Action.SELECTED_KEY, true);
-                    break;
-                case EDGE:
-                    drawEdgesAction.putValue(Action.SELECTED_KEY, true);
-                    break;
-                case TRANSACTION:
-                    drawTransactionsAction.putValue(Action.SELECTED_KEY, true);
-                    break;
-                default:
-                    throw new IllegalStateException("Unknown ConnectionMode: " + connectionMode);
+                case LINK -> drawLinksAction.putValue(Action.SELECTED_KEY, true);
+                case EDGE -> drawEdgesAction.putValue(Action.SELECTED_KEY, true);
+                case TRANSACTION -> drawTransactionsAction.putValue(Action.SELECTED_KEY, true);
+                default -> throw new IllegalStateException("Unknown ConnectionMode: " + connectionMode);
             }
         } finally {
             rg.release();

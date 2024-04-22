@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -94,8 +94,7 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
      * @param allTableRows all the rows that the table can currently display
      * @param maxRowsPerPage the maximum number of rows per page in the table
      */
-    public void update(final List<ObservableList<String>> allTableRows,
-            final int maxRowsPerPage) {
+    public void update(final List<ObservableList<String>> allTableRows, final int maxRowsPerPage) {
         this.allTableRows = allTableRows;
         this.maxRowsPerPage = maxRowsPerPage;
     }
@@ -131,8 +130,7 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
             removeListeners();
 
             // Backup the current sort settings so that they can be restored after the page update
-            final Pair<TableColumn<ObservableList<String>, ?>, TableColumn.SortType> sortBackup
-                    = getCurrentSort();
+            final Pair<TableColumn<ObservableList<String>, ?>, TableColumn.SortType> sortBackup = getCurrentSort();
 
             // Unbind the sorted row list comparator property
             tablePane.getActiveTableReference().getSortedRowList().comparatorProperty().unbind();
@@ -143,9 +141,8 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
             final int toIndex = Math.min(fromIndex + maxRowsPerPage, allTableRows.size());
 
             // Set the new page
-            tablePane.getTable().getTableView().setItems(
-                    FXCollections.observableArrayList(allTableRows.subList(fromIndex, toIndex))
-            );
+            tablePane.getTable().getTableView()
+                    .setItems(FXCollections.observableArrayList(allTableRows.subList(fromIndex, toIndex)));
 
             // Restore the sort details
             restoreSort(sortBackup);
@@ -172,11 +169,9 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
                 } else {
                     // The table IS NOT in selected only mode which means the row selection
                     // is based on the selection in the graph.
-                    restoreSelectionFromGraph(
-                            tablePane.getParentComponent().getCurrentGraph(),
+                    restoreSelectionFromGraph(tablePane.getParentComponent().getCurrentGraph(), 
                             tablePane.getParentComponent().getCurrentState(),
-                            tablePane.getActiveTableReference().getElementIdToRowIndex()
-                    );
+                            tablePane.getActiveTableReference().getElementIdToRowIndex());
                 }
             }
 
@@ -283,12 +278,10 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
      * @param graph the graph to read selection from
      * @param state the current table view state
      */
-    protected void restoreSelectionFromGraph(final Graph graph,
-            final TableViewState state,
+    protected void restoreSelectionFromGraph(final Graph graph, final TableViewState state,
             final Map<Integer, ObservableList<String>> elementIdToRowIndex) {
         // Double check that the table is not in selected only mode
         if (graph != null && state != null && !state.isSelectedOnly()) {
-
             if (!Platform.isFxApplicationThread()) {
                 throw new IllegalStateException("Not processing on the JavaFX Application Thread");
             }
@@ -321,8 +314,7 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
      * @param state the current table state
      * @return the IDs of the selected elements
      */
-    protected List<Integer> getSelectedIds(final Graph graph,
-            final TableViewState state) {
+    protected List<Integer> getSelectedIds(final Graph graph, final TableViewState state) {
         return TableViewUtilities.getSelectedIds(graph, state);
     }
 }

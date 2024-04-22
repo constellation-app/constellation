@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,8 @@ public class BooleanLogicConverters {
         // added private constructor to hide implicit public constructor - S1118.
     }
 
-    public static <P1 extends BooleanReadable, P2 extends BooleanReadable> void register(ConverterRegistry r, Class<P1> parameterClass1, Class<P2> parameterClass2) {
+    public static <P1 extends BooleanReadable, P2 extends BooleanReadable> void register(final ConverterRegistry r, 
+            final Class<P1> parameterClass1, final Class<P2> parameterClass2) {
         r.register(parameterClass1, parameterClass2, And.class, new AndConverter());
         r.register(parameterClass1, parameterClass2, Or.class, new OrConverter());
         r.register(parameterClass1, parameterClass2, ExclusiveOr.class, new ExclusiveOrConverter());
@@ -43,14 +44,14 @@ public class BooleanLogicConverters {
         r.register(parameterClass1, parameterClass2, NotEquals.class, new NotEqualsConverter());
     }
 
-    public static <P extends BooleanReadable> void register(ConverterRegistry r, Class<P> parameterClass) {
+    public static <P extends BooleanReadable> void register(final ConverterRegistry r, final Class<P> parameterClass) {
         r.register(parameterClass, Not.class, new NotConverter());
     }
 
     public static class NotConverter implements Converter<BooleanReadable, Not> {
 
         @Override
-        public Not convert(BooleanReadable source) {
+        public Not convert(final BooleanReadable source) {
             return new Not() {
                 @Override
                 public BooleanValue createValue() {
@@ -58,7 +59,7 @@ public class BooleanLogicConverters {
                 }
 
                 @Override
-                public void read(BooleanValue value) {
+                public void read(final BooleanValue value) {
                     value.writeBoolean(!source.readBoolean());
                 }
             };
@@ -68,7 +69,7 @@ public class BooleanLogicConverters {
     public static class AndConverter implements Biconverter<BooleanReadable, BooleanReadable, And<BooleanValue>> {
 
         @Override
-        public And<BooleanValue> convert(BooleanReadable source1, BooleanReadable source2) {
+        public And<BooleanValue> convert(final BooleanReadable source1, final BooleanReadable source2) {
             return new And<>() {
                 @Override
                 public BooleanValue createValue() {
@@ -76,7 +77,7 @@ public class BooleanLogicConverters {
                 }
 
                 @Override
-                public void read(BooleanValue value) {
+                public void read(final BooleanValue value) {
                     value.writeBoolean(source1.readBoolean() && source2.readBoolean());
                 }
             };
@@ -86,7 +87,7 @@ public class BooleanLogicConverters {
     public static class OrConverter implements Biconverter<BooleanReadable, BooleanReadable, Or<BooleanValue>> {
 
         @Override
-        public Or<BooleanValue> convert(BooleanReadable source1, BooleanReadable source2) {
+        public Or<BooleanValue> convert(final BooleanReadable source1, final BooleanReadable source2) {
             return new Or<>() {
                 @Override
                 public BooleanValue createValue() {
@@ -94,7 +95,7 @@ public class BooleanLogicConverters {
                 }
 
                 @Override
-                public void read(BooleanValue value) {
+                public void read(final BooleanValue value) {
                     value.writeBoolean(source1.readBoolean() || source2.readBoolean());
                 }
             };
@@ -104,7 +105,7 @@ public class BooleanLogicConverters {
     public static class ExclusiveOrConverter implements Biconverter<BooleanReadable, BooleanReadable, ExclusiveOr<BooleanValue>> {
 
         @Override
-        public ExclusiveOr<BooleanValue> convert(BooleanReadable source1, BooleanReadable source2) {
+        public ExclusiveOr<BooleanValue> convert(final BooleanReadable source1, final BooleanReadable source2) {
             return new ExclusiveOr<>() {
                 @Override
                 public BooleanValue createValue() {
@@ -112,7 +113,7 @@ public class BooleanLogicConverters {
                 }
 
                 @Override
-                public void read(BooleanValue value) {
+                public void read(final BooleanValue value) {
                     value.writeBoolean(source1.readBoolean() ^ source2.readBoolean());
                 }
             };
@@ -122,7 +123,7 @@ public class BooleanLogicConverters {
     public static class EqualsConverter implements Biconverter<BooleanReadable, BooleanReadable, Equals> {
 
         @Override
-        public Equals convert(BooleanReadable source1, BooleanReadable source2) {
+        public Equals convert(final BooleanReadable source1, final BooleanReadable source2) {
             return new Equals() {
                 @Override
                 public BooleanValue createValue() {
@@ -130,7 +131,7 @@ public class BooleanLogicConverters {
                 }
 
                 @Override
-                public void read(BooleanValue value) {
+                public void read(final BooleanValue value) {
                     value.writeBoolean(source1.readBoolean() == source2.readBoolean());
                 }
             };
@@ -140,7 +141,7 @@ public class BooleanLogicConverters {
     public static class NotEqualsConverter implements Biconverter<BooleanReadable, BooleanReadable, NotEquals> {
 
         @Override
-        public NotEquals convert(BooleanReadable source1, BooleanReadable source2) {
+        public NotEquals convert(final BooleanReadable source1, final BooleanReadable source2) {
             return new NotEquals() {
                 @Override
                 public BooleanValue createValue() {
@@ -148,7 +149,7 @@ public class BooleanLogicConverters {
                 }
 
                 @Override
-                public void read(BooleanValue value) {
+                public void read(final BooleanValue value) {
                     value.writeBoolean(source1.readBoolean() != source2.readBoolean());
                 }
             };

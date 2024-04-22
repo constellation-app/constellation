@@ -166,8 +166,8 @@ public class DateTimeRangeParameterType extends PluginParameterType<DateTimeRang
             final DateTimeRange newdtr;
             if (o == null) {
                 newdtr = null;
-            } else if (o instanceof DateTimeRange) {
-                newdtr = (DateTimeRange) o;
+            } else if (o instanceof DateTimeRange dateTimeRange) {
+                newdtr = dateTimeRange;
             } else {
                 throw new IllegalArgumentException(String.format("Unexpected class %s", o.getClass()));
             }

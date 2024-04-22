@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import java.util.SortedSet;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
@@ -37,12 +38,12 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
@@ -61,15 +62,15 @@ public class WordCloudPane extends BorderPane {
 
     private final WordCloudController controller;
 
-    private final VBox content;
-    private final StackPane everything;
+    private final SplitPane everything;
     private final VBox theCloud;
     private final Label queryInfoLabel;
     private final ScrollPane wordHolder;
     private final FlowPane words;
-    private final AnchorPane buttonBar;
-    private final AnchorPane sliderBar;
+    private final BorderPane buttonBarPane;
     private final Slider slider;
+    private final ScrollPane topPart;
+    private final BorderPane sliderBarPane;
 
     private final ToggleGroup modeButtons;
     private final ToggleButton union;
@@ -81,24 +82,20 @@ public class WordCloudPane extends BorderPane {
 
     private final ProgressIndicator spinner = new ProgressIndicator();
     private final WordCloudParametersPane paramPane;
+    private final ScrollPane paramScrollPane;
 
-    private static final int CONTENT_SPACING = 25;
-    private static final int CLOUD_SPACING = 5;
-    private static final int CLOUD_HEIGHT = 400;
     private static final int CLOUD_WIDTH = 500;
     private static final int HGAP_BETWEEN_WORDS = 4;
     private static final int VGAP_BETWEEN_WORDS = 2;
-    private static final double BUTTON_INSET = 2.0;
-    private static final double TOOLTIP_TOGGLE_INSET = 160.0;
-    private static final double SLIDER_INSET = 160.0;
     private static final Insets WORDCLOUD_PADDING = new Insets(10, 5, 10, 5);
+    private static final int CLOUD_SPACING = 10;
 
     private final TooltipPane tipsPane = new TooltipPane();
     private final StackPane cloudStackPane = new StackPane();
     protected CheckBox showTooltipsCheckbox;
 
     private final Hyperlink noWord;
-    
+
     // The mutliplicative size difference between the smallest and largest words in the cloud 
     private static final int FONT_EXPANSION_FACTOR = 3;
 
@@ -106,20 +103,25 @@ public class WordCloudPane extends BorderPane {
      * Constructs a WordCloudPane to be controlled by the specified controller
      */
     public WordCloudPane(final WordCloudController controller) {
-        everything = new StackPane();
+        everything = new SplitPane();
+        everything.setOrientation(Orientation.VERTICAL);
+        everything.setDividerPositions(0.5F);
         this.controller = controller;
         setPadding(WORDCLOUD_PADDING);
-
-        // Create some containers for vertical spacing
-        content = new VBox();
-        content.setSpacing(CONTENT_SPACING);
-        theCloud = new VBox();
-        theCloud.setSpacing(CLOUD_SPACING);
-
-        // add the tips pane and the cloud to content. Place this container at the top
-        cloudStackPane.getChildren().add(theCloud);
-        content.getChildren().add(cloudStackPane);
         setTop(everything);
+
+        // Scroll pane for entire top of word cloud view
+        topPart = new ScrollPane();
+        topPart.setFitToHeight(true);
+        topPart.setFitToWidth(true);
+
+        // Create container for vertical spacing, holds wordHolder, buttons and sliders
+        theCloud = new VBox(CLOUD_SPACING);
+
+        // add the tips pane and the cloud to a stack pane
+        cloudStackPane.getChildren().add(theCloud);
+        cloudStackPane.getChildren().add(tipsPane);
+        topPart.setContent(cloudStackPane);
 
         // Create the label used to give information about the parameters used to generate the word cloud 
         queryInfoLabel = new Label("");
@@ -130,7 +132,6 @@ public class WordCloudPane extends BorderPane {
 
         // Create a flow pane to display the words themselves, and a scroll pane to allow scrolling on the flow pane. Set and bind widths and heights correctly
         wordHolder = new ScrollPane();
-        wordHolder.setMaxHeight(CLOUD_HEIGHT);
         words = new FlowPane(HGAP_BETWEEN_WORDS, VGAP_BETWEEN_WORDS);
         words.setPrefWrapLength(CLOUD_WIDTH);
         wordHolder.setContent(words);
@@ -155,7 +156,7 @@ public class WordCloudPane extends BorderPane {
                     controller.setIsUnionSelect(false);
                 }
             }
-            
+
             // Disallow deselection
             if (t1 == null) {
                 modeButtons.selectToggle(t);
@@ -178,79 +179,105 @@ public class WordCloudPane extends BorderPane {
                     controller.setIsSizeSorted(true);
                 }
             }
-            
+
             // Disallow deselection
             if (t1 == null) {
                 sortingButtons.selectToggle(t);
             }
         });
 
-        // Create an anchor pane for the buttons just constructed and add these buttons to the pane 
-        buttonBar = new AnchorPane();
+        // Create border pane for the buttons that were just constructed and add these buttons to the pane 
+        buttonBarPane = new BorderPane();
+
+        // Group buttons together
         final HBox modeButtonBar = new HBox();
         modeButtonBar.getChildren().addAll(union, intersection);
         final HBox sortingButtonBar = new HBox();
         sortingButtonBar.getChildren().addAll(alphabetical, frequency);
         showTooltipsCheckbox = new CheckBox("Hovering translations");
         showTooltipsCheckbox.setSelected(true);
-        showTooltipsCheckbox.setOnAction((final ActionEvent t) -> 
-            tipsPane.setEnabled(showTooltipsCheckbox.isSelected()));
-        
+        showTooltipsCheckbox.setOnAction((final ActionEvent t)
+                -> tipsPane.setEnabled(showTooltipsCheckbox.isSelected()));
+
         showTooltipsCheckbox.setStyle("fx-text-fill: white; -fx-padding: 2;");
-        buttonBar.getChildren().addAll(modeButtonBar, showTooltipsCheckbox, sortingButtonBar);
-        AnchorPane.setLeftAnchor(modeButtonBar, BUTTON_INSET);
-        AnchorPane.setLeftAnchor(showTooltipsCheckbox, TOOLTIP_TOGGLE_INSET);
-        AnchorPane.setRightAnchor(sortingButtonBar, BUTTON_INSET);
-        theCloud.getChildren().add(buttonBar);
+
+        // Add buttons to bar
+        buttonBarPane.setLeft(modeButtonBar);
+        buttonBarPane.setCenter(showTooltipsCheckbox);
+        buttonBarPane.setRight(sortingButtonBar);
+
+        // Add bar to cloud
+        theCloud.getChildren().add(buttonBarPane);
 
         // Create a slider beneath the buttons to be displayed when significance levels are in play 
-        sliderBar = new AnchorPane();
+        sliderBarPane = new BorderPane();
+
         slider = new Slider(0, 1, 0.5);
         final Label significanceLabel = new Label(String.format("Significance: %.2g", 0.5));
         significanceLabel.setStyle("-fx-text-fill: #d4d4d4;");
         slider.setPrefWidth(400);
+
         slider.valueProperty().addListener((final ObservableValue<? extends Number> obv, final Number oldVal, final Number newVal) -> {
             double newSignificance = newVal.doubleValue();
             significanceLabel.setText(String.format("Significance: %.2g", newSignificance));
             controller.setSignificance(newSignificance);
         });
 
-        sliderBar.getChildren().addAll(significanceLabel, slider);
-        AnchorPane.setLeftAnchor(significanceLabel, BUTTON_INSET);
-        AnchorPane.setLeftAnchor(slider, SLIDER_INSET);
+        // Add label and slider to pane
+        sliderBarPane.setLeft(significanceLabel);
+        sliderBarPane.setRight(slider);
 
         // Create the pane allowing the word cloud analytic to be run
         paramPane = new WordCloudParametersPane(this);
-        content.getChildren().add(paramPane);
-        everything.getChildren().add(content);
-        everything.getChildren().add(tipsPane);
+        paramScrollPane = new ScrollPane();
+        paramScrollPane.setContent(paramPane);
+        paramScrollPane.setFitToWidth(true);
+        paramScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+
+        // Add params and cloud to split pane
+        everything.getItems().addAll(topPart, paramScrollPane);
 
         spinner.setMaxSize(50, 50);
         wordButtons = new HashMap<>();
         noWord = new Hyperlink();
         noWord.setMaxSize(0, 0);
     }
-    
+
+    /**
+     * Sets the height of the whole word cloud pane and adjusts elements to fit
+     *
+     * @param height the new height of the pane
+     */
+    public void setContentHeight(final int height) {
+        everything.setMaxHeight(height - 10);// need 10 pixels for scroll bar on bottom
+        paramScrollPane.setPrefHeight(height);
+        theCloud.setPrefHeight(height);
+    }
+
+    public double getContentHeight() {
+        return everything.getMaxHeight();
+    }
+
     protected StackPane getCloudStackPane() {
         return cloudStackPane;
     }
-    
+
     protected ProgressIndicator getSpinner() {
         return spinner;
     }
-    
+
     protected VBox getTheCloud() {
         return theCloud;
     }
-    
-    protected AnchorPane getSliderBar() {
-        return sliderBar;
+
+    protected BorderPane getSliderBarPane() {
+        return sliderBarPane;
     }
-    
+
     protected Map<String, Hyperlink> getWordButtons() {
         return wordButtons;
     }
-    
+
     protected FlowPane getWords() {
         return words;
     }
@@ -271,10 +298,9 @@ public class WordCloudPane extends BorderPane {
      * managing a word cloud.
      */
     public void enableTheCloud(final boolean unionButtonSelected, final boolean frequencyButtonSelected, final boolean hasSignificances) {
-        content.setSpacing(CONTENT_SPACING);
-        wordHolder.setMinHeight(CLOUD_HEIGHT);
         theCloud.setVisible(true);
         theCloud.setManaged(true);
+        everything.setDividerPositions(0.5F);
         if (unionButtonSelected) {
             modeButtons.selectToggle(union);
         } else {
@@ -285,10 +311,10 @@ public class WordCloudPane extends BorderPane {
         } else {
             sortingButtons.selectToggle(alphabetical);
         }
-        if (hasSignificances && !theCloud.getChildren().contains(sliderBar)) {
-            theCloud.getChildren().add(sliderBar);
-        } else if (!hasSignificances && theCloud.getChildren().contains(sliderBar)) {
-            theCloud.getChildren().remove(sliderBar);
+        if (hasSignificances && !theCloud.getChildren().contains(sliderBarPane)) {
+            theCloud.getChildren().add(sliderBarPane);
+        } else if (!hasSignificances && theCloud.getChildren().contains(sliderBarPane)) {
+            theCloud.getChildren().remove(sliderBarPane);
         }
     }
 
@@ -305,10 +331,11 @@ public class WordCloudPane extends BorderPane {
      * top. Called by the controller when it is not managing a word cloud.
      */
     public void disableTheCloud() {
-        content.setSpacing(0);
         wordHolder.setMinHeight(0);
+        topPart.setMinHeight(0);
         theCloud.setVisible(false);
         theCloud.setManaged(false);
+        everything.setDividerPositions(0.0F);
     }
 
     /**
@@ -351,16 +378,15 @@ public class WordCloudPane extends BorderPane {
             // Create a hyperlink for the word
             final Hyperlink h = new Hyperlink(word);
             h.setWrapText(true);
-            h.setMaxWidth(CLOUD_WIDTH);
             // Set the word's font based on its prescribed size 
             final Font f = Font.font("Arial", FontWeight.BOLD, getFontSize(wordListWithSizes.get(word), baseFontSize));
             h.setFont(f);
-            
+
             // Set the context menu for copying 
             final ContextMenu menu = new ContextMenu();
             final MenuItem copy = new MenuItem("copy");
-            copy.setOnAction((final ActionEvent event) -> 
-                ClipboardUtilities.copyToClipboard(word));
+            copy.setOnAction((final ActionEvent event)
+                    -> ClipboardUtilities.copyToClipboard(word));
             menu.getItems().add(copy);
             h.setContextMenu(menu);
             // Add the event handler for clicking the word. This handler tells the controller to add teh wrod to its word cloud's currently selected word list 
@@ -386,16 +412,16 @@ public class WordCloudPane extends BorderPane {
     }
 
     public void updateSelection(final Set<String> selectedWords) {
-        wordButtons.values().forEach(h -> 
-            h.setVisited(false));
+        wordButtons.values().forEach(h
+                -> h.setVisited(false));
 
         if (selectedWords == null) {
             return;
         }
 
         // Display the word as selected if necessary
-        selectedWords.stream().filter(word -> (selectedWords.contains(word))).forEachOrdered(word -> 
-            wordButtons.get(word).setVisited(true)); 
+        selectedWords.stream().filter(word -> (selectedWords.contains(word))).forEachOrdered(word
+                -> wordButtons.get(word).setVisited(true));
     }
 
     /**

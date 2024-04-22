@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -179,18 +179,17 @@ public class ClusterToColorTranslator extends AbstractColorTranslator<ClusterRes
                     final int elementId = clusterData.getElementId();
                     final int clusterNumber = clusterData.getClusterNumber();
                     switch (elementType) {
-                        case VERTEX:
+                        case VERTEX -> {
                             final ConstellationColor vertexColor = graph.getObjectValue(vertexOverlayColorAttribute, elementId);
                             vertexColors.put(elementId, vertexColor);
                             graph.setObjectValue(vertexOverlayColorAttribute, elementId, colorMap.get(clusterNumber));
-                            break;
-                        case TRANSACTION:
+                        }
+                        case TRANSACTION -> {
                             final ConstellationColor transactionColor = graph.getObjectValue(transactionOverlayColorAttribute, elementId);
                             transactionColors.put(elementId, transactionColor);
                             graph.setObjectValue(transactionOverlayColorAttribute, elementId, colorMap.get(clusterNumber));
-                            break;
-                        default:
-                            throw new InvalidElementTypeException("'Color Elements' is not supported "
+                        }
+                        default -> throw new InvalidElementTypeException("'Color Elements' is not supported "
                                     + "for the element type associated with this analytic question.");
                     }
                 }

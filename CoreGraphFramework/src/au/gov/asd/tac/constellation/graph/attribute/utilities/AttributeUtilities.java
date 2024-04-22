@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,9 +46,9 @@ public class AttributeUtilities {
      * @param attributeDescription
      * @return
      */
-    public static List<String> getAttributeNames(final GraphElementType graphElementType, String attributeDescription) {
+    public static List<String> getAttributeNames(final GraphElementType graphElementType, final String attributeDescription) {
         final List<String> attributeNames = new ArrayList<>();
-        for (Attribute attribute : getAttributes(graphElementType)) {
+        for (final Attribute attribute : getAttributes(graphElementType)) {
             if (attribute.getAttributeType().equals(attributeDescription) || StringUtils.isEmpty(attributeDescription)) {
                 attributeNames.add(attribute.getName());
             }
@@ -66,14 +66,11 @@ public class AttributeUtilities {
         final Graph graph = GraphManager.getDefault().getActiveGraph();
         final List<Attribute> attributes = new ArrayList<>();
         if (graph != null && graph.getSchema() != null) {
-            final ReadableGraph readableGraph = graph.getReadableGraph();
-            try {
+            try (final ReadableGraph readableGraph = graph.getReadableGraph()) {
                 final int attributeCount = readableGraph.getAttributeCount(graphElementType);
                 for (int i = 0; i < attributeCount; i++) {
                     attributes.add(new GraphAttribute(readableGraph, readableGraph.getAttribute(graphElementType, i)));
                 }
-            } finally {
-                readableGraph.release();
             }
         }
         return attributes;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,16 +54,20 @@ public final class TimeAttributeDescription extends AbstractAttributeDescription
     private int defaultValue = DEFAULT_VALUE;
 
     private int convertFromObject(final Object object) throws IllegalArgumentException {
-        if (object == null) {
-            return (int) getDefault();
-        } else if (object instanceof LocalTime) {
-            return ((LocalTime) object).get(ChronoField.MILLI_OF_DAY);
-        } else if (object instanceof Number) {
-            return ((Number) object).intValue();
-        } else if (object instanceof String) {
-            return convertFromString((String) object);
-        } else {
-            throw new IllegalArgumentException(String.format(
+        switch (object) {
+            case LocalTime localTime -> {
+                return localTime.get(ChronoField.MILLI_OF_DAY);
+            }       
+            case Number number -> {
+                return number.intValue();
+            }       
+            case String string -> {
+                return convertFromString(string);
+            }  
+            case null -> {
+                return (int) getDefault();
+            }
+            default -> throw new IllegalArgumentException(String.format(
                     "Error converting Object '%s' to time", object.getClass()));
         }
     }
@@ -252,12 +256,12 @@ public final class TimeAttributeDescription extends AbstractAttributeDescription
     }
 
     @Override
-    public Object createReadObject(IntReadable indexReadable) {
+    public Object createReadObject(final IntReadable indexReadable) {
         return (IntReadable) () -> data[indexReadable.readInt()];
     }
 
     @Override
-    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+    public Object createWriteObject(final GraphWriteMethods graph, final int attribute, final IntReadable indexReadable) {
         return new IntVariable() {
             @Override
             public int readInt() {
@@ -265,7 +269,7 @@ public final class TimeAttributeDescription extends AbstractAttributeDescription
             }
 
             @Override
-            public void writeInt(int value) {
+            public void writeInt(final int value) {
                 graph.setIntValue(attribute, indexReadable.readInt(), value);
             }
         };

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,8 +69,7 @@ public class AddBlazePlugin extends SimpleEditPlugin {
 
     @Override
     public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-        int blazeAttr = VisualConcept.VertexAttribute.BLAZE.ensure(wg);
-
+        final int blazeAttr = VisualConcept.VertexAttribute.BLAZE.ensure(wg);
         final int vxId = parameters.getIntegerValue(VERTEX_ID_PARAMETER_ID);
         if (vxId != Graph.NOT_FOUND) {
             wg.setObjectValue(blazeAttr, vxId, DEFAULT_BLAZE);

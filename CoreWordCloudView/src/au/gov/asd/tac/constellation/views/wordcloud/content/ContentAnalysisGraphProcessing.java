@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -89,14 +89,14 @@ public class ContentAnalysisGraphProcessing {
         this.graphElementType = elementType;
         this.graph = graph;
         switch (followUpChoice) {
-            case MAKE_SELECTIONS:
-                followUpPlugins.add(new MakeSelectionsPlugin(cvcs.getClusters()));
-                break;
-            case CLUSTER:
+            case MAKE_SELECTIONS -> followUpPlugins.add(new MakeSelectionsPlugin(cvcs.getClusters()));
+            case CLUSTER -> {
                 followUpPlugins.add(new ClusterElementsPlugin(cvcs.getClusters()));
                 followUpPlugins.add(new ShowClustersOnHistogramPlugin());
-                break;
-            default:
+            }
+            default -> {
+                // Do nothing 
+            }
         }
     }
 
@@ -150,29 +150,19 @@ public class ContentAnalysisGraphProcessing {
             // Create the cluster attribtue if it is not already present in the rgaph, or if it was, reset all vertices to be unclustered.
             final int clusterElementAttr = ClusteringConcept.VertexAttribute.NAMED_CLUSTER.ensure(wg);
             int elementCount;
-            switch (graphElementType) {
-                case VERTEX:
-                    elementCount = wg.getVertexCount();
-                    break;
-                case TRANSACTION:
-                    elementCount = wg.getTransactionCount();
-                    break;
-                default:
-                    elementCount = 0;
-            }
+            elementCount = switch (graphElementType) {
+                case VERTEX -> wg.getVertexCount();
+                case TRANSACTION -> wg.getTransactionCount();
+                default -> 0;
+            };
 
             for (int i = 0; i < elementCount; i++) {
                 int element;
-                switch (graphElementType) {
-                    case VERTEX:
-                        element = wg.getVertex(i);
-                        break;
-                    case TRANSACTION:
-                        element = wg.getTransaction(i);
-                        break;
-                    default:
-                        element = -1;
-                }
+                element = switch (graphElementType) {
+                    case VERTEX -> wg.getVertex(i);
+                    case TRANSACTION -> wg.getTransaction(i);
+                    default -> -1;
+                };
                 wg.setStringValue(clusterElementAttr, element, "no cluster");
             }
 
@@ -298,7 +288,6 @@ public class ContentAnalysisGraphProcessing {
                 wg.setStringValue(name, link, linkName + currentLinkNum++);
                 wg.setObjectValue(colorAttr, link, ConstellationColor.PURPLE);
             }
-
         }
 
         @Override

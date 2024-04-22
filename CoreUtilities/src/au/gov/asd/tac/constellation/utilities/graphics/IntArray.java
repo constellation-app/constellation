@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -157,7 +157,7 @@ public final class IntArray implements Iterable<Integer>, Cloneable {
      */
     public void trimToSize() {
         modCount++;
-        int oldCapacity = elementData.length;
+        final int oldCapacity = elementData.length;
         if (size < oldCapacity) {
             elementData = Arrays.copyOf(elementData, size);
         }
@@ -172,7 +172,7 @@ public final class IntArray implements Iterable<Integer>, Cloneable {
      */
     public void ensureCapacity(final int minCapacity) {
         modCount++;
-        int oldCapacity = elementData.length;
+        final int oldCapacity = elementData.length;
         if (minCapacity > oldCapacity) {
             int newCapacity = (oldCapacity * 3) / 2 + 1;
             if (newCapacity < minCapacity) {
@@ -265,12 +265,12 @@ public final class IntArray implements Iterable<Integer>, Cloneable {
     @Override
     public IntArray clone() {
         try {
-            IntArray v = (IntArray) super.clone();
+            final IntArray v = (IntArray) super.clone();
             v.elementData = Arrays.copyOf(elementData, size);
             v.size = size;
             v.modCount = 0;
             return v;
-        } catch (CloneNotSupportedException e) {
+        } catch (final CloneNotSupportedException e) {
             // this shouldn't happen, since we are Cloneable
             throw new InternalError();
         }
@@ -338,7 +338,7 @@ public final class IntArray implements Iterable<Integer>, Cloneable {
     public int set(final int index, final int element) {
         rangeCheck(index);
 
-        int oldValue = elementData[index];
+        final int oldValue = elementData[index];
         elementData[index] = element;
         return oldValue;
     }
@@ -405,9 +405,9 @@ public final class IntArray implements Iterable<Integer>, Cloneable {
         rangeCheck(index);
 
         modCount++;
-        int oldValue = elementData[index];
+        final int oldValue = elementData[index];
 
-        int numMoved = size - index - 1;
+        final int numMoved = size - index - 1;
         if (numMoved > 0) {
             System.arraycopy(elementData, index + 1, elementData, index, numMoved);
         }
@@ -446,10 +446,9 @@ public final class IntArray implements Iterable<Integer>, Cloneable {
      */
     private void fastRemove(final int index) {
         modCount++;
-        int numMoved = size - index - 1;
+        final int numMoved = size - index - 1;
         if (numMoved > 0) {
-            System.arraycopy(elementData, index + 1, elementData, index,
-                    numMoved);
+            System.arraycopy(elementData, index + 1, elementData, index, numMoved);
         }
         --size;
     }
@@ -536,7 +535,7 @@ public final class IntArray implements Iterable<Integer>, Cloneable {
 
     @Override
     public String toString() {
-        StringBuilder b = new StringBuilder();
+        final StringBuilder b = new StringBuilder();
         for (int i = 0; i < size; i++) {
             if (b.length() > 0) {
                 b.append(',');

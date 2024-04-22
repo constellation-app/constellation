@@ -1,5 +1,5 @@
 /*
-* Copyright 2010-2023 Australian Signals Directorate
+* Copyright 2010-2024 Australian Signals Directorate
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -221,8 +221,7 @@ public class SVGObject {
      * Sets the width of the SVGObject.
      * @param width 
      */
-    private void setWidth(final float width) {
-        
+    private void setWidth(final float width) {       
         // Get the current width wihtout the local reference. 
         final float currentWidth = getPositionalData(null, SVGAttributeConstants.WIDTH);
         
@@ -412,15 +411,9 @@ public class SVGObject {
      */
     public void setStrokeStyle(final LineStyle style) {
         switch (style) {
-            case DOTTED:
-                this.setStrokeArray(35, 35);
-                break;
-            case DASHED:
-                this.setStrokeArray(70, 35);
-                break;
-            default:
-                this.svgDataReference.setAttribute(SVGAttributeConstants.DASH_ARRAY, null);
-                break;
+            case DOTTED -> this.setStrokeArray(35, 35);
+            case DASHED -> this.setStrokeArray(70, 35);
+            default -> this.svgDataReference.setAttribute(SVGAttributeConstants.DASH_ARRAY, null);
         }
     }
     
@@ -523,7 +516,7 @@ public class SVGObject {
     } 
     
     public static SVGObject loadFromInputStream(final InputStream is) {
-        try{
+        try {
             return new SVGObject(SVGParser.parse(is));
         } catch (final IOException e) {
             return null;

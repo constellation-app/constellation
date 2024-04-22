@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -169,11 +169,8 @@ public class SVertex {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+    public boolean equals(final Object obj) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
         final SVertex other = (SVertex) obj;

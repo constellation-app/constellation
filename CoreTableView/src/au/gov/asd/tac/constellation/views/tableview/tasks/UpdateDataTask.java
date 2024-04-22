@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,8 +48,7 @@ public class UpdateDataTask implements Runnable {
      * @param table the table being updated
      * @param rows the new rows to update the table with
      */
-    public UpdateDataTask(final Table table,
-            final List<ObservableList<String>> rows) {
+    public UpdateDataTask(final Table table, final List<ObservableList<String>> rows) {
         this.table = table;
         this.rows = rows;
 
@@ -87,8 +86,7 @@ public class UpdateDataTask implements Runnable {
         table.getTableView().setItems(FXCollections.observableArrayList(getActiveTableReference().getSortedRowList()));
 
         // add user defined filter to the table
-        final TableFilter<ObservableList<String>> filter
-                = TableFilter.forTableView(table.getTableView()).lazy(true).apply();
+        final TableFilter<ObservableList<String>> filter = TableFilter.forTableView(table.getTableView()).lazy(true).apply();
         filter.setSearchStrategy((filterTerm, cellText) -> {
             try {
                 return StringUtils.startsWithIgnoreCase(cellText, filterTerm);

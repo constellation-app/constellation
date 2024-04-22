@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -202,7 +202,7 @@ public class AttributeEditorPanel extends BorderPane {
 
         titledPaneHeadingsContainer = new VBox();
         for (final String heading : HEADING_TITLES) {
-            VBox temp = new VBox();
+            final VBox temp = new VBox();
             temp.setPadding(Insets.EMPTY);
             valueTitledPaneContainers.add(temp);
         }
@@ -247,21 +247,12 @@ public class AttributeEditorPanel extends BorderPane {
      */
     public void refreshShowEmpty() {
         for (final HeadingType headingType : HeadingType.values()) {
-            final String emptyKey;
-            switch (headingType) {
-                case GRAPH:
-                    emptyKey = AttributePreferenceKey.GRAPH_SHOW_EMPTY;
-                    break;
-                case NODE:
-                    emptyKey = AttributePreferenceKey.NODE_SHOW_EMPTY;
-                    break;
-                case TRANSACTION:
-                    emptyKey = AttributePreferenceKey.TRANSACTION_SHOW_EMPTY;
-                    break;
-                default:
-                    emptyKey = "";
-                    break;
-            }
+            final String emptyKey = switch (headingType) {
+                case GRAPH -> AttributePreferenceKey.GRAPH_SHOW_EMPTY;
+                case NODE -> AttributePreferenceKey.NODE_SHOW_EMPTY;
+                case TRANSACTION -> AttributePreferenceKey.TRANSACTION_SHOW_EMPTY;
+                default -> "";
+            };
 
             // Ensure empty attributes are shown by default  
             prefs.putBoolean(emptyKey, true);
@@ -341,22 +332,22 @@ public class AttributeEditorPanel extends BorderPane {
 
         final GraphElementType elementType;
         switch (headingType) {
-            case GRAPH:
+            case GRAPH -> {
                 emptyKey = AttributePreferenceKey.GRAPH_SHOW_EMPTY;
                 elementType = GraphElementType.GRAPH;
-                break;
-            case NODE:
+            }
+            case NODE -> {
                 emptyKey = AttributePreferenceKey.NODE_SHOW_EMPTY;
                 elementType = GraphElementType.VERTEX;
-                break;
-            case TRANSACTION:
+            }
+            case TRANSACTION -> {
                 emptyKey = AttributePreferenceKey.TRANSACTION_SHOW_EMPTY;
                 elementType = GraphElementType.TRANSACTION;
-                break;
-            default:
+            }
+            default -> {
                 emptyKey = "";
                 elementType = null;
-                break;
+            }
         }
         showEmptyToggle.selectedProperty().addListener((final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue)
                 -> prefs.putBoolean(emptyKey, newValue));
@@ -370,21 +361,12 @@ public class AttributeEditorPanel extends BorderPane {
         showHiddenToggle.setPrefSize(80, 12);
         showHiddenToggle.setPadding(new Insets(5));
         showHiddenToggle.setTooltip(new Tooltip("Show hidden attributes"));
-        final String hiddenKey;
-        switch (headingType) {
-            case GRAPH:
-                hiddenKey = AttributePreferenceKey.GRAPH_SHOW_HIDDEN;
-                break;
-            case NODE:
-                hiddenKey = AttributePreferenceKey.NODE_SHOW_HIDDEN;
-                break;
-            case TRANSACTION:
-                hiddenKey = AttributePreferenceKey.TRANSACTION_SHOW_HIDDEN;
-                break;
-            default:
-                hiddenKey = "";
-                break;
-        }
+        final String hiddenKey = switch (headingType) {
+            case GRAPH -> AttributePreferenceKey.GRAPH_SHOW_HIDDEN;
+            case NODE -> AttributePreferenceKey.NODE_SHOW_HIDDEN;
+            case TRANSACTION -> AttributePreferenceKey.TRANSACTION_SHOW_HIDDEN;
+            default -> "";
+        };
         showHiddenToggle.selectedProperty().addListener((final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue)
                 -> prefs.putBoolean(hiddenKey, newValue));
         showHiddenToggle.setSelected(prefs.getBoolean(hiddenKey, false));
@@ -757,7 +739,6 @@ public class AttributeEditorPanel extends BorderPane {
     }
 
     private ListView<Object> createListView(final AttributeData attribute, final ObservableList<Object> listData) {
-
         final ListView<Object> newList = new ListView<>(listData);
         newList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         newList.setCellFactory((ListView<Object> p) -> new AttributeValueCell(attribute.getDataType()));
@@ -802,24 +783,24 @@ public class AttributeEditorPanel extends BorderPane {
     private void populateContentContainer(final AttributeState state, final GraphElementType type, final double longestTitleWidth) {
         final int elementTypeIndex;
 
-        String showEmptyKey = ""; // Key used to indicate state of "Show Empty" key 
-        switch (type) {
-            case GRAPH:
-                showEmptyKey = AttributePreferenceKey.GRAPH_SHOW_EMPTY;
+        final String showEmptyKey = switch (type) {
+            case GRAPH -> {
                 elementTypeIndex = 0;
-                break;
-            case VERTEX:
-                showEmptyKey = AttributePreferenceKey.NODE_SHOW_EMPTY;
+                yield AttributePreferenceKey.GRAPH_SHOW_EMPTY;
+            }
+            case VERTEX -> {
                 elementTypeIndex = 1;
-                break;
-            case TRANSACTION:
-                showEmptyKey = AttributePreferenceKey.TRANSACTION_SHOW_EMPTY;
+                yield AttributePreferenceKey.NODE_SHOW_EMPTY;
+            }
+            case TRANSACTION -> {
                 elementTypeIndex = 2;
-                break;
-            default:
+                yield AttributePreferenceKey.TRANSACTION_SHOW_EMPTY;
+            }
+            default -> {
                 elementTypeIndex = -1;
-                break;
-        }
+                yield "";
+            }
+        };
 
         // Check if we are showing all attributes regardless of hidden state
         final boolean showEmpty = prefs.getBoolean(showEmptyKey, false);

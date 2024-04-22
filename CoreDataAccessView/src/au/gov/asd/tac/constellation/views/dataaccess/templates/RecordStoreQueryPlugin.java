@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
@@ -111,17 +110,12 @@ public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
     @Override
     protected void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
         switch (getRecordStoreType()) {
-            case GraphRecordStoreUtilities.SOURCE:
-                queryRecordStore = GraphRecordStoreUtilities.getSelectedVertices(graph);
-                break;
-            case GraphRecordStoreUtilities.TRANSACTION:
-                queryRecordStore = GraphRecordStoreUtilities.getSelectedTransactions(graph);
-                break;
-            case GraphRecordStoreUtilities.ALL:
-                queryRecordStore = GraphRecordStoreUtilities.getAllSelected(graph);
-                break;
-            default:
-                break;
+            case GraphRecordStoreUtilities.SOURCE -> queryRecordStore = GraphRecordStoreUtilities.getSelectedVertices(graph);
+            case GraphRecordStoreUtilities.TRANSACTION -> queryRecordStore = GraphRecordStoreUtilities.getSelectedTransactions(graph);
+            case GraphRecordStoreUtilities.ALL -> queryRecordStore = GraphRecordStoreUtilities.getAllSelected(graph);
+            default -> {
+                // Do nothing
+            }
         }
     }
 
@@ -170,10 +164,10 @@ public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
             // If the query thread throws an exception then cancel the plugin.
         } catch (ExecutionException ex) {
             final Throwable cause = ex.getCause();
-            if (cause instanceof RuntimeException) {
-                throw (RuntimeException) cause;
-            } else if (cause instanceof PluginException) {
-                throw (PluginException) cause;
+            if (cause instanceof RuntimeException runtimeException) {
+                throw runtimeException;
+            } else if (cause instanceof PluginException pluginException) {
+                throw pluginException;
             } else {
                 throw new RuntimeException(ex);
             }

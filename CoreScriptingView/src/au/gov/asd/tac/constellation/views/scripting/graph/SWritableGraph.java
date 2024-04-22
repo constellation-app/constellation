@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -157,7 +157,7 @@ public class SWritableGraph extends SReadableGraph {
      * @param vertices the consumed vertices as a {@link SCollection}.
      */
     public void mergeVertices(final int leadVertex, final SCollection vertices) {
-        GraphElementMerger merger = new PrioritySurvivingGraphElementMerger();
+        final GraphElementMerger merger = new PrioritySurvivingGraphElementMerger();
         final BitSet mergeVertices = vertices.elementIds();
         for (int vertexId = mergeVertices.nextSetBit(0); vertexId >= 0; vertexId = mergeVertices.nextSetBit(vertexId + 1)) {
             if (vertexId != leadVertex) {
@@ -232,15 +232,15 @@ public class SWritableGraph extends SReadableGraph {
     /**
      * The exit point for the Python context manager.
      *
-     * @param exc_type the exception type.
-     * @param exc_value the exception value.
+     * exc_Type exc_type the exception type.
+     * @param excValue the exception value.
      * @param traceback the exception traceback.
      */
     @Override
-    public void __exit__(final Object exc_type, final Object exc_value, final Object traceback) {
+    public void __exit__(final Object exc_Type, final Object excValue, final Object traceback) {
         LOGGER.log(Level.FINE, "__exit__ {0}", this);
-        LOGGER.log(Level.FINE, "{0} {1} {2}", new Object[]{exc_type, exc_value, traceback});
-        if (exc_type == null) {
+        LOGGER.log(Level.FINE, "{0} {1} {2}", new Object[]{exc_Type, excValue, traceback});
+        if (exc_Type == null) {
             commit();
         } else {
             rollback();

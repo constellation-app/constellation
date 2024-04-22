@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ public class OctTree extends AbstractTree {
      * @param parent
      * @param box
      */
-    protected OctTree(OctTree parent, final BoundingBox3D box) {
+    protected OctTree(final OctTree parent, final BoundingBox3D box) {
         super(parent, box);
         // Inherit parent values for graph based variables.
         zId = parent.zId;

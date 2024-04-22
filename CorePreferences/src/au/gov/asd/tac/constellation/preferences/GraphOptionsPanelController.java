@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,9 +65,9 @@ public final class GraphOptionsPanelController extends OptionsPanelController {
         final List<Color> colors = new ArrayList<>();
         for (final String currentColor : presetColorsString.split(";")) {
             if (StringUtils.isNotBlank(currentColor) && !"null".equals(currentColor)) {
-                final int r = Integer.valueOf(currentColor.substring(1, 3), 16);
-                final int g = Integer.valueOf(currentColor.substring(3, 5), 16);
-                final int b = Integer.valueOf(currentColor.substring(5, 7), 16);
+                final int r = Integer.parseInt(currentColor.substring(1, 3), 16);
+                final int g = Integer.parseInt(currentColor.substring(3, 5), 16);
+                final int b = Integer.parseInt(currentColor.substring(5, 7), 16);
                 colors.add(new Color(r, g, b));
             } else {
                 colors.add(null);

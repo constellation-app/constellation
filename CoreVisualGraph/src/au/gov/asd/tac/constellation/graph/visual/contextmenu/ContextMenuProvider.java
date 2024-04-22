@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,11 +71,9 @@ public interface ContextMenuProvider {
      * @return a list of icons to be placed into the context menu aligned to
      * items provided by getItems.
      */
-    default public List<ImageIcon> getIcons(final GraphReadMethods graph, final GraphElementType elementType, final int elementId) {
+    public default List<ImageIcon> getIcons(final GraphReadMethods graph, final GraphElementType elementType, final int elementId) {
         return null;
     }
-
-    ;
 
     /**
      * This method is called when a user selects an item in the context menu.

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,17 +39,16 @@ public final class SynchronizerAction implements ActionListener {
 
     private final GraphNode context;
 
-    public SynchronizerAction(GraphNode context) {
+    public SynchronizerAction(final GraphNode context) {
         this.context = context;
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(final ActionEvent e) {
+        final Graph graph = context.getGraph();
 
-        Graph graph = context.getGraph();
-
-        int count = 3;
-        PluginSynchronizer pluginSynchronizer = new PluginSynchronizer(count);
+        final int count = 3;
+        final PluginSynchronizer pluginSynchronizer = new PluginSynchronizer(count);
 
         for (int i = 0; i < count; i++) {
             PluginExecution.withPlugin(new SynchronizerPlugin())

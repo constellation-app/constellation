@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,7 +88,7 @@ public class ConversationBubble extends VBox {
         bubbleContent.getChildren().add(bubbleGraphic);
 
         Region previousContent = null;
-        for (Region content : contents) {
+        for (final Region content : contents) {
             if (previousContent != null) {
                 final Pane separator = new Pane();
                 separator.setPrefHeight(3);

@@ -176,8 +176,8 @@ public class CopyToNewGraphPlugin extends SimpleReadPlugin {
             final int namedSelectionAttr = original.getAttribute(GraphElementType.META, NamedSelectionState.ATTRIBUTE_NAME);
             if (namedSelectionAttr != Graph.NOT_FOUND) {
                 final Object possibleState = original.getObjectValue(namedSelectionAttr, 0);
-                if (possibleState instanceof NamedSelectionState) {
-                    final NamedSelectionState state = new NamedSelectionState((NamedSelectionState) possibleState);
+                if (possibleState instanceof NamedSelectionState namedSelectionState) {
+                    final NamedSelectionState state = new NamedSelectionState(namedSelectionState);
                     graph.setObjectValue(attributeTranslation[namedSelectionAttr], 0, state);
                 }
             }

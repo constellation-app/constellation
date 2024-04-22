@@ -77,24 +77,19 @@ public class NumberInputPane<T> extends Pane {
         final Boolean shrinkWidth = (Boolean) parameter.getProperty(FloatParameterType.SHRINK_VAL);
 
         switch (parameter.getType().getId()) {
-            case IntegerParameterType.ID:
-                field = new Spinner<>(
+            case IntegerParameterType.ID -> field = new Spinner<>(
                         min == null ? Integer.MIN_VALUE : min.intValue(),
                         max == null ? Integer.MAX_VALUE : max.intValue(),
                         init == null ? 0 : init.intValue(),
                         step == null ? 1 : step.intValue()
                 );
-                break;
-            case FloatParameterType.ID:
-                field = new Spinner<>(
+            case FloatParameterType.ID -> field = new Spinner<>(
                         min == null ? Double.MIN_VALUE : min.doubleValue(),
                         max == null ? Double.MAX_VALUE : max.doubleValue(),
                         init == null ? 0 : init.doubleValue(),
                         step == null ? 1 : step.doubleValue()
                 );
-                break;
-            default:
-                throw new IllegalArgumentException(String.format("Unsupported type %s found.", parameter.getType().getId()));
+            default -> throw new IllegalArgumentException(String.format("Unsupported type %s found.", parameter.getType().getId()));
         }
 
         if (shrinkWidth != null && shrinkWidth) {
@@ -171,7 +166,7 @@ public class NumberInputPane<T> extends Pane {
         parameter.addListener((pluginParameter, change) ->
             Platform.runLater(() -> {
                 switch (change) {
-                    case VALUE:
+                    case VALUE -> {
                         if (StringUtils.isNotBlank(currentTextValue) && (!currentTextValue.equals(parameter.getStringValue()) || parameter.getError() != null)) {
                             setParameterBasedOnType(parameter, min, max);
                         } else if (currentTextValue != null && currentTextValue.isEmpty()) {
@@ -180,20 +175,16 @@ public class NumberInputPane<T> extends Pane {
                         } else {
                             // Do nothing
                         }
-                        break;
-                    case ENABLED:
-                        field.setDisable(!pluginParameter.isEnabled());
-                        break;
-                    case VISIBLE:
+                    }
+                    case ENABLED -> field.setDisable(!pluginParameter.isEnabled());
+                    case VISIBLE -> {
                         field.setManaged(parameter.isVisible());
                         field.setVisible(parameter.isVisible());
                         this.setVisible(parameter.isVisible());
                         this.setManaged(parameter.isVisible());
-                        break;
-                    default:
-                        LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
-                        break;
-                }
+                    }
+                    default -> LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
+                    }
             })
         );
         getChildren().add(field);
@@ -203,8 +194,8 @@ public class NumberInputPane<T> extends Pane {
         try {
             parameter.setError(null);
             switch (parameter.getType().getId()) {
-                case IntegerParameterType.ID:
-                    final int currentIntegerValue = Integer.valueOf(currentTextValue);
+                case IntegerParameterType.ID -> {
+                    final int currentIntegerValue = Integer.parseInt(currentTextValue);
                     if ((min != null && currentIntegerValue < min.intValue())
                             || (max != null && currentIntegerValue > max.intValue())) {
                         field.setId(INVALID_ID);
@@ -213,9 +204,9 @@ public class NumberInputPane<T> extends Pane {
                     // this won't succeed if we entered the if block before this but it will
                     // add some helpful logging to indicate the problem in that instance
                     parameter.setIntegerValue(currentIntegerValue);
-                    break;
-                case FloatParameterType.ID:
-                    final float currentFloatValue = Float.valueOf(currentTextValue);
+                }
+                case FloatParameterType.ID -> {
+                    final float currentFloatValue = Float.parseFloat(currentTextValue);
                     if ((min != null && currentFloatValue < min.doubleValue())
                             || (max != null && currentFloatValue > max.doubleValue())) {
                         field.setId(INVALID_ID);
@@ -224,9 +215,9 @@ public class NumberInputPane<T> extends Pane {
                     // this won't succeed if we entered the if block before this but it will
                     // add some helpful logging to indicate the problem in that instance
                     parameter.setFloatValue(currentFloatValue);
-                    break;
-                default:
-                    break;
+                }
+                default -> {
+                }
             }
         } catch (final NumberFormatException ex) {
             field.setId(INVALID_ID);

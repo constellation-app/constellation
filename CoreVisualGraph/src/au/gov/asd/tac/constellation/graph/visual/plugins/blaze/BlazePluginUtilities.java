@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ public class BlazePluginUtilities {
      * @return The int corresponding to the input parameter.
      */
     private static int toInt(final Object o) {
-        return o instanceof Integer ? (Integer) o : Integer.parseInt((String) o);
+        return o instanceof Integer integer ? integer: Integer.parseInt((String) o);
     }
 
     /**

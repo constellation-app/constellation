@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,9 +28,9 @@ public class AttributeValueUpdater2 implements ValueUpdater32 {
     public static final AttributeValueUpdater2 INSTANCE = new AttributeValueUpdater2();
 
     @Override
-    public int store(final UndoGraphEditState state, int attribute) {
+    public int store(final UndoGraphEditState state, final int attribute) {
         if (attribute != state.getCurrentAttribute()) {
-            int delta = attribute - state.getCurrentAttribute();
+            final int delta = attribute - state.getCurrentAttribute();
             state.setCurrentAttribute(attribute);
             if (delta == 1) {
                 return 1;
@@ -47,12 +47,12 @@ public class AttributeValueUpdater2 implements ValueUpdater32 {
     }
 
     @Override
-    public void updateExecute(final UndoGraphEditState state, int parameters) {
+    public void updateExecute(final UndoGraphEditState state, final int parameters) {
         ATTRIBUTE_GETTERS[parameters & 3].getExecute(state);
     }
 
     @Override
-    public void updateUndo(final UndoGraphEditState state, int parameters) {
+    public void updateUndo(final UndoGraphEditState state, final int parameters) {
         ATTRIBUTE_GETTERS[parameters & 3].getUndo(state);
     }
 

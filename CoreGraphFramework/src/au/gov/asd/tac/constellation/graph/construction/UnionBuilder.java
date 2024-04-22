@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  *
@@ -28,19 +29,18 @@ import java.util.Map;
 public class UnionBuilder extends GraphBuilder {
 
     public static UnionBuilder unionGraph(final GraphWriteMethods graph, final GraphReadMethods toUnion, final Map<Integer, Integer> identificationMapping) {
-
         // Add toUnion to graph
-        AddGraphBuilder a = AddGraphBuilder.addGraph(graph, toUnion);
+        final AddGraphBuilder a = AddGraphBuilder.addGraph(graph, toUnion);
 
         // Remap vertex IDs in the identificaiton mapping for the union
         final Map<Integer, Integer> addedOldToNewIDs = a.addedOldToNewIDs;
         final Map<Integer, Integer> newIDVertexMapping = new HashMap<>();
-        for (final Map.Entry<Integer, Integer> entry : identificationMapping.entrySet()) {
+        for (final Entry<Integer, Integer> entry : identificationMapping.entrySet()) {
             newIDVertexMapping.put(addedOldToNewIDs.get(entry.getKey()), entry.getValue());
         }
 
         // Add new transactions for vertex identification and record mapping from old to new transactions
-        Map<Integer, Integer> newIDTransactionMapping = new HashMap<>();
+        final Map<Integer, Integer> newIDTransactionMapping = new HashMap<>();
         for (int i = 0; i < a.transactions.length; i++) {
             final int trans = graph.getTransaction(a.transactions[i]);
             final int source = graph.getTransactionSourceVertex(trans);
@@ -57,8 +57,6 @@ public class UnionBuilder extends GraphBuilder {
             } else if (newIDVertexMapping.containsKey(dest)) {
                 final int newTrans = constructTransaction(graph, source, newIDVertexMapping.get(dest), directed);
                 newIDTransactionMapping.put(trans, newTrans);
-            } else {
-                // Do nothing
             }
         }
 
@@ -99,12 +97,12 @@ public class UnionBuilder extends GraphBuilder {
     public final int[] unionedTransactions;
     public final int[] allNewTransactions;
 
-    private UnionBuilder(final GraphWriteMethods graph, final int[] addedVerts, final int[] addedTransactions, final int[] unionedTransactions, int[] allNewTransactions) {
+    private UnionBuilder(final GraphWriteMethods graph, final int[] addedVerts, final int[] addedTransactions, 
+            final int[] unionedTransactions, final int[] allNewTransactions) {
         super(graph);
         this.addedVerts = addedVerts;
         this.addedTransactions = addedTransactions;
         this.unionedTransactions = unionedTransactions;
         this.allNewTransactions = allNewTransactions;
     }
-
 }

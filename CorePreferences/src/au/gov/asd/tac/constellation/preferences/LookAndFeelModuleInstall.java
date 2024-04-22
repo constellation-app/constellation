@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,8 @@ import org.openide.modules.ModuleInstall;
 import org.openide.util.NbPreferences;
 
 /**
- * Set the default look and feel to be the FlatLaf Dark theme. This needs to run
- * when modules are loaded so that the LAF can be set to the Swing parts of the
- * application before they load.
+ * Set the default look and feel to be the FlatLaf Dark theme. This needs to run when modules are loaded so that the LAF
+ * can be set to the Swing parts of the application before they load.
  *
  * @author arcturus
  */

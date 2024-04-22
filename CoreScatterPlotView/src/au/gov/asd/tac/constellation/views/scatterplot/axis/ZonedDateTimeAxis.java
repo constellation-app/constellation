@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -128,7 +128,7 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
      * @param lowerBound The lower bound.
      * @param upperBound The upper bound.
      */
-    public ZonedDateTimeAxis(ZonedDateTime lowerBound, ZonedDateTime upperBound) {
+    public ZonedDateTimeAxis(final ZonedDateTime lowerBound, final ZonedDateTime upperBound) {
         this();
         setAutoRanging(false);
         setLowerBound(lowerBound);
@@ -142,13 +142,13 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
      * @param lowerBound The lower bound.
      * @param upperBound The upper bound.
      */
-    public ZonedDateTimeAxis(String axisLabel, ZonedDateTime lowerBound, ZonedDateTime upperBound) {
+    public ZonedDateTimeAxis(final String axisLabel, final ZonedDateTime lowerBound, final ZonedDateTime upperBound) {
         this(lowerBound, upperBound);
         setLabel(axisLabel);
     }
 
     @Override
-    public void invalidateRange(List<ZonedDateTime> list) {
+    public void invalidateRange(final List<ZonedDateTime> list) {
         super.invalidateRange(list);
 
         Collections.sort(list);
@@ -159,13 +159,11 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
         } else if (list.size() > 1) {
             minZonedDateTime = list.get(0);
             maxZonedDateTime = list.get(list.size() - 1);
-        } else {
-            // Do nothing
         }
     }
 
     @Override
-    protected Object autoRange(double length) {
+    protected Object autoRange(final double length) {
         if (isAutoRanging()) {
             return new Object[]{minZonedDateTime, maxZonedDateTime};
         } else {
@@ -177,7 +175,7 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
     }
 
     @Override
-    protected void setRange(Object range, boolean animating) {
+    protected void setRange(final Object range, final boolean animating) {
         final Object[] dateTimeRange = (Object[]) range;
         final ZonedDateTime newLowerBound = (ZonedDateTime) dateTimeRange[0];
         final ZonedDateTime newUpperBound = (ZonedDateTime) dateTimeRange[1];
@@ -235,18 +233,18 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
     }
 
     @Override
-    public double getDisplayPosition(ZonedDateTime datetime) {
+    public double getDisplayPosition(final ZonedDateTime datetime) {
         final double length = getSide().isHorizontal() ? getWidth() : getHeight();
 
         // get the difference between the max and min datetime.
-        double diff = currentUpperBound.get() - currentLowerBound.get();
+        final double diff = currentUpperBound.get() - currentLowerBound.get();
 
         // get the range of the visible area (the min datetime should start at the zero position, so subtract it).
-        double range = length - getZeroPosition();
+        final double range = length - getZeroPosition();
 
         // get the difference from the actual datetime to the min datetime and divide it by the total difference.
         // this should be a value between 0 and 1, if the datetime is within the min and max datetimes.
-        double d = (datetime.toInstant().toEpochMilli() - currentLowerBound.get()) / diff;
+        final double d = (datetime.toInstant().toEpochMilli() - currentLowerBound.get()) / diff;
 
         // multiply this percent value with the range and add the zero offset.
         if (getSide().isVertical()) {
@@ -257,14 +255,14 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
     }
 
     @Override
-    public ZonedDateTime getValueForDisplay(double displayPosition) {
+    public ZonedDateTime getValueForDisplay(final double displayPosition) {
         final double length = getSide().isHorizontal() ? getWidth() : getHeight();
 
         // get the difference between the max and min datetime.
-        double diff = currentUpperBound.get() - currentLowerBound.get();
+        final double diff = currentUpperBound.get() - currentLowerBound.get();
 
         // get the range of the visible area (the min datetime should start at the zero position, so subtract it).
-        double range = length - getZeroPosition();
+        final double range = length - getZeroPosition();
 
         if (getSide().isVertical()) {
             final long datetime = (long) ((displayPosition - getZeroPosition() - getHeight()) / -range * diff + currentLowerBound.get());
@@ -276,17 +274,17 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
     }
 
     @Override
-    public boolean isValueOnAxis(ZonedDateTime date) {
+    public boolean isValueOnAxis(final ZonedDateTime date) {
         return date.toInstant().toEpochMilli() > currentLowerBound.get() && date.toInstant().toEpochMilli() < currentUpperBound.get();
     }
 
     @Override
-    public double toNumericValue(ZonedDateTime date) {
+    public double toNumericValue(final ZonedDateTime date) {
         return date.toInstant().toEpochMilli();
     }
 
     @Override
-    public ZonedDateTime toRealValue(double v) {
+    public ZonedDateTime toRealValue(final double v) {
         return ZonedDateTime.ofInstant(Instant.ofEpochMilli((long) v), TimeZoneUtilities.UTC);
     }
 
@@ -297,7 +295,7 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
         final ZonedDateTime upperBound = (ZonedDateTime) dateTimeRange[1];
 
         List<ZonedDateTime> dateTimeList = new ArrayList<>();
-        List<ZonedDateTime> previousDateTimeList = new ArrayList<>();
+        final List<ZonedDateTime> previousDateTimeList = new ArrayList<>();
         Interval previousInterval = Interval.values()[0];
 
         // calculate the gap which should be between two tick marks.
@@ -306,7 +304,7 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
 
         // starting with the greatest interval, add one of each calendar unit.
         ZonedDateTime datetime = lowerBound;
-        for (Interval interval : Interval.values()) {
+        for (final Interval interval : Interval.values()) {
             datetime = lowerBound;
             dateTimeList.clear();
             previousDateTimeList.clear();
@@ -338,7 +336,7 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
         // finally, add the upper bound.
         dateTimeList.add(upperBound);
 
-        List<ZonedDateTime> evenDateTimeList = makeDateTimesEven(dateTimeList);
+        final List<ZonedDateTime> evenDateTimeList = makeDateTimesEven(dateTimeList);
         // if there are at least three datetimes, check if the gap between the lower datetime and the second datetime
         // is at least half the gap of the second and third datetime, then repeat for the upper bound.
         // if gaps between datetimes are too small, remove one of them (this can occur, e.g. if the lower bound is 25.12.2013 and years are shown;
@@ -374,7 +372,7 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
     }
 
     @Override
-    protected String getTickMarkLabel(ZonedDateTime datetime) {
+    protected String getTickMarkLabel(final ZonedDateTime datetime) {
         final StringConverter<ZonedDateTime> converter = getTickLabelFormatter();
         if (converter != null) {
             return converter.toString(datetime);
@@ -386,23 +384,12 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
         } else if (actualInterval.interval == ChronoUnit.MONTHS && datetime.getDayOfMonth() == 1) {
             formatter = DateTimeFormatter.ofPattern("MMM yy");
         } else {
-            switch (actualInterval.interval) {
-                case DAYS:
-                case WEEKS:
-                case HOURS:
-                case MINUTES:
-                    formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
-                    break;
-                case SECONDS:
-                    formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
-                    break;
-                case MILLIS:
-                    formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL);
-                    break;
-                default:
-                    formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
-                    break;
-            }
+            formatter = switch (actualInterval.interval) {
+                case DAYS, WEEKS, HOURS, MINUTES -> DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
+                case SECONDS -> DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
+                case MILLIS -> DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL);
+                default -> DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
+            };
         }
         return formatter.format(datetime);
     }
@@ -417,7 +404,7 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
     private List<ZonedDateTime> makeDateTimesEven(final List<ZonedDateTime> dateTimes) {
         // if the dates contain more dates than just the lower and upper bounds, make the dates in between even.
         if (dateTimes.size() > 2) {
-            List<ZonedDateTime> evenDateTimes = new ArrayList<>();
+            final List<ZonedDateTime> evenDateTimes = new ArrayList<>();
 
             // for each interval, modify the date slightly by a few millis, to make sure they are different days.
             // this is because Axis stores each value and won't update the tick labels, if the value is already known.
@@ -425,7 +412,7 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
             for (int i = 0; i < dateTimes.size(); i++) {
                 ZonedDateTime evenDateTime = dateTimes.get(i);
                 switch (actualInterval.interval) {
-                    case YEARS:
+                    case YEARS -> {
                         // if it's not the first or last date (lower and upper bound), make the year begin with first month and let the months begin with first day.
                         if (i != 0 && i != dateTimes.size() - 1) {
                             evenDateTime = evenDateTime.withMonth(0);
@@ -435,8 +422,8 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
                         evenDateTime = evenDateTime.withMinute(0);
                         evenDateTime = evenDateTime.withSecond(0);
                         evenDateTime = evenDateTime.withNano(6 * TemporalConstants.NANOSECONDS_IN_MILLISECOND);
-                        break;
-                    case MONTHS:
+                    }
+                    case MONTHS -> {
                         // if it's not the first or last date (lower and upper bound), make the months begin with first day.
                         if (i != 0 && i != dateTimes.size() - 1) {
                             evenDateTime = evenDateTime.withDayOfMonth(1);
@@ -445,38 +432,37 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
                         evenDateTime = evenDateTime.withMinute(0);
                         evenDateTime = evenDateTime.withSecond(0);
                         evenDateTime = evenDateTime.withNano(5 * TemporalConstants.NANOSECONDS_IN_MILLISECOND);
-                        break;
-                    case WEEKS:
+                    }
+                    case WEEKS -> {
                         // make weeks begin with first day of week?
                         evenDateTime = evenDateTime.withHour(0);
                         evenDateTime = evenDateTime.withMinute(0);
                         evenDateTime = evenDateTime.withSecond(0);
                         evenDateTime = evenDateTime.withNano(4 * TemporalConstants.NANOSECONDS_IN_MILLISECOND);
-                        break;
-                    case DAYS:
+                    }
+                    case DAYS -> {
                         evenDateTime = evenDateTime.withHour(0);
                         evenDateTime = evenDateTime.withMinute(0);
                         evenDateTime = evenDateTime.withSecond(0);
                         evenDateTime = evenDateTime.withNano(3 * TemporalConstants.NANOSECONDS_IN_MILLISECOND);
-                        break;
-                    case HOURS:
+                    }
+                    case HOURS -> {
                         if (i != 0 && i != dateTimes.size() - 1) {
                             evenDateTime = evenDateTime.withMinute(0);
                             evenDateTime = evenDateTime.withSecond(0);
                         }
                         evenDateTime = evenDateTime.withNano(2 * TemporalConstants.NANOSECONDS_IN_MILLISECOND);
-                        break;
-                    case MINUTES:
+                    }
+                    case MINUTES -> {
                         if (i != 0 && i != dateTimes.size() - 1) {
                             evenDateTime = evenDateTime.withSecond(0);
                         }
                         evenDateTime = evenDateTime.withNano(1 * TemporalConstants.NANOSECONDS_IN_MILLISECOND);
-                        break;
-                    case SECONDS:
-                        evenDateTime = evenDateTime.withNano(0 * TemporalConstants.NANOSECONDS_IN_MILLISECOND);
-                        break;
-                    default:
-                        break;
+                    }
+                    case SECONDS -> evenDateTime = evenDateTime.withNano(0 * TemporalConstants.NANOSECONDS_IN_MILLISECOND);
+                    default -> {
+                        // do nothing
+                    }
                 }
                 evenDateTimes.add(evenDateTime);
             }
@@ -514,7 +500,7 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
      * @param date The lower bound date.
      * @see #lowerBoundProperty()
      */
-    public final void setLowerBound(ZonedDateTime date) {
+    public final void setLowerBound(final ZonedDateTime date) {
         lowerBound.set(date);
     }
 
@@ -545,7 +531,7 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
      * @param date The upper bound date.
      * @see #upperBoundProperty() ()
      */
-    public final void setUpperBound(ZonedDateTime date) {
+    public final void setUpperBound(final ZonedDateTime date) {
         upperBound.set(date);
     }
 
@@ -572,7 +558,7 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
      *
      * @param value The converter.
      */
-    public final void setTickLabelFormatter(StringConverter<ZonedDateTime> value) {
+    public final void setTickLabelFormatter(final StringConverter<ZonedDateTime> value) {
         tickLabelFormatter.setValue(value);
     }
 
@@ -605,7 +591,7 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
         private final ChronoUnit interval;
         private final int amount;
 
-        private Interval(ChronoUnit interval, int amount) {
+        private Interval(final ChronoUnit interval, final int amount) {
             this.interval = interval;
             this.amount = amount;
         }

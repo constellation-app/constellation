@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,5 +69,4 @@ public class StarGraphBuilder extends GraphBuilder {
         System.arraycopy(pendants, 0, nodes, 1, pendants.length);
         this.transactions = rays;
     }
-
 }

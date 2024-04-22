@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.graph.GraphIndexType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
+import java.util.Objects;
 
 /**
  * A SchemaAttribute is a class for defining graph attributes which belong with
@@ -47,10 +48,9 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
     private final boolean isDecorator;
     private final boolean create;
 
-    private SchemaAttribute(final GraphElementType elementType, final String attributeType,
-            final String name, final String description, final Object defaultvalue,
-            final String attributeMergerId, final String regex, final String format,
-            final GraphIndexType indexType, final boolean isMultiValue, final boolean isLabel,
+    private SchemaAttribute(final GraphElementType elementType, final String attributeType, final String name, 
+            final String description, final Object defaultvalue, final String attributeMergerId, final String regex, 
+            final String format, final GraphIndexType indexType, final boolean isMultiValue, final boolean isLabel,
             final boolean isDecorator, final boolean create) {
         this.elementType = elementType;
         this.attributeType = attributeType;
@@ -275,8 +275,8 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
         if (graph.getSchema() == null) {
             int attribute = get(graph);
             if (!boundBySchema && attribute == Graph.NOT_FOUND) {
-                attribute = graph.addAttribute(getElementType(), getAttributeType(),
-                        getName(), getDescription(), getDefault(), getAttributeMergerId());
+                attribute = graph.addAttribute(getElementType(), getAttributeType(), getName(), getDescription(), 
+                        getDefault(), getAttributeMergerId());
                 graph.setAttributeIndexType(attribute, getIndexType());
             }
             return attribute;
@@ -305,56 +305,24 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
      * @return
      */
     public boolean equivalent(final Attribute other) {
-        if (other == null) {
-            return false;
-        }
-        if (!elementType.equals(other.getElementType())) {
-            return false;
-        }
-        if (!attributeType.equals(other.getAttributeType())) {
-            return false;
-        }
-        if (name == null) {
-            if (other.getName() != null) {
-                return false;
-            }
-        } else if (!name.equals(other.getName())) {
-            return false;
-        } else {
-            // Do nothing
-        }
-        if (description == null) {
-            if (other.getDescription() != null) {
-                return false;
-            }
-        } else if (!description.equals(other.getDescription())) {
-            return false;
-        } else {
-            // Do nothing
-        }
-        if (defaultValue == null) {
-            if (other.getDefaultValue() != null) {
-                return false;
-            }
-        } else if (!defaultValue.equals(other.getDefaultValue())) {
-            return false;
-        } else {
-            // Do nothing
-        }
-
-        return true;
+        return other != null 
+                && elementType.equals(other.getElementType())
+                && attributeType.equals(other.getAttributeType())
+                && Objects.equals(name, other.getName())
+                && Objects.equals(description, other.getDescription())
+                && Objects.equals(defaultValue, other.getDefaultValue());
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((elementType == null) ? 0 : elementType.hashCode());
-        result = prime * result + ((attributeType == null) ? 0 : attributeType.hashCode());
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + ((description == null) ? 0 : description.hashCode());
-        result = prime * result + ((regex == null) ? 0 : regex.hashCode());
-        result = prime * result + ((format == null) ? 0 : format.hashCode());
+        result = prime * result + (elementType == null ? 0 : elementType.hashCode());
+        result = prime * result + (attributeType == null ? 0 : attributeType.hashCode());
+        result = prime * result + (name == null ? 0 : name.hashCode());
+        result = prime * result + (description == null ? 0 : description.hashCode());
+        result = prime * result + (regex == null ? 0 : regex.hashCode());
+        result = prime * result + (format == null ? 0 : format.hashCode());
         return result;
     }
 
@@ -363,66 +331,18 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
         if (this == o) {
             return true;
         }
-        if (o == null) {
+        if (o == null || this.getClass() != o.getClass()) {
             return false;
-        }
-        if (this.getClass() != o.getClass()) {
-            return false;
-        }
-        final SchemaAttribute other = (SchemaAttribute) o;
-        if (!elementType.equals(other.elementType)) {
-            return false;
-        }
-        if (!attributeType.equals(other.attributeType)) {
-            return false;
-        }
-        if (name == null) {
-            if (other.name != null) {
-                return false;
-            }
-        } else if (!name.equals(other.name)) {
-            return false;
-        } else {
-            // Do nothing
-        }
-        if (description == null) {
-            if (other.description != null) {
-                return false;
-            }
-        } else if (!description.equals(other.description)) {
-            return false;
-        } else {
-            // Do nothing
-        }
-        if (defaultValue == null) {
-            if (other.defaultValue != null) {
-                return false;
-            }
-        } else if (!defaultValue.equals(other.defaultValue)) {
-            return false;
-        } else {
-            // Do nothing
-        }
-        if (regex == null) {
-            if (other.regex != null) {
-                return false;
-            }
-        } else if (!regex.equals(other.regex)) {
-            return false;
-        } else {
-            // Do nothing
-        }
-        if (format == null) {
-            if (other.format != null) {
-                return false;
-            }
-        } else if (!format.equals(other.format)) {
-            return false;
-        } else {
-            // Do nothing
         }
 
-        return true;
+        final SchemaAttribute other = (SchemaAttribute) o;
+        return elementType.equals(other.elementType)
+                && attributeType.equals(other.attributeType)
+                && Objects.equals(name, other.name)
+                && Objects.equals(description, other.description)
+                && Objects.equals(defaultValue, other.defaultValue)
+                && Objects.equals(regex, other.regex)
+                && Objects.equals(format, other.format);
     }
 
     @Override

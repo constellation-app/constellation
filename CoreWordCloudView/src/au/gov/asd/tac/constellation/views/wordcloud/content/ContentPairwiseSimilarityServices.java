@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,7 +69,6 @@ public class ContentPairwiseSimilarityServices {
     }
 
     private void computeSimilarities(final double threshold) {
-
         if (similarityCalculator.computeModulii()) {
             for (int i = 0; i < handler.totalChunks; i++) {
                 final int currentChunk = i;
@@ -167,63 +166,6 @@ public class ContentPairwiseSimilarityServices {
 
         // Called to finalize modulus calculations, usually doing something such as taking a square root (for the L2/euclidian norm)
         public abstract double finalizeModulus(final double currentModulus);
-    }
-
-    private static class IntegerSpaceEuclidianNormCalculator extends PairwiseSimilarityCalculator {
-
-        @Override
-        public double updateSimilarity(final double currentSimilarity, final int element1Freq, final int element2Freq) {
-            return currentSimilarity + (element1Freq * element2Freq);
-        }
-
-        @Override
-        public double normalizeSimilarity(final double currentSimilarity, final double element1Modulus, final double element2Modulus) {
-            return currentSimilarity / (element1Modulus * element2Modulus);
-        }
-
-        @Override
-        public boolean computeModulii() {
-            return true;
-        }
-
-        @Override
-        public double updateModulus(final double currentModulus, final int element1Freq) {
-            return currentModulus + (element1Freq * element1Freq);
-        }
-
-        @Override
-        public double finalizeModulus(final double modulus) {
-            return Math.sqrt(modulus);
-        }
-
-    }
-
-    private static class BinarySpaceEuclidianNormCalculator extends PairwiseSimilarityCalculator {
-
-        @Override
-        public double updateSimilarity(final double currentSimilarity, final int element1Freq, final int element2Freq) {
-            return currentSimilarity + 1;
-        }
-
-        @Override
-        public double normalizeSimilarity(final double currentSimilarity, final double element1Modulus, final double element2Modulus) {
-            return currentSimilarity / (element1Modulus * element2Modulus);
-        }
-
-        @Override
-        public boolean computeModulii() {
-            return true;
-        }
-
-        @Override
-        public double updateModulus(final double currentModulus, final int element1Freq) {
-            return currentModulus + 1;
-        }
-
-        @Override
-        public double finalizeModulus(final double modulus) {
-            return Math.sqrt(modulus);
-        }
     }
 
     private static class BinarySpaceTaxicabNormCalculator extends PairwiseSimilarityCalculator {

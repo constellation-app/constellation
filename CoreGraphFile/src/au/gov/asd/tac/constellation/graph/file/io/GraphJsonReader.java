@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
@@ -147,11 +148,11 @@ public final class GraphJsonReader {
                             }
                             if (saveCustomFile) {
                                 // copy the icon image from the zip file to the constellation user's icon directory
-                                final FileOutputStream os = new FileOutputStream(file); //NOSONAR
-                                for (int c = zin.read(); c != -1; c = zin.read()) {
-                                    os.write(c);
+                                try (final FileOutputStream os = new FileOutputStream(file)) {
+                                    for (int c = zin.read(); c != -1; c = zin.read()) {
+                                        os.write(c);
+                                    }
                                 }
-                                os.close();
                                 // new image file has now been written to the constellation folder
                                 // set a flag to have all icon images reloaded
                                 iconsUpdated = true;
@@ -201,42 +202,36 @@ public final class GraphJsonReader {
         // read global mod count
         final JsonNode node = jp.readValueAsTree();
         if (!node.has(GLOBAL_MOD_COUNT)) {
-            final String msg = String.
-                    format(EXPECTED_LONG_FORMAT, current, jp.getCurrentLocation());
+            final String msg = String.format(EXPECTED_LONG_FORMAT, current, jp.getCurrentLocation());
             throw new GraphParseException(msg);
         }
         if (!node.has(STRUCTURE_MOD_COUNT)) {
-            final String msg = String.
-                    format(EXPECTED_LONG_FORMAT, current, jp.getCurrentLocation());
+            final String msg = String.format(EXPECTED_LONG_FORMAT, current, jp.getCurrentLocation());
             throw new GraphParseException(msg);
         }
         if (!node.has(ATTRIBUTE_MOD_COUNT)) {
-            final String msg = String.
-                    format(EXPECTED_LONG_FORMAT, current, jp.getCurrentLocation());
+            final String msg = String.format(EXPECTED_LONG_FORMAT, current, jp.getCurrentLocation());
             throw new GraphParseException(msg);
         }
         // global
         if (node.get(GLOBAL_MOD_COUNT).isNumber()) {
             globalModCount = node.get(GLOBAL_MOD_COUNT).asLong();
         } else {
-            final String msg = String.
-                    format(EXPECTED_NUMERIC_FORMAT, node.get(GLOBAL_MOD_COUNT).asText(), jp.getCurrentLocation());
+            final String msg = String.format(EXPECTED_NUMERIC_FORMAT, node.get(GLOBAL_MOD_COUNT).asText(), jp.getCurrentLocation());
             throw new GraphParseException(msg);
         }
         // structure
         if (node.get(STRUCTURE_MOD_COUNT).isNumber()) {
             globalModCount = node.get(STRUCTURE_MOD_COUNT).asLong();
         } else {
-            final String msg = String.
-                    format(EXPECTED_NUMERIC_FORMAT, node.get(STRUCTURE_MOD_COUNT), jp.getCurrentLocation());
+            final String msg = String.format(EXPECTED_NUMERIC_FORMAT, node.get(STRUCTURE_MOD_COUNT), jp.getCurrentLocation());
             throw new GraphParseException(msg);
         }
         // attribute
         if (node.get(ATTRIBUTE_MOD_COUNT).isNumber()) {
             globalModCount = node.get(ATTRIBUTE_MOD_COUNT).asLong();
         } else {
-            final String msg = String.
-                    format(EXPECTED_NUMERIC_FORMAT, node.get(GLOBAL_MOD_COUNT), jp.getCurrentLocation());
+            final String msg = String.format(EXPECTED_NUMERIC_FORMAT, node.get(GLOBAL_MOD_COUNT), jp.getCurrentLocation());
             throw new GraphParseException(msg);
         }
         return jp.getLastClearedToken();
@@ -268,7 +263,6 @@ public final class GraphJsonReader {
      * @throws GraphParseException On graph parsing errors.
      */
     public Graph readGraph(final String path, final InputStream in, final long entrySize, final IoProgress progress) throws IOException, InterruptedException, GraphParseException {
-
         final ImmutableObjectCache immutableObjectCache = new ImmutableObjectCache();
 
         // Use a combination of stream and tree-model parsing.
@@ -462,8 +456,6 @@ public final class GraphJsonReader {
             } else if (current != JsonToken.END_OBJECT) {
                 final String msg = String.format("Error: expected END_OBJECT, found '%s' at %s", current, jp.getCurrentLocation());
                 throw new GraphParseException(msg);
-            } else {
-                // Do nothing
             }
 
             current = jp.nextToken();
@@ -638,7 +630,7 @@ public final class GraphJsonReader {
             }
 
             // Gather the key labels.
-            final ArrayList<Integer> keyAttrIds = new ArrayList<>();
+            final List<Integer> keyAttrIds = new ArrayList<>();
             while (jp.nextToken() != JsonToken.END_ARRAY) {
                 // Read the key attributes from the array and create the graph key.
                 final String keyLabel = jp.readValueAs(String.class);
@@ -689,55 +681,50 @@ public final class GraphJsonReader {
             // Read the object into a tree model.
             final JsonNode node = jp.readValueAsTree();
             final int id;
-            if (elementType == GraphElementType.VERTEX) {
-                final JsonNode idNode = node.get(GraphFileConstants.VX_ID);
-                if (idNode == null) {
-                    final String msg = String.format(DID_NOT_FIND_FORMAT, GraphFileConstants.VX_ID, jp.getCurrentLocation());
-                    throw new GraphParseException(msg);
+            switch (elementType) {
+                case VERTEX -> {
+                    final JsonNode idNode = node.get(GraphFileConstants.VX_ID);
+                    if (idNode == null) {
+                        final String msg = String.format(DID_NOT_FIND_FORMAT, GraphFileConstants.VX_ID, jp.getCurrentLocation());
+                        throw new GraphParseException(msg);
+                    }       final int jsonId = idNode.intValue();
+                    id = graph.addVertex();
+                    vertexPositions.put(jsonId, id);
                 }
-
-                final int jsonId = idNode.intValue();
-                id = graph.addVertex();
-                vertexPositions.put(jsonId, id);
-            } else if (elementType == GraphElementType.TRANSACTION) {
-                final JsonNode idNode = node.get(GraphFileConstants.TX_ID);
-                // We can't test for null and throw an exception here: putting the txId in the file is an afterthought,
-                // so lots of existing graphs won't have it.
-
-                final JsonNode srcNode = node.get(GraphFileConstants.SRC);
-                if (srcNode == null) {
-                    final String msg = String.format(DID_NOT_FIND_FORMAT, GraphFileConstants.SRC, jp.getCurrentLocation());
-                    throw new GraphParseException(msg);
+                case TRANSACTION -> {
+                    final JsonNode idNode = node.get(GraphFileConstants.TX_ID);
+                    // We can't test for null and throw an exception here: putting the txId in the file is an afterthought,
+                    // so lots of existing graphs won't have it.
+                    final JsonNode srcNode = node.get(GraphFileConstants.SRC);
+                    if (srcNode == null) {
+                        final String msg = String.format(DID_NOT_FIND_FORMAT, GraphFileConstants.SRC, jp.getCurrentLocation());
+                        throw new GraphParseException(msg);
+                    }       
+                    final JsonNode dstNode = node.get(GraphFileConstants.DST);
+                    if (dstNode == null) {
+                        final String msg = String.format(DID_NOT_FIND_FORMAT, GraphFileConstants.DST, jp.getCurrentLocation());
+                        throw new GraphParseException(msg);
+                    }       
+                    final JsonNode dirNode = node.get(GraphFileConstants.DIR);
+                    if (dirNode == null) {
+                        final String msg = String.format(DID_NOT_FIND_FORMAT, GraphFileConstants.DIR, jp.getCurrentLocation());
+                        throw new GraphParseException(msg);
+                    }       
+                    // Map the ids in the JSON file to the vertex ids in the graph.
+                    final int jsonId = idNode != null ? idNode.intValue() : Graph.NOT_FOUND;
+                    final int jsonSrc = srcNode.intValue();
+                    final int jsonDst = dstNode.intValue();
+                    final int src = vertexPositions.get(jsonSrc);
+                    final int dst = vertexPositions.get(jsonDst);
+                    final boolean directed = dirNode.booleanValue();
+                    id = graph.addTransaction(src, dst, directed);
+                    if (jsonId != Graph.NOT_FOUND) {
+                        transactionPositions.put(jsonId, id);
+                    }                          
                 }
-
-                final JsonNode dstNode = node.get(GraphFileConstants.DST);
-                if (dstNode == null) {
-                    final String msg = String.format(DID_NOT_FIND_FORMAT, GraphFileConstants.DST, jp.getCurrentLocation());
-                    throw new GraphParseException(msg);
-                }
-
-                final JsonNode dirNode = node.get(GraphFileConstants.DIR);
-                if (dirNode == null) {
-                    final String msg = String.format(DID_NOT_FIND_FORMAT, GraphFileConstants.DIR, jp.getCurrentLocation());
-                    throw new GraphParseException(msg);
-                }
-
-                // Map the ids in the JSON file to the vertex ids in the graph.
-                final int jsonId = idNode != null ? idNode.intValue() : Graph.NOT_FOUND;
-                final int jsonSrc = srcNode.intValue();
-                final int jsonDst = dstNode.intValue();
-
-                final int src = vertexPositions.get(jsonSrc);
-                final int dst = vertexPositions.get(jsonDst);
-                final boolean directed = dirNode.booleanValue();
-                id = graph.addTransaction(src, dst, directed);
-                if (jsonId != Graph.NOT_FOUND) {
-                    transactionPositions.put(jsonId, id);
-                }
-            } else if (elementType == GraphElementType.GRAPH || elementType == GraphElementType.META) {
-                id = 0;
-            } else {
-                id = Graph.NOT_FOUND;
+                case GRAPH, META -> id = 0;
+                case null -> id = Graph.NOT_FOUND;
+                default -> id = Graph.NOT_FOUND;
             }
 
             for (final Iterator<Map.Entry<String, JsonNode>> it = node.fields(); it.hasNext();) {
@@ -750,8 +737,6 @@ public final class GraphJsonReader {
                     ioProvider.readObject(ai.attrId, id, jnode, graph, vertexPositions, transactionPositions, byteReader, immutableObjectCache);
                 } else if (ai != null) {
                     throw new Exception("No IO provider found for attribute type: " + ai.attrType);
-                } else {
-                    // Do nothing
                 }
             }
 
@@ -763,8 +748,6 @@ public final class GraphJsonReader {
                     ph.progress(msg, workunit);
                 } else if (ph != null) {
                     ph.progress(msg);
-                } else {
-                    // Do nothing
                 }
             }
         }

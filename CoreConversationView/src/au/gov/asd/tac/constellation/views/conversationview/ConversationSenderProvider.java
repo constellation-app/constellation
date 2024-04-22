@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,5 +26,5 @@ import java.util.List;
  */
 public interface ConversationSenderProvider {
 
-    public void updateMessageSenders(GraphReadMethods graph, List<ConversationMessage> messages, List<String> senderAttributes);
+    public void updateMessageSenders(final GraphReadMethods graph, final List<ConversationMessage> messages, final List<String> senderAttributes);
 }

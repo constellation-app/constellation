@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -167,14 +167,9 @@ public class MultiPart {
 
         final int code = conn.getResponseCode();
 
-        final String location;
         final int responseClass = code / 100;
-        if (responseClass == 2) {
-            location = conn.getHeaderField("Location");
-        } else {
-            location = null;
-        }
-
+        final String location = responseClass == 2 ? conn.getHeaderField("Location") : null;
+        
         return new Pair<>(conn.getResponseMessage(), location);
     }
 
@@ -187,11 +182,9 @@ public class MultiPart {
                 if (len == -1) {
                     break;
                 }
-
                 os.write(buf, 0, len);
             }
         }
-
         return os.toByteArray();
     }
 
