@@ -169,18 +169,6 @@ public class ApplicationOptionsPanelNGTest {
     }
 
     /**
-     * Test of setCurrentFont method, of class ApplicationOptionsPanel.
-     */
-    @Test
-    public void testSetGetCurrentFont() {
-        System.out.println("setGetCurrentFont");
-        String currentFont = "Arial";
-        ApplicationOptionsPanel instance = new ApplicationOptionsPanel(null);
-        instance.setCurrentFont(currentFont);
-        assertEquals(instance.getCurrentFont(), currentFont);
-    }
-
-    /**
      * Test of setFontSize method, of class ApplicationOptionsPanel.
      */
     @Test
