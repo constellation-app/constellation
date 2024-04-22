@@ -82,11 +82,11 @@ public class Geohash {
         }
 
         public char[] getCharset() {
-            return charset;
+            return charset.clone();
         }
 
         public int[] getInverseCharset() {
-            return inverseCharset;
+            return inverseCharset.clone();
         }
 
         public double getMinX() {
@@ -110,7 +110,7 @@ public class Geohash {
         }
 
         public int[] getBits() {
-            return bits;
+            return bits.clone();
         }
     }
 

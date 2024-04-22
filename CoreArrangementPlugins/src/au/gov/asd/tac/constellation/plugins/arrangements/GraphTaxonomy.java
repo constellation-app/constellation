@@ -115,11 +115,11 @@ public final class GraphTaxonomy {
     }
 
     public Map<Integer, Set<Integer>> getTaxa() {
-        return taxa;
+        return Collections.unmodifiableMap(taxa);
     }
 
     public Map<Integer, Integer> getNodeToTaxa() {
-        return nodeToTaxa;
+        return Collections.unmodifiableMap(nodeToTaxa);
     }
 
     public int getSingletonKey() {

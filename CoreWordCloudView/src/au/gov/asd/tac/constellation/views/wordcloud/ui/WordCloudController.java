@@ -30,6 +30,7 @@ import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.views.wordcloud.phraseanalysis.PhrasiphyContentPlugin;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
@@ -96,11 +97,11 @@ public class WordCloudController {
     }
 
     public List<String> getVertTextAttributes() {
-        return vertTextAttributes;
+        return Collections.unmodifiableList(vertTextAttributes);
     }
 
     public List<String> getTransTextAttributes() {
-        return transTextAttributes;
+        return Collections.unmodifiableList(transTextAttributes);
     }
     
     public boolean isControllerIntialising() {

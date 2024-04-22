@@ -34,6 +34,7 @@ import au.gov.asd.tac.constellation.views.analyticview.results.FactResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.FactResult.ElementFact;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticTranslatorUtilities;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.SizeVisualisation;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.openide.util.lookup.ServiceProvider;
@@ -73,7 +74,7 @@ public class FactToSizeTranslator extends AbstractSizeTranslator<FactResult, Ele
 
     @Override
     public Map<Integer, Float> getVertexSizes() {
-        return vertexSizes;
+        return Collections.unmodifiableMap(vertexSizes);
     }
 
     @Override
@@ -83,7 +84,7 @@ public class FactToSizeTranslator extends AbstractSizeTranslator<FactResult, Ele
 
     @Override
     public Map<Integer, Float> getTransactionSizes() {
-        return transactionSizes;
+        return Collections.unmodifiableMap(transactionSizes);
     }
 
     @Override

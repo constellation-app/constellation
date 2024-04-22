@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.analyticview.results;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult.ElementScore;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -98,7 +99,7 @@ public class ScoreResult extends AnalyticResult<ElementScore> {
          * @return
          */
         public Map<String, Float> getNamedScores() {
-            return namedScores;
+            return Collections.unmodifiableMap(namedScores);
         }
 
         @Override

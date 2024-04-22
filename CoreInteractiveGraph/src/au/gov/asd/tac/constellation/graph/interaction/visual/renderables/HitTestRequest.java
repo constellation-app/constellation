@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.graph.interaction.visual.renderables;
 
 import au.gov.asd.tac.constellation.graph.interaction.framework.HitState;
+import java.util.Collections;
 import java.util.Queue;
 import java.util.function.Consumer;
 
@@ -56,6 +57,6 @@ public class HitTestRequest {
     }
 
     public Queue<HitState> getNotificationQueue() {
-        return notificationQueue;
+        return (Queue<HitState>) Collections.unmodifiableCollection(notificationQueue);
     }
 }

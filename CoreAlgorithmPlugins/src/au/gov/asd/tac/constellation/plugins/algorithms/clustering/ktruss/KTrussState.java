@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -323,49 +324,49 @@ public class KTrussState {
      * @return the extantKTrusses
      */
     public boolean[] getExtantKTrusses() {
-        return extantKTrusses;
+        return extantKTrusses.clone();
     }
 
     /**
      * @return the kTrussToIndex
      */
     public int[] getkTrussToIndex() {
-        return kTrussToIndex;
+        return kTrussToIndex.clone();
     }
 
     /**
      * @return the indexToKTruss
      */
     public int[] getIndexToKTruss() {
-        return indexToKTruss;
+        return indexToKTruss.clone();
     }
 
     /**
      * @return the nodeToComponent
      */
     public Map<Integer, Integer> getNodeToComponent() {
-        return nodeToComponent;
+        return Collections.unmodifiableMap(nodeToComponent);
     }
 
     /**
      * @return the linkToComponent
      */
     public Map<Integer, Integer> getLinkToComponent() {
-        return linkToComponent;
+        return Collections.unmodifiableMap(linkToComponent);
     }
 
     /**
      * @return the componentTree
      */
     public Map<Integer, Integer> getComponentTree() {
-        return componentTree;
+        return Collections.unmodifiableMap(componentTree);
     }
 
     /**
      * @return the componentSizes
      */
     public Map<Integer, Integer> getComponentSizes() {
-        return componentSizes;
+        return Collections.unmodifiableMap(componentSizes);
     }
 
     /**

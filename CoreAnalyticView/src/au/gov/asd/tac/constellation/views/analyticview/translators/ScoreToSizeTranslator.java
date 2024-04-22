@@ -35,6 +35,7 @@ import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult.ElementScore;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticTranslatorUtilities;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.SizeVisualisation;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.openide.util.lookup.ServiceProvider;
@@ -74,7 +75,7 @@ public class ScoreToSizeTranslator extends AbstractSizeTranslator<ScoreResult, E
 
     @Override
     public Map<Integer, Float> getVertexSizes() {
-        return vertexSizes;
+        return Collections.unmodifiableMap(vertexSizes);
     }
 
     @Override
@@ -84,7 +85,7 @@ public class ScoreToSizeTranslator extends AbstractSizeTranslator<ScoreResult, E
 
     @Override
     public Map<Integer, Float> getTransactionSizes() {
-        return transactionSizes;
+        return Collections.unmodifiableMap(transactionSizes);
     }
 
     @Override

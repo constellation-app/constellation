@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap;
 
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Resizer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -114,7 +115,7 @@ public class PartitionQueue {
     }
 
     public List<NodeBase> getQueue() {
-        return queue;
+        return Collections.unmodifiableList(queue);
     }
 
     public void setQueue(final List<NodeBase> queue) {
