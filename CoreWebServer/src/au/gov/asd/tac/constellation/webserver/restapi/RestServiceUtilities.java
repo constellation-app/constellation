@@ -23,7 +23,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.DoubleNode;
 import com.fasterxml.jackson.databind.node.IntNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -81,7 +80,7 @@ public class RestServiceUtilities {
      *
      * @return A List&lt;Float&gt;, List&lt;Integer&gt;, or List&lt;String&gt;.
      */
-    public static List<?> toList(final ArrayNode array) {
+    public static List<?> toList(final JsonNode array) {
         final int size = array.size();
         List<?> list;
         if (size == 0) {
@@ -124,7 +123,7 @@ public class RestServiceUtilities {
      * @param json An OnjectNode.
      * @param parameters The parameters to be assigned values.
      */
-    public static void parametersFromJson(final ObjectNode json, final PluginParameters parameters) {
+    public static void parametersFromJson(final JsonNode json, final PluginParameters parameters) {
         json.fields().forEachRemaining(entry -> {
             final String parameterName = entry.getKey();
             if (parameters.hasParameter(parameterName)) {

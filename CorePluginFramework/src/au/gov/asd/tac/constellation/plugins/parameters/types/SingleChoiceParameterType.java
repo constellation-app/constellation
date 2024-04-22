@@ -341,7 +341,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
          * @param options A list of Strings to set the collection of options
          * from.
          */
-        public void setOptions(final List<String> options) {
+        public void setOptions(final Iterable<String> options) {
             this.options.clear();
             for (final String option : options) {
                 final StringParameterValue doOption = new StringParameterValue(option);

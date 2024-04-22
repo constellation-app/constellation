@@ -17,9 +17,9 @@ package au.gov.asd.tac.constellation.utilities.text;
 
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.StringJoiner;
 import java.util.regex.Pattern;
 
@@ -236,7 +236,7 @@ public class StringUtilities {
      * @param toSplitOn the characters to split on.
      * @return the labels string split into individual labels.
      */
-    public static List<String> splitLabelsWithEscapeCharacters(final String labelsString, final Set<Character> toSplitOn) {
+    public static List<String> splitLabelsWithEscapeCharacters(final String labelsString, final Collection<Character> toSplitOn) {
         // Split up the components of the graph labels and decorators string by
         // toSplitOn, checking for escaped toSplitOns in attribute names.
         final List<String> decoratorsAndLabelsComponentsList = new ArrayList<>();

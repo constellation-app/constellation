@@ -23,7 +23,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
-import java.util.List;
 import java.util.TimeZone;
 
 /**
@@ -395,7 +394,7 @@ public final class IoUtilities {
      *
      * @return The strings joined using the separator character.
      */
-    public static String join(final List<String> a, final char separator) {
+    public static String join(final Iterable<String> a, final char separator) {
         final StringBuilder buf = new StringBuilder();
         for (final String s : a) {
             if (buf.length() > 0) {
