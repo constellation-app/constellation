@@ -279,7 +279,9 @@ public class SVGGraphBuilder {
      */
     private void postBuild(){
         access.endUpdate();
-        threadPool.shutdown();
+        if (threadPool != null){
+            threadPool.shutdown();
+        }
     }
     
     /**

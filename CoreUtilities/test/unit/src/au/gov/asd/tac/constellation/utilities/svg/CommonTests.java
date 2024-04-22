@@ -37,4 +37,12 @@ public class CommonTests {
         assertTrue(graph.getAllChildren().contains(header));
         assertFalse(graph.getAllChildren().contains(node0));
     }
+    
+    public static String getString(SVGData svgObject) {
+        StringBuilder sb = new StringBuilder();
+        for (String line : svgObject.toLines()){
+            sb.append(line);
+        }
+        return sb.toString();
+    }
 }

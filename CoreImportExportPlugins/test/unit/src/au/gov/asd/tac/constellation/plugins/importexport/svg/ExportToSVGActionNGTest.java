@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
 import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import java.awt.event.ActionEvent;
 import static org.mockito.ArgumentMatchers.any;
@@ -42,7 +43,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
- *
+ * 
  * @author capricornunicorn123
  */
 public class ExportToSVGActionNGTest {
@@ -91,6 +92,7 @@ public class ExportToSVGActionNGTest {
         doReturn(pluginExecutionMock).when(pluginExecutionMock).withParameter(any(String.class), any(String.class));
         doReturn(pluginExecutionMock).when(pluginExecutionMock).withParameter(any(String.class), anyBoolean());
         doReturn(pluginExecutionMock).when(pluginExecutionMock).withParameter(any(String.class), any(ConstellationColor.class));
+        doReturn(pluginExecutionMock).when(pluginExecutionMock).withParameter(any(String.class), any(Integer.class));
         doReturn(pluginExecutionMock).when(pluginExecutionMock).interactively(anyBoolean(), any(String.class));
         doReturn(graphMock).when(contextMock).getGraph();
         doReturn(readableGraphMock).when(graphMock).getReadableGraph();
