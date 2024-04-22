@@ -98,12 +98,10 @@ public class StringUtilities {
      * <p>
      * It is assumed that the escape character is "\".
      *
-     * @param escapedString The string to unescape.
-     * @param characters The characters to be unescaped.
      *
      * @return An unescaped String.
      */
-    public static String unescape(final String escapedString, final String characters) {
+    public static String unescape(final String escapedString) {
         if (escapedString == null) {
             return null;
         }
@@ -157,13 +155,13 @@ public class StringUtilities {
                 } else if (character.equals(ESCAPE_CHARACTER)) {
                     escaped = true;
                 } else if (delimiter.contains(character)) {
-                    splits.add(unescape(escapedString.substring(part0, i), delimiter));
+                    splits.add(unescape(escapedString.substring(part0, i)));
                     part0 = i + 1;
                 }
             }
 
             if (part0 < escapedString.length()) {
-                splits.add(unescape(escapedString.substring(part0, escapedString.length()), delimiter));
+                splits.add(unescape(escapedString.substring(part0, escapedString.length())));
             }
         }
 
