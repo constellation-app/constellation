@@ -691,8 +691,7 @@ public class IconDataNGTest {
         assertEquals(result1, expResult1);
 
         // When data is anything but null.
-        final Random random = new Random();
-        final int bytes = random.nextInt(50) + 1;
+        final int bytes = 25;
 
         doReturn(new byte[bytes]).when(instance).createData(ConstellationIcon.DEFAULT_ICON_SIZE, null);
         instance.getData();
