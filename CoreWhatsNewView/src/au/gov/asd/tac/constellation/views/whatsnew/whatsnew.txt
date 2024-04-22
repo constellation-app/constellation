@@ -1,6 +1,12 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2024-03-08 Exporting to SVG
+
+<p>Graphs can now be exported to an SVG image format.</p>
+<p>Large graphs can be exported in under a minuet on performant devices</p>
+<p>A variety of parameters are available to customize the export including the number fo allocated processors, the format of the exported SVG file and the export perspective.</p>
+
 == 2024-03-08 More Ways to Zoom In and Out
 <p>Keyboard shortcuts have been added for zooming in and out of the graph view (CTRL-ALT-UP and CTRL-ALT-DOWN respectively).</p>
 <p>Toolbar buttons have been added for zooming in and out of the graph view.</p>
