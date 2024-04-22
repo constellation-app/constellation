@@ -33,7 +33,6 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.security.MessageDigest;
@@ -279,7 +278,7 @@ public class WebServer {
         downloadPythonClientToDir(new File(getNotebookDir()));
     }
     
-    private static void downloadPythonClientToDir(final File directory) {
+    public static void downloadPythonClientToDir(final File directory) {
         final File download = new File(directory, CONSTELLATION_CLIENT);
         
         final boolean doDownload = !download.exists() || !equalScripts(download);
