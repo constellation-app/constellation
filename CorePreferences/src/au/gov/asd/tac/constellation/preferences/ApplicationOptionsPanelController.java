@@ -95,7 +95,7 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
                 final ApplicationOptionsPanel applicationOptionsPanel = getPanel();
 
                 prefs.put(ApplicationPreferenceKeys.USER_DIR, applicationOptionsPanel.getUserDirectory());
-                prefs.putBoolean(ApplicationPreferenceKeys.AUTOSAVE_ENABLED, applicationOptionsPanel.isAustosaveEnabled());
+                prefs.putBoolean(ApplicationPreferenceKeys.AUTOSAVE_ENABLED, applicationOptionsPanel.isAutosaveEnabled());
                 prefs.putInt(ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE, applicationOptionsPanel.getAustosaveFrequency());
                 prefs.putBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, applicationOptionsPanel.isWelcomeOnStartupSelected());
                 prefs.putBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, applicationOptionsPanel.isWhatsNewOnStartupSelected());
@@ -135,7 +135,7 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
         final ApplicationOptionsPanel applicationOptionsPanel = getPanel();
 
         return !(applicationOptionsPanel.getUserDirectory().equals(prefs.get(ApplicationPreferenceKeys.USER_DIR, ApplicationPreferenceKeys.USER_DIR_DEFAULT))
-                && applicationOptionsPanel.isAustosaveEnabled() == prefs.getBoolean(ApplicationPreferenceKeys.AUTOSAVE_ENABLED, ApplicationPreferenceKeys.AUTOSAVE_ENABLED_DEFAULT)
+                && applicationOptionsPanel.isAutosaveEnabled() == prefs.getBoolean(ApplicationPreferenceKeys.AUTOSAVE_ENABLED, ApplicationPreferenceKeys.AUTOSAVE_ENABLED_DEFAULT)
                 && applicationOptionsPanel.getAustosaveFrequency() == prefs.getInt(ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE, ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE_DEFAULT)
                 && applicationOptionsPanel.isWelcomeOnStartupSelected() == prefs.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, ApplicationPreferenceKeys.WELCOME_ON_STARTUP_DEFAULT)
                 && applicationOptionsPanel.isWhatsNewOnStartupSelected() == prefs.getBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP_DEFAULT)

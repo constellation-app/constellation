@@ -62,7 +62,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
         userDirectoryText.setText(userDirectory);
     }
 
-    public boolean isAustosaveEnabled() {
+    public boolean isAutosaveEnabled() {
         return autosaveCheckBox.isSelected();
     }
 
