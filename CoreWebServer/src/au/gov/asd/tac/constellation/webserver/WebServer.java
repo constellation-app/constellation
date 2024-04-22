@@ -139,23 +139,11 @@ public class WebServer {
                 // Make sure the file is owner read/write.
                 final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
                 final File restFile = new File(userDir, REST_FILE);
-                if (restFile.exists()) {
-                    try {
-                        Files.delete(Path.of(restFile.getPath()));
-                    } catch (IOException e) {
-                        LOGGER.log(Level.WARNING, "{0}", e);
-                    }
-                }
-
+                cleanupRest(restFile, userDir);
+                
                 // Also put rest file in notebook directory
                 final File restFileNotebook = new File(getNotebookDir(), REST_FILE);
-                if (restFileNotebook.exists()) {
-                    try {
-                        Files.delete(Path.of(restFileNotebook.getPath()));
-                    } catch (IOException e) {
-                        LOGGER.log(Level.WARNING, "{0}", e);
-                    }
-                }
+                cleanupRest(restFileNotebook, getNotebookDir());
 
                 // On Posix, we can use stricter file permissions.
                 // On Windows, we just create the new file.
@@ -238,6 +226,16 @@ public class WebServer {
         }
 
         return port;
+    }
+
+    static void cleanupRest(File restFile, String directory) {
+        if (Files.exists(Path.of(directory).resolve(REST_FILE))) {
+            try {
+                Files.delete(Path.of(restFile.getPath()));
+            } catch (IOException e) {
+                LOGGER.log(Level.WARNING, "Error deleting existing rest file in user directory");
+            }
+        }
     }
 
     static File getScriptDir(final boolean mkdir) {

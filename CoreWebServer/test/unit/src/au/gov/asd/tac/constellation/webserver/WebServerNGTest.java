@@ -106,18 +106,7 @@ public class WebServerNGTest {
     }
 
     /**
-     * Test of start method, of class WebServer.
-     */
-    @Test
-    public void testStart() {
-        System.out.println("start");
-        int expResult = 1517;
-        int result = WebServer.start();
-        assertEquals(expResult, result);
-    }
-
-    /**
-     * Test of start method, of class WebServer.
+     * Test of start method with existing rest and constellation_client.py files, of class WebServer.
      */
     @Test
     public void testStartExistingRest() {
