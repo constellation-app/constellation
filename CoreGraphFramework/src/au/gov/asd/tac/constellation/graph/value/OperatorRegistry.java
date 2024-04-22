@@ -26,12 +26,10 @@ import java.util.function.Function;
  */
 public class OperatorRegistry {
 
-    private final String name;
     private final List<FunctionRecord<?, ?>> functions = new ArrayList<>();
     private final List<BiFunctionRecord<?, ?, ?>> biFunctions = new ArrayList<>();
 
     public OperatorRegistry(final String name) {
-        this.name = name;
     }
 
     public final <P, R> OperatorRegistry register(final Class<P> parameterClass, final Class<R> resultClass, final Function<? super P, ? extends R> function) {

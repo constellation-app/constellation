@@ -34,7 +34,7 @@ public class LogarithmicAxis extends ValueAxis<Number> {
 
     private final DoubleProperty currentUpperBound = new SimpleDoubleProperty();
 //    private final ChartLayoutAnimator animator = new ChartLayoutAnimator(this);
-    private Object currentAnimationID;
+//    private Object currentAnimationID;
 
     /**
      * Default constructor. Creates an auto-ranging logarithmic axis.

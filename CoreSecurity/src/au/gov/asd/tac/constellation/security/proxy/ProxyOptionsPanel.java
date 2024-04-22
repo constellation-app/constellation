@@ -28,10 +28,7 @@ import javax.swing.event.DocumentListener;
  */
 public class ProxyOptionsPanel extends javax.swing.JPanel {
 
-    private final ProxyOptionsPanelController controller;
-
     public ProxyOptionsPanel(final ProxyOptionsPanelController controller) {
-        this.controller = controller;
         initComponents();
 
         defaultProxyText.getDocument().addDocumentListener(new DocumentListener() {

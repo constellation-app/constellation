@@ -48,8 +48,6 @@ import au.gov.asd.tac.constellation.utilities.visual.AxisConstants;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess.ConnectionDirection;
 import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import java.time.ZonedDateTime;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Builder that generates the the output SVG file.
@@ -65,7 +63,6 @@ import java.util.logging.Logger;
 public class SVGGraphBuilder {
     
     // Variables specified when the Builder class is instantiated
-    private static final Logger LOGGER = Logger.getLogger(SVGGraphBuilder.class.getName());
     private final Matrix44f modelViewProjectionMatrix = new Matrix44f();
     private final VisualManager visualManager;
     private final GraphVisualAccess access;

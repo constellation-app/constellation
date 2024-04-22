@@ -45,7 +45,7 @@ public class DateAxis extends Axis<Date> {
     private final LongProperty currentLowerBound = new SimpleLongProperty(this, "currentLowerBound");
     private final LongProperty currentUpperBound = new SimpleLongProperty(this, "currentUpperBound");
 //    private ChartLayoutAnimator animator = new ChartLayoutAnimator(this);
-    private Object currentAnimationID;
+//    private Object currentAnimationID;
     private Interval actualInterval = Interval.DECADE;
 
     /**

@@ -37,10 +37,7 @@ import org.openide.util.NbBundle.Messages;
 @Messages("CTL_AnimateStopAction=Stop Animating")
 public final class AnimateStopAction implements ActionListener {
 
-    private final GraphNode context;
-
     public AnimateStopAction(final GraphNode context) {
-        this.context = context;
     }
 
     @Override

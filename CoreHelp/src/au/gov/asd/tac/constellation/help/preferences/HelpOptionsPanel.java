@@ -22,10 +22,7 @@ package au.gov.asd.tac.constellation.help.preferences;
  */
 public class HelpOptionsPanel extends javax.swing.JPanel {
 
-    private final HelpOptionsPanelController controller;
-
     public HelpOptionsPanel(final HelpOptionsPanelController controller) {
-        this.controller = controller;
         initComponents();
 
     }
