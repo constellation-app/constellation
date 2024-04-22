@@ -553,12 +553,12 @@ public final class GlyphManagerBI implements GlyphManager {
 
     @Override
     public float getWidthScalingFactor() {
-        return textureBuffer.width / maxFontHeight;
+        return (float) textureBuffer.width / maxFontHeight;
     }
 
     @Override
     public float getHeightScalingFactor() {
-        return textureBuffer.height / maxFontHeight;
+        return (float) textureBuffer.height / maxFontHeight;
     }
 
     BufferedImage getTextureBuffer() {
