@@ -39,7 +39,7 @@ public class StarGraphBuilder extends GraphBuilder {
     }
 
     public static StarGraphBuilder addStar(final int numPendants, final StarDirection direction) {
-        return addStar(new StoreGraph(), PENDANTS_DEFAULT, DIRECTION_DEFAULT);
+        return addStar(new StoreGraph(), numPendants, DIRECTION_DEFAULT);
     }
 
     public static StarGraphBuilder addStar(final GraphWriteMethods graph, final int numPendants, final StarDirection direction) {

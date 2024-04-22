@@ -123,12 +123,7 @@ public class KTrussState {
         interactive = prevState.interactive;
     }
 
-    public KTrussState(final long modificationCounter, final long strucModificationCount, final int currentK, final int highestK, 
-            final boolean excludedElementsDimmed, final int displayOptionToggles, final boolean[] extantKTrusses, final int[] kTrussToIndex, 
-            final int[] indexToKTruss, final Map<Integer, Integer> nodeToComponent, final Map<Integer, Integer> linkToComponent, 
-            final Map<Integer, Integer> componentTree, final Map<Integer, Integer> componentSizes, final boolean isNestedTrussesVisible, 
-            final int highestComponentNum, final int totalVerts, final int totalVertsInTrusses, final boolean drawAllComponents, 
-            final boolean nestedTrussesColored, final boolean interactive) {
+    public KTrussState(final long modificationCounter, final long strucModificationCount, final int currentK, final int highestK, final boolean excludedElementsDimmed, final int displayOptionToggles, final boolean[] extantKTrusses, final int[] kTrussToIndex, final int[] indexToKTruss, final Map<Integer, Integer> nodeToComponent, final Map<Integer, Integer> linkToComponent, final Map<Integer, Integer> componentTree, final Map<Integer, Integer> componentSizes, final boolean isNestedTrussesVisible, final int highestComponentNum, final int totalVerts, final int totalVertsInTrusses, final boolean nestedTrussesColored, final boolean interactive) {
         this.modificationCounter = modificationCounter;
         this.strucModificationCount = strucModificationCount;
         this.currentK = currentK;

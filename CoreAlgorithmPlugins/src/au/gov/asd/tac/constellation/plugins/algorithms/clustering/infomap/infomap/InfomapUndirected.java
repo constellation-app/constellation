@@ -132,7 +132,7 @@ public class InfomapUndirected extends InfomapGreedy {
 
         @Override
         public NodeBase createNode(final String name, final double flow, final double teleportWeight) {
-            final FlowUndirected data = new FlowUndirected(flow, teleportWeight);
+            final FlowUndirected data = new FlowUndirected(flow);
             return new Node(name, data);
         }
 

@@ -217,7 +217,7 @@ public class BinCollection {
         }
     }
 
-    public void saveBinsToClipboard(final GraphReadMethods rg) {
+    public void saveBinsToClipboard() {
         final StringBuilder buf = new StringBuilder();
         for (final Bin bin : bins) {
             final String label = bin.getLabel() != null ? bin.getLabel() : HistogramDisplay.NO_VALUE;

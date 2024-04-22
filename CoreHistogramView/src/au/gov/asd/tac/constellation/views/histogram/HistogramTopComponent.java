@@ -761,7 +761,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
 
         @Override
         protected void read(final GraphReadMethods rg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-            currentBinCollection.saveBinsToClipboard(rg);
+            currentBinCollection.saveBinsToClipboard();
         }
     }
 

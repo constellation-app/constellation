@@ -24,7 +24,6 @@ public class HelpOptionsPanel extends javax.swing.JPanel {
 
     public HelpOptionsPanel(final HelpOptionsPanelController controller) {
         initComponents();
-
     }
 
     public boolean isOnlineHelpSelected() {

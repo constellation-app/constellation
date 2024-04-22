@@ -121,11 +121,10 @@ public class PlaceholderUtilities {
         } catch (ProcessingException ex) {
             throw new PluginException(PluginNotificationLevel.ERROR, ex.getMessage());
         }
-        return collapsePlaceholders(graph, record, rowProcessor, dominanceComparator, cleanupGraph, debug);
+        return collapsePlaceholders(graph, rowProcessor, dominanceComparator, cleanupGraph, debug);
     }
 
-    public static StoreGraph collapsePlaceholders(final StoreGraphRecordStore graph, final Record record, final DatumProcessor<Record, ?> rowProcessor,
-            final Comparator<GraphVertex> dominanceComparator, final boolean cleanupGraph, final boolean debug) throws PluginException, InterruptedException {
+    public static StoreGraph collapsePlaceholders(final StoreGraphRecordStore graph, final DatumProcessor<Record, ?> rowProcessor, final Comparator<GraphVertex> dominanceComparator, final boolean cleanupGraph, final boolean debug) throws PluginException, InterruptedException {
         graph.complete();
         graph.validateKeys();
 

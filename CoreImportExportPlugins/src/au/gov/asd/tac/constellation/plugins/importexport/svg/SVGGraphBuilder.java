@@ -673,7 +673,7 @@ public class SVGGraphBuilder {
                     
                     // Create the connection labels if required
                     if (showConnectionLabels) {
-                        addConnectionLabels(svgLabels, highEndPoint, lowEndPoint, connectionIndex, access.getLinkConnectionCount(linkIndex), highIndex, lowIndex);
+                        addConnectionLabels(svgLabels, highEndPoint, lowEndPoint, connectionIndex, access.getLinkConnectionCount(linkIndex));
                     } else {
                         SVGObjectConstants.LABELS.removeFrom(svgLink);
                     }
@@ -696,10 +696,8 @@ public class SVGGraphBuilder {
      * @param lowPosition
      * @param connectionIndex
      * @param connectionCount 
-     * @param highIndex
-     * @param lowIndex
      */
-    private void addConnectionLabels(final SVGObject svgLabels, final Vector3f highPosition, final Vector3f lowPosition, final int connectionIndex, final int connectionCount, final int highIndex, final int lowIndex) {
+    private void addConnectionLabels(final SVGObject svgLabels, final Vector3f highPosition, final Vector3f lowPosition, final int connectionIndex, final int connectionCount) {
         
         // Determine how many segments along the connection length are needed.
         final int totalSegments;

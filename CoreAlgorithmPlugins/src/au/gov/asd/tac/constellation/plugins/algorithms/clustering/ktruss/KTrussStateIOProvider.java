@@ -145,7 +145,7 @@ public class KTrussStateIOProvider extends AbstractGraphIOProvider {
                 interactive = jnode.get(INTERACTIVE).asBoolean();
             }
 
-            final KTrussState state = new KTrussState(modificationCounter, strucModificationCount, currentK, highestK, excludedElementsDimmed, displayOptionToggles, extantKTrusses, kTrussToIndex, indexToKTruss, nodeToComponent, linkToComponent, componentTree, componentSizes, isNestedTrussesVisible, highestComponentNum, totalVerts, totalVertsInTrusses, drawAllComponents, nestedTrussesColored, interactive);
+            final KTrussState state = new KTrussState(modificationCounter, strucModificationCount, currentK, highestK, excludedElementsDimmed, displayOptionToggles, extantKTrusses, kTrussToIndex, indexToKTruss, nodeToComponent, linkToComponent, componentTree, componentSizes, isNestedTrussesVisible, highestComponentNum, totalVerts, totalVertsInTrusses, nestedTrussesColored, interactive);
 
             graph.setObjectValue(attributeId, elementId, state);
         }
