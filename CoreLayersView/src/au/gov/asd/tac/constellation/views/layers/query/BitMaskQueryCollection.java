@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttributeUtilit
 import au.gov.asd.tac.constellation.graph.value.values.IntValue;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -262,7 +263,7 @@ public class BitMaskQueryCollection {
                 }
             }
         }
-        attributes.removeIf(item -> item == null);
+        attributes.removeIf(Objects::isNull);
         
         return attributes;
     }
