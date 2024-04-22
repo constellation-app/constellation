@@ -107,11 +107,11 @@ public final class GlyphManagerBI implements GlyphManager {
      */
     private static class LigatureContext {
 
-        private GlyphRectangle[] glyphRectangles;
-        private int left;
-        private int right;
-        private int top;
-        private int bottom;
+        private final GlyphRectangle[] glyphRectangles;
+        private final int left;
+        private final int right;
+        private final int top;
+        private final int bottom;
 
         public LigatureContext(final GlyphRectangle[] glyphRectangles, final int left, final int right, final int top, final int bottom) {
             this.glyphRectangles = glyphRectangles;
@@ -126,7 +126,7 @@ public final class GlyphManagerBI implements GlyphManager {
      * Cache the bulk of the work renderTextAsLigature does to greatly improve
      * performance.
      */
-    private static Map<String, LigatureContext> cache = new HashMap<>();;
+    private static Map<String, LigatureContext> cache = new HashMap<>();
 
     /**
      * A default no-op GlyphStream to use when the user specifies null.
