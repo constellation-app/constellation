@@ -64,7 +64,7 @@ public class IONGTest {
      */
     @Test
     public void saveLoadNonNullDefault() {
-        final String name = UUID.randomUUID().toString();
+        final String name = "0000-00-00-00-000000";
         File graphFile = null;
         try {
             graphFile = File.createTempFile(name, ".star");
