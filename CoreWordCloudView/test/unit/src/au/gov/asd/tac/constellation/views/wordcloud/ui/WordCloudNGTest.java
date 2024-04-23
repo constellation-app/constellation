@@ -178,7 +178,7 @@ public class WordCloudNGTest {
         final boolean val = false;
         final WordCloud instance = new WordCloud(wordsToHashes, hashedWordSets, elementType, wordListWithSizes, wordSignificances, currentSignificance, queryInfoString, modCount, selectedWords, isUnionSelect, isSizeSorted);
         instance.setIsSizeSorted(val);
-        final boolean result = instance.getIsSizeSorted();
+        final boolean result = instance.isSizeSorted();
         assertEquals(val, result);
     }
 
