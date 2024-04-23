@@ -229,8 +229,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     private long graphModificationCount;
 
     // Sidebar actions.
-    private ContractAllCompositesAction contractCompositesAction;
-    private ExpandAllCompositesAction expandCompositesAction;
     private DrawNodesAction drawNodesAction;
     private DrawConnectionsAction drawConnectionsAction;
     private DrawNodeLabelsAction drawNodeLabelsAction;
@@ -310,8 +308,8 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         // NetBeans creates a single instance of an action and uses it globally, which doesn't do us any good,
         // because we want to have different toggle states on different graphs, for instance.
         // Therefore, we'll ignore NetBeans and create our own per-graph action instances.
-        expandCompositesAction = new ExpandAllCompositesAction(graphNode);
-        contractCompositesAction = new ContractAllCompositesAction(graphNode);
+        final ExpandAllCompositesAction expandCompositesAction = new ExpandAllCompositesAction(graphNode);
+        final ContractAllCompositesAction contractCompositesAction = new ContractAllCompositesAction(graphNode);
         drawNodesAction = new DrawNodesAction(graphNode);
         drawConnectionsAction = new DrawConnectionsAction(graphNode);
         drawNodeLabelsAction = new DrawNodeLabelsAction(graphNode);

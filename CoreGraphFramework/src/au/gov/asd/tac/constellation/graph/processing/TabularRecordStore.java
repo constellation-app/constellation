@@ -98,16 +98,16 @@ public class TabularRecordStore implements RecordStore {
      * @param values An array of arrays of {@link Object} representing a set of
      * values from this TabularRecordStore. This data structure is such that
      * arrays are minimally created, effectively conserving memory.
-     * @param record An integer value representing the id of the record you wish
+     * @param newRecord An integer value representing the id of the record you wish
      * to retrieve a value for.
      * @return True is the requested value exists, otherwise false.
      */
-    protected static boolean hasValue(final Object[][] values, final int record) {
-        if (values == null || values.length <= record >>> BATCH_BITS) {
+    protected static boolean hasValue(final Object[][] values, final int newRecord) {
+        if (values == null || values.length <= newRecord >>> BATCH_BITS) {
             return false;
         }
-        final Object[] batch = values[record >>> BATCH_BITS];
-        return batch != null && batch[record & BATCH_MASK] != null;
+        final Object[] batch = values[newRecord >>> BATCH_BITS];
+        return batch != null && batch[newRecord & BATCH_MASK] != null;
     }
 
     /**
@@ -117,16 +117,16 @@ public class TabularRecordStore implements RecordStore {
      * @param values An array of arrays of {@link Object} representing a set of
      * values from this TabularRecordStore. This data structure is such that
      * arrays are minimally created, effectively conserving memory.
-     * @param record An integer value representing the id of the record you wish
+     * @param newRecord An integer value representing the id of the record you wish
      * to retrieve a value for.
      * @return A {@link String} object representing the requested value.
      */
-    protected static String getValue(final Object[][] values, final int record) {
-        if (values == null || values.length <= record >>> BATCH_BITS) {
+    protected static String getValue(final Object[][] values, final int newRecord) {
+        if (values == null || values.length <= newRecord >>> BATCH_BITS) {
             return null;
         }
-        final Object[] batch = values[record >>> BATCH_BITS];
-        final Object value = batch == null ? null : batch[record & BATCH_MASK];
+        final Object[] batch = values[newRecord >>> BATCH_BITS];
+        final Object value = batch == null ? null : batch[newRecord & BATCH_MASK];
         return value == NULL ? null : (String) value;
     }
 
@@ -141,10 +141,10 @@ public class TabularRecordStore implements RecordStore {
 
     @Override
     public void add(final RecordStore recordStore) {
-        for (int record = 0; record < recordStore.size(); record++) {
+        for (int records = 0; records < recordStore.size(); records++) {
             final int newRecord = add();
             for (final String key : recordStore.keys()) {
-                final String value = recordStore.get(record, key);
+                final String value = recordStore.get(records, key);
                 if (value != null) {
                     set(newRecord, key, value);
                 }
@@ -182,8 +182,8 @@ public class TabularRecordStore implements RecordStore {
     }
 
     @Override
-    public boolean hasValue(final int record, final String key) {
-        return TabularRecordStore.hasValue(getColumn(key), record);
+    public boolean hasValue(final int newRecord, final String key) {
+        return TabularRecordStore.hasValue(getColumn(key), newRecord);
     }
 
     @Override
@@ -192,8 +192,8 @@ public class TabularRecordStore implements RecordStore {
     }
 
     @Override
-    public String get(final int record, final String key) {
-        return TabularRecordStore.getValue(getColumn(key), record);
+    public String get(final int newRecord, final String key) {
+        return TabularRecordStore.getValue(getColumn(key), newRecord);
     }
 
     @Override
@@ -202,12 +202,12 @@ public class TabularRecordStore implements RecordStore {
     }
 
     @Override
-    public void set(final int record, String key, String value) {
+    public void set(final int newRecord, String key, String value) {
         if (key == null) {
             throw new IllegalArgumentException("Key cannot be null.");
         }
-        if (record < 0 || record >= size) {
-            throw new IllegalArgumentException("Invalid record: " + record);
+        if (newRecord < 0 || newRecord >= size) {
+            throw new IllegalArgumentException("Invalid record: " + newRecord);
         }
 
         if (cache != null) {
@@ -236,16 +236,16 @@ public class TabularRecordStore implements RecordStore {
             createColumn(key, values);
 
             // If there is not enough capacity to hold this record
-        } else if (values.length <= record >>> BATCH_BITS) {
+        } else if (values.length <= newRecord >>> BATCH_BITS) {
             values = Arrays.copyOf(values, capacity >>> BATCH_BITS);
             createColumn(key, values);
         }
 
-        Object[] batch = values[record >>> BATCH_BITS];
+        Object[] batch = values[newRecord >>> BATCH_BITS];
         if (batch == null) {
-            values[record >>> BATCH_BITS] = batch = new Object[BATCH_SIZE];
+            values[newRecord >>> BATCH_BITS] = batch = new Object[BATCH_SIZE];
         }
-        batch[record & BATCH_MASK] = value == null ? NULL : value;
+        batch[newRecord & BATCH_MASK] = value == null ? NULL : value;
     }
 
     @Override
@@ -271,8 +271,8 @@ public class TabularRecordStore implements RecordStore {
     public List<String> getAll(final String key) {
         final Object[][] values = getColumn(key);
         final List<String> result = new ArrayList<>(size);
-        for (int record = 0; record < size; record++) {
-            result.add(TabularRecordStore.getValue(values, record));
+        for (int records = 0; records < size; records++) {
+            result.add(TabularRecordStore.getValue(values, records));
         }
         return result;
     }
@@ -290,10 +290,10 @@ public class TabularRecordStore implements RecordStore {
     @Override
     public String toStringVerbose() {
         final StringBuilder out = new StringBuilder();
-        for (int record = 0; record < size; record++) {
+        for (int newRecord = 0; newRecord < size; newRecord++) {
             boolean first = true;
             for (final Entry<String, Object[][]> e : records.entrySet()) {
-                if (TabularRecordStore.hasValue(e.getValue(), record)) {
+                if (TabularRecordStore.hasValue(e.getValue(), newRecord)) {
                     if (!first) {
                         out.append(", ");
                     } else {
@@ -301,7 +301,7 @@ public class TabularRecordStore implements RecordStore {
                     }
                     out.append(e.getKey());
                     out.append(" = ");
-                    out.append(TabularRecordStore.getValue(e.getValue(), record));
+                    out.append(TabularRecordStore.getValue(e.getValue(), newRecord));
                 }
             }
             out.append('\n');
