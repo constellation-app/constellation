@@ -39,6 +39,7 @@ import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
+import au.gov.asd.tac.constellation.utilities.gui.field.FileInputField.FileInputKind;
 import au.gov.asd.tac.constellation.utilities.visual.AxisConstants;
 import java.io.File;
 import java.io.FileWriter;
@@ -84,7 +85,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         final PluginParameter<FileParameterValue> fnamParam = FileParameterType.build(FILE_NAME_PARAMETER_ID);
         fnamParam.setName("File Location");
         fnamParam.setDescription("File location and name for export");
-        FileParameterType.setKind(fnamParam, FileParameterType.FileParameterKind.SAVE);
+        FileParameterType.setKind(fnamParam, FileInputKind.SAVE);
         FileParameterType.setFileFilters(fnamParam, new FileChooser.ExtensionFilter("SVG file", FileExtensionConstants.SVG));
         fnamParam.setRequired(true);
         parameters.addParameter(fnamParam);

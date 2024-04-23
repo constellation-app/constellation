@@ -106,7 +106,7 @@ public class ConstellationInputField extends StackPane {
     final Color buttonColor = Color.color(34/255D, 96/255D, 168/255D);
    
     public ConstellationInputField(){
-        this(ConstellationInputFieldLayoutConstants.INPUT, TextType.SINGLELINE);
+        throw new UnsupportedOperationException();
     }
     
     public ConstellationInputField(final ConstellationInputFieldLayoutConstants layout, final TextType type) {
@@ -379,6 +379,18 @@ public class ConstellationInputField extends StackPane {
 
     public IndexRange getSelection() {
         return this.field.getSelection();
+    }
+    
+    public void setWrapText(boolean wrapText) {
+        if (this.field instanceof TextArea textAreaField){
+            textAreaField.setWrapText(wrapText);
+        }
+    }
+
+    public void setPrefRowCount(Integer suggestedHeight) {
+               if (this.field instanceof TextArea textAreaField){
+            textAreaField.setPrefRowCount(suggestedHeight);
+        }
     }
     
     public enum ConstellationInputFieldLayoutConstants {

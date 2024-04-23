@@ -51,6 +51,7 @@ import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape.GeometryType;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.gui.field.FileInputField.FileInputKind;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -115,7 +116,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
         outputParameter.setName("Output File");
         outputParameter.setDescription("The name of the output file");
         outputParameter.setRequired(true);
-        FileParameterType.setKind(outputParameter, FileParameterType.FileParameterKind.SAVE);
+        FileParameterType.setKind(outputParameter, FileInputKind.SAVE);
         FileParameterType.setFileFilters(outputParameter, getExportType());
         parameters.addParameter(outputParameter);
 

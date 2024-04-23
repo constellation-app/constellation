@@ -18,9 +18,11 @@ package au.gov.asd.tac.constellation.plugins.parameters.types;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
+import au.gov.asd.tac.constellation.utilities.gui.field.FileInputField.FileInputKind;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -95,7 +97,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
      * @param kind A {@link FileParameterKind} constant to set for the given
      * parameter.
      */
-    public static void setKind(final PluginParameter<FileParameterValue> parameter, final FileParameterKind kind) {
+    public static void setKind(final PluginParameter<FileParameterValue> parameter, final FileInputKind kind) {
         parameter.getParameterValue().setKind(kind);
     }
 
@@ -105,7 +107,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
      * @param parameter A {@link PluginParameter} of this type.
      * @return The {@link FileParameterKind} for the given parameter.
      */
-    public static FileParameterKind getKind(final PluginParameter<FileParameterValue> parameter) {
+    public static FileInputKind getKind(final PluginParameter<FileParameterValue> parameter) {
         return parameter.getParameterValue().getKind();
     }
 
@@ -216,7 +218,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
     public static class FileParameterValue extends ParameterValue {
 
         private final List<String> files;
-        private FileParameterKind kind;
+        private FileInputKind kind;
         private ExtensionFilter filter;
         private boolean acceptAllFileFilterUsed;
         
@@ -226,7 +228,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
          */
         public FileParameterValue() {
             files = new ArrayList<>();
-            kind = FileParameterKind.OPEN_MULTIPLE; // backward-compatible default.
+            kind = FileInputKind.OPEN_MULTIPLE; // backward-compatible default.
             filter = null;
             acceptAllFileFilterUsed = false;
         }
@@ -241,7 +243,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
         public FileParameterValue(final List<String> files) {
             this.files = new ArrayList<>();
             this.files.addAll(files);
-            kind = FileParameterKind.OPEN_MULTIPLE; // backward-compatible default.
+            kind = FileInputKind.OPEN_MULTIPLE; // backward-compatible default.
             filter = null;
             acceptAllFileFilterUsed = false;
         }
@@ -298,7 +300,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
          * @return A {@link FileParameterKind} constant indicating the kind of
          * file selection.
          */
-        public FileParameterKind getKind() {
+        public FileInputKind getKind() {
             return kind;
         }
 
@@ -308,7 +310,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
          * @param kind The {@link FileParameterKind} constant indicating the
          * kind of file selection.
          */
-        public void setKind(final FileParameterKind kind) {
+        public void setKind(final FileInputKind kind) {
             this.kind = kind;
         }
 
@@ -350,8 +352,13 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
 
         @Override
         public String validateString(final String s) {
-            final File validationFile = new File(s);
-            return (validationFile.isDirectory() || (validationFile.getParentFile() != null && validationFile.getParentFile().exists())) ? null : "The specified file path doe not contain valid directories";
+            final String[] fileStrings = s.split("\n");
+            final boolean filesValid = Arrays.stream(fileStrings).allMatch(fileString ->{
+                final File validationFile = new File(fileString);
+                return (validationFile.isDirectory() || (validationFile.getParentFile() != null && validationFile.getParentFile().exists()));
+            });
+            
+            return s.isBlank() || filesValid ? null : "The specified file path does not contain valid directories";
         }
 
         @Override
