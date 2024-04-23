@@ -21,7 +21,6 @@ import au.gov.asd.tac.constellation.views.namedselection.NamedSelection;
 import au.gov.asd.tac.constellation.views.namedselection.NamedSelectionManager;
 import java.util.ArrayList;
 import java.util.BitSet;
-import org.openide.awt.UndoRedo;
 
 /**
  * This class holds the state variables used by the NamedSelection services.
@@ -205,8 +204,7 @@ public final class NamedSelectionState {
      * @throws java.lang.InterruptedException if the process was canceled during
      * execution.
      */
-    public void update(final Graph graph, final UndoRedo.Manager undoRedoManager,
-            final int stateAttr, final String name) throws InterruptedException {
+    public void update(final Graph graph, final int stateAttr, final String name) throws InterruptedException {
         update(graph, stateAttr, name, false);
     }
 

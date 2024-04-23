@@ -32,7 +32,10 @@ package au.gov.asd.tac.constellation.utilities.video;
 //import javax.imageio.ImageIO;
 
 /**
- * Capture the actions of a graph to a WMV files
+ * Capture the actions of a graph to a WMV files.
+ * 
+ * Class has been commented to eliminate numerous code smells whilst retaining previous functionality.
+ * Issue has been created to address this class.
  *
  * @author algol
  */

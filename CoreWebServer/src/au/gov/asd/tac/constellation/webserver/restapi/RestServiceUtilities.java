@@ -80,9 +80,9 @@ public class RestServiceUtilities {
      *
      * @return A List&lt;Float&gt;, List&lt;Integer&gt;, or List&lt;String&gt;.
      */
-    public static List<?> toList(final JsonNode array) {
+    public static List<? extends Object> toList(final JsonNode array) {
         final int size = array.size();
-        List<?> list;
+        List<? extends Object> list;
         if (size == 0) {
             list = new ArrayList<>(size);
         } else if (array.get(0).getClass() == IntNode.class) {
@@ -134,7 +134,7 @@ public class RestServiceUtilities {
                 if (node.isArray()) {
                     // If the parameter is a JSON array, convert it to a Java List.
                     //
-                    param.setObjectValue(toList((ArrayNode) node));
+                    param.setObjectValue(toList(node));
                 } else {
                     // Convert the parameter to a String, and let PluginParameter deal with the type conversion.
                     //

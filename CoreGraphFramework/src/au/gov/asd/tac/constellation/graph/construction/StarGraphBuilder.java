@@ -33,13 +33,13 @@ public class StarGraphBuilder extends GraphBuilder {
         CENTRE_IS_SINK,
         UNDIRECTED;
     }
-
+    
+    public static StarGraphBuilder addStar() {
+        return addStar(new StoreGraph(), PENDANTS_DEFAULT, DIRECTION_DEFAULT);
+    }
+    
     public static StarGraphBuilder addStar(final GraphWriteMethods graph) {
         return addStar(graph, PENDANTS_DEFAULT, DIRECTION_DEFAULT);
-    }
-
-    public static StarGraphBuilder addStar(final int numPendants, final StarDirection direction) {
-        return addStar(new StoreGraph(), numPendants, DIRECTION_DEFAULT);
     }
 
     public static StarGraphBuilder addStar(final GraphWriteMethods graph, final int numPendants, final StarDirection direction) {

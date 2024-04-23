@@ -138,7 +138,6 @@ public class KTrussStateIOProvider extends AbstractGraphIOProvider {
             final int highestComponentNum = jnode.get(HIGHCOMP).asInt();
             final int totalVerts = jnode.get(TOTALVERTS).asInt();
             final int totalVertsInTrusses = jnode.get(TOTALTRUSSVERTS).asInt();
-            final boolean drawAllComponents = jnode.get(DRAWALL).asBoolean();
             final boolean nestedTrussesColored = jnode.get(NESTEDCOLORED).asBoolean();
             boolean interactive = true;
             if (jnode.has(INTERACTIVE)) {

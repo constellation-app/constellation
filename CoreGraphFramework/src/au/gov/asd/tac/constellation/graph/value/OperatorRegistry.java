@@ -29,7 +29,7 @@ public class OperatorRegistry {
     private final List<FunctionRecord<?, ?>> functions = new ArrayList<>();
     private final List<BiFunctionRecord<?, ?, ?>> biFunctions = new ArrayList<>();
 
-    public OperatorRegistry(final String name) {
+    public OperatorRegistry() {
     }
 
     public final <P, R> OperatorRegistry register(final Class<P> parameterClass, final Class<R> resultClass, final Function<? super P, ? extends R> function) {

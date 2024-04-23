@@ -50,7 +50,7 @@ final class GraphOptionsPanel extends javax.swing.JPanel {
     private final static Color DEFAULT_COLOR = new Color(255, 255, 254);
     private static final String[] EYE_COLORS = new String[]{"Blue", "Cyan", "Green", "Magenta", "Red", "Yellow"};
 
-    public GraphOptionsPanel(final GraphOptionsPanelController controller) {
+    public GraphOptionsPanel() {
         initComponents();
 
         colorPanels = new ArrayList<>();

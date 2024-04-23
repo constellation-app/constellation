@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.graph.interaction.animation.actions;
 
 import au.gov.asd.tac.constellation.graph.interaction.animation.Animation;
-import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import org.openide.awt.ActionID;
@@ -37,7 +36,7 @@ import org.openide.util.NbBundle.Messages;
 @Messages("CTL_AnimateStopAction=Stop Animating")
 public final class AnimateStopAction implements ActionListener {
 
-    public AnimateStopAction(final GraphNode context) {
+    public AnimateStopAction() {
     }
 
     @Override

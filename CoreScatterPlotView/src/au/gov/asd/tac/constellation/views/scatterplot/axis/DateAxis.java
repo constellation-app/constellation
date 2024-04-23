@@ -34,6 +34,7 @@ import javafx.util.StringConverter;
  * in the ExtFX library.
  *
  * TODO: {@link ChartLayoutAnimator} is not longer supported, fix it.
+ * Commented out code in this class is related to this issue. Ticket has been created to address.
  *
  * @author cygnus_x-1
  */

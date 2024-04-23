@@ -48,7 +48,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
 
     private static final String USER_HOME_PROPERTY = "user.home";
 
-    public ApplicationOptionsPanel(final ApplicationOptionsPanelController controller) {
+    public ApplicationOptionsPanel() {
         initComponents();
     }
 
