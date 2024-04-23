@@ -166,16 +166,16 @@ public final class VideoCreator implements Runnable {
         return ImageIO.read(f);
     }
 
-    private static void addWatermark(final BufferedImage img) {
-        final Graphics2D g2d = (Graphics2D) img.getGraphics();
-        g2d.setComposite(WM_ALPHA);
-        g2d.setColor(Color.WHITE);
-        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        g2d.setFont(WM_FONT);
-        final FontMetrics fm = g2d.getFontMetrics();
-        final int x = img.getWidth() - fm.stringWidth(WATERMARK) - fm.getMaxDescent();
-        final int y = img.getHeight() - fm.getMaxDescent();
-        g2d.drawString(WATERMARK, x, y);
-        g2d.dispose();
-    }
+//    private static void addWatermark(final BufferedImage img) {
+//        final Graphics2D g2d = (Graphics2D) img.getGraphics();
+//        g2d.setComposite(WM_ALPHA);
+//        g2d.setColor(Color.WHITE);
+//        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+//        g2d.setFont(WM_FONT);
+//        final FontMetrics fm = g2d.getFontMetrics();
+//        final int x = img.getWidth() - fm.stringWidth(WATERMARK) - fm.getMaxDescent();
+//        final int y = img.getHeight() - fm.getMaxDescent();
+//        g2d.drawString(WATERMARK, x, y);
+//        g2d.dispose();
+//    }
 }

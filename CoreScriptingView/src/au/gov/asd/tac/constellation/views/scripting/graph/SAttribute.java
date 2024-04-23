@@ -58,10 +58,6 @@ public class SAttribute {
         this(readableGraph, readableGraph.getAttribute(elementType, name));
     }
 
-    private GraphWriteMethods writableGraph() {
-        return (GraphWriteMethods) readableGraph;
-    }
-
     /**
      * Get the id of this attribute.
      *
