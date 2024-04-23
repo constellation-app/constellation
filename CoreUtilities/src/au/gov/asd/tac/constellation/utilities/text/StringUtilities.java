@@ -17,11 +17,13 @@ package au.gov.asd.tac.constellation.utilities.text;
 
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.regex.Pattern;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Provides various string operations such as escaping and pretty printing.
@@ -37,6 +39,10 @@ public class StringUtilities {
     private static final Pattern NON_SPECIAL_CHARACTERS = Pattern.compile("[^A-Za-z0-9]");
     private static final Pattern OPENING_SQUARE_BRACKET = Pattern.compile("^\\[");
     private static final Pattern ENDING_SQUARE_BRACKET = Pattern.compile("]$");
+
+    public static boolean endsWithAny(String name, String... endings) {
+        return Arrays.asList(endings).stream().anyMatch(ending -> StringUtils.endsWith(name, ending));
+    }
 
     private StringUtilities() {
         throw new IllegalStateException("Utility class");
