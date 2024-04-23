@@ -123,7 +123,7 @@ public class TimelinePanel extends Region {
 
         // Set the layout constraints:
         this.setMaxHeight(Double.MAX_VALUE);
-        this.setMinWidth(440d);
+        this.setMinWidth(440D);
         this.setMaxWidth(Double.MAX_VALUE);
 
         // Create the timeline component:
@@ -176,10 +176,10 @@ public class TimelinePanel extends Region {
         vbox.setFillWidth(true);
 
         // Organise the inner pane:
-        AnchorPane.setTopAnchor(vbox, 0d);
-        AnchorPane.setBottomAnchor(vbox, 0d);
-        AnchorPane.setLeftAnchor(vbox, 0d);
-        AnchorPane.setRightAnchor(vbox, 0d);
+        AnchorPane.setTopAnchor(vbox, 0D);
+        AnchorPane.setBottomAnchor(vbox, 0D);
+        AnchorPane.setLeftAnchor(vbox, 0D);
+        AnchorPane.setRightAnchor(vbox, 0D);
         innerPane.getChildren().add(vbox);
         innerPane.prefHeightProperty().bind(super.heightProperty());
         innerPane.prefWidthProperty().bind(super.widthProperty());
@@ -627,14 +627,14 @@ public class TimelinePanel extends Region {
         final Label newLabel = new Label();
 
         // Align the text vertically:
-        newLabel.setRotate(270d);
+        newLabel.setRotate(270D);
         // Fix the dimensions to prevent jittery motion on value changes:
-        newLabel.setMinWidth(150d);
-        newLabel.setPrefWidth(150d);
-        newLabel.setMaxWidth(150d);
-        newLabel.setMinHeight(30d);
-        newLabel.setPrefHeight(30d);
-        newLabel.setMaxHeight(30d);
+        newLabel.setMinWidth(150D);
+        newLabel.setPrefWidth(150D);
+        newLabel.setMaxWidth(150D);
+        newLabel.setMinHeight(30D);
+        newLabel.setPrefHeight(30D);
+        newLabel.setMaxHeight(30D);
         newLabel.setAlignment(Pos.CENTER);
 
         return newLabel;

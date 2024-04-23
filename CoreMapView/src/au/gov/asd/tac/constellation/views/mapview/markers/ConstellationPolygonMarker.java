@@ -66,7 +66,7 @@ public class ConstellationPolygonMarker extends ConstellationAbstractMarker {
     @Override
     public boolean isInside(final UnfoldingMap map, final float checkX, final float checkY) {
         final List<ScreenPosition> positions = locations.stream()
-                .map(location -> map.getScreenPosition(location))
+                .map(map::getScreenPosition)
                 .collect(Collectors.toList());
         return isInside(checkX, checkY, positions);
     }

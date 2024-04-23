@@ -146,7 +146,7 @@ public class UndoGraphEditState {
         }
 
         objectStack = new Object[objectCount];
-        Arrays.setAll(objectStack, index -> classMap.get(index));
+        Arrays.setAll(objectStack, classMap::get);
     }
 
     public byte[] getByteStack() {
