@@ -46,7 +46,7 @@ public class CompleteGraphBuilder extends GraphBuilder {
             }
         }
         final int source = nodes.length > 0 ? nodes[0] : null;
-        final int sink = nodes[size - 1];
+        final int sink = nodes.length > 0 ? nodes[size - 1] : null;
 
         return new CompleteGraphBuilder(graph, source, sink, nodes, transactions);
     }

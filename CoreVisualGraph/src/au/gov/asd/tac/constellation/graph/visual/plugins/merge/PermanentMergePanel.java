@@ -407,7 +407,7 @@ public final class PermanentMergePanel extends JPanel {
         }
     }
 
-    private class AttributeCellRenderer extends DefaultTableCellRenderer {
+    private static class AttributeCellRenderer extends DefaultTableCellRenderer {
 
         private final PermanentMergePanel panel;
 

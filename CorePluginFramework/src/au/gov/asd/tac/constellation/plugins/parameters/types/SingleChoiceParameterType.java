@@ -330,7 +330,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
          * @return A list of Strings representing the options.
          */
         public List<String> getOptions() {            
-            final List<String> optionStrings = options.stream().map(elem -> elem.toString()).collect(Collectors.toList());
+            final List<String> optionStrings = options.stream().map(Object::toString).toList();
 
             return Collections.unmodifiableList(optionStrings);
         }

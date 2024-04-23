@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.scripting.graph;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 
 /**
  * A representation of an attribute for use with scripting.
@@ -56,6 +55,15 @@ public class SAttribute {
 
     public SAttribute(final GraphReadMethods readableGraph, final GraphElementType elementType, final String name) {
         this(readableGraph, readableGraph.getAttribute(elementType, name));
+    }
+    
+    /**
+     * Get the readableGraph of this attribute.
+     *
+     * @return the readableGraph of this attribute.
+     */
+    public GraphReadMethods readableGraph() {
+        return readableGraph;
     }
 
     /**
