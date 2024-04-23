@@ -226,11 +226,11 @@ public class Shape {
             case POINT -> geometry = geometryBuilder.point(centroidLongitude, centroidLatitude);
             case LINE -> geometry = geometryBuilder.lineString(coordinates.stream()
                         .flatMap(Tuple::stream)
-                        .mapToDouble(coordinate -> (Double) coordinate)
+                        .mapToDouble(Double.class::cast)
                         .toArray());
             case POLYGON -> geometry = geometryBuilder.polygon(coordinates.stream()
                         .flatMap(Tuple::stream)
-                        .mapToDouble(coordinate -> (Double) coordinate)
+                        .mapToDouble(Double.class::cast)
                         .toArray());
             case BOX -> {
                 final List<Tuple<Double, Double>> boxCoordinates = new ArrayList<>();
@@ -240,7 +240,7 @@ public class Shape {
                 boxCoordinates.add(Tuple.create(maxLongitude, minLatitude));
                 geometry = geometryBuilder.polygon(boxCoordinates.stream()
                         .flatMap(Tuple::stream)
-                        .mapToDouble(coordinate -> (Double) coordinate)
+                        .mapToDouble(Double.class::cast)
                         .toArray());
             }
             default -> throw new IllegalArgumentException(String.format("The specified shape type, %s, is not currently supported.", type));

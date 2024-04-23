@@ -52,7 +52,7 @@ public final class ElementGraphLabelsV0 {
     public ElementGraphLabelsV0(final ElementGraphLabelsV0 graphLabels, final List<ElementGraphLabelV0> additionalLabels) {
         final List<ElementGraphLabelV0> allLabels = new ArrayList<>();
         graphLabels.labels.forEach(label -> allLabels.add(new ElementGraphLabelV0(label)));
-        additionalLabels.forEach(label -> allLabels.add(label));
+        additionalLabels.forEach(allLabels::add);
         labels = allLabels.size() > MAX_LABELS ? allLabels.subList(0, MAX_LABELS) : allLabels;
     }
 
@@ -74,7 +74,7 @@ public final class ElementGraphLabelsV0 {
 
     @Override
     public String toString() {
-        return StringUtilities.quoteAndDelimitString(labels.stream().map(label -> label.toString()).toList(), LABEL_DELIMITER);
+        return StringUtilities.quoteAndDelimitString(labels.stream().map(Object::toString).toList(), LABEL_DELIMITER);
     }
 
     public static ElementGraphLabelsV0 valueOf(final String graphLabelsString) {

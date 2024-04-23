@@ -702,7 +702,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             final Action discardNebula = new AbstractAction("Discard nebula") {
                 @Override
                 public void actionPerformed(final ActionEvent e) {
-                    TopComponent.getRegistry().getOpened().stream().filter(tc -> (tc instanceof VisualGraphTopComponent)).map(tc -> (VisualGraphTopComponent) tc).forEach(vtc -> {
+                    TopComponent.getRegistry().getOpened().stream().filter(VisualGraphTopComponent.class::isInstance).map(tc -> (VisualGraphTopComponent) tc).forEach(vtc -> {
                         final NebulaDataObject ndo = vtc.getGraphNode().getDataObject().getNebulaDataObject();
                         if (nebula.equalsPath(ndo)) {
                             vtc.savable.setModified(false);
@@ -735,7 +735,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 final Action closeNebula = new AbstractAction("Close nebula") {
                     @Override
                     public void actionPerformed(final ActionEvent e) {
-                        TopComponent.getRegistry().getOpened().stream().filter(tc -> (tc instanceof VisualGraphTopComponent)).map(tc -> (VisualGraphTopComponent) tc).forEach(vtc -> {
+                        TopComponent.getRegistry().getOpened().stream().filter(VisualGraphTopComponent.class::isInstance).map(tc -> (VisualGraphTopComponent) tc).forEach(vtc -> {
                             final NebulaDataObject ndo = vtc.getGraphNode().getDataObject().getNebulaDataObject();
                             if (nebula.equalsPath(ndo)) {
                                 vtc.close();
@@ -814,7 +814,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     private static List<Savable> getNebulaSavables(final NebulaDataObject nebula) {
         final List<Savable> savableList = new ArrayList<>();
         final Collection<? extends Savable> savables = Savable.REGISTRY.lookupAll(Savable.class);
-        savables.stream().filter(s -> (s instanceof MySavable)).forEach(s -> {
+        savables.stream().filter(MySavable.class::isInstance).forEach(s -> {
             final NebulaDataObject otherNDO = ((MySavable) s).tc().getGraphNode().getDataObject().getNebulaDataObject();
             if (nebula.equalsPath(otherNDO)) {
                 savableList.add(s);

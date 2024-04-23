@@ -48,7 +48,7 @@ public class FeatureKey {
             case MULTI, CLUSTER -> {
                 this.featureClass = ConstellationMultiFeature.class;
                 this.featureLocations = ((ConstellationMultiFeature) multiFeature).getFeatures().stream()
-                        .map(feature -> getLocations(feature)).flatMap(List::stream).toList();
+                        .map(this::getLocations).flatMap(List::stream).toList();
             }
             default -> {
                 this.featureClass = null;
