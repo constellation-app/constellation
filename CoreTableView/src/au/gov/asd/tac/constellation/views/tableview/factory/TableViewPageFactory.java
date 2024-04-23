@@ -117,11 +117,11 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
         if (allTableRows != null) {
 
             // This action only effects selected only mode variables but runs no
-            // matter if the table is in selected only mode or not.
+            // matter if the table is in selected only mode or not.pluginExecution(Java) "==" and "!=" should not be used when "equals" is overridden
             // The reasoning is that in selected only mode, if the row list changes
             // then that means the selection on the graph has changed. In this case
             // the expected behaviour is to clear the current table selection.
-            if (lastAllTableRows == null || lastAllTableRows != allTableRows) {
+            if (lastAllTableRows == null || !lastAllTableRows.equals(allTableRows)) {
                 tablePane.getActiveTableReference().getSelectedOnlySelectedRows().clear();
                 lastAllTableRows = allTableRows;
             }

@@ -468,7 +468,7 @@ public class ExpressionParser {
                         } else if (c == '(') {
                             currentExpression = new SequenceExpression(currentExpression);
                         } else if (c == ')') {
-                            if (currentExpression == rootExpression) {
+                            if (currentExpression.equals(rootExpression)) {
                                 final String errorMessage = """
                                                             Found closing parenthesis ) within variable.
                                                             parentheses must be used in pairs to enclose variables.""";
@@ -507,7 +507,7 @@ public class ExpressionParser {
                         contentLength = 0;
                         currentExpression = new SequenceExpression(currentExpression);
                     } else if (c == ')') {
-                        if (currentExpression == rootExpression) {
+                        if (currentExpression.equals(rootExpression)) {
                             final String errorMessage = """
                                                         Found closing parenthesis ) within variable.
                                                         parentheses must be used in pairs to enclose variables.""";
@@ -610,7 +610,7 @@ public class ExpressionParser {
             }
         }
 
-        if (currentExpression != rootExpression) {
+        if (!currentExpression.equals(rootExpression)) {
             if (!isHeadless) {
                 Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
                         MALFORMED_QUERY, NESTED_PARENTHESIS_ERROR, Alert.AlertType.ERROR));

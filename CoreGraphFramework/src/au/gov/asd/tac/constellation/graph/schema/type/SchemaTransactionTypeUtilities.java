@@ -116,7 +116,7 @@ public class SchemaTransactionTypeUtilities {
             });
 
             // add custom types if no concept is specified
-            if (fromConcepts == GET_ALL_TYPES) {
+            if (fromConcepts.equals(GET_ALL_TYPES)) {
                 transactionTypes.addAll(CUSTOM_TRANSACTION_TYPES);
             }
 
