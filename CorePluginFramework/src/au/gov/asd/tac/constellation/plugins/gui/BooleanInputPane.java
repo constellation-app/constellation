@@ -45,7 +45,7 @@ public class BooleanInputPane extends Pane {
     public BooleanInputPane(final PluginParameter<BooleanParameterValue> parameter) {
         field = new CheckBox();
         final BooleanParameterValue pv = parameter.getParameterValue();
-        field.setSelected(pv.get());
+        field.setSelected(pv.getValue());
 
         if (parameter.getParameterValue().getGuiInit() != null) {
             parameter.getParameterValue().getGuiInit().init(field);

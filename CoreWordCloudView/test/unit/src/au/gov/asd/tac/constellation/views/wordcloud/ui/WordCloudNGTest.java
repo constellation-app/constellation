@@ -124,7 +124,7 @@ public class WordCloudNGTest {
         System.out.println("getHasSignificances");
         final WordCloud instance = new WordCloud(wordsToHashes, hashedWordSets, elementType, wordListWithSizes, wordSignificances, currentSignificance, queryInfoString, modCount, selectedWords, isUnionSelect, isSizeSorted);
         final boolean expResult = false;
-        final boolean result = instance.getHasSignificances();
+        final boolean result = instance.hasSignificances();
         assertEquals(result, expResult);
     }
 
@@ -165,7 +165,7 @@ public class WordCloudNGTest {
         final boolean val = false;
         final WordCloud instance = new WordCloud(wordsToHashes, hashedWordSets, elementType, wordListWithSizes, wordSignificances, currentSignificance, queryInfoString, modCount, selectedWords, isUnionSelect, isSizeSorted);
         instance.setIsUnionSelect(val);
-        final boolean result = instance.getIsUnionSelect();
+        final boolean result = instance.isUnionSelect();
         assertEquals(val, result);
     }
 

@@ -236,7 +236,7 @@ public class WordCloud {
         return queryInfoString;
     }
 
-    public boolean getHasSignificances() {
+    public boolean hasSignificances() {
         return hasSignificances;
     }
 
@@ -281,14 +281,14 @@ public class WordCloud {
     /**
      * Gets whether or not the selection mode is union
      */
-    public boolean getIsUnionSelect() {
+    public boolean isUnionSelect() {
         return isUnionSelect;
     }
 
     /**
      * Gets whether or not the sorting mode is by size
      */
-    public boolean getIsSizeSorted() {
+    public boolean isSizeSorted() {
         return isSizeSorted;
     }
 
