@@ -57,6 +57,6 @@ public class HitTestRequest {
     }
 
     public Queue<HitState> getNotificationQueue() {
-        return (Queue<HitState>) Collections.unmodifiableCollection(notificationQueue);
+        return notificationQueue;
     }
 }
