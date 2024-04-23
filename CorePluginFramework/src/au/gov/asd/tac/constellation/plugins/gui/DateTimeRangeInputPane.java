@@ -41,6 +41,7 @@ import java.util.Set;
 import java.util.function.UnaryOperator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -603,8 +604,7 @@ public final class DateTimeRangeInputPane extends Pane {
         final DateTimeFormatter zf = DateTimeFormatter.ofPattern("Z");
         final Instant instant = Instant.now();
         final Set<String> zoneSet = ZoneId.getAvailableZoneIds();
-        final List<ZoneId> zoned = new ArrayList<>();
-        zoneSet.stream().map(ZoneId::of).forEach(zoned::add);
+        final List<ZoneId> zoned = zoneSet.stream().map(ZoneId::of).collect(Collectors.toList());
 
         Collections.sort(zoned, (final ZoneId zi1, final ZoneId zi2) -> {
             final ZonedDateTime z1 = ZonedDateTime.ofInstant(instant, zi1);
