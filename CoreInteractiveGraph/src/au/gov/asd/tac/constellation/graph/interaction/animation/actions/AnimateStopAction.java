@@ -36,9 +36,6 @@ import org.openide.util.NbBundle.Messages;
 @Messages("CTL_AnimateStopAction=Stop Animating")
 public final class AnimateStopAction implements ActionListener {
 
-    public AnimateStopAction() {
-    }
-
     @Override
     public void actionPerformed(final ActionEvent ev) {
         Animation.stopAnimation();
