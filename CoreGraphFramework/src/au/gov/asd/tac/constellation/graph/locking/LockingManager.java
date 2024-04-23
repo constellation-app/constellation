@@ -51,8 +51,8 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
     private final ReentrantLock globalWriteLock = new ReentrantLock(true);
     private Context a;
     private Context b;
-    private volatile Context readContext;
-    private volatile Context writeContext;
+    private Context readContext;
+    private Context writeContext;
     private LockingEdit currentEdit = null;
     private LockingEdit initialEdit = null;
     private UndoManager undoManager;
