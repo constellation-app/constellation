@@ -462,39 +462,39 @@ public class ExpressionParser {
 
             switch (info.state) {
                 case READING_WHITESPACE -> {
-                    if (!parse_reading_whitespace(c, content, info)) {
+                    if (!parseReadingWhitespace(c, content, info)) {
                         return null;
                     }
                 }
                 case READING_VARIABLE -> {
-                    if (!parse_reading_variable(c, content, info)) {
+                    if (!parseReadingVariable(c, content, info)) {
                         return null;
                     }
                 }
                 case READING_SINGLE_STRING -> {
-                    if (!parse_reading_single_string(c, content, info)) {
+                    if (!parseReadingSingleString(c, content, info)) {
                         return null;
                     }
                 }
                 case READING_DOUBLE_STRING -> {
-                    if (!parse_reading_double_string(c, content, info)) {
+                    if (!parseReadingDoubleString(c, content, info)) {
                         return null;
                     }
                 }
                 case READING_SINGLE_ESCAPED -> {
-                    if (!parse_reading_string_escaped(c, content, info)) {
+                    if (!parseReadingStringEscaped(c, content, info)) {
                         return null;
                     }
                 }
                 case READING_DOUBLE_ESCAPED -> {
-                    if (!parse_reading_double_escaped(c, content, info)) {
+                    if (!parseReadingDoubleEscaped(c, content, info)) {
                         return null;
                     }
                 }
             }
         }
-
-        if (info.currentExpression != info.rootExpression) {
+        //Preventing sonar check, as we do want to check if the two variables are NOT the same object
+        if (info.currentExpression != info.rootExpression) {//NOSONAR
             if (!isHeadless) {
                 Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
                         MALFORMED_QUERY, NESTED_PARENTHESIS_ERROR, Alert.AlertType.ERROR));
@@ -533,7 +533,7 @@ public class ExpressionParser {
         return c >= '0' && c <= '9';
     }
 
-    private static boolean parse_reading_whitespace(final char c, final char[] content, final ParseInfoHolder info) {
+    private static boolean parseReadingWhitespace(final char c, final char[] content, final ParseInfoHolder info) {
         if (c != ' ' && c != 0) {
             if (isLetter(c) || isDigit(c) || isAllowable(c)) {
                 content[info.contentLength++] = c;
@@ -545,7 +545,8 @@ public class ExpressionParser {
             } else if (c == '(') {
                 info.currentExpression = new SequenceExpression(info.currentExpression);
             } else if (c == ')') {
-                if (info.currentExpression == info.rootExpression) {
+                //Preventing sonar check, as we do want to check if the two variables are the same object
+                if (info.currentExpression == info.rootExpression) {//NOSONAR
                     final String errorMessage = """
                                                             Found closing parenthesis ) within variable.
                                                             parentheses must be used in pairs to enclose variables.""";
@@ -575,7 +576,7 @@ public class ExpressionParser {
         return true;
     }
 
-    private static boolean parse_reading_variable(final char c, final char[] content, final ParseInfoHolder info) {
+    private static boolean parseReadingVariable(final char c, final char[] content, final ParseInfoHolder info) {
         if (c == ' ' || c == 0) {
             info.currentExpression.addChild(new VariableExpression(info.currentExpression, content, info.contentLength));
             info.contentLength = 0;
@@ -587,7 +588,8 @@ public class ExpressionParser {
             info.contentLength = 0;
             info.currentExpression = new SequenceExpression(info.currentExpression);
         } else if (c == ')') {
-            if (info.currentExpression == info.rootExpression) {
+            //Preventing sonar check, as we do want to check if the two variables are the same object
+            if (info.currentExpression == info.rootExpression) {//NOSONAR
                 final String errorMessage = """
                                                         Found closing parenthesis ) within variable.
                                                         parentheses must be used in pairs to enclose variables.""";
@@ -622,7 +624,7 @@ public class ExpressionParser {
         return true;
     }
 
-    private static boolean parse_reading_single_string(final char c, final char[] content, final ParseInfoHolder info) {
+    private static boolean parseReadingSingleString(final char c, final char[] content, final ParseInfoHolder info) {
         switch (c) {
             case '\'' -> {
                 info.currentExpression.addChild(new StringExpression(info.currentExpression, content, info.contentLength));
@@ -647,7 +649,7 @@ public class ExpressionParser {
         return true;
     }
 
-    private static boolean parse_reading_double_string(final char c, final char[] content, final ParseInfoHolder info) {
+    private static boolean parseReadingDoubleString(final char c, final char[] content, final ParseInfoHolder info) {
         switch (c) {
             case '"' -> {
                 info.currentExpression.addChild(new StringExpression(info.currentExpression, content, info.contentLength));
@@ -672,7 +674,7 @@ public class ExpressionParser {
         return true;
     }
 
-    private static boolean parse_reading_string_escaped(final char c, final char[] content, final ParseInfoHolder info) {
+    private static boolean parseReadingStringEscaped(final char c, final char[] content, final ParseInfoHolder info) {
         if (c == 0) {
             final String errorMessage = "Found escaped character ' at end of expression.";
             if (!isHeadless) {
@@ -689,7 +691,7 @@ public class ExpressionParser {
         return true;
     }
 
-    private static boolean parse_reading_double_escaped(final char c, final char[] content, final ParseInfoHolder info) {
+    private static boolean parseReadingDoubleEscaped(final char c, final char[] content, final ParseInfoHolder info) {
         if (c == 0) {
             final String errorMessage = "Found escaped character \" at end of expression.";
             if (!isHeadless) {
