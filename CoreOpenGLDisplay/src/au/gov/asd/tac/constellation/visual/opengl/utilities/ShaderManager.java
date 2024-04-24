@@ -84,9 +84,9 @@ public class ShaderManager {
     private final Properties shaderMap;
 
     //other constants
-    private static final String V_COLOR = "vColor";
-    private static final String V_VERTEX = "vVertex";
-    private static final String OUT_COLOR = "outColor";
+    private final String vColor = "vColor";
+    private final String vVertex = "vVertex";
+    private final String outColor = "outColor";
 
     public ShaderManager() {
         stockShaders = new int[SHADER_LAST];
@@ -150,32 +150,32 @@ public class ShaderManager {
                 shaderMap.getProperty("SHADER_IDENTITY_VS"),
                 null,
                 shaderMap.getProperty("SHADER_IDENTITY_FS"),
-                ATTRIBUTE_VERTEX, V_VERTEX,
-                FRAG_BASE, OUT_COLOR);
+                ATTRIBUTE_VERTEX, vVertex,
+                FRAG_BASE, outColor);
 
         stockShaders[SHADER_FLAT] = GLTools.loadShaderSourceWithAttributes(gl, "SHADER_FLAT",
                 shaderMap.getProperty("SHADER_FLAT_VS"),
                 null,
                 shaderMap.getProperty("SHADER_FLAT_FS"),
-                ATTRIBUTE_VERTEX, V_VERTEX,
-                FRAG_BASE, OUT_COLOR);
+                ATTRIBUTE_VERTEX, vVertex,
+                FRAG_BASE, outColor);
 
         stockShaders[SHADER_POINT_LIGHT_DIFF] = GLTools.loadShaderSourceWithAttributes(gl, "SHADER_POINT_LIGHT_DIFF",
                 shaderMap.getProperty("SHADER_POINT_LIGHT_DIFF_VS"),
                 null,
                 shaderMap.getProperty("SHADER_POINT_LIGHT_DIFF_FS"),
-                ATTRIBUTE_VERTEX, V_VERTEX,
+                ATTRIBUTE_VERTEX, vVertex,
                 ATTRIBUTE_NORMAL, "vNormal",
-                FRAG_BASE, OUT_COLOR);
+                FRAG_BASE, outColor);
 
         stockShaders[SHADER_TEXTURE_POINT_LIGHT_DIFF] = GLTools.loadShaderSourceWithAttributes(gl, "SHADER_TEXTURE_POINT_LIGHT_DIFF",
                 shaderMap.getProperty("SHADER_TEXTURE_POINT_LIGHT_DIFF_VS"),
                 null,
                 shaderMap.getProperty("SHADER_TEXTURE_POINT_LIGHT_DIFF_FS"),
-                ATTRIBUTE_VERTEX, V_VERTEX,
+                ATTRIBUTE_VERTEX, vVertex,
                 ATTRIBUTE_NORMAL, "vNormal",
                 ATTRIBUTE_TEXTURE0, "vTexCoord0",
-                FRAG_BASE, OUT_COLOR);
+                FRAG_BASE, outColor);
     }
 
     /**
@@ -199,48 +199,48 @@ public class ShaderManager {
         switch (shaderId) {
             case SHADER_IDENTITY -> {
                     // Just the color.
-                    int colorLoc = gl.glGetUniformLocation(stockShaders[shaderId], V_COLOR);
-                    float[] color = (float[]) args[0];
+                    final int colorLoc = gl.glGetUniformLocation(stockShaders[shaderId], vColor);
+                    final float[] color = (float[]) args[0];
                     gl.glUniform4fv(colorLoc, 1, color, 0);
                 }
             case SHADER_FLAT -> {
                     // The modelview projection matrix and the color.
-                    int transformLoc = gl.glGetUniformLocation(stockShaders[shaderId], "mvpMatrix");
-                    Matrix44f mvpMatrix = (Matrix44f) args[0];
+                    final int transformLoc = gl.glGetUniformLocation(stockShaders[shaderId], "mvpMatrix");
+                    final Matrix44f mvpMatrix = (Matrix44f) args[0];
                     gl.glUniformMatrix4fv(transformLoc, 1, false, mvpMatrix.a, 0);
-                    int colorLoc = gl.glGetUniformLocation(stockShaders[shaderId], V_COLOR);
-                    float[] color = (float[]) args[1];
+                    final int colorLoc = gl.glGetUniformLocation(stockShaders[shaderId], vColor);
+                    final float[] color = (float[]) args[1];
                     gl.glUniform4fv(colorLoc, 1, color, 0);
                 }
             case SHADER_POINT_LIGHT_DIFF -> {
-                    int modelMatrix = gl.glGetUniformLocation(stockShaders[shaderId], "mvMatrix");
-                    Matrix44f mvMatrix = (Matrix44f) args[0];
+                    final int modelMatrix = gl.glGetUniformLocation(stockShaders[shaderId], "mvMatrix");
+                    final Matrix44f mvMatrix = (Matrix44f) args[0];
                     gl.glUniformMatrix4fv(modelMatrix, 1, false, mvMatrix.a, 0);
-                    int projMatrix = gl.glGetUniformLocation(stockShaders[shaderId], "pMatrix");
-                    Matrix44f pMatrix = (Matrix44f) args[1];
+                    final int projMatrix = gl.glGetUniformLocation(stockShaders[shaderId], "pMatrix");
+                    final Matrix44f pMatrix = (Matrix44f) args[1];
                     gl.glUniformMatrix4fv(projMatrix, 1, false, pMatrix.a, 0);
-                    int light = gl.glGetUniformLocation(stockShaders[shaderId], "vLightPos");
-                    Vector3f vLightPos = (Vector3f) args[2];
+                    final int light = gl.glGetUniformLocation(stockShaders[shaderId], "vLightPos");
+                    final Vector3f vLightPos = (Vector3f) args[2];
                     gl.glUniform3fv(light, 1, vLightPos.a, 0);
-                    int colorLoc = gl.glGetUniformLocation(stockShaders[shaderId], V_COLOR);
-                    float[] color = (float[]) args[3];
+                    final int colorLoc = gl.glGetUniformLocation(stockShaders[shaderId], vColor);
+                    final float[] color = (float[]) args[3];
                     gl.glUniform4fv(colorLoc, 1, color, 0);
                 }
             case SHADER_TEXTURE_POINT_LIGHT_DIFF -> {
-                    int modelMatrix = gl.glGetUniformLocation(stockShaders[shaderId], "mvMatrix");
-                    Matrix44f mvMatrix = (Matrix44f) args[0];
+                    final int modelMatrix = gl.glGetUniformLocation(stockShaders[shaderId], "mvMatrix");
+                    final Matrix44f mvMatrix = (Matrix44f) args[0];
                     gl.glUniformMatrix4fv(modelMatrix, 1, false, mvMatrix.a, 0);
-                    int projMatrix = gl.glGetUniformLocation(stockShaders[shaderId], "pMatrix");
-                    Matrix44f pMatrix = (Matrix44f) args[1];
+                    final int projMatrix = gl.glGetUniformLocation(stockShaders[shaderId], "pMatrix");
+                    final Matrix44f pMatrix = (Matrix44f) args[1];
                     gl.glUniformMatrix4fv(projMatrix, 1, false, pMatrix.a, 0);
-                    int light = gl.glGetUniformLocation(stockShaders[shaderId], "vLightPos");
-                    Vector3f lightPos = (Vector3f) args[2];
+                    final int light = gl.glGetUniformLocation(stockShaders[shaderId], "vLightPos");
+                    final Vector3f lightPos = (Vector3f) args[2];
                     gl.glUniform3fv(light, 1, lightPos.a, 0);
-                    int colorLoc = gl.glGetUniformLocation(stockShaders[shaderId], V_COLOR);
-                    Vector4f color = (Vector4f) args[3];
+                    final int colorLoc = gl.glGetUniformLocation(stockShaders[shaderId], vColor);
+                    final Vector4f color = (Vector4f) args[3];
                     gl.glUniform4fv(colorLoc, 1, color.a, 0);
-                    int textureUnit = gl.glGetUniformLocation(stockShaders[shaderId], "textureUnit0");
-                    int i = (Integer) args[4];
+                    final int textureUnit = gl.glGetUniformLocation(stockShaders[shaderId], "textureUnit0");
+                    final int i = (Integer) args[4];
                     gl.glUniform1i(textureUnit, i);
                 }
             default -> throw new RenderException("Unimplemented shader.");

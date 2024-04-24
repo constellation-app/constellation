@@ -868,7 +868,6 @@ public final class GLTools {
                 //Do Nothing
             }
         }
-        // Do nothing
         LOGGER.log(Level.SEVERE, "**** Framebuffer error %{0}: %{1} ({2})", new Object[]{msg, errtext, fboStatus});
     }
 
