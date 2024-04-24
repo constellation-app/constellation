@@ -84,9 +84,9 @@ public class ShaderManager {
     private final Properties shaderMap;
 
     //other constants
-    private final String vColor = "vColor";
-    private final String vVertex = "vVertex";
-    private final String outColor = "outColor";
+    private static final String V_COLOR = "vColor";
+    private static final String V_VERTEX = "vVertex";
+    private static final String OUT_COLOR = "outColor";
 
     public ShaderManager() {
         stockShaders = new int[SHADER_LAST];
@@ -150,32 +150,32 @@ public class ShaderManager {
                 shaderMap.getProperty("SHADER_IDENTITY_VS"),
                 null,
                 shaderMap.getProperty("SHADER_IDENTITY_FS"),
-                ATTRIBUTE_VERTEX, vVertex,
-                FRAG_BASE, outColor);
+                ATTRIBUTE_VERTEX, V_VERTEX,
+                FRAG_BASE, OUT_COLOR);
 
         stockShaders[SHADER_FLAT] = GLTools.loadShaderSourceWithAttributes(gl, "SHADER_FLAT",
                 shaderMap.getProperty("SHADER_FLAT_VS"),
                 null,
                 shaderMap.getProperty("SHADER_FLAT_FS"),
-                ATTRIBUTE_VERTEX, vVertex,
-                FRAG_BASE, outColor);
+                ATTRIBUTE_VERTEX, V_VERTEX,
+                FRAG_BASE, OUT_COLOR);
 
         stockShaders[SHADER_POINT_LIGHT_DIFF] = GLTools.loadShaderSourceWithAttributes(gl, "SHADER_POINT_LIGHT_DIFF",
                 shaderMap.getProperty("SHADER_POINT_LIGHT_DIFF_VS"),
                 null,
                 shaderMap.getProperty("SHADER_POINT_LIGHT_DIFF_FS"),
-                ATTRIBUTE_VERTEX, vVertex,
+                ATTRIBUTE_VERTEX, V_VERTEX,
                 ATTRIBUTE_NORMAL, "vNormal",
-                FRAG_BASE, outColor);
+                FRAG_BASE, OUT_COLOR);
 
         stockShaders[SHADER_TEXTURE_POINT_LIGHT_DIFF] = GLTools.loadShaderSourceWithAttributes(gl, "SHADER_TEXTURE_POINT_LIGHT_DIFF",
                 shaderMap.getProperty("SHADER_TEXTURE_POINT_LIGHT_DIFF_VS"),
                 null,
                 shaderMap.getProperty("SHADER_TEXTURE_POINT_LIGHT_DIFF_FS"),
-                ATTRIBUTE_VERTEX, vVertex,
+                ATTRIBUTE_VERTEX, V_VERTEX,
                 ATTRIBUTE_NORMAL, "vNormal",
                 ATTRIBUTE_TEXTURE0, "vTexCoord0",
-                FRAG_BASE, outColor);
+                FRAG_BASE, OUT_COLOR);
     }
 
     /**
@@ -199,7 +199,7 @@ public class ShaderManager {
         switch (shaderId) {
             case SHADER_IDENTITY -> {
                     // Just the color.
-                    final int colorLoc = gl.glGetUniformLocation(stockShaders[shaderId], vColor);
+                    final int colorLoc = gl.glGetUniformLocation(stockShaders[shaderId], V_COLOR);
                     final float[] color = (float[]) args[0];
                     gl.glUniform4fv(colorLoc, 1, color, 0);
                 }
@@ -208,7 +208,7 @@ public class ShaderManager {
                     final int transformLoc = gl.glGetUniformLocation(stockShaders[shaderId], "mvpMatrix");
                     final Matrix44f mvpMatrix = (Matrix44f) args[0];
                     gl.glUniformMatrix4fv(transformLoc, 1, false, mvpMatrix.a, 0);
-                    final int colorLoc = gl.glGetUniformLocation(stockShaders[shaderId], vColor);
+                    final int colorLoc = gl.glGetUniformLocation(stockShaders[shaderId], V_COLOR);
                     final float[] color = (float[]) args[1];
                     gl.glUniform4fv(colorLoc, 1, color, 0);
                 }
@@ -222,7 +222,7 @@ public class ShaderManager {
                     final int light = gl.glGetUniformLocation(stockShaders[shaderId], "vLightPos");
                     final Vector3f vLightPos = (Vector3f) args[2];
                     gl.glUniform3fv(light, 1, vLightPos.a, 0);
-                    final int colorLoc = gl.glGetUniformLocation(stockShaders[shaderId], vColor);
+                    final int colorLoc = gl.glGetUniformLocation(stockShaders[shaderId], V_COLOR);
                     final float[] color = (float[]) args[3];
                     gl.glUniform4fv(colorLoc, 1, color, 0);
                 }
@@ -236,7 +236,7 @@ public class ShaderManager {
                     final int light = gl.glGetUniformLocation(stockShaders[shaderId], "vLightPos");
                     final Vector3f lightPos = (Vector3f) args[2];
                     gl.glUniform3fv(light, 1, lightPos.a, 0);
-                    final int colorLoc = gl.glGetUniformLocation(stockShaders[shaderId], vColor);
+                    final int colorLoc = gl.glGetUniformLocation(stockShaders[shaderId], V_COLOR);
                     final Vector4f color = (Vector4f) args[3];
                     gl.glUniform4fv(colorLoc, 1, color.a, 0);
                     final int textureUnit = gl.glGetUniformLocation(stockShaders[shaderId], "textureUnit0");
