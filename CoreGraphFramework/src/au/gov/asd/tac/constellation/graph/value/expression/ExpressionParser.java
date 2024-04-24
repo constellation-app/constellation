@@ -442,10 +442,10 @@ public class ExpressionParser {
 
     public static class ParseInfoHolder {
 
-        public ParseState state = ParseState.READING_WHITESPACE;
-        public int contentLength = 0;
-        public SequenceExpression rootExpression = new SequenceExpression(null);
-        public SequenceExpression currentExpression = rootExpression;
+        ParseState state = ParseState.READING_WHITESPACE;
+        int contentLength = 0;
+        SequenceExpression rootExpression = new SequenceExpression(null);
+        SequenceExpression currentExpression = rootExpression;
     }
 
     public static SequenceExpression parse(final String expression) {
