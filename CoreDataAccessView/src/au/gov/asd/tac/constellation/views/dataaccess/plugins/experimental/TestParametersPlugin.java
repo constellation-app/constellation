@@ -57,6 +57,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValu
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
+import au.gov.asd.tac.constellation.utilities.gui.field.FileInputField.FileInputKind;
 import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
@@ -286,14 +287,14 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         final PluginParameter<FileParameterValue> openFileParam = FileParameterType.build(INPUT_FILE_PARAMETER_ID);
         openFileParam.setName("Input file");
         openFileParam.setDescription("A file to read stuff from");
-        FileParameterType.setKind(openFileParam, FileParameterType.FileParameterKind.OPEN);
+        FileParameterType.setKind(openFileParam, FileInputKind.OPEN);
         FileParameterType.enableAcceptAllFileFilter(openFileParam);
         params.addParameter(openFileParam);
 
         final PluginParameter<FileParameterValue> saveFileParam = FileParameterType.build(OUTPUT_FILE_PARAMETER_ID);
         saveFileParam.setName("Output file");
         saveFileParam.setDescription("A file to write stuff to");
-        FileParameterType.setKind(saveFileParam, FileParameterType.FileParameterKind.SAVE);
+        FileParameterType.setKind(saveFileParam, FileInputKind.SAVE);
         FileParameterType.setFileFilters(saveFileParam, new ExtensionFilter("Text files", FileExtensionConstants.TEXT));
         params.addParameter(saveFileParam);
 

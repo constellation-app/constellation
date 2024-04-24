@@ -283,21 +283,13 @@ public class ConstellationInputField extends StackPane {
     }
     
     private void bindFocusEffect(final TextInputControl local, final Rectangle foreground) {
-        //Change the border color of the firld to show that it is focused
-        local.setOnMouseClicked(event -> {
-            foreground.setStroke(Color.CYAN);
-            final Scene scene = this.getScene();
-            
-            //Register an event handeler so that the boarder is changed back to black on the next mouse press
-            scene.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent mouseEvent) {
-                    foreground.setStroke(null);
-                    
-                    // Dont forget to remove the listerner as it has done its job
-                    scene.removeEventFilter(MouseEvent.MOUSE_PRESSED, this);
-                }
-            });
+        
+        local.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal) {
+                foreground.setStroke(Color.web("#1B92E3"));
+            } else {
+                foreground.setStroke(null);
+            }
         });
     }
     
