@@ -49,22 +49,11 @@ public class ApplicationOptionsPanelNGTest {
     }
 
     /**
-     * Test of getUserDirectory method, of class ApplicationOptionsPanel.
-     */
-    @Test
-    public void testGetUserDirectory() {
-        System.out.println("getUserDirectory");
-        ApplicationOptionsPanel instance = new ApplicationOptionsPanel(null);
-        String result = instance.getUserDirectory();
-        assertEquals(result.getClass(), String.class);
-    }
-
-    /**
-     * Test of setUserDirectory method, of class ApplicationOptionsPanel.
+     * Test of setUserDirectory and getUserDirectory methods, of class ApplicationOptionsPanel.
      */
     @Test
     public void testSetUserDirectory() {
-        System.out.println("setUserDirectory");
+        System.out.println("setGetUserDirectory");
         String expResult = "RESULT";
         ApplicationOptionsPanel instance = new ApplicationOptionsPanel(null);
         instance.setUserDirectory(expResult);
@@ -72,7 +61,7 @@ public class ApplicationOptionsPanelNGTest {
     }
 
     /**
-     * Test of setAutosaveEnabled method, of class ApplicationOptionsPanel.
+     * Test of setAutosaveEnabled and getAutosaveEnabled methods, of class ApplicationOptionsPanel.
      */
     @Test
     public void testSetGetAutosaveEnabled() {
@@ -84,7 +73,7 @@ public class ApplicationOptionsPanelNGTest {
     }
 
     /**
-     * Test of setAutosaveFrequency method, of class ApplicationOptionsPanel.
+     * Test of setAutosaveFrequency and getAutosaveFrequency methods, of class ApplicationOptionsPanel.
      */
     @Test
     public void testSetGetAutosaveFrequency() {
@@ -97,7 +86,7 @@ public class ApplicationOptionsPanelNGTest {
     }
 
     /**
-     * Test of setWelcomeOnStartup method, of class ApplicationOptionsPanel.
+     * Test of setWelcomeOnStartup and getWelcomeOnStartup methods, of class ApplicationOptionsPanel.
      */
     @Test
     public void testSetGetWelcomeOnStartup() {
@@ -109,7 +98,7 @@ public class ApplicationOptionsPanelNGTest {
     }
 
     /**
-     * Test of setWhatsNewOnStartup method, of class ApplicationOptionsPanel.
+     * Test of setWhatsNewOnStartup and getWhatsNewOnStartup methods, of class ApplicationOptionsPanel.
      */
     @Test
     public void testSetGetWhatsNewOnStartup() {
@@ -121,7 +110,7 @@ public class ApplicationOptionsPanelNGTest {
     }
 
     /**
-     * Test of setWebserverPort method, of class ApplicationOptionsPanel.
+     * Test of setWebserverPort and getWebserverPort methods, of class ApplicationOptionsPanel.
      */
     @Test
     public void testSetGetWebserverPort() {
@@ -133,7 +122,7 @@ public class ApplicationOptionsPanelNGTest {
     }
 
     /**
-     * Test of setNotebookDirectory method, of class ApplicationOptionsPanel.
+     * Test of setNotebookDirectory and getNotebookDirectory methods, of class ApplicationOptionsPanel.
      */
     @Test
     public void testSetGetNotebookDirectory() {
@@ -145,7 +134,7 @@ public class ApplicationOptionsPanelNGTest {
     }
 
     /**
-     * Test of setRestDirectory method, of class ApplicationOptionsPanel.
+     * Test of setRestDirectory and getRestDirectory methods, of class ApplicationOptionsPanel.
      */
     @Test
     public void testSetGetRestDirectory() {
@@ -157,7 +146,7 @@ public class ApplicationOptionsPanelNGTest {
     }
 
     /**
-     * Test of setDownloadPythonClient method, of class ApplicationOptionsPanel.
+     * Test of setDownloadPythonClient and getDownloadPythonClient methods, of class ApplicationOptionsPanel.
      */
     @Test
     public void testSetGetDownloadPythonClient() {
@@ -169,7 +158,7 @@ public class ApplicationOptionsPanelNGTest {
     }
 
     /**
-     * Test of setFontSize method, of class ApplicationOptionsPanel.
+     * Test of setFontSize and getFontSize methods, of class ApplicationOptionsPanel.
      */
     @Test
     public void testSetGetFontSize() {
@@ -191,7 +180,7 @@ public class ApplicationOptionsPanelNGTest {
     }
 
     /**
-     * Test of setColorModeSelection method, of class ApplicationOptionsPanel.
+     * Test of setColorModeSelection and getColorModeSelection methods, of class ApplicationOptionsPanel.
      */
     @Test
     public void testSetGetColorModeSelection() {

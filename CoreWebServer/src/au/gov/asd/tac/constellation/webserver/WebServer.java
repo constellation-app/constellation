@@ -140,7 +140,7 @@ public class WebServer {
                 final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
                 final File restFile = new File(userDir, REST_FILE);
                 cleanupRest(restFile, userDir);
-                
+
                 // Also put rest file in notebook directory
                 final File restFileNotebook = new File(getNotebookDir(), REST_FILE);
                 cleanupRest(restFileNotebook, getNotebookDir());
@@ -228,17 +228,17 @@ public class WebServer {
         return port;
     }
 
-    static void cleanupRest(File restFile, String directory) {
+    private static void cleanupRest(final File restFile, final String directory) {
         if (Files.exists(Path.of(directory).resolve(REST_FILE))) {
             try {
                 Files.delete(Path.of(restFile.getPath()));
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 LOGGER.log(Level.WARNING, "Error deleting existing rest file in user directory");
             }
         }
     }
 
-    static File getScriptDir(final boolean mkdir) {
+    public static File getScriptDir(final boolean mkdir) {
         final File homeDir = new File(System.getProperty("user.home"));
         final File ipython = new File(homeDir, IPYTHON);
 
@@ -249,7 +249,7 @@ public class WebServer {
         return ipython;
     }
 
-    static String getNotebookDir() {
+    public static String getNotebookDir() {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         // Return path to directory
         return prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT);

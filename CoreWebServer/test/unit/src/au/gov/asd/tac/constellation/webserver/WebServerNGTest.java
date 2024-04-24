@@ -20,6 +20,7 @@ import static au.gov.asd.tac.constellation.webserver.WebServer.getNotebookDir;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermission;
@@ -30,6 +31,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import org.openide.util.NbPreferences;
+import static org.testng.Assert.assertNotEquals;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 import org.testng.annotations.AfterClass;
@@ -48,6 +50,7 @@ public class WebServerNGTest {
     private static final Logger LOGGER = Logger.getLogger(WebServerNGTest.class.getName());
     private static final String IPYTHON = ".ipython";
     private static final String REST_FILE = "rest.json";
+    private static final String TEST_TEXT = "TEST FILE";
 
     public WebServerNGTest() {
     }
@@ -123,34 +126,49 @@ public class WebServerNGTest {
             final Set<PosixFilePermission> perms = EnumSet.of(PosixFilePermission.OWNER_READ, PosixFilePermission.OWNER_WRITE);
             try {
                 Files.createFile(restFile.toPath(), PosixFilePermissions.asFileAttribute(perms));
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 LOGGER.log(Level.WARNING, "Error making file");
             }
             try {
                 Files.createFile(restFileNotebook.toPath(), PosixFilePermissions.asFileAttribute(perms));
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 LOGGER.log(Level.WARNING, "Error making file");
             }
         }
         // Windows
         try (final PrintWriter pw = new PrintWriter(restFile)) {
             // Couldn't be bothered starting up a JSON writer for two simple values.
-            pw.printf("TEST FILE");
-        } catch (IOException e) {
+            pw.printf(TEST_TEXT);
+        } catch (final IOException e) {
             LOGGER.log(Level.WARNING, "Error making file");
         }
 
         try (final PrintWriter pw = new PrintWriter(restFileNotebook)) {
             // Couldn't be bothered starting up a JSON writer for two simple values.
-            pw.printf("TEST FILE");
-        } catch (IOException e) {
+            pw.printf(TEST_TEXT);
+        } catch (final IOException e) {
             LOGGER.log(Level.WARNING, "Error making file");
         }
+
+        // Check server NOT running
+        assertEquals(false, WebServer.isRunning());
 
         // Run start
         int expResult = 1517;
         int result = WebServer.start();
+        // Check port number
         assertEquals(expResult, result);
+
+        // Check server running
+        assertEquals(true, WebServer.isRunning());
+
+        // Check file contents DO NOT match the initial values
+        try {
+            assertNotEquals(Files.readString(Path.of(userDir).resolve(REST_FILE), StandardCharsets.UTF_8), TEST_TEXT);
+            assertNotEquals(Files.readString(Path.of(getNotebookDir()).resolve(REST_FILE), StandardCharsets.UTF_8), TEST_TEXT);
+        } catch (final IOException e) {
+            LOGGER.log(Level.WARNING, "Error matching files");
+        }
     }
 
     /**
