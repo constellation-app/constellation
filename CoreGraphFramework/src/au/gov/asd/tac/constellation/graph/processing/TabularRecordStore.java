@@ -141,10 +141,10 @@ public class TabularRecordStore implements RecordStore {
 
     @Override
     public void add(final RecordStore recordStore) {
-        for (int records = 0; records < recordStore.size(); records++) {
+        for (int newRecords = 0; newRecords < recordStore.size(); newRecords++) {
             final int newRecord = add();
             for (final String key : recordStore.keys()) {
-                final String value = recordStore.get(records, key);
+                final String value = recordStore.get(newRecords, key);
                 if (value != null) {
                     set(newRecord, key, value);
                 }
@@ -271,8 +271,8 @@ public class TabularRecordStore implements RecordStore {
     public List<String> getAll(final String key) {
         final Object[][] values = getColumn(key);
         final List<String> result = new ArrayList<>(size);
-        for (int records = 0; records < size; records++) {
-            result.add(TabularRecordStore.getValue(values, records));
+        for (int newRecords = 0; newRecords < size; newRecords++) {
+            result.add(TabularRecordStore.getValue(values, newRecords));
         }
         return result;
     }

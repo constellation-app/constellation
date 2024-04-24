@@ -32,10 +32,9 @@ public final class PermanentMergeTableModel extends DefaultTableModel {
     /**
      * Initializes the table model.
      *
-     * @param graph the graph that holds the vertices to be merged.
      * @param attributes the attributes to be displayed in the table.
      */
-    public void initialise(final ArrayList<Attribute> attributes) {
+    public void initialise(final List<Attribute> attributes) {
         vertexAttributes = attributes;
         setupAttributeHeaders();
         getDataVector().clear();

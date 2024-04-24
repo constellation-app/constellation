@@ -121,15 +121,15 @@ public class PlaceholderUtilities {
         } catch (ProcessingException ex) {
             throw new PluginException(PluginNotificationLevel.ERROR, ex.getMessage());
         }
-        return collapsePlaceholders(graph, newRecord, rowProcessor, dominanceComparator, cleanupGraph, debug);
+        return collapsePlaceholders(graph, rowProcessor, dominanceComparator, cleanupGraph, debug);
     }
 
-    public static StoreGraph collapsePlaceholders(final StoreGraphRecordStore graph, final Record newRecord, final DatumProcessor<Record, ?> rowProcessor,
+    public static StoreGraph collapsePlaceholders(final StoreGraphRecordStore graph, final DatumProcessor<Record, ?> rowProcessor,
             final Comparator<GraphVertex> dominanceComparator, final boolean cleanupGraph, final boolean debug) throws PluginException, InterruptedException {
         graph.complete();
         graph.validateKeys();
 
-        GraphWrapper g = new GraphWrapper(graph);
+        final GraphWrapper g = new GraphWrapper(graph);
 
         // remove all transactions with type 'unknown' and all nodes with identifier 'unknown'
         if (cleanupGraph) {
