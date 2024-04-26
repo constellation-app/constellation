@@ -59,7 +59,7 @@ public final class GraphOptionsPanelController extends OptionsPanelController {
         graphOptionsPanel.setBlazeOpacity(prefs.getInt(GraphPreferenceKeys.BLAZE_OPACITY, GraphPreferenceKeys.BLAZE_OPACITY_DEFAULT));
 
         final String presetColorsString = NbPreferences.forModule(GraphPreferenceKeys.class)
-                .get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
+                .get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.getBlazePresetsColorsDefault());
 
         // set the colors here - below generates a list of colored icons.
         final List<Color> colors = new ArrayList<>();

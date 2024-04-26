@@ -30,7 +30,7 @@ public final class GraphPreferenceKeys {
     public static final String BLAZE_OPACITY = "blazeOpacity";
     public static final int BLAZE_OPACITY_DEFAULT = 100;
     public static final String BLAZE_PRESET_COLORS = "blazePresetColors";
-    public static final String BLAZE_PRESET_COLORS_DEFAULT = "#FF0000;#0000FF;#FFFF00;";
+    private static String BLAZE_PRESET_COLORS_DEFAULT = "#FF0000;#0000FF;#FFFF00;";
     public static final String BLAZE_RECENT_COLORS = "blazeRecentColors";
     public static final String BLAZE_RECENT_COLORS_DEFAULT = "";
 
@@ -48,5 +48,13 @@ public final class GraphPreferenceKeys {
     public static final String RIGHT_COLOR_DEFAULT = "Magenta";
 
     private GraphPreferenceKeys() {
+    }
+
+    public static String getBlazePresetsColorsDefault() {
+        return BLAZE_PRESET_COLORS_DEFAULT;
+    }
+
+    public static void setBlazePresetsColorsDefault(String newPreset) {
+        BLAZE_PRESET_COLORS_DEFAULT = newPreset;
     }
 }

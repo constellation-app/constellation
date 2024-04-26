@@ -154,7 +154,7 @@ public class BlazeUtilities {
      * @param newColor the new selected color to add as a preset
      */
     public static void savePreset(final Color newColor) {
-        final String colorString = getGraphPreferences().get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
+        final String colorString = getGraphPreferences().get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.getBlazePresetsColorsDefault());
         final List<String> colorsList = Arrays.asList(colorString.split(SeparatorConstants.SEMICOLON));
         final int freePosition;
         if (colorsList.indexOf("null") != -1) {
@@ -224,7 +224,7 @@ public class BlazeUtilities {
             return;
         }
 
-        final String colorString = getGraphPreferences().get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
+        final String colorString = getGraphPreferences().get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.getBlazePresetsColorsDefault());
         final List<String> colorsList = new ArrayList<>();
 
         colorsList.addAll(Arrays.asList(colorString.split(SeparatorConstants.SEMICOLON)));
