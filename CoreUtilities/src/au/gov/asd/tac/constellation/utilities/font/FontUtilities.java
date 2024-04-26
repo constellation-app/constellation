@@ -62,13 +62,13 @@ public class FontUtilities {
         final Preferences p = NbPreferences.root();
         try {
             if (!p.nodeExists(ApplicationPreferenceKeys.FONT_PREFERENCES)) {
-                p.node(ApplicationPreferenceKeys.FONT_PREFERENCES).put(ApplicationPreferenceKeys.FONT_SIZE, ApplicationPreferenceKeys.FONT_SIZE_DEFAULT);
-                p.node(ApplicationPreferenceKeys.FONT_PREFERENCES).put(ApplicationPreferenceKeys.FONT_FAMILY, ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT);
+                p.node(ApplicationPreferenceKeys.FONT_PREFERENCES).put(ApplicationPreferenceKeys.FONT_SIZE, ApplicationPreferenceKeys.getFontSizeDefault());
+                p.node(ApplicationPreferenceKeys.FONT_PREFERENCES).put(ApplicationPreferenceKeys.FONT_FAMILY, ApplicationPreferenceKeys.getFontFamilyDefault());
             } else {
-                ApplicationPreferenceKeys.FONT_SIZE_DEFAULT = p.node(ApplicationPreferenceKeys.FONT_PREFERENCES).get(ApplicationPreferenceKeys.FONT_SIZE,
-                        ApplicationPreferenceKeys.FONT_SIZE_DEFAULT);
-                ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT = p.node(ApplicationPreferenceKeys.FONT_PREFERENCES).get(ApplicationPreferenceKeys.FONT_FAMILY,
-                        ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT);
+                ApplicationPreferenceKeys.setFontSizeDefault( p.node(ApplicationPreferenceKeys.FONT_PREFERENCES).get(ApplicationPreferenceKeys.FONT_SIZE,
+                        ApplicationPreferenceKeys.getFontSizeDefault()));
+                ApplicationPreferenceKeys.setFontFamilyDefault(p.node(ApplicationPreferenceKeys.FONT_PREFERENCES).get(ApplicationPreferenceKeys.FONT_FAMILY,
+                        ApplicationPreferenceKeys.getFontFamilyDefault()));
             }
         } catch (final BackingStoreException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
@@ -107,13 +107,13 @@ public class FontUtilities {
             final Preferences p = NbPreferences.root();
             if (p.nodeExists(ApplicationPreferenceKeys.FONT_PREFERENCES)) {
                 final String fontSizePreference = p.node(ApplicationPreferenceKeys.FONT_PREFERENCES).get(ApplicationPreferenceKeys.FONT_SIZE,
-                        ApplicationPreferenceKeys.FONT_SIZE_DEFAULT);
+                        ApplicationPreferenceKeys.getFontSizeDefault());
                 fontSize = Integer.parseInt(fontSizePreference);
             } else {
                 fontSize = UIManager.getFont(SWING_FONT).getSize();
             }
         } catch (final BackingStoreException | NumberFormatException ex) {
-            fontSize = Integer.parseInt(ApplicationPreferenceKeys.FONT_SIZE_DEFAULT);
+            fontSize = Integer.parseInt(ApplicationPreferenceKeys.getFontSizeDefault());
             LOGGER.severe(ex.getLocalizedMessage());
         }
         LOGGER.log(Level.FINE, "Font size is {0}", fontSize);
@@ -134,12 +134,12 @@ public class FontUtilities {
         try {
             final Preferences p = NbPreferences.root();
             if (p.nodeExists(ApplicationPreferenceKeys.FONT_PREFERENCES)) {
-                fontFamily = p.node(ApplicationPreferenceKeys.FONT_PREFERENCES).get(ApplicationPreferenceKeys.FONT_FAMILY, ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT);
+                fontFamily = p.node(ApplicationPreferenceKeys.FONT_PREFERENCES).get(ApplicationPreferenceKeys.FONT_FAMILY, ApplicationPreferenceKeys.getFontFamilyDefault());
             } else {
-                fontFamily = ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT;
+                fontFamily = ApplicationPreferenceKeys.getFontFamilyDefault();
             }
         } catch (final BackingStoreException ex) {
-            fontFamily = ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT;
+            fontFamily = ApplicationPreferenceKeys.getFontFamilyDefault();
             LOGGER.severe(ex.getLocalizedMessage());
         }
 

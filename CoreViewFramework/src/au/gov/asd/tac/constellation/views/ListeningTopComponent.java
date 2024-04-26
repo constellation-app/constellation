@@ -75,8 +75,8 @@ public abstract class ListeningTopComponent<P> extends AbstractTopComponent<P> i
         this.preferenceMonitors = Collections.synchronizedMap(new HashMap<>());
         this.ignoredEvents = new HashSet<>();
 
-        preferenceMonitors.put(ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT, event -> updateFont());
-        preferenceMonitors.put(ApplicationPreferenceKeys.FONT_SIZE_DEFAULT, event -> updateFont());
+        preferenceMonitors.put(ApplicationPreferenceKeys.getFontFamilyDefault(), event -> updateFont());
+        preferenceMonitors.put(ApplicationPreferenceKeys.getFontSizeDefault(), event -> updateFont());
     }
 
     /**

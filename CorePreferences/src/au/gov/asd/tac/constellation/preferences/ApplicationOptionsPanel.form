@@ -31,7 +31,6 @@
                   <Component id="webserverPanel" alignment="0" max="32767" attributes="0"/>
                   <Component id="notebookPanel" alignment="0" max="32767" attributes="0"/>
                   <Component id="fontPanel" alignment="0" max="32767" attributes="0"/>
-                  <Component id="notebookPanel" alignment="0" max="32767" attributes="0"/>
                   <Component id="colorblindPanel" alignment="0" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -59,8 +58,7 @@
               <Component id="fontPanel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="colorblindPanel" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="13" max="32767" attributes="0"/>
-              <EmptySpace pref="111" max="32767" attributes="0"/>
+              <EmptySpace pref="124" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -480,7 +478,7 @@
               <Connection code="new DefaultComboBoxModel(fonts)" type="code"/>
             </Property>
             <Property name="selectedItem" type="java.lang.Object" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT" type="code"/>
+              <Connection code="au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys.getFontFamilyDefault()" type="code"/>
             </Property>
           </Properties>
           <Events>
