@@ -189,23 +189,23 @@ public final class ApplicationPreferenceKeys {
     public static final String FONT_PREFERENCES = "au/gov/asd/tac/constellation/preferences";
     public static final String FONT_FAMILY = "fontFamily";
     public static final String FONT_SIZE = "fontSize";
-    private static String FONT_FAMILY_DEFAULT = "Arial";
-    private static String FONT_SIZE_DEFAULT = "12";
+    private static String fontFamilyDefault = "Arial";
+    private static String fontSizeDefault = "12";
 
     public static String getFontFamilyDefault() {
-        return FONT_FAMILY_DEFAULT;
+        return fontFamilyDefault;
     }
     
     public static void setFontFamilyDefault(final String newFontFamily) {
-        FONT_FAMILY_DEFAULT = newFontFamily;
+        fontFamilyDefault = newFontFamily;
     }
 
     public static String getFontSizeDefault() {
-        return FONT_SIZE_DEFAULT;
+        return fontSizeDefault;
     }
     
     public static void setFontSizeDefault(final String newFontSize) {
-        FONT_SIZE_DEFAULT = newFontSize;
+        fontSizeDefault = newFontSize;
     }
 
     /**
