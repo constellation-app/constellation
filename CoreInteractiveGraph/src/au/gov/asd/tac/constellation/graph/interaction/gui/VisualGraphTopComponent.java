@@ -515,12 +515,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     public void componentOpened() {
         super.componentOpened();
 
-        // Try to free up any unused memory
-        final boolean forceGarbageCollectOnOpen = NbPreferences.forModule(ApplicationPreferenceKeys.class).getBoolean(DeveloperPreferenceKeys.FORCE_GC_ON_OPEN, DeveloperPreferenceKeys.FORCE_GC_ON_OPEN_DEFAULT);
-        if (forceGarbageCollectOnOpen) {
-            System.gc();
-        }
-
         graphUpdateManager.setManaged(true);
     }
 
@@ -552,12 +546,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
         if (GraphManager.getDefault().getAllGraphs().isEmpty()) {
             ConstellationIcon.clearCache();
-        }
-
-        // Try to free up any unused memory
-        final boolean forceGarbageCollectOnClose = NbPreferences.forModule(ApplicationPreferenceKeys.class).getBoolean(DeveloperPreferenceKeys.FORCE_GC_ON_CLOSE, DeveloperPreferenceKeys.FORCE_GC_ON_CLOSE_DEFAULT);
-        if (forceGarbageCollectOnClose) {
-            System.gc();
         }
 
         graphUpdateManager.setManaged(false);
