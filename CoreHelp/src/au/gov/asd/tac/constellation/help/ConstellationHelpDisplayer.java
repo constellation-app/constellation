@@ -60,8 +60,9 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         final String sep = File.separator;
         final InputStream pageInput = getInputStream(filePath);
         final InputStream tocInput = getInputStream(Generator.getBaseDirectory() + sep + Generator.getTOCDirectory());
-
-        if (pageInput == null || tocInput == null) {
+        
+        // Sonar mistakenly thinks pageInput and tocInput can never be null, but they can be null
+        if (pageInput == null && tocInput == null) { //NOSONAR
             // files could not be found, don't progress.
             return;
         }
