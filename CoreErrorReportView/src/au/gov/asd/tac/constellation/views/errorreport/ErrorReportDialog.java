@@ -23,6 +23,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.io.File;
 import java.util.Date;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.JFXPanel;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -35,6 +37,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
@@ -58,13 +61,16 @@ public class ErrorReportDialog {
     private static final Color TRANSPARENT = new Color(0, 0, 0, 0);
     private static final Insets BORDERPANE_PADDING = new Insets(8);
     private static final Insets BUTTONPANE_PADDING = new Insets(4, 4, 4, 4);
+    private static final boolean DARK_MODE = JavafxStyleManager.isDarkTheme();
 
     private final CheckBox blockRepeatsCheckbox = new CheckBox("Block all future popups for this exception");
     private final Button showHideButton = new Button("Show Details");
+    private final Label messageDesc = new Label("");
     private final TextArea errorMsgArea;
     private final Label summaryLabel = new Label("");
     private final BorderPane root;
     private final VBox detailsBox;
+    private final VBox fullMessageBox;
 
     protected double mouseOrigX = 0;
     protected double mouseOrigY = 0;
@@ -121,13 +127,16 @@ public class ErrorReportDialog {
         final Label occurrenceDesc = new Label(" " + errorEntry.getOccurrences() + " Occurrences ");
         headerSeverityPane.getChildren().add(severityDesc);
 
-        // Text just needs some better formatting, spacing is good, just wrapping or something
-        final Label messageDesc = new Label(errorEntry.getHeading());
+        final String adjustedMessage = errorEntry.getTrimmedHeading(500);
+
+        messageDesc.setText(adjustedMessage);
+        messageDesc.setWrapText(true);
+        messageDesc.setMaxWidth(375);
         messageDesc.setStyle("-fx-font-weight: bold; ");
 
         errorHeadingText.getChildren().add(messageDesc);
         errorHeadingText.setPadding(new Insets(3, 0, 10, 0));
-
+        
         final BorderPane headingSection = new BorderPane();
 
         if (showOccs) {
@@ -149,13 +158,17 @@ public class ErrorReportDialog {
 
         detailsBox.getChildren().add(errorHeadingPane);
         errorMsgArea = new TextArea(errorEntry.getSummaryHeading() + SeparatorConstants.NEWLINE + errorEntry.getErrorData());
-        errorMsgArea.setPrefRowCount(24);
         errorMsgArea.setEditable(false);
+
+        fullMessageBox = new VBox();
+        fullMessageBox.setPadding(new Insets(2, 2, 8, 2));
+        VBox.setVgrow(errorMsgArea, Priority.ALWAYS);
+        root.setCenter(fullMessageBox);
 
         summaryLabel.setText(" Click Show Details or see the messages.log file in your\n " + logFileLocation + " folder");
         final ImageView blankImage = new ImageView(DefaultIconProvider.TRANSPARENT.buildImage(36, Color.RED));
         summaryLabel.setGraphic(blankImage);
-        detailsBox.getChildren().add(summaryLabel);
+        fullMessageBox.getChildren().add(summaryLabel);
         final BorderPane buttonPane = new BorderPane();
         buttonPane.setPadding(BUTTONPANE_PADDING);
         root.setBottom(buttonPane);
@@ -167,6 +180,15 @@ public class ErrorReportDialog {
         blockRepeatsCheckbox.setSelected(errorEntry.isBlockRepeatedPopups());
         buttonPane.setCenter(blockRepeatsCheckbox);
         buttonPane.setRight(closeButton);
+        
+        root.widthProperty().addListener(new ChangeListener<Number>(){
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                final int newWidth = newValue.intValue() - 55;
+                messageDesc.setMaxWidth(newWidth > 120 ? newWidth : 120);
+            }
+        });
+        
         final Scene scene = new Scene(root);
         scene.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         fxPanel.setScene(scene);
@@ -180,13 +202,13 @@ public class ErrorReportDialog {
         showHideButton.setText(showingDetails ? "Hide Details" : "Show Details");
         final int headerLen = currentError.getHeading().length();
         if (showingDetails) {
-            detailsBox.getChildren().remove(summaryLabel);
-            detailsBox.getChildren().add(errorMsgArea);
+            fullMessageBox.getChildren().remove(summaryLabel);
+            fullMessageBox.getChildren().add(errorMsgArea);
             final int prefHeight = 575 + Math.min(75, 25 * (headerLen / 125));
             dialog.setSize(new Dimension(575, prefHeight));
         } else {
-            detailsBox.getChildren().remove(errorMsgArea);
-            detailsBox.getChildren().add(summaryLabel);
+            fullMessageBox.getChildren().remove(errorMsgArea);
+            fullMessageBox.getChildren().add(summaryLabel);
             final int prefHeight = 225 + Math.min(75, 25 * (headerLen / 75));
             dialog.setSize(new Dimension(430, prefHeight));
         }

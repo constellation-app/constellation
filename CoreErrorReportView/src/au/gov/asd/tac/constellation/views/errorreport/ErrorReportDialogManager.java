@@ -185,7 +185,7 @@ public class ErrorReportDialogManager {
             gracePeriodResumptionDate = null;
         } else {
             latestPopupDismissDate = new Date(latestDismissDate.getTime());
-            gracePeriodResumptionDate = new Date(latestPopupDismissDate.getTime() + 5000);
+            gracePeriodResumptionDate = new Date(latestPopupDismissDate.getTime() + 10000);
         }
     }
 

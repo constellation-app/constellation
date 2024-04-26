@@ -199,10 +199,10 @@ public class ConstellationLAFSettings {
         } else {
             // Fixed set of Blue shade colors
             // appropriate for standard Nimbus LAF
-            activeBlue = new Color(160, 210, 255);
-            activeDarkBlue = new Color(92, 130, 188);
+            activeBlue = new Color(175, 204, 252);
+            activeDarkBlue = new Color(121, 153, 228);
             selectedBlue = new Color(145, 185, 250);
-            selectedDarkBlue = new Color(82, 122, 178);
+            selectedDarkBlue = new Color(99, 137, 200);
             unselectedGreyBlue = new Color(190, 205, 215);
             unselectedDarkGreyBlue = new Color(150, 160, 175);
         }
@@ -249,7 +249,7 @@ public class ConstellationLAFSettings {
             selectedHoverBackgroundBlue = new Color(40, 70, 120);
             unselectedHoverBackgroundBlue = new Color(40, 70, 110);
             gradientBackgroundBlue = new Color(40, 70, 110);
-            attentionBackgroundOrange = new Color(138, 42, 30);
+            attentionBackgroundOrange = new Color(148, 52, 40);
         } else {
             // Fixed set of Blue shade colors
             // appropriate for FlatLafLight LAF
@@ -261,7 +261,7 @@ public class ConstellationLAFSettings {
             hoverBackgroundBlue = new Color(195, 215, 250);
             selectedHoverBackgroundBlue = new Color(212, 230, 252);
             unselectedHoverBackgroundBlue = new Color(195, 215, 255);
-            attentionBackgroundOrange = new Color(250, 180, 160);
+            attentionBackgroundOrange = new Color(250, 170, 150);
         }
 
         try {
@@ -284,7 +284,7 @@ public class ConstellationLAFSettings {
                 UIManager.getDefaults().put("ViewTab.hoverBackground", hoverBackgroundBlue);
                 UIManager.getDefaults().put("ViewTab.selectedHoverBackground", selectedHoverBackgroundBlue);
                 UIManager.getDefaults().put("ViewTab.unselectedHoverBackground", unselectedHoverBackgroundBlue);
-                UIManager.getDefaults().put("ViewTab.underlineHeight", 4);
+                UIManager.getDefaults().put("ViewTab.underlineHeight", 3);
                 UIManager.getDefaults().put("ViewTab.underlineColor", selectedUnderlineBlue);
                 UIManager.getDefaults().put("ViewTab.inactiveUnderlineColor", inactiveUnderlineBlue); // ViewTab.attentionForeground
                 UIManager.getDefaults().put("ViewTab.attentionBackground", attentionBackgroundOrange);
@@ -296,7 +296,7 @@ public class ConstellationLAFSettings {
                 UIManager.getDefaults().put("EditorTab.hoverBackground", hoverBackgroundBlue);
                 UIManager.getDefaults().put("EditorTab.selectedHoverBackground", selectedHoverBackgroundBlue);
                 UIManager.getDefaults().put("EditorTab.unselectedHoverBackground", unselectedHoverBackgroundBlue);
-                UIManager.getDefaults().put("EditorTab.underlineHeight", 4);
+                UIManager.getDefaults().put("EditorTab.underlineHeight", 3);
                 UIManager.getDefaults().put("EditorTab.underlineColor", selectedUnderlineBlue);
                 UIManager.getDefaults().put("EditorTab.inactiveUnderlineColor", inactiveUnderlineBlue);
                 UIManager.getDefaults().put("EditorTab.attentionBackground", attentionBackgroundOrange);

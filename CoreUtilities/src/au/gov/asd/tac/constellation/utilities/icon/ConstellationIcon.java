@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.utilities.icon;
 
 import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
-import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.svg.SVGAttributeConstants;
 import au.gov.asd.tac.constellation.utilities.svg.SVGData;
 import au.gov.asd.tac.constellation.utilities.svg.SVGObject;
@@ -237,12 +236,8 @@ public class ConstellationIcon {
      * @return A {@link BufferedImage} of the specified size.
      */
     public BufferedImage buildBufferedImage(final int size, final Color color) {
-        Color adjustedColor = JavafxStyleManager.isDarkTheme() ? new Color(255,255,255,128) : new Color(128,128,128,128);
-        if (color != null) {
-            adjustedColor = color;
-        }
         // build the cache key
-        final ThreeTuple<Integer, Integer, Color> key = buildCacheKey(size, adjustedColor);
+        final ThreeTuple<Integer, Integer, Color> key = buildCacheKey(size, color);
 
         BufferedImage icon;
         if (BUFFERED_IMAGE_CACHE.containsKey(key)) {
@@ -250,7 +245,7 @@ public class ConstellationIcon {
         } else {
             // build the icon
             LOGGER.log(Level.FINE, BUILDING_ICON_FORMAT, name);
-            final byte[] data = retrieveIconData(iconData, size, adjustedColor);
+            final byte[] data = retrieveIconData(iconData, size, color);
             try {
                 icon = ImageIO.read(new ByteArrayInputStream(data));
 
@@ -308,12 +303,8 @@ public class ConstellationIcon {
      * @return An {@link Icon} of the specified size.
      */
     public Icon buildIcon(final int size, final Color color) {
-        Color adjustedColor = JavafxStyleManager.isDarkTheme() ?  new Color(255,255,255,64) : new Color(128,128,128,64);
-        if (color != null) {
-            adjustedColor = color;
-        }
         // build the cache key
-        final ThreeTuple<Integer, Integer, Color> key = buildCacheKey(size, adjustedColor);
+        final ThreeTuple<Integer, Integer, Color> key = buildCacheKey(size, color);
 
         final ImageIcon icon;
         if (ICON_CACHE.containsKey(key)) {
@@ -321,7 +312,7 @@ public class ConstellationIcon {
         } else {
             // build the icon
             LOGGER.log(Level.FINE, BUILDING_ICON_FORMAT, name);
-            final byte[] data = retrieveIconData(iconData, size, adjustedColor);
+            final byte[] data = retrieveIconData(iconData, size, color);
             icon = new ImageIcon(data);
 
             // cache the icon data

@@ -64,13 +64,20 @@ public class ErrorReportEntry {
         if (heading == null) {
             return "-NULL-";
         }
-        if (heading.length() < length) {
-            return heading;
+
+        String adjustedHeading = heading;
+        if (adjustedHeading.endsWith("\n")) {
+            adjustedHeading = adjustedHeading.substring(0, adjustedHeading.lastIndexOf("\n"));
+        }
+        adjustedHeading = adjustedHeading.replaceAll("\n", " . ") + "\n";
+        
+        if (adjustedHeading.length() < length) {
+            return adjustedHeading;
         }
         if (length <= 4) {
-            return heading.substring(0, 4);
+            return adjustedHeading.substring(0, 4);
         }
-        return heading.substring(0, length - 4) + " ...";
+        return adjustedHeading.substring(0, length - 4) + " ...";
     }
 
     public String getHeading() {

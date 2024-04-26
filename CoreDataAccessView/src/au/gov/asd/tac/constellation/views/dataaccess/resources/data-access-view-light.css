@@ -4,21 +4,21 @@
 
 .accordion .titled-pane-heading .title, .titled-pane-heading > .title {
     -fx-font-weight:bold;
-    -fx-background-color: linear-gradient(to bottom, derive(#4191d1,100%), derive(#4191d1,0%) 5%, derive(#1f99f0,-25%) 95%, derive(#1f99f0,50%) 100%);
+    -fx-background-color: linear-gradient(to bottom, derive(#4191e8,100%), derive(#4191e8,0%) 5%, derive(#1f99f0,-25%) 95%, derive(#1f99f0,50%) 100%);
     -fx-padding: 3;
     -fx-color: blue;
 }
 
 .titled-pane-selected > .title {
-    -fx-background-color: #6bd65c;
+    -fx-background-color: #6fc95c;
 }
 
 #go-style {
-    -fx-background-color: #6bd65c;
+    -fx-background-color: #6fc95c;
 }
 
 .titled-pane-matched > .title {
-    -fx-background-color: #a8d0fe;
+    -fx-background-color: #a4c8fe;
 }
 
 .titled-pane-heading > .title {
@@ -28,7 +28,7 @@
 }
 
 .titled-pane-datetime > .title {
-    -fx-base: #4191d1;
+    -fx-base: #4191e8;
 }
 
 .page-corner {
@@ -48,7 +48,7 @@
 }
 
 #options-menu {
-    -fx-background-color: linear-gradient(to bottom, derive(#4191d1,100%), derive(#4191d1,0%) 5%, derive(#4191d1,-25%) 95%, derive(#4191d1,50%) 100%);
+    -fx-background-color: linear-gradient(to bottom, derive(#4191e8,100%), derive(#4191e8,0%) 5%, derive(#4191d1,-25%) 95%, derive(#4191d1,50%) 100%);
     -fx-padding: 3;
     -fx-color: blue;
     -fx-border-color: #444444
