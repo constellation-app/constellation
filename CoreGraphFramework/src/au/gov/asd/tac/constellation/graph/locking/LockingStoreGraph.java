@@ -35,36 +35,30 @@ public class LockingStoreGraph extends StoreGraph implements ReadableGraph, Writ
     private static final Logger LOGGER = Logger.getLogger(LockingStoreGraph.class.getName());
 
     private final LockingManager<?> lockingManager;
-    private final int instance;
 
     public LockingStoreGraph(final LockingManager<?> lockingManager, final int instance, final Schema schema) {
         super(schema);
         this.lockingManager = lockingManager;
-        this.instance = instance;
     }
 
     public LockingStoreGraph(final LockingManager<?> lockingManager, final int instance, final Schema schema, final String id) {
         super(schema, id);
         this.lockingManager = lockingManager;
-        this.instance = instance;
     }
 
     public LockingStoreGraph(final LockingManager<?> lockingManager, final int instance, final StoreGraph storeGraph) {
         super(storeGraph);
         this.lockingManager = lockingManager;
-        this.instance = instance;
     }
 
     public LockingStoreGraph(final LockingManager<?> lockingManager, final int instance, final StoreGraph storeGraph, final boolean newId) {
         super(storeGraph, newId);
         this.lockingManager = lockingManager;
-        this.instance = instance;
     }
 
     public LockingStoreGraph(final LockingManager<?> lockingManager, final int instance, final StoreGraph storeGraph, final String id) {
         super(storeGraph, id);
         this.lockingManager = lockingManager;
-        this.instance = instance;
     }
 
     @Override

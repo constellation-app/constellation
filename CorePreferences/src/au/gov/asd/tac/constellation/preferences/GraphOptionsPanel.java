@@ -45,14 +45,12 @@ import org.openide.util.NbPreferences;
  */
 final class GraphOptionsPanel extends JPanel {
 
-    private final GraphOptionsPanelController controller;
     private final List<JPanel> colorPanels;
     final Preferences prefs = NbPreferences.forModule(GraphPreferenceKeys.class);
     private final static Color DEFAULT_COLOR = new Color(255, 255, 254);
     private static final String[] EYE_COLORS = new String[]{"Blue", "Cyan", "Green", "Magenta", "Red", "Yellow"};
 
-    public GraphOptionsPanel(final GraphOptionsPanelController controller) {
-        this.controller = controller;
+    public GraphOptionsPanel() {
         initComponents();
 
         colorPanels = new ArrayList<>();

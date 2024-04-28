@@ -44,13 +44,11 @@ import org.openide.util.NbBundle;
  */
 final class ApplicationOptionsPanel extends JPanel {
 
-    private final ApplicationOptionsPanelController controller;
     private final String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
 
     private static final String USER_HOME_PROPERTY = "user.home";
 
-    public ApplicationOptionsPanel(final ApplicationOptionsPanelController controller) {
-        this.controller = controller;
+    public ApplicationOptionsPanel() {
         initComponents();
     }
 
@@ -140,7 +138,7 @@ final class ApplicationOptionsPanel extends JPanel {
     }
 
     public void setFontSize(final String fontSize) {
-        fontSizeSpinner.setValue(Integer.parseInt(fontSize));
+        fontSizeSpinner.setValue(Integer.valueOf(fontSize));
     }
 
     public String[] getFontList() {

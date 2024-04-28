@@ -39,10 +39,9 @@ import javafx.stage.Stage;
  */
 public class UseListInputWindow extends Stage {
 
-    private StringCriteriaPanel parentComponent;
-    private String chosenSplitLineOption;
+    private final StringCriteriaPanel parentComponent;
 
-    private BorderPane bp = new BorderPane();
+    private final BorderPane bp = new BorderPane();
 
     private final VBox vbox = new VBox();
 
@@ -56,10 +55,10 @@ public class UseListInputWindow extends Stage {
     private final ChoiceBox<String> splitLinesChoiceBox = new ChoiceBox<>();
     private final Button splitLinesButton = new Button("Split Lines");
 
-    private BorderPane buttonsBp = new BorderPane();
-    private HBox buttonsHbox = new HBox();
-    private Button saveButton = new Button("Save");
-    private Button cancelButton = new Button("Cancel");
+    private final BorderPane buttonsBp = new BorderPane();
+    private final HBox buttonsHbox = new HBox();
+    private final Button saveButton = new Button("Save");
+    private final Button cancelButton = new Button("Cancel");
 
     private static final String COMMA = "Comma";
     private static final String TAB = "Tab";
@@ -99,7 +98,6 @@ public class UseListInputWindow extends Stage {
         textArea.setText(parentComponent.getSearchFieldText());
         splitLinesChoiceBox.getItems().addAll(COMMA, TAB, SEMI_COLON, STRING_STRING);
         splitLinesChoiceBox.getSelectionModel().selectFirst();
-        chosenSplitLineOption = splitLinesChoiceBox.getSelectionModel().getSelectedItem();
 
         splitLinesHbox.getChildren().addAll(splitLinesChoiceBoxLabel, splitLinesChoiceBox, splitLinesButton);
         splitLinesHbox.setSpacing(10);
@@ -129,7 +127,7 @@ public class UseListInputWindow extends Stage {
      *
      * @param text
      */
-    public void updateText(String text) {
+    public final void updateText(String text) {
         final StringBuilder sb = new StringBuilder();
         final String[] splitText = text.split(SeparatorConstants.COMMA);
         for (int i = 0; i < splitText.length; i++) {
@@ -156,8 +154,7 @@ public class UseListInputWindow extends Stage {
      */
     private void splitLinesAction() {
         final String selectedSplitChoice = splitLinesChoiceBox.getSelectionModel().getSelectedItem();
-        final String splitAt;
-        splitAt = switch (selectedSplitChoice) {
+        final String splitAt = switch (selectedSplitChoice) {
             case COMMA -> SeparatorConstants.COMMA;
             case TAB -> SeparatorConstants.TAB;
             case SEMI_COLON -> SeparatorConstants.SEMICOLON;
@@ -184,7 +181,6 @@ public class UseListInputWindow extends Stage {
      * @param choiceSelection
      */
     private void splitLinesChoiceAction(String choiceSelection) {
-        chosenSplitLineOption = choiceSelection;
         splitLinesHbox.getChildren().clear();
 
         if (STRING_STRING.equals(choiceSelection)) {

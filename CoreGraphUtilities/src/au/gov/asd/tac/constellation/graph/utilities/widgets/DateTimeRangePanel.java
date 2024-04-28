@@ -45,7 +45,6 @@ public class DateTimeRangePanel extends javax.swing.JPanel {
 
     private static final Logger LOGGER = Logger.getLogger(DateTimeRangePanel.class.getName());
 
-    private final DateTimeListenerInterface parentPanel;
     private Calendar firstDate = null;
     private Calendar secondDate = null;
     private Date minDate = null;
@@ -57,7 +56,6 @@ public class DateTimeRangePanel extends javax.swing.JPanel {
      * @param parent The <code>FindCriteriaPanel</code> that owns this panel.
      */
     public DateTimeRangePanel(final DateTimeListenerInterface parent) {
-        this.parentPanel = parent;
         initialise();
     }
 
@@ -119,7 +117,6 @@ public class DateTimeRangePanel extends javax.swing.JPanel {
      */
     public DateTimeRangePanel(final DateTimeListenerInterface parent, final Calendar firstDateTime,
             final Calendar secondDateTime, final Calendar minDateTime, final Calendar maxDateTime, final boolean isBetween) {
-        this.parentPanel = parent;
         this.firstDate = firstDateTime;
         this.secondDate = secondDateTime;
         if (minDateTime == null || maxDateTime == null) {
@@ -161,7 +158,7 @@ public class DateTimeRangePanel extends javax.swing.JPanel {
      * @param isBetween <code>true</code> if form should show the extended input
      * controls, <code>false</code> if it should not.
      */
-    public void setUIState(final boolean isBetween) {
+    public final void setUIState(final boolean isBetween) {
         lblDateTime1.setVisible(isBetween);
         spnDateTime2.setVisible(isBetween);
         calendarButton2.setVisible(isBetween);

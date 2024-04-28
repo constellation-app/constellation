@@ -98,7 +98,7 @@ public class HelpOptionsPanelController extends OptionsPanelController implement
 
     protected HelpOptionsPanel getPanel() {
         if (panel == null) {
-            panel = new HelpOptionsPanel(this);
+            panel = new HelpOptionsPanel();
         }
         return panel;
     }
