@@ -98,7 +98,6 @@ public class TimelinePanel extends Region {
     private ComboBox<String> cmbExcludedNodes;
     private ToggleButton selectedOnlyButton;
     private ToggleButton btnShowLabels;
-    private Button btnZoomToSelection;
     private ComboBox<ZoneId> timeZoneComboBox;
     private long expectedvxMod = Long.MIN_VALUE;
     private long expectedtxMod = Long.MIN_VALUE;
@@ -456,9 +455,8 @@ public class TimelinePanel extends Region {
         timeZoneComboBox.setCellFactory(cellFactory);
         timeZoneComboBox.setButtonCell(cellFactory.call(null));
         timeZoneComboBox.getSelectionModel().select(TimeZoneUtilities.UTC);
-        timeZoneComboBox.getSelectionModel().selectedItemProperty().addListener((v, o, n) -> {
-            coordinator.updateTimeZone(n);
-        });
+        timeZoneComboBox.getSelectionModel().selectedItemProperty().addListener((v, o, n) -> 
+            coordinator.updateTimeZone(n));
 
         // Combo box for excluded nodes visibility
         cmbExcludedNodes = new ComboBox<>();
@@ -488,21 +486,18 @@ public class TimelinePanel extends Region {
         btnShowLabels.selectedProperty().addListener((observable, oldValue, newValue) 
                 -> coordinator.setIsShowingNodeLabels(newValue));
 
-        btnZoomToSelection = new Button(Bundle.ZoomtoSelection());
-        btnZoomToSelection.setOnAction(e -> {
-            coordinator.setExtents();
-        });
+        final Button btnZoomToSelection = new Button(Bundle.ZoomtoSelection());
+        btnZoomToSelection.setOnAction(e -> 
+            coordinator.setExtents());
 
         selectedOnlyButton = new ToggleButton(Bundle.Lbl_ShowSelectedOnly());
-        selectedOnlyButton.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            coordinator.setIsShowingSelectedOnly(newValue);
-        });
+        selectedOnlyButton.selectedProperty().addListener((observable, oldValue, newValue) -> 
+            coordinator.setIsShowingSelectedOnly(newValue));
 
         final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.WHITE.getJavaColor())));
         helpButton.setTooltip(new Tooltip("Display help for Timeline"));
-        helpButton.setOnAction(event -> {
-            new HelpCtx(TimelineTopComponent.class.getName()).display();
-        });
+        helpButton.setOnAction(event -> 
+            new HelpCtx(TimelineTopComponent.class.getName()).display());
 
         final Label spacer1 = new Label("   ");
         final Label spacer2 = new Label("   ");

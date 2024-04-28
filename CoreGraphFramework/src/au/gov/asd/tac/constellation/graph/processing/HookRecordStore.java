@@ -61,8 +61,8 @@ public class HookRecordStore implements RecordStore {
     }
 
     @Override
-    public String get(final int record, final String key) {
-        return recordStore.get(record, key);
+    public String get(final int newRecord, final String key) {
+        return recordStore.get(newRecord, key);
     }
 
     @Override
@@ -71,8 +71,8 @@ public class HookRecordStore implements RecordStore {
     }
 
     @Override
-    public boolean hasValue(final int record, final String key) {
-        return recordStore.hasValue(record, key);
+    public boolean hasValue(final int newRecord, final String key) {
+        return recordStore.hasValue(newRecord, key);
     }
 
     @Override
@@ -86,8 +86,8 @@ public class HookRecordStore implements RecordStore {
     }
 
     @Override
-    public void set(final int record, final String key, final String value) {
-        recordStore.set(record, key, value);
+    public void set(final int newRecord, final String key, final String value) {
+        recordStore.set(newRecord, key, value);
     }
 
     @Override
@@ -101,8 +101,8 @@ public class HookRecordStore implements RecordStore {
     }
 
     @Override
-    public List<String> values(final int record) {
-        return recordStore.values(record);
+    public List<String> values(final int newRecord) {
+        return recordStore.values(newRecord);
     }
 
     @Override

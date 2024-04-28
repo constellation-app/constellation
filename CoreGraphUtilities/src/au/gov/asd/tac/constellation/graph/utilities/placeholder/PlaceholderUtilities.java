@@ -101,7 +101,7 @@ public class PlaceholderUtilities {
      * nodes and cleaning up the result.
      *
      * @param schema the schema for the new graph.
-     * @param record the record to add to the new graph.
+     * @param newRecord the record to add to the new graph.
      * @param rowProcessor the processor that will interpret the record.
      * @param parameters the parameters that are passed to the row processor.
      * @param dominanceComparator the comparator that orders the vertices to
@@ -113,22 +113,23 @@ public class PlaceholderUtilities {
      * @throws PluginException if an anticipated exception occurs.
      * @throws InterruptedException if the operation is canceled.
      */
-    public static StoreGraph processRecord(final Schema schema, final Record record, final DatumProcessor<Record, Map<String, String>> rowProcessor,
+    public static StoreGraph processRecord(final Schema schema, final Record newRecord, final DatumProcessor<Record, Map<String, String>> rowProcessor,
             final Map<String, String> parameters, Comparator<GraphVertex> dominanceComparator, final boolean cleanupGraph, final boolean debug) throws PluginException, InterruptedException {
         StoreGraphRecordStore graph = new StoreGraphRecordStore(schema);
         try {
-            rowProcessor.process(parameters, record, graph);
+            rowProcessor.process(parameters, newRecord, graph);
         } catch (ProcessingException ex) {
             throw new PluginException(PluginNotificationLevel.ERROR, ex.getMessage());
         }
         return collapsePlaceholders(graph, rowProcessor, dominanceComparator, cleanupGraph, debug);
     }
 
-    public static StoreGraph collapsePlaceholders(final StoreGraphRecordStore graph, final DatumProcessor<Record, ?> rowProcessor, final Comparator<GraphVertex> dominanceComparator, final boolean cleanupGraph, final boolean debug) throws PluginException, InterruptedException {
+    public static StoreGraph collapsePlaceholders(final StoreGraphRecordStore graph, final DatumProcessor<Record, ?> rowProcessor,
+            final Comparator<GraphVertex> dominanceComparator, final boolean cleanupGraph, final boolean debug) throws PluginException, InterruptedException {
         graph.complete();
         graph.validateKeys();
 
-        GraphWrapper g = new GraphWrapper(graph);
+        final GraphWrapper g = new GraphWrapper(graph);
 
         // remove all transactions with type 'unknown' and all nodes with identifier 'unknown'
         if (cleanupGraph) {

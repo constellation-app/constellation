@@ -131,10 +131,9 @@ public class NumberInputPane<T> extends Pane {
                 } else {
                     repeatedOccurrences = 0;
                 }
-                Platform.runLater(() -> {
+                Platform.runLater(() -> 
                     // Auto-select the numeric portion of the new text, to allow immediate overwriting of the inserted value.
-                    field.getEditor().selectRange((repeatedOccurrences%2 == 1) ? 0 : newValue.length(), field.getEditor().getText().length());
-                });
+                    field.getEditor().selectRange((repeatedOccurrences%2 == 1) ? 0 : newValue.length(), field.getEditor().getText().length()));
                 return;
             }
             final int dotPos = newValue.indexOf(SeparatorConstants.PERIOD);

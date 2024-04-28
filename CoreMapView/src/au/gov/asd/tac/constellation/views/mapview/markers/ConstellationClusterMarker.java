@@ -169,9 +169,8 @@ public class ConstellationClusterMarker extends ConstellationAbstractMarker {
         }
 
         clusterCenter = new MapPosition();
-        positions.forEach(position -> {
-            clusterCenter.add(position);
-        });
+        positions.forEach(position -> 
+            clusterCenter.add(position));
         clusterCenter.div(positions.size());
 
         double diameter = 0;
