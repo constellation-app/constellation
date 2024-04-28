@@ -22,7 +22,6 @@ import de.fhpotsdam.unfolding.utils.MapPosition;
 import de.fhpotsdam.unfolding.utils.ScreenPosition;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import processing.core.PConstants;
 import processing.core.PGraphics;
 
@@ -67,7 +66,7 @@ public class ConstellationPolygonMarker extends ConstellationAbstractMarker {
     public boolean isInside(final UnfoldingMap map, final float checkX, final float checkY) {
         final List<ScreenPosition> positions = locations.stream()
                 .map(map::getScreenPosition)
-                .collect(Collectors.toList());
+                .toList();
         return isInside(checkX, checkY, positions);
     }
 

@@ -95,7 +95,7 @@ public class GraphVertex extends GraphElement {
         List<GraphStep> neighbours = streamNeighbours()
                 .filter(n -> !visited.contains(n.getDestinationVertex().getId()))
                 .filter(p)
-                .collect(Collectors.toList());
+                .toList();
         visited.addAll(neighbours.stream().map(n -> n.getDestinationVertex().getId()).collect(Collectors.toSet()));
         return Stream.concat(
                 neighbours.stream(),

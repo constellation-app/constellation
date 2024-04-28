@@ -282,16 +282,16 @@ public final class GLTools {
      * @param iStacks the number of stacks in the sphere.
      */
     public static void makeSphere(final GL3 gl, final TriangleBatch sphereBatch, final float fRadius, final int iSlices, final int iStacks) {
-        float drho = (float) Math.PI / (float) iStacks;
-        float dtheta = 2.0F * (float) Math.PI / (float) iSlices;
-        float ds = 1.0F / (float) iSlices;
-        float dt = 1.0F / (float) iStacks;
+        float drho = (float) Math.PI / iStacks;
+        float dtheta = 2.0F * (float) Math.PI / iSlices;
+        float ds = 1.0F / iSlices;
+        float dt = 1.0F / iStacks;
         float t = 1.0F;
         float s;
 
         sphereBatch.beginMesh(iSlices * iStacks * 6);
         for (int i = 0; i < iStacks; i++) {
-            float rho = (float) i * drho;
+            float rho = i * drho;
             float srho = (float) (Math.sin(rho));
             float crho = (float) (Math.cos(rho));
             float srhodrho = (float) (Math.sin(rho + drho));

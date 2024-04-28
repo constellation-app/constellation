@@ -43,7 +43,7 @@ import org.openide.util.NbPreferences;
  *
  * @author aldebaran30701
  */
-final class GraphOptionsPanel extends javax.swing.JPanel {
+final class GraphOptionsPanel extends JPanel {
 
     private final GraphOptionsPanelController controller;
     private final List<JPanel> colorPanels;
