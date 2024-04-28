@@ -36,7 +36,7 @@ public class Operators {
         synchronized (registries) {
             OperatorRegistry registry = registries.get(name);
             if (registry == null) {
-                registry = new OperatorRegistry(name);
+                registry = new OperatorRegistry();
                 registries.put(name, registry);
             }
             return registry;

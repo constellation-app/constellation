@@ -242,7 +242,7 @@ public class MdsArranger implements Arranger {
                 // Find info about closest vertices that are already there
                 // (fill in an entry in each of indicesOfClosestVertices,
                 // indicesOfNextClosestVertices, and gammas).
-                initialPositioningInfoThisVertex(wg, verticesToArrange, newVxId, distanceMatrix, closestVertices, nextClosestVertices, gammas);
+                initialPositioningInfoThisVertex(verticesToArrange, newVxId, distanceMatrix, closestVertices, nextClosestVertices, gammas);
 
                 remainingVertices--;
             }
@@ -486,9 +486,7 @@ public class MdsArranger implements Arranger {
      * nextClosestVertices, and gammas. Note that numVxsToInfluence is changing
      * each time it is called.
      */
-    private static void initialPositioningInfoThisVertex(final GraphWriteMethods graph, final BitSet verticesToArrange,
-            final int vxId, final float[][] distanceMatrix, final int[] closestVertices, final int[] nextClosestVertices,
-            final float[] gammas) {
+    private static void initialPositioningInfoThisVertex(final BitSet verticesToArrange, final int vxId, final float[][] distanceMatrix, final int[] closestVertices, final int[] nextClosestVertices, final float[] gammas) {
         // Find the vertex closest to vxId.
         int closestVxId = Graph.NOT_FOUND;
         int nextClosestVxId = Graph.NOT_FOUND;

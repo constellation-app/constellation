@@ -137,7 +137,7 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
 
     @Override
     public void setByte(final int id, final byte value) {
-        data[id] = (int) value;
+        data[id] = value;
     }
 
     @Override
@@ -147,7 +147,7 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
 
     @Override
     public void setShort(final int id, final short value) {
-        data[id] = (int) value;
+        data[id] = value;
     }
 
     @Override
@@ -162,7 +162,7 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
 
     @Override
     public long getLong(final int id) {
-        return (long) data[id];
+        return data[id];
     }
 
     @Override
@@ -172,7 +172,7 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
 
     @Override
     public float getFloat(final int id) {
-        return (float) data[id];
+        return data[id];
     }
 
     @Override
@@ -182,7 +182,7 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
 
     @Override
     public double getDouble(final int id) {
-        return (double) data[id];
+        return data[id];
     }
 
     @Override
@@ -207,7 +207,7 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
 
     @Override
     public void setChar(final int id, final char value) {
-        data[id] = (int) value;
+        data[id] = value;
     }
 
     @Override

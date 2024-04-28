@@ -105,7 +105,7 @@ public abstract class AbstractObjectAttributeDescription<T extends Object> exten
     @SuppressWarnings("unchecked")
     @Override
     public String getString(final int id) {
-        return data[id] != null ? String.valueOf((T) data[id]) : null;
+        return data[id] != null ? String.valueOf(data[id]) : null;
     }
 
     @Override

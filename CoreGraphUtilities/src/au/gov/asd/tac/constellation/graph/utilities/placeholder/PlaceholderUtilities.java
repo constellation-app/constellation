@@ -83,7 +83,7 @@ public class PlaceholderUtilities {
      * @param transactionType the type of transaction to add.
      * @param enrichmentAttributes the extra attributes to add.
      */
-    public static void createGroup(final String groupName, final RecordStore recordStore, final List<String> nodes,
+    public static void createGroup(final String groupName, final RecordStore recordStore, final Iterable<String> nodes,
             final SchemaTransactionType transactionType, final Map<String, String> enrichmentAttributes) {
         for (final String node : nodes) {
             recordStore.add();

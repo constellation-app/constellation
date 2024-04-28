@@ -38,6 +38,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -78,7 +79,7 @@ public final class GLTools {
      * @param version An int[2] to receive the version: version[0] contains
      * GL_MAJOR_VERSION, version[1] contains GL_MINOR_VERSION.
      */
-    public static void getOpenGLVersion(final GL3 gl, int[] version) {
+    public static void getOpenGLVersion(final GL gl, int[] version) {
         gl.glGetIntegerv(GL2ES3.GL_MAJOR_VERSION, version, 0);
         gl.glGetIntegerv(GL2ES3.GL_MINOR_VERSION, version, 1);
     }
@@ -135,13 +136,13 @@ public final class GLTools {
         return buf.toString();
     }
 
-    public static void loadShaderSource(final GL3 gl, final String shaderSrc, final int shader) {
+    public static void loadShaderSource(final GL2ES2 gl, final String shaderSrc, final int shader) {
         final String[] shaderParam = {shaderSrc};
 
         gl.glShaderSource(shader, 1, shaderParam, null, 0);
     }
 
-    public static String getShaderLog(final GL3 gl, final int shader) {
+    public static String getShaderLog(final GL2ES2 gl, final int shader) {
         final int[] maxLength = new int[1];
         gl.glGetShaderiv(shader, GL2ES2.GL_INFO_LOG_LENGTH, maxLength, 0);
         if (maxLength[0] == 0) {
@@ -156,7 +157,7 @@ public final class GLTools {
         return log.trim();
     }
 
-    public static String getProgramLog(final GL3 gl, final int shader) {
+    public static String getProgramLog(final GL2ES2 gl, final int shader) {
         final int[] maxLength = new int[1];
         gl.glGetProgramiv(shader, GL2ES2.GL_INFO_LOG_LENGTH, maxLength, 0);
         if (maxLength[0] == 0) {
@@ -282,16 +283,16 @@ public final class GLTools {
      * @param iStacks the number of stacks in the sphere.
      */
     public static void makeSphere(final GL3 gl, final TriangleBatch sphereBatch, final float fRadius, final int iSlices, final int iStacks) {
-        float drho = (float) Math.PI / (float) iStacks;
-        float dtheta = 2.0F * (float) Math.PI / (float) iSlices;
-        float ds = 1.0F / (float) iSlices;
-        float dt = 1.0F / (float) iStacks;
+        float drho = (float) Math.PI / iStacks;
+        float dtheta = 2.0F * (float) Math.PI / iSlices;
+        float ds = 1.0F / iSlices;
+        float dt = 1.0F / iStacks;
         float t = 1.0F;
         float s;
 
         sphereBatch.beginMesh(iSlices * iStacks * 6);
         for (int i = 0; i < iStacks; i++) {
-            float rho = (float) i * drho;
+            float rho = i * drho;
             float srho = (float) (Math.sin(rho));
             float crho = (float) (Math.cos(rho));
             float srhodrho = (float) (Math.sin(rho + drho));
@@ -487,7 +488,7 @@ public final class GLTools {
     }
 
     // Load a TGA as a 2D Texture. Completely initialize the state
-    public static Texture loadTexture(final GL3 gl, final InputStream in, final String ext, final int minFilter, final int magFilter, final int wrapMode) throws IOException {
+    public static Texture loadTexture(final GL gl, final InputStream in, final int minFilter, final int magFilter, final int wrapMode) throws IOException {
         // NVS-415: Appears to be a bug in JOGL where texture provider for PNG files does not flip the texture.
         final TextureData data = TextureIO.newTextureData(gl.getGLProfile(), in, false, null);
         final Texture tex = TextureIO.newTexture(data);
@@ -522,7 +523,7 @@ public final class GLTools {
      * @param magFilter Texture selection with TEXTURE_MAG_FILTER.
      * @param wrapMode texture wrap mode with TEXTURE_WRAP_S and TEXTURE_WRAP_T.
      */
-    public static void loadTextures(final GL3 gl, final int textureName, final List<BufferedImage> images, final int maxWidth, final int maxHeight, final int minFilter, final int magFilter, final int wrapMode) {
+    public static void loadTextures(final GL2ES2 gl, final int textureName, final Collection<BufferedImage> images, final int maxWidth, final int maxHeight, final int minFilter, final int magFilter, final int wrapMode) {
         gl.glBindTexture(GL2ES3.GL_TEXTURE_2D_ARRAY, textureName);
 
         gl.glTexParameteri(GL2ES3.GL_TEXTURE_2D_ARRAY, GL.GL_TEXTURE_WRAP_S, wrapMode);
@@ -825,7 +826,7 @@ public final class GLTools {
      * @param gl the current OpenGL context.
      * @param msg the message that will be printed out if an error has occurred.
      */
-    public static void checkError(final GL3 gl, final String msg) {
+    public static void checkError(final GL gl, final String msg) {
         while (true) {
             final int err = gl.glGetError();
             if (err == GL.GL_NO_ERROR || msg == null) {
@@ -853,19 +854,19 @@ public final class GLTools {
      * @param msg msg the message that will be printed out if an error has
      * occurred.
      */
-    public static void checkFramebufferStatus(final GL3 gl, final String msg) {
+    public static void checkFramebufferStatus(final GL gl, final String msg) {
         int fboStatus = gl.glCheckFramebufferStatus(GL.GL_DRAW_FRAMEBUFFER);
         if (fboStatus == GL.GL_FRAMEBUFFER_COMPLETE) {
             return;
         }
 
         String errtext = "";
-        if (fboStatus == GL.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT) {
-            errtext = "framebuffer incomplete missing attachment";
-        } else if (fboStatus == GL.GL_FRAMEBUFFER_UNSUPPORTED) {
-            errtext = "framebuffer unsupported";
-        } else {
-            // Do nothing
+        switch (fboStatus) {
+            case GL.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT -> errtext = "framebuffer incomplete missing attachment";
+            case GL.GL_FRAMEBUFFER_UNSUPPORTED -> errtext = "framebuffer unsupported";
+            default -> {
+                //Do Nothing
+            }
         }
         LOGGER.log(Level.SEVERE, "**** Framebuffer error %{0}: %{1} ({2})", new Object[]{msg, errtext, fboStatus});
     }

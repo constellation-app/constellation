@@ -43,8 +43,6 @@ import java.util.logging.Logger;
  */
 public abstract class SimpleReadPlugin extends AbstractPlugin {
 
-    private static final Logger LOGGER = Logger.getLogger(SimpleReadPlugin.class.getName());
-
     protected SimpleReadPlugin() {
     }
 

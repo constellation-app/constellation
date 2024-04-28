@@ -124,6 +124,7 @@ import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.Icon;
 import javax.swing.InputMap;
+import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
@@ -497,13 +498,13 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        displayPanel = new javax.swing.JPanel();
+        displayPanel = new JPanel();
 
-        setLayout(new java.awt.BorderLayout());
+        setLayout(new BorderLayout());
 
-        displayPanel.setBackground(new java.awt.Color(0, 0, 0));
-        displayPanel.setLayout(new java.awt.BorderLayout());
-        add(displayPanel, java.awt.BorderLayout.CENTER);
+        displayPanel.setBackground(new Color(0, 0, 0));
+        displayPanel.setLayout(new BorderLayout());
+        add(displayPanel, BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel displayPanel;

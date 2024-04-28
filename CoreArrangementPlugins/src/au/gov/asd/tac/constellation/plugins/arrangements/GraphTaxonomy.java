@@ -98,7 +98,7 @@ public final class GraphTaxonomy {
     }
 
     public GraphTaxonomy(final GraphWriteMethods wg, final Map<Integer, Set<Integer>> taxa, final Map<Integer, Integer> nodeToTaxa) {
-        this(wg, taxa, null, Graph.NOT_FOUND, Graph.NOT_FOUND);
+        this(wg, taxa, nodeToTaxa, Graph.NOT_FOUND, Graph.NOT_FOUND);
     }
 
     public GraphTaxonomy(final GraphWriteMethods wg, final Map<Integer, Set<Integer>> taxa, final Map<Integer, Integer> nodeToTaxa, final int singletonKey, final int doubletKey) {
