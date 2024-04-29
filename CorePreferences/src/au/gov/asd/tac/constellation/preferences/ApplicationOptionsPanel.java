@@ -368,7 +368,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
         Mnemonics.setLocalizedText(fontSizeLbl, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.fontSizeLbl.text")); // NOI18N
 
         fontCombo.setModel(new DefaultComboBoxModel(fonts));
-        fontCombo.setSelectedItem(ApplicationPreferenceKeys.getFontFamilyDefault());
+        fontCombo.setSelectedItem(ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT);
         fontCombo.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 fontComboActionPerformed(evt);

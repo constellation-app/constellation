@@ -116,8 +116,8 @@ public class FontUtilitiesNGTest {
         
         /* keep the original application preferences for font size and family so
            they can be restored later */
-        final String defaultFontSize = ApplicationPreferenceKeys.getFontSizeDefault();
-        final String defaultFontFamily = ApplicationPreferenceKeys.getFontFamilyDefault();
+        final String defaultFontSize = ApplicationPreferenceKeys.FONT_SIZE_DEFAULT;
+        final String defaultFontFamily = ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT;
         
         try (final MockedStatic<NbPreferences> prefsMockedStatic = mockStatic(NbPreferences.class)) {
             prefsMockedStatic.when(() -> NbPreferences.root()).thenReturn(p);
@@ -135,11 +135,11 @@ public class FontUtilitiesNGTest {
             final String fontSize = p.node(
                     ApplicationPreferenceKeys.FONT_PREFERENCES).get(
                             ApplicationPreferenceKeys.FONT_SIZE,
-                            ApplicationPreferenceKeys.getFontSizeDefault());
+                            ApplicationPreferenceKeys.FONT_SIZE_DEFAULT);
             final String fontFamily = p.node(
                     ApplicationPreferenceKeys.FONT_PREFERENCES).get(
                             ApplicationPreferenceKeys.FONT_FAMILY,
-                            ApplicationPreferenceKeys.getFontFamilyDefault());
+                            ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT);
             assertEquals(fontSize, testFontSize1);
             assertEquals(fontFamily, testFontFamily1);
             
@@ -151,8 +151,8 @@ public class FontUtilitiesNGTest {
                     ApplicationPreferenceKeys.FONT_FAMILY, testFontFamily2);
             
             FontUtilities.initialiseApplicationFontPreferenceOnFirstUse();
-            assertEquals(ApplicationPreferenceKeys.getFontSizeDefault(), testFontSize2);
-            assertEquals(ApplicationPreferenceKeys.getFontFamilyDefault(), testFontFamily2);
+            assertEquals(ApplicationPreferenceKeys.FONT_SIZE_DEFAULT, testFontSize2);
+            assertEquals(ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT, testFontFamily2);
         } finally {
             // clean up, first remove Preferences nodes this test plays with
             p.node(ApplicationPreferenceKeys.FONT_PREFERENCES).removeNode();
@@ -261,7 +261,7 @@ public class FontUtilitiesNGTest {
         final Preferences p = Preferences.userNodeForPackage(FontUtilitiesNGTest.class);
 
         // keep the original application Preference so it can be restored later
-        final String defaultFontSize = ApplicationPreferenceKeys.getFontSizeDefault();
+        final String defaultFontSize = ApplicationPreferenceKeys.FONT_SIZE_DEFAULT;
         
         try (final MockedStatic<NbPreferences> prefsMockedStatic = mockStatic(NbPreferences.class)) {            
             final String dummyPref = "dummy";
@@ -306,7 +306,7 @@ public class FontUtilitiesNGTest {
         p.node(ApplicationPreferenceKeys.FONT_PREFERENCES).removeNode();
 
         // keep the original application default so it can be restored later
-        final String defaultFontFamily = ApplicationPreferenceKeys.getFontFamilyDefault();
+        final String defaultFontFamily = ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT;
         
         try (final MockedStatic<NbPreferences> prefsMockedStatic = mockStatic(NbPreferences.class)) {
             prefsMockedStatic.when(() -> NbPreferences.root()).thenReturn(p);
@@ -341,7 +341,7 @@ public class FontUtilitiesNGTest {
     @Test
     public void testGetApplicationFontFamilyException() throws IOException, BackingStoreException {
         // keep the original application Preference so it can be restored later
-        final String defaultFontFamily = ApplicationPreferenceKeys.getFontFamilyDefault();
+        final String defaultFontFamily = ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT;
         
         try (final MockedStatic<NbPreferences> prefsMockedStatic = mockStatic(NbPreferences.class)) {
             String fontFamily = "a dummy font family";

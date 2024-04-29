@@ -478,7 +478,7 @@
               <Connection code="new DefaultComboBoxModel(fonts)" type="code"/>
             </Property>
             <Property name="selectedItem" type="java.lang.Object" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys.getFontFamilyDefault()" type="code"/>
+              <Connection code="au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT" type="code"/>
             </Property>
           </Properties>
           <Events>

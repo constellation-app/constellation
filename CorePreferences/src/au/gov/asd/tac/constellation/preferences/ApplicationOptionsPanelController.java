@@ -78,8 +78,8 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
         applicationOptionsPanel.setNotebookDirectory(prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT));
         applicationOptionsPanel.setRestDirectory(prefs.get(ApplicationPreferenceKeys.REST_DIR, ApplicationPreferenceKeys.REST_DIR_DEFAULT));
         applicationOptionsPanel.setDownloadPythonClient(prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT));
-        applicationOptionsPanel.setCurrentFont(prefs.get(ApplicationPreferenceKeys.FONT_FAMILY, ApplicationPreferenceKeys.getFontFamilyDefault()));
-        applicationOptionsPanel.setFontSize(prefs.get(ApplicationPreferenceKeys.FONT_SIZE, ApplicationPreferenceKeys.getFontSizeDefault()));
+        applicationOptionsPanel.setCurrentFont(prefs.get(ApplicationPreferenceKeys.FONT_FAMILY, ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT));
+        applicationOptionsPanel.setFontSize(prefs.get(ApplicationPreferenceKeys.FONT_SIZE, ApplicationPreferenceKeys.FONT_SIZE_DEFAULT));
         applicationOptionsPanel.setColorModeSelection(prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT));
     }
 
@@ -143,8 +143,8 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
                 && applicationOptionsPanel.getNotebookDirectory().equals(prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT))
                 && applicationOptionsPanel.getRestDirectory().equals(prefs.get(ApplicationPreferenceKeys.REST_DIR, ApplicationPreferenceKeys.REST_DIR_DEFAULT))
                 && applicationOptionsPanel.isDownloadPythonClientSelected() == prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT)
-                && applicationOptionsPanel.getCurrentFont().equals(prefs.get(ApplicationPreferenceKeys.FONT_FAMILY, ApplicationPreferenceKeys.getFontFamilyDefault()))
-                && applicationOptionsPanel.getFontSize().equals(prefs.get(ApplicationPreferenceKeys.FONT_SIZE, ApplicationPreferenceKeys.getFontSizeDefault()))
+                && applicationOptionsPanel.getCurrentFont().equals(prefs.get(ApplicationPreferenceKeys.FONT_FAMILY, ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT))
+                && applicationOptionsPanel.getFontSize().equals(prefs.get(ApplicationPreferenceKeys.FONT_SIZE, ApplicationPreferenceKeys.FONT_SIZE_DEFAULT))
                 && applicationOptionsPanel.getColorModeSelection().equals(prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT)));
     }
 
