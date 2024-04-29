@@ -62,7 +62,7 @@ public class ScoreResult extends AnalyticResult<ElementScore> {
         public ElementScore(final GraphElementType elementType, final int elementId,
                 final String identifier, final boolean isNull, final Map<String, Float> namedScores) {
             super(elementType, elementId, identifier, isNull);
-            this.namedScores = namedScores;
+            this.namedScores = new HashMap<>(namedScores);
         }
 
         public static ElementScore combineReplace(final ElementScore es1, final ElementScore es2) {

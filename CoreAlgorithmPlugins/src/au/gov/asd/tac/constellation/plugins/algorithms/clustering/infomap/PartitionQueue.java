@@ -119,7 +119,7 @@ public class PartitionQueue {
     }
 
     public void setQueue(final List<NodeBase> queue) {
-        this.queue = queue;
+        this.queue = new ArrayList<>(queue);
     }
 
     public void swap(final PartitionQueue other) {

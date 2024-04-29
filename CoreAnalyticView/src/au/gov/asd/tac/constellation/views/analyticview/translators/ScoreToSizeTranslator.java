@@ -80,7 +80,7 @@ public class ScoreToSizeTranslator extends AbstractSizeTranslator<ScoreResult, E
 
     @Override
     public void setVertexSizes(final Map<Integer, Float> sizes) {
-        vertexSizes = sizes;
+        vertexSizes = new HashMap<>(sizes);
     }
 
     @Override
@@ -90,7 +90,7 @@ public class ScoreToSizeTranslator extends AbstractSizeTranslator<ScoreResult, E
 
     @Override
     public void setTransactionSizes(final Map<Integer, Float> sizes) {
-        transactionSizes = sizes;
+        transactionSizes = new HashMap<>(sizes);
     }
 
     @PluginInfo(tags = {PluginTags.MODIFY})
@@ -111,7 +111,6 @@ public class ScoreToSizeTranslator extends AbstractSizeTranslator<ScoreResult, E
 
         @Override
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-
             // get parameter values
             final boolean reset = parameters.getBooleanValue(RESET_PARAMETER_ID);
 
