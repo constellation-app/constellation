@@ -89,7 +89,7 @@ public final class SimpleGraphOpener extends GraphOpener {
                     time = System.currentTimeMillis() - t0;
                 } catch (final GraphParseException ex) {
                     gex = ex;
-                    LOGGER.log(Level.WARNING, "{0}", ex.getStackTrace());
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
             }
 

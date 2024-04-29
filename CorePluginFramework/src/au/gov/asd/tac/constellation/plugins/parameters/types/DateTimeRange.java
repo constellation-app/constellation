@@ -189,7 +189,7 @@ public class DateTimeRange {
 
                 return new DateTimeRange(period, zi);
             } catch (final DateTimeParseException ex) {
-                LOGGER.log(Level.INFO, "{0}", ex.getStackTrace());
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
 
             // Default period when we couldn't parse the value.
@@ -210,7 +210,7 @@ public class DateTimeRange {
                     return new DateTimeRange(zstart, zend);
                 }
             } catch (final DateTimeParseException ex) {
-                LOGGER.log(Level.INFO, "{0}", ex.getStackTrace());
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
 
             final ZonedDateTime zend = ZonedDateTime.now(ZoneId.of("UTC"));

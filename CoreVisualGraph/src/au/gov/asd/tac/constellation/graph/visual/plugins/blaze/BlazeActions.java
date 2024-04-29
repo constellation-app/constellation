@@ -153,7 +153,7 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
     public static List<ConstellationColor> getPresetCustomColors() {
         presetCustomColors.clear();
         final String presetCustomColorsString = prefs.get(GraphPreferenceKeys.BLAZE_PRESET_COLORS,
-                GraphPreferenceKeys.getBlazePresetsColorsDefault());
+                GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
 
         for (final String currentColor : presetCustomColorsString.split(SeparatorConstants.SEMICOLON)) {
             if (!"#".equals(currentColor)) {
