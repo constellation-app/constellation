@@ -39,7 +39,7 @@ public abstract class LockingTarget implements ReadingInterface {
         lock.unlock();
 
         if (VERBOSE) {
-            LOGGER.log(Level.SEVERE, "Read lock released by  {0}", Thread.currentThread());
+            LOGGER.log(Level.INFO, "Read lock released by  {0}", Thread.currentThread());
         }
     }
 
