@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.graph.undo;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.operations.GraphOperation;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import java.io.DataOutput;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -146,7 +146,7 @@ public class UndoGraphEditState {
         }
 
         objectStack = new Object[objectCount];
-        Arrays.setAll(objectStack, index -> classMap.get(index));
+        Arrays.setAll(objectStack, classMap::get);
     }
 
     public byte[] getByteStack() {
@@ -465,7 +465,7 @@ public class UndoGraphEditState {
         }
     }
 
-    public void write(final DataOutputStream out) throws IOException {
+    public void write(final DataOutput out) throws IOException {
         out.writeInt(operationCount);
         for (int i = 0; i < operationCount; i++) {
             out.writeShort(operationStack[i]);

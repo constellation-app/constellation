@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.HttpURLConnection;
+import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
@@ -49,7 +50,7 @@ public class HttpsUtilities {
      *
      * @throws IOException if an error occurs during the connection.
      */
-    public static InputStream getInputStream(final HttpURLConnection connection) throws IOException {
+    public static InputStream getInputStream(final URLConnection connection) throws IOException {
         final String encoding = connection.getContentEncoding();
 
         if (encoding != null && "gzip".equalsIgnoreCase(encoding)) {

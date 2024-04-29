@@ -35,10 +35,7 @@ public class DeveloperOptionsPanel extends JPanel {
 
     private static final Logger LOGGER = Logger.getLogger(DeveloperOptionsPanel.class.getName());
 
-    private final DeveloperOptionsPanelController controller;
-
-    public DeveloperOptionsPanel(final DeveloperOptionsPanelController controller) {
-        this.controller = controller;
+    public DeveloperOptionsPanel() {
         initComponents();
     }
 

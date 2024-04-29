@@ -221,7 +221,7 @@ public class ScriptingViewPane extends JPanel {
                                 .addContainerGap())
         );
         layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                layout.createParallelGroup(Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                                 .addContainerGap()
                                 .addComponent(scriptPane, GroupLayout.DEFAULT_SIZE, 544, Short.MAX_VALUE)

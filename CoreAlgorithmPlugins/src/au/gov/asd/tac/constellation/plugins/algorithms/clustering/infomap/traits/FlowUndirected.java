@@ -25,10 +25,10 @@ public class FlowUndirected implements FlowBase {
     private double exitFlow;
 
     public FlowUndirected() {
-        this(1, 1);
+        this(1);
     }
 
-    public FlowUndirected(final double flow, final double teleportWeight) {
+    public FlowUndirected(final double flow) {
         this.flow = flow;
         this.exitFlow = 0;
     }

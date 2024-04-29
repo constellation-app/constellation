@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManagerO
 import com.jogamp.opengl.DebugGL3;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.GLBase;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLContext;
 import com.jogamp.opengl.GLDrawableFactory;
@@ -240,7 +241,7 @@ public final class SharedDrawable {
      * @return the id of the icon shader.
      * @throws IOException if an error occurs while reading the shader source.
      */
-    public static int getSimpleIconShader(final GL3 glCurrent, final int colorTarget, final String colorShaderName, final int iconTarget, final String iconShaderName) throws IOException {
+    public static int getSimpleIconShader(final GLBase glCurrent, final int colorTarget, final String colorShaderName, final int iconTarget, final String iconShaderName) throws IOException {
         if (simpleIconShader == 0) {
             glCurrent.getContext().release();
             try {
@@ -277,7 +278,7 @@ public final class SharedDrawable {
      * @return the id of the icon shader.
      * @throws IOException if an error occurs while reading the shader source.
      */
-    public static int getVertexIconShader(final GL3 glCurrent, final int colorTarget, final String colorShaderName, final int iconTarget, final String iconShaderName) throws IOException {
+    public static int getVertexIconShader(final GLBase glCurrent, final int colorTarget, final String colorShaderName, final int iconTarget, final String iconShaderName) throws IOException {
         if (vertexIconShader == 0) {
             glCurrent.getContext().release();
             try {
@@ -314,7 +315,7 @@ public final class SharedDrawable {
      * @return the id of the line shader.
      * @throws IOException if an error occurs while reading the shader source.
      */
-    public static int getLineShader(final GL3 glCurrent, final int colotTarget, final String colorShaderName, final int connectionInfoTarget, final String connectionInfoShaderName) throws IOException {
+    public static int getLineShader(final GLBase glCurrent, final int colotTarget, final String colorShaderName, final int connectionInfoTarget, final String connectionInfoShaderName) throws IOException {
         if (lineShader == 0) {
             glCurrent.getContext().release();
             try {
@@ -352,7 +353,7 @@ public final class SharedDrawable {
      * @return the id of the line shader.
      * @throws IOException if an error occurs while reading the shader source.
      */
-    public static int getLineLineShader(final GL3 glCurrent, final int colotTarget, final String colorShaderName, final int connectionInfoTarget, final String connectionInfoShaderName) throws IOException {
+    public static int getLineLineShader(final GLBase glCurrent, final int colotTarget, final String colorShaderName, final int connectionInfoTarget, final String connectionInfoShaderName) throws IOException {
         if (lineLineShader == 0) {
             glCurrent.getContext().release();
             try {
@@ -389,7 +390,7 @@ public final class SharedDrawable {
      * @return the id of the loop shader.
      * @throws IOException if an error occurs while reading the shader source.
      */
-    public static int getLoopShader(final GL3 glCurrent, final int colorTarget, final String colorShaderName, final int loopInfoTarget, final String loopInfoShaderName) throws IOException {
+    public static int getLoopShader(final GLBase glCurrent, final int colorTarget, final String colorShaderName, final int loopInfoTarget, final String loopInfoShaderName) throws IOException {
         if (loopShader == 0) {
             glCurrent.getContext().release();
             try {
@@ -426,7 +427,7 @@ public final class SharedDrawable {
      * @return the id of the shader.
      * @throws IOException if an error occurs while reading the shader source.
      */
-    public static int getNodeLabelShader(final GL3 glCurrent, final int labelFloatsTarget, final String labelFloatsShaderName, final int labelIntsTarget, final String labelIntsShaderName) throws IOException {
+    public static int getNodeLabelShader(final GLBase glCurrent, final int labelFloatsTarget, final String labelFloatsShaderName, final int labelIntsTarget, final String labelIntsShaderName) throws IOException {
         if (nodeLabelShader == 0) {
             glCurrent.getContext().release();
             try {
@@ -465,7 +466,7 @@ public final class SharedDrawable {
      * @return the name of the shader.
      * @throws IOException if an error occurs while reader the shader source.
      */
-    public static int getConnectionLabelShader(final GL3 glCurrent, final int labelFloatsTarget, final String labelFloatsShaderName, final int labelIntsTarget, final String labelIntsShaderName) throws IOException {
+    public static int getConnectionLabelShader(final GLBase glCurrent, final int labelFloatsTarget, final String labelFloatsShaderName, final int labelIntsTarget, final String labelIntsShaderName) throws IOException {
         if (connectionLabelShader == 0) {
             glCurrent.getContext().release();
             try {
@@ -503,7 +504,7 @@ public final class SharedDrawable {
      * @return the name of the shader.
      * @throws IOException if an error occurs while reader the shader source.
      */
-    public static int getBlazeShader(final GL3 glCurrent, final int colorTarget, final String colorShaderName, final int blazeInfoTarget, final String blazeInfoShaderName) throws IOException {
+    public static int getBlazeShader(final GLBase glCurrent, final int colorTarget, final String colorShaderName, final int blazeInfoTarget, final String blazeInfoShaderName) throws IOException {
         if (blazeShader == 0) {
             glCurrent.getContext().release();
             try {

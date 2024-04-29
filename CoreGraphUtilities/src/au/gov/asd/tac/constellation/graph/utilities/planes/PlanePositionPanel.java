@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.graph.utilities.planes;
 
-import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-
 /**
  *
  * @author algol
@@ -27,7 +25,7 @@ public class PlanePositionPanel extends javax.swing.JPanel {
         initComponents();
     }
 
-    public float[] getPosition(final GraphReadMethods rg, final float x, final float y, final float z, final float radius, final float width, final float height) {
+    public float[] getPosition(final float x, final float y, final float z, final float radius, final float width, final float height) {
         float xx;
         float yy;
         float rr = includeRadiusCheck.isSelected() ? radius : 0;

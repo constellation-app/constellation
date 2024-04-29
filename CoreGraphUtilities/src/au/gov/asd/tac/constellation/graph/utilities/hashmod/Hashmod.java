@@ -68,7 +68,7 @@ public class Hashmod {
         this.csvFileStr = StringUtils.defaultString(csvFileStr);
         parser = new HashmodCSVImportFileParser();
         try {
-            data = parser.parse(new HashmodInputSource(new File(this.csvFileStr)), null);
+            data = parser.parse(new HashmodInputSource(new File(this.csvFileStr)));
         } catch (IOException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
