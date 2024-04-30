@@ -87,7 +87,7 @@ public final class PermanentMergePanel extends JPanel {
     private void populateTable() {
         this.getVertexAttributes();
         tableModel = (PermanentMergeTableModel) nodeTable.getModel();
-        tableModel.initialise(graph, nodeAttrbiutes);
+        tableModel.initialise(nodeAttrbiutes);
         this.setupVertexData();
         this.includeAllVertices();
     }

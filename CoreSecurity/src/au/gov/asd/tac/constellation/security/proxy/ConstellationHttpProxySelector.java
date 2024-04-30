@@ -146,7 +146,7 @@ public class ConstellationHttpProxySelector extends ProxySelector {
      */
     private static boolean isLocalHost(final String host, final List<String> localHosts) {
         final String hostLowerCase = host.toLowerCase();
-        if (StringUtils.equalsAnyIgnoreCase(hostLowerCase, (CharSequence[]) new String[]{"localhost", "127.0.0.1"})) {
+        if (StringUtils.equalsAnyIgnoreCase(hostLowerCase, new String[]{"localhost", "127.0.0.1"})) {
             return true;
         }
 

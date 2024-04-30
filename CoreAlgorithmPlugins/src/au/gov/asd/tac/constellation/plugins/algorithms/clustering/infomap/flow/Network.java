@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Config;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Config.ConnectionType;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -137,11 +138,11 @@ public class Network {
     }
 
     public Map<NodePair, Double> getMap() {
-        return connectionMap;
+        return Collections.unmodifiableMap(connectionMap);
     }
 
     public double[] getNodeTeleportRates() {
-        return nodeWeights;
+        return nodeWeights.clone();
     }
 
     public double getSumNodeWeights() {

@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.mapview.features;
 
 import de.fhpotsdam.unfolding.geo.Location;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -42,7 +43,7 @@ public class ConstellationShapeFeature extends ConstellationAbstractFeature {
     }
 
     public List<Location> getLocations() {
-        return locations;
+        return Collections.unmodifiableList(locations);
     }
 
     public void addLocations(final List<Location> locations) {
@@ -58,6 +59,6 @@ public class ConstellationShapeFeature extends ConstellationAbstractFeature {
     }
 
     public List<List<Location>> getInteriorRings() {
-        return interiorRingLocationArray;
+        return Collections.unmodifiableList(interiorRingLocationArray);
     }
 }

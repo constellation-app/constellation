@@ -874,7 +874,7 @@ public class ShapeNGTest {
     public void testGenerateShapeCollection() throws IOException {
         // generate the shape collection
         final String s = Shape.generateShapeCollection(
-                UUID.randomUUID().toString(), // the UUID is never used
+                "0000-00-00-00-000000", // the UUID is never used
                 getTestShapes(), getTestAttributes());
 
         // convert GeoJson string to a list of Features

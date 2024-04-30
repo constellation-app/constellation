@@ -42,7 +42,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-import java.util.stream.Collectors;
 
 /**
  * A plugin template for a query plugin that uses RecordStores for its
@@ -305,7 +304,7 @@ public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
      */
     protected void removeValidator(final Class<? extends RecordStoreValidator> c) {
         // Create a new List that contains everything but instances of the given class.
-        final List<RecordStoreValidator> rv = validators.stream().filter(v -> !v.getClass().equals(c)).collect(Collectors.toList());
+        final List<RecordStoreValidator> rv = validators.stream().filter(v -> !v.getClass().equals(c)).toList();
         validators.clear();
         validators.addAll(rv);
     }

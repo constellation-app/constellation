@@ -22,7 +22,6 @@ import au.gov.asd.tac.constellation.views.analyticview.results.ClusterResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ClusterResult.ClusterData;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.TableVisualisation;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -54,12 +53,12 @@ public class ClusterToTableTranslator extends AbstractTableTranslator<ClusterRes
         if (result.getIgnoreTransactions()) {
             displayResult = displayResult.stream()
                     .filter(clusterData -> clusterData.getElementType() != GraphElementType.TRANSACTION)
-                    .collect(Collectors.toList());
+                    .toList();
         }
         if (result.isIgnoreNullResults()) {
             displayResult = displayResult.stream()
                     .filter(clusterData -> !clusterData.isNull())
-                    .collect(Collectors.toList());
+                    .toList();
         }
         tableVisualisation.populateTable(displayResult);
         result.addResultListener(tableVisualisation);

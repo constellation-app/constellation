@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.attributeeditor;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -80,13 +81,13 @@ public class AttributeState {
      * @return the attributeValues
      */
     public Map<String, Object[]> getAttributeValues() {
-        return attributeValues;
+        return Collections.unmodifiableMap(attributeValues);
     }
 
     /**
      * @return the attributeCounts
      */
     public Map<GraphElementType, Integer> getAttributeCounts() {
-        return attributeCounts;
+        return Collections.unmodifiableMap(attributeCounts);
     }
 }

@@ -46,10 +46,6 @@ public final class CreateVertexPlugin extends SimpleEditPlugin {
     public static final String Y_PARAMETER_ID = PluginParameter.buildId(CreateVertexPlugin.class, VisualConcept.VertexAttribute.Y.getName());
     public static final String Z_PARAMETER_ID = PluginParameter.buildId(CreateVertexPlugin.class, VisualConcept.VertexAttribute.Z.getName());
 
-    private float x;
-    private float y;
-    private float z;
-
     @Override
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
@@ -77,10 +73,9 @@ public final class CreateVertexPlugin extends SimpleEditPlugin {
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-
-        this.x = parameters.getParameters().get(X_PARAMETER_ID).getFloatValue();
-        this.y = parameters.getParameters().get(Y_PARAMETER_ID).getFloatValue();
-        this.z = parameters.getParameters().get(Z_PARAMETER_ID).getFloatValue();
+        final float x = parameters.getParameters().get(X_PARAMETER_ID).getFloatValue();
+        final float y = parameters.getParameters().get(Y_PARAMETER_ID).getFloatValue();
+        final float z = parameters.getParameters().get(Z_PARAMETER_ID).getFloatValue();
 
         final int xAttrId = VisualConcept.VertexAttribute.X.get(graph);
         final int yAttrId = VisualConcept.VertexAttribute.Y.get(graph);

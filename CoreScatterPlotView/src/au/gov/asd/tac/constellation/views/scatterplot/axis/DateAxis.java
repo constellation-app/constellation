@@ -34,6 +34,7 @@ import javafx.util.StringConverter;
  * in the ExtFX library.
  *
  * TODO: {@link ChartLayoutAnimator} is not longer supported, fix it.
+ * Commented out code in this class is related to this issue. Ticket has been created to address.
  *
  * @author cygnus_x-1
  */
@@ -45,7 +46,7 @@ public class DateAxis extends Axis<Date> {
     private final LongProperty currentLowerBound = new SimpleLongProperty(this, "currentLowerBound");
     private final LongProperty currentUpperBound = new SimpleLongProperty(this, "currentUpperBound");
 //    private ChartLayoutAnimator animator = new ChartLayoutAnimator(this);
-    private Object currentAnimationID;
+//    private Object currentAnimationID;
     private Interval actualInterval = Interval.DECADE;
 
     /**

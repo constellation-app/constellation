@@ -211,7 +211,7 @@ public class ClusteringManager {
     }
 
     public Set<TreeElement> getElementsToDraw() {
-        return elementsToDraw;
+        return Collections.unmodifiableSet(elementsToDraw);
     }
 
     public void clearTree() {

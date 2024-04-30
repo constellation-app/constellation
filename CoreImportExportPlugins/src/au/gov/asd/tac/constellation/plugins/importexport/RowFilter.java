@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,7 +55,6 @@ public class RowFilter {
     private String script;
 
     private String[] columns = new String[0];
-    private String[] encodedColumns = new String[0];
     private static final String COLUMN_HEADER_PREFIX = "uniqueColumnHeaderPrefix_";
     private static final String VALID_HEADER_PATTERN = "^[a-zA-Z][a-zA-Z0-9_]*$";
     private static final Pattern VALID_HEADER_MATCHER = Pattern.compile(VALID_HEADER_PATTERN);
@@ -170,7 +169,7 @@ public class RowFilter {
      * @return The columns included in the filter.
      */
     public String[] getColumns() {
-        return columns;
+        return columns.clone();
     }
 
     /**
@@ -184,15 +183,15 @@ public class RowFilter {
      */
     public void setColumns(final String[] columns) {
         this.columns = new String[columns.length];
-        this.encodedColumns = new String[columns.length];
+        final String[] encodedColumns = new String[columns.length];
         for (int columnIndex = 0; columnIndex < columns.length; columnIndex++) {
             if (columns[columnIndex] != null) {
                 this.columns[columnIndex] = columns[columnIndex];
             }
-            this.encodedColumns[columnIndex] = encodeColumn(columns[columnIndex]);
+            encodedColumns[columnIndex] = encodeColumn(columns[columnIndex]);
         }
 
-        LOGGER.log(Level.INFO, "COLUMNS = {0} {1}", new Object[]{Arrays.toString(this.columns), Arrays.toString(this.encodedColumns)});
+        LOGGER.log(Level.INFO, "COLUMNS = {0} {1}", new Object[]{Arrays.toString(this.columns), Arrays.toString(encodedColumns)});
     }
 
     private static String encodeColumn(final String column) {
