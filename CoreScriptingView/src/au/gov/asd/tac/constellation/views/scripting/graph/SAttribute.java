@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.scripting.graph;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 
 /**
  * A representation of an attribute for use with scripting.
@@ -34,8 +35,8 @@ public class SAttribute {
     private final Object defaultValue;
     private final String mergerId;
 
-    public SAttribute(final GraphReadMethods readableGraph, final int id, final GraphElementType elementType, 
-            final String attributeType, final String name, final String description, final Object defaultValue, 
+    public SAttribute(final GraphReadMethods readableGraph, final int id, final GraphElementType elementType,
+            final String attributeType, final String name, final String description, final Object defaultValue,
             final String mergerId) {
         this.readableGraph = readableGraph;
         this.id = id;
@@ -56,14 +57,15 @@ public class SAttribute {
     public SAttribute(final GraphReadMethods readableGraph, final GraphElementType elementType, final String name) {
         this(readableGraph, readableGraph.getAttribute(elementType, name));
     }
+
     
     /**
      * Get the readableGraph of this attribute.
      *
      * @return the readableGraph of this attribute.
      */
-    public GraphReadMethods readableGraph() {
-        return readableGraph;
+    public GraphWriteMethods getreadableGraph() {
+        return (GraphWriteMethods) readableGraph;
     }
 
     /**
