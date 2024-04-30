@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.graph.utilities.perspectives;
 import au.gov.asd.tac.constellation.graph.utilities.perspectives.PerspectiveModel.Perspective;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.stream.Collectors;
 import javax.swing.AbstractListModel;
 
 /**
@@ -27,14 +27,14 @@ import javax.swing.AbstractListModel;
  */
 class PerspectiveModel extends AbstractListModel<Perspective> {
 
-    final List<Perspective> perspectives;
+    final ArrayList<Perspective> perspectives;
 
     public PerspectiveModel() {
         perspectives = new ArrayList<>();
     }
 
     public PerspectiveModel(final PerspectiveModel other) {
-        perspectives = other.perspectives.stream().toList();
+        perspectives = (ArrayList<Perspective>) other.perspectives.stream().collect(Collectors.toList());
     }
 
     @Override
@@ -107,8 +107,7 @@ class PerspectiveModel extends AbstractListModel<Perspective> {
      *
      * @param label The label to search for.
      *
-     * @return True if the label already exists in the model, false if it
-     * doesn't.
+     * @return True if the label already exists in the model, false if it doesn't.
      */
     private boolean exists(final String label) {
         return perspectives.stream().anyMatch(p -> p.label.equals(label));
