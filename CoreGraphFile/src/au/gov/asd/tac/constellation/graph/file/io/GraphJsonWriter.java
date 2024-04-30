@@ -508,7 +508,7 @@ public final class GraphJsonWriter implements Cancellable {
      * @return true if the attribute is numeric, false otherwise.
      */
     private static boolean isNumeric(final Attribute attr) {
-        return StringUtilities.endsWithAny(attr.getAttributeType(), "integer", "float");
+        return StringUtilities.equalsAny(attr.getAttributeType(), "integer", "float");
     }
 
     @Override

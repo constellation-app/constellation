@@ -40,7 +40,11 @@ public class StringUtilities {
     private static final Pattern ENDING_SQUARE_BRACKET = Pattern.compile("]$");
 
     public static boolean endsWithAny(String name, String... endings) {
-        return Arrays.asList(endings).stream().anyMatch(ending -> StringUtils.endsWith(name, ending));
+        return StringUtils.endsWithAny(name, endings);
+    }
+
+    public static boolean equalsAny(String attributeType, String... values) {
+        return StringUtils.equalsAny(attributeType, values);
     }
 
     private StringUtilities() {
