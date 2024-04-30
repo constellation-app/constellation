@@ -188,10 +188,10 @@ public final class ApplicationPreferenceKeys {
      */
     public static final String FONT_PREFERENCES = "au/gov/asd/tac/constellation/preferences";
     public static final String FONT_FAMILY = "fontFamily";
-    public static String FONT_FAMILY_DEFAULT = "Arial";
     public static final String FONT_SIZE = "fontSize";
-    public static String FONT_SIZE_DEFAULT = "12";
-
+    public static final String FONT_FAMILY_DEFAULT = "Arial";
+    public static final String FONT_SIZE_DEFAULT = "12";
+   
     /**
      * Colorblind mode.
      */

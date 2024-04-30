@@ -425,7 +425,8 @@ public final class FreeformSelectionPlugin extends SimpleEditPlugin {
         }
 
         if (x1 == x2) {
-            return minX <= x1 && x1 <= maxX;
+            // At this point minX <= x1 is always true
+            return x1 <= maxX;
         }
 
         // Slope of line segment.
