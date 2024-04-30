@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.help.utilities;
 
 import au.gov.asd.tac.constellation.help.HelpPageProvider;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.collections4.MapUtils;
@@ -58,7 +59,7 @@ public class HelpMapper {
         if (MapUtils.isEmpty(mappings)) {
             updateMappings();
         }
-        return mappings;
+        return Collections.unmodifiableMap(mappings);
     }
 
     /**

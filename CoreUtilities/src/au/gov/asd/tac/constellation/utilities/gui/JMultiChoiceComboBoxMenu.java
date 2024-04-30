@@ -152,11 +152,11 @@ public class JMultiChoiceComboBoxMenu<E> extends JComponent implements ListSelec
     }
 
     protected Map<JMenuItem, E> getMenuItems() {
-        return menuItems;
+        return Collections.unmodifiableMap(menuItems);
     }
 
     public final Set<E> getSelectedItems() {
-        return selectedItems;
+        return Collections.unmodifiableSet(selectedItems);
     }
 
     public final void setSelectedItem(final E item) {

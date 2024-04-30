@@ -21,6 +21,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -67,7 +68,7 @@ public final class GraphByteWriter {
     }
 
     public Map<String, File> getFileMap() {
-        return fileMap;
+        return Collections.unmodifiableMap(fileMap);
     }
 
     /**

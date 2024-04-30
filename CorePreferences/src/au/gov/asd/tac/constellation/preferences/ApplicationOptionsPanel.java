@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -142,7 +142,7 @@ final class ApplicationOptionsPanel extends JPanel {
     }
 
     public String[] getFontList() {
-        return fonts;
+        return fonts.clone();
     }
 
     public String getColorModeSelection() {

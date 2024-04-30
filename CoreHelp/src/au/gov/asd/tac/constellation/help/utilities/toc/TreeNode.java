@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.help.utilities.HelpMapper;
 import com.jogamp.common.os.Platform;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -54,7 +55,7 @@ public class TreeNode<T> {
     }
 
     public List<TreeNode<T>> getChildren() {
-        return children;
+        return Collections.unmodifiableList(children);
     }
 
     public T getData() {

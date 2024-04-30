@@ -243,11 +243,11 @@ public class FlowNetwork {
     }
 
     public double[] getNodeFlow() {
-        return nodeFlow;
+        return nodeFlow.clone();
     }
 
     public double[] getNodeTeleportRates() {
-        return nodeTeleportRates;
+        return nodeTeleportRates.clone();
     }
 
     public Connection[] getFlowConnections() {
