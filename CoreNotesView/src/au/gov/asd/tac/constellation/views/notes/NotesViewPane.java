@@ -42,6 +42,7 @@ import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.Comparator;
@@ -477,11 +478,8 @@ public class NotesViewPane extends BorderPane {
             );
 
             note.setUndone(pluginReport.isUndone());
-            final String[] tags = pluginReport.getTags();
-            final List<String> tagsList = new ArrayList<>();
-            for (final String tag : tags) {
-                tagsList.add(tag);
-            }
+            final List<String> tagsList = Arrays.asList(pluginReport.getTags());
+
             note.setTags(tagsList);
 
             /**
@@ -506,7 +504,7 @@ public class NotesViewPane extends BorderPane {
      */
     protected void processNewUndoRedoReport(final UndoRedoReport undoRedoReport) {
         if (hasMatchingNote(undoRedoReport)) {
-            getMatchingNoteOfUndoRedoReport(undoRedoReport).setUndone(undoRedoReport.getActionType() == UNDO);
+            getMatchingNoteOfUndoRedoReport(undoRedoReport).setUndone(undoRedoReport.getActionType().equals(UNDO));
             updateTagsFiltersAvailable();
             updateNotesAndFiltersUI();
         }
@@ -730,7 +728,7 @@ public class NotesViewPane extends BorderPane {
     }
 
     private NotesViewEntry getMatchingNoteOfUndoRedoReport(final UndoRedoReport undoRedoReport) {
-        if (undoRedoReport.getActionType() == UNDO) {
+        if (undoRedoReport.getActionType().equals(UNDO)) {
             return notesViewEntries.stream()
                     .filter(entry -> undoRedoReport.getActionDescription().equals(entry.getNoteTitle()) && !entry.getUndone())
                     .max(Comparator.comparing(NotesViewEntry::getDateTime)).get();

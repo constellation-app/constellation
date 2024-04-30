@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.graph.file.io;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -366,7 +367,7 @@ public final class IoUtilities {
      * names "_id", "_from", "_to" at the beginning.
      *
      */
-    public static class LCComparator implements Comparator<String> {
+    public static class LCComparator implements Comparator<String>, Serializable {
         // Ensure that the special attributes are at the beginning of the names.
 
         private static String specialCaseSortName(final String name) {

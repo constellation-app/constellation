@@ -165,7 +165,7 @@ public final class VideoCreator implements Runnable {
 //    public static BufferedImage getImageFromFile(final File f) throws IOException {
 //        return ImageIO.read(f);
 //    }
-//
+//// NOTE: Unused code below is referenced in commented code above, therefore it is commented out in case above code is revived
 ////    private static void addWatermark(final BufferedImage img) {
 ////        final Graphics2D g2d = (Graphics2D) img.getGraphics();
 ////        g2d.setComposite(WM_ALPHA);

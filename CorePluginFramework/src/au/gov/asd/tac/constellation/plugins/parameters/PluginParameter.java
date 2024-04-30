@@ -574,7 +574,7 @@ public class PluginParameter<V extends ParameterValue> {
      * {@link BooleanParameterValue}.
      */
     public boolean getBooleanValue() {
-        return ((BooleanParameterValue) value).get();
+        return ((BooleanParameterValue) value).getValue();
     }
 
     /**

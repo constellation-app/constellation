@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -282,7 +283,7 @@ public final class PermanentMergePanel extends JPanel {
         final ArrayList<Integer> list = new ArrayList<>();
         for (int i = 0; i < tableModel.getRowCount(); i++) {
             if ((Boolean) tableModel.getValueAt(i, 0)) {
-                final Integer key = Integer.parseInt((String) (tableModel.getValueAt(i, 1)));
+                final Integer key = Integer.valueOf((String) (tableModel.getValueAt(i, 1)));
                 list.add(key);
             }
         }
@@ -398,7 +399,7 @@ public final class PermanentMergePanel extends JPanel {
     private javax.swing.JLabel selectedNodesLabel;
     // End of variables declaration//GEN-END:variables
 
-    private class AttributeComparator implements Comparator<Attribute> {
+    private static class AttributeComparator implements Comparator<Attribute>, Serializable {
 
         @Override
         public int compare(final Attribute a1, final Attribute a2) {
@@ -406,7 +407,7 @@ public final class PermanentMergePanel extends JPanel {
         }
     }
 
-    private class AttributeCellRenderer extends DefaultTableCellRenderer {
+    private static class AttributeCellRenderer extends DefaultTableCellRenderer {
 
         private final PermanentMergePanel panel;
 
