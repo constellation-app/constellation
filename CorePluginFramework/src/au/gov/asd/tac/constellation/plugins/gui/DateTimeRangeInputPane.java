@@ -604,7 +604,7 @@ public final class DateTimeRangeInputPane extends Pane {
         final DateTimeFormatter zf = DateTimeFormatter.ofPattern("Z");
         final Instant instant = Instant.now();
         final Set<String> zoneSet = ZoneId.getAvailableZoneIds();
-        final List<ZoneId> zoned = zoneSet.stream().map(ZoneId::of).collect(Collectors.toList());
+        final List<ZoneId> zoned = zoneSet.stream().map(ZoneId::of).toList();
 
         Collections.sort(zoned, (final ZoneId zi1, final ZoneId zi2) -> {
             final ZonedDateTime z1 = ZonedDateTime.ofInstant(instant, zi1);

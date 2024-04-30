@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.graph.utilities.perspectives;
 import au.gov.asd.tac.constellation.graph.utilities.perspectives.PerspectiveModel.Perspective;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.AbstractListModel;
 
 /**
@@ -26,14 +27,14 @@ import javax.swing.AbstractListModel;
  */
 class PerspectiveModel extends AbstractListModel<Perspective> {
 
-    final ArrayList<Perspective> perspectives;
+    final List<Perspective> perspectives;
 
     public PerspectiveModel() {
         perspectives = new ArrayList<>();
     }
 
     public PerspectiveModel(final PerspectiveModel other) {
-        perspectives = (ArrayList<Perspective>) other.perspectives.stream().toList();
+        perspectives = other.perspectives.stream().toList();
     }
 
     @Override
