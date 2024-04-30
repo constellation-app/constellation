@@ -190,19 +190,19 @@ public class ConstellationLAFSettings {
         if (darkMode) {
             // Fixed set of Blue shade colors
             // appropriate for Nimbus dark LAF
-            activeBlue = new Color(125, 170, 225);
-            activeDarkBlue = new Color(60, 95, 150);
-            selectedBlue = new Color(105, 155, 200);
-            selectedDarkBlue = new Color(50, 85, 145);
+            activeBlue = new Color(100, 150, 200);
+            activeDarkBlue = new Color(52, 90, 158);
+            selectedBlue = new Color(143, 164, 189);
+            selectedDarkBlue = new Color(79, 103, 157);
             unselectedGreyBlue = new Color(140, 150, 155);
             unselectedDarkGreyBlue = new Color(100, 110, 115);
         } else {
             // Fixed set of Blue shade colors
             // appropriate for standard Nimbus LAF
-            activeBlue = new Color(175, 204, 252);
-            activeDarkBlue = new Color(121, 153, 228);
-            selectedBlue = new Color(145, 185, 250);
-            selectedDarkBlue = new Color(99, 137, 200);
+            activeBlue = new Color(170, 200, 245);
+            activeDarkBlue = new Color(100, 140, 220);
+            selectedBlue = new Color(165, 195, 230);
+            selectedDarkBlue = new Color(110, 140, 190);
             unselectedGreyBlue = new Color(190, 205, 215);
             unselectedDarkGreyBlue = new Color(150, 160, 175);
         }

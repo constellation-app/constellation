@@ -36,6 +36,7 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.gui.MultiChoiceInputField;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.notes.state.NotesViewEntry;
 import au.gov.asd.tac.constellation.views.notes.utilities.MarkdownTree;
 import java.text.SimpleDateFormat;
@@ -122,8 +123,8 @@ public class NotesViewPane extends BorderPane {
     private static final String SHOW_MORE = "Show more";
     private static final String SHOW_LESS = "Show less";
 
-    private static final String USER_COLOR = "#942483";
-    private static final String AUTO_COLOR = "#1c5aa6";
+    private static final String USER_COLOR = "#c55eff";
+    private static final String AUTO_COLOR = "#236fcc";
     private static String USER_CHOSEN_COLOUR = USER_COLOR;
     private static final String DATETIME_PATTERN = "hh:mm:ss a 'on' dd/MM/yyyy"; // TODO: make this a preference so that we can support their local timestamp format instead.
 
@@ -136,7 +137,8 @@ public class NotesViewPane extends BorderPane {
 
     private static final Object LOCK = new Object();
 
-    private final String fontStyle = String.format("-fx-text-fill: #fff; -fx-font-size:%d;", FontUtilities.getApplicationFontSize());
+    private static final boolean DARK_MODE = JavafxStyleManager.isDarkTheme();
+    private final String fontStyle = String.format("-fx-text-fill: " + (DARK_MODE ? "white" : "black") + "; -fx-font-size:%d;", FontUtilities.getApplicationFontSize());
     private static final String BOLD_STYLE = "-fx-font-weight: bold;";
     private static String fontSize = String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize());
 
@@ -796,7 +798,6 @@ public class NotesViewPane extends BorderPane {
         final Label titleLabel = new Label(newNote.getNoteTitle());
         titleLabel.setWrapText(true);
         titleLabel.setStyle(BOLD_STYLE + fontStyle);
-        titleLabel.setStyle("-fx-text-fill: #FFFFFF;");
 
         // Define content label
         final Label contentLabel = new Label(newNote.getNoteContent());

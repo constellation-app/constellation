@@ -69,7 +69,7 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                                 notesArray.get(i).get(2).asText(),
                                 notesArray.get(i).get(3).asBoolean(),
                                 notesArray.get(i).get(4).asBoolean(),
-                                "#942483",
+                                "#c55eff",
                                 false
                         ));
 

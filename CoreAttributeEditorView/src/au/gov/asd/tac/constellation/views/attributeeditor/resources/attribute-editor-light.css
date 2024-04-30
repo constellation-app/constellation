@@ -1,0 +1,32 @@
+.undisplayedValue {
+    -fx-font-style:italic;
+    -fx-text-fill: #bbbbbb;
+}
+
+.titled-pane .graphic-container .text .hidden {
+    -fx-text-fill: #b8b8b8;
+}
+
+.titled-pane .hidden {
+    -fx-base: #cccccc;
+}
+
+.titled-pane .hidden .label {
+    -fx-text-fill: white;
+}
+
+#primarykey {
+    -fx-base:#e8a49c;
+}
+
+.hidden#primarykey {
+    -fx-base:#E1C8C6;
+}
+
+#custom {
+    -fx-base:#afc8ff;
+}
+
+.hidden#custom {
+    -fx-base:#D3DCF1;
+}
