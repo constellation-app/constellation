@@ -441,7 +441,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                     // If the element was not unique then attempt a merge
                 } else {
                     if (allowMerging && graphElementMerger != null && graphElementMerger.mergeElement(this, elementType, existingElement, element)) {
-                            continue;
+                        continue;
                     }
 
                     final StringBuilder elementValues = new StringBuilder("New[" + element + "]: ");
