@@ -24,6 +24,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A ConstellationColor manages data related to a color in CONSTELLATION,
@@ -33,6 +35,8 @@ import java.util.NoSuchElementException;
  * @author cygnus_x-1
  */
 public final class ConstellationColor implements Comparable<ConstellationColor>, Serializable {
+
+    private static final Logger LOGGER = Logger.getLogger(ConstellationColor.class.getName());
 
     // colors
     public static final ConstellationColor AMETHYST = new ConstellationColor("Amethyst", 155, 89, 182, 255);
@@ -157,6 +161,7 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
      * @return A ColorValue instance if one can be derived, else null.
      */
     public static ConstellationColor getColorValue(final String name) {
+        LOGGER.log(Level.SEVERE, String.format("originalColorString: %s",name));
         if (name == null) {
             return null;
         }
@@ -166,12 +171,16 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
             ucName = "GREY";
         }
         if (NAMED_COLOR_MAP.containsKey(ucName)) {
+            LOGGER.log(Level.SEVERE, String.format("Key Found"));
             return NAMED_COLOR_MAP.get(ucName);
         } else if (ucName.startsWith("RGB")) {
+            LOGGER.log(Level.SEVERE, String.format("RGB"));
             return fromRgbColor(ucName);
         } else if (name.contains(",")) {
+            LOGGER.log(Level.SEVERE, String.format("RGB"));
             return fromRgbWithCommaColor(ucName);
         } else if (ucName.startsWith("#")) {
+            LOGGER.log(Level.SEVERE, String.format("HTML"));
             return fromHtmlColor(name);
         }
 
@@ -416,7 +425,7 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
         final float red = Integer.parseInt(color.substring(3, 6), 10);
         final float green = Integer.parseInt(color.substring(6, 9), 10);
         final float blue = Integer.parseInt(color.substring(9, 12), 10);
-        return new ConstellationColor(null, red / 255F, green / 255F, blue / 255F, 1F);
+        return ConstellationColor.getColorValue(red / 255F, green / 255F, blue / 255F, 1F);
     }
 
     /**

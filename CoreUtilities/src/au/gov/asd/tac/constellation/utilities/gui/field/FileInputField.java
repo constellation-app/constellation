@@ -23,6 +23,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.control.ContextMenu;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javax.swing.filechooser.FileFilter;
 import org.apache.commons.lang3.StringUtils;
@@ -32,7 +33,7 @@ import org.openide.filesystems.FileChooserBuilder;
  * An input field to manage file opening and saving.
  * @author capricornunicorn123
  */
-public class FileInputField extends ConstellationInputField{
+public class FileInputField extends ConstellationInputField {
     
     private ExtensionFilter extensionFilter = null;
     private boolean acceptAll = true;
@@ -171,6 +172,16 @@ public class FileInputField extends ConstellationInputField{
         this.extensionFilter = extensionFilter;
     }
     
+    @Override
+    public ConstellationInputContextMenu getContextMenu() {
+        throw new UnsupportedOperationException("FileInputField does not provide a ContextMenu");
+    }
+    
+    @Override
+    public boolean isValid(String value){
+        return true;
+    }
+
     /**
      * Describes the method of file selection for a parameter of this type.
      */

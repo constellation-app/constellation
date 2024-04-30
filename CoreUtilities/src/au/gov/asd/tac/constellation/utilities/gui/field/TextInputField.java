@@ -15,14 +15,76 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
+import java.util.ArrayList;
+import java.util.List;
+import javafx.application.Platform;
+import javafx.geometry.Side;
+import javafx.scene.control.CustomMenuItem;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputControl;
+import static javafx.scene.layout.Region.USE_PREF_SIZE;
+import javafx.scene.text.Text;
+import org.controlsfx.control.textfield.TextFields;
+
 /**
  *
  * @author capricornunicorn123
  */
 public class TextInputField extends ConstellationInputField {
     
-    public TextInputField(TextType type){
-        super(ConstellationInputFieldLayoutConstants.INPUT_POPUP, type);
-        this.setRightLabel("Recent");    
+    private List<String> recentValues = new ArrayList<>();
+    
+    public TextInputField(TextType type, boolean showRecentValues){
+        super(showRecentValues ? ConstellationInputFieldLayoutConstants.INPUT_CONTEXT : ConstellationInputFieldLayoutConstants.INPUT, type);
+        if (showRecentValues){
+            this.setRightLabel("Recent");
+            if (type.equals(TextType.SINGLELINE)){
+                Platform.runLater(() -> TextFields.bindAutoCompletion((TextField) this.getBaseField(), recentValues));
+            }
+        }
+        
+        this.registerRightButtonEvent(event -> {
+            TextInputControl base = this.getBaseField();
+            getContextMenu().show(base, Side.TOP, USE_PREF_SIZE, USE_PREF_SIZE);
+        });
+        
+    }
+    
+    public static void addRecentValues(ConstellationInputField inputField, List<String> options) {
+        if (inputField instanceof TextInputField textField){
+            textField.addRecentValues(options);
+        }
+    }
+    
+    public void addRecentValues(List<String> options){
+        this.recentValues.clear();
+        this.recentValues.addAll(options);
+    }
+    
+    @Override
+    public ConstellationInputContextMenu getContextMenu() {
+        return new TextInputContextMenu(this);
+    }
+    
+    @Override
+    public boolean isValid(String value){
+        return true;
+    }
+    
+    private class TextInputContextMenu extends ConstellationInputContextMenu {
+        public TextInputContextMenu(TextInputField field){
+            super(field);
+            
+            for (final String recentValue : recentValues){
+                final Text text = new Text(recentValue);
+                
+                text.setOnMouseClicked(event -> {
+                    field.setText(recentValue);
+                });
+
+                this.addMenuOption(new CustomMenuItem(text));
+            }
+        }
     }
 }

@@ -15,18 +15,15 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
-import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.StringProperty;
-import javafx.event.Event;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.geometry.Pos;
-import javafx.geometry.Side;
-import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.IndexRange;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -43,7 +40,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
+import javafx.scene.text.Text;
 
 
 /**
@@ -78,7 +75,7 @@ import javafx.scene.shape.Shape;
  * 
  * @author capricornunicorn123
  */
-public class ConstellationInputField extends StackPane {
+public abstract class ConstellationInputField extends StackPane {
     
     //types of button
     //Cinotext trigger
@@ -90,12 +87,22 @@ public class ConstellationInputField extends StackPane {
     final int centerCellMinWidth = 100;
     final int defaultCellHeight = 22;
     
+    final ColumnConstraints leftConstraint = new ColumnConstraints(50);
+
+    final ColumnConstraints rightConstraint = new ColumnConstraints(50);
+
+    final ColumnConstraints centerConstraint = new ColumnConstraints(100, 400, 500);
+
+    final ColumnConstraints doubleConstraint = new ColumnConstraints(100, 450, 550);
+
+    final ColumnConstraints trippleConstraint = new ColumnConstraints(100, 500, 600);
+    
     private GridPane gridPane;
     private TextInputControl field;
     private final Label leftLabel = new Label();
     private final Label rightLabel = new Label();
-    private final Rectangle rightButton = new Rectangle(endCellPrefWidth, defaultCellHeight); 
-    private final Rectangle leftButton = new Rectangle(); 
+    protected final Rectangle rightButton = new Rectangle(endCellPrefWidth, defaultCellHeight); 
+    protected final Rectangle leftButton = new Rectangle(endCellPrefWidth, defaultCellHeight); 
     
     private final ReadOnlyDoubleProperty heightBinding;
         
@@ -108,6 +115,11 @@ public class ConstellationInputField extends StackPane {
     public ConstellationInputField(){
         throw new UnsupportedOperationException();
     }
+    
+    public ConstellationInputField(final ConstellationInputFieldLayoutConstants layout){
+        this(layout, TextType.SINGLELINE);
+    }
+    
     
     public ConstellationInputField(final ConstellationInputFieldLayoutConstants layout, final TextType type) {
         field = this.createInputField(type);
@@ -160,7 +172,7 @@ public class ConstellationInputField extends StackPane {
         gridPane.setClip(clippingMask);
         gridPane.setAlignment(Pos.CENTER);
         this.getChildren().addAll(background, gridPane, foreground);
-        this.setAlignment(Pos.CENTER);
+        this.setAlignment(Pos.TOP_CENTER);
     }
     
     public TextInputControl getBaseField() {
@@ -177,10 +189,6 @@ public class ConstellationInputField extends StackPane {
                 break;
             }
         }
-    }
-    
-    public final void registerLeftButon(final String labelText) {
-        
     }
     
     private Pane getEndCellGroup(final ContentDisplay side, final Color color, final Label label) {
@@ -224,23 +232,7 @@ public class ConstellationInputField extends StackPane {
      */
     private GridPane getGridPaneWithChildCellPanes(final ConstellationInputFieldLayoutConstants layout) {
         final GridPane local = new GridPane();
-        
-        final ColumnConstraints leftConstraint = new ColumnConstraints(50);
-        
-        final ColumnConstraints rightConstraint = new ColumnConstraints(50);
-        
-        final ColumnConstraints centerConstraint = new ColumnConstraints();
-        centerConstraint.setPrefWidth(400);
-        centerConstraint.setMinWidth(100);
-        
-        final ColumnConstraints doubleConstraint = new ColumnConstraints();
-        doubleConstraint.setPrefWidth(450);
-        doubleConstraint.setMinWidth(100);
-        
-        final ColumnConstraints trippleConstraint = new ColumnConstraints();
-        trippleConstraint.setPrefWidth(500);
-        trippleConstraint.setMinWidth(100);
-        
+               
         final ContentDisplay[] areas = layout.getAreas();
         for (final ContentDisplay area : areas) {
             switch (area) {
@@ -275,9 +267,14 @@ public class ConstellationInputField extends StackPane {
             case MULTILINE -> new TextArea();
             default -> new TextField();
         };
-        local.setBackground(Background.fill(Color.TRANSPARENT));
-        local.setBorder(Border.stroke(Color.TRANSPARENT));
-        
+        local.setStyle("-fx-background-radius: 0; -fx-background-color: transparent; -fx-border-color: transparent; -fx-focus-color: transparent;");
+        local.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (isValid(newValue)){
+                local.setStyle("-fx-background-color: transparent;");
+            } else {
+                local.setStyle("-fx-background-color: red;");
+            }
+        });
         return local;
         
     }
@@ -302,11 +299,16 @@ public class ConstellationInputField extends StackPane {
     };
     
     public void registerRightButtonEvent(final EventHandler<MouseEvent> event) {
-        this.rightButton.setOnMouseClicked(event);
+        this.rightButton.setOnMousePressed(event);
     }
     
-    public void registerleftButtonEvent(final EventHandler<MouseEvent> event) {
-        this.leftButton.setOnMouseClicked(event);
+    public void registerLeftButtonEvent(final EventHandler<MouseEvent> event) {
+        this.leftButton.setOnMousePressed(event);
+    }
+    
+    public void setContextButtonDisable(boolean b) {
+        //to do
+        //want to reformat the grid pane to eliminate the context menu when button is disabled. this will be tricky
     }
 
     public void setPromptText(final String description) {
@@ -382,6 +384,27 @@ public class ConstellationInputField extends StackPane {
     public void setPrefRowCount(Integer suggestedHeight) {
                if (this.field instanceof TextArea textAreaField){
             textAreaField.setPrefRowCount(suggestedHeight);
+        }
+    }
+    public abstract boolean isValid(String value);
+    
+    public abstract ConstellationInputContextMenu getContextMenu();
+    
+    public class ConstellationInputContextMenu extends ContextMenu {
+        //final Rectangle rect = new Rectangle(300, 88);
+        //final GridPane grid = new GridPane();
+        final ConstellationInputField parent;
+        public ConstellationInputContextMenu(final ConstellationInputField field) {
+            parent = field;
+            //grid.translateYProperty().bind(heightBinding);
+            //grid.getColumnConstraints().add(trippleConstraint);
+            //rect.setFill(Color.BLUE);
+            //this.getChildren().add(rect); 
+            //this.getChildren().add(grid);
+        }
+        
+        public void addMenuOption(CustomMenuItem text) {
+            this.getItems().add(text);
         }
     }
     

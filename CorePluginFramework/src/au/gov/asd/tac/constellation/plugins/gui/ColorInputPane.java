@@ -19,6 +19,8 @@ import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType.ColorParameterValue;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.gui.field.ColorInputField;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputField;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -46,43 +48,26 @@ import javafx.util.Callback;
  * @author algol
  */
 public class ColorInputPane extends Pane {
+    
+    public static final int DEFAULT_WIDTH = 300;
 
-    private final ColorPicker field;
-    private final ComboBox<ConstellationColor> namedCombo;
+    private final ColorInputField field;
     private static final Logger LOGGER = Logger.getLogger(ColorInputPane.class.getName());
-
+    
     public ColorInputPane(final PluginParameter<ColorParameterValue> parameter) {
-        field = new ColorPicker();
-        namedCombo = makeNamedCombo();
-        final HBox hbox = new HBox(field, namedCombo);
-
-        field.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                final Color opaque = Color.color(newValue.getRed(), newValue.getGreen(), newValue.getBlue());
-                if (!opaque.equals(oldValue)) {
-                    boolean foundNamedColor = false;
-                    for (final ConstellationColor c : ConstellationColor.NAMED_COLOR_LIST) {
-                        final Color fxc = c.getJavaFXColor();
-                        if (opaque.equals(fxc)) {
-                            namedCombo.setValue(c);
-                            foundNamedColor = true;
-                            break;
-                        }
-                    }
-
-                    if (!foundNamedColor) {
-                        namedCombo.setValue(null);
-                    }
-                }
-            }
-        });
+        this(parameter, DEFAULT_WIDTH);
+    }
+    
+    public ColorInputPane(final PluginParameter<ColorParameterValue> parameter, final int defaultWidth) {
+        field = new ColorInputField();
 
         final ColorParameterValue pv = parameter.getParameterValue();
 
-        field.setValue(pv.get().getJavaFXColor());
+        field.setColor(pv.get().getJavaFXColor());
+        field.setPrefWidth(defaultWidth);
 
         if (parameter.getParameterValue().getGuiInit() != null) {
-            parameter.getParameterValue().getGuiInit().init(hbox);
+            parameter.getParameterValue().getGuiInit().init(field);
         }
 
         field.setDisable(!parameter.isEnabled());
@@ -91,24 +76,23 @@ public class ColorInputPane extends Pane {
         this.setManaged(parameter.isVisible());
         this.setVisible(parameter.isVisible());
 
-        namedCombo.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null && !newValue.equals(oldValue)) {
-                field.setValue(newValue.getJavaFXColor());
-                parameter.setColorValue(ConstellationColor.fromFXColor(field.getValue()));
+        field.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                parameter.setColorValue(ColorInputField.getColor(newValue));                
             }
         });
-
-        field.setOnAction(event -> parameter.setColorValue(ConstellationColor.fromFXColor(field.getValue())));
 
         parameter.addListener((PluginParameter<?> pluginParameter, ParameterChange change) -> Platform.runLater(() -> {
                 switch (change) {
                     case VALUE -> {
                         // Don't change the value if it isn't necessary.
                         final ConstellationColor param = pluginParameter.getColorValue();
-                        if (!param.equals(field.getValue())) {
-                            field.setValue(param.getJavaFXColor());
+                        if (field.isValid(field.getText())){
+                            if (!param.equals(field.getColor())) {
+                                field.setColor(param);
+                            }
                         }
-                }
+                    }
                     case ENABLED -> field.setDisable(!pluginParameter.isEnabled());
                     case VISIBLE -> {
                         field.setManaged(parameter.isVisible());
@@ -120,31 +104,6 @@ public class ColorInputPane extends Pane {
                 }
             }));
 
-        getChildren().add(hbox);
-    }
-
-    private ComboBox<ConstellationColor> makeNamedCombo() {
-        final ObservableList<ConstellationColor> namedColors = FXCollections.observableArrayList();
-        for (final ConstellationColor c : ConstellationColor.NAMED_COLOR_LIST) {
-            namedColors.add(c);
-        }
-        final ComboBox<ConstellationColor> namedCombo = new ComboBox<>(namedColors);
-        namedCombo.setValue(ConstellationColor.WHITE);
-        final Callback<ListView<ConstellationColor>, ListCell<ConstellationColor>> cellFactory = (final ListView<ConstellationColor> p) -> new ListCell<ConstellationColor>() {
-            @Override
-            protected void updateItem(final ConstellationColor item, boolean empty) {
-                super.updateItem(item, empty);
-                if (item != null) {
-                    final Rectangle r = new Rectangle(12, 12, item.getJavaFXColor());
-                    r.setStroke(Color.BLACK);
-                    setText(item.getName());
-                    setGraphic(r);
-                }
-            }
-        };
-        namedCombo.setCellFactory(cellFactory);
-        namedCombo.setButtonCell(cellFactory.call(null));
-
-        return namedCombo;
+        getChildren().add(field);
     }
 }
