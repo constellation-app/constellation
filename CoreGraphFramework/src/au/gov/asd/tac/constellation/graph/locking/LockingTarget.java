@@ -19,6 +19,8 @@ import au.gov.asd.tac.constellation.graph.DuplicateKeyException;
 import static au.gov.asd.tac.constellation.graph.locking.LockingManager.VERBOSE;
 import au.gov.asd.tac.constellation.graph.undo.GraphEdit;
 import java.util.concurrent.locks.Lock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * manages the locking of a graph
@@ -30,12 +32,14 @@ public abstract class LockingTarget implements ReadingInterface {
     Lock lock;
     protected GraphOperationMode operationMode = GraphOperationMode.EXECUTE;
 
+    private static final Logger LOGGER = Logger.getLogger(LockingTarget.class.getName());
+
     @Override
     public void release() {
         lock.unlock();
 
         if (VERBOSE) {
-            System.out.println("Read lock released by " + Thread.currentThread());
+            LOGGER.log(Level.INFO, "Read lock released by  {0}", Thread.currentThread());
         }
     }
 

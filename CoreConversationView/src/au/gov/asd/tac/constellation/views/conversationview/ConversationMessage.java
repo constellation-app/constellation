@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.conversationview;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -244,7 +245,7 @@ public class ConversationMessage {
      * @return The list of all visible contributions.
      */
     public List<ConversationContribution> getVisibleContributions() {
-        return visibleContributions;
+        return Collections.unmodifiableList(visibleContributions);
     }
 
     @Override

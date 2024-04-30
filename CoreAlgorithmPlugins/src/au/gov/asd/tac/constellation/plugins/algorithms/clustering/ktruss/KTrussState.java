@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -123,12 +124,7 @@ public class KTrussState {
         interactive = prevState.interactive;
     }
 
-    public KTrussState(final long modificationCounter, final long strucModificationCount, final int currentK, final int highestK, 
-            final boolean excludedElementsDimmed, final int displayOptionToggles, final boolean[] extantKTrusses, final int[] kTrussToIndex, 
-            final int[] indexToKTruss, final Map<Integer, Integer> nodeToComponent, final Map<Integer, Integer> linkToComponent, 
-            final Map<Integer, Integer> componentTree, final Map<Integer, Integer> componentSizes, final boolean isNestedTrussesVisible, 
-            final int highestComponentNum, final int totalVerts, final int totalVertsInTrusses, final boolean drawAllComponents, 
-            final boolean nestedTrussesColored, final boolean interactive) {
+    public KTrussState(final long modificationCounter, final long strucModificationCount, final int currentK, final int highestK, final boolean excludedElementsDimmed, final int displayOptionToggles, final boolean[] extantKTrusses, final int[] kTrussToIndex, final int[] indexToKTruss, final Map<Integer, Integer> nodeToComponent, final Map<Integer, Integer> linkToComponent, final Map<Integer, Integer> componentTree, final Map<Integer, Integer> componentSizes, final boolean isNestedTrussesVisible, final int highestComponentNum, final int totalVerts, final int totalVertsInTrusses, final boolean nestedTrussesColored, final boolean interactive) {
         this.modificationCounter = modificationCounter;
         this.strucModificationCount = strucModificationCount;
         this.currentK = currentK;
@@ -323,49 +319,49 @@ public class KTrussState {
      * @return the extantKTrusses
      */
     public boolean[] getExtantKTrusses() {
-        return extantKTrusses;
+        return extantKTrusses.clone();
     }
 
     /**
      * @return the kTrussToIndex
      */
     public int[] getkTrussToIndex() {
-        return kTrussToIndex;
+        return kTrussToIndex.clone();
     }
 
     /**
      * @return the indexToKTruss
      */
     public int[] getIndexToKTruss() {
-        return indexToKTruss;
+        return indexToKTruss.clone();
     }
 
     /**
      * @return the nodeToComponent
      */
     public Map<Integer, Integer> getNodeToComponent() {
-        return nodeToComponent;
+        return Collections.unmodifiableMap(nodeToComponent);
     }
 
     /**
      * @return the linkToComponent
      */
     public Map<Integer, Integer> getLinkToComponent() {
-        return linkToComponent;
+        return Collections.unmodifiableMap(linkToComponent);
     }
 
     /**
      * @return the componentTree
      */
     public Map<Integer, Integer> getComponentTree() {
-        return componentTree;
+        return Collections.unmodifiableMap(componentTree);
     }
 
     /**
      * @return the componentSizes
      */
     public Map<Integer, Integer> getComponentSizes() {
-        return componentSizes;
+        return Collections.unmodifiableMap(componentSizes);
     }
 
     /**

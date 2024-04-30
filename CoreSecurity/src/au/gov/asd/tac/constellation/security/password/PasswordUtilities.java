@@ -52,7 +52,7 @@ public class PasswordUtilities {
             iv = secret.getIV();
         }
 
-        return iv;
+        return iv.clone();
     }
 
     public static byte[] getKey() {
@@ -64,7 +64,7 @@ public class PasswordUtilities {
             key = secret.getKey();
         }
 
-        return key;
+        return key.clone();
     }
 
     public static byte[] generateKey() {

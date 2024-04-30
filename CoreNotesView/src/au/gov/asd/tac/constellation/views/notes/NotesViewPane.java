@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.notes;
 
-import au.gov.asd.tac.constellation.views.notes.utilities.NewNotePane;
-import au.gov.asd.tac.constellation.views.notes.utilities.DateTimeRangePicker;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
@@ -37,7 +35,9 @@ import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.gui.MultiChoiceInputField;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.notes.state.NotesViewEntry;
+import au.gov.asd.tac.constellation.views.notes.utilities.DateTimeRangePicker;
 import au.gov.asd.tac.constellation.views.notes.utilities.MarkdownTree;
+import au.gov.asd.tac.constellation.views.notes.utilities.NewNotePane;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -1240,7 +1240,7 @@ public class NotesViewPane extends BorderPane {
      */
     public void updateSelectedTagsCombo(final List<String> selectedTagsFilters) {
         this.tagsSelectedFiltersList.clear();
-        selectedTagsFilters.forEach(filter -> this.tagsSelectedFiltersList.add(filter));
+        selectedTagsFilters.forEach(this.tagsSelectedFiltersList::add);
         updateTagFilters();
     }
 

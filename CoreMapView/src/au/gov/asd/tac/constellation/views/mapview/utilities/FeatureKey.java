@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * An object representing a unique geographic feature.
@@ -49,7 +48,7 @@ public class FeatureKey {
             case MULTI, CLUSTER -> {
                 this.featureClass = ConstellationMultiFeature.class;
                 this.featureLocations = ((ConstellationMultiFeature) multiFeature).getFeatures().stream()
-                        .map(feature -> getLocations(feature)).flatMap(List::stream).collect(Collectors.toList());
+                        .map(this::getLocations).flatMap(List::stream).toList();
             }
             default -> {
                 this.featureClass = null;

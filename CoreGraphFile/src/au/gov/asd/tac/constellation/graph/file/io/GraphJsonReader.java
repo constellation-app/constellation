@@ -175,7 +175,7 @@ public final class GraphJsonReader {
             }
 
             try {
-                graph = readGraph(name, in.getInputStream(), in.getAvailableSize(), progress);
+                graph = readGraph(in.getInputStream(), in.getAvailableSize(), progress);
             } catch (final IllegalStateException ex) {
                 throw new GraphParseException(ex.getMessage(), ex);
             } catch (final InterruptedException ex) {
@@ -262,7 +262,7 @@ public final class GraphJsonReader {
      * @throws java.lang.InterruptedException If the graph can't be locked.
      * @throws GraphParseException On graph parsing errors.
      */
-    public Graph readGraph(final String path, final InputStream in, final long entrySize, final IoProgress progress) throws IOException, InterruptedException, GraphParseException {
+    public Graph readGraph(final InputStream in, final long entrySize, final IoProgress progress) throws IOException, InterruptedException, GraphParseException {
         final ImmutableObjectCache immutableObjectCache = new ImmutableObjectCache();
 
         // Use a combination of stream and tree-model parsing.

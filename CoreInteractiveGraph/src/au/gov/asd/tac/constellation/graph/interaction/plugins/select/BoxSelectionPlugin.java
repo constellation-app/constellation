@@ -432,7 +432,8 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
         // We know now that the end-points are outside the rectangle, so we only have to worry
         // that the line is between the sides.
         if (x1 == x2) {
-            return minX <= x1 && x1 <= maxX;
+            // At this point minX <= x1 is always true
+            return x1 <= maxX;
         }
 
         // Slope of line segment.

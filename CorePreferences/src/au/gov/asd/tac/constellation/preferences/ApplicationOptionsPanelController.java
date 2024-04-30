@@ -160,7 +160,7 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
 
     private ApplicationOptionsPanel getPanel() {
         if (panel == null) {
-            panel = new ApplicationOptionsPanel(this);
+            panel = new ApplicationOptionsPanel();
         }
         return panel;
     }

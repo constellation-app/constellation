@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.graph.visual.plugins.merge;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
-import au.gov.asd.tac.constellation.graph.Graph;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
@@ -28,17 +27,14 @@ import javax.swing.table.DefaultTableModel;
 public final class PermanentMergeTableModel extends DefaultTableModel {
 
     private Class<?>[] headerClass;
-    private Graph graph;
     private List<Attribute> vertexAttributes = new ArrayList<>();
 
     /**
      * Initializes the table model.
      *
-     * @param graph the graph that holds the vertices to be merged.
      * @param attributes the attributes to be displayed in the table.
      */
-    public void initialise(final Graph graph, final ArrayList<Attribute> attributes) {
-        this.graph = graph;
+    public void initialise(final List<Attribute> attributes) {
         vertexAttributes = attributes;
         setupAttributeHeaders();
         getDataVector().clear();

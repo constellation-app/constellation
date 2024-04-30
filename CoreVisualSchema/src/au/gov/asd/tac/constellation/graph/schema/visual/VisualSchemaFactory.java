@@ -55,7 +55,7 @@ public class VisualSchemaFactory extends SchemaFactory {
     public static final String NONE = "None";
     private static final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
     //Retrieve colorblind mode selection preference 
-    public static String colorMode = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
+    private static String colorMode = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
 
     // Note: changing this value will break backwards compatibility!
     public static final String VISUAL_SCHEMA_ID = "au.gov.asd.tac.constellation.graph.schema.VisualSchemaFactory";
@@ -87,9 +87,12 @@ public class VisualSchemaFactory extends SchemaFactory {
     public List<SchemaAttribute> getKeyAttributes(final GraphElementType elementType) {
         final List<SchemaAttribute> keys;
         keys = switch (elementType) {
-            case VERTEX -> Arrays.asList(VisualConcept.VertexAttribute.IDENTIFIER);
-            case TRANSACTION -> Arrays.asList(VisualConcept.TransactionAttribute.IDENTIFIER);
-            default -> Collections.emptyList();
+            case VERTEX ->
+                Arrays.asList(VisualConcept.VertexAttribute.IDENTIFIER);
+            case TRANSACTION ->
+                Arrays.asList(VisualConcept.TransactionAttribute.IDENTIFIER);
+            default ->
+                Collections.emptyList();
         };
 
         return Collections.unmodifiableList(keys);
@@ -234,7 +237,7 @@ public class VisualSchemaFactory extends SchemaFactory {
         @Override
         public void completeVertex(final GraphWriteMethods graph, final int vertexId) {
             super.completeVertex(graph, vertexId);
-            
+
             final int vertexIdentifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
             final int vertexLabelAttribute = VisualConcept.VertexAttribute.LABEL.ensure(graph);
             final String identifier = graph.getStringValue(vertexIdentifierAttribute, vertexId);

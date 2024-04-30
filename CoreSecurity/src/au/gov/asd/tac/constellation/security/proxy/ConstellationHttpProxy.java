@@ -105,9 +105,8 @@ public interface ConstellationHttpProxy {
      */
     public default String getBypassProxyHostsString() {
         final StringBuilder noProxyHosts = new StringBuilder();
-        getBypassProxyHosts().forEach(noProxyHost -> {
-            noProxyHosts.append(noProxyHost).append(ProxyUtilities.PROXY_SEPARATOR);
-        });
+        getBypassProxyHosts().forEach(noProxyHost -> 
+            noProxyHosts.append(noProxyHost).append(ProxyUtilities.PROXY_SEPARATOR));
         return noProxyHosts.toString();
     }
 

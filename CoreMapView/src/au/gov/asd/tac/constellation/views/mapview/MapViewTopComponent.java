@@ -69,6 +69,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
@@ -483,7 +484,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
     }
 
     public List<? extends MapProvider> getProviders() {
-        return providers;
+        return Collections.unmodifiableList(providers);
     }
 
     public MarkerState getMarkerState() {

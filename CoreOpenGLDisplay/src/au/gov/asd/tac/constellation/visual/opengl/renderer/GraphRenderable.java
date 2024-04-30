@@ -252,9 +252,8 @@ public final class GraphRenderable implements GLRenderable {
                     });
                 };
             case CONNECTION_LABEL_COLOR:
-                return (change, access) -> {
+                return (change, access) -> 
                     addTask(connectionLabelBatcher.setLabelColors(access));
-                };
             case CONNECTION_LABELS_REBUILD:
                 return (change, access) -> {
                     addTask(connectionLabelBatcher.setLabelColors(access));

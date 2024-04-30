@@ -53,8 +53,8 @@ public class ListSelectionEditorFactory extends AbstractEditorFactory<List<Strin
             super(editOperation, defaultGetter, validator, editedItemName, initialValue);
         }
 
-        public void setPossibleItems(List<String> possibleItems) {
-            this.possibleItems = possibleItems;
+        public void setPossibleItems(final List<String> possibleItems) {
+            this.possibleItems = new ArrayList<>(possibleItems);
         }
 
         @Override
