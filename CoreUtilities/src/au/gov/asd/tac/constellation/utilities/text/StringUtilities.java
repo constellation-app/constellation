@@ -39,17 +39,34 @@ public class StringUtilities {
     private static final Pattern OPENING_SQUARE_BRACKET = Pattern.compile("^\\[");
     private static final Pattern ENDING_SQUARE_BRACKET = Pattern.compile("]$");
 
-    public static boolean endsWithAny(String name, String... endings) {
-        return StringUtils.endsWithAny(name, endings);
-    }
-
-    public static boolean equalsAny(String attributeType, String... values) {
-        return StringUtils.equalsAny(attributeType, values);
-    }
-
     private StringUtilities() {
         throw new IllegalStateException("Utility class");
     }
+    
+   /**
+    * Checks a string for the presence of any of the specified endings. 
+    * Acts as a helper method to eliminate the need to create a list when performing the same operation with {@link StringUtils}
+    * 
+    * @param base
+    * @param endings
+    * @return 
+    */
+    public static boolean endsWithAny(final String base, final String... endings) {
+        return StringUtils.endsWithAny(base, endings);
+    }
+
+    /**
+    * Checks a string for equality with any of the specified values. 
+    * Acts as a helper method to eliminate the need to create a list when performing the same operation with {@link StringUtils}
+    * 
+    * @param reference
+    * @param targets
+    * @return 
+    */
+    public static boolean equalsAny(final String reference, final String... targets) {
+        return StringUtils.equalsAny(reference, targets);
+    }
+    
 
     /**
      * Escape a String.
