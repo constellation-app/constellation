@@ -157,13 +157,10 @@ public class BasicFindPlugin extends SimpleEditPlugin {
                             // get the UID of the element and the graph
                             final long uid = elementType.getUID(graph, currElement);
                             // if the user wants to find it in, or remove it from their current selection
-                            if (removeFromCurrentSelection || (currentSelection && replaceCurrentSelection)) {
-                                // if the element is selected
-                                if (graph.getBooleanValue(selectedAttribute, currElement)) {
-                                    // Add the element to the find in and remove from list
-                                    findInCurrentSelectionList.add(new FindResult(currElement, uid, elementType, graph.getId()));
-                                    removeFromCurrentSelectionList.add(new FindResult(currElement, uid, elementType, graph.getId()));
-                                }
+                            if ((removeFromCurrentSelection || (currentSelection && replaceCurrentSelection)) && graph.getBooleanValue(selectedAttribute, currElement)) {
+                                // if the element is selected, Add the element to the find in and remove from list
+                                findInCurrentSelectionList.add(new FindResult(currElement, uid, elementType, graph.getId()));
+                                removeFromCurrentSelectionList.add(new FindResult(currElement, uid, elementType, graph.getId()));
                             }
                             // if the user wants to select all, select the matching element
                             if (selectAll && !removeFromCurrentSelection && !(currentSelection && replaceCurrentSelection)) {

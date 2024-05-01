@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.StringJoiner;
 import java.util.regex.Pattern;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Provides various string operations such as escaping and pretty printing.
@@ -40,6 +41,30 @@ public class StringUtilities {
 
     private StringUtilities() {
         throw new IllegalStateException("Utility class");
+    }
+    
+   /**
+    * Checks a base string for the presence of any of the specified endings. 
+    * Acts as a helper method to eliminate the need to create a list when performing the same operation with {@link StringUtils}
+    * 
+    * @param base
+    * @param endings
+    * @return 
+    */
+    public static boolean endsWithAny(final String base, final String... endings) {
+        return StringUtils.endsWithAny(base, endings);
+    }
+
+    /**
+    * Checks a reference string for equality with any of the specified target values. 
+    * Acts as a helper method to eliminate the need to create a list when performing the same operation with {@link StringUtils}
+    * 
+    * @param reference
+    * @param targets
+    * @return 
+    */
+    public static boolean equalsAny(final String reference, final String... targets) {
+        return StringUtils.equalsAny(reference, targets);
     }
 
     /**

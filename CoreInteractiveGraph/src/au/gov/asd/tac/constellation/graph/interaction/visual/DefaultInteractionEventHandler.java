@@ -1194,12 +1194,10 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
 
                         for (int i = 0; i < childCount; i++) {
                             final JComponent childComponent = (JComponent) currentMenu.getComponent(i);
-                            if (childComponent instanceof JMenu childMenu) {
-                                if (childMenu.getText().equals(path)) {
-                                    pathAlreadyExists = true;
-                                    currentMenu = childComponent;
-                                    break;
-                                }
+                            if (childComponent instanceof JMenu childMenu && childMenu.getText().equals(path)) {
+                                pathAlreadyExists = true;
+                                currentMenu = childComponent;
+                                break;
                             }
                         }
 

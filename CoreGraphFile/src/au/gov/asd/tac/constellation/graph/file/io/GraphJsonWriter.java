@@ -32,6 +32,7 @@ import au.gov.asd.tac.constellation.utilities.icon.DefaultCustomIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.FileIconData;
 import au.gov.asd.tac.constellation.utilities.icon.IconData;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
+import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -507,7 +508,7 @@ public final class GraphJsonWriter implements Cancellable {
      * @return true if the attribute is numeric, false otherwise.
      */
     private static boolean isNumeric(final Attribute attr) {
-        return StringUtils.equalsAny(attr.getAttributeType(), new String[]{"integer", "float"});
+        return StringUtilities.equalsAny(attr.getAttributeType(), "integer", "float");
     }
 
     @Override
