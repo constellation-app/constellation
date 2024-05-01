@@ -69,14 +69,14 @@ public final class JoglVersionAction implements ActionListener {
                 )
         );
         if (gl instanceof GL2ES2) {
-            sb.append(String.format("Shading language version: %s\n", gl.glGetString(GL2ES2.GL_SHADING_LANGUAGE_VERSION)));
+            sb.append(String.format("Shading language version: %s%n", gl.glGetString(GL2ES2.GL_SHADING_LANGUAGE_VERSION)));
         }
 
         final JoglVersion jv = JoglVersion.getInstance();
         final Set<?> names = jv.getAttributeNames();
         final ArrayList<String> lines = new ArrayList<>();
         for (final Object name : names) {
-            lines.add(String.format("%s: %s\n", name, jv.getAttribute((Attributes.Name) name)));
+            lines.add(String.format("%s: %s%n", name, jv.getAttribute((Attributes.Name) name)));
         }
 
         Collections.sort(lines);

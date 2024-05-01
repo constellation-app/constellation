@@ -566,9 +566,9 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
             if (bin.selectedCount > 0) {
                 final String label = bin.getLabel() != null ? bin.getLabel() : HistogramDisplay.NO_VALUE;
                 if (includeCounts) {
-                    buf.append(String.format("%s\t%d\n", label, bin.elementCount));
+                    buf.append(String.format("%s\t%d%n", label, bin.elementCount));
                 } else {
-                    buf.append(String.format("%s%s", label, "\n"));
+                    buf.append(String.format("%s%n", label));
                 }
             }
         }
