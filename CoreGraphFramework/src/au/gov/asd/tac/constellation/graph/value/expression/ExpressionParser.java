@@ -440,7 +440,7 @@ public class ExpressionParser {
         }
     }
 
-    public static class ParseInfoHolder {
+    private static class ParseInfoHolder {
 
         private ParseState state = ParseState.READING_WHITESPACE;
         private int contentLength = 0;
