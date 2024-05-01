@@ -32,23 +32,23 @@ public class MultiValueStore implements ParameterReadAccess, ParameterWriteAcces
     private double d;
     private Object o;
     
-    public int getInt(){
+    private int getInt(){
         return i;
     }
 
-    public long getLong() {
+    private long getLong() {
         return l;
     }
 
-    public float getFloat() {
+    private float getFloat() {
         return f;
     }
 
-    public double getDouble() {
+    private double getDouble() {
         return d;
     }
     
-    public Object getObject(){
+    private Object getObject(){
         return o;
     }
 
