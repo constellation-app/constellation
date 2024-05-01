@@ -274,7 +274,7 @@ public class FloatParameterType extends PluginParameterType<FloatParameterValue>
 
         @Override
         public Object getObjectValue() {
-            return f;
+            return get();
         }
 
         @Override
@@ -321,7 +321,7 @@ public class FloatParameterType extends PluginParameterType<FloatParameterValue>
 
         @Override
         public Number getNumberValue() {
-            return f;
+            return get();
         }
 
         @Override

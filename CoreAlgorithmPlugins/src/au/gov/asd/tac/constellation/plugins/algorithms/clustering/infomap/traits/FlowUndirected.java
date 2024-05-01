@@ -50,7 +50,7 @@ public class FlowUndirected implements FlowBase {
 
     @Override
     public double getEnterFlow() {
-        return exitFlow;
+        return getExitFlow();
     }
 
     @Override

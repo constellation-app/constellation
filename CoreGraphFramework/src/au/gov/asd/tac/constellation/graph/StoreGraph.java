@@ -394,7 +394,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
     @Override
     public long getModificationCounter() {
-        return globalModificationCounter;
+        return getGlobalModificationCounter();
     }
 
     @Override

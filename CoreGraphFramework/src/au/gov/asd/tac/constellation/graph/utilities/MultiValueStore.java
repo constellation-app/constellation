@@ -31,55 +31,75 @@ public class MultiValueStore implements ParameterReadAccess, ParameterWriteAcces
     private float f;
     private double d;
     private Object o;
+    
+    public int getInt(){
+        return i;
+    }
+
+    public long getLong() {
+        return l;
+    }
+
+    public float getFloat() {
+        return f;
+    }
+
+    public double getDouble() {
+        return d;
+    }
+    
+    public Object getObject(){
+        return o;
+    }
 
     @Override
     public int getExecuteInt() {
-        return i;
+        return getInt();
     }
 
     @Override
     public long getExecuteLong() {
-        return l;
+        return getLong();
     }
 
     @Override
     public float getExecuteFloat() {
-        return f;
+        return getFloat();
     }
 
     @Override
     public double getExecuteDouble() {
-        return d;
+        return getDouble();
     }
 
     @Override
     public Object getExecuteObject() {
-        return o;
+        return getObject();
     }
 
     @Override
     public int getUndoInt() {
-        return i;
+        return getInt();
     }
 
     @Override
     public long getUndoLong() {
-        return l;
+        return getLong();
     }
 
     @Override
     public float getUndoFloat() {
-        return f;
+        return getFloat();
     }
 
     @Override
     public double getUndoDouble() {
-        return d;
+        return getDouble();
     }
 
     @Override
     public Object getUndoObject() {
-        return o;
+        return getObject();
     }
 
     @Override
