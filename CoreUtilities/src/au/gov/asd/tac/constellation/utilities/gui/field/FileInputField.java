@@ -23,7 +23,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.scene.control.ContextMenu;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javax.swing.filechooser.FileFilter;
 import org.apache.commons.lang3.StringUtils;
@@ -173,7 +172,7 @@ public class FileInputField extends ConstellationInputField {
     }
     
     @Override
-    public ConstellationInputContextMenu getContextMenu() {
+    public ConstellationInputDropDown getDropDown() {
         throw new UnsupportedOperationException("FileInputField does not provide a ContextMenu");
     }
     

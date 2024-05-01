@@ -15,28 +15,30 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
-import javafx.scene.control.ContentDisplay;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.Skin;
-import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
 
 /**
- *
+ * An input field for handling the entry of passwords.
+ * This field is based off of a {@link PasswordField}. 
+ * 
+ * To facilitate showing and hiding of passwords an alternate {@link TextField}
+ * is used and linked to the {@link PasswordField}.
+ * When interacting with the Password Input Field through the COnstellationInputField Interface 
+ * the {@link PasswordField} is always treated as the base field.
  * @author capricornunicorn123
  */
 public class PasswordInputField extends ConstellationInputField {
-    final TextInputControl alternate;
+    final private TextInputControl alternate;
     
     public PasswordInputField(){
-        super(ConstellationInputFieldLayoutConstants.INPUT_CONTEXT, TextType.SECRET);
+        super(ConstellationInputFieldLayoutConstants.INPUT_DROPDOWN, TextType.SECRET);
         this.setRightLabel("Show");    
         
-        TextInputControl base = this.getBaseField();
+        final TextInputControl base = this.getBaseField();
         alternate = this.createInputField(TextType.SINGLELINE);
         alternate.textProperty().bindBidirectional(base.textProperty());
         alternate.textFormatterProperty().bindBidirectional(base.textFormatterProperty());
+        alternate.promptTextProperty().bindBidirectional(base.promptTextProperty());
         alternate.setVisible(false);
         this.insertBaseFieldIntoGrid(alternate);
         
@@ -54,10 +56,16 @@ public class PasswordInputField extends ConstellationInputField {
     }
     
     @Override
-    public ConstellationInputContextMenu getContextMenu() {
+    public ConstellationInputDropDown getDropDown() {
         throw new UnsupportedOperationException("PasswordInputField does not provide a ContextMenu");
     }
     
+    /**
+     * Password validation could be included here with tool top triggers
+     * things like minimum length, character combinations etc
+     * @param value
+     * @return 
+     */
     @Override
     public boolean isValid(String value){
         return true;

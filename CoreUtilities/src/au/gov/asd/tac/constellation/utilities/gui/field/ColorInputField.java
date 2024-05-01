@@ -17,22 +17,14 @@ package au.gov.asd.tac.constellation.utilities.gui.field;
 
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColorPicker;
-import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
-import java.awt.Dimension;
 import javafx.embed.swing.JFXPanel;
-import javafx.event.EventHandler;
-import javafx.geometry.Bounds;
+import javafx.geometry.Insets;
 import javafx.geometry.Side;
 import javafx.scene.Scene;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuButton;
 import javafx.scene.control.TextInputControl;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import javax.swing.JButton;
 import org.openide.DialogDescriptor;
@@ -47,7 +39,7 @@ public class ColorInputField extends ConstellationInputField {
     ColorMode mode = ColorMode.COLOR;
     
     public ColorInputField(){
-        super(ConstellationInputFieldLayoutConstants.CONTEXT_INPUT_POPUP);
+        super(ConstellationInputFieldLayoutConstants.DROPDOWN_INPUT_POPUP);
         this.setRightLabel("Swatch");
         this.setLeftLabel(mode.toString());
         this.registerRightButtonEvent(event -> {
@@ -65,12 +57,8 @@ public class ColorInputField extends ConstellationInputField {
             Object r = DialogDisplayer.getDefault().notify(dd);
         });
         
-        //ConstellationInputContextMenu menu = getContextMenu();
-        
         this.registerLeftButtonEvent(event -> {
-            TextInputControl base = this.getBaseField();
-            
-            getContextMenu().show(base, Side.TOP, USE_PREF_SIZE, USE_PREF_SIZE);
+            this.showDropDown(getDropDown());
         });
     }
     
@@ -81,8 +69,7 @@ public class ColorInputField extends ConstellationInputField {
     }
     
     public void setColor(Color color){
-        this.setColor(ConstellationColor.fromFXColor(color));
-        
+        this.setColor(ConstellationColor.fromFXColor(color)); 
     }
     
     public void setColor(final ConstellationColor color){
@@ -96,7 +83,12 @@ public class ColorInputField extends ConstellationInputField {
                     }
                 }
                 case HEX -> this.setText(color.getHtmlColor());
-                case RGB -> this.setText(String.format("Red:%s, Green:%s, Blue:%s", (int) (color.getRed() * 255), (int) (color.getGreen() * 255), (int) (color.getBlue() * 255)));
+                case RGB -> this.setText(String.format(
+                        "Red:%s, Green:%s, Blue:%s", 
+                        (int) (color.getRed() * 255), 
+                        (int) (color.getGreen() * 255), 
+                        (int) (color.getBlue() * 255))
+                );
             }
         }
     }
@@ -126,8 +118,8 @@ public class ColorInputField extends ConstellationInputField {
     }
     
     @Override
-    public ConstellationInputContextMenu getContextMenu() {
-        return new ColorInputContextMenu(this);
+    public ConstellationInputDropDown getDropDown() {
+        return new ColorInputDropDown(this);
     }
     
     @Override
@@ -135,18 +127,18 @@ public class ColorInputField extends ConstellationInputField {
         return getColor(value) != null;
     }
     
-    private class ColorInputContextMenu extends ConstellationInputContextMenu {
+    private class ColorInputDropDown extends ConstellationInputDropDown {
         
-        public ColorInputContextMenu(final ColorInputField field){
+        public ColorInputDropDown(final ColorInputField field){
             super(field);
             for (final ColorMode mode : ColorMode.values()){
-                final Text text = new Text(mode.toString());
+                final Label label = new Label(mode.toString());
                 
-                text.setOnMouseClicked(event -> {
+                label.setOnMouseClicked(event -> {
                     field.setMode(mode);
                 });
 
-                this.addMenuOption(new CustomMenuItem(text));
+                this.addMenuOption(label);
             }
         }        
     }

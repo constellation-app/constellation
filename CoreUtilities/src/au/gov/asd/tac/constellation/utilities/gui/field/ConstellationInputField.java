@@ -17,9 +17,9 @@ package au.gov.asd.tac.constellation.utilities.gui.field;
 
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.StringProperty;
-import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ContextMenu;
@@ -32,15 +32,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
 
 
 /**
@@ -175,7 +172,7 @@ public abstract class ConstellationInputField extends StackPane {
         this.setAlignment(Pos.TOP_CENTER);
     }
     
-    public TextInputControl getBaseField() {
+    protected TextInputControl getBaseField() {
         return this.field;
     }
     
@@ -197,11 +194,10 @@ public abstract class ConstellationInputField extends StackPane {
         final Rectangle background = switch (side) {
             case LEFT -> leftButton;
             case RIGHT -> rightButton;
-            default -> new Rectangle(); // never used but a noce way to get rid of errors
+            default -> new Rectangle(); // never used but a nioce way to get rid of errors
         };
         
         background.setFill(color);
-//        cellBackground.setStroke(Color.BLACK);
         background.setOnMouseEntered(event -> background.setFill(Color.BLUE));
         background.setOnMouseExited(event -> background.setFill(color));
         background.heightProperty().bind(heightBinding);
@@ -260,6 +256,14 @@ public abstract class ConstellationInputField extends StackPane {
         return local;
     }
 
+    /**
+     * Creates an imput field based off of the text type. 
+     * This method is protected as the password input field uses it to create a non secret alternative for password showing and hiding. 
+     * 
+     * 
+     * @param type
+     * @return 
+     */
     protected final TextInputControl createInputField(final TextType type) {
         
         final TextInputControl local = switch (type) {
@@ -279,8 +283,16 @@ public abstract class ConstellationInputField extends StackPane {
         
     }
     
+    /** 
+     * Adds a listener to the focusedProperty of the base Input field to enable equivalent effects to be produced on the 
+     * ConstellationInputField. 
+     * 
+     * Results in the entire field to display a blue glow effect instead of just the text area.
+     * 
+     * @param local
+     * @param foreground 
+     */
     private void bindFocusEffect(final TextInputControl local, final Rectangle foreground) {
-        
         local.focusedProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal) {
                 foreground.setStroke(Color.web("#1B92E3"));
@@ -386,39 +398,59 @@ public abstract class ConstellationInputField extends StackPane {
             textAreaField.setPrefRowCount(suggestedHeight);
         }
     }
+    
+    /**
+     * Determined if the provided text is a valid value for the input field.
+     * Is implemented differently for different input fields.
+     * 
+     * @param value
+     * @return 
+     */
     public abstract boolean isValid(String value);
     
-    public abstract ConstellationInputContextMenu getContextMenu();
+    public abstract ConstellationInputDropDown getDropDown();
     
-    public class ConstellationInputContextMenu extends ContextMenu {
-        //final Rectangle rect = new Rectangle(300, 88);
-        //final GridPane grid = new GridPane();
+    /**
+     * Displays the provided ConstellationInputDropDown to the user.
+     * This functionality has been captured in the base class intentionally to consistency across 
+     * all input fields regarding context displaying 
+     * 
+     * @param menu 
+     */
+    protected final void showDropDown(ConstellationInputDropDown menu){
+        getDropDown().show(this, Side.TOP, USE_PREF_SIZE, USE_PREF_SIZE);
+    }
+    
+    /**
+     * An extension of a ContextMenu to provide features that enable its use as a drop down menu in ConstellationInputFields
+     */
+    public class ConstellationInputDropDown extends ContextMenu {
         final ConstellationInputField parent;
-        public ConstellationInputContextMenu(final ConstellationInputField field) {
+        public ConstellationInputDropDown(final ConstellationInputField field) {
             parent = field;
-            //grid.translateYProperty().bind(heightBinding);
-            //grid.getColumnConstraints().add(trippleConstraint);
-            //rect.setFill(Color.BLUE);
-            //this.getChildren().add(rect); 
-            //this.getChildren().add(grid);
         }
         
-        public void addMenuOption(CustomMenuItem text) {
-            this.getItems().add(text);
+        public void addMenuOption(Label text) {
+            text.prefWidthProperty().bind(parent.prefWidthProperty());
+            this.getItems().add(new CustomMenuItem(text));
         }
     }
     
-    public enum ConstellationInputFieldLayoutConstants {
-    //types of button
-    //Cinotext trigger
-    //pop up trigger
-    //valueupdater
-        
+    /**
+     * A representation of the different layouts that a ConstellationInputField can take. 
+     * INPUT represents the input area of the field.
+     * DROPDWN represents a button that triggers a drop down menu on the field. 
+     * POPUP represents a button that triggers a pop up window.     
+     * UPDATER represents a button that updates the value of the Field when pressed.
+     * 
+     * The combination of these representative words represents their order in the ConstellationInputField
+     */
+    public enum ConstellationInputFieldLayoutConstants {        
         INPUT(false, ContentDisplay.CENTER),
-        INPUT_CONTEXT(false, ContentDisplay.CENTER, ContentDisplay.RIGHT),
-        CONTEXT_INUT_CONTEXT(false, ContentDisplay.LEFT, ContentDisplay.CENTER, ContentDisplay.RIGHT),
+        INPUT_DROPDOWN(false, ContentDisplay.CENTER, ContentDisplay.RIGHT),
         INPUT_POPUP(true, ContentDisplay.CENTER, ContentDisplay.RIGHT),
-        CONTEXT_INPUT_POPUP(true, ContentDisplay.LEFT, ContentDisplay.CENTER, ContentDisplay.RIGHT);
+        DROPDOWN_INPUT_POPUP(true, ContentDisplay.LEFT, ContentDisplay.CENTER, ContentDisplay.RIGHT),
+        UPDATER_INUT_UPDATER(false, ContentDisplay.LEFT, ContentDisplay.CENTER, ContentDisplay.RIGHT);
         
         private final ContentDisplay[] areas;
         private final boolean hasButton;

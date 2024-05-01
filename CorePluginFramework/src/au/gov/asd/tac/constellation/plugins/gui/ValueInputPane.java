@@ -195,9 +195,9 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
 //                recentValuesCombo.getSelectionModel().selectedIndexProperty().addListener(recentValueSelectionListener);
 
 
-            if (parameter.getParameterValue().getGuiInit() != null) {
-                parameter.getParameterValue().getGuiInit().init(field.getBaseField());
-            }
+//            if (parameter.getParameterValue().getGuiInit() != null) {
+//                parameter.getParameterValue().getGuiInit().init(field);
+//            }
             // If parameter is enabled, ensure widget is both enabled and editable.
             field.setEditable(parameter.isEnabled());
             field.setDisable(!parameter.isEnabled());

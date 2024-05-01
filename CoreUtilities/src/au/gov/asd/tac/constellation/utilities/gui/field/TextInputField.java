@@ -20,6 +20,7 @@ import java.util.List;
 import javafx.application.Platform;
 import javafx.geometry.Side;
 import javafx.scene.control.CustomMenuItem;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
@@ -36,7 +37,7 @@ public class TextInputField extends ConstellationInputField {
     private List<String> recentValues = new ArrayList<>();
     
     public TextInputField(TextType type, boolean showRecentValues){
-        super(showRecentValues ? ConstellationInputFieldLayoutConstants.INPUT_CONTEXT : ConstellationInputFieldLayoutConstants.INPUT, type);
+        super(showRecentValues ? ConstellationInputFieldLayoutConstants.INPUT_DROPDOWN : ConstellationInputFieldLayoutConstants.INPUT, type);
         if (showRecentValues){
             this.setRightLabel("Recent");
             if (type.equals(TextType.SINGLELINE)){
@@ -45,8 +46,7 @@ public class TextInputField extends ConstellationInputField {
         }
         
         this.registerRightButtonEvent(event -> {
-            TextInputControl base = this.getBaseField();
-            getContextMenu().show(base, Side.TOP, USE_PREF_SIZE, USE_PREF_SIZE);
+            this.showDropDown(getDropDown());            
         });
         
     }
@@ -63,8 +63,8 @@ public class TextInputField extends ConstellationInputField {
     }
     
     @Override
-    public ConstellationInputContextMenu getContextMenu() {
-        return new TextInputContextMenu(this);
+    public ConstellationInputDropDown getDropDown() {
+        return new TextInputDropDown(this);
     }
     
     @Override
@@ -72,18 +72,18 @@ public class TextInputField extends ConstellationInputField {
         return true;
     }
     
-    private class TextInputContextMenu extends ConstellationInputContextMenu {
-        public TextInputContextMenu(TextInputField field){
+    private class TextInputDropDown extends ConstellationInputDropDown {
+        public TextInputDropDown(TextInputField field){
             super(field);
             
             for (final String recentValue : recentValues){
-                final Text text = new Text(recentValue);
+                final Label label = new Label(recentValue);
                 
-                text.setOnMouseClicked(event -> {
+                label.setOnMouseClicked(event -> {
                     field.setText(recentValue);
                 });
 
-                this.addMenuOption(new CustomMenuItem(text));
+                this.addMenuOption(label);
             }
         }
     }
