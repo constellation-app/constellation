@@ -335,7 +335,7 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
             this.distanceFromCamera = getDistanceFromCamera(nodeLocation, horizontalScale, verticalScale);
         }
 
-        public Vector3f GetNodeLocation() {
+        public Vector3f getNodeLocation() {
             return nodeLocation;
         }
 
