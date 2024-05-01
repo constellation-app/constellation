@@ -117,7 +117,7 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
         if (allTableRows != null) {
 
             // This action only effects selected only mode variables but runs no
-            // matter if the table is in selected only mode or not
+            // matter if the table is in selected only mode or not.
             // The reasoning is that in selected only mode, if the row list changes
             // then that means the selection on the graph has changed. In this case
             // the expected behaviour is to clear the current table selection.
