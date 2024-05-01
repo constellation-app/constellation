@@ -378,7 +378,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
 
             graph.addGraphChangeListener(this);
         
-// Moving to nothing:
+        // Moving to nothing:
         } else {
             persistStateToGraph();
 
@@ -726,7 +726,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                         populateFromGraphNode(true);
                     });
                 
-                //Detect value change on the temporal attribute
+                // Detect value change on the temporal attribute
                 } else if (currentTemporalAttributeModificationCount != oldTemporalAttributeModificationCount) {
                     populateFromGraphNode(true);
                 // Detect graph structural changes (such as adding and removal of nodes etc):
