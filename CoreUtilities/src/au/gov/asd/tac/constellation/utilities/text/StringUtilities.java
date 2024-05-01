@@ -44,7 +44,7 @@ public class StringUtilities {
     }
     
    /**
-    * Checks a string for the presence of any of the specified endings. 
+    * Checks a base string for the presence of any of the specified endings. 
     * Acts as a helper method to eliminate the need to create a list when performing the same operation with {@link StringUtils}
     * 
     * @param base
@@ -56,7 +56,7 @@ public class StringUtilities {
     }
 
     /**
-    * Checks a string for equality with any of the specified values. 
+    * Checks a reference string for equality with any of the specified target values. 
     * Acts as a helper method to eliminate the need to create a list when performing the same operation with {@link StringUtils}
     * 
     * @param reference
@@ -66,7 +66,6 @@ public class StringUtilities {
     public static boolean equalsAny(final String reference, final String... targets) {
         return StringUtils.equalsAny(reference, targets);
     }
-    
 
     /**
      * Escape a String.
