@@ -168,7 +168,7 @@ public class TreeNode<T> {
                 return searchNode;
             } else {
                 TreeNode<?> foundNode = null;
-                for (final TreeNode child : searchNode.getChildren()) {
+                for (final TreeNode<?> child : searchNode.getChildren()) {
                     if (foundNode == null) {
                         foundNode = search(findItem, child);
                     }
