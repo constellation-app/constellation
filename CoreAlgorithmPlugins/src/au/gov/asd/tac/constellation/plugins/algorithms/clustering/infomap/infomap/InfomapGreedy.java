@@ -172,7 +172,6 @@ public abstract class InfomapGreedy extends InfomapBase {
     @Override
     protected int optimizeModules() {
         int numOptimizationRounds = 0;
-        double oldCodelength = codelength;
         int loopLimit = config.getCoreLoopLimit();
         if (config.getCoreLoopLimit() > 0 && config.isRandomizeCoreLoopLimit()) {
             loopLimit = (int) (rand.nextDouble() * config.getCoreLoopLimit()) + 1;
@@ -180,11 +179,10 @@ public abstract class InfomapGreedy extends InfomapBase {
 
         // Iterate while the optimization loop moves some nodes within the dynamic modular structure.
         do {
-            oldCodelength = codelength;
             tryMoveEachNodeIntoBestModule(); // returns numNodesMoved
             ++numOptimizationRounds;
         } while (numOptimizationRounds != loopLimit
-                && codelength < oldCodelength - config.getMinimumCodelengthImprovement());
+                && codelength < codelength - config.getMinimumCodelengthImprovement());
 
         return numOptimizationRounds;
     }

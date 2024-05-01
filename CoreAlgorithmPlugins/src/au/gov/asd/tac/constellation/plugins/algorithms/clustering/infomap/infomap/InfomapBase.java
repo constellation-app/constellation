@@ -490,7 +490,6 @@ public abstract class InfomapBase {
             consolidateModules(false);
 
             hierarchicalCodelength = workingHierarchicalCodelength;
-            oldIndexLength = indexCodelength;
 
             // Store the individual codelengths on each module.
             for (final NodeBase module : getRoot().getChildren()) {
