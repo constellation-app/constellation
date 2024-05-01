@@ -18,14 +18,8 @@ package au.gov.asd.tac.constellation.utilities.gui.field;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.application.Platform;
-import javafx.geometry.Side;
-import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputControl;
-import static javafx.scene.layout.Region.USE_PREF_SIZE;
-import javafx.scene.text.Text;
 import org.controlsfx.control.textfield.TextFields;
 
 /**
@@ -46,7 +40,7 @@ public class TextInputField extends ConstellationInputField {
         }
         
         this.registerRightButtonEvent(event -> {
-            this.showDropDown(getDropDown());            
+            this.showDropDown();            
         });
         
     }

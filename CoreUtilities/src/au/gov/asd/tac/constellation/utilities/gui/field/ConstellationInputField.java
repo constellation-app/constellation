@@ -417,7 +417,7 @@ public abstract class ConstellationInputField extends StackPane {
      * 
      * @param menu 
      */
-    protected final void showDropDown(ConstellationInputDropDown menu){
+    protected final void showDropDown(){
         getDropDown().show(this, Side.TOP, USE_PREF_SIZE, USE_PREF_SIZE);
     }
     

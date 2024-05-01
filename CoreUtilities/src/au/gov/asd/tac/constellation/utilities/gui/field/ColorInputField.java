@@ -18,14 +18,9 @@ package au.gov.asd.tac.constellation.utilities.gui.field;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColorPicker;
 import javafx.embed.swing.JFXPanel;
-import javafx.geometry.Insets;
-import javafx.geometry.Side;
 import javafx.scene.Scene;
-import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextInputControl;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 import javax.swing.JButton;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -58,7 +53,7 @@ public class ColorInputField extends ConstellationInputField {
         });
         
         this.registerLeftButtonEvent(event -> {
-            this.showDropDown(getDropDown());
+            this.showDropDown();
         });
     }
     
