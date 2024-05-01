@@ -442,10 +442,10 @@ public class ExpressionParser {
 
     public static class ParseInfoHolder {
 
-        ParseState state = ParseState.READING_WHITESPACE;
-        int contentLength = 0;
-        SequenceExpression rootExpression = new SequenceExpression(null);
-        SequenceExpression currentExpression = rootExpression;
+        private ParseState state = ParseState.READING_WHITESPACE;
+        private int contentLength = 0;
+        private SequenceExpression rootExpression = new SequenceExpression(null);
+        private SequenceExpression currentExpression = rootExpression;
     }
 
     public static SequenceExpression parse(final String expression) {
@@ -493,8 +493,8 @@ public class ExpressionParser {
                 }
             }
         }
-        //Preventing sonar check, as we do want to check if the two variables are NOT the same object
-        if (info.currentExpression != info.rootExpression) {//NOSONAR
+        //We do want to check if the two variables are NOT the same object
+        if (info.currentExpression != info.rootExpression) {
             if (!isHeadless) {
                 Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
                         MALFORMED_QUERY, NESTED_PARENTHESIS_ERROR, Alert.AlertType.ERROR));
