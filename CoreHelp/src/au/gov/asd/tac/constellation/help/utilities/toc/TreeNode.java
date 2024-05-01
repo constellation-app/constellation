@@ -161,16 +161,16 @@ public class TreeNode<T> {
      * @param searchNode the node to look within
      * @return the node within searchNode that matches nodeToFind
      */
-    public static TreeNode<?> search(final TOCItem findItem, final TreeNode<?> searchNode) {
+    public static TreeNode search(final TOCItem findItem, final TreeNode<?> searchNode) {
         if (searchNode != null) {
-            final TOCItem searchTOC = (TOCItem) (searchNode.getData());
+            final TOCItem searchTOC = (TOCItem) searchNode.getData();
             if (searchTOC != null && searchTOC.equals(findItem)) {
                 return searchNode;
             } else {
                 TreeNode<?> foundNode = null;
-                for (final Object child : searchNode.getChildren()) {
+                for (final TreeNode child : searchNode.getChildren()) {
                     if (foundNode == null) {
-                        foundNode = search(findItem, (TreeNode) child);
+                        foundNode = search(findItem, child);
                     }
                 }
                 return foundNode;
