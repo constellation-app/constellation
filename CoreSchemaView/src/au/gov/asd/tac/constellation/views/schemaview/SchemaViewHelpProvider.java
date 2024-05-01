@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class SchemaViewHelpProvider extends HelpPageProvider {
 
     private static final String CODEBASE_NAME = "constellation";
+    private static final String SEP = File.separator;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file name
@@ -40,10 +41,9 @@ public class SchemaViewHelpProvider extends HelpPageProvider {
      */
     @Override
     public Map<String, String> getHelpMap() {
-        final Map<String, String> map = new HashMap<>();
-        final String sep = File.separator;
-        final String schemaModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreSchemaView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
-                + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "schemaview" + sep;
+        final Map<String, String> map = new HashMap<>();       
+        final String schemaModulePath = ".." + SEP + "ext" + SEP + "docs" + SEP + "CoreSchemaView" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP + "asd"
+                + SEP + "tac" + SEP + CODEBASE_NAME + SEP + "views" + SEP + "schemaview" + SEP;
 
         map.put("au.gov.asd.tac.constellation.views.schemaview.SchemaViewTopComponent", schemaModulePath + "schema-view.md");
         return map;
@@ -56,10 +56,7 @@ public class SchemaViewHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        final String sep = File.separator;
-        final String schemaViewPath;
-        schemaViewPath = "ext" + sep + "docs" + sep + "CoreSchemaView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
-                + CODEBASE_NAME + sep + "views" + sep + "schemaview" + sep + "schemaview-toc.xml";
-        return schemaViewPath;
+        return "ext" + SEP + "docs" + SEP + "CoreSchemaView" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP + "asd" + SEP + "tac" + SEP
+                + CODEBASE_NAME + SEP + "views" + SEP + "schemaview" + SEP + "schemaview-toc.xml";
     }
 }

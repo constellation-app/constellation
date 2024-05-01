@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,10 +40,10 @@ public class SparseMatrix<N extends Number> {
     }
 
     public static SparseMatrix constructMatrix(final Number noEntryVal) {
-        if (noEntryVal instanceof Integer) {
-            return new SparseMatrix<>((Integer) noEntryVal, IntegerArithmeticHandler.INSTANCE);
-        } else if (noEntryVal instanceof Float) {
-            return new SparseMatrix<>((Float) noEntryVal, FloatArithmeticHandler.INSTANCE);
+        if (noEntryVal instanceof Integer value) {
+            return new SparseMatrix<>(value, IntegerArithmeticHandler.INSTANCE);
+        } else if (noEntryVal instanceof Float value) {
+            return new SparseMatrix<>(value, FloatArithmeticHandler.INSTANCE);
         } else {
             return null;
         }

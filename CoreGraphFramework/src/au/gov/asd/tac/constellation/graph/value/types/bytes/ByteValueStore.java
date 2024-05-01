@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ public class ByteValueStore implements ValueStore<ByteValue> {
         values = EMPTY_VALUES;
     }
 
-    public ByteValueStore(int[] values) {
+    public ByteValueStore(final int[] values) {
         this.values = values;
     }
 
@@ -47,17 +47,17 @@ public class ByteValueStore implements ValueStore<ByteValue> {
     }
 
     @Override
-    public void setCapacity(int capacity) {
+    public void setCapacity(final int capacity) {
         values = Arrays.copyOf(values, capacity);
     }
 
     @Override
-    public void write(int id, ByteValue value) {
+    public void write(final int id, final ByteValue value) {
         values[id] = value.readInt();
     }
 
     @Override
-    public void read(int id, ByteValue value) {
+    public void read(final int id, final ByteValue value) {
         value.writeInt(values[id]);
     }
 }

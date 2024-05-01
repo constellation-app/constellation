@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,14 +46,11 @@ public class SchemaAttributeUtilities {
         if (SCHEMA_VERTEX_ATTRIBUTES.isEmpty() || SCHEMA_TRANSACTION_ATTRIBUTES.isEmpty()) {
             SchemaConceptUtilities.getAttributes().forEach((conceptClass, schemaAttributes) -> schemaAttributes.forEach(schemaAttribute -> {
                     switch (schemaAttribute.getElementType()) {
-                        case VERTEX:
-                            SCHEMA_VERTEX_ATTRIBUTES.add(schemaAttribute);
-                            break;
-                        case TRANSACTION:
-                            SCHEMA_TRANSACTION_ATTRIBUTES.add(schemaAttribute);
-                            break;
-                        default:
-                            break;
+                        case VERTEX -> SCHEMA_VERTEX_ATTRIBUTES.add(schemaAttribute);
+                        case TRANSACTION -> SCHEMA_TRANSACTION_ATTRIBUTES.add(schemaAttribute);
+                        default -> {
+                            // do nothing
+                        }
                     }
                 }));
         }
@@ -70,14 +67,11 @@ public class SchemaAttributeUtilities {
     @SuppressWarnings("unchecked") // unchecked cast error cause by Empty set : this is fine.
     public static Collection<SchemaAttribute> getAttributes(final GraphElementType elementType) {
         buildAttributes();
-        switch (elementType) {
-            case VERTEX:
-                return Collections.unmodifiableCollection(SCHEMA_VERTEX_ATTRIBUTES);
-            case TRANSACTION:
-                return Collections.unmodifiableCollection(SCHEMA_TRANSACTION_ATTRIBUTES);
-            default:
-                return Collections.emptySet();
-        }
+        return switch (elementType) {
+            case VERTEX -> Collections.unmodifiableCollection(SCHEMA_VERTEX_ATTRIBUTES);
+            case TRANSACTION -> Collections.unmodifiableCollection(SCHEMA_TRANSACTION_ATTRIBUTES);
+            default -> Collections.emptySet();
+        };
     }
 
     /**
@@ -89,7 +83,7 @@ public class SchemaAttributeUtilities {
      * {@link SchemaAttribute} objects.
      * @return A {@link List} of all discovered {@link SchemaAttribute}.
      */
-    public static Collection<SchemaAttribute> getAttributes(final GraphElementType elementType, Class<? extends SchemaConcept> fromConcept) {
+    public static Collection<SchemaAttribute> getAttributes(final GraphElementType elementType, final Class<? extends SchemaConcept> fromConcept) {
         if (fromConcept == null) {
             return getAttributes(elementType);
         }
@@ -109,7 +103,7 @@ public class SchemaAttributeUtilities {
      * objects.
      * @return A {@link Collection} of {@link SchemaAttribute}.
      */
-    public static Collection<SchemaAttribute> getAttributes(final GraphElementType elementType, Set<Class<? extends SchemaConcept>> fromConcepts) {
+    public static Collection<SchemaAttribute> getAttributes(final GraphElementType elementType, final Set<Class<? extends SchemaConcept>> fromConcepts) {
         if (fromConcepts == null) {
             return getAttributes(elementType);
         }
@@ -140,7 +134,7 @@ public class SchemaAttributeUtilities {
      * @return A {@link SchemaAttribute} with the specified name if it could be
      * found, otherwise null.
      */
-    public static SchemaAttribute getAttribute(final GraphElementType elementType, String name) {
+    public static SchemaAttribute getAttribute(final GraphElementType elementType, final String name) {
         return getAttribute(elementType, name, null);
     }
 
@@ -158,14 +152,13 @@ public class SchemaAttributeUtilities {
      * @return A {@link SchemaAttribute} with the specified name if it could be
      * found, otherwise null.
      */
-    public static SchemaAttribute getAttribute(final GraphElementType elementType, String name, Class<? extends SchemaConcept> fromConcept) {
+    public static SchemaAttribute getAttribute(final GraphElementType elementType, final String name, final Class<? extends SchemaConcept> fromConcept) {
         if (name == null) {
             return null;
         }
 
-        for (SchemaAttribute schemaAttribute : getAttributes(elementType, fromConcept)) {
-            if (schemaAttribute.getName().equals(name)
-                    || schemaAttribute.toString().equals(name)) {
+        for (final SchemaAttribute schemaAttribute : getAttributes(elementType, fromConcept)) {
+            if (schemaAttribute.getName().equals(name) || schemaAttribute.toString().equals(name)) {
                 return schemaAttribute;
             }
         }

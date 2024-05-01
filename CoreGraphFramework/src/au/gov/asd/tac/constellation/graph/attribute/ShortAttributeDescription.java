@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,16 +57,20 @@ public class ShortAttributeDescription extends AbstractAttributeDescription {
 
     @SuppressWarnings("unchecked") // Casts are manually checked
     private short convertFromObject(final Object object) throws IllegalArgumentException {
-        if (object == null) {
-            return (short) getDefault();
-        } else if (object instanceof Number) {
-            return ((Number) object).shortValue();
-        } else if (object instanceof Boolean) {
-            return ((Boolean) object) ? (short) 1 : (short) 0;
-        } else if (object instanceof String) {
-            return convertFromString((String) object);
-        } else {
-            throw new IllegalArgumentException(String.format(
+        switch (object) {
+            case Number number -> {
+                return number.shortValue();
+            }       
+            case Boolean bool -> {
+                return bool ? (short) 1 : (short) 0;
+            }       
+            case String string -> {
+                return convertFromString(string);
+            }
+            case null -> {
+                return (short) getDefault();
+            }
+            default -> throw new IllegalArgumentException(String.format(
                     "Error converting Object '%s' to short", object.getClass()));
         }
     }
@@ -130,7 +134,7 @@ public class ShortAttributeDescription extends AbstractAttributeDescription {
 
     @Override
     public void setByte(final int id, final byte value) {
-        data[id] = (short) value;
+        data[id] = value;
     }
 
     @Override
@@ -145,7 +149,7 @@ public class ShortAttributeDescription extends AbstractAttributeDescription {
 
     @Override
     public int getInt(final int id) {
-        return (int) data[id];
+        return data[id];
     }
 
     @Override
@@ -155,7 +159,7 @@ public class ShortAttributeDescription extends AbstractAttributeDescription {
 
     @Override
     public long getLong(final int id) {
-        return (long) data[id];
+        return data[id];
     }
 
     @Override
@@ -165,7 +169,7 @@ public class ShortAttributeDescription extends AbstractAttributeDescription {
 
     @Override
     public float getFloat(final int id) {
-        return (float) data[id];
+        return data[id];
     }
 
     @Override
@@ -175,7 +179,7 @@ public class ShortAttributeDescription extends AbstractAttributeDescription {
 
     @Override
     public double getDouble(final int id) {
-        return (double) data[id];
+        return data[id];
     }
 
     @Override
@@ -244,7 +248,7 @@ public class ShortAttributeDescription extends AbstractAttributeDescription {
 
     @Override
     public int hashCode(final int id) {
-        return (int) data[id];
+        return data[id];
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ public class GraphByteReader {
     }
 
     public GraphByteReader(final InputStream in) throws IOException {
-        ZipInputStream zin = new ZipInputStream(in);
+        final ZipInputStream zin = new ZipInputStream(in);
         ZipEntry entry = zin.getNextEntry();
         while (entry != null) {
             final ExtendedBuffer out = new ExtendedBuffer(1 << 16);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Custom Error Manager to replace the Netbeans Error Manager
+ * 
  * @author OrionsGuardian
  */
 @ServiceProvider(service = Handler.class, supersedes = "org.netbeans.core.NbErrorManager")
@@ -49,7 +50,7 @@ public class ConstellationErrorManager extends Handler {
             final String exceptionType = errorSummary.substring(prevDotPos + 1, (firstColon != -1 ? firstColon : errorSummary.length()));
             String recordHeader = extractedMessage.isEmpty() ? exceptionType : extractedMessage;
             String revisedSummary = errorSummary.substring(0, firstColon + 1) 
-                                    + errorSummary.substring(firstColon + 1 + (autoBlockPopup ? NotifyDisplayer.BLOCK_POPUP_FLAG.length() : 0));
+                    + errorSummary.substring(firstColon + 1 + (autoBlockPopup ? NotifyDisplayer.BLOCK_POPUP_FLAG.length() : 0));
             if (!revisedSummary.endsWith(SeparatorConstants.NEWLINE)) {
                 revisedSummary += SeparatorConstants.NEWLINE;
             }
@@ -87,5 +88,4 @@ public class ConstellationErrorManager extends Handler {
     public void close() throws SecurityException {
         // no persistent data objects to clear
     }
-
 }

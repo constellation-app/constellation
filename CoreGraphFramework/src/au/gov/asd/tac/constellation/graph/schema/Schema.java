@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,8 +68,8 @@ public class Schema {
      * @param graph the {@link GraphWriteMethods} to initialise.
      */
     public void newGraph(final GraphWriteMethods graph) {
-        for (GraphElementType elementType : factory.getRegisteredAttributes().keySet()) {
-            for (SchemaAttribute attribute : factory.getRegisteredAttributes().get(elementType).values()) {
+        for (final GraphElementType elementType : factory.getRegisteredAttributes().keySet()) {
+            for (final SchemaAttribute attribute : factory.getRegisteredAttributes().get(elementType).values()) {
                 if (attribute.isCreate()) {
                     attribute.ensure(graph);
                 }

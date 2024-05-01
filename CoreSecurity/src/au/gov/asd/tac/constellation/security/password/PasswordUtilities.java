@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ public class PasswordUtilities {
             iv = secret.getIV();
         }
 
-        return iv;
+        return iv.clone();
     }
 
     public static byte[] getKey() {
@@ -64,7 +64,7 @@ public class PasswordUtilities {
             key = secret.getKey();
         }
 
-        return key;
+        return key.clone();
     }
 
     public static byte[] generateKey() {

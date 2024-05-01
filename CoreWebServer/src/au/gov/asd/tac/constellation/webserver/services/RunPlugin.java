@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -95,10 +95,9 @@ public class RunPlugin extends RestService {
     }
 
     @Override
-    public void callService(final PluginParameters parameters, InputStream in, OutputStream out) throws IOException {
+    public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
         final String pluginName = parameters.getStringValue(PLUGIN_NAME_PARAMETER_ID);
         final String graphId = parameters.getStringValue(GRAPH_ID_PARAMETER_ID);
-
         final Graph graph = graphId == null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
         if (graph != null) {
             try {

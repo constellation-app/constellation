@@ -307,7 +307,7 @@ public class PluginReport {
      * @return true if the specified collection of tags contains all tags of
      * this plugin.
      */
-    public boolean containsAllTags(final Set<String> filteredTags) {
+    public boolean containsAllTags(final Collection<String> filteredTags) {
         for (String tag : tags) {
             if (!filteredTags.contains(tag)) {
                 return false;
@@ -325,7 +325,7 @@ public class PluginReport {
      * @return true if the specified collection of tags contains at least one of
      * the tags of this plugin.
      */
-    public boolean containsAnyTag(final Set<String> allowedTags) {
+    public boolean containsAnyTag(final Collection<String> allowedTags) {
         for (String tag : tags) {
             if (allowedTags.contains(tag)) {
                 return true;

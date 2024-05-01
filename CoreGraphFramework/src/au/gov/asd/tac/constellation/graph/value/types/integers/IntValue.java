@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,8 +51,8 @@ public class IntValue implements Copyable, IntReadable, IntWritable, LongReadabl
     }
 
     @Override
-    public void writeString(String value) {
-        this.value = Integer.valueOf(value);
+    public void writeString(final String value) {
+        this.value = Integer.parseInt(value);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class IntValue implements Copyable, IntReadable, IntWritable, LongReadabl
     }
 
     @Override
-    public void writeInt(int value) {
+    public void writeInt(final int value) {
         this.value = value;
     }
 
@@ -71,7 +71,7 @@ public class IntValue implements Copyable, IntReadable, IntWritable, LongReadabl
     }
 
     @Override
-    public void writeLong(long value) {
+    public void writeLong(final long value) {
         this.value = (int) value;
     }
 
@@ -81,7 +81,7 @@ public class IntValue implements Copyable, IntReadable, IntWritable, LongReadabl
     }
 
     @Override
-    public void writeDouble(double value) {
+    public void writeDouble(final double value) {
         this.value = (int) value;
     }
 
@@ -91,19 +91,13 @@ public class IntValue implements Copyable, IntReadable, IntWritable, LongReadabl
     }
 
     @Override
-    public void writeFloat(float value) {
+    public void writeFloat(final float value) {
         this.value = (int) value;
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (other == null) {
-            return false;
-        }
-        if (this.getClass() == other.getClass()) {
-            return value == ((IntValue) other).value;
-        }
-        return false;
+    public boolean equals(final Object other) {
+        return other != null && this.getClass() == other.getClass() && value == ((IntValue) other).value;
     }
 
     @Override
@@ -112,7 +106,7 @@ public class IntValue implements Copyable, IntReadable, IntWritable, LongReadabl
     }
 
     @Override
-    public int compareTo(IntValue value) {
+    public int compareTo(final IntValue value) {
         return Integer.compare(this.value, value.value);
     }
 

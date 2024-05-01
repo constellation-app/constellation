@@ -135,8 +135,8 @@ public class ImportTableColumn extends TableColumn<TableRow, CellValue> {
         final ColumnHeader header = (ColumnHeader) getGraphic();
         if (header.getChildren().size() > 1) {
             final Node node = header.getChildren().get(1);
-            if (node instanceof AttributeNode) {
-                return (AttributeNode) node;
+            if (node instanceof AttributeNode attributeNode) {
+                return attributeNode;
             }
         }
         return null;

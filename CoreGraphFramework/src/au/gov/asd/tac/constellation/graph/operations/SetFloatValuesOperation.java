@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ public class SetFloatValuesOperation extends GraphOperation {
      * @param value The value of the element
      */
     public void setValue(final int id, final float value) {
-        float currentValue = graph.getFloatValue(attribute, id);
+        final float currentValue = graph.getFloatValue(attribute, id);
         if (currentValue != value) {
             if (changes[id] == 0) {
                 changeCount++;
@@ -63,11 +63,9 @@ public class SetFloatValuesOperation extends GraphOperation {
             if (id < lowestChange) {
                 lowestChange = id;
             }
-        } else {
-            if (changes[id] != 0) {
-                changeCount--;
-                changes[id] = 0;
-            }
+        } else if (changes[id] != 0) {
+            changeCount--;
+            changes[id] = 0;
         }
     }
 
@@ -87,7 +85,7 @@ public class SetFloatValuesOperation extends GraphOperation {
     public void execute(final GraphWriteMethods graph) {
         for (int i = 0; i < changes.length; i++) {
             if (changes[i] != 0) {
-                int element = offset + i;
+                final int element = offset + i;
                 graph.setFloatValue(attribute, element, Float.intBitsToFloat(Float.floatToRawIntBits(graph.getFloatValue(attribute, element)) ^ changes[i]));
             }
         }
@@ -97,7 +95,7 @@ public class SetFloatValuesOperation extends GraphOperation {
     public void undo(final GraphWriteMethods graph) {
         for (int i = 0; i < changes.length; i++) {
             if (changes[i] != 0) {
-                int element = offset + i;
+                final int element = offset + i;
                 graph.setFloatValue(attribute, element, Float.intBitsToFloat(Float.floatToRawIntBits(graph.getFloatValue(attribute, element)) ^ changes[i]));
             }
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,11 +61,6 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         final InputStream pageInput = getInputStream(filePath);
         final InputStream tocInput = getInputStream(Generator.getBaseDirectory() + sep + Generator.getTOCDirectory());
 
-        if (pageInput == null || tocInput == null) {
-            // files could not be found, don't progress.
-            return;
-        }
-
         // avoid parsing utility files or images into html
         if (filePath.contains(".css") || filePath.contains(".js") || filePath.contains(".png") || filePath.contains(".jpg")) {
             out.write(pageInput.readAllBytes());
@@ -101,8 +96,8 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
     }
 
     /**
-     * Generate a String which represents the table of contents, the currently
-     * displayed page, and the necessary html tags for formatting.
+     * Generate a String which represents the table of contents, the currently displayed page, and the necessary html
+     * tags for formatting.
      *
      * @param separator
      * @param tocInput

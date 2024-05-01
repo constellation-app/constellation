@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -298,7 +298,7 @@ public class ColumnVisibilityContextMenuNGTest {
                 Tuple.create(columnType2, attribute2),
                 Tuple.create(columnType3, attribute3),
                 Tuple.create(columnType5, attribute5)
-        ), () -> verify(readableGraph).release());
+        ), null);
 
         /////////////////
         // NO COLUMNS

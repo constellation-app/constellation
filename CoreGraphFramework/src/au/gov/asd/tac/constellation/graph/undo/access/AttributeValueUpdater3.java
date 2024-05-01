@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,21 +28,26 @@ public class AttributeValueUpdater3 implements ValueUpdater32 {
     public static final AttributeValueUpdater3 INSTANCE = new AttributeValueUpdater3();
 
     @Override
-    public int store(final UndoGraphEditState state, int attribute) {
+    public int store(final UndoGraphEditState state, final int attribute) {
         int delta = attribute - state.getCurrentAttribute();
         state.setCurrentAttribute(attribute);
         switch (delta) {
-            case -2:
+            case -2 -> {
                 return 0;
-            case -1:
+            }
+            case -1 -> {
                 return 1;
-            case 0:
+            }
+            case 0 -> {
                 return 2;
-            case 1:
+            }
+            case 1 -> {
                 return 3;
-            case 2:
+            }
+            case 2 -> {
                 return 4;
-            default:
+            }
+            default -> {
                 if (delta >= Byte.MIN_VALUE && delta <= Byte.MAX_VALUE) {
                     state.addByte((byte) delta);
                     return 5;
@@ -53,16 +58,17 @@ public class AttributeValueUpdater3 implements ValueUpdater32 {
                     state.addInt(delta);
                     return 7;
                 }
+            }
         }
     }
 
     @Override
-    public void updateExecute(final UndoGraphEditState state, int parameters) {
+    public void updateExecute(final UndoGraphEditState state, final int parameters) {
         ATTRIBUTE_GETTERS[parameters & 7].getExecute(state);
     }
 
     @Override
-    public void updateUndo(final UndoGraphEditState state, int parameters) {
+    public void updateUndo(final UndoGraphEditState state, final int parameters) {
         ATTRIBUTE_GETTERS[parameters & 7].getUndo(state);
     }
 
@@ -124,7 +130,7 @@ public class AttributeValueUpdater3 implements ValueUpdater32 {
         },
         new ValueGetter() {
             @Override
-            public void getExecute(UndoGraphEditState edit) {
+            public void getExecute(final UndoGraphEditState edit) {
                 edit.setCurrentAttribute(edit.getCurrentAttribute() + edit.getByteStack()[edit.getBytePointer()]);
                 edit.setBytePointer(edit.getBytePointer() + 1);
             }

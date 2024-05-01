@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import de.fhpotsdam.unfolding.utils.MapPosition;
 import de.fhpotsdam.unfolding.utils.ScreenPosition;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import processing.core.PConstants;
 import processing.core.PGraphics;
 
@@ -66,8 +65,8 @@ public class ConstellationPolygonMarker extends ConstellationAbstractMarker {
     @Override
     public boolean isInside(final UnfoldingMap map, final float checkX, final float checkY) {
         final List<ScreenPosition> positions = locations.stream()
-                .map(location -> map.getScreenPosition(location))
-                .collect(Collectors.toList());
+                .map(map::getScreenPosition)
+                .toList();
         return isInside(checkX, checkY, positions);
     }
 

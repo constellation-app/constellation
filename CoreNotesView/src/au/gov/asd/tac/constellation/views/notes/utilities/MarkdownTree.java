@@ -473,24 +473,12 @@ public class MarkdownTree {
                 if (currentNode.getType() == MarkdownNode.Type.HEADING) {
                     int level = currentNode.getHeadingLevel();
                     switch (level) {
-                        case 1:
-                            currentText.setSize(32.0);
-                            break;
-                        case 2:
-                            currentText.setSize(24.0);
-                            break;
-                        case 3:
-                            currentText.setSize(18.72);
-                            break;
-                        case 4:
-                            currentText.setSize(16.0);
-                            break;
-                        case 5:
-                            currentText.setSize(12.28);
-                            break;
-                        default:
-                            currentText.setSize(10.72);
-                            break;
+                        case 1 -> currentText.setSize(32.0);
+                        case 2 -> currentText.setSize(24.0);
+                        case 3 -> currentText.setSize(18.72);
+                        case 4 -> currentText.setSize(16.0);
+                        case 5 -> currentText.setSize(12.28);
+                        default -> currentText.setSize(10.72);
                     }
                 } else if (currentNode.getType() == MarkdownNode.Type.ITALIC) {
                     currentText.setPosture(FontPosture.ITALIC);

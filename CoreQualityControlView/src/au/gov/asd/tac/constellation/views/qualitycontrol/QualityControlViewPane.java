@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -396,28 +396,24 @@ public final class QualityControlViewPane extends BorderPane {
         final String textColor = JavafxStyleManager.isDarkTheme() ? "-fx-text-fill: white; " : "-fx-text-fill: black;";
 
         switch (category) {
-            case MINOR:
+            case MINOR ->
                 style = String.format("%s -fx-background-color: rgba(90,150,255,%f);", textColor, alpha);
-                break;
-            case MEDIUM:
+            case MEDIUM ->
                 style = String.format("%s -fx-background-color: rgba(255,215,0,%f);", "-fx-text-fill: black;", alpha);
-                break;
-            case MAJOR:
+            case MAJOR -> {
                 intensity = 255 - (255 * QualityControlEvent.MAJOR_VALUE) / 100;
                 style = String.format("%s -fx-background-color: rgba(255,%d,0,%f);", "-fx-text-fill: black;", intensity, alpha);
-                break;
-            case SEVERE:
+            }
+            case SEVERE -> {
                 intensity = 255 - (255 * QualityControlEvent.SEVERE_VALUE) / 100;
                 style = String.format("%s -fx-background-color: rgba(255,%d,%d,%f);", textColor, intensity, intensity, alpha);
-                break;
-            case CRITICAL:
+            }
+            case CRITICAL -> {
                 intensity = 255 - (255 * QualityControlEvent.CRITICAL_VALUE) / 100;
                 style = String.format("-fx-text-fill: rgb(255,255,0); -fx-background-color: rgba(150,%d,%d,%f);", intensity, intensity, alpha);
-                break;
-            default:
-                // DEFAULT case
+            }
+            default -> // DEFAULT case
                 style = String.format("%s -fx-background-color: rgba(0,200,0,%f);", textColor, alpha);
-                break;
         }
         return style;
     }
@@ -476,23 +472,18 @@ public final class QualityControlViewPane extends BorderPane {
             final Button resetButton = new Button(resetText);
             resetButton.setOnAction(event -> {
                 switch (rule.getCategory(0)) {
-                    case MINOR:
+                    case MINOR ->
                         minorButton.setSelected(true);
-                        break;
-                    case MEDIUM:
+                    case MEDIUM ->
                         mediumButton.setSelected(true);
-                        break;
-                    case MAJOR:
+                    case MAJOR ->
                         majorButton.setSelected(true);
-                        break;
-                    case SEVERE:
+                    case SEVERE ->
                         severeButton.setSelected(true);
-                        break;
-                    case CRITICAL:
+                    case CRITICAL ->
                         criticalButton.setSelected(true);
-                        break;
-                    default:
-                        break;
+                    default -> {
+                    }
                 }
                 resetButton.setText("Reset");
             });
@@ -523,23 +514,18 @@ public final class QualityControlViewPane extends BorderPane {
             getPriorities().putIfAbsent(rule, rule.getCategory(0));
             // setting the selection based on the current priority
             switch (getPriorities().get(rule)) {
-                case MINOR:
+                case MINOR ->
                     minorButton.setSelected(true);
-                    break;
-                case MEDIUM:
+                case MEDIUM ->
                     mediumButton.setSelected(true);
-                    break;
-                case MAJOR:
+                case MAJOR ->
                     majorButton.setSelected(true);
-                    break;
-                case SEVERE:
+                case SEVERE ->
                     severeButton.setSelected(true);
-                    break;
-                case CRITICAL:
+                case CRITICAL ->
                     criticalButton.setSelected(true);
-                    break;
-                default:
-                    break;
+                default -> {
+                }
             }
 
             if (Boolean.FALSE.equals(getEnablementStatuses().get(rule))) {
@@ -638,7 +624,8 @@ public final class QualityControlViewPane extends BorderPane {
     }
 
     /**
-     * Display a dialog containing all Rule objects registered with the Quality Control View and which matched for a given QualityControlEvent.
+     * Display a dialog containing all Rule objects registered with the Quality Control View and which matched for a
+     * given QualityControlEvent.
      *
      * @param owner
      * @param qcevent
@@ -667,7 +654,8 @@ public final class QualityControlViewPane extends BorderPane {
     }
 
     /**
-     * Display a dialog containing all Rule objects registered with the Quality Control View and which matched for a given identifier.
+     * Display a dialog containing all Rule objects registered with the Quality Control View and which matched for a
+     * given identifier.
      *
      * @param owner The owner Node
      * @param identifier The identifier of the graph node being displayed.

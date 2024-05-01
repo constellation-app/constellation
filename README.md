@@ -128,7 +128,7 @@ To build Constellation from source code do the following:
     21](https://netbeans.apache.org/front/main/download/nb21/)
 
 -   Update `netbeans_jdkhome` in netbeans.conf 
-    (e.g. `C:\Program Files\NetBeans-12\netbeans\etc`) to point to the Azul Zulu
+    (e.g. `C:\Program Files\NetBeans-21\netbeans\etc`) to point to the Azul Zulu
     JDK you downloaded
     (e.g. `C:\Program Files\Azul\zulu21.32.17-ca-fx-jdk21.0.2-win_x64`)
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,8 +30,6 @@ import java.util.logging.Logger;
  * @author cygnus_x-1
  */
 public class Geohash {
-
-    private static final Logger LOGGER = Logger.getLogger(Geohash.class.getName());
 
     public static final double EARTH_RADIUS_KM = 6371.01;
 
@@ -84,11 +82,11 @@ public class Geohash {
         }
 
         public char[] getCharset() {
-            return charset;
+            return charset.clone();
         }
 
         public int[] getInverseCharset() {
-            return inverseCharset;
+            return inverseCharset.clone();
         }
 
         public double getMinX() {
@@ -112,7 +110,7 @@ public class Geohash {
         }
 
         public int[] getBits() {
-            return bits;
+            return bits.clone();
         }
     }
 

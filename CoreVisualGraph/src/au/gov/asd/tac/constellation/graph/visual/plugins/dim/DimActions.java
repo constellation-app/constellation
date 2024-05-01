@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -155,32 +155,17 @@ public final class DimActions extends AbstractAction implements Presenter.Toolba
         final String command = e.getActionCommand();
 
         switch (command) {
-            case DIM_SELECTED_ACTION:
-                PluginExecution.withPlugin(VisualGraphPluginRegistry.DIM_SELECTED).executeLater(graph);
-                break;
-            case DIM_UNSELECTED_ACTION:
-                PluginExecution.withPlugin(VisualGraphPluginRegistry.DIM_UNSELECTED).executeLater(graph);
-                break;
-            case DIM_ALL_ACTION:
-                PluginExecution.withPlugin(VisualGraphPluginRegistry.DIM_ALL).executeLater(graph);
-                break;
-            case UNDIM_SELECTED_ACTION:
-                PluginExecution.withPlugin(VisualGraphPluginRegistry.UNDIM_SELECTED).executeLater(graph);
-                break;
-            case UNDIM_UNSELECTED_ACTION:
-                PluginExecution.withPlugin(VisualGraphPluginRegistry.UNDIM_UNSELECTED).executeLater(graph);
-                break;
-            case UNDIM_ALL_ACTION:
-                PluginExecution.withPlugin(VisualGraphPluginRegistry.UNDIM_ALL).executeLater(graph);
-                break;
-            case SELECT_DIMMED_ACTION:
-                PluginExecution.withPlugin(VisualGraphPluginRegistry.SELECT_DIMMED).executeLater(graph);
-                break;
-            case SELECT_UNDIMMED_ACTION:
-                PluginExecution.withPlugin(VisualGraphPluginRegistry.SELECT_UNDIMMED).executeLater(graph);
-                break;
-            default:
-                break;
+            case DIM_SELECTED_ACTION -> PluginExecution.withPlugin(VisualGraphPluginRegistry.DIM_SELECTED).executeLater(graph);
+            case DIM_UNSELECTED_ACTION -> PluginExecution.withPlugin(VisualGraphPluginRegistry.DIM_UNSELECTED).executeLater(graph);
+            case DIM_ALL_ACTION -> PluginExecution.withPlugin(VisualGraphPluginRegistry.DIM_ALL).executeLater(graph);
+            case UNDIM_SELECTED_ACTION -> PluginExecution.withPlugin(VisualGraphPluginRegistry.UNDIM_SELECTED).executeLater(graph);
+            case UNDIM_UNSELECTED_ACTION -> PluginExecution.withPlugin(VisualGraphPluginRegistry.UNDIM_UNSELECTED).executeLater(graph);
+            case UNDIM_ALL_ACTION -> PluginExecution.withPlugin(VisualGraphPluginRegistry.UNDIM_ALL).executeLater(graph);
+            case SELECT_DIMMED_ACTION -> PluginExecution.withPlugin(VisualGraphPluginRegistry.SELECT_DIMMED).executeLater(graph);
+            case SELECT_UNDIMMED_ACTION -> PluginExecution.withPlugin(VisualGraphPluginRegistry.SELECT_UNDIMMED).executeLater(graph);
+            default -> {
+                // Do nothing
+            }
         }
     }
 

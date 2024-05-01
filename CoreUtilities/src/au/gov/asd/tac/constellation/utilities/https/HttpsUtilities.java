@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.HttpURLConnection;
+import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
@@ -49,7 +50,7 @@ public class HttpsUtilities {
      *
      * @throws IOException if an error occurs during the connection.
      */
-    public static InputStream getInputStream(final HttpURLConnection connection) throws IOException {
+    public static InputStream getInputStream(final URLConnection connection) throws IOException {
         final String encoding = connection.getContentEncoding();
 
         if (encoding != null && "gzip".equalsIgnoreCase(encoding)) {
@@ -107,8 +108,12 @@ public class HttpsUtilities {
             }
 
             throw new IOException(
-                    String.format("An error occurred with the %s service: %d %s\n\n"
-                            + "If problems persist, contact support via Help -> Support\n\nTechnical Error: %s",
+                    String.format("""
+                                  An error occurred with the %s service: %d %s
+                                  
+                                  If problems persist, contact support via Help -> Support
+                                  
+                                  Technical Error: %s""",
                             system,
                             connection.getResponseCode(),
                             connection.getResponseMessage(),

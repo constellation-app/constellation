@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1202,7 +1202,7 @@ public final class GraphVisualAccess implements VisualAccess {
 
                 case TRANSACTION:
                 default:
-                    float transLayerVisibility = transactionLayerVisibility != Graph.NOT_FOUND ? accessGraph.getFloatValue(transactionLayerVisibility, connectionElementIds[connection]) : VisualGraphDefaults.DEFAULT_TRANSACTION_FILTER_VISIBILITY;
+                    final float transLayerVisibility = transactionLayerVisibility != Graph.NOT_FOUND ? accessGraph.getFloatValue(transactionLayerVisibility, connectionElementIds[connection]) : VisualGraphDefaults.DEFAULT_TRANSACTION_FILTER_VISIBILITY;
                     return transLayerVisibility * accessGraph.getFloatValue(transactionVisibility, connectionElementIds[connection]);
             }
         }

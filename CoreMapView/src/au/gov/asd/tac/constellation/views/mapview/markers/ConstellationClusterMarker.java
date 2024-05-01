@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import de.fhpotsdam.unfolding.utils.MapPosition;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import processing.core.PConstants;
 import processing.core.PGraphics;
 
@@ -80,7 +79,7 @@ public class ConstellationClusterMarker extends ConstellationAbstractMarker {
     public Location getLocation() {
         final Location center = new Location(0, 0);
         markers.forEach(marker -> center.add(marker.getLocation()));
-        center.div((float) markers.size());
+        center.div(markers.size());
         return center;
     }
 
@@ -159,7 +158,7 @@ public class ConstellationClusterMarker extends ConstellationAbstractMarker {
         final PGraphics graphics = map.mapDisplay.getOuterPG();
         final List<MapPosition> positions = getLocations().stream()
                 .map(location -> new MapPosition(map.mapDisplay.getObjectFromLocation(location)))
-                .collect(Collectors.toList());
+                .toList();
         draw(graphics, positions, map);
     }
 
@@ -170,9 +169,8 @@ public class ConstellationClusterMarker extends ConstellationAbstractMarker {
         }
 
         clusterCenter = new MapPosition();
-        positions.forEach(position -> {
-            clusterCenter.add(position);
-        });
+        positions.forEach(position -> 
+            clusterCenter.add(position));
         clusterCenter.div(positions.size());
 
         double diameter = 0;

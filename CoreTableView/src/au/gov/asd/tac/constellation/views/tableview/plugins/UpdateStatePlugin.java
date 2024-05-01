@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,14 +43,10 @@ public class UpdateStatePlugin extends SimpleEditPlugin {
     }
 
     @Override
-    public void edit(final GraphWriteMethods graph,
-            final PluginInteraction interaction,
+    public void edit(final GraphWriteMethods graph, final PluginInteraction interaction,
             final PluginParameters parameters) throws InterruptedException, PluginException {
-        graph.setObjectValue(
-                TableViewConcept.MetaAttribute.TABLE_VIEW_STATE.ensure(graph),
-                0,
-                new TableViewState(tableViewState)
-        );
+        final int tableViewStateAttribute = TableViewConcept.MetaAttribute.TABLE_VIEW_STATE.ensure(graph);
+        graph.setObjectValue(tableViewStateAttribute, 0, new TableViewState(tableViewState));
     }
 
     @Override

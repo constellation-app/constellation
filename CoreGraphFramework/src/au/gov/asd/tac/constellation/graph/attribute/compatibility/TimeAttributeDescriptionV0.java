@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -103,15 +103,20 @@ public final class TimeAttributeDescriptionV0 extends AbstractAttributeDescripti
     }
 
     private static int setObject(final Object value) {
-        if (value == null) {
-            return NULL_VALUE;
-        } else if (value instanceof Number) {
-            return ((Number) value).intValue();
-        } else if (value instanceof String) {
-            return setString((String) value);
-        } else {
-            final String msg = String.format("Error converting '%s' to TimeAttributeDescription", value.getClass());
-            throw new IllegalArgumentException(msg);
+        switch (value) {
+            case Number number -> {
+                return number.intValue();
+            }       
+            case String string -> {
+                return setString(string);
+            }
+            case null -> {
+                return NULL_VALUE;
+            }
+            default -> {
+                final String msg = String.format("Error converting '%s' to TimeAttributeDescription", value.getClass());
+                throw new IllegalArgumentException(msg);
+            }   
         }
     }
 
@@ -121,7 +126,7 @@ public final class TimeAttributeDescriptionV0 extends AbstractAttributeDescripti
     }
 
     @Override
-    public String acceptsString(String value) {
+    public String acceptsString(final String value) {
         return setString(value) == NULL_VALUE ? "Not a valid time value (Expected HH:mm:ss.SSS)" : null;
     }
 
@@ -160,8 +165,8 @@ public final class TimeAttributeDescriptionV0 extends AbstractAttributeDescripti
     }
 
     @Override
-    public AttributeDescription copy(GraphReadMethods graph) {
-        TimeAttributeDescriptionV0 attribute = new TimeAttributeDescriptionV0();
+    public AttributeDescription copy(final GraphReadMethods graph) {
+        final TimeAttributeDescriptionV0 attribute = new TimeAttributeDescriptionV0();
         attribute.data = Arrays.copyOf(data, data.length);
         attribute.defaultValue = this.defaultValue;
         attribute.graph = graph;
@@ -200,7 +205,7 @@ public final class TimeAttributeDescriptionV0 extends AbstractAttributeDescripti
                 final int ms = time.length() > 8 ? Integer.parseInt(time.substring(9, 12)) : 0;
 
                 return h * 3600000 + min * 60000 + sec * 1000 + ms;
-            } catch (StringIndexOutOfBoundsException | NumberFormatException ex) {
+            } catch (final StringIndexOutOfBoundsException | NumberFormatException ex) {
                 LOGGER.log(Level.WARNING, "Can''t parse time string ''{0}'': {1}", new Object[]{time, ex.getMessage()});
             }
         } else {
@@ -307,12 +312,8 @@ public final class TimeAttributeDescriptionV0 extends AbstractAttributeDescripti
         }
 
         @Override
-        public int compareTo(Representation other) {
-            if (equals(other)) {
-                return 0;
-            } else {
-                return Integer.compare(time, other.time);
-            }
+        public int compareTo(final Representation other) {
+            return equals(other) ? 0 : Integer.compare(time, other.time);
         }
 
         @Override
@@ -321,12 +322,12 @@ public final class TimeAttributeDescriptionV0 extends AbstractAttributeDescripti
         }
 
         @Override
-        public boolean equals(Object obj) {
+        public boolean equals(final Object obj) {
             if (obj == null) {
                 return false;
             }
             if (this.getClass() == obj.getClass()) {
-                Representation r = (Representation) obj;
+                final Representation r = (Representation) obj;
                 return time == r.time;
             }
             return false;
@@ -355,12 +356,12 @@ public final class TimeAttributeDescriptionV0 extends AbstractAttributeDescripti
     }
 
     @Override
-    public Object createReadObject(IntReadable indexReadable) {
+    public Object createReadObject(final IntReadable indexReadable) {
         return (IntReadable) () -> data[indexReadable.readInt()];
     }
 
     @Override
-    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+    public Object createWriteObject(final GraphWriteMethods graph, final int attribute, final IntReadable indexReadable) {
         return new IntVariable() {
             @Override
             public int readInt() {
@@ -368,7 +369,7 @@ public final class TimeAttributeDescriptionV0 extends AbstractAttributeDescripti
             }
 
             @Override
-            public void writeInt(int value) {
+            public void writeInt(final int value) {
                 graph.setIntValue(attribute, indexReadable.readInt(), value);
             }
         };

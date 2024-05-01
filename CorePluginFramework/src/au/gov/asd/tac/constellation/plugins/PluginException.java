@@ -41,7 +41,13 @@ public class PluginException extends Exception {
      * to be thrown
      */
     public PluginException(Plugin plugin, PluginNotificationLevel notificationLevel, String message, Throwable cause) {
-        super(String.format("%s failed with the following message:\n%s", plugin.getName(), message), cause);
+        super("""
+              %s failed with the following message:
+              %s"""
+                .formatted(
+                      plugin.getName(), 
+                      message
+                ), cause);
         this.notificationLevel = notificationLevel;
     }
 

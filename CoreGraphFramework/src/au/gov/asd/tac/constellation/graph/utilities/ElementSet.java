@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,22 +40,21 @@ public class ElementSet {
     }
 
     public ElementSet(final String encoded) {
-        int typeEnd = encoded.indexOf(':');
+        final int typeEnd = encoded.indexOf(':');
         type = GraphElementType.getValue(encoded.substring(0, typeEnd));
 
-        int lengthEnd = encoded.indexOf(':', typeEnd + 1);
+        final int lengthEnd = encoded.indexOf(':', typeEnd + 1);
         elements = new long[Integer.parseInt(encoded.substring(typeEnd + 1, lengthEnd))];
 
         int start = lengthEnd + 1;
         for (int i = 0; i < elements.length - 1; i++) {
-            int end = encoded.indexOf(':', start);
+            final int end = encoded.indexOf(':', start);
             elements[i] = Integer.parseInt(encoded.substring(start, end));
             start = end + 1;
         }
     }
 
     public void add(final GraphReadMethods graph, final int element) {
-
         if (element >= elements.length) {
             elements = Arrays.copyOf(elements, type.getElementCapacity(graph));
         }
@@ -75,7 +74,7 @@ public class ElementSet {
 
     @Override
     public String toString() {
-        StringBuilder out = new StringBuilder();
+        final StringBuilder out = new StringBuilder();
         out.append(type.name());
         out.append(':');
         out.append(elements.length);

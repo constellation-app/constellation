@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,6 +54,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
@@ -200,14 +201,11 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
         graphNames.sort(String::compareTo);
 
         // make a list of attributes that should be ignored.
-        final ReadableGraph rg = graph.getReadableGraph();
         final Set<String> registeredVertexAttributes;
         final Set<String> registeredTransactionAttributes;
-        try {
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
             registeredVertexAttributes = AttributeUtilities.getRegisteredAttributeIdsFromGraph(rg, GraphElementType.VERTEX).keySet();
             registeredTransactionAttributes = AttributeUtilities.getRegisteredAttributeIdsFromGraph(rg, GraphElementType.TRANSACTION).keySet();
-        } finally {
-            rg.release();
         }
 
         // ignore lowercase attributes
@@ -286,20 +284,14 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
         final Set<String> transactionPrimaryKeys;
 
         // get a copy of the graph's record store and statistical info
-        ReadableGraph rg = originalGraph.getReadableGraph();
-        try {
+        try (final ReadableGraph rg = originalGraph.getReadableGraph()) {
             originalAll = GraphRecordStoreUtilities.getAll(rg, false, true);
             vertexPrimaryKeys = PrimaryKeyUtilities.getPrimaryKeyNames(rg, GraphElementType.VERTEX);
             transactionPrimaryKeys = PrimaryKeyUtilities.getPrimaryKeyNames(rg, GraphElementType.TRANSACTION);
-        } finally {
-            rg.release();
         }
 
-        rg = compareGraph.getReadableGraph();
-        try {
+        try (final ReadableGraph rg = compareGraph.getReadableGraph()) {
             compareAll = GraphRecordStoreUtilities.getAll(rg, false, true);
-        } finally {
-            rg.release();
         }
 
         // ignore the id attributes to avoid reporting on them
@@ -328,7 +320,10 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
      * @return A {@link GraphRecordStore} containing the differences
      * @throws PluginException
      */
-    protected GraphRecordStore compareGraphs(final String title, final GraphRecordStore original, final GraphRecordStore compare, final Set<String> vertexPrimaryKeys, final Set<String> transactionPrimaryKeys, final List<String> ignoreVertexAttributes, final List<String> ignoreTransactionAttributes, final ConstellationColor addedColor, final ConstellationColor removedColor, final ConstellationColor changedColor, final ConstellationColor unchangedColor) throws PluginException {
+    protected GraphRecordStore compareGraphs(final String title, final GraphRecordStore original, final GraphRecordStore compare, 
+            final Set<String> vertexPrimaryKeys, final Set<String> transactionPrimaryKeys, final List<String> ignoreVertexAttributes, 
+            final List<String> ignoreTransactionAttributes, final ConstellationColor addedColor, final ConstellationColor removedColor, 
+            final ConstellationColor changedColor, final ConstellationColor unchangedColor) throws PluginException {
         final GraphRecordStore result = new GraphRecordStore();
         original.reset();
         compare.reset();
@@ -430,22 +425,14 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
                         final String keyType = attribute.substring(0, dividerPosition).toLowerCase();
                         final String keyAttribute = attribute.substring(dividerPosition + 1);
 
-                        switch (keyType) {
-                            case "source":
-                                final String originalValue = original.get(originalVertexKeysToIndex.get(vertex), attribute);
-                                final String compareValue = compare.get(compareVertexKeysToIndex.get(vertex), attribute);
-                                if ((originalValue != null && !originalValue.equals(compareValue))
-                                        || (compareValue != null && !compareValue.equals(originalValue))) {
-                                    vertexChanged = true;
-                                    output.println(String.format("Changed node %s, '%s' value was '%s' and now '%s'", originalSource, keyAttribute, originalValue, compareValue));
-                                }
-                                break;
-                            case "destination":
-                            case "transaction":
-                                // Intentionally left blank
-                                break;
-                            default:
-                                break;
+                        if ("source".equals(keyType)) {
+                            final String originalValue = original.get(originalVertexKeysToIndex.get(vertex), attribute);
+                            final String compareValue = compare.get(compareVertexKeysToIndex.get(vertex), attribute);
+                            if ((originalValue != null && !originalValue.equals(compareValue))
+                                    || (compareValue != null && !compareValue.equals(originalValue))) {
+                                vertexChanged = true;
+                                output.println(String.format("Changed node %s, '%s' value was '%s' and now '%s'", originalSource, keyAttribute, originalValue, compareValue));
+                            }
                         }
                     }
                 }
@@ -467,8 +454,6 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
                 }
 
                 seenVertices.add(vertex);
-            } else {
-                // Do nothing
             }
 
             // transaction compare
@@ -504,23 +489,16 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
                         final String keyType = attribute.substring(0, dividerPosition).toLowerCase();
                         final String keyAttribute = attribute.substring(dividerPosition + 1);
 
-                        switch (keyType) {
-                            case "source":
-                            case "destination":
-                                break;
-                            case "transaction":
-                                final Integer originalTransactionIndex = originalTransactionKeysToIndex.get(transaction);
-                                final Integer compareTransactionIndex = compareTransactionKeysToIndex.get(transaction);
-                                final String originalTransactionValue = original.get(originalTransactionIndex, GraphRecordStoreUtilities.TRANSACTION + keyAttribute);
-                                final String compareTransactionValue = compare.get(compareTransactionIndex, GraphRecordStoreUtilities.TRANSACTION + keyAttribute);
-                                if ((originalTransactionValue != null && !originalTransactionValue.equals(compareTransactionValue))
-                                        || (compareTransactionValue != null && !compareTransactionValue.equals(originalTransactionValue))) {
-                                    transactionChanged = true;
-                                    output.println(String.format("Changed transaction connecting %s to %s, attribute %s value was '%s' and now '%s'", originalSource, originalDestination, keyAttribute, originalTransactionValue, compareTransactionValue));
-                                }
-                                break;
-                            default:
-                                break;
+                        if ("transaction".equals(keyType)) {
+                            final Integer originalTransactionIndex = originalTransactionKeysToIndex.get(transaction);
+                            final Integer compareTransactionIndex = compareTransactionKeysToIndex.get(transaction);
+                            final String originalTransactionValue = original.get(originalTransactionIndex, GraphRecordStoreUtilities.TRANSACTION + keyAttribute);
+                            final String compareTransactionValue = compare.get(compareTransactionIndex, GraphRecordStoreUtilities.TRANSACTION + keyAttribute);
+                            if ((originalTransactionValue != null && !originalTransactionValue.equals(compareTransactionValue))
+                                    || (compareTransactionValue != null && !compareTransactionValue.equals(originalTransactionValue))) {
+                                transactionChanged = true;
+                                output.println(String.format("Changed transaction connecting %s to %s, attribute %s value was '%s' and now '%s'", originalSource, originalDestination, keyAttribute, originalTransactionValue, compareTransactionValue));
+                            }
                         }
                     }
                 }
@@ -546,8 +524,6 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
                 }
 
                 seenTransactions.add(transaction);
-            } else {
-                // Do nothing
             }
         }
 
@@ -568,8 +544,7 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
     protected Graph createComparisonGraph(final Graph originalGraph, final GraphRecordStore changes) throws InterruptedException {
         Graph copy;
 
-        final ReadableGraph rg = originalGraph.getReadableGraph();
-        try {
+        try (final ReadableGraph rg = originalGraph.getReadableGraph()) {
             try {
                 final Plugin copyGraphPlugin = PluginRegistry.get(InteractiveGraphPluginRegistry.COPY_TO_NEW_GRAPH);
                 final PluginParameters copyParams = copyGraphPlugin.createParameters();
@@ -585,12 +560,7 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
                 // The copy failed, drop out now.
                 return null;
             }
-        } finally {
-            rg.release();
         }
-
-        final List<String> vertexIdAttributes = new ArrayList<>();
-        vertexIdAttributes.add(VisualConcept.VertexAttribute.LABEL.getName() + "<string>");
 
         final WritableGraph wgcopy = copy.getWritableGraph("Add changes", true);
         try {
@@ -632,7 +602,7 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
      */
     protected Map<String, Integer> calculateStatisticalDifferences(final Map<String, Integer> originalStatistics, final Map<String, Integer> compareStatistics) {
         final Map<String, Integer> statisticalDifferences = new HashMap<>();
-        for (final Map.Entry<String, Integer> entry : originalStatistics.entrySet()) {
+        for (final Entry<String, Integer> entry : originalStatistics.entrySet()) {
             statisticalDifferences.put(entry.getKey(), compareStatistics.get(entry.getKey()) - entry.getValue());
         }
         return statisticalDifferences;

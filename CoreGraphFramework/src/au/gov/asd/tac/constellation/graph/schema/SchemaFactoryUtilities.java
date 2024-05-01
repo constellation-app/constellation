@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,10 +74,6 @@ public class SchemaFactoryUtilities {
      * @return An instance of the SchemaFactory with the specified name.
      */
     public static final SchemaFactory getSchemaFactory(final String name) {
-        if (name == null) {
-            return null;
-        }
-
-        return getSchemaFactories().get(name);
+        return name == null ? null : getSchemaFactories().get(name);
     }
 }

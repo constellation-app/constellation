@@ -35,7 +35,7 @@ public class LeadNodeSelectionDialog extends ItemsDialog<Integer> {
     private static final String HELP_MESSAGE = "Select the lead identifier by highlighting a single row and click Continue.";
 
     public LeadNodeSelectionDialog(Window owner, ObservableList<ItemsRow<Integer>> rows, Graph graph) {
-        super(owner, "Lead Node Identifier", HELP_MESSAGE, "Identifier", "", rows);
+        super("Lead Node Identifier", HELP_MESSAGE, "Identifier", "", rows);
         this.graph = graph;
         this.leadVertexId = -1;
     }

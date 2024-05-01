@@ -191,8 +191,8 @@ public class LocalDateParameterType extends PluginParameterType<LocalDateParamet
             final LocalDate newld;
             if (o == null) {
                 newld = null;
-            } else if (o instanceof LocalDate) {
-                newld = (LocalDate) o;
+            } else if (o instanceof LocalDate localDate) {
+                newld = localDate;
             } else {
                 throw new IllegalArgumentException(String.format("Unexpected class %s", o.getClass()));
             }

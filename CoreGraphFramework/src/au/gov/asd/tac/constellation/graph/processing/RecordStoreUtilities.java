@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,18 +61,10 @@ public class RecordStoreUtilities {
                     char c = field.charAt(i);
                     if (escape) {
                         switch (c) {
-                            case 't':
-                                result.append('\t');
-                                break;
-                            case 'n':
-                                result.append('\n');
-                                break;
-                            case 'r':
-                                result.append('\r');
-                                break;
-                            default:
-                                result.append(c);
-                                break;
+                            case 't' -> result.append('\t');
+                            case 'n' -> result.append('\n');
+                            case 'r' -> result.append('\r');
+                            default -> result.append(c);
                         }
                     } else if (c == '\\') {
                         escape = true;
@@ -119,7 +111,7 @@ public class RecordStoreUtilities {
                     while (true) {
                         currentToken = parser.nextToken();
                         if (currentToken == JsonToken.FIELD_NAME) {
-                            String fieldName = parser.getCurrentName();
+                            final String fieldName = parser.getCurrentName();
 
                             String fieldValue;
                             currentToken = parser.nextToken();
@@ -165,7 +157,7 @@ public class RecordStoreUtilities {
      */
     public static String toJson(final RecordStore recordStore) throws IOException {
         final String json;
-        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+        try (final ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             try (final JsonGenerator jg = new JsonFactory().createGenerator(outputStream)) {
                 jg.writeStartArray();
 
@@ -173,7 +165,7 @@ public class RecordStoreUtilities {
                     recordStore.reset();
                     while (recordStore.next()) {
                         jg.writeStartObject();
-                        for (String key : recordStore.keys()) {
+                        for (final String key : recordStore.keys()) {
                             final String value = recordStore.get(key);
                             if (value == null) {
                                 continue;
@@ -294,7 +286,7 @@ public class RecordStoreUtilities {
 
                 try {
                     outputStream.write(line.toString().getBytes(StandardCharsets.UTF_8.name()));
-                } catch (IOException ex) {
+                } catch (final IOException ex) {
                     LOGGER.severe(ex.getLocalizedMessage());
                 }
             }
@@ -317,7 +309,7 @@ public class RecordStoreUtilities {
 
             try {
                 outputStream.write(line.toString().getBytes(StandardCharsets.UTF_8.name()));
-            } catch (IOException ex) {
+            } catch (final IOException ex) {
                 LOGGER.severe(ex.getLocalizedMessage());
             }
         }

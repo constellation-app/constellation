@@ -66,8 +66,7 @@ public class ElementTypeParameterValue extends ParameterValue {
 
     @Override
     public boolean setObjectValue(final Object o) {
-        if (o instanceof GraphElementType) {
-            final GraphElementType type = (GraphElementType) o;
+        if (o instanceof GraphElementType type) {
             final boolean equal = Objects.equals(type, elementType);
             if (!equal) {
                 elementType = type;

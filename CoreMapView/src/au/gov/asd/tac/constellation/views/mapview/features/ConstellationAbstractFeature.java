@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.mapview.features;
 
 import de.fhpotsdam.unfolding.data.Feature;
+import java.util.Collections;
 import java.util.HashMap;
 
 /**
@@ -35,19 +36,12 @@ public class ConstellationAbstractFeature {
 
     public ConstellationAbstractFeature(Feature feature) {
         this.id = feature.getId();
-        switch (feature.getType()) {
-            case POINT:
-                this.type = ConstellationFeatureType.POINT;
-                break;
-            case LINES:
-                this.type = ConstellationFeatureType.LINE;
-                break;
-            case POLYGON:
-                this.type = ConstellationFeatureType.POLYGON;
-                break;
-            default:
-                this.type = ConstellationFeatureType.MULTI;
-        }
+        this.type = switch (feature.getType()) {
+            case POINT -> ConstellationFeatureType.POINT;
+            case LINES -> ConstellationFeatureType.LINE;
+            case POLYGON -> ConstellationFeatureType.POLYGON;
+            default -> ConstellationFeatureType.MULTI;
+        };
         this.properties = feature.getProperties();
     }
 
@@ -68,7 +62,7 @@ public class ConstellationAbstractFeature {
     }
 
     public HashMap<String, Object> getProperties() {
-        return properties;
+        return (HashMap<String, Object>) Collections.unmodifiableMap(properties);
     }
 
     public Object getProperty(final String key) {
@@ -77,8 +71,8 @@ public class ConstellationAbstractFeature {
 
     public String getStringProperty(final String key) {
         final Object value = properties.get(key);
-        if (value instanceof String) {
-            return (String) value;
+        if (value instanceof String string) {
+            return string;
         } else {
             return null;
         }

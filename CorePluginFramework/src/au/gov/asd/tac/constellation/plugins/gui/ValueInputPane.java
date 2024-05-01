@@ -99,26 +99,26 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
             l.setPrefWidth(defaultWidth);
             getChildren().add(l);
             parameter.addListener((pluginParameter, change) -> Platform.runLater(() -> {
-                switch (change) {
-                    case VALUE:
-                        // Don't change the value if it isn't necessary.
-                        // Setting the text changes the cursor position, which makes it look like text is
-                        // being entered right-to-left.
-                        final String param = parameter.getStringValue();
-                        if (!l.getText().equals(param)) {
-                            l.setText(param);
+                    switch (change) {
+                        case VALUE -> {
+                            // Don't change the value if it isn't necessary.
+                            // Setting the text changes the cursor position, which makes it look like text is
+                            // being entered right-to-left.
+                            final String param = parameter.getStringValue();
+                            if (!l.getText().equals(param)) {
+                                l.setText(param);
+                            }
                         }
-                        break;
-                    case VISIBLE:
-                        l.setManaged(parameter.isVisible());
-                        l.setVisible(parameter.isVisible());
-                        this.setVisible(parameter.isVisible());
-                        this.setManaged(parameter.isVisible());
-                        break;
-                    default:
-                        break;
-                }
-            }));
+                        case VISIBLE -> {
+                            l.setManaged(parameter.isVisible());
+                            l.setVisible(parameter.isVisible());
+                            this.setVisible(parameter.isVisible());
+                            this.setManaged(parameter.isVisible());
+                        }
+                        default -> {
+                        }
+                    }
+                }));
         } else {
             recentValuesCombo = new ComboBox<>();
             recentValuesCombo.setEditable(false);
@@ -228,7 +228,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
 
             parameter.addListener((pluginParameter, change) -> Platform.runLater(() -> {
                     switch (change) {
-                        case VALUE:
+                        case VALUE -> {
                             // Don't change the value if it isn't necessary.
                             // Setting the text changes the cursor position, which makes it look like text is
                             // being entered right-to-left.
@@ -236,22 +236,20 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                             if (!field.getText().equals(param)) {
                                 field.setText(param != null ? param : "");
                             }
-                            break;
-                        case ENABLED:
+                        }
+                        case ENABLED -> {
                             // If enabled, then ensure widget is both editable and enabled.
                             field.setEditable(pluginParameter.isEnabled());
                             field.setDisable(!pluginParameter.isEnabled());
                             recentValuesCombo.setDisable(!pluginParameter.isEnabled());
-                            break;
-                        case VISIBLE:
+                        }
+                        case VISIBLE -> {
                             field.setManaged(parameter.isVisible());
                             field.setVisible(parameter.isVisible());
                             this.setVisible(parameter.isVisible());
                             this.setManaged(parameter.isVisible());
-                            break;
-                        default:
-                            LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
-                            break;
+                        }
+                        default -> LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
                     }
                 }));
 

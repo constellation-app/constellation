@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,12 +48,12 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
     // This is a map from the color names to their RGB color bits used by glColorMask.
     //
     private static final Map<String, boolean[]> COLOR_BITS = Map.of(
-            "Blue",    new boolean[]{false, false, true},
-            "Cyan",    new boolean[]{false, true,  true},
-            "Green",   new boolean[]{false, true,  false},
-            "Magenta", new boolean[]{true,  false, true},
-            "Red",     new boolean[]{true,  false, false},
-            "Yellow",  new boolean[]{true,  true,  false}
+            "Blue", new boolean[]{false, false, true},
+            "Cyan", new boolean[]{false, true, true},
+            "Green", new boolean[]{false, true, false},
+            "Magenta", new boolean[]{true, false, true},
+            "Red", new boolean[]{true, false, false},
+            "Yellow", new boolean[]{true, true, false}
     );
 
     public static boolean[] getColorMask(final String color) {
@@ -163,7 +163,7 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
 
     private ApplicationOptionsPanel getPanel() {
         if (panel == null) {
-            panel = new ApplicationOptionsPanel(this);
+            panel = new ApplicationOptionsPanel();
         }
         return panel;
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,15 +42,13 @@ import org.openide.util.NbBundle;
  *
  * @author algol
  */
-final class ApplicationOptionsPanel extends javax.swing.JPanel {
+final class ApplicationOptionsPanel extends JPanel {
 
-    private final ApplicationOptionsPanelController controller;
     private final String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
 
     private static final String USER_HOME_PROPERTY = "user.home";
 
-    public ApplicationOptionsPanel(final ApplicationOptionsPanelController controller) {
-        this.controller = controller;
+    public ApplicationOptionsPanel() {
         initComponents();
     }
 
@@ -140,11 +138,11 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
     }
 
     public void setFontSize(final String fontSize) {
-        fontSizeSpinner.setValue(Integer.parseInt(fontSize));
+        fontSizeSpinner.setValue(Integer.valueOf(fontSize));
     }
 
     public String[] getFontList() {
-        return fonts;
+        return fonts.clone();
     }
 
     public boolean isEnableSpellCheckingSelected() {
@@ -529,9 +527,9 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(fontPanel, GroupLayout.PREFERRED_SIZE, 95, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(spellCheckingPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(colorblindPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                .addComponent(colorblindPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(spellCheckingPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         notebookPanel.getAccessibleContext().setAccessibleName(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.notebookPanel.AccessibleContext.accessibleName")); // NOI18N

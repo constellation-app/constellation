@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -105,7 +105,7 @@ public class PointMarkerErrorLayer extends MapLayer {
                     for (final GraphElement element : elements) {
                         final float elementPrecision;
                         switch (element.getType()) {
-                            case VERTEX:
+                            case VERTEX -> {
                                 if (vertexPrecisionAttributeId != Graph.NOT_FOUND) {
                                     elementPrecision = readableGraph.getFloatValue(vertexPrecisionAttributeId, element.getId());
                                     minimumPrecision = Math.max(elementPrecision, minimumPrecision);
@@ -113,15 +113,11 @@ public class PointMarkerErrorLayer extends MapLayer {
                                     elementPrecision = DEFAULT_PRECISION;
                                     minimumPrecision = DEFAULT_PRECISION;
                                 }
-                                break;
-                            case TRANSACTION:
-                                elementPrecision = transactionPrecisionAttributeId != Graph.NOT_FOUND
+                            }
+                            case TRANSACTION -> elementPrecision = transactionPrecisionAttributeId != Graph.NOT_FOUND
                                         ? readableGraph.getFloatValue(transactionPrecisionAttributeId, element.getId())
                                         : DEFAULT_PRECISION;
-                                break;
-                            default:
-                                elementPrecision = DEFAULT_PRECISION;
-                                break;
+                            default -> elementPrecision = DEFAULT_PRECISION;
                         }
                         minimumPrecision = Math.max(elementPrecision, minimumPrecision);
                     }
@@ -137,7 +133,7 @@ public class PointMarkerErrorLayer extends MapLayer {
                     final List<Location> errorRegionLocations = MarkerUtilities.generateCircle(marker.getLocation(), errorRegionRadiusLocation);
                     final List<MapPosition> errorRegionPositions = errorRegionLocations.stream()
                             .map(location -> new MapPosition(map.mapDisplay.getObjectFromLocation(location)))
-                            .collect(Collectors.toList());
+                            .toList();
                     errorRegionImage.beginShape();
                     errorRegionPositions.forEach(position -> errorRegionImage.vertex(position.x, position.y));
                     errorRegionImage.endShape(PConstants.CLOSE);

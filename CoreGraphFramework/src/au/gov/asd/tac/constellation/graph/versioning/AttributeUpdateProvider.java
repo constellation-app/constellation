@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,7 +84,7 @@ public abstract class AttributeUpdateProvider implements UpdateProvider {
     @Override
     public void update(final StoreGraph graph) {
         graph.setAttributeRegistry(AttributeRegistry.copyWithRegsitrations(graph.getAttributeRegistry(), Arrays.asList(getUpdatedAttributeDescription().getClass())));
-        for (GraphElementType elementType : GraphElementType.values()) {
+        for (final GraphElementType elementType : GraphElementType.values()) {
             final Map<Attribute, Object[]> values = new HashMap<>();
             for (int i = 0; i < graph.getAttributeCount(elementType); i++) {
                 final int attrId = graph.getAttribute(elementType, i);
@@ -105,7 +105,7 @@ public abstract class AttributeUpdateProvider implements UpdateProvider {
                     final int[] key = graph.getPrimaryKey(elementType);
                     final int[] newKey = new int[key.length - 1];
                     int pos = 0;
-                    for (int k : key) {
+                    for (final int k : key) {
                         if (k != attr.getId()) {
                             newKey[pos++] = k;
                         }

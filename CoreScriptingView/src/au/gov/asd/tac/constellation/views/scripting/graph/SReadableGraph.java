@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -475,13 +475,13 @@ public class SReadableGraph {
     /**
      * The exit point for the Python context manager.
      *
-     * @param exc_type the exception type.
-     * @param exc_value the exception value.
+     * @param excType the exception type.
+     * @param excValue the exception value.
      * @param traceback the exception traceback.
      */
-    protected void __exit__(final Object exc_type, final Object exc_value, final Object traceback) {
+    protected void __exit__(final Object excType, final Object excValue, final Object traceback) {
         LOGGER.log(Level.INFO, "__exit__ {0}", this);
-        LOGGER.log(Level.INFO, "    {0} {1} {2}", new Object[]{exc_type, exc_value, traceback});
+        LOGGER.log(Level.INFO, "    {0} {1} {2}", new Object[]{excType, excValue, traceback});
         readableGraph.release();
     }
 

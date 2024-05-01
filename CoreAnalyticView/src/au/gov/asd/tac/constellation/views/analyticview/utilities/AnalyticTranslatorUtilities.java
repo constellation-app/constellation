@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.analyticview.utilities;
 
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,27 +40,27 @@ public class AnalyticTranslatorUtilities {
     }
 
     public static Map<String, Map<Integer, Float>> getVertexSizeCache() {
-        return vertexSizeCache;
+        return Collections.unmodifiableMap(vertexSizeCache);
     }
 
     public static Map<String, Map<Integer, Float>> getTransactionSizeCache() {
-        return transactionSizeCache;
+        return Collections.unmodifiableMap(transactionSizeCache);
     }
 
     public static Map<String, Map<Integer, ConstellationColor>> getVertexColorCache() {
-        return vertexColorCache;
+        return Collections.unmodifiableMap(vertexColorCache);
     }
 
     public static Map<String, Map<Integer, ConstellationColor>> getTransactionColorCache() {
-        return transactionColorCache;
+        return Collections.unmodifiableMap(transactionColorCache);
     }
     
     public static Map<String, Map<Integer, Float>> getVertexHideCache() {
-        return vertexHideCache;
+        return Collections.unmodifiableMap(vertexHideCache);
     }
     
     public static Map<String, Map<Integer, Float>> getTransactionHideCache() {
-        return transactionHideCache;
+        return Collections.unmodifiableMap(transactionHideCache);
     }
     
     public static void addToVertexSizeCache(final String currentGraphKey, final Map<Integer, Float> vertexSizes) {

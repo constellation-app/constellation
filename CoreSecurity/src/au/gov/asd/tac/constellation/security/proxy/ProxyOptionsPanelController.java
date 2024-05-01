@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,10 +96,10 @@ public class ProxyOptionsPanelController extends OptionsPanelController implemen
     public boolean isChanged() {
         final Preferences prefs = NbPreferences.forModule(ProxyPreferenceKeys.class);
         final ProxyOptionsPanel proxyOptionsPanel = getPanel();
-        return !(proxyOptionsPanel.isUseDefaultSettingsSelected() == prefs.getBoolean(ProxyPreferenceKeys.USE_DEFAULTS, ProxyPreferenceKeys.USE_DEFAULTS_DEFAULT)
-                && proxyOptionsPanel.getDefaultProxy().equals(prefs.get(ProxyPreferenceKeys.DEFAULT, ProxyPreferenceKeys.DEFAULT_DEFAULT))
-                && proxyOptionsPanel.getAdditionalProxies().equals(prefs.get(ProxyPreferenceKeys.ADDITIONAL, ProxyPreferenceKeys.ADDITIONAL_DEFAULT))
-                && proxyOptionsPanel.getBypassProxyHosts().equals(prefs.get(ProxyPreferenceKeys.BYPASS, ProxyPreferenceKeys.BYPASS_DEFAULT)));
+        return proxyOptionsPanel.isUseDefaultSettingsSelected() != prefs.getBoolean(ProxyPreferenceKeys.USE_DEFAULTS, ProxyPreferenceKeys.USE_DEFAULTS_DEFAULT)
+                || !proxyOptionsPanel.getDefaultProxy().equals(prefs.get(ProxyPreferenceKeys.DEFAULT, ProxyPreferenceKeys.DEFAULT_DEFAULT))
+                || !proxyOptionsPanel.getAdditionalProxies().equals(prefs.get(ProxyPreferenceKeys.ADDITIONAL, ProxyPreferenceKeys.ADDITIONAL_DEFAULT))
+                || !proxyOptionsPanel.getBypassProxyHosts().equals(prefs.get(ProxyPreferenceKeys.BYPASS, ProxyPreferenceKeys.BYPASS_DEFAULT));
     }
 
     @Override
@@ -119,7 +119,7 @@ public class ProxyOptionsPanelController extends OptionsPanelController implemen
 
     private ProxyOptionsPanel getPanel() {
         if (panel == null) {
-            panel = new ProxyOptionsPanel(this);
+            panel = new ProxyOptionsPanel();
         }
         return panel;
     }

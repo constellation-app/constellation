@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ public class ContentVectorClusteringServices {
 
     private ContentVectorClusteringServices(final SparseMatrix<Integer> tokenElementMatrix) {
         this.tokenElementMatrix = tokenElementMatrix;
-        this.elementTokenMatrix = SparseMatrix.constructMatrix((Float) 0F);
+        this.elementTokenMatrix = SparseMatrix.constructMatrix(0F);
         this.elementToCluster = new ConcurrentSkipListMap<>();
         this.clusterCentres = new ArrayList<>();
         moduli = new ConcurrentSkipListMap<>();
@@ -136,27 +136,25 @@ public class ContentVectorClusteringServices {
                 lastTotalError = totalError;
                 totalError = 0;
 
-                for (int j = 0; j < columnKeys.length; j++) {
+                for (final Integer columnKey : columnKeys) {
                     final Iterator<Integer> iter = clusterCentres.iterator();
                     float smallestDistanceSoFar = Float.MAX_VALUE;
                     int closestCentre = -1;
                     while (iter.hasNext()) {
                         final int centreKey = iter.next();
-                        final float currentDistance = elementTokenMatrix.getCommonalityDistanceBetweenColumns(centreKey, columnKeys[j]);
+                        final float currentDistance = elementTokenMatrix.getCommonalityDistanceBetweenColumns(centreKey, columnKey);
                         if (currentDistance < smallestDistanceSoFar || (currentDistance == smallestDistanceSoFar && r.nextBoolean())) {
                             smallestDistanceSoFar = currentDistance;
                             closestCentre = centreKey;
                         }
                     }
-
                     totalError += Math.pow(smallestDistanceSoFar, 2);
-                    elementToCluster.put(columnKeys[j], clusterCentres.indexOf(closestCentre));
+                    elementToCluster.put(columnKey, clusterCentres.indexOf(closestCentre));
                     List<Integer> clusterList = clusters.get(closestCentre);
                     if (clusterList == null) {
                         clusterList = new LinkedList<>();
                     }
-
-                    clusterList.add(columnKeys[j]);
+                    clusterList.add(columnKey);
                     clusters.put(closestCentre, clusterList);
                 }
 
@@ -241,19 +239,19 @@ public class ContentVectorClusteringServices {
                 while (tokenIter.hasNext()) {
                     SparseMatrix.ElementValuePair<Integer> element = tokenIter.next();
                     // Calculate the modulii of each element
-                    updateModulii(element, token, tokenIter);
+                    updateModulii(token, tokenIter);
                     // Perform algorithm specific processing of each element
-                    processElementsSeenWithToken(element, token, tokenIter);
+                    processElementsSeenWithToken(element, token);
                 }
             }
         }
 
-        protected void updateModulii(final SparseMatrix.ElementValuePair<Integer> element, final int token, final SparseMatrix<Integer>.MatrixColumnIterator tokenIter) {
+        protected void updateModulii(final int token, final SparseMatrix<Integer>.MatrixColumnIterator tokenIter) {
             // The modulus of a token is the total number of elements that were seen with it.
             moduli.put(token, tokenIter.getSize());
         }
 
-        protected void processElementsSeenWithToken(final SparseMatrix.ElementValuePair<Integer> element, final int token, final SparseMatrix<Integer>.MatrixColumnIterator tokenIter) {
+        protected void processElementsSeenWithToken(final SparseMatrix.ElementValuePair<Integer> element, final int token) {
             synchronized (elementTokenMatrix) {
                 // Record the number of times the element occured witht the token
                 if (weightingCalculator.isSignificantEntry(moduli.get(token))) {

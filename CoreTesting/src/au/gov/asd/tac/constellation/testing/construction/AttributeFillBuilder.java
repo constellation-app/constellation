@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttribute
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -64,11 +65,9 @@ public class AttributeFillBuilder extends GraphBuilder {
     }
 
     public static AttributeFillBuilder fillAttribute(final GraphWriteMethods graph, final int attrID, final int[] elementsToFill, final Object lower, final Object upper) {
-
         final AttributeValueGenerator avg;
-
-        Class<? extends AttributeDescription> ad = graph.getAttributeDataType(attrID);
-
+        final Class<? extends AttributeDescription> ad = graph.getAttributeDataType(attrID);
+        
         if (ad.equals(IntegerAttributeDescription.class)) {
             avg = new IntegerAttributeValueGenerator();
         } else if (ad.equals(FloatAttributeDescription.class)) {
@@ -84,8 +83,7 @@ public class AttributeFillBuilder extends GraphBuilder {
         if (lower == null && upper == null) {
             return fillAttribute(graph, attrID, elementsToFill, avg.createValues(elementsToFill.length), true);
         } else if (upper == null) {
-            List<Object> singleOption = new ArrayList<>();
-            singleOption.add(lower);
+            final List<Object> singleOption = Arrays.asList(lower);
             return fillAttribute(graph, attrID, elementsToFill, singleOption, true);
         } else {
             return fillAttribute(graph, attrID, elementsToFill, avg.createValues(lower, upper, elementsToFill.length), true);
@@ -103,7 +101,6 @@ public class AttributeFillBuilder extends GraphBuilder {
     }
 
     public static AttributeFillBuilder fillAttribute(final GraphWriteMethods graph, final int attrID, final int[] elementsToFill, final List<Object> options, final boolean sequential) {
-
         for (int i = 0; i < elementsToFill.length; i++) {
             graph.setObjectValue(attrID, elementsToFill[i], sequential ? options.get(i % options.size()) : options.get(R.nextInt(options.size())));
         }
@@ -126,7 +123,7 @@ public class AttributeFillBuilder extends GraphBuilder {
         @Override
         public List<Object> createValues(final Integer low, final Integer high, final int numberOfValues) {
             final int difference = high - low;
-            List<Object> values = new ArrayList<>();
+            final List<Object> values = new ArrayList<>();
             for (int i = 0; i < numberOfValues; i++) {
                 values.add(low + ((difference * i) / numberOfValues));
             }
@@ -148,7 +145,7 @@ public class AttributeFillBuilder extends GraphBuilder {
         @Override
         public List<Object> createValues(final Float low, final Float high, final int numberOfValues) {
             final float difference = high - low;
-            List<Object> values = new ArrayList<>();
+            final List<Object> values = new ArrayList<>();
             for (int i = 0; i < numberOfValues; i++) {
                 values.add(low + ((difference * i) / numberOfValues));
             }
@@ -170,7 +167,7 @@ public class AttributeFillBuilder extends GraphBuilder {
 
         @Override
         public List<Object> createValues(final Date low, final Date high, final int numberOfValues) {
-            List<Object> values = new ArrayList<>();
+            final List<Object> values = new ArrayList<>();
             final long lowTime = low.getTime();
             final long difference = high.getTime() - low.getTime();
             for (int i = 0; i < numberOfValues; i++) {
@@ -193,8 +190,7 @@ public class AttributeFillBuilder extends GraphBuilder {
 
         @Override
         public List<Object> createValues(final ConstellationColor low, final ConstellationColor high, final int numberOfValues) {
-
-            List<Object> values = new ArrayList<>();
+            final List<Object> values = new ArrayList<>();
             final float redLow = low.getRed();
             final float greenLow = low.getGreen();
             final float blueLow = low.getBlue();
@@ -219,5 +215,4 @@ public class AttributeFillBuilder extends GraphBuilder {
     private AttributeFillBuilder(final GraphWriteMethods graph) {
         super(graph);
     }
-
 }
