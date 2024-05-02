@@ -106,7 +106,7 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
 
                     try {
                         description = describedEdit(writableGraph, interaction, parameters);
-                    } catch (final Exception ex) {
+                    } catch (final PluginException | InterruptedException ex) {
                         cancelled = true;
                         throw ex;
                     }

@@ -81,7 +81,8 @@ public class ScriptFormatter extends BinFormatter {
             engine = manager.getEngineByName(LANGUAGES.get("Python"));
             bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
             compiledScript = ((Compilable) engine).compile(script);
-        } catch (Exception e) {
+        } catch (ScriptException e) {
+            // Do Nothing
         }
 
         return new ScriptFormatBin(bin, bindings, compiledScript);

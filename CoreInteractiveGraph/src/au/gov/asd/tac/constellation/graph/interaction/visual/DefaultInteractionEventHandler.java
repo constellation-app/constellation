@@ -241,7 +241,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                         long nextWaitTime = 0;
                         try {
                             nextWaitTime = Math.max(0, beforeProcessing + handler.processEvent(interactionGraph) - System.currentTimeMillis());
-                        } catch (Exception ex) {
+                        } catch (NullPointerException ex) {
                             LOGGER.log(Level.WARNING, "Null exception accessing interactionGraph", ex);
                         }
                         // Add any visual operations that need to occur after a graph flush.
