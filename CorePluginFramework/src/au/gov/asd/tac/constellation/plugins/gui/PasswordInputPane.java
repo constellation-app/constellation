@@ -38,11 +38,9 @@ public class PasswordInputPane extends HBox {
 
     public static final int DEFAULT_WIDTH = 300;
     public static final int INTEGER_WIDTH = 75;
-    private static final int EMPTY_WIDTH = 100;
 
     private final TextInputControl field;
     private final boolean required;
-    private int comboBoxWidth = EMPTY_WIDTH;
     private static final Logger LOGGER = Logger.getLogger(PasswordInputPane.class.getName());
 
     public PasswordInputPane(final PluginParameter<?> parameter) {
@@ -56,7 +54,6 @@ public class PasswordInputPane extends HBox {
         }
 
         field.setPrefWidth(DEFAULT_WIDTH);
-
 
         if (parameter.getParameterValue().getGuiInit() != null) {
             parameter.getParameterValue().getGuiInit().init(field);
@@ -89,7 +86,7 @@ public class PasswordInputPane extends HBox {
 
         parameter.addListener((pluginParameter, change) -> Platform.runLater(() -> {
                 switch (change) {
-                    case VALUE:
+                    case VALUE -> {
                         // Don't change the value if it isn't necessary.
                         // Setting the text changes the cursor position, which makes it look like text is
                         // being entered right-to-left.
@@ -97,27 +94,25 @@ public class PasswordInputPane extends HBox {
                         if (!field.getText().equals(param)) {
                             field.setText(param != null ? param : "");
                         }
-                        break;
-                    case ENABLED:
+                    }
+                    case ENABLED -> {
                         // If enabled, then ensure widget is both editable and enabled.
                         field.setEditable(pluginParameter.isEnabled());
                         field.setDisable(!pluginParameter.isEnabled());
-                        break;
-                    case VISIBLE:
+                    }
+                    case VISIBLE -> {
                         field.setManaged(parameter.isVisible());
                         field.setVisible(parameter.isVisible());
                         this.setVisible(parameter.isVisible());
                         this.setManaged(parameter.isVisible());
-                        break;
-                    default:
-                        LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
-                        break;
+                    }
+                   default -> LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
                 }
             }));
-            final HBox fieldHBox = new HBox();
-            fieldHBox.setSpacing(2);
-            fieldHBox.getChildren().add(field);
-            getChildren().add(fieldHBox);
+        final HBox fieldHBox = new HBox();
+        fieldHBox.setSpacing(2);
+        fieldHBox.getChildren().add(field);
+        getChildren().add(fieldHBox);
     }
 }
 
