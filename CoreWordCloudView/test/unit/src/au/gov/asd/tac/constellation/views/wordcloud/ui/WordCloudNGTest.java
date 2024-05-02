@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -124,7 +124,7 @@ public class WordCloudNGTest {
         System.out.println("getHasSignificances");
         final WordCloud instance = new WordCloud(wordsToHashes, hashedWordSets, elementType, wordListWithSizes, wordSignificances, currentSignificance, queryInfoString, modCount, selectedWords, isUnionSelect, isSizeSorted);
         final boolean expResult = false;
-        final boolean result = instance.getHasSignificances();
+        final boolean result = instance.hasSignificances();
         assertEquals(result, expResult);
     }
 
@@ -165,7 +165,7 @@ public class WordCloudNGTest {
         final boolean val = false;
         final WordCloud instance = new WordCloud(wordsToHashes, hashedWordSets, elementType, wordListWithSizes, wordSignificances, currentSignificance, queryInfoString, modCount, selectedWords, isUnionSelect, isSizeSorted);
         instance.setIsUnionSelect(val);
-        final boolean result = instance.getIsUnionSelect();
+        final boolean result = instance.isUnionSelect();
         assertEquals(val, result);
     }
 
@@ -178,7 +178,7 @@ public class WordCloudNGTest {
         final boolean val = false;
         final WordCloud instance = new WordCloud(wordsToHashes, hashedWordSets, elementType, wordListWithSizes, wordSignificances, currentSignificance, queryInfoString, modCount, selectedWords, isUnionSelect, isSizeSorted);
         instance.setIsSizeSorted(val);
-        final boolean result = instance.getIsSizeSorted();
+        final boolean result = instance.isSizeSorted();
         assertEquals(val, result);
     }
 

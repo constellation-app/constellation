@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -173,20 +173,13 @@ public class UncollideArrangement implements Arranger {
         }
 
         deltas = Arrays.stream(deltas).filter(x -> x != 0).toArray();
-        double nudge; // nudge needed to move them to just beyond the minimum distance so that are at least a padding apart.
-        switch (deltas.length) {
-            case 2:
-                nudge = 0.5 * ((twinDistance - delta) + 0.002); // Nudge needed if only moving along one axis
-                break;
-            case 1:
-                nudge = 0.5 * ((twinDistance - delta) + 0.002) / math.sqrt(2); // Nudge needed if moving along two axis
-                break;
-            case 0:
-                nudge = 0.5 * ((twinDistance - delta) + 0.002) / Math.cbrt(3); // Nudge needed if moving along 3 axis
-                break;
-            default:
-                nudge = 0.5 * ((twinDistance - delta) + 0.002); // Should never reach this but need to maske the compiler happy.
-        }
+        // nudge needed to move them to just beyond the minimum distance so that are at least a padding apart.
+        final double nudge = switch (deltas.length) {
+            case 2 -> 0.5 * ((twinDistance - delta) + 0.002); // Nudge needed if only moving along one axis
+            case 1 -> 0.5 * ((twinDistance - delta) + 0.002) / math.sqrt(2); // Nudge needed if moving along two axis
+            case 0 -> 0.5 * ((twinDistance - delta) + 0.002) / Math.cbrt(3); // Nudge needed if moving along 3 axis
+            default -> 0.5 * ((twinDistance - delta) + 0.002); // Should never reach this but need to maske the compiler happy.
+        };
 
         // Nudge horizontally based on relative position.
         nudge(wg, xId, deltaX, subject, twin, nudge);

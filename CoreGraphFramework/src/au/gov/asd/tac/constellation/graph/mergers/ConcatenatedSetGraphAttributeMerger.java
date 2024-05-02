@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ public class ConcatenatedSetGraphAttributeMerger extends GraphAttributeMerger {
 
         final StringBuilder result = new StringBuilder();
         String separator = "";
-        for (String element : elements) {
+        for (final String element : elements) {
             result.append(separator);
             separator = ",";
             result.append(element);

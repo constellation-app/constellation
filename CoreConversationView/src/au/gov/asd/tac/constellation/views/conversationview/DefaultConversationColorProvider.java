@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import javax.swing.SwingUtilities;
 public class DefaultConversationColorProvider implements ConversationColorProvider {
 
     @Override
-    public void updateMessageColors(GraphReadMethods graph, List<ConversationMessage> messages) {
+    public void updateMessageColors(final GraphReadMethods graph, final List<ConversationMessage> messages) {
         assert !SwingUtilities.isEventDispatchThread();
 
         if (graph == null || messages.isEmpty()) {
@@ -98,7 +98,7 @@ public class DefaultConversationColorProvider implements ConversationColorProvid
         private int hue = 0;
         private int total = 1;
 
-        public DefaultConversationColor(float saturation, float brightness) {
+        public DefaultConversationColor(final float saturation, final float brightness) {
             this.saturation = saturation;
             this.brightness = brightness;
         }

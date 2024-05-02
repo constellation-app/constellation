@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,16 +60,14 @@ public class SelectionToGraphPlugin extends SimpleEditPlugin {
      * displaying
      */
     public SelectionToGraphPlugin(final TableView<ObservableList<String>> table,
-            final Map<ObservableList<String>, Integer> rowToElementIdIndex,
-            final GraphElementType elementType) {
+            final Map<ObservableList<String>, Integer> rowToElementIdIndex, final GraphElementType elementType) {
         this.table = table;
         this.rowToElementIdIndex = rowToElementIdIndex;
         this.elementType = elementType;
     }
 
     @Override
-    public void edit(final GraphWriteMethods graph,
-            final PluginInteraction interaction,
+    public void edit(final GraphWriteMethods graph, final PluginInteraction interaction,
             final PluginParameters parameters) throws InterruptedException, PluginException {
         // Convert all the rows in the table to graph element IDs
         final Set<Integer> elements = table.getItems().stream()

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,12 +44,9 @@ public final class TableViewState {
 
     public TableViewState(final TableViewState state) {
         this.selectedOnly = state != null && state.selectedOnly;
-        this.elementType = state == null
-                ? GraphElementType.TRANSACTION : state.elementType;
-        this.transactionColumnAttributes = state == null
-                ? null : state.transactionColumnAttributes;
-        this.vertexColumnAttributes = state == null
-                ? null : state.vertexColumnAttributes;
+        this.elementType = state == null ? GraphElementType.TRANSACTION : state.elementType;
+        this.transactionColumnAttributes = state == null ? null : state.transactionColumnAttributes;
+        this.vertexColumnAttributes = state == null ? null : state.vertexColumnAttributes;
     }
 
     public boolean isSelectedOnly() {
@@ -85,8 +82,7 @@ public final class TableViewState {
     }
 
     public List<Tuple<String, Attribute>> getColumnAttributes() {
-        return elementType == GraphElementType.TRANSACTION
-                ? transactionColumnAttributes : vertexColumnAttributes;
+        return elementType == GraphElementType.TRANSACTION? transactionColumnAttributes : vertexColumnAttributes;
     }
 
     public void setColumnAttributes(final List<Tuple<String, Attribute>> columnAttributes) {

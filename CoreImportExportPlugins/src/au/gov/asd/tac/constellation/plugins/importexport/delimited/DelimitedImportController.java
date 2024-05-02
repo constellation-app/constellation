@@ -201,8 +201,9 @@ public class DelimitedImportController extends ImportController {
                 }
                 currentColumns[0] = "Row";
             } catch (final FileNotFoundException ex) {
-                final String warningMsg = "The following file could not be found "
-                        + "and has been excluded from the import set:\n  " + sampleFile.getPath();
+                final String warningMsg = """
+                                        The following file could not be found and has been excluded from the import set:
+                                        """ + sampleFile.getPath();
                 final Throwable fnfEx = new FileNotFoundException(NotifyDisplayer.BLOCK_POPUP_FLAG + warningMsg);
                 fnfEx.setStackTrace(ex.getStackTrace());
                 LOGGER.log(Level.INFO, warningMsg, fnfEx);
@@ -211,8 +212,9 @@ public class DelimitedImportController extends ImportController {
                 files.remove(sampleFile);
                 ((DelimitedSourcePane) importPane.getSourcePane()).removeFile(sampleFile);
             } catch (final IOException ex) {
-                final String warningMsg = "The following file could not be parsed and has "
-                        + "been excluded from the import set:\n  " + sampleFile.getPath();
+                final String warningMsg = """
+                                        The following file could not be parsed and has been excluded from the import set:
+                                        """ + sampleFile.getPath();
                 final Throwable ioEx = new IOException(NotifyDisplayer.BLOCK_POPUP_FLAG + warningMsg);
                 ioEx.setStackTrace(ex.getStackTrace());
                 LOGGER.log(Level.INFO, warningMsg, ioEx);

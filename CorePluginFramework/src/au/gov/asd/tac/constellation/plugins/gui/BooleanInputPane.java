@@ -45,7 +45,7 @@ public class BooleanInputPane extends Pane {
     public BooleanInputPane(final PluginParameter<BooleanParameterValue> parameter) {
         field = new CheckBox();
         final BooleanParameterValue pv = parameter.getParameterValue();
-        field.setSelected(pv.get());
+        field.setSelected(pv.getValue());
 
         if (parameter.getParameterValue().getGuiInit() != null) {
             parameter.getParameterValue().getGuiInit().init(field);
@@ -61,25 +61,21 @@ public class BooleanInputPane extends Pane {
 
         parameter.addListener((PluginParameter<?> pluginParameter, ParameterChange change) -> Platform.runLater(() -> {
                 switch (change) {
-                    case VALUE:
+                    case VALUE -> {
                         // Don't change the value if it isn't necessary.
                         final boolean param = pluginParameter.getBooleanValue();
                         if (param != field.isSelected()) {
                             field.setSelected(param);
                         }
-                        break;
-                    case ENABLED:
-                        field.setDisable(!pluginParameter.isEnabled());
-                        break;
-                    case VISIBLE:
+                    }
+                    case ENABLED -> field.setDisable(!pluginParameter.isEnabled());
+                    case VISIBLE -> {
                         field.setManaged(parameter.isVisible());
                         field.setVisible(parameter.isVisible());
                         this.setVisible(parameter.isVisible());
                         this.setManaged(parameter.isVisible());
-                        break;
-                    default:
-                        LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
-                        break;
+                    }
+                    default -> LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
                 }
             }));
         getChildren().add(field);

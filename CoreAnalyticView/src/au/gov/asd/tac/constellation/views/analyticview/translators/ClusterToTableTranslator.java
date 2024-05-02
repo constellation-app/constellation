@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import au.gov.asd.tac.constellation.views.analyticview.results.ClusterResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ClusterResult.ClusterData;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.TableVisualisation;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -54,12 +53,12 @@ public class ClusterToTableTranslator extends AbstractTableTranslator<ClusterRes
         if (result.getIgnoreTransactions()) {
             displayResult = displayResult.stream()
                     .filter(clusterData -> clusterData.getElementType() != GraphElementType.TRANSACTION)
-                    .collect(Collectors.toList());
+                    .toList();
         }
         if (result.isIgnoreNullResults()) {
             displayResult = displayResult.stream()
                     .filter(clusterData -> !clusterData.isNull())
-                    .collect(Collectors.toList());
+                    .toList();
         }
         tableVisualisation.populateTable(displayResult);
         result.addResultListener(tableVisualisation);
@@ -73,12 +72,13 @@ public class ClusterToTableTranslator extends AbstractTableTranslator<ClusterRes
             return null;
         }
         switch (columnName) {
-            case IDENTIFIER_COLUMN_NAME:
+            case IDENTIFIER_COLUMN_NAME -> {
                 return cellValue.getIdentifier();
-            case CLUSTER_COLUMN_NAME:
+            }
+            case CLUSTER_COLUMN_NAME -> {
                 return cellValue.getClusterNumber();
-            default:
-                throw new UnrecognisedColumnException(columnName);
+            }
+            default -> throw new UnrecognisedColumnException(columnName);
         }
     }
 
@@ -88,11 +88,10 @@ public class ClusterToTableTranslator extends AbstractTableTranslator<ClusterRes
             return null;
         }
         switch (columnName) {
-            case IDENTIFIER_COLUMN_NAME:
-            case CLUSTER_COLUMN_NAME:
+            case IDENTIFIER_COLUMN_NAME, CLUSTER_COLUMN_NAME -> {
                 return cellItem.toString();
-            default:
-                throw new UnrecognisedColumnException(columnName);
+            }
+            default -> throw new UnrecognisedColumnException(columnName);
         }
     }
 

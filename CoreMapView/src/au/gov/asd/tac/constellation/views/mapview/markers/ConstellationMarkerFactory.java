@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -146,23 +146,14 @@ public class ConstellationMarkerFactory {
             marker = featureCache.getRandom(key);
         } else {
             switch (feature.getType()) {
-                case POINT:
-                    marker = createPointMarker((ConstellationPointFeature) feature);
-                    break;
-                case LINE:
-                    marker = createLineMarker((ConstellationShapeFeature) feature);
-                    break;
-                case POLYGON:
-                    marker = createPolygonMarker((ConstellationShapeFeature) feature);
-                    break;
-                case MULTI:
-                    marker = createMultiMarker((ConstellationMultiFeature) feature);
-                    break;
-                case CLUSTER:
-                    marker = createClusterMarker((ConstellationMultiFeature) feature);
-                    break;
-                default:
+                case POINT -> marker = createPointMarker((ConstellationPointFeature) feature);
+                case LINE -> marker = createLineMarker((ConstellationShapeFeature) feature);
+                case POLYGON -> marker = createPolygonMarker((ConstellationShapeFeature) feature);
+                case MULTI -> marker = createMultiMarker((ConstellationMultiFeature) feature);
+                case CLUSTER -> marker = createClusterMarker((ConstellationMultiFeature) feature);
+                default -> {
                     return null;
+                }
             }
             featureCache.add(key, marker);
         }
@@ -195,10 +186,10 @@ public class ConstellationMarkerFactory {
         ConstellationAbstractMarker marker;
         try {
             final Constructor<? extends ConstellationAbstractMarker> markerConstructor = markerClass.getDeclaredConstructor(List.class, HashMap.class);
-            marker = (ConstellationAbstractMarker) markerConstructor.newInstance(feature.getLocations(), feature.getProperties());
+            marker = markerConstructor.newInstance(feature.getLocations(), feature.getProperties());
         } catch (final NoSuchMethodException ex) {
             final Constructor<? extends ConstellationAbstractMarker> markerConstructor = markerClass.getDeclaredConstructor(List.class);
-            marker = (ConstellationAbstractMarker) markerConstructor.newInstance(feature.getLocations());
+            marker = markerConstructor.newInstance(feature.getLocations());
             marker.setProperties(feature.getProperties());
         }
         marker.setColor(defaultColor);
@@ -215,10 +206,10 @@ public class ConstellationMarkerFactory {
         ConstellationAbstractMarker marker;
         try {
             final Constructor<? extends ConstellationAbstractMarker> markerConstructor = markerClass.getDeclaredConstructor(List.class, HashMap.class);
-            marker = (ConstellationAbstractMarker) markerConstructor.newInstance(feature.getLocations(), feature.getProperties());
+            marker = markerConstructor.newInstance(feature.getLocations(), feature.getProperties());
         } catch (NoSuchMethodException ex) {
             final Constructor<? extends ConstellationAbstractMarker> markerConstructor = markerClass.getDeclaredConstructor(List.class);
-            marker = (ConstellationAbstractMarker) markerConstructor.newInstance(feature.getLocations());
+            marker = markerConstructor.newInstance(feature.getLocations());
             marker.setProperties(feature.getProperties());
         }
         marker.setColor(defaultColor);

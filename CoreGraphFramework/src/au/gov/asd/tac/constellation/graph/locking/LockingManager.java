@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,7 +72,7 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
 
     private final class Context {
 
-        ReentrantReadWriteLock lock = new ReentrantReadWriteLock(true);
+        private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock(true);
         private final T target;
 
         public Context(final T target) {
@@ -90,7 +90,7 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
             currentEdit = new LockingEdit(name, significant, source);
             initialEdit = currentEdit;
         } else {
-            LockingEdit childEdit = new LockingEdit(name, significant, source);
+            final LockingEdit childEdit = new LockingEdit(name, significant, source);
             childEdit.parent = currentEdit;
             currentEdit = childEdit;
         }
@@ -99,7 +99,7 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
         currentEdit.setModificationCounter(writeContext.target.getModificationCounter());
 
         if (VERBOSE) {
-            final String log = String.format("Write lock acquired for " + name + " by " + Thread.currentThread());
+            final String log = String.format("Write lock acquired for %s by %s", name, Thread.currentThread());
             LOGGER.log(Level.INFO, log);
         }
 
@@ -107,7 +107,6 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
     }
 
     public T tryStartWriting(final String name, final boolean significant, final Object source) {
-
         if (a.lock.getReadHoldCount() > 0 || b.lock.getReadHoldCount() > 0) {
             throw new IllegalMonitorStateException("attempting to write while reading");
         }
@@ -118,7 +117,7 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
                     currentEdit = new LockingEdit(name, significant, source);
                     initialEdit = currentEdit;
                 } else {
-                    LockingEdit childEdit = new LockingEdit(name, significant, source);
+                    final LockingEdit childEdit = new LockingEdit(name, significant, source);
                     childEdit.parent = currentEdit;
                     currentEdit = childEdit;
                 }
@@ -126,7 +125,7 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
                 currentEdit.setModificationCounter(writeContext.target.getModificationCounter());
 
                 if (VERBOSE) {
-                    final String log = String.format("Write lock acquired for " + name + " by " + Thread.currentThread());
+                    final String log = String.format("Write lock acquired for %s by %s", name, Thread.currentThread());
                     LOGGER.log(Level.INFO, log);
                 }
 
@@ -134,7 +133,7 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
             } else {
                 return null;
             }
-        } catch (InterruptedException ex) {
+        } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
             return null;
         }
@@ -214,14 +213,13 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
             graphEdit.execute((GraphWriteMethods) target);
 
             if (followingChildren != null) {
-                for (LockingEdit followingChild : followingChildren) {
+                for (final LockingEdit followingChild : followingChildren) {
                     followingChild.execute(target);
                 }
             }
         }
 
         private void undo(final T target) {
-
             if (followingChildren != null) {
                 for (int i = followingChildren.size() - 1; i >= 0; i--) {
                     followingChildren.get(i).undo(target);
@@ -239,7 +237,6 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
 
         @Override
         public void undo() {
-
             if (!canUndo() || !executed.compareAndSet(true, false)) {
                 throw new CannotUndoException();
             }
@@ -280,7 +277,7 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
         }
 
         private void fireUndoRedoReport(final String actionType, final GraphWriteMethods target, final String presentationName) {
-            UndoRedoReport undoRedoReport = new UndoRedoReport(target.getId());
+            final UndoRedoReport undoRedoReport = new UndoRedoReport(target.getId());
             undoRedoReport.setActionDescription(presentationName);
             undoRedoReport.setActionType(actionType);
             UndoRedoReportManager.fireNewUndoRedoReport(undoRedoReport);
@@ -293,7 +290,6 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
 
         @Override
         public void redo() {
-
             if (!canRedo() || !executed.compareAndSet(false, true)) {
                 throw new CannotRedoException();
             }
@@ -347,7 +343,7 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
         public boolean addEdit(final UndoableEdit edit) {
             if (edit.getClass() == LockingEdit.class) {
                 @SuppressWarnings("unchecked") // Type is manually checked.
-                LockingEdit lockingEdit = (LockingEdit) edit;
+                final LockingEdit lockingEdit = (LockingEdit) edit;
                 if (!lockingEdit.significant) {
                     if (followingChildren == null) {
                         followingChildren = new ArrayList<>();
@@ -387,7 +383,7 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
         public void commit(final Object description, final String commitName) throws DuplicateKeyException {
             try {
                 writeContext.target.validateKeys();
-            } catch (DuplicateKeyException ex) {
+            } catch (final DuplicateKeyException ex) {
                 rollBack(parent == null);
                 throw ex;
             }
@@ -399,10 +395,9 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
             }
 
             if (parent == null) {
-
                 writeContext.target.setGraphEdit(null);
 
-                Context originalReadContext = readContext;
+                final Context originalReadContext = readContext;
                 readContext = writeContext;
 
                 originalReadContext.lock.writeLock().lock();
@@ -423,20 +418,18 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
                 globalWriteLock.unlock();
 
                 update(description, editor);
-
             } else {
                 parent.graphEdit.addChild(graphEdit);
                 currentEdit = parent;
                 writeContext.target.setGraphEdit(currentEdit.graphEdit);
                 globalWriteLock.unlock();
-
             }
         }
 
         public T flush(final Object description, final boolean announce) {
             try {
                 writeContext.target.validateKeys();
-            } catch (DuplicateKeyException ex) {
+            } catch (final DuplicateKeyException ex) {
                 rollBack(parent == null);
                 throw ex;
             }
@@ -445,8 +438,7 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
             finished();
 
             if (parent == null) {
-
-                Context originalReadContext = readContext;
+                final Context originalReadContext = readContext;
                 readContext = writeContext;
 
                 originalReadContext.lock.writeLock().lock();
@@ -468,15 +460,12 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
                 if (announce) {
                     update(description, editor);
                 }
-
             } else {
-
                 parent.graphEdit.addChild(graphEdit);
-                LockingEdit childEdit = new LockingEdit(name, false, editor);
+                final LockingEdit childEdit = new LockingEdit(name, false, editor);
                 childEdit.parent = currentEdit;
                 currentEdit = childEdit;
                 writeContext.target.setGraphEdit(currentEdit.graphEdit);
-
             }
             return writeContext.target;
         }

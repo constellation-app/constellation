@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.io.File;
-import javax.swing.filechooser.FileFilter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -38,6 +37,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javax.swing.filechooser.FileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.filesystems.FileChooserBuilder;
 
@@ -92,40 +92,31 @@ public class FileInputPane extends HBox {
             final List<File> files = new ArrayList<>();
             final CompletableFuture dialogFuture;
             switch (paramaterValue.getKind()) {
-                case OPEN:
-                case OPEN_OBSCURED:
-                    dialogFuture = FileChooser.openOpenDialog(getFileChooser(parameter, "Open")).thenAccept(optionalFile -> optionalFile.ifPresent(openFile -> {
-                        if (openFile != null) {
-                            files.add(openFile);
+                case OPEN, OPEN_OBSCURED -> dialogFuture = FileChooser.openOpenDialog(getFileChooser(parameter, "Open")).thenAccept(optionalFile -> optionalFile.ifPresent(openFile -> {
+                    if (openFile != null) {
+                        files.add(openFile);
+                    }
+                }));
+                case OPEN_MULTIPLE, OPEN_MULTIPLE_OBSCURED -> dialogFuture = FileChooser.openMultiDialog(getFileChooser(parameter, "Open File(s)")).thenAccept(optionalFile -> optionalFile.ifPresent(openFiles -> {
+                    if (openFiles != null) {
+                        files.addAll(openFiles);
+                    }
+                }));
+                case SAVE, SAVE_OBSCURED -> dialogFuture = FileChooser.openSaveDialog(getFileChooser(parameter, "Save")).thenAccept(optionalFile -> optionalFile.ifPresent(saveFile -> {
+                    if (saveFile != null) {
+                        //Save files may have been typed by the user and an extension may not have been specified.
+                        final String fnam = saveFile.getAbsolutePath();
+                        final String expectedExtension = FileParameterType.getFileFilters(parameter).getExtensions().get(0);
+                        if (!fnam.toLowerCase().endsWith(expectedExtension)) {
+                            saveFile = new File(fnam + expectedExtension);
                         }
-                    }));
-                    break;
-                case OPEN_MULTIPLE:
-                case OPEN_MULTIPLE_OBSCURED:
-                    dialogFuture = FileChooser.openMultiDialog(getFileChooser(parameter, "Open File(s)")).thenAccept(optionalFile -> optionalFile.ifPresent(openFiles -> {
-                        if (openFiles != null) {
-                            files.addAll(openFiles);
-                        }
-                    }));
-                    break;
-                case SAVE:
-                case SAVE_OBSCURED:
-                    dialogFuture = FileChooser.openSaveDialog(getFileChooser(parameter, "Save")).thenAccept(optionalFile -> optionalFile.ifPresent(saveFile -> {
-                        if (saveFile != null) {
-                            //Save files may have been typed by the user and an extension may not have been specified.
-                            final String fnam = saveFile.getAbsolutePath();
-                            final String expectedExtension = FileParameterType.getFileFilters(parameter).getExtensions().get(0);
-                            if (!fnam.toLowerCase().endsWith(expectedExtension)) {
-                                saveFile = new File(fnam + expectedExtension);
-                            }
-                            files.add(saveFile);
-                        }
-                    }));
-                    break;
-                default:
+                        files.add(saveFile);
+                    }
+                }));
+                default -> {
                     dialogFuture = null;
                     LOGGER.log(Level.FINE, "ignoring file selection type {0}.", paramaterValue.getKind());
-                    break;
+                }
             }
             
             // As the dialog windows are completed on another thread 
@@ -231,30 +222,27 @@ public class FileInputPane extends HBox {
         // Looks for changes to the plugin parameter
         // Can be triggered by a change from the application or a change from the respective input field
         // Can trigger a change to the input field which will cause this listner to be triggered a second time.
-        parameter.addListener((pluginParameter, change) -> {
+        parameter.addListener((pluginParameter, change) -> 
             Platform.runLater(() -> {
                 switch (change) {
-                    case VALUE:
+                    case VALUE -> {
                         // Do not retrigger the fieled listner if this event was triggered by the field listner.
                         final String param = parameter.getStringValue();
                         if (!field.getText().equals(param)) {
                             field.setText(param);
                         }
-                        break;
-                    case ENABLED:
-                        field.setDisable(!pluginParameter.isEnabled());
-                        break;
-                    case VISIBLE:
+                    }
+                    case ENABLED -> field.setDisable(!pluginParameter.isEnabled());
+                    case VISIBLE -> {
                         field.setManaged(parameter.isVisible());
                         field.setVisible(parameter.isVisible());
                         this.setVisible(parameter.isVisible());
                         this.setManaged(parameter.isVisible());
-                        break;
-                    default:
-                        break;
+                    }
+                    default -> {
+                    }
                 }
-            });
-        });
+            }));
 
         final HBox fieldAndAddButton = new HBox();
         fieldAndAddButton.setSpacing(2);
@@ -275,7 +263,7 @@ public class FileInputPane extends HBox {
         
         FileChooserBuilder fileChooserBuilder = new FileChooserBuilder(title)
                 .setTitle(title)
-                .setAcceptAllFileFilterUsed(extensionFilter == null ? true : FileParameterType.isAcceptAllFileFilterUsed(parameter))
+                .setAcceptAllFileFilterUsed(extensionFilter == null || FileParameterType.isAcceptAllFileFilterUsed(parameter))
                 .setFilesOnly(true);
 
         if (extensionFilter != null) {

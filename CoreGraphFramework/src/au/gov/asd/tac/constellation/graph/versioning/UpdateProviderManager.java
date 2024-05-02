@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,8 +79,6 @@ public class UpdateProviderManager {
                 throw new UpdateProviderException(String.format("Found update provider %s with to-version %d not strictly greater than from-version %d.", itemName, toVersion, fromVersion));
             } else if (!itemProviders.containsKey(toVersion) && LATEST_VERSIONS.get(itemName) != toVersion) {
                 throw new UpdateProviderException(String.format("Found update provider %s with to-version %d that is not the latest (%d), but no update provider with the corresponding from version.", itemName, toVersion, LATEST_VERSIONS.get(itemName)));
-            } else {
-                // Do nothing
             }
         }));
     }
@@ -90,7 +88,5 @@ public class UpdateProviderManager {
         public UpdateProviderException(final String message) {
             super(message);
         }
-
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,17 +84,18 @@ public class ExpressionFilter {
         // added private constructor to hide implicit public constructor - S1118.
     }
 
-    public static IndexedReadable<?> createExpressionReadable(SequenceExpression expression, IndexedReadableProvider indexedReadableProvider, ConverterRegistry converterRegistry) {
-
+    public static IndexedReadable<?> createExpressionReadable(final SequenceExpression expression, final IndexedReadableProvider indexedReadableProvider, 
+            final ConverterRegistry converterRegistry) {
         final List<Expression> children = expression.getUnmodifiableChildren();
         switch (children.size()) {
-            case 1:
+            case 1 -> {
                 final IndexedReadable<?> indexedReadable = createIndexedReadable(children.get(0), indexedReadableProvider, converterRegistry);
                 if (indexedReadable == null) {
                     throw new IllegalArgumentException("Invalid expression size: " + children.size());
                 }
                 return indexedReadable;
-            case 2:
+            }
+            case 2 -> {
                 final OperatorExpression operator = (OperatorExpression) children.get(0);
                 final Expression right = children.get(1);
                 final Class converterClass = CONVERTER_CLASSES.get(operator.getOperator());
@@ -103,7 +104,8 @@ public class ExpressionFilter {
                     throw new IllegalArgumentException("Unable to perform unary operation on constant");
                 }
                 return Filter.createFilter(rightIndexedReadable, converterClass, converterRegistry);
-            case 3:
+            }
+            case 3 -> {
                 final Expression left = children.get(0);
                 final OperatorExpression operator2 = (OperatorExpression) children.get(1);
                 final Expression right2 = children.get(2);
@@ -125,23 +127,25 @@ public class ExpressionFilter {
                 } else {
                     return Filter.createFilter(leftIndexedReadable, rightIndexedReadable2, operatorClass, converterRegistry);
                 }
-            default:
-                throw new IllegalArgumentException("Invalid expression size: " + children.size());
+            }
+            default -> throw new IllegalArgumentException("Invalid expression size: " + children.size());
         }
     }
 
-    private static IndexedReadable<?> createIndexedReadable(Expression expression, IndexedReadableProvider indexedReadableProvider, ConverterRegistry converterRegistry) {
-        if (expression instanceof SequenceExpression) {
-            return createExpressionReadable((SequenceExpression) expression, indexedReadableProvider, converterRegistry);
-        } else if (expression instanceof VariableExpression) {
-            final String variableName = ((VariableExpression) expression).getContent();
-            final IndexedReadable<?> indexedReadable = indexedReadableProvider.getIndexedReadable(variableName);
-            if (indexedReadable == null) {
-                throw new IllegalArgumentException("Unknown variable: " + variableName);
+    private static IndexedReadable<?> createIndexedReadable(final Expression expression, final IndexedReadableProvider indexedReadableProvider, 
+            final ConverterRegistry converterRegistry) {
+        return switch (expression) {
+            case SequenceExpression sequenceExpression -> 
+                createExpressionReadable(sequenceExpression, indexedReadableProvider, converterRegistry);
+            case VariableExpression variableExpression -> {
+                final String variableName = variableExpression.getContent();
+                final IndexedReadable<?> indexedReadable = indexedReadableProvider.getIndexedReadable(variableName);
+                if (indexedReadable == null) {
+                    throw new IllegalArgumentException("Unknown variable: " + variableName);
+                }
+                yield indexedReadable;
             }
-            return indexedReadable;
-        } else {
-            return null;
-        }
+            default -> null;
+        };
     }
 }

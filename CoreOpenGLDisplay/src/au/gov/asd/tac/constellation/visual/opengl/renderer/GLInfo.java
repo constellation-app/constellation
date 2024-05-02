@@ -53,12 +53,20 @@ public class GLInfo {
      */
     public static void respondToIncompatibleHardwareOrGL(final GLAutoDrawable drawable) {
         final String basicInfo = drawable == null ? "Not available" : (new GLInfo(drawable.getGL())).getBasicInfo();
-        final String errorMessage
-                = BrandingUtilities.APPLICATION_NAME + " requires a minimum of "
-                + "OpenGL version " + MINIMUM_OPEN_GL_VERSION + "\n\n"
-                + "This PC has an incompatible graphics card.\n"
-                + "Please contact CONSTELLATION support, or use a different PC.\n\n"
-                + "This PC's details:\n\n" + basicInfo;
+        final String errorMessage = """
+                                    %s requires a minimum of OpenGL version %s"
+
+                                    This PC has an incompatible graphics card.
+                                    Please contact CONSTELLATION support, or use a different PC.
+
+                                    This PC's details:
+
+                                    %s"""
+                .formatted(
+                        BrandingUtilities.APPLICATION_NAME, 
+                        MINIMUM_OPEN_GL_VERSION, 
+                        basicInfo
+                );
 
         new Thread(() -> {
             final InfoTextPanel itp = new InfoTextPanel(errorMessage);
@@ -67,7 +75,7 @@ public class GLInfo {
         }).start();
     }
 
-    public static void printGLCapabilities(final GL3 gl) {
+    public static void printGLCapabilities(final GL gl) {
         final int[] v = new int[10];
         gl.glGetIntegerv(GL.GL_MAX_RENDERBUFFER_SIZE, v, 0);
         gl.glGetIntegerv(GL2ES2.GL_MAX_VERTEX_ATTRIBS, v, 1);
@@ -96,11 +104,21 @@ public class GLInfo {
 
     public GLInfo(final GL gl) {
         final StringBuilder sb = new StringBuilder();
-        sb.append(String.format("OpenGL version: %s\n", gl.glGetString(GL.GL_VERSION)));
-        sb.append(String.format("Vendor: %s\n", gl.glGetString(GL.GL_VENDOR)));
-        sb.append(String.format("Renderer: %s\n", gl.glGetString(GL.GL_RENDERER)));
+        sb.append("""
+                  OpenGL version: %s
+                  Vendor: %s
+                  Renderer: %s
+                  """
+                .formatted(
+                        gl.glGetString(GL.GL_VERSION), 
+                        gl.glGetString(GL.GL_VENDOR), 
+                        gl.glGetString(GL.GL_RENDERER)
+                )
+        );
+
+
         if (gl instanceof GL2ES2) {
-            sb.append(String.format("Shading language version: %s\n", gl.glGetString(GL2ES2.GL_SHADING_LANGUAGE_VERSION)));
+            sb.append(String.format("Shading language version: %s%n", gl.glGetString(GL2ES2.GL_SHADING_LANGUAGE_VERSION)));
         }
 
         basicInfo = sb.toString();

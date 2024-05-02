@@ -36,8 +36,7 @@ public class NodeGlyphStream implements GlyphManager.GlyphStream {
 
     @Override
     public void addGlyph(final int glyphPosition, final float x, final float y, final GlyphStreamContext streamContext) {
-        if (streamContext instanceof NodeGlyphStreamContext) {
-            final NodeGlyphStreamContext context = (NodeGlyphStreamContext) streamContext;
+        if (streamContext instanceof NodeGlyphStreamContext context) {
             currentFloats.add(glyphPosition, x, y, context.visibility);
             currentInts.add(context.currentNodeID, context.totalScale, context.labelNumber, 0);
         } else {
@@ -47,8 +46,7 @@ public class NodeGlyphStream implements GlyphManager.GlyphStream {
 
     @Override
     public void newLine(float width, final GlyphStreamContext streamContext) {
-        if (streamContext instanceof NodeGlyphStreamContext) {
-            final NodeGlyphStreamContext context = (NodeGlyphStreamContext) streamContext;
+        if (streamContext instanceof NodeGlyphStreamContext context) {
             currentFloats.add(SharedDrawable.getLabelBackgroundGlyphPosition(), -width / 2.0F - 0.2F, 0.0F, streamContext.visibility);
             currentInts.add(context.currentNodeID, streamContext.totalScale, streamContext.labelNumber, 0);
         } else {

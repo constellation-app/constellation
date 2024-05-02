@@ -432,8 +432,8 @@ public class PluginParameter<V extends ParameterValue> {
      */
     protected PluginParameter<?> create(final ParameterValue value, final PluginParameterType<?> type, final String id) {
         final PluginParameter<?> p = new PluginParameter(value.copy(), type, id);
-        if (p.value instanceof ParameterListParameterValue) {
-            ((ParameterListParameterValue) p.value).setEnclosingParameter(p);
+        if (p.value instanceof ParameterListParameterValue parameterListParameterValue) {
+            parameterListParameterValue.setEnclosingParameter(p);
         }
         return p;
     }
@@ -509,10 +509,8 @@ public class PluginParameter<V extends ParameterValue> {
      */
     public final void setStringValue(final String stringValue) {
         setError(value.validateString(stringValue));
-        if (getError() == null) {
-            if (value.setStringValue(stringValue)) {
-                fireChangeEvent(ParameterChange.VALUE);
-            } 
+        if (getError() == null && value.setStringValue(stringValue)) {
+            fireChangeEvent(ParameterChange.VALUE);
         }
     }
 
@@ -574,7 +572,7 @@ public class PluginParameter<V extends ParameterValue> {
      * {@link BooleanParameterValue}.
      */
     public boolean getBooleanValue() {
-        return ((BooleanParameterValue) value).get();
+        return ((BooleanParameterValue) value).getValue();
     }
 
     /**

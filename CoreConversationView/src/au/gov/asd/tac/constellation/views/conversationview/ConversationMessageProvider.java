@@ -35,4 +35,5 @@ public interface ConversationMessageProvider {
     public void getMessages(final GraphReadMethods graph, final List<ConversationMessage> messages, final int pageNumber);
     
     public int getTotalMessageCount();
+
 }

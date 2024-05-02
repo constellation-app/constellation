@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -118,10 +118,9 @@ public class AttributeUtilities {
      * Return a set of vertex attributes
      *
      * @param graph The graph
-     * @param vxId The vertex id to test in the graph
      * @return Map of attribute names
      */
-    public static Map<String, Integer> getVertexAttributes(final GraphReadMethods graph, final int vxId) {
+    public static Map<String, Integer> getVertexAttributes(final GraphReadMethods graph) {
         final Map<String, Integer> attributeIds = new TreeMap<>();
 
         if (graph == null) {
@@ -133,9 +132,8 @@ public class AttributeUtilities {
 
             final Attribute attr = new GraphAttribute(graph, graph.getAttribute(GraphElementType.VERTEX, i));
 
-            if (attr != null) {
-                attributeIds.put(attr.getName(), attr.getId());
-            }
+            attributeIds.put(attr.getName(), attr.getId());
+            
         }
 
         return attributeIds;

@@ -165,8 +165,8 @@ public class ColorParameterType extends PluginParameterType<ColorParameterValue>
             final ConstellationColor newc;
             if (o == null) {
                 newc = ConstellationColor.CLOUDS;
-            } else if (o instanceof ConstellationColor) {
-                newc = (ConstellationColor) o;
+            } else if (o instanceof ConstellationColor constellationColor) {
+                newc = constellationColor;
             } else {
                 throw new IllegalArgumentException(String.format("Unexpected class %s", o.getClass()));
             }

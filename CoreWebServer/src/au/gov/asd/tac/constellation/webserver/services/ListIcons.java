@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,7 +70,7 @@ public class ListIcons extends RestService {
     }
 
     @Override
-    public void callService(PluginParameters parameters, InputStream in, OutputStream out) throws IOException {
+    public void callService(PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
         final boolean editable = parameters.getBooleanValue(EDITABLE_PARAMETER_ID);
         final List<String> names = new ArrayList<>(IconManager.getIconNames(editable));
         names.sort(String::compareToIgnoreCase);

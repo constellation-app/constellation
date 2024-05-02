@@ -80,7 +80,7 @@ public class StringParameterValue extends ParameterValue {
 
     @Override
     public Object getObjectValue() {
-        return s;
+        return get();
     }
 
     @Override

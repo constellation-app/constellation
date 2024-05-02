@@ -81,12 +81,12 @@ public class PasswordParameterValue extends ParameterValue {
 
     @Override
     public Object getObjectValue() {
-        return s;
+        return get();
     }
 
     @Override
     public boolean setObjectValue(final Object o) {
-        if (o == null || o instanceof String) {
+        if (o == null || o instanceof String s) {
             return setStringValue((String) o);
         } else {
             throw new IllegalArgumentException(String.format("Unexpected class %s", o.getClass()));

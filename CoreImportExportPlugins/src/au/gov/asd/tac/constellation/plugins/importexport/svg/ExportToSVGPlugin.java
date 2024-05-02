@@ -45,7 +45,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javafx.stage.FileChooser;
@@ -75,7 +74,6 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
     public static final String SHOW_CONNECTION_LABELS_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_transaction_labels");
     public static final String SHOW_BLAZES_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_blazes");
     public static final String EXPORT_PERSPECTIVE_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "export_perspective");
-    private static final Logger LOGGER = Logger.getLogger(ExportToSVGPlugin.class.getName());
     
     @Override
     public PluginParameters createParameters() {

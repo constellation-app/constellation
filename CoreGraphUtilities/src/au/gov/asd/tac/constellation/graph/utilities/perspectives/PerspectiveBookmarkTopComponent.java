@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,7 +88,7 @@ import org.openide.windows.TopComponent;
     "MSG_RemovePerspective=Remove perspective"
 })
 public final class PerspectiveBookmarkTopComponent extends TopComponent implements GraphManagerListener {
-    
+
     private static final Logger LOGGER = Logger.getLogger(PerspectiveBookmarkTopComponent.class.getName());
 
     private PerspectiveModel perspectiveModel;
@@ -276,15 +276,20 @@ public final class PerspectiveBookmarkTopComponent extends TopComponent implemen
 
     private void perspectivesListKeyPressed(java.awt.event.KeyEvent evt)//GEN-FIRST:event_perspectivesListKeyPressed
     {//GEN-HEADEREND:event_perspectivesListKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            moveToPerspective();
-            evt.consume();
-        } else if (evt.getKeyCode() == KeyEvent.VK_F2) {
-            renamePerspective();
-            evt.consume();
-        } else {
-            // Do nothing
+        switch (evt.getKeyCode()) {
+            case KeyEvent.VK_ENTER -> {
+                moveToPerspective();
+                evt.consume();
+            }
+            case KeyEvent.VK_F2 -> {
+                renamePerspective();
+                evt.consume();
+            }
+            default -> {
+                // Do nothing
+            }
         }
+
     }//GEN-LAST:event_perspectivesListKeyPressed
 
     private void renameButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_renameButtonActionPerformed

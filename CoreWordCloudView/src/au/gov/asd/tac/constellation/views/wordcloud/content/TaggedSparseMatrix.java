@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,10 +39,10 @@ public class TaggedSparseMatrix<N extends Number> extends SparseMatrix<N> {
     }
 
     public static TaggedSparseMatrix constructMatrix(final Number noEntryValue) {
-        if (noEntryValue instanceof Integer) {
-            return new TaggedSparseMatrix<>((Integer) noEntryValue, IntegerArithmeticHandler.INSTANCE);
-        } else if (noEntryValue instanceof Float) {
-            return new TaggedSparseMatrix<>((Float) noEntryValue, FloatArithmeticHandler.INSTANCE);
+        if (noEntryValue instanceof Integer value) {
+            return new TaggedSparseMatrix<>(value, IntegerArithmeticHandler.INSTANCE);
+        } else if (noEntryValue instanceof Float value) {
+            return new TaggedSparseMatrix<>(value, FloatArithmeticHandler.INSTANCE);
         } else {
             return null;
         }

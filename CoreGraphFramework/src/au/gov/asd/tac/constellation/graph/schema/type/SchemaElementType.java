@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -144,10 +144,7 @@ public abstract class SchemaElementType<T extends SchemaElementType<?>> {
      * SchemaElementType.
      */
     public final SchemaElementType<T> getTopLevelType() {
-        if (getSuperType() != this) {
-            return getSuperType().getTopLevelType();
-        }
-        return this;
+        return getSuperType() != this ? getSuperType().getTopLevelType() : this;
     }
 
     /**

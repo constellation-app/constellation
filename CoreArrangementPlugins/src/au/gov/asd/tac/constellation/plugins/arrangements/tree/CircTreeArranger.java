@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -115,8 +115,8 @@ public final class CircTreeArranger implements Arranger {
             vxsToGo.clear(rootVxId);
 
             // Map vxIds to their ordered children (vxId and nChildren).
-            HashMap<Integer, ArrayList<VxInfo>> orderedChildren = new HashMap<>();
-            BitSet onlyChildren = new BitSet();
+            final HashMap<Integer, ArrayList<VxInfo>> orderedChildren = new HashMap<>();
+            final BitSet onlyChildren = new BitSet();
 
             orderChildren(rootVxId, vxsToGo, orderedChildren, onlyChildren);
 
@@ -202,16 +202,9 @@ public final class CircTreeArranger implements Arranger {
         return result;
     }
 
-    private float findSpacingOf(
-            final int vxId,
-            final BitSet vxsToGo,
-            final HashMap<Integer, ArrayList<VxInfo>> orderedChildren,
-            final BitSet onlyChildren,
-            final float scale,
-            final boolean strictCircularLayout,
-            final float[] childrenRadii,
-            final float[] fullRadii,
-            final AnnulusInfo[] annulusInfo) throws InterruptedException {
+    private float findSpacingOf(final int vxId, final BitSet vxsToGo, final HashMap<Integer, ArrayList<VxInfo>> orderedChildren,
+            final BitSet onlyChildren, final float scale, final boolean strictCircularLayout, final float[] childrenRadii,
+            final float[] fullRadii, final AnnulusInfo[] annulusInfo) throws InterruptedException {
         // Get the radius of the starting vertex.
         // We don't want a radius of zero; this will break things higher up and result in NaN values for x,y,z.
         // Instead, we'll use a minimum radius (pulled out of a hat).
@@ -352,22 +345,16 @@ public final class CircTreeArranger implements Arranger {
         }
     }
 
-    private void positionThis(
-            final int vxId,
-            final BitSet vxsToGo,
-            final HashMap<Integer, ArrayList<VxInfo>> orderedChildren,
-            float ourLocX,
-            float ourLocY,
-            final float parentOffsetX,
-            final float parentOffsetY,
-            final boolean strictCircularLayout,
-            final float[] childrenRadii,
-            final float[] fullRadii,
-            final AnnulusInfo[] annulusInfo,
-            float parentAngle) throws InterruptedException {
+    private void positionThis(final int vxId, final BitSet vxsToGo, final HashMap<Integer, ArrayList<VxInfo>> orderedChildren,
+            final float ourLocX, final float ourLocY, final float parentOffsetX, final float parentOffsetY,
+            final boolean strictCircularLayout, final float[] childrenRadii, final float[] fullRadii,
+            final AnnulusInfo[] annulusInfo, final float parentAngle) throws InterruptedException {
         // Keep parent angle in check.
+        float newParentAngle = parentAngle;
+        float newOurLocX = ourLocX;
+        float newOurLocY = ourLocY;
         if (parentAngle > TWO_PI) {
-            parentAngle -= TWO_PI;
+            newParentAngle -= TWO_PI;
         }
 
         // Get radius from satellites.
@@ -378,8 +365,8 @@ public final class CircTreeArranger implements Arranger {
 
         if (CollectionUtils.isEmpty(children)) {
             // Position us in centre.
-            graph.setFloatValue(xAttr, vxId, ourLocX);
-            graph.setFloatValue(yAttr, vxId, ourLocY);
+            graph.setFloatValue(xAttr, vxId, newOurLocX);
+            graph.setFloatValue(yAttr, vxId, newOurLocY);
             graph.setFloatValue(zAttr, vxId, 0);
         } else if (children.size() == 1) {
             // Remove these children from consideration.
@@ -398,24 +385,24 @@ public final class CircTreeArranger implements Arranger {
                 offsetX = childrenRadius;
             }
 
-            ourLocX -= (offsetX * actualChildRadius) / childrenRadius;
-            ourLocY -= (offsetY * actualChildRadius) / childrenRadius;
+            newOurLocX -= (offsetX * actualChildRadius) / childrenRadius;
+            newOurLocY -= (offsetY * actualChildRadius) / childrenRadius;
 
             // Position us back from centre.
-            graph.setFloatValue(xAttr, vxId, ourLocX);
-            graph.setFloatValue(yAttr, vxId, ourLocY);
+            graph.setFloatValue(xAttr, vxId, newOurLocX);
+            graph.setFloatValue(yAttr, vxId, newOurLocY);
             graph.setFloatValue(zAttr, vxId, 0);
 
             // Position child forward from centre.
-            positionThis(child.vxId, vxsToGo, orderedChildren, ourLocX + offsetX, ourLocY + offsetY, offsetX, offsetY, strictCircularLayout, childrenRadii, fullRadii, annulusInfo, parentAngle);
+            positionThis(child.vxId, vxsToGo, orderedChildren, newOurLocX + offsetX, newOurLocY + offsetY, offsetX, offsetY, strictCircularLayout, childrenRadii, fullRadii, annulusInfo, newParentAngle);
         } else if (strictCircularLayout || annulusInfo[children.get(children.size() - 1).vxId] == null) { // annulusInfo[children.get(0).vxId]==null
             // More than one child.
             // Remove these children from consideration.
             removeChildren(vxsToGo, children);
 
             // Position us in centre.
-            graph.setFloatValue(xAttr, vxId, ourLocX);
-            graph.setFloatValue(yAttr, vxId, ourLocY);
+            graph.setFloatValue(xAttr, vxId, newOurLocX);
+            graph.setFloatValue(yAttr, vxId, newOurLocY);
             graph.setFloatValue(zAttr, vxId, 0);
 
             // Figure out available and needed circumferences.
@@ -425,7 +412,7 @@ public final class CircTreeArranger implements Arranger {
             }
 
             // Starting orientation is perpendicular to parent's.
-            float accumCircle = neededCircumference * (0.25F + parentAngle / TWO_PI);
+            float accumCircle = neededCircumference * (0.25F + newParentAngle / TWO_PI);
 
             // Loop through each child, positioning it and its satellites.
             float oldRadiusIncrement = 0;
@@ -446,7 +433,7 @@ public final class CircTreeArranger implements Arranger {
                 final float angle = accumToRadians * accumCircle;
                 final float offsetX = childrenRadius * (float) Math.sin(angle);
                 final float offsetY = childrenRadius * (float) Math.cos(angle);
-                positionThis(child.vxId, vxsToGo, orderedChildren, ourLocX + offsetX, ourLocY + offsetY, offsetX, offsetY, strictCircularLayout, childrenRadii, fullRadii, annulusInfo, angle);
+                positionThis(child.vxId, vxsToGo, orderedChildren, newOurLocX + offsetX, newOurLocY + offsetY, offsetX, offsetY, strictCircularLayout, childrenRadii, fullRadii, annulusInfo, angle);
             }
         } else {
             // More than one child.
@@ -454,8 +441,8 @@ public final class CircTreeArranger implements Arranger {
             removeChildren(vxsToGo, children);
 
             // Position us in centre.
-            graph.setFloatValue(xAttr, vxId, ourLocX);
-            graph.setFloatValue(yAttr, vxId, ourLocY);
+            graph.setFloatValue(xAttr, vxId, newOurLocX);
+            graph.setFloatValue(yAttr, vxId, newOurLocY);
             graph.setFloatValue(zAttr, vxId, 0);
 
             // Figure out available and needed circumferences.
@@ -478,14 +465,14 @@ public final class CircTreeArranger implements Arranger {
 
                 // The outermost annulus starts perpendicular to its parent's angle.
                 if (lastAnnulus != 0 && lastAnnulus != childAnnulusRadius && outermostAnnulus == childAnnulusRadius) {
-                    cumAngle += TWO_PI * (parentAngle / TWO_PI + 0.25F);
+                    cumAngle += TWO_PI * (newParentAngle / TWO_PI + 0.25F);
                 }
 
                 lastAnnulus = childAnnulusRadius;
 
                 final float offsetX = childAnnulusRadius * (float) Math.sin(cumAngle);
                 final float offsetY = childAnnulusRadius * (float) Math.cos(cumAngle);
-                positionThis(child.vxId, vxsToGo, orderedChildren, ourLocX + offsetX, ourLocY + offsetY, offsetX, offsetY, strictCircularLayout, childrenRadii, fullRadii, annulusInfo, cumAngle);
+                positionThis(child.vxId, vxsToGo, orderedChildren, newOurLocX + offsetX, newOurLocY + offsetY, offsetX, offsetY, strictCircularLayout, childrenRadii, fullRadii, annulusInfo, cumAngle);
 
                 cumAngle += angIncrement;
             }

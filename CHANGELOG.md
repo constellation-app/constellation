@@ -1,5 +1,19 @@
 # Constellation Changes
 
+## Changes in May 2024
+-   Updated the method GetNodeLocation() to getNodeLocation() in class InteractiveGLVisualProcessor.
+
+## Changes in April 2024
+-   Removed `graph` parameter from `PermanentMergeTableModel.initialise` as it was unused.
+
+## Changes in March 2024
+-   Removed `dateTimeAttr` parameter from `ClusteringManager.InitDimOrHidePlugin` as it was unused.
+-   Removed `datetimeAtrr` parameter from `TimelinePanel.initExclusionState` as it was unused.
+-   Renamed `exclusionState()`, `setIsShowingSelectedOnly()`, and `setIsShowingNodeLabels()` in `TimelineState` 
+    to `getExclusionState()`, `setShowingSelectedOnly()`, and `setShowingNodeLabels()` to follow naming convention.
+-   Updated `TimeExtents` to be a record instead of a class.
+-   Updated `VideoFrame` to be a record.
+
 ## Changes in February 2024
 -   Updated the `constellationapplication/netbeans-runner` docker image
     to `21` to include updates to Netbeans, Azul JDK, and other tools used as part of image.

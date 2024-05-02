@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,5 +21,5 @@ package au.gov.asd.tac.constellation.graph.value.converter;
  */
 public interface Biconverter<S1, S2, D> {
 
-    public D convert(S1 source1, S2 source2);
+    public D convert(final S1 source1, final S2 source2);
 }

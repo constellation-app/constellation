@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ public abstract class ConversationContributionProvider implements Comparable<Con
      * for priority will appear earlier in the bubble for a message that has
      * multiple Contributions.
      */
-    protected ConversationContributionProvider(String name, int priority) {
+    protected ConversationContributionProvider(final String name, final int priority) {
         this.name = name;
         this.priority = priority;
     }
@@ -90,7 +90,7 @@ public abstract class ConversationContributionProvider implements Comparable<Con
      * @return True if this provider can create contributions with the graph,
      * false otherwise.
      */
-    public abstract boolean isCompatibleWithGraph(GraphReadMethods graph);
+    public abstract boolean isCompatibleWithGraph(final GraphReadMethods graph);
 
     /**
      * Constructs and returns a new Contribution for the given message and
@@ -104,7 +104,7 @@ public abstract class ConversationContributionProvider implements Comparable<Con
      * @param message The message that the Contribution belongs to.
      * @return A new Contribution for the given graph and message.
      */
-    public abstract ConversationContribution createContribution(GraphReadMethods graph, ConversationMessage message);
+    public abstract ConversationContribution createContribution(final GraphReadMethods graph, final ConversationMessage message);
 
     /**
      * Get a list of all providers by using lookup. This will find all providers
@@ -131,7 +131,7 @@ public abstract class ConversationContributionProvider implements Comparable<Con
      * @param graph The graph to get compatible providers for.
      * @return A list of all providers that are compatible with the given graph.
      */
-    public static List<ConversationContributionProvider> getCompatibleProviders(GraphReadMethods graph) {
+    public static List<ConversationContributionProvider> getCompatibleProviders(final GraphReadMethods graph) {
         final List<ConversationContributionProvider> compatibleProviders = new ArrayList<>();
         if (graph != null) {
             for (ConversationContributionProvider provider : getProviders()) {
@@ -144,7 +144,7 @@ public abstract class ConversationContributionProvider implements Comparable<Con
     }
 
     @Override
-    public int compareTo(ConversationContributionProvider other) {
+    public int compareTo(final ConversationContributionProvider other) {
         return Integer.compare(priority, other.priority);
     }
 }

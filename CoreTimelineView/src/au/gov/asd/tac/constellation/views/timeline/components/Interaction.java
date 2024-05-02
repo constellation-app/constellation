@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,15 +37,9 @@ public class Interaction extends Group {
         this.vertexA = vertexA;
         this.vertexB = vertexB;
 
-        // Determine the 'top' and 'bottom' vertices for display:
-        if (vertexA.getDisplayPos() > vertexB.getDisplayPos()) {
-            vertexA.setNorthernVertex(true, isShowingLabels);
-            vertexB.setNorthernVertex(false, isShowingLabels);
-        } else {
-            vertexA.setNorthernVertex(false, isShowingLabels);
-            vertexB.setNorthernVertex(true, isShowingLabels);
-        }
-
+        vertexA.setNorthernVertex(vertexA.getDisplayPos() > vertexB.getDisplayPos(), isShowingLabels);
+        vertexB.setNorthernVertex(vertexA.getDisplayPos() <= vertexB.getDisplayPos(), isShowingLabels);
+        
         this.transaction = transaction;
 
         setAutoSizeChildren(false);

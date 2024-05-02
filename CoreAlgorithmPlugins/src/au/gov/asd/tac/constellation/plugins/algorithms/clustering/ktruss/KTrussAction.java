@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,7 +69,7 @@ public final class KTrussAction extends AbstractAction {
         }
 
         @Override
-        protected void read(GraphReadMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+        protected void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
             SwingUtilities.invokeLater(() -> {
                 final TopComponent tc = WindowManager.getDefault().findTopComponent(KTrussControllerTopComponent.class.getSimpleName());
                 if (tc != null) {

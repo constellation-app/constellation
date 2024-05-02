@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,11 +32,11 @@ public class PieChartIconProvider implements ConstellationIconProvider {
     public static final List<ConstellationIcon> PIE_CHART_ICONS = new ArrayList<>();
 
     public PieChartIconProvider() {
-        BufferedImage[] pieChartIcons = createPieChartImages(256, 0.375F, 4);
+        final BufferedImage[] pieChartIcons = createPieChartImages(256, 0.375F, 4);
 
         for (int i = 0; i < pieChartIcons.length; i++) {
-            String iconName = String.valueOf(i) + "/" + PIE_CHART_LEVELS + " Pie";
-            ConstellationIcon pieChartIcon = new ConstellationIcon.Builder(iconName, new ImageIconData(pieChartIcons[i]))
+            final String iconName = String.valueOf(i) + "/" + PIE_CHART_LEVELS + " Pie";
+            final ConstellationIcon pieChartIcon = new ConstellationIcon.Builder(iconName, new ImageIconData(pieChartIcons[i]))
                     .addCategory("Pie Chart")
                     .build();
 
@@ -54,28 +54,26 @@ public class PieChartIconProvider implements ConstellationIconProvider {
         final BufferedImage[] images = new BufferedImage[levels];
 
         for (int level = 0; level < levels; level++) {
-
-            float fraction = (float) level / (levels - 1);
+            final float fraction = (float) level / (levels - 1);
             final BufferedImage pieChartImage = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
 
             final float sampleSize = 1.0F / (size * samples);
             final float sampleOffset = sampleSize * 0.5F;
 
             for (int x = 0; x < size; x++) {
-                float xMin = (float) x / size + sampleOffset;
-                float xMax = (float) (x + 1) / size + sampleOffset;
+                final float xMin = (float) x / size + sampleOffset;
+                final float xMax = (float) (x + 1) / size + sampleOffset;
 
                 for (int y = 0; y < size; y++) {
-                    float yMin = (float) y / size + sampleOffset;
-                    float yMax = (float) (y + 1) / size + sampleOffset;
+                    final float yMin = (float) y / size + sampleOffset;
+                    final float yMax = (float) (y + 1) / size + sampleOffset;
 
                     float alpha = 0.0F;
                     float color = 0.0F;
                     for (float xx = xMin; xx < xMax; xx += sampleSize) {
                         for (float yy = yMin; yy < yMax; yy += sampleSize) {
-
-                            float dx = xx - 0.5F;
-                            float dy = yy - 0.5F;
+                            final float dx = xx - 0.5F;
+                            final float dy = yy - 0.5F;
                             if (dx * dx + dy * dy < radius * radius) {
                                 alpha++;
 
@@ -97,9 +95,9 @@ public class PieChartIconProvider implements ConstellationIconProvider {
                     alpha /= samples * samples;
                     color /= samples * samples;
 
-                    int r = (int) (color * 255) << 16;
-                    int b = (int) ((1.0F - color) * 255);
-                    int a = (int) (alpha * 255) << 24;
+                    final int r = (int) (color * 255) << 16;
+                    final int b = (int) ((1.0F - color) * 255);
+                    final int a = (int) (alpha * 255) << 24;
                     pieChartImage.setRGB(x, y, r | b | a);
                 }
             }

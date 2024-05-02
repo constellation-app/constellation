@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,8 +37,7 @@ public class CycleGraphBuilder extends GraphBuilder {
     }
 
     public static CycleGraphBuilder addCycle(final GraphWriteMethods graph, final int length, final boolean directed) {
-
-        PathGraphBuilder path = PathGraphBuilder.addPath(graph, length, directed);
+        final PathGraphBuilder path = PathGraphBuilder.addPath(graph, length, directed);
         final int[] transactions = Arrays.copyOf(path.transactions, length);
         transactions[length - 1] = constructTransaction(graph, path.end, path.start, directed);
 
@@ -53,5 +52,4 @@ public class CycleGraphBuilder extends GraphBuilder {
         this.nodes = path.nodes;
         this.transactions = transactions;
     }
-
 }

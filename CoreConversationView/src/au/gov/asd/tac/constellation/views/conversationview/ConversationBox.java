@@ -188,6 +188,7 @@ public final class ConversationBox extends StackPane {
                     messages.addAll(conversation.updateMessages(graph));
                     updatePages(conversation.getTotalPages());
                     graph.release();
+
                 }
                 
                 content.getChildren().clear();
@@ -356,15 +357,15 @@ public final class ConversationBox extends StackPane {
             visibleContributions.forEach(contribution -> {
                 final Region region = contribution.getContent(tipsPane);
 
-                if (region instanceof EnhancedTextArea) {
-                    foundCount += ((EnhancedTextArea) region).highlightText(searchTextField.getText());
+                if (region instanceof EnhancedTextArea enhancedTextArea) {
+                    foundCount += enhancedTextArea.highlightText(searchTextField.getText());
                     matches.put(foundCount, message);
                 }
 
-                if (region instanceof GridPane) {
-                    ((GridPane) region).getChildren().forEach(child -> {
-                        if (child instanceof EnhancedTextArea) {
-                            foundCount += ((EnhancedTextArea) child).highlightText(searchTextField.getText());
+                if (region instanceof GridPane gridPane) {
+                    gridPane.getChildren().forEach(child -> {
+                        if (child instanceof EnhancedTextArea textArea) {
+                            foundCount += textArea.highlightText(searchTextField.getText());
                             matches.put(foundCount, message);
                         }
                     });

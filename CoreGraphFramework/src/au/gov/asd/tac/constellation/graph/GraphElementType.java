@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -180,13 +180,13 @@ public enum GraphElementType {
             if (graph.getSchema() != null) {
                 final int vertexCount = graph.getVertexCount();
                 for (int i = 0; i < vertexCount; i++) {
-                    int vertex = graph.getVertex(i);
+                    final int vertex = graph.getVertex(i);
                     graph.getSchema().completeVertex(graph, vertex);
                 }
 
                 final int transactionCount = graph.getTransactionCount();
                 for (int i = 0; i < transactionCount; i++) {
-                    int transaction = graph.getTransaction(i);
+                    final int transaction = graph.getTransaction(i);
                     graph.getSchema().completeTransaction(graph, transaction);
                 }
             }
@@ -341,9 +341,9 @@ public enum GraphElementType {
 
         @Override
         public boolean isSelected(final GraphReadMethods graph, final int element, final int selectedAttribute) {
-            int transactionCount = graph.getLinkTransactionCount(element);
+            final int transactionCount = graph.getLinkTransactionCount(element);
             for (int i = 0; i < transactionCount; i++) {
-                int transaction = graph.getLinkTransaction(element, i);
+                final int transaction = graph.getLinkTransaction(element, i);
                 if (graph.getBooleanValue(selectedAttribute, transaction)) {
                     return true;
                 }
@@ -366,7 +366,7 @@ public enum GraphElementType {
             if (graph.getSchema() != null) {
                 final int transactionCount = graph.getLinkTransactionCount(element);
                 for (int i = 0; i < transactionCount; i++) {
-                    int transaction = graph.getLinkTransaction(element, i);
+                    final int transaction = graph.getLinkTransaction(element, i);
                     graph.getSchema().completeTransaction(graph, transaction);
                 }
             }
@@ -440,9 +440,9 @@ public enum GraphElementType {
 
         @Override
         public boolean isSelected(final GraphReadMethods graph, final int element, final int selectedAttribute) {
-            int transactionCount = graph.getEdgeTransactionCount(element);
+            final int transactionCount = graph.getEdgeTransactionCount(element);
             for (int i = 0; i < transactionCount; i++) {
-                int transaction = graph.getEdgeTransaction(element, i);
+                final int transaction = graph.getEdgeTransaction(element, i);
                 if (graph.getBooleanValue(selectedAttribute, transaction)) {
                     return true;
                 }
@@ -465,7 +465,7 @@ public enum GraphElementType {
             if (graph.getSchema() != null) {
                 final int transactionCount = graph.getEdgeTransactionCount(element);
                 for (int i = 0; i < transactionCount; i++) {
-                    int transaction = graph.getEdgeTransaction(element, i);
+                    final int transaction = graph.getEdgeTransaction(element, i);
                     graph.getSchema().completeTransaction(graph, transaction);
                 }
             }

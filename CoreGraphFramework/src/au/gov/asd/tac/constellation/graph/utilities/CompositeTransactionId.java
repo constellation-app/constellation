@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,8 @@ public class CompositeTransactionId {
     private boolean destContracted;
     private final String suffix;
 
-    public CompositeTransactionId(final String originalSourceNode, final String originalDestinationNode, final String suffix, final boolean sourceContracted, final boolean destContracted) {
+    public CompositeTransactionId(final String originalSourceNode, final String originalDestinationNode, 
+            final String suffix, final boolean sourceContracted, final boolean destContracted) {
         this.originalSourceNode = originalSourceNode;
         this.originalDestinationNode = originalDestinationNode;
         this.sourceContracted = sourceContracted;
@@ -75,8 +76,8 @@ public class CompositeTransactionId {
         if (id == null || !id.startsWith(COMPOSITE)) {
             return new CompositeTransactionId(null, null, id, false, false);
         } else {
-            final boolean sourceContracted = Boolean.valueOf(id.substring(id.indexOf(':') + 1, id.indexOf(':', id.indexOf(':') + 1)));
-            final boolean destContracted = Boolean.valueOf(id.substring(id.indexOf(':', id.indexOf(':') + 1) + 1, id.indexOf('[')));
+            final boolean sourceContracted = Boolean.parseBoolean(id.substring(id.indexOf(':') + 1, id.indexOf(':', id.indexOf(':') + 1)));
+            final boolean destContracted = Boolean.parseBoolean(id.substring(id.indexOf(':', id.indexOf(':') + 1) + 1, id.indexOf('[')));
             final String source = id.indexOf('[') + 1 == id.indexOf("->") ? null : id.substring(id.indexOf('[') + 1, id.indexOf("->"));
             final String dest = id.indexOf("->") + 2 == id.indexOf("]_") ? null : id.substring(id.indexOf("->") + 2, id.indexOf("]_"));
             final String suffix = id.substring(id.indexOf("]_") + 2);

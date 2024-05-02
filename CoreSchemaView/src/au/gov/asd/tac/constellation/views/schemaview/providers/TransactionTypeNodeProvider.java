@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionTypeUtili
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import javafx.application.Platform;
@@ -68,7 +69,7 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
 
     private final Label schemaLabel;
     private final TreeView<SchemaTransactionType> treeView;
-    private final ArrayList<SchemaTransactionType> transactionTypes;
+    private final List<SchemaTransactionType> transactionTypes;
     private final HBox detailsView;
     private final RadioButton startsWithRb;
     private final TextField filterText;
@@ -90,7 +91,7 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
         // A shiny cell factory so the tree nodes show the correct text and graphic.
         treeView.setCellFactory(p -> new TreeCell<SchemaTransactionType>() {
             @Override
-            protected void updateItem(final SchemaTransactionType item, boolean empty) {
+            protected void updateItem(final SchemaTransactionType item, final boolean empty) {
                 super.updateItem(item, empty);
                 if (!empty && item != null) {
                     setText(item.getName());
@@ -176,12 +177,12 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
         treeView.setRoot(root);
     }
 
-    private boolean isFilterMatchCurrentNode(SchemaTransactionType treeItem) {
+    private boolean isFilterMatchCurrentNode(final SchemaTransactionType treeItem) {
         return StringUtils.isNotBlank(filterText.getText())
                 && (isFilterMatchText(treeItem.getName()) || isFilterMatchAnyProperty(treeItem));
     }
 
-    private boolean isFilterMatchAnyProperty(SchemaTransactionType treeItem) {
+    private boolean isFilterMatchAnyProperty(final SchemaTransactionType treeItem) {
         return isFilterMatchText(treeItem.getName())
                 || isFilterMatchText(treeItem.getDescription())
                 || isFilterMatchText(Objects.toString(treeItem.getColor().toString(), ""))
@@ -227,42 +228,42 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
                 col1.setPercentWidth(75);
                 grid.getColumnConstraints().addAll(col0, col1);
 
-                Label nameLabel = new Label(transactionType.getName());
+                final Label nameLabel = new Label(transactionType.getName());
                 nameLabel.setWrapText(true);
                 grid.add(boldLabel("Name:"), 0, 0);
                 grid.add(nameLabel, 1, 0);
 
-                Label descriptionLabel = new Label(transactionType.getDescription());
+                final Label descriptionLabel = new Label(transactionType.getDescription());
                 descriptionLabel.setWrapText(true);
                 grid.add(boldLabel("Description:"), 0, 1);
                 grid.add(descriptionLabel, 1, 1);
 
-                Label colorLabel = new Label(transactionType.getColor().toString());
+                final Label colorLabel = new Label(transactionType.getColor().toString());
                 colorLabel.setWrapText(true);
                 grid.add(boldLabel("Color:"), 0, 2);
                 grid.add(colorLabel, 1, 2);
 
-                Label styleLabel = new Label(transactionType.getStyle().toString());
+                final Label styleLabel = new Label(transactionType.getStyle().toString());
                 styleLabel.setWrapText(true);
                 grid.add(boldLabel("Style:"), 0, 3);
                 grid.add(styleLabel, 1, 3);
 
-                Label directedLabel = new Label(transactionType.isDirected().toString());
+                final Label directedLabel = new Label(transactionType.isDirected().toString());
                 directedLabel.setWrapText(true);
                 grid.add(boldLabel("Directed:"), 0, 4);
                 grid.add(directedLabel, 1, 4);
 
-                Label hierarchyLabel = new Label(transactionType.getHierachy());
+                final Label hierarchyLabel = new Label(transactionType.getHierachy());
                 hierarchyLabel.setWrapText(true);
                 grid.add(boldLabel("Hierarchy:"), 0, 5);
                 grid.add(hierarchyLabel, 1, 5);
 
                 int gridPosition = 5;
-                for (String property : transactionType.getProperties().keySet()) {
+                for (final String property : transactionType.getProperties().keySet()) {
                     final Object propertyValue = transactionType.getProperty(property);
                     if (propertyValue != null) {
                         gridPosition++;
-                        Label propertyLabel = new Label(propertyValue.toString());
+                        final Label propertyLabel = new Label(propertyValue.toString());
                         propertyLabel.setWrapText(true);
                         grid.add(boldLabel(property + SeparatorConstants.COLON), 0, gridPosition);
                         grid.add(propertyLabel, 1, gridPosition);
@@ -271,7 +272,7 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
                 for (final Node child : grid.getChildren()) {
                     final Integer column = GridPane.getColumnIndex(child);
                     final Integer row = GridPane.getRowIndex(child);
-                    if ((column > 0 && row != null && child instanceof Label) && isFilterMatchText(((Label) child).getText())) {
+                    if (column > 0 && row != null && child instanceof Label labelChild && isFilterMatchText(labelChild.getText())) {
                         child.getStyleClass().add("schemaview-highlight-blue");
                     }
                 }

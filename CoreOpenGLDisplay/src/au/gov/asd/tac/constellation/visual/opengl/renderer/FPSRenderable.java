@@ -52,7 +52,6 @@ public class FPSRenderable implements GLRenderable {
     private static final Matrix44f IDENTITY_44F = Matrix44f.identity();
     private static final Camera CAMERA = new Camera();
 
-    private final GLVisualProcessor parent;
     private final FpsBatcher fpsBatcher = new FpsBatcher();
     private final Vector3f bottomRightCorner = new Vector3f();
     private float pixelDensity = 0;
@@ -65,7 +64,6 @@ public class FPSRenderable implements GLRenderable {
     private long countFps = 0;
 
     public FPSRenderable(final GLVisualProcessor parent) {
-        this.parent = parent;
 
         final Preferences prefs = NbPreferences.forModule(DeveloperPreferenceKeys.class);
         this.enabled = prefs.getBoolean(DeveloperPreferenceKeys.DISPLAY_FRAME_RATE,
@@ -91,9 +89,13 @@ public class FPSRenderable implements GLRenderable {
             // there will be subsequent NullPointerExceptions, but there's nothing we can do about that.
             // Without shaders, we're dead in the water anyway.
             final String msg
-                    = "This error may have occurred because your video card and/or driver is\n"
-                    + "incompatible with CONSTELLATION.\n\n"
-                    + "Please inform CONSTELLATION support, including the text of this message.\n\n"
+                    = """
+                      This error may have occurred because your video card and/or driver is
+                      incompatible with CONSTELLATION.
+                      
+                      Please inform CONSTELLATION support, including the text of this message.
+                      
+                      """
                     + ex.getMessage();
             LOGGER.log(Level.SEVERE, msg, ex);
             final InfoTextPanel itp = new InfoTextPanel(msg);

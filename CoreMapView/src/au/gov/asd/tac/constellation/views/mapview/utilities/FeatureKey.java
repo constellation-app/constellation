@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * An object representing a unique geographic feature.
@@ -38,38 +37,32 @@ public class FeatureKey {
 
     public FeatureKey(final ConstellationAbstractFeature multiFeature) {
         switch (multiFeature.getType()) {
-            case POINT:
+            case POINT -> {
                 this.featureClass = ConstellationPointFeature.class;
                 this.featureLocations = getLocations(multiFeature);
-                break;
-            case LINE:
-            case POLYGON:
+            }
+            case LINE, POLYGON -> {
                 this.featureClass = ConstellationShapeFeature.class;
                 this.featureLocations = getLocations(multiFeature);
-                break;
-            case MULTI:
-            case CLUSTER:
+            }
+            case MULTI, CLUSTER -> {
                 this.featureClass = ConstellationMultiFeature.class;
                 this.featureLocations = ((ConstellationMultiFeature) multiFeature).getFeatures().stream()
-                        .map(feature -> getLocations(feature)).flatMap(List::stream).collect(Collectors.toList());
-                break;
-            default:
+                        .map(this::getLocations).flatMap(List::stream).toList();
+            }
+            default -> {
                 this.featureClass = null;
                 this.featureLocations = null;
-                break;
+            }
         }
     }
 
     private List<Location> getLocations(final ConstellationAbstractFeature feature) {
-        switch (feature.getType()) {
-            case POINT:
-                return Arrays.asList(((ConstellationPointFeature) feature).getLocation());
-            case LINE:
-            case POLYGON:
-                return ((ConstellationShapeFeature) feature).getLocations();
-            default:
-                return new ArrayList<>();
-        }
+        return switch (feature.getType()) {
+            case POINT -> Arrays.asList(((ConstellationPointFeature) feature).getLocation());
+            case LINE, POLYGON -> ((ConstellationShapeFeature) feature).getLocations();
+            default -> new ArrayList<>();
+        };
     }
 
     @Override

@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport;
 
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -63,8 +64,8 @@ public class DefaultAttributeValueDialog extends Stage {
         setTitle("Set Default Value: " + attributeName);
 
         final BorderPane root = new BorderPane();
-        root.setStyle("-fx-background-color: #DDDDDD;");
         final Scene scene = new Scene(root);
+        scene.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         setScene(scene);
 
         final GridPane fieldPane = new GridPane();

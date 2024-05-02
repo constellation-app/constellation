@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,7 +63,6 @@ public class ListStore implements Serializable {
     }
 
     public ListStore(final ListStore original) {
-
         this.categories = original.categories;
         this.countLength = original.countLength;
         this.listCapacity = original.listCapacity;
@@ -83,9 +82,8 @@ public class ListStore implements Serializable {
     }
 
     public void addElement(final int list, final int element, final int category) {
-
         int[] l = elements[list];
-        int base = countLength * list + category;
+        final int base = countLength * list + category;
         int currentCategory = categories - category;
 
         // Create a space at the end of the list entire list
@@ -97,12 +95,10 @@ public class ListStore implements Serializable {
         }
 
         while (--currentCategory > 0) {
-
             // Find the first element in the current category
             final int firstPosition = categoryCounts[currentCategory + base]++;
 
             if (firstPosition < space) {
-
                 final int firstElement = l[firstPosition];
 
                 // Move the first element into the space
@@ -120,7 +116,6 @@ public class ListStore implements Serializable {
     }
 
     public void removeElement(final int element) {
-
         final int list = elementLists[element];
         int category = (elementPositions[element] >>> CATEGORY_SHIFT) - 1;
         int space = elementPositions[element] & POSITION_MASK;
@@ -136,7 +131,6 @@ public class ListStore implements Serializable {
             final int newSpace = --categoryCounts[category + base + 1];
 
             if (newSpace > space) {
-
                 final int id = l[newSpace];
                 l[space] = id;
                 elementPositions[id] = space | (category << CATEGORY_SHIFT);
@@ -181,7 +175,7 @@ public class ListStore implements Serializable {
     }
 
     public int getElementCount(final int list, final int category) {
-        int base = list * countLength;
+        final int base = list * countLength;
         return categoryCounts[base + category + 1] - categoryCounts[base + category];
     }
 
@@ -194,8 +188,7 @@ public class ListStore implements Serializable {
     }
 
     public String toString(final int list) {
-
-        StringBuilder out = new StringBuilder();
+        final StringBuilder out = new StringBuilder();
 
         for (int category = 0; category < categories; category++) {
             out.append(category);
@@ -203,7 +196,7 @@ public class ListStore implements Serializable {
             out.append(getElementCount(list, category));
             out.append("):");
             for (int position = 0; position < getElementCount(list, category); position++) {
-                int element = getElement(list, category, position);
+                final int element = getElement(list, category, position);
                 out.append(" ");
                 out.append(element);
                 out.append('(');

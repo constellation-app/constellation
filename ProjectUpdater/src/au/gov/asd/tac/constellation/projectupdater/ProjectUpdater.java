@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -106,11 +106,8 @@ public class ProjectUpdater extends Task {
                 final NodeList children = publicPackagesNode.getChildNodes();
                 while (children.getLength() > 0) {
                     final Node child = children.item(0);
-                    if (child instanceof Element) {
-                        final Element childElement = (Element) child;
-                        if (childElement.getTagName().equals(PACKAGE_TAG)) {
-                            publicPackages.add(childElement.getTextContent());
-                        }
+                    if (child instanceof Element childElement && childElement.getTagName().equals(PACKAGE_TAG)) {
+                        publicPackages.add(childElement.getTextContent());
                     }
                     publicPackagesNode.removeChild(child);
                 }
@@ -130,14 +127,12 @@ public class ProjectUpdater extends Task {
                 final Node classPathExtensionNode = classPathExtensionNodes.item(0);
                 if (classPathExtensionNode.getParentNode() == dataNode) {
                     Node nextNode = classPathExtensionNode.getNextSibling();
-                    while (nextNode instanceof Text) {
-                        final Node textNode = nextNode;
+                    while (nextNode instanceof Text textNode) {
                         nextNode = nextNode.getNextSibling();
                         dataNode.removeChild(textNode);
                     }
                     Node prevNode = classPathExtensionNode.getPreviousSibling();
-                    while (prevNode instanceof Text) {
-                        final Node textNode = prevNode;
+                    while (prevNode instanceof Text textNode) {
                         prevNode = prevNode.getPreviousSibling();
                         dataNode.removeChild(textNode);
                     }
@@ -205,7 +200,7 @@ public class ProjectUpdater extends Task {
 
             // Save the edited document to project.xml
             saveXMLFile(document, projectFile);
-        } catch (IOException | IllegalStateException | ParserConfigurationException | TransformerException | DOMException ex) {
+        } catch (final IOException | IllegalStateException | ParserConfigurationException | TransformerException | DOMException ex) {
             logMessage("Exception during update: " + ex.getClass() + " " + ex.getMessage() + " " + ex.getStackTrace()[0]);
         }
     }
@@ -244,7 +239,7 @@ public class ProjectUpdater extends Task {
         final Document document = builder.newDocument();
 
         // Read in the existing project.xml into the document
-        try (FileInputStream in = new FileInputStream(xmlFile)) {
+        try (final FileInputStream in = new FileInputStream(xmlFile)) {
             final Source loadSource = new StreamSource(in);
             final Result loadResult = new DOMResult(document);
             transformer.transform(loadSource, loadResult);
@@ -260,7 +255,7 @@ public class ProjectUpdater extends Task {
 //        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
         final Transformer transformer = transformerFactory.newTransformer();
 
-        try (FileOutputStream out = new FileOutputStream(xmlFile)) {
+        try (final FileOutputStream out = new FileOutputStream(xmlFile)) {
             final Source saveSource = new DOMSource(document);
             final Result saveResult = new StreamResult(out);
             transformer.transform(saveSource, saveResult);
@@ -290,11 +285,9 @@ public class ProjectUpdater extends Task {
                                     publicPackages.add(name);
                                     break;
                                 }
-                            } else {
-                                if (name.equals(expression)) {
-                                    publicPackages.add(name);
-                                    break;
-                                }
+                            } else if (name.equals(expression)) {
+                                publicPackages.add(name);
+                                break;
                             }
                         }
                     }
@@ -305,7 +298,7 @@ public class ProjectUpdater extends Task {
         }
     }
 
-    private void logMessage(String message) {
+    private void logMessage(final String message) {
         if (getProject() != null) {
             getProject().log(message);
         } else {

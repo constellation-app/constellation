@@ -1,5 +1,5 @@
 /*
-* Copyright 2010-2023 Australian Signals Directorate
+* Copyright 2010-2024 Australian Signals Directorate
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -78,8 +78,7 @@ public class MultiChoiceInputField<T extends Object> extends CheckComboBox<T> {
      * @param displayText
      * @param event
      */
-    public final void setSelectionOption(final String displayText, final EventHandler<ActionEvent> event){
-             
+    public final void setSelectionOption(final String displayText, final EventHandler<ActionEvent> event){           
         // Note: Setting a MenuItem to the MenuButton makes that MenuItem unavailable to the ContentMenu
         // so the MenuItem must be made seperately for the MenuButton and the ContextMenu
         final MenuItem menuButtonItem = new MenuItem(displayText);

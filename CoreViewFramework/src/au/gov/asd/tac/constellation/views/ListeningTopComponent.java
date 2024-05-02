@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,7 +66,7 @@ public abstract class ListeningTopComponent<P> extends AbstractTopComponent<P> i
     protected final Set<Object> ignoredEvents;
     protected Graph currentGraph;
 
-    public ListeningTopComponent() {
+    protected ListeningTopComponent() {
         super();
         this.globalMonitors = Collections.synchronizedMap(new HashMap<>());
         this.structureMonitors = Collections.synchronizedMap(new HashMap<>());
@@ -135,7 +135,7 @@ public abstract class ListeningTopComponent<P> extends AbstractTopComponent<P> i
                 currentGraph = graph;
                 currentGraph.addGraphChangeListener(this);
 
-                ReadableGraph readableGraph = currentGraph.getReadableGraph();
+                final ReadableGraph readableGraph = currentGraph.getReadableGraph();
                 try {
                     final Map<GlobalMonitor, Consumer<Graph>> globalMonitorsCopy;
                     synchronized (globalMonitors) {
@@ -177,7 +177,7 @@ public abstract class ListeningTopComponent<P> extends AbstractTopComponent<P> i
             return;
         }
 
-        ReadableGraph readableGraph = currentGraph.getReadableGraph();
+        final ReadableGraph readableGraph = currentGraph.getReadableGraph();
         try {
             final Map<GlobalMonitor, Consumer<Graph>> globalMonitorsCopy;
             synchronized (globalMonitors) {

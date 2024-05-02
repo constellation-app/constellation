@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -38,7 +39,6 @@ import java.util.UUID;
 public final class GraphByteWriter {
 
     static final String FILE_PREFIX = "CONSTELLATION_";
-    static final String FILE_SUFFIX = ".bin";
     private static final int BUFSIZ = 1024 * 1024;
 
     // Map reference to File.
@@ -68,7 +68,7 @@ public final class GraphByteWriter {
     }
 
     public Map<String, File> getFileMap() {
-        return fileMap;
+        return Collections.unmodifiableMap(fileMap);
     }
 
     /**
@@ -88,7 +88,7 @@ public final class GraphByteWriter {
 
         // Store the data in a temporary file.
         final File temp = File.createTempFile(FILE_PREFIX, FileExtensionConstants.BINARY);
-        try (OutputStream out = new FileOutputStream(temp)) {
+        try (final OutputStream out = new FileOutputStream(temp)) {
             copy(in, out);
             fileMap.put(reference, temp);
         } finally {
