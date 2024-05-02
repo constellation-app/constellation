@@ -76,7 +76,7 @@ public class JDBCConnectionManager {
     }
 
     public List<JDBCConnection> getConnections() {
-        return new ArrayList(connectionMap.values());
+        return new ArrayList<>(connectionMap.values());
     }
 
     public boolean testConnection(final String connectionName, final JDBCDriver driver, final String username, final String password, final String connectionString) {

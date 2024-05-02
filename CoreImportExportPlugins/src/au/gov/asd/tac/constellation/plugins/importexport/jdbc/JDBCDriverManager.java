@@ -66,7 +66,7 @@ public class JDBCDriverManager {
     }
 
     public List<JDBCDriver> getDrivers() {
-        return new ArrayList(driversMap.values());
+        return new ArrayList<>(driversMap.values());
     }
 
     public JDBCDriver getDriver(final String name) {
