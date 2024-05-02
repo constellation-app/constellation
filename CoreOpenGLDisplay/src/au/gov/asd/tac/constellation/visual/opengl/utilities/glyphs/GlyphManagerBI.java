@@ -278,7 +278,8 @@ public final class GlyphManagerBI implements GlyphManager {
      */
     private static List<Rectangle> mergeBoxes(final List<Rectangle> boxes) {
         final List<Rectangle> merged = new ArrayList<>();
-        for (int i = boxes.size() - 1; i >= 0;) {
+        int i = boxes.size() - 1;
+        while ( i >= 0) {
             Rectangle curr = boxes.get(i--);
             if (i == -1) {
                 merged.add(curr);

@@ -940,11 +940,13 @@ public class ContentTokenizingServices {
         @Override
         protected String sanitizeString(final String str) {
             String newStr = str;
-            for (int i = 0; i < str.length(); i++) {
+            int i = 0;
+            while ( i < str.length()) {
                 if (toFilter.contains(str.charAt(i)) && replacement.length() > 0) {
                     newStr = str.substring(0, i) + replacement + str.substring(i + 1, str.length());
                     i += (replacement.length() - 1);
                 }
+                i++;
             }
             return newStr;
         }
