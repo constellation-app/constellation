@@ -21,14 +21,11 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
-import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import au.gov.asd.tac.constellation.utilities.graphics.Mathf;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.security.SecureRandom;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * Cause the camera to move around the graph on smooth path between nodes.
@@ -113,8 +110,7 @@ public final class FlyingAnimation extends Animation {
     }
 
     @Override
-    public List<ThreeTuple<Integer, Integer, Object>> animate(final GraphReadMethods wg) {
-        List<ThreeTuple<Integer, Integer, Object>> graphWrites = new ArrayList<>();
+    public void animate(final GraphWriteMethods wg) {
         
         // Do not animate unless there is more than 1 node
         if (wg.getVertexCount() > 1) {
@@ -165,17 +161,16 @@ public final class FlyingAnimation extends Animation {
                 right.crossProduct(forward, camera.lookAtUp);
                 
                 camera.lookAtUp.crossProduct(right, forward);
-                graphWrites.add(new ThreeTuple<>(cameraAttribute, 0, camera));
+               
+                wg.setObjectValue(cameraAttribute, 0, camera);
                 step++;
             }
-            return graphWrites;
         }
-        return null;
     }
 
     @Override
     public void reset(final GraphWriteMethods wg) {
-        AnimationUtilities.startAnimation(new PanAnimation("Reset View", wg.getObjectValue(cameraAttribute, 0), initialPosition, true), this.getGraphID());
+        AnimationUtilities.startAnimation(new PanAnimation("Reset View", wg.getObjectValue(cameraAttribute, 0), initialPosition, true), graphID);
     }
 
     @Override

@@ -27,7 +27,6 @@ import au.gov.asd.tac.constellation.graph.file.nebula.NebulaDataObject;
 import au.gov.asd.tac.constellation.graph.file.save.AutosaveUtilities;
 import au.gov.asd.tac.constellation.graph.interaction.animation.Animation;
 import au.gov.asd.tac.constellation.graph.interaction.animation.AnimationManager;
-import au.gov.asd.tac.constellation.graph.interaction.animation.GraphAnimator;
 import au.gov.asd.tac.constellation.graph.interaction.framework.GraphVisualManagerFactory;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.CopyToClipboardAction;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.CutToClipboardAction;
@@ -218,7 +217,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
     private final GraphVisualManagerFactory graphVisualManagerFactory;
     private final VisualManager visualManager;
-    private final GraphAnimator graphAnimator;
+    private final AnimationManager animationManager;
     private final InstanceContent content;
     private final Graph graph;
     private MySaveAs saveAs = null;
@@ -436,7 +435,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         content = new InstanceContent();
         init();
         MemoryManager.newObject(VisualGraphTopComponent.class);
-        graphAnimator = new GraphAnimator(graph);
+        animationManager = new AnimationManager(graph.getId());
     }
 
     /**
@@ -465,7 +464,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         content = new InstanceContent();
         init();
         MemoryManager.newObject(VisualGraphTopComponent.class);
-        graphAnimator = new AnimationManager(graph);
+        animationManager = new AnimationManager(graph.getId());
     }
 
     @Override
@@ -497,8 +496,8 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         return graphNode;
     }
     
-    public GraphAnimator getAnimator(){
-        return graphAnimator;
+    public AnimationManager getAnimationManager(){
+        return animationManager;
     }
 
     /**

@@ -19,8 +19,6 @@ import au.gov.asd.tac.constellation.graph.interaction.gui.VisualGraphTopComponen
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.preferences.GraphPreferenceKeys;
-import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
-import java.util.concurrent.ExecutorService;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.util.NbPreferences;
 
@@ -32,8 +30,6 @@ import org.openide.util.NbPreferences;
  * @author capricornunicorn123
  */
 public class AnimationUtilities {
-    
-    private static ExecutorService singleton = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool();;
     
     /**
      * Stops all running animations on all graphs.
@@ -50,7 +46,7 @@ public class AnimationUtilities {
      * @param graphId
      */
     public static final void stopAllAnimations(final String graphId) {
-        getGraphAnimator(graphId).stopAnimating();
+        getGraphAnimationManager(graphId).stopAllAnimations();
     }
     
     /**
@@ -60,7 +56,7 @@ public class AnimationUtilities {
      * @param graphId
      */
     public static final void stopAnimation(final String animationName, final String graphId) {
-        getGraphAnimator(graphId).stopAnimation(animationName);
+        getGraphAnimationManager(graphId).stopAnimation(animationName);
     }
 
     /**
@@ -69,11 +65,11 @@ public class AnimationUtilities {
      * @param graphId
      * @return 
      */
-    private static GraphAnimator getGraphAnimator(final String graphId){
+    private static AnimationManager getGraphAnimationManager(final String graphId){
         if (StringUtils.isNotBlank(graphId)){
             GraphNode gn = GraphNode.getGraphNode(graphId);
             if (gn != null) {
-             return ((VisualGraphTopComponent) gn.getTopComponent()).getAnimator();
+             return ((VisualGraphTopComponent) gn.getTopComponent()).getAnimationManager();
             }
         }
         return null; 
@@ -91,15 +87,15 @@ public class AnimationUtilities {
     public static final void startAnimation(final Animation animation, final String graphId) {
         // Run the animation
         if (animationsEnabled()){
-            GraphAnimator am = getGraphAnimator(graphId);
+            AnimationManager am = getGraphAnimationManager(graphId);
             if (am != null){
-                    am.addAnimation(animation);
-            } 
-            if (!am.isRunning()){
-                singleton.submit(am);
+                    am.runAnimation(animation);
+            } else {
+                animation.skip(graphId);
             }
+        } else {
+            animation.skip(graphId);
         }
-        
     }
     
     /**
@@ -110,7 +106,7 @@ public class AnimationUtilities {
      * @return 
      */
     public static boolean isAnimating(final String name, final String graphId) {
-        return getGraphAnimator(graphId).isAnimating(name);
+        return getGraphAnimationManager(graphId).isAnimating(name);
     }
     
     /**
@@ -127,7 +123,7 @@ public class AnimationUtilities {
      */
     public static final synchronized void interruptAllAnimations() {
         GraphManager.getDefault().getAllGraphs().values().forEach(graph -> {
-            ((VisualGraphTopComponent) GraphNode.getGraphNode(graph).getTopComponent()).getAnimator().interruptAllAnimations();
+            ((VisualGraphTopComponent) GraphNode.getGraphNode(graph).getTopComponent()).getAnimationManager().interruptAllAnimations();
         });
     }
     
@@ -137,7 +133,7 @@ public class AnimationUtilities {
      * @param graphId
      */
     public static final synchronized void interruptAllAnimations(final String graphId) {
-        getGraphAnimator(graphId).interruptAllAnimations();
+        getGraphAnimationManager(graphId).interruptAllAnimations();
     }
 
     /**
@@ -146,6 +142,6 @@ public class AnimationUtilities {
      * @param animation 
      */
     public static void notifyComplete(final Animation animation) {
-        AnimationUtilities.getGraphAnimator(animation.getGraphID()).notifyComplete(animation);
+        AnimationUtilities.getGraphAnimationManager(animation.graphID).notifyComplete(animation);
     }
 }

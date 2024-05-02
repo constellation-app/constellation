@@ -15,14 +15,10 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.animation;
 
-import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -72,25 +68,26 @@ public final class ColorWarpAnimation extends Animation {
     }
 
     @Override
-    public List<ThreeTuple<Integer, Integer, Object>> animate(final GraphReadMethods wg) {
+    public void animate(final GraphWriteMethods wg) {
         
-        List<ThreeTuple<Integer, Integer, Object>> graphWrites = new ArrayList<>();
         // Do not animate unless there is more than 1 node
         if (wg.getVertexCount() > 0) {
             
             for (int vertexPosition = 0 ; vertexPosition < wg.getVertexCount(); vertexPosition++) {
                 final int vertexID = wg.getVertex(vertexPosition);
                 final ConstellationColor vertexColor = wg.getObjectValue(vertexColorAttr, vertexID);
-                graphWrites.add(new ThreeTuple(vertexColorAttr, vertexID, this.getNextColor(vertexColor)));
+                
+                wg.setObjectValue(vertexColorAttr, vertexID, this.getNextColor(vertexColor));
             }
             
             for (int transactionPosition = 0 ; transactionPosition < wg.getTransactionCount(); transactionPosition++) {
                 final int transactionID = wg.getTransaction(transactionPosition);
                 final ConstellationColor transactionColor = wg.getObjectValue(transactionColorAttr, transactionID);
-                graphWrites.add(new ThreeTuple(transactionColorAttr, transactionID, this.getNextColor(transactionColor)));
-            } 
+                
+                wg.setObjectValue(transactionColorAttr, transactionID, this.getNextColor(transactionColor));
+            }
+            
         }
-        return graphWrites;
     }
 
     @Override
@@ -108,6 +105,11 @@ public final class ColorWarpAnimation extends Animation {
             wg.setObjectValue(transactionColorAttr, transactionID, transactionOriginals.get(transactionID));
         }
         
+    }
+
+    @Override
+    public long getIntervalInMillis() {
+        return 5;
     }
 
     private ConstellationColor getNextColor(final ConstellationColor color) {

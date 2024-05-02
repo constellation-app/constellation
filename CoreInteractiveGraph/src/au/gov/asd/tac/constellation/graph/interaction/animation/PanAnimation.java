@@ -15,14 +15,10 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.animation;
 
-import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
-import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Cause the camera to pan (and translate) the from one position to another.
@@ -67,8 +63,8 @@ public final class PanAnimation extends Animation {
         camera = wg.getObjectValue(cameraAttr, 0);
     }
 
-    public List<ThreeTuple<Integer, Integer, Object>> animate(final GraphReadMethods wg) {
-        List<ThreeTuple<Integer, Integer, Object>> graphWrites = new ArrayList<>();
+    @Override
+    public void animate(final GraphWriteMethods wg) {
         if (step <= STEPS) {
             final float t = step / (float) STEPS;
             final float mix = reflect(t);
@@ -79,14 +75,11 @@ public final class PanAnimation extends Animation {
             camera.lookAtUp.set(Graphics3DUtilities.mix(from.lookAtUp, to.lookAtUp, mix));
             camera.lookAtRotation.set(Graphics3DUtilities.mix(from.lookAtRotation, to.lookAtRotation, mix));
 
-            graphWrites.add(new ThreeTuple<>(cameraAttr, 0, camera));
+            wg.setObjectValue(cameraAttr, 0, camera);
             step++;
-            return graphWrites;
         } else {
             setFinished();
-            return null;
         }
-        
     }
 
     @Override

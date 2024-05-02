@@ -15,10 +15,8 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.animation;
 
-import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
 
 /**
  * Responsible for managing animations on a {@link VisualGraph}. 
@@ -31,12 +29,9 @@ public class AnimationManager {
 
     private final Map<String, Animation> animations = new HashMap<String, Animation>();
     private final String graphId;
-    private ExecutorService pool;
     
     public AnimationManager(final String graphId) {
         this.graphId = graphId;
-        this.pool = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool();
-
     }
 
     /**
@@ -55,7 +50,6 @@ public class AnimationManager {
      * Stops animating all animations on an 
      */
     public void stopAllAnimations() {
-        //pool.shutdown();
         animations.values().forEach(animation -> {
             animation.setFinished();
         });
@@ -71,8 +65,7 @@ public class AnimationManager {
     public void runAnimation(final Animation animation) {
         
         if (animations.get(animation.getName()) == null) {
-            animation.setGraphID(graphId);
-            pool.submit(animation);
+            animation.run(graphId);
             animations.put(animation.getName(), animation);
         }
     }
