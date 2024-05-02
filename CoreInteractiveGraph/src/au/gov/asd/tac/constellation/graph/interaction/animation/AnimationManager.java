@@ -98,4 +98,10 @@ public class AnimationManager {
     void notifyComplete(final Animation animation) {
         animations.remove(animation.getName());
     }
+
+    void pauseAllAnimations(long time) {
+        animations.values().forEach(animation -> {
+            animation.pause(time);
+        });
+    }
 }

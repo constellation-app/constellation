@@ -15,13 +15,18 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.utilities;
 
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2ES3;
 import com.jogamp.opengl.GL3;
+import com.jogamp.opengl.GLException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Encapsulate a float buffer.
@@ -29,6 +34,8 @@ import java.nio.FloatBuffer;
  * @author algol
  */
 public class FloatTextureBuffer extends TextureBuffer<FloatBuffer> {
+
+    private static final Logger LOGGER = Logger.getLogger(FloatTextureBuffer.class.getName());
 
     public FloatTextureBuffer(final GL3 gl, final FloatBuffer buffer) {
         super(gl, buffer);
@@ -47,8 +54,17 @@ public class FloatTextureBuffer extends TextureBuffer<FloatBuffer> {
     @Override
     public FloatBuffer connectBuffer(GL3 gl) {
         gl.glBindBuffer(GL2ES3.GL_TEXTURE_BUFFER, getBufferName());
-        ByteBuffer buffer = gl.glMapBuffer(GL2ES3.GL_TEXTURE_BUFFER, GL2ES3.GL_READ_WRITE);
-        return buffer.order(ByteOrder.nativeOrder()).asFloatBuffer();
+        
+        // The .glMapBuffer(GL2ES3.GL_TEXTURE_BUFFER, GL2ES3.GL_READ_WRITE); method is throwing a GL exception when 
+        // multiple animations are runnng on large graphs and a graph view resize is triggered by opening or closing another view.
+        // The error does not cause disruption to the behavious or Constellation but does result in in an error message bing thrown
+        try{
+            ByteBuffer bytebuffer = gl.glMapBuffer(GL2ES3.GL_TEXTURE_BUFFER, GL2ES3.GL_READ_WRITE); 
+            return bytebuffer.order(ByteOrder.nativeOrder()).asFloatBuffer();
+        } catch (GLException ex){
+            LOGGER.log(Level.WARNING, String.format("A GLException occured: %s", ex.getLocalizedMessage()));
+        }
+        return buffer;
     }
 
 }

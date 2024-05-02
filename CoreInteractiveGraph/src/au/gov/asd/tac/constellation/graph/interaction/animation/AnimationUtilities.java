@@ -144,4 +144,8 @@ public class AnimationUtilities {
     public static void notifyComplete(final Animation animation) {
         AnimationUtilities.getGraphAnimationManager(animation.graphID).notifyComplete(animation);
     }
+
+    public static void pauseAllAnimations(final String graphId, long time) {
+        getGraphAnimationManager(graphId).pauseAllAnimations(time);
+    }
 }

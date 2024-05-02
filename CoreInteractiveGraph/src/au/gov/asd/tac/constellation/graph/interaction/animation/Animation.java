@@ -43,6 +43,7 @@ public abstract class Animation {
     public String graphID;
     private boolean finished = false;
     private Thread animationThread;
+    private long pause = 0;
     
     public void setGraphID(final String graphID){
         this.graphID = graphID;
@@ -174,6 +175,9 @@ public abstract class Animation {
             
             // Sleep untill it is time for the next frame
             Thread.sleep(getIntervalInMillis());
+            
+            Thread.sleep(pause);
+            pause = 0;
         }
     }
     
@@ -223,4 +227,8 @@ public abstract class Animation {
     };
     
     public abstract void setFinalFrame(final GraphWriteMethods wg);
+
+    void pause(long time) {
+        pause = time;
+    }
 }
