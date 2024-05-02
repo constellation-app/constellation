@@ -248,7 +248,7 @@ public class ExcelImportFileParser extends ImportFileParser {
                 default -> "";
             };
         } catch (IllegalStateException ex) {
-            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage() + " with value " + cell.getStringCellValue(), ex);
+            LOGGER.log(Level.SEVERE, String.format("%s with value %s", ex.getLocalizedMessage(), cell.getStringCellValue()), ex);
             result = "";
         }
         return result;

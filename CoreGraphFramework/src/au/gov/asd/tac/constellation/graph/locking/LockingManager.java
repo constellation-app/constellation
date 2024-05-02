@@ -99,7 +99,7 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
         currentEdit.setModificationCounter(writeContext.target.getModificationCounter());
 
         if (VERBOSE) {
-            final String log = String.format("Write lock acquired for " + name + " by " + Thread.currentThread());
+            final String log = String.format("Write lock acquired for %s by %s", name, Thread.currentThread());
             LOGGER.log(Level.INFO, log);
         }
 
@@ -125,7 +125,7 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
                 currentEdit.setModificationCounter(writeContext.target.getModificationCounter());
 
                 if (VERBOSE) {
-                    final String log = String.format("Write lock acquired for " + name + " by " + Thread.currentThread());
+                    final String log = String.format("Write lock acquired for %s by %s", name, Thread.currentThread());
                     LOGGER.log(Level.INFO, log);
                 }
 

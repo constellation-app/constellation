@@ -105,6 +105,6 @@ public class ZoomUtilities {
 
         final InteractiveGLVisualProcessor.NodeCameraDistance closest = nodeCameraDistances.parallel().reduce(new InteractiveGLVisualProcessor.NodeCameraDistance(), (ncd1, ncd2) -> InteractiveGLVisualProcessor.NodeCameraDistance.getClosestNode(ncd1, ncd2));
 
-        return closest.GetNodeLocation();
+        return closest.getNodeLocation();
     }
 }

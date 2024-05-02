@@ -405,7 +405,11 @@ public class UndoGraphEditState {
         }
 
         final int total = (operationCount * 2) + byteCount + (shortCount * 2) + (intCount * 4) + (longCount * 8) + (objectCount * 4) + graphOperationCount;
-        final String log = String.format("STATS: OPERATIONS = " + operationCount + " BYTES = " + byteCount + " SHORTS = " + shortCount + " INTS = " + intCount + " LONGS = " + longCount + " OBJECTS = " + objectCount + " GRAPH_OPERATIONS = " + graphOperationCount + " TOTAL = " + total);
+        final String log = String.format(
+                "STATS: OPERATIONS = %s BYTES = %s SHORTS = %s INTS = %s LONGS = %s OBJECTS = %s GRAPH_OPERATIONS = %s TOTAL = %s",
+                operationCount, byteCount, shortCount, intCount, longCount,objectCount, graphOperationCount, total
+        );
+        
         LOGGER.log(Level.INFO, log);
         for (final UndoGraphEditOperation operation : UndoGraphEditOperation.values()) {
             LOGGER.log(Level.INFO, "    {0} {1}", new Object[]{operation.ordinal(), operation.getName()});

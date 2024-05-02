@@ -118,7 +118,7 @@ public class GLInfo {
 
 
         if (gl instanceof GL2ES2) {
-            sb.append(String.format("Shading language version: %s\n", gl.glGetString(GL2ES2.GL_SHADING_LANGUAGE_VERSION)));
+            sb.append(String.format("Shading language version: %s%n", gl.glGetString(GL2ES2.GL_SHADING_LANGUAGE_VERSION)));
         }
 
         basicInfo = sb.toString();

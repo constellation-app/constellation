@@ -58,12 +58,12 @@ public class TreeLeaf extends TreeElement implements Comparable<TreeLeaf> {
 
     @Override
     public long getLowerTimeExtent() {
-        return datetime;
+        return getDatetime();
     }
 
     @Override
     public long getUpperTimeExtent() {
-        return datetime;
+        return getDatetime();
     }
 
     @Override
