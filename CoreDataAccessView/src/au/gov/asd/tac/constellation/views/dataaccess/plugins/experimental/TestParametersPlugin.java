@@ -412,9 +412,9 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         LOGGER.log(Level.INFO, "localdate: {0} ", localDate);
         if (localDate != null) {
             final Calendar cal = LocalDateParameterType.toCalendar(localDate);
-            LOGGER.log(Level.INFO, String.format("toDate: [%s] [%04d-%02d-%02d]",
+            LOGGER.log(Level.INFO, "{0}", String.format("toDate: [%s] [%04d-%02d-%02d]",
                     cal, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)));
-            LOGGER.log(Level.INFO, String.format("fields: [%04d-%02d-%02d]",
+            LOGGER.log(Level.INFO, "{0}", String.format("fields: [%04d-%02d-%02d]",
                     localDate.get(ChronoField.YEAR), localDate.get(ChronoField.MONTH_OF_YEAR), localDate.get(ChronoField.DAY_OF_MONTH)));
         }
         

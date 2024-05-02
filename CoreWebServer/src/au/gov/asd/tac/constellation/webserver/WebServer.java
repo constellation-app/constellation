@@ -195,7 +195,7 @@ public class WebServer {
                 };
                 server.setRequestLog(requestLog);
 
-                LOGGER.info(String.format("Starting Jetty version %s on%s:%d...", Server.getVersion(), loopback, port));
+                LOGGER.log(Level.INFO, "{0}", String.format("Starting Jetty version %s on%s:%d...", Server.getVersion(), loopback, port));
                 server.start();
 
                 // Wait for the server to stop (if it ever does).
