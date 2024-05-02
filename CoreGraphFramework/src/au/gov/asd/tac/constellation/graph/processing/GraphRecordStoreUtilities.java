@@ -309,7 +309,7 @@ public class GraphRecordStoreUtilities {
                 if (currentType != null) {
                     final boolean directed = Boolean.parseBoolean(requestedDirected);
                     // if the requested direction is different to the type's direction then make a new type
-                    if (currentType.isDirected() != directed) {
+                    if (Boolean.TRUE.equals(currentType.isDirected()) != directed) {
                         final String typeName = String.format("%s (%s)", currentType, directed ? "directed" : "undirected");
                         final SchemaTransactionType modifiedType = new SchemaTransactionType.Builder(currentType, typeName)
                                 .setDirected(Boolean.valueOf(requestedDirected))

@@ -639,7 +639,7 @@ public class NotesViewPane extends BorderPane {
 
                 } else if (selectedFilters.contains(SELECTED_FILTER) && entry.isUserCreated() && entry.getShowing()) {
                     // If no nodes or transactions are selected, show notes applied to the whole graph.
-                    if (entry.isGraphAttribute()) {
+                    if (Boolean.TRUE.equals(entry.isGraphAttribute())) {
                         notesToRender.add(entry);
                     }
                     // Show notes related to the selected nodes.
@@ -834,7 +834,7 @@ public class NotesViewPane extends BorderPane {
 
         // If the note is user created add the selection details.
         if (newNote.isUserCreated()) {
-            if (newNote.isGraphAttribute()) {
+            if (Boolean.TRUE.equals(newNote.isGraphAttribute())) {
                 selectionLabelText = "Note linked to: the graph.";
             } else {
                 selectionLabelText = "Note linked to: ";
@@ -1148,7 +1148,7 @@ public class NotesViewPane extends BorderPane {
         updateSelectedElements();
 
         if (!nodesSelected.isEmpty()) {
-            if (noteToEdit.isGraphAttribute()) {
+            if (Boolean.TRUE.equals(noteToEdit.isGraphAttribute())) {
                 noteToEdit.setGraphAttribute(false);
             }
             final List<Integer> originalNodes = noteToEdit.getNodesSelected();
@@ -1161,7 +1161,7 @@ public class NotesViewPane extends BorderPane {
         }
 
         if (!transactionsSelected.isEmpty()) {
-            if (noteToEdit.isGraphAttribute()) {
+            if (Boolean.TRUE.equals(noteToEdit.isGraphAttribute())) {
                 noteToEdit.setGraphAttribute(false);
             }
             final List<Integer> originalTransactions = noteToEdit.getTransactionsSelected();

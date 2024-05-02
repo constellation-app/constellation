@@ -245,7 +245,7 @@ public class DataAccessPaneState {
      *
      * @return an immutable copy of the running plugins for the current graph
      */
-    public static synchronized Map<Future<?>, String> getRunningPlugins() {
+    public static synchronized Map<Future, String> getRunningPlugins() {
         return getRunningPlugins(currentGraphId);
     }
     
@@ -257,7 +257,7 @@ public class DataAccessPaneState {
      * @param graphId the ID of the graph that the running plugins will be retrieved for
      * @return an immutable copy of the running plugins for the passed graph
      */
-    public static synchronized Map<Future<?>, String> getRunningPlugins(final String graphId) {
+    public static synchronized Map<Future, String> getRunningPlugins(final String graphId) {
         if (graphId != null) {
             return ImmutableMap.copyOf(
                     DATA_ACCESS_PANE_STATES

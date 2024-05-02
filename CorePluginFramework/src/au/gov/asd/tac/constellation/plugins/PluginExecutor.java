@@ -189,7 +189,7 @@ public class PluginExecutor {
      * @param graph the graph to run the plugins on.
      * @return a Future object representing the running of this plugin sequence.
      */
-    public Future<?> executeWriteLater(final Graph graph) {
+    public Future executeWriteLater(final Graph graph) {
         return executeWriteLater(graph, (Future<?>) null);
     }
 
@@ -205,7 +205,7 @@ public class PluginExecutor {
      * in Constellation.
      * @return a Future object representing the running of this plugin sequence.
      */
-    public Future<?> executeWriteLater(final Graph graph, final String pluginName) {
+    public Future executeWriteLater(final Graph graph, final String pluginName) {
         return executeWriteLater(graph, pluginName, null);
     }
 
@@ -222,7 +222,7 @@ public class PluginExecutor {
      * wait for the future to finish.
      * @return a Future object representing the running of this plugin sequence.
      */
-    public Future<?> executeWriteLater(final Graph graph, final Future<?> future) {
+    public Future executeWriteLater(final Graph graph, final Future<?> future) {
         if (entries.size() == 1) {
             return entries.get(0).executeLater(graph, future);
         } else {
@@ -244,7 +244,7 @@ public class PluginExecutor {
      * wait for the future to finish.
      * @return a Future object representing the running of this plugin sequence.
      */
-    public Future<?> executeWriteLater(final Graph graph, final String pluginName, final Future<?> future) {
+    public Future executeWriteLater(final Graph graph, final String pluginName, final Future<?> future) {
         return PluginExecution.withPlugin(new SimplePlugin(pluginName) {
 
             @Override
@@ -275,7 +275,7 @@ public class PluginExecutor {
      * in Constellation.
      * @return a Future object representing the running of this plugin sequence.
      */
-    public Future<?> executeReadLater(final Graph graph, final String pluginName) {
+    public Future executeReadLater(final Graph graph, final String pluginName) {
         return executeReadLater(graph, pluginName, null);
     }
 
@@ -290,7 +290,7 @@ public class PluginExecutor {
      * @param graph the graph to run the plugins on.
      * @return a Future object representing the running of this plugin sequence.
      */
-    public Future<?> executeReadLater(final Graph graph) {
+    public Future executeReadLater(final Graph graph) {
         return executeReadLater(graph, entries.get(0).plugin.getName(), null);
     }
 
@@ -307,7 +307,7 @@ public class PluginExecutor {
      * wait for the future to finish.
      * @return a Future object representing the running of this plugin sequence.
      */
-    public Future<?> executeReadLater(final Graph graph, Future<?> future) {
+    public Future executeReadLater(final Graph graph, Future<?> future) {
         return executeReadLater(graph, entries.get(0).plugin.getName(), future);
     }
 
@@ -325,7 +325,7 @@ public class PluginExecutor {
      * wait for the future to finish.
      * @return a Future object representing the running of this plugin sequence.
      */
-    public Future<?> executeReadLater(final Graph graph, final String pluginName, final Future<?> future) {
+    public Future executeReadLater(final Graph graph, final String pluginName, final Future<?> future) {
         return PluginExecution.withPlugin(new SimplePlugin(pluginName) {
 
             @Override
@@ -410,7 +410,7 @@ public class PluginExecutor {
             return PluginEnvironment.getDefault().executeEditPluginNow(graph, plugin, parameters, interactive);
         }
 
-        public Future<?> executeLater(final Graph graph, final Future<?> future) {
+        public Future executeLater(final Graph graph, final Future<?> future) {
             final List<Future<?>> futures = future == null ? null : Arrays.asList(future);
             return PluginEnvironment.getDefault().executePluginLater(graph, plugin, parameters, interactive, futures, null);
         }

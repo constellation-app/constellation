@@ -61,7 +61,7 @@ public abstract class PluginEnvironment {
      * of multiple plugins running on different threads.
      * @return A Future representing the result of the asynchronous plugin.
      */
-    public Future<?> executePluginLater(final Graph graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive, final List<Future<?>> async, final PluginSynchronizer synchronizer){
+    public Future executePluginLater(final Graph graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive, final List<Future<?>> async, final PluginSynchronizer synchronizer){
         return executePluginLater(graph, plugin, parameters, interactive, null, async, synchronizer); 
     }
 
@@ -83,7 +83,7 @@ public abstract class PluginEnvironment {
      *
      * @return A Future representing the result of the asynchronous plugin.
      */
-    public abstract Future<?> executePluginLater(final Graph graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive, final String disclaimer, final List<Future<?>> async, final PluginSynchronizer synchronizer);
+    public abstract Future executePluginLater(final Graph graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive, final String disclaimer, final List<Future<?>> async, final PluginSynchronizer synchronizer);
 
     /**
      * Execute a plugin synchronously on the current thread.

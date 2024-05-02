@@ -273,11 +273,11 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
      * @param uri the URI to navigate to
      * @return true if successful, false otherwise
      */
-    public static Future<?> browse(final URI uri) {
+    public static Future browse(final URI uri) {
         LOGGER.log(Level.INFO, "Loading help uri {0}", uri);
 
         // Run in a different thread, not the JavaFX thread
-        final ExecutorService pluginExecutor = Executors.newCachedThreadPool();
+        final ExecutorService pluginExecutor = Executors.newCachedThreadPool(); // TODO: Fix this to only create a new threadpool once, then re-use it for new browse requests
         return pluginExecutor.submit(() -> {
             Thread.currentThread().setName("Browse Help");
             try {

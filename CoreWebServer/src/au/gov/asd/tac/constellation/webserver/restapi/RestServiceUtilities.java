@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.DoubleNode;
 import com.fasterxml.jackson.databind.node.IntNode;
 import java.util.ArrayList;
@@ -80,7 +79,7 @@ public class RestServiceUtilities {
      *
      * @return A List&lt;Float&gt;, List&lt;Integer&gt;, or List&lt;String&gt;.
      */
-    public static List<? extends Object> toList(final JsonNode array) {
+    public static List toList(final JsonNode array) {
         final int size = array.size();
         List<? extends Object> list;
         if (size == 0) {

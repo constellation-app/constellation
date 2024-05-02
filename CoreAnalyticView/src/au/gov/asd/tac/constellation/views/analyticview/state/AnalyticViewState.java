@@ -108,7 +108,7 @@ public class AnalyticViewState {
         this.activeCategory = activeCategory;
     }
 
-    public AnalyticQuestion<?> getQuestion() {
+    public AnalyticQuestion getQuestion() {
         return question;
     }
 
@@ -128,7 +128,7 @@ public class AnalyticViewState {
         return Collections.unmodifiableList(activeAnalyticQuestions);
     }
 
-    public AnalyticResult<?> getResult() {
+    public AnalyticResult getResult() {
         return result;
     }
 
@@ -165,7 +165,7 @@ public class AnalyticViewState {
      *
      * @return the current {@link AnalyticQuestionDescription}.
      */
-    public final AnalyticQuestionDescription<?> getCurrentQuestion() {
+    public final AnalyticQuestionDescription getCurrentQuestion() {
         return currentQuestion;
     }
 

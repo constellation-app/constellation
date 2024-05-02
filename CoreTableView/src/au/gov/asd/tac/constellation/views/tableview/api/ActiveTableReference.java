@@ -202,7 +202,7 @@ public class ActiveTableReference {
      * column attributes
      * @return a {@link Future<?>} object of the plugin execution.
      */
-    public Future<?> updateVisibleColumns(final Graph graph, final TableViewState state, 
+    public Future updateVisibleColumns(final Graph graph, final TableViewState state, 
             final List<Tuple<String, Attribute>> columnAttributes, final UpdateMethod updateState) {
         if (graph != null && state != null) {
             final TableViewState newState = new TableViewState(state);

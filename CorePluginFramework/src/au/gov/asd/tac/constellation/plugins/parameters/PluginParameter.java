@@ -430,7 +430,7 @@ public class PluginParameter<V extends ParameterValue> {
      *
      * @return A new instance of PluginParameter.
      */
-    protected PluginParameter<?> create(final ParameterValue value, final PluginParameterType<?> type, final String id) {
+    protected PluginParameter create(final ParameterValue value, final PluginParameterType<?> type, final String id) {
         final PluginParameter<?> p = new PluginParameter(value.copy(), type, id);
         if (p.value instanceof ParameterListParameterValue parameterListParameterValue) {
             parameterListParameterValue.setEnclosingParameter(p);

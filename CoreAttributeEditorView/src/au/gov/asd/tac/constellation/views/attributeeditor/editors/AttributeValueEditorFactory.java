@@ -44,18 +44,13 @@ public abstract class AttributeValueEditorFactory<V> extends AbstractEditorFacto
         typeHandlers = new HashMap<>();
         handlers.forEach(handler -> {
             final String type = handler.getAttributeType();
-            if (!typeHandlers.containsKey(type)) {
+            if (!typeHandlers.containsKey(type) || (typeHandlers.get(type).getPriority() < handler.getPriority())) {
                 typeHandlers.put(type, handler);
-            } else {
-                if (typeHandlers.get(type).getPriority() >= handler.getPriority()) {
-                } else {
-                    typeHandlers.put(type, handler);
-                }
             }
         });
     }
 
-    public static AttributeValueEditorFactory<?> getEditFactory(final String attributeType) {
+    public static AttributeValueEditorFactory getEditFactory(final String attributeType) {
         if (typeHandlers == null) {
             createTypeHandlers();
         }
