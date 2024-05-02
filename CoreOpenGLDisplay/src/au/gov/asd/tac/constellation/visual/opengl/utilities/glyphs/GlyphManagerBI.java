@@ -107,11 +107,11 @@ public final class GlyphManagerBI implements GlyphManager {
      */
     private static class LigatureContext {
 
-        private GlyphRectangle[] glyphRectangles;
-        private int left;
-        private int right;
-        private int top;
-        private int bottom;
+        private final GlyphRectangle[] glyphRectangles;
+        private final int left;
+        private final int right;
+        private final int top;
+        private final int bottom;
 
         public LigatureContext(final GlyphRectangle[] glyphRectangles, final int left, final int right, final int top, final int bottom) {
             this.glyphRectangles = glyphRectangles;
@@ -126,7 +126,7 @@ public final class GlyphManagerBI implements GlyphManager {
      * Cache the bulk of the work renderTextAsLigature does to greatly improve
      * performance.
      */
-    private static Map<String, LigatureContext> cache = new HashMap<>();;
+    private static Map<String, LigatureContext> cache = new HashMap<>();
 
     /**
      * A default no-op GlyphStream to use when the user specifies null.
@@ -378,8 +378,8 @@ public final class GlyphManagerBI implements GlyphManager {
         //
         final float centre = (ligature.left + ligature.right) / 2F;
         for (final GlyphRectangle gr : ligature.glyphRectangles) {
-            final float cx = (gr.rect.x - centre) / (float) maxFontHeight - 0.1F;
-            final float cy = (gr.rect.y - (ligature.top + ligature.bottom) / 2F) / (float) (maxFontHeight) + 0.5F;
+            final float cx = (gr.rect.x - centre) / maxFontHeight - 0.1F;
+            final float cy = (gr.rect.y - (ligature.top + ligature.bottom) / 2F) / (maxFontHeight) + 0.5F;
             glyphStream.addGlyph(gr.position, cx, cy, context);
         }
     }
@@ -553,12 +553,12 @@ public final class GlyphManagerBI implements GlyphManager {
 
     @Override
     public float getWidthScalingFactor() {
-        return textureBuffer.width / maxFontHeight;
+        return (float) textureBuffer.width / maxFontHeight;
     }
 
     @Override
     public float getHeightScalingFactor() {
-        return textureBuffer.height / maxFontHeight;
+        return (float) textureBuffer.height / maxFontHeight;
     }
 
     BufferedImage getTextureBuffer() {

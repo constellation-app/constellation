@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.mapview.features;
 
 import de.fhpotsdam.unfolding.data.Feature;
+import java.util.Collections;
 import java.util.HashMap;
 
 /**
@@ -61,7 +62,7 @@ public class ConstellationAbstractFeature {
     }
 
     public HashMap<String, Object> getProperties() {
-        return properties;
+        return (HashMap<String, Object>) Collections.unmodifiableMap(properties);
     }
 
     public Object getProperty(final String key) {

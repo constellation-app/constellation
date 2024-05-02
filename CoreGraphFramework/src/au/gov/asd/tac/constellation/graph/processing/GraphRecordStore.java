@@ -82,12 +82,12 @@ public class GraphRecordStore extends TabularRecordStore {
     }
 
     @Override
-    public void set(final int record, String key, String value) {
+    public void set(final int newRecord, String key, String value) {
         if (key == null) {
             throw new IllegalArgumentException("Key cannot be null.");
         }
-        if (record < 0 || record >= size) {
-            throw new IllegalArgumentException("Invalid record: " + record);
+        if (newRecord < 0 || newRecord >= size) {
+            throw new IllegalArgumentException("Invalid record: " + newRecord);
         }
 
         if (cache != null) {
@@ -116,23 +116,23 @@ public class GraphRecordStore extends TabularRecordStore {
             createColumn(key, values);
 
             // If there is not enough capacity to hold this record
-        } else if (values.length <= record >>> BATCH_BITS) {
+        } else if (values.length <= newRecord >>> BATCH_BITS) {
             values = Arrays.copyOf(values, capacity >>> BATCH_BITS);
             createColumn(key, values);
         }
 
-        Object[] batch = values[record >>> BATCH_BITS];
+        Object[] batch = values[newRecord >>> BATCH_BITS];
         if (batch == null) {
-            values[record >>> BATCH_BITS] = batch = new Object[BATCH_SIZE];
+            values[newRecord >>> BATCH_BITS] = batch = new Object[BATCH_SIZE];
         }
-        batch[record & BATCH_MASK] = value == null ? NULL : value;
+        batch[newRecord & BATCH_MASK] = value == null ? NULL : value;
     }
 
     @Override
-    public List<String> values(final int record) {
+    public List<String> values(final int newRecord) {
         final List<String> values = new ArrayList<>(typedRecords.size());
         for (final Object[][] v : typedRecords.values()) {
-            values.add(TabularRecordStore.getValue(v, record));
+            values.add(TabularRecordStore.getValue(v, newRecord));
         }
         return values;
     }
@@ -146,10 +146,10 @@ public class GraphRecordStore extends TabularRecordStore {
     @Override
     public void add(final RecordStore recordStore) {
         if (recordStore instanceof GraphRecordStore graphRecordStore) {
-            for (int record = 0; record < graphRecordStore.size(); record++) {
+            for (int records = 0; records < graphRecordStore.size(); records++) {
                 final int newRecord = add();
                 for (final String key : graphRecordStore.keysWithType()) {
-                    final String value = graphRecordStore.get(record, key);
+                    final String value = graphRecordStore.get(records, key);
                     if (value != null) {
                         set(newRecord, key, value);
                     }
@@ -195,15 +195,15 @@ public class GraphRecordStore extends TabularRecordStore {
                 return false;
             }
 
-            for (int record = 0; record < size; record++) {
+            for (int records = 0; records < size; records++) {
                 for (final Entry<String, Object[][]> e : this.typedRecords.entrySet()) {
-                    if (!TabularRecordStore.hasValue(e.getValue(), record) || !TabularRecordStore.hasValue(other.typedRecords.get(e.getKey()), record)) {
+                    if (!TabularRecordStore.hasValue(e.getValue(), records) || !TabularRecordStore.hasValue(other.typedRecords.get(e.getKey()), records)) {
                         return false;
-                    } else if (TabularRecordStore.getValue(e.getValue(), record) == null && TabularRecordStore.getValue(other.typedRecords.get(e.getKey()), record) == null) {
+                    } else if (TabularRecordStore.getValue(e.getValue(), records) == null && TabularRecordStore.getValue(other.typedRecords.get(e.getKey()), records) == null) {
                         // continue
-                    } else if (TabularRecordStore.getValue(e.getValue(), record) == null && TabularRecordStore.getValue(other.typedRecords.get(e.getKey()), record) != null) {
+                    } else if (TabularRecordStore.getValue(e.getValue(), records) == null && TabularRecordStore.getValue(other.typedRecords.get(e.getKey()), records) != null) {
                         return false;
-                    } else if (!TabularRecordStore.getValue(e.getValue(), record).equals(TabularRecordStore.getValue(other.typedRecords.get(e.getKey()), record))) {
+                    } else if (!TabularRecordStore.getValue(e.getValue(), records).equals(TabularRecordStore.getValue(other.typedRecords.get(e.getKey()), records))) {
                         return false;
                     }
                 }
@@ -216,10 +216,10 @@ public class GraphRecordStore extends TabularRecordStore {
     @Override
     public String toStringVerbose() {
         final StringBuilder out = new StringBuilder();
-        for (int record = 0; record < size; record++) {
+        for (int records = 0; records < size; records++) {
             boolean first = true;
             for (final Entry<String, Object[][]> e : typedRecords.entrySet()) {
-                if (TabularRecordStore.hasValue(e.getValue(), record)) {
+                if (TabularRecordStore.hasValue(e.getValue(), records)) {
                     if (!first) {
                         out.append(", ");
                     } else {
@@ -227,7 +227,7 @@ public class GraphRecordStore extends TabularRecordStore {
                     }
                     out.append(e.getKey());
                     out.append(" = ");
-                    out.append(TabularRecordStore.getValue(e.getValue(), record));
+                    out.append(TabularRecordStore.getValue(e.getValue(), records));
                 }
             }
             out.append('\n');

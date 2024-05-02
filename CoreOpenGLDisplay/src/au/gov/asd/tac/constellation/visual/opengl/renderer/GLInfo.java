@@ -75,7 +75,7 @@ public class GLInfo {
         }).start();
     }
 
-    public static void printGLCapabilities(final GL3 gl) {
+    public static void printGLCapabilities(final GL gl) {
         final int[] v = new int[10];
         gl.glGetIntegerv(GL.GL_MAX_RENDERBUFFER_SIZE, v, 0);
         gl.glGetIntegerv(GL2ES2.GL_MAX_VERTEX_ATTRIBS, v, 1);
@@ -118,7 +118,7 @@ public class GLInfo {
 
 
         if (gl instanceof GL2ES2) {
-            sb.append(String.format("Shading language version: %s\n", gl.glGetString(GL2ES2.GL_SHADING_LANGUAGE_VERSION)));
+            sb.append(String.format("Shading language version: %s%n", gl.glGetString(GL2ES2.GL_SHADING_LANGUAGE_VERSION)));
         }
 
         basicInfo = sb.toString();

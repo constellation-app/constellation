@@ -89,7 +89,7 @@ public class TOCGenerator {
      *
      * @param xmlFromFile File of XML mappings
      */
-    public static void convertXMLMappings(final List<File> xmlsFromFile, final TreeNode root) throws IOException {
+    public static void convertXMLMappings(final List<File> xmlsFromFile, final TreeNode<?> root) throws IOException {
         final FileWriter writer;
         writer = new FileWriter(toc);
         convertXMLMappings(xmlsFromFile, writer, root);
@@ -99,7 +99,7 @@ public class TOCGenerator {
     /**
      * Generate a table of contents from the XML mapping file
      */
-    public static void convertXMLMappings(final List<File> xmlsFromFile, final FileWriter markdownOutput, final TreeNode root) {
+    public static void convertXMLMappings(final List<File> xmlsFromFile, final FileWriter markdownOutput, final TreeNode<?> root) {
         writeText(markdownOutput, String.format("<div class=\"%s\">", "container"));
         writeText(markdownOutput, Platform.getNewline());
         writeText(markdownOutput, String.format("<div id=\"%s\">", "accordion"));

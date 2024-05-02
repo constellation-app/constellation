@@ -41,6 +41,7 @@ import java.util.Set;
 import java.util.function.UnaryOperator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -66,9 +67,12 @@ import javafx.util.converter.IntegerStringConverter;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * A pane that allows the entry of a relative or absolute date-time range, along with a time-zone, which is the GUI element corresponding to a {@link PluginParameter} of {@link au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRangeParameterType}.
+ * A pane that allows the entry of a relative or absolute date-time range, along with a time-zone, which is the GUI
+ * element corresponding to a {@link PluginParameter} of
+ * {@link au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRangeParameterType}.
  * <p>
- * Selecting a relative range, altering the absolute range, or changing the time-zone will all update the object value of the underlying {@link PluginParameter}.
+ * Selecting a relative range, altering the absolute range, or changing the time-zone will all update the object value
+ * of the underlying {@link PluginParameter}.
  *
  * @see au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRangeParameterType
  *
@@ -304,12 +308,14 @@ public final class DateTimeRangeInputPane extends Pane {
                         }
                     }
                 }
-                case ENABLED -> setDisable(!pluginParameter.isEnabled());
+                case ENABLED ->
+                    setDisable(!pluginParameter.isEnabled());
                 case VISIBLE -> {
                     setManaged(parameter.isVisible());
                     setVisible(parameter.isVisible());
                 }
-                default -> LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
+                default ->
+                    LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
             }
         }));
     }
@@ -443,7 +449,8 @@ public final class DateTimeRangeInputPane extends Pane {
     /**
      * Get the selected ZoneId from the timezone ComboBox.
      * <p>
-     * The ComboBox holds a list of strings in a human-readable form. We need to extract the zoneid part and turn it into a ZoneId.
+     * The ComboBox holds a list of strings in a human-readable form. We need to extract the zoneid part and turn it
+     * into a ZoneId.
      *
      * @return The selected ZoneId, or null if nothing is selected.
      */
@@ -454,7 +461,8 @@ public final class DateTimeRangeInputPane extends Pane {
     /**
      * Get the selected ZoneId from the timezone ComboBox.
      * <p>
-     * The ComboBox holds a list of strings in a human-readable form. We need to extract the zoneid part and turn it into a ZoneId.
+     * The ComboBox holds a list of strings in a human-readable form. We need to extract the zoneid part and turn it
+     * into a ZoneId.
      *
      * @param tz a string value as used by the timezone ComboBox.
      *
@@ -472,7 +480,8 @@ public final class DateTimeRangeInputPane extends Pane {
     /**
      * Set the highlighting of the TitlePane's title.
      * <p>
-     * Highlighting is done by adding/removing our own style class. We attempt to make sure that we don't add it more than once.
+     * Highlighting is done by adding/removing our own style class. We attempt to make sure that we don't add it more
+     * than once.
      *
      * @param highlight True to be highlighted, false to be unhighlighted.
      */
@@ -575,7 +584,7 @@ public final class DateTimeRangeInputPane extends Pane {
         spinner.setEditable(true);
         final TextFormatter<Integer> timeFormatter = new TextFormatter<>(new IntegerStringConverter(), 0, filter);
         spinner.getEditor().setTextFormatter(timeFormatter);
-        
+
         // Set spinner to enable value wrapping
         spinner.getValueFactory().setWrapAround(true);
 
@@ -603,8 +612,7 @@ public final class DateTimeRangeInputPane extends Pane {
         final DateTimeFormatter zf = DateTimeFormatter.ofPattern("Z");
         final Instant instant = Instant.now();
         final Set<String> zoneSet = ZoneId.getAvailableZoneIds();
-        final List<ZoneId> zoned = new ArrayList<>();
-        zoneSet.stream().map(ZoneId::of).forEach(zoned::add);
+        List<ZoneId> zoned = zoneSet.stream().map(ZoneId::of).collect(Collectors.toList());
 
         Collections.sort(zoned, (final ZoneId zi1, final ZoneId zi2) -> {
             final ZonedDateTime z1 = ZonedDateTime.ofInstant(instant, zi1);
@@ -633,7 +641,8 @@ public final class DateTimeRangeInputPane extends Pane {
     private static class NonToggleButton extends ToggleButton {
 
         /**
-         * Toggles the state of the radio button if and only if the RadioButton has not already selected or is not part of a {@link ToggleGroup}.
+         * Toggles the state of the radio button if and only if the RadioButton has not already selected or is not part
+         * of a {@link ToggleGroup}.
          */
         @Override
         public void fire() {

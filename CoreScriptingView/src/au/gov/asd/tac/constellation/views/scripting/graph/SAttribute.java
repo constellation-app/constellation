@@ -35,8 +35,8 @@ public class SAttribute {
     private final Object defaultValue;
     private final String mergerId;
 
-    public SAttribute(final GraphReadMethods readableGraph, final int id, final GraphElementType elementType, 
-            final String attributeType, final String name, final String description, final Object defaultValue, 
+    public SAttribute(final GraphReadMethods readableGraph, final int id, final GraphElementType elementType,
+            final String attributeType, final String name, final String description, final Object defaultValue,
             final String mergerId) {
         this.readableGraph = readableGraph;
         this.id = id;
@@ -58,7 +58,13 @@ public class SAttribute {
         this(readableGraph, readableGraph.getAttribute(elementType, name));
     }
 
-    private GraphWriteMethods writableGraph() {
+    
+    /**
+     * Get the readableGraph of this attribute.
+     *
+     * @return the readableGraph of this attribute.
+     */
+    public GraphWriteMethods getreadableGraph() {
         return (GraphWriteMethods) readableGraph;
     }
 

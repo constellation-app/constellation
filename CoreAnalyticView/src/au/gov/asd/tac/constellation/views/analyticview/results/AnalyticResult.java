@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.analyticview.results;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewController;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -55,7 +56,7 @@ public abstract class AnalyticResult<D extends AnalyticData> {
         analyticViewController.selectOnGraph(GraphElementType.TRANSACTION, transactionsToSelect);
     }
 
-    public void setSelectionOnVisualisation(final GraphElementType elementType, final List<Integer> elementIds) {
+    public void setSelectionOnVisualisation(final GraphElementType elementType, final Collection<Integer> elementIds) {
         final List<D> selectedElementScores = new ArrayList<>();
         final List<D> ignoredElementScores = new ArrayList<>();
         result.values().forEach(elementScore -> {

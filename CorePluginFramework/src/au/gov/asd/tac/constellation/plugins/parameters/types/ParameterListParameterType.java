@@ -311,7 +311,7 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
 
         @Override
         public Object getObjectValue() {
-            return value;
+            return get();
         }
 
         @Override

@@ -215,8 +215,13 @@ public class JDBCSourcePane extends SourcePane {
                 final JDBCDriver d = (JDBCDriver) driverTable.getSelectionModel().getSelectedItem();
                 if (d != null) {
                     if (driverManager.isDriverUsed(d.getName())) {
-                        final Optional<ButtonType> res = NotifyDisplayer.displayConfirmationAlert(TITLE_JDBC_IMPORT, "Remove Driver", "Connections exist using this Driver.\nThe "
-                                + "connections that use this driver will be deleted, do you want to proceed?");
+                        final Optional<ButtonType> res = NotifyDisplayer.displayConfirmationAlert(
+                                TITLE_JDBC_IMPORT, 
+                                "Remove Driver", 
+                                """
+                                Connections exist using this Driver.
+                                The connections that use this driver will be deleted, do you want to proceed?"""
+                        );
                         if (!res.isPresent() || res.get() == ButtonType.NO) {
                             return;
                         }
@@ -298,6 +303,7 @@ public class JDBCSourcePane extends SourcePane {
 
         final TextArea query = new TextArea();
         query.setPrefRowCount(5);
+
         GridPane.setConstraints(query, 1, 3, 2, 1, HPos.LEFT, VPos.TOP);
 
         final Label destinationLabel = new Label("Destination:");
@@ -389,8 +395,13 @@ public class JDBCSourcePane extends SourcePane {
 
             if (driverName.getSelectionModel().getSelectedItem() != null) {
                 if (driverManager.isDriverUsed((String) driverName.getSelectionModel().getSelectedItem())) {
-                    final Optional<ButtonType> res = NotifyDisplayer.displayConfirmationAlert(TITLE_JDBC_IMPORT,
-                            ADD_DRIVER, "This Driver already exists.\n Do you want to overwrite?");
+                    final Optional<ButtonType> res = NotifyDisplayer.displayConfirmationAlert(
+                            TITLE_JDBC_IMPORT,
+                            ADD_DRIVER, 
+                            """
+                            This Driver already exists.
+                            Do you want to overwrite?"""
+                    );
                     if (!res.isPresent() || res.get() == ButtonType.NO) {
                         return;
                     }
@@ -524,9 +535,9 @@ public class JDBCSourcePane extends SourcePane {
         cn.setPromptText("Enter a name for your connection");
         cn.setFocusTraversable(false);
         cn.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            cn.setStyle(""); 
+            cn.setStyle("");
             if (!newVal && StringUtils.isBlank(cn.getText())){
-                cn.setStyle("-fx-text-box-border: red;");  
+                cn.setStyle("-fx-text-box-border: red;");
             }
         });
         gp.add(cn, 1, 0, 2, 1);
@@ -547,9 +558,9 @@ public class JDBCSourcePane extends SourcePane {
         connectionStringF.setPromptText("Enter a URL to connect to, eg. jdbc:sqlite:C:/my_folder/database.sqlite");
         connectionStringF.setFocusTraversable(false);
         connectionStringF.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            connectionStringF.setStyle(""); 
+            connectionStringF.setStyle("");
             if (!newVal && StringUtils.isBlank(connectionStringF.getText())){
-                connectionStringF.setStyle("-fx-text-box-border: red;");  
+                connectionStringF.setStyle("-fx-text-box-border: red;");
             }
         });
         gp.add(connectionStringF, 1, 2, 2, 1);

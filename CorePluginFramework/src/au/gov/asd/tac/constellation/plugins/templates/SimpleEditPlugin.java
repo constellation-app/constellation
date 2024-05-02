@@ -53,7 +53,7 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
     protected SimpleEditPlugin() {
     }
 
-    public SimpleEditPlugin(String pluginName) {
+    protected SimpleEditPlugin(String pluginName) {
         super(pluginName);
     }
 

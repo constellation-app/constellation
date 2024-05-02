@@ -52,7 +52,7 @@ public final class PlaneState {
         visibilityUpdate = false;
     }
 
-    public void setPlanes(final List<Plane> planes) {
+    public void setPlanes(final Iterable<Plane> planes) {
         this.planes.clear();
         for (final Plane plane : planes) {
             this.planes.add(plane);

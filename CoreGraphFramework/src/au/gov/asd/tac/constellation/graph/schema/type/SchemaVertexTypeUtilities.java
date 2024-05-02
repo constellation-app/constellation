@@ -124,7 +124,7 @@ public class SchemaVertexTypeUtilities {
             });
 
             // add custom types if no concept is specified
-            if (fromConcepts == GET_ALL_TYPES) {
+            if (fromConcepts == null) {
                 vertexTypes.addAll(CUSTOM_VERTEX_TYPES);
             }
 

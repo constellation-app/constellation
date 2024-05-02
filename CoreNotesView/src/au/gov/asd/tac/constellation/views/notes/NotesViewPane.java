@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.notes;
 
-import au.gov.asd.tac.constellation.views.notes.utilities.NewNotePane;
-import au.gov.asd.tac.constellation.views.notes.utilities.DateTimeRangePicker;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
@@ -38,11 +36,14 @@ import au.gov.asd.tac.constellation.utilities.gui.MultiChoiceInputField;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.notes.state.NotesViewEntry;
+import au.gov.asd.tac.constellation.views.notes.utilities.DateTimeRangePicker;
 import au.gov.asd.tac.constellation.views.notes.utilities.MarkdownTree;
+import au.gov.asd.tac.constellation.views.notes.utilities.NewNotePane;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.Comparator;
@@ -479,11 +480,8 @@ public class NotesViewPane extends BorderPane {
             );
 
             note.setUndone(pluginReport.isUndone());
-            final String[] tags = pluginReport.getTags();
-            final List<String> tagsList = new ArrayList<>();
-            for (final String tag : tags) {
-                tagsList.add(tag);
-            }
+            final List<String> tagsList = Arrays.asList(pluginReport.getTags());
+
             note.setTags(tagsList);
 
             /**
@@ -508,7 +506,7 @@ public class NotesViewPane extends BorderPane {
      */
     protected void processNewUndoRedoReport(final UndoRedoReport undoRedoReport) {
         if (hasMatchingNote(undoRedoReport)) {
-            getMatchingNoteOfUndoRedoReport(undoRedoReport).setUndone(undoRedoReport.getActionType() == UNDO);
+            getMatchingNoteOfUndoRedoReport(undoRedoReport).setUndone(undoRedoReport.getActionType().equals(UNDO));
             updateTagsFiltersAvailable();
             updateNotesAndFiltersUI();
         }
@@ -732,7 +730,7 @@ public class NotesViewPane extends BorderPane {
     }
 
     private NotesViewEntry getMatchingNoteOfUndoRedoReport(final UndoRedoReport undoRedoReport) {
-        if (undoRedoReport.getActionType() == UNDO) {
+        if (undoRedoReport.getActionType().equals(UNDO)) {
             return notesViewEntries.stream()
                     .filter(entry -> undoRedoReport.getActionDescription().equals(entry.getNoteTitle()) && !entry.getUndone())
                     .max(Comparator.comparing(NotesViewEntry::getDateTime)).get();
@@ -1243,7 +1241,7 @@ public class NotesViewPane extends BorderPane {
      */
     public void updateSelectedTagsCombo(final List<String> selectedTagsFilters) {
         this.tagsSelectedFiltersList.clear();
-        selectedTagsFilters.forEach(filter -> this.tagsSelectedFiltersList.add(filter));
+        selectedTagsFilters.forEach(this.tagsSelectedFiltersList::add);
         updateTagFilters();
     }
 

@@ -105,7 +105,7 @@ public class BooleanParameterType extends PluginParameterType<BooleanParameterVa
          *
          * @return The boolean that this parameter value is holding.
          */
-        public boolean get() {
+        public boolean getValue() {
             return b;
         }
 
@@ -143,7 +143,7 @@ public class BooleanParameterType extends PluginParameterType<BooleanParameterVa
 
         @Override
         public Object getObjectValue() {
-            return b;
+            return getValue();
         }
 
         @Override

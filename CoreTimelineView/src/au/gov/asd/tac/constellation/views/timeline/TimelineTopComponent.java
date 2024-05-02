@@ -377,8 +377,9 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
             populateFromGraph(graph, true);
 
             graph.addGraphChangeListener(this);
-        } // Moving to nothing:
-        else {
+        
+        // Moving to nothing:
+        } else {
             persistStateToGraph();
 
             graphNode = null;
@@ -724,15 +725,16 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                         timelinePanel.setNodeLabelAttributes(GraphManager.getDefault().getVertexAttributeNames());
                         populateFromGraphNode(true);
                     });
-                } //Detect value change on the temporal attribute
-                else if (currentTemporalAttributeModificationCount != oldTemporalAttributeModificationCount) {
+                
+                // Detect value change on the temporal attribute
+                } else if (currentTemporalAttributeModificationCount != oldTemporalAttributeModificationCount) {
                     populateFromGraphNode(true);
-                } // Detect graph structural changes (such as adding and removal of nodes etc):
-                else if (currentStructureModificationCount != oldStructureModificationCount) {
+                // Detect graph structural changes (such as adding and removal of nodes etc):
+                } else if (currentStructureModificationCount != oldStructureModificationCount) {
                     // Re-populate charts:
                     populateFromGraphNode(true);
-                } // Detect changes of selection to transactions or vertices:
-                else if (currentTransSelectedModificationCount != oldTransSelectedModificationCount
+                // Detect changes of selection to transactions or vertices:
+                } else if (currentTransSelectedModificationCount != oldTransSelectedModificationCount
                         || currentVertSelectedModificationCount != oldVertSelectedModificationCount) {
                     // Do only a partial update, ie the timeline and selection area for histogram:
                     populateFromGraphNode(false);

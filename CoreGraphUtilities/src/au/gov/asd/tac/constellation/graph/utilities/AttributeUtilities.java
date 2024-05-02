@@ -118,10 +118,9 @@ public class AttributeUtilities {
      * Return a set of vertex attributes
      *
      * @param graph The graph
-     * @param vxId The vertex id to test in the graph
      * @return Map of attribute names
      */
-    public static Map<String, Integer> getVertexAttributes(final GraphReadMethods graph, final int vxId) {
+    public static Map<String, Integer> getVertexAttributes(final GraphReadMethods graph) {
         final Map<String, Integer> attributeIds = new TreeMap<>();
 
         if (graph == null) {

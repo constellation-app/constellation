@@ -221,7 +221,7 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
         buttonListeners.stream().forEach(listener -> listener.qualityControlRuleChanged(true));
     }
 
-    protected static List<QualityControlRule> getRules() {
+    protected static synchronized List<QualityControlRule> getRules() {
         if (rules == null) {
             rules = new ArrayList<>(Lookup.getDefault().lookupAll(QualityControlRule.class));
             uRules = Collections.unmodifiableList(rules);
