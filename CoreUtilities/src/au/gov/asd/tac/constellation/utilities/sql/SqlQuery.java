@@ -112,7 +112,7 @@ public class SqlQuery {
                 statement.setDouble(arg.getKey(), arg.getValue());
             }
 
-            LOGGER.log(Level.FINE, "{0}", statement.toString());
+            LOGGER.log(Level.FINE, "{0}", statement);
 
             // execute the query and return the results.
             if (isQuery) {
