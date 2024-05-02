@@ -50,7 +50,7 @@ public abstract class AttributeValueEditorFactory<V> extends AbstractEditorFacto
         });
     }
 
-    public static AttributeValueEditorFactory getEditFactory(final String attributeType) {
+    public static AttributeValueEditorFactory<?> getEditFactory(final String attributeType) {
         if (typeHandlers == null) {
             createTypeHandlers();
         }

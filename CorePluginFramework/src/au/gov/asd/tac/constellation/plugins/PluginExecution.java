@@ -299,7 +299,7 @@ public class PluginExecution {
      * @return a {@link Future} providing access to the process running the
      * plugin.
      */
-    public Future executeLater(final Graph graph) {
+    public Future<?> executeLater(final Graph graph) {
         if (parameters == null) {
             parameters = DefaultPluginParameters.getDefaultParameters(plugin);
         }

@@ -206,7 +206,7 @@ public class LayersViewController {
      *
      * @return a future of the plugin
      */
-    public Future writeState() {
+    public Future<?> writeState() {
         final Graph graph = GraphManager.getDefault().getActiveGraph();
         if (graph == null) {
             return null;

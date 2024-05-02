@@ -226,7 +226,7 @@ public abstract class AbstractAttributeInteraction<T> {
      * @param value an object representing the attribute value.
      * @return a comparable version of the supplied attribute value.
      */
-    public Comparable getComparable(final Object value) {
+    public Comparable<?> getComparable(final Object value) {
         if (isComparable()) {
             return (Comparable<?>) value;
         }

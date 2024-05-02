@@ -79,7 +79,7 @@ public class RestServiceUtilities {
      *
      * @return A List&lt;Float&gt;, List&lt;Integer&gt;, or List&lt;String&gt;.
      */
-    public static List toList(final JsonNode array) {
+    public static List<? extends Object> toList(final JsonNode array) {
         final int size = array.size();
         List<? extends Object> list;
         if (size == 0) {
@@ -176,7 +176,7 @@ public class RestServiceUtilities {
                 final Graph newGraph = GraphManager.getDefault().getActiveGraph();
                 if (newGraph != null) {
                     final String newId = newGraph.getId();
-                    if (existingId == null || (existingId != null && !existingId.equals(newId))) {
+                    if (existingId == null || !existingId.equals(newId)) {
                         // - there was no existing graph, and the new graph is active, or
                         // - there was an existing graph, and the active graph is not the existing graph.
                         // - we assume the user hasn't interfered by manually switching to another graph at the same time.

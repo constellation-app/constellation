@@ -63,33 +63,33 @@ public class AnalyticUtilities {
                 .toList());
     }
 
-    public static AnalyticQuestionDescription lookupAnalyticQuestionDescription(final Class<? extends AnalyticQuestionDescription<?>> questionDescriptionType) {
+    public static AnalyticQuestionDescription<?> lookupAnalyticQuestionDescription(final Class<? extends AnalyticQuestionDescription<?>> questionDescriptionType) {
         return ANALYTIC_QUESTION_DESCRIPTIONS.values().stream()
                 .filter(questionDescriptionType::isInstance)
                 .toList().get(0);
     }
 
-    public static AnalyticQuestionDescription lookupAnalyticQuestionDescription(final String analyticQuestionDescriptionName) {
+    public static AnalyticQuestionDescription<?> lookupAnalyticQuestionDescription(final String analyticQuestionDescriptionName) {
         return ANALYTIC_QUESTION_DESCRIPTIONS.get(analyticQuestionDescriptionName);
     }
 
-    public static Collection<AnalyticAggregator> getAnalyticAggregators() {
+    public static Collection<AnalyticAggregator<?>> getAnalyticAggregators() {
         return Collections.unmodifiableCollection(ANALYTIC_AGGREGATORS.values());
     }
 
-    public static Collection<AnalyticAggregator> lookupAnalyticAggregators(final Class<? extends AnalyticResult<?>> analyticResultType) {
+    public static Collection<AnalyticAggregator<?>> lookupAnalyticAggregators(final Class<? extends AnalyticResult<?>> analyticResultType) {
         return Collections.unmodifiableCollection(ANALYTIC_AGGREGATORS.values().stream()
                 .filter(aggregator -> aggregator.getResultType().isAssignableFrom(analyticResultType))
                 .toList());
     }
 
-    public static AnalyticAggregator lookupAnalyticAggregator(final Class<? extends AnalyticAggregator<?>> analyticAggregatorType) {
+    public static AnalyticAggregator<?> lookupAnalyticAggregator(final Class<? extends AnalyticAggregator<?>> analyticAggregatorType) {
         return ANALYTIC_AGGREGATORS.values().stream()
                 .filter(analyticAggregatorType::isInstance)
                 .toList().get(0);
     }
 
-    public static AnalyticAggregator lookupAnalyticAggregator(final String analyticAggregatorName) {
+    public static AnalyticAggregator<?> lookupAnalyticAggregator(final String analyticAggregatorName) {
         return ANALYTIC_AGGREGATORS.get(analyticAggregatorName);
     }
 

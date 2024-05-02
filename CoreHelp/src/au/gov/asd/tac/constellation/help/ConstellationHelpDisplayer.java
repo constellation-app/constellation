@@ -55,6 +55,9 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
 
     private static final String OFFICIAL_CONSTELLATION_WEBSITE = "https://www.constellation-app.com/help";
     private static final String NEWLINE = "\n";
+    
+    // Run in a different thread, not the JavaFX thread
+    private static final ExecutorService pluginExecutor = Executors.newCachedThreadPool();
 
     public static void copy(final String filePath, final OutputStream out) throws IOException {
         final String sep = File.separator;
@@ -273,11 +276,9 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
      * @param uri the URI to navigate to
      * @return true if successful, false otherwise
      */
-    public static Future browse(final URI uri) {
+    public static Future<?> browse(final URI uri) {
         LOGGER.log(Level.INFO, "Loading help uri {0}", uri);
 
-        // Run in a different thread, not the JavaFX thread
-        final ExecutorService pluginExecutor = Executors.newCachedThreadPool(); // TODO: Fix this to only create a new threadpool once, then re-use it for new browse requests
         return pluginExecutor.submit(() -> {
             Thread.currentThread().setName("Browse Help");
             try {
