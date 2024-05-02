@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import java.util.Map;
  */
 public class AnimationManager {
 
-    private final Map<String, Animation> animations = new HashMap<String, Animation>();
+    private final Map<String, Animation> animations = new HashMap<>();
     private final String graphId;
     
     public AnimationManager(final String graphId) {
@@ -40,7 +40,7 @@ public class AnimationManager {
      * @param animationName
      */
     public final void stopAnimation(final String animationName) {
-        Animation removedAnimation = animations.remove(animationName);
+        final Animation removedAnimation = animations.remove(animationName);
         if (removedAnimation != null) {
             removedAnimation.setFinished();
         }

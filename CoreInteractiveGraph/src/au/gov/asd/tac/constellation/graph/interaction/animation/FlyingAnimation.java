@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -154,10 +154,10 @@ public final class FlyingAnimation extends Animation {
                 
                 // The camera's up direction must be updated at each frame
                 // This ensures the camera doesnt look in the default up direction causing perspective warping.
-                Vector3f forward = Vector3f.subtract(camera.lookAtEye, camera.lookAtCentre);
+                final Vector3f forward = Vector3f.subtract(camera.lookAtEye, camera.lookAtCentre);
                 forward.normalize();
                 
-                Vector3f right = new Vector3f();
+                final Vector3f right = new Vector3f();
                 right.crossProduct(forward, camera.lookAtUp);
                 
                 camera.lookAtUp.crossProduct(right, forward);

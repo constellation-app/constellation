@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,7 +67,7 @@ public class AnimationUtilities {
      */
     private static AnimationManager getGraphAnimationManager(final String graphId){
         if (StringUtils.isNotBlank(graphId)){
-            GraphNode gn = GraphNode.getGraphNode(graphId);
+            final GraphNode gn = GraphNode.getGraphNode(graphId);
             if (gn != null) {
              return ((VisualGraphTopComponent) gn.getTopComponent()).getAnimationManager();
             }
@@ -87,7 +87,7 @@ public class AnimationUtilities {
     public static final void startAnimation(final Animation animation, final String graphId) {
         // Run the animation
         if (animationsEnabled()){
-            AnimationManager am = getGraphAnimationManager(graphId);
+            final AnimationManager am = getGraphAnimationManager(graphId);
             if (am != null){
                     am.runAnimation(animation);
             } else {
@@ -115,7 +115,7 @@ public class AnimationUtilities {
      * @return 
      */
     public static boolean animationsEnabled() {
-        return GraphPreferenceKeys.isAnimatable(NbPreferences.forModule(GraphPreferenceKeys.class));
+        return NbPreferences.forModule(GraphPreferenceKeys.class).getBoolean(GraphPreferenceKeys.ENABLE_ANIMATIONS, GraphPreferenceKeys.ENABLE_ANIMATIONS_DEFAULT);
     }
     
     /**

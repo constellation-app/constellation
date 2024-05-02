@@ -51,10 +51,6 @@ public final class GraphPreferenceKeys {
     
     public static final String ENABLE_ANIMATIONS = "enableAnimations";
     public static final boolean ENABLE_ANIMATIONS_DEFAULT = true;
-    
-    public static boolean isAnimatable (final Preferences prefs) {
-        return prefs.getBoolean(ENABLE_ANIMATIONS, ENABLE_ANIMATIONS_DEFAULT);
-    }
 
     private GraphPreferenceKeys() {
     }

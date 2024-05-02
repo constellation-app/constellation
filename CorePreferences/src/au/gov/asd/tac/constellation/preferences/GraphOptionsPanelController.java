@@ -49,9 +49,7 @@ public final class GraphOptionsPanelController extends OptionsPanelController {
 
     private GraphOptionsPanel panel;
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-    private static final Logger LOG = Logger.getLogger(GraphOptionsPanelController.class.getName());
     
-
     @Override
     public void update() {
         final Preferences prefs = NbPreferences.forModule(GraphPreferenceKeys.class);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -133,7 +133,7 @@ public abstract class Animation {
         if (GraphNode.getGraphNode(graphId) != null) {
             this.graphID = graphId;
             final Graph graph = gn.getGraph();
-            // Chreate the Thread for this animaton
+            // Create the Thread for this animaton
             animationThread = new Thread(() -> {
                 try {
                     if (lockGraphSafely(graph)) {
@@ -142,7 +142,7 @@ public abstract class Animation {
                         editGraph(graph);
                     } 
                     
-                } catch (InterruptedException ex) {
+                } catch (final InterruptedException ex) {
 
                 } finally {
                     if (lockGraphSafely(graph)) {                    
@@ -173,7 +173,7 @@ public abstract class Animation {
                 wg.commit();
             }
             
-            // Sleep untill it is time for the next frame
+            // Sleep until it is time for the next frame
             Thread.sleep(getIntervalInMillis());
             
             Thread.sleep(pause);
@@ -191,7 +191,7 @@ public abstract class Animation {
         try {
             wg = graph.getWritableGraph(getName(), isSignificant());
             return true;
-        } catch (InterruptedException ex) {
+        } catch (final InterruptedException ex) {
             return false;
         }
     }
@@ -215,7 +215,7 @@ public abstract class Animation {
     public void skip(final String graphId) {
         final GraphNode gn = GraphNode.getGraphNode(graphId);
         
-        if (GraphNode.getGraphNode(graphId) != null) {
+        if (gn != null) {
             final Graph graph = gn.getGraph();
             
             if (lockGraphSafely(graph)) {
@@ -228,7 +228,7 @@ public abstract class Animation {
     
     public abstract void setFinalFrame(final GraphWriteMethods wg);
 
-    void pause(long time) {
+    void pause(final long time) {
         pause = time;
     }
 }
