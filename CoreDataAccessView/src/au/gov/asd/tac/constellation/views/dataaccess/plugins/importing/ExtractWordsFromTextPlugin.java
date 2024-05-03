@@ -471,7 +471,6 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
                             word = word.toLowerCase();
                         }
                         if (removeSpecialChars) {
-                            word = word.replaceAll("\\W", "");
                             word = SPECIAL_CHARS_PATTERN.matcher(word).replaceAll("");
                         }
                         if (word.length() < wordLength) {
