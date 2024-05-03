@@ -42,11 +42,11 @@ and open the template in the editor.
 }
 
 .text-area {
-    text-area-background: white ;
+    -text-area-background: white ;
 }
 
 .text-area .content {
-    -fx-background-color: text-area-background ;
+    -fx-background-color: -text-area-background ;
 }
 
 .button {

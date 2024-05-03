@@ -69,7 +69,7 @@ public class ErrorReportEntry {
         if (adjustedHeading.endsWith("\n")) {
             adjustedHeading = adjustedHeading.substring(0, adjustedHeading.lastIndexOf("\n"));
         }
-        adjustedHeading = adjustedHeading.replaceAll("\n", " . ") + "\n";
+        adjustedHeading = adjustedHeading.replace("\n", " . ") + "\n";
         
         if (adjustedHeading.length() < length) {
             return adjustedHeading;

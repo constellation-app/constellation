@@ -1,11 +1,10 @@
 .list-view .list-cell:even {
-    -fx-background-color: linear-gradient(to right, #cacaca, #e0e0e0 25% ,#ffffff 100%); /* #e8f1f4; */
+    -fx-background-color: linear-gradient(to right, #cacaca, #e0e0e0 25% ,#ffffff 100%);
 }
 .list-view .list-cell:odd {
-    -fx-background-color: linear-gradient(to right, #c0c0c0, #d8d8d8 25% ,#ffffff 100%); /* #e0eaec; */
+    -fx-background-color: linear-gradient(to right, #c0c0c0, #d8d8d8 25% ,#ffffff 100%);
 }
 .list-view .list-cell:selected {
-    /* -fx-background-color: #4598e2; */
     -fx-background-color: linear-gradient(to right, #4598e2, #55a1f9 25% , #b0d0f0 100%);
 }
 .list-view .list-cell:hover {

@@ -158,7 +158,12 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
     private final List<String> popupFilters = new ArrayList<>();
     private boolean errorReportRunning = true;
     private boolean waitForGracePeriod = false;
-    private static final String INACTIVE_BACKGROUND = DARK_MODE ? "black" : "white";
+    
+    private static final String BLACK = "black";
+    private static final String WHITE = "white";
+    private static final String INACTIVE_BACKGROUND = DARK_MODE ? BLACK : WHITE;
+    private static final String FX_TEXT_FILL = " -fx-text-fill: ";
+    private static final String FX_BACKGROUND = " -fx-background-color: ";
 
     private Date flashActivatedDate = null;
     private boolean iconFlashing = false;
@@ -454,7 +459,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         componentBox.getChildren().add(toolboxContainer);
 
         final BorderPane errorBPane = new BorderPane();
-        errorBPane.setStyle("-fx-text-fill: purple; -fx-text-background-color: blue; -fx-background-color: " + (DARK_MODE ? "black" : "white") + ";");
+        errorBPane.setStyle(FX_BACKGROUND + INACTIVE_BACKGROUND + ";");
         sessionErrorsBox.setPadding(new Insets(0, 0, 0, 0));
         sessionErrorsBox.setSpacing(2);
 
@@ -545,7 +550,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
     }
 
     private void updateSettingsIcon(final FlowPane settingsPane, final String innerShade, final String borderShade) {
-        settingsPane.setStyle("-fx-background-color: " + innerShade + "; -fx-border-color: " + borderShade + ";");
+        settingsPane.setStyle(FX_BACKGROUND + innerShade + "; -fx-border-color: " + borderShade + ";");
     }
 
     public void setReportsExpanded(final boolean expandedMode) {
@@ -785,8 +790,8 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
      */
     public TitledPane generateErrorReportTitledPane(final ErrorReportEntry entry) {
         final TitledPane ttlPane = new TitledPane();
-        String backgroundColour = DARK_MODE ? "#4a0000" : "#ff9696";
-        String backgroundFadeColour = DARK_MODE ? "#140000" : "#f4f4f4";
+        String backgroundColour = DARK_MODE ? "#4a0000" : "#ec9696";
+        String backgroundFadeColour = DARK_MODE ? "#140000" : "#f2ebeb";
         int redBase = 0;
         int redIncrement = 0;
         int greenBase = 0;
@@ -797,17 +802,17 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         String alertColour = "#a0a0a0";
         if (entry.getErrorLevel() == Level.SEVERE) {
             alertColour = "#d87070";
-            redBase = DARK_MODE ? 100 : 240;
+            redBase = DARK_MODE ? 100 : 245;
             redIncrement = 16;
-            greenBase = DARK_MODE ? 20 : 120;
+            greenBase = DARK_MODE ? 20 : 115;
             greenIncrement = 7;
-            blueBase = DARK_MODE ? 20 : 120;
+            blueBase = DARK_MODE ? 20 : 115;
             blueIncrement = 7;
         } else if (entry.getErrorLevel() == Level.WARNING) {
             alertColour = "#c08c60";
             redBase = DARK_MODE ? 95: 250;
             redIncrement = 15;
-            greenBase = DARK_MODE ? 50 : 160;
+            greenBase = DARK_MODE ? 50 : 155;
             greenIncrement = 10;
             blueBase = DARK_MODE ? 12 : 80;
             blueIncrement = 5;
@@ -832,20 +837,20 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         int intensityFactor = 1;
         if (entry.getOccurrences() > 999) {
             intensityFactor = 5;
-            backgroundColour = DARK_MODE ? "#7c0000" : "#f37e7e";
-            backgroundFadeColour = DARK_MODE ? "#240000" : "#fcfcfc";
+            backgroundColour = DARK_MODE ? "#7c0000" : "#dc7676";
+            backgroundFadeColour = DARK_MODE ? "#240000" : "#e9dfdf";
         } else if (entry.getOccurrences() > 99) {
             intensityFactor = 4;
-            backgroundColour = DARK_MODE ? "#6e0000" : "#f68484";
-            backgroundFadeColour = DARK_MODE ? "#200000" : "#fafafa";
+            backgroundColour = DARK_MODE ? "#6e0000" : "#e07e7e";
+            backgroundFadeColour = DARK_MODE ? "#200000" : "#eae2e2";
         } else if (entry.getOccurrences() > 9) {
             intensityFactor = 3;
-            backgroundColour = DARK_MODE ? "#600000" : "#f98a8a";
-            backgroundFadeColour = DARK_MODE ? "#1c0000" : "#f8f8f8";
+            backgroundColour = DARK_MODE ? "#600000" : "#e48686";
+            backgroundFadeColour = DARK_MODE ? "#1c0000" : "#ece5e5";
         } else if (entry.getOccurrences() > 1) {
             intensityFactor = 2;
-            backgroundColour = DARK_MODE ? "#540000" : "#fc9090";
-            backgroundFadeColour = DARK_MODE ? "#180000" : "#f6f6f6";
+            backgroundColour = DARK_MODE ? "#540000" : "#e88e8e";
+            backgroundFadeColour = DARK_MODE ? "#180000" : "#eee8e8";
         }
         String areaBackgroundColour = "radial-gradient(radius 100%, " + backgroundColour + " 0%, " + backgroundFadeColour + " 100%)";
         if (!DARK_MODE) {
@@ -863,7 +868,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         final String textColour = DARK_MODE ? "#c0c0c0" : "#303030";
 
         final TextArea data = new TextArea(entry.getSummaryHeading() + "\n" + entry.getErrorData());
-        data.setStyle("-fx-text-fill: " + textColour + "; -fx-background-color: " + backgroundColour + "; text-area-background: " + areaBackgroundColour + "; -fx-border-color: #505050; -fx-border-width: 2;");
+        data.setStyle(FX_TEXT_FILL + textColour + ";" + FX_BACKGROUND + backgroundColour + "; -text-area-background: " + areaBackgroundColour + "; -fx-border-color: #505050; -fx-border-width: 2;");
         data.setEditable(false);
         data.setPadding(new Insets(2));
         data.setPrefRowCount(14);
@@ -893,11 +898,11 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         final ImageView allowPopups = new ImageView(popupAllowImage);
         final ImageView blockPopups = new ImageView(popupBlockImage);
 
-        String backgroundTextTitleColour = DARK_MODE ? backgroundFadeColour : "#b8c9db";
-        String backgroundStyle = "-fx-background-color: linear-gradient( " + severityColour + " 1% , " + backgroundTextTitleColour + " 30%, " + backgroundTextTitleColour + " 70%, " + severityColour + " 99% );";
+        final String backgroundTextTitleColour = backgroundFadeColour;
+        final String backgroundStyle = "-fx-background-color: linear-gradient( " + severityColour + " 1% , " + backgroundTextTitleColour + " 35%, " + backgroundTextTitleColour + " 65%, " + severityColour + " 99% );";
         
         final Button blockPopupsButton = new Button("");
-        blockPopupsButton.setStyle("-fx-background-color: " + (DARK_MODE ? "404040" : "#A4BAD0") + ";" + " -fx-border-color: #404040");
+        blockPopupsButton.setStyle(FX_BACKGROUND + (DARK_MODE ? "#404040" : "#aabaca") + ";" + " -fx-border-color: #606060");
         blockPopupsButton.setGraphic(entry.isBlockRepeatedPopups() ? blockPopups : allowPopups);
         blockPopupsButton.setTooltip(entry.isBlockRepeatedPopups() ? new Tooltip("Popups Blocked.\nRight click to review exception") : new Tooltip("Popups Allowed.\nRight click to review exception"));
         blockPopupsButton.setPadding(new Insets(2, 2, 2, 2));
@@ -913,40 +918,43 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         contextMenu.getItems().add(redisplay);
         blockPopupsButton.setContextMenu(contextMenu);
         
-        blockPopupsButton.setMinHeight(18);
-        blockPopupsButton.setMinHeight(18);
+        blockPopupsButton.setMinHeight(22);
+        blockPopupsButton.setMaxHeight(22);
 
         final ImageView crossImageHighlight = new ImageView(UserInterfaceIconProvider.CROSS.buildImage(14, new Color(215, 215, 215)));
         final Button dismissButton = new Button("");
-        dismissButton.setStyle("-fx-background-color: " + (DARK_MODE ? "404040" : "#91ACC7") + "; -fx-border-color: #606060"); // "#809EBD"
+        final String dismissButtonColor = DARK_MODE ? "#404040" : "#89A0B5";
+        dismissButton.setStyle(FX_BACKGROUND + dismissButtonColor + "; -fx-border-color: #606060");
         dismissButton.setGraphic(crossImageHighlight);
         dismissButton.addEventFilter(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+            @Override
             public void handle(final MouseEvent mouseEvent) {
-                dismissButton.setStyle("-fx-background-color: #e84848; -fx-border-color: #c01c1c");
+                dismissButton.setStyle("-fx-background-color: #e84848; -fx-border-color: #c03c3c");
                 mouseEvent.consume();
             }
         });
         dismissButton.addEventFilter(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
+            @Override
             public void handle(final MouseEvent mouseEvent) {
-                dismissButton.setStyle("-fx-background-color: " + (DARK_MODE ? "404040" : "#91ACC7") + "; -fx-border-color: #606060");
+                dismissButton.setStyle(FX_BACKGROUND + dismissButtonColor + "; -fx-border-color: #606060");
                 mouseEvent.consume();
             }
         });
         dismissButton.setPadding(new Insets(3,1,1,1));
-        dismissButton.setMinHeight(21);
-        dismissButton.setMinHeight(21);
+        dismissButton.setMinHeight(22);
+        dismissButton.setMaxHeight(22);
         dismissButton.setOnAction((final ActionEvent event) -> {
             ErrorReportSessionData.getInstance().removeEntry(entry.getEntryId());
             updateSessionErrorsBox(-1);
         });
 
-        label.setStyle("-fx-text-fill: " + textColour + ";");
-        timeLabel.setStyle("-fx-text-fill: " + textColour + ";");
+        label.setStyle(FX_TEXT_FILL + textColour + ";");
+        timeLabel.setStyle(FX_TEXT_FILL + textColour + ";");
 
         hBoxLeft.setStyle(backgroundStyle);
         hBoxTitle.setStyle(backgroundStyle);
         hBoxRight.setStyle(backgroundStyle);
-        counterLabel.setStyle(" -fx-background-color: " + (DARK_MODE ? "black" : "#e0e0e0") + "; -fx-text-background-color: cyan; -fx-text-fill: " + alertColour + " ; -fx-font-weight: bold; -fx-border-color: " + severityColour);
+        counterLabel.setStyle(FX_BACKGROUND + (DARK_MODE ? BLACK : "#e0e0e0") + ";" + FX_TEXT_FILL + alertColour + " ; -fx-font-weight: bold; -fx-border-color: " + severityColour);
         counterLabel.setTooltip(new Tooltip("Repeated Occurrences"));
         counterLabel.setPadding(new Insets(1, 0, 1, 0));
         timeLabel.setPadding(new Insets(2, 0, 0, 0));

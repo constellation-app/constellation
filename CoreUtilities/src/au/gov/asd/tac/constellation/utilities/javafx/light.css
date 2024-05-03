@@ -5,11 +5,11 @@
  ******************************************************************************/
 
 * {
-    consty-fadeblue: #b0d0f0;
-    consty-ltblue: #51a5f8;;
-    consty-blue: #4191e8;
-    consty-dkblue: #317fee;
-    consty-diabled: #85aac8;
+    -consty-fadeblue: #b0d0f0;
+    -consty-ltblue: #51a5f8;
+    -consty-blue: #4191e8;
+    -consty-dkblue: #317fee;
+    -consty-diabled: #7aa2cd;
 }
 
 /*******************************************************************************
@@ -18,20 +18,20 @@
  *                                                                             *
  ******************************************************************************/
 .list-view .list-cell:selected {
-    -fx-background-color: consty-ltblue;
+    -fx-background-color: -consty-ltblue;
     -fx-text-fill: white;
 }
 .list-view .list-cell:hover {
-    -fx-background-color: consty-ltblue;
+    -fx-background-color: -consty-ltblue;
     -fx-text-fill: white;
 }
 
 .tree-cell:selected {
-    -fx-background-color: consty-ltblue;
+    -fx-background-color: -consty-ltblue;
     -fx-text-fill: white;
 }
 .tree-cell:hover {
-    -fx-background-color: consty-ltblue;
+    -fx-background-color: -consty-ltblue;
     -fx-text-fill: white;
 }
 
@@ -62,8 +62,8 @@
  *                                                                             *
  ******************************************************************************/
 .menu-button {
-    -fx-background-color: consty-blue;
-    -fx-border-color: consty-dkblue;
+    -fx-background-color: -consty-blue;
+    -fx-border-color: -consty-dkblue;
     -fx-border-radius: 2px;
     -fx-mark-color: white;
 }
@@ -74,7 +74,7 @@
 
 .menu-button:hover {
     -fx-color: -fx-hover-base;
-    -fx-background-color: consty-ltblue;
+    -fx-background-color: -consty-ltblue;
 }
 
 .menu-bar .label {
@@ -87,11 +87,11 @@
 
 .menu-item:hover .label {
     -fx-text-fill: white;
-    -fx-background-color: consty-ltblue;
+    -fx-background-color: -consty-ltblue;
 }
 
 .menu:hover {
-    -fx-background-color: consty-ltblue;
+    -fx-background-color: -consty-ltblue;
 }
 
 .menu-item:focused .label {
@@ -104,11 +104,11 @@
 }
 
 .context-menu .menu-item:hover {
-    -fx-background-color: consty-ltblue;
+    -fx-background-color: -consty-ltblue;
 }
 
 .context-menu .menu-item:focused {
-    -fx-background-color: consty-ltblue;
+    -fx-background-color: -consty-ltblue;
 }
 /*******************************************************************************
  *                                                                             *
@@ -116,14 +116,14 @@
  *                                                                             *
  ******************************************************************************/
 .button {
-    -fx-base: consty-blue;
+    -fx-base: -consty-blue;
     -fx-text-fill: #ffffff;
 }
 
 .button:hover {
     -fx-color: -fx-hover-base;
     -fx-text-fill: #ffffff;
-    -fx-background-color: consty-ltblue;
+    -fx-background-color: -consty-ltblue;
 }
 
 .toggle-button {
@@ -137,11 +137,11 @@
 
 
 .toggle-button:selected {
-    -fx-background-color: consty-blue;
+    -fx-background-color: -consty-blue;
 }
 
 .toggle-button:selected:focused {
-    -fx-background-color: consty-blue;
+    -fx-background-color: -consty-blue;
 }
 
 /* Uncategorised */

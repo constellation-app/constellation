@@ -61,7 +61,6 @@ public class ErrorReportDialog {
     private static final Color TRANSPARENT = new Color(0, 0, 0, 0);
     private static final Insets BORDERPANE_PADDING = new Insets(8);
     private static final Insets BUTTONPANE_PADDING = new Insets(4, 4, 4, 4);
-    private static final boolean DARK_MODE = JavafxStyleManager.isDarkTheme();
 
     private final CheckBox blockRepeatsCheckbox = new CheckBox("Block all future popups for this exception");
     private final Button showHideButton = new Button("Show Details");
