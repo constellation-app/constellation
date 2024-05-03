@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -94,6 +94,8 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
 
     private static final String OUTGOING = "outgoing";
     private static final String INCOMING = "incoming";
+    
+    private static final Pattern SPECIAL_CHARS_PATTERN = Pattern.compile("\\W");
 
     @Override
     public String getType() {
@@ -470,6 +472,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
                         }
                         if (removeSpecialChars) {
                             word = word.replaceAll("\\W", "");
+                            word = SPECIAL_CHARS_PATTERN.matcher(word).replaceAll("");
                         }
                         if (word.length() < wordLength) {
                             continue;

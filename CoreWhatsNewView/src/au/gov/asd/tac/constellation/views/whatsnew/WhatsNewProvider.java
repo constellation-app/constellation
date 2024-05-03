@@ -39,6 +39,8 @@ import java.util.regex.Pattern;
 public abstract class WhatsNewProvider {
     
     private static final Logger LOGGER = Logger.getLogger(WhatsNewProvider.class.getName());
+    
+    private static final Pattern WNE_HEADER_REGEX = Pattern.compile("^==\\s+(\\d{4}-\\d{2}-\\d{2})\\s+(.*)");
 
     /**
      * Get the path of a text file (relative to the implementing class) that
@@ -111,8 +113,6 @@ public abstract class WhatsNewProvider {
      * @throws IOException If something goes wrong while reading the text.
      */
     private static List<WhatsNewEntry> parse(final BufferedReader reader, final String section) throws IOException {
-        final Pattern wneHeader = Pattern.compile("^==\\s+(\\d{4}-\\d{2}-\\d{2})\\s+(.*)");
-
         final ArrayList<WhatsNewEntry> wnes = new ArrayList<>();
 
         String date = null;
@@ -133,7 +133,7 @@ public abstract class WhatsNewProvider {
                     break;
                 }
 
-                final Matcher m = wneHeader.matcher(line);
+                final Matcher m = WNE_HEADER_REGEX.matcher(line);
                 if (m.matches()) {
                     date = m.group(1);
                     header = m.group(2);

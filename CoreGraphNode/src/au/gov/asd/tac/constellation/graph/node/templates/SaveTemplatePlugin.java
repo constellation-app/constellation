@@ -37,6 +37,8 @@ import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.prefs.Preferences;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -91,8 +93,9 @@ public class SaveTemplatePlugin extends SimplePlugin {
         final File templateDir = new File(userDir, TEMPLATE_DIR);
         final File oldTemplate = new File(templateDir, NewSchemaGraphAction.getTemplateNames().get(templateName) + "/" + templateName);
         if (oldTemplate.exists()) {
-            final boolean oldTemplateIsDeleted = oldTemplate.delete();
-            if (!oldTemplateIsDeleted) {
+            try {
+                Files.delete(Path.of(oldTemplate.getPath()));
+            } catch (final IOException ex) {
                 //TODO: Handle case where file not successfully deleted
             }
         }

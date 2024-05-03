@@ -36,6 +36,9 @@ import javax.swing.ListSelectionModel;
  * @author sol695510
  */
 final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
+    
+    private static final String NO_CATEGORY_SELECTED = "No Category Selected";
+    private static final String PLEASE_SELECT_CATEGORY_MESSAGE = "Please select a category first";
 
     private final DataAccessViewCategoryPanelController controller;
 
@@ -288,7 +291,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
     private void buttonRightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRightActionPerformed
 
         if (visibleList.getSelectedIndex() == -1) {
-            JOptionPane.showMessageDialog(OptionPanel, "No Category selected...", "Error", 1);
+            JOptionPane.showMessageDialog(OptionPanel, PLEASE_SELECT_CATEGORY_MESSAGE, NO_CATEGORY_SELECTED, JOptionPane.WARNING_MESSAGE);
         } else {
             // Add selected options to hidden list.
             final List<String> selectedValues = visibleList.getSelectedValuesList();
@@ -313,7 +316,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
     private void buttonLeftActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonLeftActionPerformed
 
         if (hiddenList.getSelectedIndex() == -1) {
-            JOptionPane.showMessageDialog(OptionPanel, "No Category selected...", "Error", 1);
+            JOptionPane.showMessageDialog(OptionPanel, PLEASE_SELECT_CATEGORY_MESSAGE, NO_CATEGORY_SELECTED, JOptionPane.WARNING_MESSAGE);
         } else {
             // Add selected options to visible list.
             final List<String> selectedValues = hiddenList.getSelectedValuesList();
@@ -337,7 +340,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
 
     private void buttonUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonUpActionPerformed
         if (visibleList.getSelectedIndex() == -1) {
-            JOptionPane.showMessageDialog(OptionPanel, "No Category selected...", "Error", 1);
+            JOptionPane.showMessageDialog(OptionPanel, PLEASE_SELECT_CATEGORY_MESSAGE, NO_CATEGORY_SELECTED, JOptionPane.WARNING_MESSAGE);
         } else {
             final int[] selectedIndices = visibleList.getSelectedIndices();
 
@@ -363,7 +366,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
 
     private void buttonDownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDownActionPerformed
         if (visibleList.getSelectedIndex() == -1) {
-            JOptionPane.showMessageDialog(OptionPanel, "No Category selected...", "Error", 1);
+            JOptionPane.showMessageDialog(OptionPanel, PLEASE_SELECT_CATEGORY_MESSAGE, NO_CATEGORY_SELECTED, JOptionPane.WARNING_MESSAGE);
         } else {
             final int[] selectedIndices = visibleList.getSelectedIndices();
 
