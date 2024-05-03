@@ -35,7 +35,7 @@ public class ErrorReportDialogManager {
     private final List<String> popupTypeFilters = new ArrayList<>();
     private boolean isErrorReportRunning = false;
 
-    private Date latestRetrievalDate = null;
+    private Date latestRetrievalDate = null; // NOSONAR
     private Date previousRetrievalDate = null;
     private Date backupRetrievalDate = null;
     private Date gracePeriodResumptionDate = null;

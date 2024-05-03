@@ -162,6 +162,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
     private static final String BLACK = "black";
     private static final String WHITE = "white";
     private static final String INACTIVE_BACKGROUND = DARK_MODE ? BLACK : WHITE;
+    private static final String MODE_TEXT = DARK_MODE ? "dark" : "light";
     private static final String FX_TEXT_FILL = " -fx-text-fill: ";
     private static final String FX_BACKGROUND = " -fx-background-color: ";
 
@@ -790,72 +791,138 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
      */
     public TitledPane generateErrorReportTitledPane(final ErrorReportEntry entry) {
         final TitledPane ttlPane = new TitledPane();
-        String backgroundColour = DARK_MODE ? "#4a0000" : "#ec9696";
-        String backgroundFadeColour = DARK_MODE ? "#140000" : "#f2ebeb";
+        String backgroundColour;
+        String backgroundFadeColour;
+        final String textColour;
+        final String dismissButtonColor;
+
         int redBase = 0;
         int redIncrement = 0;
         int greenBase = 0;
         int greenIncrement = 0;
         int blueBase = 0;
         int blueIncrement = 0;
-
         String alertColour = "#a0a0a0";
-        if (entry.getErrorLevel() == Level.SEVERE) {
-            alertColour = "#d87070";
-            redBase = DARK_MODE ? 100 : 245;
-            redIncrement = 16;
-            greenBase = DARK_MODE ? 20 : 115;
-            greenIncrement = 7;
-            blueBase = DARK_MODE ? 20 : 115;
-            blueIncrement = 7;
-        } else if (entry.getErrorLevel() == Level.WARNING) {
-            alertColour = "#c08c60";
-            redBase = DARK_MODE ? 95: 250;
-            redIncrement = 15;
-            greenBase = DARK_MODE ? 50 : 155;
-            greenIncrement = 10;
-            blueBase = DARK_MODE ? 12 : 80;
-            blueIncrement = 5;
-        } else if (entry.getErrorLevel() == Level.INFO) {
-            alertColour = "#a8a848";
-            redBase = DARK_MODE ? 62 : 250;
-            redIncrement = 13;
-            greenBase = DARK_MODE ? 62 : 210;
-            greenIncrement = 13;
-            blueBase = DARK_MODE ? 8 : 80;
-            blueIncrement = 4;
-        } else if (entry.getErrorLevel() == Level.FINE) {
-            alertColour = "#42a4a4";
-            redBase = DARK_MODE ? 8 : 80;
-            redIncrement = 4;
-            greenBase = DARK_MODE ? 60 : 220;
-            greenIncrement = 11;
-            blueBase = DARK_MODE ? 60 : 220;
-            blueIncrement = 11;
-        }
 
         int intensityFactor = 1;
-        if (entry.getOccurrences() > 999) {
-            intensityFactor = 5;
-            backgroundColour = DARK_MODE ? "#7c0000" : "#dc7676";
-            backgroundFadeColour = DARK_MODE ? "#240000" : "#e9dfdf";
-        } else if (entry.getOccurrences() > 99) {
-            intensityFactor = 4;
-            backgroundColour = DARK_MODE ? "#6e0000" : "#e07e7e";
-            backgroundFadeColour = DARK_MODE ? "#200000" : "#eae2e2";
-        } else if (entry.getOccurrences() > 9) {
-            intensityFactor = 3;
-            backgroundColour = DARK_MODE ? "#600000" : "#e48686";
-            backgroundFadeColour = DARK_MODE ? "#1c0000" : "#ece5e5";
-        } else if (entry.getOccurrences() > 1) {
-            intensityFactor = 2;
-            backgroundColour = DARK_MODE ? "#540000" : "#e88e8e";
-            backgroundFadeColour = DARK_MODE ? "#180000" : "#eee8e8";
+        if (DARK_MODE) {
+            backgroundColour = "#4a0000";
+            backgroundFadeColour = "#140000";
+            textColour = "#c0c0c0";
+            dismissButtonColor = "#404040";
+
+            if (entry.getOccurrences() > 999) {
+                intensityFactor = 5;
+                backgroundColour = "#7c0000";
+                backgroundFadeColour = "#240000";
+            } else if (entry.getOccurrences() > 99) {
+                intensityFactor = 4;
+                backgroundColour = "#6e0000";
+                backgroundFadeColour = "#200000";
+            } else if (entry.getOccurrences() > 9) {
+                intensityFactor = 3;
+                backgroundColour = "#600000";
+                backgroundFadeColour = "#1c0000";
+            } else if (entry.getOccurrences() > 1) {
+                intensityFactor = 2;
+                backgroundColour = "#540000";
+                backgroundFadeColour = "#180000";
+            }
+            
+            if (entry.getErrorLevel() == Level.SEVERE) {
+                alertColour = "#d87070";
+                redBase = 100;
+                redIncrement = 16;
+                greenBase = 20;
+                greenIncrement = 7;
+                blueBase = 20;
+                blueIncrement = 7;
+            } else if (entry.getErrorLevel() == Level.WARNING) {
+                alertColour = "#c08c60";
+                redBase = 95;
+                redIncrement = 15;
+                greenBase = 50;
+                greenIncrement = 10;
+                blueBase = 12;
+                blueIncrement = 5;
+            } else if (entry.getErrorLevel() == Level.INFO) {
+                alertColour = "#a8a848";
+                redBase = 62;
+                redIncrement = 13;
+                greenBase = 62;
+                greenIncrement = 13;
+                blueBase = 8;
+                blueIncrement = 4;
+            } else if (entry.getErrorLevel() == Level.FINE) {
+                alertColour = "#42a4a4";
+                redBase = 8;
+                redIncrement = 4;
+                greenBase = 60;
+                greenIncrement = 11;
+                blueBase = 60;
+                blueIncrement = 11;
+            }
+            
+        } else {
+            backgroundColour = "#ec9696";
+            backgroundFadeColour = "#f2ebeb";
+            textColour = "#303030";
+            dismissButtonColor = "#89A0B5";
+            
+            if (entry.getOccurrences() > 999) {
+                intensityFactor = 5;
+                backgroundColour = "#dc7676";
+                backgroundFadeColour = "#e9dfdf";
+            } else if (entry.getOccurrences() > 99) {
+                intensityFactor = 4;
+                backgroundColour = "#e07e7e";
+                backgroundFadeColour = "#eae2e2";
+            } else if (entry.getOccurrences() > 9) {
+                intensityFactor = 3;
+                backgroundColour = "#e48686";
+                backgroundFadeColour = "#ece5e5";
+            } else if (entry.getOccurrences() > 1) {
+                intensityFactor = 2;
+                backgroundColour = "#e88e8e";
+                backgroundFadeColour = "#eee8e8";
+            }
+            
+            if (entry.getErrorLevel() == Level.SEVERE) {
+                alertColour = "#d87070";
+                redBase = 245;
+                redIncrement = -10;
+                greenBase = 115;
+                greenIncrement = -6;
+                blueBase = 115;
+                blueIncrement = -6;
+            } else if (entry.getErrorLevel() == Level.WARNING) {
+                alertColour = "#c08c60";
+                redBase = 250;
+                redIncrement = -15;
+                greenBase = 155;
+                greenIncrement = -10;
+                blueBase = 80;
+                blueIncrement = -5;
+            } else if (entry.getErrorLevel() == Level.INFO) {
+                alertColour = "#a8a848";
+                redBase = 250;
+                redIncrement = -13;
+                greenBase = 210;
+                greenIncrement = -13;
+                blueBase = 80;
+                blueIncrement = -4;
+            } else if (entry.getErrorLevel() == Level.FINE) {
+                alertColour = "#42a4a4";
+                redBase = 80;
+                redIncrement = -4;
+                greenBase = 220;
+                greenIncrement = -11;
+                blueBase = 220;
+                blueIncrement = -11;
+            }
+                        
         }
         String areaBackgroundColour = "radial-gradient(radius 100%, " + backgroundColour + " 0%, " + backgroundFadeColour + " 100%)";
-        if (!DARK_MODE) {
-            intensityFactor = -1 * intensityFactor;
-        }
 
         final String severityColour = "rgb(" + (redBase + intensityFactor * redIncrement) + ","
                 + (greenBase + intensityFactor * greenIncrement) + ","
@@ -865,8 +932,6 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         final VBox vBox = new VBox();
         vBox.setPadding(new Insets(1));
         
-        final String textColour = DARK_MODE ? "#c0c0c0" : "#303030";
-
         final TextArea data = new TextArea(entry.getSummaryHeading() + "\n" + entry.getErrorData());
         data.setStyle(FX_TEXT_FILL + textColour + ";" + FX_BACKGROUND + backgroundColour + "; -text-area-background: " + areaBackgroundColour + "; -fx-border-color: #505050; -fx-border-width: 2;");
         data.setEditable(false);
@@ -890,8 +955,8 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         final WritableImage popupAllowImage = new WritableImage(16, 16);
         final WritableImage popupBlockImage = new WritableImage(16, 16);
         try {
-            SwingFXUtils.toFXImage(ImageIO.read(ErrorReportTopComponent.class.getResource("resources/popupallow" + (DARK_MODE ? "dark" : "light") + ".png")), popupAllowImage);
-            SwingFXUtils.toFXImage(ImageIO.read(ErrorReportTopComponent.class.getResource("resources/popupblock" + (DARK_MODE ? "dark" : "light") + ".png")), popupBlockImage);
+            SwingFXUtils.toFXImage(ImageIO.read(ErrorReportTopComponent.class.getResource("resources/popupallow" + MODE_TEXT + ".png")), popupAllowImage);
+            SwingFXUtils.toFXImage(ImageIO.read(ErrorReportTopComponent.class.getResource("resources/popupblock" + MODE_TEXT + ".png")), popupBlockImage);
         } catch (final IOException ioex) {
             LOGGER.log(Level.SEVERE, "Error loading image file", ioex);
         }
@@ -923,7 +988,6 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
 
         final ImageView crossImageHighlight = new ImageView(UserInterfaceIconProvider.CROSS.buildImage(14, new Color(215, 215, 215)));
         final Button dismissButton = new Button("");
-        final String dismissButtonColor = DARK_MODE ? "#404040" : "#89A0B5";
         dismissButton.setStyle(FX_BACKGROUND + dismissButtonColor + "; -fx-border-color: #606060");
         dismissButton.setGraphic(crossImageHighlight);
         dismissButton.addEventFilter(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
