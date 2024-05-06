@@ -36,6 +36,7 @@ import au.gov.asd.tac.constellation.utilities.visual.AxisConstants;
 import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import java.awt.Component;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -69,6 +70,7 @@ public class SVGGraphBuilderNGTest {
     private GraphNode contextMock;
     private ConstellationGlobalThreadPool globalThreadPoolMock;
     private Component visualComponentMock;
+    private File fileMock;
     private final DrawFlags flags = new DrawFlags(true, true, true, false, false);
     private final String graphName = "Test Graph 1";
     private final ExecutorService threadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
@@ -127,6 +129,7 @@ public class SVGGraphBuilderNGTest {
         interactionMock = mock(DefaultPluginInteraction.class);
         visualComponentMock = mock(Component.class);
         globalThreadPoolMock = mock(ConstellationGlobalThreadPool.class);
+        fileMock = mock(File.class);
         
         //Getting Graph from GraphNode
         doReturn(graphName).when(contextMock).getDisplayName();
@@ -156,6 +159,7 @@ public class SVGGraphBuilderNGTest {
         threadPoolStaticMock.when(() 
                 -> ConstellationGlobalThreadPool.getThreadPool())
                 .thenReturn(globalThreadPoolMock);
+        doReturn(false).when(fileMock).exists();
         
         doReturn(threadPool).when(globalThreadPoolMock).getFixedThreadPool(anyString(), anyInt());
     }
@@ -250,25 +254,26 @@ public class SVGGraphBuilderNGTest {
         assertEquals(result, instance);
     }
 
-//    /**
-//     * Test of build method, of class SVGGraphBuilder.
-//     */
-//    @Test
-//    public void testBuild() throws IllegalArgumentException, InterruptedException {
-//        System.out.println("build");
-//        final SVGGraphBuilder instance = new SVGGraphBuilder()
-//                .withInteraction(interactionMock)
-//                .withReadableGraph(graph.getReadableGraph())
-//                .withTitle(graphName)
-//                .fromPerspective(AxisConstants.Z_POSITIVE)
-//                .withSelectedElementsOnly(false)
-//                .withDrawFlags(flags)
-//                .withCores(2);
-//        
-//        final SVGObject result = new SVGObject(instance.build());
-//        assertNotNull(result.getChild(String.format("node-%s",vertexId2)));
-//    }
-    
+    /**
+     * Test of build method, of class SVGGraphBuilder.
+     */
+    @Test
+    public void testBuild() throws IllegalArgumentException, InterruptedException {
+        System.out.println("build");
+        final SVGGraphBuilder instance = new SVGGraphBuilder()
+                .atDirectory(fileMock)
+                .withInteraction(interactionMock)
+                .withReadableGraph(graph.getReadableGraph())
+                .withTitle(graphName)
+                .fromPerspective(AxisConstants.Z_POSITIVE)
+                .withSelectedElementsOnly(false)
+                .withDrawFlags(flags)
+                .withCores(4);
+        
+        final SVGObject result = new SVGObject(instance.build());
+        assertNotNull(result.getChild(String.format("node-%s",vertexId2)));
+    }
+        
     /**
      * Test of build method, of class SVGGraphBuilder.
      * @throws java.lang.InterruptedException
@@ -406,7 +411,7 @@ public class SVGGraphBuilderNGTest {
             transactionId3 = wg.addTransaction(vertexId5, vertexId2, true);
             transactionId4 = wg.addTransaction(vertexId2, vertexId2, true);
             transactionId5 = wg.addTransaction(vertexId2, vertexId2, false);
-            
+
         } finally {
             wg.commit();
         }

@@ -201,7 +201,7 @@ public class SVGGraphBuilder {
 
             buildLayout(svgGraph);
         } catch (InterruptedException ex){
-            threadPool.shutdownNow();
+            threadPool.shutdown();
             throw ex;
             
         } finally {
@@ -280,7 +280,7 @@ public class SVGGraphBuilder {
     private void postBuild(){
         access.endUpdate();
         if (threadPool != null){
-            threadPool.shutdown();
+            threadPool.close();
         }
     }
     

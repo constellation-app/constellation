@@ -25,11 +25,9 @@ import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.FileIconData;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
-import au.gov.asd.tac.constellation.utilities.svg.SVGAttributeConstants;
 import au.gov.asd.tac.constellation.utilities.svg.SVGData;
 import au.gov.asd.tac.constellation.utilities.svg.SVGObject;
 import au.gov.asd.tac.constellation.utilities.svg.SVGParser;
-import au.gov.asd.tac.constellation.utilities.svg.SVGTypeConstants;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
@@ -38,7 +36,6 @@ import javax.imageio.ImageIO;
 import au.gov.asd.tac.constellation.plugins.MultiTaskInteraction.SharedInteractionRunnable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -247,7 +244,6 @@ public class GenerateSVGNodesTask implements Runnable, SharedInteractionRunnable
         // If there is not a external asset direcotory ConstellationIcon should be used to build an imbeded SVG assets with imbeded image data
         } else if (!graph.directory.exists()){
             return icon.buildSVG(color);
-            
         //    
         } else {
             return this.generateRasterImageRefrerence(icon, color);

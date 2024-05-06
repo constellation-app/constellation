@@ -76,11 +76,7 @@ public class GraphVisualisationReferences {
         this.selectedElementsOnly = selectedElementsOnly;
         final Graph currentGraph = GraphManager.getDefault().getActiveGraph();
         this.access = new GraphVisualAccess(currentGraph);
-        if (directory != null){
-            this.directory = new File(directory.getAbsolutePath());
-        } else {
-            this.directory = null;
-        }
+        this.directory = directory;
     }
     
     public void initialise(){
