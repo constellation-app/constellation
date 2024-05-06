@@ -836,7 +836,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
             backgroundColour = "#540000";
             areaBackgroundColour = "radial-gradient(radius 100%, #540000 0%, #180000 100%)";
         }
-
+        
         final String severityColour = "rgb(" + (redBase + intensityFactor * redIncrement) + ","
                 + (greenBase + intensityFactor * greenIncrement) + ","
                 + (blueBase + intensityFactor * blueIncrement) + ")";
@@ -846,7 +846,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         vBox.setPadding(new Insets(1));
 
         final TextArea data = new TextArea(entry.getSummaryHeading() + "\n" + entry.getErrorData());
-        data.setStyle("-fx-text-fill: #c0c0c0; -fx-background-color: " + backgroundColour + "; text-area-background: " + areaBackgroundColour + "; -fx-border-color: #505050; -fx-border-width: 2;"); //  + backgroundColour
+        data.setStyle("-fx-text-fill: #c0c0c0; -fx-background-color: " + backgroundColour + "; --text-area-background: " + areaBackgroundColour + "; -fx-border-color: #505050; -fx-border-width: 2;"); //  + backgroundColour
         data.setEditable(false);
         data.setPadding(new Insets(2));
         data.setPrefRowCount(14);

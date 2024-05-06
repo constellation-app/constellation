@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.help.utilities.HelpMapper;
 import com.jogamp.common.os.Platform;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -54,7 +55,7 @@ public class TreeNode<T> {
     }
 
     public List<TreeNode<T>> getChildren() {
-        return children;
+        return Collections.unmodifiableList(children);
     }
 
     public T getData() {
@@ -160,16 +161,16 @@ public class TreeNode<T> {
      * @param searchNode the node to look within
      * @return the node within searchNode that matches nodeToFind
      */
-    public static TreeNode search(final TOCItem findItem, final TreeNode searchNode) {
+    public static TreeNode search(final TOCItem findItem, final TreeNode<?> searchNode) {
         if (searchNode != null) {
-            final TOCItem searchTOC = (TOCItem) (searchNode.getData());
+            final TOCItem searchTOC = (TOCItem) searchNode.getData();
             if (searchTOC != null && searchTOC.equals(findItem)) {
                 return searchNode;
             } else {
-                TreeNode foundNode = null;
-                for (final Object child : searchNode.getChildren()) {
+                TreeNode<?> foundNode = null;
+                for (final TreeNode<?> child : searchNode.getChildren()) {
                     if (foundNode == null) {
-                        foundNode = search(findItem, (TreeNode) child);
+                        foundNode = search(findItem, child);
                     }
                 }
                 return foundNode;

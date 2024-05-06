@@ -42,6 +42,7 @@ import au.gov.asd.tac.constellation.views.histogram.formats.BinFormatter;
 import java.awt.BorderLayout;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Properties;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
@@ -158,11 +159,11 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
         removeKeyListener(display);
     }
 
-    void writeProperties(java.util.Properties p) {
+    void writeProperties(Properties p) {
         // Method required for @ConvertAsProperties, intentionally left blank.
     }
 
-    void readProperties(java.util.Properties p) {
+    void readProperties(Properties p) {
         // Method required for @ConvertAsProperties, intentionally left blank.
     }
 
@@ -761,7 +762,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
 
         @Override
         protected void read(final GraphReadMethods rg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-            currentBinCollection.saveBinsToClipboard(rg);
+            currentBinCollection.saveBinsToClipboard();
         }
     }
 

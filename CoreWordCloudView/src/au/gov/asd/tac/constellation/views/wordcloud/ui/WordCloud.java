@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.views.wordcloud.content.PhraseTokenHandler;
 import au.gov.asd.tac.constellation.views.wordcloud.content.SparseMatrix;
 import au.gov.asd.tac.constellation.views.wordcloud.content.TaggedSparseMatrix;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -34,6 +35,8 @@ import java.util.TreeSet;
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.apache.commons.math3.stat.descriptive.moment.Variance;
 import org.apache.commons.math3.stat.inference.TTest;
+import org.python.google.common.primitives.Doubles;
+import org.python.google.common.primitives.Ints;
 
 /**
  * A model of the word cloud generated from specific graph elements and a
@@ -198,15 +201,12 @@ public class WordCloud {
         }
 
         // Convert the arrays to their primitive types 
-        final double[] graphColumnD = new double[graphColumn.length];
-        for (int i = 0; i < graphColumnD.length; i++) {
-            graphColumnD[i] = graphColumn[i];
-        }
+        // Converts graphColumn to an array of primitive ints, which is then converted to array of doubles
+        final double[] graphColumnD = Doubles.toArray(Ints.asList(Arrays.stream(graphColumn).mapToInt(Integer::intValue).toArray()));
 
-        final double[] modelColumnD = new double[modelColumn.length];
-        for (int i = 0; i < modelColumnD.length; i++) {
-            modelColumnD[i] = modelColumn[i];
-        }
+        // Converts modelColumn to an array of primitive ints, which is then converted to array of doubles
+        final double[] modelColumnD = Doubles.toArray(Ints.asList(Arrays.stream(modelColumn).mapToInt(Integer::intValue).toArray()));
+
 
         // Return default values when both distributions have zero variance to avoid NaNs.
         final Variance v = new Variance();
@@ -236,7 +236,7 @@ public class WordCloud {
         return queryInfoString;
     }
 
-    public boolean getHasSignificances() {
+    public boolean hasSignificances() {
         return hasSignificances;
     }
 
@@ -281,14 +281,14 @@ public class WordCloud {
     /**
      * Gets whether or not the selection mode is union
      */
-    public boolean getIsUnionSelect() {
+    public boolean isUnionSelect() {
         return isUnionSelect;
     }
 
     /**
      * Gets whether or not the sorting mode is by size
      */
-    public boolean getIsSizeSorted() {
+    public boolean isSizeSorted() {
         return isSizeSorted;
     }
 

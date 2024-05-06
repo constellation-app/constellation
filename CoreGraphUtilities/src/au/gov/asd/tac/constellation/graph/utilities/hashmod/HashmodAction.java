@@ -122,10 +122,8 @@ public final class HashmodAction implements ActionListener {
                 final String[] attributeName = nextAttr.split("\\.");
                 String newAttributeType = StringAttributeDescription.ATTRIBUTE_NAME;
 
-                if (attributeName.length >= 2) {
-                    if (AttributeRegistry.getDefault().getAttributes().get(attributeName[attributeName.length - 1]) != null) {
-                        newAttributeType = attributeName[attributeName.length - 1];
-                    }
+                if (attributeName.length >= 2 && AttributeRegistry.getDefault().getAttributes().get(attributeName[attributeName.length - 1]) != null) {
+                    newAttributeType = attributeName[attributeName.length - 1];
                 }
 
                 if (createAttributes) {

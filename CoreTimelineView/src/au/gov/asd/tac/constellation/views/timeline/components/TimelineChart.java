@@ -129,11 +129,13 @@ public class TimelineChart extends XYChart<Number, Number> {
                     // Change the mouse cursor for the timeline:
                     if (me.getEventType() == MouseEvent.MOUSE_ENTERED) {
                         parent.setCursor(Cursor.CROSSHAIR);
-                    } // Recognise mouse clicks and register the origin for drag operations:
-                    else if (me.getEventType() == MouseEvent.MOUSE_PRESSED) {
+                    
+                    // Recognise mouse clicks and register the origin for drag operations:    
+                    } else if (me.getEventType() == MouseEvent.MOUSE_PRESSED) {
                         mouseOrigin = me.getX();
-                    } // Handle scrolling back and forth:
-                    else if (me.getEventType() == MouseEvent.MOUSE_DRAGGED) {
+                        
+                    // Handle scrolling back and forth:
+                    } else if (me.getEventType() == MouseEvent.MOUSE_DRAGGED) {
                         final double amount = range / width;
                         final double delta = mouseOrigin - mouseX;
 
@@ -144,8 +146,9 @@ public class TimelineChart extends XYChart<Number, Number> {
 
                         // Update variables based on current mouse pointer position:
                         mouseOrigin = mouseX;
-                    } // Get the time under the cursor and place it in a tooltip:
-                    else if (me.getEventType() == MouseEvent.MOUSE_MOVED) {
+                    
+                    // Get the time under the cursor and place it in a tooltip:
+                    } else if (me.getEventType() == MouseEvent.MOUSE_MOVED) {
                         final double pos = lowerTimeExtent + ((mouseX * (upperTimeExtent - lowerTimeExtent)) / width);
 
                         final SimpleDateFormat sdf = new SimpleDateFormat(Bundle.DateFormat() + "  ");
@@ -179,8 +182,9 @@ public class TimelineChart extends XYChart<Number, Number> {
 
                         selection.setLayoutX(mouseOrigin);
                         selection.setWidth(0);
-                    } // Determine if we are doing a drag based selection:
-                    else if (me.getEventType() == MouseEvent.MOUSE_DRAGGED) {
+                    
+                    // Determine if we are doing a drag based selection:
+                    } else if (me.getEventType() == MouseEvent.MOUSE_DRAGGED) {
                         final double delta = mouseOrigin - mouseX;
                         mouseDistanceFromOrigin += delta;
 

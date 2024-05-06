@@ -119,7 +119,7 @@ public class ProxyOptionsPanelController extends OptionsPanelController implemen
 
     private ProxyOptionsPanel getPanel() {
         if (panel == null) {
-            panel = new ProxyOptionsPanel(this);
+            panel = new ProxyOptionsPanel();
         }
         return panel;
     }

@@ -135,7 +135,7 @@ public class PasswordObfuscator {
                 }
             } else { // Encrypt a password
                 final ObfuscatedPassword obfuscatedPassword = obfuscate(password);
-                LOGGER.log(Level.INFO, "The obfuscated password is: {0}", obfuscatedPassword.toString());
+                LOGGER.log(Level.INFO, "The obfuscated password is: {0}", obfuscatedPassword);
             }
         }
     }

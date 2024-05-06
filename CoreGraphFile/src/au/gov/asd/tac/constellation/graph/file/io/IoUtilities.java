@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.graph.file.io;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -23,7 +24,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
-import java.util.List;
 import java.util.TimeZone;
 
 /**
@@ -367,7 +367,7 @@ public final class IoUtilities {
      * names "_id", "_from", "_to" at the beginning.
      *
      */
-    public static class LCComparator implements Comparator<String> {
+    public static class LCComparator implements Comparator<String>, Serializable {
         // Ensure that the special attributes are at the beginning of the names.
 
         private static String specialCaseSortName(final String name) {
@@ -395,7 +395,7 @@ public final class IoUtilities {
      *
      * @return The strings joined using the separator character.
      */
-    public static String join(final List<String> a, final char separator) {
+    public static String join(final Iterable<String> a, final char separator) {
         final StringBuilder buf = new StringBuilder();
         for (final String s : a) {
             if (buf.length() > 0) {

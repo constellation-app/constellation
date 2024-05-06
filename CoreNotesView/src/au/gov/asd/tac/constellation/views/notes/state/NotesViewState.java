@@ -31,9 +31,9 @@ public class NotesViewState {
     private final List<String> tagsSelectedFilters;
 
     public NotesViewState() {
-        notesViewEntries = new ArrayList();
-        selectedFilters = new ArrayList();
-        tagsSelectedFilters = new ArrayList();
+        notesViewEntries = new ArrayList<>();
+        selectedFilters = new ArrayList<>();
+        tagsSelectedFilters = new ArrayList<>();
     }
 
     public NotesViewState(final NotesViewState currentState) {

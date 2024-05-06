@@ -833,7 +833,7 @@ public final class PluginParametersPane extends GridPane {
                 case MultiChoiceParameterType.ID -> pane = new MultiChoiceInputPane((PluginParameter<MultiChoiceParameterValue>) parameter);
                 case ParameterListParameterType.ID -> pane = new ParameterListInputPane((PluginParameter<ParameterListParameterValue>) parameter);
                 case ActionParameterType.ID -> pane = new ActionInputPane(parameter);
-                case PasswordParameterType.ID -> pane = new ValueInputPane((PluginParameter<PasswordParameterValue>) parameter, ValueInputPane.DEFAULT_WIDTH);
+                case PasswordParameterType.ID -> pane = new PasswordInputPane((PluginParameter<PasswordParameterValue>) parameter);
                 default -> throw new IllegalArgumentException("Unsupported parameter type ID: " + id);
             }
 

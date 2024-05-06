@@ -37,6 +37,7 @@ import au.gov.asd.tac.constellation.views.find.components.advanced.criteriavalue
 import au.gov.asd.tac.constellation.views.find.components.advanced.utilities.AdvancedSearchParameters;
 import au.gov.asd.tac.constellation.views.find.utilities.ActiveFindResultsList;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
@@ -561,7 +562,7 @@ public class AdvancedFindTab extends Tab {
      * @return nodeFindCriteriaList
      */
     public List<AdvancedCriteriaBorderPane> getNodeFindCriteriaList() {
-        return nodeFindCriteriaList;
+        return Collections.unmodifiableList(nodeFindCriteriaList);
     }
 
     /**
@@ -571,7 +572,7 @@ public class AdvancedFindTab extends Tab {
      * @return transactionFindCriteriaList
      */
     public List<AdvancedCriteriaBorderPane> getTransactionFindCriteriaList() {
-        return transactionFindCriteriaList;
+        return Collections.unmodifiableList(transactionFindCriteriaList);
     }
 
     /**

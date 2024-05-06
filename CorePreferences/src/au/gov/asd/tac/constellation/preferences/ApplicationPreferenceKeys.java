@@ -111,6 +111,12 @@ public final class ApplicationPreferenceKeys {
     public static final String FILE_OPEN_AND_SAVE_LOCATION = "fileOpenAndSaveLocation";
 
     /**
+     * Enable/disable Spell Checking in SpellCheckingTextArea text fields.
+     */
+    public static final String ENABLE_SPELL_CHECKING = "enableSpellChecking";
+    public static final boolean ENABLE_SPELL_CHECKING_DEFAULT = true;
+
+    /**
      * A directory where the webserver can write files to emulate REST requests.
      *
      * @param prefs Application preferences.
@@ -188,10 +194,10 @@ public final class ApplicationPreferenceKeys {
      */
     public static final String FONT_PREFERENCES = "au/gov/asd/tac/constellation/preferences";
     public static final String FONT_FAMILY = "fontFamily";
-    public static String FONT_FAMILY_DEFAULT = "Arial";
     public static final String FONT_SIZE = "fontSize";
-    public static String FONT_SIZE_DEFAULT = "12";
-
+    public static final String FONT_FAMILY_DEFAULT = "Arial";
+    public static final String FONT_SIZE_DEFAULT = "12";
+   
     /**
      * Colorblind mode.
      */

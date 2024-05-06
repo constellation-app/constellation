@@ -64,7 +64,7 @@ public class IONGTest {
      */
     @Test
     public void saveLoadNonNullDefault() {
-        final String name = UUID.randomUUID().toString();
+        final String name = "0000-00-00-00-000000";
         File graphFile = null;
         try {
             graphFile = File.createTempFile(name, ".star");
@@ -139,7 +139,7 @@ public class IONGTest {
         writer.writeGraphToStream(storeGraph, out, false, Arrays.asList(GraphElementType.GRAPH, GraphElementType.VERTEX, GraphElementType.TRANSACTION, GraphElementType.META));
         final ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
         GraphJsonReader reader = new GraphJsonReader();
-        final Graph graph = reader.readGraph("test", in, -1, null);
+        final Graph graph = reader.readGraph(in, -1, null);
         ReadableGraph rg = graph.getReadableGraph();
         try {
             final int defaultMergerAttributeId = rg.getAttribute(GraphElementType.VERTEX, "defaultMergerAttribute");

@@ -25,7 +25,6 @@ import de.fhpotsdam.unfolding.data.MultiFeature;
 import de.fhpotsdam.unfolding.data.PointFeature;
 import de.fhpotsdam.unfolding.data.ShapeFeature;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Utility methods for features in the Map View.
@@ -46,7 +45,7 @@ public class FeatureUtilities {
             case POLYGON -> constellationFeature = new ConstellationShapeFeature(ConstellationFeatureType.POLYGON, ((ShapeFeature) feature).getLocations());
             case MULTI -> {
                 final List<ConstellationAbstractFeature> constellationFeatures = ((MultiFeature) feature).getFeatures().stream()
-                        .map(FeatureUtilities::convert).collect(Collectors.toList());
+                        .map(FeatureUtilities::convert).toList();
                 constellationFeature = new ConstellationMultiFeature(ConstellationFeatureType.MULTI, constellationFeatures);
             }
             default -> {

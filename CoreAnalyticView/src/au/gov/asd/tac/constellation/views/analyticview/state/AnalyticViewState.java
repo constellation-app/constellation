@@ -125,15 +125,15 @@ public class AnalyticViewState {
     }
 
     public List<AnalyticQuestionDescription<?>> getActiveAnalyticQuestions() {
-        return activeAnalyticQuestions;
+        return Collections.unmodifiableList(activeAnalyticQuestions);
     }
 
-    public AnalyticResult<?> getResult() {
+    public AnalyticResult getResult() {
         return result;
     }
 
     public List<List<SelectableAnalyticPlugin>> getActiveSelectablePlugins() {
-        return activeSelectablePlugins;
+        return Collections.unmodifiableList(activeSelectablePlugins);
     }
 
     public void setActiveSelectablePlugins(final List<List<SelectableAnalyticPlugin>> activeSelectablePlugins) {

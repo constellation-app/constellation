@@ -62,7 +62,7 @@ public class DoubleAttributeDescription extends AbstractAttributeDescription {
                 return number.doubleValue();
             }       
             case Boolean bool -> {
-                return bool ? 1.0 : 0.0;
+                return Boolean.TRUE.equals(bool) ? 1.0 : 0.0;
             }       
             case Character character -> {
                 return character;
@@ -137,7 +137,7 @@ public class DoubleAttributeDescription extends AbstractAttributeDescription {
 
     @Override
     public void setByte(final int id, final byte value) {
-        data[id] = (double) value;
+        data[id] = value;
     }
 
     @Override
@@ -147,7 +147,7 @@ public class DoubleAttributeDescription extends AbstractAttributeDescription {
 
     @Override
     public void setShort(final int id, final short value) {
-        data[id] = (double) value;
+        data[id] = value;
     }
 
     @Override
@@ -157,7 +157,7 @@ public class DoubleAttributeDescription extends AbstractAttributeDescription {
 
     @Override
     public void setInt(final int id, final int value) {
-        data[id] = (double) value;
+        data[id] = value;
     }
 
     @Override
@@ -167,7 +167,7 @@ public class DoubleAttributeDescription extends AbstractAttributeDescription {
 
     @Override
     public void setLong(final int id, final long value) {
-        data[id] = (double) value;
+        data[id] = value;
     }
 
     @Override
@@ -177,7 +177,7 @@ public class DoubleAttributeDescription extends AbstractAttributeDescription {
 
     @Override
     public void setFloat(final int id, final float value) {
-        data[id] = (double) value;
+        data[id] = value;
     }
 
     @Override
@@ -207,7 +207,7 @@ public class DoubleAttributeDescription extends AbstractAttributeDescription {
 
     @Override
     public void setChar(final int id, final char value) {
-        data[id] = (double) value;
+        data[id] = value;
     }
 
     @Override

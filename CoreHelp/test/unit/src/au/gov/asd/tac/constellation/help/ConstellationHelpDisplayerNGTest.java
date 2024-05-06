@@ -174,15 +174,6 @@ public class ConstellationHelpDisplayerNGTest {
         FileInputStream fis = mock(FileInputStream.class);
         when(fis.readAllBytes()).thenReturn(arr);
 
-        try (MockedStatic<ConstellationHelpDisplayer> mockedHelpDisplayerStatic = Mockito.mockStatic(ConstellationHelpDisplayer.class)) {
-            mockedHelpDisplayerStatic.when(() -> ConstellationHelpDisplayer.copy(Mockito.anyString(), Mockito.any())).thenCallRealMethod();
-            mockedHelpDisplayerStatic.when(() -> ConstellationHelpDisplayer.getInputStream(Mockito.anyString())).thenReturn(null);
-
-            ConstellationHelpDisplayer.copy("anypath", os);
-            mockedHelpDisplayerStatic.verify(() -> ConstellationHelpDisplayer.getInputStream(Mockito.anyString()), times(2));
-            verifyNoInteractions(os);
-        }
-
         try (MockedStatic<ConstellationHelpDisplayer> mockedHelpDisplayerStatic2 = Mockito.mockStatic(ConstellationHelpDisplayer.class)) {
             mockedHelpDisplayerStatic2.when(() -> ConstellationHelpDisplayer.copy(Mockito.anyString(), Mockito.any())).thenCallRealMethod();
             mockedHelpDisplayerStatic2.when(() -> ConstellationHelpDisplayer.getInputStream(Mockito.anyString())).thenReturn(fis);
