@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Blaze;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
@@ -71,7 +72,7 @@ public class SVGGraphBuilderNGTest {
     private ConstellationGlobalThreadPool globalThreadPoolMock;
     private Component visualComponentMock;
     private File fileMock;
-    private final DrawFlags flags = new DrawFlags(true, true, true, false, false);
+    private final DrawFlags flags = new DrawFlags(true, true, true, true, true);
     private final String graphName = "Test Graph 1";
     private final ExecutorService threadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
     
@@ -266,10 +267,10 @@ public class SVGGraphBuilderNGTest {
                 .withReadableGraph(graph.getReadableGraph())
                 .withTitle(graphName)
                 .fromPerspective(AxisConstants.Z_POSITIVE)
-                .withSelectedElementsOnly(false)
+                .withSelectedElementsOnly(true)
                 .withDrawFlags(flags)
                 .withCores(4);
-        
+            
         final SVGObject result = new SVGObject(instance.build());
         assertNotNull(result.getChild(String.format("node-%s",vertexId2)));
     }
@@ -363,13 +364,20 @@ public class SVGGraphBuilderNGTest {
             vertexAttributeIdPinned = VisualConcept.VertexAttribute.PINNED.ensure(wg);
             vertexAttributeIdSelected = VisualConcept.VertexAttribute.SELECTED.ensure(wg);
             transactionAttributeIdSelected = VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
+            
+            int vertexDimmedAttributeId = VisualConcept.VertexAttribute.DIMMED.ensure(wg);
+            int vertexBlazeAttributeId = VisualConcept.VertexAttribute.BLAZE.ensure(wg);
+            
+            Blaze blaze = new Blaze(90, ConstellationColor.BANANA);
 
             vertexId1 = wg.addVertex();
             wg.setFloatValue(vertexAttributeIdX, vertexId1, 1.0f);
             wg.setFloatValue(vertexAttributeIdY, vertexId1, 1.0f);
             wg.setFloatValue(vertexAttributeIdZ, vertexId1, 1.0f);
-            wg.setBooleanValue(vertexAttributeIdSelected, vertexId1, false);
+            wg.setBooleanValue(vertexAttributeIdSelected, vertexId1, true);
             wg.setStringValue(vertexAttributeIdLabel, vertexId1, "vertex1");
+            
+            wg.setObjectValue(vertexBlazeAttributeId, vertexId1, blaze);
             
             vertexId2 = wg.addVertex();
             wg.setFloatValue(vertexAttributeIdX, vertexId2, 5.0f);
@@ -378,19 +386,20 @@ public class SVGGraphBuilderNGTest {
             wg.setBooleanValue(vertexAttributeIdSelected, vertexId2, true);
             wg.setBooleanValue(vertexAttributeIdPinned, vertexId2, true);
             wg.setStringValue(vertexAttributeIdLabel, vertexId2, "vertex2");
+            wg.setFloatValue(vertexDimmedAttributeId, vertexId2, 0F);
             
             vertexId3 = wg.addVertex();
             wg.setFloatValue(vertexAttributeIdX, vertexId3, 1.0f);
             wg.setFloatValue(vertexAttributeIdY, vertexId3, 5.0f);
             wg.setFloatValue(vertexAttributeIdZ, vertexId3, 1.0f);
-            wg.setBooleanValue(vertexAttributeIdSelected, vertexId3, false);
+            wg.setBooleanValue(vertexAttributeIdSelected, vertexId3, true);
             wg.setStringValue(vertexAttributeIdLabel, vertexId3, "vertex3");
             
             vertexId4 = wg.addVertex();
             wg.setFloatValue(vertexAttributeIdX, vertexId4, 5.0f);
             wg.setFloatValue(vertexAttributeIdY, vertexId4, 5.0f);
             wg.setFloatValue(vertexAttributeIdZ, vertexId4, 5.0f);
-            wg.setBooleanValue(vertexAttributeIdSelected, vertexId4, false);
+            wg.setBooleanValue(vertexAttributeIdSelected, vertexId4, true);
             wg.setStringValue(vertexAttributeIdLabel, vertexId4, "vertex4");
             
             vertexId5 = wg.addVertex();
