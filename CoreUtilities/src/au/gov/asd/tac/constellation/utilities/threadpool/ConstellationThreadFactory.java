@@ -40,8 +40,7 @@ public class ConstellationThreadFactory implements ThreadFactory{
 
     @Override
     public Thread newThread(Runnable r) {
-        Thread thread = new Thread(r, String.format("%s-Pool - Thread-%s", poolName, getCount()));
-        return thread;
+        return new Thread(r, String.format("%s-Pool - Thread-%s", poolName, getCount()));
     }
     
 }

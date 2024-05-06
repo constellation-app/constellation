@@ -49,7 +49,7 @@ public class GenerateSVGConnectionsTask implements Runnable, SharedInteractionRu
     
     public GenerateSVGConnectionsTask(final GraphVisualisationReferences graph, final List<Integer> linkIndicies, final List<SVGObject> output){
         this.graph = graph;
-        this.connectionIndicies = linkIndicies;
+        this.connectionIndicies = List.copyOf(linkIndicies);
         this.output = output;
         this.totalSteps = linkIndicies.size();
     }
@@ -117,18 +117,11 @@ public class GenerateSVGConnectionsTask implements Runnable, SharedInteractionRu
                         svgLink.setSortOrderValue(loopScreenCenterPosition.getW());
 
                         // Generate the SVG Loop Image
-                        final SVGData svgloopImage;
                         final ConnectionDirection direction = graph.getConnectionDirection(connection);
-                        switch (direction) { 
-                            case LOW_TO_HIGH:
-                                //This case uses the logic of the following case. 
-                            case HIGH_TO_LOW:
-                                svgloopImage = DefaultIconProvider.LOOP_DIRECTED.buildSVG(graph.getConnectionColor(connection).getJavaColor());
-                                break;
-                            default:
-                                svgloopImage = DefaultIconProvider.LOOP_UNDIRECTED.buildSVG(graph.getConnectionColor(connection).getJavaColor());
-                                break;
-                        }
+                        final SVGData svgloopImage = switch (direction) {
+                            case LOW_TO_HIGH, HIGH_TO_LOW -> DefaultIconProvider.LOOP_DIRECTED.buildSVG(graph.getConnectionColor(connection).getJavaColor());
+                            default -> DefaultIconProvider.LOOP_UNDIRECTED.buildSVG(graph.getConnectionColor(connection).getJavaColor());
+                        };
                         svgloopImage.setParent(svgLoop);
 
                         //Loop labels have not been implementd
@@ -155,7 +148,7 @@ public class GenerateSVGConnectionsTask implements Runnable, SharedInteractionRu
                         vertexTagentDirection.crossProduct(graph.getForwardVector(), highDirectionVector);
 
                         // Determine the perpendicular offset distance of the current connection from the center line joing the source and destination node
-                        final float perpendicularOffsetDistance = (connectionIndex / 2 + ((connectionIndex % 2 == 0) ? 0 : 1)) * 0.15F;
+                        final float perpendicularOffsetDistance = (connectionIndex / 2F + ((connectionIndex % 2 == 0) ? 0 : 1)) * 0.15F;
 
                         // Determine if this conection should be positioned above or below the center line joing the source and destination node
                         final float perpendicularOffsetDirection = ((Double) Math.pow(-1, connectionIndex)).floatValue();
@@ -248,7 +241,7 @@ public class GenerateSVGConnectionsTask implements Runnable, SharedInteractionRu
 
                         // Create the connection labels if required
                         if (graph.exportConnectionLabels()) {
-                            addConnectionLabels(svgLabels, highEndPoint, lowEndPoint, connectionIndex, graph.getLinkConnectionCount(linkIndex), highIndex, lowIndex);
+                            addConnectionLabels(svgLabels, highEndPoint, lowEndPoint, connectionIndex, graph.getLinkConnectionCount(linkIndex));
                         } else {
                             SVGObjectConstants.LABELS.removeFrom(svgLink);
                         }
@@ -279,7 +272,7 @@ public class GenerateSVGConnectionsTask implements Runnable, SharedInteractionRu
      * @param highIndex
      * @param lowIndex
      */
-    private void addConnectionLabels(final SVGObject svgLabels, final Vector3f highPosition, final Vector3f lowPosition, final int connectionIndex, final int connectionCount, final int highIndex, final int lowIndex) {
+    private void addConnectionLabels(final SVGObject svgLabels, final Vector3f highPosition, final Vector3f lowPosition, final int connectionIndex, final int connectionCount) {
         
         // Determine how many segments along the connection length are needed.
         final int totalSegments;

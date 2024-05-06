@@ -36,7 +36,6 @@ import javax.imageio.ImageIO;
 import au.gov.asd.tac.constellation.plugins.MultiTaskInteraction.SharedInteractionRunnable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 /**
  * A runnable task designed to build SVG assets representing graph nodes.
@@ -54,12 +53,12 @@ public class GenerateSVGNodesTask implements Runnable, SharedInteractionRunnable
     private final int totalSteps;
     private int currentStep;
     private boolean complete = false;
-    private static final Logger LOGGER = Logger.getLogger(GenerateSVGNodesTask.class.getName());
+
     
     
     public GenerateSVGNodesTask(final GraphVisualisationReferences graph, final List<Integer> vertexIndicies, final List<SVGObject> output){
         this.graph = graph;
-        this.vertexIndicies = vertexIndicies;
+        this.vertexIndicies = List.copyOf(vertexIndicies);
         this.output = output;
         this.totalSteps = vertexIndicies.size();
     }

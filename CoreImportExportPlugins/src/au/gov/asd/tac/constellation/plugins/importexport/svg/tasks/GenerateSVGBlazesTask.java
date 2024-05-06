@@ -40,7 +40,7 @@ public class GenerateSVGBlazesTask implements SharedInteractionRunnable {
     
     public GenerateSVGBlazesTask(final GraphVisualisationReferences graph, final List<Integer> vertexIndicies, final List<SVGObject> output){
         this.graph = graph;
-        this.vertexIndicies = vertexIndicies;
+        this.vertexIndicies = List.copyOf(vertexIndicies);
         this.output = output;
         this.totalSteps = vertexIndicies.size();
     }
@@ -52,22 +52,22 @@ public class GenerateSVGBlazesTask implements SharedInteractionRunnable {
             vertexIndicies.forEach(vertexIndex -> {
                 if (graph.inView(vertexIndex) && graph.isBlazed(vertexIndex)&& (!graph.selectedElementsOnly || graph.isVertexSelected(vertexIndex)) && graph.getVertexVisibility(vertexIndex) > 0) {
 
-                // Get relevant variables
-                final int blazeAngle = graph.getBlazeAngle(vertexIndex);
-                final float blazeSize = graph.getBlazeSize();
-                final float blazeWidth = 512 * blazeSize;
-                final float blazeHeight = 128 * blazeSize;
-                final Vector4f edgePosition = graph.offsetPosition(graph.getVertexPosition(vertexIndex), graph.getVertexScaledRadius(vertexIndex), Math.toRadians(blazeAngle + 90D));
+                    // Get relevant variables
+                    final int blazeAngle = graph.getBlazeAngle(vertexIndex);
+                    final float blazeSize = graph.getBlazeSize();
+                    final float blazeWidth = 512 * blazeSize;
+                    final float blazeHeight = 128 * blazeSize;
+                    final Vector4f edgePosition = graph.offsetPosition(graph.getVertexPosition(vertexIndex), graph.getVertexScaledRadius(vertexIndex), Math.toRadians(blazeAngle + 90D));
 
-                // Build the blaze
-                final SVGObject svgBlaze = SVGTemplateConstants.BLAZE.getSVGObject();
-                svgBlaze.setID(String.format("blaze-%s", vertexIndex));
-                svgBlaze.setSortOrderValue(0);
-                svgBlaze.setFillColor(graph.getBlazeColor(vertexIndex));
-                svgBlaze.setOpacity(graph.getBlazeOpacity());svgBlaze.setDimension(blazeWidth, blazeHeight);
-                svgBlaze.setPosition(edgePosition.getX() , edgePosition.getY() - blazeHeight / 2);
-                SVGObjectConstants.INDICATOR.findIn(svgBlaze).setTransformation(String.format("rotate(%s %s %s)", blazeAngle - 90, 0, 16));
-                output.add(svgBlaze);
+                    // Build the blaze
+                    final SVGObject svgBlaze = SVGTemplateConstants.BLAZE.getSVGObject();
+                    svgBlaze.setID(String.format("blaze-%s", vertexIndex));
+                    svgBlaze.setSortOrderValue(0);
+                    svgBlaze.setFillColor(graph.getBlazeColor(vertexIndex));
+                    svgBlaze.setOpacity(graph.getBlazeOpacity());svgBlaze.setDimension(blazeWidth, blazeHeight);
+                    svgBlaze.setPosition(edgePosition.getX() , edgePosition.getY() - blazeHeight / 2);
+                    SVGObjectConstants.INDICATOR.findIn(svgBlaze).setTransformation(String.format("rotate(%s %s %s)", blazeAngle - 90, 0, 16));
+                    output.add(svgBlaze);
                 }
                 currentStep++;
             });

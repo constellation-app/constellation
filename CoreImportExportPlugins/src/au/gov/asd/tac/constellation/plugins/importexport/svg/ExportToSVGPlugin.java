@@ -47,12 +47,14 @@ import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javafx.stage.FileChooser;
 import org.apache.commons.lang3.StringUtils;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -117,11 +119,8 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
                                       Embedded = Single File, Large Size
                                       Linked = File & folder of Image Assets, Small Size"""
         );
-        final List<String> imageModeOptions = new ArrayList<>();
-        imageModeOptions.add("Embedded");
-        imageModeOptions.add("Linked");
-        SingleChoiceParameterType.setOptions(imageModeParam, imageModeOptions);
-        SingleChoiceParameterType.setChoice(imageModeParam, "Embedded");
+        SingleChoiceParameterType.setOptions(imageModeParam, Stream.of(ExportMode.values()).map(ExportMode::toString).collect(Collectors.toList()));
+        SingleChoiceParameterType.setChoice(imageModeParam, ExportMode.LINKED.toString());
         parameters.addParameter(imageModeParam);
         
         final PluginParameter<ColorParameterValue> backgroundColorParam = ColorParameterType.build(BACKGROUND_COLOR_PARAMETER_ID);
@@ -208,12 +207,22 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         // A directory of image assets may have already been created for a graph of the same name.
         // This export will overwire these assets, so empty the directory.
         for (File file : assetDirectory.listFiles()){
-            file.delete();
+            try {
+                Files.delete(file.toPath());
+            } catch (IOException ex) {
+                //To Do: when does this get thrwn?
+                Exceptions.printStackTrace(ex);
+            }
         }
             
         // If the user has not selected a linked export he asset fdirectoy can now be deleted. 
-        if (!imageMode.equals("Linked")){
-            assetDirectory.delete();
+        if (!ExportMode.LINKED.toString().equals("Linked")){
+            try {
+                Files.delete(assetDirectory.toPath());
+            } catch (IOException ex) {
+                //To Do: when does this get thrwn?
+                Exceptions.printStackTrace(ex);
+            }
         }
         
         try {
@@ -248,7 +257,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
     private void exportToSVG(final File file, final SVGData data, final PluginInteraction interaction) throws IOException, InterruptedException {
         final boolean fileOverwritten = file.createNewFile();
         try (final FileWriter writer = new FileWriter(file)) {
-            final ArrayList<String> lines = data.toLines();
+            final List<String> lines = data.toLines();
             final int totalLines = lines.size();
             interaction.setExecutionStage(0, totalLines, "Exporting Graph", "Writing data to file", true);
             for (int i = 0; i < totalLines; i++){
@@ -261,6 +270,22 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
             } else {
                 interaction.setProgress(0, -1, String.format("File %s has been created", file.getName()), false);
             }
+        }
+    }
+    
+    private enum ExportMode{
+        LINKED("Linked"),
+        EMBEDED("Embedded");
+        
+        private final String label;
+        
+        private ExportMode(final String label){
+            this.label = label;
+        }
+        
+        @Override
+        public String toString(){
+            return this.label;
         }
     }
 }

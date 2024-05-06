@@ -86,7 +86,7 @@ public final class ExportToSVGAction implements ActionListener {
             PluginExecution.withPlugin(ImportExportPluginRegistry.EXPORT_SVG)
                     .withParameter(ExportToSVGPlugin.GRAPH_TITLE_PARAMETER_ID, graphName)
                     .withParameter(ExportToSVGPlugin.SELECTED_ELEMENTS_PARAMETER_ID, false)
-                    .withParameter(ExportToSVGPlugin.EXPORT_CORES_PARAMETER_ID, Math.round(Runtime.getRuntime().availableProcessors()/2))
+                    .withParameter(ExportToSVGPlugin.EXPORT_CORES_PARAMETER_ID, (int) Math.ceil(Runtime.getRuntime().availableProcessors() / 2D))
                     .withParameter(ExportToSVGPlugin.SHOW_NODES_PARAMETER_ID, flags.drawNodes())
                     .withParameter(ExportToSVGPlugin.SHOW_CONNECTIONS_PARAMETER_ID, flags.drawConnections())
                     .withParameter(ExportToSVGPlugin.SHOW_NODE_LABELS_PARAMETER_ID, flags.drawNodeLabels())

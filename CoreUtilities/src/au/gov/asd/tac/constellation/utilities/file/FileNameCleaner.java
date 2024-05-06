@@ -23,14 +23,18 @@ import java.util.Arrays;
  */
 public class FileNameCleaner {
     
-    final static char[] ILLEGAL_CHARACTERS = {'/','\\',':','*','?','"','<','>','|'};
+    private static final char[] ILLEGAL_CHARACTERS = {'/','\\',':','*','?','"','<','>','|'};
+    
+    public FileNameCleaner(){
+        throw new IllegalStateException("Utility class");
+    }
 
     public static String cleanFileName(String badFileName) {
         StringBuilder cleanName = new StringBuilder();
         for (int i = 0; i < badFileName.length(); i++) {
             char c = badFileName.charAt(i);
             if (Arrays.binarySearch(ILLEGAL_CHARACTERS, c) < 0) {
-                cleanName.append((char) c);
+                cleanName.append(c);
             }
         }
         return cleanName.toString();

@@ -228,7 +228,7 @@ public class SVGData {
      * directly to an output file.
      * @return an ArrayList<String> of lines in an SVG format.
      */
-    public final ArrayList<String> toLines() {
+    public final List<String> toLines() {
         cleanAttributes();
         return toString(null);
     }

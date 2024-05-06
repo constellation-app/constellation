@@ -54,7 +54,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
-import java.util.logging.Logger;
 
 /**
  * Builder that generates the the output SVG file.
@@ -69,8 +68,9 @@ import java.util.logging.Logger;
  */
 public class SVGGraphBuilder {
     
+    private final String buildingReportMessage= "BuildingGraph";
+    
     // Variables specified when the Builder class is instantiated
-    private static final Logger LOGGER = Logger.getLogger(SVGGraphBuilder.class.getName());
     private final Matrix44f modelViewProjectionMatrix = new Matrix44f();
     private final VisualManager visualManager;
     private final GraphVisualAccess access;
@@ -297,7 +297,7 @@ public class SVGGraphBuilder {
         final List<SVGObject> filters = new ArrayList<>();
 
         // Initate plugin report information
-        interaction.setExecutionStage(0, -1, "Building Graph", "Building Nodes", true);
+        interaction.setExecutionStage(0, -1, buildingReportMessage, "Building Nodes", true);
         final MultiTaskInteraction mti = new MultiTaskInteraction(interaction);
         
         if (!drawFlags.drawNodes()) {
@@ -332,15 +332,14 @@ public class SVGGraphBuilder {
         }
         
         // Combine the generated nodes into a single list.
-        threadOuputLists.forEach(outputList -> {
-            outputList.forEach(svgObject -> {
+        threadOuputLists.forEach(outputList -> outputList.forEach(svgObject -> {
                 if (SVGTypeConstants.FILTER.getTypeString().equals(svgObject.toSVGData().getType())){
                     filters.add(svgObject);
                 } else {
                     nodes.add(svgObject);
                 }
-            });
-        }); 
+            })
+        ); 
         
         definitionsContainer.setChildren(filters);
         nodesContainer.setChildren(nodes);
@@ -359,7 +358,7 @@ public class SVGGraphBuilder {
     private List<SVGObject> buildConnections() throws InterruptedException {
 
         // Initate plugin report information
-        interaction.setExecutionStage(0, -1 , "Building Graph", "Building Connections", false);
+        interaction.setExecutionStage(0, -1 , buildingReportMessage, "Building Connections", false);
         final MultiTaskInteraction mti = new MultiTaskInteraction(interaction);
         
         // Do not export any connections if the show connections parameter is disabled
@@ -388,9 +387,7 @@ public class SVGGraphBuilder {
         
         // Combine the generated nodes into a single list.
         final List<SVGObject> connections = new ArrayList<>();
-        threadOuputLists.forEach(outputList -> {
-            connections.addAll(outputList);
-        }); 
+        threadOuputLists.forEach(outputList -> connections.addAll(outputList)); 
         
         interaction.setProgress(0, -1, String.format("Created %s connections", connections.size()), true);
         return connections;
@@ -407,7 +404,7 @@ public class SVGGraphBuilder {
     private List<SVGObject> buildBlazes() throws InterruptedException {
         
         // Initate plugin report information
-        interaction.setExecutionStage(0, -1, "Building Graph", "Building Blazes", true);
+        interaction.setExecutionStage(0, -1, buildingReportMessage, "Building Blazes", true);
         final MultiTaskInteraction mti = new MultiTaskInteraction(interaction);
         
         if (!drawFlags.drawBlazes()) {
@@ -436,9 +433,7 @@ public class SVGGraphBuilder {
         
         // Combine the generated nodes into a single list.
         final List<SVGObject> blazes = new ArrayList<>();
-        threadOuputLists.forEach(outputList -> {
-            blazes.addAll(outputList);
-        }); 
+        threadOuputLists.forEach(outputList -> blazes.addAll(outputList));
         
         // Update the PluginInteraction of the Nodes generated 
         interaction.setProgress(0, -1, String.format("Created %s blazes", blazes.size()), true);
@@ -470,6 +465,8 @@ public class SVGGraphBuilder {
      */
     private void buildLayout(final SVGObject svgGraph) {
         
+        buildHeader(svgGraph);
+        
         // Set the background color of the output file
         SVGObjectConstants.BACKGROUND.findIn(svgGraph).setFillColor(backgroundColor);
 
@@ -487,6 +484,7 @@ public class SVGGraphBuilder {
         SVGObjectConstants.CONTENT.findIn(svgGraph).setViewBox(widthTrimValue / 2, heightTrimValue / 2, contentWidth , contentHeight);
         
         svgGraph.setDimension(contentWidth, contentHeight + (contentHeight * .05F));
+        
     }
     
     private List<List<Integer>> createSubListsOfRange(final int lowIndexIncludive, final int highIndexExclusive, final int subListQuantity) {
