@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -122,7 +122,7 @@ public final class GraphLabel implements Serializable, Comparable<GraphLabel> {
         final List<String> labelProperties;
         try {
             labelProperties = StringUtilities.splitEscaped(graphLabelString, DELIMITER);
-        } catch (IllegalArgumentException ex) {
+        } catch (final IllegalArgumentException ex) {
             throw new IllegalArgumentException("String does not represent a graph label: " + graphLabelString);
         }
         if (labelProperties.size() == 3) {
@@ -133,8 +133,8 @@ public final class GraphLabel implements Serializable, Comparable<GraphLabel> {
             }
             final float size;
             try {
-                size = Float.valueOf(labelProperties.get(2));
-            } catch (NumberFormatException ex) {
+                size = Float.parseFloat(labelProperties.get(2));
+            } catch (final NumberFormatException ex) {
                 throw new IllegalArgumentException("Invalid size for label");
             }
             return new GraphLabel(attributeName, color, size);
@@ -156,20 +156,13 @@ public final class GraphLabel implements Serializable, Comparable<GraphLabel> {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
         final GraphLabel other = (GraphLabel) obj;
-        if (Float.floatToIntBits(this.size) != Float.floatToIntBits(other.size)) {
-            return false;
-        }
-        if (!Objects.equals(this.attributeName, other.attributeName)) {
-            return false;
-        }
-        return Objects.equals(this.color, other.color);
+        return Float.floatToIntBits(this.size) == Float.floatToIntBits(other.size)
+                && Objects.equals(this.attributeName, other.attributeName)
+                && Objects.equals(this.color, other.color);
     }
 
     @Override

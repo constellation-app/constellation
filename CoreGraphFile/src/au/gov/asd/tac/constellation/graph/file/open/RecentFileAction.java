@@ -96,19 +96,15 @@ public class RecentFileAction extends AbstractAction
     /**
      * property of menu items where we store fileobject to open
      */
-    private static final String PATH_PROP
-            = "RecentFileAction.Recent_File_Path"; // NOI18N
-    private static final String OFMSG_PATH_IS_NOT_DEFINED
-            = NbBundle.getMessage(RecentFileAction.class,
+    private static final String PATH_PROP = "RecentFileAction.Recent_File_Path"; // NOI18N
+    private static final String OFMSG_PATH_IS_NOT_DEFINED = NbBundle.getMessage(RecentFileAction.class,
                     "OFMSG_PATH_IS_NOT_DEFINED");  // NOI18N
-    private static final String OFMSG_FILE_NOT_EXISTS
-            = NbBundle.getMessage(RecentFileAction.class,
+    private static final String OFMSG_FILE_NOT_EXISTS = NbBundle.getMessage(RecentFileAction.class,
                     "OFMSG_FILE_NOT_EXISTS");      // NOI18N
     private JMenu menu;
 
     public RecentFileAction() {
-        super(NbBundle.getMessage(RecentFileAction.class,
-                "LBL_RecentFileAction_Name")); // NOI18N
+        super(NbBundle.getMessage(RecentFileAction.class, "LBL_RecentFileAction_Name")); // NOI18N
     }
 
     /**
@@ -118,8 +114,7 @@ public class RecentFileAction extends AbstractAction
     public JMenuItem getMenuPresenter() {
         if (menu == null) {
             menu = new UpdatingMenu(this);
-            menu.setMnemonic(NbBundle.getMessage(RecentFileAction.class,
-                    "MNE_RecentFileAction_Name").charAt(0)); // NOI18N
+            menu.setMnemonic(NbBundle.getMessage(RecentFileAction.class, "MNE_RecentFileAction_Name").charAt(0)); // NOI18N
             // #115277 - workaround, PopupMenuListener don't work on Mac
             if (!Utilities.isMac()) {
                 menu.getPopupMenu().addPopupMenuListener(this);
@@ -248,8 +243,7 @@ public class RecentFileAction extends AbstractAction
         // apply workaround only when mouse is not hovering over menu
         // (which signalizes mouse driven menu traversing) and only
         // when selected menu path contains expected value - submenu itself
-        if (!menu.contains(loc) && selPath.length > 0
-                && menu.getPopupMenu() == selPath[selPath.length - 1]) {
+        if (!menu.contains(loc) && selPath.length > 0 && menu.getPopupMenu() == selPath[selPath.length - 1]) {
             // select first item in submenu through MenuSelectionManager
             final MenuElement[] newPath = new MenuElement[selPath.length + 1];
             System.arraycopy(selPath, 0, newPath, 0, selPath.length);
@@ -268,8 +262,7 @@ public class RecentFileAction extends AbstractAction
     @Override
     public void actionPerformed(final ActionEvent evt) {
         final Object source = evt.getSource();
-        if (source instanceof JMenuItem) {
-            final JMenuItem menuItem = (JMenuItem) source;
+        if (source instanceof JMenuItem menuItem) {
             final String path = (String) menuItem.getClientProperty(PATH_PROP);
             final String msg = openFile(path);
             if (msg != null) {

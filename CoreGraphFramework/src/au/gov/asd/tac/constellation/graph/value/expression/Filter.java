@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ public class Filter {
             }
 
             @Override
-            public void read(int index, V value) {
+            public void read(final int index, final V value) {
                 parameter1.read(index, parameter1Value);
                 operation.read(value);
             }
@@ -48,11 +48,12 @@ public class Filter {
         // added private constructor to hide implicit public constructor - S1118.
     }
 
-    public static <P1, V, O extends Readable<V>> IndexedReadable<V> createFilter(IndexedReadable<P1> parameter1, Class<O> operationClass) {
+    public static <P1, V, O extends Readable<V>> IndexedReadable<V> createFilter(final IndexedReadable<P1> parameter1, final Class<O> operationClass) {
         return createFilter(parameter1, operationClass, ConverterRegistry.getDefault());
     }
 
-    public static <P1, P2, V, O extends Readable<V>> IndexedReadable<V> createFilter(IndexedReadable<P1> parameter1, IndexedReadable<P2> parameter2, Class<O> operationClass, ConverterRegistry converterRegistry) {
+    public static <P1, P2, V, O extends Readable<V>> IndexedReadable<V> createFilter(final IndexedReadable<P1> parameter1, final IndexedReadable<P2> parameter2, 
+            final Class<O> operationClass, final ConverterRegistry converterRegistry) {
         final P1 parameter1Value = parameter1.createValue();
         final P2 parameter2Value = parameter2.createValue();
         final O operation = converterRegistry.convert(parameter1Value, parameter2Value, operationClass);
@@ -64,7 +65,7 @@ public class Filter {
             }
 
             @Override
-            public void read(int index, V value) {
+            public void read(final int index, final V value) {
                 parameter1.read(index, parameter1Value);
                 parameter2.read(index, parameter2Value);
                 operation.read(value);
@@ -72,11 +73,13 @@ public class Filter {
         };
     }
 
-    public static <P1, P2, V, O extends Readable<V>> IndexedReadable<V> createFilter(IndexedReadable<P1> parameter1, IndexedReadable<P2> parameter2, Class<O> operationClass) {
+    public static <P1, P2, V, O extends Readable<V>> IndexedReadable<V> createFilter(final IndexedReadable<P1> parameter1, final IndexedReadable<P2> parameter2, 
+            final Class<O> operationClass) {
         return createFilter(parameter1, parameter2, operationClass, ConverterRegistry.getDefault());
     }
 
-    public static <P1, V, O extends Readable<V>> IndexedReadable<V> createFilter(IndexedReadable<P1> parameter1, String parameter2, Class<O> operationClass, ConverterRegistry converterRegistry) {
+    public static <P1, V, O extends Readable<V>> IndexedReadable<V> createFilter(final IndexedReadable<P1> parameter1, final String parameter2, 
+            final Class<O> operationClass, ConverterRegistry converterRegistry) {
         final P1 parameter1Value = parameter1.createValue();
         final P1 parameter2Value = parameter1.createValue();
 
@@ -92,18 +95,20 @@ public class Filter {
             }
 
             @Override
-            public void read(int index, V value) {
+            public void read(final int index, final V value) {
                 parameter1.read(index, parameter1Value);
                 operation.read(value);
             }
         };
     }
 
-    public static <P1, V, O extends Readable<V>> IndexedReadable<V> createFilter(IndexedReadable<P1> parameter1, String parameter2, Class<O> operationClass) {
+    public static <P1, V, O extends Readable<V>> IndexedReadable<V> createFilter(final IndexedReadable<P1> parameter1, final String parameter2, 
+            final Class<O> operationClass) {
         return createFilter(parameter1, parameter2, operationClass, ConverterRegistry.getDefault());
     }
 
-    public static <P2, V, O extends Readable<V>> IndexedReadable<V> createFilter(String parameter1, IndexedReadable<P2> parameter2, Class<O> operationClass, ConverterRegistry converterRegistry) {
+    public static <P2, V, O extends Readable<V>> IndexedReadable<V> createFilter(final String parameter1, final IndexedReadable<P2> parameter2, 
+            final Class<O> operationClass, ConverterRegistry converterRegistry) {
         final P2 parameter1Value = parameter2.createValue();
         final P2 parameter2Value = parameter2.createValue();
 
@@ -119,14 +124,15 @@ public class Filter {
             }
 
             @Override
-            public void read(int index, V value) {
+            public void read(final int index, final V value) {
                 parameter2.read(index, parameter2Value);
                 operation.read(value);
             }
         };
     }
 
-    public static <P2, V, O extends Readable<V>> IndexedReadable<V> createFilter(String parameter1, IndexedReadable<P2> parameter2, Class<O> operationClass) {
+    public static <P2, V, O extends Readable<V>> IndexedReadable<V> createFilter(final String parameter1, final IndexedReadable<P2> parameter2, 
+            final Class<O> operationClass) {
         return createFilter(parameter1, parameter2, operationClass, ConverterRegistry.getDefault());
     }
 }

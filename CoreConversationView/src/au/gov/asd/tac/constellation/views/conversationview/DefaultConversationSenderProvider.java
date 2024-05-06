@@ -113,7 +113,7 @@ public class DefaultConversationSenderProvider implements ConversationSenderProv
         private final Image iconImage;
 
         public DefaultConversationSender(final List<String> senderLabels, final Image iconImage) {
-            this.senderLabels = senderLabels;
+            this.senderLabels = new ArrayList<>(senderLabels);
             this.iconImage = iconImage;
         }
 

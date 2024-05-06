@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.scatterplot.axis;
 
-//import com.sun.javafx.charts.ChartLayoutAnimator;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,6 +34,7 @@ import javafx.util.StringConverter;
  * in the ExtFX library.
  *
  * TODO: {@link ChartLayoutAnimator} is not longer supported, fix it.
+ * Commented out code in this class is related to this issue. Ticket has been created to address.
  *
  * @author cygnus_x-1
  */
@@ -46,7 +46,7 @@ public class DateAxis extends Axis<Date> {
     private final LongProperty currentLowerBound = new SimpleLongProperty(this, "currentLowerBound");
     private final LongProperty currentUpperBound = new SimpleLongProperty(this, "currentUpperBound");
 //    private ChartLayoutAnimator animator = new ChartLayoutAnimator(this);
-    private Object currentAnimationID;
+//    private Object currentAnimationID;
     private Interval actualInterval = Interval.DECADE;
 
     /**
@@ -129,7 +129,7 @@ public class DateAxis extends Axis<Date> {
      * @param lowerBound The lower bound.
      * @param upperBound The upper bound.
      */
-    public DateAxis(Date lowerBound, Date upperBound) {
+    public DateAxis(final Date lowerBound, final Date upperBound) {
         this();
         setAutoRanging(false);
         setLowerBound(lowerBound);
@@ -143,13 +143,13 @@ public class DateAxis extends Axis<Date> {
      * @param lowerBound The lower bound.
      * @param upperBound The upper bound.
      */
-    public DateAxis(String axisLabel, Date lowerBound, Date upperBound) {
+    public DateAxis(final String axisLabel, final Date lowerBound, final Date upperBound) {
         this(lowerBound, upperBound);
         setLabel(axisLabel);
     }
 
     @Override
-    public void invalidateRange(List<Date> list) {
+    public void invalidateRange(final List<Date> list) {
         super.invalidateRange(list);
 
         Collections.sort(list);
@@ -160,13 +160,11 @@ public class DateAxis extends Axis<Date> {
         } else if (list.size() > 1) {
             minDate = list.get(0);
             maxDate = list.get(list.size() - 1);
-        } else {
-            // Do nothing
         }
     }
 
     @Override
-    protected Object autoRange(double length) {
+    protected Object autoRange(final double length) {
         if (isAutoRanging()) {
             return new Object[]{minDate, maxDate};
         } else {
@@ -178,7 +176,7 @@ public class DateAxis extends Axis<Date> {
     }
 
     @Override
-    protected void setRange(Object range, boolean animating) {
+    protected void setRange(final Object range, final boolean animating) {
         final Object[] r = (Object[]) range;
         final Date newLowerBound = (Date) r[0];
         final Date newUpperBound = (Date) r[1];
@@ -239,18 +237,18 @@ public class DateAxis extends Axis<Date> {
     }
 
     @Override
-    public double getDisplayPosition(Date date) {
+    public double getDisplayPosition(final Date date) {
         final double length = getSide().isHorizontal() ? getWidth() : getHeight();
 
         // get the difference between the max and min date.
-        double diff = currentUpperBound.get() - currentLowerBound.get();
+        final double diff = currentUpperBound.get() - currentLowerBound.get();
 
         // get the range of the visible area (the min date should start at the zero position, so subtract it).
-        double range = length - getZeroPosition();
+        final double range = length - getZeroPosition();
 
         // get the difference from the actual date to the min date and divide it by the total difference.
         // this should be a value between 0 and 1, if the date is within the min and max date.
-        double d = (date.getTime() - currentLowerBound.get()) / diff;
+        final double d = (date.getTime() - currentLowerBound.get()) / diff;
 
         // multiply this percent value with the range and add the zero offset.
         if (getSide().isVertical()) {
@@ -261,14 +259,14 @@ public class DateAxis extends Axis<Date> {
     }
 
     @Override
-    public Date getValueForDisplay(double displayPosition) {
+    public Date getValueForDisplay(final double displayPosition) {
         final double length = getSide().isHorizontal() ? getWidth() : getHeight();
 
         // get the difference between the max and min date.
-        double diff = currentUpperBound.get() - currentLowerBound.get();
+        final double diff = currentUpperBound.get() - currentLowerBound.get();
 
         // get the range of the visible area (the min date should start at the zero position, so subtract it).
-        double range = length - getZeroPosition();
+        final double range = length - getZeroPosition();
 
         if (getSide().isVertical()) {
             final long date = (long) ((displayPosition - getZeroPosition() - getHeight()) / -range * diff + currentLowerBound.get());
@@ -280,28 +278,28 @@ public class DateAxis extends Axis<Date> {
     }
 
     @Override
-    public boolean isValueOnAxis(Date date) {
+    public boolean isValueOnAxis(final Date date) {
         return date.getTime() > currentLowerBound.get() && date.getTime() < currentUpperBound.get();
     }
 
     @Override
-    public double toNumericValue(Date date) {
+    public double toNumericValue(final Date date) {
         return date.getTime();
     }
 
     @Override
-    public Date toRealValue(double v) {
+    public Date toRealValue(final double v) {
         return new Date((long) v);
     }
 
     @Override
-    protected List<Date> calculateTickValues(double v, Object range) {
+    protected List<Date> calculateTickValues(final double v, final Object range) {
         final Object[] r = (Object[]) range;
         final Date lowerBound = (Date) r[0];
         final Date upperBound = (Date) r[1];
 
         List<Date> dateList = new ArrayList<>();
-        List<Date> previousDateList = new ArrayList<>();
+        final List<Date> previousDateList = new ArrayList<>();
         Interval previousInterval = Interval.values()[0];
 
         // the preferred gap which should be between two tick marks.
@@ -310,7 +308,7 @@ public class DateAxis extends Axis<Date> {
 
         // starting with the greatest interval, add one of each calendar unit.
         Calendar calendar = Calendar.getInstance();
-        for (Interval interval : Interval.values()) {
+        for (final Interval interval : Interval.values()) {
             calendar.setTime(lowerBound);
             dateList.clear();
             previousDateList.clear();
@@ -342,13 +340,12 @@ public class DateAxis extends Axis<Date> {
         // finally, add the upper bound.
         dateList.add(upperBound);
 
-        List<Date> evenDateList = makeDatesEven(dateList, calendar);
+        final List<Date> evenDateList = makeDatesEven(dateList, calendar);
         // if there are at least three dates, check if the gap between the lower date and the second date
         // is at least half the gap of the second and third date, then repeat for the upper bound.
         // if gaps between dates are to small, remove one of them (this can occur, e.g. if the lower bound is 25.12.2013 and years are shown,
         // then the next year shown would be 2014 (01.01.2014) which would be too narrow to 25.12.2013).
         if (evenDateList.size() > 2) {
-
             final Date secondDate = evenDateList.get(1);
             final Date thirdDate = evenDateList.get(2);
             final Date lastDate = evenDateList.get(dateList.size() - 2);
@@ -379,7 +376,7 @@ public class DateAxis extends Axis<Date> {
     }
 
     @Override
-    protected String getTickMarkLabel(Date date) {
+    protected String getTickMarkLabel(final Date date) {
         final StringConverter<Date> converter = getTickLabelFormatter();
         if (converter != null) {
             return converter.toString(date);
@@ -394,23 +391,12 @@ public class DateAxis extends Axis<Date> {
         } else if (actualInterval.interval == Calendar.MONTH && calendar.get(Calendar.DATE) == 1) {
             dateFormat = new SimpleDateFormat("MMM yy");
         } else {
-            switch (actualInterval.interval) {
-                case Calendar.DATE:
-                case Calendar.WEEK_OF_YEAR:
-                case Calendar.HOUR:
-                case Calendar.MINUTE:
-                    dateFormat = DateFormat.getTimeInstance(DateFormat.SHORT);
-                    break;
-                case Calendar.SECOND:
-                    dateFormat = DateFormat.getTimeInstance(DateFormat.MEDIUM);
-                    break;
-                case Calendar.MILLISECOND:
-                    dateFormat = DateFormat.getTimeInstance(DateFormat.FULL);
-                    break;
-                default:
-                    dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
-                    break;
-            }
+            dateFormat = switch (actualInterval.interval) {
+                case Calendar.DATE, Calendar.WEEK_OF_YEAR, Calendar.HOUR, Calendar.MINUTE -> DateFormat.getTimeInstance(DateFormat.SHORT);
+                case Calendar.SECOND -> DateFormat.getTimeInstance(DateFormat.MEDIUM);
+                case Calendar.MILLISECOND -> DateFormat.getTimeInstance(DateFormat.FULL);
+                default -> DateFormat.getDateInstance(DateFormat.MEDIUM);
+            };
         }
         return dateFormat.format(date);
     }
@@ -422,10 +408,10 @@ public class DateAxis extends Axis<Date> {
      * @param dates The list of dates.
      * @return The new list of dates.
      */
-    private List<Date> makeDatesEven(List<Date> dates, Calendar calendar) {
+    private List<Date> makeDatesEven(final List<Date> dates, final Calendar calendar) {
         // if the dates contain more dates than just the lower and upper bounds, make the dates in between even.
         if (dates.size() > 2) {
-            List<Date> evenDates = new ArrayList<>();
+            final List<Date> evenDates = new ArrayList<>();
 
             // for each interval, modify the date slightly by a few millis, to make sure they are different days.
             // this is because Axis stores each value and won't update the tick labels, if the value is already known.
@@ -433,7 +419,7 @@ public class DateAxis extends Axis<Date> {
             for (int i = 0; i < dates.size(); i++) {
                 calendar.setTime(dates.get(i));
                 switch (actualInterval.interval) {
-                    case Calendar.YEAR:
+                    case Calendar.YEAR -> {
                         // if it's not the first or last date (lower and upper bound), make the year begin with first month and let the months begin with first day.
                         if (i != 0 && i != dates.size() - 1) {
                             calendar.set(Calendar.MONTH, 0);
@@ -443,8 +429,8 @@ public class DateAxis extends Axis<Date> {
                         calendar.set(Calendar.MINUTE, 0);
                         calendar.set(Calendar.SECOND, 0);
                         calendar.set(Calendar.MILLISECOND, 6);
-                        break;
-                    case Calendar.MONTH:
+                    }
+                    case Calendar.MONTH -> {
                         // if it's not the first or last date (lower and upper bound), make the months begin with first day.
                         if (i != 0 && i != dates.size() - 1) {
                             calendar.set(Calendar.DATE, 1);
@@ -453,38 +439,37 @@ public class DateAxis extends Axis<Date> {
                         calendar.set(Calendar.MINUTE, 0);
                         calendar.set(Calendar.SECOND, 0);
                         calendar.set(Calendar.MILLISECOND, 5);
-                        break;
-                    case Calendar.WEEK_OF_YEAR:
+                    }
+                    case Calendar.WEEK_OF_YEAR -> {
                         // make weeks begin with first day of week?
                         calendar.set(Calendar.HOUR_OF_DAY, 0);
                         calendar.set(Calendar.MINUTE, 0);
                         calendar.set(Calendar.SECOND, 0);
                         calendar.set(Calendar.MILLISECOND, 4);
-                        break;
-                    case Calendar.DATE:
+                    }
+                    case Calendar.DATE -> {
                         calendar.set(Calendar.HOUR_OF_DAY, 0);
                         calendar.set(Calendar.MINUTE, 0);
                         calendar.set(Calendar.SECOND, 0);
                         calendar.set(Calendar.MILLISECOND, 3);
-                        break;
-                    case Calendar.HOUR:
+                    }
+                    case Calendar.HOUR -> {
                         if (i != 0 && i != dates.size() - 1) {
                             calendar.set(Calendar.MINUTE, 0);
                             calendar.set(Calendar.SECOND, 0);
                         }
                         calendar.set(Calendar.MILLISECOND, 2);
-                        break;
-                    case Calendar.MINUTE:
+                    }
+                    case Calendar.MINUTE -> {
                         if (i != 0 && i != dates.size() - 1) {
                             calendar.set(Calendar.SECOND, 0);
                         }
                         calendar.set(Calendar.MILLISECOND, 1);
-                        break;
-                    case Calendar.SECOND:
-                        calendar.set(Calendar.MILLISECOND, 0);
-                        break;
-                    default:
-                        break;
+                    }
+                    case Calendar.SECOND -> calendar.set(Calendar.MILLISECOND, 0);
+                    default -> {
+                        //do nothing
+                    }
                 }
                 evenDates.add(calendar.getTime());
             }
@@ -522,7 +507,7 @@ public class DateAxis extends Axis<Date> {
      * @param date The lower bound date.
      * @see #lowerBoundProperty()
      */
-    public final void setLowerBound(Date date) {
+    public final void setLowerBound(final Date date) {
         lowerBound.set(date);
     }
 
@@ -553,7 +538,7 @@ public class DateAxis extends Axis<Date> {
      * @param date The upper bound date.
      * @see #upperBoundProperty() ()
      */
-    public final void setUpperBound(Date date) {
+    public final void setUpperBound(final Date date) {
         upperBound.set(date);
     }
 
@@ -571,7 +556,7 @@ public class DateAxis extends Axis<Date> {
      *
      * @param value The converter.
      */
-    public final void setTickLabelFormatter(StringConverter<Date> value) {
+    public final void setTickLabelFormatter(final StringConverter<Date> value) {
         tickLabelFormatter.setValue(value);
     }
 
@@ -614,7 +599,7 @@ public class DateAxis extends Axis<Date> {
 
         private final int interval;
 
-        private Interval(int interval, int amount) {
+        private Interval(final int interval, final int amount) {
             this.interval = interval;
             this.amount = amount;
         }

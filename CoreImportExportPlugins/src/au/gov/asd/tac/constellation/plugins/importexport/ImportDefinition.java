@@ -81,7 +81,7 @@ public class ImportDefinition {
     @Override
     public String toString() {
         final StringBuilder b = new StringBuilder();
-        b.append(String.format("[\nFirst row:%d\nFilter:%s\n", firstRow, filter != null ? filter.getScript() : ""));
+        b.append(String.format("[%nFirst row:%d%nFilter:%s%n", firstRow, filter != null ? filter.getScript() : ""));
         for (final AttributeType at : AttributeType.values()) {
             final List<ImportAttributeDefinition> defs = getDefinitions(at);
             defs.stream().forEach(iad -> b.append(String.format("%s %s (column %d)\n", at, iad.toString(), iad.getColumnIndex())));

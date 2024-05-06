@@ -99,7 +99,7 @@ public class WordCloudControllerNGTest {
             
             final boolean val = false;
             controller.setIsSizeSorted(val);
-            assertFalse(wordCloud.getIsSizeSorted());
+            assertFalse(wordCloud.isSizeSorted());
            
         }
     }
@@ -153,7 +153,7 @@ public class WordCloudControllerNGTest {
             
             final boolean val = true;
             controller.setIsUnionSelect(val);
-            assertTrue(wordCloud.getIsUnionSelect());
+            assertTrue(wordCloud.isUnionSelect());
         }
     }
 

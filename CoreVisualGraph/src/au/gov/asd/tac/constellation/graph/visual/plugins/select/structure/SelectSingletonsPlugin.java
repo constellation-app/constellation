@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,6 @@ public class SelectSingletonsPlugin extends SimpleEditPlugin {
         final int selectedAttrId = VisualConcept.VertexAttribute.SELECTED.get(graph);
         for (int position = 0; position < graph.getVertexCount(); position++) {
             final int vxId = graph.getVertex(position);
-
             final int degree = graph.getVertexLinkCount(vxId);
             if (degree == 0) {
                 graph.setBooleanValue(selectedAttrId, vxId, true);

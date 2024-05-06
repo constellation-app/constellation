@@ -98,13 +98,13 @@ public final class GraphTaxonomy {
     }
 
     public GraphTaxonomy(final GraphWriteMethods wg, final Map<Integer, Set<Integer>> taxa, final Map<Integer, Integer> nodeToTaxa) {
-        this(wg, taxa, null, Graph.NOT_FOUND, Graph.NOT_FOUND);
+        this(wg, taxa, nodeToTaxa, Graph.NOT_FOUND, Graph.NOT_FOUND);
     }
 
     public GraphTaxonomy(final GraphWriteMethods wg, final Map<Integer, Set<Integer>> taxa, final Map<Integer, Integer> nodeToTaxa, final int singletonKey, final int doubletKey) {
         this.wg = wg;
-        this.taxa = taxa;
-        this.nodeToTaxa = nodeToTaxa;
+        this.taxa = new HashMap<>(taxa);
+        this.nodeToTaxa = nodeToTaxa == null ? null : new HashMap<>(nodeToTaxa);
         arrangeRectangularly = new HashSet<>();
         this.singletonKey = singletonKey;
         this.doubletKey = doubletKey;
@@ -119,7 +119,7 @@ public final class GraphTaxonomy {
     }
 
     public Map<Integer, Integer> getNodeToTaxa() {
-        return nodeToTaxa;
+        return Collections.unmodifiableMap(nodeToTaxa);
     }
 
     public int getSingletonKey() {

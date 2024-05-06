@@ -55,16 +55,14 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
 
     private static final String OFFICIAL_CONSTELLATION_WEBSITE = "https://www.constellation-app.com/help";
     private static final String NEWLINE = "\n";
+    
+    // Run in a different thread, not the JavaFX thread
+    private static final ExecutorService pluginExecutor = Executors.newCachedThreadPool();
 
     public static void copy(final String filePath, final OutputStream out) throws IOException {
         final String sep = File.separator;
         final InputStream pageInput = getInputStream(filePath);
         final InputStream tocInput = getInputStream(Generator.getBaseDirectory() + sep + Generator.getTOCDirectory());
-
-        if (pageInput == null || tocInput == null) {
-            // files could not be found, don't progress.
-            return;
-        }
 
         // avoid parsing utility files or images into html
         if (filePath.contains(".css") || filePath.contains(".js") || filePath.contains(".png") || filePath.contains(".jpg")) {
@@ -101,8 +99,8 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
     }
 
     /**
-     * Generate a String which represents the table of contents, the currently
-     * displayed page, and the necessary html tags for formatting.
+     * Generate a String which represents the table of contents, the currently displayed page, and the necessary html
+     * tags for formatting.
      *
      * @param separator
      * @param tocInput
@@ -281,8 +279,6 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
     public static Future<?> browse(final URI uri) {
         LOGGER.log(Level.INFO, "Loading help uri {0}", uri);
 
-        // Run in a different thread, not the JavaFX thread
-        final ExecutorService pluginExecutor = Executors.newCachedThreadPool();
         return pluginExecutor.submit(() -> {
             Thread.currentThread().setName("Browse Help");
             try {

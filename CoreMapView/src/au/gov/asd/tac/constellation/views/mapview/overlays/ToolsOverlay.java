@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import org.openide.util.lookup.ServiceProvider;
 import processing.core.PApplet;
 import processing.core.PConstants;
@@ -415,7 +414,7 @@ public class ToolsOverlay extends MapOverlay {
             synchronized (LOCK) {
                 hitMarkers = map.getHitMarkers(event.getX(), event.getY()).stream()
                         .map(ConstellationAbstractMarker.class::cast)
-                        .collect(Collectors.toList());
+                        .toList();
             }
             if (mouseLeftDrawToolRegion && drawActive) {
                 final MarkerCache markerCache = renderer.getMarkerCache();

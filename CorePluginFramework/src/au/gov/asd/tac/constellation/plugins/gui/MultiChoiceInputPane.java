@@ -97,9 +97,8 @@ public class MultiChoiceInputPane extends HBox {
                         final List<ParameterValue> checkedItems = (List<ParameterValue>) MultiChoiceParameterType.getChoicesData(mcPluginParameter);
 
                         field.getCheckModel().getCheckedItems();
-                        checkedItems.forEach(checked -> {
-                            field.getCheckModel().check(checked);
-                        });
+                        checkedItems.forEach(checked -> 
+                            field.getCheckModel().check(checked));
                         
                         // give a visual indicator if a required parameter is empty
                         field.setId(mcPluginParameter.isRequired() && field.getCheckModel().isEmpty() ? "invalid selection" : "");

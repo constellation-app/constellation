@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects;
 
-import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteReader;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteWriter;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -198,7 +197,7 @@ public final class Plane {
         this.isVisible = isVisible;
     }
 
-    public static Plane readNode(final JsonNode jnode, final GraphReadMethods graph, final GraphByteReader byteReader) throws IOException {
+    public static Plane readNode(final JsonNode jnode, final GraphByteReader byteReader) throws IOException {
         final String label = jnode.get("label").textValue();
         final float x = (float) jnode.get("x").doubleValue();
         final float y = (float) jnode.get("y").doubleValue();

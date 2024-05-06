@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,11 +55,8 @@ public class TreeNode extends TreeElement implements Comparable<TreeNode> {
 
         if (thisGap < otherGap) {
             return -1;
-        } else if (thisGap == otherGap) {
-            return 0;
-        } else {
-            return 1;
         }
+        return thisGap == otherGap ? 0 : 1;
     }
 
     public void setFirstChild(final TreeNode firstChild) {

@@ -23,6 +23,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A date time range, with the start and end times truncated to the second.
@@ -41,6 +43,8 @@ public class DateTimeRange {
     private final Period period;
     private final ZonedDateTime zstart;
     private final ZonedDateTime zend;
+    
+    private static final Logger LOGGER = Logger.getLogger(DateTimeRange.class.getName());
 
     /**
      * A range with the specified ZoneDateTime instances.
@@ -185,7 +189,7 @@ public class DateTimeRange {
 
                 return new DateTimeRange(period, zi);
             } catch (final DateTimeParseException ex) {
-                ex.printStackTrace(System.err);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
 
             // Default period when we couldn't parse the value.
@@ -206,7 +210,7 @@ public class DateTimeRange {
                     return new DateTimeRange(zstart, zend);
                 }
             } catch (final DateTimeParseException ex) {
-                ex.printStackTrace(System.err);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
 
             final ZonedDateTime zend = ZonedDateTime.now(ZoneId.of("UTC"));

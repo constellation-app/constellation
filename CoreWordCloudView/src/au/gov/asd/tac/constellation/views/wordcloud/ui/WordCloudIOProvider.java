@@ -208,8 +208,8 @@ public class WordCloudIOProvider extends AbstractGraphIOProvider {
                 }
                 jsonGenerator.writeEndArray();
 
-                jsonGenerator.writeBooleanField(ISUNION, cloud.getIsUnionSelect());
-                jsonGenerator.writeBooleanField(ISSIZE, cloud.getIsSizeSorted());
+                jsonGenerator.writeBooleanField(ISUNION, cloud.isUnionSelect());
+                jsonGenerator.writeBooleanField(ISSIZE, cloud.isSizeSorted());
                 jsonGenerator.writeEndObject();
             }
         }

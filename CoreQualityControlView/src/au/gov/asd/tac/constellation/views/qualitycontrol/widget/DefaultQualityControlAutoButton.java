@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -103,9 +103,8 @@ public final class DefaultQualityControlAutoButton extends QualityControlAutoBut
     }
 
     /**
-     * Add this button as a listener to the quality control auto vetter. This
-     * allows the containing top component to effectively subscribe/unsubscribe
-     * listeners as the components are opened or closed.
+     * Add this button as a listener to the quality control auto vetter. This allows the containing top component to
+     * effectively subscribe/unsubscribe listeners as the components are opened or closed.
      */
     public void addQCListener() {
         QualityControlAutoVetter.getInstance().addListener(this);
@@ -113,9 +112,8 @@ public final class DefaultQualityControlAutoButton extends QualityControlAutoBut
     }
 
     /**
-     * Remove this button as a listener from the quality control auto vetter.
-     * This allows the containing top component to effectively
-     * subscribe/unsubscribe listeners as the components are opened or closed.
+     * Remove this button as a listener from the quality control auto vetter. This allows the containing top component
+     * to effectively subscribe/unsubscribe listeners as the components are opened or closed.
      */
     public void removeQCListener() {
         QualityControlAutoVetter.getInstance().removeListener(this);

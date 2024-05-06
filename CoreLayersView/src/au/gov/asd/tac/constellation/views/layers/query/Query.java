@@ -70,7 +70,7 @@ public class Query {
     }
 
     public int[] getAttributeIds() {
-        return attributeIds;
+        return attributeIds.clone();
     }
 
     private static final class GraphVariableProvider implements VariableProvider {

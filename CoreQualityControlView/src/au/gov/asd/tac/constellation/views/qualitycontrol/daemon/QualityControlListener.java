@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,8 +25,7 @@ public interface QualityControlListener {
     /**
      * Called when the quality control state has changed.
      * <p>
-     * This can happen when a graph changes, or when a different graph is in the
-     * global lookup.
+     * This can happen when a graph changes, or when a different graph is in the global lookup.
      *
      * @param state The new state.
      */

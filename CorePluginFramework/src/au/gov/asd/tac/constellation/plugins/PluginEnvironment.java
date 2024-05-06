@@ -63,7 +63,7 @@ public abstract class PluginEnvironment {
      */
     public Future<?> executePluginLater(final Graph graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive, final List<Future<?>> async, final PluginSynchronizer synchronizer){
         return executePluginLater(graph, plugin, parameters, interactive, null, async, synchronizer); 
-    };
+    }
 
     /**
      * Execute a plugin asynchronously on a different thread.

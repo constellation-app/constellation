@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ public class And {
         // added private constructor to hide implicit public constructor - S1118.
     }
 
-    public static void register(Operators operators) {
+    public static void register(final Operators operators) {
         final OperatorRegistry registry = operators.getRegistry(NAME);
 
         registry.register(BooleanReadable.class, BooleanReadable.class, BooleanReadable.class, (p1, p2)

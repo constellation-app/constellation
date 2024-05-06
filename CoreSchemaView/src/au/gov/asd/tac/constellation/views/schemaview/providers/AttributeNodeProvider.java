@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -196,26 +196,15 @@ public class AttributeNodeProvider implements SchemaViewNodeProvider, GraphManag
             
             final GraphElementType et = p.getValue().attr.getElementType();
             switch (et) {
-                case VERTEX:
-                    label.setGraphic(new ImageView(vertexImage));
-                    break;
-                case TRANSACTION:
-                    label.setGraphic(new ImageView(transactionImage));
-                    break;
-                case EDGE:
-                    label.setGraphic(new ImageView(edgeImage));
-                    break;
-                case LINK:
-                    label.setGraphic(new ImageView(linkImage));
-                    break;
-                case GRAPH:
-                    label.setGraphic(new ImageView(graphImage));
-                    break;
-                case META:
-                    label.setGraphic(new ImageView(metaImage));
-                    break;
-                default:
-                    break;
+                case VERTEX -> label.setGraphic(new ImageView(vertexImage));
+                case TRANSACTION -> label.setGraphic(new ImageView(transactionImage));
+                case EDGE -> label.setGraphic(new ImageView(edgeImage));
+                case LINK -> label.setGraphic(new ImageView(linkImage));
+                case GRAPH -> label.setGraphic(new ImageView(graphImage));
+                case META -> label.setGraphic(new ImageView(metaImage));
+                default -> {
+                    //do nothing
+                }
             }
 
             return new SimpleObjectProperty<>(label);

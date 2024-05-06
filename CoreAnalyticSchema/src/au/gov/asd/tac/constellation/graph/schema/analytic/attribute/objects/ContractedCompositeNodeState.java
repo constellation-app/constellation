@@ -72,7 +72,7 @@ public class ContractedCompositeNodeState {
      * @return An array {x,y,z} containing the coordinates of the mean position.
      */
     public float[] getMean() {
-        return this.mean;
+        return mean.clone();
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ public class ConverterRegistry {
     private final Map<Class<?>, Map<Class<?>, Converter<?, ?>>> converters = new HashMap<>();
     private final Map<Class<?>, Map<Class<?>, Map<Class<?>, Biconverter<?, ?, ?>>>> biConverters = new HashMap<>();
 
-    public <S, D> void register(Class<S> sourceClass, Class<D> destinationClass, Converter<? super S, ? extends D> converter) {
+    public <S, D> void register(final Class<S> sourceClass, final Class<D> destinationClass, final Converter<? super S, ? extends D> converter) {
         Map<Class<?>, Converter<?, ?>> sourceConverters = converters.get(sourceClass);
         if (sourceConverters == null) {
             sourceConverters = new HashMap<>();
@@ -42,7 +42,7 @@ public class ConverterRegistry {
         sourceConverters.put(destinationClass, converter);
     }
 
-    public <S1, S2, D> void register(Class<S1> source1Class, Class<S2> source2Class, Class<D> destinationClass, Biconverter<? super S1, ? super S2, ? extends D> converter) {
+    public <S1, S2, D> void register(final Class<S1> source1Class, final Class<S2> source2Class, final Class<D> destinationClass, final Biconverter<? super S1, ? super S2, ? extends D> converter) {
         Map<Class<?>, Map<Class<?>, Biconverter<?, ?, ?>>> source1Converters = biConverters.get(source1Class);
         if (source1Converters == null) {
             source1Converters = new HashMap<>();
@@ -56,10 +56,10 @@ public class ConverterRegistry {
         source2Converters.put(destinationClass, converter);
     }
 
-    public <D> D convert(Object sourceObject, Class<? extends D> destinationClass) {
-        Map<Class<?>, Converter<?, ?>> sourceConverters = converters.get(sourceObject.getClass());
+    public <D> D convert(final Object sourceObject, final Class<? extends D> destinationClass) {
+        final Map<Class<?>, Converter<?, ?>> sourceConverters = converters.get(sourceObject.getClass());
         if (sourceConverters != null) {
-            Converter<Object, D> converter = (Converter<Object, D>) sourceConverters.get(destinationClass);
+            final Converter<Object, D> converter = (Converter<Object, D>) sourceConverters.get(destinationClass);
             if (converter != null) {
                 return converter.convert(sourceObject);
             }
@@ -72,16 +72,16 @@ public class ConverterRegistry {
         return null;
     }
 
-    public <D> D convert(Object source1Object, Object source2Object, Class<? extends D> destinationClass) {
-        Map<Class<?>, Map<Class<?>, Biconverter<?, ?, ?>>> source1Converters = biConverters.get(source1Object.getClass());
+    public <D> D convert(final Object source1Object, final Object source2Object, final Class<? extends D> destinationClass) {
+        final Map<Class<?>, Map<Class<?>, Biconverter<?, ?, ?>>> source1Converters = biConverters.get(source1Object.getClass());
         if (source1Converters == null) {
             return null;
         }
-        Map<Class<?>, Biconverter<?, ?, ?>> source2Converters = source1Converters.get(source2Object.getClass());
+        final Map<Class<?>, Biconverter<?, ?, ?>> source2Converters = source1Converters.get(source2Object.getClass());
         if (source2Converters == null) {
             return null;
         }
-        Biconverter<Object, Object, D> converter = (Biconverter<Object, Object, D>) source2Converters.get(destinationClass);
+        final Biconverter<Object, Object, D> converter = (Biconverter<Object, Object, D>) source2Converters.get(destinationClass);
         return converter == null ? null : converter.convert(source1Object, source2Object);
     }
 }

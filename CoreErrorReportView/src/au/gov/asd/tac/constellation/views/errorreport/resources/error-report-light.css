@@ -42,11 +42,11 @@ and open the template in the editor.
 }
 
 .text-area {
-    text-area-background: black ;
+    --text-area-background: black ;
 }
 
 .text-area .content {
-    -fx-background-color: text-area-background ;
+    -fx-background-color: --text-area-background ;
 }
 
 .titled-pane-heading .title, .titled-pane-heading > .title {

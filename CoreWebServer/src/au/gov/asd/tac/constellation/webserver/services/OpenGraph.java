@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,9 +96,7 @@ public class OpenGraph extends RestService {
     @Override
     public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
         final String filePath = parameters.getStringValue(FILE_PARAMETER_ID);
-
         final String existingId = RestServiceUtilities.activeGraphId();
-
         final File fnam = new File(filePath).getAbsoluteFile();
         String name = fnam.getName();
         if (StringUtils.endsWithIgnoreCase(name, GraphDataObject.FILE_EXTENSION)) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -111,18 +111,23 @@ public final class DateAttributeDescriptionV0 extends AbstractAttributeDescripti
      * @return A long.
      */
     private static long setObject(final Object value) {
-        if (value == null) {
-            return DEFAULT_VALUE;
-        } else if (value instanceof Date) {
-            return ((Date) value).getTime();
-        } else if (value instanceof Number) {
-            return ((Number) value).longValue();
-        } else if (value instanceof Calendar) {
-            return ((Calendar) value).getTimeInMillis();
-        } else if (value instanceof String) {
-            return setString((String) value);
-        } else {
-            throw new IllegalArgumentException("Error converting Object to long");
+        switch (value) {
+            case Date date -> {
+                return date.getTime();
+            }      
+            case Number number -> {
+                return number.longValue();
+            }       
+            case Calendar calendar -> {
+                return calendar.getTimeInMillis();
+            }       
+            case String string -> {
+                return setString(string);
+            }
+            case null -> {
+                return DEFAULT_VALUE;
+            }
+            default -> throw new IllegalArgumentException("Error converting Object to long");
         }
     }
 
@@ -154,11 +159,7 @@ public final class DateAttributeDescriptionV0 extends AbstractAttributeDescripti
 
     @Override
     public Object getObject(final int id) {
-        if (data[id] == DEFAULT_VALUE) {
-            return null;
-        } else {
-            return new Representation(data[id]);
-        }
+        return data[id] == DEFAULT_VALUE ? null : new Representation(data[id]);
     }
 
     @Override
@@ -168,7 +169,7 @@ public final class DateAttributeDescriptionV0 extends AbstractAttributeDescripti
 
     @Override
     public AttributeDescription copy(GraphReadMethods graph) {
-        DateAttributeDescriptionV0 attribute = new DateAttributeDescriptionV0();
+        final DateAttributeDescriptionV0 attribute = new DateAttributeDescriptionV0();
         attribute.data = Arrays.copyOf(data, data.length);
         attribute.defaultValue = this.defaultValue;
         attribute.graph = graph;
@@ -207,7 +208,7 @@ public final class DateAttributeDescriptionV0 extends AbstractAttributeDescripti
             final int h = 0;
             final int min = 0;
             final int sec = 0;
-            int ms = 0;
+            final int ms = 0;
 
             final Calendar cal = new GregorianCalendar(UTC);
             cal.set(Calendar.YEAR, y);
@@ -219,7 +220,7 @@ public final class DateAttributeDescriptionV0 extends AbstractAttributeDescripti
             cal.set(Calendar.MILLISECOND, ms);
 
             return cal.getTimeInMillis();
-        } catch (StringIndexOutOfBoundsException | NumberFormatException ex) {
+        } catch (final StringIndexOutOfBoundsException | NumberFormatException ex) {
             LOGGER.log(Level.WARNING, "Can''t parse date string ''{0}'': {1}", new Object[]{date, ex.getMessage()});
         }
 
@@ -285,16 +286,12 @@ public final class DateAttributeDescriptionV0 extends AbstractAttributeDescripti
         }
 
         @Override
-        public int compareTo(Date other) {
-            if (other instanceof Representation && equals(other)) {
-                return 0;
-            } else {
-                return super.compareTo(other);
-            }
+        public int compareTo(final Date other) {
+            return other instanceof Representation && equals(other) ? 0 : super.compareTo(other);
         }
 
         @Override
-        public boolean equals(Object obj) {
+        public boolean equals(final Object obj) {
             if (obj == null) {
                 return false;
             }
@@ -334,17 +331,17 @@ public final class DateAttributeDescriptionV0 extends AbstractAttributeDescripti
     }
 
     @Override
-    public String acceptsString(String value) {
+    public String acceptsString(final String value) {
         return parseDate(value) == NULL_VALUE ? "Not a valid date (Expected yyyy-mm-dd)" : null;
     }
 
     @Override
-    public Object createReadObject(IntReadable indexReadable) {
+    public Object createReadObject(final IntReadable indexReadable) {
         return (LongReadable) () -> data[indexReadable.readInt()];
     }
 
     @Override
-    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+    public Object createWriteObject(final GraphWriteMethods graph, final int attribute, final IntReadable indexReadable) {
         return new LongVariable() {
             @Override
             public long readLong() {
@@ -352,7 +349,7 @@ public final class DateAttributeDescriptionV0 extends AbstractAttributeDescripti
             }
 
             @Override
-            public void writeLong(long value) {
+            public void writeLong(final long value) {
                 graph.setLongValue(attribute, indexReadable.readInt(), value);
             }
         };

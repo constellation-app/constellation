@@ -71,7 +71,7 @@ public class NifiClient extends RestClient {
                     response = new NifiFileSubmitResponse(this.responseCode, this.responseMessage, this.headerFields, this.bytes);
                     acceptingNode = node;
                     LOGGER.log(Level.INFO, "Success: response code {0} from node {1}", new Object[]{responseCode, node});
-                    if (stopAfterFirstAccept) {
+                    if (Boolean.TRUE.equals(stopAfterFirstAccept)) {
                         LOGGER.log(Level.INFO, "Stopping after node {0} accepted request", node);
                         break;
                     } else {

@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.graph.reporting;
 
-import au.gov.asd.tac.constellation.graph.reporting.UndoRedoReportListener;
-import au.gov.asd.tac.constellation.graph.reporting.UndoRedoReport;
 import java.util.ArrayList;
 import java.util.List;
 

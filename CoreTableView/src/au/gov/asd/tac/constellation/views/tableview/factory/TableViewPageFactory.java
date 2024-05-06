@@ -121,7 +121,7 @@ public class TableViewPageFactory implements Callback<Integer, Node> {
             // The reasoning is that in selected only mode, if the row list changes
             // then that means the selection on the graph has changed. In this case
             // the expected behaviour is to clear the current table selection.
-            if (lastAllTableRows == null || lastAllTableRows != allTableRows) {
+            if (lastAllTableRows == null || !lastAllTableRows.equals(allTableRows)) {
                 tablePane.getActiveTableReference().getSelectedOnlySelectedRows().clear();
                 lastAllTableRows = allTableRows;
             }

@@ -81,7 +81,7 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                             noteViewEntries.get(i).setInMarkdown(notesArray.get(i).get(8).asBoolean());
                         }
 
-                        if (notesArray.get(i).get(3).asBoolean() == true && notesArray.get(i).get(4).asBoolean() == false) {
+                        if (notesArray.get(i).get(3).asBoolean() && !notesArray.get(i).get(4).asBoolean()) {
 
                             final JsonNode nodesArrayNode = notesArray.get(i).get(5);
                             final JsonNode transactionsArrayNode = notesArray.get(i).get(6);
@@ -114,7 +114,7 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                                 noteViewEntries.get(i).setInMarkdown(notesArray.get(i).get(6).asBoolean());
                             }
 
-                        } else if (notesArray.get(i).get(3).asBoolean() == false) {
+                        } else if (!notesArray.get(i).get(3).asBoolean()) {
                             // Create auto notes with the tags they have assigned to them
                             final JsonNode tagsArrayNode = notesArray.get(i).get(6);
                             if (tagsArrayNode != null) {
@@ -199,7 +199,7 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                         jsonGenerator.writeBoolean(note.isUserCreated());
                         jsonGenerator.writeBoolean(note.isGraphAttribute());
 
-                        if (!note.isGraphAttribute() && note.isUserCreated()) {
+                        if (!Boolean.TRUE.equals(note.isGraphAttribute()) && note.isUserCreated()) {
 
                             if (note.getNodesSelected() != null) {
                                 // Add nodes that are selected to the note
@@ -227,7 +227,7 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
 
                             jsonGenerator.writeString(note.getNodeColour());
 
-                        } else if (note.isGraphAttribute() && note.isUserCreated()) {
+                        } else if (Boolean.TRUE.equals(note.isGraphAttribute()) && note.isUserCreated()) {
                             jsonGenerator.writeString(note.getNodeColour());
                         }
 

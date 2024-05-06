@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -328,9 +329,8 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
          *
          * @return A list of Strings representing the options.
          */
-        public List<String> getOptions() {
-            final List<String> optionStrings = new ArrayList<>();
-            options.stream().forEach(option -> optionStrings.add(option.toString()));
+        public List<String> getOptions() {            
+            final List<String> optionStrings = options.stream().map(Object::toString).toList();
 
             return Collections.unmodifiableList(optionStrings);
         }
@@ -341,7 +341,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
          * @param options A list of Strings to set the collection of options
          * from.
          */
-        public void setOptions(final List<String> options) {
+        public void setOptions(final Iterable<String> options) {
             this.options.clear();
             for (final String option : options) {
                 final StringParameterValue doOption = new StringParameterValue(option);

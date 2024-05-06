@@ -355,17 +355,6 @@ public final class SimpleGraphTopComponent extends CloneableTopComponent impleme
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void componentOpened() {
-        super.componentOpened();
-
-        // Try to free up any unused memory
-        final boolean forceGarbageCollectOnOpen = NbPreferences.forModule(ApplicationPreferenceKeys.class).getBoolean(DeveloperPreferenceKeys.FORCE_GC_ON_OPEN, DeveloperPreferenceKeys.FORCE_GC_ON_OPEN_DEFAULT);
-        if (forceGarbageCollectOnOpen) {
-            System.gc();
-        }
-    }
-
-    @Override
     public void componentClosed() {
         super.componentClosed();
 
@@ -378,11 +367,5 @@ public final class SimpleGraphTopComponent extends CloneableTopComponent impleme
         content.remove(graphNode);
 
         graphNode.destroy();
-
-        // Try to free up any unused memory
-        final boolean forceGarbageCollectOnClose = NbPreferences.forModule(ApplicationPreferenceKeys.class).getBoolean(DeveloperPreferenceKeys.FORCE_GC_ON_CLOSE, DeveloperPreferenceKeys.FORCE_GC_ON_CLOSE_DEFAULT);
-        if (forceGarbageCollectOnClose) {
-            System.gc();
-        }
     }
 }

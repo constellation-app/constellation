@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Window;
 
 /**
  * Display a dialog containing a table containing 2 columns of ItemsRow
@@ -67,7 +66,7 @@ public class ItemsDialog<T> extends ConstellationDialog {
     private final Button okButton;
     private final Button cancelButton;
 
-    public ItemsDialog(final Window owner, final String title, final String helpText, final String labelColumnHeading, final String descriptionColumnHeading, final ObservableList<ItemsRow<T>> rows) {
+    public ItemsDialog(final String title, final String helpText, final String labelColumnHeading, final String descriptionColumnHeading, final ObservableList<ItemsRow<T>> rows) {
         final BorderPane root = new BorderPane();
         
         // add a title

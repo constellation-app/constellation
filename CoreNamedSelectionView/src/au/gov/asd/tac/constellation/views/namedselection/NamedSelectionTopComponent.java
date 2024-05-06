@@ -99,8 +99,9 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
                 if (e.getClickCount() == 2) {
                     retrieveSelection();
                 }
-            } // Right click: open context menu on the named selection 'under' the mouse pointer:
-            else if (e.getButton() == MouseEvent.BUTTON3) {
+                
+            // Right click: open context menu on the named selection 'under' the mouse pointer:
+            } else if (e.getButton() == MouseEvent.BUTTON3) {
                 lstNamedSelections.setSelectedIndex(lstNamedSelections.locationToIndex(e.getPoint()));
 
                 boolean isEnabled = true;

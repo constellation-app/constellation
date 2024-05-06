@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,12 +58,12 @@ public class TreeLeaf extends TreeElement implements Comparable<TreeLeaf> {
 
     @Override
     public long getLowerTimeExtent() {
-        return datetime;
+        return getDatetime();
     }
 
     @Override
     public long getUpperTimeExtent() {
-        return datetime;
+        return getDatetime();
     }
 
     @Override
@@ -95,10 +95,7 @@ public class TreeLeaf extends TreeElement implements Comparable<TreeLeaf> {
     public int compareTo(final TreeLeaf o) {
         if (this.datetime < o.datetime) {
             return -1;
-        } else if (this.datetime == o.datetime) {
-            return 0;
-        } else {
-            return 1;
         }
+        return this.datetime == o.datetime ? 0 : 1;
     }
 }

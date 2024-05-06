@@ -52,7 +52,6 @@ public class FPSRenderable implements GLRenderable {
     private static final Matrix44f IDENTITY_44F = Matrix44f.identity();
     private static final Camera CAMERA = new Camera();
 
-    private final GLVisualProcessor parent;
     private final FpsBatcher fpsBatcher = new FpsBatcher();
     private final Vector3f bottomRightCorner = new Vector3f();
     private float pixelDensity = 0;
@@ -65,7 +64,6 @@ public class FPSRenderable implements GLRenderable {
     private long countFps = 0;
 
     public FPSRenderable(final GLVisualProcessor parent) {
-        this.parent = parent;
 
         final Preferences prefs = NbPreferences.forModule(DeveloperPreferenceKeys.class);
         this.enabled = prefs.getBoolean(DeveloperPreferenceKeys.DISPLAY_FRAME_RATE,

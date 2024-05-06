@@ -154,7 +154,7 @@ public class PlaneStateIOProviderNGTest {
         when(mockJsonNode.get(anyString())).thenReturn(arrayNode);
 
         try (MockedStatic<Plane> mockPlane = Mockito.mockStatic(Plane.class)) {
-            mockPlane.when(() -> Plane.readNode(any(), any(), any()))
+            mockPlane.when(() -> Plane.readNode(any(), any()))
                    .thenReturn(new Plane("plane", 0.0f, 0.1f, 0.2f, 0.3f, 0.4f, new BufferedImage(1,2,3), 5, 6));
 
             instance.readObject(attributeId, elementId, mockJsonNode, mockGraphWriteMethods, null, null, mockByteReader, null);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,14 +37,13 @@ public class ConnectionBuilder extends GraphBuilder {
     }
 
     public static ConnectionBuilder makeConnection(final GraphWriteMethods graph, final int[] leftToConnect, final int[] rightToConnect, final ConnectionDirection direction) {
-
         // Create the new transactions connecting specified vertices in g1 to specified vertices in g2.
         final int[] connectingTransactions = new int[leftToConnect.length * rightToConnect.length];
         int currentTrans = 0;
-        boolean directed = direction != ConnectionDirection.UNDIRECTED;
-        boolean reverse = direction == ConnectionDirection.RIGHT_TO_LEFT;
-        for (int leftID : leftToConnect) {
-            for (int rightID : rightToConnect) {
+        final boolean directed = direction != ConnectionDirection.UNDIRECTED;
+        final boolean reverse = direction == ConnectionDirection.RIGHT_TO_LEFT;
+        for (final int leftID : leftToConnect) {
+            for (final int rightID : rightToConnect) {
                 connectingTransactions[currentTrans++] = constructTransaction(graph, leftID, rightID, directed, reverse);
             }
         }
@@ -56,9 +55,8 @@ public class ConnectionBuilder extends GraphBuilder {
 
     public final int[] connectingTransactions;
 
-    private ConnectionBuilder(final GraphWriteMethods graph, int[] connectingTransactions) {
+    private ConnectionBuilder(final GraphWriteMethods graph, final int[] connectingTransactions) {
         super(graph);
         this.connectingTransactions = connectingTransactions;
     }
-
 }

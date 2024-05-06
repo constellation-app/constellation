@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,20 +29,20 @@ public class LongStore implements Store {
 
     private long[] values;
 
-    public LongStore(int capacity) {
+    public LongStore(final int capacity) {
         values = new long[capacity];
     }
 
-    public LongStore(long... values) {
+    public LongStore(final long... values) {
         this.values = values;
     }
 
-    public void setCapacity(int capacity) {
+    public void setCapacity(final int capacity) {
         values = Arrays.copyOf(values, capacity);
     }
 
     @Override
-    public Object createVariable(IntReadable indexReadable) {
+    public Object createVariable(final IntReadable indexReadable) {
         return new Value(indexReadable);
     }
 
@@ -50,7 +50,7 @@ public class LongStore implements Store {
 
         private final IntReadable indexReadable;
 
-        public Value(IntReadable indexReadable) {
+        public Value(final IntReadable indexReadable) {
             this.indexReadable = indexReadable;
         }
 
@@ -60,7 +60,7 @@ public class LongStore implements Store {
         }
 
         @Override
-        public void writeLong(long value) {
+        public void writeLong(final long value) {
             values[indexReadable.readInt()] = value;
         }
     }

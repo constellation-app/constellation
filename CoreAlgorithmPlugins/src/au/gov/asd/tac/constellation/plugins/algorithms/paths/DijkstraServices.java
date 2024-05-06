@@ -103,7 +103,7 @@ public class DijkstraServices {
      */
     public DijkstraServices(final GraphWriteMethods graph, final List<Integer> verticesToPath, final boolean followDirection) {
         this.graph = graph;
-        this.selectedVertices = verticesToPath;
+        this.selectedVertices = new ArrayList<>(verticesToPath);
         this.followDirection = followDirection;
     }
 

@@ -125,7 +125,7 @@ public class JSingleChoiceComboBoxMenu<E> extends JComponent implements ListSele
     }
 
     public final Set<E> getSelectedItem() {
-        return selectedItems;
+        return Collections.unmodifiableSet(selectedItems);
     }
 
     public final void setSelectedItem(final E item) {
@@ -142,7 +142,7 @@ public class JSingleChoiceComboBoxMenu<E> extends JComponent implements ListSele
     }
 
     protected Map<JMenuItem, E> getMenuItems() {
-        return menuItems;
+        return Collections.unmodifiableMap(menuItems);
     }
 
     protected final void addMenuItemActionListener(final JMenuItem menuItem) {
