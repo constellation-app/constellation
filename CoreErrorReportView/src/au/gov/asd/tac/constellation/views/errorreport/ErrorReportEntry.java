@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.errorreport;
 
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.logging.Level;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -66,10 +67,10 @@ public class ErrorReportEntry {
         }
 
         String adjustedHeading = heading;
-        if (adjustedHeading.endsWith("\n")) {
-            adjustedHeading = adjustedHeading.substring(0, adjustedHeading.lastIndexOf("\n"));
+        if (adjustedHeading.endsWith(SeparatorConstants.NEWLINE)) {
+            adjustedHeading = adjustedHeading.substring(0, adjustedHeading.lastIndexOf(SeparatorConstants.NEWLINE));
         }
-        adjustedHeading = adjustedHeading.replace("\n", " . ") + "\n";
+        adjustedHeading = adjustedHeading.replace(SeparatorConstants.NEWLINE, " . ") + SeparatorConstants.NEWLINE;
         
         if (adjustedHeading.length() < length) {
             return adjustedHeading;

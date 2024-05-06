@@ -85,7 +85,7 @@ public class NewNotePane {
     private TextFlow previewTextFlow;
 
     private final ColorPicker newNoteColour;
-    private String previousColour = "#c55eff";
+    private String previousColour = "#a26fc0";
 
     private boolean applySelected = true;
     private boolean markdownSelected = false;

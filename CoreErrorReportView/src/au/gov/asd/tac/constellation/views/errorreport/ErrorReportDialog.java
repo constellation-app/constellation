@@ -180,12 +180,9 @@ public class ErrorReportDialog {
         buttonPane.setCenter(blockRepeatsCheckbox);
         buttonPane.setRight(closeButton);
         
-        root.widthProperty().addListener(new ChangeListener<Number>(){
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                final int newWidth = newValue.intValue() - 55;
-                messageDesc.setMaxWidth(newWidth > 120 ? newWidth : 120);
-            }
+        root.widthProperty().addListener((final ObservableValue<? extends Number> observable, final Number oldValue, final Number newValue) -> {
+            final int newWidth = newValue.intValue() - 55;
+            messageDesc.setMaxWidth(newWidth > 120 ? newWidth : 120);
         });
         
         final Scene scene = new Scene(root);
