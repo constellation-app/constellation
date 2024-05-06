@@ -109,7 +109,7 @@ public class ScriptingViewPane extends JPanel {
     private File scriptFile;
     private boolean newOutput;
     
-    private static final Pattern COLUMN_PATTERN = Pattern.compile(" at column number (\\d+)");;
+    private static final Pattern COLUMN_PATTERN = Pattern.compile(" at column number (\\d+)");
     private static final Pattern LINE_PATTERN = Pattern.compile(" at line number (\\d+)");
 
     public ScriptingViewPane(final ScriptingViewTopComponent topComponent) {

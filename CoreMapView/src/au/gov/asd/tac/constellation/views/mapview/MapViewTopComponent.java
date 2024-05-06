@@ -154,7 +154,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
     private int cachedHeight;
     private final Consumer<Graph> updateMarkers;
     
-    private static final Pattern COMMA_SEPARATED_REGEX = Pattern.compile("[,\\s]+");
+    private static final Pattern COMMA_SEPARATED_REGEX = Pattern.compile("[,\\s]+", Pattern.UNICODE_CHARACTER_CLASS);
 
     public MapViewTopComponent() {
         super();

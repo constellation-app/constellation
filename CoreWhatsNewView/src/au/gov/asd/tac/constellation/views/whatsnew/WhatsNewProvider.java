@@ -40,7 +40,7 @@ public abstract class WhatsNewProvider {
     
     private static final Logger LOGGER = Logger.getLogger(WhatsNewProvider.class.getName());
     
-    private static final Pattern WNE_HEADER_REGEX = Pattern.compile("^==\\s+(\\d{4}-\\d{2}-\\d{2})\\s+(.*)");
+    private static final Pattern WNE_HEADER_REGEX = Pattern.compile("^==\\s+(\\d{4}-\\d{2}-\\d{2})\\s+(.*)", Pattern.UNICODE_CHARACTER_CLASS);
 
     /**
      * Get the path of a text file (relative to the implementing class) that

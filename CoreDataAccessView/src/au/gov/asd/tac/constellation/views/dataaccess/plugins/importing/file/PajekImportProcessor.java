@@ -57,7 +57,7 @@ public class PajekImportProcessor implements GraphFileImportProcessor {
     public static final String VERTEX_HEADER = "*V";
     public static final String EDGE_HEADER = "*E";
     
-    private static final Pattern WHITESPACES_REGEX = Pattern.compile("\\s+");
+    private static final Pattern WHITESPACES_REGEX = Pattern.compile("\\s+", Pattern.UNICODE_CHARACTER_CLASS);
 
     @Override
     public String getName() {

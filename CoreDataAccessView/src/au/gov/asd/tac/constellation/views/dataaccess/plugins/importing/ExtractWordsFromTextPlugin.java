@@ -95,7 +95,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
     private static final String OUTGOING = "outgoing";
     private static final String INCOMING = "incoming";
     
-    private static final Pattern SPECIAL_CHARS_PATTERN = Pattern.compile("\\W");
+    private static final Pattern SPECIAL_CHARS_PATTERN = Pattern.compile("\\W", Pattern.UNICODE_CHARACTER_CLASS);
 
     @Override
     public String getType() {

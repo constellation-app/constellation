@@ -106,7 +106,7 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
     // messages
     private static final String GRAPH_NOT_FOUND_ERROR = "Graph %s not found.";
     
-    private static final Pattern LOWERCASE_REGEX = Pattern.compile("[a-z]");
+    private static final Pattern LOWERCASE_REGEX = Pattern.compile("\\p{javaLowerCase}");
 
     @Override
     public PluginParameters createParameters() {

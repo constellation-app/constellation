@@ -104,7 +104,7 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
     private static final String ADD_PRESET_BLAZE_ACTION = "Add_Preset_Blaze";
     private static final String REMOVE_BLAZES_ACTION = "Remove_Blazes";
     
-    private static final Pattern ADD_PRESET_BLAZE_REGEX = Pattern.compile("Add_Preset_Blaze");
+    private static final Pattern ADD_PRESET_BLAZE_REGEX = Pattern.compile(ADD_PRESET_BLAZE_ACTION);
 
     private static final Color DEFAULT_COLOR = new Color(255, 255, 254);
 

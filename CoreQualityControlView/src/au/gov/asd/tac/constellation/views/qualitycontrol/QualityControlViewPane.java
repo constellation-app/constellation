@@ -123,7 +123,9 @@ public final class QualityControlViewPane extends BorderPane {
 
     private static final String DISABLE = "Disable";
     private static final String ENABLE = "Enable";
-    private static final String ENABLE_TEXT_COLOR = JavafxStyleManager.isDarkTheme() ? "-fx-text-fill: white; " : "-fx-text-fill: black;";
+    
+    private static final String BLACK_TEXT_COLOR = "-fx-text-fill: black;";
+    private static final String ENABLE_TEXT_COLOR = JavafxStyleManager.isDarkTheme() ? "-fx-text-fill: white; " : BLACK_TEXT_COLOR;
     
 
     /*firstClick is a workaround for currently a existing bug within ControlsFX object, which causes two clicks 
@@ -399,10 +401,10 @@ public final class QualityControlViewPane extends BorderPane {
             case MINOR ->
                 style = String.format("%s -fx-background-color: rgba(90,150,255,%f);", ENABLE_TEXT_COLOR, alpha);
             case MEDIUM ->
-                style = String.format("%s -fx-background-color: rgba(255,215,0,%f);", "-fx-text-fill: black;", alpha);
+                style = String.format("%s -fx-background-color: rgba(255,215,0,%f);", BLACK_TEXT_COLOR, alpha);
             case MAJOR -> {
                 intensity = 255 - (255 * QualityControlEvent.MAJOR_VALUE) / 100;
-                style = String.format("%s -fx-background-color: rgba(255,%d,0,%f);", "-fx-text-fill: black;", intensity, alpha);
+                style = String.format("%s -fx-background-color: rgba(255,%d,0,%f);", BLACK_TEXT_COLOR, intensity, alpha);
             }
             case SEVERE -> {
                 intensity = 255 - (255 * QualityControlEvent.SEVERE_VALUE) / 100;
