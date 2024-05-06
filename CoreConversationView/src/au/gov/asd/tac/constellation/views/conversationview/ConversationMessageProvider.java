@@ -31,9 +31,14 @@ public interface ConversationMessageProvider {
      *
      * @param graph the provided graph.
      * @param messages the list of messages to populate.
+     * @param pageNumber page number to display messages for.
      */
     public void getMessages(final GraphReadMethods graph, final List<ConversationMessage> messages, final int pageNumber);
     
     public int getTotalMessageCount();
-
+    
+    public int getMaxContentPerPage();
+    
+    public void setMaxContentPerPage(final int maxContent);
+    
 }

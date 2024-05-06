@@ -58,6 +58,7 @@ import javafx.scene.CacheHint;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -116,6 +117,7 @@ public final class ConversationBox extends StackPane {
     // Allow the user to choose the displayed actor name.
     private final ObservableList<String> senderAttributesChoices = FXCollections.observableArrayList();
     private final MultiChoiceInputField<String> senderAttributesMultiChoiceInput = new MultiChoiceInputField<>(senderAttributesChoices);
+    private final ChoiceBox<Integer> contentPerPageChoiceBox = new ChoiceBox<>();
 
     private HBox togglesPane;
 
@@ -153,6 +155,26 @@ public final class ConversationBox extends StackPane {
 
         final VBox content = new VBox();
         content.setStyle(CSS_BACKGROUND_COLOR_TRANSPARENT);
+        
+        // Hook up the bubbles pane to the conversation.
+        final ObservableList<ConversationMessage> messages = FXCollections.observableArrayList();
+        final Label contentLabel = new Label("Content per page:");
+  
+        contentPerPageChoiceBox.getItems().clear();
+        contentPerPageChoiceBox.getItems().addAll(25, 50, 100);
+        contentPerPageChoiceBox.getSelectionModel().select(25);
+        contentPerPageChoiceBox.setValue(25);
+        contentPerPageChoiceBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+            if (activeGraph != null) {
+                final ReadableGraph graph = activeGraph.getReadableGraph();
+                conversation.setContentPerPage(contentPerPageChoiceBox.getValue());
+                messages.clear();
+                messages.addAll(conversation.updateMessages(graph));
+                updatePages(conversation.getTotalPages());
+                graph.release();
+            }
+        });
 
         pagination.setPageCount(1);
         pagination.setMaxPageIndicatorCount(1);
@@ -160,8 +182,6 @@ public final class ConversationBox extends StackPane {
         pagination.setPageFactory(new Callback<Integer, Node>() {
             public Node call(final Integer pageIndex) {
                 
-                // Hook up the bubbles pane to the conversation.
-                ObservableList<ConversationMessage> messages = FXCollections.observableArrayList();
                 // Create the bubbles pane.
                 bubbles = new ListView<>();
                 bubbles.setStyle(CSS_BACKGROUND_COLOR_TRANSPARENT);
@@ -183,6 +203,7 @@ public final class ConversationBox extends StackPane {
                 final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
                 if (activeGraph != null && conversation.getPageNumber() != pageIndex) {
                     final ReadableGraph graph = activeGraph.getReadableGraph();
+                    conversation.setContentPerPage(contentPerPageChoiceBox.getValue());
                     conversation.setPageNumber(pageIndex);
                     messages.clear();
                     messages.addAll(conversation.updateMessages(graph));
@@ -260,7 +281,7 @@ public final class ConversationBox extends StackPane {
                 addAttributesButton.setTooltip(aabt);
 
                 optionsPane.getItems().clear();
-                optionsPane.getItems().addAll(senderAttributesMultiChoiceInput, showToolTip, addAttributesButton, helpButton);
+                optionsPane.getItems().addAll(senderAttributesMultiChoiceInput, showToolTip, addAttributesButton, helpButton, contentLabel, contentPerPageChoiceBox);
 
                 contributionsPane = new BorderPane();
                 contributionsPane.setPadding(new Insets(PADDING));
@@ -318,7 +339,11 @@ public final class ConversationBox extends StackPane {
     public void updatePages(final int totalPages) {
         Platform.runLater(() -> {
             pagination.setPageCount(totalPages);
-            pagination.setMaxPageIndicatorCount(totalPages);
+            if (totalPages > 10) {
+                pagination.setMaxPageIndicatorCount(10);
+            } else {
+                pagination.setMaxPageIndicatorCount(totalPages);
+            }
         });
     }
 

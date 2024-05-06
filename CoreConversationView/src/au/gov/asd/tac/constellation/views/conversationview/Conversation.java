@@ -110,6 +110,7 @@ public class Conversation {
     private int pageNumber = 0;
     private int totalMessageCount = 0;
     private int totalPages = 0;
+    private int contentPerPage = 25;
 
     private ObservableList<ConversationMessage> resultMessages = null;
     private ConversationContributionProviderListener contributorListener = null;
@@ -188,6 +189,14 @@ public class Conversation {
 
     public void setTotalPages(final int totalPages) {
         this.totalPages = totalPages;
+    }
+
+    public int getContentPerPage() {
+        return contentPerPage;
+    }
+
+    public void setContentPerPage(final int contentPerPage) {
+        this.contentPerPage = contentPerPage;
     }
 
     public ObservableList updateMessages(final GraphReadMethods graph) {
@@ -356,13 +365,11 @@ public class Conversation {
                 final Thread thread = new Thread(CONVERSATION_VIEW_UPDATE_MESSAGE_THREAD_NAME) {
                     @Override
                     public void run() {
+                        messageProvider.setMaxContentPerPage(contentPerPage);
                         messageProvider.getMessages(graph, allMessages, pageNumber);
                         totalMessageCount = messageProvider.getTotalMessageCount();
                         if (totalMessageCount != 0) {
-                            totalPages = totalMessageCount / 20;
-                            if (totalPages > 1) {
-                                //ConversationController.getDefault().getConversationBox().updatePages(totalPages);                                
-                            } 
+                            totalPages = (int) Math.ceil((double) totalMessageCount / messageProvider.getMaxContentPerPage());
                         }
                         latch.countDown();
                     }
@@ -518,7 +525,6 @@ public class Conversation {
 
             return true;
         }
-
     };
 
     /**

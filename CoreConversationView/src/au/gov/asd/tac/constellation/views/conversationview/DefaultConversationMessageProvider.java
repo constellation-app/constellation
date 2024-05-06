@@ -26,20 +26,20 @@ import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 
 /**
- * The DefaultConversationMessageProvider creates messages based on the current
- * selection in a number of ways: 1) If a single vertex is selected then
- * messages are created for all adjacent transactions. 2) If 2 vertices are
- * selected then messages are created for all transactions between them 3) If
- * transactions are selected and there is a common vertex in all of them then
- * messages are created for each.
+ * The DefaultConversationMessageProvider creates messages based on the current selection in a number of ways: 1) If a
+ * single vertex is selected then messages are created for all adjacent transactions. 2) If 2 vertices are selected then
+ * messages are created for all transactions between them 3) If transactions are selected and there is a common vertex
+ * in all of them then messages are created for each.
  *
  * @author sirius
  */
 public class DefaultConversationMessageProvider implements ConversationMessageProvider {
 
     private static final Logger LOGGER = Logger.getLogger(DefaultConversationMessageProvider.class.getName());
-    
+
     private int totalMessageCount = 0;
+    private int maxContentPerPage = 25;
+    private int currentVertex = -1;
 
     @Override
     public void getMessages(final GraphReadMethods graph, final List<ConversationMessage> messages, final int pageNumber) {
@@ -48,33 +48,54 @@ public class DefaultConversationMessageProvider implements ConversationMessagePr
         if (graph == null) {
             return; // Null graph means no messages.
         }
+        // Get content when only one vertex is selected 
         final int vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
         if (vertexSelectedAttribute != Graph.NOT_FOUND) {
             totalMessageCount = 0;
             final GraphIndexResult selectedVertices = GraphIndexUtilities.filterElements(graph, vertexSelectedAttribute, true);
             final int vertex = selectedVertices.getNextElement();
-            if (vertex != Graph.NOT_FOUND) {
+            if (vertex != Graph.NOT_FOUND && vertex != currentVertex) {
+                currentVertex = vertex;
                 final int secondVertex = selectedVertices.getNextElement();
                 if (secondVertex == Graph.NOT_FOUND) {
                     final int transactionCount = graph.getVertexTransactionCount(vertex);
-                    totalMessageCount = transactionCount;
-                    final int minPosition = pageNumber * 20;
-                    final int maxCount = minPosition + 20 > transactionCount ? transactionCount : minPosition + 20;
-                    for (int position = minPosition; position < maxCount; position++) {
+                    LOGGER.log(Level.SEVERE, "transaction count: " + String.valueOf(transactionCount));
+                    final int minPosition = pageNumber * maxContentPerPage;
+                    for (int position = minPosition; position < transactionCount; position++) {
                         final int transaction = graph.getVertexTransaction(vertex, position);
                         if (graph.getTransactionDirection(transaction) != Graph.UNDIRECTED) {
                             final int sender = graph.getTransactionSourceVertex(transaction);
                             final ConversationSide conversationSide = sender == vertex ? ConversationSide.LEFT : ConversationSide.RIGHT;
                             final ConversationMessage message = new ConversationMessage(transaction, sender, conversationSide);
-                            LOGGER.log(Level.SEVERE, message.toString());
-                            messages.add(message);
+                            
+                            totalMessageCount++;
+                            if (messages.size() < maxContentPerPage) {
+                                messages.add(message);
+                            }
                         }
                     }
+                    LOGGER.log(Level.SEVERE, "total message count: " + String.valueOf(totalMessageCount));
                     return;
                 }
+            } else if (currentVertex == vertex) {
+                final int transactionCount = graph.getVertexTransactionCount(vertex);
+                LOGGER.log(Level.SEVERE, String.valueOf(transactionCount));
+                final int minPosition = pageNumber * maxContentPerPage;
+                final int maxCount = minPosition + maxContentPerPage > transactionCount ? transactionCount : minPosition + maxContentPerPage;
+                for (int position = minPosition; position < maxCount; position++) {
+                    final int transaction = graph.getVertexTransaction(vertex, position);
+                    if (graph.getTransactionDirection(transaction) != Graph.UNDIRECTED) {
+                        final int sender = graph.getTransactionSourceVertex(transaction);
+                        final ConversationSide conversationSide = sender == vertex ? ConversationSide.LEFT : ConversationSide.RIGHT;
+                        final ConversationMessage message = new ConversationMessage(transaction, sender, conversationSide);
+                        messages.add(message);
+                    }
+                }
+                return;
             }
         }
 
+        // Get content when only one transaction is selected
         final int transactionSelectedAttribute = VisualConcept.TransactionAttribute.SELECTED.get(graph);
         if (transactionSelectedAttribute != Graph.NOT_FOUND) {
             totalMessageCount = 0;
@@ -110,21 +131,33 @@ public class DefaultConversationMessageProvider implements ConversationMessagePr
             }
 
             final int leftSender = Math.max(vertexA, vertexB);
-            for (int i = 0; i < transactionCount; i++) {
+            totalMessageCount = transactionCount;
+            final int minPosition = pageNumber * maxContentPerPage;
+            final int maxCount = minPosition + maxContentPerPage > transactionCount ? transactionCount : minPosition + maxContentPerPage;
+            for (int i = minPosition; i < maxCount; i++) {
                 transaction = graph.getTransaction(transactionPositions[i]);
                 if (graph.getTransactionDirection(transaction) != Graph.UNDIRECTED) {
                     final int sender = graph.getTransactionSourceVertex(transaction);
                     final ConversationSide conversationSide = sender == leftSender ? ConversationSide.LEFT : ConversationSide.RIGHT;
                     final ConversationMessage message = new ConversationMessage(transaction, sender, conversationSide);
                     messages.add(message);
-                    totalMessageCount++;
                 }
             }
         }
     }
-    
+
     @Override
     public int getTotalMessageCount() {
         return totalMessageCount;
+    }
+    
+    @Override
+    public int getMaxContentPerPage() {
+        return maxContentPerPage;
+    }
+    
+    @Override
+    public void setMaxContentPerPage(final int maxContent) {
+        maxContentPerPage = maxContent;
     }
 }
