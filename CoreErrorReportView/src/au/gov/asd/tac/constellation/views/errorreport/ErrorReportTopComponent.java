@@ -922,7 +922,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
             }
                         
         }
-        String areaBackgroundColour = "radial-gradient(radius 100%, " + backgroundColour + " 0%, " + backgroundFadeColour + " 100%)";
+        final String areaBackgroundColour = "radial-gradient(radius 100%, " + backgroundColour + " 0%, " + backgroundFadeColour + " 100%)";
 
         final String severityColour = "rgb(" + (redBase + intensityFactor * redIncrement) + ","
                 + (greenBase + intensityFactor * greenIncrement) + ","

@@ -30,10 +30,6 @@
     -fx-background-color: -consty-ltblue;
     -fx-text-fill: white;
 }
-.tree-cell:hover {
-    -fx-background-color: -consty-ltblue;
-    -fx-text-fill: white;
-}
 
 /*******************************************************************************
  *                                                                             *

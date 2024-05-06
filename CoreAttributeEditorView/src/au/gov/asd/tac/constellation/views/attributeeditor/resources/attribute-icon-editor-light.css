@@ -7,6 +7,3 @@
 .list-view .list-cell:selected {
     -fx-background-color: linear-gradient(to right, #4598e2, #55a1f9 25% , #b0d0f0 100%);
 }
-.list-view .list-cell:hover {
-    -fx-background-color: linear-gradient(to right, #55abf6, #65b1fa 25% , #b8d9fa 100%);
-}

@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import javafx.application.Platform;
+import org.testfx.api.FxToolkit;
 
 /**
  * Maintain a session variable with active dialogs that are shown
@@ -57,7 +58,7 @@ public class ErrorReportDialogManager {
         final TimerTask refreshAction = new TimerTask() {
             @Override
             public void run() {
-                if (!isErrorReportRunning) {
+                if (!isErrorReportRunning && FxToolkit.isFXApplicationThreadRunning()) {
                     Platform.runLater(() -> {
                         final Date currentDate = new Date();
                         if (gracePeriodResumptionDate != null && currentDate.before(gracePeriodResumptionDate)) {
