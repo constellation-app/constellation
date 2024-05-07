@@ -75,7 +75,6 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
     public static final String BACKGROUND_COLOR_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "background_color");
     public static final String SELECTED_ELEMENTS_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "selected_elements");
     public static final String EXPORT_CORES_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "export_cores");
-    public static final String CONNECTION_MODE_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "connection_mode");
     public static final String SHOW_NODES_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_nodes");
     public static final String SHOW_CONNECTIONS_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_connections");
     public static final String SHOW_NODE_LABELS_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_node_labels");
