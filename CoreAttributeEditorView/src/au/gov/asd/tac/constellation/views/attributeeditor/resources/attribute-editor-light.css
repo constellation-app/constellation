@@ -1,14 +1,14 @@
 .undisplayedValue {
     -fx-font-style:italic;
-    -fx-text-fill: #666666;
+    -fx-text-fill: #bbbbbb;
 }
 
 .titled-pane .graphic-container .text .hidden {
-    -fx-text-fill: #999999;
+    -fx-text-fill: #b8b8b8;
 }
 
 .titled-pane .hidden {
-    -fx-base: #a6a6a6;
+    -fx-base: #cccccc;
 }
 
 .titled-pane .hidden .label {
@@ -16,17 +16,17 @@
 }
 
 #primarykey {
-    -fx-base:#8a1d1d;
+    -fx-base:#e8a49c;
 }
 
 .hidden#primarykey {
-    -fx-base:#ba4d4d;
+    -fx-base:#E1C8C6;
 }
 
 #custom {
-    -fx-base:#1f4f8a;
+    -fx-base:#a0c0ff;
 }
 
 .hidden#custom {
-    -fx-base:#4f7fba;
+    -fx-base:#D3DCF1;
 }

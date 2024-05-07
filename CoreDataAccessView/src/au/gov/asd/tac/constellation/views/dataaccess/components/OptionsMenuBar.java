@@ -56,6 +56,7 @@ public class OptionsMenuBar {
     private static final String TITLE = "Folder to save data access results to";
 
     private static final String OPTIONS_MENU_TEXT = "Workflow Options";
+    private static final String ICON_SET = JavafxStyleManager.isDarkTheme() ? "Light" : "Dark";
 
     static {
         SETTINGS_ICON = new ImageView(new Image(
@@ -64,27 +65,27 @@ public class OptionsMenuBar {
         SETTINGS_ICON.setFitWidth(20);
 
         SAVE_TEMPLATE_ICON = new ImageView(new Image(
-                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessSaveTemplate.png")));
+                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessSaveTemplate" + ICON_SET + ".png")));
         SAVE_TEMPLATE_ICON.setFitHeight(15);
         SAVE_TEMPLATE_ICON.setFitWidth(15);
 
         LOAD_TEMPLATE_ICON = new ImageView(new Image(
-                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessLoadTemplate.png")));
+                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessLoadTemplate" + ICON_SET + ".png")));
         LOAD_TEMPLATE_ICON.setFitHeight(15);
         LOAD_TEMPLATE_ICON.setFitWidth(15);
 
         SAVE_RESULTS_ICON = new ImageView(new Image(
-                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessSaveResults.png")));
+                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessSaveResults" + ICON_SET + ".png")));
         SAVE_RESULTS_ICON.setFitHeight(15);
         SAVE_RESULTS_ICON.setFitWidth(15);
 
         UNCHECKED_ICON = new ImageView(new Image(
-                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessUnchecked.png")));
+                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessUnchecked" + ICON_SET + ".png")));
         UNCHECKED_ICON.setFitHeight(15);
         UNCHECKED_ICON.setFitWidth(15);
 
         LOGGER_ICON = new ImageView(new Image(
-                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessConnectionLogging.png")));
+                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessConnectionLogging" + ICON_SET + ".png")));
         LOGGER_ICON.setFitHeight(15);
         LOGGER_ICON.setFitWidth(15);
     }

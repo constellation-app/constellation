@@ -148,10 +148,11 @@ public class AttributeEditorPanel extends BorderPane {
     private static final GraphElementType[] ELEMENT_TYPES = {GraphElementType.GRAPH, GraphElementType.VERTEX, GraphElementType.TRANSACTION};
     private static final String NO_VALUE_TEXT = "<No Value>";
 
-    private static final String PRIMARY_KEY_ATTRIBUTE_COLOR = "#8a1d1d";
-    private static final String CUSTOM_ATTRIBUTE_COLOR = "#1f4f8a";
-    private static final String HIDDEN_ATTRIBUTE_COLOR = "#999999";
-    private static final String SCHEMA_ATTRIBUTE_COLOR = JavafxStyleManager.isDarkTheme() ? "#333333" : "#777777";
+    private static final boolean DARK_MODE = JavafxStyleManager.isDarkTheme();
+    private static final String PRIMARY_KEY_ATTRIBUTE_COLOR = DARK_MODE ? "#8a1d1d" : "#e8a49c";
+    private static final String CUSTOM_ATTRIBUTE_COLOR = DARK_MODE ? "#1f4f8a" : "#a0c0ff";
+    private static final String HIDDEN_ATTRIBUTE_COLOR = DARK_MODE ? "#999999" : "#b8b8b8";
+    private static final String SCHEMA_ATTRIBUTE_COLOR = DARK_MODE ? "#333333" : "#d6d6d6";
 
     private StackPane root;
     private ArrayList<VBox> valueTitledPaneContainers = new ArrayList<>();
@@ -524,7 +525,8 @@ public class AttributeEditorPanel extends BorderPane {
      */
     private TitledPane createAttributeTitlePane(final AttributeData attribute, final Object[] values, final double longestTitledWidth, final boolean hidden) {
         final String attributeTitle = attribute.getAttributeName();
-        final int spacing = 5;
+        final boolean multiValue = values != null && values.length > 1;
+        final int spacing = multiValue ? 3 : 6;
         final GridPane gridPane = new GridPane();
         gridPane.setHgap(spacing);
         final double titleWidth = longestTitledWidth + spacing;
@@ -544,8 +546,6 @@ public class AttributeEditorPanel extends BorderPane {
         if (attribute.getDataType().equals(ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME)) {
             attributePane.addMenuItem("Update time-zone of selection", e -> updateTimeZoneAction(attribute));
         }
-
-        final boolean multiValue = values != null && values.length > 1;
 
         if (attribute.isKey()) {
             final String color;
@@ -577,11 +577,6 @@ public class AttributeEditorPanel extends BorderPane {
 
         if (!multiValue) {
             attributePane.setCollapsible(false);
-
-            if (!JavafxStyleManager.isDarkTheme()) {
-                attributePane.setStyle("-fx-background-color: #FFFFFF; ");
-            }
-
         } else {
             createMultiValuePane(attribute, attributePane, values);
         }
@@ -591,10 +586,10 @@ public class AttributeEditorPanel extends BorderPane {
 
         // Value TextField
         final Node attributeValueNode = createAttributeValueNode(values, attribute, attributePane, multiValue);
-        if (JavafxStyleManager.isDarkTheme()) {
+        if (DARK_MODE) {
             attributeValueNode.setStyle("-fx-background-color: #111111; ");
         } else {
-            attributeValueNode.setStyle("-fx-background-color: #757575; -fx-text-fill: #FFFFFF; ");
+            attributeValueNode.setStyle("-fx-text-fill: #000000; ");
         }
 
         // Edit Functionality

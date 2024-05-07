@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.conversationview;
 
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
 import java.util.List;
 import javafx.geometry.Insets;
@@ -54,6 +55,7 @@ public class ConversationBubble extends VBox {
     private final Rectangle bubbleGraphic;
     private final Path tail;
     private final Line tailTop;
+    private static final boolean DARK_MODE = JavafxStyleManager.isDarkTheme();
 
     /**
      * Creates a new Bubble.
@@ -159,8 +161,8 @@ public class ConversationBubble extends VBox {
     }
 
     public final void setColor(final Color color) {
-        Color bottomColor = color.darker();
-        Color topColor = color.brighter();
+        Color bottomColor = DARK_MODE ? color.darker() : color;
+        Color topColor = DARK_MODE ? color.brighter() : color.brighter().brighter();
 
         Stop[] stops = new Stop[]{
             new Stop(0, topColor),
