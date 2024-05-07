@@ -266,9 +266,11 @@ public class FileListener implements Runnable {
                 try {
                     in.close();
                 } catch (final IOException ex) {
+                    LOGGER.log(Level.WARNING, "Error occurred while attempting to close input stream");
                 }
-                final boolean fqpIsDeleted = fqp.delete();
-                if (!fqpIsDeleted) {
+                try {
+                    Files.delete(Path.of(fqp.getPath()));
+                } catch (final IOException ex) {
                     //TODO: Handle case where file not successfully deleted
                 }
             }

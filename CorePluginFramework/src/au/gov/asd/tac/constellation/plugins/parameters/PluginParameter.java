@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -431,8 +431,8 @@ public class PluginParameter<V extends ParameterValue> {
      *
      * @return A new instance of PluginParameter.
      */
-    protected PluginParameter<?> create(final ParameterValue value, final PluginParameterType<?> type, final String id) {
-        final PluginParameter<?> p = new PluginParameter(value.copy(), type, id);
+    protected PluginParameter<V> create(final ParameterValue value, final PluginParameterType<V> type, final String id) {
+        final PluginParameter<V> p = new PluginParameter(value.copy(), type, id);
         if (p.value instanceof ParameterListParameterValue parameterListParameterValue) {
             parameterListParameterValue.setEnclosingParameter(p);
         }

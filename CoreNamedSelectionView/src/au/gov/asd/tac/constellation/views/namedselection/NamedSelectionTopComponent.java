@@ -139,6 +139,7 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
                 case KeyEvent.VK_F2 -> // On F2, rename the selection:
                     renameElement();
                 default -> {
+                    // do nothing
                 }
             }
         }

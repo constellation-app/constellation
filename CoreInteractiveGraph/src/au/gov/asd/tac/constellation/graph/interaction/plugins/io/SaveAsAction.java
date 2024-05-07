@@ -222,7 +222,8 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
                     fileInUse = filename.getCanonicalPath().equalsIgnoreCase(existingFile.getCanonicalPath());
                 }
             }
-        } catch (final Exception ex) {
+        } catch (final IOException ex) {
+            LOGGER.log(Level.WARNING, "Error occurred while attempting to retrieve file path");
         }
         return fileInUse;
     }

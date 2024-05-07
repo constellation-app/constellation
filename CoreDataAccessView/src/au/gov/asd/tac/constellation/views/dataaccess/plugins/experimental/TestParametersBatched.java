@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,9 +43,6 @@ import org.openide.util.lookup.ServiceProviders;
 @Messages("TestParametersBatched=Test Parameters (Batched)")
 @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.DEVELOPER, PluginTags.MODIFY})
 public class TestParametersBatched extends WorkflowQueryPlugin implements DataAccessPlugin {
-
-    public TestParametersBatched() {
-    }
 
     @Override
     public String getType() {

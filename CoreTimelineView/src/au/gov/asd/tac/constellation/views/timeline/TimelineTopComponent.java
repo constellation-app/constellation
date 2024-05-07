@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,8 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.geometry.Orientation;
@@ -97,6 +99,8 @@ import org.openide.windows.TopComponent;
 })
 public final class TimelineTopComponent extends TopComponent implements LookupListener, GraphChangeListener, UndoRedo.Provider {
 
+    private static final Logger LOGGER = Logger.getLogger(TimelineTopComponent.class.getName());
+    
     private static final double DEFAULT_DIVIDER_LOCATION = 0.8;
     private static final String UPDATE_TIMELINE_THREAD_NAME = "Update Timeline from Graph";
     public static final List<String> SUPPORTED_DATETIME_ATTRIBUTE_TYPES = Arrays.asList(
@@ -314,6 +318,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                 // Ensure that this happens after the initial setup.
                 Platform.runLater(() -> splitPane.getDividers().get(0).setPosition(splitPanePosition));
             } catch (final NumberFormatException ex) {
+                LOGGER.log(Level.WARNING, "Divider location could not be parsed");
             }
         }
     }

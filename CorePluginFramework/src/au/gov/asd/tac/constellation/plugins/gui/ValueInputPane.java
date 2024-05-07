@@ -116,6 +116,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                             this.setManaged(parameter.isVisible());
                         }
                         default -> {
+                            // do nothing
                         }
                     }
                 }));
