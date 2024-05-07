@@ -28,6 +28,7 @@ import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Blaze;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
@@ -39,7 +40,6 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import java.awt.Component;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -428,7 +428,7 @@ public class SVGGraphBuilderNGTest {
             transactionId5 = wg.addTransaction(vertexId2, vertexId2, false);
             transactionId6 = wg.addTransaction(vertexId1, vertexId2, true);
             transactionId7 = wg.addTransaction(vertexId2, vertexId1, true);
-
+            wg.setObjectValue(VisualConcept.GraphAttribute.CONNECTION_MODE.ensure(wg), 0, ConnectionMode.TRANSACTION);
         } finally {
             wg.commit();
         }
