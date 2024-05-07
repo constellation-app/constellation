@@ -120,21 +120,16 @@ public final class TableViewState {
 
     public void setColumnAttributes(final List<Tuple<String, Attribute>> columnAttributes) {
         switch (elementType) {
-            case GraphElementType.TRANSACTION:
+            case GraphElementType.TRANSACTION ->
                 this.transactionColumnAttributes = columnAttributes;
-                break;
-            case GraphElementType.VERTEX:
+            case GraphElementType.VERTEX ->
                 this.vertexColumnAttributes = columnAttributes;
-                break;
-            case GraphElementType.LINK:
+            case GraphElementType.LINK ->
                 this.linkColumnAttributes = columnAttributes;
-                break;
-            case GraphElementType.EDGE:
+            case GraphElementType.EDGE ->
                 this.edgeColumnAttributes = columnAttributes;
-                break;
-            default:
+            default ->
                 this.transactionColumnAttributes = columnAttributes;
-                break;
         }
     }
 
