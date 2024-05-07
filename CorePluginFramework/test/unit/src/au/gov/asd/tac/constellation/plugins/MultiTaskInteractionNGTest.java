@@ -103,7 +103,7 @@ public class MultiTaskInteractionNGTest {
     
     private class TestTask implements SharedInteractionRunnable{
         private int currentStep = 0;
-        private final int totalSteps = 1000;
+        private final int totalSteps = 10;
 
         @Override
         public int getTotalSteps() {
@@ -124,6 +124,11 @@ public class MultiTaskInteractionNGTest {
         public void run() {
             while(currentStep <= totalSteps) {
                 currentStep++;
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
             }
         }
     }

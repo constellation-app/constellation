@@ -376,8 +376,8 @@ public class SVGGraphBuilderNGTest {
             int vertexBlazeAttributeId = VisualConcept.VertexAttribute.BLAZE.ensure(wg);
             int vertexIconAttributeId = VisualConcept.VertexAttribute.BACKGROUND_ICON.ensure(wg);
 
-            // Vertex 1
-            // has an invisible bakgroundImage
+            // Node 1
+            // has an invisible bakground
             // has a blaze
             // is Selected
             vertexId1 = wg.addVertex();
@@ -389,7 +389,11 @@ public class SVGGraphBuilderNGTest {
             wg.setObjectValue(vertexIconAttributeId, vertexId1, DefaultIconProvider.EMPTY);
             wg.setObjectValue(vertexBlazeAttributeId, vertexId1,  new Blaze(90, ConstellationColor.BANANA));
             
-            //
+            // Node 2
+            // is pinned
+            // has a visable background
+            // is Selected
+            // has directed looped Connection
             vertexId2 = wg.addVertex();
             wg.setFloatValue(vertexAttributeIdX, vertexId2, 5.0f);
             wg.setFloatValue(vertexAttributeIdY, vertexId2, 1.0f);
@@ -397,14 +401,21 @@ public class SVGGraphBuilderNGTest {
             wg.setBooleanValue(vertexAttributeIdSelected, vertexId2, true);
             wg.setBooleanValue(vertexAttributeIdPinned, vertexId2, true);
             wg.setStringValue(vertexAttributeIdLabel, vertexId2, "vertex2");
-            wg.setFloatValue(vertexDimmedAttributeId, vertexId2, 1F);
+            wg.setObjectValue(vertexIconAttributeId, vertexId1, DefaultIconProvider.FLAT_SQUARE);
+            transactionId4 = wg.addTransaction(vertexId2, vertexId2, true);
             
+            // Node 3
+            // is dimmed
+            // is selected 
+            // has undirected looped connection
             vertexId3 = wg.addVertex();
             wg.setFloatValue(vertexAttributeIdX, vertexId3, 1.0f);
             wg.setFloatValue(vertexAttributeIdY, vertexId3, 5.0f);
             wg.setFloatValue(vertexAttributeIdZ, vertexId3, 1.0f);
             wg.setBooleanValue(vertexAttributeIdSelected, vertexId3, true);
             wg.setStringValue(vertexAttributeIdLabel, vertexId3, "vertex3");
+            wg.setFloatValue(vertexDimmedAttributeId, vertexId2, 1F);
+            transactionId5 = wg.addTransaction(vertexId3, vertexId3, false);
             
             vertexId4 = wg.addVertex();
             wg.setFloatValue(vertexAttributeIdX, vertexId4, 5.0f);
@@ -430,8 +441,6 @@ public class SVGGraphBuilderNGTest {
             transactionId1 = wg.addTransaction(vertexId1, vertexId2, false);
             transactionId2 = wg.addTransaction(vertexId2, vertexId3, false);
             transactionId3 = wg.addTransaction(vertexId5, vertexId2, true);
-            transactionId4 = wg.addTransaction(vertexId2, vertexId2, true);
-            transactionId5 = wg.addTransaction(vertexId2, vertexId2, false);
             transactionId6 = wg.addTransaction(vertexId1, vertexId2, true);
             transactionId7 = wg.addTransaction(vertexId2, vertexId1, true);
             wg.setObjectValue(VisualConcept.GraphAttribute.CONNECTION_MODE.ensure(wg), 0, ConnectionMode.TRANSACTION);
