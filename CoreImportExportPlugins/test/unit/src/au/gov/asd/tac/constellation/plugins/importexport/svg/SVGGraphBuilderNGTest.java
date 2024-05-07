@@ -49,6 +49,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -56,7 +57,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
- * threadPool = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool("SVG Export", cores);
  * Test for{@link SVGGraphBuilder}
  * @author capricornunicorn123
  */
@@ -72,10 +72,10 @@ public class SVGGraphBuilderNGTest {
     private ConstellationGlobalThreadPool globalThreadPoolMock;
     private Component visualComponentMock;
     private File fileMock;
-    private final DrawFlags flags = new DrawFlags(true, true, true, true, true);
+    private final DrawFlags drawAllVisualElementsFlag = new DrawFlags(true, true, true, true, true);
+    private final DrawFlags drawNoVisualElementsFlag = new DrawFlags(false, false, false, false, false);
     private final String graphName = "Test Graph 1";
-    private final ExecutorService threadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-    
+
     // Positional Attributes
     private int vertexAttributeIdX;
     private int vertexAttributeIdY;
@@ -162,7 +162,7 @@ public class SVGGraphBuilderNGTest {
                 .thenReturn(globalThreadPoolMock);
         doReturn(false).when(fileMock).exists();
         
-        doReturn(threadPool).when(globalThreadPoolMock).getFixedThreadPool(anyString(), anyInt());
+        doReturn(Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())).when(globalThreadPoolMock).getFixedThreadPool(anyString(), anyInt());
     }
 
     @AfterMethod
@@ -173,93 +173,99 @@ public class SVGGraphBuilderNGTest {
     }
 
     /**
-     * Test of withReadableGraph method, of class SVGGraphBuilder.
+     * Tests the builder pattern of the SVGGraphBuilder.
+     * Ensures that the of calling any "with" methods return the same instance of the Builder object
      */
     @Test
-    public void testWithReadableGraph() {
+    public void testBuilderPattern_returnTypes() {
         System.out.println("withReadableGraph");
         final GraphReadMethods localGraph = GraphNode.getGraphNode(graphName).getGraph().getReadableGraph();
         final SVGGraphBuilder instance = new SVGGraphBuilder();
+        
+        final SVGGraphBuilder withBackgroundResult = instance.withBackground(ConstellationColor.BANANA);
+        assertEquals(withBackgroundResult, instance);
+        
+        final SVGGraphBuilder withTitleResult = instance.withTitle("Test Title");
+        assertEquals(withTitleResult, instance);
+        
+        final SVGGraphBuilder withInteractionResult = instance.withInteraction(interactionMock);
+        assertEquals(withInteractionResult, instance);
+        
         final SVGGraphBuilder result = instance.withReadableGraph(localGraph);
         assertEquals(result, instance);
+        
+        final SVGGraphBuilder fromPerspectiveResult = instance.fromPerspective(AxisConstants.Z_NEGATIVE);
+        assertEquals(fromPerspectiveResult, instance);
+        
+        final SVGGraphBuilder withSelectedElementsOnlyResult = instance.withSelectedElementsOnly(true);
+        assertEquals(withSelectedElementsOnlyResult, instance);
+        
+        final SVGGraphBuilder drawFlagsResult = instance.withDrawFlags(drawAllVisualElementsFlag);
+        assertEquals(drawFlagsResult, instance);
+        
+        final SVGGraphBuilder atDirectoryResult = instance.atDirectory(fileMock);
+        assertEquals(atDirectoryResult, instance);
+        
+        final SVGGraphBuilder withCoresResult = instance.withCores(2);
+        assertEquals(withCoresResult, instance);
     }
-
+        
     /**
-     * Test of withInteraction method, of class SVGGraphBuilder.
+     * Test to ensure that building a SVG graph without a {@link Graph} reference will throw an error.
+     * @throws java.lang.InterruptedException
      */
-    @Test
-    public void testWithInteraction() {
-        System.out.println("withInteraction");
-        final PluginInteraction interaction = interactionMock;
-        final SVGGraphBuilder instance = new SVGGraphBuilder();
-        final SVGGraphBuilder result = instance.withInteraction(interaction);
-        assertEquals(result, instance);
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testBuilderPattern_withoutReadableGraph() throws InterruptedException {
+        System.out.println("build");
+        final SVGGraphBuilder instance = new SVGGraphBuilder()
+                .withInteraction(interactionMock)
+                .withTitle(graphName)
+                .fromPerspective(AxisConstants.Z_POSITIVE)
+                .withSelectedElementsOnly(false)
+                .withDrawFlags(drawAllVisualElementsFlag)
+                .withCores(2);
+        instance.build();
     }
-
+    
     /**
-     * Test of withTitle method, of class SVGGraphBuilder.
+     * Test to ensure that building a SVG graph without a {@link PluginInteraction} reference will throw an error.
+     * @throws java.lang.InterruptedException
      */
-    @Test
-    public void testWithTitle() {
-        System.out.println("withTitle");
-        final String title = "Test Title";
-        final SVGGraphBuilder instance = new SVGGraphBuilder();
-        final SVGGraphBuilder result = instance.withTitle(title);
-        assertEquals(result, instance);
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testBuilderPattern_withoutInteraction() throws InterruptedException {
+        System.out.println("build");
+        final SVGGraphBuilder instance = new SVGGraphBuilder()
+                .withReadableGraph(graph.getReadableGraph())
+                .withTitle(graphName)
+                .fromPerspective(AxisConstants.Z_POSITIVE)
+                .withSelectedElementsOnly(false)
+                .withDrawFlags(drawAllVisualElementsFlag)
+                .withCores(2);
+        instance.build();
     }
-
+    
     /**
-     * Test of withBackground method, of class SVGGraphBuilder.
+     * Test to ensure that building a SVG graph without a graph title will throw an error.
+     * @throws java.lang.InterruptedException
      */
-    @Test
-    public void testWithBackground() {
-        System.out.println("withBackground");
-        final ConstellationColor color = ConstellationColor.BANANA;
-        final SVGGraphBuilder instance = new SVGGraphBuilder();
-        final SVGGraphBuilder result = instance.withBackground(color);
-        assertEquals(result, instance);
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testBuilderPattern_withoutGraphTitle() throws InterruptedException {
+        System.out.println("build");
+        final SVGGraphBuilder instance = new SVGGraphBuilder()
+                .withInteraction(interactionMock)
+                .withReadableGraph(graph.getReadableGraph())
+                .fromPerspective(AxisConstants.Z_POSITIVE)
+                .withSelectedElementsOnly(false)
+                .withDrawFlags(drawAllVisualElementsFlag)
+                .withCores(2);
+        instance.build();
     }
-
-    /**
-     * Test of withSelectedElementsOnly method, of class SVGGraphBuilder.
-     */
-    @Test
-    public void testWithElements() {
-        System.out.println("withElements");
-        final Boolean selectedElementsOnly = true;
-        final SVGGraphBuilder instance = new SVGGraphBuilder();
-        final SVGGraphBuilder result = instance.withSelectedElementsOnly(selectedElementsOnly);
-        assertEquals(result, instance);
-    }
-
-    /**
-     * Test of includeNodes method, of class SVGGraphBuilder.
-     */
-    @Test
-    public void testWithDrawFlagsNodes() {
-        System.out.println("drawFlags");
-        final SVGGraphBuilder instance = new SVGGraphBuilder();
-        final SVGGraphBuilder result = instance.withDrawFlags(flags);
-        assertEquals(result, instance);
-    }
-
-    /**
-     * Test of fromPerspective method, of class SVGGraphBuilder.
-     */
-    @Test
-    public void testFromPerspective() {
-        System.out.println("fromPerspective");
-        final AxisConstants exportPerspective = AxisConstants.X_POSITIVE;
-        final SVGGraphBuilder instance = new SVGGraphBuilder();
-        final SVGGraphBuilder result = instance.fromPerspective(exportPerspective);
-        assertEquals(result, instance);
-    }
-
+    
     /**
      * Test of build method, of class SVGGraphBuilder.
      */
     @Test
-    public void testBuild() throws IllegalArgumentException, InterruptedException {
+    public void testBuildPatternOutput_allVisualElements() throws IllegalArgumentException, InterruptedException {
         System.out.println("build");
         final SVGGraphBuilder instance = new SVGGraphBuilder()
                 .atDirectory(fileMock)
@@ -268,64 +274,42 @@ public class SVGGraphBuilderNGTest {
                 .withTitle(graphName)
                 .fromPerspective(AxisConstants.Z_POSITIVE)
                 .withSelectedElementsOnly(true)
-                .withDrawFlags(flags)
-                .withCores(4);
+                .withDrawFlags(drawAllVisualElementsFlag)
+                .withCores(2);
             
         final SVGObject result = new SVGObject(instance.build());
         assertNotNull(result.getChild(String.format("node-%s",vertexId2)));
     }
-        
-    /**
-     * Test of build method, of class SVGGraphBuilder.
-     * @throws java.lang.InterruptedException
-     */
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void testBuild_withoutReadableGraph() throws InterruptedException {
-        System.out.println("build");
-        final SVGGraphBuilder instance = new SVGGraphBuilder()
-                .withInteraction(interactionMock)
-                .withTitle(graphName)
-                .fromPerspective(AxisConstants.Z_POSITIVE)
-                .withSelectedElementsOnly(false)
-                .withDrawFlags(flags)
-                .withCores(2);
-        instance.build();
-    }
     
     /**
      * Test of build method, of class SVGGraphBuilder.
-     * @throws java.lang.InterruptedException
      */
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void testBuild_withoutInteraction() throws InterruptedException {
+    @Test
+    public void testBuildPatternOutput_noVisualElements() throws IllegalArgumentException, InterruptedException {
         System.out.println("build");
         final SVGGraphBuilder instance = new SVGGraphBuilder()
+                .atDirectory(fileMock)
+                .withInteraction(interactionMock)
                 .withReadableGraph(graph.getReadableGraph())
                 .withTitle(graphName)
                 .fromPerspective(AxisConstants.Z_POSITIVE)
-                .withSelectedElementsOnly(false)
-                .withDrawFlags(flags)
+                .withSelectedElementsOnly(true)
+                .withDrawFlags(this.drawNoVisualElementsFlag)
                 .withCores(2);
-        instance.build();
+            
+        final SVGObject result = new SVGObject(instance.build());
+        assertNull(result.getChild(String.format("node-%s",vertexId2)));
     }
+    
+    
+    
     
     /**
-     * Test of build method, of class SVGGraphBuilder.
-     * @throws java.lang.InterruptedException
+     * A local method to build a graph with known elements for testing.
+     * @return
+     * @throws InterruptedException 
      */
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void testBuild_withoutGraphTitle() throws InterruptedException {
-        System.out.println("build");
-        final SVGGraphBuilder instance = new SVGGraphBuilder()
-                .withInteraction(interactionMock)
-                .withReadableGraph(graph.getReadableGraph())
-                .fromPerspective(AxisConstants.Z_POSITIVE)
-                .withSelectedElementsOnly(false)
-                .withDrawFlags(flags)
-                .withCores(2);
-        instance.build();
-    }
-    
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">  
     private Graph buildTestableGraph() throws InterruptedException{
         final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
         final Graph localGraph = new DualGraph(schema);
@@ -414,6 +398,7 @@ public class SVGGraphBuilderNGTest {
             wg.setFloatValue(vertexAttributeIdY, vertexId6, 0.0f);
             wg.setFloatValue(vertexAttributeIdZ, vertexId6, 15.0f);
             wg.setStringValue(vertexAttributeIdLabel, vertexId6, "vertex6");
+            wg.setBooleanValue(vertexAttributeIdSelected, vertexId6, false);
 
             transactionId1 = wg.addTransaction(vertexId1, vertexId2, false);
             transactionId2 = wg.addTransaction(vertexId2, vertexId3, false);
@@ -426,5 +411,6 @@ public class SVGGraphBuilderNGTest {
         }
         return localGraph;
     }
+    // </editor-fold>  
     
 }

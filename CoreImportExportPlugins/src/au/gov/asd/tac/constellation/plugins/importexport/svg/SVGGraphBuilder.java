@@ -302,50 +302,45 @@ public class SVGGraphBuilder {
         
         if (!drawFlags.drawNodes()) {
             interaction.setProgress(0, -1, "Created 0 nodes", true);
-        }  
-        
-        // An arbitrary task count of 4 times the number of processors was chosen.
-        // It is difficult to know how may processors are available to run for this export plugin.
-        // Too few and the plugin runs slowely for no reason. 
-        // (3 tasks across 8 cores only uses 3 cores)
-        // slightly to many and the final stages fo the esxport run slowley as the final task is processed on only one core. 
-        // (9 tasks across 8 cores couls see 50% of the time concumed by the final task runninf on a single core)
-        final int taskCount = Runtime.getRuntime().availableProcessors() * 4;
-        
-        // Get a unique sub list of vertex indicies for each available thread 
-        final List<List<Integer>> threadInputLists = createSubListsOfRange(0, access.getVertexCount(), taskCount);
-        final List<List<SVGObject>> threadOuputLists = new ArrayList<>();
-        
-        // Create a task for each set of inputLists with an array list for their generated output
-        for (int threadInput = 0; threadInput < threadInputLists.size(); threadInput++){
-            final GraphVisualisationReferences graph = new GraphVisualisationReferences(viewFrustum, modelViewProjectionMatrix, viewPort, camera, drawFlags, selectedElementsOnly, directory);
-            final ArrayList<SVGObject> output = new ArrayList<>();
-            final GenerateSVGNodesTask task = new GenerateSVGNodesTask(graph, threadInputLists.get(threadInput), output);
-            mti.addTask(task);
-            threadOuputLists.add(output);
-            CompletableFuture.runAsync(task, threadPool);
-        }    
+        }  else {
 
-        // Wait until all tasks are complete.
-        while (!mti.isComplete()){
-            mti.setProgress(true);
+            final int taskCount = Runtime.getRuntime().availableProcessors() * 4;
+
+            // Get a unique sub list of vertex indicies for each available thread 
+            final List<List<Integer>> threadInputLists = createSubListsOfRange(0, access.getVertexCount(), taskCount);
+            final List<List<SVGObject>> threadOuputLists = new ArrayList<>();
+
+            // Create a task for each set of inputLists with an array list for their generated output
+            for (int threadInput = 0; threadInput < threadInputLists.size(); threadInput++){
+                final GraphVisualisationReferences graph = new GraphVisualisationReferences(viewFrustum, modelViewProjectionMatrix, viewPort, camera, drawFlags, selectedElementsOnly, directory);
+                final ArrayList<SVGObject> output = new ArrayList<>();
+                final GenerateSVGNodesTask task = new GenerateSVGNodesTask(graph, threadInputLists.get(threadInput), output);
+                mti.addTask(task);
+                threadOuputLists.add(output);
+                CompletableFuture.runAsync(task, threadPool);
+            }    
+
+            // Wait until all tasks are complete.
+            while (!mti.isComplete()){
+                mti.setProgress(true);
+            }
+
+            // Combine the generated nodes into a single list.
+            threadOuputLists.forEach(outputList -> outputList.forEach(svgObject -> {
+                    if (SVGTypeConstants.FILTER.getTypeString().equals(svgObject.toSVGData().getType())){
+                        filters.add(svgObject);
+                    } else {
+                        nodes.add(svgObject);
+                    }
+                })
+            ); 
+
+            definitionsContainer.setChildren(filters);
+            nodesContainer.setChildren(nodes);
+
+            // Update the PluginInteraction of the Nodes generated.
+            interaction.setProgress(0, -1, String.format("Created %s nodes", nodes.size()), true);
         }
-        
-        // Combine the generated nodes into a single list.
-        threadOuputLists.forEach(outputList -> outputList.forEach(svgObject -> {
-                if (SVGTypeConstants.FILTER.getTypeString().equals(svgObject.toSVGData().getType())){
-                    filters.add(svgObject);
-                } else {
-                    nodes.add(svgObject);
-                }
-            })
-        ); 
-        
-        definitionsContainer.setChildren(filters);
-        nodesContainer.setChildren(nodes);
-        
-        // Update the PluginInteraction of the Nodes generated.
-        interaction.setProgress(0, -1, String.format("Created %s nodes", nodes.size()), true);
     }
 
     /**
