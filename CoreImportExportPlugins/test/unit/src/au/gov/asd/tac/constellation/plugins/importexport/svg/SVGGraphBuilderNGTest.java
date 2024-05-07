@@ -32,6 +32,8 @@ import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Connec
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
+import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import au.gov.asd.tac.constellation.utilities.svg.SVGObject;
 import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
 import au.gov.asd.tac.constellation.utilities.visual.AxisConstants;
@@ -372,18 +374,22 @@ public class SVGGraphBuilderNGTest {
             
             int vertexDimmedAttributeId = VisualConcept.VertexAttribute.DIMMED.ensure(wg);
             int vertexBlazeAttributeId = VisualConcept.VertexAttribute.BLAZE.ensure(wg);
-            
-            Blaze blaze = new Blaze(90, ConstellationColor.BANANA);
+            int vertexIconAttributeId = VisualConcept.VertexAttribute.BACKGROUND_ICON.ensure(wg);
 
+            // Vertex 1
+            // has an invisible bakgroundImage
+            // has a blaze
+            // is Selected
             vertexId1 = wg.addVertex();
             wg.setFloatValue(vertexAttributeIdX, vertexId1, 1.0f);
             wg.setFloatValue(vertexAttributeIdY, vertexId1, 1.0f);
             wg.setFloatValue(vertexAttributeIdZ, vertexId1, 1.0f);
             wg.setBooleanValue(vertexAttributeIdSelected, vertexId1, true);
             wg.setStringValue(vertexAttributeIdLabel, vertexId1, "vertex1");
+            wg.setObjectValue(vertexIconAttributeId, vertexId1, DefaultIconProvider.EMPTY);
+            wg.setObjectValue(vertexBlazeAttributeId, vertexId1,  new Blaze(90, ConstellationColor.BANANA));
             
-            wg.setObjectValue(vertexBlazeAttributeId, vertexId1, blaze);
-            
+            //
             vertexId2 = wg.addVertex();
             wg.setFloatValue(vertexAttributeIdX, vertexId2, 5.0f);
             wg.setFloatValue(vertexAttributeIdY, vertexId2, 1.0f);

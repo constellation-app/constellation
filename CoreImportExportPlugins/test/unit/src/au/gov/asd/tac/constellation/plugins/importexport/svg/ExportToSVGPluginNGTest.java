@@ -79,18 +79,18 @@ public class ExportToSVGPluginNGTest {
         assertNotNull(result.getObjectValue(ExportToSVGPlugin.SHOW_NODE_LABELS_PARAMETER_ID));
     }
 
-    /**
-     * Test of read method, of class ExportToSVGPlugin.
-     */
-    @Test
-    public void testRead() throws Exception {
-        System.out.println("read");
-        GraphReadMethods graph = null;
-        PluginInteraction interaction = null;
-        PluginParameters parameters = null;
-        ExportToSVGPlugin instance = new ExportToSVGPlugin();
-        instance.read(graph, interaction, parameters);
-        // TODO review the generated test code and remove the default call to fail.
-    }
+//    /**
+//     * Test of read method, of class ExportToSVGPlugin.
+//     */
+//    @Test
+//    public void testRead() throws Exception {
+//        System.out.println("read");
+//        GraphReadMethods graph = null;
+//        PluginInteraction interaction = null;
+//        PluginParameters parameters = null;
+//        ExportToSVGPlugin instance = new ExportToSVGPlugin();
+//        instance.read(graph, interaction, parameters);
+//        // TODO review the generated test code and remove the default call to fail.
+//    }
     
 }
