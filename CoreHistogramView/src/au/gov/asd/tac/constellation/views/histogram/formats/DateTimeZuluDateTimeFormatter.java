@@ -43,7 +43,7 @@ public class DateTimeZuluDateTimeFormatter extends BinFormatter {
 
     @Override
     public boolean appliesToBin(Bin bin) {
-        return bin instanceof AttributeBin && ((AttributeBin) bin).getAttributeType().equals(ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME);
+        return bin instanceof AttributeBin attributeBin && attributeBin.getAttributeType().equals(ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME);
     }
 
     @Override

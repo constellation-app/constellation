@@ -64,7 +64,7 @@ public class Generator implements Runnable {
         // Create TOCFile with the location of the resources file
         // Create the root node for application-wide table of contents
         TOCGenerator.createTOCFile(baseDirectory + tocDirectory);
-        final TreeNode root = new TreeNode(new TOCItem(ROOT_NODE_NAME, ""));
+        final TreeNode<?> root = new TreeNode(new TOCItem(ROOT_NODE_NAME, ""));
         final List<File> tocXMLFiles = getXMLFiles(baseDirectory);
 
         try {

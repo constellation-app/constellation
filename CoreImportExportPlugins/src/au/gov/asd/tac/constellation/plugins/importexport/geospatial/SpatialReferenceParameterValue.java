@@ -72,8 +72,7 @@ public class SpatialReferenceParameterValue extends ParameterValue {
 
     @Override
     public boolean setObjectValue(final Object o) {
-        if (o instanceof Shape.SpatialReference) {
-            final Shape.SpatialReference reference = (Shape.SpatialReference) o;
+        if (o instanceof Shape.SpatialReference reference) {
             final boolean equal = Objects.equals(reference, spatialReference);
             if (!equal) {
                 spatialReference = reference;

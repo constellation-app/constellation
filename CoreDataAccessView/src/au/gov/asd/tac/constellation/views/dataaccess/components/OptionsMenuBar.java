@@ -301,7 +301,7 @@ public class OptionsMenuBar {
         public void changed(final ObservableValue<? extends Boolean> observable,
                 final Boolean oldValue,
                 final Boolean newValue) {
-            if (newValue) {
+            if (Boolean.TRUE.equals(newValue)) {
                 lastChange = FileChooser.openOpenDialog(getDataAccessResultsFileChooser()).thenAccept(optionalFolder
                         -> optionalFolder.ifPresentOrElse(
                                 folder -> DataAccessPreferenceUtilities.setDataAccessResultsDir(folder),

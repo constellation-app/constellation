@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.FileIconData;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import java.awt.Component;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -381,7 +382,7 @@ private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
                     public boolean accept(final File file) {
                         final int extlen = 4;
                         final String name = file.getName().toLowerCase();
-                        if (file.isFile() && StringUtils.endsWithAny(name, new String[]{FileExtensionConstants.JPG, FileExtensionConstants.PNG})) {
+                        if (file.isFile() && StringUtilities.endsWithAny(name, FileExtensionConstants.JPG, FileExtensionConstants.PNG)) {
                             final String label = name.substring(0, name.length() - extlen);
 
                             // The name must contain at least one category (a '.' in position 1 or greater).

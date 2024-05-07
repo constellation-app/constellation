@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.views.analyticview.analytics.AnalyticPlugin;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,7 +101,7 @@ public class AnalyticQuestion<R extends AnalyticResult<?>> {
     }
 
     public List<Exception> getExceptions() {
-        return exceptions;
+        return Collections.unmodifiableList(exceptions);
     }
 
     public void addException(final Exception exception) {

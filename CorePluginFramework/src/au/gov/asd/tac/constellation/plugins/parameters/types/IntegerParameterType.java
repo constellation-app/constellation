@@ -274,7 +274,7 @@ public class IntegerParameterType extends PluginParameterType<IntegerParameterVa
 
         @Override
         public Object getObjectValue() {
-            return i;
+            return get();
         }
 
         @Override
@@ -321,7 +321,7 @@ public class IntegerParameterType extends PluginParameterType<IntegerParameterVa
 
         @Override
         public Number getNumberValue() {
-            return i;
+            return get();
         }
 
         @Override

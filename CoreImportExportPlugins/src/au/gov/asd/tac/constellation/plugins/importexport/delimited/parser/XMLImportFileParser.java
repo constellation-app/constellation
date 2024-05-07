@@ -124,8 +124,7 @@ public class XMLImportFileParser extends ImportFileParser {
         NodeList childNodeList = element.getChildNodes();
         for (int childIndex = 0; childIndex < childNodeList.getLength(); childIndex++) {
             final Node childNode = childNodeList.item(childIndex);
-            if (childNode instanceof Element) {
-                final Element childElement = (Element) childNode;
+            if (childNode instanceof Element childElement) {
                 path.add(childElement.getTagName());
                 exploreElement(childElement, path, counts);
                 path.remove(path.size() - 1);
@@ -143,8 +142,7 @@ public class XMLImportFileParser extends ImportFileParser {
             final NodeList childNodeList = element.getChildNodes();
             for (int childIndex = 0; childIndex < childNodeList.getLength(); childIndex++) {
                 final Node childNode = childNodeList.item(childIndex);
-                if (childNode instanceof Element) {
-                    final Element childElement = (Element) childNode;
+                if (childNode instanceof Element childElement) {
                     rowPath.add(childElement.getTagName());
                     processRowElement(childElement, rowPath, rowValues, globalKeys);
                     rowPath.remove(rowPath.size() - 1);
@@ -154,8 +152,7 @@ public class XMLImportFileParser extends ImportFileParser {
             final NodeList childNodeList = element.getChildNodes();
             for (int childIndex = 0; childIndex < childNodeList.getLength(); childIndex++) {
                 final Node childNode = childNodeList.item(childIndex);
-                if (childNode instanceof Element) {
-                    final Element childElement = (Element) childNode;
+                if (childNode instanceof Element childElement) {
                     currentPath.add(childElement.getTagName());
                     findRowElements(childElement, currentPath, elementPath, globalKeys, table);
                     currentPath.remove(currentPath.size() - 1);
@@ -186,16 +183,16 @@ public class XMLImportFileParser extends ImportFileParser {
         final NodeList childNodeList = element.getChildNodes();
         for (int childIndex = 0; childIndex < childNodeList.getLength(); childIndex++) {
             final Node childNode = childNodeList.item(childIndex);
-            if (childNode instanceof Element) {
-                final Element childElement = (Element) childNode;
-                rowPath.add(childElement.getTagName());
-                processRowElement(childElement, rowPath, rowValues, globalKeys);
-                rowPath.remove(rowPath.size() - 1);
-            } else if (childNode instanceof Text) {
-                final Text textNode = (Text) childNode;
-                text.append(textNode.getNodeValue());
-            } else {
-                // Do nothing
+            switch (childNode) {
+                case Element childElement -> {
+                    rowPath.add(childElement.getTagName());
+                    processRowElement(childElement, rowPath, rowValues, globalKeys);
+                    rowPath.remove(rowPath.size() - 1);
+                }
+                case Text textNode -> text.append(textNode.getNodeValue());
+                default -> {
+                    // Do nothing
+                }
             }
         }
 
@@ -208,8 +205,7 @@ public class XMLImportFileParser extends ImportFileParser {
             final List<String> attributeKey = new ArrayList<>(globalKey);
             for (int attributeIndex = 0; attributeIndex < attributeMap.getLength(); attributeIndex++) {
                 final Node attributeNode = attributeMap.item(attributeIndex);
-                if (attributeNode instanceof Attr) {
-                    final Attr attribute = (Attr) attributeNode;
+                if (attributeNode instanceof Attr attribute) {
                     attributeKey.add("[" + attribute.getName() + "]");
                     final List<String> globalAttributeKey = createGlobalKey(attributeKey, globalKeys);
                     attributeKey.remove(attributeKey.size() - 1);

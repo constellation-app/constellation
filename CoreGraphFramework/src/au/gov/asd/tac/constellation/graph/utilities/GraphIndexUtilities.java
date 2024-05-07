@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,18 +41,16 @@ public class GraphIndexUtilities {
         throw new IllegalStateException("Utility class");
     }
 
-    public static GraphIndexResult filterElements(final GraphReadMethods graph, final int attribute, Object value) {
-
+    public static GraphIndexResult filterElements(final GraphReadMethods graph, final int attribute, final Object value) {
         if (graph.getAttributeIndexType(attribute) == GraphIndexType.NONE) {
-
-            Attribute attributeObject = new GraphAttribute(graph, attribute);
-            NativeAttributeType nativeType = graph.getNativeAttributeType(attribute);
-            NativeValue searchValue = nativeType.create(value);
-            NativeValue elementValue = new NativeValue();
-            GraphElementType elementType = attributeObject.getElementType();
+            final Attribute attributeObject = new GraphAttribute(graph, attribute);
+            final NativeAttributeType nativeType = graph.getNativeAttributeType(attribute);
+            final NativeValue searchValue = nativeType.create(value);
+            final NativeValue elementValue = new NativeValue();
+            final GraphElementType elementType = attributeObject.getElementType();
 
             if (VERBOSE) {
-                LOGGER.log(Level.INFO, "NOT USING INDEX: " + attributeObject.getName() + ": " + attribute);
+                LOGGER.log(Level.INFO, "NOT USING INDEX: {0}: {1}", new Object[]{attributeObject.getName(), attribute});
             }
 
             return new GraphIndexResult() {
@@ -66,7 +64,7 @@ public class GraphIndexUtilities {
                     if (count == -1) {
                         count = 0;
                         for (int pos = 0; pos < elementCount; pos++) {
-                            int element = elementType.getElement(graph, pos);
+                            final int element = elementType.getElement(graph, pos);
                             nativeType.get(graph, attribute, element, elementValue);
                             if (nativeType.equalValue(elementValue, searchValue)) {
                                 count++;
@@ -79,7 +77,7 @@ public class GraphIndexUtilities {
                 @Override
                 public int getNextElement() {
                     while (position < elementCount) {
-                        int element = elementType.getElement(graph, position++);
+                        final int element = elementType.getElement(graph, position++);
                         nativeType.get(graph, attribute, element, elementValue);
                         if (nativeType.equalValue(elementValue, searchValue)) {
                             return element;
@@ -89,12 +87,10 @@ public class GraphIndexUtilities {
                 }
 
             };
-
         } else {
-
             if (VERBOSE) {
                 Attribute attributeObject = new GraphAttribute(graph, attribute);
-                LOGGER.log(Level.INFO, "USING INDEX: " + attributeObject.getName() + ": " + attribute);
+                LOGGER.log(Level.INFO, "USING INDEX: {0}: {1}", new Object[]{attributeObject.getName(), attribute});
             }
 
             return graph.getElementsWithAttributeValue(attribute, value);

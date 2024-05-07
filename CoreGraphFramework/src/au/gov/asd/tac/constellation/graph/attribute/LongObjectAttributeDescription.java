@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,14 +40,17 @@ public class LongObjectAttributeDescription extends AbstractObjectAttributeDescr
         try {
             return super.convertFromObject(object);
         } catch (final IllegalArgumentException ex) {
-            if (object instanceof Number) {
-                return ((Number) object).longValue();
-            } else if (object instanceof Boolean) {
-                return ((Boolean) object) ? 1L : 0L;
-            } else if (object instanceof Character) {
-                return (long) ((Character) object);
-            } else {
-                throw ex;
+            switch (object) {
+                case Number number -> {
+                    return number.longValue();
+                }
+                case Boolean bool -> {
+                    return Boolean.TRUE.equals(bool) ? 1L : 0L;
+                }
+                case Character character -> {
+                    return (long) character;
+                }
+                default -> throw ex;
             }
         }
     }
@@ -57,7 +60,7 @@ public class LongObjectAttributeDescription extends AbstractObjectAttributeDescr
         if (StringUtils.isBlank(string)) {
             return getDefault();
         } else {
-            return Long.parseLong(string);
+            return Long.valueOf(string);
         }
     }
 

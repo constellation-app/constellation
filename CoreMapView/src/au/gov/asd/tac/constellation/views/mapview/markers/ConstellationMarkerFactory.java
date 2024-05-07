@@ -186,10 +186,10 @@ public class ConstellationMarkerFactory {
         ConstellationAbstractMarker marker;
         try {
             final Constructor<? extends ConstellationAbstractMarker> markerConstructor = markerClass.getDeclaredConstructor(List.class, HashMap.class);
-            marker = (ConstellationAbstractMarker) markerConstructor.newInstance(feature.getLocations(), feature.getProperties());
+            marker = markerConstructor.newInstance(feature.getLocations(), feature.getProperties());
         } catch (final NoSuchMethodException ex) {
             final Constructor<? extends ConstellationAbstractMarker> markerConstructor = markerClass.getDeclaredConstructor(List.class);
-            marker = (ConstellationAbstractMarker) markerConstructor.newInstance(feature.getLocations());
+            marker = markerConstructor.newInstance(feature.getLocations());
             marker.setProperties(feature.getProperties());
         }
         marker.setColor(defaultColor);
@@ -206,10 +206,10 @@ public class ConstellationMarkerFactory {
         ConstellationAbstractMarker marker;
         try {
             final Constructor<? extends ConstellationAbstractMarker> markerConstructor = markerClass.getDeclaredConstructor(List.class, HashMap.class);
-            marker = (ConstellationAbstractMarker) markerConstructor.newInstance(feature.getLocations(), feature.getProperties());
+            marker = markerConstructor.newInstance(feature.getLocations(), feature.getProperties());
         } catch (NoSuchMethodException ex) {
             final Constructor<? extends ConstellationAbstractMarker> markerConstructor = markerClass.getDeclaredConstructor(List.class);
-            marker = (ConstellationAbstractMarker) markerConstructor.newInstance(feature.getLocations());
+            marker = markerConstructor.newInstance(feature.getLocations());
             marker.setProperties(feature.getProperties());
         }
         marker.setColor(defaultColor);

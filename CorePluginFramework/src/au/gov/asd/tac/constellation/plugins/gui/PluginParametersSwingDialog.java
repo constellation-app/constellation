@@ -74,7 +74,7 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
     private final String title;
     private final JFXPanel xp;
     
-    private final HashMap<PluginParameter<?>, Boolean> parameterValidity = new HashMap();
+    private final HashMap<PluginParameter<?>, Boolean> parameterValidity = new HashMap<>();
     private final JButton acceptanceOption;
     private final PluginParameters parameters;
 

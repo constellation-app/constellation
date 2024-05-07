@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,18 +54,23 @@ public final class StringAttributeDescription extends AbstractAttributeDescripti
 
     @SuppressWarnings("unchecked") // Casts are manually checked
     private String convertFromObject(final Object object) throws IllegalArgumentException {
-        if (object == null) {
-            return (String) getDefault();
-        } else if (object instanceof Number) {
-            return ((Number) object).toString();
-        } else if (object instanceof Boolean) {
-            return ((Boolean) object).toString();
-        } else if (object instanceof Character) {
-            return ((Character) object).toString();
-        } else if (object instanceof String) {
-            return (String) object;
-        } else {
-            throw new IllegalArgumentException(String.format(
+        switch (object) {
+            case Number number -> {
+                return number.toString();
+            }       
+            case Boolean bool -> {
+                return bool.toString();
+            }       
+            case Character character -> {
+                return character.toString();
+            }       
+            case String string -> {
+                return string;
+            }
+            case null -> {
+                return (String) getDefault();
+            }
+            default -> throw new IllegalArgumentException(String.format(
                     "Error converting Object '%s' to String", object.getClass()));
         }
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -92,8 +92,7 @@ public class PluginsNodeProvider implements SchemaViewNodeProvider {
             boolean isEnabled = true;
             final Plugin plugin = PluginRegistry.get(pluginClassName);
             final String pluginName = plugin.getName();
-            if (plugin instanceof DataAccessPlugin) {
-                final DataAccessPlugin dataAccessPlugin = (DataAccessPlugin) plugin;
+            if (plugin instanceof DataAccessPlugin dataAccessPlugin) {
                 final String dataAccessType = dataAccessPlugin.getType();
                 isEnabled = dataAccessPlugin.isEnabled();
                 if (isEnabled && !dataAccessType.equals(DataAccessPluginCoreType.EXPERIMENTAL)
@@ -107,8 +106,6 @@ public class PluginsNodeProvider implements SchemaViewNodeProvider {
                     LOGGER.log(Level.WARNING, "null name for plugin %s{0}", pluginClassName);
                 } else if (pluginNames.containsKey(pluginName)) {
                     LOGGER.log(Level.WARNING, "duplicate name {0} for plugins {1}, {2}", new Object[]{pluginName, pluginClassName, pluginNames.get(pluginName)});
-                } else {
-                    // Do nothing
                 }
 
                 pluginNames.put(pluginName != null ? pluginName : pluginClassName, pluginClassName);
@@ -176,7 +173,7 @@ public class PluginsNodeProvider implements SchemaViewNodeProvider {
                 colDefault.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getStringValue()));
 
                 final TableView<PluginParameter<?>> parameterTable = new TableView<>(pluginParameters.get(pluginName));
-                parameterTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+                parameterTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
                 parameterTable.getColumns().addAll(colName, colType, colLabel, colDescr, colDefault);
                 parameterTable.setFixedCellSize(25);
                 parameterTable.prefHeightProperty().bind(parameterTable.fixedCellSizeProperty().multiply(Bindings.size(parameterTable.getItems()).add(1.01)));
@@ -277,12 +274,13 @@ public class PluginsNodeProvider implements SchemaViewNodeProvider {
 
                         Collections.sort(paramList, (a, b) -> a.getId().compareToIgnoreCase(b.getId()));
 
-                        paramList.stream().forEach(p -> sb.append(plugin.getClass().getName()).append(SeparatorConstants.COMMA)                                    .append(PluginRegistry.getAlias(pname)).append(SeparatorConstants.COMMA)
-                                    .append(p.getId()).append(SeparatorConstants.COMMA)
-                                    .append(p.getType().getId()).append(SeparatorConstants.COMMA)
-                                    .append(p.getName()).append(SeparatorConstants.COMMA)
-                                    .append("\"").append(p.getDescription()).append("\"").append(SeparatorConstants.COMMA)
-                                    .append("\"").append(p.getStringValue()).append("\"")
+                        paramList.stream().forEach(p -> sb.append(plugin.getClass().getName()).append(SeparatorConstants.COMMA)
+                                .append(PluginRegistry.getAlias(pname)).append(SeparatorConstants.COMMA)
+                                .append(p.getId()).append(SeparatorConstants.COMMA)
+                                .append(p.getType().getId()).append(SeparatorConstants.COMMA)
+                                .append(p.getName()).append(SeparatorConstants.COMMA)
+                                .append("\"").append(p.getDescription()).append("\"").append(SeparatorConstants.COMMA)
+                                .append("\"").append(p.getStringValue()).append("\"")
                                 .append(SeparatorConstants.NEWLINE));
                     } else {
                         sb.append(plugin.getClass().getName()).append(SeparatorConstants.COMMA)
@@ -297,7 +295,7 @@ public class PluginsNodeProvider implements SchemaViewNodeProvider {
                 final File file = new File(dir, String.format("Plugin Details - %s.csv", dateFormatter.format(new Date())));
                 try (final FileOutputStream fileOutputStream = new FileOutputStream(file)) {
                     fileOutputStream.write(sb.toString().getBytes(StandardCharsets.UTF_8.name()));
-                } catch (IOException ex) {
+                } catch (final IOException ex) {
                     LOGGER.log(Level.SEVERE, "Error during export of plugin details to csv", ex);
                 }
             });

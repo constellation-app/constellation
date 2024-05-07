@@ -34,6 +34,7 @@ import au.gov.asd.tac.constellation.views.analyticview.results.FactResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.FactResult.ElementFact;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticTranslatorUtilities;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.SizeVisualisation;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.openide.util.lookup.ServiceProvider;
@@ -73,22 +74,22 @@ public class FactToSizeTranslator extends AbstractSizeTranslator<FactResult, Ele
 
     @Override
     public Map<Integer, Float> getVertexSizes() {
-        return vertexSizes;
+        return Collections.unmodifiableMap(vertexSizes);
     }
 
     @Override
     public void setVertexSizes(final Map<Integer, Float> sizes) {
-        vertexSizes = sizes;
+        vertexSizes = new HashMap<>(sizes);
     }
 
     @Override
     public Map<Integer, Float> getTransactionSizes() {
-        return transactionSizes;
+        return Collections.unmodifiableMap(transactionSizes);
     }
 
     @Override
     public void setTransactionSizes(final Map<Integer, Float> sizes) {
-        transactionSizes = sizes;
+        transactionSizes = new HashMap<>(sizes);
     }
 
     @PluginInfo(tags = {PluginTags.MODIFY})
@@ -109,7 +110,6 @@ public class FactToSizeTranslator extends AbstractSizeTranslator<FactResult, Ele
 
         @Override
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-
             // get parameter values
             final boolean reset = parameters.getBooleanValue(RESET_PARAMETER_ID);
             

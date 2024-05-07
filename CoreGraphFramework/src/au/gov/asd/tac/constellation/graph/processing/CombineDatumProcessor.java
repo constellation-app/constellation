@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ public abstract class CombineDatumProcessor<T, U> implements DatumProcessor<T, U
      *
      * @param processors An array of {@link DatumProcessor}.
      */
-    protected CombineDatumProcessor(DatumProcessor<T, U>[] processors) {
+    protected CombineDatumProcessor(final DatumProcessor<T, U>[] processors) {
         this.processors.addAll(Arrays.asList(processors));
     }
 
@@ -54,7 +54,7 @@ public abstract class CombineDatumProcessor<T, U> implements DatumProcessor<T, U
 
     @Override
     public void process(final U parameters, final T input, final RecordStore output) throws ProcessingException {
-        for (DatumProcessor<T, U> rowProcessor : processors) {
+        for (final DatumProcessor<T, U> rowProcessor : processors) {
             rowProcessor.process(parameters, input, output);
         }
     }

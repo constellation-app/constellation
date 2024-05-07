@@ -57,11 +57,11 @@ public class StoreGraphRecordStore extends StoreGraph implements RecordStore {
     }
 
     @Override
-    public void add(RecordStore recordStore) {
+    public void add(final RecordStore recordStore) {
         recordStore.reset();
         while (recordStore.next()) {
             add();
-            for (String key : recordStore.keys()) {
+            for (final String key : recordStore.keys()) {
                 set(key, recordStore.get(key));
             }
         }
@@ -74,7 +74,7 @@ public class StoreGraphRecordStore extends StoreGraph implements RecordStore {
      * @param value the value to associate with the key.
      */
     @Override
-    public void set(String key, String value) {
+    public void set(final String key, final String value) {
         int dividerPosition = key.indexOf('.');
         int typeStartPosition = key.indexOf('<');
         int typeEndPosition = key.indexOf('>');
@@ -139,32 +139,32 @@ public class StoreGraphRecordStore extends StoreGraph implements RecordStore {
     }
 
     @Override
-    public boolean hasValue(String key) {
+    public boolean hasValue(final String key) {
         throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
-    public boolean hasValue(int record, String key) {
+    public boolean hasValue(final int newRecord, final String key) {
         throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
-    public String get(String key) {
+    public String get(final String key) {
         throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
-    public String get(int record, String key) {
+    public String get(final int newRecord, final String key) {
         throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
-    public List<String> getAll(String key) {
+    public List<String> getAll(final String key) {
         throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
-    public void set(int record, String key, String value) {
+    public void set(final int newRecord, final String key, final String value) {
         throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
@@ -174,7 +174,7 @@ public class StoreGraphRecordStore extends StoreGraph implements RecordStore {
     }
 
     @Override
-    public List<String> values(int record) {
+    public List<String> values(final int newRecord) {
         throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 

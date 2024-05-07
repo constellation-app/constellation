@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -206,10 +206,8 @@ public class VisualGraphUtilities {
         }
     }
 
-    public static Stream<Vector3f> streamVertexWorldLocations(GraphReadMethods rg, final Camera state) {
-
+    public static Stream<Vector3f> streamVertexWorldLocations(final GraphReadMethods rg, final Camera state) {
         final int vertexCount = rg.getVertexCount();
-
         final float mix = state.getMix();
 
         // Look up all the required attributes.
@@ -222,7 +220,6 @@ public class VisualGraphUtilities {
 
         // Do the vertex positions need mixing?
         final boolean requiresMix = x2Attr != Graph.NOT_FOUND && y2Attr != Graph.NOT_FOUND && z2Attr != Graph.NOT_FOUND;
-
         final Iterable<Vector3f> worldLocations;
         if (xAttr != Graph.NOT_FOUND && yAttr != Graph.NOT_FOUND && zAttr != Graph.NOT_FOUND) {
 
@@ -268,7 +265,7 @@ public class VisualGraphUtilities {
         return StreamSupport.stream(worldLocations.spliterator(), false);
     }
 
-    public static Stream<Vector3f> streamVertexSceneLocations(GraphReadMethods rg, final Camera camera) {
+    public static Stream<Vector3f> streamVertexSceneLocations(final GraphReadMethods rg, final Camera camera) {
 
         // Get a copy of the current rotation matrix.
         final Matrix44f modelViewMatrix = Graphics3DUtilities.getModelViewMatrix(camera);

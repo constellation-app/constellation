@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,34 +42,19 @@ public class PrimaryKeyBuilder extends GraphBuilder {
     }
 
     public static PrimaryKeyBuilder addPrimaryKey(final GraphWriteMethods graph, final int numberOfVertexKeys, final int numberOfTransactionKeys, final String vertexKeyType, final String transactionKeyType, final Object vertexDefaultValue, final Object transactionDefaultValue, final boolean fillVertexKeys, final boolean fillTransactionKeys) {
-
         final int[] vertexKeys = makeKeys(graph, GraphElementType.VERTEX, numberOfVertexKeys, vertexKeyType, vertexDefaultValue);
         final int[] transactionKeys = makeKeys(graph, GraphElementType.TRANSACTION, numberOfTransactionKeys, transactionKeyType, transactionDefaultValue);
 
-        KeySetter vertexKeySetter;
-        switch (vertexKeyType) {
-            case DEFAULT_KEY_TYPE:
-                vertexKeySetter = new IntegerKeySetter();
-                break;
-            case "float":
-                vertexKeySetter = new FloatKeySetter();
-                break;
-            default:
-                vertexKeySetter = new StringKeySetter();
-                break;
-        }
-        KeySetter transactionKeySetter;
-        switch (transactionKeyType) {
-            case DEFAULT_KEY_TYPE:
-                transactionKeySetter = new IntegerKeySetter();
-                break;
-            case "float":
-                transactionKeySetter = new FloatKeySetter();
-                break;
-            default:
-                transactionKeySetter = new StringKeySetter();
-                break;
-        }
+        final KeySetter vertexKeySetter = switch (vertexKeyType) {
+            case DEFAULT_KEY_TYPE -> new IntegerKeySetter();
+            case "float" -> new FloatKeySetter();
+            default -> new StringKeySetter();
+        };
+        final KeySetter transactionKeySetter = switch (transactionKeyType) {
+            case DEFAULT_KEY_TYPE -> new IntegerKeySetter();
+            case "float" -> new FloatKeySetter();
+            default -> new StringKeySetter();
+        };
 
         if (fillVertexKeys) {
             fillKeys(graph, vertexKeySetter, GraphElementType.VERTEX, vertexKeys);
@@ -85,7 +70,7 @@ public class PrimaryKeyBuilder extends GraphBuilder {
     }
 
     public static int[] makeKeys(final GraphWriteMethods graph, final GraphElementType elementType, final int numberOfKeys, final String keyType, final Object defaultVal) {
-        int[] keys = new int[numberOfKeys];
+        final int[] keys = new int[numberOfKeys];
         for (int i = 0; i < numberOfKeys; i++) {
             keys[i] = graph.addAttribute(elementType, keyType, PRIMARY_KEY_ATTRIBUTE_NAME + Integer.toString(i), PRIMARY_KEY_ATTRIBUTE_NAME + Integer.toString(i), defaultVal, null);
         }
@@ -93,7 +78,6 @@ public class PrimaryKeyBuilder extends GraphBuilder {
     }
 
     private static void fillKeys(final GraphWriteMethods graph, final KeySetter keySetter, final GraphElementType elementType, final int[] keyAttributes) {
-
         if (keyAttributes.length == 0) {
             return;
         }
@@ -115,7 +99,6 @@ public class PrimaryKeyBuilder extends GraphBuilder {
         }
 
         for (int i = 0; i < numOfElements; i++) {
-
             // For each graph element set its value for each key
             final int elId = elementType == GraphElementType.VERTEX ? graph.getVertex(i) : graph.getTransaction(i);
             for (int j = 0; j < numKeys; j++) {
@@ -138,7 +121,6 @@ public class PrimaryKeyBuilder extends GraphBuilder {
     private interface KeySetter {
 
         public void setKey(final GraphWriteMethods graph, final int attrId, final int elId, final int valueNumber);
-
     }
 
     private static class IntegerKeySetter implements KeySetter {
@@ -147,7 +129,6 @@ public class PrimaryKeyBuilder extends GraphBuilder {
         public void setKey(final GraphWriteMethods graph, final int attrId, final int elId, final int valueNumber) {
             graph.setIntValue(attrId, elId, valueNumber);
         }
-
     }
 
     private static class StringKeySetter implements KeySetter {
@@ -156,7 +137,6 @@ public class PrimaryKeyBuilder extends GraphBuilder {
         public void setKey(final GraphWriteMethods graph, final int attrId, final int elId, final int valueNumber) {
             graph.setStringValue(attrId, elId, Integer.toString(valueNumber));
         }
-
     }
 
     private static class FloatKeySetter implements KeySetter {
@@ -165,7 +145,6 @@ public class PrimaryKeyBuilder extends GraphBuilder {
         public void setKey(final GraphWriteMethods graph, final int attrId, final int elId, final int valueNumber) {
             graph.setFloatValue(attrId, elId, ((float) valueNumber / 10));
         }
-
     }
 
     public final int[] vertexKeys;
@@ -176,5 +155,4 @@ public class PrimaryKeyBuilder extends GraphBuilder {
         this.vertexKeys = vertexKeys;
         this.transactionKeys = transactionKeys;
     }
-
 }

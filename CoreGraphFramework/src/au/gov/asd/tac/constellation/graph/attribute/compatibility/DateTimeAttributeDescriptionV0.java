@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -122,18 +122,23 @@ public final class DateTimeAttributeDescriptionV0 extends AbstractAttributeDescr
     }
 
     private static long setObject(final Object value, final TimeZone tz) {
-        if (value == null) {
-            return DEFAULT_VALUE;
-        } else if (value instanceof Date) {
-            return ((Date) value).getTime();
-        } else if (value instanceof Number) {
-            return ((Number) value).longValue();
-        } else if (value instanceof Calendar) {
-            return ((Calendar) value).getTimeInMillis();
-        } else if (value instanceof String) {
-            return setString((String) value, tz);
-        } else {
-            throw new IllegalArgumentException("Error converting Object to long: " + value.getClass().getName());
+        switch (value) {
+            case Date date -> {
+                return date.getTime();
+            }       
+            case Number number -> {
+                return number.longValue();
+            }       
+            case Calendar calendar -> {
+                return calendar.getTimeInMillis();
+            }       
+            case String string -> {
+                return setString(string, tz);
+            }
+            case null -> {
+                return DEFAULT_VALUE;
+            }
+            default -> throw new IllegalArgumentException("Error converting Object to long: " + value.getClass().getName());
         }
     }
 
@@ -188,14 +193,12 @@ public final class DateTimeAttributeDescriptionV0 extends AbstractAttributeDescr
         } else if (attrModificationCounter != graph.getValueModificationCounter(tzAttr)) {
             tz = (TimeZone) graph.getObjectValue(tzAttr, 0);
             attrModificationCounter = graph.getValueModificationCounter(tzAttr);
-        } else {
-            // Do nothing
         }
     }
 
     @Override
     public AttributeDescription copy(GraphReadMethods graph) {
-        DateTimeAttributeDescriptionV0 attribute = new DateTimeAttributeDescriptionV0();
+        final DateTimeAttributeDescriptionV0 attribute = new DateTimeAttributeDescriptionV0();
         attribute.data = Arrays.copyOf(data, data.length);
         attribute.defaultValue = this.defaultValue;
         attribute.graph = graph;
@@ -288,7 +291,6 @@ public final class DateTimeAttributeDescriptionV0 extends AbstractAttributeDescr
             return cal.getTimeInMillis();
 
         } else if (RE_DATETIME4.matcher(dt).matches()) {
-
             final int ye = Integer.parseInt(dt.substring(0, 4), 10);
             final int mo = Integer.parseInt(dt.substring(4, 6), 10);
             final int da = Integer.parseInt(dt.substring(6, 8), 10);
@@ -309,7 +311,6 @@ public final class DateTimeAttributeDescriptionV0 extends AbstractAttributeDescr
             cal.set(Calendar.MILLISECOND, ms);
 
             return cal.getTimeInMillis();
-
         } else {
             LOGGER.log(Level.WARNING, "Can''t parse datetime string ''{0}'': {1}", new Object[]{dt, "incorrect format"});
         }
@@ -318,7 +319,7 @@ public final class DateTimeAttributeDescriptionV0 extends AbstractAttributeDescr
     }
 
     @Override
-    public String acceptsString(String value) {
+    public String acceptsString(final String value) {
         return parseDateTime(value, tz) == NULL_VALUE ? "Not a valid datetime" : null;
     }
 
@@ -416,12 +417,12 @@ public final class DateTimeAttributeDescriptionV0 extends AbstractAttributeDescr
     }
 
     @Override
-    public Object createReadObject(IntReadable indexReadable) {
+    public Object createReadObject(final IntReadable indexReadable) {
         return (LongReadable) () -> data[indexReadable.readInt()];
     }
 
     @Override
-    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+    public Object createWriteObject(final GraphWriteMethods graph, final int attribute, final IntReadable indexReadable) {
         return new LongVariable() {
             @Override
             public long readLong() {
@@ -429,7 +430,7 @@ public final class DateTimeAttributeDescriptionV0 extends AbstractAttributeDescr
             }
 
             @Override
-            public void writeLong(long value) {
+            public void writeLong(final long value) {
                 graph.setLongValue(attribute, indexReadable.readInt(), value);
             }
         };

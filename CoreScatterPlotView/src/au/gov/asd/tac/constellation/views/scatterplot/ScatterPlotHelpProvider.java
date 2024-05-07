@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class ScatterPlotHelpProvider extends HelpPageProvider {
 
     private static final String CODEBASE_NAME = "constellation";
+    private static final String SEP = File.separator;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file name
@@ -41,9 +42,8 @@ public class ScatterPlotHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
-        final String sep = File.separator;
-        final String scatterModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreScatterPlotView" + sep + "src" + sep + "au" + sep + "gov" + sep
-                + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "scatterplot" + sep;
+        final String scatterModulePath = ".." + SEP + "ext" + SEP + "docs" + SEP + "CoreScatterPlotView" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP
+                + "asd" + SEP + "tac" + SEP + CODEBASE_NAME + SEP + "views" + SEP + "scatterplot" + SEP;
 
         map.put("au.gov.asd.tac.constellation.views.scatterplot", scatterModulePath + "scatter-plot-view.md");
         return map;
@@ -56,10 +56,7 @@ public class ScatterPlotHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        final String sep = File.separator;
-        final String scatterPath;
-        scatterPath = "ext" + sep + "docs" + sep + "CoreScatterPlotView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
-                + CODEBASE_NAME + sep + "views" + sep + "scatterplot" + sep + "scatterplot-toc.xml";
-        return scatterPath;
+        return "ext" + SEP + "docs" + SEP + "CoreScatterPlotView" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP + "asd" + SEP + "tac" + SEP
+                + CODEBASE_NAME + SEP + "views" + SEP + "scatterplot" + SEP + "scatterplot-toc.xml";
     }
 }

@@ -43,9 +43,9 @@ public class ActionPane extends BorderPane {
     private static final int HBOX_SPACING = 5;
     private final Button importButton;
     private final CheckBox skipInvalidRowsCheckBox;
-    private final ImportController importController;
+    private final ImportController<?> importController;
 
-    public ActionPane(final ImportController controller) {
+    public ActionPane(final ImportController<?> controller) {
         this.importController = controller;
 
         final HBox runBox = new HBox();
@@ -70,9 +70,8 @@ public class ActionPane extends BorderPane {
         skipInvalidRowsCheckBox.setSelected(false);
         skipInvalidRowsCheckBox.setDisable(true);        
         
-        skipInvalidRowsCheckBox.setOnAction((t) -> {
-            controller.setSkipInvalidRows(skipInvalidRowsCheckBox.isSelected());
-        });
+        skipInvalidRowsCheckBox.setOnAction((t) -> 
+            controller.setSkipInvalidRows(skipInvalidRowsCheckBox.isSelected()));
 
         runBox.getChildren().add(skipInvalidRowsCheckBox);
     }

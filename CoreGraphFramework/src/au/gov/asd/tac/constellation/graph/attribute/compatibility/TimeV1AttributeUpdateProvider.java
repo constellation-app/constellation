@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ public class TimeV1AttributeUpdateProvider extends AttributeUpdateProvider {
         try {
             FROM_ATTRIBUTE = TimeAttributeDescriptionV0.class.newInstance();
             TO_ATTRIBUTE = TimeAttributeDescription.class.newInstance();
-        } catch (IllegalAccessException | InstantiationException ex) {
+        } catch (final IllegalAccessException | InstantiationException ex) {
             throw new IllegalArgumentException(String.format("Version provider %s unable to access required attribute descriptions %s or %s", TimeV1AttributeUpdateProvider.class.getName(), TimeAttributeDescriptionV0.class.getName(), TimeAttributeDescription.class.getName()));
         }
     }

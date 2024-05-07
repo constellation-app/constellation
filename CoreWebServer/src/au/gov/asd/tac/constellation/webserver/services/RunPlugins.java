@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -111,7 +111,7 @@ public class RunPlugins extends RestService {
     }
 
     @Override
-    public void callService(final PluginParameters parameters, InputStream in, OutputStream out) throws IOException {
+    public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
         final String graphId = parameters.getStringValue(GRAPH_ID_PARAMETER_ID);
         final Graph graph = graphId == null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
         if (graph == null) {
@@ -134,7 +134,6 @@ public class RunPlugins extends RestService {
         }
 
         final ConcurrentLinkedQueue<PluginError> errorQueue = new ConcurrentLinkedQueue<>();
-
         final ArrayNode pluginList = (ArrayNode) json;
         final List<PluginInstance> pluginInstances = new ArrayList<>();
         pluginList.forEach(pluginItem -> {
@@ -242,13 +241,7 @@ public class RunPlugins extends RestService {
 
         @Override
         public String toString() {
-            // Pick one of these, depending on how much error we want to
-            // show to the user.
-            //
-//            - final StringWriter exString = new StringWriter();
-//            - ex.printStackTrace(new PrintWriter(exString));
             final String exString = ex.getMessage();
-
             return String.format("Plugin:%n%s%nException:%n%s%n", pluginName, exString);
         }
     }

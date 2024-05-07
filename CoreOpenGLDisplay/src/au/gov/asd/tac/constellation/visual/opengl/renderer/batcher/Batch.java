@@ -451,7 +451,7 @@ public final class Batch {
      * @param target
      * @return A FloatBuffer directly backed by data on the GL context.
      */
-    public FloatBuffer connectFloatBuffer(final GL3 gl, final int target) {
+    public FloatBuffer connectFloatBuffer(final GL gl, final int target) {
         final int bufferName = getBufferName(target);
         if (!bufferIsFloat[target]) {
             throw new RenderException(NOT_FLOATBUFFER);
@@ -469,7 +469,7 @@ public final class Batch {
      * @param target
      * @return An IntBuffer directly backed by data on the GL context.
      */
-    public IntBuffer connectIntBuffer(final GL3 gl, final int target) {
+    public IntBuffer connectIntBuffer(final GL gl, final int target) {
         final int bufferName = getBufferName(target);
         if (bufferIsFloat[target]) {
             throw new RenderException("Specified target is not an IntBuffer");
@@ -488,7 +488,7 @@ public final class Batch {
      * @param gl The GL context on which the buffer was finalised.
      * @param target The buffer to disconnect.
      */
-    public void disconnectBuffer(final GL3 gl, final int target) {
+    public void disconnectBuffer(final GL gl, final int target) {
         gl.glBindBuffer(GL.GL_ARRAY_BUFFER, getBufferName(target));
         gl.glUnmapBuffer(GL.GL_ARRAY_BUFFER);
     }
@@ -528,7 +528,7 @@ public final class Batch {
      *
      * @param gl The GL context to dispose this batch from.
      */
-    public void dispose(final GL3 gl) {
+    public void dispose(final GL2ES3 gl) {
         for (int i = 0; i < bufferNames.length; i++) {
             if (bufferNames[i].length != 0) {
                 gl.glDeleteBuffers(1, bufferNames[i], 0);
