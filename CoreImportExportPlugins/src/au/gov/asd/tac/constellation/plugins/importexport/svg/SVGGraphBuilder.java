@@ -320,10 +320,8 @@ public class SVGGraphBuilder {
                 CompletableFuture.runAsync(task, threadPool);
             }    
 
-            // Wait until all tasks are complete.
-            while (!mti.isComplete()){
-                mti.setProgress(true);
-            }
+            // Wait until all tasks are complete
+            mti.waitForTasksToComplete();
 
             // Combine the generated nodes into a single list.
             threadOuputLists.forEach(outputList -> outputList.forEach(svgObject -> {
@@ -376,10 +374,8 @@ public class SVGGraphBuilder {
         }      
         
         // Wait until all tasks are complete
-        while (!mti.isComplete()){
-            mti.setProgress(true);
-        }
-        
+        mti.waitForTasksToComplete();
+                
         // Combine the generated nodes into a single list.
         final List<SVGObject> connections = new ArrayList<>();
         threadOuputLists.forEach(outputList -> connections.addAll(outputList)); 
@@ -422,9 +418,7 @@ public class SVGGraphBuilder {
         }    
 
         // Wait until all tasks are complete
-        while (!mti.isComplete()){
-            mti.setProgress(true);
-        }
+        mti.waitForTasksToComplete();
         
         // Combine the generated nodes into a single list.
         final List<SVGObject> blazes = new ArrayList<>();

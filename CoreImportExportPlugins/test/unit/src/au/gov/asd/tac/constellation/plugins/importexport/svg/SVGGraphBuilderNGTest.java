@@ -73,6 +73,7 @@ public class SVGGraphBuilderNGTest {
     private Component visualComponentMock;
     private File fileMock;
     private final DrawFlags drawAllVisualElementsFlag = new DrawFlags(true, true, true, true, true);
+    private final DrawFlags drawNoLabelsFlag = new DrawFlags(true, true, false, false, false);
     private final DrawFlags drawNoVisualElementsFlag = new DrawFlags(false, false, false, false, false);
     private final String graphName = "Test Graph 1";
 
@@ -95,6 +96,8 @@ public class SVGGraphBuilderNGTest {
     private int transactionId3;
     private int transactionId4;
     private int transactionId5;
+    private int transactionId6;
+    private int transactionId7;
     
     
     // Other Attributea
@@ -301,7 +304,25 @@ public class SVGGraphBuilderNGTest {
         assertNull(result.getChild(String.format("node-%s",vertexId2)));
     }
     
-    
+        /**
+     * Test of build method, of class SVGGraphBuilder.
+     */
+    @Test
+    public void testBuildPatternOutput_noLabels() throws IllegalArgumentException, InterruptedException {
+        System.out.println("build");
+        final SVGGraphBuilder instance = new SVGGraphBuilder()
+                .atDirectory(fileMock)
+                .withInteraction(interactionMock)
+                .withReadableGraph(graph.getReadableGraph())
+                .withTitle(graphName)
+                .fromPerspective(AxisConstants.Z_POSITIVE)
+                .withSelectedElementsOnly(true)
+                .withDrawFlags(this.drawNoLabelsFlag)
+                .withCores(2);
+            
+        final SVGObject result = new SVGObject(instance.build());
+        assertNotNull(result.getChild(String.format("node-%s",vertexId2)));
+    }  
     
     
     /**
@@ -370,7 +391,7 @@ public class SVGGraphBuilderNGTest {
             wg.setBooleanValue(vertexAttributeIdSelected, vertexId2, true);
             wg.setBooleanValue(vertexAttributeIdPinned, vertexId2, true);
             wg.setStringValue(vertexAttributeIdLabel, vertexId2, "vertex2");
-            wg.setFloatValue(vertexDimmedAttributeId, vertexId2, 0F);
+            wg.setFloatValue(vertexDimmedAttributeId, vertexId2, 1F);
             
             vertexId3 = wg.addVertex();
             wg.setFloatValue(vertexAttributeIdX, vertexId3, 1.0f);
@@ -405,6 +426,8 @@ public class SVGGraphBuilderNGTest {
             transactionId3 = wg.addTransaction(vertexId5, vertexId2, true);
             transactionId4 = wg.addTransaction(vertexId2, vertexId2, true);
             transactionId5 = wg.addTransaction(vertexId2, vertexId2, false);
+            transactionId6 = wg.addTransaction(vertexId1, vertexId2, true);
+            transactionId7 = wg.addTransaction(vertexId2, vertexId1, true);
 
         } finally {
             wg.commit();

@@ -39,8 +39,14 @@ import org.openide.util.Cancellable;
 
 /**
  * Interface for plugins that work in an interactive mode.
- * <p>
- * The following is a summary:</p>
+ * 
+ * This class allows for plugins to interact with constellations reporting mechanisms, the {@link NotifyDisplayer} and the {@link PluginReporter}.
+ * Capabilities for terminating plugins are also available in the class due to the need from the relevant reporting mechanism.
+ * 
+ * <p>{@link PluginReporter} interactions can be facilitated using {@code setProgress()} and {@code setExecutionStage()}.</p> 
+ * 
+ * <p>{@link NotifyDisplayer} interactions can be facilitated using {@code confirm()} and {@code notify()}.</p> 
+ * <p>The following is a summary of the various visual presentations based on the supplied {@link PluginNotificationLevel}:</p>
  * <ul>
  * <li>{@code PluginNotificationLevel.FATAL} and
  * {@code PluginNotificationLevel.ERROR} type messages will have a dialog
@@ -52,6 +58,7 @@ import org.openide.util.Cancellable;
  * <li>{@code PluginNotificationLevel.DEBUG} messages will be logged if the FINE
  * log to this class in enabled</li>
  * </ul>
+ * 
  *
  * @author sirius
  */
@@ -185,6 +192,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
 
         }
     }
+    
     
     @Override
     public void setExecutionStage(final int currentStep, final int totalSteps, final String executionStage, final String message, final boolean cancellable) throws InterruptedException {
