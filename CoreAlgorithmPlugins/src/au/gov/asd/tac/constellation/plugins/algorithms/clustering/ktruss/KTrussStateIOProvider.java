@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,13 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss;
 
-import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.KTrussStateAttributeDescription;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.io.AbstractGraphIOProvider;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteReader;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteWriter;
+import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.KTrussStateAttributeDescription;
 import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -138,14 +138,13 @@ public class KTrussStateIOProvider extends AbstractGraphIOProvider {
             final int highestComponentNum = jnode.get(HIGHCOMP).asInt();
             final int totalVerts = jnode.get(TOTALVERTS).asInt();
             final int totalVertsInTrusses = jnode.get(TOTALTRUSSVERTS).asInt();
-            final boolean drawAllComponents = jnode.get(DRAWALL).asBoolean();
             final boolean nestedTrussesColored = jnode.get(NESTEDCOLORED).asBoolean();
             boolean interactive = true;
             if (jnode.has(INTERACTIVE)) {
                 interactive = jnode.get(INTERACTIVE).asBoolean();
             }
 
-            final KTrussState state = new KTrussState(modificationCounter, strucModificationCount, currentK, highestK, excludedElementsDimmed, displayOptionToggles, extantKTrusses, kTrussToIndex, indexToKTruss, nodeToComponent, linkToComponent, componentTree, componentSizes, isNestedTrussesVisible, highestComponentNum, totalVerts, totalVertsInTrusses, drawAllComponents, nestedTrussesColored, interactive);
+            final KTrussState state = new KTrussState(modificationCounter, strucModificationCount, currentK, highestK, excludedElementsDimmed, displayOptionToggles, extantKTrusses, kTrussToIndex, indexToKTruss, nodeToComponent, linkToComponent, componentTree, componentSizes, isNestedTrussesVisible, highestComponentNum, totalVerts, totalVertsInTrusses, nestedTrussesColored, interactive);
 
             graph.setObjectValue(attributeId, elementId, state);
         }

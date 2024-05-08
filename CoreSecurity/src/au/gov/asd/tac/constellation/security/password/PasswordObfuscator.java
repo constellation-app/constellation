@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -135,7 +135,7 @@ public class PasswordObfuscator {
                 }
             } else { // Encrypt a password
                 final ObfuscatedPassword obfuscatedPassword = obfuscate(password);
-                LOGGER.log(Level.INFO, "The obfuscated password is: {0}", obfuscatedPassword.toString());
+                LOGGER.log(Level.INFO, "The obfuscated password is: {0}", obfuscatedPassword);
             }
         }
     }

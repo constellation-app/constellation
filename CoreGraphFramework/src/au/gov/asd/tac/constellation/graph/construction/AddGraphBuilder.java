@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,6 @@ public class AddGraphBuilder extends GraphBuilder {
     }
 
     public static AddGraphBuilder addGraph(final GraphWriteMethods graph, final GraphReadMethods toAdd) {
-
         // Copy the nodes from toAdd into graph, recording a mapping between IDs
         final int[] addedVerts = new int[toAdd.getVertexCount()];
         final Map<Integer, Integer> addedOldToNewIDs = new HashMap<>();
@@ -60,7 +59,7 @@ public class AddGraphBuilder extends GraphBuilder {
     public final int[] transactions;
     public final Map<Integer, Integer> addedOldToNewIDs;
 
-    public int[] getSubsetOfAddedVerts(int[] originalIDs) {
+    public int[] getSubsetOfAddedVerts(final int[] originalIDs) {
         final int[] newIDs = new int[originalIDs.length];
         for (int i = 0; i < newIDs.length; i++) {
             newIDs[i] = addedOldToNewIDs.get(originalIDs[i]);
@@ -68,11 +67,10 @@ public class AddGraphBuilder extends GraphBuilder {
         return newIDs;
     }
 
-    private AddGraphBuilder(final GraphWriteMethods graph, int[] addedVerts, int[] addedTransactions, final Map<Integer, Integer> addedOldToNewIDs) {
+    private AddGraphBuilder(final GraphWriteMethods graph, final int[] addedVerts, final int[] addedTransactions, final Map<Integer, Integer> addedOldToNewIDs) {
         super(graph);
         this.nodes = addedVerts;
         this.transactions = addedTransactions;
         this.addedOldToNewIDs = addedOldToNewIDs;
     }
-
 }

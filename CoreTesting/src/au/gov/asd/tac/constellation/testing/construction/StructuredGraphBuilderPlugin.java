@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,6 +40,7 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
@@ -108,10 +109,10 @@ public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
         final int backboneDensity = params.get(BACKBONE_DENSITY_PARAMETER_ID).getIntegerValue();
         final int radiusFactor = params.get(RADIUS).getIntegerValue();
 
-        long dt = new Date().getTime();
+        final long dt = new Date().getTime();
 
         // Icons will be chosen from the provided defaults.
-        final ArrayList<String> iconNames = new ArrayList<>(IconManager.getIconNames(null));
+        final List<String> iconNames = new ArrayList<>(IconManager.getIconNames(null));
 
         // "Name" is already the primary key.
         final int vxNameAttr = VisualConcept.VertexAttribute.LABEL.ensure(graph);
@@ -159,28 +160,28 @@ public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
             graph.setFloatValue(vxZAttr, nodeId, z * radius);
         }
 
-        float[] minDistances = new float[backboneVertexCount];
+        final float[] minDistances = new float[backboneVertexCount];
         Arrays.fill(minDistances, Float.MAX_VALUE);
-        int[] closestNeighbour = new int[backboneVertexCount];
+        final int[] closestNeighbour = new int[backboneVertexCount];
 
         for (int s = 0; s < backboneVertexCount; s++) {
             for (int d = s + 1; d < backboneVertexCount; d++) {
-                int source = graph.getVertex(s);
-                int destination = graph.getVertex(d);
+                final int source = graph.getVertex(s);
+                final int destination = graph.getVertex(d);
 
-                float sx = graph.getFloatValue(vxXAttr, source);
-                float sy = graph.getFloatValue(vxYAttr, source);
-                float sz = graph.getFloatValue(vxZAttr, source);
+                final float sx = graph.getFloatValue(vxXAttr, source);
+                final float sy = graph.getFloatValue(vxYAttr, source);
+                final float sz = graph.getFloatValue(vxZAttr, source);
 
-                float dx = graph.getFloatValue(vxXAttr, destination);
-                float dy = graph.getFloatValue(vxYAttr, destination);
-                float dz = graph.getFloatValue(vxZAttr, destination);
+                final float dx = graph.getFloatValue(vxXAttr, destination);
+                final float dy = graph.getFloatValue(vxYAttr, destination);
+                final float dz = graph.getFloatValue(vxZAttr, destination);
 
-                float x = sx - dx;
-                float y = sy - dy;
-                float z = sz - dz;
+                final float x = sx - dx;
+                final float y = sy - dy;
+                final float z = sz - dz;
 
-                float distance = (float) Math.sqrt(x * x + y * y + z * z);
+                final float distance = (float) Math.sqrt(x * x + y * y + z * z);
                 if (minDistances[s] > distance) {
                     minDistances[s] = distance;
                     closestNeighbour[s] = d;
@@ -190,8 +191,7 @@ public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
                     closestNeighbour[d] = s;
                 }
 
-                int transactionCount = (int) (radius / (distance * distance) * r.nextInt(backboneDensity));
-
+                final int transactionCount = (int) (radius / (distance * distance) * r.nextInt(backboneDensity));
                 for (int t = 0; t < transactionCount; t++) {
                     createRandomTransaction(graph, source, destination, txDateTimeAttr, txColorAttr, r, dt);
                 }
@@ -203,12 +203,12 @@ public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
             int destination = closestNeighbour[s];
             createRandomTransaction(graph, source, destination, txDateTimeAttr, txColorAttr, r, dt);
 
-            float cx = graph.getFloatValue(vxXAttr, source);
-            float cy = graph.getFloatValue(vxYAttr, source);
-            float cz = graph.getFloatValue(vxZAttr, source);
+            final float cx = graph.getFloatValue(vxXAttr, source);
+            final float cy = graph.getFloatValue(vxYAttr, source);
+            final float cz = graph.getFloatValue(vxZAttr, source);
 
-            float minDistance = minDistances[s];
-            float pendants = minDistance * minDistance * r.nextFloat() / backboneVertexCount;
+            final float minDistance = minDistances[s];
+            final float pendants = minDistance * minDistance * r.nextFloat() / backboneVertexCount;
 
             double interestDensity = r.nextDouble() * 0.9;
             interestDensity *= interestDensity * interestDensity * interestDensity * interestDensity;
@@ -222,12 +222,12 @@ public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
                 graph.setObjectValue(vxColorAttr, pendant, randomColorWithAlpha(r));
                 graph.setFloatValue(vxVisibilityAttr, pendant, 1.0F);
 
-                float x = r.nextFloat() * 2 - 1;
-                float y = r.nextFloat() * 2 - 1;
-                float z = r.nextFloat() * 2 - 1;
-                float length = (float) Math.sqrt(x * x + y * y + z * z);
+                final float x = r.nextFloat() * 2 - 1;
+                final float y = r.nextFloat() * 2 - 1;
+                final float z = r.nextFloat() * 2 - 1;
+                final float length = (float) Math.sqrt(x * x + y * y + z * z);
 
-                float pendantRadius = minDistance * 0.7F * r.nextFloat();
+                final float pendantRadius = minDistance * 0.7F * r.nextFloat();
                 graph.setFloatValue(vxXAttr, pendant, cx + x / length * pendantRadius);
                 graph.setFloatValue(vxYAttr, pendant, cy + y / length * pendantRadius);
                 graph.setFloatValue(vxZAttr, pendant, cz + z / length * pendantRadius);
@@ -238,8 +238,8 @@ public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
             }
         }
 
-        int selectedPosition = r.nextInt(backboneVertexCount);
-        int selectedVertex = graph.getVertex(selectedPosition);
+        final int selectedPosition = r.nextInt(backboneVertexCount);
+        final int selectedVertex = graph.getVertex(selectedPosition);
         graph.setBooleanValue(vxSelectedAttr, selectedVertex, true);
 
         PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
@@ -247,27 +247,19 @@ public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
 
     }
 
-    static void createRandomTransaction(final GraphWriteMethods graph, final int source, final int destination, final int attrTxDatetime, final int colorAttr, SecureRandom r, long dt) {
-        int transaction = 0;
-        switch (r.nextInt(3)) {
-            case 0:
-                transaction = graph.addTransaction(source, destination, true);
-                break;
-            case 1:
-                transaction = graph.addTransaction(destination, source, true);
-                break;
-            case 2:
-                transaction = graph.addTransaction(source, destination, false);
-                break;
-            default:
-                break;
-        }
+    static void createRandomTransaction(final GraphWriteMethods graph, final int source, final int destination, final int attrTxDatetime, final int colorAttr, final SecureRandom r, long dt) {
+        final int transaction = switch (r.nextInt(3)) {
+            case 0 -> graph.addTransaction(source, destination, true);
+            case 1 -> graph.addTransaction(destination, source, true);
+            case 2 -> graph.addTransaction(source, destination, false);
+            default -> 0;
+        };
 
         graph.setLongValue(attrTxDatetime, transaction, dt++);
         graph.setObjectValue(colorAttr, transaction, randomColorWithAlpha(r));
     }
 
-    private static String getRandomIconName(final ArrayList<String> iconNames, SecureRandom r) {
+    private static String getRandomIconName(final List<String> iconNames, final SecureRandom r) {
         int i;
         do {
             i = r.nextInt(iconNames.size());
@@ -276,7 +268,7 @@ public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
         return iconNames.get(i);
     }
 
-    private static ConstellationColor randomColorWithAlpha(SecureRandom r) {
+    private static ConstellationColor randomColorWithAlpha(final SecureRandom r) {
         return ConstellationColor.getColorValue(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1.0F);
     }
 }

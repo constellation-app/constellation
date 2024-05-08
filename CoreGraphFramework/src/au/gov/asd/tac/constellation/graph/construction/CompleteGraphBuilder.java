@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,8 +45,8 @@ public class CompleteGraphBuilder extends GraphBuilder {
                 transactions[currentTransaction++] = constructTransaction(graph, nodes[j], nodes[i], directed);
             }
         }
-        final int source = nodes[0];
-        final int sink = nodes[size - 1];
+        final int source = nodes.length > 0 ? nodes[0] : null;
+        final int sink = nodes.length > 0 ? nodes[size - 1] : null;
 
         return new CompleteGraphBuilder(graph, source, sink, nodes, transactions);
     }
@@ -63,5 +63,4 @@ public class CompleteGraphBuilder extends GraphBuilder {
         this.nodes = nodes;
         this.transactions = transactions;
     }
-
 }

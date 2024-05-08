@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,6 @@ public class ElementStore implements Serializable {
     private long[] id2UID;
 
     public ElementStore(final int capacity) {
-
         this.capacity = capacity;
         this.position2id = new int[capacity];
         this.id2position = new int[capacity];
@@ -82,7 +81,6 @@ public class ElementStore implements Serializable {
 
     public boolean ensureCapacity(final int capacity) {
         if (this.capacity < capacity) {
-
             int c = this.capacity;
             while (c < capacity) {
                 c <<= 1;
@@ -108,7 +106,6 @@ public class ElementStore implements Serializable {
     }
 
     public void add(final int element) {
-
         // Get the position of the new element
         final int position = id2position[element] & LOW_BITS;
 
@@ -122,12 +119,10 @@ public class ElementStore implements Serializable {
     }
 
     public boolean addIfRemoved(final int element) {
-
         // Get the position of the new element
         int position = id2position[element];
 
         if (position < 0) {
-
             position &= LOW_BITS;
 
             // Move the next element to the positon of the element
@@ -145,7 +140,6 @@ public class ElementStore implements Serializable {
     }
 
     public void remove(final int element) {
-
         final int position = id2position[element];
 
         final int lastAddedElement = position2id[--count];
@@ -160,7 +154,6 @@ public class ElementStore implements Serializable {
         final int position = id2position[element];
 
         if (position >= 0) {
-
             final int lastAddedElement = position2id[--count];
             position2id[position] = lastAddedElement;
             id2position[lastAddedElement] = position;
@@ -179,8 +172,7 @@ public class ElementStore implements Serializable {
     }
 
     public int removeLast() {
-
-        int element = position2id[--count];
+        final int element = position2id[--count];
 
         id2position[element] = count | HIGH_BIT;
         return element;

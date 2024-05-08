@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,17 +39,14 @@ public class UndimUnselectedPlugin extends SimpleEditPlugin {
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-
-        int vxDimAttr = VisualConcept.VertexAttribute.DIMMED.ensure(graph);
-        int txDimAttr = VisualConcept.TransactionAttribute.DIMMED.ensure(graph);
-
-        int vxSelectedAttr = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
-        int txSelectedAttr = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
+        final int vxDimAttr = VisualConcept.VertexAttribute.DIMMED.ensure(graph);
+        final int txDimAttr = VisualConcept.TransactionAttribute.DIMMED.ensure(graph);
+        final int vxSelectedAttr = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
+        final int txSelectedAttr = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
 
         final int vxCount = graph.getVertexCount();
         for (int position = 0; position < vxCount; position++) {
             final int vxId = graph.getVertex(position);
-
             final boolean isSelected = graph.getBooleanValue(vxSelectedAttr, vxId);
             if (!isSelected) {
                 graph.setBooleanValue(vxDimAttr, vxId, false);
@@ -59,7 +56,6 @@ public class UndimUnselectedPlugin extends SimpleEditPlugin {
         final int txCount = graph.getTransactionCount();
         for (int position = 0; position < txCount; position++) {
             final int txId = graph.getTransaction(position);
-
             final boolean isSelected = graph.getBooleanValue(txSelectedAttr, txId);
             if (!isSelected) {
                 graph.setBooleanValue(txDimAttr, txId, false);

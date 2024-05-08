@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,8 +50,7 @@ import org.openide.util.HelpCtx;
 import org.openide.util.NbPreferences;
 
 /**
- * A PluginReporterPane provides a UI where all PluginReports for a single graph
- * are displayed.
+ * A PluginReporterPane provides a UI where all PluginReports for a single graph are displayed.
  *
  * @author sirius
  */
@@ -69,7 +68,6 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
     private final MultiChoiceInputField<String> tagFilterMultiChoiceInput = new MultiChoiceInputField<>(availableTags);
     private final Set<String> filteredTags = new HashSet<>();
     private PluginReportFilter pluginReportFilter = null;
-
 
     // The height of the report box last time we looked
     // This allows us to see if a change in the vertical scroll
@@ -120,8 +118,9 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
             setPluginReportFilter(defaultReportFilter);
         });
 
-        final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor()));
+        final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor()));
         Button helpButton = new Button("", helpImage);
+        helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent; -fx-effect: null; ");
         helpButton.setOnAction((ActionEvent event)
                 -> new HelpCtx(getClass().getPackage().getName()).display());
 
@@ -182,8 +181,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
     }
 
     /**
-     * Update the reports shown in the report box to reflect those recorded
-     * against the current graph.
+     * Update the reports shown in the report box to reflect those recorded against the current graph.
      *
      * @param refresh
      */

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,9 +26,9 @@ public class LongValueUpdater2 implements ValueUpdater64 {
     public static final LongValueUpdater2 INSTANCE = new LongValueUpdater2();
 
     @Override
-    public int store(final UndoGraphEditState state, long l) {
+    public int store(final UndoGraphEditState state, final long l) {
         if (l != state.getCurrentLong()) {
-            long delta = l - state.getCurrentLong();
+            final long delta = l - state.getCurrentLong();
             state.setCurrentLong(l);
             if (delta >= Short.MIN_VALUE && delta <= Short.MAX_VALUE) {
                 state.addShort((short) delta);
@@ -45,12 +45,12 @@ public class LongValueUpdater2 implements ValueUpdater64 {
     }
 
     @Override
-    public void updateExecute(final UndoGraphEditState state, int parameters) {
+    public void updateExecute(final UndoGraphEditState state, final int parameters) {
         LONG_GETTERS[parameters & 3].getExecute(state);
     }
 
     @Override
-    public void updateUndo(final UndoGraphEditState state, int parameters) {
+    public void updateUndo(final UndoGraphEditState state, final int parameters) {
         LONG_GETTERS[parameters & 3].getUndo(state);
     }
 

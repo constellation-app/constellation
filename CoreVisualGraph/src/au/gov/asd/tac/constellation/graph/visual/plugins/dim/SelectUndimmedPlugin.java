@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,16 +42,14 @@ public class SelectUndimmedPlugin extends SimpleEditPlugin {
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-
-        int vxDimAttr = VisualConcept.VertexAttribute.DIMMED.get(graph);
-        int txDimAttr = VisualConcept.TransactionAttribute.DIMMED.get(graph);
+        final int vxDimAttr = VisualConcept.VertexAttribute.DIMMED.get(graph);
+        final int txDimAttr = VisualConcept.TransactionAttribute.DIMMED.get(graph);
 
         if (vxDimAttr != Graph.NOT_FOUND) {
             final int vxSelectedAttr = graph.addAttribute(GraphElementType.VERTEX, BooleanAttributeDescription.ATTRIBUTE_NAME, VisualConcept.VertexAttribute.SELECTED.getName(), VisualConcept.VertexAttribute.SELECTED.getName(), false, null);
             final int vxCount = graph.getVertexCount();
             for (int position = 0; position < vxCount; position++) {
                 final int vxId = graph.getVertex(position);
-
                 final boolean isDimmed = graph.getBooleanValue(vxDimAttr, vxId);
                 if (!isDimmed) {
                     graph.setBooleanValue(vxSelectedAttr, vxId, true);
@@ -61,11 +59,9 @@ public class SelectUndimmedPlugin extends SimpleEditPlugin {
 
         if (txDimAttr != Graph.NOT_FOUND) {
             final int txSelectedAttr = graph.addAttribute(GraphElementType.TRANSACTION, BooleanAttributeDescription.ATTRIBUTE_NAME, VisualConcept.VertexAttribute.SELECTED.getName(), VisualConcept.VertexAttribute.SELECTED.getName(), false, null);
-
             final int txCount = graph.getTransactionCount();
             for (int position = 0; position < txCount; position++) {
                 final int txId = graph.getTransaction(position);
-
                 final boolean isDimmed = graph.getBooleanValue(txDimAttr, txId);
                 if (!isDimmed) {
                     graph.setBooleanValue(txSelectedAttr, txId, true);

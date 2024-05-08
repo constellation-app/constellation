@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,7 +49,7 @@ public class DefaultConversationSenderProvider implements ConversationSenderProv
     private static final Logger LOGGER = Logger.getLogger(DefaultConversationSenderProvider.class.getName());
 
     @Override
-    public void updateMessageSenders(GraphReadMethods graph, List<ConversationMessage> messages, List<String> senderAttributes) {
+    public void updateMessageSenders(final GraphReadMethods graph, final List<ConversationMessage> messages, final List<String> senderAttributes) {
         assert !SwingUtilities.isEventDispatchThread();
 
         if (graph == null || messages.isEmpty()) {
@@ -112,7 +113,7 @@ public class DefaultConversationSenderProvider implements ConversationSenderProv
         private final Image iconImage;
 
         public DefaultConversationSender(final List<String> senderLabels, final Image iconImage) {
-            this.senderLabels = senderLabels;
+            this.senderLabels = new ArrayList<>(senderLabels);
             this.iconImage = iconImage;
         }
 
@@ -121,12 +122,24 @@ public class DefaultConversationSenderProvider implements ConversationSenderProv
             Region region = null;
             try {
                 if (senderLabels.size() == 1) {
-                    region = new SelectableLabel(senderLabels.get(0), false, "-fx-text-fill: #cccccc;", null, null);
+                    region = new SelectableLabel(
+                            senderLabels.get(0),
+                            false,
+                            JavafxStyleManager.isDarkTheme() ? "-fx-text-fill: #cccccc;" : null,
+                            null,
+                            null
+                    );
                 } else {
                     final VBox content = new VBox(-5.0);
                     content.setAlignment(Pos.CENTER_LEFT);
                     for (final String senderLabel : senderLabels) {
-                        content.getChildren().add(new SelectableLabel(senderLabel, false, "-fx-text-fill: #cccccc;", null, null));
+                        content.getChildren().add(new SelectableLabel(
+                                senderLabel, 
+                                false, 
+                                JavafxStyleManager.isDarkTheme() ? "-fx-text-fill: #cccccc;" : null,
+                                null, 
+                                null
+                        ));
                     }
                     region = content;
                 }
@@ -142,7 +155,7 @@ public class DefaultConversationSenderProvider implements ConversationSenderProv
 
                     region = borderPane;
                 }
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
 

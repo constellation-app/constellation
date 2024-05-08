@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
-import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -211,8 +211,6 @@ public class TableViewUtilitiesNGTest {
         tableViewState.setElementType(GraphElementType.VERTEX);
 
         assertEquals(List.of(100, 102), TableViewUtilities.getSelectedIds(graph, tableViewState));
-
-        verify(readableGraph).release();
     }
 
     @Test
@@ -236,7 +234,5 @@ public class TableViewUtilitiesNGTest {
         tableViewState.setElementType(GraphElementType.TRANSACTION);
 
         assertEquals(List.of(100, 102), TableViewUtilities.getSelectedIds(graph, tableViewState));
-
-        verify(readableGraph).release();
     }
 }

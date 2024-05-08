@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import javafx.scene.layout.HBox;
  */
 public class SelectableIconLabel extends HBox {
 
-    public SelectableIconLabel(final String text, boolean wrapText, String style, final TooltipPane tipsPane, Image icon) {
+    public SelectableIconLabel(final String text, boolean wrapText, String style, final TooltipPane tipsPane, final Image icon) {
 
         if (icon != null) {
             final ImageView imageView = new ImageView(icon);

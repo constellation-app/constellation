@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -106,7 +107,7 @@ public abstract class RestClient {
                 } 
             }
         }
-        return new URL(url + (query.length() > 0 ? "?" + query : ""));
+        return URI.create(url + (query.length() > 0 ? "?" + query : "")).toURL();
     }
 
     /**

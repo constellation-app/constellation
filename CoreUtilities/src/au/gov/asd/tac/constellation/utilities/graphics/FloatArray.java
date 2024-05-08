@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,7 +77,7 @@ import java.util.NoSuchElementException;
  * time in the future.
  *
  */
-public final class FloatArray implements Iterable<Float>, Cloneable {
+public final class FloatArray implements Iterable<Float> {
 
     private static final long serialVersionUID = 8683452581122442189L;
     /**
@@ -145,6 +145,17 @@ public final class FloatArray implements Iterable<Float>, Cloneable {
     public FloatArray() {
         this(10);
     }
+    
+    /**
+     * Constructs a shallow copy of an existing FloatArray object
+     * 
+     * @param fa the FloatArray to copy
+     */
+    public FloatArray(final FloatArray fa) {
+        this.elementData = Arrays.copyOf(fa.elementData, fa.size);
+        this.size = fa.size;
+        this.modCount = 0;
+    }
 
     /**
      * Trims the capacity of this <tt>ArrayList</tt> instance to be the list's
@@ -153,7 +164,7 @@ public final class FloatArray implements Iterable<Float>, Cloneable {
      */
     public void trimToSize() {
         modCount++;
-        int oldCapacity = elementData.length;
+        final int oldCapacity = elementData.length;
         if (size < oldCapacity) {
             elementData = Arrays.copyOf(elementData, size);
         }
@@ -168,7 +179,7 @@ public final class FloatArray implements Iterable<Float>, Cloneable {
      */
     public void ensureCapacity(final int minCapacity) {
         modCount++;
-        int oldCapacity = elementData.length;
+        final int oldCapacity = elementData.length;
         if (minCapacity > oldCapacity) {
             int newCapacity = (oldCapacity * 3) / 2 + 1;
             if (newCapacity < minCapacity) {
@@ -253,26 +264,6 @@ public final class FloatArray implements Iterable<Float>, Cloneable {
     }
 
     /**
-     * Returns a shallow copy of this <tt>ArrayList</tt> instance. (The elements
-     * themselves are not copied.)
-     *
-     * @return a clone of this <tt>ArrayList</tt> instance
-     */
-    @Override
-    public FloatArray clone() {
-        try {
-            FloatArray v = (FloatArray) super.clone();
-            v.elementData = Arrays.copyOf(elementData, size);
-            v.size = size;
-            v.modCount = 0;
-            return v;
-        } catch (CloneNotSupportedException e) {
-            // this shouldn't happen, since we are Cloneable
-            throw new InternalError();
-        }
-    }
-
-    /**
      * Returns an array containing all of the elements in this list in proper
      * sequence (from first to last element).
      *
@@ -334,7 +325,7 @@ public final class FloatArray implements Iterable<Float>, Cloneable {
     public float set(final int index, final float element) {
         rangeCheck(index);
 
-        float oldValue = elementData[index];
+        final float oldValue = elementData[index];
         elementData[index] = element;
         return oldValue;
     }
@@ -419,9 +410,9 @@ public final class FloatArray implements Iterable<Float>, Cloneable {
         rangeCheck(index);
 
         modCount++;
-        float oldValue = elementData[index];
+        final float oldValue = elementData[index];
 
-        int numMoved = size - index - 1;
+        final int numMoved = size - index - 1;
         if (numMoved > 0) {
             System.arraycopy(elementData, index + 1, elementData, index, numMoved);
         }
@@ -460,7 +451,7 @@ public final class FloatArray implements Iterable<Float>, Cloneable {
      */
     private void fastRemove(final int index) {
         modCount++;
-        int numMoved = size - index - 1;
+        final int numMoved = size - index - 1;
         if (numMoved > 0) {
             System.arraycopy(elementData, index + 1, elementData, index,
                     numMoved);
@@ -529,7 +520,7 @@ public final class FloatArray implements Iterable<Float>, Cloneable {
 
     @Override
     public String toString() {
-        StringBuilder b = new StringBuilder();
+        final StringBuilder b = new StringBuilder();
         for (int i = 0; i < size; i++) {
             if (b.length() > 0) {
                 b.append(',');

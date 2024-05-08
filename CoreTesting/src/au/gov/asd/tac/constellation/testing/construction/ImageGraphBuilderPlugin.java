@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -89,7 +89,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
         final PluginParameter<FileParameterValue> imageFileParameter = FileParameterType.build(IMAGE_FILE_PARAMETER_ID);
         imageFileParameter.setName("Image File");
         imageFileParameter.setDescription("The image file from which to build a graph");
-        FileParameterType.setFileFilters(imageFileParameter, new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif"));
+        FileParameterType.setFileFilters(imageFileParameter, new ExtensionFilter("Image Files", FileExtensionConstants.PNG, FileExtensionConstants.JPG, FileExtensionConstants.GIF));
         parameters.addParameter(imageFileParameter);
 
         return parameters;
@@ -103,7 +103,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
         final List<File> imageFiles = (List<File>) parameters.getObjectValue(IMAGE_FILE_PARAMETER_ID);
 
         for (final File imageFile : imageFiles) {
-            final ArrayList<BufferedImage> images = new ArrayList<>();
+            final List<BufferedImage> images = new ArrayList<>();
             if (StringUtils.endsWithIgnoreCase(imageFile.getName(), FileExtensionConstants.GIF)) {
                 final ThreeTuple<List<BufferedImage>, List<Integer>, List<Integer>> loadedImageData;
                 try {
@@ -127,9 +127,8 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
                     images.add(image);
                 }
             } else {
-                final BufferedImage loadedImageData;
                 try {
-                    loadedImageData = loadImage(imageFile);
+                    final BufferedImage loadedImageData = loadImage(imageFile);
                     images.add(loadedImageData);
                 } catch (final IOException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
@@ -181,11 +180,11 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
             final boolean useTransAttributes = transactionWeightAttributeId != Graph.NOT_FOUND;
 
             int frame = 0;
-            for (BufferedImage image : images) {
+            for (final BufferedImage image : images) {
                 final int w = image.getWidth();
                 final int h = image.getHeight();
 
-                int[][] vertexIds = new int[w][h];
+                final int[][] vertexIds = new int[w][h];
 
                 final float zlen = multipleFrames ? 0 : Math.min(w, h) / 4F;
                 final float vis = frame / (float) (images.size() - 1);
@@ -208,7 +207,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
                         ConstructionUtilities.setxyz(graph, vxId, vertexXAttributeId, vertexYAttributeId, vertexZAttributeId, x * 2, yinv * 2, -gray * zlen / 255F);
                         ConstructionUtilities.setxyz(graph, vxId, vertexX2AttributeId, vertexY2AttributeId, vertexZ2AttributeId, x * 2, yinv * 2, 0);
                         graph.setStringValue(vertexBackgroundIconAttributeId, vxId, "Background.Flat Square");
-                        ConstellationColor color = ConstellationColor.getColorValue(r / 255F, g / 255F, b / 255F, a / 255F);
+                        final ConstellationColor color = ConstellationColor.getColorValue(r / 255F, g / 255F, b / 255F, a / 255F);
                         graph.setObjectValue(vertexColorAttributeId, vxId, color);
 
                         if (multipleFrames) {
@@ -239,13 +238,13 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
                         if (useTransAttributes) {
                             if (x > 0) {
                                 final int transactionId = graph.addTransaction(vxId, vertexIds[x - 1][y], false);
-                                ConstellationColor otherColor = (ConstellationColor) graph.getObjectValue(vertexColorAttributeId, vertexIds[x - 1][y]);
+                                final ConstellationColor otherColor = (ConstellationColor) graph.getObjectValue(vertexColorAttributeId, vertexIds[x - 1][y]);
                                 graph.setFloatValue(transactionWeightAttributeId, transactionId, calculateWeight(color, otherColor));
                             }
 
                             if (y > 0) {
                                 final int transactionId = graph.addTransaction(vxId, vertexIds[x][y - 1], false);
-                                ConstellationColor otherColor = (ConstellationColor) graph.getObjectValue(vertexColorAttributeId, vertexIds[x][y - 1]);
+                                final ConstellationColor otherColor = (ConstellationColor) graph.getObjectValue(vertexColorAttributeId, vertexIds[x][y - 1]);
                                 graph.setFloatValue(transactionWeightAttributeId, transactionId, calculateWeight(color, otherColor));
                             }
                         }
@@ -261,12 +260,11 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
     }
 
     private static float calculateWeight(final ConstellationColor a, final ConstellationColor b) {
-        float aGray = a.getRed() * 0.21F + a.getGreen() * 0.71F + a.getBlue() * 0.08F;
-        float bGray = b.getRed() * 0.21F + b.getGreen() * 0.71F + b.getBlue() * 0.08F;
-        float weight = Math.abs(aGray - bGray);
-        weight = (float) Math.exp(-weight);
-
-        return weight;
+        final float aGray = a.getRed() * 0.21F + a.getGreen() * 0.71F + a.getBlue() * 0.08F;
+        final float bGray = b.getRed() * 0.21F + b.getGreen() * 0.71F + b.getBlue() * 0.08F;
+        final float weight = Math.abs(aGray - bGray);
+        
+        return (float) Math.exp(-weight);
     }
 
     private static float calculateDifference(final float r1, final float g1, final float b1, final int color2) {
@@ -288,7 +286,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
      */
     private static BufferedImage loadImage(final File file) throws IOException {
         final ByteArrayOutputStream out;
-        try ( InputStream in = new FileInputStream(file)) {
+        try (final InputStream in = new FileInputStream(file)) {
             out = new ByteArrayOutputStream();
             final byte[] buf = new byte[1024];
             while (true) {
@@ -315,21 +313,18 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
      * @throws IOException
      */
     private static ThreeTuple<List<BufferedImage>, List<Integer>, List<Integer>> loadImagesFromStream(final File file) throws IOException {
-        final ArrayList<BufferedImage> frames = new ArrayList<>();
-        final ArrayList<Integer> delays = new ArrayList<>();
-        final ArrayList<Integer> loffsets = new ArrayList<>();
-        final ArrayList<Integer> toffsets = new ArrayList<>();
+        final List<BufferedImage> frames = new ArrayList<>();
+        final List<Integer> loffsets = new ArrayList<>();
+        final List<Integer> toffsets = new ArrayList<>();
 
-        try ( ImageInputStream imageStream = new FileImageInputStream(file)) {
+        try (final ImageInputStream imageStream = new FileImageInputStream(file)) {
             final Iterator<ImageReader> readers = ImageIO.getImageReaders(imageStream);
             ImageReader reader = null;
             while (readers.hasNext()) {
                 reader = readers.next();
 
                 final String metaFormat = reader.getOriginatingProvider().getNativeImageMetadataFormatName();
-                if ("gif".equalsIgnoreCase(reader.getFormatName()) && !"javax_imageio_gif_image_1.0".equals(metaFormat)) {
-                    continue;
-                } else {
+                if (!"gif".equalsIgnoreCase(reader.getFormatName()) || "javax_imageio_gif_image_1.0".equals(metaFormat)) {
                     break;
                 }
             }
@@ -365,10 +360,9 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
                     }
 
                     final IIOMetadataNode gce = (IIOMetadataNode) imgRootNode.getElementsByTagName("GraphicControlExtension").item(0);
-                    delays.add(Integer.parseInt(gce.getAttribute("delayTime")));
                     final IIOMetadataNode imgDescr = (IIOMetadataNode) imgRootNode.getElementsByTagName("ImageDescriptor").item(0);
-                    loffsets.add(Integer.parseInt(imgDescr.getAttribute("imageLeftPosition")));
-                    toffsets.add(Integer.parseInt(imgDescr.getAttribute("imageTopPosition")));
+                    loffsets.add(Integer.valueOf(imgDescr.getAttribute("imageLeftPosition")));
+                    toffsets.add(Integer.valueOf(imgDescr.getAttribute("imageTopPosition")));
                 } catch (final IndexOutOfBoundsException ex) {
                     break;
                 }

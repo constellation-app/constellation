@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,6 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoField;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
@@ -70,7 +69,6 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
         private Spinner<Integer> minSpinner;
         private Spinner<Integer> secSpinner;
         private Spinner<Integer> milliSpinner;
-        private CheckBox noValueCheckBox;
 
         protected LocalDateTimeEditor(final EditOperation editOperation, final DefaultGetter<LocalDateTime> defaultGetter, final ValueValidator<LocalDateTime> validator, final String editedItemName, final LocalDateTime initialValue) {
             super(editOperation, defaultGetter, validator, editedItemName, initialValue);
@@ -78,7 +76,6 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
 
         @Override
         public void updateControlsWithValue(final LocalDateTime value) {
-            noValueCheckBox.setSelected(false);
             if (value != null) {
                 datePicker.setValue(value.toLocalDate());
                 hourSpinner.getValueFactory().setValue(value.get(ChronoField.HOUR_OF_DAY));
@@ -90,12 +87,10 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
 
         @Override
         protected LocalDateTime getValueFromControls() throws ControlsInvalidException {
-            if (noValueCheckBox.isSelected()) {
-                return null;
-            }
             if (hourSpinner.getValue() == null || minSpinner.getValue() == null || secSpinner.getValue() == null || milliSpinner.getValue() == null) {
                 throw new ControlsInvalidException("Time spinners must have numeric values");
             }
+
             final String dateString = datePicker.getEditor().getText();
             //The converter is being used here to try and determine if the entered date is a LocalDate
             //It will throw an exception and won't convert it if its invalid
@@ -106,10 +101,12 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
             } catch (final DateTimeParseException ex) {
                 throw new ControlsInvalidException("Entered value is not a date of format yyyy-mm-dd.");
             }
-            return LocalDateTime.of(
-                    datePicker.getValue(),
-                    LocalTime.of(hourSpinner.getValue(), minSpinner.getValue(),
-                            secSpinner.getValue(), milliSpinner.getValue() * NANOSECONDS_IN_MILLISECOND));
+
+            return LocalDateTime.of(datePicker.getValue(), LocalTime.of(
+                    hourSpinner.getValue(),
+                    minSpinner.getValue(),
+                    secSpinner.getValue(),
+                    milliSpinner.getValue() * NANOSECONDS_IN_MILLISECOND));
         }
 
         @Override
@@ -118,21 +115,9 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
             controls.setAlignment(Pos.CENTER);
             controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
 
-            noValueCheckBox = new CheckBox(NO_VALUE_LABEL);
-            noValueCheckBox.setAlignment(Pos.CENTER);
-            noValueCheckBox.selectedProperty().addListener((v, o, n) -> {
-                datePicker.setDisable(noValueCheckBox.isSelected());
-                hourSpinner.setDisable(noValueCheckBox.isSelected());
-                minSpinner.setDisable(noValueCheckBox.isSelected());
-                secSpinner.setDisable(noValueCheckBox.isSelected());
-                milliSpinner.setDisable(noValueCheckBox.isSelected());
-                update();
-            });
-
             final HBox timeSpinnerContainer = createTimeSpinners();
-
             controls.addRow(0, timeSpinnerContainer);
-            controls.addRow(1, noValueCheckBox);
+
             return controls;
         }
 
@@ -204,6 +189,11 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
             timeSpinnerContainer.getChildren().addAll(dateLabelNode, hourLabelNode, minLabelNode, secLabelNode, milliLabelNode);
 
             return timeSpinnerContainer;
+        }
+
+        @Override
+        public boolean noValueCheckBoxAvailable() {
+            return true;
         }
     }
 }

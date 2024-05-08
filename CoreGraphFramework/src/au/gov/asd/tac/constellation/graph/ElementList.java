@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,7 +78,7 @@ public class ElementList {
      */
     public ElementList(final ElementStore elementStore) {
         this(elementStore.getCapacity());
-        int elementCount = elementStore.getCount();
+        final int elementCount = elementStore.getCount();
         for (int i = 0; i < elementCount; i++) {
             this.addToBack(elementStore.getElement(i));
         }
@@ -112,7 +112,6 @@ public class ElementList {
      * @return true if the element was added (not already in the list)
      */
     public boolean addToFront(final int element) {
-
         // If the element is not currently in the list...
         if (prev[element] == Graph.NOT_FOUND) {
             if (first == Graph.NOT_FOUND) {
@@ -141,8 +140,6 @@ public class ElementList {
             prev[first] = element;
             next[element] = first;
             first = element;
-        } else {
-            // Do nothing
         }
 
         // Return false to indicate that we did not add the element to the list
@@ -158,7 +155,6 @@ public class ElementList {
      * @return true if the element was added (not already in the list)
      */
     public boolean addToBack(final int element) {
-
         // If the element is not currently in the list...
         if (prev[element] == Graph.NOT_FOUND) {
             if (last == Graph.NOT_FOUND) {
@@ -174,7 +170,6 @@ public class ElementList {
 
             // If the element is currently in the list but not the last element...
         } else if (last != element) {
-
             // If the element is currently the first element in the list
             if (first == element) {
                 first = next[element];
@@ -186,8 +181,6 @@ public class ElementList {
             next[last] = element;
             prev[element] = last;
             last = element;
-        } else {
-            // Do nothing
         }
 
         return false;
@@ -274,13 +267,10 @@ public class ElementList {
 
         // If the list is not empty...
         if (first != Graph.NOT_FOUND) {
-
             // If the list has exactly 1 element...
             if (first == last) {
                 first = last = Graph.NOT_FOUND;
-
-                // If the list has > 1 element...
-            } else {
+            } else { // If the list has > 1 element...
                 first = next[element];
             }
 
@@ -303,13 +293,10 @@ public class ElementList {
 
         // If the list is not empty...
         if (last != Graph.NOT_FOUND) {
-
             // If the list has exactly 1 element...
             if (first == last) {
-                first = last = Graph.NOT_FOUND;
-
-                // If the list has > 1 element...
-            } else {
+                first = last = Graph.NOT_FOUND;              
+            } else {  // If the list has > 1 element...
                 last = prev[element];
             }
 
@@ -322,7 +309,7 @@ public class ElementList {
 
     @Override
     public String toString() {
-        StringBuilder out = new StringBuilder();
+        final StringBuilder out = new StringBuilder();
 
         out.append("ElementList[size=").append(size);
         out.append(",first=").append(first).append(",last=").append(last);

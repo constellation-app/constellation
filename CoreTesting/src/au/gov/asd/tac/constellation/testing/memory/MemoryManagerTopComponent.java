@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -128,13 +128,12 @@ public final class MemoryManagerTopComponent extends TopComponent implements Mem
     }
 
     private void updateObjectCounts() {
+        final StringBuilder result = new StringBuilder();
 
-        StringBuilder result = new StringBuilder();
-
-        Map<Class<?>, ClassStats> counts = MemoryManager.getObjectCounts();
-        for (Entry<Class<?>, ClassStats> e : counts.entrySet()) {
-            Class<?> c = e.getKey();
-            ClassStats stats = e.getValue();
+        final Map<Class<?>, ClassStats> counts = MemoryManager.getObjectCounts();
+        for (final Entry<Class<?>, ClassStats> e : counts.entrySet()) {
+            final Class<?> c = e.getKey();
+            final ClassStats stats = e.getValue();
             result.append(c.getCanonicalName());
             result.append(": current = ");
             result.append(stats.getCurrentCount());

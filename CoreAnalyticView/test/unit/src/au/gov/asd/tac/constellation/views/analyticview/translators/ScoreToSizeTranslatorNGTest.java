@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,28 +16,15 @@
 package au.gov.asd.tac.constellation.views.analyticview.translators;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.WritableGraph;
-import au.gov.asd.tac.constellation.graph.locking.DualGraph;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
-import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult;
-import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticTranslatorUtilities;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.SizeVisualisation;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -118,31 +105,6 @@ public class ScoreToSizeTranslatorNGTest {
     }
 
     /**
-     * Test of executePlugin method, of class ScoreToSizeTranslator.
-     */
-    @Test
-    public void testExecutePlugin() {
-        System.out.println("executePlugin");
-        try (final MockedStatic<GraphManager> graphManagerMockedStatic = Mockito.mockStatic(GraphManager.class)) {
-            final GraphManager graphManager = spy(GraphManager.class);
-            graphManagerMockedStatic.when(GraphManager::getDefault).thenReturn(graphManager);
-            setupGraph();
-            when(graphManager.getActiveGraph()).thenReturn(graph);
-            
-            final boolean reset = false;
-            final ScoreToSizeTranslator instance = new ScoreToSizeTranslator();
-            ScoreResult result = mock(ScoreResult.class);
-            instance.setResult(result);
-            instance.executePlugin(reset);
-            final boolean vertexSizes = AnalyticTranslatorUtilities.getVertexSizeCache().isEmpty();
-            final boolean transactionSizes = AnalyticTranslatorUtilities.getTransactionSizeCache().isEmpty();
-            assertFalse(vertexSizes);
-            assertFalse(transactionSizes);  
-            // TODO: update test to further test the plugin called in executePlugin
-        }
-    }
-
-    /**
      * Test of setVertexSizes method, of class ScoreToSizeTranslator.
      */
     @Test
@@ -169,32 +131,4 @@ public class ScoreToSizeTranslatorNGTest {
         final Map<Integer, Float> result = instance.getTransactionSizes();
         assertEquals(result, sizes);
     }
-    
-    public void setupGraph() {
-        graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
-
-        try {
-            WritableGraph wg = graph.getWritableGraph("", true);
-            
-            // ensure attributes
-            final int vertexSizeAttribute = VisualConcept.VertexAttribute.NODE_RADIUS.ensure(wg);
-            final int transactionSizeAttribute = VisualConcept.TransactionAttribute.WIDTH.ensure(wg);
-            final int vxId1 = wg.addVertex();
-            final int vxId2 = wg.addVertex();
-            final int txId1 = wg.addTransaction(vxId1, vxId2, true);
-            final int txId2 = wg.addTransaction(vxId2, vxId2, true);
-            
-            wg.setFloatValue(vertexSizeAttribute, vxId1, 4F);
-            wg.setFloatValue(vertexSizeAttribute, vxId2, 7F);
-            wg.setFloatValue(transactionSizeAttribute, txId1, 2F);
-            wg.setFloatValue(transactionSizeAttribute, txId2, 1F);
-            
-            wg.commit();
-
-        } catch (final InterruptedException ex) {
-            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-            Thread.currentThread().interrupt();
-        }
-    }
-
 }

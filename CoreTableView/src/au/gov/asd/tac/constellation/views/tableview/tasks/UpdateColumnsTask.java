@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -118,7 +118,7 @@ public class UpdateColumnsTask implements Runnable {
         table.getTableView().getColumns().addAll(
                 getActiveTableReference().getColumnIndex().stream()
                         .map(column -> column.getTableColumn())
-                        .collect(Collectors.toList())
+                        .toList()
         );
 
         // add a listener that responds to column additions and removals
@@ -131,7 +131,7 @@ public class UpdateColumnsTask implements Runnable {
                         final List<TableColumn<ObservableList<String>, String>> columnIndexColumns
                                 = getActiveTableReference().getColumnIndex().stream()
                                         .map(column -> column.getTableColumn())
-                                        .collect(Collectors.toList());
+                                        .toList();
 
                         final List<Tuple<String, Attribute>> orderedColumns
                                 = change.getAddedSubList().stream()
@@ -144,7 +144,7 @@ public class UpdateColumnsTask implements Runnable {
                                                 -> getTableViewTopComponent().getCurrentState().getColumnAttributes()
                                                 .contains(columnAttr)
                                         )
-                                        .collect(Collectors.toList());
+                                        .toList();
 
                         getActiveTableReference().updateVisibleColumns(
                                 getTableViewTopComponent().getCurrentGraph(),

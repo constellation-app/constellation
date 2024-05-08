@@ -40,10 +40,14 @@ public abstract class PluginEnvironment {
     public static PluginEnvironment getDefault() {
         return Lookup.getDefault().lookup(PluginEnvironment.class);
     }
-
+    
     /**
      * Execute a plugin asynchronously on a different thread.
      *
+     * This method was the existing implementation for ExecutePluginLater() for this interface and has been overloaded to enable disclaimer 
+     * messages to be provided to interactively run plugins. This method signature has been maintained in the event that external adapters or modules
+     * rely on it.
+     * 
      * @param graph the graph to run the plugin on.
      * @param plugin the plugin to run.
      * @param parameters the parameters that will configure this run of the
@@ -55,10 +59,31 @@ public abstract class PluginEnvironment {
      * without waiting.
      * @param synchronizer The plugin synchronizer can synchronize the running
      * of multiple plugins running on different threads.
+     * @return A Future representing the result of the asynchronous plugin.
+     */
+    public Future<?> executePluginLater(final Graph graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive, final List<Future<?>> async, final PluginSynchronizer synchronizer){
+        return executePluginLater(graph, plugin, parameters, interactive, null, async, synchronizer); 
+    }
+
+    /**
+     * Execute a plugin asynchronously on a different thread.
+     *
+     * @param graph the graph to run the plugin on.
+     * @param plugin the plugin to run.
+     * @param parameters the parameters that will configure this run of the
+     * plugin.
+     * @param interactive should the framework involve the user when running
+     * this plugin or run the plugin programmatically.
+     * @param disclaimer a optional disclaimer to the user when plugin is run interactively.
+     * @param async The plugin will not begin to execute until all of these
+     * Futures have completed. If this Future is null, the plugin will execute
+     * without waiting.
+     * @param synchronizer The plugin synchronizer can synchronize the running
+     * of multiple plugins running on different threads.
      *
      * @return A Future representing the result of the asynchronous plugin.
      */
-    public abstract Future<?> executePluginLater(final Graph graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive, final List<Future<?>> async, final PluginSynchronizer synchronizer);
+    public abstract Future<?> executePluginLater(final Graph graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive, final String disclaimer, final List<Future<?>> async, final PluginSynchronizer synchronizer);
 
     /**
      * Execute a plugin synchronously on the current thread.

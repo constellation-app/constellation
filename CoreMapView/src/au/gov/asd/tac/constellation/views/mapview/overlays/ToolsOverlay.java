@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import org.openide.util.lookup.ServiceProvider;
 import processing.core.PApplet;
 import processing.core.PConstants;
@@ -307,13 +306,11 @@ public class ToolsOverlay extends MapOverlay {
             renderer.fill(BACKGROUND_COLOR);
             renderer.rect(x, yOffset - 1, width, drawDescriptionHeight);
 
-            final String drawDescription = " > Click on the map to draw a point marker.\n"
-                    + " > Click on the map while holding shift to begin drawing a circle"
-                    + "  marker, click again with or without shift to complete it.\n"
-                    + " > Click on the map while holding control to begin drawing a polygon"
-                    + "  marker, continue clicking while holding control to draw edges,"
-                    + "  then release control and click once more to complete it.\n"
-                    + " > Click on a drawn marker to remove it.";
+            final String drawDescription = """
+                                            > Click on the map to draw a point marker.
+                                            > Click on the map while holding shift to begin drawing a circle  marker, click again with or without shift to complete it.
+                                            > Click on the map while holding control to begin drawing a polygon  marker, continue clicking while holding control to draw edges,  then release control and click once more to complete it.
+                                            > Click on a drawn marker to remove it.""";
             drawInfo(drawDescription, yOffset - (PADDING * 2), width - (MARGIN * 2) - (PADDING * 2), true);
         } else {
             drawValue(DISABLED, drawToolX, yOffset, drawToolWidth, false, false);
@@ -417,7 +414,7 @@ public class ToolsOverlay extends MapOverlay {
             synchronized (LOCK) {
                 hitMarkers = map.getHitMarkers(event.getX(), event.getY()).stream()
                         .map(ConstellationAbstractMarker.class::cast)
-                        .collect(Collectors.toList());
+                        .toList();
             }
             if (mouseLeftDrawToolRegion && drawActive) {
                 final MarkerCache markerCache = renderer.getMarkerCache();

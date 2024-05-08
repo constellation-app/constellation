@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,7 +69,6 @@ public class TableVisualisation<C extends AnalyticData> extends InternalVisualis
 
         this.tableFilter = new TextField();
         tableFilter.setPromptText("Type here to filter results: ");
-        tableFilter.setStyle("-fx-prompt-text-fill: gray;");
 
         final AnalyticExportResultsMenu menu = new AnalyticExportResultsMenu(table);
         menu.init();

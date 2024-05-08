@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -142,8 +142,9 @@ public class WebServer {
                 final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
                 final File restFile = new File(userDir, REST_FILE);
                 if (restFile.exists()) {
-                    final boolean restFileIsDeleted = restFile.delete();
-                    if (!restFileIsDeleted) {
+                    try {
+                        Files.delete(Path.of(restFile.getPath()));
+                    } catch (final IOException ex) {
                         //TODO: Handle case where file not successfully deleted
                     }
                 }
@@ -208,8 +209,9 @@ public class WebServer {
                         throw new RuntimeException(ex);
                     } finally {
                         // Play nice and clean up (if Netbeans lets us).
-                        final boolean restFileIsDeleted = restFile.delete();
-                        if (!restFileIsDeleted) {
+                        try {
+                            Files.delete(Path.of(restFile.getPath()));
+                        } catch (final IOException ex) {
                             //TODO: Handle case where file not successfully deleted
                         }
                     }

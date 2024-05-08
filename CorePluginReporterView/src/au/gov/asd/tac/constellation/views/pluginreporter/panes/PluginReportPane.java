@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,11 +26,9 @@ import au.gov.asd.tac.constellation.plugins.reporting.PluginReportFilter;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReportListener;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
-import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.io.CharArrayWriter;
 import java.io.PrintWriter;
-import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -59,8 +57,7 @@ import static javafx.scene.layout.Region.USE_PREF_SIZE;
 import javafx.scene.layout.VBox;
 
 /**
- * A PluginReportPane provides the UI that displays a single PluginReport and
- * its child PluginReports.
+ * A PluginReportPane provides the UI that displays a single PluginReport and its child PluginReports.
  *
  * @author sirius
  */
@@ -83,20 +80,20 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
     private final Label timeLabel = new Label("3:00");
     private final Label messageLabel = new Label();
 
+    private static final String DEFAULT_NAME_TEXT = "defaultNameText";
+    private static final String DEFAULT_MESSAGE_TEXT = "defaultMessageText";
+    private static final String ERROR_MESSAGE_TEXT = "errorMessageText";
+    private static final String ERROR_NAME_TEXT = "errorNameText";
+
     private int nextChild = 0;
 
     /**
-     * Creates a new PluginReportPane for a specified PluginReport and places it
-     * is a specified PluginReporterPane.
+     * Creates a new PluginReportPane for a specified PluginReport and places it is a specified PluginReporterPane.
      *
-     * @param reporterPane the PluginReporterPane which will display this
-     * PluginReportPane.
-     * @param pluginReport the PluginReport that the new PluginReportPane will
-     * display.
-     * @param filteredTags the current list of tags that are filtering the
-     * PluginReporterPane.
-     * @param pluginReportFilter the filter that is currently applied to the
-     * PluginReporterPane.
+     * @param reporterPane the PluginReporterPane which will display this PluginReportPane.
+     * @param pluginReport the PluginReport that the new PluginReportPane will display.
+     * @param filteredTags the current list of tags that are filtering the PluginReporterPane.
+     * @param pluginReportFilter the filter that is currently applied to the PluginReporterPane.
      */
     public PluginReportPane(final PluginReporterPane reporterPane, final PluginReport pluginReport, final Set<String> filteredTags, final PluginReportFilter pluginReportFilter) {
         this.reporterPane = reporterPane;
@@ -135,6 +132,7 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
         GridPane.setFillWidth(timeLabel, true);
         timeLabel.setPadding(new Insets(0, 0, 0, 5));
         timeLabel.setMinWidth(USE_PREF_SIZE);
+        timeLabel.getStyleClass().add(DEFAULT_NAME_TEXT);
         contentPane.add(timeLabel, 2, 0);
 
         BorderPane messageContainer = new BorderPane();
@@ -236,8 +234,7 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
     }
 
     /**
-     * Updates the UI displayed by this PluginReportPane to reflect the current
-     * state of the underlying PluginReport.
+     * Updates the UI displayed by this PluginReportPane to reflect the current state of the underlying PluginReport.
      */
     private void update() {
 
@@ -252,53 +249,54 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
             // If the plugin is still running
             if (stopTime == -1) {
                 sequencePane.getStyleClass().add("running");
-                pluginNameLabel.getStyleClass().add(JavafxStyleManager.LIGHT_NAME_TEXT);
-                messageLabel.getStyleClass().add(JavafxStyleManager.LIGHT_MESSAGE_TEXT);
+                pluginNameLabel.getStyleClass().add(DEFAULT_NAME_TEXT);
+                messageLabel.getStyleClass().add(DEFAULT_MESSAGE_TEXT);
 
-            // If the plugin has finished
+                // If the plugin has finished
             } else {
                 sequencePane.getStyleClass().add("finished");
-                pluginNameLabel.getStyleClass().add(JavafxStyleManager.LIGHT_NAME_TEXT);
-                messageLabel.getStyleClass().add(JavafxStyleManager.LIGHT_MESSAGE_TEXT);
+                pluginNameLabel.getStyleClass().add(DEFAULT_NAME_TEXT);
+                messageLabel.getStyleClass().add(DEFAULT_MESSAGE_TEXT);
             }
-                
+
             messageLabel.setVisible(pluginReport.getLastMessage() != null);
         } else {
 
             // If the plugin has been cancelled
             if (error instanceof InterruptedException) {
                 sequencePane.getStyleClass().add("interrupted");
-                pluginNameLabel.getStyleClass().add(JavafxStyleManager.LIGHT_NAME_TEXT);
-                messageLabel.getStyleClass().add(JavafxStyleManager.LIGHT_MESSAGE_TEXT);
+                pluginNameLabel.getStyleClass().add(DEFAULT_NAME_TEXT);
+                messageLabel.getStyleClass().add(DEFAULT_MESSAGE_TEXT);
+                messageLabel.setText("Cancelled");
 
-            // If the plugin failed in an expected way
+                // If the plugin failed in an expected way
             } else if (error instanceof PluginException) {
                 sequencePane.getStyleClass().add("failed");
-                pluginNameLabel.getStyleClass().add("darkNameText");
-                messageLabel.getStyleClass().add("darkMessageText");
+                pluginNameLabel.getStyleClass().add(ERROR_NAME_TEXT);
+                messageLabel.getStyleClass().add(ERROR_MESSAGE_TEXT);
 
-            // If the plugin failed in an unexpected way
+                // If the plugin failed in an unexpected way
             } else {
                 sequencePane.getStyleClass().add("errored");
-                pluginNameLabel.getStyleClass().add(JavafxStyleManager.LIGHT_NAME_TEXT);
-                messageLabel.getStyleClass().add(JavafxStyleManager.LIGHT_MESSAGE_TEXT);
+                pluginNameLabel.getStyleClass().add(DEFAULT_NAME_TEXT);
+                messageLabel.getStyleClass().add(DEFAULT_MESSAGE_TEXT);
             }
         }
 
         //Status Bar display otions
         int currentStep = pluginReport.getCurrentStep();
         int totalSteps = pluginReport.getTotalSteps();
-        
+
         //The process time does not exist - hide bar from view
         if (totalSteps == 0) {
             pluginProgressBar.setVisible(false);
-            
-        //The process time is indetemrinent - set the status bar to continualy load
+
+            //The process time is indetemrinent - set the status bar to continualy load
         } else if (totalSteps < 0) {
             pluginProgressBar.setVisible(true);
             pluginProgressBar.setProgress(-1);
-   
-        //The process tiem is known and the process is underway - updated the status of the loading bar.
+
+            //The process tiem is known and the process is underway - updated the status of the loading bar.
         } else {
             pluginProgressBar.setVisible(true);
             pluginProgressBar.setProgress((double) currentStep / (double) totalSteps);
@@ -306,7 +304,7 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
 
         updateTime();
         pluginNameLabel.setText(pluginReport.getPluginName() + " (" + pluginReport.getExecutionStage() + ")");
-        
+
         if (messageButton.isSelected()) {
             messageLabel.setText(pluginReport.getReportLog());
             messageLabel.setMaxHeight(Double.MAX_VALUE);
@@ -334,8 +332,8 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
     }
 
     /**
-     * Updates the UI to reflect any new child plugin reports that have been
-     * added to this plugin report since the UI was last updated.
+     * Updates the UI to reflect any new child plugin reports that have been added to this plugin report since the UI
+     * was last updated.
      */
     public void updateChildren() {
         Platform.runLater(() -> {
@@ -365,8 +363,7 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
     }
 
     /**
-     * A convenience method to convert a datetime into a intuitive
-     * human-readable string.
+     * A convenience method to convert a datetime into a intuitive human-readable string.
      */
     private static String convertTime(long time) {
         StringBuilder result = new StringBuilder();
@@ -425,8 +422,7 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
     }
 
     /**
-     * Remove the plugin report listener to allow the PlguinReportPane to be
-     * garbage collected
+     * Remove the plugin report listener to allow the PlguinReportPane to be garbage collected
      */
     public void removeListener() {
         this.pluginReport.removePluginReportListener(this);
@@ -434,6 +430,7 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
 
     /**
      * Get the time label for unit tests
+     *
      * @return timeLabel
      */
     protected Label getTimeLabel() {

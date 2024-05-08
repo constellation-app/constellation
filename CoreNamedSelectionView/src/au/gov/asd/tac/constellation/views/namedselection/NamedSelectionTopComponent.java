@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionMod
 import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionProtectedPanel;
 import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionRenamerPanel;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.KeyAdapter;
@@ -100,8 +99,9 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
                 if (e.getClickCount() == 2) {
                     retrieveSelection();
                 }
-            } // Right click: open context menu on the named selection 'under' the mouse pointer:
-            else if (e.getButton() == MouseEvent.BUTTON3) {
+                
+            // Right click: open context menu on the named selection 'under' the mouse pointer:
+            } else if (e.getButton() == MouseEvent.BUTTON3) {
                 lstNamedSelections.setSelectedIndex(lstNamedSelections.locationToIndex(e.getPoint()));
 
                 boolean isEnabled = true;
@@ -134,17 +134,13 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
         @Override
         public void keyPressed(final KeyEvent e) {
             switch (e.getKeyCode()) {
-                case KeyEvent.VK_ENTER:
-                    // On enter, retrieve the selection:
+                case KeyEvent.VK_ENTER -> // On enter, retrieve the selection:
                     retrieveSelection();
-                    break;
-                case KeyEvent.VK_F2:
-                    // On F2, rename the selection:
+                case KeyEvent.VK_F2 -> // On F2, rename the selection:
                     renameElement();
-                    break;
-                default:
-                    // Do nothing
-                    break;
+                default -> {
+                    // do nothing
+                }
             }
         }
     };
@@ -161,8 +157,6 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
         // Create label and container to show user when no active graph selected:
         panelNoGraph.setLayout(new BorderLayout());
         panelNoGraph.setName("panelNoGraph");
-        lblNoGraph.setBackground(Color.WHITE);
-        lblNoGraph.setForeground(Color.LIGHT_GRAY);
         lblNoGraph.setOpaque(true);
         lblNoGraph.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblNoGraph.setVerticalAlignment(javax.swing.SwingConstants.CENTER);

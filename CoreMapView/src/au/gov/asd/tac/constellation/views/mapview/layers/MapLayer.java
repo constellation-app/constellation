@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -101,14 +101,14 @@ public abstract class MapLayer {
     }
 
     public void mouseDragged(final MouseEvent event) {
-        if (event.getButton() == PConstants.RIGHT) {
+        if (event.getButton() == PConstants.RIGHT || event.getButton() == PConstants.CENTER) {
             layer = null;
             mouseIsDragging = true;
         }
     }
 
     public void mouseReleased(final MouseEvent event) {
-        if (mouseIsDragging && event.getButton() == PConstants.RIGHT) {
+        if (mouseIsDragging && (event.getButton() == PConstants.RIGHT || event.getButton() == PConstants.CENTER)) {
             layer = null;
             mouseIsDragging = false;
             mouseIsReleased = true;

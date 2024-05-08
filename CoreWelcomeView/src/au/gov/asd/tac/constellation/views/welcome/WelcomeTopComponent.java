@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.welcome;
 
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import java.awt.BorderLayout;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -63,8 +64,6 @@ public final class WelcomeTopComponent extends JavaFxTopComponent<WelcomeViewPan
 
     private final WelcomeViewPane pane;
 
-    private static final String WELCOME_THEME = "resources/welcome_theme.css";
-
     public WelcomeTopComponent() {
         initComponents();
 
@@ -76,11 +75,11 @@ public final class WelcomeTopComponent extends JavaFxTopComponent<WelcomeViewPan
         initContent();
     }
 
-    void writeProperties(final java.util.Properties p) {
+    public void writeProperties(final java.util.Properties p) {
         //Required for @ConvertAsProperties
     }
 
-    void readProperties(final java.util.Properties p) {
+    public void readProperties(final java.util.Properties p) {
         //Required for @ConvertAsProperties
     }
 
@@ -146,7 +145,7 @@ public final class WelcomeTopComponent extends JavaFxTopComponent<WelcomeViewPan
 
     @Override
     protected String createStyle() {
-        return WELCOME_THEME;
+        return JavafxStyleManager.isDarkTheme() ? "resources/dark_welcome.css" : "resources/light_welcome.css";
     }
 
     @Override

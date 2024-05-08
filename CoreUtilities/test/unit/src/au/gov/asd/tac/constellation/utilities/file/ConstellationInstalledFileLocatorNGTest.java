@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.utilities.file;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -78,7 +79,7 @@ public class ConstellationInstalledFileLocatorNGTest {
             final ProtectionDomain protectionDomain = mock(ProtectionDomain.class);
             final CodeSource codeSource = mock(CodeSource.class);
             when(protectionDomain.getCodeSource()).thenReturn(codeSource);
-            when(codeSource.getLocation()).thenReturn(new URL("http://dummy/"));
+            when(codeSource.getLocation()).thenReturn(URI.create("http://dummy/").toURL());
             // create a temp file with two parent directories
             final Path dir1 = Files.createTempDirectory("dir1");
             final Path dir2 = Files.createTempDirectory(dir1, "dir2");
@@ -111,7 +112,7 @@ public class ConstellationInstalledFileLocatorNGTest {
             final ProtectionDomain protectionDomain = mock(ProtectionDomain.class);
             final CodeSource codeSource = mock(CodeSource.class);
             when(protectionDomain.getCodeSource()).thenReturn(codeSource);
-            when(codeSource.getLocation()).thenReturn(new URL("http://dummy/"));
+            when(codeSource.getLocation()).thenReturn(URI.create("http://dummy/").toURL());
             // mock paths to return a temp file
             final Path tmpFile = Files.createTempFile("tmp", ".tmp");
             pathsMockedStatic.when(() -> Paths.get(any())).thenReturn(tmpFile);
@@ -138,6 +139,9 @@ public class ConstellationInstalledFileLocatorNGTest {
             final ProtectionDomain protectionDomain = mock(ProtectionDomain.class);
             final CodeSource codeSource = mock(CodeSource.class);
             when(protectionDomain.getCodeSource()).thenReturn(codeSource);
+            // TODO: Investigate options for removing URL constructor use given it has been deprecated
+            // issue is that the recommended switch (via URI object) doesn't work (would throw the exception here instead of in the function we're testing) 
+            // since the URI we're generating is obviously invalid (that's the point of this test)
             when(codeSource.getLocation()).thenReturn(new URL("http://dummy/a?b^c"));
 
             ConstellationInstalledFileLocator.locate("", "", protectionDomain);

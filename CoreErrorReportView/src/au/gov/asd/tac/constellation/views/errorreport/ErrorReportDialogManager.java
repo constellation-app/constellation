@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import javafx.application.Platform;
+import org.testfx.api.FxToolkit;
 
 /**
  * Maintain a session variable with active dialogs that are shown
@@ -57,7 +58,7 @@ public class ErrorReportDialogManager {
         final TimerTask refreshAction = new TimerTask() {
             @Override
             public void run() {
-                if (!isErrorReportRunning) {
+                if (!isErrorReportRunning && FxToolkit.isFXApplicationThreadRunning()) {
                     Platform.runLater(() -> {
                         final Date currentDate = new Date();
                         if (gracePeriodResumptionDate != null && currentDate.before(gracePeriodResumptionDate)) {
@@ -102,7 +103,7 @@ public class ErrorReportDialogManager {
         }
         final Date currentDate = new Date();
         if (gracePeriodResumptionDate != null && currentDate.before(gracePeriodResumptionDate)) {
-            // prevent popups for 5 seconds ... just in case of an infinite cycle of popups
+            // prevent popups for 10 seconds ... just in case of an infinite cycle of popups
             // this allows some time to set the popup mode to 0 (disabling any more popups)
             
             // We set the retrieval dates back, then retry them after the grace period.
@@ -125,8 +126,8 @@ public class ErrorReportDialogManager {
                 return;
             }
         } else if (popupDisplayMode == 3) {
-            // only need to check if the entry has already been displayed
-            if (entry.getLastPopupDate() != null) {
+            // check if the entry has already been displayed or it is currently being displayed
+            if (entry.getLastPopupDate() != null || activePopupIds.contains(entry.getEntryId())) {
                 return;
             }
         } else if (popupDisplayMode == 4 && activePopupIds.contains(entry.getEntryId())) {
@@ -185,7 +186,7 @@ public class ErrorReportDialogManager {
             gracePeriodResumptionDate = null;
         } else {
             latestPopupDismissDate = new Date(latestDismissDate.getTime());
-            gracePeriodResumptionDate = new Date(latestPopupDismissDate.getTime() + 5000);
+            gracePeriodResumptionDate = new Date(latestPopupDismissDate.getTime() + 10000); // 10 seconds grace period
         }
     }
 

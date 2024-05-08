@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -153,17 +153,22 @@ public class VertexGraphLabelsEditorFactory extends AttributeValueEditorFactory<
             return controls;
         }
 
+        @Override
+        public boolean noValueCheckBoxAvailable() {
+            return false;
+        }
+
         private class LabelEntry {
 
-            final ComboBox<String> attrCombo;
-            final Rectangle colorRect;
-            Color color;
-            final TextField sizeText;
-            final HBox entry;
-            final List<LabelEntry> host;
-            final Pane visualHost;
+            private final ComboBox<String> attrCombo;
+            private final Rectangle colorRect;
+            private Color color;
+            private final TextField sizeText;
+            private final HBox entry;
+            private final List<LabelEntry> host;
+            private final Pane visualHost;
 
-            LabelEntry(final List<LabelEntry> host, final Pane visualHost, final String attributeName, final ConstellationColor color, final float size) {
+            public LabelEntry(final List<LabelEntry> host, final Pane visualHost, final String attributeName, final ConstellationColor color, final float size) {
 
                 attrCombo = new ComboBox<>(FXCollections.observableList(attributeNames));
                 attrCombo.setPrefWidth(150);
@@ -210,7 +215,7 @@ public class VertexGraphLabelsEditorFactory extends AttributeValueEditorFactory<
                 if (index > 0) {
                     host.set(index, host.get(index - 1));
                     host.set(index - 1, this);
-                    Node movingDown = visualHost.getChildren().remove(index - 1);
+                    final Node movingDown = visualHost.getChildren().remove(index - 1);
                     final List<Node> hostChildren = visualHost.getChildren();
                     final List<Node> beginning = new ArrayList<>(hostChildren.subList(0, index));
                     final List<Node> end = new ArrayList<>(hostChildren.subList(index, hostChildren.size()));
@@ -227,7 +232,7 @@ public class VertexGraphLabelsEditorFactory extends AttributeValueEditorFactory<
                     host.set(index, host.get(index + 1));
                     host.set(index + 1, this);
 
-                    Node movingUp = visualHost.getChildren().remove(index + 1);
+                    final Node movingUp = visualHost.getChildren().remove(index + 1);
                     final List<Node> hostChildren = visualHost.getChildren();
                     final List<Node> beginning = new ArrayList<>(hostChildren.subList(0, index));
                     final List<Node> end = new ArrayList<>(hostChildren.subList(index, hostChildren.size()));

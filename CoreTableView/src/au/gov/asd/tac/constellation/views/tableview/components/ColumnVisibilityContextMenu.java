@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -119,10 +119,8 @@ public class ColumnVisibilityContextMenu {
                     getTableViewTopComponent().getCurrentGraph(),
                     getTableViewTopComponent().getCurrentState(),
                     extractColumnAttributes(table.getColumnIndex().stream()
-                            .filter(column -> Character.isUpperCase(
-                            column.getAttribute().getName().charAt(0))
-                            )
-                            .collect(Collectors.toList())),
+                            .filter(column -> Character.isUpperCase(column.getAttribute().getName().charAt(0)))
+                            .toList()),
                     UpdateMethod.REPLACE
             );
             e.consume();
@@ -131,8 +129,7 @@ public class ColumnVisibilityContextMenu {
         showPrimaryColumnsMenu = createCustomMenu(KEY_COLUMNS, e -> {
             if (getTableViewTopComponent().getCurrentGraph() != null) {
                 final Set<GraphAttribute> keyAttributes = new HashSet<>();
-                final ReadableGraph readableGraph = getTableViewTopComponent().getCurrentGraph().getReadableGraph();
-                try {
+                try (final ReadableGraph readableGraph = getTableViewTopComponent().getCurrentGraph().getReadableGraph()) {
                     final int[] vertexKeys = readableGraph.getPrimaryKey(GraphElementType.VERTEX);
                     for (final int vertexKey : vertexKeys) {
                         keyAttributes.add(new GraphAttribute(readableGraph, vertexKey));
@@ -141,8 +138,6 @@ public class ColumnVisibilityContextMenu {
                     for (final int transactionKey : transactionKeys) {
                         keyAttributes.add(new GraphAttribute(readableGraph, transactionKey));
                     }
-                } finally {
-                    readableGraph.release();
                 }
                 getActiveTableReference().updateVisibleColumns(
                         getTableViewTopComponent().getCurrentGraph(),
@@ -150,9 +145,8 @@ public class ColumnVisibilityContextMenu {
                         extractColumnAttributes(
                                 table.getColumnIndex().stream()
                                         .filter(column -> keyAttributes.stream()
-                                        .anyMatch(keyAttribute -> keyAttribute.equals(column.getAttribute()))
-                                        )
-                                        .collect(Collectors.toList())
+                                                .anyMatch(keyAttribute -> keyAttribute.equals(column.getAttribute())))
+                                        .toList()
                         ),
                         UpdateMethod.REPLACE
                 );
@@ -200,17 +194,9 @@ public class ColumnVisibilityContextMenu {
             final String columnHeading = columnTuple.getAttributeNamePrefix();
             if (columnHeading != null) {
                 switch (columnHeading) {
-                    case GraphRecordStoreUtilities.SOURCE:
-                        columnCheckboxesSource.add(createColumnVisibilityMenu(columnTuple));
-                        break;
-                    case GraphRecordStoreUtilities.DESTINATION:
-                        columnCheckboxesDestination.add(createColumnVisibilityMenu(columnTuple));
-                        break;
-                    case GraphRecordStoreUtilities.TRANSACTION:
-                        columnCheckboxesTransaction.add(createColumnVisibilityMenu(columnTuple));
-                        break;
-                    default:
-                        break;
+                    case GraphRecordStoreUtilities.SOURCE -> columnCheckboxesSource.add(createColumnVisibilityMenu(columnTuple));
+                    case GraphRecordStoreUtilities.DESTINATION -> columnCheckboxesDestination.add(createColumnVisibilityMenu(columnTuple));
+                    case GraphRecordStoreUtilities.TRANSACTION -> columnCheckboxesTransaction.add(createColumnVisibilityMenu(columnTuple));
                 }
             }
         });
@@ -352,6 +338,7 @@ public class ColumnVisibilityContextMenu {
      */
     protected CustomMenuItem createColumnFilterMenu(final List<CustomMenuItem> columnCheckboxes) {
         final Label label = new Label(FILTER_CAPTION);
+        label.setId("filter-label");
         final TextField textField = new TextField();
         final HBox box = new HBox();
 
@@ -360,8 +347,7 @@ public class ColumnVisibilityContextMenu {
         final CustomMenuItem menuItem = new CustomMenuItem(box);
         menuItem.setHideOnClick(false);
 
-        textField.setOnKeyReleased(
-                new ColumnFilterKeyReleasedEventHandler(columnCheckboxes));
+        textField.setOnKeyReleased(new ColumnFilterKeyReleasedEventHandler(columnCheckboxes));
 
         return menuItem;
     }
@@ -405,12 +391,8 @@ public class ColumnVisibilityContextMenu {
      */
     private List<Tuple<String, Attribute>> extractColumnAttributes(final List<Column> columns) {
         return columns.stream()
-                .map(column
-                        -> Tuple.create(
-                        column.getAttributeNamePrefix(),
-                        column.getAttribute())
-                )
-                .collect(Collectors.toList());
+                .map(column -> Tuple.create(column.getAttributeNamePrefix(), column.getAttribute()))
+                .toList();
     }
 
     /**
@@ -424,8 +406,7 @@ public class ColumnVisibilityContextMenu {
      * added to the menu
      * @return the created menu item or null if column check boxes is empty
      */
-    private CustomMenuItem createDynamicColumnMenu(final MenuButton button,
-            final List<CustomMenuItem> columnCheckboxes) {
+    private CustomMenuItem createDynamicColumnMenu(final MenuButton button, final List<CustomMenuItem> columnCheckboxes) {
         if (!columnCheckboxes.isEmpty()) {
             button.getItems().addAll(columnCheckboxes);
 
@@ -447,8 +428,7 @@ public class ColumnVisibilityContextMenu {
      * is clicked
      * @return the created menu item
      */
-    private CustomMenuItem createCustomMenu(final String title,
-            final EventHandler<ActionEvent> handler) {
+    private CustomMenuItem createCustomMenu(final String title, final EventHandler<ActionEvent> handler) {
         final CustomMenuItem menuItem = new CustomMenuItem(new Label(title));
 
         menuItem.setHideOnClick(false);
@@ -481,7 +461,7 @@ public class ColumnVisibilityContextMenu {
      * field. Based on the filter text, the handler will hide and show the
      * columns it searches across.
      */
-    class ColumnFilterKeyReleasedEventHandler implements EventHandler<KeyEvent> {
+    private class ColumnFilterKeyReleasedEventHandler implements EventHandler<KeyEvent> {
 
         private final List<CustomMenuItem> columnCheckboxes;
 

@@ -1,6 +1,33 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2024-03-21 Spell checking in Constellation
+<p>Spell checking is available in text areas of Constellation. E.g. Data access view (Extract Types and Extract Words Plugins). It can be added in other text areas as requested.</p>
+<p>When enabled, incorrect spellings and some grammar errors are highlighted and underlined. 
+Left Clicking on a highlighted word/phrase will popup a suggestions list to choose from. An "Ignore All" button is available for spelling errors which will ignore the same error in the current text area.</p>
+<p>Constellation Option "Enable spell checking in specified text areas" (Enabled by default) is used to enable/disable spell checking. 
+If it is set, the right click context menu option "Turn On Spell Checking" will be available on fields where it has been enabled, and it can be used to toggle on/off spell checking dynamically. </p>
+
+== 2024-03-08 More Ways to Zoom In and Out
+<p>Keyboard shortcuts have been added for zooming in and out of the graph view (CTRL-ALT-UP and CTRL-ALT-DOWN respectively).</p>
+<p>Toolbar buttons have been added for zooming in and out of the graph view.</p>
+
+== 2024-02-26 Colorblind Mode in Options
+<p>Colorblind mode options have been added and can be found through Setup -&gt; Options -&gt; CONSTELLATION -&gt; Application.</p>
+<p>The random generation of node colors has been adjusted based on the selected colorblind mode.</p>
+<p>Existing graphs can be displayed in a the selected colorblind scheme through the toolbar with Display -&gt; Apply Colorblind Schema to Open Graphs.</p>
+
+== 2024-02-02 Word Cloud View in Experimental
+<p>A Word Cloud View has been created and can be found under Experimental -&gt; Views -&gt; Word Cloud.</p>
+<p>This view allows you to create a Word Cloud based on words and phrases found in attributes in nodes and transactions.</p>
+
+== 2024-01-09 Data Access View Categories change
+<p>Added a new "Restore to Default" button to the Data Access View Categories </p>
+
+== 2024-01-08 Light and dark mode support
+<p>Light/Dark mode themes have been reworked and now comprehensively cover most of the application.</p>
+<p>The modes can be accessed via SetUp -&gt; Options -&gt; Appearance -&gt; Look and Feel -&gt; FlatLaf Light/FlatLaf Dark respectively.</p>
+
 == 2023-11-15 Rename graphs through REST API and Jupyter Notebooks
 <p>Jupyter notebook users can now specify or change Constellation graph title names within scripts using the client.</p>
 <p>When creating a new graph <strong>new_graph</strong> the graph name can be specified as an optional parameter. There's also a separate function to rename a graph specified by the graph ID <strong>rename_graph</strong>. If a graph ID is not specified, the current active graph will be renamed.</p> 

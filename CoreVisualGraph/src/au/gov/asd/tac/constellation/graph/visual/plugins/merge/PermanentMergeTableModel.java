@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 package au.gov.asd.tac.constellation.graph.visual.plugins.merge;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
-import au.gov.asd.tac.constellation.graph.Graph;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -27,17 +27,14 @@ import javax.swing.table.DefaultTableModel;
 public final class PermanentMergeTableModel extends DefaultTableModel {
 
     private Class<?>[] headerClass;
-    private Graph graph;
-    private ArrayList<Attribute> vertexAttributes = new ArrayList<>();
+    private List<Attribute> vertexAttributes = new ArrayList<>();
 
     /**
      * Initializes the table model.
      *
-     * @param graph the graph that holds the vertices to be merged.
      * @param attributes the attributes to be displayed in the table.
      */
-    public void initialise(final Graph graph, final ArrayList<Attribute> attributes) {
-        this.graph = graph;
+    public void initialise(final List<Attribute> attributes) {
         vertexAttributes = attributes;
         setupAttributeHeaders();
         getDataVector().clear();
@@ -48,7 +45,6 @@ public final class PermanentMergeTableModel extends DefaultTableModel {
      */
     public void setupAttributeHeaders() {
         headerClass = new Class<?>[vertexAttributes.size() + 1];
-
         headerClass[0] = Boolean.class;
         for (int i = 0; i < (vertexAttributes.size()); i++) {
             headerClass[i + 1] = String.class;

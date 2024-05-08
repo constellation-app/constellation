@@ -35,27 +35,27 @@ public class Difference {
 
     public static final ArithmeticOperation ARITHMETIC_OPERATION = new ArithmeticOperation() {
         @Override
-        public double execute(double p1, double p2) {
+        public double execute(final double p1, final double p2) {
             return p1 - p2;
         }
 
         @Override
-        public float execute(float p1, float p2) {
+        public float execute(final float p1, final float p2) {
             return p1 - p2;
         }
 
         @Override
-        public long execute(long p1, long p2) {
+        public long execute(final long p1, final long p2) {
             return p1 - p2;
         }
 
         @Override
-        public int execute(int p1, int p2) {
+        public int execute(final int p1, final int p2) {
             return p1 - p2;
         }
     };
 
-    public static void register(Operators operators) {
+    public static void register(final Operators operators) {
         final OperatorRegistry registry = operators.getRegistry(NAME);
         ARITHMETIC_OPERATION.register(registry);
     }

@@ -22,11 +22,11 @@ import static au.gov.asd.tac.constellation.plugins.importexport.geospatial.Abstr
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
-import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -43,15 +43,16 @@ public class ExportToGeoPackagePlugin extends AbstractGeoExportPlugin {
 
     @Override
     protected ExtensionFilter getExportType() {
-        return new FileChooser.ExtensionFilter("GeoPackage", "*.gpkg");
+        return new ExtensionFilter("GeoPackage", FileExtensionConstants.GEO_PACKAGE);
     }
 
     @Override
     protected void exportGeo(final PluginParameters parameters, final String uuid, final Map<String, String> shapes, final Map<String, Map<String, Object>> attributes, final File output) throws IOException {
         final ParameterValue spatialReferencePV = parameters.getSingleChoice(SPATIAL_REFERENCE_PARAMETER_ID);
-        assert (spatialReferencePV instanceof SpatialReferenceParameterValue);
-        final Shape.SpatialReference spatialReference = ((SpatialReferenceParameterValue) spatialReferencePV).getSpatialReference();
-        Shape.generateGeoPackage(uuid, shapes, attributes, output, spatialReference);
+        if (spatialReferencePV instanceof SpatialReferenceParameterValue spatialReferenceParameterValue) {
+            final Shape.SpatialReference spatialReference = spatialReferenceParameterValue.getSpatialReference();
+            Shape.generateGeoPackage(uuid, shapes, attributes, output, spatialReference);
+        }
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,12 +24,11 @@ import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 import org.openide.util.NbBundle;
 
 /**
@@ -81,17 +80,17 @@ public class ProvideFeedbackWelcomePlugin implements WelcomePluginInterface {
     public Button getButton() {
         feedView.setFitHeight(25);
         feedView.setFitWidth(25);
-        final Text title = new Text("Provide Feedback");
-        title.setFill(Color.WHITE);
-        final Text subtitle = new Text("Let us know your thoughts");
-        subtitle.setId("smallInfoText");
-        subtitle.setFill(Color.WHITE);
+        final Label title = new Label("Provide Feedback");
+        title.setId("label");
+        final Label subtitle = new Label("Let us know your thoughts");
+        subtitle.setId("infoText");
         final VBox layoutVBox = new VBox(title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER_LEFT);
         final HBox layoutHBox = new HBox(feedView, layoutVBox);
         layoutHBox.setSpacing(8);
         layoutHBox.setAlignment(Pos.CENTER_LEFT);
         feedbackButton.setGraphic(layoutHBox);
+        feedbackButton.setId("left-button");
         return feedbackButton;
     }
 }

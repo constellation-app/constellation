@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -473,7 +473,7 @@ public abstract class InfomapGreedy extends InfomapBase {
         }
 
         if (DEBUG) {
-            final String log = String.format("Done! Moved %d nodes into %d modules to codelength: %.5f\n",
+            final String log = String.format("Done! Moved %d nodes into %d modules to codelength: %.5f%n",
                     numMoved, getNumActiveModules(), codelength);
             LOGGER.log(Level.INFO, log);
         }
@@ -494,7 +494,7 @@ public abstract class InfomapGreedy extends InfomapBase {
      *
      * @return The number of nodes moved.
      */
-    int tryMoveEachNodeIntoBestModule() {
+    public int tryMoveEachNodeIntoBestModule() {
         if (DEBUG) {
             LOGGER.log(Level.INFO, "{0}.tryMoveEachNodeIntoBestModule", getClass().getSimpleName());
         }
@@ -693,7 +693,7 @@ public abstract class InfomapGreedy extends InfomapBase {
             // Happens after optimizing fine-tune and when moving leaf nodes to super clusters.
             if (activeNetworkAlreadyHaveModuleLevel) {
                 if (DEBUG) {
-                    final String log = String.format("Replace existing %d modules with its children before consolidating the %d dynamic modules...\n",
+                    final String log = String.format("Replace existing %d modules with its children before consolidating the %d dynamic modules...%n",
                             getNumTopModules(), getNumActiveModules());
                     LOGGER.log(Level.INFO, log);
                 }
@@ -719,7 +719,7 @@ public abstract class InfomapGreedy extends InfomapBase {
 
         if (asSubModules) {
             if (DEBUG) {
-                final String log = String.format("Consolidated %d submodules under %d modules, store module structure before releasing it...\n",
+                final String log = String.format("Consolidated %d submodules under %d modules, store module structure before releasing it...%n",
                         getNumActiveModules(), getNumTopModules());
                 LOGGER.log(Level.INFO, log);
             }

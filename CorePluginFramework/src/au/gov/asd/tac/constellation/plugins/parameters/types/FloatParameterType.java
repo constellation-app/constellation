@@ -274,7 +274,7 @@ public class FloatParameterType extends PluginParameterType<FloatParameterValue>
 
         @Override
         public Object getObjectValue() {
-            return f;
+            return get();
         }
 
         @Override
@@ -282,8 +282,8 @@ public class FloatParameterType extends PluginParameterType<FloatParameterValue>
             final float newf;
             if (o == null) {
                 newf = 0;
-            } else if (o instanceof Float) {
-                newf = (Float) o;
+            } else if (o instanceof Float aFloat) {
+                newf = aFloat;
             } else {
                 throw new IllegalArgumentException(String.format("Unexpected object value %s", o.getClass()));
             }
@@ -321,7 +321,7 @@ public class FloatParameterType extends PluginParameterType<FloatParameterValue>
 
         @Override
         public Number getNumberValue() {
-            return f;
+            return get();
         }
 
         @Override

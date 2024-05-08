@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,12 +50,12 @@ public class ConstructionUtilities {
      * @throws IOException is an error occurs while reading the icon resources.
      */
     public static Map<String, byte[]> loadIcons(final Class<?> cls, final String... names) throws IOException {
-        final HashMap<String, byte[]> iconBytes = new HashMap<>();
+        final Map<String, byte[]> iconBytes = new HashMap<>();
 
-        for (String name : names) {
+        for (final String name : names) {
             final String resourceName = String.format("icons/%s.png", name);
             final ByteArrayOutputStream out;
-            try (InputStream in = cls.getResourceAsStream(resourceName)) {
+            try (final InputStream in = cls.getResourceAsStream(resourceName)) {
                 if (in == null) {
                     throw new IOException("Can't find icon file '" + resourceName + "' relative to class " + cls.getCanonicalName());
                 }
@@ -73,7 +73,6 @@ public class ConstructionUtilities {
 
             iconBytes.put(name, out.toByteArray());
         }
-
         return iconBytes;
     }
 

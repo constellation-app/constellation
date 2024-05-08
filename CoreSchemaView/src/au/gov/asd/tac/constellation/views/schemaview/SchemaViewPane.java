@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThre
 import au.gov.asd.tac.constellation.views.schemaview.providers.SchemaViewNodeProvider;
 import java.util.Collection;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import javafx.application.Platform;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;

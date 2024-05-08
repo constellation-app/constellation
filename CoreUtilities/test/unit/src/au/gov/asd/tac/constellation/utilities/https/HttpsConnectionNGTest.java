@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.Arrays;
 import javax.net.ssl.HostnameVerifier;
@@ -29,10 +30,10 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocketFactory;
 import org.testng.annotations.Test;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertFalse;
-import static org.testng.AssertJUnit.assertSame;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 import org.mockito.MockedStatic;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.doNothing;
@@ -53,10 +54,7 @@ public class HttpsConnectionNGTest {
     // returns a URL object with a dummy location
     private static URL getDummyUrl(final boolean https) {
         try {
-            if (https) {
-                return new URL("https://dummy/secure");
-            }
-            return new URL("http://dummy/insecure");
+            return URI.create(https ? "https://dummy/secure" : "http://dummy/insecure").toURL();
         } catch (MalformedURLException e) {
             return null;
         }

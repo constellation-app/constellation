@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,22 +40,20 @@ public class InvertSelectionPlugin extends SimpleEditPlugin {
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-        int vxSelectedAttr = VisualConcept.VertexAttribute.SELECTED.get(graph);
+        final int vxSelectedAttr = VisualConcept.VertexAttribute.SELECTED.get(graph);
         if (vxSelectedAttr != Graph.NOT_FOUND) {
             final int vxCount = graph.getVertexCount();
             for (int position = 0; position < vxCount; position++) {
                 final int vxId = graph.getVertex(position);
-
                 graph.setBooleanValue(vxSelectedAttr, vxId, !graph.getBooleanValue(vxSelectedAttr, vxId));
             }
         }
 
-        int txSelected = VisualConcept.TransactionAttribute.SELECTED.get(graph);
+        final int txSelected = VisualConcept.TransactionAttribute.SELECTED.get(graph);
         if (txSelected != Graph.NOT_FOUND) {
             final int txCount = graph.getTransactionCount();
             for (int position = 0; position < txCount; position++) {
                 final int txId = graph.getTransaction(position);
-
                 graph.setBooleanValue(txSelected, txId, !graph.getBooleanValue(txSelected, txId));
             }
         }

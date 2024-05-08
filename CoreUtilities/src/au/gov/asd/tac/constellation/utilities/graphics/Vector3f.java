@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -90,14 +90,17 @@ public final class Vector3f implements Serializable {
     }
 
     /**
-     * Add two vectors, store the result in this vector.
+     * Add one or more vectors, store the result in this vector.
      *
-     * @param u An existing Vector3f.
-     * @param v Another existing Vector3f.
-     * @return the sum of the 2 given vectors.
+     * @param vectors one or more number of existing Vector3f.
+     * @return the sum of the given vectors.
      */
-    public static Vector3f add(final Vector3f u, final Vector3f v) {
-        return new Vector3f(u.a[0] + v.a[0], u.a[1] + v.a[1], u.a[2] + v.a[2]);
+    public static Vector3f add(final Vector3f... vectors) {
+        final Vector3f result = new Vector3f();
+        for (final Vector3f vector : vectors){
+            result.add(vector);
+        }
+        return result;
     }
 
     /**
@@ -142,9 +145,9 @@ public final class Vector3f implements Serializable {
      * @param m A rotation matrix
      */
     public void rotate(final Matrix33f m) {
-        float x = m.a[0] * a[0] + m.a[3] * a[1] + m.a[6] * a[2];
-        float y = m.a[1] * a[0] + m.a[4] * a[1] + m.a[7] * a[2];
-        float z = m.a[2] * a[0] + m.a[5] * a[1] + m.a[8] * a[2];
+        final float x = m.a[0] * a[0] + m.a[3] * a[1] + m.a[6] * a[2];
+        final float y = m.a[1] * a[0] + m.a[4] * a[1] + m.a[7] * a[2];
+        final float z = m.a[2] * a[0] + m.a[5] * a[1] + m.a[8] * a[2];
         a[0] = x;
         a[1] = y;
         a[2] = z;
@@ -193,7 +196,7 @@ public final class Vector3f implements Serializable {
      */
     public static Vector3f subtract(final Vector3f u, final Vector3f v) {
         return new Vector3f(u.a[0] - v.a[0], u.a[1] - v.a[1], u.a[2] - v.a[2]);
-    }
+        }
 
     /**
      * Calculate u-v, store the result in result.
@@ -207,7 +210,7 @@ public final class Vector3f implements Serializable {
         result.a[1] = u.a[1] - v.a[1];
         result.a[2] = u.a[2] - v.a[2];
     }
-
+    
     /**
      * The cross product is the vector perpendicular to the vectors being
      * multiplied and normal to the plane containing them.
@@ -220,7 +223,7 @@ public final class Vector3f implements Serializable {
         a[1] = -u.a[0] * v.a[2] + v.a[0] * u.a[2];
         a[2] = u.a[0] * v.a[1] - v.a[0] * u.a[1];
     }
-
+    
     /**
      * The dot product is the cosine of the angle between the vectors.
      *
@@ -320,7 +323,7 @@ public final class Vector3f implements Serializable {
      * @return An array of Vector3f instances with the specified length.
      */
     public static Vector3f[] createArray(final int length) {
-        Vector3f[] array = new Vector3f[length];
+        final Vector3f[] array = new Vector3f[length];
         for (int i = 0; i < length; i++) {
             array[i] = new Vector3f();
         }

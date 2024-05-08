@@ -53,21 +53,21 @@ import org.openide.windows.TopComponent;
 public final class JDBCImportTopComponent extends ImportTopComponent {
 
     private final JDBCImportPane jdbcImportPane;
-    private final static String HELP_TEXT = "1. Add the relevant JDBC Driver via 'Manage Connections' -> 'Drivers' tab. \n"
-            + "2. Add the Connection details in 'Manage Connections' -> 'Connections' tab. "
-            + "If the 'Username' and 'Password' are not required, leave them blank.\n"
-            + "3. Select the connection from the 'Connection' drop-down in the main "
-            + "Import window.\n"
-            + "4. Enter 'Username' and 'Password' if the connection requires them.\n"
-            + "5. Enter the SQL 'Query' and Click the 'Query' button to retrieve data.\n"
-            + "6. Select your 'Destination' graph.\n"
-            + "7. Drag and drop attributes onto columns.\n"
-            + "8. Right click an attribute for more options.\n"
-            + "9. Click the 'Import' button to add data to your graph.\n\n"
-            + "HINTS:\n* See all supported attributes with 'Options > Show all schema attributes'.\n"
-            + "* Filter in the Configuration Pane by adding searches of the form <column_name>==\"<search text>\"."
-            + "* E.g. first_name==\"Nick\"\n"
-            + "* To filter Attributes, start typing in the Attributes Filter.";
+    private final static String HELP_TEXT = """
+                                            1. Add the relevant JDBC Driver via 'Manage Connections' -> 'Drivers' tab. 
+                                            2. Add the Connection details in 'Manage Connections' -> 'Connections' tab. If the 'Username' and 'Password' are not required, leave them blank.
+                                            3. Select the connection from the 'Connection' drop-down in the main Import window.
+                                            4. Enter 'Username' and 'Password' if the connection requires them.
+                                            5. Enter the SQL 'Query' and Click the 'Query' button to retrieve data.
+                                            6. Select your 'Destination' graph.
+                                            7. Drag and drop attributes onto columns.
+                                            8. Right click an attribute for more options.
+                                            9. Click the 'Import' button to add data to your graph.
+                                            
+                                            HINTS:
+                                            * See all supported attributes with 'Options > Show all schema attributes'.
+                                            * Filter in the Configuration Pane by adding searches of the form <column_name>=="<search text>".* E.g. first_name=="Nick"
+                                            * To filter Attributes, start typing in the Attributes Filter.""";
 
     final JDBCImportController controller = new JDBCImportController();
     final ConfigurationPane configurationPane = new ConfigurationPane(controller, HELP_TEXT);
@@ -85,7 +85,7 @@ public final class JDBCImportTopComponent extends ImportTopComponent {
 
     @Override
     protected String createStyle() {
-        return "resources/jdbc-import.css";
+        return null;
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,14 +55,17 @@ public final class LocalDateTimeAttributeDescription extends AbstractObjectAttri
         try {
             return super.convertFromObject(object);
         } catch (final IllegalArgumentException ex) {
-            if (object instanceof Date) {
-                return LocalDateTime.ofInstant(Instant.ofEpochMilli(((Date) object).getTime()), TimeZoneUtilities.UTC);
-            } else if (object instanceof Calendar) {
-                return LocalDateTime.ofInstant(Instant.ofEpochMilli(((Calendar) object).getTimeInMillis()), ((Calendar) object).getTimeZone().toZoneId());
-            } else if (object instanceof Number) {
-                return LocalDateTime.ofInstant(Instant.ofEpochMilli(((Number) object).longValue()), TimeZoneUtilities.UTC);
-            } else {
-                throw new IllegalArgumentException(String.format(
+            switch (object) {
+                case Date date -> {
+                    return LocalDateTime.ofInstant(Instant.ofEpochMilli(date.getTime()), TimeZoneUtilities.UTC);
+                }
+                case Calendar calendar -> {
+                    return LocalDateTime.ofInstant(Instant.ofEpochMilli(calendar.getTimeInMillis()), calendar.getTimeZone().toZoneId());
+                }
+                case Number number -> {
+                    return LocalDateTime.ofInstant(Instant.ofEpochMilli(number.longValue()), TimeZoneUtilities.UTC);
+                }
+                default -> throw new IllegalArgumentException(String.format(
                         "Error converting Object '%s' to datetime", object.getClass()));
             }
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,10 +45,13 @@ public class ConstellationInstalledFileLocator {
      * find the location of the JAR.
      * @return the requested {@code File}, if it can be found, else {@code null}
      */
-    public static File locate(String relativePath, String codeNameBase, ProtectionDomain protectedDomain) {
+    public static File locate(final String relativePath, final String codeNameBase, final ProtectionDomain protectedDomain) {
         File locatedFile = InstalledFileLocator.getDefault().locate(relativePath, codeNameBase, false);
-        if (locatedFile == null) {
-            // InstalledFileLocator only works in the NetBeans environment.
+        
+        //The below code causes the aplication to hang due to fialing quietly when a file is not at the expected location.
+        //Have deactivated the code when looking for .svg file as svg equivlents to raster images is not ensured.
+        if (locatedFile == null && !relativePath.contains(".svg")) {
+            // InstalledFileLocator only works in th NetBeans environment.
             // If we're not there (because we're running unit tests in development, for example), we won't find anything.
             // Instead, we'll hack our way to what we want. If there's a nicer way, tell me.
             //
@@ -57,7 +60,7 @@ public class ConstellationInstalledFileLocator {
 
             try {
                 locatedFile = Paths.get(url.toURI()).toFile();
-            } catch (URISyntaxException ex) {
+            } catch (final URISyntaxException ex) {
                 throw new RuntimeException(ex);
             }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,11 +39,13 @@ public class Hashmod {
 
     private static final Logger LOGGER = Logger.getLogger(Hashmod.class.getName());
 
-    private static final String HEADER_MATCH_STRING = ".*\\.\\.\\..*";
     public static final String ATTRIBUTE_NAME = "hashmod";
     private HashmodCSVImportFileParser parser;
     private String csvFileStr;
     private List<String[]> data;
+    
+    private static final Pattern HEADER_MATCH_REGEX = Pattern.compile(".*\\.\\.\\..*");
+    private static final Pattern TRANSACTION_PATTERN = Pattern.compile("^.*;;;([^\"]+)");
 
     public Hashmod() {
         parser = null;
@@ -68,7 +70,7 @@ public class Hashmod {
         this.csvFileStr = StringUtils.defaultString(csvFileStr);
         parser = new HashmodCSVImportFileParser();
         try {
-            data = parser.parse(new HashmodInputSource(new File(this.csvFileStr)), null);
+            data = parser.parse(new HashmodInputSource(new File(this.csvFileStr)));
         } catch (IOException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
@@ -119,7 +121,7 @@ public class Hashmod {
     public int getNumberCSVDataColumns() {
         final String[] headers = getCSVFileHeaders();
         for (int i = 0; i < headers.length; i++) {
-            if (headers[i].matches(HEADER_MATCH_STRING)) {
+            if (HEADER_MATCH_REGEX.matcher(headers[i]).matches()) {
                 return i;
             }
         }
@@ -130,7 +132,7 @@ public class Hashmod {
         final String[] headers = getCSVFileHeaders();
         int numTransactions = 0;
         for (int i = getNumberCSVDataColumns(); i < headers.length; i++) {
-            if (!headers[i].matches(HEADER_MATCH_STRING)) {
+            if (!HEADER_MATCH_REGEX.matcher(headers[i]).matches()) {
                 return numTransactions;
             }
             numTransactions++;
@@ -144,7 +146,7 @@ public class Hashmod {
         final String[] headers = getCSVFileHeaders();
         int numTransactions = 0;
         for (int i = getNumberCSVDataColumns(); i < headers.length; i++) {
-            if (headers[i].matches(HEADER_MATCH_STRING) && numTransactions == transactionCol) {
+            if (HEADER_MATCH_REGEX.matcher(headers[i]).matches() && numTransactions == transactionCol) {
                 final Matcher matchPattern = transactionPattern.matcher(headers[i]);
                 if (matchPattern.find()) {
                     return matchPattern.group(1);
@@ -164,8 +166,7 @@ public class Hashmod {
     }
 
     public String getTransactionAttribute(final String attributeFromCSV) {
-        final Pattern transactionPattern = Pattern.compile("^.*;;;([^\"]+)");
-        final Matcher matchPattern = transactionPattern.matcher(attributeFromCSV);
+        final Matcher matchPattern = TRANSACTION_PATTERN.matcher(attributeFromCSV);
         if (matchPattern.find()) {
             return matchPattern.group(1);
         }

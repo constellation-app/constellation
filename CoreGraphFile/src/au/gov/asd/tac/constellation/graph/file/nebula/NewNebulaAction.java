@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,7 @@ public final class NewNebulaAction implements ActionListener {
 
         final PluginParameter<FileParameterValue> fileParam = FileParameterType.build(NEBULA_FILE_PARAMETER_ID);
         fileParam.setName("Nebula file");
-        FileParameterType.setFileFilters(fileParam, new ExtensionFilter("Nebula file", "*.nebula"));
+        FileParameterType.setFileFilters(fileParam, new ExtensionFilter("Nebula file", FileExtensionConstants.NEBULA));
         fileParam.getParameterValue().setKind(FileParameterKind.SAVE);
         fileParam.setHelpID("au.gov.asd.tac.constellation.file.nebula");
         params.addParameter(fileParam);

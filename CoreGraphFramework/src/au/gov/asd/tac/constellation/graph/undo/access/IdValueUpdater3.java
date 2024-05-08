@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,21 +28,26 @@ public class IdValueUpdater3 implements ValueUpdater32 {
     public static final IdValueUpdater3 INSTANCE = new IdValueUpdater3();
 
     @Override
-    public int store(final UndoGraphEditState state, int id) {
+    public int store(final UndoGraphEditState state, final int id) {
         int delta = id - state.getCurrentId();
         state.setCurrentId(id);
         switch (delta) {
-            case -2:
+            case -2 -> {
                 return 0;
-            case -1:
+            }
+            case -1 -> {
                 return 1;
-            case 0:
+            }
+            case 0 -> {
                 return 2;
-            case 1:
+            }
+            case 1 -> {
                 return 3;
-            case 2:
+            }
+            case 2 -> {
                 return 4;
-            default:
+            }
+            default -> {
                 if (delta >= Byte.MIN_VALUE && delta <= Byte.MAX_VALUE) {
                     state.addByte((byte) delta);
                     return 5;
@@ -53,16 +58,17 @@ public class IdValueUpdater3 implements ValueUpdater32 {
                     state.addInt(delta);
                     return 7;
                 }
+            }
         }
     }
 
     @Override
-    public void updateExecute(final UndoGraphEditState state, int parameters) {
+    public void updateExecute(final UndoGraphEditState state, final int parameters) {
         ID_GETTERS[parameters & 7].getExecute(state);
     }
 
     @Override
-    public void updateUndo(final UndoGraphEditState state, int parameters) {
+    public void updateUndo(final UndoGraphEditState state, final int parameters) {
         ID_GETTERS[parameters & 7].getUndo(state);
     }
 

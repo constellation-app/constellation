@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -112,7 +112,7 @@ public class BlazeContextMenu implements ContextMenuProvider {
         }
 
         switch (item) {
-            case ADD_CUSTOM_BLAZE:
+            case ADD_CUSTOM_BLAZE -> {
                 final ConstellationColor defaultColor = clickedBlaze == null
                         ? BlazeUtilities.DEFAULT_BLAZE.getColor()
                         : clickedBlaze.getColor();
@@ -122,17 +122,17 @@ public class BlazeContextMenu implements ContextMenuProvider {
                     parameters = DefaultPluginParameters.getDefaultParameters(plugin);
                     parameters.setObjectValue(BlazeUtilities.COLOR_PARAMETER_ID, colorResult.getValue());
                 }
-                break;
-            case UNSET_BLAZE:
+            }
+            case UNSET_BLAZE -> {
                 plugin = PluginRegistry.get(VisualGraphPluginRegistry.REMOVE_BLAZE);
                 parameters = DefaultPluginParameters.getDefaultParameters(plugin);
-                break;
-            default:
+            }
+            default -> {
                 final ConstellationColor color = ConstellationColor.getColorValue(item);
                 plugin = PluginRegistry.get(VisualGraphPluginRegistry.ADD_CUSTOM_BLAZE);
                 parameters = DefaultPluginParameters.getDefaultParameters(plugin);
                 parameters.setObjectValue(BlazeUtilities.COLOR_PARAMETER_ID, color);
-                break;
+            }
         }
 
         if (plugin != null && parameters != null) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import de.fhpotsdam.unfolding.geo.Location;
 import de.fhpotsdam.unfolding.utils.MapPosition;
 import de.fhpotsdam.unfolding.utils.ScreenPosition;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.openide.util.lookup.ServiceProvider;
 import processing.core.PConstants;
 import processing.core.PGraphics;
@@ -85,7 +84,7 @@ public class DayNightLayer extends MapLayer {
         final List<Location> leftTwighlightCivilLocations = MarkerUtilities.generateCircle(leftShadowLocation, leftTwighlightCivilRadiusLocation);
         final List<MapPosition> leftTwighlightCivilPositions = leftTwighlightCivilLocations.stream()
                 .map(location -> new MapPosition(map.mapDisplay.getObjectFromLocation(location)))
-                .collect(Collectors.toList());
+                .toList();
         dayNightImage.noStroke();
         dayNightImage.fill(TWIGHLIGHT_CIVIL_COLOR);
         dayNightImage.beginShape();
@@ -99,7 +98,7 @@ public class DayNightLayer extends MapLayer {
         final List<Location> leftTwighlightNauticalLocations = MarkerUtilities.generateCircle(leftShadowLocation, leftTwighlightNauticalRadiusLocation);
         final List<MapPosition> leftTwighlightNauticalPositions = leftTwighlightNauticalLocations.stream()
                 .map(location -> new MapPosition(map.mapDisplay.getObjectFromLocation(location)))
-                .collect(Collectors.toList());
+                .toList();
         dayNightImage.noStroke();
         dayNightImage.fill(TWIGHLIGHT_NAUTICAL_COLOR);
         dayNightImage.beginShape();
@@ -113,7 +112,7 @@ public class DayNightLayer extends MapLayer {
         final List<Location> leftTwighlightAstronomicalLocations = MarkerUtilities.generateCircle(leftShadowLocation, leftTwighlightAstronomicalRadiusLocation);
         final List<MapPosition> leftTwighlightAstronomicalPositions = leftTwighlightAstronomicalLocations.stream()
                 .map(location -> new MapPosition(map.mapDisplay.getObjectFromLocation(location)))
-                .collect(Collectors.toList());
+                .toList();
         dayNightImage.noStroke();
         dayNightImage.fill(TWIGHLIGHT_ASTRONOMICAL_COLOR);
         dayNightImage.beginShape();
@@ -127,7 +126,7 @@ public class DayNightLayer extends MapLayer {
         final List<Location> leftNightLocations = MarkerUtilities.generateCircle(leftShadowLocation, leftNightRadiusLocation);
         final List<MapPosition> leftNightPositions = leftNightLocations.stream()
                 .map(location -> new MapPosition(map.mapDisplay.getObjectFromLocation(location)))
-                .collect(Collectors.toList());
+                .toList();
         dayNightImage.noStroke();
         dayNightImage.fill(NIGHT_COLOR);
         dayNightImage.beginShape();
@@ -141,7 +140,7 @@ public class DayNightLayer extends MapLayer {
         final List<Location> rightTwighlightCivilLocations = MarkerUtilities.generateCircle(rightShadowLocation, rightTwighlightCivilRadiusLocation);
         final List<MapPosition> rightTwighlightCivilPositions = rightTwighlightCivilLocations.stream()
                 .map(location -> new MapPosition(map.mapDisplay.getObjectFromLocation(location)))
-                .collect(Collectors.toList());
+                .toList();
         dayNightImage.noStroke();
         dayNightImage.fill(TWIGHLIGHT_CIVIL_COLOR);
         dayNightImage.beginShape();
@@ -155,7 +154,7 @@ public class DayNightLayer extends MapLayer {
         final List<Location> rightTwighlightNauticalLocations = MarkerUtilities.generateCircle(rightShadowLocation, rightTwighlightNauticalRadiusLocation);
         final List<MapPosition> rightTwighlightNauticalPositions = rightTwighlightNauticalLocations.stream()
                 .map(location -> new MapPosition(map.mapDisplay.getObjectFromLocation(location)))
-                .collect(Collectors.toList());
+                .toList();
         dayNightImage.noStroke();
         dayNightImage.fill(TWIGHLIGHT_NAUTICAL_COLOR);
         dayNightImage.beginShape();
@@ -169,7 +168,7 @@ public class DayNightLayer extends MapLayer {
         final List<Location> rightTwighlightAstronomicalLocations = MarkerUtilities.generateCircle(rightShadowLocation, rightTwighlightAstronomicalRadiusLocation);
         final List<MapPosition> rightTwighlightAstronomicalPositions = rightTwighlightAstronomicalLocations.stream()
                 .map(location -> new MapPosition(map.mapDisplay.getObjectFromLocation(location)))
-                .collect(Collectors.toList());
+                .toList();
         dayNightImage.noStroke();
         dayNightImage.fill(TWIGHLIGHT_ASTRONOMICAL_COLOR);
         dayNightImage.beginShape();
@@ -183,7 +182,7 @@ public class DayNightLayer extends MapLayer {
         final List<Location> rightNightLocations = MarkerUtilities.generateCircle(rightShadowLocation, rightNightRadiusLocation);
         final List<MapPosition> rightNightPositions = rightNightLocations.stream()
                 .map(location -> new MapPosition(map.mapDisplay.getObjectFromLocation(location)))
-                .collect(Collectors.toList());
+                .toList();
         dayNightImage.noStroke();
         dayNightImage.fill(NIGHT_COLOR);
         dayNightImage.beginShape();

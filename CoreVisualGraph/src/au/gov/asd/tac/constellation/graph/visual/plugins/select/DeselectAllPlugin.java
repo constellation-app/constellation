@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,6 @@ public class DeselectAllPlugin extends SimpleEditPlugin {
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-
         final int vxSelectedAttrId = VisualConcept.VertexAttribute.SELECTED.get(graph);
         if (vxSelectedAttrId != Graph.NOT_FOUND) {
             final int vxCount = graph.getVertexCount();

@@ -1,12 +1,12 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
- * 
+ * Copyright 2010-2024 Australian Signals Directorate
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -46,9 +46,7 @@ import au.gov.asd.tac.constellation.views.find.utilities.FindViewUtilities;
 import static au.gov.asd.tac.constellation.views.find.utilities.FindViewUtilities.clearSelection;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -136,8 +134,6 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
 
         final int selectedAttribute = graph.getAttribute(elementType, VisualConcept.VertexAttribute.SELECTED.getName());
 
-        final Set<FindResult> findResultSet = new HashSet<>();
-
         /**
          * This loops through all existing graph elements, then loops through
          * all criteria values, then determines what data type the criteria
@@ -172,41 +168,28 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                     boolean matches = false;
                     // Determine what data type to treat the search as
                     switch (values.getAttributeType()) {
-                        case StringAttributeDescription.ATTRIBUTE_NAME:
-                            matches = searchAsString(values, attributeInt, currElement, graph);
-                            break;
-                        case FloatAttributeDescription.ATTRIBUTE_NAME:
-                            matches = searchAsFloat(values, attributeInt, currElement, graph);
-                            break;
-                        case BooleanAttributeDescription.ATTRIBUTE_NAME:
-                            matches = searchAsBoolean(values, attributeInt, currElement, graph);
-                            break;
-                        case ColorAttributeDescription.ATTRIBUTE_NAME:
-                            matches = searchAsColor(values, attributeInt, currElement, graph);
-                            break;
-                        case ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME:
-                            matches = searchAsDateTime(values, attributeInt, currElement, graph);
-                            break;
-                        case IconAttributeDescription.ATTRIBUTE_NAME:
-                            matches = searchAsIcon(values, attributeInt, currElement, graph);
-                            break;
-                        default:
-                            break;
+                        case StringAttributeDescription.ATTRIBUTE_NAME -> matches = searchAsString(values, attributeInt, currElement, graph);
+                        case FloatAttributeDescription.ATTRIBUTE_NAME -> matches = searchAsFloat(values, attributeInt, currElement, graph);
+                        case BooleanAttributeDescription.ATTRIBUTE_NAME -> matches = searchAsBoolean(values, attributeInt, currElement, graph);
+                        case ColorAttributeDescription.ATTRIBUTE_NAME -> matches = searchAsColor(values, attributeInt, currElement, graph);
+                        case ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME -> matches = searchAsDateTime(values, attributeInt, currElement, graph);
+                        case IconAttributeDescription.ATTRIBUTE_NAME -> matches = searchAsIcon(values, attributeInt, currElement, graph);
+                        default -> {
+                            // Do nothing
+                        }
                     }
                     // if a match was found
                     if (matches) {
                         // increase the matchesAllCount by 1
                         matchesAllCount++;
 
-                        // If the search is select all and match critera = any
-                        if (selectAll && ANY.equals(allOrAny)) {
-
-                            // If the current selection = ignore or add to
-                            if ((REPLACE.equals(postSearchAction) && !(CURRENT_SELECTION.equals(searchInLocation))) || ADD_TO.equals(postSearchAction)) {
+                        if (ANY.equals(allOrAny)) {
+                            if (!selectAll) {
+                                foundResult.add(new FindResult(currElement, uid, elementType, graph.getId()));
+                            } else if ((REPLACE.equals(postSearchAction) && !(CURRENT_SELECTION.equals(searchInLocation))) || ADD_TO.equals(postSearchAction)) {
+                                // If the current selection = ignore or add to
                                 // set the elements selection attribute to true
                                 graph.setBooleanValue(selectedAttribute, currElement, true);
-                                // add a new find result to the found results list
-                                // of the element
                                 foundResult.add(new FindResult(currElement, uid, elementType, graph.getId()));
 
                                 // if the current selection = find in and the graph element is already selected
@@ -222,12 +205,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                                 // of the element
                                 removeFromCurrentSelectionList.add(new FindResult(currElement, uid, elementType, graph.getId()));
                             }
-                        } else if (ANY.equals(allOrAny)) {
-                            // if not select all and the match criteria = any
-                            // add a new find result to the found results list
-                            // of the element
-                            foundResult.add(new FindResult(currElement, uid, elementType, graph.getId()));
-                        } 
+                        }
                     }
                 }
 
@@ -236,11 +214,9 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                  * of the criteria.
                  */
                 if (allOrAny.contains(ALL) && matchesAllCount == criteriaList.size()) {
-
                     // add a new find result to the found results list
                     // of the element
                     foundResult.add(new FindResult(currElement, uid, elementType, graph.getId()));
-                    findResultSet.add(new FindResult(currElement, uid, elementType, graph.getId()));
                     // if the attribute is already selected
                     if (graph.getBooleanValue(selectedAttribute, currElement)) {
                         // add it to the find in current selection list
@@ -251,7 +227,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
             }
         }
 
-        findAllMatchingResultsList.addAll(findResultSet);
+        findAllMatchingResultsList.addAll(foundResult);
 
         // if Find in select all the find in results
         if (CURRENT_SELECTION.equals(searchInLocation) && REPLACE.equals(postSearchAction)) {
@@ -277,7 +253,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
         foundResult.clear();
         foundResult.addAll(distinctValues);
 
-        // If the results list is null, has different parameters to the current list, and is not searching all graphs, then create a new results list 
+        // If the results list is null, has different parameters to the current list, and is not searching all graphs, then create a new results list
         if (ActiveFindResultsList.getAdvancedResultsList() == null || !ActiveFindResultsList.getAdvancedResultsList().getAdvancedSearchParameters().equals(this.parameters)
                 || (!this.parameters.getSearchInLocation().equals(ALL_OPEN_GRAPHS) && !ActiveFindResultsList.getAdvancedResultsList().isEmpty()
                 && !ActiveFindResultsList.getAdvancedResultsList().get(0).getGraphId().equals(graph.getId()))) {
@@ -337,7 +313,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
             // loop through the list selecting all find results
             for (final FindResult fr : findInCurrentSelectionList) {
                 graph.setBooleanValue(selectedAttribute, fr.getID(), true);
-            }  
+            }
         }
     }
 
@@ -402,50 +378,49 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
          * the user. It checks all str within the allSearchable strings list.
          */
         switch (stringValues.getFilter()) {
-            case IS:
+            case IS -> {
                 for (final String str : allSearchableString) {
                     if (str.equals(value)) {
                         matches = true;
                     }
                 }
-                break;
-            case IS_NOT:
+            }
+            case IS_NOT -> {
                 for (final String str : allSearchableString) {
                     if (!str.equals(value)) {
                         matches = true;
                     }
                 }
-                break;
-            case "Contains":
+            }
+            case "Contains" -> {
                 for (final String str : allSearchableString) {
                     if (value != null && value.contains(str)) {
                         matches = true;
                     }
                 }
-                break;
-            case "Doesn't Contain":
+            }
+            case "Doesn't Contain" -> {
                 for (final String str : allSearchableString) {
                     if (value != null && !value.contains(str)) {
                         matches = true;
                     }
                 }
-
-                break;
-            case "Begins With":
+            }
+            case "Begins With" -> {
                 for (final String str : allSearchableString) {
                     if (value != null && value.startsWith(str)) {
                         matches = true;
                     }
                 }
-                break;
-            case "Ends With":
+            }
+            case "Ends With" -> {
                 for (final String str : allSearchableString) {
                     if (value != null && value.endsWith(str)) {
                         matches = true;
                     }
                 }
-                break;
-            case "Matches (Regex)":
+            }
+            case "Matches (Regex)" -> {
                 for (final String str : allSearchableString) {
                     if (value != null) {
                         final int caseSensitivity = Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE;
@@ -454,9 +429,10 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                         matches = match.find();
                     }
                 }
-                break;
-            default:
-                break;
+            }
+            default -> {
+                // Do nothing
+            }
         }
         return matches;
     }
@@ -483,37 +459,34 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
          * float value
          */
         switch (floatValues.getFilter()) {
-            case IS:
+            case IS -> {
                 if (floatValues.getFloatValuePrimary() == value) {
                     matches = true;
                 }
-                break;
-            case IS_NOT:
+            }
+            case IS_NOT -> {
                 if (floatValues.getFloatValuePrimary() != value) {
                     matches = true;
                 }
-                break;
-            case "Is Less Than":
+            }
+            case "Is Less Than" -> {
                 if (floatValues.getFloatValuePrimary() > value) {
                     matches = true;
                 }
-                break;
-            case "Is Greater Than":
+            }
+            case "Is Greater Than" -> {
                 if (floatValues.getFloatValuePrimary() < value) {
                     matches = true;
                 }
-                break;
-            case "Is Between":
+            }
+            case "Is Between" -> {
                 if (value < floatValues.getFloatValuePrimary() && value > floatValues.getFloatValueSecondary()) {
                     matches = true;
                 }
                 if (value > floatValues.getFloatValuePrimary() && value < floatValues.getFloatValueSecondary()) {
                     matches = true;
                 }
-
-                break;
-            default:
-                break;
+            }
         }
         return matches;
     }
@@ -603,28 +576,28 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
          * date time values
          */
         switch (dateTimeValues.getFilter()) {
-            case "Occured On":
+            case "Occured On" -> {
                 if (valueDateTime.isEqual(attributeDateTime)) {
                     matches = true;
                 }
-                break;
+            }
 
-            case "Didn't Occur On":
+            case "Didn't Occur On" -> {
                 if (!valueDateTime.isEqual(attributeDateTime)) {
                     matches = true;
                 }
-                break;
-            case "Occured Before":
+            }
+            case "Occured Before" -> {
                 if (!valueDateTime.isBefore(attributeDateTime)) {
                     matches = true;
                 }
-                break;
-            case "Occured After":
+            }
+            case "Occured After" -> {
                 if (!valueDateTime.isAfter(attributeDateTime)) {
                     matches = true;
                 }
-                break;
-            case "Occured Between":
+            }
+            case "Occured Between" -> {
                 if (dateTimeValues.getDateTimeStringSecondaryValue().isEmpty()) {
                     return matches;
                 }
@@ -637,7 +610,10 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                 if (attributeDateTime.isAfter(valueDateTimeTwo) && attributeDateTime.isBefore(valueDateTime)) {
                     matches = true;
                 }
-                break;
+            }
+            default -> {
+                // do nothing
+            }
         }
         return matches;
     }

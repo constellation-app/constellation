@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ public class StringValueStore implements ValueStore<StringValue> {
         values = EMPTY_VALUES;
     }
 
-    public StringValueStore(String[] values) {
+    public StringValueStore(final String[] values) {
         this.values = values;
     }
 
@@ -47,17 +47,17 @@ public class StringValueStore implements ValueStore<StringValue> {
     }
 
     @Override
-    public void setCapacity(int capacity) {
+    public void setCapacity(final int capacity) {
         values = Arrays.copyOf(values, capacity);
     }
 
     @Override
-    public void write(int id, StringValue value) {
+    public void write(final int id, final StringValue value) {
         values[id] = value.readString();
     }
 
     @Override
-    public void read(int id, StringValue value) {
+    public void read(final int id, final StringValue value) {
         value.writeString(values[id]);
     }
 }

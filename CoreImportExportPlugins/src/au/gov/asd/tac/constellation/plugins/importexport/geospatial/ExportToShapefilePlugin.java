@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape.GeometryType;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape.SpatialReference;
@@ -69,20 +70,19 @@ public class ExportToShapefilePlugin extends AbstractGeoExportPlugin {
 
     @Override
     protected ExtensionFilter getExportType() {
-        return new ExtensionFilter("Shapefile", "*.shp");
+        return new ExtensionFilter("Shapefile", FileExtensionConstants.SHAPE);
     }
 
     @Override
     protected void exportGeo(final PluginParameters parameters, final String uuid, final Map<String, String> shapes, final Map<String, Map<String, Object>> attributes, final File output) throws IOException {
         final ParameterValue geometryTypePV = parameters.getSingleChoice(GEOMETRY_TYPE_PARAMETER_ID);
-        assert (geometryTypePV instanceof GeometryTypeParameterValue);
-        final GeometryType geometryType = ((GeometryTypeParameterValue) geometryTypePV).getGeometryType();
-
         final ParameterValue spatialReferencePV = parameters.getSingleChoice(SPATIAL_REFERENCE_PARAMETER_ID);
-        assert (spatialReferencePV instanceof SpatialReferenceParameterValue);
-        final SpatialReference spatialReference = ((SpatialReferenceParameterValue) spatialReferencePV).getSpatialReference();
-
-        Shape.generateShapefile(uuid, geometryType, shapes, attributes, output, spatialReference);
+        
+        if (geometryTypePV instanceof GeometryTypeParameterValue geometryTypeParameterValue && spatialReferencePV instanceof SpatialReferenceParameterValue spatialReferenceParameterValue) {
+            final GeometryType geometryType = geometryTypeParameterValue.getGeometryType();
+            final SpatialReference spatialReference = spatialReferenceParameterValue.getSpatialReference();
+            Shape.generateShapefile(uuid, geometryType, shapes, attributes, output, spatialReference);
+        }
     }
 
     @Override
@@ -129,8 +129,7 @@ public class ExportToShapefilePlugin extends AbstractGeoExportPlugin {
 
         @Override
         public final boolean setObjectValue(final Object o) {
-            if (o instanceof GeometryType) {
-                final GeometryType type = (GeometryType) o;
+            if (o instanceof GeometryType type) {
                 final boolean equal = Objects.equals(type, geometryType);
                 if (!equal) {
                     geometryType = type;

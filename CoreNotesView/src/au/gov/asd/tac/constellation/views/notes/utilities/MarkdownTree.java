@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.notes.utilities;
 
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -29,12 +30,12 @@ import javafx.scene.text.TextFlow;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * This class makes a tree containing nodes that represent text and their
- * respective formatting
+ * This class makes a tree containing nodes that represent text and their respective formatting
  *
  * @author altair1673
  */
 public class MarkdownTree {
+
     // Root node that doesn't contain any text and is of no type, it is just an entry point for the tree
     private final MarkdownNode root;
 
@@ -73,7 +74,6 @@ public class MarkdownTree {
         this.markdownEnabled = markdownEnabled;
     }
 
-
     /**
      * Processes the markdown text
      */
@@ -87,8 +87,7 @@ public class MarkdownTree {
     }
 
     /**
-     * Process raw string and record formatting and text inside MarkdownNodes
-     * and add them to the tree
+     * Process raw string and record formatting and text inside MarkdownNodes and add them to the tree
      *
      * @param currentNode - The current node the text is under or contained in
      * @param text - The piece of text that the function is currently processing
@@ -441,7 +440,7 @@ public class MarkdownTree {
         // Base case, make a TextHelper object with the raw text from the NORMAL markdown node and add no formatting and return that in a list
         if (currentNode.getType() == MarkdownNode.Type.NORMAL) {
             final TextHelper text = new TextHelper(currentNode.getValue());
-            text.setFill(Color.WHITE);
+            text.setFill(JavafxStyleManager.isDarkTheme() ? Color.WHITE : Color.BLACK);
             textNodes.add(text);
             return textNodes;
             // If the currentNode is an ordered list then add in a TextHelper signifying the begining of a list
@@ -459,7 +458,7 @@ public class MarkdownTree {
             // If the current node is a list item add in a text helper containing a new line character and the number of that list
         } else if (currentNode.getType() == MarkdownNode.Type.LIST_ITEM) {
             final TextHelper listItemNumber = new TextHelper("\n" + currentNode.getLatestListItem() + ". ");
-            listItemNumber.setFill(Color.WHITE);
+            listItemNumber.setFill(JavafxStyleManager.isDarkTheme() ? Color.WHITE : Color.BLACK);
             textNodes.add(listItemNumber);
         }
 
@@ -474,24 +473,12 @@ public class MarkdownTree {
                 if (currentNode.getType() == MarkdownNode.Type.HEADING) {
                     int level = currentNode.getHeadingLevel();
                     switch (level) {
-                        case 1:
-                            currentText.setSize(32.0);
-                            break;
-                        case 2:
-                            currentText.setSize(24.0);
-                            break;
-                        case 3:
-                            currentText.setSize(18.72);
-                            break;
-                        case 4:
-                            currentText.setSize(16.0);
-                            break;
-                        case 5:
-                            currentText.setSize(12.28);
-                            break;
-                        default:
-                            currentText.setSize(10.72);
-                            break;
+                        case 1 -> currentText.setSize(32.0);
+                        case 2 -> currentText.setSize(24.0);
+                        case 3 -> currentText.setSize(18.72);
+                        case 4 -> currentText.setSize(16.0);
+                        case 5 -> currentText.setSize(12.28);
+                        default -> currentText.setSize(10.72);
                     }
                 } else if (currentNode.getType() == MarkdownNode.Type.ITALIC) {
                     currentText.setPosture(FontPosture.ITALIC);

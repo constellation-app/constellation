@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ public class Graphics3DUtilities {
     }
 
     public static Matrix44f getModelViewMatrix(final Camera camera) {
-        Matrix44f mat = new Matrix44f();
+        final Matrix44f mat = new Matrix44f();
         getModelViewMatrix(camera.lookAtEye, camera.lookAtCentre, camera.lookAtUp, mat);
         return mat;
     }
@@ -125,9 +125,9 @@ public class Graphics3DUtilities {
         tr[2] /= w;
 
         // At this point, the projected coordinates (tr) are normalised to the unit cube.
-        float winx = viewport[0] + (viewport[2] * (tr[0] + 1.0F)) / 2.0F;
-        float winy = viewport[1] + (viewport[3] * (tr[1] + 1.0F)) / 2.0F;
-        float winz = (tr[2] + 1.0F) / 2.0F;
+        final float winx = viewport[0] + (viewport[2] * (tr[0] + 1.0F)) / 2.0F;
+        final float winy = viewport[1] + (viewport[3] * (tr[1] + 1.0F)) / 2.0F;
+        final float winz = (tr[2] + 1.0F) / 2.0F;
 
         // Now we're projected to the window.
         projectedPosition.set(winx, winy, winz, w);
@@ -152,7 +152,7 @@ public class Graphics3DUtilities {
         tr[1] *= w;
         tr[2] *= w;
 
-        Matrix44f invmat = new Matrix44f();
+        final Matrix44f invmat = new Matrix44f();
         invmat.invert(modelViewProjectionMatrix);
         final float[] untr = invmat.multiply(tr[0], tr[1], tr[2], tr[3]);
 
@@ -224,7 +224,7 @@ public class Graphics3DUtilities {
         // At this point, the projected coordinates (tr) are normalised to the unit cube.
         float winx = viewport[0] + (viewport[2] * (tr[0] + 1.0F)) / 2.0F;
         float winy = viewport[1] + (viewport[3] * (tr[1] + 1.0F)) / 2.0F;
-        float winz = (tr[2] + 1.0F) / 2.0F;
+        final float winz = (tr[2] + 1.0F) / 2.0F;
 
         // Now we're projected to the window.
         // Add the delta from the before and after mouse movement.
@@ -265,7 +265,6 @@ public class Graphics3DUtilities {
      */
     public static Vector3f mix(final Vector3f v1, final Vector3f v2, final float a) {
         final float a1 = 1 - a;
-
         return new Vector3f(
                 v1.getX() * a1 + v2.getX() * a,
                 v1.getY() * a1 + v2.getY() * a,
@@ -275,7 +274,6 @@ public class Graphics3DUtilities {
 
     public static float mix(final float f1, final float f2, final float a) {
         final float a1 = 1 - a;
-
         return f1 * a1 + f2 * a;
     }
 
@@ -315,7 +313,6 @@ public class Graphics3DUtilities {
      */
     public static float distance(final Vector3f p0, final Vector3f p1) {
         final Vector3f delta = Vector3f.subtract(p0, p1);
-
         return delta.getLength();
     }
 }

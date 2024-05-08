@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,12 +41,11 @@ public interface AttributeValueTranslator {
 
     public static AttributeValueTranslator getNativeTranslator(final String attrType) {
         try {
-            final AttributeDescription description = AttributeRegistry.getDefault()
-                    .getAttributes().get(attrType).getDeclaredConstructor().newInstance();
+            final AttributeDescription description = AttributeRegistry.getDefault().getAttributes().get(attrType)
+                    .getDeclaredConstructor().newInstance();
             return description::convertToNativeValue;
-        } catch (final IllegalAccessException | IllegalArgumentException
-                | InstantiationException | NoSuchMethodException
-                | SecurityException | InvocationTargetException ex) {
+        } catch (final IllegalAccessException | IllegalArgumentException | InstantiationException 
+                | NoSuchMethodException | SecurityException | InvocationTargetException ex) {
             LOGGER.warning("Could not create attribute description corresponding to the given type");
             return IDENTITY;
         }

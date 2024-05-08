@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.importexport;
 
 import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
@@ -42,9 +43,9 @@ public class ActionPane extends BorderPane {
     private static final int HBOX_SPACING = 5;
     private final Button importButton;
     private final CheckBox skipInvalidRowsCheckBox;
-    private final ImportController importController;
+    private final ImportController<?> importController;
 
-    public ActionPane(final ImportController controller) {
+    public ActionPane(final ImportController<?> controller) {
         this.importController = controller;
 
         final HBox runBox = new HBox();
@@ -69,9 +70,8 @@ public class ActionPane extends BorderPane {
         skipInvalidRowsCheckBox.setSelected(false);
         skipInvalidRowsCheckBox.setDisable(true);        
         
-        skipInvalidRowsCheckBox.setOnAction((t) -> {
-            controller.setSkipInvalidRows(skipInvalidRowsCheckBox.isSelected());
-        });
+        skipInvalidRowsCheckBox.setOnAction((t) -> 
+            controller.setSkipInvalidRows(skipInvalidRowsCheckBox.isSelected()));
 
         runBox.getChildren().add(skipInvalidRowsCheckBox);
     }
@@ -80,11 +80,13 @@ public class ActionPane extends BorderPane {
         final Alert dialog;
         if (successful) {
             dialog = new Alert(Alert.AlertType.CONFIRMATION, "", ButtonType.OK);
+            dialog.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
             final ImageView successIcon = new ImageView(SUCCESS_ICON_PATH);
             dialog.setGraphic(successIcon);
 
         } else {
             dialog = new Alert(Alert.AlertType.ERROR, "", ButtonType.OK);
+            dialog.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         }
         dialog.setTitle(title);
         dialog.setHeaderText(header);

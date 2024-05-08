@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReportListener;
 import au.gov.asd.tac.constellation.views.notes.utilities.MarkdownTree;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javafx.geometry.Insets;
 import javafx.scene.text.TextFlow;
@@ -36,7 +37,7 @@ public class NotesViewEntry implements PluginReportListener {
     private String noteTitle;
     private String noteContent;
 
-    private String nodeColour = "#942483";
+    private String nodeColour = "#a26fc0";
     private final boolean userCreated;
     private Boolean graphAttribute;
     private List<Integer> nodesSelected;
@@ -134,7 +135,7 @@ public class NotesViewEntry implements PluginReportListener {
     }
 
     public List<String> getTags() {
-        return tags;
+        return Collections.unmodifiableList(tags);
     }
 
     public String getNodeColour() {

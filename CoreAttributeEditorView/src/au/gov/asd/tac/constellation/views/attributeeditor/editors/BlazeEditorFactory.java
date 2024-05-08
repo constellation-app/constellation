@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,6 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -66,7 +65,6 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
 
         private TextField angleTextField;
         private ColorPicker picker;
-        private CheckBox noValueCheckBox;
 
         protected BlazeEditor(final EditOperation editOperation, final DefaultGetter<Blaze> defaultGetter, final ValueValidator<Blaze> validator, final String editedItemName, final Blaze initialValue) {
             super(editOperation, defaultGetter, validator, editedItemName, initialValue);
@@ -74,7 +72,6 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
 
         @Override
         public void updateControlsWithValue(final Blaze value) {
-            noValueCheckBox.setSelected(false);
             if (value != null) {
                 angleTextField.setText(String.valueOf(value.getAngle()));
                 picker.setValue(value.getColor().getJavaFXColor());
@@ -83,15 +80,13 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
 
         @Override
         protected Blaze getValueFromControls() throws ControlsInvalidException {
-            if (noValueCheckBox.isSelected()) {
-                return null;
-            }
-
             try {
                 final int angle = Integer.parseInt(angleTextField.getText());
+
                 if (angle >= 360) {
                     throw new ControlsInvalidException("Blaze angle must be in range [0, 360)");
                 }
+
                 return new Blaze(angle, ConstellationColor.fromFXColor(picker.getValue()));
             } catch (final NumberFormatException ex) {
                 throw new ControlsInvalidException("Blaze angle must be a number.");
@@ -138,6 +133,7 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
             for (final ConstellationColor c : ConstellationColor.NAMED_COLOR_LIST) {
                 namedColors.add(c);
             }
+
             final ComboBox<ConstellationColor> colorCombo = new ComboBox<>(namedColors);
             final Callback<ListView<ConstellationColor>, ListCell<ConstellationColor>> cellFactory = (final ListView<ConstellationColor> p) -> new ListCell<ConstellationColor>() {
                 @Override
@@ -151,6 +147,7 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
                     }
                 }
             };
+
             colorCombo.setCellFactory(cellFactory);
             colorCombo.setButtonCell(cellFactory.call(null));
             namedLabel.setLabelFor(colorCombo);
@@ -180,16 +177,7 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
                         colorCombo.setValue(null);
                     }
                 }
-                update();
-            });
 
-            noValueCheckBox = new CheckBox(NO_VALUE_LABEL);
-            noValueCheckBox.setAlignment(Pos.CENTER);
-            noValueCheckBox.selectedProperty().addListener((v, o, n) -> {
-                angleHBox.getChildren().forEach(button -> button.setDisable(noValueCheckBox.isSelected()));
-                angleTextField.setDisable(noValueCheckBox.isSelected());
-                colorCombo.setDisable(noValueCheckBox.isSelected());
-                picker.setDisable(noValueCheckBox.isSelected());
                 update();
             });
 
@@ -198,8 +186,12 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
             controls.add(colorSeparator, 0, 2, 2, 1);
             controls.addRow(3, namedLabel, colorCombo);
             controls.addRow(4, pickerLabel, picker);
-            controls.addRow(5, noValueCheckBox);
             return controls;
+        }
+
+        @Override
+        public boolean noValueCheckBoxAvailable() {
+            return true;
         }
     }
 }

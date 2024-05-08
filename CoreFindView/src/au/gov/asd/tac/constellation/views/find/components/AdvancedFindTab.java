@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,7 @@ import au.gov.asd.tac.constellation.views.find.components.advanced.criteriavalue
 import au.gov.asd.tac.constellation.views.find.components.advanced.utilities.AdvancedSearchParameters;
 import au.gov.asd.tac.constellation.views.find.utilities.ActiveFindResultsList;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
@@ -272,7 +273,7 @@ public class AdvancedFindTab extends Tab {
         final List<AdvancedCriteriaBorderPane> criteriaList = getCorrespondingCriteriaList(type);
 
         for (final AdvancedCriteriaBorderPane criteriaPane : criteriaList) {
-            criteriaPane.setStyle(i % 2 == 0 ? "-fx-background-color: #4d4d4d;" : "-fx-background-color: #222222;");
+            criteriaPane.setStyle(i % 2 == 0 ? "-fx-background-color: -criteria-grid;" : "-fx-background-color: -criteria-grid-alt;");
             i++;
         }
     }
@@ -389,26 +390,17 @@ public class AdvancedFindTab extends Tab {
      */
     private AdvancedCriteriaBorderPane getNewCriteriaPanel(final String attributeType, final String attributeName, final GraphElementType type) {
         //Switch statement to determine what type of panel is being requested
-        switch (attributeType) {
-            case StringAttributeDescription.ATTRIBUTE_NAME:
-                return new StringCriteriaPanel(this, attributeName, type);
-            case FloatAttributeDescription.ATTRIBUTE_NAME:
-                return new FloatCriteriaPanel(this, attributeName, type);
-            case IntegerAttributeDescription.ATTRIBUTE_NAME:
-                return new FloatCriteriaPanel(this, attributeName, type);
-            case LongAttributeDescription.ATTRIBUTE_NAME:
-                return new FloatCriteriaPanel(this, attributeName, type);
-            case BooleanAttributeDescription.ATTRIBUTE_NAME:
-                return new BooleanCriteriaPanel(this, attributeName, type);
-            case ColorAttributeDescription.ATTRIBUTE_NAME:
-                return new ColorCriteriaPanel(this, attributeName, type);
-            case ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME:
-                return new DateTimeCriteriaPanel(this, attributeName, type);
-            case IconAttributeDescription.ATTRIBUTE_NAME:
-                return new IconCriteriaPanel(this, attributeName, type);
-            default:
-                return new StringCriteriaPanel(this, attributeName, type);
-        }
+        return switch (attributeType) {
+            case StringAttributeDescription.ATTRIBUTE_NAME -> new StringCriteriaPanel(this, attributeName, type);
+            case FloatAttributeDescription.ATTRIBUTE_NAME -> new FloatCriteriaPanel(this, attributeName, type);
+            case IntegerAttributeDescription.ATTRIBUTE_NAME -> new FloatCriteriaPanel(this, attributeName, type);
+            case LongAttributeDescription.ATTRIBUTE_NAME -> new FloatCriteriaPanel(this, attributeName, type);
+            case BooleanAttributeDescription.ATTRIBUTE_NAME -> new BooleanCriteriaPanel(this, attributeName, type);
+            case ColorAttributeDescription.ATTRIBUTE_NAME -> new ColorCriteriaPanel(this, attributeName, type);
+            case ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME -> new DateTimeCriteriaPanel(this, attributeName, type);
+            case IconAttributeDescription.ATTRIBUTE_NAME -> new IconCriteriaPanel(this, attributeName, type);
+            default -> new StringCriteriaPanel(this, attributeName, type);
+        };
     }
 
     /**
@@ -570,7 +562,7 @@ public class AdvancedFindTab extends Tab {
      * @return nodeFindCriteriaList
      */
     public List<AdvancedCriteriaBorderPane> getNodeFindCriteriaList() {
-        return nodeFindCriteriaList;
+        return Collections.unmodifiableList(nodeFindCriteriaList);
     }
 
     /**
@@ -580,7 +572,7 @@ public class AdvancedFindTab extends Tab {
      * @return transactionFindCriteriaList
      */
     public List<AdvancedCriteriaBorderPane> getTransactionFindCriteriaList() {
-        return transactionFindCriteriaList;
+        return Collections.unmodifiableList(transactionFindCriteriaList);
     }
 
     /**

@@ -274,7 +274,7 @@ public class IntegerParameterType extends PluginParameterType<IntegerParameterVa
 
         @Override
         public Object getObjectValue() {
-            return i;
+            return get();
         }
 
         @Override
@@ -282,8 +282,8 @@ public class IntegerParameterType extends PluginParameterType<IntegerParameterVa
             final int newi;
             if (o == null) {
                 newi = 0;
-            } else if (o instanceof Integer) {
-                newi = (Integer) o;
+            } else if (o instanceof Integer integer) {
+                newi = integer;
             } else {
                 throw new IllegalArgumentException(String.format("Unexpected class %s", o.getClass()));
             }
@@ -321,7 +321,7 @@ public class IntegerParameterType extends PluginParameterType<IntegerParameterVa
 
         @Override
         public Number getNumberValue() {
-            return i;
+            return get();
         }
 
         @Override

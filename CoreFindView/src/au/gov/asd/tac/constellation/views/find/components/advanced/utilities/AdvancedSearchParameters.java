@@ -1,12 +1,12 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
- * 
+ * Copyright 2010-2024 Australian Signals Directorate
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -180,64 +180,60 @@ public class AdvancedSearchParameters {
                     // determine the attribute type and handle the comparison appropriately
                     // for the object comparion all values must be identical
                     switch (values.getAttributeType()) {
-                        // treat values as strings
-                        case StringAttributeDescription.ATTRIBUTE_NAME:
+                        case StringAttributeDescription.ATTRIBUTE_NAME -> {
+                            // treat values as strings
                             StringCriteriaValues stringParameterValues = (StringCriteriaValues) values;
                             StringCriteriaValues stringActualValues = (StringCriteriaValues) parameters.getCriteriaValuesList().get(i);
                             if ((!stringParameterValues.equals(stringActualValues))
                                     || (stringParameterValues.isIgnoreCase() != stringActualValues.isIgnoreCase())
                                     || (stringParameterValues.isUseList() != stringActualValues.isUseList())
                                     || (!stringActualValues.isUseList() && !stringParameterValues.getText().equals(stringActualValues.getText()))
-                                    || (stringActualValues.isUseList() && !stringParameterValues.getTextList().equals(stringActualValues.getTextList()))
-                                    || (!stringActualValues.equals(stringParameterValues))
-                                    || (!stringActualValues.getText().equals(stringParameterValues.getText()))) {
+                                    || (stringActualValues.isUseList() && !stringParameterValues.getTextList().equals(stringActualValues.getTextList()))) {
                                 return false;
                             }
-                            break;
-                        // treat values as floats
-                        case FloatAttributeDescription.ATTRIBUTE_NAME:
+                        }
+                        case FloatAttributeDescription.ATTRIBUTE_NAME -> {
+                            // treat values as floats
                             FloatCriteriaValues floatParameterValues = (FloatCriteriaValues) values;
                             FloatCriteriaValues floatActualValues = (FloatCriteriaValues) parameters.getCriteriaValuesList().get(i);
                             if (floatParameterValues.getFloatValuePrimary() != floatActualValues.getFloatValuePrimary()
                                     || floatParameterValues.getFloatValueSecondary() != floatActualValues.getFloatValueSecondary()) {
                                 return false;
                             }
-                            break;
-                        // treat values as booleans
-                        case BooleanAttributeDescription.ATTRIBUTE_NAME:
+                        }
+                        case BooleanAttributeDescription.ATTRIBUTE_NAME -> {
+                            // treat values as booleans
                             BooleanCriteriaValues boolParameterValues = (BooleanCriteriaValues) values;
                             BooleanCriteriaValues boolActualValues = (BooleanCriteriaValues) parameters.getCriteriaValuesList().get(i);
                             if (boolParameterValues.getBoolValue() != boolActualValues.getBoolValue()) {
                                 return false;
                             }
-                            break;
-                        // treat values as colors
-                        case ColorAttributeDescription.ATTRIBUTE_NAME:
+                        }
+                        case ColorAttributeDescription.ATTRIBUTE_NAME -> {
+                            // treat values as colors
                             ColorCriteriaValues colorParameterValues = (ColorCriteriaValues) values;
                             ColorCriteriaValues colorActualValues = (ColorCriteriaValues) parameters.getCriteriaValuesList().get(i);
                             if (!colorParameterValues.getColorValue().equals(colorActualValues.getColorValue())) {
                                 return false;
                             }
-                            break;
-                        // treat values as dateTimes
-                        case ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME:
+                        }
+                        case ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME -> {
+                            // treat values as dateTimes
                             DateTimeCriteriaValues dateTimeParameterValues = (DateTimeCriteriaValues) values;
                             DateTimeCriteriaValues dateTimeActualValues = (DateTimeCriteriaValues) parameters.getCriteriaValuesList().get(i);
                             if (!dateTimeParameterValues.getDateTimeStringPrimaryValue().equals(dateTimeActualValues.getDateTimeStringPrimaryValue())
                                     || !dateTimeParameterValues.getDateTimeStringSecondaryValue().equals(dateTimeActualValues.getDateTimeStringSecondaryValue())) {
                                 return false;
                             }
-                            break;
-                        // treat values as icons
-                        case IconAttributeDescription.ATTRIBUTE_NAME:
+                        }
+                        case IconAttributeDescription.ATTRIBUTE_NAME -> {
+                            // treat values as icons
                             IconCriteriaValues iconParameterValues = (IconCriteriaValues) values;
                             IconCriteriaValues iconActualValues = (IconCriteriaValues) parameters.getCriteriaValuesList().get(i);
                             if (!iconParameterValues.getIconValue().equals(iconActualValues.getIconValue())) {
                                 return false;
                             }
-                            break;
-                        default:
-                            break;
+                        }
                     }
                 }
                 i++;

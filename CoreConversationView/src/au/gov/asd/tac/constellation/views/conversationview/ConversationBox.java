@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ListChangeListener.Change;
@@ -116,11 +115,13 @@ public final class ConversationBox extends StackPane {
     private volatile boolean isAdjustingContributionProviders = false;
     private volatile boolean isAdjustingSenderLabels;
 
+    private static final String CSS_BACKGROUND_COLOR_TRANSPARENT = "-fx-background-color: transparent;";
     private int foundCount;
     private int searchCount;
 
+    private static final boolean DARK_MODE = JavafxStyleManager.isDarkTheme();
     private static final String FOUND_TEXT = "Showing ";
-    private static final String FOUND_PASS_COLOR = "-fx-text-fill: yellow;";
+    private static final String FOUND_PASS_COLOR = DARK_MODE ? "-fx-text-fill: yellow;" : "-fx-text-fill: blue;";
     private static final String FOUND_FAIL_COLOR = "-fx-text-fill: red;";
     private final Label foundLabel = new Label();
 
@@ -141,10 +142,10 @@ public final class ConversationBox extends StackPane {
         setPrefSize(500, 500);
         setCache(true);
         setCacheHint(CacheHint.SPEED);
-        setStyle(JavafxStyleManager.CSS_BACKGROUND_COLOR_TRANSPARENT);
+        setStyle(CSS_BACKGROUND_COLOR_TRANSPARENT);
 
         final VBox content = new VBox();
-        content.setStyle(JavafxStyleManager.CSS_BACKGROUND_COLOR_TRANSPARENT);
+        content.setStyle(CSS_BACKGROUND_COLOR_TRANSPARENT);
 
         showToolTip.setSelected(true);
         showToolTip.setOnAction((ActionEvent t) -> tipsPane.setEnabled(showToolTip.isSelected()));
@@ -152,7 +153,7 @@ public final class ConversationBox extends StackPane {
         conversation.setSenderAttributeListener((possibleSenderAttributes, senderAttributes) -> {
             isAdjustingSenderLabels = true;
             senderAttributesMultiChoiceInput.getCheckModel().clearChecks();
-            possibleSenderAttributes = possibleSenderAttributes.stream().filter(Objects::nonNull).collect(Collectors.toList());
+            possibleSenderAttributes = possibleSenderAttributes.stream().filter(Objects::nonNull).toList();
             senderAttributesChoices.setAll(possibleSenderAttributes);
             for (final String senderAttribute : senderAttributes) {
                 senderAttributesMultiChoiceInput.getCheckModel().check(senderAttribute);
@@ -166,8 +167,9 @@ public final class ConversationBox extends StackPane {
             }
         });
 
-        final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor()));
+        final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor()));
         final Button helpButton = new Button("", helpImage);
+        helpButton.setStyle("-fx-border-color: transparent; -fx-background-color: transparent; -fx-effect: null; ");
         helpButton.setOnAction(event
                 -> new HelpCtx(this.getClass().getName()).display());
 
@@ -222,7 +224,7 @@ public final class ConversationBox extends StackPane {
 
         // Create the bubbles pane.
         bubbles = new ListView<>();
-        bubbles.setStyle(JavafxStyleManager.CSS_BACKGROUND_COLOR_TRANSPARENT);
+        bubbles.setStyle(CSS_BACKGROUND_COLOR_TRANSPARENT);
         bubbles.setCellFactory(callback -> new BubbleCell());
         VBox.setVgrow(bubbles, Priority.ALWAYS);
 
@@ -241,7 +243,7 @@ public final class ConversationBox extends StackPane {
 
         // Create controls to allow the user to search and highlight text within contributions.
         searchTextField.setPromptText("Type to search...");
-        searchTextField.setStyle("-fx-prompt-text-fill: #868686;");
+        searchTextField.setStyle("-fx-padding: 5 5 5 5;");
         searchTextField.setOnKeyTyped(e -> {
             foundLabel.setText("searching...");
             foundLabel.setStyle(FOUND_PASS_COLOR);
@@ -270,6 +272,7 @@ public final class ConversationBox extends StackPane {
         searchTextField.setPrefWidth(300);
 
         foundLabel.setPadding(new Insets(4, 8, 4, 8));
+        searchHBox.setSpacing(6);
         searchHBox.getChildren().addAll(searchTextField, prevButton, nextButton, foundLabel);
 
         content.getChildren().addAll(optionsPane, searchHBox, contributionsPane, bubbles);
@@ -312,15 +315,15 @@ public final class ConversationBox extends StackPane {
             visibleContributions.forEach(contribution -> {
                 final Region region = contribution.getContent(tipsPane);
 
-                if (region instanceof EnhancedTextArea) {
-                    foundCount += ((EnhancedTextArea) region).highlightText(searchTextField.getText());
+                if (region instanceof EnhancedTextArea enhancedTextArea) {
+                    foundCount += enhancedTextArea.highlightText(searchTextField.getText());
                     matches.put(foundCount, message);
                 }
 
-                if (region instanceof GridPane) {
-                    ((GridPane) region).getChildren().forEach(child -> {
-                        if (child instanceof EnhancedTextArea) {
-                            foundCount += ((EnhancedTextArea) child).highlightText(searchTextField.getText());
+                if (region instanceof GridPane gridPane) {
+                    gridPane.getChildren().forEach(child -> {
+                        if (child instanceof EnhancedTextArea textArea) {
+                            foundCount += textArea.highlightText(searchTextField.getText());
                             matches.put(foundCount, message);
                         }
                     });
@@ -442,7 +445,7 @@ public final class ConversationBox extends StackPane {
 
             // Handle the case where the cell is empty.
             if (empty || message == null) {
-                setStyle(JavafxStyleManager.CSS_BACKGROUND_COLOR_TRANSPARENT);
+                setStyle(CSS_BACKGROUND_COLOR_TRANSPARENT);
                 setGraphic(null);
             } else {
                 // Look for the bubble in the cache.
@@ -457,8 +460,7 @@ public final class ConversationBox extends StackPane {
                     bubbleBox = new BubbleBox(message);
                     bubbleCache.put(message, bubbleBox);
                 }
-
-                setStyle("-fx-background-color: " + message.getBackgroundColor() + "; -fx-padding: 5 5 5 5;");
+                setStyle("-fx-background-color: " + (DARK_MODE ? message.getBackgroundColor() : " #d8d8d8 ")  + "; -fx-padding: 5 5 5 5;");
                 setGraphic(bubbleBox);
             }
         }

@@ -83,10 +83,9 @@ public final class PasteGraphPlugin extends SimpleEditPlugin {
     public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
 
         final Object paramPaster = parameters.getParameters().get(RECORDSTORE_PARAMETER_ID).getObjectValue();
-        if (!(paramPaster instanceof RecordStore)) {
+        if (!(paramPaster instanceof RecordStore paster)) {
             throw new IllegalArgumentException(Bundle.MSG_Param(RECORDSTORE_PARAMETER_ID));
         }
-        final RecordStore paster = ((RecordStore) paramPaster);
 
         synchronized (paster) {
             GraphRecordStoreUtilities.addRecordStoreToGraph(wg, paster, false, false, null);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -91,64 +91,35 @@ public class ExportMenu {
     public void init() {
         exportButton = createMenuButton(EXPORT_ICON);
 
-        exportCsvMenu = createExportMenu(
-                EXPORT_CSV,
-                EXPORT_CSV_FILE_CHOOSER_TITLE,
-                FileExtensionConstants.COMMA_SEPARATED_VALUE,
-                EXPORT_CSV_FILE_CHOOSER_DESCRIPTION,
-                file -> new ExportToCsvFilePlugin(
-                        file,
-                        tablePane.getTable().getTableView(),
-                        tablePane.getActiveTableReference().getPagination(),
-                        false
-                )
+        exportCsvMenu = createExportMenu(EXPORT_CSV, EXPORT_CSV_FILE_CHOOSER_TITLE, 
+                FileExtensionConstants.COMMA_SEPARATED_VALUE, EXPORT_CSV_FILE_CHOOSER_DESCRIPTION, 
+                file -> new ExportToCsvFilePlugin(file, tablePane.getTable().getTableView(),
+                        tablePane.getActiveTableReference().getPagination(), false)
         );
 
-        exportCsvSelectionMenu = createExportMenu(
-                EXPORT_CSV_SELECTION,
-                EXPORT_CSV_FILE_CHOOSER_TITLE,
-                FileExtensionConstants.COMMA_SEPARATED_VALUE,
-                EXPORT_CSV_FILE_CHOOSER_DESCRIPTION,
-                file -> new ExportToCsvFilePlugin(
-                        file,
-                        tablePane.getTable().getTableView(),
-                        tablePane.getActiveTableReference().getPagination(),
-                        true
-                )
+        exportCsvSelectionMenu = createExportMenu(EXPORT_CSV_SELECTION, EXPORT_CSV_FILE_CHOOSER_TITLE,
+                FileExtensionConstants.COMMA_SEPARATED_VALUE, EXPORT_CSV_FILE_CHOOSER_DESCRIPTION,
+                file -> new ExportToCsvFilePlugin(file, tablePane.getTable().getTableView(),
+                        tablePane.getActiveTableReference().getPagination(), true)
         );
 
-        exportExcelMenu = createExportMenu(
-                EXPORT_XLSX,
-                EXPORT_XLSX_FILE_CHOOSER_TITLE,
-                FileExtensionConstants.XLSX,
-                EXPORT_XLSX_FILE_CHOOSER_DESCRIPTION,
-                file -> new ExportToExcelFilePlugin(
-                        file,
-                        tablePane.getTable().getTableView(),
+        exportExcelMenu = createExportMenu(EXPORT_XLSX, EXPORT_XLSX_FILE_CHOOSER_TITLE,
+                FileExtensionConstants.XLSX, EXPORT_XLSX_FILE_CHOOSER_DESCRIPTION,
+                file -> new ExportToExcelFilePlugin(file, tablePane.getTable().getTableView(),
                         tablePane.getActiveTableReference().getPagination(),
                         tablePane.getActiveTableReference().getUserTablePreferences().getMaxRowsPerPage(),
-                        false,
-                        tablePane.getParentComponent().getCurrentGraph().getId()
-                )
+                        false, tablePane.getParentComponent().getCurrentGraph().getId())
         );
 
-        exportExcelSelectionMenu = createExportMenu(
-                EXPORT_XLSX_SELECTION,
-                EXPORT_XLSX_FILE_CHOOSER_TITLE,
-                FileExtensionConstants.XLSX,
-                EXPORT_XLSX_FILE_CHOOSER_DESCRIPTION,
-                file -> new ExportToExcelFilePlugin(
-                        file,
-                        tablePane.getTable().getTableView(),
+        exportExcelSelectionMenu = createExportMenu(EXPORT_XLSX_SELECTION, EXPORT_XLSX_FILE_CHOOSER_TITLE,
+                FileExtensionConstants.XLSX, EXPORT_XLSX_FILE_CHOOSER_DESCRIPTION,
+                file -> new ExportToExcelFilePlugin(file, tablePane.getTable().getTableView(),
                         tablePane.getActiveTableReference().getPagination(),
                         tablePane.getActiveTableReference().getUserTablePreferences().getMaxRowsPerPage(),
-                        true,
-                        tablePane.getParentComponent().getCurrentGraph().getId()
-                )
+                        true, tablePane.getParentComponent().getCurrentGraph().getId())
         );
 
-        exportButton.getItems().addAll(exportCsvMenu, exportCsvSelectionMenu,
-                exportExcelMenu, exportExcelSelectionMenu);
+        exportButton.getItems().addAll(exportCsvMenu, exportCsvSelectionMenu, exportExcelMenu, exportExcelSelectionMenu);
     }
 
     /**
@@ -229,10 +200,8 @@ public class ExportMenu {
      * will write to the passed file
      * @return the created menu item
      */
-    private MenuItem createExportMenu(final String menuTitle,
-            final String fileChooserTitle,
-            final String expectedFileExtension,
-            final String fileChooserDescription,
+    private MenuItem createExportMenu(final String menuTitle, final String fileChooserTitle, 
+            final String expectedFileExtension, final String fileChooserDescription,
             final Function<File, Plugin> exportPluginCreator) {
         final MenuItem menuItem = new MenuItem(menuTitle);
 
@@ -246,7 +215,7 @@ public class ExportMenu {
      * Action handler for menu items that will export table rows to either CSV
      * or Excel.
      */
-    class ExportMenuItemActionHandler implements EventHandler<ActionEvent> {
+    protected class ExportMenuItemActionHandler implements EventHandler<ActionEvent> {
 
         private final String fileChooserTitle;
         private final String expectedFileExtension;
@@ -267,10 +236,8 @@ public class ExportMenu {
          * @param exportPluginCreator a function that creates an export plugin
          * that will write to the passed file
          */
-        public ExportMenuItemActionHandler(final String fileChooserTitle,
-                final String expectedFileExtension,
-                final String fileChooserDescription,
-                final Function<File, Plugin> exportPluginCreator) {
+        public ExportMenuItemActionHandler(final String fileChooserTitle, final String expectedFileExtension,
+                final String fileChooserDescription, final Function<File, Plugin> exportPluginCreator) {
             this.fileChooserTitle = fileChooserTitle;
             this.expectedFileExtension = expectedFileExtension;
             this.fileChooserDescription = fileChooserDescription;
@@ -304,9 +271,8 @@ public class ExportMenu {
                                     final ThreadConstraints workerConstraints = ThreadConstraints.getConstraints();
                                     workerConstraints.setCurrentReport(callingConstraints.getCurrentReport());                                    
                                     try {
-                                        PluginExecution.withPlugin(
-                                                exportPluginCreator.apply(fileName)
-                                        ).executeNow((Graph) null);
+                                        PluginExecution.withPlugin(exportPluginCreator.apply(fileName))
+                                                .executeNow((Graph) null);
                                     } catch (final InterruptedException ex) {
                                         LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                                         Thread.currentThread().interrupt();

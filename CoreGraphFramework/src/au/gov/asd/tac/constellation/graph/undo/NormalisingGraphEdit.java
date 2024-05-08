@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,8 +63,8 @@ public class NormalisingGraphEdit implements GraphEdit {
 
     @Override
     public void addVertex(final int vertex) {
-        Vertex newVertex = new Vertex(vertex);
-        Vertex currentVertex = vertices.put(vertex, newVertex);
+        final Vertex newVertex = new Vertex(vertex);
+        final Vertex currentVertex = vertices.put(vertex, newVertex);
         if (currentVertex != null) {
             newVertex.setPrevious(currentVertex);
             newVertex.setVersion(currentVertex.getVersion() + 1);
@@ -82,9 +82,8 @@ public class NormalisingGraphEdit implements GraphEdit {
     }
 
     @Override
-    public void addTransaction(final int sourceVertex,
-            final int destinationVertex, final boolean directed, final int transaction) {
-
+    public void addTransaction(final int sourceVertex, final int destinationVertex, final boolean directed, 
+            final int transaction) {
         Vertex currentSource = vertices.get(sourceVertex);
         if (currentSource == null) {
             currentSource = new Vertex(sourceVertex);
@@ -97,9 +96,8 @@ public class NormalisingGraphEdit implements GraphEdit {
             vertices.put(destinationVertex, currentDestination);
         }
 
-        Transaction newTransaction = new Transaction(transaction);
-
-        Transaction currentTransaction = transactions.put(transaction, newTransaction);
+        final Transaction newTransaction = new Transaction(transaction);
+        final Transaction currentTransaction = transactions.put(transaction, newTransaction);
         if (currentTransaction != null) {
             newTransaction.setPrevious(currentTransaction);
             newTransaction.setVersion(currentTransaction.getVersion() + 1);
@@ -107,11 +105,10 @@ public class NormalisingGraphEdit implements GraphEdit {
     }
 
     @Override
-    public void removeTransaction(final int sourceVertex,
-            final int destinationVertex, final boolean directed, final int transaction) {
+    public void removeTransaction(final int sourceVertex, final int destinationVertex, final boolean directed, 
+            final int transaction) {
         Transaction currentTransaction = transactions.get(transaction);
         if (currentTransaction == null) {
-
             Vertex currentSource = vertices.get(sourceVertex);
             if (currentSource == null) {
                 currentSource = new Vertex(sourceVertex);
@@ -133,8 +130,8 @@ public class NormalisingGraphEdit implements GraphEdit {
     }
 
     @Override
-    public void setTransactionSourceVertex(final int transaction,
-            final int oldSourceVertex, final int newSourceVertex, final boolean reverseTransaction) {
+    public void setTransactionSourceVertex(final int transaction, final int oldSourceVertex, final int newSourceVertex, 
+            final boolean reverseTransaction) {
 
         Vertex newSource = vertices.get(newSourceVertex);
         if (newSource == null) {
@@ -150,8 +147,8 @@ public class NormalisingGraphEdit implements GraphEdit {
     }
 
     @Override
-    public void setTransactionDestinationVertex(final int transaction,
-            final int oldDestinationVertex, final int newDestinationVertex, final boolean reverseTransaction) {
+    public void setTransactionDestinationVertex(final int transaction, final int oldDestinationVertex, 
+            final int newDestinationVertex, final boolean reverseTransaction) {
         throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
@@ -173,7 +170,7 @@ public class NormalisingGraphEdit implements GraphEdit {
     }
 
     @Override
-    public void updateAttributeDescription(int attribute, String oldDescription, String newDescription) {
+    public void updateAttributeDescription(final int attribute, final String oldDescription, final String newDescription) {
         throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
@@ -244,7 +241,7 @@ public class NormalisingGraphEdit implements GraphEdit {
         private int version;
         private E previous = null;
 
-        public Element(int id) {
+        public Element(final int id) {
             this.id = id;
         }
 
@@ -284,7 +281,7 @@ public class NormalisingGraphEdit implements GraphEdit {
 
     private class Transaction extends Element<Transaction> {
 
-        public Transaction(int id) {
+        public Transaction(final int id) {
             super(id);
         }
     }

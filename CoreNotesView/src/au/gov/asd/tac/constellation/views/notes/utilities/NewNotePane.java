@@ -37,6 +37,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
@@ -63,11 +64,11 @@ import javax.swing.WindowConstants;
  * @author altair1673
  */
 public class NewNotePane {
+
     private boolean isFirstTime = true;
-    private final Pane dialogPane;
+    private final BorderPane dialogPane;
     private static final String FONT_SIZE_STRING = "-fx-font-size:%d;";
     private final String fontStyle = String.format(FONT_SIZE_STRING, FontUtilities.getApplicationFontSize());
-    private static final String PROMPT_COLOR = "#909090";
     private static final double WIDTH = 500;
     private static final double HEIGHT = 300;
 
@@ -84,7 +85,7 @@ public class NewNotePane {
     private TextFlow previewTextFlow;
 
     private final ColorPicker newNoteColour;
-    private String previousColour = "#942483";
+    private String previousColour = "#a26fc0";
 
     private boolean applySelected = true;
     private boolean markdownSelected = false;
@@ -102,28 +103,25 @@ public class NewNotePane {
     public NewNotePane(final String userChosenColour) {
         this.userChosenColour = userChosenColour;
 
-        dialogPane = new Pane();
-        dialogPane.setMinHeight(HEIGHT);
-        dialogPane.setMaxHeight(HEIGHT);
-        dialogPane.setMinWidth(WIDTH);
-        dialogPane.setMaxWidth(WIDTH);
+        dialogPane = new BorderPane();
+        dialogPane.setPrefHeight(HEIGHT);
+        dialogPane.setPrefWidth(WIDTH);
 
         // TextField to enter new note title.
         titleField.setPromptText("Type a title...");
-        titleField.setStyle("-fx-text-fill: #FFFFFF;");
+        titleField.setId("title-field");
         titleField.setMinWidth(WIDTH - 5);
 
         // Checkbox to apply note to selection.
         applyToSelection.setSelected(true);
-        applyToSelection.setTextFill(Color.WHITE);
-        applyToSelection.setStyle("-fx-selected-box-color: #000000");
         applyToSelection.selectedProperty().addListener((ov, oldVal, newVal) -> applySelected = applyToSelection.isSelected());
 
         // TextArea to enter new note content.
         contentField = new TextArea();
         contentField.setMinWidth(WIDTH - 10);
         contentField.setPromptText("Type a note...");
-        contentField.setStyle(fontStyle + "-fx-prompt-text-fill: " + PROMPT_COLOR + ";" + " -fx-control-inner-background:#000000;");
+        contentField.setStyle(fontStyle);
+
         contentField.setWrapText(true);
 
         tabPane = new TabPane();
@@ -171,39 +169,27 @@ public class NewNotePane {
         tabPane.getTabs().addAll(writeTab, previewTab);
 
         enableMarkdown.setSelected(false);
-        enableMarkdown.setTextFill(Color.WHITE);
-        enableMarkdown.setStyle("-fx-selected-box-color: #000000");
         enableMarkdown.selectedProperty().addListener((ov, oldVal, newVal) -> markdownSelected = enableMarkdown.isSelected());
 
         // Colourpicker to set colour of new note
         newNoteColour = new ColorPicker(ConstellationColor.fromHtmlColor(NewNotePane.userChosenColour).getJavaFXColor());
         newNoteColour.setOnAction(event -> NewNotePane.userChosenColour = ConstellationColor.fromFXColor(newNoteColour.getValue()).getHtmlColor());
         newNoteColour.setBorder(new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
-        addButton.setStyle(String.format(FONT_SIZE_STRING, FontUtilities.getApplicationFontSize()) + "-fx-background-color: #26ED49;");
-        addButton.setPadding(new Insets(0, 15, 0, 15));
-        addButton.setMinHeight(25);
-        addButton.setTextFill(Color.BLACK);
-        addButton.setOnMouseEntered(event -> addButton.setStyle("-fx-background-color: #86ED26; "));
-        addButton.setOnMouseExited(event -> addButton.setStyle("-fx-background-color: #26ED49;  "));
+        addButton.setStyle(String.format(FONT_SIZE_STRING, FontUtilities.getApplicationFontSize()));
+        addButton.setId("add-button");
 
-        saveButton.setStyle(String.format(FONT_SIZE_STRING, FontUtilities.getApplicationFontSize()) + "-fx-background-color: #26ED49;");
+        saveButton.setStyle(String.format(FONT_SIZE_STRING, FontUtilities.getApplicationFontSize()));
         saveButton.setPadding(new Insets(0, 15, 0, 15));
         saveButton.setMinHeight(25);
-        saveButton.setTextFill(Color.BLACK);
-        saveButton.setOnMouseEntered(event -> saveButton.setStyle("-fx-background-color: #86ED26; "));
-        saveButton.setOnMouseExited(event -> saveButton.setStyle("-fx-background-color: #26ED49;  "));
 
         // Cancel button to stop creating a new note
-        cancelButton.setStyle(String.format(FONT_SIZE_STRING, FontUtilities.getApplicationFontSize()) + "-fx-background-color: #DEC20B;");
-        cancelButton.setPadding(new Insets(0, 15, 0, 15));
-        cancelButton.setMinHeight(25);
-        cancelButton.setTextFill(Color.BLACK);
+        cancelButton.setStyle(String.format(FONT_SIZE_STRING, FontUtilities.getApplicationFontSize()));
+        cancelButton.setId("add-button");
         cancelButton.setOnAction(event -> {
             clearTextFields();
             closePopUp();
         });
-        cancelButton.setOnMouseEntered(event -> cancelButton.setStyle("-fx-background-color: #DBA800; "));
-        cancelButton.setOnMouseExited(event -> cancelButton.setStyle("-fx-background-color: #DEC20B;  "));
+
         final Region gap = new Region();
         gap.setMinWidth(15);
         final HBox noteHBox = new HBox(5, newNoteColour, gap, addButton, cancelButton);
@@ -211,14 +197,11 @@ public class NewNotePane {
         noteHBox.setAlignment(Pos.CENTER_RIGHT);
 
         final HBox cbHBox = new HBox(30, applyToSelection, enableMarkdown);
-        final VBox addNoteVBox = new VBox(5, tabPane, cbHBox, noteHBox);
-        addNoteVBox.setAlignment(Pos.CENTER_LEFT);
-        addNoteVBox.setStyle(fontStyle + "-fx-padding: 5px;");
-        addNoteVBox.setMinHeight(220);
 
-        dialogPane.setBackground(new Background(new BackgroundFill(ConstellationColor.fromHtmlColor("#222222").getJavaFXColor(), null, null)));
-
-        dialogPane.getChildren().add(addNoteVBox);
+        final VBox paramVBox = new VBox(cbHBox, noteHBox);
+        paramVBox.setStyle(fontStyle + "-fx-padding: 5px;");
+        dialogPane.setCenter(tabPane);
+        dialogPane.setBottom(paramVBox);
 
         inEditMode.addListener((obj, old, newVal) -> {
             noteHBox.getChildren().clear();
@@ -236,8 +219,8 @@ public class NewNotePane {
 
     private void resizeTextFlows(final TextFlow textFlow, final double scale) {
         for (int i = 0; i < textFlow.getChildren().size(); ++i) {
-            if (textFlow.getChildren().get(i) instanceof TextFlow) {
-                resizeTextFlows((TextFlow) textFlow.getChildren().get(i), scale + 0.5);
+            if (textFlow.getChildren().get(i) instanceof TextFlow textFlowChild) {
+                resizeTextFlows(textFlowChild, scale + 0.5);
             }
         }
         textFlow.setMaxHeight(textFlow.getMaxHeight() / scale);
@@ -266,12 +249,9 @@ public class NewNotePane {
             stage.setTitle("Create new note");
             stage.setMinHeight(HEIGHT);
             stage.setMinWidth(WIDTH);
-            stage.setResizable(true);
 
             final Scene s = new Scene(dialogPane);
             s.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
-            s.getStylesheets().add(getClass().getResource("resources/notes-view.css").toExternalForm());
-
             stage.setScene(s);
 
             isFirstTime = false;
@@ -317,7 +297,6 @@ public class NewNotePane {
     public Button getSaveButton() {
         return saveButton;
     }
-
 
     public String getUserChosenColour() {
         return userChosenColour;
@@ -373,6 +352,5 @@ public class NewNotePane {
     public void setPreviousColour(final String previousColour) {
         this.previousColour = previousColour;
     }
-
 
 }

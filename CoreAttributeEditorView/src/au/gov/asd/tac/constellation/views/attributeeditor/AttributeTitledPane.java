@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.attributeeditor;
 
 import au.gov.asd.tac.constellation.utilities.clipboard.ConstellationClipboardOwner;
-import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -55,6 +54,7 @@ public class AttributeTitledPane extends TitledPane {
     private final SeparatorMenuItem separatorMenuItem = new SeparatorMenuItem();
     private final ContextMenu ctxMenu;
     private final Preferences prefs = NbPreferences.forModule(AttributePreferenceKey.class);
+    private static final String HIDDEN = "hidden";
 
     public AttributeTitledPane() {
         this(null, null);
@@ -112,15 +112,15 @@ public class AttributeTitledPane extends TitledPane {
     }
 
     private void hide() {
-        if (!this.getStyleClass().contains(JavafxStyleManager.HIDDEN)) {
-            this.getStyleClass().add(JavafxStyleManager.HIDDEN);
+        if (!this.getStyleClass().contains(HIDDEN)) {
+            this.getStyleClass().add(HIDDEN);
         }
         hideAttributeMenuItem.setSelected(true);
 
     }
 
     private void unhide() {
-        this.getStyleClass().remove(JavafxStyleManager.HIDDEN);
+        this.getStyleClass().remove(HIDDEN);
         hideAttributeMenuItem.setSelected(false);
     }
 

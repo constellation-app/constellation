@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ public class TimeZoneV1AttributeUpdateProvider extends AttributeUpdateProvider {
         try {
             FROM_ATTRIBUTE = TimeZoneAttributeDescriptionV0.class.newInstance();
             TO_ATTRIBUTE = TimeZoneAttributeDescription.class.newInstance();
-        } catch (IllegalAccessException | InstantiationException ex) {
+        } catch (final IllegalAccessException | InstantiationException ex) {
             throw new IllegalArgumentException(String.format("Version provider %s unable to access required attribute descriptions %s or %s", TimeZoneV1AttributeUpdateProvider.class.getName(), TimeZoneAttributeDescriptionV0.class.getName(), TimeZoneAttributeDescription.class.getName()));
         }
     }
@@ -55,11 +55,10 @@ public class TimeZoneV1AttributeUpdateProvider extends AttributeUpdateProvider {
 
     @Override
     public Object updateAttributeValue(final Object value) {
-        if (value instanceof String) {
-            return ZoneId.of((String) value);
+        if (value instanceof String string) {
+            return ZoneId.of(string);
         }
 
         return value == null ? null : ((TimeZone) value).toZoneId();
     }
-
 }

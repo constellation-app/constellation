@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcep
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ImportGraphFilePlugin.RETRIEVE_TRANSACTIONS_PARAMETER_ID;
 import java.io.BufferedReader;
@@ -65,7 +66,7 @@ public class GMLImportProcessor implements GraphFileImportProcessor {
 
     @Override
     public ExtensionFilter getExtensionFilter() {
-        return new ExtensionFilter("GML files", "*.gml");
+        return new ExtensionFilter("GML files", FileExtensionConstants.GML);
     }
 
     @Override
@@ -136,15 +137,9 @@ public class GMLImportProcessor implements GraphFileImportProcessor {
                         final String key = line.split(" ")[0].trim();
                         final String value = line.split(" ")[1].trim().replace("\"", "");
                         switch (key) {
-                            case "source":
-                                edgeRecords.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, value);
-                                break;
-                            case "target":
-                                edgeRecords.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, value);
-                                break;
-                            default:
-                                edgeRecords.set(GraphRecordStoreUtilities.TRANSACTION + key, value);
-                                break;
+                            case "source" -> edgeRecords.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, value);
+                            case "target" -> edgeRecords.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, value);
+                            default -> edgeRecords.set(GraphRecordStoreUtilities.TRANSACTION + key, value);
                         }
                     } catch (final ArrayIndexOutOfBoundsException ex) {
                         // Do nothing

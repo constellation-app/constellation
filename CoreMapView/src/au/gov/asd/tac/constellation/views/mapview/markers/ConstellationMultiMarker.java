@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,9 +70,8 @@ public class ConstellationMultiMarker extends ConstellationAbstractMarker {
     @Override
     public Location getLocation() {
         final Location center = new Location(0, 0);
-        markers.forEach(marker -> {
-            center.add(marker.getLocation());
-        });
+        markers.forEach(marker -> 
+            center.add(marker.getLocation()));
         center.div((float) markers.size());
         return center;
     }
@@ -110,9 +109,8 @@ public class ConstellationMultiMarker extends ConstellationAbstractMarker {
     @Override
     public List<Location> getLocations() {
         final List<Location> locations = new ArrayList<>();
-        markers.forEach(marker -> {
-            locations.addAll(marker.getLocations());
-        });
+        markers.forEach(marker -> 
+            locations.addAll(marker.getLocations()));
         return locations;
     }
 
@@ -143,9 +141,8 @@ public class ConstellationMultiMarker extends ConstellationAbstractMarker {
 
     @Override
     public void draw(final UnfoldingMap map) {
-        markers.forEach(marker -> {
-            marker.draw(map);
-        });
+        markers.forEach(marker -> 
+            marker.draw(map));
     }
 
     @Override
@@ -164,54 +161,47 @@ public class ConstellationMultiMarker extends ConstellationAbstractMarker {
 
     @Override
     public void setHighlighted(final boolean highlighted) {
-        markers.forEach(marker -> {
-            marker.setHighlighted(highlighted);
-        });
+        markers.forEach(marker -> 
+            marker.setHighlighted(highlighted));
         this.highlighted = highlighted;
     }
 
     @Override
     public void setSelected(final boolean selected) {
-        markers.forEach(marker -> {
-            marker.setSelected(selected);
-        });
+        markers.forEach(marker -> 
+            marker.setSelected(selected));
         this.selected = selected;
     }
 
     @Override
     public void setHidden(final boolean hidden) {
-        markers.forEach(marker -> {
-            marker.setHidden(hidden);
-        });
+        markers.forEach(marker -> 
+            marker.setHidden(hidden));
         this.hidden = hidden;
     }
 
     @Override
     public void setColor(final int color) {
-        markers.forEach(marker -> {
-            marker.setColor(color);
-        });
+        markers.forEach(marker -> 
+            marker.setColor(color));
     }
 
     @Override
     public void setStrokeColor(final int color) {
-        markers.forEach(marker -> {
-            marker.setStrokeColor(color);
-        });
+        markers.forEach(marker -> 
+            marker.setStrokeColor(color));
     }
 
     @Override
     public void setStrokeWeight(final int weight) {
-        markers.forEach(marker -> {
-            marker.setStrokeWeight(weight);
-        });
+        markers.forEach(marker -> 
+            marker.setStrokeWeight(weight));
     }
 
     @Override
     public void setHighlightColor(final int color) {
-        markers.forEach(marker -> {
-            marker.setHighlightColor(color);
-        });
+        markers.forEach(marker -> 
+            marker.setHighlightColor(color));
     }
 
     @Override
