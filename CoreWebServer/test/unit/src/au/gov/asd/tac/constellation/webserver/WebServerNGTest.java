@@ -211,15 +211,15 @@ public class WebServerNGTest {
     /**
      * Test of downloadPythonClientNotebookDir method, of class WebServer.
      */
-    @Test
-    public void testDownloadPythonClientNotebookDir() {
-        System.out.println("downloadPythonClientNotebookDir");
-        final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-        final Path filePath = Path.of(prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT)).resolve(WebServer.CONSTELLATION_CLIENT);
-
-        WebServer.downloadPythonClientNotebookDir();
-        assertTrue(Files.exists(filePath));
-    }
+//    @Test
+//    public void testDownloadPythonClientNotebookDir() {
+//        System.out.println("downloadPythonClientNotebookDir");
+//        final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+//        final Path filePath = Path.of(prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT)).resolve(WebServer.CONSTELLATION_CLIENT);
+//
+//        WebServer.downloadPythonClientNotebookDir();
+//        assertTrue(Files.exists(filePath));
+//    }
 
     /**
      * Test of downloadPythonClientToDir method, of class WebServer.

@@ -142,8 +142,8 @@ public class WebServer {
                 cleanupRest(restFile, userDir);
 
                 // Also put rest file in notebook directory
-                final File restFileNotebook = new File(getNotebookDir(), REST_FILE);
-                cleanupRest(restFileNotebook, getNotebookDir());
+                final File restFileIPython = new File(getScriptDir(true), REST_FILE);
+                cleanupRest(restFileIPython, getScriptDir(true).toString());
 
                 // On Posix, we can use stricter file permissions.
                 // On Windows, we just create the new file.
@@ -151,7 +151,7 @@ public class WebServer {
                 if (!os.startsWith("Windows")) {
                     final Set<PosixFilePermission> perms = EnumSet.of(PosixFilePermission.OWNER_READ, PosixFilePermission.OWNER_WRITE);
                     Files.createFile(restFile.toPath(), PosixFilePermissions.asFileAttribute(perms));
-                    Files.createFile(restFileNotebook.toPath(), PosixFilePermissions.asFileAttribute(perms));
+                    Files.createFile(restFileIPython.toPath(), PosixFilePermissions.asFileAttribute(perms));
                 }
 
                 // Now write the file contents.
@@ -159,7 +159,7 @@ public class WebServer {
                     // Couldn't be bothered starting up a JSON writer for two simple values.
                     pw.printf("{\"%s\":\"%s\", \"port\":%d}%n", ConstellationHttpServlet.SECRET_HEADER, ConstellationHttpServlet.SECRET, port);
                 }
-                try (final PrintWriter pw = new PrintWriter(restFileNotebook)) {
+                try (final PrintWriter pw = new PrintWriter(restFileIPython)) {
                     // Couldn't be bothered starting up a JSON writer for two simple values.
                     pw.printf("{\"%s\":\"%s\", \"port\":%d}%n", ConstellationHttpServlet.SECRET_HEADER, ConstellationHttpServlet.SECRET, port);
                 }
@@ -168,7 +168,6 @@ public class WebServer {
                 final boolean pythonRestClientDownload = prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT);
                 if (pythonRestClientDownload) {
                     downloadPythonClient();
-                    downloadPythonClientNotebookDir();
                 }
 
                 // Build the server.
@@ -266,18 +265,16 @@ public class WebServer {
         final File ipython = getScriptDir(true);
         downloadPythonClientToDir(ipython);
     }
-
+    
     /**
-     * Download the Python REST API client to the user's Jupyter Notebook directory.
+     * Download the Python REST API client to a given directory.
      * <p>
      * The download is done only if the script doesn't exist, or the existing script needs updating.
      * <p>
      * This is in the path for Jupyter notebooks, but not for standard Python.
+     * 
+     * @param directory The directory for constellation_client.py to be downloaded to.
      */
-    public static void downloadPythonClientNotebookDir() {
-        downloadPythonClientToDir(new File(getNotebookDir()));
-    }
-
     public static void downloadPythonClientToDir(final File directory) {
         final File download = new File(directory, CONSTELLATION_CLIENT);
 
