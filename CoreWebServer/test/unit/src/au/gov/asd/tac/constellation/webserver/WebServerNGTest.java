@@ -118,6 +118,7 @@ public class WebServerNGTest {
         // Make rest files first
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
+        final String scriptDir = WebServer.getScriptDir(false).toString();
         final File restFile = new File(userDir, REST_FILE);
         final File restFileNotebook = new File(getNotebookDir(), REST_FILE);
         // Unix
@@ -165,7 +166,7 @@ public class WebServerNGTest {
         // Check file contents DO NOT match the initial values
         try {
             assertNotEquals(Files.readString(Path.of(userDir).resolve(REST_FILE), StandardCharsets.UTF_8), TEST_TEXT);
-            assertNotEquals(Files.readString(Path.of(getNotebookDir()).resolve(REST_FILE), StandardCharsets.UTF_8), TEST_TEXT);
+            assertNotEquals(Files.readString(Path.of(scriptDir).resolve(REST_FILE), StandardCharsets.UTF_8), TEST_TEXT);
         } catch (final IOException e) {
             LOGGER.log(Level.WARNING, "Error matching files");
         }
@@ -207,19 +208,6 @@ public class WebServerNGTest {
         WebServer.downloadPythonClient();
         assertTrue(Files.exists(filePath));
     }
-
-    /**
-     * Test of downloadPythonClientNotebookDir method, of class WebServer.
-     */
-//    @Test
-//    public void testDownloadPythonClientNotebookDir() {
-//        System.out.println("downloadPythonClientNotebookDir");
-//        final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-//        final Path filePath = Path.of(prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT)).resolve(WebServer.CONSTELLATION_CLIENT);
-//
-//        WebServer.downloadPythonClientNotebookDir();
-//        assertTrue(Files.exists(filePath));
-//    }
 
     /**
      * Test of downloadPythonClientToDir method, of class WebServer.
