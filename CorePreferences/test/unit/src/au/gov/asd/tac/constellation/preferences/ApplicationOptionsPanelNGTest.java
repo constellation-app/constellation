@@ -55,7 +55,7 @@ public class ApplicationOptionsPanelNGTest {
     public void testSetUserDirectory() {
         System.out.println("setGetUserDirectory");
         String expResult = "RESULT";
-        ApplicationOptionsPanel instance = new ApplicationOptionsPanel(null);
+        ApplicationOptionsPanel instance = new ApplicationOptionsPanel();
         instance.setUserDirectory(expResult);
         assertEquals(instance.getUserDirectory(), expResult);
     }
@@ -67,7 +67,7 @@ public class ApplicationOptionsPanelNGTest {
     public void testSetGetAutosaveEnabled() {
         System.out.println("setGetAutosaveEnabled");
         boolean autosaveEnabled = false;
-        ApplicationOptionsPanel instance = new ApplicationOptionsPanel(null);
+        ApplicationOptionsPanel instance = new ApplicationOptionsPanel();
         instance.setAutosaveEnabled(autosaveEnabled);
         assertEquals(instance.isAutosaveEnabled(), autosaveEnabled);
     }
@@ -79,7 +79,7 @@ public class ApplicationOptionsPanelNGTest {
     public void testSetGetAutosaveFrequency() {
         System.out.println("setGetAutosaveFrequency");
         int autosaveFrequency = 0;
-        ApplicationOptionsPanel instance = new ApplicationOptionsPanel(null);
+        ApplicationOptionsPanel instance = new ApplicationOptionsPanel();
         instance.setAutosaveFrequency(autosaveFrequency);
         assertEquals(instance.getAustosaveFrequency(), autosaveFrequency);
 
@@ -92,7 +92,7 @@ public class ApplicationOptionsPanelNGTest {
     public void testSetGetWelcomeOnStartup() {
         System.out.println("setGetWelcomeOnStartup");
         boolean welcomeOnStartup = false;
-        ApplicationOptionsPanel instance = new ApplicationOptionsPanel(null);
+        ApplicationOptionsPanel instance = new ApplicationOptionsPanel();
         instance.setWelcomeOnStartup(welcomeOnStartup);
         assertEquals(instance.isWelcomeOnStartupSelected(), welcomeOnStartup);
     }
@@ -104,7 +104,7 @@ public class ApplicationOptionsPanelNGTest {
     public void testSetGetWhatsNewOnStartup() {
         System.out.println("setGetWhatsNewOnStartup");
         boolean whatsNewOnStartup = false;
-        ApplicationOptionsPanel instance = new ApplicationOptionsPanel(null);
+        ApplicationOptionsPanel instance = new ApplicationOptionsPanel();
         instance.setWhatsNewOnStartup(whatsNewOnStartup);
         assertEquals(instance.isWhatsNewOnStartupSelected(), whatsNewOnStartup);
     }
@@ -116,7 +116,7 @@ public class ApplicationOptionsPanelNGTest {
     public void testSetGetWebserverPort() {
         System.out.println("setGetWebserverPort");
         int webserverPort = 0;
-        ApplicationOptionsPanel instance = new ApplicationOptionsPanel(null);
+        ApplicationOptionsPanel instance = new ApplicationOptionsPanel();
         instance.setWebserverPort(webserverPort);
         assertEquals(instance.getWebserverPort(), webserverPort);
     }
@@ -128,7 +128,7 @@ public class ApplicationOptionsPanelNGTest {
     public void testSetGetNotebookDirectory() {
         System.out.println("setGetNotebookDirectory");
         String notebookDirectory = "";
-        ApplicationOptionsPanel instance = new ApplicationOptionsPanel(null);
+        ApplicationOptionsPanel instance = new ApplicationOptionsPanel();
         instance.setNotebookDirectory(notebookDirectory);
         assertEquals(instance.getNotebookDirectory(), notebookDirectory);
     }
@@ -140,7 +140,7 @@ public class ApplicationOptionsPanelNGTest {
     public void testSetGetRestDirectory() {
         System.out.println("setGetRestDirectory");
         String restDirectory = "";
-        ApplicationOptionsPanel instance = new ApplicationOptionsPanel(null);
+        ApplicationOptionsPanel instance = new ApplicationOptionsPanel();
         instance.setRestDirectory(restDirectory);
         assertEquals(instance.getRestDirectory(), restDirectory);
     }
@@ -152,7 +152,7 @@ public class ApplicationOptionsPanelNGTest {
     public void testSetGetDownloadPythonClient() {
         System.out.println("setGetDownloadPythonClient");
         boolean downloadPythonClient = false;
-        ApplicationOptionsPanel instance = new ApplicationOptionsPanel(null);
+        ApplicationOptionsPanel instance = new ApplicationOptionsPanel();
         instance.setDownloadPythonClient(downloadPythonClient);
         assertEquals(instance.isDownloadPythonClientSelected(), downloadPythonClient);
     }
@@ -164,7 +164,7 @@ public class ApplicationOptionsPanelNGTest {
     public void testSetGetFontSize() {
         System.out.println("setGetFontSize");
         String fontSize = "12";
-        ApplicationOptionsPanel instance = new ApplicationOptionsPanel(null);
+        ApplicationOptionsPanel instance = new ApplicationOptionsPanel();
         instance.setFontSize(fontSize);
         assertEquals(instance.getFontSize(), fontSize);
     }
@@ -175,7 +175,7 @@ public class ApplicationOptionsPanelNGTest {
     @Test
     public void testGetFontList() {
         System.out.println("getFontList");
-        ApplicationOptionsPanel instance = new ApplicationOptionsPanel(null);
+        ApplicationOptionsPanel instance = new ApplicationOptionsPanel();
         assertEquals(instance.getFontList(), GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames());
     }
 
@@ -186,7 +186,7 @@ public class ApplicationOptionsPanelNGTest {
     public void testSetGetColorModeSelection() {
         System.out.println("setGetColorModeSelection");
         String currentColorMode = "None";
-        ApplicationOptionsPanel instance = new ApplicationOptionsPanel(null);
+        ApplicationOptionsPanel instance = new ApplicationOptionsPanel();
         instance.setColorModeSelection(currentColorMode);
         assertEquals(instance.getColorModeSelection(), currentColorMode);
     }
