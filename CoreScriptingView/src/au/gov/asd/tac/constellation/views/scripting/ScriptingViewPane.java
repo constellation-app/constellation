@@ -108,6 +108,9 @@ public class ScriptingViewPane extends JPanel {
 
     private File scriptFile;
     private boolean newOutput;
+    
+    private static final Pattern COLUMN_PATTERN = Pattern.compile(" at column number (\\d+)");
+    private static final Pattern LINE_PATTERN = Pattern.compile(" at line number (\\d+)");
 
     public ScriptingViewPane(final ScriptingViewTopComponent topComponent) {
         this.topComponent = topComponent;
@@ -221,7 +224,7 @@ public class ScriptingViewPane extends JPanel {
                                 .addContainerGap())
         );
         layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                layout.createParallelGroup(Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                                 .addContainerGap()
                                 .addComponent(scriptPane, GroupLayout.DEFAULT_SIZE, 544, Short.MAX_VALUE)
@@ -368,14 +371,12 @@ public class ScriptingViewPane extends JPanel {
                         scriptParser.setError(msg, line);
                     } else {
                         // Search the exception message to find the line (and possibly column) where the error occurred.
-                        final Pattern linePattern = Pattern.compile(" at line number (\\d+)");
-                        final Matcher lineMatcher = linePattern.matcher(msg);
+                        final Matcher lineMatcher = LINE_PATTERN.matcher(msg);
                         if (lineMatcher.find()) {
                             final String ln = lineMatcher.group(1);
                             line = Integer.parseInt(ln) - 1;
 
-                            final Pattern columnPattern = Pattern.compile(" at column number (\\d+)");
-                            final Matcher columnMatcher = columnPattern.matcher(msg);
+                            final Matcher columnMatcher = COLUMN_PATTERN.matcher(msg);
                             if (columnMatcher.find()) {
                                 final String col = columnMatcher.group(1);
                                 final int column = Integer.parseInt(col) - 1;

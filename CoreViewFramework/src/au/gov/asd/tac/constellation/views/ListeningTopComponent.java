@@ -66,7 +66,7 @@ public abstract class ListeningTopComponent<P> extends AbstractTopComponent<P> i
     protected final Set<Object> ignoredEvents;
     protected Graph currentGraph;
 
-    public ListeningTopComponent() {
+    protected ListeningTopComponent() {
         super();
         this.globalMonitors = Collections.synchronizedMap(new HashMap<>());
         this.structureMonitors = Collections.synchronizedMap(new HashMap<>());

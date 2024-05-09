@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.io.File;
-import javax.swing.filechooser.FileFilter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -38,6 +37,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javax.swing.filechooser.FileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.filesystems.FileChooserBuilder;
 
@@ -222,7 +222,7 @@ public class FileInputPane extends HBox {
         // Looks for changes to the plugin parameter
         // Can be triggered by a change from the application or a change from the respective input field
         // Can trigger a change to the input field which will cause this listner to be triggered a second time.
-        parameter.addListener((pluginParameter, change) -> {
+        parameter.addListener((pluginParameter, change) -> 
             Platform.runLater(() -> {
                 switch (change) {
                     case VALUE -> {
@@ -240,10 +240,10 @@ public class FileInputPane extends HBox {
                         this.setManaged(parameter.isVisible());
                     }
                     default -> {
+                        // do nothing
                     }
                 }
-            });
-        });
+            }));
 
         final HBox fieldAndAddButton = new HBox();
         fieldAndAddButton.setSpacing(2);
@@ -264,7 +264,7 @@ public class FileInputPane extends HBox {
         
         FileChooserBuilder fileChooserBuilder = new FileChooserBuilder(title)
                 .setTitle(title)
-                .setAcceptAllFileFilterUsed(extensionFilter == null ? true : FileParameterType.isAcceptAllFileFilterUsed(parameter))
+                .setAcceptAllFileFilterUsed(extensionFilter == null || FileParameterType.isAcceptAllFileFilterUsed(parameter))
                 .setFilesOnly(true);
 
         if (extensionFilter != null) {

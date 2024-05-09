@@ -47,6 +47,7 @@ import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
 import java.util.prefs.Preferences;
+import java.util.regex.Pattern;
 import javafx.util.Pair;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -102,6 +103,8 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
     private static final String ADD_CUSTOM_BLAZE_ACTION = "Add_Custom_Blaze";
     private static final String ADD_PRESET_BLAZE_ACTION = "Add_Preset_Blaze";
     private static final String REMOVE_BLAZES_ACTION = "Remove_Blazes";
+    
+    private static final Pattern ADD_PRESET_BLAZE_REGEX = Pattern.compile(ADD_PRESET_BLAZE_ACTION);
 
     private static final Color DEFAULT_COLOR = new Color(255, 255, 254);
 
@@ -436,7 +439,7 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
                 // check for the overloaded command name. In this case the default action name
                 // ADD_PRESET_BLAZE_ACTION has the string representation of the color
                 if (command.startsWith(ADD_PRESET_BLAZE_ACTION)) {
-                    final String colorValStr = command.replaceFirst(ADD_PRESET_BLAZE_ACTION, "");
+                    final String colorValStr = ADD_PRESET_BLAZE_REGEX.matcher(command).replaceFirst("");
                     final ConstellationColor color = ConstellationColor.fromHtmlColor(colorValStr) == null
                             ? ConstellationColor.getColorValue(colorValStr)
                             : ConstellationColor.fromHtmlColor(colorValStr);

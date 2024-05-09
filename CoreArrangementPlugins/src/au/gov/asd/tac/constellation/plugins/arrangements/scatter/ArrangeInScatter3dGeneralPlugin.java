@@ -124,7 +124,7 @@ public class ArrangeInScatter3dGeneralPlugin extends SimpleEditPlugin {
         final ReadableGraph rg = graph.getReadableGraph();
         Map<String, Integer> vertexAttributes = null;
         try {
-            vertexAttributes = AttributeUtilities.getVertexAttributes(rg, 0);
+            vertexAttributes = AttributeUtilities.getVertexAttributes(rg);
         } finally {
             rg.release();
         }

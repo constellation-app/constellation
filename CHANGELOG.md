@@ -1,5 +1,14 @@
 # Constellation Changes
 
+## Changes in May 2024
+-   Removed `FloatArray.clone()` and replaced with a constructor that takes a `FloatArray` object. 
+-   Removed `IntArray.clone()` in favour of constructor that takes a `IntArray` object. 
+-   Removed `NamedSelection.clone()` and replaced with a constructor that takes a `NamedSelection` object. 
+-   Updated the method GetNodeLocation() to getNodeLocation() in class InteractiveGLVisualProcessor.
+
+## Changes in April 2024
+-   Removed `graph` parameter from `PermanentMergeTableModel.initialise` as it was unused.
+
 ## Changes in March 2024
 -   Removed `dateTimeAttr` parameter from `ClusteringManager.InitDimOrHidePlugin` as it was unused.
 -   Removed `datetimeAtrr` parameter from `TimelinePanel.initExclusionState` as it was unused.

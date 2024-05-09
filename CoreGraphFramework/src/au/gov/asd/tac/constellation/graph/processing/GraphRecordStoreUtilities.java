@@ -32,6 +32,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -308,7 +309,7 @@ public class GraphRecordStoreUtilities {
                 if (currentType != null) {
                     final boolean directed = Boolean.parseBoolean(requestedDirected);
                     // if the requested direction is different to the type's direction then make a new type
-                    if (currentType.isDirected() != directed) {
+                    if (Boolean.TRUE.equals(currentType.isDirected()) != directed) {
                         final String typeName = String.format("%s (%s)", currentType, directed ? "directed" : "undirected");
                         final SchemaTransactionType modifiedType = new SchemaTransactionType.Builder(currentType, typeName)
                                 .setDirected(Boolean.valueOf(requestedDirected))
@@ -1049,7 +1050,7 @@ public class GraphRecordStoreUtilities {
      * composite nodes.
      */
     public static void copyTransactionsToComposite(final GraphReadMethods graph, final RecordStore recordStore,
-            final int expandedVxId, final String expandedId, final Set<Integer> expandedIds, final String toId, final Attribute uniqueIdAttr) {
+            final int expandedVxId, final String expandedId, final Collection<Integer> expandedIds, final String toId, final Attribute uniqueIdAttr) {
         final int transactionAttributeCount = graph.getAttributeCount(GraphElementType.TRANSACTION);
         final Attribute[] transactionAttributes = new Attribute[transactionAttributeCount];
         for (int a = 0; a < transactionAttributeCount; a++) {
@@ -1069,8 +1070,8 @@ public class GraphRecordStoreUtilities {
             }
             final CompositeTransactionId compositeTransactionId = CompositeTransactionId.fromString(graph.getStringValue(uniqueIdAttr.getId(), transaction));
 
-            String sourceId = null;
-            String destId = null;
+            final String sourceId;
+            final String destId;
             final String uniqueId;
             if (expandedVxId == source) {
                 destId = String.valueOf(destination);

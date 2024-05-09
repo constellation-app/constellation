@@ -124,7 +124,7 @@ public class JDropDownMenu<E> extends JComponent implements ActionListener {
     }
 
     protected Map<JMenuItem, E> getMenuItems() {
-        return menuItems;
+        return Collections.unmodifiableMap(menuItems);
     }
 
     public final String getText() {

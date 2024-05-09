@@ -256,7 +256,7 @@ public class SReadableGraph {
 
             context.setAttribute("__p1", new SVertex(readableGraph, vertexId), ScriptContext.ENGINE_SCOPE);
             final Object b = graph.getEngine().eval(FUNC_P1);
-            if ((Boolean) b) {
+            if (Boolean.TRUE.equals(b)) {
                 vertices.set(vertexId);
             }
         }
@@ -351,7 +351,7 @@ public class SReadableGraph {
 
             context.setAttribute("__p1", new STransaction(readableGraph, transaction), ScriptContext.ENGINE_SCOPE);
             final Object b = graph.getEngine().eval(FUNC_P1);
-            if ((Boolean) b) {
+            if (Boolean.TRUE.equals(b)) {
                 transactions.set(transaction);
             }
         }

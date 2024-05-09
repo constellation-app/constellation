@@ -362,7 +362,7 @@ section in the [Readme](README.md).
         <#if licenseFirst??>
         ${licenseFirst}
         </#if>
-        ${licensePrefix}Copyright 2010-2021 Australian Signals Directorate
+        ${licensePrefix}Copyright 2010-2024 Australian Signals Directorate
         ${licensePrefix}
         ${licensePrefix}Licensed under the Apache License, Version 2.0 (the "License");
         ${licensePrefix}you may not use this file except in compliance with the License.

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,10 +69,10 @@ public final class FreeformSelectionPlugin extends SimpleEditPlugin {
         for (i = 0; i < numVertices; i++) {
             j = (i == numVertices - 1) ? 0 : i + 1;
 
-            final float vertY_i = (float) transformedVertices[i * 2 + 1];
-            final float vertX_i = (float) transformedVertices[i * 2];
-            final float vertY_j = (float) transformedVertices[j * 2 + 1];
-            final float vertX_j = (float) transformedVertices[j * 2];
+            final float vertY_i = transformedVertices[i * 2 + 1];
+            final float vertX_i = transformedVertices[i * 2];
+            final float vertY_j = transformedVertices[j * 2 + 1];
+            final float vertX_j = transformedVertices[j * 2];
 
             final boolean belowLowY = vertY_i > yPoint;
             final boolean belowHighY = vertY_j > yPoint;
@@ -425,7 +425,8 @@ public final class FreeformSelectionPlugin extends SimpleEditPlugin {
         }
 
         if (x1 == x2) {
-            return minX <= x1 && x1 <= maxX;
+            // At this point minX <= x1 is always true
+            return x1 <= maxX;
         }
 
         // Slope of line segment.

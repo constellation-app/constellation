@@ -135,7 +135,7 @@ public final class GraphOptionsPanelController extends OptionsPanelController {
 
     private GraphOptionsPanel getPanel() {
         if (panel == null) {
-            panel = new GraphOptionsPanel(this);
+            panel = new GraphOptionsPanel();
         }
         return panel;
     }

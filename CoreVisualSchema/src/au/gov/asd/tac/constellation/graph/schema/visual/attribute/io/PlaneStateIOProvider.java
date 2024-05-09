@@ -83,7 +83,7 @@ public class PlaneStateIOProvider extends AbstractGraphIOProvider {
             for (Iterator<JsonNode> i = planeList.elements(); i.hasNext();) {
                 final JsonNode element = i.next();
 
-                final Plane p = Plane.readNode(element, graph, byteReader);
+                final Plane p = Plane.readNode(element, byteReader);
                 planes.add(p);
             }
             state.setPlanes(planes);

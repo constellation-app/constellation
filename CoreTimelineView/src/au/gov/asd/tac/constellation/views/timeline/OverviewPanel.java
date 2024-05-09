@@ -402,7 +402,7 @@ public class OverviewPanel extends Pane {
                 origin = t.getX(); // Set the origin on all mouse presses.
                 handleResizing(t);
             } else if (t.getEventType() == MouseEvent.MOUSE_RELEASED) {
-                handleRelease(t);
+                handleRelease();
             } else if (t.getEventType() == MouseEvent.MOUSE_DRAGGED) {
                 handleDragging(t);
             }
@@ -446,11 +446,9 @@ public class OverviewPanel extends Pane {
         /**
          * Helper method called when releasing mouse press events occur.
          *
-         * @param t The triggered mouse event.
-         *
          * @see MouseEvent
          */
-        private void handleRelease(final MouseEvent t) {
+        private void handleRelease() {
             // Switch off resizing flags:
             isResizingLeft = isResizingRight = false;
         }
