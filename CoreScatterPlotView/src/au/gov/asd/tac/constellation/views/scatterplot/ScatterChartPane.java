@@ -98,8 +98,9 @@ public class ScatterChartPane extends BorderPane {
                 // Mouse cursor enters chart
                 if (!me.isPrimaryButtonDown() && me.getEventType().equals(MouseEvent.MOUSE_ENTERED)) {
                     scatterChart.setCursor(Cursor.CROSSHAIR);
-                } // Mouse moved to new position within chart
-                else if (!me.isPrimaryButtonDown() && me.getEventType().equals(MouseEvent.MOUSE_MOVED)) {
+                
+                // Mouse moved to new position within chart
+                } else if (!me.isPrimaryButtonDown() && me.getEventType().equals(MouseEvent.MOUSE_MOVED)) {
                     // create buffer around mouse position
                     selectionXOrigin = mouseX;
                     selectionYOrigin = mouseY;

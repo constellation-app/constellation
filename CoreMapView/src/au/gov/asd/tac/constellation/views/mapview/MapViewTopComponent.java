@@ -69,11 +69,13 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
@@ -151,6 +153,8 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
     private int cachedWidth;
     private int cachedHeight;
     private final Consumer<Graph> updateMarkers;
+    
+    private static final Pattern COMMA_SEPARATED_REGEX = Pattern.compile("[,\\s]+", Pattern.UNICODE_CHARACTER_CLASS);
 
     public MapViewTopComponent() {
         super();
@@ -231,6 +235,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
                         }
                     }
                     default -> {
+                        // do nothing
                     }
                 }
             } else {
@@ -375,7 +380,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         final ConstellationAbstractMarker marker;
         switch (geoType) {
             case GEO_TYPE_COORDINATE -> {
-                final String[] coordinate = location.split("[,\\s]+");
+                final String[] coordinate = COMMA_SEPARATED_REGEX.split(location);
                 if (coordinate.length != 2 && coordinate.length != 3) {
                     NotifyDisplayer.display("Invalid coordinate syntax provided, should be comma or space separated", NotifyDescriptor.ERROR_MESSAGE);
                     return;
@@ -470,6 +475,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
                 case GEO_TYPE_MGRS -> params.get(PARAMETER_LOCATION)
                             .setDescription("Enter an MGRS value");
                 default -> {
+                    // do nothing
                 }
             }
         });
@@ -483,7 +489,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
     }
 
     public List<? extends MapProvider> getProviders() {
-        return providers;
+        return Collections.unmodifiableList(providers);
     }
 
     public MarkerState getMarkerState() {
@@ -623,6 +629,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
                     }
                 }
                 default -> {
+                    // do nothing
                 }
             }
         }

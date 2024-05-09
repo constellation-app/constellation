@@ -93,7 +93,7 @@ public class StyleGenerator {
         final Rule rule = styleFactory.createRule();
         rule.symbolizers().add(sym);
 
-        final FeatureTypeStyle fts = styleFactory.createFeatureTypeStyle(new Rule[]{rule});
+        final FeatureTypeStyle fts = styleFactory.createFeatureTypeStyle(rule);
         final Style style = styleFactory.createStyle();
         style.getDescription().setTitle("Polygon Style");
         style.featureTypeStyles().add(fts);
@@ -119,7 +119,7 @@ public class StyleGenerator {
         final Rule rule = styleFactory.createRule();
         rule.symbolizers().add(sym);
 
-        final FeatureTypeStyle fts = styleFactory.createFeatureTypeStyle(new Rule[]{rule});
+        final FeatureTypeStyle fts = styleFactory.createFeatureTypeStyle(rule);
         final Style style = styleFactory.createStyle();
         style.getDescription().setTitle("Line Style");
         style.featureTypeStyles().add(fts);
@@ -147,7 +147,7 @@ public class StyleGenerator {
         final Rule rule = styleFactory.createRule();
         rule.symbolizers().add(sym);
 
-        final FeatureTypeStyle fts = styleFactory.createFeatureTypeStyle(new Rule[]{rule});
+        final FeatureTypeStyle fts = styleFactory.createFeatureTypeStyle(rule);
         final Style style = styleFactory.createStyle();
         style.getDescription().setTitle("Point Style");
         style.featureTypeStyles().add(fts);

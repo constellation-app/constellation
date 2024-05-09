@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -165,7 +165,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
      * @return Global instance for menu/toolbar
      */
     public static ContextAwareAction create() {
-        return new au.gov.asd.tac.constellation.graph.interaction.plugins.io.SaveAsAction();
+        return new SaveAsAction();
     }
 
     @Override
@@ -222,14 +222,15 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
                     fileInUse = filename.getCanonicalPath().equalsIgnoreCase(existingFile.getCanonicalPath());
                 }
             }
-        } catch (final Exception ex) {
+        } catch (final IOException ex) {
+            LOGGER.log(Level.WARNING, "Error occurred while attempting to retrieve file path");
         }
         return fileInUse;
     }
 
     @Override
     public Action createContextAwareInstance(final Lookup actionContext) {
-        return new au.gov.asd.tac.constellation.graph.interaction.plugins.io.SaveAsAction(actionContext, false);
+        return new SaveAsAction(actionContext, false);
     }
 
     @Override

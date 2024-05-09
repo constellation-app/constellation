@@ -48,13 +48,13 @@ public class TOCParser {
      * @param xmlFromFile the file to read
      * @param root the root node to place items into
      */
-    public static void parse(final File xmlFromFile, final TreeNode root) throws SAXException, IOException, ParserConfigurationException {
+    public static void parse(final File xmlFromFile, final TreeNode<?> root) throws SAXException, IOException, ParserConfigurationException {
         if (xmlFromFile == null || StringUtils.isEmpty(xmlFromFile.getPath())) {
             return;
         }
 
         final String targetAttribute = "target";
-        TreeNode currentParent = root;
+        TreeNode<?> currentParent = root;
         final DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         final DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         // Ignore DTD validation to avoid unknown host exception when parsing XML
@@ -77,7 +77,7 @@ public class TOCParser {
                 final TreeNode current = new TreeNode(currentTocItem);
                 // when has children, then set parent
                 if (nNode.hasChildNodes()) {
-                    final TreeNode duplicate = TreeNode.search(currentTocItem, root);
+                    final TreeNode<?> duplicate = TreeNode.search(currentTocItem, root);
 
                     if (duplicate != null) {
                         //set the current parent to duplicate
@@ -88,7 +88,7 @@ public class TOCParser {
                         final Element parentElement = (Element) eElement.getParentNode();
                         final TOCItem parentTocItem = new TOCItem(parentElement.getAttribute("text"), parentElement.getAttribute(targetAttribute));
 
-                        final TreeNode parentDuplicate = TreeNode.search(parentTocItem, root);
+                        final TreeNode<?> parentDuplicate = TreeNode.search(parentTocItem, root);
 
                         if (StringUtils.isEmpty(parentTocItem.getText()) && StringUtils.isEmpty(parentTocItem.getTarget())) {
                             // this is the root node, add to root.
@@ -105,7 +105,7 @@ public class TOCParser {
                 } else {
                     final Element parentElement = (Element) eElement.getParentNode();
                     final TOCItem parentTocItem = new TOCItem(parentElement.getAttribute("text"), parentElement.getAttribute(targetAttribute));
-                    final TreeNode parentDuplicate = TreeNode.search(parentTocItem, root);
+                    final TreeNode<?> parentDuplicate = TreeNode.search(parentTocItem, root);
                     if (parentDuplicate != null) {
                         currentParent.addChild(current);
                     }

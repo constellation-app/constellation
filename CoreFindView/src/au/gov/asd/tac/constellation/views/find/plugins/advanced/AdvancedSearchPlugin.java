@@ -611,6 +611,9 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                     matches = true;
                 }
             }
+            default -> {
+                // do nothing
+            }
         }
         return matches;
     }

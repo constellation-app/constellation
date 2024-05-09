@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,7 +66,7 @@ public class DateTimeYearMonthFormatter extends BinFormatter {
         @Override
         public void setKey(GraphReadMethods graph, int attribute, int element) {
             bin.setKey(graph, attribute, element);
-            key = bin.getKeyAsObject() == null ? NULL_YEAR_MONTH : ((long) ((ZonedDateTime) bin.getKeyAsObject()).getYear() << 8 | (long) ((ZonedDateTime) bin.getKeyAsObject()).getMonthValue());
+            key = bin.getKeyAsObject() == null ? NULL_YEAR_MONTH : ((long) ((ZonedDateTime) bin.getKeyAsObject()).getYear() << 8 | ((ZonedDateTime) bin.getKeyAsObject()).getMonthValue());
         }
 
         @Override

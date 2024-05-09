@@ -30,6 +30,7 @@ import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.views.wordcloud.phraseanalysis.PhrasiphyContentPlugin;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
@@ -96,11 +97,11 @@ public class WordCloudController {
     }
 
     public List<String> getVertTextAttributes() {
-        return vertTextAttributes;
+        return Collections.unmodifiableList(vertTextAttributes);
     }
 
     public List<String> getTransTextAttributes() {
-        return transTextAttributes;
+        return Collections.unmodifiableList(transTextAttributes);
     }
     
     public boolean isControllerIntialising() {
@@ -399,9 +400,9 @@ public class WordCloudController {
      */
     public void updateButtonsOnPane() {
         // Retrieve the button states from the WordCloud 
-        final boolean isSizeSorted = cloud != null && cloud.getIsSizeSorted();
-        final boolean isUnionSelect = cloud != null && cloud.getIsUnionSelect();
-        final boolean hasSignificances = cloud != null && cloud.getHasSignificances();
+        final boolean isSizeSorted = cloud != null && cloud.isSizeSorted();
+        final boolean isUnionSelect = cloud != null && cloud.isUnionSelect();
+        final boolean hasSignificances = cloud != null && cloud.hasSignificances();
 
         // Run an update to the WordCloudPane, based on the retrieved information, on the javafx thread 
         Platform.runLater(() -> {

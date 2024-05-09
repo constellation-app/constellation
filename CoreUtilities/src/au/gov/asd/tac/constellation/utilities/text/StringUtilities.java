@@ -17,11 +17,12 @@ package au.gov.asd.tac.constellation.utilities.text;
 
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.StringJoiner;
 import java.util.regex.Pattern;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Provides various string operations such as escaping and pretty printing.
@@ -40,6 +41,30 @@ public class StringUtilities {
 
     private StringUtilities() {
         throw new IllegalStateException("Utility class");
+    }
+    
+   /**
+    * Checks a base string for the presence of any of the specified endings. 
+    * Acts as a helper method to eliminate the need to create a list when performing the same operation with {@link StringUtils}
+    * 
+    * @param base
+    * @param endings
+    * @return 
+    */
+    public static boolean endsWithAny(final String base, final String... endings) {
+        return StringUtils.endsWithAny(base, endings);
+    }
+
+    /**
+    * Checks a reference string for equality with any of the specified target values. 
+    * Acts as a helper method to eliminate the need to create a list when performing the same operation with {@link StringUtils}
+    * 
+    * @param reference
+    * @param targets
+    * @return 
+    */
+    public static boolean equalsAny(final String reference, final String... targets) {
+        return StringUtils.equalsAny(reference, targets);
     }
 
     /**
@@ -98,12 +123,10 @@ public class StringUtilities {
      * <p>
      * It is assumed that the escape character is "\".
      *
-     * @param escapedString The string to unescape.
-     * @param characters The characters to be unescaped.
      *
      * @return An unescaped String.
      */
-    public static String unescape(final String escapedString, final String characters) {
+    public static String unescape(final String escapedString) {
         if (escapedString == null) {
             return null;
         }
@@ -157,13 +180,13 @@ public class StringUtilities {
                 } else if (character.equals(ESCAPE_CHARACTER)) {
                     escaped = true;
                 } else if (delimiter.contains(character)) {
-                    splits.add(unescape(escapedString.substring(part0, i), delimiter));
+                    splits.add(unescape(escapedString.substring(part0, i)));
                     part0 = i + 1;
                 }
             }
 
             if (part0 < escapedString.length()) {
-                splits.add(unescape(escapedString.substring(part0, escapedString.length()), delimiter));
+                splits.add(unescape(escapedString.substring(part0, escapedString.length())));
             }
         }
 
@@ -236,7 +259,7 @@ public class StringUtilities {
      * @param toSplitOn the characters to split on.
      * @return the labels string split into individual labels.
      */
-    public static List<String> splitLabelsWithEscapeCharacters(final String labelsString, final Set<Character> toSplitOn) {
+    public static List<String> splitLabelsWithEscapeCharacters(final String labelsString, final Collection<Character> toSplitOn) {
         // Split up the components of the graph labels and decorators string by
         // toSplitOn, checking for escaped toSplitOns in attribute names.
         final List<String> decoratorsAndLabelsComponentsList = new ArrayList<>();

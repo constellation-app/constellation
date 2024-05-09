@@ -166,7 +166,7 @@ public final class TimeAttributeDescription extends AbstractAttributeDescription
 
     @Override
     public long getLong(final int id) {
-        return (long) data[id];
+        return data[id];
     }
 
     @Override

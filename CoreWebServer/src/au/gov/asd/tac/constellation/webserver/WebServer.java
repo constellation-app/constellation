@@ -212,8 +212,9 @@ public class WebServer {
                         throw new RuntimeException(ex);
                     } finally {
                         // Play nice and clean up (if Netbeans lets us).
-                        final boolean restFileIsDeleted = restFile.delete();
-                        if (!restFileIsDeleted) {
+                        try {
+                            Files.delete(Path.of(restFile.getPath()));
+                        } catch (final IOException ex) {
                             //TODO: Handle case where file not successfully deleted
                         }
                     }

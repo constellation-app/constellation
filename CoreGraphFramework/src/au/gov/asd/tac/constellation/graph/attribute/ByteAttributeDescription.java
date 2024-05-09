@@ -62,7 +62,7 @@ public class ByteAttributeDescription extends AbstractAttributeDescription {
                 return number.byteValue();
             }       
             case Boolean bool -> {
-                return bool ? (byte) 1 : (byte) 0;
+                return Boolean.TRUE.equals(bool) ? (byte) 1 : (byte) 0;
             }       
             case String string -> {
                 return convertFromString(string);
@@ -139,7 +139,7 @@ public class ByteAttributeDescription extends AbstractAttributeDescription {
 
     @Override
     public short getShort(final int id) {
-        return (short) data[id];
+        return data[id];
     }
 
     @Override
@@ -149,7 +149,7 @@ public class ByteAttributeDescription extends AbstractAttributeDescription {
 
     @Override
     public int getInt(final int id) {
-        return (int) data[id];
+        return data[id];
     }
 
     @Override
@@ -159,7 +159,7 @@ public class ByteAttributeDescription extends AbstractAttributeDescription {
 
     @Override
     public long getLong(final int id) {
-        return (long) data[id];
+        return data[id];
     }
 
     @Override
@@ -169,7 +169,7 @@ public class ByteAttributeDescription extends AbstractAttributeDescription {
 
     @Override
     public float getFloat(final int id) {
-        return (float) data[id];
+        return data[id];
     }
 
     @Override
@@ -179,7 +179,7 @@ public class ByteAttributeDescription extends AbstractAttributeDescription {
 
     @Override
     public double getDouble(final int id) {
-        return (double) data[id];
+        return data[id];
     }
 
     @Override
@@ -258,7 +258,7 @@ public class ByteAttributeDescription extends AbstractAttributeDescription {
 
     @Override
     public int hashCode(final int id) {
-        return (int) data[id];
+        return data[id];
     }
 
     @Override

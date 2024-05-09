@@ -21,6 +21,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -56,8 +59,9 @@ public final class GraphByteWriter {
     public void reset() {
         for (final File f : fileMap.values()) {
             if (f.exists()) {
-                final boolean fIsDeleted = f.delete();
-                if (!fIsDeleted) {
+                try {
+                    Files.delete(Path.of(f.getPath()));
+                } catch (final IOException ex) {
                     //TODO: Handle case where file not successfully deleted
                 }
             }
@@ -67,7 +71,7 @@ public final class GraphByteWriter {
     }
 
     public Map<String, File> getFileMap() {
-        return fileMap;
+        return Collections.unmodifiableMap(fileMap);
     }
 
     /**

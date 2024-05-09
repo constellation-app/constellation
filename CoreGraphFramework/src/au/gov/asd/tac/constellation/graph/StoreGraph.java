@@ -394,7 +394,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
     @Override
     public long getModificationCounter() {
-        return globalModificationCounter;
+        return getGlobalModificationCounter();
     }
 
     @Override
@@ -440,10 +440,8 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
                     // If the element was not unique then attempt a merge
                 } else {
-                    if (allowMerging && graphElementMerger != null) {
-                        if (graphElementMerger.mergeElement(this, elementType, existingElement, element)) {
-                            continue;
-                        }
+                    if (allowMerging && graphElementMerger != null && graphElementMerger.mergeElement(this, elementType, existingElement, element)) {
+                        continue;
                     }
 
                     final StringBuilder elementValues = new StringBuilder("New[" + element + "]: ");

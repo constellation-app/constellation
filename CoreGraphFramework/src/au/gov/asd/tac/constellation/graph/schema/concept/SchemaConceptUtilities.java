@@ -54,7 +54,7 @@ public class SchemaConceptUtilities {
      *
      * @return The highest priority SchemaConcept.
      */
-    public static final SchemaConcept getDefaultConcept() {
+    public static final synchronized SchemaConcept getDefaultConcept() {
         if (defaultConcept == null) {
             defaultConcept = Lookup.getDefault().lookup(SchemaConcept.class);
         }

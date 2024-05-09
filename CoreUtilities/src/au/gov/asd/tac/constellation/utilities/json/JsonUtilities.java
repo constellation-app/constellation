@@ -15,10 +15,10 @@
  */
 package au.gov.asd.tac.constellation.utilities.json;
 
-import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.TokenStreamFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayOutputStream;
@@ -369,7 +369,7 @@ public class JsonUtilities {
      * @param map the map to convert to a json string
      * @return the JSON String representation of the map
      */
-    public static <K, V> String getMapAsString(final JsonFactory factory, final Map<K, V> map) {
+    public static <K, V> String getMapAsString(final TokenStreamFactory factory, final Map<K, V> map) {
         if (MapUtils.isNotEmpty(map)) {
             final ByteArrayOutputStream json = new ByteArrayOutputStream();
             try (final JsonGenerator jg = factory.createGenerator(json)) {
@@ -401,7 +401,7 @@ public class JsonUtilities {
      * @param mapAsString the JSON String representation of the map
      * @return A String, String map based on the JSON String
      */
-    public static Map<String, String> getStringAsMap(final JsonFactory factory, final String mapAsString) {
+    public static Map<String, String> getStringAsMap(final TokenStreamFactory factory, final String mapAsString) {
         final Map<String, String> map = new HashMap<>();
         if (StringUtils.isNotEmpty(mapAsString)) {
             try (final JsonParser jp = factory.createParser(mapAsString)) {
