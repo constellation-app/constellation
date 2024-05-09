@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.webserver;
 
+import au.gov.asd.tac.constellation.help.utilities.Generator;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
@@ -26,7 +27,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -34,6 +34,8 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.security.MessageDigest;
@@ -122,6 +124,8 @@ public class WebServer {
     protected static final String CONSTELLATION_CLIENT = "constellation_client.py";
     private static final String IPYTHON = ".ipython";
     private static final String RESOURCES = "resources/";
+    private static final String SEP = File.separator;
+    private static final String SCRIPT_SOURCE = Generator.getBaseDirectory() + "ext" + SEP + "package" + SEP + "src" + SEP + "constellation_client" + SEP;
 
     public static boolean isRunning() {
         return running;
@@ -265,14 +269,14 @@ public class WebServer {
         final File ipython = getScriptDir(true);
         downloadPythonClientToDir(ipython);
     }
-    
+
     /**
      * Download the Python REST API client to a given directory.
      * <p>
      * The download is done only if the script doesn't exist, or the existing script needs updating.
      * <p>
      * This is in the path for Jupyter notebooks, but not for standard Python.
-     * 
+     *
      * @param directory The directory for constellation_client.py to be downloaded to.
      */
     public static void downloadPythonClientToDir(final File directory) {
@@ -282,20 +286,25 @@ public class WebServer {
 
         if (doDownload) {
             boolean complete = false;
-            try (final InputStream in = WebServer.class.getResourceAsStream(RESOURCES + CONSTELLATION_CLIENT); final FileOutputStream out = new FileOutputStream(download)) {
-                final byte[] buf = new byte[64 * 1024];
-                while (true) {
-                    final int len = in.read(buf);
-                    if (len == -1) {
-                        break;
-                    }
-
-                    out.write(buf, 0, len);
-                }
-
-                complete = true;
-            } catch (final IOException ex) {
-                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+//            try (final InputStream in = WebServer.class.getResourceAsStream(RESOURCES + CONSTELLATION_CLIENT); final FileOutputStream out = new FileOutputStream(download)) {
+//                final byte[] buf = new byte[64 * 1024];
+//                while (true) {
+//                    final int len = in.read(buf);
+//                    if (len == -1) {
+//                        break;
+//                    }
+//
+//                    out.write(buf, 0, len);
+//                }
+//
+//                complete = true;
+//            } catch (final IOException ex) {
+//                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+//            }
+            try {
+                Files.copy(Paths.get(SCRIPT_SOURCE + CONSTELLATION_CLIENT), download.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                LOGGER.log(Level.WARNING, "Error retrieving constellation_client.py:", e);
             }
 
             if (complete) {
