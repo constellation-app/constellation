@@ -81,7 +81,7 @@ public class ApplicationOptionsPanelNGTest {
         int autosaveFrequency = 0;
         ApplicationOptionsPanel instance = new ApplicationOptionsPanel();
         instance.setAutosaveFrequency(autosaveFrequency);
-        assertEquals(instance.getAustosaveFrequency(), autosaveFrequency);
+        assertEquals(instance.getAutosaveFrequency(), autosaveFrequency);
 
     }
 

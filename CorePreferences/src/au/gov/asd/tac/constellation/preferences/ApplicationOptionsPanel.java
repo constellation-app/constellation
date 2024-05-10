@@ -69,7 +69,7 @@ final class ApplicationOptionsPanel extends JPanel {
         autosaveSpinner.setEnabled(autosaveEnabled);
     }
 
-    public int getAustosaveFrequency() {
+    public int getAutosaveFrequency() {
         return (Integer) autosaveSpinner.getModel().getValue();
     }
 
