@@ -33,7 +33,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
-import au.gov.asd.tac.constellation.plugins.parameters.types.NumberParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
@@ -118,7 +117,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
                                       Embedded = Single File, Large Size
                                       Linked = File & folder of Image Assets, Small Size"""
         );
-        SingleChoiceParameterType.setOptions(imageModeParam, Stream.of(ExportMode.values()).map(ExportMode::toString).collect(Collectors.toList()));
+        SingleChoiceParameterType.setOptions(imageModeParam, Stream.of(ExportMode.values()).map(ExportMode::toString).toList());
         SingleChoiceParameterType.setChoice(imageModeParam, ExportMode.LINKED.toString());
         parameters.addParameter(imageModeParam);
         
@@ -215,7 +214,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         }
             
         // If the user has not selected a linked export he asset fdirectoy can now be deleted. 
-        if (!ExportMode.LINKED.toString().equals("Linked")){
+        if (!ExportMode.LINKED.toString().equals(imageMode)){
             try {
                 Files.delete(assetDirectory.toPath());
             } catch (IOException ex) {

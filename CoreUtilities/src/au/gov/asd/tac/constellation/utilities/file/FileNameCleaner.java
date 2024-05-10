@@ -25,7 +25,7 @@ public class FileNameCleaner {
     
     private static final char[] ILLEGAL_CHARACTERS = {'/','\\',':','*','?','"','<','>','|'};
     
-    public FileNameCleaner(){
+    private FileNameCleaner(){
         throw new IllegalStateException("Utility class");
     }
 

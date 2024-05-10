@@ -31,6 +31,7 @@ import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Blaze;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.testing.construction.TestableGraphBuilder;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
@@ -79,39 +80,8 @@ public class SVGGraphBuilderNGTest {
     private final DrawFlags drawNoVisualElementsFlag = new DrawFlags(false, false, false, false, false);
     private final String graphName = "Test Graph 1";
 
-    // Positional Attributes
-    private int vertexAttributeIdX;
-    private int vertexAttributeIdY;
-    private int vertexAttributeIdZ;
-    
-    // Vertex Ids
-    private int vertexId1;
-    private int vertexId2;
-    private int vertexId3;
-    private int vertexId4;
-    private int vertexId5;
-    private int vertexId6;
-    
-    // Transaction Ids
-    private int transactionId1;
-    private int transactionId2;
-    private int transactionId3;
-    private int transactionId4;
-    private int transactionId5;
-    private int transactionId6;
-    private int transactionId7;
-    
-    
-    // Other Attributea
-    private int vertexAttributeIdSelected;
-    private int vertexAttributeIdLabel;
-    private int transactionAttributeIdSelected;
-    private int vertexAttributeIdPinned;
-    private int graphAttributeIdTopLabels;
-    private int graphAttributeIdBottomLabels;
-    private int graphAttributeIdTransactionLabels;
-    
     public SVGGraphBuilderNGTest() {
+        
     }
 
     @BeforeClass
@@ -125,7 +95,7 @@ public class SVGGraphBuilderNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         
-        graph = buildTestableGraph();
+        graph = new TestableGraphBuilder().buildGraphwithEverything();
         graphNodeStaticMock = mockStatic(GraphNode.class);
         graphManagerStaticMock = mockStatic(GraphManager.class);
         threadPoolStaticMock = mockStatic(ConstellationGlobalThreadPool.class);
@@ -283,7 +253,7 @@ public class SVGGraphBuilderNGTest {
                 .withCores(2);
             
         final SVGObject result = new SVGObject(instance.build());
-        assertNotNull(result.getChild(String.format("node-%s",vertexId2)));
+        assertNotNull(result.getChild(String.format("node-%s",0)));
     }
     
     /**
@@ -303,7 +273,7 @@ public class SVGGraphBuilderNGTest {
                 .withCores(2);
             
         final SVGObject result = new SVGObject(instance.build());
-        assertNull(result.getChild(String.format("node-%s",vertexId2)));
+        assertNull(result.getChild(String.format("node-%s", 2)));
     }
     
         /**
@@ -323,132 +293,6 @@ public class SVGGraphBuilderNGTest {
                 .withCores(2);
             
         final SVGObject result = new SVGObject(instance.build());
-        assertNotNull(result.getChild(String.format("node-%s",vertexId2)));
+        assertNotNull(result.getChild(String.format("node-%s", 0)));
     }  
-    
-    
-    /**
-     * A local method to build a graph with known elements for testing.
-     * @return
-     * @throws InterruptedException 
-     */
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">  
-    private Graph buildTestableGraph() throws InterruptedException{
-        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
-        final Graph localGraph = new DualGraph(schema);
-
-        final WritableGraph wg = localGraph.getWritableGraph("Autosave", true);
-        try {
-            
-            GraphLabel testLabel1 = new GraphLabel("Label", ConstellationColor.CLOUDS);
-            GraphLabel testLabel2 = new GraphLabel("x", ConstellationColor.BANANA);
-            GraphLabel testLabel3 = new GraphLabel("color", ConstellationColor.BLUE);
-            
-            ArrayList testNodeLabelsList = new ArrayList<>();
-            testNodeLabelsList.add(testLabel1);
-            testNodeLabelsList.add(testLabel2);
-            GraphLabels topLabels = new GraphLabels(testNodeLabelsList);
-            GraphLabels bottomLabels = new GraphLabels(testNodeLabelsList);
-            
-            graphAttributeIdTopLabels = VisualConcept.GraphAttribute.TOP_LABELS.ensure(wg);
-            wg.setObjectValue(graphAttributeIdTopLabels, 0, topLabels);
-            ArrayList testTransactionLabelsList = new ArrayList<>();
-            testTransactionLabelsList.add(testLabel1);
-            testTransactionLabelsList.add(testLabel3);
-            GraphLabels transactionLabels = new GraphLabels(testTransactionLabelsList);
-            
-            graphAttributeIdBottomLabels = VisualConcept.GraphAttribute.BOTTOM_LABELS.ensure(wg);
-            wg.setObjectValue(graphAttributeIdBottomLabels, 0, bottomLabels);
-            
-            graphAttributeIdTransactionLabels = VisualConcept.GraphAttribute.TRANSACTION_LABELS.ensure(wg);
-            wg.setObjectValue(graphAttributeIdTransactionLabels, 0, transactionLabels);
-            
-            vertexAttributeIdX = VisualConcept.VertexAttribute.X.ensure(wg);
-            vertexAttributeIdY = VisualConcept.VertexAttribute.Y.ensure(wg);
-            vertexAttributeIdZ = VisualConcept.VertexAttribute.Z.ensure(wg);
-            vertexAttributeIdLabel = VisualConcept.VertexAttribute.LABEL.ensure(wg);
-            VisualConcept.VertexAttribute.BLAZE.ensure(wg);
-            vertexAttributeIdPinned = VisualConcept.VertexAttribute.PINNED.ensure(wg);
-            vertexAttributeIdSelected = VisualConcept.VertexAttribute.SELECTED.ensure(wg);
-            transactionAttributeIdSelected = VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
-            
-            int vertexDimmedAttributeId = VisualConcept.VertexAttribute.DIMMED.ensure(wg);
-            int vertexBlazeAttributeId = VisualConcept.VertexAttribute.BLAZE.ensure(wg);
-            int vertexIconAttributeId = VisualConcept.VertexAttribute.BACKGROUND_ICON.ensure(wg);
-
-            // Node 1
-            // has an invisible bakground
-            // has a blaze
-            // is Selected
-            vertexId1 = wg.addVertex();
-            wg.setFloatValue(vertexAttributeIdX, vertexId1, 1.0f);
-            wg.setFloatValue(vertexAttributeIdY, vertexId1, 1.0f);
-            wg.setFloatValue(vertexAttributeIdZ, vertexId1, 1.0f);
-            wg.setBooleanValue(vertexAttributeIdSelected, vertexId1, true);
-            wg.setStringValue(vertexAttributeIdLabel, vertexId1, "vertex1");
-            wg.setObjectValue(vertexIconAttributeId, vertexId1, DefaultIconProvider.EMPTY);
-            wg.setObjectValue(vertexBlazeAttributeId, vertexId1,  new Blaze(90, ConstellationColor.BANANA));
-            
-            // Node 2
-            // is pinned
-            // has a visable background
-            // is Selected
-            // has directed looped Connection
-            vertexId2 = wg.addVertex();
-            wg.setFloatValue(vertexAttributeIdX, vertexId2, 5.0f);
-            wg.setFloatValue(vertexAttributeIdY, vertexId2, 1.0f);
-            wg.setFloatValue(vertexAttributeIdZ, vertexId2, 1.0f);
-            wg.setBooleanValue(vertexAttributeIdSelected, vertexId2, true);
-            wg.setBooleanValue(vertexAttributeIdPinned, vertexId2, true);
-            wg.setStringValue(vertexAttributeIdLabel, vertexId2, "vertex2");
-            wg.setObjectValue(vertexIconAttributeId, vertexId1, DefaultIconProvider.FLAT_SQUARE);
-            transactionId4 = wg.addTransaction(vertexId2, vertexId2, true);
-            
-            // Node 3
-            // is dimmed
-            // is selected 
-            // has undirected looped connection
-            vertexId3 = wg.addVertex();
-            wg.setFloatValue(vertexAttributeIdX, vertexId3, 1.0f);
-            wg.setFloatValue(vertexAttributeIdY, vertexId3, 5.0f);
-            wg.setFloatValue(vertexAttributeIdZ, vertexId3, 1.0f);
-            wg.setBooleanValue(vertexAttributeIdSelected, vertexId3, true);
-            wg.setStringValue(vertexAttributeIdLabel, vertexId3, "vertex3");
-            wg.setFloatValue(vertexDimmedAttributeId, vertexId2, 1F);
-            transactionId5 = wg.addTransaction(vertexId3, vertexId3, false);
-            
-            vertexId4 = wg.addVertex();
-            wg.setFloatValue(vertexAttributeIdX, vertexId4, 5.0f);
-            wg.setFloatValue(vertexAttributeIdY, vertexId4, 5.0f);
-            wg.setFloatValue(vertexAttributeIdZ, vertexId4, 5.0f);
-            wg.setBooleanValue(vertexAttributeIdSelected, vertexId4, true);
-            wg.setStringValue(vertexAttributeIdLabel, vertexId4, "vertex4");
-            
-            vertexId5 = wg.addVertex();
-            wg.setFloatValue(vertexAttributeIdX, vertexId5, 10.0f);
-            wg.setFloatValue(vertexAttributeIdY, vertexId5, 10.0f);
-            wg.setFloatValue(vertexAttributeIdZ, vertexId5, 10.0f);
-            wg.setBooleanValue(vertexAttributeIdSelected, vertexId5, true);
-            wg.setStringValue(vertexAttributeIdLabel, vertexId5, "vertex5");
-            
-            vertexId6 = wg.addVertex();
-            wg.setFloatValue(vertexAttributeIdX, vertexId6, 0.0f);
-            wg.setFloatValue(vertexAttributeIdY, vertexId6, 0.0f);
-            wg.setFloatValue(vertexAttributeIdZ, vertexId6, 15.0f);
-            wg.setStringValue(vertexAttributeIdLabel, vertexId6, "vertex6");
-            wg.setBooleanValue(vertexAttributeIdSelected, vertexId6, false);
-
-            transactionId1 = wg.addTransaction(vertexId1, vertexId2, false);
-            transactionId2 = wg.addTransaction(vertexId2, vertexId3, false);
-            transactionId3 = wg.addTransaction(vertexId5, vertexId2, true);
-            transactionId6 = wg.addTransaction(vertexId1, vertexId2, true);
-            transactionId7 = wg.addTransaction(vertexId2, vertexId1, true);
-            wg.setObjectValue(VisualConcept.GraphAttribute.CONNECTION_MODE.ensure(wg), 0, ConnectionMode.TRANSACTION);
-        } finally {
-            wg.commit();
-        }
-        return localGraph;
-    }
-    // </editor-fold>  
-    
 }
