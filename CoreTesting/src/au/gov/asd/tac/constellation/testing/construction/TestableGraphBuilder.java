@@ -60,6 +60,17 @@ import java.util.List;
  * @author capricornunicorn123
  */
 public class TestableGraphBuilder {
+
+    public static int[] getSelectedNodeIds() {
+        int[] ids = {9, 10, 11, 12, 13, 14, 15, 16};
+        return ids;
+    }
+
+    public static int[] getNodeIds() {
+        int[] ids = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17};
+        return ids;
+    }
+    
     final Graph graph;
     
     private final List<Integer> vertexIds = new ArrayList<>();
@@ -107,8 +118,6 @@ public class TestableGraphBuilder {
         withDecorators(gwm);
     }
     
-
-    
     /**
      * Ensures that the graph being built has decorators.
      * <p>Decorators include:
@@ -123,6 +132,7 @@ public class TestableGraphBuilder {
         WritableGraph wg = graph.getWritableGraph("addDecroators", true);
         withDecorators(wg);
         wg.commit();
+        
         return this;
     }
     
@@ -313,7 +323,7 @@ public class TestableGraphBuilder {
     }
     
     
-    private TestableGraphBuilder withNodes() throws InterruptedException{
+    public TestableGraphBuilder withNodes() throws InterruptedException{
         WritableGraph wg = graph.getWritableGraph("addVerticies", true);
         withNodes(wg);       
         wg.commit();
@@ -340,7 +350,7 @@ public class TestableGraphBuilder {
      * </ul></p>
      * @param gwm 
      */
-    private void withNodes(GraphWriteMethods gwm) {
+    public void withNodes(GraphWriteMethods gwm) {
         
         // Ensure the attributes exist on the graph
         final int vertexAttributeIdX = VisualConcept.VertexAttribute.X.ensure(gwm);
@@ -489,6 +499,4 @@ public class TestableGraphBuilder {
     public Graph build(){
         return graph;
     }
-
-    
 }
