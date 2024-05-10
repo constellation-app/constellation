@@ -287,21 +287,6 @@ public class WebServer {
 
         if (doDownload) {
             boolean complete = false;
-//            try (final InputStream in = WebServer.class.getResourceAsStream(RESOURCES + CONSTELLATION_CLIENT); final FileOutputStream out = new FileOutputStream(download)) {
-//                final byte[] buf = new byte[64 * 1024];
-//                while (true) {
-//                    final int len = in.read(buf);
-//                    if (len == -1) {
-//                        break;
-//                    }
-//
-//                    out.write(buf, 0, len);
-//                }
-//
-//                complete = true;
-//            } catch (final IOException ex) {
-//                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-//            }
             try {
                 Files.copy(Paths.get(SCRIPT_SOURCE + CONSTELLATION_CLIENT), download.toPath(), StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {

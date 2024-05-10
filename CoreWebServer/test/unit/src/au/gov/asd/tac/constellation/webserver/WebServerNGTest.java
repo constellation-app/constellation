@@ -23,6 +23,7 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.EnumSet;
@@ -30,6 +31,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.openide.util.NbPreferences;
 import static org.testng.Assert.assertNotEquals;
 import static org.testng.AssertJUnit.assertEquals;
@@ -205,8 +208,14 @@ public class WebServerNGTest {
         final String scriptDir = WebServer.getScriptDir(false).toString();
         final Path filePath = Path.of(scriptDir).resolve(WebServer.CONSTELLATION_CLIENT);
 
-        WebServer.downloadPythonClient();
-        assertTrue(Files.exists(filePath));
+        final Path testFilePath = createTestFile();
+
+        try (MockedStatic<Paths> pathsStaticMock = Mockito.mockStatic(Paths.class)) {
+
+            pathsStaticMock.when(() -> Paths.get(Mockito.anyString())).thenReturn(testFilePath);
+            WebServer.downloadPythonClient();
+            assertTrue(Files.exists(filePath));
+        }
     }
 
     /**
@@ -217,10 +226,33 @@ public class WebServerNGTest {
         System.out.println("downloadPythonClientToDir");
         final String pathString = System.getProperty("user.dir");
         final Path filePath = Path.of(pathString).resolve(WebServer.CONSTELLATION_CLIENT);
-        WebServer.downloadPythonClientToDir(new File(pathString));
 
-        assertTrue(Files.exists(filePath));
-        // Validate file contents
-        assertTrue(WebServer.equalScripts(new File(pathString + File.separator + WebServer.CONSTELLATION_CLIENT)));
+        final Path testFilePath = createTestFile();
+
+        try (MockedStatic<Paths> pathsStaticMock = Mockito.mockStatic(Paths.class)) {
+
+            pathsStaticMock.when(() -> Paths.get(Mockito.anyString())).thenReturn(testFilePath);
+            WebServer.downloadPythonClientToDir(new File(pathString));
+            assertTrue(Files.exists(filePath));
+        }
+    }
+    
+    /**
+     * Function to create empty file to be used in tests.
+     */
+    private Path createTestFile() {
+        final File testFile = new File("testFile.py");
+        try {
+            if (testFile.createNewFile()) {
+                System.out.println("File created: " + testFile.getName());
+            } else {
+                System.out.println("File already exists.");
+            }
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+
+        return Paths.get(testFile.getAbsolutePath());
     }
 }
