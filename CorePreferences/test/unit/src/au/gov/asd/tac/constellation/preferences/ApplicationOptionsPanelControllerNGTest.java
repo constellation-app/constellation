@@ -19,6 +19,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.List;
 import java.util.Map;
+import java.util.prefs.Preferences;
 import javax.swing.JComponent;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -30,6 +31,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.openide.util.HelpCtx;
+import org.openide.util.NbPreferences;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -160,7 +162,7 @@ public class ApplicationOptionsPanelControllerNGTest {
      */
     @Test
     public void testIsValid() {
-        System.out.println("isValid");
+        System.out.println("isValid Basic");
         ApplicationOptionsPanelController instance = new ApplicationOptionsPanelController();
         boolean expResult = false;
 
@@ -186,11 +188,52 @@ public class ApplicationOptionsPanelControllerNGTest {
     }
 
     /**
+     * Test of isValid method, of class ApplicationOptionsPanelController.
+     */
+    @Test
+    public void testIsValidAllValid() {
+        System.out.println("isValid All Valid");
+        ApplicationOptionsPanelController instance = new ApplicationOptionsPanelController();
+        boolean expResult = true;
+
+        try (MockedConstruction<ApplicationOptionsPanel> mockAP = mockConstruction(ApplicationOptionsPanel.class,
+                (mockInstance, context) -> {
+                    //implement method for mock so true is returned from isValid
+                    when(mockInstance.getUserDirectory()).thenReturn("");
+                    when(mockInstance.getAutosaveFrequency()).thenReturn(1);
+                    when(mockInstance.getWebserverPort()).thenReturn(1);
+                    when(mockInstance.getNotebookDirectory()).thenReturn("");
+                    when(mockInstance.getRestDirectory()).thenReturn("");
+                    when(mockInstance.getCurrentFont()).thenReturn("");
+                    when(mockInstance.getFontSize()).thenReturn("");
+                    when(mockInstance.getColorModeSelection()).thenReturn("");
+                })) {
+
+            boolean result = instance.isValid();
+            assertEquals(result, expResult);
+
+            // Get a list of all created mocks
+            List<ApplicationOptionsPanel> constructed = mockAP.constructed();
+            assertEquals(1, constructed.size());
+
+            // Assert that created panel had run the following methods
+            verify(constructed.get(0), times(1)).getUserDirectory();
+            verify(constructed.get(0), times(1)).getAutosaveFrequency();
+            verify(constructed.get(0), times(1)).getWebserverPort();
+            verify(constructed.get(0), times(1)).getNotebookDirectory();
+            verify(constructed.get(0), times(1)).getRestDirectory();
+            verify(constructed.get(0), times(1)).getCurrentFont();
+            verify(constructed.get(0), times(1)).getFontSize();
+            verify(constructed.get(0), times(1)).getColorModeSelection();
+        }
+    }
+
+    /**
      * Test of isChanged method, of class ApplicationOptionsPanelController.
      */
     @Test
     public void testIsChanged() {
-        System.out.println("isChanged");
+        System.out.println("isChanged Basic");
         ApplicationOptionsPanelController instance = new ApplicationOptionsPanelController();
         boolean expResult = true;
 
@@ -222,6 +265,59 @@ public class ApplicationOptionsPanelControllerNGTest {
             verify(constructed.get(0), times(0)).getFontSize();
             verify(constructed.get(0), times(0)).isEnableSpellCheckingSelected();
             verify(constructed.get(0), times(0)).getColorModeSelection();
+        }
+    }
+
+    /**
+     * Test of isChanged method, of class ApplicationOptionsPanelController.
+     */
+    @Test
+    public void testIsChangedAll() {
+        System.out.println("isChanged All");
+        ApplicationOptionsPanelController instance = new ApplicationOptionsPanelController();
+        final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+        
+        boolean expResult = false;
+        
+        try (MockedConstruction<ApplicationOptionsPanel> mock = mockConstruction(ApplicationOptionsPanel.class,
+                (mockInstance, context) -> {
+                    //implement methods for mock so false is returned from isChanged
+                    when(mockInstance.getUserDirectory()).thenReturn(prefs.get(ApplicationPreferenceKeys.USER_DIR, ApplicationPreferenceKeys.USER_DIR_DEFAULT));
+                    when(mockInstance.isAutosaveEnabled()).thenReturn(prefs.getBoolean(ApplicationPreferenceKeys.AUTOSAVE_ENABLED, ApplicationPreferenceKeys.AUTOSAVE_ENABLED_DEFAULT));
+                    when(mockInstance.getAutosaveFrequency()).thenReturn(prefs.getInt(ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE, ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE_DEFAULT));
+                    when(mockInstance.isWelcomeOnStartupSelected()).thenReturn(prefs.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, ApplicationPreferenceKeys.WELCOME_ON_STARTUP_DEFAULT));
+                    when(mockInstance.isWhatsNewOnStartupSelected()).thenReturn(prefs.getBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP_DEFAULT));
+                    when(mockInstance.getWebserverPort()).thenReturn(prefs.getInt(ApplicationPreferenceKeys.WEBSERVER_PORT, ApplicationPreferenceKeys.WEBSERVER_PORT_DEFAULT));
+                    when(mockInstance.getNotebookDirectory()).thenReturn(prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT));
+                    when(mockInstance.getRestDirectory()).thenReturn(prefs.get(ApplicationPreferenceKeys.REST_DIR, ApplicationPreferenceKeys.REST_DIR_DEFAULT));
+                    when(mockInstance.isDownloadPythonClientSelected()).thenReturn(prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT));
+                    when(mockInstance.getCurrentFont()).thenReturn(prefs.get(ApplicationPreferenceKeys.FONT_FAMILY, ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT));
+                    when(mockInstance.getFontSize()).thenReturn(prefs.get(ApplicationPreferenceKeys.FONT_SIZE, ApplicationPreferenceKeys.FONT_SIZE_DEFAULT));
+                    when(mockInstance.isEnableSpellCheckingSelected()).thenReturn(prefs.getBoolean(ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING, ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING_DEFAULT));
+                    when(mockInstance.getColorModeSelection()).thenReturn(prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT));
+                })) {
+
+            boolean result = instance.isChanged();
+            assertEquals(result, expResult);
+
+            // Get a list of all created mocks
+            List<ApplicationOptionsPanel> constructed = mock.constructed();
+            assertEquals(1, constructed.size());
+
+            // Assert that created panel had run the following methods
+            verify(constructed.get(0), times(1)).getUserDirectory();
+            verify(constructed.get(0), times(1)).isAutosaveEnabled();
+            verify(constructed.get(0), times(1)).getAutosaveFrequency();
+            verify(constructed.get(0), times(1)).isWelcomeOnStartupSelected();
+            verify(constructed.get(0), times(1)).isWhatsNewOnStartupSelected();
+            verify(constructed.get(0), times(1)).getWebserverPort();
+            verify(constructed.get(0), times(1)).getNotebookDirectory();
+            verify(constructed.get(0), times(1)).getRestDirectory();
+            verify(constructed.get(0), times(1)).isDownloadPythonClientSelected();
+            verify(constructed.get(0), times(1)).getCurrentFont();
+            verify(constructed.get(0), times(1)).getFontSize();
+            verify(constructed.get(0), times(1)).isEnableSpellCheckingSelected();
+            verify(constructed.get(0), times(1)).getColorModeSelection();
         }
     }
 
