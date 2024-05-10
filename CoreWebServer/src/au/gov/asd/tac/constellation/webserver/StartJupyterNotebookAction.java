@@ -79,8 +79,10 @@ public class StartJupyterNotebookAction implements ActionListener {
         try {
             int result = p.waitFor();
             LOGGER.log(Level.INFO, "Pip python process result: {0}", result);
-        } catch (InterruptedException ex) { //TODO make complient
+        } catch (InterruptedException ex) {
             LOGGER.log(Level.WARNING, "EXCEPTION CAUGHT in the python process:", ex);
+            p.destroy();
+            Thread.currentThread().interrupt();
         }
 
         try {

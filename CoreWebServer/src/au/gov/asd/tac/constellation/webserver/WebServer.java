@@ -286,10 +286,11 @@ public class WebServer {
         final boolean doDownload = !download.exists() || !equalScripts(download);
 
         if (doDownload) {
-            boolean complete = false;
+            boolean complete = true;
             try {
                 Files.copy(Paths.get(SCRIPT_SOURCE + CONSTELLATION_CLIENT), download.toPath(), StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
+                complete = false;
                 LOGGER.log(Level.WARNING, "Error retrieving constellation_client.py:", e);
             }
 
