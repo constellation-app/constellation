@@ -128,7 +128,7 @@ public class AnalyticViewState {
         return Collections.unmodifiableList(activeAnalyticQuestions);
     }
 
-    public AnalyticResult<?> getResult() {
+    public AnalyticResult getResult() {
         return result;
     }
 

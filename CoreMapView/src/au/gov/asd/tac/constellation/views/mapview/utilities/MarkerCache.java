@@ -302,6 +302,7 @@ public abstract class MarkerCache extends ObjectCache<ConstellationAbstractMarke
                                             }
                                         }
                                         default -> {
+                                            // do nothing
                                         }
                                     }
                                 }

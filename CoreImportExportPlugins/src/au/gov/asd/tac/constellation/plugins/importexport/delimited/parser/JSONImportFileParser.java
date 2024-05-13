@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Pattern;
 import javax.swing.filechooser.FileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
@@ -71,16 +72,15 @@ public class JSONImportFileParser extends ImportFileParser {
                                     * A list of equal size lists, containing basic data types only (no nested lists or objects)
                                     * A list of objects. These objects may contain different data, with field names and path used to determine column names.""";
 
-    // Flag to indicate that no suitable list has been found to extract via the
-    // importer.
+    // Flag to indicate that no suitable list has been found to extract via the importer.
     public static final int NO_LIST_LEVEL = Integer.MAX_VALUE;
 
-    // The list to extract values from. If null, no lists were found. Refer to
-    // header comments for logic in selecting list.
+    // The list to extract values from. If null, no lists were found. Refer to header comments for logic in selecting list.
     private JsonNode selectedList = null;
-    // Depth of the selectedList in JSON structure, used in determining best
-    // placed list.
+    // Depth of the selectedList in JSON structure, used in determining best placed list.
     private int selectedListDepth = NO_LIST_LEVEL;
+    
+    private static final Pattern START_END_QUOTES_REGEX = Pattern.compile("(^\")|(\"$)");
 
     /**
      * Construct a new JSONImportFileParser with "JSON" label at position 4.
@@ -101,7 +101,7 @@ public class JSONImportFileParser extends ImportFileParser {
      * called by lookForChildArrays it can be assumed that parent is an array
      * and not empty as this is checked in lookForChildArrays.
      */
-    private boolean checkAllArrayItemsAreObjects(JsonNode parent) {
+    private boolean checkAllArrayItemsAreObjects(final JsonNode parent) {
 
         // Get the first child of the list and ensure all children are same type.
         // We only want a list of lists or a list of objects.
@@ -158,7 +158,7 @@ public class JSONImportFileParser extends ImportFileParser {
      * @param path The path to the given node in the overall JSON structure.
      * @param depth The depth into the overall JSON structure of the node.
      */
-    private void lookForChildArrays(JsonNode node, String path, int depth) throws IOException {
+    private void lookForChildArrays(final JsonNode node, final String path, final int depth) throws IOException {
         if (node.isArray()) {
             if (node.size() > 0 && checkAllArrayItemsAreObjects(node)) {
                 // Process node content. IF errors are detected an IOException is
@@ -209,7 +209,7 @@ public class JSONImportFileParser extends ImportFileParser {
      * qualified column name relative to the list origin.
      * @return Updated list of known column headers.
      */
-    private ArrayList<String> extractColNamesFromFields(JsonNode node, ArrayList<String> existingColumns, String prefix) {
+    private ArrayList<String> extractColNamesFromFields(final JsonNode node, final ArrayList<String> existingColumns, final String prefix) {
         if (node.isObject()) {
             // Iterate over each field in object and add its name if it doesnt already exist in results
             for (Iterator<Entry<String, JsonNode>> it = node.fields(); it.hasNext();) {
@@ -248,8 +248,7 @@ public class JSONImportFileParser extends ImportFileParser {
      * qualified column name relative to the list origin.
      * @return Updated list of known column headers.
      */
-    private ArrayList<String> extractAllColNames(JsonNode parent, ArrayList<String> existingColumns, String prefix) {
-
+    private ArrayList<String> extractAllColNames(final JsonNode parent, ArrayList<String> existingColumns, final String prefix) {
         // Ensure existingColumns is created if it wasn't already.
         if (existingColumns == null) {
             existingColumns = new ArrayList<>();
@@ -299,8 +298,7 @@ public class JSONImportFileParser extends ImportFileParser {
      * @return line of data. This is effectively an array of strings, one per
      * column.
      */
-    private String[] getLineContent(JsonNode node, Map<String, Integer> columnMap, String prefix, String[] line) {
-
+    private String[] getLineContent(final JsonNode node, final Map<String, Integer> columnMap, final String prefix, String[] line) {
         // Ensure the line is created if it wasn't already.
         if (line == null) {
             line = new String[columnMap.size()];
@@ -314,18 +312,18 @@ public class JSONImportFileParser extends ImportFileParser {
                 line[colNo++] = listEntry.toString();
             }
         } else if (node.isObject()) {
-            // Iterate over all child fields of the parewnt noode, for each one
+            // Iterate over all child fields of the parent noode, for each one
             // determine if its a container Object node, if so recursively continue
             // to extract its values, if not, extract the value. Note that nested
             // lists will be converted to text, so if a list contains another list,
             // that second list is treated as a single object.
-            for (Iterator<Entry<String, JsonNode>> it = node.fields(); it.hasNext();) {
+            for (final Iterator<Entry<String, JsonNode>> it = node.fields(); it.hasNext();) {
                 final Map.Entry<String, JsonNode> entry = it.next();
 
                 if (entry.getValue().isObject()) {
                     line = getLineContent(entry.getValue(), columnMap, (prefix + entry.getKey() + SeparatorConstants.PERIOD), line);
                 } else {
-                    line[columnMap.get(prefix + entry.getKey())] = entry.getValue().toString().replaceAll("(^\")|(\"$)", "");
+                    line[columnMap.get(prefix + entry.getKey())] = START_END_QUOTES_REGEX.matcher(entry.getValue().toString()).replaceAll("");
                 }
             }
         } else {
@@ -383,7 +381,6 @@ public class JSONImportFileParser extends ImportFileParser {
      * resulting table.
      */
     private List<String[]> getResults(final InputSource input, final int limit) throws IOException {
-
         try {
             final ArrayList<String[]> results = new ArrayList<>();
             ObjectMapper mapper = new ObjectMapper();

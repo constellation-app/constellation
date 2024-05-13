@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,7 +84,7 @@ public final class RunPane extends BorderPane implements KeyListener {
     private static final int TABLECOLUMN_PREFWIDTH = 50;
     private static final String FILTER_STYLE_ALERT = "-fx-background-color: red; -fx-text-fill: black;";
 
-    private final ImportController importController;
+    private final ImportController<?> importController;
     private final TableView<TableRow> sampleDataView = new TableView<>();
     private final AttributeList sourceVertexAttributeList;
     private final AttributeList destinationVertexAttributeList;
@@ -168,7 +168,7 @@ public final class RunPane extends BorderPane implements KeyListener {
         }
     }
 
-    public RunPane(final ImportController importController, final String displayText, final String paneName) {
+    public RunPane(final ImportController<?> importController, final String displayText, final String paneName) {
         this.importController = importController;
         this.paneName = paneName;
 

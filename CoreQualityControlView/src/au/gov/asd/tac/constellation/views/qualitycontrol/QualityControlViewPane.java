@@ -123,7 +123,10 @@ public final class QualityControlViewPane extends BorderPane {
 
     private static final String DISABLE = "Disable";
     private static final String ENABLE = "Enable";
-    private static final String enableTextColor = JavafxStyleManager.isDarkTheme() ? "-fx-text-fill: white; " : "-fx-text-fill: black; ";
+    
+    private static final String BLACK_TEXT_COLOR = "-fx-text-fill: black;";
+    private static final String ENABLE_TEXT_COLOR = JavafxStyleManager.isDarkTheme() ? "-fx-text-fill: white; " : BLACK_TEXT_COLOR;
+    
 
     /*firstClick is a workaround for currently a existing bug within ControlsFX object, which causes two clicks 
     to be registered upon the user's first click within the view pane when calling value.getClickCount()*/
@@ -393,27 +396,26 @@ public final class QualityControlViewPane extends BorderPane {
     public static String qualityStyle(final QualityCategory category, final float alpha) {
         final int intensity;
         final String style;
-        final String textColor = JavafxStyleManager.isDarkTheme() ? "-fx-text-fill: white; " : "-fx-text-fill: black;";
 
         switch (category) {
             case MINOR ->
-                style = String.format("%s -fx-background-color: rgba(90,150,255,%f);", textColor, alpha);
+                style = String.format("%s -fx-background-color: rgba(90,150,255,%f);", ENABLE_TEXT_COLOR, alpha);
             case MEDIUM ->
-                style = String.format("%s -fx-background-color: rgba(255,215,0,%f);", "-fx-text-fill: black;", alpha);
+                style = String.format("%s -fx-background-color: rgba(255,215,0,%f);", BLACK_TEXT_COLOR, alpha);
             case MAJOR -> {
                 intensity = 255 - (255 * QualityControlEvent.MAJOR_VALUE) / 100;
-                style = String.format("%s -fx-background-color: rgba(255,%d,0,%f);", "-fx-text-fill: black;", intensity, alpha);
+                style = String.format("%s -fx-background-color: rgba(255,%d,0,%f);", BLACK_TEXT_COLOR, intensity, alpha);
             }
             case SEVERE -> {
                 intensity = 255 - (255 * QualityControlEvent.SEVERE_VALUE) / 100;
-                style = String.format("%s -fx-background-color: rgba(255,%d,%d,%f);", textColor, intensity, intensity, alpha);
+                style = String.format("%s -fx-background-color: rgba(255,%d,%d,%f);", ENABLE_TEXT_COLOR, intensity, intensity, alpha);
             }
             case CRITICAL -> {
                 intensity = 255 - (255 * QualityControlEvent.CRITICAL_VALUE) / 100;
                 style = String.format("-fx-text-fill: rgb(255,255,0); -fx-background-color: rgba(150,%d,%d,%f);", intensity, intensity, alpha);
             }
             default -> // DEFAULT case
-                style = String.format("%s -fx-background-color: rgba(0,200,0,%f);", textColor, alpha);
+                style = String.format("%s -fx-background-color: rgba(0,200,0,%f);", ENABLE_TEXT_COLOR, alpha);
         }
         return style;
     }
@@ -483,6 +485,7 @@ public final class QualityControlViewPane extends BorderPane {
                     case CRITICAL ->
                         criticalButton.setSelected(true);
                     default -> {
+                        // do nothing
                     }
                 }
                 resetButton.setText("Reset");
@@ -501,7 +504,7 @@ public final class QualityControlViewPane extends BorderPane {
                     resetButton.setDisable(true);
                 } else {
                     enableDisableButton.setText(DISABLE);
-                    ruleName.setStyle(enableTextColor);
+                    ruleName.setStyle(ENABLE_TEXT_COLOR);
                     minorButton.setDisable(false);
                     mediumButton.setDisable(false);
                     majorButton.setDisable(false);
@@ -525,6 +528,7 @@ public final class QualityControlViewPane extends BorderPane {
                 case CRITICAL ->
                     criticalButton.setSelected(true);
                 default -> {
+                    // do nothing
                 }
             }
 

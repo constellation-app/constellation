@@ -145,6 +145,15 @@ final class ApplicationOptionsPanel extends JPanel {
         return fonts.clone();
     }
 
+    public boolean isEnableSpellCheckingSelected() {
+        return enableSpellCheckingCheckBox.isSelected();
+    }
+
+    public void setEnableSpellChecking(final boolean enableSpellChecking) {
+        this.enableSpellCheckingCheckBox.setSelected(enableSpellChecking);
+    }
+
+
     public String getColorModeSelection() {
         return colorblindDropdown.getSelectedItem().toString();
     }
@@ -190,6 +199,9 @@ final class ApplicationOptionsPanel extends JPanel {
         colorblindDropdown = new JComboBox<>();
         colorblindLabel = new JLabel();
         restartLabel = new JLabel();
+        spellCheckingPanel = new JPanel();
+        enableSpellCheckingCheckBox = new JCheckBox();
+        leftClickRemindertLabel = new JLabel();
 
         Mnemonics.setLocalizedText(userDirectoryLabel, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.userDirectoryLabel.text")); // NOI18N
 
@@ -388,32 +400,28 @@ final class ApplicationOptionsPanel extends JPanel {
             .addGroup(fontPanelLayout.createSequentialGroup()
                 .addGap(27, 27, 27)
                 .addGroup(fontPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                    .addGroup(fontPanelLayout.createSequentialGroup()
-                        .addGroup(fontPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                            .addComponent(fontLbl)
-                            .addComponent(fontSizeLbl))
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(fontPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                            .addComponent(fontSizeSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addComponent(fontCombo, GroupLayout.PREFERRED_SIZE, 240, GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(fontPanelLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(resetBtn)))
-                .addContainerGap())
+                    .addComponent(fontLbl)
+                    .addComponent(fontSizeLbl))
+                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(fontPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                    .addComponent(fontSizeSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(fontCombo, GroupLayout.PREFERRED_SIZE, 240, GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(resetBtn))
         );
         fontPanelLayout.setVerticalGroup(fontPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(fontPanelLayout.createSequentialGroup()
-                .addContainerGap(15, Short.MAX_VALUE)
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(fontPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                     .addComponent(fontLbl)
                     .addComponent(fontCombo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(fontPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(fontSizeSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                    .addComponent(fontSizeLbl))
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(resetBtn))
+                .addGroup(fontPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                    .addGroup(fontPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                        .addComponent(fontSizeSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(fontSizeLbl))
+                    .addComponent(resetBtn))
+                .addGap(26, 26, 26))
         );
 
         colorblindPanel.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.colorblindPanel.border.title"))); // NOI18N
@@ -444,9 +452,40 @@ final class ApplicationOptionsPanel extends JPanel {
                 .addGroup(colorblindPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                     .addComponent(colorblindLabel)
                     .addComponent(colorblindDropdown, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(restartLabel)
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addContainerGap(18, Short.MAX_VALUE))
+        );
+
+        spellCheckingPanel.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.spellCheckingPanel.border.title"))); // NOI18N
+
+        enableSpellCheckingCheckBox.setSelected(true);
+        Mnemonics.setLocalizedText(enableSpellCheckingCheckBox, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.enableSpellCheckingCheckBox.text")); // NOI18N
+        enableSpellCheckingCheckBox.setActionCommand(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.enableSpellCheckingCheckBox.actionCommand")); // NOI18N
+
+        leftClickRemindertLabel.setIcon(new ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/preferences/resources/warning.png"))); // NOI18N
+        Mnemonics.setLocalizedText(leftClickRemindertLabel, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.leftClickRemindertLabel.text")); // NOI18N
+
+        GroupLayout spellCheckingPanelLayout = new GroupLayout(spellCheckingPanel);
+        spellCheckingPanel.setLayout(spellCheckingPanelLayout);
+        spellCheckingPanelLayout.setHorizontalGroup(spellCheckingPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(spellCheckingPanelLayout.createSequentialGroup()
+                .addGroup(spellCheckingPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                    .addGroup(spellCheckingPanelLayout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(enableSpellCheckingCheckBox))
+                    .addGroup(spellCheckingPanelLayout.createSequentialGroup()
+                        .addGap(48, 48, 48)
+                        .addComponent(leftClickRemindertLabel)))
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        spellCheckingPanelLayout.setVerticalGroup(spellCheckingPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(spellCheckingPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(enableSpellCheckingCheckBox)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(leftClickRemindertLabel)
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         GroupLayout layout = new GroupLayout(this);
@@ -466,6 +505,7 @@ final class ApplicationOptionsPanel extends JPanel {
                     .addComponent(webserverPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(notebookPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(fontPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(spellCheckingPanel, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(colorblindPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -485,13 +525,15 @@ final class ApplicationOptionsPanel extends JPanel {
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(notebookPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(fontPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addComponent(fontPanel, GroupLayout.PREFERRED_SIZE, 95, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(colorblindPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(124, Short.MAX_VALUE))
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(spellCheckingPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         notebookPanel.getAccessibleContext().setAccessibleName(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.notebookPanel.AccessibleContext.accessibleName")); // NOI18N
+        spellCheckingPanel.getAccessibleContext().setAccessibleName(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.spellCheckingPanel.AccessibleContext.accessibleName")); // NOI18N
     }// </editor-fold>//GEN-END:initComponents
 
     private void userDirectoryButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_userDirectoryButtonActionPerformed
@@ -558,11 +600,13 @@ final class ApplicationOptionsPanel extends JPanel {
     private JLabel colorblindLabel;
     private JPanel colorblindPanel;
     private JCheckBox downloadPythonClientCheckBox;
+    private JCheckBox enableSpellCheckingCheckBox;
     private JComboBox<String> fontCombo;
     private JLabel fontLbl;
     private JPanel fontPanel;
     private JLabel fontSizeLbl;
     private JSpinner fontSizeSpinner;
+    private JLabel leftClickRemindertLabel;
     private JButton notebookDirectoryButton;
     private JLabel notebookDirectoryLabel;
     private JTextField notebookDirectoryText;
@@ -572,6 +616,7 @@ final class ApplicationOptionsPanel extends JPanel {
     private JLabel restDirectoryLabel;
     private JTextField restDirectoryText;
     private JLabel restartLabel;
+    private JPanel spellCheckingPanel;
     private JPanel startupPanel;
     private JCheckBox startupWelcomeCheckbox;
     private JCheckBox startupWhatsNewCheckbox;

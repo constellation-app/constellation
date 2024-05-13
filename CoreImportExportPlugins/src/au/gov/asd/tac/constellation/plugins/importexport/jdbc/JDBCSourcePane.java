@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -303,6 +303,7 @@ public class JDBCSourcePane extends SourcePane {
 
         final TextArea query = new TextArea();
         query.setPrefRowCount(5);
+
         GridPane.setConstraints(query, 1, 3, 2, 1, HPos.LEFT, VPos.TOP);
 
         final Label destinationLabel = new Label("Destination:");
@@ -534,9 +535,9 @@ public class JDBCSourcePane extends SourcePane {
         cn.setPromptText("Enter a name for your connection");
         cn.setFocusTraversable(false);
         cn.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            cn.setStyle(""); 
+            cn.setStyle("");
             if (!newVal && StringUtils.isBlank(cn.getText())){
-                cn.setStyle("-fx-text-box-border: red;");  
+                cn.setStyle("-fx-text-box-border: red;");
             }
         });
         gp.add(cn, 1, 0, 2, 1);
@@ -557,9 +558,9 @@ public class JDBCSourcePane extends SourcePane {
         connectionStringF.setPromptText("Enter a URL to connect to, eg. jdbc:sqlite:C:/my_folder/database.sqlite");
         connectionStringF.setFocusTraversable(false);
         connectionStringF.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            connectionStringF.setStyle(""); 
+            connectionStringF.setStyle("");
             if (!newVal && StringUtils.isBlank(connectionStringF.getText())){
-                connectionStringF.setStyle("-fx-text-box-border: red;");  
+                connectionStringF.setStyle("-fx-text-box-border: red;");
             }
         });
         gp.add(connectionStringF, 1, 2, 2, 1);

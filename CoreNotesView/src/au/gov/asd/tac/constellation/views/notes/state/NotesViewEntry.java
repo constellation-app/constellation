@@ -37,7 +37,7 @@ public class NotesViewEntry implements PluginReportListener {
     private String noteTitle;
     private String noteContent;
 
-    private String nodeColour = "#942483";
+    private String nodeColour = "#a26fc0";
     private final boolean userCreated;
     private Boolean graphAttribute;
     private List<Integer> nodesSelected;

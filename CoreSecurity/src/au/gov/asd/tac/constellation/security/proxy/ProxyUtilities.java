@@ -200,6 +200,7 @@ public class ProxyUtilities implements PreferenceChangeListener {
                 return new Pair<>(host, port);
             }
         } catch (final NumberFormatException ex) {
+            LOGGER.log(Level.WARNING, "Port couldn't be parsed");
         }
 
         return null;

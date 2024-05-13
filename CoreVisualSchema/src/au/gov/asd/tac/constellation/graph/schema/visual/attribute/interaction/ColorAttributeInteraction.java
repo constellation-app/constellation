@@ -63,7 +63,7 @@ public class ColorAttributeInteraction extends AbstractAttributeInteraction<Cons
         final double rectHeight = height == -1 ? rectWidth : height;
         final Rectangle rect = new Rectangle(rectWidth, rectHeight);
         rect.setFill(colorValue.getJavaFXColor());
-        rect.setStroke(Color.LIGHTGREY);
+        rect.setStroke(Color.GREY);
         return Arrays.asList(rect);
     }
 

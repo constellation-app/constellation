@@ -206,7 +206,7 @@ public final class BooleanObjectAttributeDescription extends AbstractObjectAttri
 
         @Override
         public GraphIndexResult getElementsWithAttributeValue(final Object value) {
-            if ((Boolean) value) {
+            if (Boolean.TRUE.equals(value)) {
                 return new IndexResult(nextTrue, 0);
             } else {
                 return new IndexResult(data.length - nextFalse, nextFalse);

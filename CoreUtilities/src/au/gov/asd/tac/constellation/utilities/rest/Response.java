@@ -201,6 +201,7 @@ public abstract class Response {
                 b.append(SeparatorConstants.NEWLINE);
                 jsonShown = true;
             } catch (final IOException ex) {
+                LOGGER.log(Level.WARNING, "Error encountered converting json to String");
             }
         }
 

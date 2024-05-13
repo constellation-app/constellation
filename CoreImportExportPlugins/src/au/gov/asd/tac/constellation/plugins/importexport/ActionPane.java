@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,9 +43,9 @@ public class ActionPane extends BorderPane {
     private static final int HBOX_SPACING = 5;
     private final Button importButton;
     private final CheckBox skipInvalidRowsCheckBox;
-    private final ImportController importController;
+    private final ImportController<?> importController;
 
-    public ActionPane(final ImportController controller) {
+    public ActionPane(final ImportController<?> controller) {
         this.importController = controller;
 
         final HBox runBox = new HBox();

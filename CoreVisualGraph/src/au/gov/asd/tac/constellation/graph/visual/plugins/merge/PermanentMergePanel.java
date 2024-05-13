@@ -230,7 +230,7 @@ public final class PermanentMergePanel extends JPanel {
     private void udpateSelectedNodeCount() {
         int count = 0;
         for (int i = 0; i < tableModel.getRowCount(); i++) {
-            if ((Boolean) tableModel.getValueAt(i, 0)) {
+            if (Boolean.TRUE.equals(tableModel.getValueAt(i, 0))) {
                 count++;
             }
         }
@@ -282,7 +282,7 @@ public final class PermanentMergePanel extends JPanel {
     public ArrayList<Integer> getSelectedVertices() {
         final ArrayList<Integer> list = new ArrayList<>();
         for (int i = 0; i < tableModel.getRowCount(); i++) {
-            if ((Boolean) tableModel.getValueAt(i, 0)) {
+            if (Boolean.TRUE.equals(tableModel.getValueAt(i, 0))) {
                 final Integer key = Integer.valueOf((String) (tableModel.getValueAt(i, 1)));
                 list.add(key);
             }

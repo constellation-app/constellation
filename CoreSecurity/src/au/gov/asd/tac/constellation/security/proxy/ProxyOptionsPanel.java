@@ -32,19 +32,21 @@ public class ProxyOptionsPanel extends javax.swing.JPanel {
         initComponents();
 
         defaultProxyText.getDocument().addDocumentListener(new DocumentListener() {
-
-            @Override
-            public void insertUpdate(final DocumentEvent event) {
+            
+            public void changeUpdate() {
                 bypassProxyHostsLabel.setEnabled(!defaultProxyText.getText().isEmpty());
                 bypassProxyHostsDescription.setEnabled(!defaultProxyText.getText().isEmpty());
                 bypassProxyHostsText.setEnabled(!defaultProxyText.getText().isEmpty());
             }
 
             @Override
+            public void insertUpdate(final DocumentEvent event) {
+                changeUpdate();
+            }
+
+            @Override
             public void removeUpdate(final DocumentEvent event) {
-                bypassProxyHostsLabel.setEnabled(!defaultProxyText.getText().isEmpty());
-                bypassProxyHostsDescription.setEnabled(!defaultProxyText.getText().isEmpty());
-                bypassProxyHostsText.setEnabled(!defaultProxyText.getText().isEmpty());
+                changeUpdate();
             }
 
             @Override

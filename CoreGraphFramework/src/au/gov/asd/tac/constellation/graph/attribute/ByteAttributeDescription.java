@@ -62,7 +62,7 @@ public class ByteAttributeDescription extends AbstractAttributeDescription {
                 return number.byteValue();
             }       
             case Boolean bool -> {
-                return bool ? (byte) 1 : (byte) 0;
+                return Boolean.TRUE.equals(bool) ? (byte) 1 : (byte) 0;
             }       
             case String string -> {
                 return convertFromString(string);

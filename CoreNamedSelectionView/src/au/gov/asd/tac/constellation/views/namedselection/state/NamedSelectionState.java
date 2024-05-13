@@ -68,7 +68,7 @@ public final class NamedSelectionState {
 
         // Iterate over all namedSelections to deep copy all content:
         for (final NamedSelection selection : state.getNamedSelections()) {
-            namedSelections.add(selection.clone());
+            namedSelections.add(new NamedSelection(selection));
         }
     }
 
