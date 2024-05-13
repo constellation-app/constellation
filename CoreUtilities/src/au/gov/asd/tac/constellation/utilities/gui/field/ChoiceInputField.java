@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
 
 /**
@@ -40,6 +41,10 @@ public class ChoiceInputField<C extends Object> extends ConstellationInputField 
         
         this.type = type;
     }
+
+    public ChoiceType getType(){
+        return this.type;
+    }
     
     public void setItems(List<C> options){
         this.choices.clear();
@@ -47,7 +52,14 @@ public class ChoiceInputField<C extends Object> extends ConstellationInputField 
     }
     
     public void select(List<C> choices){
-        choices.stream().forEach(choice -> this.select(choice));
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i< choices.size(); i++) {
+            if (i != 0){
+                sb.append(", ");
+            }
+            sb.append(choices.get(i).toString());
+        }
+        this.setText(sb.toString());
     }
     
     public void select(C choice){
@@ -58,24 +70,35 @@ public class ChoiceInputField<C extends Object> extends ConstellationInputField 
                 this.setText(newOption);
             }
             case MULTI -> {
-                boolean include = true;
-                String oldText = this.getText();
-                String[] options = oldText.split(SeparatorConstants.COMMA);
-                for (String option : options){
-                    if (option.strip().equals(newOption)) {
-                        include = false;
+                List<C> currentSelection = this.getSelectedItems();
+                List<C> items = new ArrayList<>();
+                for (C item : choices){
+                    if (currentSelection.contains(item) || choice.equals(item)){
+                        items.add(item);
                     }
-                } 
-
-                if (include) {
-                    StringBuilder sb = new StringBuilder();
-                    sb.append(oldText);
-                    if (options.length != 0){
-                        sb.append(", ");
-                    }
-                    sb.append(newOption);
-                    this.setText(sb.toString());
                 }
+                select(items);
+           
+//                boolean include = true;
+//                String oldText = this.getText();
+//                String[] options = oldText.split(SeparatorConstants.COMMA);
+//                for (String option : options){
+//                    if (option.strip().equals(newOption)) {
+//                        include = false;
+//                    }
+//                } 
+//
+//                if (include) {
+//                    StringBuilder sb = new StringBuilder();
+//                    if (!oldText.isBlank()){
+//                    sb.append(oldText);
+//                        if (options.length != 0){
+//                            sb.append(", ");
+//                        }
+//                    }
+//                    sb.append(newOption);
+//                    this.setText(sb.toString());
+//                }
             }
         }
     }
@@ -137,6 +160,19 @@ public class ChoiceInputField<C extends Object> extends ConstellationInputField 
         public ChoiceInputDropDown(ChoiceInputField field){
             super(field);
             
+            if (field.type == ChoiceType.MULTI){
+            Label all = new Label("Select All");
+            all.setOnMouseClicked(event -> field.select(field.choices)); 
+            this.getItems().add(new CustomMenuItem(all));
+            
+            Label clear = new Label("Clear All");
+            clear.setOnMouseClicked(event -> field.clearSelection()); 
+            this.getItems().add(new CustomMenuItem(clear));
+            }
+            
+            
+            this.addSeparator();
+            
             List<C> selectedChoices = field.getSelectedItems();
             
             for (final C choice : choices){
@@ -152,9 +188,7 @@ public class ChoiceInputField<C extends Object> extends ConstellationInputField 
                 this.addMenuOption(box);
             }
             
-            if (field.type == ChoiceType.MULTI){
-                //Stop the menu from closing
-            }
+
         }
     }
     

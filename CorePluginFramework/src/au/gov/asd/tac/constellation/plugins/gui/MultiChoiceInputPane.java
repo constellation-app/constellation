@@ -20,6 +20,8 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParamete
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.utilities.gui.MultiChoiceInputField;
+import au.gov.asd.tac.constellation.utilities.gui.field.ChoiceInputField;
+import au.gov.asd.tac.constellation.utilities.gui.field.ChoiceInputField.ChoiceType;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -50,12 +52,12 @@ public class MultiChoiceInputPane extends HBox {
     public static final int DEFAULT_WIDTH = 300;
 
     private final ObservableList<ParameterValue> options = FXCollections.observableArrayList();
-    private final MultiChoiceInputField<ParameterValue> field;
+    private final ChoiceInputField<ParameterValue> field;
     private boolean isAdjusting = false;
     
     public MultiChoiceInputPane(final PluginParameter<MultiChoiceParameterValue> parameter) {
         options.addAll(MultiChoiceParameterType.getOptionsData(parameter));
-        field = new MultiChoiceInputField<>(options);
+        field = new ChoiceInputField<>(ChoiceType.MULTI);
         field.setPromptText(parameter.getDescription());
         if (parameter.getParameterValue().getGuiInit() != null) {
             parameter.getParameterValue().getGuiInit().init(field);
@@ -65,23 +67,20 @@ public class MultiChoiceInputPane extends HBox {
         field.setVisible(parameter.isVisible());
         this.setManaged(parameter.isVisible());
         this.setVisible(parameter.isVisible());
+        
+        field.setItems(options);
 
         // Set properties before adding listener to ensure unwanted onChanged events do not fire.
         Platform.runLater(() -> {
             @SuppressWarnings("unchecked") // Below cast will always work because getChoicesData returns List<? extends ParameterValue>.
             final List<ParameterValue> checkedItems = (List<ParameterValue>) MultiChoiceParameterType.getChoicesData(parameter);
-            checkedItems.stream().forEach(checked -> {
-                final BooleanProperty bp = field.getItemBooleanProperty(checked);
-                if (bp != null) {
-                    bp.setValue(true);
-                }
-            });
+            field.select(checkedItems);
 
-            field.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change<? extends ParameterValue> c) -> {
-                if (!isAdjusting) {
-                    MultiChoiceParameterType.setChoicesData(parameter, field.getCheckModel().getCheckedItems());
-                }
-            });
+//            field.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change<? extends ParameterValue> c) -> {
+//                if (!isAdjusting) {
+//                    MultiChoiceParameterType.setChoicesData(parameter, field.getCheckModel().getCheckedItems());
+//                }
+//            });
         });
 
         parameter.addListener((pluginParameter, change) -> Platform.runLater(() -> {
@@ -90,19 +89,16 @@ public class MultiChoiceInputPane extends HBox {
                 switch (change) {
                     case VALUE -> {
                         isAdjusting = true;
-                        field.getCheckModel().clearChecks(); //The order matters here- this should be called before clearing the options.
+                        field.clearSelection();
                         options.clear();
                         options.addAll(MultiChoiceParameterType.getOptionsData(mcPluginParameter));
                         @SuppressWarnings("unchecked") //checkedItems will be list of parameter values
                         final List<ParameterValue> checkedItems = (List<ParameterValue>) MultiChoiceParameterType.getChoicesData(mcPluginParameter);
 
-                        field.getCheckModel().getCheckedItems();
-                        checkedItems.forEach(checked -> {
-                            field.getCheckModel().check(checked);
-                        });
+                        field.select(checkedItems);
                         
                         // give a visual indicator if a required parameter is empty
-                        field.setId(mcPluginParameter.isRequired() && field.getCheckModel().isEmpty() ? "invalid selection" : "");
+                        field.setId(mcPluginParameter.isRequired() && field.isEmpty() ? "invalid selection" : "");
                         field.setStyle("invalid selection".equals(field.getId()) ? "-fx-color: #8A1D1D" : "");
 
                         isAdjusting = false;
@@ -124,7 +120,7 @@ public class MultiChoiceInputPane extends HBox {
         
         final HBox fieldAndButtons = new HBox();
         fieldAndButtons.setSpacing(2);
-        fieldAndButtons.getChildren().addAll(field, field.getBulkSelectionOptionsMenuButton());
+        fieldAndButtons.getChildren().addAll(field);
         getChildren().add(fieldAndButtons);
     }
 }

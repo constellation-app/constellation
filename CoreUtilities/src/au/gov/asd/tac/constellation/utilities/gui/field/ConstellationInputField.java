@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
+import au.gov.asd.tac.constellation.utilities.gui.field.ChoiceInputField.ChoiceType;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
@@ -32,6 +33,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.Separator;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
@@ -440,9 +442,24 @@ public abstract class ConstellationInputField extends StackPane {
         
         public void addMenuOption(Labeled text) {
             text.prefWidthProperty().bind(parent.prefWidthProperty());
-            MenuItem item = new CustomMenuItem(text);
+            CustomMenuItem item = new CustomMenuItem(text);
+            
+            if (parent instanceof ChoiceInputField field && field.getType() == ChoiceType.MULTI){
+                item.setHideOnClick(false);
+            }
+            
             this.getItems().add(item);
         }
+        
+        public void addSeparator(){
+            Separator sep = new Separator();
+            sep.prefWidthProperty().bind(parent.prefWidthProperty());
+            MenuItem item = new CustomMenuItem(sep);
+            item.setDisable(true);
+
+            this.getItems().add(item);
+        }
+        
     }
     
     /**
