@@ -63,6 +63,19 @@ public class ColorInputField extends ConstellationInputField {
         this.setColor(getColor());
     }
     
+    public void updateMode(String text){
+        ColorMode localMode;
+        if (text.contains(",")){
+            localMode = ColorMode.RGB;
+        } else if (text.contains("#")){
+            localMode = ColorMode.HEX;
+        } else {
+            localMode = ColorMode.COLOR;
+        }
+        this.mode = localMode;
+        this.setLeftLabel(localMode.toString());
+    }
+    
     public void setColor(Color color){
         this.setColor(ConstellationColor.fromFXColor(color)); 
     }
@@ -92,24 +105,57 @@ public class ColorInputField extends ConstellationInputField {
         return getColor(this.getText());
     }
     
-    public static ConstellationColor getColor(final String text){
+    /**
+     * Gets a ConstellationColor Object representing the color represented by plain text.
+     * @param text
+     * @return 
+     */
+    public ConstellationColor getColor(final String text){
+        final ConstellationColor color;
         if (text.isBlank()){
             return null;
         } else if (text.contains(",")){
             StringBuilder sb = new StringBuilder();
             sb.append("RGB");
             String[] colors = text.split(",");
-            for (String color : colors){
-                String colorVal = color.split(":")[1];
-                for (int i = 0 ; i < 3 - colorVal.length() ; i++){
-                    sb.append("0");
-                }
-                sb.append(colorVal);
+            
+            //threre should only be 3 colors
+            if (colors.length != 3){
+                return null;
             }
-            return ConstellationColor.getColorValue(sb.toString());
+            for (int colorIndex = 0 ; colorIndex < 3 ; colorIndex++) {
+                final String[] colorPair = colors[colorIndex].split(":");
+                //The color should have a 
+                if (colorPair.length != 2){
+                    return null;
+                }
+                
+                String expectedKey = switch(colorIndex){
+                    case 0 -> "RED";
+                    case 1 -> "GREEN";
+                    case 2 -> "BLUE";
+                    default -> null;
+                };
+                
+                if (!colorPair[0].strip().toUpperCase().equals(expectedKey) || colorPair[1].isBlank()) {
+                    return null;
+                }
+                
+                int colorVal = Integer.parseInt(colorPair[1].strip());
+                
+                if (colorVal > 255 || colorVal < 0){
+                    return null;
+                }
+                
+                sb.append(String.format("%03d", colorVal));         
+            }
+
+            color = ConstellationColor.getColorValue(sb.toString());
         } else {
-            return ConstellationColor.getColorValue(text);
-        }
+            color = ConstellationColor.getColorValue(text);
+
+        }                     
+        return color;
     }
     
     @Override
@@ -119,7 +165,11 @@ public class ColorInputField extends ConstellationInputField {
     
     @Override
     public boolean isValid(String value){
-        return getColor(value) != null;
+        if (getColor(value) != null){
+            updateMode(value);
+            return true;
+        }
+        return false;
     }
     
     private class ColorInputDropDown extends ConstellationInputDropDown {

@@ -78,7 +78,7 @@ public class ColorInputPane extends Pane {
 
         field.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                parameter.setColorValue(ColorInputField.getColor(newValue));                
+                parameter.setColorValue(field.getColor(newValue));                
             }
         });
 
