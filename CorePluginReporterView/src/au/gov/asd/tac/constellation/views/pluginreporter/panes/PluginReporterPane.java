@@ -156,7 +156,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
         filteredTags.removeAll(tagFilterMultiChoiceInput.getCheckModel().getCheckedItems());
 
         // Save the new filtered tags to preferences
-        StringBuilder prefString = new StringBuilder();
+        final StringBuilder prefString = new StringBuilder();
         String delimiter = "";
         for (String filteredTag : filteredTags) {
             prefString.append(delimiter);
