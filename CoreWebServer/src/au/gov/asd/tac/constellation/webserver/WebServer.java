@@ -145,7 +145,7 @@ public class WebServer {
                 final File restFile = new File(userDir, REST_FILE);
                 cleanupRest(restFile, userDir);
 
-                // Also put rest file in notebook directory
+                // Also put rest file in the ipython directory
                 final File restFileIPython = new File(getScriptDir(true), REST_FILE);
                 cleanupRest(restFileIPython, getScriptDir(true).toString());
 

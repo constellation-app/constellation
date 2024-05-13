@@ -15,14 +15,20 @@
  */
 package au.gov.asd.tac.constellation.webserver;
 
+import au.gov.asd.tac.constellation.help.utilities.Generator;
 import java.awt.event.ActionEvent;
-import static jnr.constants.PlatformConstants.OS;
+import static org.mockito.ArgumentMatchers.any;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import processing.core.PApplet;
 
 /**
  *
@@ -56,5 +62,36 @@ public class StartJupyterNotebookActionNGTest {
         boolean result = StartJupyterNotebookAction.isWindows();
         assertEquals(result, expResult);;
     }
-    
+
+    /**
+     * Test of actionPerformed method, of class StartJupyterNotebookAction.
+     */
+    @Test
+    public void testActionPerformed() {
+        System.out.println("actionPerformed");
+        ActionEvent e = null;
+
+        // Mocks
+        Process processMock = mock(Process.class);
+            try {
+                when(processMock.waitFor()).thenReturn(0); // Return success
+            } catch (InterruptedException ex) {
+            }
+            
+
+//        WebServer webserverMock = mock(new WebServer());
+//        when(webserverMock.start()).thenReturn(0);
+        //MockedStatic<WebServer> webserverMock = Mockito.mockStatic(WebServer.class);
+        try (MockedStatic<Generator> generatorMock = Mockito.mockStatic(Generator.class); MockedStatic<WebServer> webserverMock = Mockito.mockStatic(WebServer.class); MockedStatic<PApplet> execute = Mockito.mockStatic(PApplet.class)) {
+            generatorMock.when(Generator::getBaseDirectory).thenReturn("");
+            webserverMock.when(WebServer::start).thenReturn(0);
+
+            //execute.when(PApplet::exec).thenReturn(processMock);
+            execute.when(() -> PApplet.exec(any(String[].class))).thenReturn(processMock);
+
+            StartJupyterNotebookAction instance = new StartJupyterNotebookAction();
+            instance.actionPerformed(e);
+        }
+    }
+
 }
