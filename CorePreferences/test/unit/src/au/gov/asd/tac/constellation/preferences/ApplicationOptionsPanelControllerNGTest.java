@@ -229,6 +229,53 @@ public class ApplicationOptionsPanelControllerNGTest {
     }
 
     /**
+     * Test of isValid method, of class ApplicationOptionsPanelController.
+     */
+    @Test
+    public void testIsValidManyCombo() {
+        System.out.println("isValid Many Combos");
+
+        for (int i = 0; i < 9; i++) {
+            // To use value of i in lambda, it needs to be final
+            final int index = i;
+            // Value should be false for all but the last iteration
+            final boolean expResult = (i == 8);
+
+            try (MockedConstruction<ApplicationOptionsPanel> mockAP = mockConstruction(ApplicationOptionsPanel.class,
+                    (mockInstance, context) -> {
+                        //implement methods
+                        when(mockInstance.getUserDirectory()).thenReturn((index > 0) ? "" : null);
+                        when(mockInstance.getAutosaveFrequency()).thenReturn((index > 1) ? 1 : 0);
+                        when(mockInstance.getWebserverPort()).thenReturn((index > 2) ? 1 : 0);
+                        when(mockInstance.getNotebookDirectory()).thenReturn((index > 3) ? "" : null);
+                        when(mockInstance.getRestDirectory()).thenReturn((index > 4) ? "" : null);
+                        when(mockInstance.getCurrentFont()).thenReturn((index > 5) ? "" : null);
+                        when(mockInstance.getFontSize()).thenReturn((index > 6) ? "" : null);
+                        when(mockInstance.getColorModeSelection()).thenReturn((index > 7) ? "" : null);
+                    })) {
+
+                ApplicationOptionsPanelController instance = new ApplicationOptionsPanelController();
+                boolean result = instance.isValid();
+                assertEquals(result, expResult);
+
+                // Get a list of all created mocks
+                List<ApplicationOptionsPanel> constructed = mockAP.constructed();
+                assertEquals(constructed.size(), 1);
+
+                // Assert that created panel had run the following methods
+                verify(constructed.get(0), times(1)).getUserDirectory();
+                verify(constructed.get(0), times((index > 0) ? 1 : 0)).getAutosaveFrequency();
+                verify(constructed.get(0), times((index > 1) ? 1 : 0)).getWebserverPort();
+                verify(constructed.get(0), times((index > 2) ? 1 : 0)).getNotebookDirectory();
+                verify(constructed.get(0), times((index > 3) ? 1 : 0)).getRestDirectory();
+                verify(constructed.get(0), times((index > 4) ? 1 : 0)).getCurrentFont();
+                verify(constructed.get(0), times((index > 5) ? 1 : 0)).getFontSize();
+                verify(constructed.get(0), times((index > 6) ? 1 : 0)).getColorModeSelection();
+            }
+        }
+    }
+
+    /**
      * Test of isChanged method, of class ApplicationOptionsPanelController.
      */
     @Test
@@ -333,6 +380,7 @@ public class ApplicationOptionsPanelControllerNGTest {
         for (int i = 0; i < 14; i++) {
             // To use value of i in lambda, it needs to be final
             final int index = i;
+            // Expected result should be true for all but the final iteration
             boolean expResult = (i != 13);
 
             try (MockedConstruction<ApplicationOptionsPanel> mock = mockConstruction(ApplicationOptionsPanel.class,
@@ -354,10 +402,9 @@ public class ApplicationOptionsPanelControllerNGTest {
                         when(mockInstance.isEnableSpellCheckingSelected()).thenReturn((index > 11) ? prefs.getBoolean(ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING, ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING_DEFAULT) : !prefs.getBoolean(ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING, ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING_DEFAULT));
                         when(mockInstance.getColorModeSelection()).thenReturn((index > 12) ? prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT) : "");
                     })) {
-                
+
                 ApplicationOptionsPanelController instance = new ApplicationOptionsPanelController();
                 boolean result = instance.isChanged();
-                System.out.println(index);
                 assertEquals(result, expResult);
 
                 // Get a list of all created mocks
