@@ -17,15 +17,20 @@ package au.gov.asd.tac.constellation.utilities.gui.field;
 
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.StringProperty;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.Node;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.IndexRange;
 import javafx.scene.control.Label;
+import javafx.scene.control.Labeled;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -153,7 +158,6 @@ public abstract class ConstellationInputField extends StackPane {
                 case LEFT -> gridPane.add(this.getEndCellGroup(ContentDisplay.LEFT, optionColor, leftLabel), 0, 0);
                 case RIGHT -> gridPane.add(this.getEndCellGroup(ContentDisplay.RIGHT, layout.hasButton ? buttonColor : optionColor, rightLabel), layout.getAreas().length - 1, 0);
                 case CENTER -> {
-                    
                     insertBaseFieldIntoGrid(field);
                 }
                 default -> {
@@ -176,7 +180,7 @@ public abstract class ConstellationInputField extends StackPane {
         return this.field;
     }
     
-        public final void insertBaseFieldIntoGrid(final TextInputControl field) {
+    public final void insertBaseFieldIntoGrid(final TextInputControl field) {
         for (final Node node : gridPane.getChildren()) {
             if (!ContentDisplay.LEFT.toString().equals(node.getId()) && !ContentDisplay.RIGHT.toString().equals(node.getId())) {
                 gridPane.add(field, GridPane.getColumnIndex(node), GridPane.getRowIndex(node));
@@ -399,6 +403,10 @@ public abstract class ConstellationInputField extends StackPane {
         }
     }
     
+    public boolean isEmpty(){
+        return this.getText().isBlank();
+    }
+    
     /**
      * Determined if the provided text is a valid value for the input field.
      * Is implemented differently for different input fields.
@@ -430,9 +438,10 @@ public abstract class ConstellationInputField extends StackPane {
             parent = field;
         }
         
-        public void addMenuOption(Label text) {
+        public void addMenuOption(Labeled text) {
             text.prefWidthProperty().bind(parent.prefWidthProperty());
-            this.getItems().add(new CustomMenuItem(text));
+            MenuItem item = new CustomMenuItem(text);
+            this.getItems().add(item);
         }
     }
     

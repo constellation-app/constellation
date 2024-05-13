@@ -19,6 +19,9 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.utilities.gui.field.ChoiceInputField;
+import au.gov.asd.tac.constellation.utilities.gui.field.ChoiceInputField.ChoiceType;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputField;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,16 +52,16 @@ public class SingleChoiceInputPane extends HBox {
     
     public static final int DEFAULT_WIDTH = 300;
 
-    private final SearchableComboBox<ParameterValue> field;
+    private final ChoiceInputField<ParameterValue> field;
     private boolean initialRun = true;
 
     public SingleChoiceInputPane(final PluginParameter<SingleChoiceParameterValue> parameter) {
-        field = new SearchableComboBox<>();
+        field = new ChoiceInputField<>(ChoiceType.SINGLE);
         field.setPromptText(parameter.getDescription());
         field.setItems(FXCollections.observableList(SingleChoiceParameterType.getOptionsData(parameter)));
         final ParameterValue initialValue = parameter.getParameterValue();
         if (initialValue.getObjectValue() != null) {
-            field.getSelectionModel().select(initialValue);
+            field.select(initialValue);
         }
 
         field.setPrefWidth(DEFAULT_WIDTH);
@@ -68,11 +71,11 @@ public class SingleChoiceInputPane extends HBox {
         this.setManaged(parameter.isVisible());
         this.setVisible(parameter.isVisible());
 
-        if (parameter.getParameterValue().getGuiInit() != null) {
-            parameter.getParameterValue().getGuiInit().init(field);
-        }
+//        if (parameter.getParameterValue().getGuiInit() != null) {
+//            parameter.getParameterValue().getGuiInit().init(field);
+//        }
 
-        field.setOnAction(event -> SingleChoiceParameterType.setChoiceData(parameter, field.getSelectionModel().getSelectedItem()));
+//        field..setOnAction(event -> SingleChoiceParameterType.setChoiceData(parameter, field.getSelectedItem()));
 
         parameter.addListener((scParameter, change) -> Platform.runLater(() -> {
                 if (scParameter.getParameterValue() instanceof SingleChoiceParameterValue scParameterValue){
@@ -80,42 +83,42 @@ public class SingleChoiceInputPane extends HBox {
                         case VALUE -> {
                             // Don't change the value if it isn't necessary.
                             final List<ParameterValue> param = scParameterValue.getOptionsData();
-                            final ParameterValue value = field.getSelectionModel().getSelectedItem();
+                            final ParameterValue value = field.getSelectedItem();
 
                             //Checks that the currently selected value is in the new parameters list
                             if (!param.contains(value)) {
-                                field.getSelectionModel().select(scParameterValue.getChoiceData());
+                                field.select(scParameterValue.getChoiceData());
                             }
 
                             // give a visual indicator if a required parameter is empty
-                            field.setId(scParameter.isRequired() && field.getSelectionModel().isEmpty() ? "invalid selection" : "");
+                            field.setId(scParameter.isRequired() && field.isEmpty() ? "invalid selection" : "");
                             field.setStyle("invalid selection".equals(field.getId()) ? "-fx-color: #8A1D1D" : "");
                         }
                         case PROPERTY -> {
                             final ObservableList<ParameterValue> options = FXCollections.observableArrayList();
-                            final EventHandler<ActionEvent> handler = field.getOnAction();
-                            field.setOnAction(null);
-
-                            options.setAll(scParameterValue.getOptionsData());
-                            field.setItems(options);
-                            field.setOnAction(handler);
-
-                            if (initialRun) {
-                                // This is a workaround to fix dynamically changing drop downs.
-                                // Otherwise when the Constellation is loaded for the first time,
-                                // such lists wouldn't populate until clicked twice on the arrow.
-                                // E.g. `Type Category` drop down in `Select Top N` plugin
-                                field.show();
-                                field.hide();
-                                field.requestFocus();
-                                initialRun = false;
-                            }
+//                            final EventHandler<ActionEvent> handler = field.getOnAction();
+//                            field.setOnAction(null);
+//
+//                            options.setAll(scParameterValue.getOptionsData());
+//                            field.setItems(options);
+//                            field.setOnAction(handler);
+//
+//                            if (initialRun) {
+//                                // This is a workaround to fix dynamically changing drop downs.
+//                                // Otherwise when the Constellation is loaded for the first time,
+//                                // such lists wouldn't populate until clicked twice on the arrow.
+//                                // E.g. `Type Category` drop down in `Select Top N` plugin
+//                                field.show();
+//                                field.hide();
+//                                field.requestFocus();
+//                                initialRun = false;
+//                            }
 
                             // Only keep the value if it's in the new choices.
                             if (options.contains(scParameterValue.getChoiceData())) {
-                                field.getSelectionModel().select(scParameter.getSingleChoice());
+                                field.select(scParameter.getSingleChoice());
                             } else {
-                                field.getSelectionModel().clearSelection();
+                                field.clearSelection();
                             }
                         }
 
