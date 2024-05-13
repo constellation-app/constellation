@@ -747,7 +747,6 @@ def _get_rest(rest=None):
     """
 
     if not rest:
-        #rest = os.path.join(os.path.expanduser('~'), '.CONSTELLATION', 'rest.json')
         rest = os.path.join(os.path.expanduser('~'), '.ipython', 'rest.json')
 
     try:
