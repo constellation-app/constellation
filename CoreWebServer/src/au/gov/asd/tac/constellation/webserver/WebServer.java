@@ -123,7 +123,6 @@ public class WebServer {
 
     protected static final String CONSTELLATION_CLIENT = "constellation_client.py";
     private static final String IPYTHON = ".ipython";
-    private static final String RESOURCES = "resources/";
     private static final String SEP = File.separator;
     private static final String SCRIPT_SOURCE = Generator.getBaseDirectory() + "ext" + SEP + "package" + SEP + "src" + SEP + "constellation_client" + SEP;
 
