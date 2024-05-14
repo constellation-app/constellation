@@ -316,9 +316,9 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
                 .setFilesOnly(true)
                 .setAcceptAllFileFilterUsed(false)
                 .setSelectionApprover((File[] selection) -> {
-
+                    // Show dialog box if file already exists when saving
                     final String extension = FilenameUtils.getExtension(selection[0].toString());
-                    final String filepath = extension.isEmpty() ? selection[0].toString() + ".star" : selection[0].toString();
+                    final String filepath = extension.isEmpty() ? selection[0].toString() + FileExtensionConstants.STAR : selection[0].toString();
                     final File file = new File(filepath);
 
                     if (file.exists()) {
