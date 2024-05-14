@@ -34,6 +34,7 @@ import javafx.scene.control.Labeled;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.Separator;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
@@ -452,12 +453,7 @@ public abstract class ConstellationInputField extends StackPane {
         }
         
         public void addSeparator(){
-            Separator sep = new Separator();
-            sep.prefWidthProperty().bind(parent.prefWidthProperty());
-            MenuItem item = new CustomMenuItem(sep);
-            item.setDisable(true);
-
-            this.getItems().add(item);
+            this.getItems().add(new SeparatorMenuItem());
         }
         
     }

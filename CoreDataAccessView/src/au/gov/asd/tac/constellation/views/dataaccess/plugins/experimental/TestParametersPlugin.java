@@ -225,28 +225,29 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
 
         // A single choice list with a subtype of String.
         final SingleChoiceParameterValue robotpv = new SingleChoiceParameterValue(StringParameterValue.class);
-        robotpv.setGuiInit(control -> {
-            @SuppressWarnings("unchecked") //control will be of type ComboBox<ParameterValue> which extends from Region
-            final ComboBox<ParameterValue> field = (ComboBox<ParameterValue>) control;
-            final Image img = new Image(ALIEN_ICON);
-            field.setCellFactory((ListView<ParameterValue> param) -> new ListCell<ParameterValue>() {
-                @Override
-                protected void updateItem(final ParameterValue item, final boolean empty) {
-                    super.updateItem(item, empty);
-                    this.setText(empty ? "" : item.toString());
-                    final float f = empty ? 0 : item.toString().length() / 11F;
-                    final Color c = Color.color(1 - f / 2F, 0, 0);
-                    setTextFill(c);
-                    setGraphic(new ImageView(img));
-                }
-            });
-        });
+//        robotpv.setGuiInit(control -> {
+//            @SuppressWarnings("unchecked") //control will be of type ComboBox<ParameterValue> which extends from Region
+//            final ComboBox<ParameterValue> field = (ComboBox<ParameterValue>) control;
+//            final Image img = new Image(ALIEN_ICON);
+//            field.setCellFactory((ListView<ParameterValue> param) -> new ListCell<ParameterValue>() {
+//                @Override
+//                protected void updateItem(final ParameterValue item, final boolean empty) {
+//                    super.updateItem(item, empty);
+//                    this.setText(empty ? "" : item.toString());
+//                    final float f = empty ? 0 : item.toString().length() / 11F;
+//                    final Color c = Color.color(1 - f / 2F, 0, 0);
+//                    setTextFill(c);
+//                    setGraphic(new ImageView(img));
+//                }
+//            });
+//        });
         final PluginParameter<SingleChoiceParameterValue> robotOptions = SingleChoiceParameterType.build(ROBOT_PARAMETER_ID, robotpv);
         robotOptions.setName("Robot options");
         robotOptions.setDescription("A list of robots to choose from");
 
         // Use the helper method to add string options.
         SingleChoiceParameterType.setOptions(robotOptions, Arrays.asList("Bender", "Gort", "Maximillian", "Robbie", "Tom Servo"));
+        SingleChoiceParameterType.setIcons(robotOptions, Arrays.asList(new Image(ALIEN_ICON), new Image(ALIEN_ICON), new Image(ALIEN_ICON), new Image(ALIEN_ICON), new Image(ALIEN_ICON)));
 
         // Create a ParameterValue of the underlying type (in this case, String) to set the default choice.
         final StringParameterValue robotChoice = new StringParameterValue("Gort");

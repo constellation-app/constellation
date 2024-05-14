@@ -21,6 +21,10 @@ import java.util.List;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
+import javafx.scene.control.Labeled;
+import javafx.scene.control.MenuItem;
+import javafx.scene.image.ImageView;
+import javax.swing.ImageIcon;
 
 /**
  *
@@ -29,6 +33,7 @@ import javafx.scene.control.Label;
 public class ChoiceInputField<C extends Object> extends ConstellationInputField {
     
     private List<C> choices = new ArrayList<>();
+    private List<ImageView> icons = new ArrayList<>();
     private ChoiceType type;
     
     public ChoiceInputField(ChoiceType type){
@@ -49,6 +54,15 @@ public class ChoiceInputField<C extends Object> extends ConstellationInputField 
     public void setItems(List<C> options){
         this.choices.clear();
         this.choices.addAll(options);
+    }
+    
+    /**
+     * Produce the list of icons for the context menu
+     * @param icons
+     */
+    public void setIcons(List<ImageView> icons) {
+        this.icons.clear();
+        this.icons.addAll(icons);
     }
     
     public void select(List<C> choices){
@@ -160,35 +174,50 @@ public class ChoiceInputField<C extends Object> extends ConstellationInputField 
         public ChoiceInputDropDown(ChoiceInputField field){
             super(field);
             
-            if (field.type == ChoiceType.MULTI){
+            if (field.type == ChoiceType.MULTI) {
             Label all = new Label("Select All");
             all.setOnMouseClicked(event -> field.select(field.choices)); 
-            this.getItems().add(new CustomMenuItem(all));
+            this.addMenuOption(all);
             
             Label clear = new Label("Clear All");
             clear.setOnMouseClicked(event -> field.clearSelection()); 
-            this.getItems().add(new CustomMenuItem(clear));
-            }
-            
+            this.addMenuOption(clear);
             
             this.addSeparator();
+            }       
             
             List<C> selectedChoices = field.getSelectedItems();
             
-            for (final C choice : choices){
-                final CheckBox box = new CheckBox(choice.toString());
-                box.setOnAction(event -> {
-                        if (box.isSelected()){
-                            field.select(choice);
-                        } else {
-                            field.deselect(choice);
-                        }
-                    }); 
-                box.setSelected(selectedChoices.contains(choice));
-                this.addMenuOption(box);
-            }
-            
+            for (int i = 0 ; i < choices.size() ; i ++){
+                final C choice = choices.get(i);
+                
+                final Labeled item = switch(field.type){
+                    case MULTI -> {
+                        final CheckBox box = new CheckBox(choice.toString());
+                        box.setOnAction(event -> {
+                            if (box.isSelected()) {
+                                field.select(choice);
+                            } else {
+                                field.deselect(choice);
+                            }
+                        }); 
+                        box.setSelected(selectedChoices.contains(choice));
+                        yield box;
+                    }
+                    case SINGLE -> {
+                        final Label label = new Label(choice.toString());
+                        label.setOnMouseClicked(event -> {
+                                field.select(choice);
+                        }); 
+                        yield label;
+                    }
+                };
 
+                if (!icons.isEmpty()){
+                    item.setGraphic(icons.get(i));
+                }
+                this.addMenuOption(item);   
+            }
         }
     }
     
