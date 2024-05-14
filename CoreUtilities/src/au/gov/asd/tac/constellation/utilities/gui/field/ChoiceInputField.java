@@ -18,6 +18,11 @@ package au.gov.asd.tac.constellation.utilities.gui.field;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
+import javafx.collections.SetChangeListener;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
@@ -30,9 +35,12 @@ import javax.swing.ImageIcon;
  *
  * @author capricornunicorn123
  */
-public class ChoiceInputField<C extends Object> extends ConstellationInputField {
+public class ChoiceInputField<C extends Object> extends ConstellationInputField implements ListChangeListener{
     
-    private List<C> choices = new ArrayList<>();
+    //Items should be ordered and unique. It is easier to enforce uniquness programaticaly so an ObservableList was use instead of an observable set
+    private final ObservableList<C> options = FXCollections.observableArrayList();
+    private final ObservableList<C> choices = FXCollections.observableArrayList();
+    
     private List<ImageView> icons = new ArrayList<>();
     private ChoiceType type;
     
@@ -45,19 +53,36 @@ public class ChoiceInputField<C extends Object> extends ConstellationInputField 
         });
         
         this.type = type;
+        
+        //Add a listener to the choices list and update the text acrodingly
+        this.addChoiceListener(this);
+        
+        //Add a listener to the text and update choices acctoringly?
+    }
+    
+    public final void addChoiceListener(ListChangeListener listener){
+        this.choices.addListener(listener);
+    }
+    
+    public final void removeChoiceListener(ListChangeListener listener){
+        this.choices.removeListener(listener);
     }
 
     public ChoiceType getType(){
         return this.type;
     }
     
-    public void setItems(List<C> options){
-        this.choices.clear();
-        this.choices.addAll(options);
+    /**
+     * Defines the options that users can select from in this field.
+     * @param options 
+     */
+    public void setOptions(List<C> options){
+        this.options.clear();
+        this.options.addAll(options);
     }
     
     /**
-     * Produce the list of icons for the context menu
+     * DEfines the list of icons for the context menu
      * @param icons
      */
     public void setIcons(List<ImageView> icons) {
@@ -65,70 +90,83 @@ public class ChoiceInputField<C extends Object> extends ConstellationInputField 
         this.icons.addAll(icons);
     }
     
-    public void select(List<C> choices){
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i< choices.size(); i++) {
-            if (i != 0){
-                sb.append(", ");
-            }
-            sb.append(choices.get(i).toString());
-        }
-        this.setText(sb.toString());
-    }
-    
-    public void select(C choice){
-        String newOption = choice.toString();
-        switch (type){
-           
-            case SINGLE -> {
-                this.setText(newOption);
-            }
-            case MULTI -> {
-                List<C> currentSelection = this.getSelectedItems();
-                List<C> items = new ArrayList<>();
-                for (C item : choices){
-                    if (currentSelection.contains(item) || choice.equals(item)){
-                        items.add(item);
-                    }
+    /**
+     * Changes the List of selected Choices to include the provided choice.
+     * this method willonly modify the list of choices for ChoiceInputFields with
+     * ChoiceType.MULTI
+     * @param choices 
+     */
+    public void select(List<C> choices) {
+        if (this.type == ChoiceType.MULTI) {
+            
+            // Simply adding a choice does not enforce the sort order
+            List<C> unsortedChoices = new ArrayList<>();
+            unsortedChoices.addAll(this.choices);
+            
+            for (C choice : choices) {
+                if (!unsortedChoices.contains(choice)){
+                    unsortedChoices.add(choice);
                 }
-                select(items);
-           
-//                boolean include = true;
-//                String oldText = this.getText();
-//                String[] options = oldText.split(SeparatorConstants.COMMA);
-//                for (String option : options){
-//                    if (option.strip().equals(newOption)) {
-//                        include = false;
-//                    }
-//                } 
-//
-//                if (include) {
-//                    StringBuilder sb = new StringBuilder();
-//                    if (!oldText.isBlank()){
-//                    sb.append(oldText);
-//                        if (options.length != 0){
-//                            sb.append(", ");
-//                        }
-//                    }
-//                    sb.append(newOption);
-//                    this.setText(sb.toString());
-//                }
             }
+            
+            //Itterate over the options and add add the choices based on that order.
+            List<C> sortedChoices = new ArrayList<>();
+            for (C option : options){
+                if (unsortedChoices.contains(option)){
+                    sortedChoices.add(option);
+                }
+            }
+
+            //Single Modiication
+            this.choices.clear();
+            this.choices.addAll(sortedChoices);
         }
     }
     
-    public void deselect(C choice){
-        switch (type){
-            case SINGLE -> {
-                this.clearSelection();
-            }
-            case MULTI -> {   
-                List<C> selectedItems = getSelectedItems();
-                this.clearSelection();
-                selectedItems.remove(choice);
-                this.select(selectedItems);
-            }
+    /**
+     * Changes the List of selected Choices to ensure the provided choice is included.
+     * if single choice selection mode then the old choice is removed
+     * if multi choice the old choice is retained
+     * @param choice 
+     */
+    public void select(C choice){
+        if (this.options.contains(choice)) {
+            switch (type){
+                case SINGLE -> {
+                    this.choices.clear();
+                    this.choices.add(choice);
+                } 
+                
+                case MULTI -> {
+                    // Simply adding a choice does not enforce the sort order
+                    List<C> unsortedChoices = new ArrayList<>();
+                    unsortedChoices.addAll(this.choices);
+                    if (!unsortedChoices.contains(choice)){
+                        unsortedChoices.add(choice);
+                    }
+                    
+                    List<C> sortedChoices = new ArrayList<>();
+                    //Itterate over the options and add add the choices based on that order.
+                    for (C option : options){
+                        if (unsortedChoices.contains(option)){
+                            sortedChoices.add(option);
+                        }
+                    }
+                    
+                    //Single Modiication
+                    this.choices.clear();
+                    this.choices.addAll(sortedChoices);
+                }
+            } 
         }
+    }
+    
+    /**
+     * Removed the provided choice from the currently selected choices.
+     * @param choice 
+     */
+    public void deselect(C choice){
+        this.choices.remove(choice);
     }
         
     @Override
@@ -138,45 +176,86 @@ public class ChoiceInputField<C extends Object> extends ConstellationInputField 
     
     @Override
     public boolean isValid(String value) {
-        return true;
+        if (getText().isBlank()){
+            return true;
+        } else {
+            return switch (type){
+                case SINGLE -> {
+                    List<C> items = stringToList(getText());
+                    yield items != null && items.size() == 1;
+                }
+                case MULTI -> stringToList(getText()) != null;
+            };
+        }
     }
 
-    public C getSelectedItem() {
-        for (C choice : choices){
-            if (choice.toString().equals(this.getText())){
-                return choice;
-            }
-        }
-        return null;
-    }
+//    public C getSelectedItem() {
+//        for (C choice : options){
+//            if (choice.toString().equals(this.getText())){
+//                return choice;
+//            }
+//        }
+//        return null;
+//    }
     
     public List<C> getSelectedItems() {
         List<C> selectedItems = new ArrayList<>();
-        String oldText = this.getText();
-        if (oldText != null && !oldText.isBlank()){
-            String[] options = oldText.split(SeparatorConstants.COMMA);
-            for (String option : options){
-                for (C choice : choices){
-                    if (choice.toString().equals(option.strip())){
-                        selectedItems.add(choice);
-                    }
-                }
-            }
-        }
+        selectedItems.addAll(choices);
         return selectedItems;
     }
 
     public void clearSelection() {
-       this.setText("");
+       this.choices.clear();
+    }
+
+    @Override
+    public void onChanged(Change change) {
+        this.setText(listToString(change.getList()));
+    }
+
+    private String listToString(ObservableList<C> set) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0 ; i < set.size() ; i++){
+            C option = set.get(i);
+                if (i != 0){
+                    sb.append(", ");
+                }
+            sb.append(option.toString());
+        }
+        return sb.toString();          
     }
     
-    private class ChoiceInputDropDown extends ConstellationInputDropDown {
+    private List<C> stringToList(String value) {
+        
+        List<C> foundChoices = new ArrayList<>();
+        List<String> choiceIndex = this.options.stream().map(Object::toString).toList();
+        
+        String[] items = value.split(SeparatorConstants.COMMA);
+        for (String item : items){
+            if (!item.isBlank()){
+                int index = choiceIndex.indexOf(item.strip());           
+                if (index == -1){
+                    return null;
+                } else {
+                    foundChoices.add(this.options.get(index));
+                }    
+            }
+        }
+
+        return foundChoices;          
+    }
+    
+    private class ChoiceInputDropDown extends ConstellationInputDropDown implements ListChangeListener{
+        
+        
+        List<CheckBox> boxes = new ArrayList<>();
+        
         public ChoiceInputDropDown(ChoiceInputField field){
             super(field);
             
             if (field.type == ChoiceType.MULTI) {
             Label all = new Label("Select All");
-            all.setOnMouseClicked(event -> field.select(field.choices)); 
+            all.setOnMouseClicked(event -> field.select(field.options)); 
             this.addMenuOption(all);
             
             Label clear = new Label("Clear All");
@@ -186,10 +265,9 @@ public class ChoiceInputField<C extends Object> extends ConstellationInputField 
             this.addSeparator();
             }       
             
-            List<C> selectedChoices = field.getSelectedItems();
-            
-            for (int i = 0 ; i < choices.size() ; i ++){
-                final C choice = choices.get(i);
+            Object[] optionsList = options.toArray();
+            for (int i = 0 ; i < optionsList.length ; i ++){
+                final C choice = (C) optionsList[i];
                 
                 final Labeled item = switch(field.type){
                     case MULTI -> {
@@ -201,7 +279,8 @@ public class ChoiceInputField<C extends Object> extends ConstellationInputField 
                                 field.deselect(choice);
                             }
                         }); 
-                        box.setSelected(selectedChoices.contains(choice));
+                        box.setSelected(choices.contains(choice));
+                        boxes.add(box);
                         yield box;
                     }
                     case SINGLE -> {
@@ -218,6 +297,23 @@ public class ChoiceInputField<C extends Object> extends ConstellationInputField 
                 }
                 this.addMenuOption(item);   
             }
+            
+            //Listeners
+            this.setOnShowing(value -> {
+                field.addChoiceListener(this);
+            });
+            
+            this.setOnHiding(value -> {
+                field.removeChoiceListener(this);
+            });
+        }
+
+        @Override
+        public void onChanged(Change c) {
+            List<String> list = c.getList().stream().map(Object::toString).toList();
+                for (CheckBox box : boxes){
+                    box.setSelected(list.contains(box.getText()));
+                } 
         }
     }
     

@@ -133,22 +133,22 @@ public abstract class ConstellationInputField extends StackPane {
         gridPane = getGridPaneWithChildCellPanes(layout);
         
         this.setPrefWidth(500);
-        this.setMinWidth(150);
+        this.setMinWidth(200);
         
-        final Rectangle clippingMask = new Rectangle(300, 22);
+        final Rectangle clippingMask = new Rectangle(300, defaultCellHeight);
         clippingMask.setArcWidth(corner);
         clippingMask.setArcHeight(corner);        
         clippingMask.setFill(Color.BLACK);
         clippingMask.setStroke(Color.BLACK);
         clippingMask.widthProperty().bind(gridPane.widthProperty());
         
-        final Rectangle background = new Rectangle(300, 22);
+        final Rectangle background = new Rectangle(300, defaultCellHeight);
         background.setArcWidth(corner);
         background.setArcHeight(corner);  
         background.setFill(fieldColor);
         background.widthProperty().bind(gridPane.widthProperty());
         
-        final Rectangle foreground = new Rectangle(300, 22);
+        final Rectangle foreground = new Rectangle(300, defaultCellHeight);
         foreground.setArcWidth(corner);
         foreground.setArcHeight(corner);        
         foreground.setFill(Color.TRANSPARENT);

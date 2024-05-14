@@ -42,9 +42,8 @@ import org.openide.util.Utilities;
 
 /**
  * A multi-choice combo box for use with Swing.
- *
  * @param <E>
- *
+ * TODO: review / remove once map view is moved to JavaFX
  * @author cygnus_x-1
  */
 public class JMultiChoiceComboBoxMenu<E> extends JComponent implements ListSelectionListener {

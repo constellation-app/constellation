@@ -68,7 +68,7 @@ public class MultiChoiceInputPane extends HBox {
         this.setManaged(parameter.isVisible());
         this.setVisible(parameter.isVisible());
         
-        field.setItems(options);
+        field.setOptions(options);
 
         // Set properties before adding listener to ensure unwanted onChanged events do not fire.
         Platform.runLater(() -> {

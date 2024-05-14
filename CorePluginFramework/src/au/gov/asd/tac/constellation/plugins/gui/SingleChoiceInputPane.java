@@ -58,7 +58,7 @@ public class SingleChoiceInputPane extends HBox {
     public SingleChoiceInputPane(final PluginParameter<SingleChoiceParameterValue> parameter) {
         field = new ChoiceInputField<>(ChoiceType.SINGLE);
         field.setPromptText(parameter.getDescription());
-        field.setItems(FXCollections.observableList(SingleChoiceParameterType.getOptionsData(parameter)));
+        field.setOptions(FXCollections.observableList(SingleChoiceParameterType.getOptionsData(parameter)));
         field.setIcons(SingleChoiceParameterType.getIcons(parameter));
         final ParameterValue initialValue = parameter.getParameterValue();
         if (initialValue.getObjectValue() != null) {
@@ -84,16 +84,19 @@ public class SingleChoiceInputPane extends HBox {
                         case VALUE -> {
                             // Don't change the value if it isn't necessary.
                             final List<ParameterValue> param = scParameterValue.getOptionsData();
-                            final ParameterValue value = field.getSelectedItem();
+                            List<ParameterValue> selection = field.getSelectedItems();
+                            if (selection.size() == 1){
+                                final ParameterValue value = selection.getFirst();
 
-                            //Checks that the currently selected value is in the new parameters list
-                            if (!param.contains(value)) {
-                                field.select(scParameterValue.getChoiceData());
+                                //Checks that the currently selected value is in the new parameters list
+                                if (!param.contains(value)) {
+                                    field.select(scParameterValue.getChoiceData());
+                                }
+
+                                // give a visual indicator if a required parameter is empty
+                                field.setId(scParameter.isRequired() && field.isEmpty() ? "invalid selection" : "");
+                                field.setStyle("invalid selection".equals(field.getId()) ? "-fx-color: #8A1D1D" : "");
                             }
-
-                            // give a visual indicator if a required parameter is empty
-                            field.setId(scParameter.isRequired() && field.isEmpty() ? "invalid selection" : "");
-                            field.setStyle("invalid selection".equals(field.getId()) ? "-fx-color: #8A1D1D" : "");
                         }
                         case PROPERTY -> {
                             final ObservableList<ParameterValue> options = FXCollections.observableArrayList();
@@ -101,7 +104,7 @@ public class SingleChoiceInputPane extends HBox {
 //                            field.setOnAction(null);
 //
 //                            options.setAll(scParameterValue.getOptionsData());
-//                            field.setItems(options);
+//                            field.setOptions(options);
 //                            field.setOnAction(handler);
 //
 //                            if (initialRun) {
