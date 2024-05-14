@@ -69,7 +69,7 @@ public class StartJupyterNotebookAction implements ActionListener {
         final String dir = prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT);
 
         // Run pip install on package
-        Process p;
+        final Process p;
         if (isWindows()) {
             p = exec(ArrayUtils.addAll(WINDOWS_COMMAND, PACKAGE_INSTALL));
         } else {
@@ -77,9 +77,9 @@ public class StartJupyterNotebookAction implements ActionListener {
         }
 
         try {
-            int result = p.waitFor();
+            final int result = p.waitFor();
             LOGGER.log(Level.INFO, "Pip python process result: {0}", result);
-        } catch (InterruptedException ex) {
+        } catch (final InterruptedException ex) {
             LOGGER.log(Level.WARNING, "EXCEPTION CAUGHT in the python process:", ex);
             p.destroy();
             Thread.currentThread().interrupt();

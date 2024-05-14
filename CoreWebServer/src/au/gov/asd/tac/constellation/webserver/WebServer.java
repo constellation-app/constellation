@@ -285,18 +285,18 @@ public class WebServer {
         final boolean doDownload = !download.exists() || !equalScripts(download);
 
         if (doDownload) {
-            boolean complete = true;
+
             try {
                 Files.copy(Paths.get(SCRIPT_SOURCE + CONSTELLATION_CLIENT), download.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            } catch (IOException e) {
-                complete = false;
+            } catch (final IOException e) {
                 LOGGER.log(Level.WARNING, "Error retrieving constellation_client.py:", e);
+                return;
             }
 
-            if (complete) {
-                final String msg = String.format("'%s' downloaded to %s", CONSTELLATION_CLIENT, directory);
-                StatusDisplayer.getDefault().setStatusText(msg);
-            }
+            // Succssfully copied files
+            final String msg = String.format("'%s' downloaded to %s", CONSTELLATION_CLIENT, directory);
+            StatusDisplayer.getDefault().setStatusText(msg);
+
         }
     }
 
