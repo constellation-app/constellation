@@ -318,7 +318,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
                 .setSelectionApprover((File[] selection) -> {
 
                     final String extension = FilenameUtils.getExtension(selection[0].toString());
-                    final String filepath = extension.equals("") ? selection[0].toString() + ".star" : selection[0].toString();
+                    final String filepath = extension.isEmpty() ? selection[0].toString() + ".star" : selection[0].toString();
                     final File file = new File(filepath);
 
                     if (file.exists()) {
