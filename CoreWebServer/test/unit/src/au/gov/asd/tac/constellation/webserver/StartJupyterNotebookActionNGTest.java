@@ -16,11 +16,12 @@
 package au.gov.asd.tac.constellation.webserver;
 
 import au.gov.asd.tac.constellation.help.utilities.Generator;
-import java.awt.event.ActionEvent;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
@@ -69,28 +70,33 @@ public class StartJupyterNotebookActionNGTest {
     @Test
     public void testActionPerformed() {
         System.out.println("actionPerformed");
-        ActionEvent e = null;
 
         // Mocks
         Process processMock = mock(Process.class);
-            try {
-                when(processMock.waitFor()).thenReturn(0); // Return success
-            } catch (InterruptedException ex) {
-            }
-            
+        try {
+            when(processMock.waitFor()).thenReturn(0); // Return success
+        } catch (InterruptedException ex) {
+        }
 
-//        WebServer webserverMock = mock(new WebServer());
-//        when(webserverMock.start()).thenReturn(0);
-        //MockedStatic<WebServer> webserverMock = Mockito.mockStatic(WebServer.class);
         try (MockedStatic<Generator> generatorMock = Mockito.mockStatic(Generator.class); MockedStatic<WebServer> webserverMock = Mockito.mockStatic(WebServer.class); MockedStatic<PApplet> execute = Mockito.mockStatic(PApplet.class)) {
             generatorMock.when(Generator::getBaseDirectory).thenReturn("");
             webserverMock.when(WebServer::start).thenReturn(0);
 
-            //execute.when(PApplet::exec).thenReturn(processMock);
+            // Return our mocked process when exec is called
             execute.when(() -> PApplet.exec(any(String[].class))).thenReturn(processMock);
 
+            // Create and run instance
             StartJupyterNotebookAction instance = new StartJupyterNotebookAction();
-            instance.actionPerformed(e);
+            instance.actionPerformed(null);
+
+            // Assert the following functions were run
+            webserverMock.verify(() -> WebServer.start(), times(1));
+            execute.verify(() -> PApplet.exec(any(String[].class)), times(1));
+
+            try {
+                verify(processMock, times(1)).waitFor();
+            } catch (InterruptedException ex) {
+            }
         }
     }
 
