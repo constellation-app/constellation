@@ -334,13 +334,12 @@ public class WebServer {
      * @return True if both exist and are (pseudo-)equal, False otherwise.
      */
     static boolean equalScripts(final File scriptFile) {
-        try (final FileInputStream in1 = new FileInputStream(scriptFile)) {
-            try (final InputStream in2 = WebServer.class.getResourceAsStream(RESOURCES + CONSTELLATION_CLIENT)) {
-                final byte[] dig1 = getDigest(in1);
-                final byte[] dig2 = getDigest(in2);
+        try (final FileInputStream in1 = new FileInputStream(scriptFile); final InputStream in2 = new FileInputStream(SCRIPT_SOURCE + CONSTELLATION_CLIENT)) {
+            final byte[] dig1 = getDigest(in1);
+            final byte[] dig2 = getDigest(in2);
 
-                return MessageDigest.isEqual(dig1, dig2);
-            }
+            return MessageDigest.isEqual(dig1, dig2);
+
         } catch (final FileNotFoundException | NoSuchAlgorithmException ex) {
             return false;
         } catch (final IOException ex) {
