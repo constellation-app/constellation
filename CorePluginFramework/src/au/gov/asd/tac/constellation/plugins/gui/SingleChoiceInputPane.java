@@ -56,7 +56,7 @@ public class SingleChoiceInputPane extends HBox {
     private boolean initialRun = true;
 
     public SingleChoiceInputPane(final PluginParameter<SingleChoiceParameterValue> parameter) {
-        field = new ChoiceInputField<>(ChoiceType.SINGLE);
+        field = new ChoiceInputField<>(ChoiceType.SINGLE_DROPDOWN);
         field.setPromptText(parameter.getDescription());
         field.setOptions(FXCollections.observableList(SingleChoiceParameterType.getOptionsData(parameter)));
         field.setIcons(SingleChoiceParameterType.getIcons(parameter));

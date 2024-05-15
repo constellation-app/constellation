@@ -483,7 +483,7 @@ public abstract class ConstellationInputField extends StackPane {
         INPUT_DROPDOWN(false, ContentDisplay.CENTER, ContentDisplay.RIGHT),
         INPUT_POPUP(true, ContentDisplay.CENTER, ContentDisplay.RIGHT),
         DROPDOWN_INPUT_POPUP(true, ContentDisplay.LEFT, ContentDisplay.CENTER, ContentDisplay.RIGHT),
-        UPDATER_INUT_UPDATER(false, ContentDisplay.LEFT, ContentDisplay.CENTER, ContentDisplay.RIGHT);
+        UPDATER_INPUT_UPDATER(false, ContentDisplay.LEFT, ContentDisplay.CENTER, ContentDisplay.RIGHT);
         
         private final ContentDisplay[] areas;
         private final boolean hasButton;
