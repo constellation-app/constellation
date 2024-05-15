@@ -47,7 +47,7 @@ import javafx.util.Callback;
  * @see au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType
  * @author algol
  */
-public class ColorInputPane extends Pane {
+public class ColorInputPane extends HBox {
     
     public static final int DEFAULT_WIDTH = 300;
 

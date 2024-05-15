@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.utilities.gui.field;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.application.Platform;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import org.controlsfx.control.textfield.TextFields;
@@ -57,7 +58,7 @@ public class TextInputField extends ConstellationInputField {
     }
     
     @Override
-    public ConstellationInputDropDown getDropDown() {
+    public ContextMenu getDropDown() {
         return new TextInputDropDown(this);
     }
     

@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColorPicker;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javax.swing.JButton;
@@ -159,7 +160,7 @@ public class ColorInputField extends ConstellationInputField {
     }
     
     @Override
-    public ConstellationInputDropDown getDropDown() {
+    public ContextMenu getDropDown() {
         return new ColorInputDropDown(this);
     }
     

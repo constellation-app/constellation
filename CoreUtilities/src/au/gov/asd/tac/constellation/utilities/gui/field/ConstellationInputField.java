@@ -31,6 +31,7 @@ import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.IndexRange;
 import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.Separator;
@@ -43,6 +44,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -113,9 +115,9 @@ public abstract class ConstellationInputField extends StackPane {
         
     final int corner = 7;
     
-    final Color optionColor = Color.color(147/255D, 149/255D, 152/255D);
+    final Color optionColor = Color.color(97/255D, 99/255D, 102/255D);
     final Color fieldColor = Color.color(51/255D, 51/255D, 51/255D);
-    final Color buttonColor = Color.color(34/255D, 96/255D, 168/255D);
+    final Color buttonColor = Color.color(25/255D, 84/255D, 154/255D);
    
     public ConstellationInputField(){
         throw new UnsupportedOperationException();
@@ -205,7 +207,7 @@ public abstract class ConstellationInputField extends StackPane {
         };
         
         background.setFill(color);
-        background.setOnMouseEntered(event -> background.setFill(Color.BLUE));
+        background.setOnMouseEntered(event -> background.setFill(color.brighter()));
         background.setOnMouseExited(event -> background.setFill(color));
         background.heightProperty().bind(heightBinding);
 
@@ -318,11 +320,11 @@ public abstract class ConstellationInputField extends StackPane {
     };
     
     public void registerRightButtonEvent(final EventHandler<MouseEvent> event) {
-        this.rightButton.setOnMousePressed(event);
+        this.rightButton.setOnMouseClicked(event);
     }
     
     public void registerLeftButtonEvent(final EventHandler<MouseEvent> event) {
-        this.leftButton.setOnMousePressed(event);
+        this.leftButton.setOnMouseClicked(event);
     }
     
     public void setContextButtonDisable(boolean b) {
@@ -419,7 +421,7 @@ public abstract class ConstellationInputField extends StackPane {
      */
     public abstract boolean isValid(String value);
     
-    public abstract ConstellationInputDropDown getDropDown();
+    public abstract ContextMenu getDropDown();
     
     /**
      * Displays the provided ConstellationInputDropDown to the user.
@@ -439,6 +441,15 @@ public abstract class ConstellationInputField extends StackPane {
         final ConstellationInputField parent;
         public ConstellationInputDropDown(final ConstellationInputField field) {
             parent = field;
+            
+            //Constrain drop down menus to a height of 400
+            this.setMaxHeight(200);
+            addEventHandler(Menu.ON_SHOWING, e -> {
+                Node content = getSkin().getNode();
+                if (content instanceof Region region) {
+                    region.setMaxHeight(getMaxHeight());
+                }
+            });
         }
         
         public void addMenuOption(Labeled text) {

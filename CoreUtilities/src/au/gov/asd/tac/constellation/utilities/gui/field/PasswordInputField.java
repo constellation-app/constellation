@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TextInputControl;
 
 /**
@@ -56,7 +57,7 @@ public class PasswordInputField extends ConstellationInputField {
     }
     
     @Override
-    public ConstellationInputDropDown getDropDown() {
+    public ContextMenu getDropDown() {
         throw new UnsupportedOperationException("PasswordInputField does not provide a ContextMenu");
     }
     

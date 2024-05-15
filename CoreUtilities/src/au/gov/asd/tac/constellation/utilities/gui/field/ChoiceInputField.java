@@ -25,6 +25,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
@@ -177,7 +178,7 @@ public class ChoiceInputField<C extends Object> extends ConstellationInputField 
     }
         
     @Override
-    public ConstellationInputDropDown getDropDown() {
+    public ContextMenu getDropDown() {
         return new ChoiceInputDropDown(this);
     }
     
