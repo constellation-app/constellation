@@ -18,12 +18,15 @@ package au.gov.asd.tac.constellation.plugins.gui;
 import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.types.LocalDateParameterType.LocalDateParameterValue;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputField;
+import au.gov.asd.tac.constellation.utilities.gui.field.DateInputField;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.control.DatePicker;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.util.StringConverter;
 import org.apache.commons.lang3.StringUtils;
@@ -41,32 +44,32 @@ import org.apache.commons.lang3.StringUtils;
  *
  * @author algol
  */
-public class LocalDateInputPane extends Pane {
+public class LocalDateInputPane extends HBox {
 
     private static final String PATTERN = "yyyy-MM-dd";
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
+//    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
     private static final Logger LOGGER = Logger.getLogger(LocalDateInputPane.class.getName());
 
-    private final DatePicker field;
+    private final DateInputField field;
 
     public LocalDateInputPane(final PluginParameter<LocalDateParameterValue> parameter) {
-        field = new DatePicker();
+        field = new DateInputField();
         final LocalDateParameterValue pv = parameter.getParameterValue();
 
         field.setPromptText(PATTERN);
-        field.setConverter(new StringConverter<LocalDate>() {
-            @Override
-            public String toString(final LocalDate date) {
-                return date != null ? DATE_FORMATTER.format(date) : "";
-            }
+//        DateInputField.setConverter(field, new StringConverter<LocalDate>() {
+//            @Override
+//            public String toString(final LocalDate date) {
+//                return date != null ? DATE_FORMATTER.format(date) : "";
+//            }
+//
+//            @Override
+//            public LocalDate fromString(final String s) {
+//                return StringUtils.isNotBlank(s) ? LocalDate.parse(s, DATE_FORMATTER) : null;
+//            }
+//        });
 
-            @Override
-            public LocalDate fromString(final String s) {
-                return StringUtils.isNotBlank(s) ? LocalDate.parse(s, DATE_FORMATTER) : null;
-            }
-        });
-
-        field.setValue(pv.get());
+        field.setDate(pv.get());
 
         if (parameter.getParameterValue().getGuiInit() != null) {
             parameter.getParameterValue().getGuiInit().init(field);
@@ -78,16 +81,16 @@ public class LocalDateInputPane extends Pane {
         this.setManaged(parameter.isVisible());
         this.setVisible(parameter.isVisible());
 
-        field.setOnAction(event -> parameter.setLocalDateValue(field.getValue()));
+//        field.setOnAction(event -> parameter.setLocalDateValue(field.getValue()));
 
         parameter.addListener((PluginParameter<?> pluginParameter, ParameterChange change) -> Platform.runLater(() -> {
                 switch (change) {
                     case VALUE -> {
                         // Don't change the value if it isn't necessary.
                         final LocalDate param = pluginParameter.getLocalDateValue();
-                        if (!param.equals(field.getValue())) {
-                            field.setValue(param);
-                        }
+//                        if (!param.equals(field.getValue())) {
+//                            field.setValue(param);
+//                        }
                     }
                     case ENABLED -> field.setDisable(!pluginParameter.isEnabled());
                     case VISIBLE -> {
