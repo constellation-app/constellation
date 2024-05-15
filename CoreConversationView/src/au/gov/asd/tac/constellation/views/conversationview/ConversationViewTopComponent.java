@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.conversationview;
 
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
+import java.util.Properties;
 import javafx.application.Platform;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
@@ -79,7 +80,7 @@ public final class ConversationViewTopComponent extends JavaFxTopComponent<Conve
     @Override
     protected void handleComponentOpened() {
         super.handleComponentOpened();
-        controller.getConversation().getGraphUpdateManager().setManaged(true);
+        controller.getConversation().getGraphUpdateManager().setManaged(needsUpdate());
     }
 
     @Override
@@ -98,11 +99,11 @@ public final class ConversationViewTopComponent extends JavaFxTopComponent<Conve
         controller.getConversation().getGraphUpdateManager().setManaged(needsUpdate());
     }
 
-    void writeProperties(java.util.Properties p) {
+    public void writeProperties(final Properties p) {
         // Required for @ConvertAsProperties
     }
 
-    void readProperties(java.util.Properties p) {
+    public void readProperties(final Properties p) {
         // Required for @ConvertAsProperties
     }
 

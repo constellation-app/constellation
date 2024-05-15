@@ -166,7 +166,7 @@ public class Conversation {
 
         contributorUpdater.dependOn(resultUpdater);
     }
-
+    
     public int getPageNumber() {
         return pageNumber;
     }
@@ -199,20 +199,15 @@ public class Conversation {
         this.contentPerPage = contentPerPage;
     }
 
-    public ObservableList updateMessages(final GraphReadMethods graph) {
-        allMessages.clear();
-        Platform.runLater(() -> {
-            messageUpdater.update(graph);
-            contributionUpdater.update(graph);
-            datetimeUpdater.update(graph);
-            senderUpdater.update(graph);
-            backgroundUpdater.update(graph);
-            colorUpdater.update(graph);
-            visibilityUpdater.update(graph);
-            resultUpdater.update(graph);
-        });
-
-        return resultMessages;
+    /**
+     * Updates the messages currently displayed when the page changes or the content per page drop down is updated
+     * 
+     * @param graph
+     * @return 
+     */
+    public List<ConversationMessage> updateMessages(final GraphReadMethods graph) {
+        visibilityUpdater.update(graph);
+        return visibleMessages;
     }
     
     /**
@@ -369,7 +364,7 @@ public class Conversation {
                         messageProvider.getMessages(graph, allMessages, pageNumber);
                         totalMessageCount = messageProvider.getTotalMessageCount();
                         if (totalMessageCount != 0) {
-                            totalPages = (int) Math.ceil((double) totalMessageCount / messageProvider.getMaxContentPerPage());
+                            totalPages = (int) Math.ceil((double) totalMessageCount / contentPerPage);
                         }
                         latch.countDown();
                     }
@@ -403,23 +398,24 @@ public class Conversation {
                         contributingMessages.clear();
                         contributingContributionProviders.clear();
 
-                        for (final ConversationMessage message : allMessages) {
-                            message.getAllContributions().clear();
+                        Platform.runLater(() -> {
+                            for (final ConversationMessage message : allMessages) {
+                                message.getAllContributions().clear();
 
-                            for (final ConversationContributionProvider contributionProvider : compatibleContributionProviders) {
-                                final ConversationContribution contribution = contributionProvider.createContribution(graph, message);
-                                if (contribution != null) {
-                                    contributingContributionProviders.add(contributionProvider);
-                                    message.getAllContributions().add(contribution);
+                                for (final ConversationContributionProvider contributionProvider : compatibleContributionProviders) {
+                                    final ConversationContribution contribution = contributionProvider.createContribution(graph, message);
+                                    if (contribution != null) {
+                                        contributingContributionProviders.add(contributionProvider);
+                                        message.getAllContributions().add(contribution);
+                                    }
+                                }
+
+                                if (!message.getAllContributions().isEmpty()) {
+                                    contributingMessages.add(message);
                                 }
                             }
-
-                            if (!message.getAllContributions().isEmpty()) {
-                                contributingMessages.add(message);
-                            }
-                        }
-
-                        latch.countDown();
+                            latch.countDown();
+                        });
                     }
                 };
                 thread.start();
@@ -588,13 +584,18 @@ public class Conversation {
         @Override
         public boolean update(final GraphReadMethods graph) {
             visibleMessages.clear();
+            int count = 0;
 
             for (final ConversationMessage message : senderMessages) {
                 message.filterContributions(conversationState.getHiddenContributionProviders());
-                if (!message.getVisibleContributions().isEmpty() && visibleMessages.size() < 20) {
+                final int minValue = pageNumber * contentPerPage;
+                final int maxValue = minValue + contentPerPage;
+                if (!message.getVisibleContributions().isEmpty() && visibleMessages.size() < contentPerPage && minValue < count && count < maxValue) {
                     visibleMessages.add(message);
                 }
+                count++;
             }
+            totalPages = (int) Math.ceil((double) totalMessageCount / contentPerPage);
 
             return true;
         }

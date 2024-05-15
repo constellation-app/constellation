@@ -60,8 +60,7 @@ public class DefaultConversationMessageProvider implements ConversationMessagePr
                 if (secondVertex == Graph.NOT_FOUND) {
                     final int transactionCount = graph.getVertexTransactionCount(vertex);
                     LOGGER.log(Level.SEVERE, "transaction count: " + String.valueOf(transactionCount));
-                    final int minPosition = pageNumber * maxContentPerPage;
-                    for (int position = minPosition; position < transactionCount; position++) {
+                    for (int position = 0; position < transactionCount; position++) {
                         final int transaction = graph.getVertexTransaction(vertex, position);
                         if (graph.getTransactionDirection(transaction) != Graph.UNDIRECTED) {
                             final int sender = graph.getTransactionSourceVertex(transaction);
@@ -69,30 +68,13 @@ public class DefaultConversationMessageProvider implements ConversationMessagePr
                             final ConversationMessage message = new ConversationMessage(transaction, sender, conversationSide);
                             
                             totalMessageCount++;
-                            if (messages.size() < maxContentPerPage) {
-                                messages.add(message);
-                            }
+                            messages.add(message);
                         }
                     }
                     LOGGER.log(Level.SEVERE, "total message count: " + String.valueOf(totalMessageCount));
                     return;
                 }
-            } else if (currentVertex == vertex) {
-                final int transactionCount = graph.getVertexTransactionCount(vertex);
-                LOGGER.log(Level.SEVERE, String.valueOf(transactionCount));
-                final int minPosition = pageNumber * maxContentPerPage;
-                final int maxCount = minPosition + maxContentPerPage > transactionCount ? transactionCount : minPosition + maxContentPerPage;
-                for (int position = minPosition; position < maxCount; position++) {
-                    final int transaction = graph.getVertexTransaction(vertex, position);
-                    if (graph.getTransactionDirection(transaction) != Graph.UNDIRECTED) {
-                        final int sender = graph.getTransactionSourceVertex(transaction);
-                        final ConversationSide conversationSide = sender == vertex ? ConversationSide.LEFT : ConversationSide.RIGHT;
-                        final ConversationMessage message = new ConversationMessage(transaction, sender, conversationSide);
-                        messages.add(message);
-                    }
-                }
-                return;
-            }
+            } 
         }
 
         // Get content when only one transaction is selected
@@ -132,9 +114,7 @@ public class DefaultConversationMessageProvider implements ConversationMessagePr
 
             final int leftSender = Math.max(vertexA, vertexB);
             totalMessageCount = transactionCount;
-            final int minPosition = pageNumber * maxContentPerPage;
-            final int maxCount = minPosition + maxContentPerPage > transactionCount ? transactionCount : minPosition + maxContentPerPage;
-            for (int i = minPosition; i < maxCount; i++) {
+            for (int i = 0; i < transactionCount; i++) {
                 transaction = graph.getTransaction(transactionPositions[i]);
                 if (graph.getTransactionDirection(transaction) != Graph.UNDIRECTED) {
                     final int sender = graph.getTransactionSourceVertex(transaction);

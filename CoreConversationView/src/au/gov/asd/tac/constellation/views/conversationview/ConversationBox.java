@@ -170,6 +170,7 @@ public final class ConversationBox extends StackPane {
                 final ReadableGraph graph = activeGraph.getReadableGraph();
                 conversation.setContentPerPage(contentPerPageChoiceBox.getValue());
                 messages.clear();
+                conversation.setPageNumber(pagination.currentPageIndexProperty().get());
                 messages.addAll(conversation.updateMessages(graph));
                 updatePages(conversation.getTotalPages());
                 graph.release();
