@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.utilities.gui.field;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -35,7 +36,7 @@ import javax.swing.ImageIcon;
  *
  * @author capricornunicorn123
  */
-public class ChoiceInputField<C extends Object> extends ConstellationInputField implements ListChangeListener{
+public class ChoiceInputField<C extends Object> extends ConstellationInputField implements ListChangeListener {
     
     //Items should be ordered and unique. It is easier to enforce uniquness programaticaly so an ObservableList was use instead of an observable set
     private final ObservableList<C> options = FXCollections.observableArrayList();
@@ -57,7 +58,17 @@ public class ChoiceInputField<C extends Object> extends ConstellationInputField 
         //Add a listener to the choices list and update the text acrodingly
         this.addChoiceListener(this);
         
-        //Add a listener to the text and update choices acctoringly?
+        this.getBaseField().textProperty().addListener((observable, oldValue, newValue) -> {
+            if (isValid(newValue)){
+                List<C> newChoices = this.stringToList(newValue);
+                if (newChoices != null){
+                    if (!this.choices.equals(newChoices)){
+
+                        this.choices.setAll(newChoices);
+                    }
+                }
+            }
+        });
     }
     
     public final void addChoiceListener(ListChangeListener listener){
@@ -77,8 +88,7 @@ public class ChoiceInputField<C extends Object> extends ConstellationInputField 
      * @param options 
      */
     public void setOptions(List<C> options){
-        this.options.clear();
-        this.options.addAll(options);
+        this.options.setAll(options);
     }
     
     /**
@@ -118,8 +128,7 @@ public class ChoiceInputField<C extends Object> extends ConstellationInputField 
             }
 
             //Single Modiication
-            this.choices.clear();
-            this.choices.addAll(sortedChoices);
+            this.choices.setAll(sortedChoices);
         }
     }
     
@@ -133,8 +142,7 @@ public class ChoiceInputField<C extends Object> extends ConstellationInputField 
         if (this.options.contains(choice)) {
             switch (type){
                 case SINGLE -> {
-                    this.choices.clear();
-                    this.choices.add(choice);
+                    this.choices.setAll(choice);
                 } 
                 
                 case MULTI -> {
@@ -154,8 +162,7 @@ public class ChoiceInputField<C extends Object> extends ConstellationInputField 
                     }
                     
                     //Single Modiication
-                    this.choices.clear();
-                    this.choices.addAll(sortedChoices);
+                    this.choices.setAll(sortedChoices);
                 }
             } 
         }
@@ -179,24 +186,21 @@ public class ChoiceInputField<C extends Object> extends ConstellationInputField 
         if (getText().isBlank()){
             return true;
         } else {
-            return switch (type){
+            List<C> items = stringToList(getText());
+            switch (type){
                 case SINGLE -> {
-                    List<C> items = stringToList(getText());
-                    yield items != null && items.size() == 1;
+                    return items != null && items.size() == 1;
                 }
-                case MULTI -> stringToList(getText()) != null;
-            };
+                case MULTI -> {
+                    if (items != null){
+                        List<C> duplicates = items.stream().collect(Collectors.groupingBy(i -> i)).entrySet().stream().filter(entry -> entry.getValue().size() > 1).map(entry -> entry.getKey()).toList();
+                        return duplicates.isEmpty();
+                    } 
+                }
+            }
+            return false;
         }
     }
-
-//    public C getSelectedItem() {
-//        for (C choice : options){
-//            if (choice.toString().equals(this.getText())){
-//                return choice;
-//            }
-//        }
-//        return null;
-//    }
     
     public List<C> getSelectedItems() {
         List<C> selectedItems = new ArrayList<>();
@@ -208,9 +212,21 @@ public class ChoiceInputField<C extends Object> extends ConstellationInputField 
        this.choices.clear();
     }
 
+    /**
+     * Implementation of the ListChangeListener.
+     * is triggered whenever the choices list is changed.
+     * this change can be triggered by selecting aon opton in the drop down or by modifying the text in the input field. 
+     * In the case that the event is trigered by selecting an option, the input field butst be updated.
+     * In the event that the input field triggered the change on the chieces, the tefield does not need t be updated.d
+     * @param change 
+     */
     @Override
     public void onChanged(Change change) {
-        this.setText(listToString(change.getList()));
+        ObservableList<C> changes = change.getList();
+        //The text and choices are not up to date meaning the triggere was not from the textConroll field. 
+        if (!this.choices.equals(stringToList(this.getText()))){
+            this.setText(listToString(changes));
+        }
     }
 
     private String listToString(ObservableList<C> set) {
@@ -246,8 +262,6 @@ public class ChoiceInputField<C extends Object> extends ConstellationInputField 
     }
     
     private class ChoiceInputDropDown extends ConstellationInputDropDown implements ListChangeListener{
-        
-        
         List<CheckBox> boxes = new ArrayList<>();
         
         public ChoiceInputDropDown(ChoiceInputField field){

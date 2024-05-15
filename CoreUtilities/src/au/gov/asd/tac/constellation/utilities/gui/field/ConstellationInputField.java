@@ -113,7 +113,7 @@ public abstract class ConstellationInputField extends StackPane {
         
     final int corner = 7;
     
-    final Color optionColor = Color.color(148/255D, 148/255D, 148/255D);
+    final Color optionColor = Color.color(147/255D, 149/255D, 152/255D);
     final Color fieldColor = Color.color(51/255D, 51/255D, 51/255D);
     final Color buttonColor = Color.color(34/255D, 96/255D, 168/255D);
    
