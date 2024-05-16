@@ -9,7 +9,6 @@ authors = [
   { name="Example Author", email="author@example.com" },
 ]
 description = "A small example package"
-readme = "README.md"
 requires-python = ">=3.0"
 classifiers = [
     "Programming Language :: Python :: 3",
