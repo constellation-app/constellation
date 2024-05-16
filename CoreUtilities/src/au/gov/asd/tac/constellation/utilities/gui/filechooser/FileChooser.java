@@ -178,6 +178,13 @@ public class FileChooser {
         return Optional.empty();
     }
 
+    /**
+     * Function for displaying "Are you sure?" dialog when user attempts to save over existing file.
+     *
+     * @param selection the files selected by the user when trying to save
+     * @param fileExtension the file extension associated with this FileChooserBuilder
+     * @return user response, indicating if user wants to overwrite exisitng file
+     */
     private static boolean approver(final File[] selection, final String fileExtension) {
 
         // Show dialog box if file already exists when saving
@@ -195,14 +202,30 @@ public class FileChooser {
         // Otherwise file didn't already exist
         return true;
     }
-    
+
+    /**
+     * Creates a FileChooserBuilder with no file filter
+     *
+     * @param title the title of the FileChooserBuilder
+     * @param fileExtension the file extension associated with this FileChooserBuilder.
+     * @return the constructed FileChooserBuilder
+     */
     public static FileChooserBuilder createFileChooserBuilderNoFilter(final String title, final String fileExtension) {
         return new FileChooserBuilder(title)
                 .setTitle(title)
                 .setFilesOnly(true)
                 .setSelectionApprover((File[] selection) -> approver(selection, fileExtension));
     }
-    
+
+    /**
+     * Creates a FileChooserBuilder with a file filter, File filter accepts if either: file is a normal file and either:
+     * filename ends with given file extension, or file is a directory
+     *
+     * @param title the title of the FileChooserBuilder
+     * @param fileExtension the file extension associated with this FileChooserBuilder.
+     * @param description the description of the file filter
+     * @return the constructed FileChooserBuilder
+     */
     public static FileChooserBuilder createFileChooserBuilder(final String title, final String fileExtension, final String description) {
         return createFileChooserBuilderNoFilter(title, fileExtension)
                 .setAcceptAllFileFilterUsed(false)
