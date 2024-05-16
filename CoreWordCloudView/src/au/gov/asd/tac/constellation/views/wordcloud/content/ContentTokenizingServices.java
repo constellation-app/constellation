@@ -656,8 +656,8 @@ public class ContentTokenizingServices {
         public void tokenizePhrase(final char[] phrase, final int elementPos) {
             final TokenizerState state = getNewState(phrase);
             while (state.findNextToken()) {
-                if (handler instanceof PhraseTokenHandler) {
-                    ((PhraseTokenHandler) handler).registerToken(new String(state.getToken()), elementPos, ((PhraseTokenizerState) state).currentSingleWords, ((PhraseTokenizerState) state).storeSingleWords);
+                if (handler instanceof PhraseTokenHandler phraseTokenHandler) {
+                    phraseTokenHandler.registerToken(new String(state.getToken()), elementPos, ((PhraseTokenizerState) state).currentSingleWords, ((PhraseTokenizerState) state).storeSingleWords);
                 } else {
                     handler.registerToken(new String(phrase), elementPos);
                 }
@@ -941,7 +941,7 @@ public class ContentTokenizingServices {
         protected String sanitizeString(final String str) {
             String newStr = str;
             int i = 0;
-            while ( i < str.length()) {
+            while (i < str.length()) {
                 if (toFilter.contains(str.charAt(i)) && replacement.length() > 0) {
                     newStr = str.substring(0, i) + replacement + str.substring(i + 1, str.length());
                     i += (replacement.length() - 1);

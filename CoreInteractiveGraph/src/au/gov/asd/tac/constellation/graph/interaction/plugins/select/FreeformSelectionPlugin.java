@@ -62,12 +62,11 @@ public final class FreeformSelectionPlugin extends SimpleEditPlugin {
 
     // From https://stackoverflow.com/questions/11716268/point-in-polygon-algorithm
     private boolean inFreeformPolygons(float xPoint, float yPoint) {
-        int j;
 
         boolean locatedInPolygon = false;
 
         for (int i = 0; i < numVertices; i++) {
-            j = (i == numVertices - 1) ? 0 : i + 1;
+            final int j = (i == numVertices - 1) ? 0 : i + 1;
 
             final float vertY_i = transformedVertices[i * 2 + 1];
             final float vertX_i = transformedVertices[i * 2];
