@@ -31,20 +31,13 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.collections.FXCollections;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.IndexRange;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import org.apache.commons.lang3.StringUtils;
-import org.controlsfx.control.textfield.TextFields;
 
 /**
  * A text box allowing entry of single line text, multiple line text, or
@@ -58,6 +51,7 @@ import org.controlsfx.control.textfield.TextFields;
  * au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType
  *
  * @author ruby_crucis
+ * @author capricornunicorn123
  */
 public class ValueInputPane extends HBox implements RecentValuesListener {
 
@@ -183,7 +177,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                 field.setText(parameter.getStringValue());
             }
 
-            field.setPrefWidth(defaultWidth);
+//            field.setPrefWidth(defaultWidth);
 
             
 //                recentValueSelectionListener = (ov, t, t1) -> {

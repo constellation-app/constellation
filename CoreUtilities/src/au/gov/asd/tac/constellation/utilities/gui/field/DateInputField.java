@@ -28,10 +28,11 @@ import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 
 /**
- *
+ * A {@link ConstellationinputField} for managing {@link LocalDate} selection. 
+ * 
  * @author capricornunicorn123
  */
-public class DateInputField extends ConstellationInputField{
+public final class DateInputField extends ConstellationInputField<LocalDate> {
     
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
     
@@ -93,7 +94,7 @@ public class DateInputField extends ConstellationInputField{
     }
     
     @Override
-    public boolean isValid(String value){
+    public boolean isValid(){
         try{
             converter.fromString(getText());
             return true;
@@ -101,4 +102,14 @@ public class DateInputField extends ConstellationInputField{
            return false; 
         }
     }   
+
+    @Override
+    public LocalDate getValue() {
+        return getLocalDate();
+    }
+
+    @Override
+    public void setValue(LocalDate value) {
+//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

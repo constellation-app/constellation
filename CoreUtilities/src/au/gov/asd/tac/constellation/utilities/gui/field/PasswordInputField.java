@@ -19,16 +19,16 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TextInputControl;
 
 /**
- * An input field for handling the entry of passwords.
+ * A {@link ConstellationinputField} for managing password inputs. 
  * This field is based off of a {@link PasswordField}. 
  * 
  * To facilitate showing and hiding of passwords an alternate {@link TextField}
  * is used and linked to the {@link PasswordField}.
- * When interacting with the Password Input Field through the COnstellationInputField Interface 
+ * When interacting with the Password Input Field through the ConstellationInputField Interface 
  * the {@link PasswordField} is always treated as the base field.
  * @author capricornunicorn123
  */
-public class PasswordInputField extends ConstellationInputField {
+public final class PasswordInputField extends ConstellationInputField<String> {
     final private TextInputControl alternate;
     
     public PasswordInputField(){
@@ -68,7 +68,17 @@ public class PasswordInputField extends ConstellationInputField {
      * @return 
      */
     @Override
-    public boolean isValid(String value){
+    public boolean isValid(){
         return true;
+    }
+
+    @Override
+    public String getValue() {
+        return this.getText();
+    }
+
+    @Override
+    public void setValue(String value) {
+        this.setText(value);
     }
 }

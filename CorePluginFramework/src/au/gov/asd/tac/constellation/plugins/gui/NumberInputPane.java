@@ -30,6 +30,7 @@ import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.Tooltip;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import org.apache.commons.lang3.StringUtils;
 
@@ -53,7 +54,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author algol
  * @author antares
  */
-public class NumberInputPane<T> extends Pane {
+public class NumberInputPane<T> extends HBox {
 
     private static final Logger LOGGER = Logger.getLogger(NumberInputPane.class.getName());
     

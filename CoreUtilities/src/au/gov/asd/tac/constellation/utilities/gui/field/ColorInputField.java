@@ -27,10 +27,11 @@ import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 
 /**
- *
+ * A {@link ConstellationinputField} for managing {@link ConstellationColor} selection. 
+ * 
  * @author capricornunicorn123
  */
-public class ColorInputField extends ConstellationInputField {
+public final class ColorInputField extends ConstellationInputField<ConstellationColor> {
     
     ColorMode mode = ColorMode.COLOR;
     
@@ -102,7 +103,7 @@ public class ColorInputField extends ConstellationInputField {
         }
     }
     
-    public ConstellationColor getColor(){        
+    private ConstellationColor getColor(){        
         return getColor(this.getText());
     }
     
@@ -111,7 +112,7 @@ public class ColorInputField extends ConstellationInputField {
      * @param text
      * @return 
      */
-    public ConstellationColor getColor(final String text){
+    private ConstellationColor getColor(final String text){
         final ConstellationColor color;
         if (text.isBlank()){
             return null;
@@ -165,12 +166,23 @@ public class ColorInputField extends ConstellationInputField {
     }
     
     @Override
-    public boolean isValid(String value){
+    public boolean isValid(){
+        String value = this.getText();
         if (getColor(value) != null){
             updateMode(value);
             return true;
         }
         return false;
+    }
+
+    @Override
+    public ConstellationColor getValue() {
+        return this.getColor();
+    }
+
+    @Override
+    public void setValue(ConstellationColor value) {
+        this.setColor(value);
     }
     
     private class ColorInputDropDown extends ConstellationInputDropDown {

@@ -22,45 +22,37 @@ import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableSet;
-import javafx.collections.SetChangeListener;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
-import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
-import javax.swing.ImageIcon;
-import org.openide.util.Exceptions;
 
 /**
- *
+ * A {@link ConstellationinputField} for managing choice selection. 
+ * 
  * @author capricornunicorn123
  */
-public class ChoiceInputField<C extends Object> extends ConstellationInputField implements ListChangeListener {
+public final class ChoiceInputField<C extends Object> extends ConstellationInputField<List<C>> implements ListChangeListener {
     
-    //Items should be ordered and unique. It is easier to enforce uniquness programaticaly so an ObservableList was use instead of an observable set
     private final ObservableList<C> options = FXCollections.observableArrayList();
     private final ObservableList<C> choices = FXCollections.observableArrayList();
-    
-    private List<ImageView> icons = new ArrayList<>();
-    private ChoiceType type;
-    
+    private final List<ImageView> icons = new ArrayList<>();
+    private final ChoiceType type;
+
     public ChoiceInputField(ChoiceType type){
         super(type.getLayout(), TextType.SINGLELINE);
-        
         switch (type){
             case SINGLE_SPINNER -> {
                 this.setRightLabel("Next");
                 this.registerRightButtonEvent(event -> {
                     this.incrementChoice();            
                 });
+                
                 this.setLeftLabel("Prev");
                 this.registerLeftButtonEvent(event -> {
                     this.decrementChoice();          
                 });
-                
             }
             case SINGLE_DROPDOWN, MULTI -> {
                 this.setRightLabel("Select");
@@ -76,7 +68,7 @@ public class ChoiceInputField<C extends Object> extends ConstellationInputField 
         this.addChoiceListener(this);
         
         this.getBaseField().textProperty().addListener((observable, oldValue, newValue) -> {
-            if (isValid(newValue)){
+            if (isValid()){
                 List<C> newChoices = this.stringToList(newValue);
                 if (newChoices != null){
                     if (!this.choices.equals(newChoices)){
@@ -105,6 +97,14 @@ public class ChoiceInputField<C extends Object> extends ConstellationInputField 
      */
     public void setOptions(List<C> options){
         this.options.setAll(options);
+    }
+    
+    /**
+     * Defines the options that users can select from in this field.
+     * @param options 
+     */
+    public List<C> getOptions(){
+        return this.options;
     }
     
     /**
@@ -202,7 +202,7 @@ public class ChoiceInputField<C extends Object> extends ConstellationInputField 
     }
     
     @Override
-    public boolean isValid(String value) {
+    public boolean isValid() {
         if (getText().isBlank()){
             return true;
         } else {
@@ -307,6 +307,16 @@ public class ChoiceInputField<C extends Object> extends ConstellationInputField 
         } else {
             this.select(this.options.getFirst());
         }
+    }
+
+    @Override
+    public List<C> getValue() {
+        return this.getSelectedItems();
+    }
+
+    @Override
+    public void setValue(List<C> value) {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
     private class ChoiceInputDropDown extends ConstellationInputDropDown implements ListChangeListener{

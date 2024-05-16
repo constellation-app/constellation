@@ -17,24 +17,15 @@ package au.gov.asd.tac.constellation.plugins.gui;
 
 import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterListener;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType.ColorParameterValue;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.gui.field.ColorInputField;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputField;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.control.ColorPicker;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.util.Callback;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 
 /**
  * A color picker which is the GUI element corresponding to a
@@ -46,64 +37,45 @@ import javafx.util.Callback;
  *
  * @see au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType
  * @author algol
+ * @author capricornunicorn123
  */
-public class ColorInputPane extends HBox {
-    
-    public static final int DEFAULT_WIDTH = 300;
+public final class ColorInputPane extends ParameterInputPane<ColorParameterValue> {
 
-    private final ColorInputField field;
     private static final Logger LOGGER = Logger.getLogger(ColorInputPane.class.getName());
     
     public ColorInputPane(final PluginParameter<ColorParameterValue> parameter) {
-        this(parameter, DEFAULT_WIDTH);
+        super(new ColorInputField(), parameter);
+        
+        // Set the initial Field value
+        setFieldValue(parameter.getParameterValue().get());
+    }
+
+    @Override
+    public final ChangeListener getFieldChangeListener(PluginParameter<ColorParameterValue> parameter) {
+        return (ChangeListener<ConstellationColor>) (ObservableValue<? extends ConstellationColor> observable, ConstellationColor oldValue, ConstellationColor newValue) -> {
+            parameter.setColorValue(newValue);
+        };
     }
     
-    public ColorInputPane(final PluginParameter<ColorParameterValue> parameter, final int defaultWidth) {
-        field = new ColorInputField();
-
-        final ColorParameterValue pv = parameter.getParameterValue();
-
-        field.setColor(pv.get().getJavaFXColor());
-        field.setPrefWidth(defaultWidth);
-
-        if (parameter.getParameterValue().getGuiInit() != null) {
-            parameter.getParameterValue().getGuiInit().init(field);
-        }
-
-        field.setDisable(!parameter.isEnabled());
-        field.setManaged(parameter.isVisible());
-        field.setVisible(parameter.isVisible());
-        this.setManaged(parameter.isVisible());
-        this.setVisible(parameter.isVisible());
-
-        field.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                parameter.setColorValue(field.getColor(newValue));                
-            }
-        });
-
-        parameter.addListener((PluginParameter<?> pluginParameter, ParameterChange change) -> Platform.runLater(() -> {
+    @Override 
+    public final PluginParameterListener getPluginParameterListener() {
+        return (PluginParameter<?> parameter, ParameterChange change) -> {
+            Platform.runLater(() -> {
                 switch (change) {
                     case VALUE -> {
                         // Don't change the value if it isn't necessary.
-                        final ConstellationColor param = pluginParameter.getColorValue();
-                        if (field.isValid(field.getText())){
-                            if (!param.equals(field.getColor())) {
-                                field.setColor(param);
+                        final ConstellationColor param = parameter.getColorValue();
+                        if (getField().isValid()){
+                            if (!param.equals(getField().getValue())) {
+                                getField().setValue(param);
                             }
                         }
                     }
-                    case ENABLED -> field.setDisable(!pluginParameter.isEnabled());
-                    case VISIBLE -> {
-                        field.setManaged(parameter.isVisible());
-                        field.setVisible(parameter.isVisible());
-                        this.setVisible(parameter.isVisible());
-                        this.setManaged(parameter.isVisible());
-                }
+                    case ENABLED -> updateFieldEnablement();
+                    case VISIBLE -> updateFieldVisability();
                     default -> LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
                 }
-            }));
-
-        getChildren().add(field);
+            });
+        };
     }
 }

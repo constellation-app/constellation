@@ -24,16 +24,21 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.IndexRange;
+import javafx.scene.control.TextInputControl;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javax.swing.filechooser.FileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.filesystems.FileChooserBuilder;
 
 /**
- * An input field to manage file opening and saving.
+ * A {@link ConstellationinputField} for managing {@link File} selection. 
+ * 
  * @author capricornunicorn123
  */
-public class FileInputField extends ConstellationInputField {
+public final class FileInputField extends ConstellationInputField<List<File>> {
     
     private ExtensionFilter extensionFilter = null;
     private boolean acceptAll = true;
@@ -49,7 +54,10 @@ public class FileInputField extends ConstellationInputField {
     }
     
     public FileInputField(FileInputKind fileInputKind, TextType textTypeOverride){
-        
+        this(fileInputKind, textTypeOverride, 1);
+    }
+    
+    public FileInputField(FileInputKind fileInputKind, TextType textTypeOverride, Integer suggestedHeight) {
         super(
                 ConstellationInputFieldLayoutConstants.INPUT_POPUP, 
                 
@@ -60,6 +68,10 @@ public class FileInputField extends ConstellationInputField {
                             default -> TextType.SINGLELINE;
                         }
         );
+        if (suggestedHeight != null && suggestedHeight > 1){
+            setWrapText(true);
+            setPrefRowCount(suggestedHeight);
+        }
         
         final FileInputKind kind = fileInputKind;
         this.setRightLabel(kind.toString());
@@ -110,8 +122,51 @@ public class FileInputField extends ConstellationInputField {
                 this.setValue(files);
             }
         });
+        
+        TextInputControl field = this.getBaseField();
+        field.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.DELETE) {
+                final IndexRange selection = field.getSelection();
+                if (selection.getLength() == 0) {
+                    field.deleteNextChar();
+                } else {
+                    field.deleteText(selection);
+                }
+                event.consume();
+            } else if (event.isShortcutDown() && event.isShiftDown() && (event.getCode() == KeyCode.RIGHT)) {
+                field.selectNextWord();
+                event.consume();
+            } else if (event.isShortcutDown() && event.isShiftDown() && (event.getCode() == KeyCode.LEFT)) {
+                field.selectPreviousWord();
+                event.consume();
+            } else if (event.isShortcutDown() && (event.getCode() == KeyCode.RIGHT)) {
+                field.nextWord();
+                event.consume();
+            } else if (event.isShortcutDown() && (event.getCode() == KeyCode.LEFT)) {
+                field.previousWord();
+                event.consume();
+            } else if (event.isShiftDown() && (event.getCode() == KeyCode.RIGHT)) {
+                field.selectForward();
+                event.consume();
+            } else if (event.isShiftDown() && (event.getCode() == KeyCode.LEFT)) {
+                field.selectBackward();
+                event.consume();
+            } else if (event.isShortcutDown() && (event.getCode() == KeyCode.A)) {
+                field.selectAll();
+                event.consume();
+            } else if (event.getCode() == KeyCode.ESCAPE) {
+                event.consume();
+            } else {
+                // Do nothing
+            }
+        });
+        
+        
+        
+        
     }
-    
+
+
     /**
      * Sets wether this FileInputField will have an "All Files" filter.
      * @param acceptAll 
@@ -157,7 +212,8 @@ public class FileInputField extends ConstellationInputField {
      * Sets the text value of this input field based on a list of provided files.
      * @param files 
      */
-    private void setValue(List<File> files) {
+    @Override
+    public void setValue(List<File> files) {
         StringBuilder sb = new StringBuilder();
         files.stream().forEach(file -> {
             sb.append(file.getAbsolutePath());
@@ -166,6 +222,10 @@ public class FileInputField extends ConstellationInputField {
             }
         });
         this.setText(sb.toString());     
+    }    
+    
+    private List<File> getFiles() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     public void setFileFilter(ExtensionFilter extensionFilter) {
@@ -178,9 +238,16 @@ public class FileInputField extends ConstellationInputField {
     }
     
     @Override
-    public boolean isValid(String value){
+    public boolean isValid(){
         return true;
     }
+
+    @Override
+    public List<File> getValue() {
+        return new ArrayList<>();
+    }
+
+
 
     /**
      * Describes the method of file selection for a parameter of this type.

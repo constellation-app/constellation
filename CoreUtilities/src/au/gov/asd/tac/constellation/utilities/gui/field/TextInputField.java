@@ -24,10 +24,11 @@ import javafx.scene.control.TextField;
 import org.controlsfx.control.textfield.TextFields;
 
 /**
- *
+ * A {@link ConstellationinputField} for managing {@link String} selection. 
+ * 
  * @author capricornunicorn123
  */
-public class TextInputField extends ConstellationInputField {
+public final class TextInputField extends ConstellationInputField<String> {
     
     private List<String> recentValues = new ArrayList<>();
     
@@ -63,8 +64,18 @@ public class TextInputField extends ConstellationInputField {
     }
     
     @Override
-    public boolean isValid(String value){
+    public boolean isValid(){
         return true;
+    }
+
+    @Override
+    public String getValue() {
+        return this.getText();
+    }
+
+    @Override
+    public void setValue(String value) {
+        this.setText(value);
     }
     
     private class TextInputDropDown extends ConstellationInputDropDown {

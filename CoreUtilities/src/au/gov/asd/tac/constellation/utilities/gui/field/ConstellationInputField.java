@@ -16,16 +16,17 @@
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
 import au.gov.asd.tac.constellation.utilities.gui.field.ChoiceInputField.ChoiceType;
-import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.StringProperty;
-import javafx.event.ActionEvent;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.Node;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
@@ -33,9 +34,7 @@ import javafx.scene.control.IndexRange;
 import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
-import javafx.scene.control.Separator;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -49,13 +48,16 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.util.StringConverter;
 
 
 /**
- * This class is the base class for all input fields in Constellation. 
- * Inputs have been developed to adhere to a strict format that is highly adaptable to different use cases.
- * To achieve this adaptive layout a number fo nuanced javaFX scructures have been integrsted into the input field 
+ * An Abstract base class for all input fields in Constellation. 
+ * These input fields have been designed to be robust and adaptable to as many use cases as possible
+ * whilst maintaining a strict design language. 
+ * Amend this class and any classes which extend from it with caution as the impact of changes to functionality of 
+ * this class may effect many components with Constellation.
+ * 
+ * To achieve this adaptive layout a number fo nuanced javaFX structures have been integrated into the input field 
  * that should be understood before extending this class. 
  * Input fields follow a magic-wand-like layout with three main sections. 
  * +--------------------------------------------+
@@ -68,11 +70,11 @@ import javafx.util.StringConverter;
  * +--------------------------------------------+
  * When extending an input field the following considerations should be made:
  * For single button input fields, the button shall be placed on the Right. 
- * Buttons that initiate a context menu or modify the value or aperance of the text area should be grey.
+ * Buttons that initiate a context menu or modify the value or apperance of the text area should be grey.
  * Buttons that initiate a pop-up window shall be blue.
  * Buttons that initiate a pop-up window shall always be positioned on the right.
  * 
- * The construction of the class is as follows 
+ * The Node construction of the class is as follows 
  *  StackPane
  *      Shape - A rounded rectangle acting as the background
  *      GridPane
@@ -81,15 +83,14 @@ import javafx.util.StringConverter;
  *                  cell contents
  *      Shape - A rounded transparent rectangle acting as the border
  * 
+ * //TODO: Lock down the Text property on all input fields. this includes getText get stringValue etc. 
+ * there should only be 1 way in and out of the input field for selection data and that is getValue() and setValue().
+ * this is for the benefit of password input field but also benefits others
  * 
  * @author capricornunicorn123
  */
-public abstract class ConstellationInputField extends StackPane {
+public abstract class ConstellationInputField<T> extends StackPane implements ObservableValue<T>{
     
-    //types of button
-    //Cinotext trigger
-    //pop up trigger
-    //valueupdater
     final int endCellPrefWidth = 50;
     final int endCellMinWidth = 50;
     final int centerCellPrefWidth = 200;
@@ -112,6 +113,7 @@ public abstract class ConstellationInputField extends StackPane {
     private final Label rightLabel = new Label();
     protected final Rectangle rightButton = new Rectangle(endCellPrefWidth, defaultCellHeight); 
     protected final Rectangle leftButton = new Rectangle(endCellPrefWidth, defaultCellHeight); 
+    protected final List<ChangeListener> listeners = new ArrayList<>();
     
     private final ReadOnlyDoubleProperty heightBinding;
         
@@ -176,11 +178,19 @@ public abstract class ConstellationInputField extends StackPane {
         background.heightProperty().bind(heightBinding);
         foreground.heightProperty().bind(heightBinding);
         clippingMask.heightProperty().bind(heightBinding);
-        
         gridPane.setClip(clippingMask);
         gridPane.setAlignment(Pos.CENTER);
         this.getChildren().addAll(background, gridPane, foreground);
-        this.setAlignment(Pos.TOP_CENTER);
+        this.setAlignment(Pos.TOP_LEFT);
+        
+        // Whenever the text value of the field changes, try and notify classes that may be listening to this field
+        this.field.textProperty().addListener((one, two, three) -> {
+            
+            // Only notify listeners of valid changes
+            if (isValid()){
+                this.notifyListeners(this.getValue());
+            }
+        });
     }
     
     protected TextInputControl getBaseField() {
@@ -284,7 +294,7 @@ public abstract class ConstellationInputField extends StackPane {
         };
         local.setStyle("-fx-background-radius: 0; -fx-background-color: transparent; -fx-border-color: transparent; -fx-focus-color: transparent;");
         local.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (isValid(newValue)){
+            if (isValid()){
                 local.setStyle("-fx-background-color: transparent;");
             } else {
                 local.setStyle("-fx-background-color: red;");
@@ -414,14 +424,33 @@ public abstract class ConstellationInputField extends StackPane {
         return this.getText().isBlank();
     }
     
-    /**
+    public void notifyListeners(T newValue){
+        for (ChangeListener listener : listeners){
+            listener.changed(this, null, newValue);
+        }
+    }
+    
+        /**
      * Determined if the provided text is a valid value for the input field.
      * Is implemented differently for different input fields.
      * 
      * @param value
      * @return 
      */
-    public abstract boolean isValid(String value);
+    public abstract boolean isValid();
+    
+    /**
+     * Gets the value that this input field represents;
+     * @return 
+     */    
+    public abstract T getValue();
+    
+    /**
+     * Sets the value that this input field represents
+     * @param value 
+     */
+    public abstract void setValue(T value);
+
     
     public abstract ContextMenu getDropDown();
     
@@ -434,6 +463,27 @@ public abstract class ConstellationInputField extends StackPane {
      */
     protected final void showDropDown(){
         getDropDown().show(this, Side.TOP, USE_PREF_SIZE, USE_PREF_SIZE);
+    }
+
+    //ObservableValue Interface Support
+    @Override
+    public void addListener(ChangeListener listener) {
+        this.listeners.add(listener);
+    }
+
+    @Override
+    public void removeListener(ChangeListener listener) {
+        this.listeners.remove(listener);
+    }
+
+    @Override
+    public void addListener(InvalidationListener listener) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void removeListener(InvalidationListener listener) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
     /**
