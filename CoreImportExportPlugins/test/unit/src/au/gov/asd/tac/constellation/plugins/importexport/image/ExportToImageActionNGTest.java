@@ -71,6 +71,14 @@ public class ExportToImageActionNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         fileChooserStaticMock = mockStatic(FileChooser.class);
+        fileChooserStaticMock.when(()
+                -> FileChooser.createFileChooserBuilderNoFilter(any(String.class), any(String.class)))
+                .thenCallRealMethod();
+
+        fileChooserStaticMock.when(()
+                -> FileChooser.createFileChooserBuilder(any(String.class), any(String.class), any(String.class)))
+                .thenCallRealMethod();
+
         pluginExecutionStaticMock = mockStatic(PluginExecution.class);
         withPluginMock = mock(PluginExecution.class);
         withParameterMock = mock(PluginExecution.class);
@@ -132,8 +140,7 @@ public class ExportToImageActionNGTest {
     }
 
     /**
-     * Test of testGetExportToImageFileChooser method, of class
-     * ExportToImageAction.
+     * Test of testGetExportToImageFileChooser method, of class ExportToImageAction.
      *
      * @throws IOException
      */
