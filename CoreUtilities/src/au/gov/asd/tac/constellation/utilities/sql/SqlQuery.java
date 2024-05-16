@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -111,7 +112,7 @@ public class SqlQuery {
                 statement.setDouble(arg.getKey(), arg.getValue());
             }
 
-            LOGGER.fine(statement.toString());
+            LOGGER.log(Level.FINE, "{0}", statement);
 
             // execute the query and return the results.
             if (isQuery) {

@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs;
 import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -62,7 +63,7 @@ class FontRunSequence {
             }
         }
 
-        LOGGER.warning(String.format("Font not found for codepoint U+%04X (%d.)", codepoint, codepoint));
+        LOGGER.log(Level.WARNING, "{0}", String.format("Font not found for codepoint U+%04X (%d.)", codepoint, codepoint));
 
         // If no font could display this codepoint, return the default font anyway.
         return fontsInfo.length - 1;

@@ -76,7 +76,7 @@ public class FileListener implements Runnable {
             final String[] files = restPath.toFile().list();
             for (final String f : files) {
                 final Path p = restPath.resolve(f);
-                LOGGER.warning(String.format("Deleting old REST file %s", p));
+                LOGGER.log(Level.WARNING, "{0}", String.format("Deleting old REST file %s", p));
                 Files.delete(p);
             }
 
@@ -130,7 +130,7 @@ public class FileListener implements Runnable {
                 for (final String f : files) {
                     if (f.equals(REQUEST_JSON)) {
                         // If any other files are required, write this file last, so the other files are already present.
-                        LOGGER.info(String.format("Found REST file %s", f));
+                        LOGGER.log(Level.INFO, "{0}", String.format("Found REST file %s", f));
                         final Path p = restPath.resolve(f);
                         JsonNode json = null;
                         try (final InputStream in = new FileInputStream(p.toFile())) {

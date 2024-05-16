@@ -31,8 +31,8 @@ public final class HierarchicalState {
     private int[] clusterNumbers;
     private int[] clusterSeenBefore;
     private int redrawCount = 0;
-    private transient long modificationCounter = -1;
-    private transient long strucModificationCount = -1;
+    private long modificationCounter = -1;
+    private long strucModificationCount = -1;
     private boolean interactive = true;
     private boolean colored = true;
 

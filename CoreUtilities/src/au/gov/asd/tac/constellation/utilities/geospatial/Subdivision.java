@@ -117,13 +117,13 @@ public enum Subdivision {
 
     private Subdivision(final Country country, final String code, final String displayName) {
         if (country == null) {
-            throw new NullPointerException("Country must be specified");
+            throw new IllegalArgumentException("Country must be specified");
         }
         if (code == null) {
-            throw new NullPointerException("Code must be specified");
+            throw new IllegalArgumentException("Code must be specified");
         }
         if (displayName == null) {
-            throw new NullPointerException("Display name must be specified");
+            throw new IllegalArgumentException("Display name must be specified");
         }
         this.country = country;
         this.code = code;

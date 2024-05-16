@@ -84,7 +84,7 @@ public final class FloatArray implements Iterable<Float> {
      * The array buffer into which the elements of the ArrayList are stored. The
      * capacity of the ArrayList is the length of this array buffer.
      */
-    private transient float[] elementData;
+    private float[] elementData;
     /**
      * The size of the ArrayList (the number of elements it contains).
      *
@@ -119,7 +119,7 @@ public final class FloatArray implements Iterable<Float> {
      * {@code ConcurrentModificationExceptions}. If an implementation does not
      * wish to provide fail-fast iterators, this field may be ignored.
      */
-    private transient int modCount = 0;
+    private int modCount = 0;
 
     /**
      * Constructs an empty list with the specified initial capacity.

@@ -407,7 +407,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     public void setHistogramViewOptions(final GraphElementType elementType, final AttributeType attributeType, final String attribute) {
         if (currentGraph != null) {
             if (elementType == null) {
-                throw new NullPointerException("Null element type");
+                throw new IllegalArgumentException("Null element type");
             }
             if (currentHistogramState == null || elementType != currentHistogramState.getElementType() || attributeType != currentHistogramState.getAttributeType()
                     || (attribute == null ? currentHistogramState.getAttribute() != null : !attribute.equals(currentHistogramState.getAttribute()))) {
@@ -423,7 +423,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     public void setGraphElementType(final GraphElementType elementType) {
         if (currentGraph != null) {
             if (elementType == null) {
-                throw new NullPointerException("Null element type");
+                throw new IllegalArgumentException("Null element type");
             }
 
             // If the current state is null or the elementType selected is not the one already selected.
@@ -458,7 +458,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     void setBinComparator(final BinComparator binComparator) {
         if (currentGraph != null) {
             if (binComparator == null) {
-                throw new NullPointerException("Null bin comparator");
+                throw new IllegalArgumentException("Null bin comparator");
             }
             if (currentHistogramState == null || binComparator != currentHistogramState.getBinComparator()) {
                 HistogramState newHistogramState = new HistogramState(currentHistogramState);
@@ -471,7 +471,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     void setBinFormatter(final BinFormatter binFormatter, final PluginParameters parameters) {
         if (currentGraph != null) {
             if (binFormatter == null) {
-                throw new NullPointerException("Null bin formatter");
+                throw new IllegalArgumentException("Null bin formatter");
             }
             if (currentHistogramState == null || binFormatter != currentHistogramState.getBinFormatter() || parameters != currentHistogramState.getBinFormatterParameters()) {
                 HistogramState newHistogramState = new HistogramState(currentHistogramState);
@@ -485,7 +485,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     void setBinSelectionMode(final BinSelectionMode binSelectionMode) {
         if (currentGraph != null) {
             if (binSelectionMode == null) {
-                throw new NullPointerException("Null bin selection mode");
+                throw new IllegalArgumentException("Null bin selection mode");
             }
             if (currentHistogramState == null || binSelectionMode != currentHistogramState.getBinSelectionMode()) {
                 HistogramState newHistogramState = new HistogramState(currentHistogramState);

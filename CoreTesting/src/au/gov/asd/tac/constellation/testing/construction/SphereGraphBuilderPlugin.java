@@ -60,7 +60,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
@@ -554,7 +553,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         final int vx5 = graph.addVertex();
         ConstructionUtilities.setxyz(graph, vx5, vxXAttr, vxYAttr, vxZAttr, max[BBoxf.X], max[BBoxf.Y], min[BBoxf.Z]);
         ConstructionUtilities.setxyz(graph, vx5, vxX2Attr, vxY2Attr, vxZ2Attr, max[BBoxf.X] / 2, max[BBoxf.Y] / 2, min[BBoxf.Z] / 2);
-        graph.setStringValue(vxLabelAttr, vx5, NODE + vx5 + " " + circleChar++);
+        graph.setStringValue(vxLabelAttr, vx5, NODE + vx5 + " " + circleChar); // Change circleChar to circleChar++ if vx6 is added
         graph.setStringValue(vxIdentifierAttr, vx5, String.valueOf(vx5));
         graph.setStringValue(vxTypeAttr, vx5, TYPE + vx5);
         graph.setFloatValue(vxRadiusAttr, vx5, nodeRadius);
