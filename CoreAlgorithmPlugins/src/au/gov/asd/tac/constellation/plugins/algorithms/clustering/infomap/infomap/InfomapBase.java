@@ -1302,7 +1302,7 @@ public abstract class InfomapBase {
         for (int i = 0; i < numLevels - 1; ++i) {
             buf.append(String.format(NINE_FORMAT1, codelengths[i]));
         }
-        buf.append(String.format(NINE_FORMAT2, codelengths[numLevels - 1]));
+        buf.append(String.format(NINE_FORMAT2, codelengths[codelengths.length - 1]));
 
         double sumCodelengths = 0.0;
         for (int i = 0; i < numLevels; ++i) {
