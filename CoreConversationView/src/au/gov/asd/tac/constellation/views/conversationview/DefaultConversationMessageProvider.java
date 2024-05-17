@@ -21,8 +21,6 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.utilities.GraphIndexUtilities;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 
 /**
@@ -35,14 +33,11 @@ import javax.swing.SwingUtilities;
  */
 public class DefaultConversationMessageProvider implements ConversationMessageProvider {
 
-    private static final Logger LOGGER = Logger.getLogger(DefaultConversationMessageProvider.class.getName());
-
     private int totalMessageCount = 0;
-    private int maxContentPerPage = 25;
     private int currentVertex = -1;
 
     @Override
-    public void getMessages(final GraphReadMethods graph, final List<ConversationMessage> messages, final int pageNumber) {
+    public void getMessages(final GraphReadMethods graph, final List<ConversationMessage> messages) {
         assert !SwingUtilities.isEventDispatchThread();
         messages.clear();
         if (graph == null) {
@@ -59,7 +54,6 @@ public class DefaultConversationMessageProvider implements ConversationMessagePr
                 final int secondVertex = selectedVertices.getNextElement();
                 if (secondVertex == Graph.NOT_FOUND) {
                     final int transactionCount = graph.getVertexTransactionCount(vertex);
-                    LOGGER.log(Level.SEVERE, "transaction count: " + String.valueOf(transactionCount));
                     for (int position = 0; position < transactionCount; position++) {
                         final int transaction = graph.getVertexTransaction(vertex, position);
                         if (graph.getTransactionDirection(transaction) != Graph.UNDIRECTED) {
@@ -71,7 +65,6 @@ public class DefaultConversationMessageProvider implements ConversationMessagePr
                             messages.add(message);
                         }
                     }
-                    LOGGER.log(Level.SEVERE, "total message count: " + String.valueOf(totalMessageCount));
                     return;
                 }
             } 
@@ -129,15 +122,5 @@ public class DefaultConversationMessageProvider implements ConversationMessagePr
     @Override
     public int getTotalMessageCount() {
         return totalMessageCount;
-    }
-    
-    @Override
-    public int getMaxContentPerPage() {
-        return maxContentPerPage;
-    }
-    
-    @Override
-    public void setMaxContentPerPage(final int maxContent) {
-        maxContentPerPage = maxContent;
     }
 }

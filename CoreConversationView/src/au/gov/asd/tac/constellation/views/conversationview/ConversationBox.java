@@ -161,9 +161,9 @@ public final class ConversationBox extends StackPane {
         final Label contentLabel = new Label("Content per page:");
   
         contentPerPageChoiceBox.getItems().clear();
-        contentPerPageChoiceBox.getItems().addAll(25, 50, 100);
-        contentPerPageChoiceBox.getSelectionModel().select(25);
-        contentPerPageChoiceBox.setValue(25);
+        contentPerPageChoiceBox.getItems().addAll(50, 100, 250, 1000);
+        contentPerPageChoiceBox.getSelectionModel().select(50);
+        contentPerPageChoiceBox.setValue(50);
         contentPerPageChoiceBox.valueProperty().addListener((observable, oldValue, newValue) -> {
             final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
             if (activeGraph != null) {

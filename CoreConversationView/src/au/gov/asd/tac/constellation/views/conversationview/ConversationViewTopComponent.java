@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.conversationview;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import java.util.Properties;
 import javafx.application.Platform;
@@ -116,7 +117,12 @@ public final class ConversationViewTopComponent extends JavaFxTopComponent<Conve
     protected ConversationBox createContent() {
         return controller.getConversationBox();
     }
-
+    
+    @Override
+    protected void handleNewGraph(final Graph graph) {
+        controller.updateComponent();
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

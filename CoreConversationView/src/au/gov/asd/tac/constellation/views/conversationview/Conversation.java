@@ -110,7 +110,7 @@ public class Conversation {
     private int pageNumber = 0;
     private int totalMessageCount = 0;
     private int totalPages = 0;
-    private int contentPerPage = 25;
+    private int contentPerPage = 50;
 
     private ObservableList<ConversationMessage> resultMessages = null;
     private ConversationContributionProviderListener contributorListener = null;
@@ -360,8 +360,7 @@ public class Conversation {
                 final Thread thread = new Thread(CONVERSATION_VIEW_UPDATE_MESSAGE_THREAD_NAME) {
                     @Override
                     public void run() {
-                        messageProvider.setMaxContentPerPage(contentPerPage);
-                        messageProvider.getMessages(graph, allMessages, pageNumber);
+                        messageProvider.getMessages(graph, allMessages);
                         totalMessageCount = messageProvider.getTotalMessageCount();
                         if (totalMessageCount != 0) {
                             totalPages = (int) Math.ceil((double) totalMessageCount / contentPerPage);
@@ -590,9 +589,9 @@ public class Conversation {
                 message.filterContributions(conversationState.getHiddenContributionProviders());
                 final int minValue = pageNumber * contentPerPage;
                 final int maxValue = minValue + contentPerPage;
-                if (!message.getVisibleContributions().isEmpty() && visibleMessages.size() < contentPerPage && minValue < count && count < maxValue) {
+                if (!message.getVisibleContributions().isEmpty() && visibleMessages.size() <= contentPerPage && minValue <= count && count < maxValue) {
                     visibleMessages.add(message);
-                }
+                } 
                 count++;
             }
             totalPages = (int) Math.ceil((double) totalMessageCount / contentPerPage);
