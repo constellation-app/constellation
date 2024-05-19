@@ -186,14 +186,13 @@ public class FileChooser {
      * @return user response, indicating if user wants to overwrite exisitng file
      */
     private static boolean approver(final File[] selection, final String fileExtension) {
-
         // Show dialog box if file already exists when saving
         final String extension = FilenameUtils.getExtension(selection[0].toString());
         final String filepath = extension.isEmpty() ? selection[0].toString() + fileExtension : selection[0].toString();
         final File file = new File(filepath);
 
         if (file.exists()) {
-            int response = JOptionPane.showConfirmDialog(null,
+            final int response = JOptionPane.showConfirmDialog(null,
                     "The file " + file.getName() + " already exists. Do you want to replace the existing file?",
                     "Overwrite file", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
             // Overwrite if user chose yes
@@ -214,7 +213,7 @@ public class FileChooser {
         return new FileChooserBuilder(title)
                 .setTitle(title)
                 .setFilesOnly(true)
-                .setSelectionApprover((File[] selection) -> approver(selection, fileExtension));
+                .setSelectionApprover((final File[] selection) -> approver(selection, fileExtension));
     }
 
     /**

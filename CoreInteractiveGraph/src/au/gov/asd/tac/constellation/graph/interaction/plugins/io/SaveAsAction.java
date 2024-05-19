@@ -312,38 +312,5 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
      */
     public FileChooserBuilder getSaveFileChooser() {
         return FileChooser.createFileChooserBuilder(TITLE, FileExtensionConstants.STAR, "Constellation Files (" + FileExtensionConstants.STAR + ")");
-//        return new FileChooserBuilder(TITLE)
-//                .setTitle(TITLE)
-//                .setFilesOnly(true)
-//                .setAcceptAllFileFilterUsed(false)
-//                .setFileFilter(new FileFilter() {
-//                    @Override
-//                    public boolean accept(final File file) {
-//                        final String name = file.getName();
-//                        return (file.isFile() && StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.STAR)) || file.isDirectory();
-//                    }
-//
-//                    @Override
-//                    public String getDescription() {
-//                        return "Constellation Files (" + FileExtensionConstants.STAR + ")";
-//                    }
-//                })
-//                .setSelectionApprover((File[] selection) -> {
-//                    // Show dialog box if file already exists when saving
-//                    final String extension = FilenameUtils.getExtension(selection[0].toString());
-//                    final String filepath = extension.isEmpty() ? selection[0].toString() + FileExtensionConstants.STAR : selection[0].toString();
-//                    final File file = new File(filepath);
-//
-//                    if (file.exists()) {
-//                        int response = JOptionPane.showConfirmDialog(null,
-//                                "The file " + file.getName() + " already exists. Do you want to replace the existing file?",
-//                                "Overwrite file", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-//                        // Overwrite if user chose yes
-//                        return response == JOptionPane.YES_OPTION;
-//                    }
-//                    // Otherwise file didn't already exist
-//                    return true;
-//
-//                });
     }
 }
