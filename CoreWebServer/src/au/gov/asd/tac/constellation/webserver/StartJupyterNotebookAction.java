@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.webserver;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
-import au.gov.asd.tac.constellation.help.utilities.Generator;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -27,10 +26,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.prefs.Preferences;
-import org.apache.commons.lang3.ArrayUtils;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
@@ -40,7 +36,6 @@ import org.openide.util.NbPreferences;
 import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
 import org.openide.windows.OutputWriter;
-import static processing.core.PApplet.exec;
 
 @ActionID(category = "Tools", id = "au.gov.asd.tac.constellation.webserver.StartJupyterNotebookAction")
 @ActionRegistration(displayName = "#CTL_StartJupyterNotebookAction", iconBase = "au/gov/asd/tac/constellation/webserver/resources/jupyter.png")
@@ -48,18 +43,10 @@ import static processing.core.PApplet.exec;
 @NbBundle.Messages("CTL_StartJupyterNotebookAction=Start Jupyter Notebook")
 public class StartJupyterNotebookAction implements ActionListener {
 
-    private static final Logger LOGGER = Logger.getLogger(StartJupyterNotebookAction.class.getName());
-
     private static final String JUPYTER_NOTEBOOK = "jupyter-notebook";
     private static final String JUPYTER_OUTPUT = "Jupyter Notebook";
 
     private static final String OS = System.getProperty("os.name").toLowerCase();
-    private static final String SEP = File.separator;
-
-    private static final String PACKAGE_SOURCE = Generator.getBaseDirectory() + "ext" + SEP + "package" + SEP;
-    private static final String[] PACKAGE_INSTALL = {"pip", "install", "--upgrade", PACKAGE_SOURCE};
-    private static final String[] WINDOWS_COMMAND = {"cmd", "/C", "start", "/wait"};
-    private static final String[] UNIX_COMMAND = {"&"};
 
     @Override
     public void actionPerformed(final ActionEvent e) {
@@ -67,23 +54,6 @@ public class StartJupyterNotebookAction implements ActionListener {
 
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String dir = prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT);
-
-        // Run pip install on package
-        final Process p;
-        if (isWindows()) {
-            p = exec(ArrayUtils.addAll(WINDOWS_COMMAND, PACKAGE_INSTALL));
-        } else {
-            p = exec(ArrayUtils.addAll(PACKAGE_INSTALL, UNIX_COMMAND));
-        }
-
-        try {
-            final int result = p.waitFor();
-            LOGGER.log(Level.INFO, "Pip python process result: {0}", result);
-        } catch (final InterruptedException ex) {
-            LOGGER.log(Level.WARNING, "EXCEPTION CAUGHT in the python process:", ex);
-            p.destroy();
-            Thread.currentThread().interrupt();
-        }
 
         try {
 
@@ -137,7 +107,4 @@ public class StartJupyterNotebookAction implements ActionListener {
         }
     }
 
-    public static boolean isWindows() {
-        return OS.contains("win");
-    }
 }

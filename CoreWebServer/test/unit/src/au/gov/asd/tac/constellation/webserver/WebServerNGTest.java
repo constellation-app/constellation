@@ -236,7 +236,7 @@ public class WebServerNGTest {
             assertTrue(Files.exists(filePath));
         }
     }
-    
+
     /**
      * Function to create empty file to be used in tests.
      */
@@ -254,5 +254,16 @@ public class WebServerNGTest {
         }
 
         return Paths.get(testFile.getAbsolutePath());
+    }
+
+    /**
+     * Test of isWindows method, of class StartJupyterNotebookAction.
+     */
+    @Test
+    public void testIsWindows() {
+        System.out.println("isWindows");
+        boolean expResult = System.getProperty("os.name").toLowerCase().contains("win");
+        boolean result = WebServer.isWindows();
+        assertEquals(result, expResult);
     }
 }

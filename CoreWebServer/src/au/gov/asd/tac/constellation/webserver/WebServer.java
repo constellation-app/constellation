@@ -48,6 +48,8 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
+import static jnr.constants.PlatformConstants.OS;
+import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -56,6 +58,7 @@ import org.openide.awt.NotificationDisplayer;
 import org.openide.awt.StatusDisplayer;
 import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
+import static processing.core.PApplet.exec;
 
 /**
  * A Web Server.
@@ -126,6 +129,11 @@ public class WebServer {
     private static final String SEP = File.separator;
     private static final String SCRIPT_SOURCE = Generator.getBaseDirectory() + "ext" + SEP + "package" + SEP + "src" + SEP + "constellation_client" + SEP;
 
+    private static final String PACKAGE_SOURCE = Generator.getBaseDirectory() + "ext" + SEP + "package" + SEP + "dist";
+    private static final String[] PACKAGE_INSTALL = {"pip", "install", "constellation_client", "--no-index", "--find-links", "file:" + PACKAGE_SOURCE};
+    private static final String[] WINDOWS_COMMAND = {"cmd", "/C", "start", "/wait"};
+    private static final String[] UNIX_COMMAND = {"&"};
+
     public static boolean isRunning() {
         return running;
     }
@@ -171,6 +179,7 @@ public class WebServer {
                 final boolean pythonRestClientDownload = prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT);
                 if (pythonRestClientDownload) {
                     downloadPythonClient();
+                    installPythonPackage();
                 }
 
                 // Build the server.
@@ -300,6 +309,25 @@ public class WebServer {
         }
     }
 
+    public static void installPythonPackage() {
+        // Run pip install on package
+        final Process p;
+        if (isWindows()) {
+            p = exec(ArrayUtils.addAll(WINDOWS_COMMAND, PACKAGE_INSTALL));
+        } else {
+            p = exec(ArrayUtils.addAll(PACKAGE_INSTALL, UNIX_COMMAND));
+        }
+
+        try {
+            final int result = p.waitFor();
+            LOGGER.log(Level.INFO, "Pip python process result: {0}", result);
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.WARNING, "EXCEPTION CAUGHT in the python process:", ex);
+            p.destroy();
+            Thread.currentThread().interrupt();
+        }
+    }
+
     /**
      * Get the SHA-256 digest of an InputStream.
      *
@@ -345,5 +373,9 @@ public class WebServer {
             LOGGER.log(Level.SEVERE, "Equal scripts", ex);
             return false;
         }
+    }
+
+    public static boolean isWindows() {
+        return OS.contains("win");
     }
 }

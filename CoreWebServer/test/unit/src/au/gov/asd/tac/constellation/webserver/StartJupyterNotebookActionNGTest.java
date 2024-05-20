@@ -23,7 +23,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -51,17 +50,6 @@ public class StartJupyterNotebookActionNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
-    }
-
-    /**
-     * Test of isWindows method, of class StartJupyterNotebookAction.
-     */
-    @Test
-    public void testIsWindows() {
-        System.out.println("isWindows");
-        boolean expResult = System.getProperty("os.name").toLowerCase().contains("win");
-        boolean result = StartJupyterNotebookAction.isWindows();
-        assertEquals(result, expResult);
     }
 
     /**
