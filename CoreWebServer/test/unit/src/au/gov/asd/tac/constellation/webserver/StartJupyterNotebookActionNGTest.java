@@ -56,8 +56,7 @@ public class StartJupyterNotebookActionNGTest {
     public void testActionPerformed() {
         System.out.println("actionPerformed");
 
-        try (MockedStatic<Generator> generatorMock = Mockito.mockStatic(Generator.class); MockedStatic<WebServer> webserverMock = Mockito.mockStatic(WebServer.class)) {
-            generatorMock.when(Generator::getBaseDirectory).thenReturn("");
+        try (MockedStatic<WebServer> webserverMock = Mockito.mockStatic(WebServer.class)) {
             webserverMock.when(WebServer::start).thenReturn(0);
 
             // Create and run instance

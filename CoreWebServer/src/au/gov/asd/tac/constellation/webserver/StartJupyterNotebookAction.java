@@ -46,8 +46,6 @@ public class StartJupyterNotebookAction implements ActionListener {
     private static final String JUPYTER_NOTEBOOK = "jupyter-notebook";
     private static final String JUPYTER_OUTPUT = "Jupyter Notebook";
 
-    private static final String OS = System.getProperty("os.name").toLowerCase();
-
     @Override
     public void actionPerformed(final ActionEvent e) {
         WebServer.start();
@@ -56,7 +54,6 @@ public class StartJupyterNotebookAction implements ActionListener {
         final String dir = prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT);
 
         try {
-
             // Start the jupyter-notebook process with its stderr redirected to
             // its stdout, and stdout being fed into an InputOutput window.
             final InputOutput io = IOProvider.getDefault().getIO(JUPYTER_OUTPUT, false);
@@ -106,5 +103,4 @@ public class StartJupyterNotebookAction implements ActionListener {
             );
         }
     }
-
 }

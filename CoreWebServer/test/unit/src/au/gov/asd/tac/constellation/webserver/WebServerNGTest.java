@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.webserver;
 
+import au.gov.asd.tac.constellation.help.utilities.Generator;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import static au.gov.asd.tac.constellation.webserver.WebServer.getNotebookDir;
 import java.io.File;
@@ -31,8 +32,13 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.openide.util.NbPreferences;
 import static org.testng.Assert.assertNotEquals;
 import static org.testng.AssertJUnit.assertEquals;
@@ -42,6 +48,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import processing.core.PApplet;
 
 /**
  * Web Server Test.
@@ -117,6 +124,12 @@ public class WebServerNGTest {
     @Test
     public void testStartExistingRest() {
         System.out.println("testStartExistingRest");
+        // Mocks
+        Process processMock = mock(Process.class);
+        try {
+            when(processMock.waitFor()).thenReturn(0); // Return success
+        } catch (InterruptedException ex) {
+        }
 
         // Make rest files first
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
@@ -157,21 +170,35 @@ public class WebServerNGTest {
         // Check server NOT running
         assertEquals(false, WebServer.isRunning());
 
-        // Run start
-        int expResult = 1517;
-        int result = WebServer.start();
-        // Check port number
-        assertEquals(expResult, result);
+        try (MockedStatic<Generator> generatorMock = Mockito.mockStatic(Generator.class); MockedStatic<PApplet> execute = Mockito.mockStatic(PApplet.class)) {
+            generatorMock.when(Generator::getBaseDirectory).thenReturn("");
+            // Return our mocked process when exec is called
+            execute.when(() -> PApplet.exec(any(String[].class))).thenReturn(processMock);
 
-        // Check server running
-        assertEquals(true, WebServer.isRunning());
+            // Run start
+            int expResult = 1517;
+            int result = WebServer.start();
 
-        // Check file contents DO NOT match the initial values
-        try {
-            assertNotEquals(Files.readString(Path.of(userDir).resolve(REST_FILE), StandardCharsets.UTF_8), TEST_TEXT);
-            assertNotEquals(Files.readString(Path.of(scriptDir).resolve(REST_FILE), StandardCharsets.UTF_8), TEST_TEXT);
-        } catch (final IOException e) {
-            LOGGER.log(Level.WARNING, "Error matching files");
+            // Check port number
+            assertEquals(expResult, result);
+
+            // Check server running
+            assertEquals(true, WebServer.isRunning());
+
+            // Assert cmd command was run
+            execute.verify(() -> PApplet.exec(any(String[].class)), times(1));
+            try {
+                verify(processMock, times(1)).waitFor();
+            } catch (InterruptedException ex) {
+            }
+
+            // Check file contents DO NOT match the initial values
+            try {
+                assertNotEquals(Files.readString(Path.of(userDir).resolve(REST_FILE), StandardCharsets.UTF_8), TEST_TEXT);
+                assertNotEquals(Files.readString(Path.of(scriptDir).resolve(REST_FILE), StandardCharsets.UTF_8), TEST_TEXT);
+            } catch (final IOException e) {
+                LOGGER.log(Level.WARNING, "Error matching files");
+            }
         }
     }
 
