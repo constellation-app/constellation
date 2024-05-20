@@ -73,8 +73,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -96,10 +98,8 @@ import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
 /**
- * Action to save document under a different file name and/or extension. The
- * action is enabled for editor windows only. This class is a copy of the
- * org.openide.actions.SaveAsAction class except that additional validation was
- * added
+ * Action to save document under a different file name and/or extension. The action is enabled for editor windows only.
+ * This class is a copy of the org.openide.actions.SaveAsAction class except that additional validation was added
  *
  */
 @ActionID(category = "File", id = "au.gov.asd.tac.constellation.functionality.save.SaveAsAction")
@@ -132,8 +132,8 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
     private static final String TITLE = "Save As";
 
     /**
-     * Action to save document under a different file name and/or extension. The
-     * action is enabled for editor windows only.
+     * Action to save document under a different file name and/or extension. The action is enabled for editor windows
+     * only.
      *
      * @since 6.3
      * @author S. Aubrecht
@@ -159,8 +159,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
     }
 
     /**
-     * Method is called from XML layers to create action instance for the main
-     * menu/toolbar.
+     * Method is called from XML layers to create action instance for the main menu/toolbar.
      *
      * @return Global instance for menu/toolbar
      */
@@ -312,21 +311,6 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
      * @return the created file chooser.
      */
     public FileChooserBuilder getSaveFileChooser() {
-        return new FileChooserBuilder(TITLE)
-                .setTitle(TITLE)
-                .setFilesOnly(true)
-                .setAcceptAllFileFilterUsed(false)
-                .setFileFilter(new FileFilter() {
-                    @Override
-                    public boolean accept(final File file) {
-                        final String name = file.getName();
-                        return (file.isFile() && StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.STAR)) || file.isDirectory();
-                    }
-
-                    @Override
-                    public String getDescription() {
-                        return "Constellation Files (" + FileExtensionConstants.STAR + ")";
-                    }
-                });
+        return FileChooser.createFileChooserBuilder(TITLE, FileExtensionConstants.STAR, "Constellation Files (" + FileExtensionConstants.STAR + ")");
     }
 }
