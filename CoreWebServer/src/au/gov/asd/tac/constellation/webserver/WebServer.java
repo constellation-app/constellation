@@ -178,7 +178,6 @@ public class WebServer {
                 // Download the Python REST client if enabled.
                 final boolean pythonRestClientDownload = prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT);
                 if (pythonRestClientDownload) {
-                    downloadPythonClient();
                     installPythonPackage();
                 }
 
