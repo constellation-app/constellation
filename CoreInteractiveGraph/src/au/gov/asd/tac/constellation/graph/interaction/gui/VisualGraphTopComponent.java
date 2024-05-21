@@ -559,7 +559,10 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             graphModificationCount = modificationCount;
             savable.setModified(true);
             SwingUtilities.invokeLater(() -> {
-                setHtmlDisplayName(String.format("<html><font color=\"#0000ff\"><b>%s</b></font></html>", getDisplayName()));
+                // Add exclamation marks if file not valid
+                final String text = (graphNode.getDataObject().isValid()) ? getDisplayName() : "!!!" + getDisplayName() + "!!!";
+                setHtmlDisplayName(String.format("<html><font color=\"#0000ff;\"><b>%s</b></font></html>", text));
+
                 requestVisible();
             });
         }
