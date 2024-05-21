@@ -16,7 +16,8 @@
 package au.gov.asd.tac.constellation.views.conversationview;
 
 /**
- *
+ * Controller class for the Conversation View 
+ * 
  * @author Delphinus8821
  */
 public class ConversationController {

@@ -41,8 +41,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -98,8 +96,6 @@ import org.openide.util.HelpCtx;
  * @author sol695510
  */
 public final class ConversationBox extends StackPane {
-
-    private static final Logger LOGGER = Logger.getLogger(ConversationBox.class.getName());
     
     public static final double PADDING = 5;
 
@@ -224,7 +220,7 @@ public final class ConversationBox extends StackPane {
                 conversation.setSenderAttributeListener((possibleSenderAttributes, senderAttributes) -> {
                     isAdjustingSenderLabels = true;
                     senderAttributesMultiChoiceInput.getCheckModel().clearChecks();
-                    possibleSenderAttributes = possibleSenderAttributes.stream().filter(Objects::nonNull).collect(Collectors.toList());
+                    possibleSenderAttributes = possibleSenderAttributes.stream().filter(Objects::nonNull).toList();
                     senderAttributesChoices.setAll(possibleSenderAttributes);
                     for (final String senderAttribute : senderAttributes) {
                         senderAttributesMultiChoiceInput.getCheckModel().check(senderAttribute);
@@ -339,6 +335,10 @@ public final class ConversationBox extends StackPane {
     
     public Pagination getPagination() {
         return pagination;
+    }
+    
+    protected Conversation getConversation() {
+        return conversation;
     }
    
     public void setInProgress() {
