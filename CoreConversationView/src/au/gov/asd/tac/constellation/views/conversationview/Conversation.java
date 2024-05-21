@@ -206,6 +206,7 @@ public class Conversation {
      * @return 
      */
     public List<ConversationMessage> updateMessages(final GraphReadMethods graph) {
+        ConversationController.getDefault().getConversationBox().setInProgress();
         visibilityUpdater.update(graph);
         return visibleMessages;
     }
@@ -360,6 +361,7 @@ public class Conversation {
                 final Thread thread = new Thread(CONVERSATION_VIEW_UPDATE_MESSAGE_THREAD_NAME) {
                     @Override
                     public void run() {
+                        ConversationController.getDefault().getConversationBox().setInProgress();
                         messageProvider.getMessages(graph, allMessages);
                         totalMessageCount = messageProvider.getTotalMessageCount();
                         if (totalMessageCount != 0) {
@@ -595,6 +597,7 @@ public class Conversation {
                 count++;
             }
             totalPages = (int) Math.ceil((double) totalMessageCount / contentPerPage);
+            ConversationController.getDefault().getConversationBox().setProgressComplete();
 
             return true;
         }

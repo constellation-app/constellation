@@ -64,6 +64,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Pagination;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToolBar;
@@ -139,6 +140,7 @@ public final class ConversationBox extends StackPane {
     private final HBox searchHBox = new HBox();
 
     private final Pagination pagination = new Pagination(0);
+    private final ProgressIndicator spinner = new ProgressIndicator();
 
     /**
      * Create a ConversationBox with the given Conversation.
@@ -176,6 +178,8 @@ public final class ConversationBox extends StackPane {
                 graph.release();
             }
         });
+        
+        spinner.setMaxSize(50, 50);
 
         pagination.setPageCount(1);
         pagination.setMaxPageIndicatorCount(1);
@@ -210,7 +214,6 @@ public final class ConversationBox extends StackPane {
                     messages.addAll(conversation.updateMessages(graph));
                     updatePages(conversation.getTotalPages());
                     graph.release();
-
                 }
                 
                 content.getChildren().clear();
@@ -335,6 +338,16 @@ public final class ConversationBox extends StackPane {
     
     public Pagination getPagination() {
         return pagination;
+    }
+   
+    public void setInProgress() {
+        Platform.runLater(() -> getChildren().add(spinner));
+        setAlignment(spinner, Pos.CENTER);
+    }
+
+    public void setProgressComplete() {
+        Platform.runLater(() -> getChildren().remove(spinner));
+
     }
     
     public void updatePages(final int totalPages) {
