@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilities;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import java.util.ArrayList;
 import java.util.List;
@@ -113,6 +114,7 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
     private final Preferences prefs = NbPreferences.forModule(AttributePreferenceKey.class);
     private LinkedBlockingQueue<Object> queue = new LinkedBlockingQueue<>();
     private Thread refreshThread;
+    private static final boolean DARK_MODE = JavafxStyleManager.isDarkTheme();
 
     public AttributeEditorTopComponent() {
         attributePanel = new AttributeEditorPanel(this);
@@ -258,7 +260,7 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
 
     @Override
     protected String createStyle() {
-        return "resources/attribute-editor.css";
+        return DARK_MODE ? "resources/attribute-editor.css" : "resources/attribute-editor-light.css";
     }
 
     @Override

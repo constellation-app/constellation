@@ -500,6 +500,7 @@ public class MapViewTileRenderer extends PApplet {
                 }
             }
             default -> {
+                // do nothing
             }
         }
 

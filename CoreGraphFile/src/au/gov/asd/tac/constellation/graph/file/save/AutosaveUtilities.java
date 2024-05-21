@@ -23,6 +23,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -109,21 +111,23 @@ public final class AutosaveUtilities {
      */
     public static void deleteAutosave(final File f) {
         final String path = f.getPath();
-        final boolean fIsDeleted = f.delete();
-        if (!fIsDeleted) {
+        try {
+            Files.delete(Path.of(path));
+        } catch (final IOException ex) {
             //TODO: Handle case where file not successfully deleted
         }
 
-        File f2 = null;
+        String filepath = null;
         if (path.endsWith(FileExtensionConstants.STAR)) {
-            f2 = new File(path + "_auto");
+            filepath = path + "_auto";
         } else if (path.endsWith(FileExtensionConstants.STAR_AUTOSAVE)) {
-            f2 = new File(path.substring(0, path.length() - 5));
+            filepath = path.substring(0, path.length() - 5);
         }
 
-        if (f2 != null) {
-            final boolean f2IsDeleted = f2.delete();
-            if (!f2IsDeleted) {
+        if (filepath != null) {
+            try {
+                Files.delete(Path.of(filepath));
+            } catch (final IOException ex) {
                 //TODO: Handle case where file not successfully deleted
             }
         }
@@ -174,11 +178,13 @@ public final class AutosaveUtilities {
      * @throws IOException When an error happens.
      */
     public static void copyFile(final File autosave, final File to) throws IOException {
-        final File toBak = new File(to.getPath() + FileExtensionConstants.BACKUP);
+        final String toBakFilePath = to.getPath() + FileExtensionConstants.BACKUP;
+        final File toBak = new File(toBakFilePath);
         LOGGER.log(Level.INFO, "Processing request to open autosave file: {0}", autosave);
         if (toBak.exists()) {
-            final boolean toBakIsDeleted = toBak.delete();
-            if (!toBakIsDeleted) {
+            try {
+                Files.delete(Path.of(toBakFilePath));
+            } catch (final IOException ex) {
                 LOGGER.log(Level.WARNING, "Unable to remove old backup file: {0}", toBak);
             }
         }
@@ -219,8 +225,9 @@ public final class AutosaveUtilities {
         for (final File star : getAutosaves(FileExtensionConstants.STAR)) {
             final File auto = new File(star.getPath() + "_auto");
             if (!auto.exists()) {
-                final boolean starIsDeleted = star.delete();
-                if (!starIsDeleted) {
+                try {
+                    Files.delete(Path.of(star.getPath()));
+                } catch (final IOException ex) {
                     //TODO: Handle case where file not successfully deleted
                 }
             }
@@ -231,8 +238,9 @@ public final class AutosaveUtilities {
             final String autos = auto.getPath();
             final File star = new File(autos.substring(0, autos.length() - 5));
             if (!star.exists()) {
-                final boolean autoIsDeleted = auto.delete();
-                if (!autoIsDeleted) {
+                try {
+                    Files.delete(Path.of(autos));
+                } catch (final IOException ex) {
                     //TODO: Handle case where file not successfully deleted
                 }
             }

@@ -111,6 +111,12 @@ public final class ApplicationPreferenceKeys {
     public static final String FILE_OPEN_AND_SAVE_LOCATION = "fileOpenAndSaveLocation";
 
     /**
+     * Enable/disable Spell Checking in SpellCheckingTextArea text fields.
+     */
+    public static final String ENABLE_SPELL_CHECKING = "enableSpellChecking";
+    public static final boolean ENABLE_SPELL_CHECKING_DEFAULT = true;
+
+    /**
      * A directory where the webserver can write files to emulate REST requests.
      *
      * @param prefs Application preferences.

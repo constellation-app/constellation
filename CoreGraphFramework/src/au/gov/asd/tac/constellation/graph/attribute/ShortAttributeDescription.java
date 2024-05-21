@@ -62,7 +62,7 @@ public class ShortAttributeDescription extends AbstractAttributeDescription {
                 return number.shortValue();
             }       
             case Boolean bool -> {
-                return bool ? (short) 1 : (short) 0;
+                return Boolean.TRUE.equals(bool) ? (short) 1 : (short) 0;
             }       
             case String string -> {
                 return convertFromString(string);

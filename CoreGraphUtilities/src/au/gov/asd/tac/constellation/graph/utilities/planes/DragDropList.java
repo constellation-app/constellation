@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.utilities.planes.DragDropList.MyElemen
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
@@ -28,6 +29,7 @@ import java.awt.dnd.DragSourceDragEvent;
 import java.awt.dnd.DragSourceDropEvent;
 import java.awt.dnd.DragSourceEvent;
 import java.awt.dnd.DragSourceListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
@@ -267,7 +269,7 @@ final class DragDropList extends JList<MyElement> {
             String indexString;
             try {
                 indexString = (String) transferable.getTransferData(DataFlavor.stringFlavor);
-            } catch (Exception ex) {
+            } catch (UnsupportedFlavorException | IOException ex) {
                 return false;
             }
 

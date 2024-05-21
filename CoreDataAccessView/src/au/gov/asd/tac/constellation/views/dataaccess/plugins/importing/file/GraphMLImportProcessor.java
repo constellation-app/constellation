@@ -66,6 +66,8 @@ import org.w3c.dom.NodeList;
 public class GraphMLImportProcessor implements GraphFileImportProcessor {
 
     private static final Logger LOGGER = Logger.getLogger(GraphMLImportProcessor.class.getName());
+    
+    private static final String PLUGIN_NAME = "Import GraphML File";
 
     public static final String GRAPHML_TAG = "graphml";
     public static final String GRAPH_TAG = "graph";
@@ -260,7 +262,7 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
             }
         } catch (final FileNotFoundException ex) {
             final String errorMsg = StringUtils.isEmpty(filename) ? "File not specified" : "File not found: " + filename;
-            NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + errorMsg, "Import GraphML File", DEFAULT_OPTION,
+            NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + errorMsg, PLUGIN_NAME, DEFAULT_OPTION,
                     NotifyDescriptor.ERROR_MESSAGE, new Object[]{NotifyDescriptor.OK_OPTION}, NotifyDescriptor.OK_OPTION));
             final Throwable fnfEx = new FileNotFoundException(NotifyDisplayer.BLOCK_POPUP_FLAG + errorMsg);
             fnfEx.setStackTrace(ex.getStackTrace());
@@ -269,7 +271,7 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         } catch (final IOException ex) {
             final String errorMsg = StringUtils.isEmpty(filename) ? "File not specified " : "Error reading file: " + filename;
-            NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + errorMsg, "Import GraphML File", DEFAULT_OPTION,
+            NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + errorMsg, PLUGIN_NAME, DEFAULT_OPTION,
                     NotifyDescriptor.ERROR_MESSAGE, new Object[]{NotifyDescriptor.OK_OPTION}, NotifyDescriptor.OK_OPTION));
             final Throwable ioEx = new IOException(NotifyDisplayer.BLOCK_POPUP_FLAG + errorMsg);
             ioEx.setStackTrace(ex.getStackTrace());
@@ -299,7 +301,7 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
                     .collect(Collectors.joining(SeparatorConstants.NEWLINE));
 
             NotifyDisplayer.display(new NotifyDescriptor("Warning - Some elements weren't able to be imported:\n" + errorMsg,
-                    "Import GraphML File", DEFAULT_OPTION,
+                    PLUGIN_NAME, DEFAULT_OPTION,
                     NotifyDescriptor.WARNING_MESSAGE, new Object[]{NotifyDescriptor.OK_OPTION}, NotifyDescriptor.OK_OPTION));
             LOGGER.log(Level.WARNING, errorMsg);
         }

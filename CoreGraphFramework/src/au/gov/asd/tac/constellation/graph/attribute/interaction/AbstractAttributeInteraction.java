@@ -288,7 +288,7 @@ public abstract class AbstractAttributeInteraction<T> {
      * @return the interaction for the specified data type.
      */
     @SuppressWarnings("rawtypes")
-    public static AbstractAttributeInteraction<?> getInteraction(final String dataType) {
+    public static AbstractAttributeInteraction getInteraction(final String dataType) {
         if (ALL_INTERACTIONS.isEmpty()) {
             final Collection<? extends AbstractAttributeInteraction> attributeInteractions = Lookup.getDefault().lookupAll(AbstractAttributeInteraction.class);
             attributeInteractions.forEach(interaction -> {

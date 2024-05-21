@@ -1,6 +1,13 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2024-03-21 Spell checking in Constellation
+<p>Spell checking is available in text areas of Constellation. E.g. Data access view (Extract Types and Extract Words Plugins). It can be added in other text areas as requested.</p>
+<p>When enabled, incorrect spellings and some grammar errors are highlighted and underlined. 
+Left Clicking on a highlighted word/phrase will popup a suggestions list to choose from. An "Ignore All" button is available for spelling errors which will ignore the same error in the current text area.</p>
+<p>Constellation Option "Enable spell checking in specified text areas" (Enabled by default) is used to enable/disable spell checking. 
+If it is set, the right click context menu option "Turn On Spell Checking" will be available on fields where it has been enabled, and it can be used to toggle on/off spell checking dynamically. </p>
+
 == 2024-03-08 More Ways to Zoom In and Out
 <p>Keyboard shortcuts have been added for zooming in and out of the graph view (CTRL-ALT-UP and CTRL-ALT-DOWN respectively).</p>
 <p>Toolbar buttons have been added for zooming in and out of the graph view.</p>
@@ -30,7 +37,6 @@
 <p>The Attribute Editor view now allows for empty (null) attributes to be hidden to de-clutter the view.</p>
 <p>The heading of each attribute category has replaced the "Show all" toggle with a "Show Hidden" toggle and a new "Show Empty" toggle has been added. The "Show Empty" toggle is enabled each time Constellation is restarted to ensure users make a conscious decision to hide them.</p>
 <p>Attributes that are marked as hidden will only be shown if the "Show Hidden" toggle is enabled while attributes that have no value set (and are empty) will only be shown if the "Show Empty" toggle is enabled. Hidden and empty attributes require both toggles to be enabled.</p>
-
 
 == 2023-08-28 Markdown support in the Notes View
 <p>The notes can now optionally render markdown text. You can now italicise, bold and strikethrough text. Headings can be added to the note as well as lists and sub lists.</p>

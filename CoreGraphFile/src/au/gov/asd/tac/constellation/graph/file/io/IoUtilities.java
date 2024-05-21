@@ -128,7 +128,8 @@ public final class IoUtilities {
         final StringBuilder t = new StringBuilder();
         final int length = s.length();
         int begin = 0;
-        for (int i = 0; i < length; i++) {
+        int i = 0;
+        while (i < length) {
             final char c = s.charAt(i);
             if (c == '\\') {
                 if (i == length - 1) {
@@ -152,6 +153,7 @@ public final class IoUtilities {
                 i++;
                 begin = i + 1;
             }
+            i++;
         }
 
         if (t.length() > 0) {

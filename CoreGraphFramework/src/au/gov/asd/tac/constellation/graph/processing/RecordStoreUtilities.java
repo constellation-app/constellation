@@ -30,6 +30,7 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -43,6 +44,8 @@ import org.apache.commons.csv.CSVRecord;
 public class RecordStoreUtilities {
 
     private static final Logger LOGGER = Logger.getLogger(RecordStoreUtilities.class.getName());
+    
+    private static final Pattern NEWLINE_QUOTE_REGEX = Pattern.compile("[\n\"]");
     
     private RecordStoreUtilities() {
         throw new IllegalStateException("Utility class");
@@ -270,7 +273,7 @@ public class RecordStoreUtilities {
             if (!columnsWritten) {
                 line.setLength(0);
                 for (final String key : recordStore.keys()) {
-                    final String columnValue = key == null ? "" : key.replaceAll("[\n\"]", "");
+                    final String columnValue = key == null ? "" : NEWLINE_QUOTE_REGEX.matcher(key).replaceAll("");
                     if (columnValue.contains(",")) {
                         line.append("\"");
                         line.append(columnValue);

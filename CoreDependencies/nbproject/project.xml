@@ -36,7 +36,13 @@
                 <package>Lib.xml.parsers</package>
                 <package>Lib.xml.sax</package>
                 <package>Lib.xml.sax.drivers2</package>
+                <package>android.annotation</package>
                 <package>au.com.objectix.jgridshift</package>
+                <package>com.carrotsearch.hppc</package>
+                <package>com.carrotsearch.hppc.cursors</package>
+                <package>com.carrotsearch.hppc.predicates</package>
+                <package>com.carrotsearch.hppc.procedures</package>
+                <package>com.carrotsearch.hppc.sorting</package>
                 <package>com.fasterxml.jackson.annotation</package>
                 <package>com.fasterxml.jackson.core</package>
                 <package>com.fasterxml.jackson.core.async</package>
@@ -77,6 +83,10 @@
                 <package>com.fasterxml.jackson.databind.util.internal</package>
                 <package>com.github.rjeschke.txtmark</package>
                 <package>com.github.rjeschke.txtmark.cmd</package>
+                <package>com.google.api</package>
+                <package>com.google.cloud</package>
+                <package>com.google.cloud.audit</package>
+                <package>com.google.cloud.location</package>
                 <package>com.google.common.annotations</package>
                 <package>com.google.common.base</package>
                 <package>com.google.common.base.internal</package>
@@ -97,20 +107,37 @@
                 <package>com.google.common.xml</package>
                 <package>com.google.errorprone.annotations</package>
                 <package>com.google.errorprone.annotations.concurrent</package>
+                <package>com.google.geo.type</package>
+                <package>com.google.gson</package>
+                <package>com.google.gson.annotations</package>
+                <package>com.google.gson.internal</package>
+                <package>com.google.gson.internal.bind</package>
+                <package>com.google.gson.internal.bind.util</package>
+                <package>com.google.gson.internal.reflect</package>
+                <package>com.google.gson.internal.sql</package>
+                <package>com.google.gson.reflect</package>
+                <package>com.google.gson.stream</package>
                 <package>com.google.j2objc.annotations</package>
+                <package>com.google.logging.type</package>
+                <package>com.google.longrunning</package>
+                <package>com.google.protobuf</package>
+                <package>com.google.protobuf.compiler</package>
+                <package>com.google.rpc</package>
+                <package>com.google.rpc.context</package>
                 <package>com.google.thirdparty.publicsuffix</package>
+                <package>com.google.type</package>
                 <package>com.graphbuilder.curve</package>
                 <package>com.graphbuilder.geom</package>
                 <package>com.graphbuilder.math</package>
                 <package>com.graphbuilder.math.func</package>
                 <package>com.graphbuilder.org.apache.harmony.awt.gl</package>
                 <package>com.graphbuilder.struc</package>
+                <package>com.hankcs.algorithm</package>
                 <package>com.jhlabs.composite</package>
                 <package>com.jhlabs.image</package>
                 <package>com.jhlabs.math</package>
                 <package>com.jhlabs.vecmath</package>
                 <package>com.jogamp.common</package>
-                <package>com.jogamp.common.av</package>
                 <package>com.jogamp.common.jvm</package>
                 <package>com.jogamp.common.net</package>
                 <package>com.jogamp.common.net.asset</package>
@@ -128,10 +155,6 @@
                 <package>com.jogamp.graph.curve.tess</package>
                 <package>com.jogamp.graph.font</package>
                 <package>com.jogamp.graph.geom</package>
-                <package>com.jogamp.graph.geom.plane</package>
-                <package>com.jogamp.graph.ui</package>
-                <package>com.jogamp.graph.ui.layout</package>
-                <package>com.jogamp.graph.ui.shapes</package>
                 <package>com.jogamp.nativewindow</package>
                 <package>com.jogamp.nativewindow.awt</package>
                 <package>com.jogamp.nativewindow.egl</package>
@@ -175,7 +198,6 @@
                 <package>com.jogamp.opengl.util</package>
                 <package>com.jogamp.opengl.util.av</package>
                 <package>com.jogamp.opengl.util.awt</package>
-                <package>com.jogamp.opengl.util.caps</package>
                 <package>com.jogamp.opengl.util.gl2</package>
                 <package>com.jogamp.opengl.util.glsl</package>
                 <package>com.jogamp.opengl.util.glsl.fixedfunc</package>
@@ -205,12 +227,39 @@
                 <package>com.microsoft.schemas.office.x2006.digsig.impl</package>
                 <package>com.microsoft.schemas.vml</package>
                 <package>com.microsoft.schemas.vml.impl</package>
+                <package>com.optimaize.langdetect</package>
+                <package>com.optimaize.langdetect.cybozu</package>
+                <package>com.optimaize.langdetect.cybozu.util</package>
+                <package>com.optimaize.langdetect.frma</package>
+                <package>com.optimaize.langdetect.i18n</package>
+                <package>com.optimaize.langdetect.ngram</package>
+                <package>com.optimaize.langdetect.profiles</package>
+                <package>com.optimaize.langdetect.profiles.util</package>
+                <package>com.optimaize.langdetect.text</package>
                 <package>com.sun.glass.ui.monocle</package>
                 <package>com.sun.istack</package>
                 <package>com.sun.istack.localization</package>
                 <package>com.sun.istack.logging</package>
                 <package>com.sun.java.help.impl</package>
                 <package>com.sun.java.help.search</package>
+                <package>com.sun.jna</package>
+                <package>com.sun.jna.internal</package>
+                <package>com.sun.jna.platform</package>
+                <package>com.sun.jna.platform.dnd</package>
+                <package>com.sun.jna.platform.linux</package>
+                <package>com.sun.jna.platform.mac</package>
+                <package>com.sun.jna.platform.unix</package>
+                <package>com.sun.jna.platform.unix.aix</package>
+                <package>com.sun.jna.platform.unix.solaris</package>
+                <package>com.sun.jna.platform.win32</package>
+                <package>com.sun.jna.platform.win32.COM</package>
+                <package>com.sun.jna.platform.win32.COM.tlb</package>
+                <package>com.sun.jna.platform.win32.COM.tlb.imp</package>
+                <package>com.sun.jna.platform.win32.COM.util</package>
+                <package>com.sun.jna.platform.win32.COM.util.annotation</package>
+                <package>com.sun.jna.platform.wince</package>
+                <package>com.sun.jna.ptr</package>
+                <package>com.sun.jna.win32</package>
                 <package>com.sun.media.imageio.plugins.bmp</package>
                 <package>com.sun.media.imageio.plugins.jpeg2000</package>
                 <package>com.sun.media.imageio.plugins.pnm</package>
@@ -271,6 +320,7 @@
                 <package>com.sun.xml.txw2</package>
                 <package>com.sun.xml.txw2.annotation</package>
                 <package>com.sun.xml.txw2.output</package>
+                <package>com.vdurmont.emoji</package>
                 <package>com.xhaus.modjy</package>
                 <package>com.zaxxer.sparsebits</package>
                 <package>com.zebraimaging</package>
@@ -297,6 +347,10 @@
                 <package>de.fhpotsdam.unfolding.ui</package>
                 <package>de.fhpotsdam.unfolding.utils</package>
                 <package>de.fhpotsdam.utils</package>
+                <package>dumonts.hunspell</package>
+                <package>dumonts.hunspell.bindings</package>
+                <package>gnu.trove</package>
+                <package>gnu.trove.decorator</package>
                 <package>gov.nasa.worldwind</package>
                 <package>gov.nasa.worldwind.animation</package>
                 <package>gov.nasa.worldwind.avlist</package>
@@ -393,6 +447,144 @@
                 <package>io.airlift.compress.lzo</package>
                 <package>io.airlift.compress.snappy</package>
                 <package>io.airlift.compress.zstd</package>
+                <package>io.github.resilience4j.circuitbreaker</package>
+                <package>io.github.resilience4j.circuitbreaker.event</package>
+                <package>io.github.resilience4j.circuitbreaker.internal</package>
+                <package>io.github.resilience4j.circuitbreaker.utils</package>
+                <package>io.github.resilience4j.core</package>
+                <package>io.github.resilience4j.core.exception</package>
+                <package>io.github.resilience4j.core.functions</package>
+                <package>io.github.resilience4j.core.lang</package>
+                <package>io.github.resilience4j.core.metrics</package>
+                <package>io.github.resilience4j.core.predicate</package>
+                <package>io.github.resilience4j.core.registry</package>
+                <package>io.github.resilience4j.micrometer</package>
+                <package>io.github.resilience4j.micrometer.tagged</package>
+                <package>io.grpc</package>
+                <package>io.grpc.inprocess</package>
+                <package>io.grpc.internal</package>
+                <package>io.grpc.netty.shaded.io.grpc.netty</package>
+                <package>io.grpc.netty.shaded.io.netty.bootstrap</package>
+                <package>io.grpc.netty.shaded.io.netty.buffer</package>
+                <package>io.grpc.netty.shaded.io.netty.buffer.search</package>
+                <package>io.grpc.netty.shaded.io.netty.channel</package>
+                <package>io.grpc.netty.shaded.io.netty.channel.embedded</package>
+                <package>io.grpc.netty.shaded.io.netty.channel.epoll</package>
+                <package>io.grpc.netty.shaded.io.netty.channel.group</package>
+                <package>io.grpc.netty.shaded.io.netty.channel.internal</package>
+                <package>io.grpc.netty.shaded.io.netty.channel.local</package>
+                <package>io.grpc.netty.shaded.io.netty.channel.nio</package>
+                <package>io.grpc.netty.shaded.io.netty.channel.oio</package>
+                <package>io.grpc.netty.shaded.io.netty.channel.pool</package>
+                <package>io.grpc.netty.shaded.io.netty.channel.socket</package>
+                <package>io.grpc.netty.shaded.io.netty.channel.socket.nio</package>
+                <package>io.grpc.netty.shaded.io.netty.channel.socket.oio</package>
+                <package>io.grpc.netty.shaded.io.netty.channel.unix</package>
+                <package>io.grpc.netty.shaded.io.netty.handler.address</package>
+                <package>io.grpc.netty.shaded.io.netty.handler.codec</package>
+                <package>io.grpc.netty.shaded.io.netty.handler.codec.base64</package>
+                <package>io.grpc.netty.shaded.io.netty.handler.codec.bytes</package>
+                <package>io.grpc.netty.shaded.io.netty.handler.codec.compression</package>
+                <package>io.grpc.netty.shaded.io.netty.handler.codec.http</package>
+                <package>io.grpc.netty.shaded.io.netty.handler.codec.http.cookie</package>
+                <package>io.grpc.netty.shaded.io.netty.handler.codec.http.cors</package>
+                <package>io.grpc.netty.shaded.io.netty.handler.codec.http.multipart</package>
+                <package>io.grpc.netty.shaded.io.netty.handler.codec.http.websocketx</package>
+                <package>io.grpc.netty.shaded.io.netty.handler.codec.http.websocketx.extensions</package>
+                <package>io.grpc.netty.shaded.io.netty.handler.codec.http.websocketx.extensions.compression</package>
+                <package>io.grpc.netty.shaded.io.netty.handler.codec.http2</package>
+                <package>io.grpc.netty.shaded.io.netty.handler.codec.json</package>
+                <package>io.grpc.netty.shaded.io.netty.handler.codec.marshalling</package>
+                <package>io.grpc.netty.shaded.io.netty.handler.codec.protobuf</package>
+                <package>io.grpc.netty.shaded.io.netty.handler.codec.rtsp</package>
+                <package>io.grpc.netty.shaded.io.netty.handler.codec.serialization</package>
+                <package>io.grpc.netty.shaded.io.netty.handler.codec.socks</package>
+                <package>io.grpc.netty.shaded.io.netty.handler.codec.socksx</package>
+                <package>io.grpc.netty.shaded.io.netty.handler.codec.socksx.v4</package>
+                <package>io.grpc.netty.shaded.io.netty.handler.codec.socksx.v5</package>
+                <package>io.grpc.netty.shaded.io.netty.handler.codec.spdy</package>
+                <package>io.grpc.netty.shaded.io.netty.handler.codec.string</package>
+                <package>io.grpc.netty.shaded.io.netty.handler.codec.xml</package>
+                <package>io.grpc.netty.shaded.io.netty.handler.flow</package>
+                <package>io.grpc.netty.shaded.io.netty.handler.flush</package>
+                <package>io.grpc.netty.shaded.io.netty.handler.ipfilter</package>
+                <package>io.grpc.netty.shaded.io.netty.handler.logging</package>
+                <package>io.grpc.netty.shaded.io.netty.handler.pcap</package>
+                <package>io.grpc.netty.shaded.io.netty.handler.proxy</package>
+                <package>io.grpc.netty.shaded.io.netty.handler.ssl</package>
+                <package>io.grpc.netty.shaded.io.netty.handler.ssl.ocsp</package>
+                <package>io.grpc.netty.shaded.io.netty.handler.ssl.util</package>
+                <package>io.grpc.netty.shaded.io.netty.handler.stream</package>
+                <package>io.grpc.netty.shaded.io.netty.handler.timeout</package>
+                <package>io.grpc.netty.shaded.io.netty.handler.traffic</package>
+                <package>io.grpc.netty.shaded.io.netty.internal.tcnative</package>
+                <package>io.grpc.netty.shaded.io.netty.resolver</package>
+                <package>io.grpc.netty.shaded.io.netty.util</package>
+                <package>io.grpc.netty.shaded.io.netty.util.collection</package>
+                <package>io.grpc.netty.shaded.io.netty.util.concurrent</package>
+                <package>io.grpc.netty.shaded.io.netty.util.internal</package>
+                <package>io.grpc.netty.shaded.io.netty.util.internal.logging</package>
+                <package>io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.queues</package>
+                <package>io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.queues.atomic</package>
+                <package>io.grpc.netty.shaded.io.netty.util.internal.shaded.org.jctools.util</package>
+                <package>io.grpc.netty.shaded.io.netty.util.internal.svm</package>
+                <package>io.grpc.protobuf</package>
+                <package>io.grpc.protobuf.lite</package>
+                <package>io.grpc.stub</package>
+                <package>io.grpc.stub.annotations</package>
+                <package>io.grpc.util</package>
+                <package>io.micrometer.core.annotation</package>
+                <package>io.micrometer.core.aop</package>
+                <package>io.micrometer.core.instrument</package>
+                <package>io.micrometer.core.instrument.binder</package>
+                <package>io.micrometer.core.instrument.binder.cache</package>
+                <package>io.micrometer.core.instrument.binder.commonspool2</package>
+                <package>io.micrometer.core.instrument.binder.db</package>
+                <package>io.micrometer.core.instrument.binder.grpc</package>
+                <package>io.micrometer.core.instrument.binder.http</package>
+                <package>io.micrometer.core.instrument.binder.httpcomponents</package>
+                <package>io.micrometer.core.instrument.binder.hystrix</package>
+                <package>io.micrometer.core.instrument.binder.jetty</package>
+                <package>io.micrometer.core.instrument.binder.jpa</package>
+                <package>io.micrometer.core.instrument.binder.jvm</package>
+                <package>io.micrometer.core.instrument.binder.kafka</package>
+                <package>io.micrometer.core.instrument.binder.logging</package>
+                <package>io.micrometer.core.instrument.binder.mongodb</package>
+                <package>io.micrometer.core.instrument.binder.okhttp3</package>
+                <package>io.micrometer.core.instrument.binder.system</package>
+                <package>io.micrometer.core.instrument.binder.tomcat</package>
+                <package>io.micrometer.core.instrument.composite</package>
+                <package>io.micrometer.core.instrument.config</package>
+                <package>io.micrometer.core.instrument.config.validate</package>
+                <package>io.micrometer.core.instrument.cumulative</package>
+                <package>io.micrometer.core.instrument.distribution</package>
+                <package>io.micrometer.core.instrument.distribution.pause</package>
+                <package>io.micrometer.core.instrument.dropwizard</package>
+                <package>io.micrometer.core.instrument.internal</package>
+                <package>io.micrometer.core.instrument.logging</package>
+                <package>io.micrometer.core.instrument.noop</package>
+                <package>io.micrometer.core.instrument.push</package>
+                <package>io.micrometer.core.instrument.search</package>
+                <package>io.micrometer.core.instrument.simple</package>
+                <package>io.micrometer.core.instrument.step</package>
+                <package>io.micrometer.core.instrument.util</package>
+                <package>io.micrometer.core.ipc.http</package>
+                <package>io.micrometer.core.lang</package>
+                <package>io.micrometer.core.util.internal.logging</package>
+                <package>io.micrometer.prometheus</package>
+                <package>io.perfmark</package>
+                <package>io.prometheus.client</package>
+                <package>io.prometheus.client.exemplars</package>
+                <package>io.prometheus.client.exemplars.tracer.common</package>
+                <package>io.prometheus.client.exemplars.tracer.otel</package>
+                <package>io.prometheus.client.exemplars.tracer.otel_agent</package>
+                <package>io.prometheus.client.exporter.common</package>
+                <package>io.prometheus.client.guava.cache</package>
+                <package>io.vavr</package>
+                <package>io.vavr.collection</package>
+                <package>io.vavr.concurrent</package>
+                <package>io.vavr.control</package>
+                <package>io.vavr.match.annotation</package>
                 <package>it.geosolutions.imageio.core</package>
                 <package>it.geosolutions.imageio.imageioimpl</package>
                 <package>it.geosolutions.imageio.maskband</package>
@@ -579,7 +771,6 @@
                 <package>jnr.posix.util</package>
                 <package>jnr.posix.windows</package>
                 <package>jogamp.common</package>
-                <package>jogamp.common.av</package>
                 <package>jogamp.common.jvm</package>
                 <package>jogamp.common.os</package>
                 <package>jogamp.common.os.elf</package>
@@ -590,25 +781,16 @@
                 <package>jogamp.graph.curve.tess</package>
                 <package>jogamp.graph.font</package>
                 <package>jogamp.graph.font.typecast</package>
-                <package>jogamp.graph.font.typecast.cff</package>
                 <package>jogamp.graph.font.typecast.ot</package>
                 <package>jogamp.graph.font.typecast.ot.mac</package>
                 <package>jogamp.graph.font.typecast.ot.table</package>
                 <package>jogamp.graph.font.typecast.t2</package>
                 <package>jogamp.graph.font.typecast.tt.engine</package>
                 <package>jogamp.graph.geom.plane</package>
-                <package>jogamp.graph.ui</package>
-                <package>jogamp.graph.ui.shapes</package>
                 <package>jogamp.nativetag.common.linux.amd64</package>
                 <package>jogamp.nativetag.common.macosx.universal</package>
                 <package>jogamp.nativetag.common.windows.amd64</package>
-                <package>jogamp.nativetag.nativewindow.linux.amd64</package>
-                <package>jogamp.nativetag.nativewindow.macosx.universal</package>
-                <package>jogamp.nativetag.nativewindow.windows.amd64</package>
                 <package>jogamp.nativetag.nativewindow.windows.i586</package>
-                <package>jogamp.nativetag.newt.linux.amd64</package>
-                <package>jogamp.nativetag.newt.macosx.universal</package>
-                <package>jogamp.nativetag.newt.windows.amd64</package>
                 <package>jogamp.nativetag.newt.windows.i586</package>
                 <package>jogamp.nativetag.opencl.linux.amd64</package>
                 <package>jogamp.nativetag.opencl.macosx.universal</package>
@@ -680,6 +862,15 @@
                 <package>junit.framework</package>
                 <package>junit.runner</package>
                 <package>junit.textui</package>
+                <package>morfologik.fsa</package>
+                <package>morfologik.fsa.builders</package>
+                <package>morfologik.speller</package>
+                <package>morfologik.stemming</package>
+                <package>net.arnx.jsonic</package>
+                <package>net.arnx.jsonic.io</package>
+                <package>net.arnx.jsonic.util</package>
+                <package>net.arnx.jsonic.web</package>
+                <package>net.arnx.jsonic.web.extension</package>
                 <package>net.bytebuddy</package>
                 <package>net.bytebuddy.agent</package>
                 <package>net.bytebuddy.agent.builder</package>
@@ -720,6 +911,12 @@
                 <package>net.bytebuddy.utility.nullability</package>
                 <package>net.bytebuddy.utility.privilege</package>
                 <package>net.bytebuddy.utility.visitor</package>
+                <package>net.loomchild.segment</package>
+                <package>net.loomchild.segment.srx</package>
+                <package>net.loomchild.segment.srx.io</package>
+                <package>net.loomchild.segment.srx.io.bind</package>
+                <package>net.loomchild.segment.srx.legacy</package>
+                <package>net.loomchild.segment.util</package>
                 <package>net.opengis.fes20</package>
                 <package>net.opengis.fes20.impl</package>
                 <package>net.opengis.fes20.util</package>
@@ -747,6 +944,80 @@
                 <package>nl.jqno.equalsverifier.internal.reflection.annotations</package>
                 <package>nl.jqno.equalsverifier.internal.testhelpers</package>
                 <package>nl.jqno.equalsverifier.internal.util</package>
+                <package>opennlp.tools.chunker</package>
+                <package>opennlp.tools.cmdline</package>
+                <package>opennlp.tools.cmdline.chunker</package>
+                <package>opennlp.tools.cmdline.dictionary</package>
+                <package>opennlp.tools.cmdline.doccat</package>
+                <package>opennlp.tools.cmdline.entitylinker</package>
+                <package>opennlp.tools.cmdline.langdetect</package>
+                <package>opennlp.tools.cmdline.languagemodel</package>
+                <package>opennlp.tools.cmdline.lemmatizer</package>
+                <package>opennlp.tools.cmdline.namefind</package>
+                <package>opennlp.tools.cmdline.params</package>
+                <package>opennlp.tools.cmdline.parser</package>
+                <package>opennlp.tools.cmdline.postag</package>
+                <package>opennlp.tools.cmdline.sentdetect</package>
+                <package>opennlp.tools.cmdline.tokenizer</package>
+                <package>opennlp.tools.dictionary</package>
+                <package>opennlp.tools.dictionary.serializer</package>
+                <package>opennlp.tools.doccat</package>
+                <package>opennlp.tools.entitylinker</package>
+                <package>opennlp.tools.formats</package>
+                <package>opennlp.tools.formats.ad</package>
+                <package>opennlp.tools.formats.brat</package>
+                <package>opennlp.tools.formats.conllu</package>
+                <package>opennlp.tools.formats.convert</package>
+                <package>opennlp.tools.formats.frenchtreebank</package>
+                <package>opennlp.tools.formats.irishsentencebank</package>
+                <package>opennlp.tools.formats.leipzig</package>
+                <package>opennlp.tools.formats.letsmt</package>
+                <package>opennlp.tools.formats.moses</package>
+                <package>opennlp.tools.formats.muc</package>
+                <package>opennlp.tools.formats.nkjp</package>
+                <package>opennlp.tools.formats.ontonotes</package>
+                <package>opennlp.tools.langdetect</package>
+                <package>opennlp.tools.languagemodel</package>
+                <package>opennlp.tools.lemmatizer</package>
+                <package>opennlp.tools.ml</package>
+                <package>opennlp.tools.ml.maxent</package>
+                <package>opennlp.tools.ml.maxent.io</package>
+                <package>opennlp.tools.ml.maxent.quasinewton</package>
+                <package>opennlp.tools.ml.model</package>
+                <package>opennlp.tools.ml.naivebayes</package>
+                <package>opennlp.tools.ml.perceptron</package>
+                <package>opennlp.tools.namefind</package>
+                <package>opennlp.tools.ngram</package>
+                <package>opennlp.tools.parser</package>
+                <package>opennlp.tools.parser.chunking</package>
+                <package>opennlp.tools.parser.lang.en</package>
+                <package>opennlp.tools.parser.lang.es</package>
+                <package>opennlp.tools.parser.treeinsert</package>
+                <package>opennlp.tools.postag</package>
+                <package>opennlp.tools.sentdetect</package>
+                <package>opennlp.tools.sentdetect.lang</package>
+                <package>opennlp.tools.sentdetect.lang.th</package>
+                <package>opennlp.tools.stemmer</package>
+                <package>opennlp.tools.stemmer.snowball</package>
+                <package>opennlp.tools.tokenize</package>
+                <package>opennlp.tools.tokenize.lang</package>
+                <package>opennlp.tools.tokenize.lang.en</package>
+                <package>opennlp.tools.util</package>
+                <package>opennlp.tools.util.eval</package>
+                <package>opennlp.tools.util.ext</package>
+                <package>opennlp.tools.util.featuregen</package>
+                <package>opennlp.tools.util.java</package>
+                <package>opennlp.tools.util.model</package>
+                <package>opennlp.tools.util.normalizer</package>
+                <package>opennlp.tools.util.wordvector</package>
+                <package>org.HdrHistogram</package>
+                <package>org.HdrHistogram.packedarray</package>
+                <package>org.LatencyUtils</package>
+                <package>org.apache.commons.beanutils</package>
+                <package>org.apache.commons.beanutils.converters</package>
+                <package>org.apache.commons.beanutils.expression</package>
+                <package>org.apache.commons.beanutils.locale</package>
+                <package>org.apache.commons.beanutils.locale.converters</package>
                 <package>org.apache.commons.codec</package>
                 <package>org.apache.commons.codec.binary</package>
                 <package>org.apache.commons.codec.cli</package>
@@ -814,6 +1085,20 @@
                 <package>org.apache.commons.dbcp.cpdsadapter</package>
                 <package>org.apache.commons.dbcp.datasources</package>
                 <package>org.apache.commons.dbcp.managed</package>
+                <package>org.apache.commons.digester</package>
+                <package>org.apache.commons.digester.annotations</package>
+                <package>org.apache.commons.digester.annotations.handlers</package>
+                <package>org.apache.commons.digester.annotations.internal</package>
+                <package>org.apache.commons.digester.annotations.providers</package>
+                <package>org.apache.commons.digester.annotations.reflect</package>
+                <package>org.apache.commons.digester.annotations.rules</package>
+                <package>org.apache.commons.digester.annotations.spi</package>
+                <package>org.apache.commons.digester.annotations.utils</package>
+                <package>org.apache.commons.digester.parser</package>
+                <package>org.apache.commons.digester.plugins</package>
+                <package>org.apache.commons.digester.plugins.strategies</package>
+                <package>org.apache.commons.digester.substitution</package>
+                <package>org.apache.commons.digester.xmlrules</package>
                 <package>org.apache.commons.io</package>
                 <package>org.apache.commons.io.build</package>
                 <package>org.apache.commons.io.channels</package>
@@ -864,6 +1149,8 @@
                 <package>org.apache.commons.lang3.time</package>
                 <package>org.apache.commons.lang3.tuple</package>
                 <package>org.apache.commons.lang3.util</package>
+                <package>org.apache.commons.logging</package>
+                <package>org.apache.commons.logging.impl</package>
                 <package>org.apache.commons.math3</package>
                 <package>org.apache.commons.math3.analysis</package>
                 <package>org.apache.commons.math3.analysis.differentiation</package>
@@ -941,6 +1228,9 @@
                 <package>org.apache.commons.math3.util</package>
                 <package>org.apache.commons.pool</package>
                 <package>org.apache.commons.pool.impl</package>
+                <package>org.apache.commons.pool2</package>
+                <package>org.apache.commons.pool2.impl</package>
+                <package>org.apache.commons.pool2.proxy</package>
                 <package>org.apache.commons.text</package>
                 <package>org.apache.commons.text.diff</package>
                 <package>org.apache.commons.text.io</package>
@@ -949,6 +1239,10 @@
                 <package>org.apache.commons.text.numbers</package>
                 <package>org.apache.commons.text.similarity</package>
                 <package>org.apache.commons.text.translate</package>
+                <package>org.apache.commons.validator</package>
+                <package>org.apache.commons.validator.routines</package>
+                <package>org.apache.commons.validator.routines.checkdigit</package>
+                <package>org.apache.commons.validator.util</package>
                 <package>org.apache.log4j</package>
                 <package>org.apache.log4j.chainsaw</package>
                 <package>org.apache.log4j.config</package>
@@ -977,6 +1271,34 @@
                 <package>org.apache.logging.log4j.spi</package>
                 <package>org.apache.logging.log4j.status</package>
                 <package>org.apache.logging.log4j.util</package>
+                <package>org.apache.lucene</package>
+                <package>org.apache.lucene.analysis</package>
+                <package>org.apache.lucene.analysis.tokenattributes</package>
+                <package>org.apache.lucene.codecs</package>
+                <package>org.apache.lucene.codecs.blocktree</package>
+                <package>org.apache.lucene.codecs.compressing</package>
+                <package>org.apache.lucene.codecs.lucene40</package>
+                <package>org.apache.lucene.codecs.lucene41</package>
+                <package>org.apache.lucene.codecs.lucene410</package>
+                <package>org.apache.lucene.codecs.lucene42</package>
+                <package>org.apache.lucene.codecs.lucene45</package>
+                <package>org.apache.lucene.codecs.lucene46</package>
+                <package>org.apache.lucene.codecs.lucene49</package>
+                <package>org.apache.lucene.codecs.lucene50</package>
+                <package>org.apache.lucene.codecs.lucene53</package>
+                <package>org.apache.lucene.codecs.lucene54</package>
+                <package>org.apache.lucene.codecs.perfield</package>
+                <package>org.apache.lucene.document</package>
+                <package>org.apache.lucene.index</package>
+                <package>org.apache.lucene.search</package>
+                <package>org.apache.lucene.search.similarities</package>
+                <package>org.apache.lucene.search.spans</package>
+                <package>org.apache.lucene.store</package>
+                <package>org.apache.lucene.util</package>
+                <package>org.apache.lucene.util.automaton</package>
+                <package>org.apache.lucene.util.fst</package>
+                <package>org.apache.lucene.util.mutable</package>
+                <package>org.apache.lucene.util.packed</package>
                 <package>org.apache.poi</package>
                 <package>org.apache.poi.common</package>
                 <package>org.apache.poi.common.usermodel</package>
@@ -1164,22 +1486,28 @@
                 <package>org.checkerframework.checker.calledmethods.qual</package>
                 <package>org.checkerframework.checker.compilermsgs.qual</package>
                 <package>org.checkerframework.checker.fenum.qual</package>
+                <package>org.checkerframework.checker.formatter</package>
                 <package>org.checkerframework.checker.formatter.qual</package>
                 <package>org.checkerframework.checker.guieffect.qual</package>
                 <package>org.checkerframework.checker.i18n.qual</package>
+                <package>org.checkerframework.checker.i18nformatter</package>
                 <package>org.checkerframework.checker.i18nformatter.qual</package>
                 <package>org.checkerframework.checker.index.qual</package>
                 <package>org.checkerframework.checker.initialization.qual</package>
                 <package>org.checkerframework.checker.interning.qual</package>
                 <package>org.checkerframework.checker.lock.qual</package>
                 <package>org.checkerframework.checker.mustcall.qual</package>
+                <package>org.checkerframework.checker.nullness</package>
                 <package>org.checkerframework.checker.nullness.qual</package>
                 <package>org.checkerframework.checker.optional.qual</package>
                 <package>org.checkerframework.checker.propkey.qual</package>
+                <package>org.checkerframework.checker.regex</package>
                 <package>org.checkerframework.checker.regex.qual</package>
                 <package>org.checkerframework.checker.signature.qual</package>
+                <package>org.checkerframework.checker.signedness</package>
                 <package>org.checkerframework.checker.signedness.qual</package>
                 <package>org.checkerframework.checker.tainting.qual</package>
+                <package>org.checkerframework.checker.units</package>
                 <package>org.checkerframework.checker.units.qual</package>
                 <package>org.checkerframework.common.aliasing.qual</package>
                 <package>org.checkerframework.common.initializedfields.qual</package>
@@ -1190,6 +1518,7 @@
                 <package>org.checkerframework.common.value.qual</package>
                 <package>org.checkerframework.dataflow.qual</package>
                 <package>org.checkerframework.framework.qual</package>
+                <package>org.checkerframework.framework.util</package>
                 <package>org.codehaus.jackson</package>
                 <package>org.codehaus.jackson.annotate</package>
                 <package>org.codehaus.jackson.impl</package>
@@ -1573,6 +1902,7 @@
                 <package>org.hsqldb.types</package>
                 <package>org.hsqldb.util</package>
                 <package>org.huldra.math</package>
+                <package>org.intellij.lang.annotations</package>
                 <package>org.jaitools</package>
                 <package>org.jaitools.imageutils</package>
                 <package>org.jaitools.imageutils.iterator</package>
@@ -1629,6 +1959,7 @@
                 <package>org.jdesktop.swingx.tree</package>
                 <package>org.jdesktop.swingx.treetable</package>
                 <package>org.jdesktop.swingx.util</package>
+                <package>org.jetbrains.annotations</package>
                 <package>org.json</package>
                 <package>org.json.simple</package>
                 <package>org.json.simple.parser</package>
@@ -1666,6 +1997,45 @@
                 <package>org.jvnet.fastinfoset.stax</package>
                 <package>org.jvnet.staxex</package>
                 <package>org.jvnet.staxex.util</package>
+                <package>org.languagetool</package>
+                <package>org.languagetool.bitext</package>
+                <package>org.languagetool.broker</package>
+                <package>org.languagetool.chunking</package>
+                <package>org.languagetool.language</package>
+                <package>org.languagetool.language.identifier</package>
+                <package>org.languagetool.language.identifier.detector</package>
+                <package>org.languagetool.languagemodel</package>
+                <package>org.languagetool.languagemodel.bert</package>
+                <package>org.languagetool.languagemodel.bert.grpc</package>
+                <package>org.languagetool.markup</package>
+                <package>org.languagetool.noop</package>
+                <package>org.languagetool.rules</package>
+                <package>org.languagetool.rules.bitext</package>
+                <package>org.languagetool.rules.en</package>
+                <package>org.languagetool.rules.en.translation</package>
+                <package>org.languagetool.rules.ml</package>
+                <package>org.languagetool.rules.ngrams</package>
+                <package>org.languagetool.rules.patterns</package>
+                <package>org.languagetool.rules.patterns.bitext</package>
+                <package>org.languagetool.rules.spelling</package>
+                <package>org.languagetool.rules.spelling.hunspell</package>
+                <package>org.languagetool.rules.spelling.morfologik</package>
+                <package>org.languagetool.rules.spelling.morfologik.suggestions_ordering</package>
+                <package>org.languagetool.rules.spelling.suggestions</package>
+                <package>org.languagetool.rules.spelling.symspell.implementation</package>
+                <package>org.languagetool.rules.translation</package>
+                <package>org.languagetool.synthesis</package>
+                <package>org.languagetool.synthesis.en</package>
+                <package>org.languagetool.tagging</package>
+                <package>org.languagetool.tagging.disambiguation</package>
+                <package>org.languagetool.tagging.disambiguation.rules</package>
+                <package>org.languagetool.tagging.disambiguation.xx</package>
+                <package>org.languagetool.tagging.en</package>
+                <package>org.languagetool.tagging.ner</package>
+                <package>org.languagetool.tagging.xx</package>
+                <package>org.languagetool.tokenizers</package>
+                <package>org.languagetool.tokenizers.en</package>
+                <package>org.languagetool.tools</package>
                 <package>org.locationtech.jts</package>
                 <package>org.locationtech.jts.algorithm</package>
                 <package>org.locationtech.jts.algorithm.construct</package>
@@ -2408,14 +2778,19 @@
                 <package>systems.uom.common</package>
                 <package>systems.uom.common.ancient</package>
                 <package>systems.uom.common.spi</package>
+                <package>tec.uom.lib.common</package>
+                <package>tec.uom.lib.common.function</package>
+                <package>tec.uom.lib.common.util</package>
                 <package>tech.units.indriya</package>
                 <package>tech.units.indriya.format</package>
                 <package>tech.units.indriya.function</package>
+                <package>tech.units.indriya.internal</package>
                 <package>tech.units.indriya.internal.format</package>
                 <package>tech.units.indriya.internal.format.l10n</package>
                 <package>tech.units.indriya.internal.function.calc</package>
                 <package>tech.units.indriya.internal.function.radix</package>
                 <package>tech.units.indriya.internal.function.simplify</package>
+                <package>tech.units.indriya.internal.simplify</package>
                 <package>tech.units.indriya.quantity</package>
                 <package>tech.units.indriya.quantity.time</package>
                 <package>tech.units.indriya.spi</package>
@@ -2423,6 +2798,10 @@
                 <package>tech.uom.lib.common.function</package>
                 <package>tech.uom.lib.common.util</package>
             </public-packages>
+            <class-path-extension>
+                <runtime-relative-path>ext/FastInfoset-1.2.13.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/FastInfoset-1.2.13.jar</binary-origin>
+            </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/FastInfoset-1.2.15.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/FastInfoset-1.2.15.jar</binary-origin>
@@ -2432,12 +2811,36 @@
                 <binary-origin>release/modules/ext/GeographicLib-Java-1.49.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/HdrHistogram-2.1.12.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/HdrHistogram-2.1.12.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/LatencyUtils-2.0.3.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/LatencyUtils-2.0.3.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/SparseBitSet-1.3.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/SparseBitSet-1.3.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/aho-corasick-double-array-trie-1.2.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/aho-corasick-double-array-trie-1.2.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/aircompressor-0.20.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/aircompressor-0.20.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/annotations-12.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/annotations-12.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/annotations-20.1.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/annotations-20.1.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/annotations-4.1.1.4.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/annotations-4.1.1.4.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/asm-7.3.1.jar</runtime-relative-path>
@@ -2480,6 +2883,14 @@
                 <binary-origin>release/modules/ext/checker-qual-3.41.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/checker-qual-3.5.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/checker-qual-3.5.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/commons-beanutils-1.9.4.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/commons-beanutils-1.9.4.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/commons-codec-1.16.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/commons-codec-1.16.0.jar</binary-origin>
             </class-path-extension>
@@ -2500,6 +2911,10 @@
                 <binary-origin>release/modules/ext/commons-dbcp-1.4.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/commons-digester-2.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/commons-digester-2.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/commons-io-2.15.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/commons-io-2.15.0.jar</binary-origin>
             </class-path-extension>
@@ -2508,8 +2923,16 @@
                 <binary-origin>release/modules/ext/commons-jxpath-1.3.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/commons-lang3-3.12.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/commons-lang3-3.12.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/commons-lang3-3.14.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/commons-lang3-3.14.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/commons-logging-1.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/commons-logging-1.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/commons-math3-3.6.1.jar</runtime-relative-path>
@@ -2520,8 +2943,20 @@
                 <binary-origin>release/modules/ext/commons-pool-1.5.4.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/commons-pool2-2.11.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/commons-pool2-2.11.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/commons-text-1.10.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/commons-text-1.10.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/commons-text-1.11.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/commons-text-1.11.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/commons-validator-1.7.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/commons-validator-1.7.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/controlsfx-11.1.2.jar</runtime-relative-path>
@@ -2572,12 +3007,24 @@
                 <binary-origin>release/modules/ext/ejml-zdense-0.43.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/emoji-java-5.1.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/emoji-java-5.1.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/equalsverifier-3.15.7.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/equalsverifier-3.15.7.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/error_prone_annotations-2.14.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/error_prone_annotations-2.14.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/error_prone_annotations-2.23.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/error_prone_annotations-2.23.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/failureaccess-1.0.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/failureaccess-1.0.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/failureaccess-1.0.2.jar</runtime-relative-path>
@@ -2606,6 +3053,38 @@
             <class-path-extension>
                 <runtime-relative-path>ext/gluegen-rt.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/gluegen-rt.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/grpc-api-1.50.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/grpc-api-1.50.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/grpc-context-1.50.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/grpc-context-1.50.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/grpc-core-1.50.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/grpc-core-1.50.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/grpc-netty-shaded-1.50.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/grpc-netty-shaded-1.50.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/grpc-protobuf-1.50.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/grpc-protobuf-1.50.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/grpc-protobuf-lite-1.50.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/grpc-protobuf-lite-1.50.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/grpc-stub-1.50.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/grpc-stub-1.50.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/gson-2.9.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/gson-2.9.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/gt-coverage-26.4.jar</runtime-relative-path>
@@ -2688,6 +3167,10 @@
                 <binary-origin>release/modules/ext/gt-xsd-ows-26.4.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/guava-30.1-jre.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/guava-30.1-jre.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/guava-33.0.0-jre.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/guava-33.0.0-jre.jar</binary-origin>
             </class-path-extension>
@@ -2700,8 +3183,16 @@
                 <binary-origin>release/modules/ext/hamcrest-core-1.3.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/hppc-0.8.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/hppc-0.8.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/hsqldb-2.4.1.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/hsqldb-2.4.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/hunspell-2.1.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/hunspell-2.1.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/imageio-ext-geocore-1.3.12.jar</runtime-relative-path>
@@ -2720,24 +3211,48 @@
                 <binary-origin>release/modules/ext/imageio-ext-utilities-1.3.12.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/indriya-1.3.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/indriya-1.3.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/indriya-2.0.2.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/indriya-2.0.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/istack-commons-runtime-3.0.5.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/istack-commons-runtime-3.0.5.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/istack-commons-runtime-3.0.7.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/istack-commons-runtime-3.0.7.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/j2objc-annotations-1.3.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/j2objc-annotations-1.3.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/j2objc-annotations-2.8.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/j2objc-annotations-2.8.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jackson-annotations-2.13.4.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jackson-annotations-2.13.4.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jackson-annotations-2.16.1.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/jackson-annotations-2.16.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/jackson-core-2.13.4.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jackson-core-2.13.4.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/jackson-core-2.16.1.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/jackson-core-2.16.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jackson-databind-2.13.4.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jackson-databind-2.13.4.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jackson-databind-2.16.1.jar</runtime-relative-path>
@@ -2760,12 +3275,28 @@
                 <binary-origin>release/modules/ext/javax.activation-api-1.2.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/javax.annotation-api-1.3.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/javax.annotation-api-1.3.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/javax.inject-1.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/javax.inject-1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/jaxb-api-2.3.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jaxb-api-2.3.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/jaxb-api-2.4.0-b180830.0359.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/jaxb-api-2.4.0-b180830.0359.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jaxb-core-2.3.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jaxb-core-2.3.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jaxb-runtime-2.3.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jaxb-runtime-2.3.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jaxb-runtime-2.4.0-b180830.0438.jar</runtime-relative-path>
@@ -2804,6 +3335,14 @@
                 <binary-origin>release/modules/ext/jgridshift-core-1.3.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/jna-5.12.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jna-5.12.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jna-platform-5.12.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jna-platform-5.12.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/jocl-natives-linux-amd64.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/jocl-natives-linux-amd64.jar</binary-origin>
             </class-path-extension>
@@ -2836,12 +3375,20 @@
                 <binary-origin>release/modules/ext/jogl-all.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/json-20220924.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/json-20220924.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/json-20240205.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/json-20240205.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/json-simple-1.1.1.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/json-simple-1.1.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jsonic-1.2.11.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jsonic-1.2.11.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jsr305-3.0.2.jar</runtime-relative-path>
@@ -2996,6 +3543,18 @@
                 <binary-origin>release/modules/ext/jython-standalone-2.7.3.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/language-detector-0.6.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/language-detector-0.6.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/language-en-6.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/language-en-6.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/languagetool-core-6.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/languagetool-core-6.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar</binary-origin>
             </class-path-extension>
@@ -3008,12 +3567,44 @@
                 <binary-origin>release/modules/ext/log4j-api-2.21.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/lucene-backward-codecs-5.5.5.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lucene-backward-codecs-5.5.5.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lucene-core-5.5.5.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lucene-core-5.5.5.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/micrometer-core-1.7.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/micrometer-core-1.7.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/micrometer-registry-prometheus-1.7.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/micrometer-registry-prometheus-1.7.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/mockito-core-5.2.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/mockito-core-5.2.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/mockito-inline-5.2.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/mockito-inline-5.2.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/morfologik-fsa-2.1.9.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/morfologik-fsa-2.1.9.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/morfologik-fsa-builders-2.1.9.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/morfologik-fsa-builders-2.1.9.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/morfologik-speller-2.1.9.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/morfologik-speller-2.1.9.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/morfologik-stemming-2.1.9.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/morfologik-stemming-2.1.9.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/nashorn-core-15.4.jar</runtime-relative-path>
@@ -3052,6 +3643,22 @@
                 <binary-origin>release/modules/ext/openjfx-monocle-21.0.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/opennlp-chunk-models-1.5.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/opennlp-chunk-models-1.5.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/opennlp-postag-models-1.5.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/opennlp-postag-models-1.5.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/opennlp-tokenize-models-1.5.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/opennlp-tokenize-models-1.5.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/opennlp-tools-1.9.4.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/opennlp-tools-1.9.4.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/org.eclipse.emf.common-2.15.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/org.eclipse.emf.common-2.15.0.jar</binary-origin>
             </class-path-extension>
@@ -3076,6 +3683,10 @@
                 <binary-origin>release/modules/ext/org.w3.xlink-26.4.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/perfmark-api-0.25.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/perfmark-api-0.25.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/picocontainer-1.2.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/picocontainer-1.2.jar</binary-origin>
             </class-path-extension>
@@ -3092,8 +3703,28 @@
                 <binary-origin>release/modules/ext/poi-ooxml-lite-5.2.5.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/proto-google-common-protos-2.9.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/proto-google-common-protos-2.9.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/protobuf-java-3.21.7.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/protobuf-java-3.21.7.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/reactfx-2.0-M5.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/reactfx-2.0-M5.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/resilience4j-circuitbreaker-1.7.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/resilience4j-circuitbreaker-1.7.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/resilience4j-core-1.7.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/resilience4j-core-1.7.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/resilience4j-micrometer-1.7.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/resilience4j-micrometer-1.7.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/richtextfx-0.11.2.jar</runtime-relative-path>
@@ -3104,6 +3735,10 @@
                 <binary-origin>release/modules/ext/rsyntaxtextarea-3.4.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/segment-2.0.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/segment-2.0.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/si-quantity-2.0.1.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/si-quantity-2.0.1.jar</binary-origin>
             </class-path-extension>
@@ -3112,12 +3747,44 @@
                 <binary-origin>release/modules/ext/si-units-2.0.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/simpleclient-0.12.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/simpleclient-0.12.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/simpleclient_common-0.10.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/simpleclient_common-0.10.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/simpleclient_guava-0.12.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/simpleclient_guava-0.12.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/simpleclient_tracer_common-0.12.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/simpleclient_tracer_common-0.12.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/simpleclient_tracer_otel-0.12.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/simpleclient_tracer_otel-0.12.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/simpleclient_tracer_otel_agent-0.12.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/simpleclient_tracer_otel_agent-0.12.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/slf4j-api-1.7.30.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/slf4j-api-1.7.30.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/slf4j-api-2.0.9.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/slf4j-api-2.0.9.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/sqlite-jdbc-3.34.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/sqlite-jdbc-3.34.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/stax-ex-1.7.8.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/stax-ex-1.7.8.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/stax-ex-1.8.jar</runtime-relative-path>
@@ -3140,8 +3807,16 @@
                 <binary-origin>release/modules/ext/testfx-core-4.0.18.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/trove4j-1.0.20200330.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/trove4j-1.0.20200330.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/txtmark-0.13.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/txtmark-0.13.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/txw2-2.3.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/txw2-2.3.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/txw2-2.4.0-b180830.0438.jar</runtime-relative-path>
@@ -3156,12 +3831,28 @@
                 <binary-origin>release/modules/ext/unfolding-master-20171010.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/unit-api-1.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/unit-api-1.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/unit-api-2.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/unit-api-2.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/uom-lib-common-1.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/uom-lib-common-1.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/uom-lib-common-2.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/uom-lib-common-2.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/vavr-0.10.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/vavr-0.10.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/vavr-match-0.10.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/vavr-match-0.10.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/wellbehavedfx-0.3.3.jar</runtime-relative-path>

@@ -142,8 +142,9 @@ public class WebServer {
                 final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
                 final File restFile = new File(userDir, REST_FILE);
                 if (restFile.exists()) {
-                    final boolean restFileIsDeleted = restFile.delete();
-                    if (!restFileIsDeleted) {
+                    try {
+                        Files.delete(Path.of(restFile.getPath()));
+                    } catch (final IOException ex) {
                         //TODO: Handle case where file not successfully deleted
                     }
                 }
@@ -195,7 +196,7 @@ public class WebServer {
                 };
                 server.setRequestLog(requestLog);
 
-                LOGGER.info(String.format("Starting Jetty version %s on%s:%d...", Server.getVersion(), loopback, port));
+                LOGGER.log(Level.INFO, "{0}", String.format("Starting Jetty version %s on%s:%d...", Server.getVersion(), loopback, port));
                 server.start();
 
                 // Wait for the server to stop (if it ever does).
@@ -208,8 +209,9 @@ public class WebServer {
                         throw new RuntimeException(ex);
                     } finally {
                         // Play nice and clean up (if Netbeans lets us).
-                        final boolean restFileIsDeleted = restFile.delete();
-                        if (!restFileIsDeleted) {
+                        try {
+                            Files.delete(Path.of(restFile.getPath()));
+                        } catch (final IOException ex) {
                             //TODO: Handle case where file not successfully deleted
                         }
                     }

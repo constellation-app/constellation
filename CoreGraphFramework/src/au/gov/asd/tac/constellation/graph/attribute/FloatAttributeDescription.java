@@ -62,7 +62,7 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
                 return number.floatValue();
             }       
             case Boolean bool -> {
-                return bool ? 1.0F : 0.0F;
+                return Boolean.TRUE.equals(bool) ? 1.0F : 0.0F;
             }       
             case Character character -> {
                 return character;

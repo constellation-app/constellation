@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -189,8 +191,9 @@ public class ProjectUpdater extends Task {
             }
 
             // Delete the existing old file and replace it with a copy of the current project.xml
-            final boolean oldProjectFileDeleted = oldProjectFile.delete();
-            if (!oldProjectFileDeleted) {
+            try {
+                Files.delete(Path.of(oldProjectFile.getPath()));
+            } catch (final IOException ex) {
                 logMessage("ERROR: The old project.xml file could not be deleted.");
             }
             final boolean projectFileRenamed = projectFile.renameTo(oldProjectFile);
