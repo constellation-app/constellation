@@ -52,6 +52,7 @@ public class StartJupyterNotebookAction implements ActionListener {
 
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String dir = prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT);
+
         try {
             // Start the jupyter-notebook process with its stderr redirected to
             // its stdout, and stdout being fed into an InputOutput window.
