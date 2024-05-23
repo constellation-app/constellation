@@ -60,7 +60,7 @@ public final class ColorIOProviderNGTest {
     final int attributeId = 23;
     final int elementId = 41;
     final String attribValue = "GREY";
-    final String attribValueRGB = "RGB255255255";
+    final String attribValueRGB = "RGB255255204";
     final ConstellationColor redAttribValue = ConstellationColor.getColorValue("Red");
     final ConstellationColor tealAttribValue = ConstellationColor.getColorValue("Teal");
     final GraphAttribute attr = new GraphAttribute(attributeId, GraphElementType.GRAPH, "attrType", "attrName", "attrDesc", null, null);
@@ -205,7 +205,7 @@ public final class ColorIOProviderNGTest {
         Mockito.verify(mockJsonGenerator, times(1)).writeObjectFieldStart(attr.getName());
         Mockito.verify(mockJsonGenerator, times(1)).writeNumberField("red", 1.0f);
         Mockito.verify(mockJsonGenerator, times(1)).writeNumberField("green", 1.0f);
-        Mockito.verify(mockJsonGenerator, times(1)).writeNumberField("blue", 1.0f);
+        Mockito.verify(mockJsonGenerator, times(1)).writeNumberField("blue", 0.8f);
         Mockito.verify(mockJsonGenerator, times(1)).writeNumberField("alpha", 1.0f);
         Mockito.verify(mockJsonGenerator, times(1)).writeEndObject();
     }    
