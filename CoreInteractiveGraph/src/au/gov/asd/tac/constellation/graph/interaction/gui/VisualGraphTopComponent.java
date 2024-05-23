@@ -109,6 +109,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -116,12 +118,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.Icon;
 import javax.swing.InputMap;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
@@ -1031,6 +1035,28 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         public void saveAs(final FileObject folder, String name) throws IOException {
             StatusDisplayer.getDefault().setStatusText("Save as " + folder.getPath() + "(" + name + ")");
 
+            final String ext = FileExtensionConstants.STAR;
+            if (name.endsWith(ext)) {
+                name = name.substring(0, name.length() - ext.length());
+            }
+
+            final File newFile = new File(folder.getPath(), name + ext);
+
+            // One last check if file were saving over doesn't have it's grpah open UNLESS were saving over the file with the same graph
+            final Path currentFilePath = Paths.get(graphNode.getDataObject().getPrimaryFile().getPath());
+
+            // Check if overwriting open graph
+            final Path filePath = Paths.get(newFile.getPath());
+            for (Graph g : GraphNode.getAllGraphs().values()) {
+                final Path graphPath = Paths.get(GraphNode.getGraphNode(g).getDataObject().getPrimaryFile().getPath());
+                if (graphPath.equals(filePath) && !graphPath.equals(currentFilePath)) {
+                    // Send message saying "Sorry, this file is in use"
+                    JOptionPane.showMessageDialog(null,
+                            "The file " + filePath + " is still open in graph view. Please close the graph if you wish to overwrite it", "Error: Graph Still Open in Graph View", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
+
             // The Save As dialog box has already asked if we want to overwrite an existing file,
             // so just go ahead and delete it if it exists.
             final FileObject existing = folder.getFileObject(name);
@@ -1038,12 +1064,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 existing.delete();
             }
 
-            final String ext = FileExtensionConstants.STAR;
-            if (name.endsWith(ext)) {
-                name = name.substring(0, name.length() - ext.length());
-            }
-
-            final File newFile = new File(folder.getPath(), name + ext);
             final FileObject fo = FileUtil.createData(newFile);
             final GraphDataObject freshGdo = (GraphDataObject) DataObject.find(fo);
             final BackgroundWriter writer = new BackgroundWriter(name, freshGdo, false);
