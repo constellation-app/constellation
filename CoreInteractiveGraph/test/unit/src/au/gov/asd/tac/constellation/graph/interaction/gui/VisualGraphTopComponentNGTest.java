@@ -18,18 +18,18 @@ package au.gov.asd.tac.constellation.graph.interaction.gui;
 import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.io.SaveAsAction;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.mockito.MockedConstruction;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertThrows;
-import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -38,20 +38,34 @@ import org.testng.annotations.Test;
  */
 public class VisualGraphTopComponentNGTest {
 
+    private static final Logger LOGGER = Logger.getLogger(VisualGraphTopComponentNGTest.class.getName());
+
     @BeforeClass
     public static void setUpClass() throws Exception {
+        try {
+            if (!FxToolkit.isFXApplicationThreadRunning()) {
+                FxToolkit.registerPrimaryStage();
+            }
+        } catch (Exception e) {
+            System.out.println("\n**** SETUP ERROR: " + e);
+            throw e;
+        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-    }
-
-    @BeforeMethod
-    public void setUpMethod() throws Exception {
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+        } catch (Exception e) {
+            if (e.toString().contains("HeadlessException")) {
+                System.out.println("\n**** EXPECTED TEARDOWN ERROR: " + e.toString());
+            } else {
+                System.out.println("\n**** UN-EXPECTED TEARDOWN ERROR: " + e.toString());
+                throw e;
+            }
+        }
     }
 
 //    /**
@@ -136,10 +150,12 @@ public class VisualGraphTopComponentNGTest {
      */
     @Test
     public void testGraphChanged() {
+        System.setProperty("java.awt.headless", "true");
         System.out.println("graphChanged");
         GraphChangeEvent evt = null;
         VisualGraphTopComponent instance = new VisualGraphTopComponent();
         instance.graphChanged(evt);
+        System.clearProperty("java.awt.headless");
     }
 
 //    /**
@@ -201,6 +217,7 @@ public class VisualGraphTopComponentNGTest {
     @Test
     public void testSaveGraphNotInMemory() throws Exception {
         System.out.println("saveGraph not in memeory");
+        System.setProperty("java.awt.headless", "true");
         final GraphDataObject mockGDO = mock(GraphDataObject.class);
         when(mockGDO.isInMemory()).thenReturn(true);
         // Mock contruct save as action, GraphNode
@@ -215,6 +232,7 @@ public class VisualGraphTopComponentNGTest {
             verify(mockSaveAsAction.constructed().get(0)).actionPerformed(null);
             verify(mockSaveAsAction.constructed().get(0)).isSaved();
         }
+        System.clearProperty("java.awt.headless");
     }
 
     /**
@@ -223,6 +241,7 @@ public class VisualGraphTopComponentNGTest {
     @Test
     public void testSaveGraphInvalid() throws Exception {
         System.out.println("saveGraph invalid");
+        System.setProperty("java.awt.headless", "true");
         final GraphDataObject mockGDO = mock(GraphDataObject.class);
         when(mockGDO.isValid()).thenReturn(false);
         // Mock contruct save as action, GraphNode
@@ -243,6 +262,7 @@ public class VisualGraphTopComponentNGTest {
 //            assertEquals(1, mockGraphNode.constructed().size());
 //            verify(mockGraphNode.constructed().get(0)).getDataObject();
         }
+        System.clearProperty("java.awt.headless");
     }
 
 //    /**
