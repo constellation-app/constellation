@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.LayoutConstants;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.io.File;
 import java.util.ArrayList;
@@ -58,8 +60,7 @@ public final class FileInputField extends ConstellationInputField<List<File>> {
     }
     
     public FileInputField(FileInputKind fileInputKind, TextType textTypeOverride, Integer suggestedHeight) {
-        super(
-                ConstellationInputFieldLayoutConstants.INPUT_POPUP, 
+        super(LayoutConstants.INPUT_POPUP, 
                 
                 textTypeOverride != null 
                         ? textTypeOverride 
@@ -73,12 +74,11 @@ public final class FileInputField extends ConstellationInputField<List<File>> {
             setPrefRowCount(suggestedHeight);
         }
         
-        final FileInputKind kind = fileInputKind;
-        this.setRightLabel(kind.toString());
+        this.setRightLabel(fileInputKind.toString());
         this.registerRightButtonEvent(event -> {
             final CompletableFuture dialogFuture;
             final List<File> files = new ArrayList<>();
-            switch (kind) {
+            switch (fileInputKind) {
                 case OPEN, OPEN_OBSCURED -> dialogFuture = FileChooser.openOpenDialog(getFileChooser("Open")).thenAccept(optionalFile -> optionalFile.ifPresent(openFile -> {
                     if (openFile != null) {
                         files.add(openFile);
@@ -102,7 +102,7 @@ public final class FileInputField extends ConstellationInputField<List<File>> {
                 }));
                 default -> {
                     dialogFuture = null;
-                    LOGGER.log(Level.FINE, "ignoring file selection type {0}.", kind);
+                    LOGGER.log(Level.FINE, "ignoring file selection type {0}.", fileInputKind);
                 }
             }
             
@@ -122,48 +122,6 @@ public final class FileInputField extends ConstellationInputField<List<File>> {
                 this.setValue(files);
             }
         });
-        
-        TextInputControl field = this.getBaseField();
-        field.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            if (event.getCode() == KeyCode.DELETE) {
-                final IndexRange selection = field.getSelection();
-                if (selection.getLength() == 0) {
-                    field.deleteNextChar();
-                } else {
-                    field.deleteText(selection);
-                }
-                event.consume();
-            } else if (event.isShortcutDown() && event.isShiftDown() && (event.getCode() == KeyCode.RIGHT)) {
-                field.selectNextWord();
-                event.consume();
-            } else if (event.isShortcutDown() && event.isShiftDown() && (event.getCode() == KeyCode.LEFT)) {
-                field.selectPreviousWord();
-                event.consume();
-            } else if (event.isShortcutDown() && (event.getCode() == KeyCode.RIGHT)) {
-                field.nextWord();
-                event.consume();
-            } else if (event.isShortcutDown() && (event.getCode() == KeyCode.LEFT)) {
-                field.previousWord();
-                event.consume();
-            } else if (event.isShiftDown() && (event.getCode() == KeyCode.RIGHT)) {
-                field.selectForward();
-                event.consume();
-            } else if (event.isShiftDown() && (event.getCode() == KeyCode.LEFT)) {
-                field.selectBackward();
-                event.consume();
-            } else if (event.isShortcutDown() && (event.getCode() == KeyCode.A)) {
-                field.selectAll();
-                event.consume();
-            } else if (event.getCode() == KeyCode.ESCAPE) {
-                event.consume();
-            } else {
-                // Do nothing
-            }
-        });
-        
-        
-        
-        
     }
 
 

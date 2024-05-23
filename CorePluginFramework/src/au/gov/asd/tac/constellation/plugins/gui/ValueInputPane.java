@@ -22,7 +22,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.RecentValuesListener;
 import au.gov.asd.tac.constellation.plugins.parameters.types.PasswordParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputField;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputField.TextType;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType;
 import au.gov.asd.tac.constellation.utilities.gui.field.PasswordInputField;
 import au.gov.asd.tac.constellation.utilities.gui.field.TextInputField;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
@@ -37,7 +37,6 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * A text box allowing entry of single line text, multiple line text, or
@@ -242,21 +241,21 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
 
             final Tooltip tooltip = new Tooltip("");
             tooltip.setStyle("-fx-text-fill: white;");
-            field.textProperty().addListener((ov, t, t1) -> {
-                final String error = parameter.validateString(field.getText());
-                if ((required && StringUtils.isBlank(field.getText())) || error != null) {
-                    // if error is blank, the situation must be that a required parameter is blank
-                    tooltip.setText(StringUtils.isNotBlank(error) ? error : "Value is required!");
-                    field.setTooltip(tooltip);
-                    field.setId("invalid");
-                } else {
-                    tooltip.setText("");
-                    field.setTooltip(null);
-                    field.setId("");
-                }
-
-                parameter.setStringValue(field.getText());
-            });
+//            field.registerTextListener((ov, t, t1) -> {
+//                final String error = parameter.validateString(field.getText());
+//                if ((required && StringUtils.isBlank(field.getText())) || error != null) {
+//                    // if error is blank, the situation must be that a required parameter is blank
+//                    tooltip.setText(StringUtils.isNotBlank(error) ? error : "Value is required!");
+//                    field.setTooltip(tooltip);
+//                    field.setId("invalid");
+//                } else {
+//                    tooltip.setText("");
+//                    field.setTooltip(null);
+//                    field.setId("");
+//                }
+//
+//                parameter.setStringValue(field.getText());
+//            });
 
             parameter.addListener((pluginParameter, change) -> Platform.runLater(() -> {
                     switch (change) {

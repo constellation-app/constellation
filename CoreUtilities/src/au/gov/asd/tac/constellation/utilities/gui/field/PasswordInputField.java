@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.LayoutConstants;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TextInputControl;
 
@@ -29,29 +31,23 @@ import javafx.scene.control.TextInputControl;
  * @author capricornunicorn123
  */
 public final class PasswordInputField extends ConstellationInputField<String> {
-    final private TextInputControl alternate;
+    
+    private boolean isVisible = false;
     
     public PasswordInputField(){
-        super(ConstellationInputFieldLayoutConstants.INPUT_DROPDOWN, TextType.SECRET);
-        this.setRightLabel("Show");    
-        
-        final TextInputControl base = this.getBaseField();
-        alternate = this.createInputField(TextType.SINGLELINE);
-        alternate.textProperty().bindBidirectional(base.textProperty());
-        alternate.textFormatterProperty().bindBidirectional(base.textFormatterProperty());
-        alternate.promptTextProperty().bindBidirectional(base.promptTextProperty());
-        alternate.setVisible(false);
-        this.insertBaseFieldIntoGrid(alternate);
+        super(LayoutConstants.INPUT_DROPDOWN, TextType.SECRET);
+        this.setRightLabel(ConstellationInputFieldConstants.SHOW_BUTTON_LABEL);    
         
         this.registerRightButtonEvent(event -> {
-            if (base.isVisible()){
-                base.setVisible(false);
-                alternate.setVisible(true);
-                this.setRightLabel("Hide");  
+            if (isVisible){
+                this.hideSecret();
+                this.setRightLabel(ConstellationInputFieldConstants.SHOW_BUTTON_LABEL);  
+                isVisible = false;
+                
             } else {
-                base.setVisible(true);
-                alternate.setVisible(false);
-                this.setRightLabel("Show");  
+                this.showSecret();
+                this.setRightLabel(ConstellationInputFieldConstants.HIDE_BUTTON_LABEL);  
+                isVisible = true;
             }
         });
     }
@@ -62,7 +58,7 @@ public final class PasswordInputField extends ConstellationInputField<String> {
     }
     
     /**
-     * Password validation could be included here with tool top triggers
+     * Password validation could be included here with tool tip triggers
      * things like minimum length, character combinations etc
      * @param value
      * @return 

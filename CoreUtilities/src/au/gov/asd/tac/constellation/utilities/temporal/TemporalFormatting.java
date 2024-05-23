@@ -79,7 +79,7 @@ public class TemporalFormatting {
 
     public static final String ERROR_PARSING_DATE_MESSAGE = "Error Parsing Date {0}: {1}";
 
-    private static final ZonedDateTime EPOCH_UTC = ZonedDateTime.ofInstant(Instant.EPOCH, TimeZoneUtilities.UTC);
+    private static final ZonedDateTime EPOCH_UTC = ZonedDateTime.ofInstant(Instant.EPOCH, TemporalUtilities.UTC);
     
     /**
      * A UTC date time formatter much like DateTimeFormatter.ISO_INSTANT but
@@ -427,7 +427,7 @@ public class TemporalFormatting {
      * @return A ZonedDateTime object in UTC, corresponding to the given long.
      */
     public static ZonedDateTime zonedDateTimeFromLong(final long value) {
-        return ZonedDateTime.ofInstant(Instant.ofEpochSecond(value), TimeZoneUtilities.UTC);
+        return ZonedDateTime.ofInstant(Instant.ofEpochSecond(value), TemporalUtilities.UTC);
     }
 
      /**
@@ -440,7 +440,7 @@ public class TemporalFormatting {
      * @return A ZonedDateTime object in UTC, corresponding to the given long.
      */
     public static ZonedDateTime zonedDateTimeFromLongMilli(final long value) {
-        return ZonedDateTime.ofInstant(Instant.ofEpochMilli(value), TimeZoneUtilities.UTC);
+        return ZonedDateTime.ofInstant(Instant.ofEpochMilli(value), TemporalUtilities.UTC);
     }
 
     /**

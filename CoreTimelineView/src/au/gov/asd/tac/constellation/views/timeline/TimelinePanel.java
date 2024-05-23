@@ -24,7 +24,7 @@ import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
-import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
+import au.gov.asd.tac.constellation.utilities.temporal.TemporalUtilities;
 import au.gov.asd.tac.constellation.views.timeline.clustering.ClusteringManager;
 import au.gov.asd.tac.constellation.views.timeline.clustering.TreeElement;
 import au.gov.asd.tac.constellation.views.timeline.clustering.TreeLeaf;
@@ -443,19 +443,19 @@ public class TimelinePanel extends Region {
 
         final ObservableList<ZoneId> timeZones = FXCollections.observableArrayList();
         ZoneId.getAvailableZoneIds().forEach(id -> timeZones.add(ZoneId.of(id)));
-        timeZoneComboBox.setItems(timeZones.sorted(TimeZoneUtilities.ZONE_ID_COMPARATOR));
+        timeZoneComboBox.setItems(timeZones.sorted(TemporalUtilities.ZONE_ID_COMPARATOR));
         final Callback<ListView<ZoneId>, ListCell<ZoneId>> cellFactory = (final ListView<ZoneId> p) -> new ListCell<>() {
             @Override
             protected void updateItem(final ZoneId item, boolean empty) {
                 super.updateItem(item, empty);
                 if (item != null) {
-                    setText(TimeZoneUtilities.getTimeZoneAsString(item));
+                    setText(TemporalUtilities.getTimeZoneAsString(item));
                 }
             }
         };
         timeZoneComboBox.setCellFactory(cellFactory);
         timeZoneComboBox.setButtonCell(cellFactory.call(null));
-        timeZoneComboBox.getSelectionModel().select(TimeZoneUtilities.UTC);
+        timeZoneComboBox.getSelectionModel().select(TemporalUtilities.UTC);
         timeZoneComboBox.getSelectionModel().selectedItemProperty().addListener((v, o, n) -> {
             coordinator.updateTimeZone(n);
         });

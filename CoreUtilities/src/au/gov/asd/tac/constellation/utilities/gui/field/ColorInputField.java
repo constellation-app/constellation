@@ -17,17 +17,20 @@ package au.gov.asd.tac.constellation.utilities.gui.field;
 
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColorPicker;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.LayoutConstants;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
-import javafx.scene.paint.Color;
+import javafx.scene.control.MenuItem;
 import javax.swing.JButton;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 
 /**
- * A {@link ConstellationinputField} for managing {@link ConstellationColor} selection. 
+ * A {@link ConstellationInputField} for managing {@link ConstellationColor} selection. 
  * 
  * @author capricornunicorn123
  */
@@ -36,8 +39,8 @@ public final class ColorInputField extends ConstellationInputField<Constellation
     ColorMode mode = ColorMode.COLOR;
     
     public ColorInputField(){
-        super(ConstellationInputFieldLayoutConstants.DROPDOWN_INPUT_POPUP);
-        this.setRightLabel("Swatch");
+        super(LayoutConstants.DROPDOWN_INPUT_POPUP);
+        this.setRightLabel(ConstellationInputFieldConstants.SWATCH_BUTTON_LABEL);
         this.setLeftLabel(mode.toString());
         this.registerRightButtonEvent(event -> {
             JFXPanel xp = new JFXPanel();
@@ -57,15 +60,17 @@ public final class ColorInputField extends ConstellationInputField<Constellation
         this.registerLeftButtonEvent(event -> {
             this.showDropDown();
         });
+        
+        
     }
     
-    public void setMode(ColorMode mode){
+    private void setMode(ColorMode mode){
         this.mode = mode;
         this.setLeftLabel(mode.toString());
         this.setColor(getColor());
     }
     
-    public void updateMode(String text){
+    private void updateMode(String text){
         ColorMode localMode;
         if (text.contains(",")){
             localMode = ColorMode.RGB;
@@ -78,11 +83,7 @@ public final class ColorInputField extends ConstellationInputField<Constellation
         this.setLeftLabel(localMode.toString());
     }
     
-    public void setColor(Color color){
-        this.setColor(ConstellationColor.fromFXColor(color)); 
-    }
-    
-    public void setColor(final ConstellationColor color){
+    private void setColor(final ConstellationColor color){
         if (color != null){
             switch (mode){
                 case COLOR -> {
@@ -109,6 +110,10 @@ public final class ColorInputField extends ConstellationInputField<Constellation
     
     /**
      * Gets a ConstellationColor Object representing the color represented by plain text.
+     * the plain text can be interpreted from three different formats representing
+     * - the name of a ConstellationColor
+     * - a hex value with a "#" followed by 6 hex digits
+     * - an RGB value with the Text "Red: , Green: , and Blue: "
      * @param text
      * @return 
      */
@@ -117,9 +122,10 @@ public final class ColorInputField extends ConstellationInputField<Constellation
         if (text.isBlank()){
             return null;
         } else if (text.contains(",")){
-            StringBuilder sb = new StringBuilder();
+            final StringBuilder sb = new StringBuilder();
             sb.append("RGB");
-            String[] colors = text.split(",");
+            
+            final String[] colors = text.split(",");
             
             //threre should only be 3 colors
             if (colors.length != 3){
@@ -132,7 +138,7 @@ public final class ColorInputField extends ConstellationInputField<Constellation
                     return null;
                 }
                 
-                String expectedKey = switch(colorIndex){
+                final String expectedKey = switch(colorIndex){
                     case 0 -> "RED";
                     case 1 -> "GREEN";
                     case 2 -> "BLUE";
@@ -143,7 +149,7 @@ public final class ColorInputField extends ConstellationInputField<Constellation
                     return null;
                 }
                 
-                int colorVal = Integer.parseInt(colorPair[1].strip());
+                final int colorVal = Integer.parseInt(colorPair[1].strip());
                 
                 if (colorVal > 255 || colorVal < 0){
                     return null;
@@ -167,7 +173,7 @@ public final class ColorInputField extends ConstellationInputField<Constellation
     
     @Override
     public boolean isValid(){
-        String value = this.getText();
+        final String value = this.getText();
         if (getColor(value) != null){
             updateMode(value);
             return true;
@@ -181,7 +187,7 @@ public final class ColorInputField extends ConstellationInputField<Constellation
     }
 
     @Override
-    public void setValue(ConstellationColor value) {
+    public void setValue(final ConstellationColor value) {
         this.setColor(value);
     }
     
@@ -189,6 +195,8 @@ public final class ColorInputField extends ConstellationInputField<Constellation
         
         public ColorInputDropDown(final ColorInputField field){
             super(field);
+            
+            List<MenuItem> items = new ArrayList<>();
             for (final ColorMode mode : ColorMode.values()){
                 final Label label = new Label(mode.toString());
                 
@@ -196,8 +204,9 @@ public final class ColorInputField extends ConstellationInputField<Constellation
                     field.setMode(mode);
                 });
 
-                this.addMenuOption(label);
+                items.add(this.buildCustomMenuItem(label));
             }
+            this.addMenuItems(items);
         }        
     }
     

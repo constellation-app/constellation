@@ -15,15 +15,17 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
-import au.gov.asd.tac.constellation.utilities.gui.field.ChoiceInputField.ChoiceType;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.LayoutConstants;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.beans.InvalidationListener;
-import javafx.beans.property.ReadOnlyDoubleProperty;
-import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.Node;
@@ -34,8 +36,8 @@ import javafx.scene.control.IndexRange;
 import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
-import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
@@ -43,7 +45,9 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -87,9 +91,12 @@ import javafx.scene.shape.Rectangle;
  * there should only be 1 way in and out of the input field for selection data and that is getValue() and setValue().
  * this is for the benefit of password input field but also benefits others
  * 
+ * The Text of the input field should be taken as the source of truth for the current value. 
+ * implementations of ConselationInput fields may implements their own back end data structures and objects to simplify the 
+ * 
  * @author capricornunicorn123
  */
-public abstract class ConstellationInputField<T> extends StackPane implements ObservableValue<T>{
+public abstract class ConstellationInputField<T> extends StackPane implements ObservableValue<T>, ChangeListener<Serializable>{   
     
     final int endCellPrefWidth = 50;
     final int endCellMinWidth = 50;
@@ -108,14 +115,13 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
     final ColumnConstraints trippleConstraint = new ColumnConstraints(100, 500, 600);
     
     private GridPane gridPane;
-    private TextInputControl field;
+    private ConstellationTextArea textArea;
     private final Label leftLabel = new Label();
     private final Label rightLabel = new Label();
     protected final Rectangle rightButton = new Rectangle(endCellPrefWidth, defaultCellHeight); 
     protected final Rectangle leftButton = new Rectangle(endCellPrefWidth, defaultCellHeight); 
-    protected final List<ChangeListener> listeners = new ArrayList<>();
-    
-    private final ReadOnlyDoubleProperty heightBinding;
+    protected final List<ChangeListener> InputFieldListeners = new ArrayList<>();
+    private Rectangle foreground;
         
     final int corner = 7;
     
@@ -127,15 +133,13 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
         throw new UnsupportedOperationException();
     }
     
-    public ConstellationInputField(final ConstellationInputFieldLayoutConstants layout){
+    public ConstellationInputField(final LayoutConstants layout){
         this(layout, TextType.SINGLELINE);
     }
     
     
-    public ConstellationInputField(final ConstellationInputFieldLayoutConstants layout, final TextType type) {
-        field = this.createInputField(type);
-        this.heightBinding = field.heightProperty();
-        
+    public ConstellationInputField(final LayoutConstants layout, final TextType type) {
+        textArea = new ConstellationTextArea(this, type);
         gridPane = getGridPaneWithChildCellPanes(layout);
         
         this.setPrefWidth(500);
@@ -154,50 +158,35 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
         background.setFill(fieldColor);
         background.widthProperty().bind(gridPane.widthProperty());
         
-        final Rectangle foreground = new Rectangle(300, defaultCellHeight);
+        foreground = new Rectangle(300, defaultCellHeight);
         foreground.setArcWidth(corner);
         foreground.setArcHeight(corner);        
         foreground.setFill(Color.TRANSPARENT);
         foreground.setMouseTransparent(true);
         foreground.widthProperty().bind(gridPane.widthProperty());
-        this.bindFocusEffect(field, foreground);
         
         for (final ContentDisplay area : layout.getAreas()) {
             if (null != area) switch (area) {
-                case LEFT -> gridPane.add(this.getEndCellGroup(ContentDisplay.LEFT, optionColor, leftLabel), 0, 0);
-                case RIGHT -> gridPane.add(this.getEndCellGroup(ContentDisplay.RIGHT, layout.hasButton ? buttonColor : optionColor, rightLabel), layout.getAreas().length - 1, 0);
+                case LEFT -> gridPane.add(this.getEndCellGroup(area, optionColor, leftLabel), 0, 0);
+                case RIGHT -> gridPane.add(this.getEndCellGroup(area, layout.hasButton() ? buttonColor : optionColor, rightLabel), layout.getAreas().length - 1, 0);
                 case CENTER -> {
-                    insertBaseFieldIntoGrid(field);
+                    insertBaseFieldIntoGrid(textArea);
                 }
                 default -> {
                     //Do Nothing
                 }
             }
         }
-        
-        background.heightProperty().bind(heightBinding);
-        foreground.heightProperty().bind(heightBinding);
-        clippingMask.heightProperty().bind(heightBinding);
+        textArea.bindHeightProperty(background);
+        textArea.bindHeightProperty(foreground);
+        textArea.bindHeightProperty(clippingMask);
         gridPane.setClip(clippingMask);
         gridPane.setAlignment(Pos.CENTER);
         this.getChildren().addAll(background, gridPane, foreground);
         this.setAlignment(Pos.TOP_LEFT);
-        
-        // Whenever the text value of the field changes, try and notify classes that may be listening to this field
-        this.field.textProperty().addListener((one, two, three) -> {
-            
-            // Only notify listeners of valid changes
-            if (isValid()){
-                this.notifyListeners(this.getValue());
-            }
-        });
     }
     
-    protected TextInputControl getBaseField() {
-        return this.field;
-    }
-    
-    public final void insertBaseFieldIntoGrid(final TextInputControl field) {
+    public final void insertBaseFieldIntoGrid(final ConstellationTextArea field) {
         for (final Node node : gridPane.getChildren()) {
             if (!ContentDisplay.LEFT.toString().equals(node.getId()) && !ContentDisplay.RIGHT.toString().equals(node.getId())) {
                 gridPane.add(field, GridPane.getColumnIndex(node), GridPane.getRowIndex(node));
@@ -221,7 +210,7 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
         background.setFill(color);
         background.setOnMouseEntered(event -> background.setFill(color.brighter()));
         background.setOnMouseExited(event -> background.setFill(color));
-        background.heightProperty().bind(heightBinding);
+        textArea.bindHeightProperty(background);
 
         label.setMouseTransparent(true);
         label.setPrefWidth(endCellPrefWidth);
@@ -247,7 +236,7 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
      * @param layout
      * @return 
      */
-    private GridPane getGridPaneWithChildCellPanes(final ConstellationInputFieldLayoutConstants layout) {
+    private GridPane getGridPaneWithChildCellPanes(final LayoutConstants layout) {
         final GridPane local = new GridPane();
                
         final ContentDisplay[] areas = layout.getAreas();
@@ -276,52 +265,6 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
         
         return local;
     }
-
-    /**
-     * Creates an imput field based off of the text type. 
-     * This method is protected as the password input field uses it to create a non secret alternative for password showing and hiding. 
-     * 
-     * 
-     * @param type
-     * @return 
-     */
-    protected final TextInputControl createInputField(final TextType type) {
-        
-        final TextInputControl local = switch (type) {
-            case SECRET -> new PasswordField();
-            case MULTILINE -> new TextArea();
-            default -> new TextField();
-        };
-        local.setStyle("-fx-background-radius: 0; -fx-background-color: transparent; -fx-border-color: transparent; -fx-focus-color: transparent;");
-        local.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (isValid()){
-                local.setStyle("-fx-background-color: transparent;");
-            } else {
-                local.setStyle("-fx-background-color: red;");
-            }
-        });
-        return local;
-        
-    }
-    
-    /** 
-     * Adds a listener to the focusedProperty of the base Input field to enable equivalent effects to be produced on the 
-     * ConstellationInputField. 
-     * 
-     * Results in the entire field to display a blue glow effect instead of just the text area.
-     * 
-     * @param local
-     * @param foreground 
-     */
-    private void bindFocusEffect(final TextInputControl local, final Rectangle foreground) {
-        local.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal) {
-                foreground.setStroke(Color.web("#1B92E3"));
-            } else {
-                foreground.setStroke(null);
-            }
-        });
-    }
     
     public void setRightLabel(final String label) {
         this.rightLabel.setText(label);
@@ -345,96 +288,109 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
     }
 
     public void setPromptText(final String description) {
-        this.field.setPromptText(description);
+        this.textArea.setPromptText(description);
     }
 
     public void setText(final String stringValue) {
-        this.field.setText(stringValue);
+        this.textArea.setText(stringValue);
     }
 
     public void setEditable(final boolean enabled) {
-        this.field.setEditable(enabled);
+        this.textArea.setEditable(enabled);
     }
-
-    public StringProperty textProperty() {
-        return this.field.textProperty();
+    
+    protected final <E extends Event> void addShortcuts(final EventType<E> eventType, final EventHandler<E> eventFilter) {
+        this.textArea.addEventFilter(eventType, eventFilter);
     }
 
     public String getText() {
-        return this.field.getText();
+        return this.textArea.getText();
     }
 
     public void setTooltip(Tooltip tooltip) {
-        this.field.setTooltip(tooltip);
+        this.textArea.setTooltip(tooltip);
     }
 
     public void selectAll() {
-        this.field.selectAll();
+        this.textArea.selectAll();
     }
 
     public void selectBackward() {
-        this.field.selectBackward();
+        this.textArea.selectBackward();
     }
 
     public void selectForward() {
-        this.field.selectForward();
+        this.textArea.selectForward();
     }
 
     public void previousWord() {
-        this.field.previousWord();
+        this.textArea.previousWord();
     }
 
     public void nextWord() {
-        this.field.nextWord();
+        this.textArea.nextWord();
     }
 
     public void selectPreviousWord() {
-       this.field.selectPreviousWord();
+       this.textArea.selectPreviousWord();
     }
 
     public void selectNextWord() {
-        this.field.selectNextWord();
+        this.textArea.selectNextWord();
     }
 
     public void deleteText(final IndexRange selection) {
-        this.field.deleteText(selection);
+        this.textArea.deleteText(selection);
     }
 
     public void deleteNextChar() {
-        this.field.deleteNextChar();
+        this.textArea.deleteNextChar();
     }
 
     public IndexRange getSelection() {
-        return this.field.getSelection();
+        return this.textArea.getSelection();
     }
     
     public void setWrapText(boolean wrapText) {
-        if (this.field instanceof TextArea textAreaField){
-            textAreaField.setWrapText(wrapText);
-        }
+        this.textArea.setWrapText(wrapText);
     }
 
     public void setPrefRowCount(Integer suggestedHeight) {
-               if (this.field instanceof TextArea textAreaField){
-            textAreaField.setPrefRowCount(suggestedHeight);
-        }
+        textArea.setPreferedRowCount(suggestedHeight);
     }
     
     public boolean isEmpty(){
         return this.getText().isBlank();
     }
     
+    public void setInFocus(boolean focused){
+
+        if (focused) {
+            foreground.setStroke(Color.web("#1B92E3"));
+        } else {
+            foreground.setStroke(null);
+        }
+
+    }
+    
+    protected void hideSecret(){
+        textArea.hide();
+    }
+    
+    protected void showSecret(){
+        textArea.reveal();
+    }
+    
     public void notifyListeners(T newValue){
-        for (ChangeListener listener : listeners){
+        for (ChangeListener listener : InputFieldListeners){
             listener.changed(this, null, newValue);
         }
     }
     
-        /**
-     * Determined if the provided text is a valid value for the input field.
+    /**
+     * Determine if the provided text is a valid value for the input field.
      * Is implemented differently for different input fields.
      * 
-     * @param value
      * @return 
      */
     public abstract boolean isValid();
@@ -443,6 +399,7 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
      * Gets the value that this input field represents;
      * @return 
      */    
+    @Override
     public abstract T getValue();
     
     /**
@@ -468,12 +425,12 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
     //ObservableValue Interface Support
     @Override
     public void addListener(ChangeListener listener) {
-        this.listeners.add(listener);
+        this.InputFieldListeners.add(listener);
     }
 
     @Override
     public void removeListener(ChangeListener listener) {
-        this.listeners.remove(listener);
+        this.InputFieldListeners.remove(listener);
     }
 
     @Override
@@ -484,6 +441,33 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
     @Override
     public void removeListener(InvalidationListener listener) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    
+    /**
+     * ChangeListener Interface Support
+     * This method manages the handeling of changes to the TextValue and Focused property of the TextInputControl used
+     * by the ConstelltionTextArea.
+     * 
+     * This method is declared final to protect the integrity and privacy of the string value being returned. 
+     * Important in the case of use with TextTpye.SECRET.
+     */
+    @Override
+    public final void changed(ObservableValue<? extends Serializable> observable, Serializable oldValue, Serializable newValue) {
+        
+        // String changes are changes to the text value of the ConstellationTextArea
+        if (newValue instanceof String){
+            if (isValid()){
+                textArea.setValid(true);
+                notifyListeners(getValue());
+            } else {
+                textArea.setValid(false);
+            }
+        }
+        
+        //Boolean Changes are changs to the focused propert of the ConstellationTextArea
+        if (newValue instanceof Boolean focused){
+            this.setInFocus(focused);
+        }
     }
     
     /**
@@ -504,55 +488,211 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
             });
         }
         
-        public void addMenuOption(Labeled text) {
+        /**
+         * Takes a {@link Labeled} object and converts it to a {@link MenuItem}.
+         * 
+         * The  {@link MenuItem} is not added to the ConstextMenu. it is returned for
+         * Input field specific modification before being added to the COntext menu using
+         *  addMenuItems();
+         * 
+         * This build method is important to correctly bind the width of the context menu to the parnte (but it currently doesnt work as they are bote rea only)....
+         * 
+         * @param text
+         * @return 
+         */
+        public CustomMenuItem buildCustomMenuItem(Labeled text) {
             text.prefWidthProperty().bind(parent.prefWidthProperty());
             CustomMenuItem item = new CustomMenuItem(text);
-            
-            if (parent instanceof ChoiceInputField field && field.getType() == ChoiceType.MULTI){
-                item.setHideOnClick(false);
-            }
-            
-            this.getItems().add(item);
+            return item;
         }
         
-        public void addSeparator(){
-            this.getItems().add(new SeparatorMenuItem());
+        /**
+         * 
+         * @param items 
+         */
+        public void addMenuItems(List<MenuItem> items){
+            this.getItems().addAll(items);
         }
         
     }
     
     /**
-     * A representation of the different layouts that a ConstellationInputField can take. 
-     * INPUT represents the input area of the field.
-     * DROPDWN represents a button that triggers a drop down menu on the field. 
-     * POPUP represents a button that triggers a pop up window.     
-     * UPDATER represents a button that updates the value of the Field when pressed.
+     * This class represents the area of text that users can interact with inside of a {@link ConstellationInputFiled}.
      * 
-     * The combination of these representative words represents their order in the ConstellationInputField
+     * The {@link ConstellationTextArea} has been designed to provide a minimal interface to the {@link ConstellationIputField} with
+     * the intention of simplifying its use and protecting the integrity of the data it stores from uncontrolled manipulation.
+     * 
+     * To assist with the protection of data within this class, the class and methods are declared private with 
+     * the class being also declared final.
+     * 
+     * The {@linkConstellationTextArea itself} is a HBox that contains children of type {@link TextInputControll}
+     * In almost all cases, the ConstellationText Area will only have one child, a {@link TextArea} or 
+     * a {@link TextField}. In cases where the input field needs to be secret (have the characters hidden) 
+     * a primary input of {@link PasswordField} and a secondary input of {@link TextField} will be used to 
+     * facilitate hiding and showing of the hidden text.
+     * 
+     * the raw inputs can still be grabbed by using the get children methods. is this an issue / vunerability?
+     * 
+     * @author capricornunicorn123
      */
-    public enum ConstellationInputFieldLayoutConstants {        
-        INPUT(false, ContentDisplay.CENTER),
-        INPUT_DROPDOWN(false, ContentDisplay.CENTER, ContentDisplay.RIGHT),
-        INPUT_POPUP(true, ContentDisplay.CENTER, ContentDisplay.RIGHT),
-        DROPDOWN_INPUT_POPUP(true, ContentDisplay.LEFT, ContentDisplay.CENTER, ContentDisplay.RIGHT),
-        UPDATER_INPUT_UPDATER(false, ContentDisplay.LEFT, ContentDisplay.CENTER, ContentDisplay.RIGHT);
-        
-        private final ContentDisplay[] areas;
-        private final boolean hasButton;
+    private final class ConstellationTextArea extends HBox{
+        private final TextInputControl primaryInput;
+        private final TextInputControl secondaryInput;
 
-        private ConstellationInputFieldLayoutConstants(final boolean hasButton, final ContentDisplay... areas) {
-            this.areas = areas;
-            this.hasButton = hasButton;
+        private ConstellationTextArea(ConstellationInputField parent, TextType type){
+
+            //Set up the primary InputControl
+            switch (type) {
+                case SECRET -> primaryInput = new PasswordField();
+                case MULTILINE -> primaryInput = new TextArea();
+                default -> primaryInput = new TextField();
+            }
+            primaryInput.textProperty().addListener(parent);
+            primaryInput.focusedProperty().addListener(parent);
+            primaryInput.setStyle("-fx-background-radius: 0; -fx-background-color: transparent; -fx-border-color: transparent; -fx-focus-color: transparent;");
+
+            HBox.setHgrow(primaryInput, Priority.ALWAYS);
+
+            // Set up the optional secondary InputControl
+            switch (type) {
+                case SECRET -> {
+                    // SecondaryInputs are only used in Secret Inputs and have bound properties wiht the primary input
+                    secondaryInput = new TextField();
+                    secondaryInput.textProperty().bindBidirectional(primaryInput.textProperty());
+                    secondaryInput.textFormatterProperty().bindBidirectional(primaryInput.textFormatterProperty());
+                    secondaryInput.promptTextProperty().bindBidirectional(primaryInput.promptTextProperty());
+                    secondaryInput.setVisible(false);
+                    HBox.setHgrow(secondaryInput, Priority.ALWAYS);
+
+                    this.getChildren().addAll(primaryInput, secondaryInput);
+                }
+                default -> {
+                    secondaryInput = null;
+
+                    this.getChildren().add(primaryInput);
+                }
+            } 
         }
-        
-        public ContentDisplay[] getAreas() {
-            return this.areas;
+
+        /**
+         * Binds the heightProperty of a Rectangle to the height property of the {@link TextInputControl}. 
+         * @param bindable
+         */
+        private void bindHeightProperty(Rectangle bindable) {
+            bindable.heightProperty().bind(primaryInput.heightProperty());
+        }
+
+        /**
+         * Sets the prompt text of the {@link TextInputControl}.
+         * @param description 
+         */
+        private void setPromptText(String description) {
+            primaryInput.setPromptText(description);
+        }
+
+        /**
+         * Sets the text value of the {@link TextInputControl}.
+         * @param stringValue 
+         */
+        private void setText(String stringValue) {
+            primaryInput.setText(stringValue);
+        }
+
+        /**
+         * Specifies if the {@link TextInputControl} is editable
+         * @param enabled 
+         */
+        private void setEditable(boolean enabled) {
+            this.primaryInput.setEditable(enabled);
+        }
+
+        private String getText() {
+            return primaryInput.getText();
+        }
+
+        private void setTooltip(Tooltip tooltip) {
+            primaryInput.setTooltip(tooltip);
+        }
+
+        private void selectAll() {
+            primaryInput.selectAll();
+        }
+
+        private void selectBackward() {
+            primaryInput.selectBackward();
+        }
+
+        private void selectForward() {
+            primaryInput.selectForward();
+        }
+
+        private void previousWord() {
+            primaryInput.previousWord();
+        }
+
+        private IndexRange getSelection() {
+            return primaryInput.getSelection();
+        }
+
+        private void deleteNextChar() {
+            primaryInput.deleteNextChar();
+        }
+
+        private void deleteText(IndexRange selection) {
+            primaryInput.deleteText(selection);
+        }
+
+        private void selectNextWord() {
+            primaryInput.selectNextWord();
+        }
+
+        private void selectPreviousWord() {
+            primaryInput.selectPreviousWord();
+        }
+
+        private void nextWord() {
+            primaryInput.nextWord();
+        }
+
+        void setWrapText(boolean wrapText) {
+            if (primaryInput instanceof TextArea textAreaField){
+                textAreaField.setWrapText(wrapText);
+            }
+        }
+
+        private void setPreferedRowCount(Integer suggestedHeight) {
+            if (primaryInput instanceof TextArea textAreaField){
+                textAreaField.setPrefRowCount(suggestedHeight);
+            }
+        }
+
+        private void hide() {
+            if (primaryInput instanceof PasswordField){
+                this.primaryInput.setVisible(true);
+                this.secondaryInput.setVisible(false);
+            } else {
+                throw new UnsupportedOperationException("Only ConstellationTextAreas of TextType.SECRET can be hidden");
+            }
+        }
+
+        private void reveal() {
+            if (primaryInput instanceof PasswordField){
+                this.primaryInput.setVisible(false);
+                this.secondaryInput.setVisible(false);
+            } else {
+                throw new UnsupportedOperationException("Only ConstellationTextAreas of TextType.SECRET can be revealed");
+            }
+        }
+
+        private void setValid(boolean isValid) {
+            if (isValid){
+                primaryInput.setStyle("-fx-background-color: transparent;");
+            } else {
+                primaryInput.setStyle("-fx-background-color: red;");
+            }
         }
     }
     
-    public enum TextType {
-        SECRET,
-        SINGLELINE,
-        MULTILINE;
-    }
+    
+    
 }

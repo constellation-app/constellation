@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
-import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
+import au.gov.asd.tac.constellation.utilities.temporal.TemporalUtilities;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import java.time.LocalDate;
@@ -150,7 +150,7 @@ public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDate
                 protected void updateItem(final ZoneId item, final boolean empty) {
                     super.updateItem(item, empty);
                     if (item != null) {
-                        setText(TimeZoneUtilities.getTimeZoneAsString(currentValue == null ? null : currentValue.toLocalDateTime(), item));
+                        setText(TemporalUtilities.getTimeZoneAsString(currentValue == null ? null : currentValue.toLocalDateTime(), item));
                     }
                 }
             };
@@ -161,7 +161,7 @@ public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDate
 
             timeZoneComboBox.setCellFactory(cellFactory);
             timeZoneComboBox.setButtonCell(cellFactory.call(null));
-            timeZoneComboBox.getSelectionModel().select(TimeZoneUtilities.UTC);
+            timeZoneComboBox.getSelectionModel().select(TemporalUtilities.UTC);
             timeZoneComboBox.getSelectionModel().selectedItemProperty().addListener(updateTimeFromZone);
 
             final HBox timeZoneHbox = new HBox(timeZoneComboBoxLabel, timeZoneComboBox);

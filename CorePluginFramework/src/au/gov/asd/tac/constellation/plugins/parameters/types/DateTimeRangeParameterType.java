@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.plugins.parameters.types;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRangeParameterType.DateTimeRangeParameterValue;
-import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
+import au.gov.asd.tac.constellation.utilities.temporal.TemporalUtilities;
 import java.text.SimpleDateFormat;
 import java.time.Period;
 import java.time.format.DateTimeParseException;
@@ -118,7 +118,7 @@ public class DateTimeRangeParameterType extends PluginParameterType<DateTimeRang
          * holding.
          */
         public DateTimeRange get() {
-            return dtr != null ? dtr : new DateTimeRange(Period.ofDays(1), TimeZoneUtilities.UTC);
+            return dtr != null ? dtr : new DateTimeRange(Period.ofDays(1), TemporalUtilities.UTC);
         }
 
         /**

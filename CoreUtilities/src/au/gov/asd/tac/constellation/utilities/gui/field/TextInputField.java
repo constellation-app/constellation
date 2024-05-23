@@ -15,13 +15,13 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.LayoutConstants;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.application.Platform;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import org.controlsfx.control.textfield.TextFields;
+import javafx.scene.control.MenuItem;
 
 /**
  * A {@link ConstellationinputField} for managing {@link String} selection. 
@@ -33,12 +33,9 @@ public final class TextInputField extends ConstellationInputField<String> {
     private List<String> recentValues = new ArrayList<>();
     
     public TextInputField(TextType type, boolean showRecentValues){
-        super(showRecentValues ? ConstellationInputFieldLayoutConstants.INPUT_DROPDOWN : ConstellationInputFieldLayoutConstants.INPUT, type);
+        super(showRecentValues ? LayoutConstants.INPUT_DROPDOWN : LayoutConstants.INPUT, type);
         if (showRecentValues){
             this.setRightLabel("Recent");
-            if (type.equals(TextType.SINGLELINE)){
-                Platform.runLater(() -> TextFields.bindAutoCompletion((TextField) this.getBaseField(), recentValues));
-            }
         }
         
         this.registerRightButtonEvent(event -> {
@@ -81,7 +78,7 @@ public final class TextInputField extends ConstellationInputField<String> {
     private class TextInputDropDown extends ConstellationInputDropDown {
         public TextInputDropDown(TextInputField field){
             super(field);
-            
+            List<MenuItem> items = new ArrayList<>();
             for (final String recentValue : recentValues){
                 final Label label = new Label(recentValue);
                 
@@ -89,8 +86,9 @@ public final class TextInputField extends ConstellationInputField<String> {
                     field.setText(recentValue);
                 });
 
-                this.addMenuOption(label);
+                items.add(this.buildCustomMenuItem(label));
             }
+            this.addMenuItems(items);
         }
     }
 }

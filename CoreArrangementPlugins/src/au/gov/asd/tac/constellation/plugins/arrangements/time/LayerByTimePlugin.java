@@ -55,7 +55,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParamet
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
+import au.gov.asd.tac.constellation.utilities.temporal.TemporalUtilities;
 import java.awt.Color;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -273,8 +273,8 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                         return;
                     }
 
-                    ZonedDateTime min = ZonedDateTime.ofInstant(Instant.now(), TimeZoneUtilities.UTC);
-                    ZonedDateTime max = ZonedDateTime.ofInstant(Instant.EPOCH, TimeZoneUtilities.UTC);
+                    ZonedDateTime min = ZonedDateTime.ofInstant(Instant.now(), TemporalUtilities.UTC);
+                    ZonedDateTime max = ZonedDateTime.ofInstant(Instant.EPOCH, TemporalUtilities.UTC);
                     final int txCount = rg.getTransactionCount();
                     boolean nonNullDateTimeFound = false;
                     for (int position = 0; position < txCount; position++) {

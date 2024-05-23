@@ -94,7 +94,7 @@ public abstract class ParameterInputPane<T extends ParameterValue> extends HBox 
      * @param parameter
      * @return A ChangeListener that can be registered to a ConstelationInputField
      */
-    public abstract ChangeListener getFieldChangeListener(PluginParameter<T> parameter);
+    public abstract ChangeListener getFieldChangeListener(final PluginParameter<T> parameter);
     
     /**
      * A PluginParameterlistener that can modify the relevant InputField when a change on the Parameter is found

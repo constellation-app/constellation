@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.views.conversationview;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
-import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
+import au.gov.asd.tac.constellation.utilities.temporal.TemporalUtilities;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoField;
 import java.util.List;
@@ -40,7 +40,7 @@ public class DefaultConversationBackgroundProvider implements ConversationBackgr
 
         for (final ConversationMessage message : messages) {
             // Get the unique day since the epcoh of the date-time in UTC.
-            final int day = (int) ZonedDateTime.of(message.getDatetime().getDate().toLocalDateTime(), TimeZoneUtilities.UTC).getLong(ChronoField.EPOCH_DAY);
+            final int day = (int) ZonedDateTime.of(message.getDatetime().getDate().toLocalDateTime(), TemporalUtilities.UTC).getLong(ChronoField.EPOCH_DAY);
 
             if (day != currentDay) {
                 currentColor ^= 1;

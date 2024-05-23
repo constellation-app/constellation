@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.TimeZoneAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
-import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
+import au.gov.asd.tac.constellation.utilities.temporal.TemporalUtilities;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import java.time.ZoneId;
@@ -96,7 +96,7 @@ public class TimeZoneEditorFactory extends AttributeValueEditorFactory<ZoneId> {
                 protected void updateItem(final ZoneId item, boolean empty) {
                     super.updateItem(item, empty);
                     if (item != null) {
-                        setText(TimeZoneUtilities.getTimeZoneAsString(item));
+                        setText(TemporalUtilities.getTimeZoneAsString(item));
                     }
                 }
             };

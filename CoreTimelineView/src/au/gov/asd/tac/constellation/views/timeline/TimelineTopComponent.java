@@ -29,7 +29,7 @@ import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
-import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
+import au.gov.asd.tac.constellation.utilities.temporal.TemporalUtilities;
 import java.awt.BorderLayout;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -338,7 +338,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                 timelinePanel.setExclusionState(0);
                 timelinePanel.setNodeLabelAttributes(null);
                 timelinePanel.setNodeLabelAttribute(null);
-                timelinePanel.setTimeZone(TimeZoneUtilities.UTC);
+                timelinePanel.setTimeZone(TemporalUtilities.UTC);
                 splitPane.setVisible(false);
                 timelinePanel.setDisable(true);
                 // Clear charts:
@@ -464,7 +464,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                                 splitPane.setDisable(false);
                                 // Add the datetime attributes:
                                 timelinePanel.setDateTimeAttributes(datetimeAttributes, currentDatetimeAttribute);
-                                timelinePanel.setTimeZone(state == null ? TimeZoneUtilities.UTC : state.getTimeZone());
+                                timelinePanel.setTimeZone(state == null ? TemporalUtilities.UTC : state.getTimeZone());
                                 // Add the label attributes:
                                 timelinePanel.setNodeLabelAttributes(GraphManager.getDefault().getVertexAttributeNames());
                                 final boolean selectedOnly = state != null && state.isShowingSelectedOnly();
@@ -474,7 +474,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                                     timelinePanel.setIsShowingNodeLabelAttributes(state.isShowingNodeLabels());
                                     timelinePanel.populateFromGraph(rg1, currentDatetimeAttribute, state.getNodeLabelsAttr(), selectedOnly, state.getTimeZone());
                                 } else {
-                                    timelinePanel.populateFromGraph(rg1, currentDatetimeAttribute, null, selectedOnly, state == null ? TimeZoneUtilities.UTC : state.getTimeZone());
+                                    timelinePanel.populateFromGraph(rg1, currentDatetimeAttribute, null, selectedOnly, state == null ? TemporalUtilities.UTC : state.getTimeZone());
                                 }
                                 overviewPanel.populateHistogram(rg1, currentDatetimeAttribute, getTimelineLowerTimeExtent(), getTimelineUpperTimeExtent(), isFullRefresh, selectedOnly);
                             } finally {
@@ -489,7 +489,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                             } else {
                                 // There is no state, so lets create a new one:
                                 state = new TimelineState(getTimelineLowerTimeExtent(), getTimelineUpperTimeExtent(),
-                                        0, false, currentDatetimeAttribute, false, null, TimeZoneUtilities.UTC);
+                                        0, false, currentDatetimeAttribute, false, null, TemporalUtilities.UTC);
                             }
                             setExtents(state.getLowerTimeExtent(), state.getUpperTimeExtent());
                         });

@@ -57,15 +57,15 @@ public class TimeZoneUtilitiesNGTest {
     @Test
     public void testComparator() {
         // offset smaller than UTC
-        final int compare1 = TimeZoneUtilities.ZONE_ID_COMPARATOR.compare(ZoneId.of("-10:00"), TimeZoneUtilities.UTC);
+        final int compare1 = TemporalUtilities.ZONE_ID_COMPARATOR.compare(ZoneId.of("-10:00"), TemporalUtilities.UTC);
         assertTrue(compare1 < 0);
         
         // offset larger than UTC
-        final int compare2 = TimeZoneUtilities.ZONE_ID_COMPARATOR.compare(ZoneId.of("+10:00"), TimeZoneUtilities.UTC);
+        final int compare2 = TemporalUtilities.ZONE_ID_COMPARATOR.compare(ZoneId.of("+10:00"), TemporalUtilities.UTC);
         assertTrue(compare2 > 0);
         
         // offset equal to UTC (therefore comes down to id)
-        final int compare3 = TimeZoneUtilities.ZONE_ID_COMPARATOR.compare(ZoneId.of("+00:00"), TimeZoneUtilities.UTC);
+        final int compare3 = TemporalUtilities.ZONE_ID_COMPARATOR.compare(ZoneId.of("+00:00"), TemporalUtilities.UTC);
         assertTrue(compare3 > 0);
     }
 
@@ -76,13 +76,13 @@ public class TimeZoneUtilitiesNGTest {
     public void testGetTimeZoneAsStringOneParameter() {
         System.out.println("getTimeZoneAsStringOneParameter");
 
-        final String result1 = TimeZoneUtilities.getTimeZoneAsString(null);
+        final String result1 = TemporalUtilities.getTimeZoneAsString(null);
         assertEquals(result1, null);
             
-        final String result2 = TimeZoneUtilities.getTimeZoneAsString(ZoneId.of("+10:00"));
+        final String result2 = TemporalUtilities.getTimeZoneAsString(ZoneId.of("+10:00"));
         assertEquals(result2, "+10:00");
 
-        final String result3 = TimeZoneUtilities.getTimeZoneAsString(TimeZoneUtilities.UTC);
+        final String result3 = TemporalUtilities.getTimeZoneAsString(TemporalUtilities.UTC);
         assertEquals(result3, "+00:00 [UTC]");
     }
 
@@ -94,10 +94,10 @@ public class TimeZoneUtilitiesNGTest {
         System.out.println("getTimeZoneAsStringTwoParameters");
         
         final LocalDateTime localDateTime  = LocalDateTime.of(1999, Month.JULY, 5, 4, 32, 10);
-        final String result1 = TimeZoneUtilities.getTimeZoneAsString(localDateTime, ZoneId.of("+10:00"));
+        final String result1 = TemporalUtilities.getTimeZoneAsString(localDateTime, ZoneId.of("+10:00"));
         assertEquals(result1, "+10:00");
         
-        final String result2 = TimeZoneUtilities.getTimeZoneAsString(localDateTime, TimeZoneUtilities.UTC);
+        final String result2 = TemporalUtilities.getTimeZoneAsString(localDateTime, TemporalUtilities.UTC);
         assertEquals(result2, "+00:00 [UTC]");
     }
     
