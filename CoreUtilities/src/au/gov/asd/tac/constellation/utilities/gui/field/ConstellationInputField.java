@@ -691,8 +691,5 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
                 primaryInput.setStyle("-fx-background-color: red;");
             }
         }
-    }
-    
-    
-    
+    }   
 }

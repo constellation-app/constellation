@@ -20,10 +20,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
 import au.gov.asd.tac.constellation.plugins.parameters.RecentValuesChangeEvent;
 import au.gov.asd.tac.constellation.plugins.parameters.RecentValuesListener;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputField;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType;
-import au.gov.asd.tac.constellation.utilities.gui.field.PasswordInputField;
-import au.gov.asd.tac.constellation.utilities.gui.field.TextInputField;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.utilities.text.SpellCheckingTextArea;
 import java.util.Collections;
@@ -31,8 +27,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.scene.control.IndexRange;
-import javafx.scene.control.Label;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ComboBox;
@@ -56,7 +50,6 @@ import org.apache.commons.lang3.StringUtils;
  * au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType
  *
  * @author ruby_crucis
- * @author capricornunicorn123
  */
 public class ValueInputPane extends HBox implements RecentValuesListener {
 
@@ -99,6 +92,8 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
         final boolean isLabel = StringParameterType.isLabel(parameter);
         if (isLabel) {
             field = null;
+            recentValuesCombo = null;
+            recentValueSelectionListener = null;
             final Label l = new Label(parameter.getStringValue().replace(SeparatorConstants.NEWLINE, " "));
             l.setWrapText(true);
             l.setPrefWidth(defaultWidth);
@@ -200,10 +195,9 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                 recentValueSelectionListener = null;
             }
 
-
-//            if (parameter.getParameterValue().getGuiInit() != null) {
-//                parameter.getParameterValue().getGuiInit().init(field);
-//            }
+            if (parameter.getParameterValue().getGuiInit() != null) {
+                parameter.getParameterValue().getGuiInit().init(field);
+            }
             // If parameter is enabled, ensure widget is both enabled and editable.
             field.setEditable(parameter.isEnabled());
             field.setDisable(!parameter.isEnabled());
@@ -211,27 +205,27 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
             field.setVisible(parameter.isVisible());
             this.setManaged(parameter.isVisible());
             this.setVisible(parameter.isVisible());
-//            if (recentValuesCombo != null) {
-//                recentValuesCombo.setDisable(!parameter.isEnabled());
-//            }
+            if (recentValuesCombo != null) {
+                recentValuesCombo.setDisable(!parameter.isEnabled());
+            }
 
             final Tooltip tooltip = new Tooltip("");
             tooltip.setStyle("-fx-text-fill: white;");
-//            field.registerTextListener((ov, t, t1) -> {
-//                final String error = parameter.validateString(field.getText());
-//                if ((required && StringUtils.isBlank(field.getText())) || error != null) {
-//                    // if error is blank, the situation must be that a required parameter is blank
-//                    tooltip.setText(StringUtils.isNotBlank(error) ? error : "Value is required!");
-//                    field.setTooltip(tooltip);
-//                    field.setId("invalid");
-//                } else {
-//                    tooltip.setText("");
-//                    field.setTooltip(null);
-//                    field.setId("");
-//                }
-//
-//                parameter.setStringValue(field.getText());
-//            });
+            field.textProperty().addListener((ov, t, t1) -> {
+                final String error = parameter.validateString(field.getText());
+                if ((required && StringUtils.isBlank(field.getText())) || error != null) {
+                    // if error is blank, the situation must be that a required parameter is blank
+                    tooltip.setText(StringUtils.isNotBlank(error) ? error : "Value is required!");
+                    field.setTooltip(tooltip);
+                    field.setId("invalid");
+                } else {
+                    tooltip.setText("");
+                    field.setTooltip(null);
+                    field.setId("");
+                }
+
+                parameter.setStringValue(field.getText());
+            });
 
             parameter.addListener((pluginParameter, change) -> Platform.runLater(() -> {
                     switch (change) {
@@ -248,7 +242,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                             // If enabled, then ensure widget is both editable and enabled.
                             field.setEditable(pluginParameter.isEnabled());
                             field.setDisable(!pluginParameter.isEnabled());
-//                            recentValuesCombo.setDisable(!pluginParameter.isEnabled());
+                            recentValuesCombo.setDisable(!pluginParameter.isEnabled());
                         }
                         case VISIBLE -> {
                             field.setManaged(parameter.isVisible());
@@ -271,17 +265,18 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
 
     @Override
     public void recentValuesChanged(final RecentValuesChangeEvent e) {
-        if (parameterId.equals(e.getId())) {
+        if (recentValuesCombo != null && parameterId.equals(e.getId())) {
             //Covering actual value change under FX Thread
             Platform.runLater(() -> {
+                recentValuesCombo.getSelectionModel().selectedIndexProperty().removeListener(recentValueSelectionListener);
                 final List<String> recentValues = e.getNewValues();
                 if (recentValues != null) {
-                    TextInputField.addRecentValues(field, recentValues);
-                    field.setDisable(false);
+                    recentValuesCombo.setItems(FXCollections.observableList(recentValues));
+                    recentValuesCombo.setDisable(false);
                 } else {
                     final List<String> empty = Collections.emptyList();
-                    TextInputField.addRecentValues(field, empty);
-                    field.setDisable(true);
+                    recentValuesCombo.setItems(FXCollections.observableList(empty));
+                    recentValuesCombo.setDisable(true);
                 }
                 recentValuesCombo.setPromptText("...");
                 recentValuesCombo.getSelectionModel().selectedIndexProperty().addListener(recentValueSelectionListener);
