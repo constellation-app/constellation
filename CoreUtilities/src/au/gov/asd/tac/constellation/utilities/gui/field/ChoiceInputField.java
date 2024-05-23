@@ -164,16 +164,17 @@ public final class ChoiceInputField<C extends Object> extends ConstellationInput
      * @param requestedChoices 
      */
     private void setChoices(final List<C> requestedChoices) {
-        
-        //This meethod requres use of an Arraylist. Casting is not possible.
-        ArrayList<C> localList = new ArrayList<>();       
-        localList.addAll(requestedChoices);
-        
-        if (this.type == ChoiceType.MULTI) {
-            // Only retain the choices from the selection that in te available options
-            localList.retainAll(options);
-            //Single Modiication
-            this.setText(listToString(localList));
+        if (requestedChoices != null) {
+            //This meethod requres use of an Arraylist. Casting is not possible.
+            ArrayList<C> localList = new ArrayList<>();       
+            localList.addAll(requestedChoices);
+
+            if (this.type == ChoiceType.MULTI) {
+                // Only retain the choices from the selection that in te available options
+                localList.retainAll(options);
+                //Single Modiication
+                this.setText(listToString(localList));
+            }
         }
     }
     
@@ -339,47 +340,49 @@ public final class ChoiceInputField<C extends Object> extends ConstellationInput
                 items.add(new SeparatorMenuItem());
             }       
             
-            final Object[] optionsList = options.toArray();
-            final List<C> choices = field.getChoices();
-            for (int i = 0 ; i < optionsList.length ; i ++){
-                final C choice = (C) optionsList[i];
-                
-                final Labeled item = switch(field.type){
-                    case MULTI -> {
-                        final CheckBox box = new CheckBox(choice.toString());
-                        box.setOnAction(event -> {
-                            if (box.isSelected()) {
-                                field.setChoice(choice);
-                            } else {
-                                field.removeChoice(choice);
-                            }
-                        }); 
-                        box.setSelected(choices.contains(choice));
-                        boxes.add(box);
-                        yield box;
-                    }
-                    case SINGLE_DROPDOWN -> {
-                        final Label label = new Label(choice.toString());
-                        label.setOnMouseClicked(event -> {
-                                field.setChoice(choice);
-                        }); 
-                        yield label;
-                    }
-                    case SINGLE_SPINNER -> throw new Exception("Spinner inputs do not have context menus");
-                };
+            if (options != null){
+                final Object[] optionsList = options.toArray();
+                final List<C> choices = field.getChoices();
+                for (int i = 0 ; i < optionsList.length ; i ++){
+                    final C choice = (C) optionsList[i];
 
-                if (!icons.isEmpty()){
-                    item.setGraphic(icons.get(i));
+                    final Labeled item = switch(field.type){
+                        case MULTI -> {
+                            final CheckBox box = new CheckBox(choice.toString());
+                            box.setOnAction(event -> {
+                                if (box.isSelected()) {
+                                    field.setChoice(choice);
+                                } else {
+                                    field.removeChoice(choice);
+                                }
+                            }); 
+                            box.setSelected(choices.contains(choice));
+                            boxes.add(box);
+                            yield box;
+                        }
+                        case SINGLE_DROPDOWN -> {
+                            final Label label = new Label(choice.toString());
+                            label.setOnMouseClicked(event -> {
+                                    field.setChoice(choice);
+                            }); 
+                            yield label;
+                        }
+                        case SINGLE_SPINNER -> throw new Exception("Spinner inputs do not have context menus");
+                    };
+
+                    if (!icons.isEmpty()){
+                        item.setGraphic(icons.get(i));
+                    }
+
+                    CustomMenuItem menuItem = this.buildCustomMenuItem(item);   
+
+                    //If in multiple choice mode the context menu should not be closed after an item is selected.
+                    if (type == ChoiceType.MULTI){
+                        menuItem.setHideOnClick(false);
+                    }
+
+                    items.add(menuItem);
                 }
-                
-                CustomMenuItem menuItem = this.buildCustomMenuItem(item);   
-                
-                //If in multiple choice mode the context menu should not be closed after an item is selected.
-                if (type == ChoiceType.MULTI){
-                    menuItem.setHideOnClick(false);
-                }
-                
-                items.add(menuItem);
             }
             
             ChangeListener<List<C>> cl = (ObservableValue<? extends List<C>> observable, List<C> oldValue, List<C> newValue) -> {
