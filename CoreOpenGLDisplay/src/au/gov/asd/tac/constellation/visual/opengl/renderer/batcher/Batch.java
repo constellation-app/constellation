@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -438,7 +438,7 @@ public final class Batch {
     public int getBufferName(final int target) {
         try {
             return bufferNames[target][0];
-        } catch (ArrayIndexOutOfBoundsException ex) {
+        } catch (final ArrayIndexOutOfBoundsException ex) {
             throw new RenderException("Specified target doesn't exist or its buffer is not yet created.");
         }
     }
@@ -451,7 +451,7 @@ public final class Batch {
      * @param target
      * @return A FloatBuffer directly backed by data on the GL context.
      */
-    public FloatBuffer connectFloatBuffer(final GL3 gl, final int target) {
+    public FloatBuffer connectFloatBuffer(final GL gl, final int target) {
         final int bufferName = getBufferName(target);
         if (!bufferIsFloat[target]) {
             throw new RenderException(NOT_FLOATBUFFER);
@@ -469,7 +469,7 @@ public final class Batch {
      * @param target
      * @return An IntBuffer directly backed by data on the GL context.
      */
-    public IntBuffer connectIntBuffer(final GL3 gl, final int target) {
+    public IntBuffer connectIntBuffer(final GL gl, final int target) {
         final int bufferName = getBufferName(target);
         if (bufferIsFloat[target]) {
             throw new RenderException("Specified target is not an IntBuffer");
@@ -488,7 +488,7 @@ public final class Batch {
      * @param gl The GL context on which the buffer was finalised.
      * @param target The buffer to disconnect.
      */
-    public void disconnectBuffer(final GL3 gl, final int target) {
+    public void disconnectBuffer(final GL gl, final int target) {
         gl.glBindBuffer(GL.GL_ARRAY_BUFFER, getBufferName(target));
         gl.glUnmapBuffer(GL.GL_ARRAY_BUFFER);
     }
@@ -528,7 +528,7 @@ public final class Batch {
      *
      * @param gl The GL context to dispose this batch from.
      */
-    public void dispose(final GL3 gl) {
+    public void dispose(final GL2ES3 gl) {
         for (int i = 0; i < bufferNames.length; i++) {
             if (bufferNames[i].length != 0) {
                 gl.glDeleteBuffers(1, bufferNames[i], 0);
@@ -567,7 +567,8 @@ public final class Batch {
             try {
                 getBufferName(target);
                 gl.glEnableVertexAttribArray(target);
-            } catch (RenderException ex) {
+            } catch (final RenderException ex) {
+                LOGGER.log(Level.WARNING, ex.getLocalizedMessage());
             }
         }
     }
@@ -584,7 +585,8 @@ public final class Batch {
             try {
                 getBufferName(target);
                 gl.glDisableVertexAttribArray(target);
-            } catch (RenderException ex) {
+            } catch (final RenderException ex) {
+                LOGGER.log(Level.WARNING, ex.getLocalizedMessage());
             }
         }
     }

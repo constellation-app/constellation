@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,12 +33,10 @@ import java.util.function.BiConsumer;
 import org.openide.util.Lookup;
 
 /**
- * This class handles drag and drop on a graph as visualised by a
- * {@link InteractiveGLVisualProcessor}.
+ * This class handles drag and drop on a graph as visualised by a {@link InteractiveGLVisualProcessor}.
  * <p>
- * This class implements AWT DropTargetAdapter behaviour by using lookup to get
- * a list of all {@link GraphDropper} instances every time a drop occurs, and
- * then passing the drop event and the graph off to teh first
+ * This class implements AWT DropTargetAdapter behaviour by using lookup to get a list of all {@link GraphDropper}
+ * instances every time a drop occurs, and then passing the drop event and the graph off to teh first
  * {@link GraphDropper} that accepts the data being dropped.
  *
  * @author algol
@@ -55,8 +53,7 @@ public final class GraphRendererDropTarget extends DropTargetAdapter {
      *
      * @param graph The {@link Graph} to provide drag and drop for.
      * @param manager The {@link VisualManager} managing the graph.
-     * @param processor The {@link InteractiveGLVisualProcessor} visualising the
-     * graph.
+     * @param processor The {@link InteractiveGLVisualProcessor} visualising the graph.
      */
     public GraphRendererDropTarget(final Graph graph, final VisualManager manager, final InteractiveGLVisualProcessor processor) {
         this.graph = graph;
@@ -102,7 +99,7 @@ public final class GraphRendererDropTarget extends DropTargetAdapter {
                         Thread.currentThread().interrupt();
                     }
                 }
-                final DropInfo dropInfo = new DropInfo(dropGraphLocation, hitState.getCurrentHitId(), hitState.getCurrentHitType().equals(HitType.VERTEX), hitState.getCurrentHitType().equals(HitType.TRANSACTION));
+                final DropInfo dropInfo = new DropInfo(dropGraphLocation, hitState.getCurrentHitId(), hitState.getCurrentHitType() == HitType.VERTEX, hitState.getCurrentHitType() == HitType.TRANSACTION);
                 resultDropHandler.accept(graph, dropInfo);
             });
             computeDrop.setName("Graph Renderer Drop Target");

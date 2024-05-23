@@ -148,7 +148,7 @@ public class DefaultCustomIconProvider implements CustomIconProvider {
         if (!iconDir.exists()) {
             iconDir.mkdir();
         } else if (!iconDir.isDirectory()) {
-            LOGGER.warning(String.format("Icon directory '%s' is not a directory", USER_ICON_DIR));
+            LOGGER.log(Level.WARNING, "{0}", String.format("Icon directory '%s' is not a directory", USER_ICON_DIR));
         }
         return iconDir.isDirectory() ? iconDir : null;
     }

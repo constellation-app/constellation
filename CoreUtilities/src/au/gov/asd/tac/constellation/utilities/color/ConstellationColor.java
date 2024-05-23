@@ -64,6 +64,7 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
     public static final ConstellationColor GREY = new ConstellationColor("Grey", Color.GRAY);
     public static final ConstellationColor LIGHT_BLUE = new ConstellationColor("LightBlue", 0.0F, 0.5F, 1.0F, 1.0F);
     public static final ConstellationColor LIGHT_GREEN = new ConstellationColor("LightGreen", 0.5F, 1.0F, 0.0F, 1.0F);
+    public static final ConstellationColor LIGHT_SKY = new ConstellationColor("Light Sky", 206, 220, 235, 255);
     public static final ConstellationColor LIME = new ConstellationColor("Lime", 57, 255, 20, 255);
     public static final ConstellationColor MAGENTA = new ConstellationColor("Magenta", Color.MAGENTA);
     public static final ConstellationColor MANILLA = new ConstellationColor("Manilla", 255, 230, 153, 255);
@@ -112,6 +113,7 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
                     GREY,
                     LIGHT_BLUE,
                     LIGHT_GREEN,
+                    LIGHT_SKY,
                     LIME,
                     MAGENTA,
                     MANILLA,

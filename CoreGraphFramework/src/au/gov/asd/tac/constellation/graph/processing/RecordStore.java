@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.processing;
 
+import au.gov.asd.tac.constellation.graph.processing.Record;
 import java.util.List;
 
 /**
@@ -101,31 +102,31 @@ public interface RecordStore extends Record {
     /**
      * Check if the specified record has a value for the specified key.
      *
-     * @param record The index of the record
+     * @param newRecord The index of the record
      * @param key The key to lookup in the record
      * @return True if the specified record exists and has a value for the given
      * key. False otherwise.
      */
-    public boolean hasValue(final int record, final String key);
+    public boolean hasValue(final int newRecord, final String key);
 
     /**
      * Get a value from the specified record.
      *
-     * @param record The index of the record
+     * @param newRecord The index of the record
      * @param key The key to lookup
      * @return The String value associated with the key for the specified
      * record, if hasValue(record, key) is true. Null otherwise.
      */
-    public String get(final int record, final String key);
+    public String get(final int newRecord, final String key);
 
     /**
      * Set a key/value pair for the specified record.
      *
-     * @param record The index of the record
+     * @param newRecord The index of the record
      * @param key The key whose value is being set
      * @param value The value to set.
      */
-    public void set(final int record, final String key, final String value);
+    public void set(final int newRecord, final String key, final String value);
 
     /**
      * Set a key/value pair for the specified record with an Object value. This
@@ -134,21 +135,21 @@ public interface RecordStore extends Record {
      * set(record, key, value == null ? null : value.toString());
      * </code></pre>
      *
-     * @param record The index of the record
+     * @param newRecord The index of the record
      * @param key The key whose value is being set
      * @param value The value to set.
      */
-    public default void set(final int record, final String key, final Object value) {
-        set(record, key, value == null ? null : value.toString());
+    public default void set(final int newRecord, final String key, final Object value) {
+        set(newRecord, key, value == null ? null : value.toString());
     }
 
     /**
      * Return the collection of values in the specified record.
      *
-     * @param record the index of the record to return values for
+     * @param newRecord the index of the record to return values for
      * @return A list of the string values for the specified record
      */
-    public List<String> values(final int record);
+    public List<String> values(final int newRecord);
 
     /**
      * Return a list containing the values for a specified key for all records.

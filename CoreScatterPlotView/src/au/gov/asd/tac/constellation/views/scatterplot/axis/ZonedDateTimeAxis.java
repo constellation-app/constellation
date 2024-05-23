@@ -303,7 +303,7 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
         final double averageTicks = v / averageTickGap;
 
         // starting with the greatest interval, add one of each calendar unit.
-        ZonedDateTime datetime = lowerBound;
+        ZonedDateTime datetime;
         for (final Interval interval : Interval.values()) {
             datetime = lowerBound;
             dateTimeList.clear();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.notes;
 
-import au.gov.asd.tac.constellation.views.notes.utilities.NewNotePane;
-import au.gov.asd.tac.constellation.views.notes.utilities.DateTimeRangePicker;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
@@ -36,12 +34,16 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.gui.MultiChoiceInputField;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.notes.state.NotesViewEntry;
+import au.gov.asd.tac.constellation.views.notes.utilities.DateTimeRangePicker;
 import au.gov.asd.tac.constellation.views.notes.utilities.MarkdownTree;
+import au.gov.asd.tac.constellation.views.notes.utilities.NewNotePane;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.Comparator;
@@ -122,9 +124,8 @@ public class NotesViewPane extends BorderPane {
     private static final String SHOW_MORE = "Show more";
     private static final String SHOW_LESS = "Show less";
 
-    private static final String USER_COLOR = "#942483";
-    private static final String AUTO_COLOR = "#1c5aa6";
-    private static String USER_CHOSEN_COLOUR = USER_COLOR;
+    private static final String USER_COLOR = "#a26fc0";
+    private static final String AUTO_COLOR = "#236fcc";
     private static final String DATETIME_PATTERN = "hh:mm:ss a 'on' dd/MM/yyyy"; // TODO: make this a preference so that we can support their local timestamp format instead.
 
     private static final String AUTO_NOTES_FILTER = "Auto Notes";
@@ -136,9 +137,11 @@ public class NotesViewPane extends BorderPane {
 
     private static final Object LOCK = new Object();
 
-    private final String fontStyle = String.format("-fx-text-fill: #fff; -fx-font-size:%d;", FontUtilities.getApplicationFontSize());
+    private static final boolean DARK_MODE = JavafxStyleManager.isDarkTheme();
+    private final String fontStyle = String.format("-fx-text-fill: " + (DARK_MODE ? "white" : "black") + "; -fx-font-size:%d;", FontUtilities.getApplicationFontSize());
     private static final String BOLD_STYLE = "-fx-font-weight: bold;";
     private static String fontSize = String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize());
+    private static String userChosenColour = USER_COLOR;
 
     private final List<Integer> nodesSelected = new ArrayList<>();
     private final List<Integer> transactionsSelected = new ArrayList<>();
@@ -256,7 +259,7 @@ public class NotesViewPane extends BorderPane {
         final ToolBar toolBar = new ToolBar();
         toolBar.getItems().addAll(createNewNoteButton, filterSelectionMultiChoiceInput, autoFilterCheckComboBox, dateTimeRangePicker.getTimeFilterMenu(), helpButton);
         // Create the actual node that allows user to add new notes
-        newNotePane = new NewNotePane(USER_CHOSEN_COLOUR);
+        newNotePane = new NewNotePane(userChosenColour);
 
         // Button to trigger pop-up window to make a new note
         createNewNoteButton.setText("Create Note");
@@ -477,11 +480,8 @@ public class NotesViewPane extends BorderPane {
             );
 
             note.setUndone(pluginReport.isUndone());
-            final String[] tags = pluginReport.getTags();
-            final List<String> tagsList = new ArrayList<>();
-            for (final String tag : tags) {
-                tagsList.add(tag);
-            }
+            final List<String> tagsList = Arrays.asList(pluginReport.getTags());
+
             note.setTags(tagsList);
 
             /**
@@ -506,7 +506,7 @@ public class NotesViewPane extends BorderPane {
      */
     protected void processNewUndoRedoReport(final UndoRedoReport undoRedoReport) {
         if (hasMatchingNote(undoRedoReport)) {
-            getMatchingNoteOfUndoRedoReport(undoRedoReport).setUndone(undoRedoReport.getActionType() == UNDO);
+            getMatchingNoteOfUndoRedoReport(undoRedoReport).setUndone(undoRedoReport.getActionType().equals(UNDO));
             updateTagsFiltersAvailable();
             updateNotesAndFiltersUI();
         }
@@ -641,7 +641,7 @@ public class NotesViewPane extends BorderPane {
 
                 } else if (selectedFilters.contains(SELECTED_FILTER) && entry.isUserCreated() && entry.getShowing()) {
                     // If no nodes or transactions are selected, show notes applied to the whole graph.
-                    if (entry.isGraphAttribute()) {
+                    if (Boolean.TRUE.equals(entry.isGraphAttribute())) {
                         notesToRender.add(entry);
                     }
                     // Show notes related to the selected nodes.
@@ -730,7 +730,7 @@ public class NotesViewPane extends BorderPane {
     }
 
     private NotesViewEntry getMatchingNoteOfUndoRedoReport(final UndoRedoReport undoRedoReport) {
-        if (undoRedoReport.getActionType() == UNDO) {
+        if (undoRedoReport.getActionType().equals(UNDO)) {
             return notesViewEntries.stream()
                     .filter(entry -> undoRedoReport.getActionDescription().equals(entry.getNoteTitle()) && !entry.getUndone())
                     .max(Comparator.comparing(NotesViewEntry::getDateTime)).get();
@@ -796,7 +796,6 @@ public class NotesViewPane extends BorderPane {
         final Label titleLabel = new Label(newNote.getNoteTitle());
         titleLabel.setWrapText(true);
         titleLabel.setStyle(BOLD_STYLE + fontStyle);
-        titleLabel.setStyle("-fx-text-fill: #FFFFFF;");
 
         // Define content label
         final Label contentLabel = new Label(newNote.getNoteContent());
@@ -836,7 +835,7 @@ public class NotesViewPane extends BorderPane {
 
         // If the note is user created add the selection details.
         if (newNote.isUserCreated()) {
-            if (newNote.isGraphAttribute()) {
+            if (Boolean.TRUE.equals(newNote.isGraphAttribute())) {
                 selectionLabelText = "Note linked to: the graph.";
             } else {
                 selectionLabelText = "Note linked to: ";
@@ -1150,7 +1149,7 @@ public class NotesViewPane extends BorderPane {
         updateSelectedElements();
 
         if (!nodesSelected.isEmpty()) {
-            if (noteToEdit.isGraphAttribute()) {
+            if (Boolean.TRUE.equals(noteToEdit.isGraphAttribute())) {
                 noteToEdit.setGraphAttribute(false);
             }
             final List<Integer> originalNodes = noteToEdit.getNodesSelected();
@@ -1163,7 +1162,7 @@ public class NotesViewPane extends BorderPane {
         }
 
         if (!transactionsSelected.isEmpty()) {
-            if (noteToEdit.isGraphAttribute()) {
+            if (Boolean.TRUE.equals(noteToEdit.isGraphAttribute())) {
                 noteToEdit.setGraphAttribute(false);
             }
             final List<Integer> originalTransactions = noteToEdit.getTransactionsSelected();
@@ -1242,7 +1241,7 @@ public class NotesViewPane extends BorderPane {
      */
     public void updateSelectedTagsCombo(final List<String> selectedTagsFilters) {
         this.tagsSelectedFiltersList.clear();
-        selectedTagsFilters.forEach(filter -> this.tagsSelectedFiltersList.add(filter));
+        selectedTagsFilters.forEach(this.tagsSelectedFiltersList::add);
         updateTagFilters();
     }
 

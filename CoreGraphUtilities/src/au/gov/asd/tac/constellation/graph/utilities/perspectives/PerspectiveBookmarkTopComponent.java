@@ -339,8 +339,7 @@ public final class PerspectiveBookmarkTopComponent extends TopComponent implemen
     public void newActiveGraph(final Graph graph) {
         enableUI(graph != null);
         if (graph != null) {
-            final ReadableGraph rg = graph.getReadableGraph();
-            try {
+            try (final ReadableGraph rg = graph.getReadableGraph()){
                 final int pId = rg.getAttribute(GraphElementType.META, PerspectiveAttributeDescription.ATTRIBUTE_NAME);
                 if (pId != Graph.NOT_FOUND) {
                     perspectiveModel = (PerspectiveModel) rg.getObjectValue(pId, 0);
@@ -348,8 +347,6 @@ public final class PerspectiveBookmarkTopComponent extends TopComponent implemen
 
                     return;
                 }
-            } finally {
-                rg.release();
             }
         }
 

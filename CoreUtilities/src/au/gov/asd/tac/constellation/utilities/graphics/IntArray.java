@@ -76,14 +76,14 @@ import java.util.NoSuchElementException;
  * time in the future.
  *
  */
-public final class IntArray implements Iterable<Integer>, Cloneable {
+public final class IntArray implements Iterable<Integer> {
 
     private static final long serialVersionUID = 8683452581122332189L;
     /**
      * The array buffer into which the elements of the ArrayList are stored. The
      * capacity of the ArrayList is the length of this array buffer.
      */
-    private transient int[] elementData;
+    private int[] elementData;
     /**
      * The size of the ArrayList (the number of elements it contains).
      *
@@ -118,7 +118,7 @@ public final class IntArray implements Iterable<Integer>, Cloneable {
      * {@code ConcurrentModificationExceptions}. If an implementation does not
      * wish to provide fail-fast iterators, this field may be ignored.
      */
-    private transient int modCount = 0;
+    private int modCount = 0;
 
     /**
      * Constructs an empty list with the specified initial capacity.
@@ -146,8 +146,9 @@ public final class IntArray implements Iterable<Integer>, Cloneable {
     }
 
     public IntArray(final IntArray other) {
-        size = other.size;
-        elementData = Arrays.copyOf(other.elementData, size);
+        this.size = other.size;
+        this.elementData = Arrays.copyOf(other.elementData, size);
+        this.modCount = 0;
     }
 
     /**
@@ -254,26 +255,6 @@ public final class IntArray implements Iterable<Integer>, Cloneable {
         }
 
         return -1;
-    }
-
-    /**
-     * Returns a shallow copy of this <tt>ArrayList</tt> instance. (The elements
-     * themselves are not copied.)
-     *
-     * @return a clone of this <tt>ArrayList</tt> instance
-     */
-    @Override
-    public IntArray clone() {
-        try {
-            final IntArray v = (IntArray) super.clone();
-            v.elementData = Arrays.copyOf(elementData, size);
-            v.size = size;
-            v.modCount = 0;
-            return v;
-        } catch (final CloneNotSupportedException e) {
-            // this shouldn't happen, since we are Cloneable
-            throw new InternalError();
-        }
     }
 
     /**

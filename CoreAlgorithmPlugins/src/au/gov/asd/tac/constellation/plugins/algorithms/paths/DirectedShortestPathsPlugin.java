@@ -32,6 +32,7 @@ import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -168,7 +169,7 @@ public class DirectedShortestPathsPlugin extends SimpleEditPlugin {
             }
             selectedNodes = label2VxId;
         }
-        return selectedNodes;
+        return Collections.unmodifiableMap(selectedNodes);
     }
 
 }

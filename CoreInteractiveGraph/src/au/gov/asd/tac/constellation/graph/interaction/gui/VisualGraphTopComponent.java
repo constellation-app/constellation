@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -124,6 +124,7 @@ import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.Icon;
 import javax.swing.InputMap;
+import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
@@ -229,8 +230,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     private long graphModificationCount;
 
     // Sidebar actions.
-    private ContractAllCompositesAction contractCompositesAction;
-    private ExpandAllCompositesAction expandCompositesAction;
     private DrawNodesAction drawNodesAction;
     private DrawConnectionsAction drawConnectionsAction;
     private DrawNodeLabelsAction drawNodeLabelsAction;
@@ -310,8 +309,8 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         // NetBeans creates a single instance of an action and uses it globally, which doesn't do us any good,
         // because we want to have different toggle states on different graphs, for instance.
         // Therefore, we'll ignore NetBeans and create our own per-graph action instances.
-        expandCompositesAction = new ExpandAllCompositesAction(graphNode);
-        contractCompositesAction = new ContractAllCompositesAction(graphNode);
+        final ExpandAllCompositesAction expandCompositesAction = new ExpandAllCompositesAction(graphNode);
+        final ContractAllCompositesAction contractCompositesAction = new ContractAllCompositesAction(graphNode);
         drawNodesAction = new DrawNodesAction(graphNode);
         drawConnectionsAction = new DrawConnectionsAction(graphNode);
         drawNodeLabelsAction = new DrawNodeLabelsAction(graphNode);
@@ -451,8 +450,8 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         visualManager.startProcessing();
 
         Schema schema = graph.getSchema();
-        if (schema instanceof GraphNodeFactory) {
-            graphNode = ((GraphNodeFactory) schema).createGraphNode(graph, gdo, this, visualManager);
+        if (schema instanceof GraphNodeFactory graphNodeFactory) {
+            graphNode = graphNodeFactory.createGraphNode(graph, gdo, this, visualManager);
         } else {
             graphNode = new GraphNode(graph, gdo, this, visualManager);
         }
@@ -499,13 +498,13 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        displayPanel = new javax.swing.JPanel();
+        displayPanel = new JPanel();
 
-        setLayout(new java.awt.BorderLayout());
+        setLayout(new BorderLayout());
 
-        displayPanel.setBackground(new java.awt.Color(0, 0, 0));
-        displayPanel.setLayout(new java.awt.BorderLayout());
-        add(displayPanel, java.awt.BorderLayout.CENTER);
+        displayPanel.setBackground(new Color(0, 0, 0));
+        displayPanel.setLayout(new BorderLayout());
+        add(displayPanel, BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel displayPanel;
@@ -514,12 +513,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     @Override
     public void componentOpened() {
         super.componentOpened();
-
-        // Try to free up any unused memory
-        final boolean forceGarbageCollectOnOpen = NbPreferences.forModule(ApplicationPreferenceKeys.class).getBoolean(DeveloperPreferenceKeys.FORCE_GC_ON_OPEN, DeveloperPreferenceKeys.FORCE_GC_ON_OPEN_DEFAULT);
-        if (forceGarbageCollectOnOpen) {
-            System.gc();
-        }
 
         graphUpdateManager.setManaged(true);
     }
@@ -552,12 +545,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
         if (GraphManager.getDefault().getAllGraphs().isEmpty()) {
             ConstellationIcon.clearCache();
-        }
-
-        // Try to free up any unused memory
-        final boolean forceGarbageCollectOnClose = NbPreferences.forModule(ApplicationPreferenceKeys.class).getBoolean(DeveloperPreferenceKeys.FORCE_GC_ON_CLOSE, DeveloperPreferenceKeys.FORCE_GC_ON_CLOSE_DEFAULT);
-        if (forceGarbageCollectOnClose) {
-            System.gc();
         }
 
         graphUpdateManager.setManaged(false);
@@ -641,17 +628,10 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             toggleDrawDirectedAction.setEnabled(isDrawingMode);
 
             switch (connectionMode) {
-                case LINK:
-                    drawLinksAction.putValue(Action.SELECTED_KEY, true);
-                    break;
-                case EDGE:
-                    drawEdgesAction.putValue(Action.SELECTED_KEY, true);
-                    break;
-                case TRANSACTION:
-                    drawTransactionsAction.putValue(Action.SELECTED_KEY, true);
-                    break;
-                default:
-                    throw new IllegalStateException("Unknown ConnectionMode: " + connectionMode);
+                case LINK -> drawLinksAction.putValue(Action.SELECTED_KEY, true);
+                case EDGE -> drawEdgesAction.putValue(Action.SELECTED_KEY, true);
+                case TRANSACTION -> drawTransactionsAction.putValue(Action.SELECTED_KEY, true);
+                default -> throw new IllegalStateException("Unknown ConnectionMode: " + connectionMode);
             }
         } finally {
             rg.release();
@@ -708,7 +688,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             final Action discardNebula = new AbstractAction("Discard nebula") {
                 @Override
                 public void actionPerformed(final ActionEvent e) {
-                    TopComponent.getRegistry().getOpened().stream().filter(tc -> (tc instanceof VisualGraphTopComponent)).map(tc -> (VisualGraphTopComponent) tc).forEach(vtc -> {
+                    TopComponent.getRegistry().getOpened().stream().filter(VisualGraphTopComponent.class::isInstance).map(tc -> (VisualGraphTopComponent) tc).forEach(vtc -> {
                         final NebulaDataObject ndo = vtc.getGraphNode().getDataObject().getNebulaDataObject();
                         if (nebula.equalsPath(ndo)) {
                             vtc.savable.setModified(false);
@@ -741,7 +721,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 final Action closeNebula = new AbstractAction("Close nebula") {
                     @Override
                     public void actionPerformed(final ActionEvent e) {
-                        TopComponent.getRegistry().getOpened().stream().filter(tc -> (tc instanceof VisualGraphTopComponent)).map(tc -> (VisualGraphTopComponent) tc).forEach(vtc -> {
+                        TopComponent.getRegistry().getOpened().stream().filter(VisualGraphTopComponent.class::isInstance).map(tc -> (VisualGraphTopComponent) tc).forEach(vtc -> {
                             final NebulaDataObject ndo = vtc.getGraphNode().getDataObject().getNebulaDataObject();
                             if (nebula.equalsPath(ndo)) {
                                 vtc.close();
@@ -820,7 +800,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     private static List<Savable> getNebulaSavables(final NebulaDataObject nebula) {
         final List<Savable> savableList = new ArrayList<>();
         final Collection<? extends Savable> savables = Savable.REGISTRY.lookupAll(Savable.class);
-        savables.stream().filter(s -> (s instanceof MySavable)).forEach(s -> {
+        savables.stream().filter(MySavable.class::isInstance).forEach(s -> {
             final NebulaDataObject otherNDO = ((MySavable) s).tc().getGraphNode().getDataObject().getNebulaDataObject();
             if (nebula.equalsPath(otherNDO)) {
                 savableList.add(s);

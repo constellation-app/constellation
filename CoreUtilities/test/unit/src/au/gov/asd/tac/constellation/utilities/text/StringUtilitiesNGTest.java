@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,37 +70,37 @@ public class StringUtilitiesNGTest {
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void unescapeEnd() {
         final String s = "abc" + StringUtilities.ESCAPE_CHARACTER;
-        StringUtilities.unescape(s, DELIM);
+        StringUtilities.unescape(s);
     }
 
     @Test
     public void roundTrip1() {
         final String s = "abc" + DELIM + "123";
-        assertEquals(StringUtilities.unescape(StringUtilities.escape(s, DELIM), DELIM), s);
+        assertEquals(StringUtilities.unescape(StringUtilities.escape(s, DELIM)), s);
     }
 
     @Test
     public void roundTripEscape1() {
         final String s = StringUtilities.ESCAPE_CHARACTER;
-        assertEquals(StringUtilities.unescape(StringUtilities.escape(s, DELIM), DELIM), s);
+        assertEquals(StringUtilities.unescape(StringUtilities.escape(s, DELIM)), s);
     }
 
     @Test
     public void roundTripEscape2() {
         final String s = StringUtilities.ESCAPE_CHARACTER + StringUtilities.ESCAPE_CHARACTER;
-        assertEquals(StringUtilities.unescape(StringUtilities.escape(s, DELIM), DELIM), s);
+        assertEquals(StringUtilities.unescape(StringUtilities.escape(s, DELIM)), s);
     }
 
     @Test
     public void roundTripEscape3() {
         final String s = StringUtilities.ESCAPE_CHARACTER + DELIM + StringUtilities.ESCAPE_CHARACTER;
-        assertEquals(StringUtilities.unescape(StringUtilities.escape(s, DELIM), DELIM), s);
+        assertEquals(StringUtilities.unescape(StringUtilities.escape(s, DELIM)), s);
     }
 
     @Test
     public void roundTripAll() {
         final String s = DELIM + DELIM + DELIM + DELIM;
-        assertEquals(StringUtilities.unescape(StringUtilities.escape(s, DELIM), DELIM), s);
+        assertEquals(StringUtilities.unescape(StringUtilities.escape(s, DELIM)), s);
     }
 
     @Test

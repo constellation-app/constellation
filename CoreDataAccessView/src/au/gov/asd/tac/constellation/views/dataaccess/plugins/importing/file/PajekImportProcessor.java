@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import javafx.stage.FileChooser.ExtensionFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.NotifyDescriptor;
@@ -55,6 +56,8 @@ public class PajekImportProcessor implements GraphFileImportProcessor {
     
     public static final String VERTEX_HEADER = "*V";
     public static final String EDGE_HEADER = "*E";
+    
+    private static final Pattern WHITESPACES_REGEX = Pattern.compile("\\s+", Pattern.UNICODE_CHARACTER_CLASS);
 
     @Override
     public String getName() {
@@ -113,7 +116,7 @@ public class PajekImportProcessor implements GraphFileImportProcessor {
                 } else if (processEdges && retrieveTransactions) {
                     try {
                         // Read edge data
-                        final String[] fields = line.split("\\s+");
+                        final String[] fields = WHITESPACES_REGEX.split(line);
                         final String srcId = fields[0];
                         final String dstId = fields[1];
                         final String weight = fields[2];

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,7 +81,7 @@ public class ImportDefinition {
     @Override
     public String toString() {
         final StringBuilder b = new StringBuilder();
-        b.append(String.format("[\nFirst row:%d\nFilter:%s\n", firstRow, filter != null ? filter.getScript() : ""));
+        b.append(String.format("[%nFirst row:%d%nFilter:%s%n", firstRow, filter != null ? filter.getScript() : ""));
         for (final AttributeType at : AttributeType.values()) {
             final List<ImportAttributeDefinition> defs = getDefinitions(at);
             defs.stream().forEach(iad -> b.append(String.format("%s %s (column %d)\n", at, iad.toString(), iad.getColumnIndex())));

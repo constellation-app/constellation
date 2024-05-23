@@ -109,7 +109,7 @@ public final class DeveloperOptionsPanelController extends OptionsPanelControlle
 
     private DeveloperOptionsPanel getPanel() {
         if (panel == null) {
-            panel = new DeveloperOptionsPanel(this);
+            panel = new DeveloperOptionsPanel();
         }
         return panel;
     }

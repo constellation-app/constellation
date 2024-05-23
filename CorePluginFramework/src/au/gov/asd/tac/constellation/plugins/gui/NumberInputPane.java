@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -132,10 +132,9 @@ public class NumberInputPane<T> extends HBox {
                 } else {
                     repeatedOccurrences = 0;
                 }
-                Platform.runLater(() -> {
+                Platform.runLater(() -> 
                     // Auto-select the numeric portion of the new text, to allow immediate overwriting of the inserted value.
-                    field.getEditor().selectRange((repeatedOccurrences%2 == 1) ? 0 : newValue.length(), field.getEditor().getText().length());
-                });
+                    field.getEditor().selectRange((repeatedOccurrences%2 == 1) ? 0 : newValue.length(), field.getEditor().getText().length()));
                 return;
             }
             final int dotPos = newValue.indexOf(SeparatorConstants.PERIOD);
@@ -218,6 +217,7 @@ public class NumberInputPane<T> extends HBox {
                     parameter.setFloatValue(currentFloatValue);
                 }
                 default -> {
+                    // do nothing
                 }
             }
         } catch (final NumberFormatException ex) {

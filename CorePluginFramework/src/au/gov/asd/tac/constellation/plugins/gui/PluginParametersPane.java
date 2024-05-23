@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -773,6 +773,7 @@ public final class PluginParametersPane extends GridPane {
                         ldb.setVisible(parameter.isVisible());
                     }
                     default -> {
+                        // do nothing
                     }
                 }
             });
@@ -793,6 +794,7 @@ public final class PluginParametersPane extends GridPane {
                     }
                     case VALUE -> Platform.runLater(this::parameterHasChanged);
                     default -> {
+                        // do nothing
                     }
                 }
                 updateTop(parameter);
@@ -833,7 +835,7 @@ public final class PluginParametersPane extends GridPane {
                 case MultiChoiceParameterType.ID -> pane = new MultiChoiceInputPane((PluginParameter<MultiChoiceParameterValue>) parameter);
                 case ParameterListParameterType.ID -> pane = new ParameterListInputPane((PluginParameter<ParameterListParameterValue>) parameter);
                 case ActionParameterType.ID -> pane = new ActionInputPane(parameter);
-                case PasswordParameterType.ID -> pane = new ValueInputPane((PluginParameter<PasswordParameterValue>) parameter, ValueInputPane.DEFAULT_WIDTH);
+                case PasswordParameterType.ID -> pane = new PasswordInputPane((PluginParameter<PasswordParameterValue>) parameter);
                 default -> throw new IllegalArgumentException("Unsupported parameter type ID: " + id);
             }
 

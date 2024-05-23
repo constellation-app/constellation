@@ -28,6 +28,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -143,7 +144,7 @@ public class ConstellationIcon {
      * ConstellationIcon.
      */
     public List<String> getAliases() {
-        return aliases;
+        return Collections.unmodifiableList(aliases);
     }
 
     /**
@@ -154,7 +155,7 @@ public class ConstellationIcon {
      * ConstellationIcon.
      */
     public List<String> getCategories() {
-        return categories;
+        return Collections.unmodifiableList(categories);
     }
 
     /**

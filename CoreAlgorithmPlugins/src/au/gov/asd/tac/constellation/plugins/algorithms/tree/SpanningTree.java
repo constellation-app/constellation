@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -214,7 +215,7 @@ public final class SpanningTree {
         }
     }
 
-    private static class LinkSorter implements Comparator<Integer> {
+    private static class LinkSorter implements Comparator<Integer>, Serializable {
 
         private final GraphWriteMethods wg;
         private final int comp;

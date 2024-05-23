@@ -30,7 +30,7 @@ public class FactResult extends AnalyticResult<ElementFact> {
 
     public Set<String> getUniqueFactNames() {
         return result.values().stream()
-                .map(elementFact -> elementFact.getFactName())
+                .map(ElementFact::getFactName)
                 .collect(Collectors.toSet());
     }
 

@@ -288,20 +288,18 @@ public class InfoOverlay extends MapOverlay implements MapEventListener {
             scopedListenersList.forEach(scopedListeners -> {
                 if (scopedListeners.isInScope(mapEvent)) {
                     scopedListeners.listeners.forEach(listener -> {
-                        if (listener instanceof UnfoldingMap listeningMap) {
-                            if (map.getId().equals(listeningMap.getId())) {
-                                if (mapEvent.getSubType().equals(PanMapEvent.PAN_BY)) {
-                                    panByListened = 1;
-                                }
-                                if (mapEvent.getSubType().equals(PanMapEvent.PAN_TO)) {
-                                    panToListened = 1;
-                                }
-                                if (mapEvent.getSubType().equals(ZoomMapEvent.ZOOM_BY_LEVEL)) {
-                                    zoomByListened = 1;
-                                }
-                                if (mapEvent.getSubType().equals(ZoomMapEvent.ZOOM_TO_LEVEL)) {
-                                    zoomToListened = 1;
-                                }
+                        if (listener instanceof UnfoldingMap listeningMap && map.getId().equals(listeningMap.getId())) {
+                            if (mapEvent.getSubType().equals(PanMapEvent.PAN_BY)) {
+                                panByListened = 1;
+                            }
+                            if (mapEvent.getSubType().equals(PanMapEvent.PAN_TO)) {
+                                panToListened = 1;
+                            }
+                            if (mapEvent.getSubType().equals(ZoomMapEvent.ZOOM_BY_LEVEL)) {
+                                zoomByListened = 1;
+                            }
+                            if (mapEvent.getSubType().equals(ZoomMapEvent.ZOOM_TO_LEVEL)) {
+                                zoomToListened = 1;
                             }
                         }
                     });

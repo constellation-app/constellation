@@ -747,18 +747,27 @@ def _get_rest(rest=None):
     """
 
     if not rest:
-        rest = os.path.join(os.path.expanduser('~'), '.CONSTELLATION', 'rest.json')
+        rest = os.path.join(os.path.expanduser('~'), '.ipython', 'rest.json')
 
     try:
         with open(rest) as f:
+            print('Found REST file {}'.format(rest))
             data = json.load(f)
     except FileNotFoundError:
         print('REST file {} not found'.format(rest), file=sys.stderr)
-        data = {}
+        rest = os.path.join(os.path.expanduser('~'), 'rest.json')
+        print('Checking {} instead...'.format(rest), file=sys.stderr)
+        try:
+            with open(rest) as f:
+                print('Found REST file {}'.format(rest))
+                data = json.load(f)
+        except FileNotFoundError:
+            print('REST file {} not found'.format(rest), file=sys.stderr)
+            data = {}
     except json.decoder.JSONDecodeError as e:
         print('Error decoding REST JSON: {}'.format(e), file=sys.stderr)
         data = {}
-
+    
     return data
 
 def _row_dict(row, names, prefix):

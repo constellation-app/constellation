@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,7 +85,7 @@ public class NewNotePane {
     private TextFlow previewTextFlow;
 
     private final ColorPicker newNoteColour;
-    private String previousColour = "#942483";
+    private String previousColour = "#a26fc0";
 
     private boolean applySelected = true;
     private boolean markdownSelected = false;

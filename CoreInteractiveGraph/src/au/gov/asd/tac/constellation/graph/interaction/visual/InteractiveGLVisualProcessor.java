@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -170,7 +170,7 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
     @Override
     public VisualOperation hitTestCursor(final int x, final int y, final HitState hitState, final Queue<HitState> notificationQueue) {
         hitTester.queueRequest(new HitTestRequest(x, y, hitState, notificationQueue, resultState -> {
-            if (resultState.getCurrentHitType().equals(HitType.NO_ELEMENT) && !VisualGraphUtilities.isDrawingMode(GraphManager.getDefault().getActiveGraph())) {
+            if (resultState.getCurrentHitType() == HitType.NO_ELEMENT && !VisualGraphUtilities.isDrawingMode(GraphManager.getDefault().getActiveGraph())) {
                 getCanvas().setCursor(DEFAULT_CURSOR);
             } else {
                 getCanvas().setCursor(CROSSHAIR_CURSOR);
@@ -335,7 +335,7 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
             this.distanceFromCamera = getDistanceFromCamera(nodeLocation, horizontalScale, verticalScale);
         }
 
-        public Vector3f GetNodeLocation() {
+        public Vector3f getNodeLocation() {
             return nodeLocation;
         }
 

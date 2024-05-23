@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects;
 
-import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteReader;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteWriter;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -24,6 +23,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
@@ -198,7 +198,7 @@ public final class Plane {
         this.isVisible = isVisible;
     }
 
-    public static Plane readNode(final JsonNode jnode, final GraphReadMethods graph, final GraphByteReader byteReader) throws IOException {
+    public static Plane readNode(final JsonNode jnode, final GraphByteReader byteReader) throws IOException {
         final String label = jnode.get("label").textValue();
         final float x = (float) jnode.get("x").doubleValue();
         final float y = (float) jnode.get("y").doubleValue();
@@ -231,7 +231,7 @@ public final class Plane {
         final String reference = byteWriter.write(new ByteArrayInputStream(bytes));
         jg.writeStringField("plane_ref", reference);
 
-        LOGGER.info(String.format("Write plane '%s', byteLabel '%s', size %d", label, reference, bytes.length));
+        LOGGER.log(Level.INFO, "{0}", String.format("Write plane '%s', byteLabel '%s', size %d", label, reference, bytes.length));
     }
 
     @Override

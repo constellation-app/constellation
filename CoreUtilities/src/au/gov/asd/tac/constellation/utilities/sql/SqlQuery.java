@@ -21,11 +21,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -110,7 +112,7 @@ public class SqlQuery {
                 statement.setDouble(arg.getKey(), arg.getValue());
             }
 
-            LOGGER.fine(statement.toString());
+            LOGGER.log(Level.FINE, "{0}", statement);
 
             // execute the query and return the results.
             if (isQuery) {
@@ -137,7 +139,7 @@ public class SqlQuery {
 
     // Helper method to qualify a list of SQL column names with the name of the table they belong to,
     // in order to avoid naming conflicts when performing joins.
-    public static List<String> qualifyColumnsWithTableName(final String tableName, final List<String> columnNames, final boolean addAsClause) {
+    public static List<String> qualifyColumnsWithTableName(final String tableName, final Collection<String> columnNames, final boolean addAsClause) {
         final List<String> qualifiedNames = new ArrayList<>(columnNames.size());
         for (final String columnName : columnNames) {
             qualifiedNames.add(qualifyColumnWithTableName(tableName, columnName, addAsClause));
@@ -209,7 +211,7 @@ public class SqlQuery {
     // Used to append a clause which inserts a list of data into a single named column to this sql query.
     // Note that the table name and column name are assumed not to be user input and hence
     // are not sanitized. The data being inserted is santized.
-    public void appendInsertIntoSingleColumnCaluse(final String tableName, final String columnName, final List<String> data) {
+    public void appendInsertIntoSingleColumnCaluse(final String tableName, final String columnName, final Iterable<String> data) {
         query.append("INSERT INTO ");
         query.append(tableName)
                 .append("(")
@@ -322,7 +324,7 @@ public class SqlQuery {
     // where a specific column is compared using = or LIKE to a list of specific values.
     // Note that the table and column name are assumed not to be user input and hence are not
     // sanitized. The values are sanitized.
-    public void appendUnionComparisonClause(final String columnName, final List<? extends Object> values, final MatchType matchType) {
+    public void appendUnionComparisonClause(final String columnName, final Iterable<? extends Object> values, final MatchType matchType) {
         final String currentQuery = query.toString();
         for (Object value : values) {
             query.append(columnName);
@@ -355,7 +357,7 @@ public class SqlQuery {
     // where a specific column is compared using = or LIKE to a list of specific values.
     // Note that the table and column name are assumed not to be user input and hence are not
     // sanitized. The values are sanitized.
-    public void appendDisjunctiveComparisonClause(final String columnName, final List<? extends Object> values, final MatchType matchType, final boolean lastClause) {
+    public void appendDisjunctiveComparisonClause(final String columnName, final Iterable<? extends Object> values, final MatchType matchType, final boolean lastClause) {
         for (Object value : values) {
             query.append(columnName);
             query.append(matchType == MatchType.MATCH_EXACT ? " = " : " LIKE ");

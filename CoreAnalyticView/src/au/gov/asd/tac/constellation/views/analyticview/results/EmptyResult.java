@@ -27,8 +27,7 @@ public class EmptyResult extends AnalyticResult<EmptyData> {
 
     public static class EmptyData extends AnalyticData {
 
-        public EmptyData(final GraphElementType elementType, final int elementId,
-                final String identifier, final boolean isNull, final float score) {
+        public EmptyData(final GraphElementType elementType, final int elementId, final String identifier, final boolean isNull) {
             super(elementType, elementId, identifier, isNull);
         }
 

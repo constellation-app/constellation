@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import org.geotools.data.FeatureWriter;
 import org.geotools.data.Transaction;
 import org.geotools.data.shapefile.ShapefileDataStore;
@@ -82,6 +83,10 @@ public class Shape {
     private static final String CENTROID_LATITUDE_ATTRIBUTE = "centreLat";
     private static final String CENTROID_LONGITUDE_ATTRIBUTE = "centreLon";
     private static final String RADIUS_ATTRIBUTE = "radius";
+    
+    private static final Pattern SOURCE_PATTERN = Pattern.compile("source");
+    private static final Pattern DESTINATION_PATTERN = Pattern.compile("destination");
+    private static final Pattern TRANSACTION_PATTERN = Pattern.compile("transaction");
 
     private static final List<Class<?>> GEOPACKAGE_ATTRIBUTE_TYPES = new ArrayList<>();
 
@@ -226,11 +231,11 @@ public class Shape {
             case POINT -> geometry = geometryBuilder.point(centroidLongitude, centroidLatitude);
             case LINE -> geometry = geometryBuilder.lineString(coordinates.stream()
                         .flatMap(Tuple::stream)
-                        .mapToDouble(coordinate -> (Double) coordinate)
+                        .mapToDouble(Double.class::cast)
                         .toArray());
             case POLYGON -> geometry = geometryBuilder.polygon(coordinates.stream()
                         .flatMap(Tuple::stream)
-                        .mapToDouble(coordinate -> (Double) coordinate)
+                        .mapToDouble(Double.class::cast)
                         .toArray());
             case BOX -> {
                 final List<Tuple<Double, Double>> boxCoordinates = new ArrayList<>();
@@ -240,7 +245,7 @@ public class Shape {
                 boxCoordinates.add(Tuple.create(maxLongitude, minLatitude));
                 geometry = geometryBuilder.polygon(boxCoordinates.stream()
                         .flatMap(Tuple::stream)
-                        .mapToDouble(coordinate -> (Double) coordinate)
+                        .mapToDouble(Double.class::cast)
                         .toArray());
             }
             default -> throw new IllegalArgumentException(String.format("The specified shape type, %s, is not currently supported.", type));
@@ -707,13 +712,13 @@ public class Shape {
 
         // shorten element prefixes
         if (compatibleHeader.startsWith("source")) {
-            compatibleHeader = compatibleHeader.replaceFirst("source", "s");
+            compatibleHeader = SOURCE_PATTERN.matcher(compatibleHeader).replaceFirst("s");
         }
         if (compatibleHeader.startsWith("destination")) {
-            compatibleHeader = compatibleHeader.replaceFirst("destination", "d");
+            compatibleHeader = DESTINATION_PATTERN.matcher(compatibleHeader).replaceFirst("d");
         }
         if (compatibleHeader.startsWith("transaction")) {
-            compatibleHeader = compatibleHeader.replaceFirst("transaction", "t");
+            compatibleHeader = TRANSACTION_PATTERN.matcher(compatibleHeader).replaceFirst("t");
         }
 
         // ensure header is no more than 10 characters

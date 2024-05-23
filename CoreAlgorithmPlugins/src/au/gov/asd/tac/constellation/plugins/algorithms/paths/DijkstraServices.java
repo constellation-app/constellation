@@ -103,7 +103,7 @@ public class DijkstraServices {
      */
     public DijkstraServices(final GraphWriteMethods graph, final List<Integer> verticesToPath, final boolean followDirection) {
         this.graph = graph;
-        this.selectedVertices = verticesToPath;
+        this.selectedVertices = new ArrayList<>(verticesToPath);
         this.followDirection = followDirection;
     }
 
@@ -563,7 +563,6 @@ public class DijkstraServices {
                         shortestPaths.add(new ArrayList<>(path));
                         path.remove(path.indexOf(previous));
                     }
-                    count++;
                 } else if (count == 0) {
                     //If we are at 0 and not at the target we have reached a dead end
                     //Not the shortest path

@@ -255,7 +255,7 @@ public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
             default -> 0;
         };
 
-        graph.setLongValue(attrTxDatetime, transaction, dt++);
+        graph.setLongValue(attrTxDatetime, transaction, dt);
         graph.setObjectValue(colorAttr, transaction, randomColorWithAlpha(r));
     }
 

@@ -200,6 +200,7 @@ public class NamedSelectionEditorPlugin extends SimpleEditPlugin {
             case UNION -> performUnion(graph);
             case CUSTOM_SAVE -> saveCustomSelection(graph);
             default -> {
+                // do nothing
             }
         }
     }

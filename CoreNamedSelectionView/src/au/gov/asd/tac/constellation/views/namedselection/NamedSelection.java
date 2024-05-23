@@ -37,7 +37,7 @@ import org.openide.util.NbBundle.Messages;
  * @author betelgeuse
  */
 @Messages("NamedSelection_DefaultSelectionName=Selection ")
-public class NamedSelection implements Cloneable {
+public class NamedSelection {
 
     private final int id;
     private String hotkey = null;
@@ -52,7 +52,6 @@ public class NamedSelection implements Cloneable {
      */
     public NamedSelection() {
         id = -1; // From 0 to 63
-
         setDefaultName();
     }
 
@@ -63,7 +62,6 @@ public class NamedSelection implements Cloneable {
      */
     public NamedSelection(final int id) {
         this.id = id;
-
         setDefaultName();
     }
 
@@ -77,7 +75,20 @@ public class NamedSelection implements Cloneable {
     public NamedSelection(final int id, final String hotkey) {
         this.id = id;
         this.hotkey = hotkey;
-
+        setDefaultName();
+    }
+    
+    /**
+     * Constructs a deep copy of an existing NamedSelection object
+     * 
+     * @param namedSelection the NamedSelection to copy
+     */
+    public NamedSelection(final NamedSelection namedSelection) {
+        this.id = namedSelection.id;
+        this.description = namedSelection.description;
+        this.hotkey = namedSelection.hotkey;
+        this.name = namedSelection.name;
+        this.isLocked = namedSelection.isLocked;
         setDefaultName();
     }
 
@@ -216,25 +227,6 @@ public class NamedSelection implements Cloneable {
      */
     public boolean isLocked() {
         return isLocked;
-    }
-
-    /**
-     * Clones (using a deep-copy) the current <code>NamedSelection</code>
-     * instance.
-     *
-     * @return The clone of the current instance.
-     *
-     * @see Cloneable
-     */
-    @Override
-    public NamedSelection clone() {
-        NamedSelection clone = new NamedSelection(this.id);
-        clone.description = this.description;
-        clone.hotkey = this.hotkey;
-        clone.name = this.name;
-        clone.isLocked = this.isLocked;
-
-        return clone;
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -874,7 +874,7 @@ public class ShapeNGTest {
     public void testGenerateShapeCollection() throws IOException {
         // generate the shape collection
         final String s = Shape.generateShapeCollection(
-                UUID.randomUUID().toString(), // the UUID is never used
+                "0000-00-00-00-000000", // the UUID is never used
                 getTestShapes(), getTestAttributes());
 
         // convert GeoJson string to a list of Features

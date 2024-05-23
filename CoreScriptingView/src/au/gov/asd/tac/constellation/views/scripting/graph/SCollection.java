@@ -72,7 +72,7 @@ public class SCollection {
         for (int vxId = elementIds.nextSetBit(0); vxId >= 0; vxId = elementIds.nextSetBit(vxId + 1)) {
             context.setAttribute("__p1", new SVertex(readableGraph, vxId), ScriptContext.ENGINE_SCOPE);
             final Object b = engine.eval("__func(__p1)");
-            if ((Boolean) b) {
+            if (Boolean.TRUE.equals(b)) {
                 vertices.set(vxId);
             }
         }
@@ -88,7 +88,7 @@ public class SCollection {
         for (int txId = elementIds.nextSetBit(0); txId >= 0; txId = elementIds.nextSetBit(txId + 1)) {
             context.setAttribute("__p1", new STransaction(readableGraph, txId), ScriptContext.ENGINE_SCOPE);
             final Object b = engine.eval("__func(__p1)");
-            if ((Boolean) b) {
+            if (Boolean.TRUE.equals(b)) {
                 transactions.set(txId);
             }
         }
