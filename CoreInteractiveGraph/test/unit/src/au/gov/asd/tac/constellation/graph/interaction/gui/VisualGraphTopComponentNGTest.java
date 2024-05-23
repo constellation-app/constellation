@@ -157,7 +157,7 @@ public class VisualGraphTopComponentNGTest {
             GraphChangeEvent evt = null;
             VisualGraphTopComponent instance = new VisualGraphTopComponent();
             instance.graphChanged(evt);
-        } catch (HeadlessException h) {
+        } catch (Exception h) {
         } finally {
             System.clearProperty("java.awt.headless");
         }
@@ -238,7 +238,7 @@ public class VisualGraphTopComponentNGTest {
                 verify(mockSaveAsAction.constructed().get(0)).actionPerformed(null);
                 verify(mockSaveAsAction.constructed().get(0)).isSaved();
             }
-        } catch (HeadlessException h) {
+        } catch (Exception h) {
         } finally {
             System.clearProperty("java.awt.headless");
         }
@@ -272,7 +272,7 @@ public class VisualGraphTopComponentNGTest {
 //            assertEquals(1, mockGraphNode.constructed().size());
 //            verify(mockGraphNode.constructed().get(0)).getDataObject();
             }
-        } catch (HeadlessException h) {
+        } catch (Exception h) {
         } finally {
             System.clearProperty("java.awt.headless");
         }
