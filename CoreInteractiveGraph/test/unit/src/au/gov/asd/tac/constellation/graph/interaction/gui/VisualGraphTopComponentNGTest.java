@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.graph.interaction.gui;
 import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.io.SaveAsAction;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
-import java.awt.HeadlessException;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -152,15 +151,12 @@ public class VisualGraphTopComponentNGTest {
     @Test
     public void testGraphChanged() {
         System.out.println("graphChanged");
-        try {
-            System.setProperty("java.awt.headless", "true");
-            GraphChangeEvent evt = null;
-            VisualGraphTopComponent instance = new VisualGraphTopComponent();
-            instance.graphChanged(evt);
-        } catch (Exception h) {
-        } finally {
-            System.clearProperty("java.awt.headless");
-        }
+
+        System.setProperty("java.awt.headless", "true");
+        GraphChangeEvent evt = null;
+        VisualGraphTopComponent instance = new VisualGraphTopComponent();
+        instance.graphChanged(evt);
+
     }
 
 //    /**
@@ -222,26 +218,23 @@ public class VisualGraphTopComponentNGTest {
     @Test
     public void testSaveGraphNotInMemory() throws Exception {
         System.out.println("saveGraph not in memeory");
-        try {
-            System.setProperty("java.awt.headless", "true");
-            final GraphDataObject mockGDO = mock(GraphDataObject.class);
-            when(mockGDO.isInMemory()).thenReturn(true);
-            // Mock contruct save as action, GraphNode
-            try (MockedConstruction<SaveAsAction> mockSaveAsAction = Mockito.mockConstruction(SaveAsAction.class); //MockedConstruction<VisualGraphTopComponent.BackgroundWriter> mockBackgroundWriter = Mockito.mockConstruction(VisualGraphTopComponent.BackgroundWriter.class)  
-                    ) {
 
-                VisualGraphTopComponent instance = new VisualGraphTopComponent();
-                instance.getGraphNode().setDataObject(mockGDO);
-                instance.saveGraph();
+        System.setProperty("java.awt.headless", "true");
+        final GraphDataObject mockGDO = mock(GraphDataObject.class);
+        when(mockGDO.isInMemory()).thenReturn(true);
+        // Mock contruct save as action, GraphNode
+        try (MockedConstruction<SaveAsAction> mockSaveAsAction = Mockito.mockConstruction(SaveAsAction.class); //MockedConstruction<VisualGraphTopComponent.BackgroundWriter> mockBackgroundWriter = Mockito.mockConstruction(VisualGraphTopComponent.BackgroundWriter.class)  
+                ) {
 
-                assertEquals(instance.getGraphNode().getDataObject(), mockGDO);
-                verify(mockSaveAsAction.constructed().get(0)).actionPerformed(null);
-                verify(mockSaveAsAction.constructed().get(0)).isSaved();
-            }
-        } catch (Exception h) {
-        } finally {
-            System.clearProperty("java.awt.headless");
+            VisualGraphTopComponent instance = new VisualGraphTopComponent();
+            instance.getGraphNode().setDataObject(mockGDO);
+            instance.saveGraph();
+
+            assertEquals(instance.getGraphNode().getDataObject(), mockGDO);
+            verify(mockSaveAsAction.constructed().get(0)).actionPerformed(null);
+            verify(mockSaveAsAction.constructed().get(0)).isSaved();
         }
+
     }
 
     /**
@@ -250,32 +243,29 @@ public class VisualGraphTopComponentNGTest {
     @Test
     public void testSaveGraphInvalid() throws Exception {
         System.out.println("saveGraph invalid");
-        try {
-            System.setProperty("java.awt.headless", "true");
-            final GraphDataObject mockGDO = mock(GraphDataObject.class);
-            when(mockGDO.isValid()).thenReturn(false);
-            // Mock contruct save as action, GraphNode
-            try (MockedConstruction<SaveAsAction> mockSaveAsAction = Mockito.mockConstruction(SaveAsAction.class); //                MockedConstruction<GraphNode> mockGraphNode = Mockito.mockConstruction(GraphNode.class, (mock, context) -> {
-                    //            when(mock.getDataObject()).thenReturn(mockGDO);
-                    //        })
-                    ) {
 
-                VisualGraphTopComponent instance = new VisualGraphTopComponent();
-                instance.getGraphNode().setDataObject(mockGDO);
-                instance.saveGraph();
+        System.setProperty("java.awt.headless", "true");
+        final GraphDataObject mockGDO = mock(GraphDataObject.class);
+        when(mockGDO.isValid()).thenReturn(false);
+        // Mock contruct save as action, GraphNode
+        try (MockedConstruction<SaveAsAction> mockSaveAsAction = Mockito.mockConstruction(SaveAsAction.class); //                MockedConstruction<GraphNode> mockGraphNode = Mockito.mockConstruction(GraphNode.class, (mock, context) -> {
+                //            when(mock.getDataObject()).thenReturn(mockGDO);
+                //        })
+                ) {
 
-                assertEquals(instance.getGraphNode().getDataObject(), mockGDO);
-                assertEquals(mockSaveAsAction.constructed().size(), 1);
-                verify(mockSaveAsAction.constructed().get(0)).actionPerformed(null);
-                verify(mockSaveAsAction.constructed().get(0)).isSaved();
+            VisualGraphTopComponent instance = new VisualGraphTopComponent();
+            instance.getGraphNode().setDataObject(mockGDO);
+            instance.saveGraph();
+
+            assertEquals(instance.getGraphNode().getDataObject(), mockGDO);
+            assertEquals(mockSaveAsAction.constructed().size(), 1);
+            verify(mockSaveAsAction.constructed().get(0)).actionPerformed(null);
+            verify(mockSaveAsAction.constructed().get(0)).isSaved();
 
 //            assertEquals(1, mockGraphNode.constructed().size());
 //            verify(mockGraphNode.constructed().get(0)).getDataObject();
-            }
-        } catch (Exception h) {
-        } finally {
-            System.clearProperty("java.awt.headless");
         }
+
     }
 
 //    /**
