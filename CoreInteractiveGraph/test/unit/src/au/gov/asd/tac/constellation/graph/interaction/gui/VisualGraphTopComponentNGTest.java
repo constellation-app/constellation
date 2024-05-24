@@ -42,7 +42,6 @@ public class VisualGraphTopComponentNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        System.setProperty("java.awt.headless", "true");
         try {
             if (!FxToolkit.isFXApplicationThreadRunning()) {
                 FxToolkit.registerPrimaryStage();
@@ -66,8 +65,6 @@ public class VisualGraphTopComponentNGTest {
                 System.out.println("\n**** UN-EXPECTED TEARDOWN ERROR: " + e.toString());
                 throw e;
             }
-        } finally {
-            System.clearProperty("java.awt.headless");
         }
     }
 
@@ -78,6 +75,7 @@ public class VisualGraphTopComponentNGTest {
     public void testSaveGraphNotInMemory() throws Exception {
         System.out.println("saveGraph not in memeory");
         Platform.runLater(() -> {
+            System.setProperty("java.awt.headless", "true");
             // Mock variables
             final GraphDataObject mockGDO = mock(GraphDataObject.class);
             when(mockGDO.isInMemory()).thenReturn(true);
@@ -94,6 +92,7 @@ public class VisualGraphTopComponentNGTest {
                 verify(mockSaveAsAction.constructed().get(0)).isSaved();
             } catch (Exception e) {
             }
+            System.clearProperty("java.awt.headless");
         });
     }
 
@@ -104,6 +103,7 @@ public class VisualGraphTopComponentNGTest {
     public void testSaveGraphInvalid() throws Exception {
         System.out.println("saveGraph invalid");
         Platform.runLater(() -> {
+            System.setProperty("java.awt.headless", "true");
             // Mock variables
             final GraphDataObject mockGDO = mock(GraphDataObject.class);
             when(mockGDO.isValid()).thenReturn(false);
@@ -121,6 +121,7 @@ public class VisualGraphTopComponentNGTest {
                 verify(mockSaveAsAction.constructed().get(0)).isSaved();
             } catch (Exception e) {
             }
+            System.clearProperty("java.awt.headless");
         });
     }
 }
