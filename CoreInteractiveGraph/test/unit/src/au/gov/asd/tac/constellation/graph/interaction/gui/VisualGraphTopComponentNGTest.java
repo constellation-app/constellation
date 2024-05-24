@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.gui;
 
+import au.gov.asd.tac.constellation.graph.interaction.gui.VisualGraphTopComponent;
 import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.io.SaveAsAction;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
@@ -148,18 +149,18 @@ public class VisualGraphTopComponentNGTest {
     /**
      * Test of graphChanged method, of class VisualGraphTopComponent.
      */
-//    @Test
-//    public void testGraphChanged() {
-//        System.out.println("graphChanged");
-//
-//        System.setProperty("java.awt.headless", "true");
-//        GraphChangeEvent evt = null;
-//        VisualGraphTopComponent instance = new VisualGraphTopComponent();
-//        instance.graphChanged(evt);
-//
-//        System.clearProperty("java.awt.headless");
-//
-//    }
+    @Test
+    public void testGraphChanged() {
+        System.out.println("graphChanged");
+
+        System.setProperty("java.awt.headless", "true");
+        GraphChangeEvent evt = null;
+        VisualGraphTopComponent instance = new VisualGraphTopComponent();
+        instance.graphChanged(evt);
+
+        System.clearProperty("java.awt.headless");
+
+    }
 
 //    /**
 //     * Test of finalize method, of class VisualGraphTopComponent.
