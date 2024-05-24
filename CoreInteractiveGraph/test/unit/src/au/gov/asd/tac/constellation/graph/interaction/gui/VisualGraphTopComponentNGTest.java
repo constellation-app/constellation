@@ -42,6 +42,7 @@ public class VisualGraphTopComponentNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        System.setProperty("java.awt.headless", "true");
         try {
             if (!FxToolkit.isFXApplicationThreadRunning()) {
                 FxToolkit.registerPrimaryStage();
@@ -65,6 +66,8 @@ public class VisualGraphTopComponentNGTest {
                 System.out.println("\n**** UN-EXPECTED TEARDOWN ERROR: " + e.toString());
                 throw e;
             }
+        } finally {
+            System.clearProperty("java.awt.headless");
         }
     }
 
@@ -89,7 +92,8 @@ public class VisualGraphTopComponentNGTest {
                 assertEquals(instance.getGraphNode().getDataObject(), mockGDO);
                 verify(mockSaveAsAction.constructed().get(0)).actionPerformed(null);
                 verify(mockSaveAsAction.constructed().get(0)).isSaved();
-            }catch(Exception e){}
+            } catch (Exception e) {
+            }
         });
     }
 
@@ -115,7 +119,8 @@ public class VisualGraphTopComponentNGTest {
                 assertEquals(mockSaveAsAction.constructed().size(), 1);
                 verify(mockSaveAsAction.constructed().get(0)).actionPerformed(null);
                 verify(mockSaveAsAction.constructed().get(0)).isSaved();
-            }catch(Exception e){}
+            } catch (Exception e) {
+            }
         });
     }
 }
