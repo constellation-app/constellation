@@ -197,7 +197,7 @@ public final class ConversationBox extends StackPane {
                 // and update the found count label
                 messages.addListener((Change<? extends ConversationMessage> c) -> {
                     updatePages(conversation.getTotalPages());
-                    highlightRegions();
+                    highlightRegions(true, false);
                     refreshCountUI(false);
                 });
                 
@@ -244,21 +244,21 @@ public final class ConversationBox extends StackPane {
                     // If they hit enter iterate through the results
                     searchCount = "\r".equals(e.getCharacter()) && foundCount > 0 ? (searchCount + 1) % foundCount : 0;
 
-                    highlightRegions();
+                    highlightRegions(true, false);
                     refreshCountUI(false);
                 });
 
                 prevButton.setOnAction(event -> {
                     if (foundCount > 0) {
                         searchCount = searchCount <= 0 ? foundCount - 1 : (searchCount - 1) % foundCount;
-                        highlightRegions();
+                        highlightRegions(false, true);
                         foundLabel.setText(StringUtils.isBlank(searchTextField.getText()) ? "" : FOUND_TEXT + (searchCount + 1) + " of " + foundCount);
                     }
                 });
                 nextButton.setOnAction(event -> {
                     if (foundCount > 0) {
                         searchCount = Math.abs((searchCount + 1) % foundCount);
-                        highlightRegions();
+                        highlightRegions(true, true);
                         foundLabel.setText(StringUtils.isBlank(searchTextField.getText()) ? "" : FOUND_TEXT + (searchCount + 1) + " of " + foundCount);
                     }
                 });
@@ -385,13 +385,14 @@ public final class ConversationBox extends StackPane {
      * Highlights the currently visible regions in the Conversation View based on the text currently present in the
      * searchTextField.
      */
-    private void highlightRegions() {
+    private void highlightRegions(final boolean nextResult, final boolean needsUpdate) {
         foundCount = 0;
 
         final Map<Integer, ConversationMessage> matches = new HashMap<>();
         final List<ConversationMessage> visibleMessages = conversation.getVisibleMessages();
+        final List<ConversationMessage> senderMessages = conversation.getSenderMessages();
 
-        visibleMessages.forEach(message -> {
+        senderMessages.forEach(message -> {
             final List<ConversationContribution> visibleContributions = message.getVisibleContributions();
 
             visibleContributions.forEach(contribution -> {
@@ -413,7 +414,20 @@ public final class ConversationBox extends StackPane {
             });
         });
         if (foundCount > 0) {
-            bubbles.scrollTo(matches.get(searchCount));
+            final int currentPage = pagination.getCurrentPageIndex();
+            if (visibleMessages.contains(matches.get(searchCount))) {
+                // If the current match is on the current page, scroll to the bubble
+                bubbles.scrollTo(matches.get(searchCount));
+            } else if (senderMessages.contains(matches.get(searchCount)) && nextResult && needsUpdate) {
+                // If the next match is on the next page, swap to the next page
+                pagination.setCurrentPageIndex(currentPage + 1);
+                bubbles.scrollTo(matches.get(searchCount));
+            } else if (senderMessages.contains(matches.get(searchCount)) && !nextResult && needsUpdate) {
+                // If the previous match is on the previous page, swap to that page 
+                pagination.setCurrentPageIndex(currentPage - 1);
+                bubbles.scrollTo(matches.get(searchCount));
+            }
+            
         }
     }
 

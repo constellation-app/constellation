@@ -698,4 +698,8 @@ public class Conversation {
     protected final List<ConversationMessage> getVisibleMessages() {
         return Collections.unmodifiableList(visibleMessages);
     }
+    
+    protected List<ConversationMessage> getSenderMessages() {
+        return Collections.unmodifiableList(senderMessages);
+    }
 }
