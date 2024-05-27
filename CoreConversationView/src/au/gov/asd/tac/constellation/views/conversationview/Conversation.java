@@ -591,14 +591,13 @@ public class Conversation {
                 message.filterContributions(conversationState.getHiddenContributionProviders());
                 final int minValue = pageNumber * contentPerPage;
                 final int maxValue = minValue + contentPerPage;
-                if (!message.getVisibleContributions().isEmpty() && visibleMessages.size() <= contentPerPage && minValue <= count && count < maxValue) {
+                if (!message.getVisibleContributions().isEmpty() && visibleMessages.size() < contentPerPage && minValue <= count && count < maxValue) {
                     visibleMessages.add(message);
                 } 
                 count++;
             }
             totalPages = (int) Math.ceil((double) totalMessageCount / contentPerPage);
             ConversationController.getDefault().getConversationBox().setProgressComplete();
-
             return true;
         }
     };
