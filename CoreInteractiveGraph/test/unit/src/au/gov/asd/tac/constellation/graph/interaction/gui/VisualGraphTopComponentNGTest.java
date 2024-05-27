@@ -77,7 +77,7 @@ public class VisualGraphTopComponentNGTest {
     public void testSaveGraphNotInMemory() throws Exception {
         System.out.println("saveGraph not in memeory");
         Platform.runLater(() -> {
-            System.setProperty("java.awt.headless", "true");
+            //System.setProperty("java.awt.headless", "true");
             // Mock variables
             final GraphDataObject mockGDO = mock(GraphDataObject.class);
             when(mockGDO.isInMemory()).thenReturn(true);
@@ -96,7 +96,7 @@ public class VisualGraphTopComponentNGTest {
             } catch (IOException e) {
                 LOGGER.log(Level.WARNING, "Caught exception in VisualGraphTopComponent test {0}", e);
             }
-            System.clearProperty("java.awt.headless");
+           // System.clearProperty("java.awt.headless");
         });
     }
 
