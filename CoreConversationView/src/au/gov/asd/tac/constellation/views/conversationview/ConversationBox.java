@@ -413,7 +413,6 @@ public final class ConversationBox extends StackPane {
             });
         });
         if (foundCount > 0) {
-            final int currentPage = pagination.getCurrentPageIndex();
             if (visibleMessages.contains(matches.get(searchCount))) {
                 // If the current match is on the current page, scroll to the bubble
                 bubbles.scrollTo(matches.get(searchCount));
