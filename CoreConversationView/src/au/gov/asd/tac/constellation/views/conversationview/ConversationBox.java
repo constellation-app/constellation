@@ -175,6 +175,43 @@ public final class ConversationBox extends StackPane {
                 graph.release();
             }
         });
+
+        togglesPane = new HBox();
+        togglesPane.getStylesheets().add(
+                JavafxStyleManager.class.getResource("pillbutton/PillButton.css").toExternalForm()
+        );
+        togglesPane.setAlignment(Pos.CENTER);
+
+        // Create toggle buttons that allow the user to turn on and off the content contributors.
+        conversation.setContributorListener(contributors -> {
+            isAdjustingContributionProviders = true;
+            try {
+                int buttonCount = 0;
+                togglesPane.getChildren().clear();
+                for (final Entry<String, Boolean> contributor : contributors.entrySet()) {
+                    final ToggleButton button = new ToggleButton(contributor.getKey());
+                    button.setSelected(contributor.getValue());
+                    if (contributors.size() == 1) {
+                        button.getStyleClass().add("center-pill");
+                    } else if (buttonCount == 0) {
+                        button.getStyleClass().add("left-pill");
+                    } else if (buttonCount == contributors.size() - 1) {
+                        button.getStyleClass().add("right-pill");
+                    } else {
+                        button.getStyleClass().add("center-pill");
+                    }
+                    button.setOnAction(event -> {
+                        if (!isAdjustingContributionProviders) {
+                            updateContributionProviderVisibility(contributor.getKey(), button.isSelected());
+                        }
+                    });
+                    togglesPane.getChildren().add(button);
+                    buttonCount++;
+                }
+            } finally {
+                isAdjustingContributionProviders = false;
+            }
+        });
         
         spinner.setMaxSize(50, 50);
 
@@ -287,48 +324,14 @@ public final class ConversationBox extends StackPane {
                 contributionsPane = new BorderPane();
                 contributionsPane.setPadding(new Insets(PADDING));
 
-                togglesPane = new HBox();
-                togglesPane.getStylesheets().add(
-                        JavafxStyleManager.class.getResource("pillbutton/PillButton.css").toExternalForm()
-                );
-                togglesPane.setAlignment(Pos.CENTER);
                 contributionsPane.setCenter(togglesPane);
-
-                // Create toggle buttons that allow the user to turn on and off the content contributors.
-                conversation.setContributorListener(contributors -> {
-                    isAdjustingContributionProviders = true;
-                    try {
-                        togglesPane.getChildren().clear();
-                        int buttonCount = 0;
-                        for (final Entry<String, Boolean> contributor : contributors.entrySet()) {
-                            final ToggleButton button = new ToggleButton(contributor.getKey());
-                            button.setSelected(contributor.getValue());
-                            if (contributors.size() == 1) {
-                                button.getStyleClass().add("center-pill");
-                            } else if (buttonCount == 0) {
-                                button.getStyleClass().add("left-pill");
-                            } else if (buttonCount == contributors.size() - 1) {
-                                button.getStyleClass().add("right-pill");
-                            } else {
-                                button.getStyleClass().add("center-pill");
-                            }
-                            button.setOnAction(event -> {
-                                if (!isAdjustingContributionProviders) {
-                                    updateContributionProviderVisibility(contributor.getKey(), button.isSelected());
-                                }
-                            });
-                            togglesPane.getChildren().add(button);
-                            buttonCount++;
-                        }
-                    } finally {
-                        isAdjustingContributionProviders = false;
-                    }
-                });     
+                  
                 content.getChildren().addAll(optionsPane, searchHBox, contributionsPane, bubbles);
                 return content;
             }
         });
 
+        
         getChildren().addAll(pagination, tipsPane);
     }
     
@@ -347,7 +350,6 @@ public final class ConversationBox extends StackPane {
 
     public void setProgressComplete() {
         Platform.runLater(() -> getChildren().remove(spinner));
-
     }
     
     public void updatePages(final int totalPages) {

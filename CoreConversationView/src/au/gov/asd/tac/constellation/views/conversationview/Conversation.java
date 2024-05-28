@@ -399,24 +399,29 @@ public class Conversation {
                         contributingMessages.clear();
                         contributingContributionProviders.clear();
 
-                        Platform.runLater(() -> {
-                            for (final ConversationMessage message : allMessages) {
-                                message.getAllContributions().clear();
+                        if (!allMessages.isEmpty()) {
+                            Platform.runLater(() -> {
+                                for (final ConversationMessage message : allMessages) {
+                                    message.getAllContributions().clear();
 
-                                for (final ConversationContributionProvider contributionProvider : compatibleContributionProviders) {
-                                    final ConversationContribution contribution = contributionProvider.createContribution(graph, message);
-                                    if (contribution != null) {
-                                        contributingContributionProviders.add(contributionProvider);
-                                        message.getAllContributions().add(contribution);
+                                    for (final ConversationContributionProvider contributionProvider : compatibleContributionProviders) {
+                                        final ConversationContribution contribution = contributionProvider.createContribution(graph, message);
+                                        if (contribution != null) {
+                                            contributingContributionProviders.add(contributionProvider);
+                                            message.getAllContributions().add(contribution);
+                                        }
+                                    }
+
+                                    if (!message.getAllContributions().isEmpty()) {
+                                        contributingMessages.add(message);
                                     }
                                 }
-
-                                if (!message.getAllContributions().isEmpty()) {
-                                    contributingMessages.add(message);
-                                }
-                            }
+                                latch.countDown();
+                            });
+                        } else {
                             latch.countDown();
-                        });
+                        }
+                        
                     }
                 };
                 thread.start();
@@ -447,26 +452,27 @@ public class Conversation {
                     @Override
                     public void run() {
                         temporalMessages.clear();
-                        datetimeProvider.updateDatetimes(graph, contributingMessages);
+                        if (!contributingMessages.isEmpty()) {
+                            datetimeProvider.updateDatetimes(graph, contributingMessages);
 
-                        for (final ConversationMessage message : contributingMessages) {
-                            boolean thereIsTextContribution = false;
+                            for (final ConversationMessage message : contributingMessages) {
+                                boolean thereIsTextContribution = false;
 
-                            if (message != null) {
-                                for (final ConversationContribution cont : message.getAllContributions()) {
-                                    if (cont instanceof TextContribution) {
-                                        thereIsTextContribution = true;
-                                        break;
+                                if (message != null) {
+                                    for (final ConversationContribution cont : message.getAllContributions()) {
+                                        if (cont instanceof TextContribution) {
+                                            thereIsTextContribution = true;
+                                            break;
+                                        }
                                     }
-                                }
 
-                                // We only want to add messages that contain any content in them.
-                                if (message.getDatetime() != null && thereIsTextContribution) {
-                                    temporalMessages.add(message);
+                                    // We only want to add messages that contain any content in them.
+                                    if (message.getDatetime() != null && thereIsTextContribution) {
+                                        temporalMessages.add(message);
+                                    }
                                 }
                             }
                         }
-
                         temporalMessages.sort(TEMPORAL_COMPARATOR);
 
                         latch.countDown();
@@ -499,15 +505,16 @@ public class Conversation {
                 final Thread thread = new Thread(CONVERSATION_VIEW_UPDATE_SENDER_THREAD_NAME) {
                     @Override
                     public void run() {
-                        senderProvider.updateMessageSenders(graph, temporalMessages, conversationState.getSenderAttributes());
-                        senderMessages.clear();
+                        if (!temporalMessages.isEmpty()) {
+                            senderProvider.updateMessageSenders(graph, temporalMessages, conversationState.getSenderAttributes());
+                            senderMessages.clear();
 
-                        for (final ConversationMessage message : temporalMessages) {
-                            if (message.getSenderContent() != null) {
-                                senderMessages.add(message);
+                            for (final ConversationMessage message : temporalMessages) {
+                                if (message.getSenderContent() != null) {
+                                    senderMessages.add(message);
+                                }
                             }
                         }
-
                         latch.countDown();
                     }
                 };
@@ -549,19 +556,19 @@ public class Conversation {
                 final Thread thread = new Thread(CONVERSATION_VIEW_UPDATE_COLOR_THREAD_NAME) {
                     @Override
                     public void run() {
-                        colorProvider.updateMessageColors(graph, senderMessages);
+                        if (!senderMessages.isEmpty()) {
+                            colorProvider.updateMessageColors(graph, senderMessages);
+                        }
                         latch.countDown();
                     }
                 };
                 thread.start();
-
                 latch.await();
             } catch (final InterruptedException ex) {
                 LOGGER.log(Level.SEVERE, "Message colors update was interrupted");
                 Thread.currentThread().interrupt();
                 return false;
             }
-
             return true;
         }
     };
@@ -586,14 +593,13 @@ public class Conversation {
         public boolean update(final GraphReadMethods graph) {
             visibleMessages.clear();
             int count = 0;
-
             for (final ConversationMessage message : senderMessages) {
                 message.filterContributions(conversationState.getHiddenContributionProviders());
                 final int minValue = pageNumber * contentPerPage;
                 final int maxValue = minValue + contentPerPage;
                 if (!message.getVisibleContributions().isEmpty() && visibleMessages.size() < contentPerPage && minValue <= count && count < maxValue) {
                     visibleMessages.add(message);
-                } 
+                }
                 count++;
             }
             totalPages = (int) Math.ceil((double) totalMessageCount / contentPerPage);

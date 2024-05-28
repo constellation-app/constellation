@@ -73,7 +73,7 @@ public final class ConversationViewTopComponent extends JavaFxTopComponent<Conve
         setName(Bundle.CTL_ConversationViewTopComponent());
         setToolTipText(Bundle.HINT_ConversationViewTopComponent());
         Platform.setImplicitExit(false);
-        controller = ConversationController.getDefault();  
+        controller = ConversationController.getDefault(); 
         controller.getConversation().getGraphUpdateManager().setManaged(true);
         initContent();
     }
@@ -97,7 +97,7 @@ public final class ConversationViewTopComponent extends JavaFxTopComponent<Conve
 
     @Override
     protected void componentDeactivated() {
-        controller.getConversation().getGraphUpdateManager().setManaged(needsUpdate());
+        controller.getConversation().getGraphUpdateManager().setManaged(false);
     }
 
     public void writeProperties(final Properties p) {
