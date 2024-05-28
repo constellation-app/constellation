@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,12 @@
 package au.gov.asd.tac.constellation.views.mapview2;
 
 import java.io.File;
+import javafx.geometry.Insets;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Paint;
+import javafx.scene.paint.Stop;
 
 /**
  * Store details of maps available for selection within the MapView.
@@ -25,11 +30,16 @@ import javafx.scene.paint.Color;
  */
 public class MapDetails {
     
+    private static final Stop[] STOPS = new Stop[] {new Stop(0, Color.LIGHTGREEN), new Stop(1, Color.BLACK)};
+
     // For now define these values as static, but potentially allow diferent maps to adjust
     public static final double MARKER_LINE_WIDTH = 0.5;
     public static final double MARKER_OPACITY = 0.55;
     public static final double MARKER_DRAWING_OPACITY = 0.25;
-    public static final Color MARKER_STROKE_COLOUR = Color.web("#000000");
+    public static final Paint MARKER_STROKE_PAINT_GRADIENT = new LinearGradient(0, 0, 1, 1, true, CycleMethod.NO_CYCLE, new Stop[] {new Stop(0, Color.LIMEGREEN), new Stop(1, Color.BLACK)});
+    public static final Paint MARKER_STROKE_PAINT_SELECTED_GRADIENT = new LinearGradient(0, 0, 1, 1, true, CycleMethod.NO_CYCLE, new Stop[] {new Stop(0, Color.GOLD), new Stop(1, Color.ORANGE)});
+    public static final Paint MARKER_STROKE_PAINT_HIGHLIGHT_GRADIENT = new LinearGradient(0, 0, 1, 1, true, CycleMethod.NO_CYCLE, new Stop[] {new Stop(0, Color.KHAKI), new Stop(1, Color.FIREBRICK)});
+    public static final Color MARKER_STROKE_COLOUR =  Color.web("#000000");
     public static final Color MARKER_MULTI_FILL_COLOUR = Color.web("#FFFFFF", MARKER_OPACITY);
     public static final Color MARKER_DEFAULT_FILL_COLOUR = Color.web("#3F7FFF", MARKER_OPACITY);
     public static final Color MARKER_SELECTED_FILL_COLOUR = Color.web("#FF0000", MARKER_OPACITY);
@@ -46,6 +56,7 @@ public class MapDetails {
     private final double bottomLat;  // Latitude of the bottom edge of the map.
     private final double leftLon;  // Longitude of the left edge of the map.
     private final double rightLon;  // Longitude of the right edge of the map.
+    private final Insets borderMilliInsets; // how much space around the outside of the map image is decorative border
     private final String name;  // Name to identify the map by.
     private final File mapFile;  // File object containing the map.
     
@@ -64,7 +75,7 @@ public class MapDetails {
      */
     public MapDetails(final MapType type, final double width, final double height,
                       final double topLat, final double bottomLat, final double leftLon, final double rightLon,
-                      final String name, final File mapFile) {
+                      final Insets borderInsets, final String name, final File mapFile) {
         this.type = type;
         this.width = width;
         this.height = height;
@@ -72,6 +83,7 @@ public class MapDetails {
         this.leftLon = leftLon;
         this.bottomLat = bottomLat;
         this.rightLon = rightLon;
+        this.borderMilliInsets = borderInsets;
         this.name = name;
         this.mapFile = mapFile;
     }
@@ -128,6 +140,16 @@ public class MapDetails {
      */
     public double getRightLon() {
         return rightLon;
+    }
+    
+    /**
+     * Get any border space around the map edges to exclude from any lat/long calculations
+     * top, right, bottom, left
+     * values to be divided by 1000 to get equivalent coordinate offsets.
+     * @return 
+     */
+    public Insets getBorderInsets() {
+        return borderMilliInsets;
     }
     
     /**

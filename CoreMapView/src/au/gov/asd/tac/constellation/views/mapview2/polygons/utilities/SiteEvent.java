@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,6 @@ public class SiteEvent extends VoronoiEvent {
 
     public SiteEvent(double yOfEvent, final Vec3 point) {
         super(yOfEvent);
-
         site.setVec3(point);
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ package au.gov.asd.tac.constellation.views.mapview2.polygons.utilities;
  * @author altair1673
  */
 public class VoronoiEvent {
-    private double yCoord;
+    private final double yCoord;
 
     protected VoronoiEvent(final double yOfEvent) {
         yCoord = yOfEvent;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.geometry.Insets;
 import org.mockito.Mockito;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
@@ -41,7 +42,7 @@ public class PointMarkerNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(PointMarkerNGTest.class.getName());
 
-    private static final MapDetails mapDetails = new MapDetails(MapDetails.MapType.SVG, 1000, 999, 85.0511, -85.0511, -180, 180, "Full World (default)",
+    private static final MapDetails mapDetails = new MapDetails(MapDetails.MapType.SVG, 1000, 999, 85.0511, -85.0511, -180, 180, new Insets(0), "Full World (default)",
                            ConstellationInstalledFileLocator.locate("modules/ext/data/WorldMap1000x999.svg", "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain()));
     
 
@@ -190,7 +191,7 @@ public class PointMarkerNGTest {
         final MapView parent = Mockito.spy(new MapView(mapViewPane, mapDetails));
 
         final PointMarker instance = new PointMarker(parent, -99, -99, 85.0511, -180, ConstellationColor.WHITE);
-        instance.setMarkerPosition(MapView.MAP_VIEWPORT_WIDTH, MapView.MAP_VIEWPORT_HEIGHT);
+        instance.setMarkerPosition(MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
         final double expResult = 0.0;
         final double result = instance.getX();
         assertEquals(result, expResult, 0.0);

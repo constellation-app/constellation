@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,17 +36,14 @@ import au.gov.asd.tac.constellation.views.mapview2.layers.StandardHeatmapLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.ThiessenPolygonsLayer2;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.MenuButtonCheckCombobox;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
-import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
@@ -63,7 +60,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import org.openide.NotifyDescriptor;
 import org.openide.util.HelpCtx;
@@ -137,17 +133,17 @@ public class MapViewPane extends BorderPane {
 
     // Store list of available maps and an object to store the currently selected map.
     private final List<MapDetails> maps = Arrays.asList(
-            new MapDetails(MapDetails.MapType.SVG, 1000, 999, 85.0511, -85.0511, -180, 180, "Full World (default)",
+            new MapDetails(MapDetails.MapType.SVG, 1000, 999, 85.0511, -85.0511, -180, 180, new Insets(0, 0.5, 0, 0.5), "Full World (default)",
                            ConstellationInstalledFileLocator.locate("modules/ext/data/FullWorld1000x999.svg", "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain())),
-            new MapDetails(MapDetails.MapType.SVG, 1000, 999, 85.0511, -85.0511, -180, 180, "Full World (more detailed large file)",
+            new MapDetails(MapDetails.MapType.SVG, 1000, 999, 85.0511, -85.0511, -180, 180, new Insets(0, 0.5, 0, 0.5), "Full World (more detailed large file)",
                            ConstellationInstalledFileLocator.locate("modules/ext/data/WorldMap1000x999.svg", "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain())),
-            new MapDetails(MapDetails.MapType.SVG, 1000, 1018, 38, -36, -18, 60, "Africa & Middle East",
+            new MapDetails(MapDetails.MapType.SVG, 1000, 1018, 38, -36, -18, 60, new Insets(0), "Africa & Middle East",
                            ConstellationInstalledFileLocator.locate("modules/ext/data/AfricaAndMiddleEast1000x1018.svg", "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain())),
-            new MapDetails(MapDetails.MapType.SVG, 1000, 1491, 84, -57, -170, 84, "The Americas",
+            new MapDetails(MapDetails.MapType.SVG, 1000, 1491, 84, -57, -170, 84, new Insets(0), "The Americas",
                            ConstellationInstalledFileLocator.locate("modules/ext/data/Americas1000x1491.svg", "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain())),
-            new MapDetails(MapDetails.MapType.SVG, 1000, 1443, 72, 33, 13, 62, "Europe & UK",
+            new MapDetails(MapDetails.MapType.SVG, 1000, 1443, 72, 33, 13, 62, new Insets(0), "Europe & UK",
                            ConstellationInstalledFileLocator.locate("modules/ext/data/EuropeAndUK1000x1443.svg", "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain())),
-            new MapDetails(MapDetails.MapType.SVG, 1000, 1090, 10, -55, 110, 180, "South East Asia",
+            new MapDetails(MapDetails.MapType.SVG, 1000, 1090, 10, -55, 110, 180, new Insets(0), "South East Asia",
                            ConstellationInstalledFileLocator.locate("modules/ext/data/SEAsia1000x1090.svg", "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain()))
     );
     private MapDetails selectedMap;
@@ -216,13 +212,12 @@ public class MapViewPane extends BorderPane {
             overlaysMenuButton.getOptionMap().keySet().forEach(key -> {
                 toggleOverlay(key, overlaysMenuButton.getOptionMap().get(key).isSelected());
 
-                if (key.equals(INFO_OVERLAY) && overlaysMenuButton.getOptionMap().get(key).isSelected() && !toolBarGridPane.getChildren().contains(latLabel)) {
-                    toolBarGridPane.add(latLabel, 0, 1);
-                    toolBarGridPane.add(latField, 1, 1);
-                    toolBarGridPane.add(lonLabel, 2, 1);
-                    toolBarGridPane.add(lonField, 3, 1);
+                if (key.equals(INFO_OVERLAY) && overlaysMenuButton.getOptionMap().get(key).isSelected() && !toolBarGridPane.getChildren().contains(MapView.getInfoOverlay().getInfoGrid())) {
+                    toolBarGridPane.add(MapView.getInfoOverlay().getInfoGrid(), 0, 1, 8, 1);
+                    MapView.getInfoOverlay().setIsShowing(true);
                 } else if (key.equals(INFO_OVERLAY) && !overlaysMenuButton.getOptionMap().get(key).isSelected()) {
-                    toolBarGridPane.getChildren().removeAll(latLabel, latField, lonLabel, lonField);
+                    toolBarGridPane.getChildren().removeAll(MapView.getInfoOverlay().getInfoGrid());
+                    MapView.getInfoOverlay().setIsShowing(false);
                 } else if (key.equals(OVERVIEW_OVERLAY) && overlaysMenuButton.getOptionMap().get(key).isSelected()) {
                     mapView.updateOverviewOverlay();
                 }
@@ -253,13 +248,7 @@ public class MapViewPane extends BorderPane {
         /**
          * Handle a request to zoom to view a region selected with a rectangle and centre the map on it.
          */
-        zoomSelection.setOnAction(event -> {
-            if (!mapView.isSelectionMade()) {
-                NotifyDisplayer.display("A map selection has not been made", NotifyDescriptor.INFORMATION_MESSAGE);
-            } else {
-                mapView.zoomToSelection();  
-            }
-        });
+        zoomSelection.setOnAction(event -> mapView.zoomToSelection());
 
         zoomLocation.setOnAction(event -> {
             if (parent.getCurrentGraph() != null) {
@@ -294,7 +283,7 @@ public class MapViewPane extends BorderPane {
         // Event handler for hiding/showing markers
         markerMenuButton.getItemClicked().addListener((obs, oldVal, newVal) -> {
             if (parent.getCurrentGraph() != null) {
-                markerMenuButton.getOptionMap().keySet().forEach(key -> mapView.updateShowingMarkers(getMarkerTypeFromString((String) key), markerMenuButton.getOptionMap().get(key).isSelected()));
+                markerMenuButton.getOptionMap().keySet().forEach(key -> mapView.updateShowingMarkers(getMarkerTypeFromString((String) key), markerMenuButton.getOptionMap().get(key).isSelected())); // AC check again
             } else {
                 markerMenuButton.revertLastAction();
                 NotifyDisplayer.display("Marker options require a graph to be open!", NotifyDescriptor.INFORMATION_MESSAGE);
@@ -452,6 +441,41 @@ public class MapViewPane extends BorderPane {
         }
     }
 
+    public void refreshLayer(final AbstractMapLayer oldLayer) {
+        final String key = getKeyFromLayer(oldLayer);
+        if ("".equals(key)) return;
+        final int id = layerMap.get(key);
+        mapView.removeLayer(id);
+        AbstractMapLayer replacementLayer = getLayerFromKey(key);
+        if (replacementLayer != null) {
+            mapView.addLayer(replacementLayer);
+            layerMap.put(key, replacementLayer.getId());
+        }
+        
+        final String markerKey = mapView.getMarkerTextProperty().get();
+        mapView.getMarkerTextProperty().set("");
+        mapView.getMarkerTextProperty().set(markerKey);
+    }
+    
+    private String getKeyFromLayer(final AbstractMapLayer layer) {
+        if (layer instanceof StandardHeatmapLayer) {
+            return HEATMAP_STANDARD;
+        } else if (layer instanceof PopularityHeatmapLayer) {
+            return HEATMAP_POPULARITY;
+        } else if (layer instanceof ActivityHeatmapLayer) {
+            return HEATMAP_ACTIVITY;
+        } else if (layer instanceof EntityPathsLayer) {
+            return ENTITY_PATHS;
+        } else if (layer instanceof LocationPathsLayer) {
+            return LOCATION_PATHS;
+        } else if (layer instanceof ThiessenPolygonsLayer2) {
+            return THIESSEAN_POLYGONS;
+        } else if (layer instanceof DayNightLayer) {
+            return DAY_NIGHT;
+        }
+        return "";
+    }
+    
     /**
      * Create a map layer based on a key
      *
@@ -528,6 +552,7 @@ public class MapViewPane extends BorderPane {
      * Redraw queried markers
      */
     public void redrawQueriedMarkers() {
+        parent.runExtractCoordsFromGraphPlugin(getCurrentGraph());
         mapView.redrawQueriedMarkers();
     }
 

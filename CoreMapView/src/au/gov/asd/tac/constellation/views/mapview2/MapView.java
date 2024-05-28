@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023s Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.geospatial.Geohash;
 import au.gov.asd.tac.constellation.views.mapview2.layers.AbstractMapLayer;
+import au.gov.asd.tac.constellation.views.mapview2.layers.DayNightLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.LocationPathsLayer;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.CircleMarker;
@@ -50,6 +51,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -84,8 +86,6 @@ import javafx.stage.Stage;
 import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.girod.javafx.svgimage.SVGImage;
-import org.girod.javafx.svgimage.SVGLoader;
 
 /**
  * This class holds the actual MapView vector graphic and all panes associated
@@ -99,7 +99,7 @@ import org.girod.javafx.svgimage.SVGLoader;
 public class MapView extends ScrollPane {
 
     private static final Logger LOGGER = Logger.getLogger(MapView.class.getName());
-    private static final double scaledMapLineWidth = 0.05;  // Scaled width of lines on maps (for SVF maps) to account
+    private static final double SCALED_MAP_LINE_WIDTH = 0.065;  // Scaled width of lines on maps (for SVG maps) to account
 
     private final MapViewPane parent;
 
@@ -109,15 +109,13 @@ public class MapView extends ScrollPane {
     // ID of the next user drawn marker
     private int drawnMarkerId = 0;
 
-    private double currentScale = 1.0;  // Scale of overall map display
-    private double pointMarkerGlobalScale = 0.1;
+    private static double currentScale = 1.0;  // Scale of overall map display
 
     // Flags for the different drawing modes
     private boolean drawingCircleMarker = false;
     private boolean drawingPolygonMarker = false;
 
-    public static final double MAP_VIEWPORT_WIDTH = 1200;
-    public static final double MAP_VIEWPORT_HEIGHT = 1200;
+    public static final double EMPTY_BORDER_REGION = 250;
 
     // TODO: look to remove these constants and instead read lats, longs, and width/height from mapDetails object.
     // Furthest longitude to the east and west
@@ -131,8 +129,9 @@ public class MapView extends ScrollPane {
     // Size of the map
     public static double MAP_WIDTH = 0;
     public static double MAP_HEIGHT = 0;
+    public static Insets MAP_OFFSETS = new Insets(0);
     
-    private static MapDetails mapDetails = new MapDetails(MapDetails.MapType.SVG, 0, 0, 0, 0, 0, 0, "", null);
+    private static MapDetails mapDetails = new MapDetails(MapDetails.MapType.SVG, 0, 0, 0, 0, 0, 0, new Insets(0), "", null);
      
     // Two containers that hold queried markers and user drawn markers
     private Map<String, AbstractMarker> markers = new HashMap<>();
@@ -178,8 +177,6 @@ public class MapView extends ScrollPane {
     // Flag for zoom to location menu
     private boolean showingZoomToLocationPane = false;
 
-    Vec3 medianPositionOfMarkers = null;
-
     // Factor to scale map by when zooming
     private static final double MAP_SCALE_FACTOR = 1.25;
 
@@ -200,12 +197,6 @@ public class MapView extends ScrollPane {
     // Flag for the line the user draws to smell distance between
     private boolean drawingMeasureLine = false;
     private Line measureLine = null;
-
-    // Panning variables
-    private double mouseAnchorX;
-    private double mouseAnchorY;
-    private double translateX;
-    private double translateY;
 
     // Pane that hold all the groups for all the different graphical outputs
     private final Pane mapGroupHolder = new Pane();
@@ -230,12 +221,12 @@ public class MapView extends ScrollPane {
     private final StringProperty markerColourProperty = new SimpleStringProperty();
     private final StringProperty markerTextProperty = new SimpleStringProperty();
 
-    private final Rectangle enclosingRectangle = new Rectangle();
-    
-    SVGImage canvasImage = null;
-    private final boolean testUsingCanvas = true; // Set this to true to test using the SVGCanvas 
-    //  NOTE ... this is currently BUGGED ... The Netbean Swing interface becomes inoperative
-    // when trying to use a SwingNode inside a Javafx component
+    private final boolean testUsingCanvas = false; // Set this to true to test using the SVGCanvas 
+    // or to use SVGImage, which requires the fxsvgImage.jar file to be included in the dependencies
+    // *** NOTE ... this functionality is currently BUGGED ***
+    // With SVGCanvas, the Netbean Swing interface becomes inoperative when trying to use a SwingNode inside a Javafx component
+    // With SVGImage, the image bounds get changed, leading to complex adjustments to synchronise (x,y) co-ordinates 
+    //   to exact map locations
 
     /**
      * Construct MapView object using the map identified by mspDetails.
@@ -246,7 +237,8 @@ public class MapView extends ScrollPane {
     public MapView(final MapViewPane parent, final MapDetails mapDetails) {
         this.parent = parent;
         this.mapDetails = mapDetails;
-
+        
+        LOGGER.setLevel(Level.ALL);
         clusterMarkerBuilder = new ClusterMarkerBuilder(this);
 
         // Instasntiate all the groups for the graphical outputs
@@ -263,20 +255,19 @@ public class MapView extends ScrollPane {
         thessianMarkersGroup = new Group();
         selectionRectangleGroup = new Group();
         viewPortRectangleGroup = new Group();
-        final Group enclosingRectangleGroup = new Group();
 
         // By default all markers should be showing
         markersShowing.add(AbstractMarker.MarkerType.LINE_MARKER);
         markersShowing.add(AbstractMarker.MarkerType.POINT_MARKER);
         markersShowing.add(AbstractMarker.MarkerType.POLYGON_MARKER);
 
-        mapGroupHolder.setBackground(new Background(new BackgroundFill(new Color(0.722, 0.871, 0.902, 1), null, null)));
+        mapGroupHolder.setBackground(new Background(new BackgroundFill(new Color(0.622, 0.761, 0.782, 1), null, null)));
 
         // Clear any existing paths and read the SVG paths of countries from the files
         countrySVGPaths.clear();
         if (!testUsingCanvas) {
             parseMapSVG();
-            countrySVGPaths.forEach(svgPath -> svgPath.setStrokeWidth(scaledMapLineWidth / this.currentScale));
+            countrySVGPaths.forEach(svgPath -> svgPath.setStrokeWidth(SCALED_MAP_LINE_WIDTH / Math.pow(currentScale, 0.85)));
         }
         
         // The stackPane to store
@@ -308,25 +299,25 @@ public class MapView extends ScrollPane {
         // Clear any country grpahics that already exist within group
         countryGroup.getChildren().clear();
 
+        final int outerWidth = (int) (mapDetails.getWidth() + EMPTY_BORDER_REGION*2);
+        final int outerHeight = (int) (mapDetails.getHeight() + EMPTY_BORDER_REGION*2);
         if (!testUsingCanvas) {
             // Add paths to group to display them on screen
             for (int i = 0; i < countrySVGPaths.size(); ++i) {
                 countryGroup.getChildren().add(countrySVGPaths.get(i));
             }
+            final SVGPath outerBorder = new SVGPath();
+            outerBorder.setContent("M-%d -%d l %d 0 l 0 %d l -%d 0 l 0 -%d".formatted((int)EMPTY_BORDER_REGION, (int)EMPTY_BORDER_REGION, outerWidth, outerHeight, outerWidth, outerHeight));
+            outerBorder.setStrokeWidth(SCALED_MAP_LINE_WIDTH);
+            outerBorder.setStroke(Color.TRANSPARENT);
+            outerBorder.setFill(Color.TRANSPARENT);
+            countryGroup.getChildren().add(outerBorder);
         }
-        enclosingRectangle.setWidth(MAP_VIEWPORT_WIDTH);
-        enclosingRectangle.setHeight(MAP_VIEWPORT_HEIGHT);
-
-        enclosingRectangle.setStroke(Color.RED);
-        enclosingRectangle.setStrokeWidth(8);
-        enclosingRectangle.setFill(Color.TRANSPARENT);
-        enclosingRectangle.setMouseTransparent(true);
-        enclosingRectangleGroup.getChildren().add(enclosingRectangle);
 
         // Setup mapView ScrollPane to be pannable and have scrollbars
         this.setPannable(true);
-        this.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-        this.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        this.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        this.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
         scrollContent = new Group(mapStackPane);  // wrap mapStackPane in a Group as Group dimensions are understood by 
                                                   // ScrollPane container.
@@ -341,37 +332,67 @@ public class MapView extends ScrollPane {
         MAX_LAT = mapDetails.getTopLat();
         MAP_WIDTH = mapDetails.getWidth();
         MAP_HEIGHT = mapDetails.getHeight();
-
-        overviewOverlay = new OverviewOverlay(mapDetails.getWidth(), mapDetails.getHeight(), countrySVGPaths);
+        MAP_OFFSETS = mapDetails.getBorderInsets();
 
         // Center content
         this.setHvalue(this.getHmin() + (this.getHmax() - this.getHmin()) / 2);
         this.setVvalue(this.getVmin() + (this.getVmax() - this.getVmin()) / 2);
 
         // Add the country group the the the pane
-        mapGroupHolder.setPrefWidth(mapDetails.getWidth());
-        mapGroupHolder.setPrefHeight(mapDetails.getHeight());
         
         if (testUsingCanvas) {
-            canvasImage = SVGLoader.load(mapDetails.getMapFile());
-            mapGroupHolder.getChildren().add(canvasImage);
+            StackPane canvasPane = new StackPane();
+            // code is COMMENTED OUT because the dependency is not included 
+            // SVGImage is the class type in the fxsvgImage.jar third party package
+
+            //SVGImage canvasImage = SVGLoader.load(mapDetails.getMapFile());
+            //mapGroupHolder.getChildren().add(canvasImage);            
+            //canvasImage.parentToLocal(parentBounds)
+
+            canvasPane.setBorder(Border.EMPTY);
+            //canvasPane.getChildren().addAll(canvasImage);
+            
+            setFitToWidth(true);
+            setFitToHeight(true);
+            canvasPane.setManaged(false);
+            mapGroupHolder.getChildren().add(canvasPane);
+            
+            //SVGImage miniCanvas = SVGLoader.load(mapDetails.getMapFile()); // can't do a regular "copy" of the canvasImage, so using a new instance
+            //miniCanvas.setScaleX(0.1);
+            //miniCanvas.setScaleY(0.1);
+            //overviewOverlay = new OverviewOverlay(mapDetails.getWidth(), mapDetails.getHeight(), null, miniCanvas);
         } else {
+            mapGroupHolder.setPrefWidth(mapDetails.getWidth());
+            mapGroupHolder.setPrefHeight(mapDetails.getHeight());
             mapGroupHolder.getChildren().add(countryGroup);
+            Rectangle clipRectangle = new Rectangle(-EMPTY_BORDER_REGION, -EMPTY_BORDER_REGION, outerWidth, outerHeight);
+            mapGroupHolder.setClip(clipRectangle);
+            overviewOverlay = new OverviewOverlay(mapDetails.getWidth(), mapDetails.getHeight(), countrySVGPaths, null);
         }
+
+        Bounds laybounds = scrollContent.getBoundsInLocal();
+        double adjX = 0.0;
+        double adjY = 0.0;
+        if (laybounds.getMinX() < 0) {
+            adjX = 0 - laybounds.getMinX();
+        }
+        if (laybounds.getMinY() < 0) {
+            adjY = 0 - laybounds.getMinX();
+        }
+        scrollContent.setLayoutX(adjX);
+        scrollContent.setLayoutY(adjY);
         
-        MapConversions.setWindowBounds(scrollContent.getLayoutBounds());
-        
+        MapConversions.setBorderOffsets(mapDetails.getBorderInsets());
         // Initialize the MapConversions class to align with the map being loaded.
         MapConversions.initMapDimensions(mapDetails);
 
         // Put overlays in map
         overlayMap.put(MapViewPane.TOOLS_OVERLAY, TOOLS_OVERLAY);
-        overlayMap.put(MapViewPane.INFO_OVERLAY, INFO_OVERLAY);
         overlayMap.put(MapViewPane.OVERVIEW_OVERLAY, overviewOverlay);
 
         markerColourProperty.set(parent.DEFAULT_COLOURS);
 
-        // TODO this is triggered from Paintbrush menu, where user can aselect:
+        // TODO this is triggered from Paintbrush menu, where user can select:
         //           - Default Colours
         //           - Use Color Attribute
         //           - Use Overlay Color
@@ -398,11 +419,7 @@ public class MapView extends ScrollPane {
             final double y = event.getY();
 
             // Change latitude and longitude text on info overlay if its showing
-            if (INFO_OVERLAY.isShowing()) {
-                INFO_OVERLAY.updateLocation(x, y);
-                parent.setLatFieldText(INFO_OVERLAY.getLatText().getText());
-                parent.setLonFieldText(INFO_OVERLAY.getLonText().getText());
-            }
+            Platform.runLater(() -> INFO_OVERLAY.updateLocation(x, y));
 
             // If drawing is enabled
             if (TOOLS_OVERLAY.getDrawingEnabled().get() && !TOOLS_OVERLAY.getMeasureEnabled().get()) {
@@ -439,7 +456,7 @@ public class MapView extends ScrollPane {
         // When mouse is dragged
         mapGroupHolder.setOnMouseDragged(event -> {
             // If the user is drawing a selection rectangle
-            if (event.isPrimaryButtonDown()) {
+            if (event.isPrimaryButtonDown() && selectionRectangle != null) {
                 isSelectingMultiple = true;
                 final double x = event.getX();
                 final double y = event.getY();
@@ -489,16 +506,15 @@ public class MapView extends ScrollPane {
                         p.deselect();
 
                         // If marker is within the selection rectangle then select the marker
-                        if (selectionRectangle.contains(p.getX(), p.getY())) {
+                        if (selectionRectangle != null && selectionRectangle.contains(p.getX(), p.getY())) {
                             p.select();
                             idList.addAll(p.getConnectedNodeIdList());
                             selectedNodeList.add(p.getMarkerId());
                         }
-
                     }
                 }
 
-                // Select all noded that correspond to selected markers in consty
+                // Select all nodes that correspond to selected markers in consty
                 PluginExecution.withPlugin(new SelectOnGraphPlugin(idList, true)).executeLater(GraphManager.getDefault().getActiveGraph());
                 isSelectingMultiple = false;
                 isSelectionMade = true;
@@ -525,6 +541,10 @@ public class MapView extends ScrollPane {
          */
         this.hvalueProperty().addListener((obs, oldVal, newVal) -> {
             this.updateOverviewOverlay(); 
+            Platform.runLater(() -> {
+                INFO_OVERLAY.updateZoomLabel(scaleSteps());
+                INFO_OVERLAY.updateMapScaleText(scaledStepsToRepresent1000km());
+            });
         });
         
         /**
@@ -532,8 +552,11 @@ public class MapView extends ScrollPane {
          */
         this.vvalueProperty().addListener((obs, oldVal, newVal) -> {
             this.updateOverviewOverlay(); 
+            Platform.runLater(() -> {
+                INFO_OVERLAY.updateZoomLabel(scaleSteps());
+                INFO_OVERLAY.updateMapScaleText(scaledStepsToRepresent1000km());
+            });
         });
-        
 
         // Add all graphical groups to pane
         mapGroupHolder.getChildren().add(hiddenPointMarkerGroup);
@@ -546,7 +569,6 @@ public class MapView extends ScrollPane {
         mapGroupHolder.getChildren().add(pointMarkerTextGroup);
         mapGroupHolder.getChildren().add(thessianMarkersGroup);
 
-        overlayGroup.getChildren().addAll(INFO_OVERLAY.getOverlayPane());
         mapGroupHolder.getChildren().add(selectionRectangleGroup);
         mapGroupHolder.getChildren().addAll(viewPortRectangleGroup);
     }
@@ -566,17 +588,6 @@ public class MapView extends ScrollPane {
                 selectionRectangleGroup.getChildren().clear();
                 selectionRectangle = null;
             }
-
-            // Determine the position of the mouse relative to the top left of the mapStackPane when the mouse button is
-            // pressed. The Top left 0,0 position reflects top left of MapViewPane which adds a toolBarGridPane across
-            // the top and the anchorPane as the main content (center). The anchor panel holds the parentStackPane which
-            // holds the mapView.
-            mouseAnchorX = event.getSceneX();
-            mouseAnchorY = event.getSceneY();
-
-            // Position of map when moise is clicked
-            translateX = mapStackPane.getTranslateX();
-            translateY = mapStackPane.getTranslateY();
 
         });
 
@@ -605,7 +616,35 @@ public class MapView extends ScrollPane {
         if (this.getScene() == null) {
             return;
         }
-        overviewOverlay.update(this.getViewportBounds().getWidth()/this.currentScale, this.getViewportBounds().getHeight()/this.currentScale, this.getHvalue(), this.getVvalue());
+        final double screenX = getScreenCentreX();
+        final double screenY = getScreenCentreY();
+        final double viewPortWidth = getViewportBounds().getWidth()/currentScale;
+        final double viewPortHeight = getViewportBounds().getHeight()/currentScale;
+
+        final double widthRange = MAP_WIDTH - viewPortWidth;
+        double posHvalue = (screenX - viewPortWidth/2) / widthRange;
+        if (posHvalue < 0) {
+            posHvalue = 0;
+        }
+        if (posHvalue > 1) {
+            posHvalue = 1;
+        }
+        final double targetHvalue = posHvalue;
+
+        final double heightRange = MAP_HEIGHT - viewPortHeight;
+        double posVvalue = 0;
+        if (heightRange > 0) {
+            posVvalue = (screenY - viewPortHeight/2) / heightRange;
+            if (posVvalue < 0) {
+                posVvalue = 0;
+            }
+            if (posVvalue > 1) {
+                posVvalue = 1;
+            }
+        }
+        final double targetVvalue = posVvalue;
+        
+        Platform.runLater(() -> overviewOverlay.update(viewPortWidth, viewPortHeight, targetHvalue, targetVvalue));
     }
 
     /**
@@ -616,7 +655,7 @@ public class MapView extends ScrollPane {
         mapGroupHolder.setOnMouseClicked(event -> {
             // If left clicked
             if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
-                // if double clicked desekect all marekers from both the map and the graph in consty
+                // if double clicked deselect all marekers from both the map and the graph in consty
                 deselectAllMarkers();
                 selectedNodeList.clear();
                 PluginExecution.withPlugin(new SelectOnGraphPlugin(selectedNodeList, true)).executeLater(GraphManager.getDefault().getActiveGraph());
@@ -713,6 +752,9 @@ public class MapView extends ScrollPane {
         // Clear any existing text
         pointMarkerTextGroup.getChildren().clear();
         markerTextLabels.clear();
+        if (option == null) {
+            return;
+        }
 
         // Loop through all the markers
         for (final AbstractMarker value : markers.values()) {
@@ -736,12 +778,10 @@ public class MapView extends ScrollPane {
     }
 
     private void resizeLines(){
-        //layers.forEach(layer -> layer.getLayer().setScaleX(MAX_LAT));
-        double adjustment = this.currentScale == 1 ? 1 : 
-                this.currentScale > 1 ? (0.75 * (Math.pow(this.currentScale, 0.75))) : (1 / Math.pow((2 - this.currentScale), 2));
+        double adjustment = currentScale == 1 ? 1 : 
+                currentScale > 1 ? (0.75 * (Math.pow(currentScale, 0.75))) : (1 / Math.pow((2 - currentScale), 2));
         layers.forEach(layer -> {
-            if (layer instanceof LocationPathsLayer) {
-                LocationPathsLayer locLayer = (LocationPathsLayer) layer;
+            if (layer instanceof LocationPathsLayer locLayer) {
                 locLayer.scale(adjustment);
             }
         });
@@ -754,8 +794,8 @@ public class MapView extends ScrollPane {
      * marker text is set to be paired with a GeoShape, that the MArker object in the pair is a dummy UserText marker.
      */
      private void resizeMarkerText(Pair<AbstractMarker, Text> textLabel) {
-        textLabel.getValue().setScaleX(0.75 +0.25/this.currentScale);
-        textLabel.getValue().setScaleY(0.75 +0.25/this.currentScale);
+        textLabel.getValue().setScaleX(0.75 +0.25/Math.pow(currentScale, 0.75));
+        textLabel.getValue().setScaleY(0.75 +0.25/Math.pow(currentScale, 0.75));
      }
     
      /**
@@ -775,10 +815,12 @@ public class MapView extends ScrollPane {
      */
     private void setPointMarkerText(final String markerText, final PointMarker p) {
  
-        final Pair<AbstractMarker, Text> textLabel = new Pair(p,  new Text(markerText));        
+        final Text textMarker = new Text(markerText);
+        final double fontSize = 15/Math.pow(MapView.getMapScale(), 0.85);
+        textMarker.setStyle(" -fx-font-size: " + fontSize + ";");
+        final Pair<AbstractMarker, Text> textLabel = new Pair(p, textMarker);        
         markerTextLabels.add(textLabel);
         pointMarkerTextGroup.getChildren().add(textLabel.getValue());
-        resizeMarkerText(textLabel);
 
         final double posX = textLabel.getValue().getBoundsInParent().getCenterX();
         final double posY = textLabel.getValue().getBoundsInParent().getCenterY();
@@ -786,8 +828,8 @@ public class MapView extends ScrollPane {
         final double markerCentreY = textLabel.getKey().getMarker().getBoundsInParent().getCenterY();
         final double markerHeight = textLabel.getKey().getMarker().getBoundsInParent().getHeight();
         if (textLabel.getKey() instanceof PointMarker) {
-            textLabel.getValue().setTranslateY(textLabel.getValue().getTranslateY() + (markerCentreY + markerHeight / 2) - posY);
-            textLabel.getValue().setTranslateX(textLabel.getValue().getTranslateX() + markerCentreX - posX);
+            textLabel.getValue().setTranslateY(textLabel.getValue().getTranslateY() + (markerCentreY + markerHeight / 2) - (posY - 10)/Math.pow(currentScale, 0.85));
+            textLabel.getValue().setTranslateX(textLabel.getValue().getTranslateX() + markerCentreX - (posX + 0.75*markerText.length())/Math.pow(currentScale, 0.85));
         }
     }
     
@@ -800,19 +842,20 @@ public class MapView extends ScrollPane {
      * @param p - The marker itself.
      */
     private void setPolygonMarkerText(final String markerText, final GeoShape gs) {
-        final Text t = new Text(markerText);      
+        final Text t = new Text(markerText);    
+        final double fontSize = 12/Math.pow(MapView.getMapScale(), 0.75);
+        t.setStyle(" -fx-font-size: " + fontSize + ";");
         final UserPointMarker tempMarker = new UserPointMarker(this, AbstractMarker.NO_MARKER_ID, gs.getCenterX(), gs.getCenterY(), 0.05);
         
         final Pair<AbstractMarker, Text> textLabel = new Pair(tempMarker,  t); 
         markerTextLabels.add(textLabel);
         pointMarkerTextGroup.getChildren().add(textLabel.getValue());
-        resizeMarkerText(textLabel);
             
         final double markerCentreX = gs.getBoundsInParent().getCenterX();
         final double markerCentreY = gs.getBoundsInParent().getCenterY();
-        final double textWidth = t.getBoundsInParent().getWidth() * this.currentScale;
+        final double textWidth = t.getBoundsInParent().getWidth() / Math.pow(currentScale, 0.85);
         t.setX(markerCentreX - textWidth/2);
-        t.setY(markerCentreY);      
+        t.setY(markerCentreY);
     }
 
     /**
@@ -821,43 +864,101 @@ public class MapView extends ScrollPane {
      * @param scalingFactor The scale to zoom the map to.
      */
     private void scale(final double scalingFactor) {
-        final Bounds contentBounds = scrollContent.getLayoutBounds();
-        final Bounds viewportBounds = this.getViewportBounds();
-        if ((contentBounds.getWidth() * scalingFactor <= viewportBounds.getWidth()) &&
-            (contentBounds.getHeight() * scalingFactor <= viewportBounds.getHeight() && scalingFactor < this.currentScale)) {
+        final double viewportWidth = getViewportBounds().getWidth();
+        final double viewportHeight = getViewportBounds().getHeight();
+        final double scaledContentWidth = getContent().getBoundsInLocal().getWidth();
+        final double scaledContentHeight = getContent().getBoundsInLocal().getHeight();
+
+        if (viewportWidth > scaledContentWidth && viewportHeight > scaledContentHeight && scalingFactor < currentScale) {
             return;
         }
         
         // Determine the new scale value and line width value. The scaledMapLineWidth value is designed to counteract
         // the value of scaleFactor and ensure that map lines remain at the same width
-        this.currentScale = this.currentScale * scalingFactor;
-        pointMarkerGlobalScale = 1 / this.currentScale;
+        currentScale = currentScale * scalingFactor;
 
         // Scale mapStackPane to the new zoom factor and update map line widths to counter it 
-        mapStackPane.setScaleX(this.currentScale);
-        mapStackPane.setScaleY(this.currentScale);
+        mapStackPane.setScaleX(currentScale);
+        mapStackPane.setScaleY(currentScale);
         if (!testUsingCanvas) {
-            countrySVGPaths.forEach(svgPath -> svgPath.setStrokeWidth(scaledMapLineWidth/this.currentScale));
+            countrySVGPaths.forEach(svgPath -> svgPath.setStrokeWidth(SCALED_MAP_LINE_WIDTH/Math.pow(currentScale, 0.85)));
         }
          
         // Resize markers
         resizeMarkers();
         resizeLines();
         resizeAllText();
+        refreshMapLayers();
+        
+        if (INFO_OVERLAY.isShowing()) {
+            Platform.runLater(() -> {
+                INFO_OVERLAY.updateZoomLabel(scaleSteps()); // y = x ^ n ... 
+                INFO_OVERLAY.updateMapScaleText(scaledStepsToRepresent1000km()); // get equivalent scaled x,y coordiantes and calculate the distance
+            });
+        }
+    }
+    
+    private double getDistancePerXstep() {
+        final double currentMapX = getScreenCentreX();
+        final double currentMapY = getScreenCentreY();
+        final double startLon = MapConversions.mapXToLon(currentMapX);
+        final double endLon = startLon + 10;
+        final double startLat = MapConversions.mapYToLat(currentMapY);
+        final double distance = getDistanceFromLatLonInKm(startLat, startLon, startLat, endLon);
+        final double xCoordDiference = MapConversions.lonToMapX(endLon) - currentMapX;
+        
+        return distance / xCoordDiference;
+    }
+    
+    private double getDistanceFromLatLonInKm(double lat1, double lon1, double lat2, double lon2) {
+      final double earthRadius = 6371; // Radius of the earth in km
+      final double dLat = degToRad(lat2 - lat1);  // degTorad below
+      final double dLon = degToRad(lon2 - lon1); 
+      final double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(degToRad(lat1)) * Math.cos(degToRad(lat2)) * 
+                Math.sin(dLon/2) * Math.sin(dLon/2); 
+      final double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+      final double d = earthRadius * c; // Distance in km
+      return d;
+    }
+    
+    private double degToRad(double degValue) {
+        return degValue * (Math.PI / 180);
+    }
+    
+    private double scaledStepsToRepresent1000km() {
+        return 1000 * currentScale / getDistancePerXstep();
+    }
+    
+    private int scaleSteps() {
+        double tempScale = currentScale;
+        int steps = 0;
+        if (tempScale >=1) {
+            while (tempScale > 1) {
+                tempScale /= MAP_SCALE_FACTOR;
+                steps++;
+            }
+        } else {
+            while (tempScale < 1) {
+                tempScale *= MAP_SCALE_FACTOR;
+                steps--;
+            }            
+        }
+        return steps;
     }
     
     /***
      * Perform a zoom in by a zoom factor.
      */
     public void zoomIn() {
-        scale(this.currentScale * MAP_SCALE_FACTOR);
+        scale(currentScale * MAP_SCALE_FACTOR);
     }
     
     /***
      * Perform a zoom out by a zoom factor.
      */
     public void zoomOut() {
-        scale(this.currentScale / MAP_SCALE_FACTOR);
+        scale(currentScale / MAP_SCALE_FACTOR);
     }
     
     /**
@@ -866,16 +967,70 @@ public class MapView extends ScrollPane {
     private void setScrollEventHandler() {
         // Scoll to zoom
         mapStackPane.setOnScroll(e -> {
-            if (e.isControlDown()) {
-                double scaleAmount = (e.getDeltaY() > 0) ? MAP_SCALE_FACTOR : 1 / MAP_SCALE_FACTOR;
-                double hScrollPos = self.getHvalue();
-                double vScrollPos = self.getVvalue();
-                scale(scaleAmount);
-                self.setHvalue(hScrollPos);
-                self.setVvalue(vScrollPos);                
+            final double scaleAmount = (e.getDeltaY() > 0) ? MAP_SCALE_FACTOR : 1 / MAP_SCALE_FACTOR;
+            final double posX = e.getX();
+            final double posY = e.getY();
+            final double cenX = getScreenCentreX();
+            final double cenY = getScreenCentreY();
+
+            final double viewportWidth = getViewportBounds().getWidth();
+            final double viewportHeight = getViewportBounds().getHeight();
+            final double scaledContentWidth = getContent().getBoundsInLocal().getWidth();
+            final double scaledContentHeight = getContent().getBoundsInLocal().getHeight();
+
+            final double deadZoneX = (MAP_WIDTH + 2 * EMPTY_BORDER_REGION) * viewportWidth / (scaledContentWidth * 4.5);
+            final double deadZoneY = (MAP_HEIGHT + 2 * EMPTY_BORDER_REGION) * viewportHeight / (scaledContentHeight * 4.5);
+
+            double modX = Math.abs(posX - cenX) > deadZoneX ? ((posX - cenX) > 0 ? ((posX - cenX - deadZoneX/1.5)/3) : ((posX - cenX + deadZoneX/1.5)/3)) : 0;
+            double modY = Math.abs(posY - cenY) > deadZoneY ? ((posY - cenY) > 0 ? ((posY - cenY - deadZoneY/1.5)/3) : ((posY - cenY + deadZoneY/1.5)/3)) : 0;
+
+            final double maxModX = (viewportWidth/scaledContentWidth) * (MAP_WIDTH/3); // 1/3 of the viewport screen content area ;
+            if (Math.abs(modX) > maxModX) {
+                modX = modX > 0 ? maxModX : -maxModX;
             }
+            final double maxModY = (viewportHeight/scaledContentHeight) * (MAP_HEIGHT/3); // 1/3 of the viewport screen content area ;
+            if (Math.abs(modY) > maxModY) {
+                modY = modY > 0 ? maxModY : -maxModY;
+            }
+            
+            double targetX = cenX + modX;
+            if (targetX < 0) {
+                targetX = 0;
+            } else if (targetX > MAP_WIDTH) {
+                targetX = MAP_WIDTH;
+            }
+            double targetY = cenY + modY;
+            if (targetY < 0) {
+                targetY = 0;
+            } else if (targetY > MAP_HEIGHT) {
+                targetY = MAP_HEIGHT;
+            }
+
+            scale(scaleAmount);
+            panToPosition(targetX, targetY);
+            
             e.consume();
         });
+    }
+
+    public double getScreenCentreX(){
+        final double hScrollPos = self.getHvalue();
+        final double viewportWidth = getViewportBounds().getWidth();        
+        // when hScrollPos is 0%, the centre of the visible screen section is half the width of the viewport window
+        // when hScrollPos is 100%, the centre is half the viewport window size subtracted from the full width.        
+        final double contentWidth = getContent().getBoundsInLocal().getWidth();        
+        final double currentXOffset = viewportWidth/2 + hScrollPos * (contentWidth - viewportWidth);
+        final double centreXVal = (MAP_WIDTH + 2 * EMPTY_BORDER_REGION) * currentXOffset/contentWidth - EMPTY_BORDER_REGION;
+        return centreXVal;
+    }
+    
+    public double getScreenCentreY(){
+        final double vScrollPos = self.getVvalue();
+        final double viewportHeight = getViewportBounds().getHeight();        
+        final double contentHeight = getContent().getBoundsInLocal().getHeight();
+        final double currentYOffset = viewportHeight/2 + vScrollPos * (contentHeight - viewportHeight);
+        final double centreYVal = (MAP_HEIGHT + 2 * EMPTY_BORDER_REGION) * currentYOffset/contentHeight - EMPTY_BORDER_REGION;
+        return centreYVal;
     }
 
     /**
@@ -907,7 +1062,7 @@ public class MapView extends ScrollPane {
 
             if (marker instanceof UserPointMarker) {
                 final UserPointMarker uMarker = (UserPointMarker) marker;
-                uMarker.scaleMarker(this.currentScale);
+                uMarker.scaleMarker(currentScale == 1 ? 1 : currentScale > 1 ? (0.85 *(Math.pow(currentScale, 0.85))) : (1/(2 - currentScale)/(2 - currentScale)));
             }
 
             drawnMarkerGroup.getChildren().addAll(marker.getMarker());
@@ -1019,7 +1174,7 @@ public class MapView extends ScrollPane {
      */
     private void resizeMarkers() {
         // TODO: once all markers have scaleMarker() set up, just call scaleMarker()
-        double adjustment = this.currentScale == 1 ? 1 : this.currentScale > 1 ? (0.75*(Math.pow(this.currentScale, 0.75))) : (1/(2 - this.currentScale)/(2 - this.currentScale));
+        final double adjustment = currentScale == 1 ? 1 : currentScale > 1 ? (0.85 *(Math.pow(currentScale, 0.85))) : (1/(2 - currentScale)/(2 - currentScale));
         markers.values().forEach(abstractMarker -> {
             if (abstractMarker instanceof PointMarker) {
                 final PointMarker marker = (PointMarker) abstractMarker;
@@ -1039,6 +1194,16 @@ public class MapView extends ScrollPane {
         });
     }
 
+    public void refreshMapLayers() {
+        layers.forEach(layer -> {
+            if (layer instanceof AbstractMapLayer amLayer && !(layer instanceof DayNightLayer)) {
+                Platform.runLater(() -> {    
+                    parent.refreshLayer(amLayer);
+                });
+            }
+        });
+    }
+    
     // Sets up and adds a layer to the map
     public void addLayer(final AbstractMapLayer layer) {
         layer.setUp();
@@ -1079,8 +1244,12 @@ public class MapView extends ScrollPane {
         }
 
         // Redraw all markers on screen
+        parent.redrawQueriedMarkers();
         redrawUserMarkers();
-        redrawQueriedMarkers();
+        resizeMarkers();
+        resizeLines();
+        resizeAllText();
+        refreshMapLayers();
     }
 
     public List<AbstractMapLayer> getLayers() {
@@ -1092,7 +1261,6 @@ public class MapView extends ScrollPane {
      */
     public void redrawQueriedMarkers() {
         graphMarkerGroup.getChildren().clear();
-
         // Redraw all queried markers
         for (final AbstractMarker value : markers.values()) {
             drawMarker(value);
@@ -1128,7 +1296,7 @@ public class MapView extends ScrollPane {
     }
 
     /**
-     * Selects one or nodes on the graph
+     * Selects one or more nodes on the graph
      *
      * @param markerID - ID of selected marker
      * @param selectedNodes - Node id's that are represented by the
@@ -1189,10 +1357,8 @@ public class MapView extends ScrollPane {
         final double centerX = this.getWidth() / 2;
         final double centerY = this.getHeight() / 2;
 
-
         mapStackPane.setTranslateX(centerX - mapDetails.getWidth() / 2);
         mapStackPane.setTranslateY(centerY - mapDetails.getHeight() / 2);
-
     }
 
     /**
@@ -1221,12 +1387,11 @@ public class MapView extends ScrollPane {
      * Zoom map out to a scale that allows the entire map to be seen.
      */
     public void zoomToAll() {
-        // Determine the zoom level required
-        final double requiredScale = 
-                Math.min(
-                        this.getViewportBounds().getWidth()/this.mapDetails.getWidth(),
-                        this.getViewportBounds().getHeight()/this.mapDetails.getHeight());
-        scale(requiredScale);
+        // best to simply do a hard reset here.
+        currentScale = 1;
+        scale(1);
+        self.setHvalue(0.5);
+        self.setVvalue(0.5);                
     }
     
     /**
@@ -1241,7 +1406,7 @@ public class MapView extends ScrollPane {
     private void zoomAndRecenterToSelection(final double requiredScale, final double centreLat, final double centreLon) {
         
         if (requiredScale < this.currentScale) {
-            LOGGER.log(Level.WARNING, "Requested zoom scale is less than current zoom scale. MAp will not centre neatly");
+            LOGGER.log(Level.WARNING, "Requested zoom scale is less than current zoom scale. Map will not centre neatly");
         }
 
         // Adjust scale, prior to readjusting centre to ensure all map dimensions are known
@@ -1257,8 +1422,8 @@ public class MapView extends ScrollPane {
         // Convert the supplied centre lat/long to X/Y coordinates converted to the current scale to ensure they are in
         // the same units as layoutBounds and viewportBounds. These can then be used to determine required new hValue
         // and vValue.
-        final double centreX = MapConversions.lonToMapX(centreLon) * this.currentScale;
-        final double centreY = MapConversions.latToMapY(centreLat) * this.currentScale;
+        final double centreX = MapConversions.lonToMapX(centreLon) * currentScale;
+        final double centreY = MapConversions.latToMapY(centreLat) * currentScale;
         
         // Now work out how much the ScrollPane is able to scroll in both dimensions. Given that the ScrollPane doesnt
         // let its content scroll off the pane in either direction, the scrollable range is thefull range of layoutBounds
@@ -1282,24 +1447,93 @@ public class MapView extends ScrollPane {
      * Zoom the map to the currently made selection.
      */
     public void zoomToSelection() {
-        if (this.isSelectionMade) {
+        // loop through all markers and use the coordinates of the selected nodes
+        // to find the rectangle that contains them all
+        int totalFound = 0;
+        double minX = Double.POSITIVE_INFINITY;
+        double minY = Double.POSITIVE_INFINITY;
+        double maxX = Double.NEGATIVE_INFINITY;
+        double maxY = Double.NEGATIVE_INFINITY;
+        for (final AbstractMarker m : markers.values()) {
+            if (m instanceof PointMarker pm && pm.isSelected()) {
+                totalFound++;
+                if (pm.getX() < minX) {
+                    minX = pm.getX();
+                }
+                if (pm.getY() < minY) {
+                    minY = pm.getY();
+                }
+                
+                if (pm.getX() > maxX) {
+                    maxX = pm.getX();
+                }
+                if (pm.getY() > maxY) {
+                    maxY = pm.getY();
+                }
+            }
+        }
+        if (totalFound == 0) {
             return;
         }
         
-        // Calculate the X and Y coordinates of the center of the selection rectangle and convert this to a latitude
-        // and longitude (which is agnostic to zoom scale).
-        // Calculate the largest possible zoom to ensure all of the selected rectangle is visi\ble
-        final double selectionCentreX = this.selectionRectangle.getX() + this.selectionRectangle.getWidth()/2;
-        final double selectionCentreY = this.selectionRectangle.getY() + this.selectionRectangle.getHeight()/2;
-        final double selectionCentreLon = MapConversions.mapXToLon(selectionCentreX);
-        final double selectionCentreLat = MapConversions.mapYToLat(selectionCentreY);
-        final double requiredScale =
-                Math.min(
-                        this.getViewportBounds().getWidth()/selectionRectangle.getWidth(),
-                        this.getViewportBounds().getHeight()/selectionRectangle.getHeight());
-        zoomAndRecenterToSelection(requiredScale, selectionCentreLat, selectionCentreLon);
+        minX -= 0.15*EMPTY_BORDER_REGION/Math.sqrt(totalFound);
+        minY -= 0.15*EMPTY_BORDER_REGION/Math.sqrt(totalFound);
+        maxX += 0.15*EMPTY_BORDER_REGION/Math.sqrt(totalFound);
+        maxY += 0.15*EMPTY_BORDER_REGION/Math.sqrt(totalFound);
+        
+        final double rectangleWidth = maxX - minX;
+        final double rectangleHeight = maxY - minY;
+        // set the position and scale such that the rectangle is inside the viewport
+        final double widthFactor = getViewportBounds().getWidth() / rectangleWidth;
+        final double heightFactor = getViewportBounds().getHeight() / rectangleHeight;
+        // the ratio of the current width to the selectionArea width is the change of zoom scale required
+        final double newScale = Math.min(widthFactor, heightFactor);
+        
+        currentScale = newScale;
+        scale(1);
+        final double targetPosX = maxX - (maxX - minX)/2;
+        final double targetPosY = maxY - (maxY - minY)/2;
+        panToPosition(targetPosX, targetPosY);
     }
 
+    public void panToPosition(final double x, final double y) {
+        // How to calculate scrollbar offsets:
+        // Accounting for scaling ... visible window fraction is getViewportBound().getWidth() / getContent().getBoundsInLocal().getWidth()
+        // sample numbers ... when zoomed in at a scale of 5.44 .... 1045 / 8158
+        // to pan to an x co-ordinate on a 1:1 scale with numbers of 1045 / 1500 ... when map x = 375 (on a 1000x999 map)
+        // scrollbar calculation for adjusted x = EMPTY_BORDER_REGION + 375 = 625
+        //           625 / 1500 = 0.417
+        // for the scaled/zoomed in case, the viewport remains a static size, so we need to compensate for that
+        // 5.44 * zoom ->   3400 / 8160 = 0.417
+        // viewport fraction = 1045 / 8160 = 0.128
+        // 0% horizontal scrollbar position has a center point = 1045/2 = 522.5
+        // 100% horizontal scrollbar position has a center point = 8160 - 522.5 = 7637.5
+        // to move to position 3400 of the full range,
+        // you actually need to move 3400 - 522.5 = 2877.5 in a range of 7115
+        // the actual scrollbar position becomes 2877.5/7155 = 0.404
+        // the theoretical position was 0.417, but the actual position is 0.404
+
+        final double viewportWidthAdjustment = getViewportBounds().getWidth()/2;
+        final double viewportHeightAdjustment = getViewportBounds().getHeight()/2;
+        final double scaledContentWidth = getContent().getBoundsInLocal().getWidth();
+        final double scaledContentHeight = getContent().getBoundsInLocal().getHeight();
+
+        final double scaledContentCenterX = currentScale * (EMPTY_BORDER_REGION + x);
+        final double adjustedCenterX = scaledContentCenterX - viewportWidthAdjustment;
+        final double scrollEndPosX = scaledContentWidth - viewportWidthAdjustment;
+        final double scrollRangeX = scrollEndPosX - viewportWidthAdjustment;
+        final double adjustedHpos = adjustedCenterX / scrollRangeX;
+        
+        final double scaledContentCenterY = currentScale * (EMPTY_BORDER_REGION + y);
+        final double adjustedCenterY = scaledContentCenterY - viewportHeightAdjustment;
+        final double scrollEndPosY = scaledContentHeight - viewportHeightAdjustment;
+        final double scrollRangeY = scrollEndPosY - viewportHeightAdjustment;
+        final double adjustedVpos = adjustedCenterY / scrollRangeY;
+
+        self.setHvalue(adjustedHpos);
+        self.setVvalue(adjustedVpos);           
+    }
+    
     /**
      * Pans the map to have the average coordinates of all selected nodes to be
      * at the the center of the screen
@@ -1348,12 +1582,6 @@ public class MapView extends ScrollPane {
 
         // Keep zooming in
         while (true) {
-
-            if (scaleFactor > 1.0) {
-                pointMarkerGlobalScale /= 1.04;
-            } else {
-                pointMarkerGlobalScale *= 1.04;
-            }
 
             final double oldXScale = mapStackPane.getScaleX();
             final double oldYScale = mapStackPane.getScaleY();
@@ -1412,7 +1640,7 @@ public class MapView extends ScrollPane {
             }
         }
 
-        return true;
+        return true; // ?? this ALWAYS returns true ! - TODO: investigate/fix this
     }
 
     /**
@@ -1592,6 +1820,7 @@ public class MapView extends ScrollPane {
 
                         userMarkers.add(marker);
                     }
+                    panToPosition(x, y);
 
                     // Convert mgrs value to x and y
                 } else if (selectedGeoType.equals(MGRS) && StringUtils.isNotBlank(mgrsInput.getText())) {
@@ -1606,6 +1835,7 @@ public class MapView extends ScrollPane {
                     addUserDrawnMarker(marker);
 
                     userMarkers.add(marker);
+                    panToPosition(x, y);
 
                     // Convert geohash value to x and y
                 } else if (selectedGeoType.equals(GEOHASH) && StringUtils.isNotBlank(geoHashInput.getText())) {
@@ -1619,6 +1849,7 @@ public class MapView extends ScrollPane {
 
                     addUserDrawnMarker(marker);
                     userMarkers.add(marker);
+                    panToPosition(x, y);
 
                 }
 
@@ -1721,7 +1952,7 @@ public class MapView extends ScrollPane {
                     graphMarkerGroup.getChildren().add(marker.getMarker());
                 }
 
-                marker.scaleMarker(this.currentScale);
+                marker.scaleMarker(currentScale == 1 ? 1 : currentScale > 1 ? (0.85 *(Math.pow(currentScale, 0.85))) : (1/(2 - currentScale)/(2 - currentScale)));
             }
         }
     }
@@ -1755,7 +1986,7 @@ public class MapView extends ScrollPane {
     }
 
     public double getScaledMapLineWidth() {
-        return scaledMapLineWidth;
+        return SCALED_MAP_LINE_WIDTH / Math.pow(currentScale, 0.85);
     }
 
     /**
@@ -1764,7 +1995,7 @@ public class MapView extends ScrollPane {
      * @return Current scaling factor (zoom) of the map.
      */
     public double getCurrentScale() {
-        return this.currentScale; 
+        return currentScale; 
     }
     
     /**
@@ -1785,28 +2016,33 @@ public class MapView extends ScrollPane {
             try (final BufferedReader bFileReader = new BufferedReader(new FileReader(mapDetails.getMapFile()))) {
                 String path = "";
                 String line = "";
+                boolean firstLineDone = false;
 
                 // While there is more to read
                 while ((line = bFileReader.readLine()) != null) {
                     // Strip the line read in
-                    line = line.strip().replace("\t", "  ");;
-
+                    line = line.strip().replace("\t", "  ");                    
                     // Extract the svg path segment from the line
                     if (line.startsWith("<path")) {
                         final int startIndex = line.indexOf(" d=") + 4;
                         final int endIndex = line.substring(startIndex).indexOf("\"");
 
                         if (startIndex > -1 && endIndex > -1) {
-                            path = line.substring(startIndex, startIndex + endIndex);                        
+                            path = line.substring(startIndex, startIndex + endIndex);
                             // Create the SVGPath object and add it to an array
                             final SVGPath svgPath = new SVGPath();
-                            svgPath.setFill(Color.WHITE);
-                            svgPath.setStrokeWidth(scaledMapLineWidth);
+                            if (!firstLineDone) { // the first line is generally the bounding border rectangle, not map data
+                                svgPath.setFill(Color.rgb(128,140,255,0.2));
+                                firstLineDone = true;
+                            } else {
+                                svgPath.setFill(Color.rgb(255,255,255,0.8));
+                            }
+                            svgPath.setStrokeWidth(getScaledMapLineWidth());
                             svgPath.setStroke(Color.BLACK);
                             svgPath.setContent(path);
+                            // to implement matrix transforms : svgPath.getTransforms().add(Transform.affine(-1, 2.4336e-008, -2.4336e-008, -1, 2163.78, 1161.93));
                             countrySVGPaths.add(svgPath);
                         }
-                        path = "";
                     }
                 }
             }
@@ -1814,5 +2050,9 @@ public class MapView extends ScrollPane {
         } catch (final IOException e) {
             LOGGER.log(Level.SEVERE, "Exception thrown: {0}", e.getMessage());
         }
+    }
+    
+    public static double getMapScale() {
+        return currentScale;
     }
 }

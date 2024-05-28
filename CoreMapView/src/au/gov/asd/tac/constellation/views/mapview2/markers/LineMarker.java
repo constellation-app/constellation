@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,26 +41,25 @@ public class LineMarker extends AbstractMarker {
 
     public LineMarker(final MapView parent, final int markerID, final int id, final double lattitude1, final double longitude1, final double lattitude2, final double longitude2) {
         super(parent, markerID, id, AbstractMarker.MarkerType.LINE_MARKER);
-        this.scalingFactor = 1 / parent.getCurrentScale();
         lat1 = lattitude1;
         lon1 = longitude1;
         lat2 = lattitude2;
         lon2 = longitude2;
 
-        markerPath.setStroke(MapDetails.MARKER_STROKE_COLOUR);
-        markerPath.setStrokeWidth(MapDetails.MARKER_LINE_WIDTH * this.scalingFactor);
+        markerPath.setStroke(MapDetails.MARKER_STROKE_PAINT_GRADIENT);
+        markerPath.setStrokeWidth(30 * MapDetails.MARKER_LINE_WIDTH * parent.getScaledMapLineWidth());
 
         // Set event handlers for the line marker
         markerPath.setOnMouseEntered(e -> {
             if (!isSelected) {
-                markerPath.setStroke(MapDetails.MARKER_USER_DRAWN_LINE_COLOUR);
+                markerPath.setStroke(MapDetails.MARKER_STROKE_PAINT_HIGHLIGHT_GRADIENT);
             }
             e.consume();
         });
 
         markerPath.setOnMouseExited((final MouseEvent e) -> {
             if (!isSelected) {
-                markerPath.setStroke(MapDetails.MARKER_STROKE_COLOUR);
+                markerPath.setStroke(MapDetails.MARKER_STROKE_PAINT_GRADIENT);
             }
 
             e.consume();
@@ -68,7 +67,7 @@ public class LineMarker extends AbstractMarker {
 
         markerPath.setOnMouseClicked((final MouseEvent e) -> {
             isSelected = true;
-            markerPath.setStroke(MapDetails.MARKER_USER_DRAWN_LINE_SELECTED_COLOUR);
+            markerPath.setStroke(MapDetails.MARKER_STROKE_PAINT_SELECTED_GRADIENT);
             parent.addMarkerIdToSelectedList(markerID, idList, false);
             e.consume();
         });
@@ -89,7 +88,7 @@ public class LineMarker extends AbstractMarker {
         x2 = MapConversions.lonToMapX(lon2);
         y2 = MapConversions.latToMapY(lat2);
 
-        final String path = "M " + x1 + SeparatorConstants.COMMA + " " + y1 + " Z L " + x2 + SeparatorConstants.COMMA + y2 + " z";
+        final String path = "M " + x1 + SeparatorConstants.COMMA + " " + y1 + " L " + x2 + SeparatorConstants.COMMA + y2 + " z";
 
         markerPath.setContent(path);
     }

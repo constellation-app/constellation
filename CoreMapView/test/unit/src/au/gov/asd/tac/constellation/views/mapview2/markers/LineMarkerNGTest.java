@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.geometry.Insets;
 import org.mockito.Mockito;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
@@ -40,7 +41,7 @@ public class LineMarkerNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(LineMarkerNGTest.class.getName());
 
-    private static final MapDetails mapDetails = new MapDetails(MapDetails.MapType.SVG, 1000, 999, 85.0511, -85.0511, -180, 180, "Full World (default)",
+    private static final MapDetails mapDetails = new MapDetails(MapDetails.MapType.SVG, 1000, 999, 85.0511, -85.0511, -180, 180, new Insets(0), "Full World (default)",
                            ConstellationInstalledFileLocator.locate("modules/ext/data/WorldMap1000x999.svg", "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain()));
     
 
@@ -79,8 +80,8 @@ public class LineMarkerNGTest {
         final MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
         final MapView parent = Mockito.spy(new MapView(mapViewPane, mapDetails));
 
-        final double mapWidth = MapView.MAP_VIEWPORT_WIDTH;
-        final double mapHeight = MapView.MAP_VIEWPORT_HEIGHT;
+        final double mapWidth = MapView.MAP_WIDTH;
+        final double mapHeight = MapView.MAP_HEIGHT;
         final LineMarker instance = new LineMarker(parent, -99, -99, 85.0511, -180, -85.0511, 180);
         instance.setMarkerPosition(mapWidth, mapHeight);
         assertEquals(instance.getStartX(), 0.0);

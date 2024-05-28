@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphConstants;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
@@ -216,6 +217,11 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
         recalculateCoords();
     }
 
+    @Override
+    protected void handleGraphChange(final GraphChangeEvent event) {
+        runExtractCoordsFromGraphPlugin(currentGraph);
+    }
+    
     public void runExtractCoordsFromGraphPlugin(final Graph graph) {
         if (graph != null) {
             try {
@@ -238,7 +244,10 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                 LOGGER.log(Level.SEVERE, "Exception thrown: {0}", ex.getMessage());
             }
 
-            Platform.runLater(() -> mapViewPane.getMap().redrawQueriedMarkers());
+            Platform.runLater(() -> {
+                mapViewPane.getMap().redrawQueriedMarkers();
+                mapViewPane.getMap().refreshMapLayers();
+            });
         }
     }
 
@@ -321,6 +330,7 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                     int overlayID = GraphConstants.NOT_FOUND;
                     int labelAttrID = GraphConstants.NOT_FOUND;
                     int identifierID = GraphConstants.NOT_FOUND;
+                    int selectedID = GraphConstants.NOT_FOUND;
 
                     final int elementCount;
 
@@ -335,11 +345,13 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                             overlayID = VisualConcept.VertexAttribute.OVERLAY_COLOR.get(graph);
                             labelAttrID = VisualConcept.VertexAttribute.LABEL.get(graph);
                             identifierID = VisualConcept.VertexAttribute.IDENTIFIER.get(graph);
+                            selectedID = VisualConcept.VertexAttribute.SELECTED.get(graph);
                             elementCount = graph.getVertexCount();
                             break;
                         case TRANSACTION:
                             lonID = SpatialConcept.TransactionAttribute.LONGITUDE.get(graph);
                             latID = SpatialConcept.TransactionAttribute.LATITUDE.get(graph);
+                            selectedID = VisualConcept.VertexAttribute.SELECTED.get(graph);
                             elementCount = graph.getTransactionCount();
                             break;
                         default:
@@ -357,7 +369,7 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                             final Float elementLon = graph.getObjectValue(lonID, elementID);
                             
                             // Only render elements that are within the geographical bounds of the selected map 
-                            if (!MapConversions.isPointOnMap(elementLat, elementLon)) {
+                            if (elementLat == null || elementLon == null || !MapConversions.isPointOnMap(elementLat, elementLon)) {
                                 continue;
                             }
                             
@@ -381,6 +393,7 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                             ConstellationColor overlayColour = null;
                             String labelAttr = null;
                             String identAttr = null;
+                            boolean elementSelected = false;
 
                             // Get other colours if they are available
                             if (blazeID != GraphConstants.NOT_FOUND) {
@@ -403,6 +416,14 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                                 identAttr = graph.getStringValue(identifierID, elementID);
                             }
 
+                            if (selectedID != GraphConstants.NOT_FOUND) {
+                                elementSelected = graph.getBooleanValue(selectedID, elementID);
+                            }
+                            
+                            if (!elementSelected && mapViewTopComponent.getMapViewPane().getMap().getMarkersShowing().contains(AbstractMarker.MarkerType.SELECTED)) {
+                                continue;
+                            }
+                            
                             // Generate a key from the vertex coordinate
                             final String coordinateKey = (double) elementLat + "," + (double) elementLon;
 
@@ -450,6 +471,9 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                                     if (p.getConnectedNodeIdList().get(0) != elementID) {
                                         p.addNodeID(elementID);
                                     }
+                                }
+                                if (elementSelected) {
+                                    p.select();
                                 }
                                 
                                 // Set colours and labels if they are available

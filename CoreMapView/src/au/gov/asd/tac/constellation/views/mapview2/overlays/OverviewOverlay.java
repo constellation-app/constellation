@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,13 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.overlays;
 
-import au.gov.asd.tac.constellation.views.mapview2.utilities.Vec3;
 import java.util.List;
 import javafx.scene.Group;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
@@ -34,13 +36,12 @@ import javafx.scene.shape.Shape;
  */
 public class OverviewOverlay extends AbstractOverlay {
 
-    private static final double OVERLAY_SCALE = 0.1;  // Scaling factor to apply to map to generate the overview map
+    private static final double OVERLAY_SCALE = 0.125;  // Scaling factor to apply to map to generate the overview map
     private static final double OVERLAY_BORDER_THICKNESS = 2;  // Border thicknesses tp apply
     private static final Color COLOUR_BORDER = new Color(0.224, 0.239, 0.278, 1);  // Colour to use for the border
     private static final Color COLOUR_FOG = new Color(0.224, 0.239, 0.278, 0.5);  // Colour to display fox as
-    private static final Color COLOUR_OCEAN = new Color(0.722, 0.871, 0.902, 1);  // Colour to display water/ocean as
+    private static final Color COLOUR_OCEAN = new Color(0.42, 0.74, 0.86, 1);  // Colour to display water/ocean as
     
-    private final Rectangle borderRect = new Rectangle();  // A crisp border around the overview pane
     private final Region fogRegion = new Region();  // The region used to display fog over non visible parts of the map
     
     private final double mapWidth;  // The width of the map being viewed
@@ -55,12 +56,12 @@ public class OverviewOverlay extends AbstractOverlay {
      * @param mapWidth The height of the main map
      * @param countrySVGPaths List of country SVG paths to display in the map
      */
-    public OverviewOverlay(final double mapWidth, final double mapHeight, final List<SVGPath> countrySVGPaths) {
+    public OverviewOverlay(final double mapWidth, final double mapHeight, final List<SVGPath> countrySVGPaths, final Group minimapGroup) {
         super(0, 0);
 
         // Setup the overlay pane dimensions and style to align with displayed map
-        this.mapWidth = mapWidth * OVERLAY_SCALE;
-        this.mapHeight = mapHeight * OVERLAY_SCALE;
+        this.mapWidth = (mapWidth) * OVERLAY_SCALE;
+        this.mapHeight = (mapHeight) * OVERLAY_SCALE;
         this.viewPortWidth = 0;
         this.viewPortHeight = 0;
         overlayPane.getChildren().clear();
@@ -72,32 +73,41 @@ public class OverviewOverlay extends AbstractOverlay {
 
         // Setup a stackpane and fill it with the map based on country SVG paths
         final StackPane stackPane = new StackPane();
-        final Group countryGroup = new Group();
-        for (int i = 0; i < countrySVGPaths.size(); i++) {
-            final SVGPath p = new SVGPath();
-            p.setContent(countrySVGPaths.get(i).getContent());
-            p.setStroke(Color.BLACK);
-            p.setFill(Color.WHITE);
-            p.setStrokeWidth(0.025);
-            countryGroup.getChildren().add(p);
+        if (minimapGroup == null) {
+            final Group countryGroup = new Group();
+            boolean firstLineDone = false;
+            for (int i = 0; i < countrySVGPaths.size(); i++) {
+                final SVGPath p = new SVGPath();
+                p.setContent(countrySVGPaths.get(i).getContent());
+                p.setStroke(Color.BLACK);
+                if (!firstLineDone) { // the first line is generally the bounding border rectangle, not map data
+                    p.setFill(Color.rgb(128,140,255,0.2));
+                    firstLineDone = true;
+                } else {
+                    p.setFill(Color.rgb(255,255,255,0.8));
+                }                
+                p.setStrokeWidth(0.005);
+                countryGroup.getChildren().add(p);
+            }
+            countryGroup.setScaleX(OVERLAY_SCALE);
+            countryGroup.setScaleY(OVERLAY_SCALE);
+            countryGroup.setLayoutX(0);
+            countryGroup.setLayoutY(0);
+
+            stackPane.getChildren().add(countryGroup);
+        } else {
+            stackPane.getChildren().add(minimapGroup);
         }
-        countryGroup.setScaleX(OVERLAY_SCALE);
-        countryGroup.setScaleY(OVERLAY_SCALE);
-        countryGroup.setLayoutX(0);
-        countryGroup.setLayoutX(0);
-        stackPane.getChildren().add(countryGroup);
+        
+        stackPane.getChildren().add(fogRegion);               
+        overlayPane.setCenter(stackPane);
 
         // Draw a clear border around the overview overlay
-        borderRect.setWidth(this.mapWidth + OVERLAY_BORDER_THICKNESS);
-        borderRect.setHeight(this.mapHeight + OVERLAY_BORDER_THICKNESS);
-        borderRect.setFill(Color.TRANSPARENT);
-        borderRect.setStroke(COLOUR_BORDER);
-        borderRect.setStrokeWidth(2);
-        borderRect.setMouseTransparent(true);
-        stackPane.getChildren().add(borderRect);
-        stackPane.getChildren().add(fogRegion);
-               
-        overlayPane.setCenter(stackPane);
+        stackPane.setMinWidth(this.mapWidth + OVERLAY_BORDER_THICKNESS * 2);
+        stackPane.setMaxWidth(this.mapWidth + OVERLAY_BORDER_THICKNESS * 2);
+        stackPane.setMinHeight(this.mapHeight + OVERLAY_BORDER_THICKNESS * 2);
+        stackPane.setMaxHeight(this.mapHeight + OVERLAY_BORDER_THICKNESS * 2);
+        stackPane.setBorder(new Border(new BorderStroke(COLOUR_BORDER, BorderStrokeStyle.SOLID, null, null)));
     }
     
     /**
@@ -121,31 +131,31 @@ public class OverviewOverlay extends AbstractOverlay {
      * @param vValue  The current vValue of the ScrollPane containing the map being viewed, which indicates its current
      *               vertical scroll.
      */
-    public void update(final double viewPortWidth, final double viewPortHeight, double hValue, double vValue) {
+    public void update(final double currentViewPortWidth, final double currentViewPortHeight, double hValue, double vValue) {
        
        // Store current viewport dimensions scaled to the size of the overlay
-       this.viewPortWidth = viewPortWidth * OVERLAY_SCALE;
-       this.viewPortHeight = viewPortHeight * OVERLAY_SCALE;   
+       viewPortWidth = currentViewPortWidth * OVERLAY_SCALE;
+       viewPortHeight = currentViewPortHeight * OVERLAY_SCALE;   
 
        // Calculate how much of the map is hidden in the horizontal and vertical directions, this combined with the
        // hValue and vValue tell us how much of the map is not visible to the left and top and therefor to the right and
        // bottom
-       final double leftFogWidth = hValue * (this.mapWidth - this.viewPortWidth);
-       final double topFogHeight = vValue * (this.mapHeight - this.viewPortHeight);
+       final double leftFogHvalue = hValue * (mapWidth - viewPortWidth);
+       final double topFogVvalue = vValue * (mapHeight - viewPortHeight);
        
        // Draw a rectangle representing the entire map and hten cut out the viewable area to create a clip to be applied
        // to the fogGregion.
-       final Rectangle fogRect = new Rectangle(this.mapWidth, this.mapHeight);
-       final Rectangle fogCutoutRect = new Rectangle(this.viewPortWidth, this.viewPortHeight);
-       fogCutoutRect.setX(leftFogWidth);
-       fogCutoutRect.setLayoutY(topFogHeight);
-       this.fogRegion.setClip(Shape.subtract(fogRect, fogCutoutRect));
+       final Rectangle fogRect = new Rectangle(mapWidth, mapHeight);
+       final Rectangle fogCutoutRect = new Rectangle(viewPortWidth, viewPortHeight);
+       fogCutoutRect.setX(leftFogHvalue);
+       fogCutoutRect.setLayoutY(topFogVvalue);
+       fogRegion.setClip(Shape.subtract(fogRect, fogCutoutRect));
     
        // Populate the fog region on the layer
-       this.fogRegion.setMinWidth(this.mapWidth);
-       this.fogRegion.setMaxWidth(this.mapWidth);
-       this.fogRegion.setMinHeight(this.mapHeight);
-       this.fogRegion.setMaxHeight(this.mapHeight);
-       this.fogRegion.setBackground(new Background(new BackgroundFill(COLOUR_FOG, null, null)));
+       fogRegion.setMinWidth(mapWidth);
+       fogRegion.setMaxWidth(mapWidth);
+       fogRegion.setMinHeight(mapHeight);
+       fogRegion.setMaxHeight(mapHeight);
+       fogRegion.setBackground(new Background(new BackgroundFill(COLOUR_FOG, null, null)));
    }
 }
