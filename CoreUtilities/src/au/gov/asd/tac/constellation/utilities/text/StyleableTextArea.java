@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.text;
 
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +31,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Tooltip;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Popup;
 import org.apache.commons.lang3.StringUtils;
@@ -43,9 +45,9 @@ import org.fxmisc.richtext.util.UndoUtils;
  * @author Auriga2
  * @author capricornunicorn123
  */
-public class StyleableTextArea extends InlineCssTextArea {
+public class StyleableTextArea {
 
-    
+    public final InlineCssTextArea field = new InlineCssTextArea();
     public static final String VALID_WORD_STYLE = "-rtfx-underline-color: transparent;";
     public static final String MISSPELT_WORD_STYLE = "-rtfx-underline-color: red; "
     + "-rtfx-underline-dash-array: 2 2;"
@@ -56,55 +58,50 @@ public class StyleableTextArea extends InlineCssTextArea {
 
     public StyleableTextArea() {
         
-        this.setAutoHeight(false);
-        this.setWrapText(true);
-        this.setPadding(insets);
+        field.setAutoHeight(false);
+        field.setWrapText(true);
+        field.setPadding(insets);
         final String css = StyleableTextArea.class.getResource("SpellChecker.css").toExternalForm();//"resources/test.css"
-        this.getStylesheets().add(css);
+        field.getStylesheets().add(css);
         
         final ContextMenu contextMenu = new ContextMenu();
         final List<MenuItem> areaModificationItems = getAreaModificationMenuItems();
         // Set the right click context menu items
         // we want to update each time the context menu is requested 
         // can't make a new context menu each time as this event occurs after showing
-        this.setOnContextMenuRequested(value -> {
+        field.setOnContextMenuRequested(value -> {
             contextMenu.getItems().clear();
             contextMenu.getItems().addAll(SpellChecker.getSpellCheckMenuItem(this), new SeparatorMenuItem());
             contextMenu.getItems().addAll(areaModificationItems);
-            this.setContextMenu(contextMenu);
+            field.setContextMenu(contextMenu);
         });
     }
 
-    public StyleableTextArea(final String text) {
-        this();
-        setText(text);
-    }
-
     public void setText(final String text) {
-        this.replaceText(text);
+        field.replaceText(text);
     }
 
     /**
      * underline and highlight the text from start to end.
      */
     public void highlightText(final int start, final int end) {
-        this.setStyle(start, end, MISSPELT_WORD_STYLE);
+        field.setStyle(start, end, MISSPELT_WORD_STYLE);
     }
 
     /**
      * Clear any previous highlighting.
      */
     public void clearStyles() {
-        this.setStyle(0, this.getText().length(), VALID_WORD_STYLE);
+        field.setStyle(0, field.getText().length(), VALID_WORD_STYLE);
     }
 
     public boolean isWordUnderCursorHighlighted(final int index) {
-        return this.getStyleOfChar(index) == MISSPELT_WORD_STYLE;
+        return field.getStyleOfChar(index) == MISSPELT_WORD_STYLE;
     }
 
 
     public final void setTooltip(final Tooltip tooltip) {
-        Tooltip.install(this, tooltip);
+        Tooltip.install(field, tooltip);
     }
 
     public final void setPromptText(final String promptText) {
@@ -112,7 +109,6 @@ public class StyleableTextArea extends InlineCssTextArea {
     }
 
     private List<MenuItem> getAreaModificationMenuItems() {
-        final ContextMenu contextMenu = new ContextMenu();
 
         final MenuItem undoMenuItem = new MenuItem("Undo");
         final MenuItem redoMenuItem = new MenuItem("Redo");
@@ -122,23 +118,23 @@ public class StyleableTextArea extends InlineCssTextArea {
         final MenuItem deleteMenuItem = new MenuItem("Delete");
         final MenuItem selectAllMenuItem = new MenuItem("Select All");
 
-        undoMenuItem.setOnAction(e -> this.undo());
-        redoMenuItem.setOnAction(e -> this.redo());
-        cutMenuItem.setOnAction(e -> this.cut());
-        copyMenuItem.setOnAction(e -> this.copy());
-        pasteMenuItem.setOnAction(e -> this.paste());
-        deleteMenuItem.setOnAction(e -> this.deleteText(this.getSelection()));
-        selectAllMenuItem.setOnAction(e -> this.selectAll());
+        undoMenuItem.setOnAction(e -> field.undo());
+        redoMenuItem.setOnAction(e -> field.redo());
+        cutMenuItem.setOnAction(e -> field.cut());
+        copyMenuItem.setOnAction(e -> field.copy());
+        pasteMenuItem.setOnAction(e -> field.paste());
+        deleteMenuItem.setOnAction(e -> field.deleteText(field.getSelection()));
+        selectAllMenuItem.setOnAction(e -> field.selectAll());
 
         // avoid Undo redo of highlighting
-        this.setUndoManager(UndoUtils.plainTextUndoManager(this));
+        field.setUndoManager(UndoUtils.plainTextUndoManager(field));
 
         // Listener to enable/disable Undo and Redo menu items based on the undo stack
-        this.getUndoManager().undoAvailableProperty().addListener((obs, oldValue, newValue) -> {
+        field.getUndoManager().undoAvailableProperty().addListener((obs, oldValue, newValue) -> {
             undoMenuItem.setDisable(!(boolean) newValue);
         });
 
-        this.getUndoManager().redoAvailableProperty().addListener((obs, oldValue, newValue) -> {
+        field.getUndoManager().redoAvailableProperty().addListener((obs, oldValue, newValue) -> {
             redoMenuItem.setDisable(!(boolean) newValue);
         });
 
@@ -152,24 +148,24 @@ public class StyleableTextArea extends InlineCssTextArea {
 
     private BooleanBinding getSelectionBinding() {
         return Bindings.createBooleanBinding(() -> {
-            final IndexRange selectionRange = this.getSelection();
+            final IndexRange selectionRange = field.getSelection();
             return selectionRange == null || selectionRange.getLength() == 0;
-        }, this.selectionProperty());
+        }, field.selectionProperty());
     }
 
     public void autoComplete(final List<String> suggestions) {
         final Popup popup = new Popup();
-        popup.setWidth(this.getWidth());
+        popup.setWidth(field.getWidth());
         final ListView<String> listView = new ListView<>();
         listView.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
             if (newValue != null) {
-                this.replaceText​(newValue);
+                field.replaceText​(newValue);
             }
             popup.hide();
         });
 
-        this.setOnKeyTyped((final KeyEvent event) -> {
-            final String input = this.getText();
+        field.setOnKeyTyped((final KeyEvent event) -> {
+            final String input = field.getText();
             popup.hide();
             popup.setAutoFix(true);
             popup.setAutoHide(true);
@@ -194,7 +190,7 @@ public class StyleableTextArea extends InlineCssTextArea {
 
                 // Show the popup under this text area
                 if (!listView.getItems().isEmpty()) {
-                    popup.show(this, this.localToScreen(0, 0).getX(), this.localToScreen(0, 0).getY() + this.heightProperty().getValue());
+                    popup.show(field, field.localToScreen(0, 0).getX(), field.localToScreen(0, 0).getY() + field.heightProperty().getValue());
                 }
             }
         });

@@ -60,54 +60,39 @@ import org.openide.util.NbPreferences;
  */
 public final class SpellChecker implements PreferenceChangeListener{
     
-    private static final List<StyleableTextArea> textAreas = new ArrayList<>();
+    private static final List<StyleableTextArea> TEXT_AREAS = new ArrayList<>();
     private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
     
-    private static final SpellChecker spellChekerInstantiation = new SpellChecker();
-
-    private static final AtomicReference<JLanguageTool> langTool = new AtomicReference<>();
-    private static JLanguageTool langToolStatic;
+    private static final JLanguageTool LANGTOOL = new MultiThreadedJLanguageTool(Languages.getLanguageForShortCode("en-AU"));
     private static SpellingCheckRule spellingCheckRule;
+    
+    private static final SpellChecker spellChekerInstantiation = new SpellChecker();
 
     private static final Logger LOGGER = Logger.getLogger(SpellChecker.class.getName());
     private static final double POPUP_PADDING = 5;
     private static final double ITEM_HEIGHT = 24;
-    private static Language language;
+    
 
-    protected static final CompletableFuture<Void> LANGTOOL_LOAD;
-
-    static {
-        // langToolStatic is used to initialize the JLanguageTool at the loading, because
-        // the very first initializing of JLanguageTool is slow but after that it is fast.
-        LANGTOOL_LOAD = CompletableFuture.supplyAsync(() -> {
-            while (true) {
-                language = Languages.getLanguageForShortCode("en-AU");
-                langToolStatic = new MultiThreadedJLanguageTool(language);
-                try {
-                    //perform a check here to prevent the spell checking being too slow at the first word after loading costy
-                    final List<RuleMatch> initMatches = langToolStatic.check("random text");
-                } catch (final IOException ex) {
-                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-                }
-                return null;
-            }
-        }, Executors.newSingleThreadExecutor());
-        
+    protected static final CompletableFuture<Void> LANGTOOL_LOAD = CompletableFuture.supplyAsync(() -> {
         while (true) {
-            LANGTOOL_LOAD.thenRun(() -> {
-                JLanguageTool langToolNew = new MultiThreadedJLanguageTool(language);
-                langTool.set(langToolNew);
-                for (final Rule rule : langTool.get().getAllRules()) {
-                    if (rule.getId().equals("UPPERCASE_SENTENCE_START")) {
-                        langTool.get().disableRule(rule.getId());
-                    } else if (rule instanceof SpellingCheckRule) {
-                        spellingCheckRule = (SpellingCheckRule) rule;
-                    }
+
+            for (final Rule rule : LANGTOOL.getAllRules()) {
+                if (rule.getId().equals("UPPERCASE_SENTENCE_START")) {
+                    LANGTOOL.disableRule(rule.getId());
+                } else if (rule instanceof SpellingCheckRule) {
+                    spellingCheckRule = (SpellingCheckRule) rule;
                 }
-            });
-            break;
+            }            
+
+            try {
+                //perform a check here to prevent the spell checking being too slow at the first word after loading costy
+                LANGTOOL.check("random text");
+            } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+            }
+            return null;
         }
-    }
+    }, Executors.newSingleThreadExecutor());
 
     private static boolean globalSpellCheckingEnabled() {
         return PREFERENCES.getBoolean(ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING, ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING_DEFAULT);
@@ -128,34 +113,34 @@ public final class SpellChecker implements PreferenceChangeListener{
      */
     static void registerArea(StyleableTextArea area) {
         
-        area.setOnMouseClicked((final MouseEvent event) -> {
+        area.field.setOnMouseClicked((final MouseEvent event) -> {
             if (globalSpellCheckingEnabled() && event.getButton() == MouseButton.PRIMARY && event.isStillSincePress()) {
                 checkSpelling(area);
                 popUpSuggestionsListAction(area, event);
             }
         });
         
-        area.setOnKeyReleased((final KeyEvent event) -> {
+        area.field.setOnKeyReleased((final KeyEvent event) -> {
             if (canCheckSpelling(area)) {
                 checkSpelling(area);
             }
         });
         
-        textAreas.add(area);
+        TEXT_AREAS.add(area);
         checkSpelling(area);
     }
 
     static void deregisterArea(StyleableTextArea area) {
-        textAreas.remove(area);
-        area.setOnMouseClicked(null);
-        area.setOnKeyReleased(null);
+        TEXT_AREAS.remove(area);
+        area.field.setOnMouseClicked(null);
+        area.field.setOnKeyReleased(null);
         //will remove formatting
         area.clearStyles();
     }
     
     static List<RuleMatch> getMatches(StyleableTextArea area){
         try {
-            return langTool.get().check(area.getText());
+            return LANGTOOL.check(area.field.getText());
         } catch (final IOException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
         }
@@ -168,7 +153,7 @@ public final class SpellChecker implements PreferenceChangeListener{
      * This method ensures scenarios like duplicate words, grammar mistakes etc. are captured
      */
     static void checkSpelling(StyleableTextArea area) {
-        if (textAreas.contains(area) && StringUtils.isNotBlank(area.getText())) {        
+        if (TEXT_AREAS.contains(area) && StringUtils.isNotBlank(area.field.getText())) {        
             area.clearStyles();
             final List<RuleMatch> matches = getMatches(area);
             matches.forEach(match -> {
@@ -184,7 +169,7 @@ public final class SpellChecker implements PreferenceChangeListener{
      * misspelled.
      */
     static void popUpSuggestionsListAction(StyleableTextArea area, MouseEvent event) {
-        if (textAreas.contains(area)) {
+        if (TEXT_AREAS.contains(area)) {
             final ObservableList<String> suggestionsList = FXCollections.observableArrayList();
             final Popup popup = new Popup();
 
@@ -230,9 +215,9 @@ public final class SpellChecker implements PreferenceChangeListener{
                 
                 suggestions.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
                     if (newValue != null) {
-                        final StringBuilder builder = new StringBuilder(area.getText());
+                        final StringBuilder builder = new StringBuilder(area.field.getText());
                         builder.replace(data.startIndex, data.endsIndex, newValue);
-                        area.replaceText​(builder.toString());
+                        area.field.replaceText​(builder.toString());
                     }
                     popup.hide();
                     checkSpelling(area);
@@ -240,21 +225,21 @@ public final class SpellChecker implements PreferenceChangeListener{
 
                 popup.getContent().add(popupContent);
                 popup.setAutoFix(true);
-                popup.show(area, event.getScreenX(), event.getScreenY() + 10);
+                popup.show(area.field, event.getScreenX(), event.getScreenY() + 10);
             }
         }
     }
     
     private static MisspeltWordData getSelectedMisspeltWordData(StyleableTextArea area) {
-        final int cursorIndex = area.getCaretPosition();
+        final int cursorIndex = area.field.getCaretPosition();
 
-        if (cursorIndex > 0 && cursorIndex < area.getText().length()) {
+        if (cursorIndex > 0 && cursorIndex < area.field.getText().length()) {
             final List<RuleMatch> matches = getMatches(area);
             for (final RuleMatch match : matches) {
                 final int start = match.getFromPos();
                 final int end = match.getToPos();
                 if (cursorIndex >= start && cursorIndex <= end) {
-                    return new MisspeltWordData(cursorIndex, match, start, end, area.getText().substring(start, end));
+                    return new MisspeltWordData(cursorIndex, match, start, end, area.field.getText().substring(start, end));
 
                 }
             }
@@ -268,14 +253,14 @@ public final class SpellChecker implements PreferenceChangeListener{
      * Microsoft Word.
      */
     public static boolean canCheckSpelling(final StyleableTextArea area) {
-        final String newText = area.getText();
-        final int caretPosition = area.getCaretPosition();
+        final String newText = area.field.getText();
+        final int caretPosition = area.field.getCaretPosition();
         if (!globalSpellCheckingEnabled()){
             return false;
         } else if (caretPosition == 0) {
             return true;
         } else if (caretPosition <= newText.length()) {
-            final String charAtCaret = Character.toString(area.getText().charAt(caretPosition - 1));
+            final String charAtCaret = Character.toString(area.field.getText().charAt(caretPosition - 1));
             return !newText.isEmpty() && (area.isWordUnderCursorHighlighted(caretPosition - 1) || !charAtCaret.matches("[a-zA-Z0-9']"));
         } else {
             return false;
@@ -285,7 +270,7 @@ public final class SpellChecker implements PreferenceChangeListener{
     // In the event that global spell checking 
     public static void globalSpellCheckingChanged(){
         boolean active = globalSpellCheckingEnabled();
-        for (StyleableTextArea area : textAreas) {
+        for (StyleableTextArea area : TEXT_AREAS) {
             if (active){
                 checkSpelling(area);
             } else {
@@ -301,7 +286,7 @@ public final class SpellChecker implements PreferenceChangeListener{
     }
     
     public static MenuItem getSpellCheckMenuItem(final StyleableTextArea area) {
-        boolean localSpellCheckingEnabled = textAreas.contains(area);
+        boolean localSpellCheckingEnabled = TEXT_AREAS.contains(area);
         // CheckMenuItem to toggle turn On/Off Spell Checking. On by default
         final CheckMenuItem toggleSpellCheckMenuItem = new CheckMenuItem("Check Spelling");
         toggleSpellCheckMenuItem.setSelected(localSpellCheckingEnabled);

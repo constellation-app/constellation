@@ -28,7 +28,6 @@ import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ContextMenu;
@@ -46,9 +45,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -544,7 +541,7 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
 
             //Set up the primary InputControl
             switch (type) {
-                case SECRET -> primaryInput = new PasswordField();
+                case SECRET -> primaryInput = new TextField();
                 case MULTILINE -> primaryInput = new TextArea();
                 default -> primaryInput = new TextField();
             }
@@ -556,13 +553,13 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
             switch (type) {
                 case SECRET -> {
                     // SecondaryInputs are only used in Secret Inputs and have bound properties wiht the primary input
-                    secondaryInput = new TextField();
+                    secondaryInput = new PasswordField();
                     secondaryInput.textProperty().bindBidirectional(primaryInput.textProperty());
                     secondaryInput.textFormatterProperty().bindBidirectional(primaryInput.textFormatterProperty());
                     secondaryInput.promptTextProperty().bindBidirectional(primaryInput.promptTextProperty());
                     secondaryInput.styleProperty().bind(primaryInput.styleProperty());
                     secondaryInput.focusedProperty().addListener(parent);
-                    secondaryInput.setVisible(false);
+                    primaryInput.setVisible(false);
 
                     this.getChildren().addAll(primaryInput, secondaryInput);
                 }
@@ -668,8 +665,8 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
 
         private void hide() {
             if (primaryInput instanceof PasswordField){
-                this.primaryInput.setVisible(true);
-                this.secondaryInput.setVisible(false);
+                this.primaryInput.setVisible(false);
+                this.secondaryInput.setVisible(true);
             } else {
                 throw new UnsupportedOperationException("Only ConstellationTextAreas of TextType.SECRET can be hidden");
             }
@@ -677,8 +674,8 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
 
         private void reveal() {
             if (primaryInput instanceof PasswordField){
-                this.primaryInput.setVisible(false);
-                this.secondaryInput.setVisible(true);
+                this.primaryInput.setVisible(true);
+                this.secondaryInput.setVisible(false); 
             } else {
                 throw new UnsupportedOperationException("Only ConstellationTextAreas of TextType.SECRET can be revealed");
             }
