@@ -28,6 +28,7 @@ import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ContextMenu;
@@ -535,7 +536,7 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
      * 
      * @author capricornunicorn123
      */
-    private final class ConstellationTextArea extends HBox{
+    private final class ConstellationTextArea extends StackPane{
         private final TextInputControl primaryInput;
         private final TextInputControl secondaryInput;
 
@@ -551,8 +552,6 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
             primaryInput.focusedProperty().addListener(parent);
             primaryInput.setStyle("-fx-background-radius: 0; -fx-background-color: transparent; -fx-border-color: transparent; -fx-focus-color: transparent;");
 
-            HBox.setHgrow(primaryInput, Priority.ALWAYS);
-
             // Set up the optional secondary InputControl
             switch (type) {
                 case SECRET -> {
@@ -561,8 +560,9 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
                     secondaryInput.textProperty().bindBidirectional(primaryInput.textProperty());
                     secondaryInput.textFormatterProperty().bindBidirectional(primaryInput.textFormatterProperty());
                     secondaryInput.promptTextProperty().bindBidirectional(primaryInput.promptTextProperty());
+                    secondaryInput.styleProperty().bind(primaryInput.styleProperty());
+                    secondaryInput.focusedProperty().addListener(parent);
                     secondaryInput.setVisible(false);
-                    HBox.setHgrow(secondaryInput, Priority.ALWAYS);
 
                     this.getChildren().addAll(primaryInput, secondaryInput);
                 }
@@ -678,7 +678,7 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
         private void reveal() {
             if (primaryInput instanceof PasswordField){
                 this.primaryInput.setVisible(false);
-                this.secondaryInput.setVisible(false);
+                this.secondaryInput.setVisible(true);
             } else {
                 throw new UnsupportedOperationException("Only ConstellationTextAreas of TextType.SECRET can be revealed");
             }

@@ -89,18 +89,49 @@ public abstract class ParameterInputPane<T extends ParameterValue> extends HBox 
      * A ChangeListener that can modify the relevant PluginParameter when a change on the InputField is found
      * Note: ConstellationInputFields will only notify ChangeListeners if the input field's TextProperty has 
      * changed and the input field has a valid value as defined by the input field.
-     * it is the responsibility of implementations of this method to ensure that the input field value is
-     * valid with respect to the input field.
+     * It is the responsibility of implementations of this method to ensure that the input field value is
+     * valid with respect object holding the InputField.
+     * <p> Example Implementation: (T is the generic type that is supported by the respective InputField)
+     * <pre>
+     * return (ChangeListener<T>) (ObservableValue<? extends T> observable, T oldValue, T newValue) -> {
+            if (newValue != null) {
+                // manipulate the local parameter reference accordingly
+            }
+        };
+     * </pre>
+     * </p>
      * @param parameter
      * @return A ChangeListener that can be registered to a ConstelationInputField
      */
     public abstract ChangeListener getFieldChangeListener(final PluginParameter<T> parameter);
     
     /**
-     * A PluginParameterlistener that can modify the relevant InputField when a change on the Parameter is found
-     * Note: Ensure that implementation fo this method only modify the input field if the value of the 
+     * A PluginParameterListener that can modify the relevant InputField when a change on the Parameter is found
+     * Note: Ensure that implementations of this method only modify the input field if the value of the 
      * input field and the value of the Plugin parameter differ. Failing to do so could cause the listener 
      * implementations to call each other cyclically. 
+     * <p> Example Implementation: (T is the ParameterValue for this parameter)
+     * <pre>
+     * return (PluginParameter<?> parameter, ParameterChange change) -> Platform.runLater(() -> {
+     *      //@SuppressWarnings("unchecked")
+     *      final PluginParameter<T> p = (PluginParameter<T>) parameter;
+     *      switch (change) {
+     *          case VALUE -> {
+     *              // Don't change the value if it isn't necessary
+     *              // manipulate the InputField reference accordingly
+     *          }
+     *          case PROPERTY -> {
+     *              
+     *              // Update the field if the something other than the ParameterValue has changed.
+     *              //Could be options, colors, filetypes etc
+     *          }
+     *          case ENABLED -> updateFieldEnablement();
+     *          case VISIBLE -> updateFieldVisability();
+     *          default -> LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
+     *      }
+     *  });
+     * </pre>
+     * </p>
      * @return A PluginParameterListener that can be registered to a PluginParameter
      */
     public abstract PluginParameterListener getPluginParameterListener();

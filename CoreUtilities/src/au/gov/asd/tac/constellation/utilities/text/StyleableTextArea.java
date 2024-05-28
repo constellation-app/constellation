@@ -15,17 +15,14 @@
  */
 package au.gov.asd.tac.constellation.utilities.text;
 
-import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import java.util.Arrays;
 import java.util.List;
-import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
-import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.IndexRange;
 import javafx.scene.control.ListCell;
@@ -38,7 +35,6 @@ import javafx.stage.Popup;
 import org.apache.commons.lang3.StringUtils;
 import org.fxmisc.richtext.InlineCssTextArea;
 import org.fxmisc.richtext.util.UndoUtils;
-import org.openide.util.NbPreferences;
 
 /**
  * StyleableTextArea is an extension of InlineCssTextArea from the RichTextFX library
@@ -69,8 +65,8 @@ public class StyleableTextArea extends InlineCssTextArea {
         final ContextMenu contextMenu = new ContextMenu();
         final List<MenuItem> areaModificationItems = getAreaModificationMenuItems();
         // Set the right click context menu items
-        //we want to update each time the context menu is requested 
-        //can make a new context menu each time as theis event occurs after showing
+        // we want to update each time the context menu is requested 
+        // can't make a new context menu each time as this event occurs after showing
         this.setOnContextMenuRequested(value -> {
             contextMenu.getItems().clear();
             contextMenu.getItems().addAll(SpellChecker.getSpellCheckMenuItem(this), new SeparatorMenuItem());

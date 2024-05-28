@@ -15,10 +15,22 @@
  */
 package au.gov.asd.tac.constellation.plugins.gui;
 
+import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
+import static au.gov.asd.tac.constellation.plugins.parameters.ParameterChange.ENABLED;
+import static au.gov.asd.tac.constellation.plugins.parameters.ParameterChange.VALUE;
+import static au.gov.asd.tac.constellation.plugins.parameters.ParameterChange.VISIBLE;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterListener;
+import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.PasswordParameterValue;
+import au.gov.asd.tac.constellation.utilities.gui.field.PasswordInputField;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.control.Tooltip;
@@ -34,85 +46,46 @@ import org.apache.commons.lang3.StringUtils;
  *
  * @author Auriga2
  */
-public class PasswordInputPane extends HBox {
+public class PasswordInputPane extends ParameterInputPane<PasswordParameterValue> {
 
     public static final int DEFAULT_WIDTH = 300;
     public static final int INTEGER_WIDTH = 75;
 
-    private final TextInputControl field;
-    private final boolean required;
     private static final Logger LOGGER = Logger.getLogger(PasswordInputPane.class.getName());
 
-    public PasswordInputPane(final PluginParameter<?> parameter) {
-        required = parameter.isRequired();
+    public PasswordInputPane(final PluginParameter<PasswordParameterValue> parameter) {
+        super(new PasswordInputField(), parameter);
+        final PasswordParameterValue pv = parameter.getParameterValue();
+        setFieldValue(pv.get());
+    }
 
-        field = new PasswordField();
-
-        field.setPromptText(parameter.getDescription());
-        if (parameter.getObjectValue() != null) {
-            field.setText(parameter.getStringValue());
-        }
-
-        field.setPrefWidth(DEFAULT_WIDTH);
-
-        if (parameter.getParameterValue().getGuiInit() != null) {
-            parameter.getParameterValue().getGuiInit().init(field);
-        }
-        // If parameter is enabled, ensure widget is both enabled and editable.
-        field.setEditable(parameter.isEnabled());
-        field.setDisable(!parameter.isEnabled());
-        field.setManaged(parameter.isVisible());
-        field.setVisible(parameter.isVisible());
-        this.setManaged(parameter.isVisible());
-        this.setVisible(parameter.isVisible());
-
-        final Tooltip tooltip = new Tooltip("");
-        tooltip.setStyle("-fx-text-fill: white;");
-        field.textProperty().addListener((ov, t, t1) -> {
-            final String error = parameter.validateString(field.getText());
-            if ((required && StringUtils.isBlank(field.getText())) || error != null) {
-                // if error is blank, the situation must be that a required parameter is blank
-                tooltip.setText(StringUtils.isNotBlank(error) ? error : "Value is required!");
-                field.setTooltip(tooltip);
-                field.setId("invalid");
-            } else {
-                tooltip.setText("");
-                field.setTooltip(null);
-                field.setId("");
+    @Override
+    public ChangeListener getFieldChangeListener(PluginParameter parameter) {
+        return (ChangeListener<String>) (ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            if (newValue != null) {
+                parameter.setStringValue(field.getText());
             }
+        };
+    }
 
-            parameter.setStringValue(field.getText());
-        });
-
-        parameter.addListener((pluginParameter, change) -> Platform.runLater(() -> {
-                switch (change) {
-                    case VALUE -> {
-                        // Don't change the value if it isn't necessary.
-                        // Setting the text changes the cursor position, which makes it look like text is
-                        // being entered right-to-left.
-                        final String param = parameter.getStringValue();
-                        if (!field.getText().equals(param)) {
-                            field.setText(param != null ? param : "");
-                        }
+    @Override
+    public PluginParameterListener getPluginParameterListener() {
+        return (PluginParameter<?> pluginParameter, ParameterChange change) -> Platform.runLater(() -> {
+            switch (change) {
+                case VALUE -> {
+                    // Don't change the value if it isn't necessary.
+                    // Setting the text changes the cursor position, which makes it look like text is
+                    // being entered right-to-left.
+                    final String param = pluginParameter.getStringValue();
+                    if (!field.getText().equals(param)) {
+                        field.setText(param != null ? param : "");
                     }
-                    case ENABLED -> {
-                        // If enabled, then ensure widget is both editable and enabled.
-                        field.setEditable(pluginParameter.isEnabled());
-                        field.setDisable(!pluginParameter.isEnabled());
-                    }
-                    case VISIBLE -> {
-                        field.setManaged(parameter.isVisible());
-                        field.setVisible(parameter.isVisible());
-                        this.setVisible(parameter.isVisible());
-                        this.setManaged(parameter.isVisible());
-                    }
-                   default -> LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
                 }
-            }));
-        final HBox fieldHBox = new HBox();
-        fieldHBox.setSpacing(2);
-        fieldHBox.getChildren().add(field);
-        getChildren().add(fieldHBox);
+                case ENABLED -> updateFieldEnablement();
+                case VISIBLE -> updateFieldVisability();
+                default -> LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
+            }
+        });
     }
 }
 
