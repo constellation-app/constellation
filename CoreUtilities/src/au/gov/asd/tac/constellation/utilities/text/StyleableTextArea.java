@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.utilities.text;
 
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import java.util.Arrays;
 import java.util.List;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
@@ -33,8 +34,6 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Popup;
 import org.apache.commons.lang3.StringUtils;
 import org.fxmisc.richtext.InlineCssTextArea;
@@ -42,57 +41,46 @@ import org.fxmisc.richtext.util.UndoUtils;
 import org.openide.util.NbPreferences;
 
 /**
- * SpellCheckingTextArea is an InlineCssTextArea from the RichTextFX library
- * with added methods for highlighting spelling errors and some grammar errors.
+ * StyleableTextArea is an extension of InlineCssTextArea from the RichTextFX library
+ * with added methods for highlighting segments of text within the area
  *
  * @author Auriga2
+ * @author capricornunicorn123
  */
-public class SpellCheckingTextArea extends InlineCssTextArea {
+public class StyleableTextArea extends InlineCssTextArea {
 
-    private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-    private final SpellChecker spellChecker = new SpellChecker(this);
+    
+    public static final String VALID_WORD_STYLE = "-rtfx-underline-color: transparent;";
+    public static final String MISSPELT_WORD_STYLE = "-rtfx-underline-color: red; "
+    + "-rtfx-underline-dash-array: 2 2;"
+    + "-rtfx-underline-width: 2.0;";
+
     private final Insets insets = new Insets(4, 8, 4, 8);
     public static final double EXTRA_HEIGHT = 3;
 
-    private static final String UNDERLINE_AND_HIGHLIGHT_STYLE = "-rtfx-background-color:derive(yellow,-30%);"
-            + "-rtfx-underline-color: red; "
-            + "-rtfx-underline-dash-array: 2 2;"
-            + "-rtfx-underline-width: 2.0;"
-            + "-fx-fill: black;";
-
-    private static final String CLEAR_STYLE = "-rtfx-background-color: transparent;"
-            + "-rtfx-underline-color: transparent;";
-
-    public SpellCheckingTextArea(final boolean isSpellCheckEnabled) {
-        final boolean enableSpellChecking = PREFERENCES.getBoolean(ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING, ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING_DEFAULT) && isSpellCheckEnabled;
-        spellChecker.turnOffSpellChecking(!enableSpellChecking);
-
+    public StyleableTextArea() {
+        
         this.setAutoHeight(false);
         this.setWrapText(true);
         this.setPadding(insets);
-        final String css = SpellCheckingTextArea.class.getResource("SpellChecker.css").toExternalForm();//"resources/test.css"
+        final String css = StyleableTextArea.class.getResource("SpellChecker.css").toExternalForm();//"resources/test.css"
         this.getStylesheets().add(css);
-
-        this.setOnMouseClicked((final MouseEvent event) -> {
-            if (event.getButton() == MouseButton.PRIMARY && event.isStillSincePress()) {
-                spellChecker.checkSpelling();
-                spellChecker.popUpSuggestionsListAction(event);
-            }
+        
+        final ContextMenu contextMenu = new ContextMenu();
+        final List<MenuItem> areaModificationItems = getAreaModificationMenuItems();
+        // Set the right click context menu items
+        //we want to update each time the context menu is requested 
+        //can make a new context menu each time as theis event occurs after showing
+        this.setOnContextMenuRequested(value -> {
+            contextMenu.getItems().clear();
+            contextMenu.getItems().addAll(SpellChecker.getSpellCheckMenuItem(this), new SeparatorMenuItem());
+            contextMenu.getItems().addAll(areaModificationItems);
+            this.setContextMenu(contextMenu);
         });
-
-        this.setOnKeyReleased((final KeyEvent event) -> {
-            if (spellChecker.canCheckSpelling(this.getText())) {
-                spellChecker.checkSpelling();
-            }
-        });
-
-        // Set the right click context menu
-        final ContextMenu contextMenu = addRightClickContextMenu(enableSpellChecking);
-        this.setContextMenu(contextMenu);
     }
 
-    public SpellCheckingTextArea(final boolean isSpellCheckEnabled, final String text) {
-        this(isSpellCheckEnabled);
+    public StyleableTextArea(final String text) {
+        this();
         setText(text);
     }
 
@@ -104,18 +92,18 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
      * underline and highlight the text from start to end.
      */
     public void highlightText(final int start, final int end) {
-        this.setStyle(start, end, UNDERLINE_AND_HIGHLIGHT_STYLE);
+        this.setStyle(start, end, MISSPELT_WORD_STYLE);
     }
 
     /**
      * Clear any previous highlighting.
      */
     public void clearStyles() {
-        this.setStyle(0, this.getText().length(), CLEAR_STYLE);
+        this.setStyle(0, this.getText().length(), VALID_WORD_STYLE);
     }
 
     public boolean isWordUnderCursorHighlighted(final int index) {
-        return this.getStyleOfChar(index) == UNDERLINE_AND_HIGHLIGHT_STYLE;
+        return this.getStyleOfChar(index) == MISSPELT_WORD_STYLE;
     }
 
 
@@ -127,8 +115,7 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
         //TODO
     }
 
-
-    private ContextMenu addRightClickContextMenu(final boolean enableSpellChecking) {
+    private List<MenuItem> getAreaModificationMenuItems() {
         final ContextMenu contextMenu = new ContextMenu();
 
         final MenuItem undoMenuItem = new MenuItem("Undo");
@@ -147,16 +134,6 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
         deleteMenuItem.setOnAction(e -> this.deleteText(this.getSelection()));
         selectAllMenuItem.setOnAction(e -> this.selectAll());
 
-        // CheckMenuItem to toggle turn On/Off Spell Checking. On by default
-        final CheckMenuItem toggleSpellCheckMenuItem = new CheckMenuItem("Turn On Spell Checking");
-        toggleSpellCheckMenuItem.setSelected(true);
-        toggleSpellCheckMenuItem.setDisable(!enableSpellChecking);
-        toggleSpellCheckMenuItem.setVisible(enableSpellChecking);
-        toggleSpellCheckMenuItem.setOnAction(event -> {
-            spellChecker.turnOffSpellChecking(!toggleSpellCheckMenuItem.isSelected());
-            spellChecker.checkSpelling();
-        });
-
         // avoid Undo redo of highlighting
         this.setUndoManager(UndoUtils.plainTextUndoManager(this));
 
@@ -174,8 +151,7 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
         copyMenuItem.disableProperty().bind(getSelectionBinding());
         deleteMenuItem.disableProperty().bind(getSelectionBinding());
 
-        contextMenu.getItems().addAll(toggleSpellCheckMenuItem, new SeparatorMenuItem(), undoMenuItem, redoMenuItem, cutMenuItem, copyMenuItem, pasteMenuItem, deleteMenuItem, selectAllMenuItem);
-        return contextMenu;
+        return Arrays.asList(undoMenuItem, redoMenuItem, cutMenuItem, copyMenuItem, pasteMenuItem, deleteMenuItem, selectAllMenuItem);
     }
 
     private BooleanBinding getSelectionBinding() {
@@ -226,5 +202,14 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
                 }
             }
         });
+    }
+
+    public void enableSpellCheck(boolean spellCheckEnabled) {
+        if (spellCheckEnabled){
+            SpellChecker.registerArea(this);
+        } else {
+            SpellChecker.deregisterArea(this);
+        }
+        
     }
 }

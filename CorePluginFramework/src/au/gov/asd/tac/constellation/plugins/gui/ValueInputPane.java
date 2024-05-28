@@ -21,7 +21,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.RecentValuesChangeEvent;
 import au.gov.asd.tac.constellation.plugins.parameters.RecentValuesListener;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
-import au.gov.asd.tac.constellation.utilities.text.SpellCheckingTextArea;
+import au.gov.asd.tac.constellation.utilities.text.StyleableTextArea;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
@@ -60,7 +60,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
 
     private final ChangeListener<Number> recentValueSelectionListener;
     private final ComboBox<String> recentValuesCombo;
-    private final SpellCheckingTextArea field;
+    private final StyleableTextArea field;
     private final String parameterId;
     private final boolean required;
     private int comboBoxWidth = EMPTY_WIDTH;
@@ -162,7 +162,8 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                 };
             });
 
-            field = new SpellCheckingTextArea(parameter.isSpellCheckEnabled());
+            field = new StyleableTextArea();
+            field.enableSpellCheck(parameter.isSpellCheckEnabled());
             if (suggestedHeight > 1) {
                 field.setWrapText(true);
             } else {

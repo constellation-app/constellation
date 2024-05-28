@@ -15,6 +15,9 @@
  */
 package au.gov.asd.tac.constellation.utilities.text;
 
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,11 +27,20 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
+import java.util.prefs.Preferences;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
@@ -40,29 +52,26 @@ import org.languagetool.MultiThreadedJLanguageTool;
 import org.languagetool.rules.Rule;
 import org.languagetool.rules.RuleMatch;
 import org.languagetool.rules.spelling.SpellingCheckRule;
+import org.openide.util.NbPreferences;
 /**
  * Handles the SpellChecking functions of SpellCheckingTextArea. SpellChecker
  * evaluates incorrect words/phrases and pops up the suggestions when the user
  * prompts
  *
  * @author Auriga2
+ * @author capricornunicorn123
  */
-public final class SpellChecker {
+public final class SpellChecker implements PreferenceChangeListener{
+    
+    private static final List<StyleableTextArea> textAreas = new ArrayList<>();
+    private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+    
+    private static final SpellChecker spellChekerInstantiation = new SpellChecker();
 
-    private final SpellCheckingTextArea textArea;
-    private static final List<String> misspells = new ArrayList<>();
-    private List<RuleMatch> matches = new ArrayList<>();
-    private int indexOfMisspelledTextUnderCursor;       // position of the current misspelled text in misspells list
-    private final ListView<String> suggestions = new ListView<>(FXCollections.observableArrayList());
-    private final AtomicReference<JLanguageTool> langTool;
+    private static final AtomicReference<JLanguageTool> langTool = new AtomicReference<>();
     private static JLanguageTool langToolStatic;
-    private SpellingCheckRule spellingCheckRule;
-    private Popup popup = new Popup();
-    private Label labelMessage = new Label();
-    private boolean turnOffSpellChecking = false;
-    private int startOfMisspelledTextUnderCursor;
-    private int endOfMisspelledTextUnderCursor;
-    private String specificRuleId;
+    private static SpellingCheckRule spellingCheckRule;
+
     private static final Logger LOGGER = Logger.getLogger(SpellChecker.class.getName());
     private static final double POPUP_PADDING = 5;
     private static final double ITEM_HEIGHT = 24;
@@ -86,63 +95,90 @@ public final class SpellChecker {
                 return null;
             }
         }, Executors.newSingleThreadExecutor());
-    }
-
-    public SpellChecker(final SpellCheckingTextArea spellCheckingTextArea) {
-        textArea = spellCheckingTextArea;
-        langTool = new AtomicReference<>();
+        
         while (true) {
             LANGTOOL_LOAD.thenRun(() -> {
                 JLanguageTool langToolNew = new MultiThreadedJLanguageTool(language);
                 langTool.set(langToolNew);
-                initialize();
+                for (final Rule rule : langTool.get().getAllRules()) {
+                    if (rule.getId().equals("UPPERCASE_SENTENCE_START")) {
+                        langTool.get().disableRule(rule.getId());
+                    } else if (rule instanceof SpellingCheckRule) {
+                        spellingCheckRule = (SpellingCheckRule) rule;
+                    }
+                }
             });
             break;
         }
     }
 
-    private void initialize() {
-        for (final Rule rule : langTool.get().getAllRules()) {
-            if (rule.getId().equals("UPPERCASE_SENTENCE_START")) {
-                langTool.get().disableRule(rule.getId());
-            } else if (rule instanceof SpellingCheckRule) {
-                spellingCheckRule = (SpellingCheckRule) rule;
-            }
-        }
-
-        //initialize popup
-        suggestions.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
-            if (newValue != null) {
-                final StringBuilder builder = new StringBuilder(textArea.getText());
-                builder.replace(startOfMisspelledTextUnderCursor, endOfMisspelledTextUnderCursor, newValue);
-                textArea.replaceText​(builder.toString());
-            }
-            popup.hide();
-            checkSpelling();
-        });
+    private static boolean globalSpellCheckingEnabled() {
+        return PREFERENCES.getBoolean(ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING, ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING_DEFAULT);
     }
 
     /**
-     * Check Spelling of the entire text. This will ensure scenarios like
-     * duplicate words, grammar mistakes etc. are triggered
+     * Constructor to register a spell checker as a listener to the spell checking preference.
      */
-    public void checkSpelling() {
-        textArea.clearStyles();
-        misspells.clear();
-
-        if (!turnOffSpellChecking && StringUtils.isNotBlank(textArea.getText())) {
-            try {
-                matches = langTool.get().check(textArea.getText());
-                matches.forEach(match -> {
-                    final int start = match.getFromPos();
-                    final int end = match.getToPos();
-                    final String misspell = textArea.getText().substring(start, end);
-                    misspells.add(misspell);
-                    textArea.highlightText(start, end);
-                });
-            } catch (final IOException ex) {
-                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+    private SpellChecker() {
+        NbPreferences.forModule(ApplicationPreferenceKeys.class).addPreferenceChangeListener(this);
+    }
+    
+    /** 
+     * This method registers a text area as having spell checking fucntionality.
+     * Being registered is not the only mechanism to enable spell checking noor deos it ensure persistant spell checking. 
+     * registered text areas are only able to be spell checked when the global spell cheking parameter is enabled.
+     * @param area 
+     */
+    static void registerArea(StyleableTextArea area) {
+        
+        area.setOnMouseClicked((final MouseEvent event) -> {
+            if (globalSpellCheckingEnabled() && event.getButton() == MouseButton.PRIMARY && event.isStillSincePress()) {
+                checkSpelling(area);
+                popUpSuggestionsListAction(area, event);
             }
+        });
+        
+        area.setOnKeyReleased((final KeyEvent event) -> {
+            if (canCheckSpelling(area)) {
+                checkSpelling(area);
+            }
+        });
+        
+        textAreas.add(area);
+        checkSpelling(area);
+    }
+
+    static void deregisterArea(StyleableTextArea area) {
+        textAreas.remove(area);
+        area.setOnMouseClicked(null);
+        area.setOnKeyReleased(null);
+        //will remove formatting
+        area.clearStyles();
+    }
+    
+    static List<RuleMatch> getMatches(StyleableTextArea area){
+        try {
+            return langTool.get().check(area.getText());
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+        }
+        return new ArrayList<>();
+    }
+    
+    /**
+     * Checks spelling of the entire text. 
+     * This method is essentially called whenever a change is detected on the text area.
+     * This method ensures scenarios like duplicate words, grammar mistakes etc. are captured
+     */
+    static void checkSpelling(StyleableTextArea area) {
+        if (textAreas.contains(area) && StringUtils.isNotBlank(area.getText())) {        
+            area.clearStyles();
+            final List<RuleMatch> matches = getMatches(area);
+            matches.forEach(match -> {
+                final int start = match.getFromPos();
+                final int end = match.getToPos();
+                area.highlightText(start, end);
+            });
         }
     }
 
@@ -150,18 +186,21 @@ public final class SpellChecker {
      * Pop up the suggestions list if the word/phrase under the cursor is
      * misspelled.
      */
-    public void popUpSuggestionsListAction(final MouseEvent event) {
-        if (!turnOffSpellChecking) {
+    static void popUpSuggestionsListAction(StyleableTextArea area, MouseEvent event) {
+        if (textAreas.contains(area)) {
             final ObservableList<String> suggestionsList = FXCollections.observableArrayList();
+            final Popup popup = new Popup();
 
             popup.hide();
             popup.setAutoFix(true);
             popup.setAutoHide(true);
             popup.setHideOnEscape(true);
-
-            if (isWordUnderCursorMisspelled()) {
+            MisspeltWordData data = getSelectedMisspeltWordData(area);
+            if (data != null) {
                 final Button ignoreButton = new Button("Ignore All");
                 final VBox popupContent = new VBox(POPUP_PADDING);
+                final ListView<String> suggestions = new ListView<>(FXCollections.observableArrayList());
+                final Label labelMessage = new Label(data.rule.getMessage());
                 popupContent.setStyle(
                         "-fx-background-color: black;"
                         + "-fx-text-fill: white;"
@@ -169,86 +208,120 @@ public final class SpellChecker {
                 popupContent.getChildren().clear();
                 suggestionsList.clear();
                 popup.getContent().clear();
+                
                 suggestions.getSelectionModel().clearSelection();
 
-                suggestionsList.addAll(matches.get(indexOfMisspelledTextUnderCursor).getSuggestedReplacements());
+                suggestionsList.addAll(data.rule.getSuggestedReplacements());
                 if (suggestionsList.isEmpty()) {
-                    labelMessage.setText("No matching suggestions available");
                     popupContent.getChildren().addAll(labelMessage);
                 } else {
                     suggestions.setItems(suggestionsList.size() > 5 ? FXCollections.observableArrayList(suggestionsList.subList(0, 5)) : suggestionsList);
-                    ignoreButton.setOnAction(e -> this.addWordsToIgnore());
+                    ignoreButton.setOnAction(e -> {
+                        addWordsToIgnore(data);
+                        popup.hide();
+                        checkSpelling(area);
+                    });
                     suggestions.setPrefHeight(suggestions.getItems().size() * ITEM_HEIGHT);
 
                     // Temporary check to remove ignore button on non spelling errors
-                    if (specificRuleId.equals("MORFOLOGIK_RULE_EN_AU")) {
+                    if (data.rule.getSpecificRuleId().equals("MORFOLOGIK_RULE_EN_AU")) {
                         popupContent.getChildren().addAll(suggestions, ignoreButton, labelMessage);
                     } else {
                         popupContent.getChildren().addAll(suggestions, labelMessage);
                     }
                 }
+                
+                suggestions.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
+                    if (newValue != null) {
+                        final StringBuilder builder = new StringBuilder(area.getText());
+                        builder.replace(data.startIndex, data.endsIndex, newValue);
+                        area.replaceText​(builder.toString());
+                    }
+                    popup.hide();
+                    checkSpelling(area);
+                });
 
                 popup.getContent().add(popupContent);
                 popup.setAutoFix(true);
-                popup.show(textArea, event.getScreenX(), event.getScreenY() + 10);
+                popup.show(area, event.getScreenX(), event.getScreenY() + 10);
             }
         }
     }
+    
+    private static MisspeltWordData getSelectedMisspeltWordData(StyleableTextArea area) {
+        final int cursorIndex = area.getCaretPosition();
 
-    /**
-     * Retrieve the word/phrase under the cursor and check if it is misspelled.
-     * If it is misspelled the index is populated.
-     */
-    private boolean isWordUnderCursorMisspelled() {
-        final int cursorIndex = textArea.getCaretPosition();
+        if (cursorIndex > 0 && cursorIndex < area.getText().length()) {
+            final List<RuleMatch> matches = getMatches(area);
+            for (final RuleMatch match : matches) {
+                final int start = match.getFromPos();
+                final int end = match.getToPos();
+                if (cursorIndex >= start && cursorIndex <= end) {
+                    return new MisspeltWordData(cursorIndex, match, start, end, area.getText().substring(start, end));
 
-        if (cursorIndex <= 0 || cursorIndex >= textArea.getText().length()) {
-            //= is to avoid the scenario of displaying the suggesttions of the first/last word
-            // (if they are incorrect) when clicking on the empty space right/below the text
-            return false;
-        }
-
-        for (final RuleMatch match : matches) {
-            final int start = match.getFromPos();
-            final int end = match.getToPos();
-            if (cursorIndex >= start && cursorIndex <= end) {
-                indexOfMisspelledTextUnderCursor = misspells.indexOf(textArea.getText().substring(start, end));
-                startOfMisspelledTextUnderCursor = start;
-                endOfMisspelledTextUnderCursor = end;
-                specificRuleId = match.getSpecificRuleId();
-                labelMessage.setText(match.getMessage());
-                return true;
+                }
             }
         }
-        return false;
+        return null;
     }
-
+    
     /**
      * Prevents highlighting while still typing. When a highlighted word is
      * corrected manually it'll be marked as correct, similar to that in
      * Microsoft Word.
      */
-    public boolean canCheckSpelling(final String newText) {
-        final int caretPosition = textArea.getCaretPosition();
-        if (caretPosition == 0) {
+    public static boolean canCheckSpelling(final StyleableTextArea area) {
+        final String newText = area.getText();
+        final int caretPosition = area.getCaretPosition();
+        if (!globalSpellCheckingEnabled()){
+            return false;
+        } else if (caretPosition == 0) {
             return true;
         } else if (caretPosition <= newText.length()) {
-            final String charAtCaret = Character.toString(textArea.getText().charAt(caretPosition - 1));
-            return !newText.isEmpty() && (textArea.isWordUnderCursorHighlighted(caretPosition - 1) || !charAtCaret.matches("[a-zA-Z0-9']"));
+            final String charAtCaret = Character.toString(area.getText().charAt(caretPosition - 1));
+            return !newText.isEmpty() && (area.isWordUnderCursorHighlighted(caretPosition - 1) || !charAtCaret.matches("[a-zA-Z0-9']"));
         } else {
             return false;
         }
     }
-
-    public void turnOffSpellChecking(final boolean turnOffSpellChecking) {
-        this.turnOffSpellChecking = turnOffSpellChecking;
-    }
-
-    public void addWordsToIgnore() {
-        if (spellingCheckRule != null) {
-            spellingCheckRule.addIgnoreTokens(Arrays.asList(textArea.getText().substring(startOfMisspelledTextUnderCursor, endOfMisspelledTextUnderCursor)));
-            popup.hide();
-            checkSpelling();
+    
+    // In the event that global spell checking 
+    public static void globalSpellCheckingChanged(){
+        boolean active = globalSpellCheckingEnabled();
+        for (StyleableTextArea area : textAreas) {
+            if (active){
+                checkSpelling(area);
+            } else {
+                area.clearStyles();
+            }
         }
     }
+
+    public static void addWordsToIgnore(MisspeltWordData data) {
+        if (spellingCheckRule != null) {
+            spellingCheckRule.addIgnoreTokens(Arrays.asList(data.word));
+        }
+    }
+    
+    public static MenuItem getSpellCheckMenuItem(final StyleableTextArea area) {
+        boolean localSpellCheckingEnabled = textAreas.contains(area);
+        // CheckMenuItem to toggle turn On/Off Spell Checking. On by default
+        final CheckMenuItem toggleSpellCheckMenuItem = new CheckMenuItem("Check Spelling");
+        toggleSpellCheckMenuItem.setSelected(localSpellCheckingEnabled);
+        toggleSpellCheckMenuItem.setDisable(!globalSpellCheckingEnabled());
+        toggleSpellCheckMenuItem.setVisible(true);
+        toggleSpellCheckMenuItem.setOnAction(event -> {
+            area.enableSpellCheck(toggleSpellCheckMenuItem.isSelected());
+        });
+        return toggleSpellCheckMenuItem;
+    }
+
+    @Override
+    public void preferenceChange(PreferenceChangeEvent evt) {
+        Platform.runLater(() ->{
+            SpellChecker.globalSpellCheckingChanged();
+        });
+    }
+    
+    private static record MisspeltWordData(int curser, RuleMatch rule, int startIndex, int endsIndex, String word){};
 }
