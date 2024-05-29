@@ -16,8 +16,6 @@
 package au.gov.asd.tac.constellation.views.conversationview;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -25,7 +23,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import org.testfx.api.FxToolkit;
 import static org.testng.AssertJUnit.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -45,18 +42,18 @@ public class ConversationViewTopComponentNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        if (!FxToolkit.isFXApplicationThreadRunning()) {
-            FxToolkit.registerPrimaryStage();
-        }
+//        if (!FxToolkit.isFXApplicationThreadRunning()) {
+//            FxToolkit.registerPrimaryStage();
+//        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        try {
-            FxToolkit.cleanupStages();
-        } catch (final TimeoutException ex) {
-            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
-        }
+//        try {
+//            FxToolkit.cleanupStages();
+//        } catch (final TimeoutException ex) {
+//            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+//        }
     }
 
     @BeforeMethod
@@ -65,6 +62,19 @@ public class ConversationViewTopComponentNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+    }
+
+    /**
+     * Test of createStyle method, of class ConversationViewTopComponent.
+     */
+    @Test
+    public void testCreateStyle() {
+        System.out.println("createStyle");
+        final String expResult = "resources/conversation.css";
+        topComponent = new ConversationViewTopComponent();
+        final String result = topComponent.createStyle();
+        assertEquals(result, expResult);
+
     }
 
     /**
