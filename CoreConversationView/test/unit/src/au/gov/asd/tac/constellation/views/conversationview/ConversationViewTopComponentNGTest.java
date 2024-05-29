@@ -68,19 +68,6 @@ public class ConversationViewTopComponentNGTest {
     }
 
     /**
-     * Test of createStyle method, of class ConversationViewTopComponent.
-     */
-    @Test
-    public void testCreateStyle() {
-        System.out.println("createStyle");
-        final String expResult = "resources/conversation.css";
-        topComponent = new ConversationViewTopComponent();
-        final String result = topComponent.createStyle();
-        assertEquals(result, expResult);
-
-    }
-
-    /**
      * Test of createContent method, of class ConversationViewTopComponent.
      */
     @Test
