@@ -131,6 +131,12 @@ public class Conversation {
      * Create a new Conversation.
      */
     public Conversation() {
+    }
+    
+    /**
+     * Set up the updaters for when they need to update the view when the graph changes
+     */
+    public void setupConversation() {
         conversationExistanceUpdater.dependOn(graphUpdateController.getNewGraphUpdateComponent());
 
         conversationStateUpdater.dependOn(conversationExistanceUpdater);
