@@ -79,6 +79,7 @@ public class ConversationNGTest {
         System.out.println("setPageNumber");
         final int pageNumber = 2;
         final Conversation instance = new Conversation();
+        instance.setupConversation();
         instance.setPageNumber(pageNumber);
         final int expResult = instance.getPageNumber();
         assertEquals(pageNumber, expResult);
@@ -92,6 +93,7 @@ public class ConversationNGTest {
         System.out.println("setTotalMessageCount");
         final int totalMessageCount = 3000;
         final Conversation instance = new Conversation();
+        instance.setupConversation();
         instance.setTotalMessageCount(totalMessageCount);
         final int expResult = instance.getTotalMessageCount();
         assertEquals(totalMessageCount, expResult);
@@ -105,6 +107,7 @@ public class ConversationNGTest {
         System.out.println("setTotalPages");
         final int totalPages = 45;
         final Conversation instance = new Conversation();
+        instance.setupConversation();
         instance.setTotalPages(totalPages);
         final int expResult = instance.getTotalPages();
         assertEquals(totalPages, expResult);
@@ -118,6 +121,7 @@ public class ConversationNGTest {
         System.out.println("setContentPerPage");
         final int contentPerPage = 0;
         final Conversation instance = new Conversation();
+        instance.setupConversation();
         instance.setContentPerPage(contentPerPage);
         final int expResult = instance.getContentPerPage();
         assertEquals(contentPerPage, expResult);
@@ -138,6 +142,7 @@ public class ConversationNGTest {
             
             final GraphReadMethods graph = mock(GraphReadMethods.class);
             final Conversation instance = new Conversation();
+            instance.setupConversation();
             final List expResult = new ArrayList();
             final List result = instance.updateMessages(graph);
             verify(controller, times(2)).getConversationBox();
