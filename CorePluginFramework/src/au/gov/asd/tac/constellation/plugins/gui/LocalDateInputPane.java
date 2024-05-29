@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterListener;
 import au.gov.asd.tac.constellation.plugins.parameters.types.LocalDateParameterType.LocalDateParameterValue;
 import au.gov.asd.tac.constellation.utilities.gui.field.DateInputField;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -41,7 +42,7 @@ import javafx.beans.value.ObservableValue;
  * @author algol
  * @author capricornunicorn123
  */
-public final class LocalDateInputPane extends ParameterInputPane<LocalDateParameterValue> {
+public final class LocalDateInputPane extends ParameterInputPane<LocalDateParameterValue, LocalDate> {
     
     private static final Logger LOGGER = Logger.getLogger(LocalDateInputPane.class.getName());
 

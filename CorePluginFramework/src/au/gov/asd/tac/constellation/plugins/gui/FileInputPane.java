@@ -65,7 +65,7 @@ import org.openide.filesystems.FileChooserBuilder;
  * @author ruby_crucis
  * @author capricornunicorn123
  */
-public final class FileInputPane extends ParameterInputPane<FileParameterValue> {
+public final class FileInputPane extends ParameterInputPane<FileParameterValue, List<File>> {
 
     public static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
     private static final Logger LOGGER = Logger.getLogger(FileInputPane.class.getName());
@@ -80,7 +80,7 @@ public final class FileInputPane extends ParameterInputPane<FileParameterValue> 
      * @param parameter parameter to link to value
      * @param suggestedHeight suggested hight (in lines)
      */
-    public FileInputPane(final PluginParameter<FileParameterValue> parameter, Integer suggestedHeight) {
+    public FileInputPane(final PluginParameter<FileParameterValue> parameter, int suggestedHeight) {
         super(suggestedHeight > 1 ? new FileInputField(parameter.getParameterValue().getKind(), TextType.MULTILINE, suggestedHeight) : new FileInputField(parameter.getParameterValue().getKind()), parameter); 
 
         final FileParameterType.FileParameterValue pv = parameter.getParameterValue();

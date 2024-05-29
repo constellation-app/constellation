@@ -16,13 +16,13 @@
 package au.gov.asd.tac.constellation.utilities.text;
 
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputField;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.PreferenceChangeEvent;
@@ -31,6 +31,7 @@ import java.util.prefs.Preferences;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Label;
@@ -43,7 +44,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import org.apache.commons.lang3.StringUtils;
 import org.languagetool.JLanguageTool;
-import org.languagetool.Language;
 import org.languagetool.Languages;
 import org.languagetool.MultiThreadedJLanguageTool;
 import org.languagetool.rules.Rule;
@@ -60,7 +60,7 @@ import org.openide.util.NbPreferences;
  */
 public final class SpellChecker implements PreferenceChangeListener{
     
-    private static final List<StyleableTextArea> TEXT_AREAS = new ArrayList<>();
+    private static final List<ConstellationInputField> TEXT_AREAS = new ArrayList<>();
     private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
     
     private static final JLanguageTool LANGTOOL = new MultiThreadedJLanguageTool(Languages.getLanguageForShortCode("en-AU"));
@@ -79,8 +79,8 @@ public final class SpellChecker implements PreferenceChangeListener{
             for (final Rule rule : LANGTOOL.getAllRules()) {
                 if (rule.getId().equals("UPPERCASE_SENTENCE_START")) {
                     LANGTOOL.disableRule(rule.getId());
-                } else if (rule instanceof SpellingCheckRule) {
-                    spellingCheckRule = (SpellingCheckRule) rule;
+                } else if (rule instanceof SpellingCheckRule spellingCheckRule1) {
+                    spellingCheckRule = spellingCheckRule1;
                 }
             }            
 
@@ -111,18 +111,23 @@ public final class SpellChecker implements PreferenceChangeListener{
      * registered text areas are only able to be spell checked when the global spell cheking parameter is enabled.
      * @param area 
      */
-    static void registerArea(StyleableTextArea area) {
-        
-        area.field.setOnMouseClicked((final MouseEvent event) -> {
-            if (globalSpellCheckingEnabled() && event.getButton() == MouseButton.PRIMARY && event.isStillSincePress()) {
-                checkSpelling(area);
-                popUpSuggestionsListAction(area, event);
+    public static void registerArea(final ConstellationInputField area) {       
+        area.registerTextClickedEvent(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (globalSpellCheckingEnabled() && event.getButton() == MouseButton.PRIMARY && event.isStillSincePress()) {
+                    checkSpelling(area);
+                    popUpSuggestionsListAction(area, event);
+                }
             }
         });
         
-        area.field.setOnKeyReleased((final KeyEvent event) -> {
-            if (canCheckSpelling(area)) {
-                checkSpelling(area);
+        area.registerTextKeyedEvent(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (canCheckSpelling(area)) {
+                    checkSpelling(area);
+                }
             }
         });
         
@@ -130,17 +135,16 @@ public final class SpellChecker implements PreferenceChangeListener{
         checkSpelling(area);
     }
 
-    static void deregisterArea(StyleableTextArea area) {
+    public static void deregisterArea(ConstellationInputField area) {
         TEXT_AREAS.remove(area);
-        area.field.setOnMouseClicked(null);
-        area.field.setOnKeyReleased(null);
-        //will remove formatting
-        area.clearStyles();
+        area.clearTextKeyedEvent();
+        area.clearTextClickedEvent();
+        area.clearTextStyles();
     }
     
-    static List<RuleMatch> getMatches(StyleableTextArea area){
+    static List<RuleMatch> getMatches(ConstellationInputField area){
         try {
-            return LANGTOOL.check(area.field.getText());
+            return LANGTOOL.check(area.getText());
         } catch (final IOException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
         }
@@ -152,9 +156,9 @@ public final class SpellChecker implements PreferenceChangeListener{
      * This method is essentially called whenever a change is detected on the text area.
      * This method ensures scenarios like duplicate words, grammar mistakes etc. are captured
      */
-    static void checkSpelling(StyleableTextArea area) {
-        if (TEXT_AREAS.contains(area) && StringUtils.isNotBlank(area.field.getText())) {        
-            area.clearStyles();
+    static void checkSpelling(ConstellationInputField area) {
+        if (TEXT_AREAS.contains(area) && StringUtils.isNotBlank(area.getText())) {        
+            area.clearTextStyles();
             final List<RuleMatch> matches = getMatches(area);
             matches.forEach(match -> {
                 final int start = match.getFromPos();
@@ -168,7 +172,7 @@ public final class SpellChecker implements PreferenceChangeListener{
      * Pop up the suggestions list if the word/phrase under the cursor is
      * misspelled.
      */
-    static void popUpSuggestionsListAction(StyleableTextArea area, MouseEvent event) {
+    static void popUpSuggestionsListAction(ConstellationInputField area, MouseEvent event) {
         if (TEXT_AREAS.contains(area)) {
             final ObservableList<String> suggestionsList = FXCollections.observableArrayList();
             final Popup popup = new Popup();
@@ -215,9 +219,9 @@ public final class SpellChecker implements PreferenceChangeListener{
                 
                 suggestions.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
                     if (newValue != null) {
-                        final StringBuilder builder = new StringBuilder(area.field.getText());
+                        final StringBuilder builder = new StringBuilder(area.getText());
                         builder.replace(data.startIndex, data.endsIndex, newValue);
-                        area.field.replaceText​(builder.toString());
+                        area.setText(builder.toString());
                     }
                     popup.hide();
                     checkSpelling(area);
@@ -225,21 +229,21 @@ public final class SpellChecker implements PreferenceChangeListener{
 
                 popup.getContent().add(popupContent);
                 popup.setAutoFix(true);
-                popup.show(area.field, event.getScreenX(), event.getScreenY() + 10);
+                popup.show(area, event.getScreenX(), event.getScreenY() + 10); // was area.field may need to get to the css element
             }
         }
     }
     
-    private static MisspeltWordData getSelectedMisspeltWordData(StyleableTextArea area) {
-        final int cursorIndex = area.field.getCaretPosition();
+    private static MisspeltWordData getSelectedMisspeltWordData(ConstellationInputField area) {
+        final int cursorIndex = area.getCaretPosition();
 
-        if (cursorIndex > 0 && cursorIndex < area.field.getText().length()) {
+        if (cursorIndex > 0 && cursorIndex < area.getText().length()) {
             final List<RuleMatch> matches = getMatches(area);
             for (final RuleMatch match : matches) {
                 final int start = match.getFromPos();
                 final int end = match.getToPos();
                 if (cursorIndex >= start && cursorIndex <= end) {
-                    return new MisspeltWordData(cursorIndex, match, start, end, area.field.getText().substring(start, end));
+                    return new MisspeltWordData(cursorIndex, match, start, end, area.getText().substring(start, end));
 
                 }
             }
@@ -252,16 +256,16 @@ public final class SpellChecker implements PreferenceChangeListener{
      * corrected manually it'll be marked as correct, similar to that in
      * Microsoft Word.
      */
-    public static boolean canCheckSpelling(final StyleableTextArea area) {
-        final String newText = area.field.getText();
-        final int caretPosition = area.field.getCaretPosition();
+    public static boolean canCheckSpelling(final ConstellationInputField area) {
+        final String newText = area.getText();
+        final int caretPosition = area.getCaretPosition();
         if (!globalSpellCheckingEnabled()){
             return false;
         } else if (caretPosition == 0) {
             return true;
         } else if (caretPosition <= newText.length()) {
-            final String charAtCaret = Character.toString(area.field.getText().charAt(caretPosition - 1));
-            return !newText.isEmpty() && (area.isWordUnderCursorHighlighted(caretPosition - 1) || !charAtCaret.matches("[a-zA-Z0-9']"));
+            final String charAtCaret = Character.toString(area.getText().charAt(caretPosition - 1));
+            return !newText.isEmpty() && (area.isWordUnderCursorHighlighted() || !charAtCaret.matches("[a-zA-Z0-9']"));
         } else {
             return false;
         }
@@ -270,11 +274,11 @@ public final class SpellChecker implements PreferenceChangeListener{
     // In the event that global spell checking 
     public static void globalSpellCheckingChanged(){
         boolean active = globalSpellCheckingEnabled();
-        for (StyleableTextArea area : TEXT_AREAS) {
+        for (ConstellationInputField area : TEXT_AREAS) {
             if (active){
                 checkSpelling(area);
             } else {
-                area.clearStyles();
+                area.clearTextStyles();
             }
         }
     }
@@ -285,7 +289,7 @@ public final class SpellChecker implements PreferenceChangeListener{
         }
     }
     
-    public static MenuItem getSpellCheckMenuItem(final StyleableTextArea area) {
+    public static MenuItem getSpellCheckMenuItem(final ConstellationInputField area) {
         boolean localSpellCheckingEnabled = TEXT_AREAS.contains(area);
         // CheckMenuItem to toggle turn On/Off Spell Checking. On by default
         final CheckMenuItem toggleSpellCheckMenuItem = new CheckMenuItem("Check Spelling");

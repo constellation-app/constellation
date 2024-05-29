@@ -46,7 +46,7 @@ import javafx.collections.ObservableList;
  * @author twinkle2_little
  * @author capricornunicorn123
  */
-public final class MultiChoiceInputPane extends ParameterInputPane<MultiChoiceParameterValue> {
+public final class MultiChoiceInputPane extends ParameterInputPane<MultiChoiceParameterValue, List<ParameterValue>> {
 
     private static final Logger LOGGER = Logger.getLogger(MultiChoiceInputPane.class.getName());
     private final ObservableList<ParameterValue> options = FXCollections.observableArrayList();

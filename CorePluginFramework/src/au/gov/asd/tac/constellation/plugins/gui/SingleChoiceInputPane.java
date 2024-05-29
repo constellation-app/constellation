@@ -45,7 +45,7 @@ import javafx.beans.value.ObservableValue;
  * @author ruby_crucis
  * @author capricornunicorn123
  */
-public final class SingleChoiceInputPane extends ParameterInputPane<SingleChoiceParameterValue> {
+public final class SingleChoiceInputPane extends ParameterInputPane<SingleChoiceParameterValue, List<ParameterValue>> {
 
     private static final Logger LOGGER = Logger.getLogger(SingleChoiceInputPane.class.getName());
 

@@ -39,7 +39,7 @@ import javafx.beans.value.ObservableValue;
  * @author algol
  * @author capricornunicorn123
  */
-public final class ColorInputPane extends ParameterInputPane<ColorParameterValue> {
+public final class ColorInputPane extends ParameterInputPane<ColorParameterValue, ConstellationColor> {
 
     private static final Logger LOGGER = Logger.getLogger(ColorInputPane.class.getName());
     

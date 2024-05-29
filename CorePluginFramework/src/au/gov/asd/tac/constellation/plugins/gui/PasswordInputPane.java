@@ -46,7 +46,7 @@ import org.apache.commons.lang3.StringUtils;
  *
  * @author Auriga2
  */
-public class PasswordInputPane extends ParameterInputPane<PasswordParameterValue> {
+public class PasswordInputPane extends ParameterInputPane<PasswordParameterValue, String> {
 
     public static final int DEFAULT_WIDTH = 300;
     public static final int INTEGER_WIDTH = 75;

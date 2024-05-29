@@ -51,8 +51,10 @@ public final class TextInputField extends ConstellationInputField<String> {
     }
     
     public void addRecentValues(List<String> options){
-        this.recentValues.clear();
-        this.recentValues.addAll(options);
+        if (options != null){
+            this.recentValues.clear();
+            this.recentValues.addAll(options);
+        }
     }
     
     @Override

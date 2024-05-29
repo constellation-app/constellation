@@ -59,7 +59,7 @@ public final class FileInputField extends ConstellationInputField<List<File>> {
         this(fileInputKind, textTypeOverride, 1);
     }
     
-    public FileInputField(FileInputKind fileInputKind, TextType textTypeOverride, Integer suggestedHeight) {
+    public FileInputField(FileInputKind fileInputKind, TextType textTypeOverride, int suggestedHeight) {
         super(LayoutConstants.INPUT_POPUP, 
                 
                 textTypeOverride != null 
@@ -69,8 +69,9 @@ public final class FileInputField extends ConstellationInputField<List<File>> {
                             default -> TextType.SINGLELINE;
                         }
         );
-        if (suggestedHeight != null && suggestedHeight > 1){
-            setWrapText(true);
+        
+        if (suggestedHeight > 1){
+            setWrapText(false);
             setPrefRowCount(suggestedHeight);
         }
         

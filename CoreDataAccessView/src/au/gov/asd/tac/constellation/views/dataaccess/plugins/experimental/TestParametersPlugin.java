@@ -58,7 +58,7 @@ import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.field.FileInputField.FileInputKind;
-import au.gov.asd.tac.constellation.utilities.text.StyleableTextArea;
+import au.gov.asd.tac.constellation.utilities.gui.field.TextInputField;
 import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
@@ -195,7 +195,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
 
         final StringParameterValue string2pv = new StringParameterValue();
         string2pv.setGuiInit(control -> {
-            final InlineCssTextArea field = (InlineCssTextArea) control;
+            final TextInputField field = (TextInputField) control;
             field.getStylesheets().add(css);
         });
         final PluginParameter<StringParameterValue> string2 = StringParameterType.build(TEST2_PARAMETER_ID, string2pv);

@@ -23,27 +23,29 @@ import javafx.beans.value.ChangeListener;
 import javafx.scene.layout.HBox;
 
 /**
- * An abstract base class for PluginParameter Input Panes in Constellation.
- * This class and it's extended classes acts as the link between {@link PluignParameter} objects
+ * An abstract base class for Panes that get user input into editing {@link PluginParameter} objects in Constellation.
+ * This class and it's extended classes act as the link between {@link PluignParameter} objects
  * and {@link ConstellationInputField} objects.
  * 
  * This class provides standard functionality for this link and defines some implementation specific 
- * methods to assist in the nuanced interactions across different parameter types.
+ * methods to assist in the nuanced interactions across different {@link PluginParameterType} implementations.
  * 
  * Visually, extensions of this class are represented by a {@link HBox} which contains a 
  * {@link ConstellationInputField}. This {@link HBox} is typically added to a {@link GridPane} by
  * the {@link PluginParametersPane}.
  * 
- * Examples of {@link PluginInputPane} can be found in the DataAccessView or the SphereGraphBuilder.
+ * Visual examples of the {@link ParameterInputPane} can be found in the DataAccessView or the SphereGraphBuilder.
  * 
  * @author capricornunicorn123
- * @param <T>
+ * @param <T> the Value represented by the {@link PluginParameter}
+ * @param <V> the Value represented by the {@link ConstellationInputField}
  */
-public abstract class ParameterInputPane<T extends ParameterValue> extends HBox {
-    public final ConstellationInputField field;
+public abstract class ParameterInputPane<T extends ParameterValue, V extends Object> extends HBox {
+    
+    public final ConstellationInputField<V> field;
     public final PluginParameter<T> parameter;
     
-    ParameterInputPane(ConstellationInputField field, PluginParameter<T> parameter){
+    ParameterInputPane(ConstellationInputField<V> field, PluginParameter<T> parameter){
         this.field = field;
         this.parameter = parameter;
         
@@ -51,6 +53,7 @@ public abstract class ParameterInputPane<T extends ParameterValue> extends HBox 
         updateFieldVisability();
 
         this.field.setPromptText(parameter.getDescription());
+        field.enableSpellCheck(parameter.isSpellCheckEnabled());
         
         this.field.addListener(getFieldChangeListener(parameter));
         parameter.addListener(getPluginParameterListener());
@@ -58,7 +61,7 @@ public abstract class ParameterInputPane<T extends ParameterValue> extends HBox 
         getChildren().add(field);
     }
     
-    public final ConstellationInputField getField(){
+    public final ConstellationInputField<V> getField(){
         return this.field;
     }
     
@@ -66,12 +69,16 @@ public abstract class ParameterInputPane<T extends ParameterValue> extends HBox 
         return true;
     }
     
-    public void setFieldValue(Object value){
+    public void setFieldValue(V value){
         this.field.setValue(value);
     }
     
-    public Object getFieldValue(){
+    public V getFieldValue(){
         return this.field.getValue();
+    }
+    
+    public void setFieldLines(int lineCount){
+        field.setLines(lineCount);
     }
     
     public final void updateFieldVisability(){
@@ -86,12 +93,12 @@ public abstract class ParameterInputPane<T extends ParameterValue> extends HBox 
     }
     
     /**
-     * A ChangeListener that can modify the relevant PluginParameter when a change on the InputField is found
-     * Note: ConstellationInputFields will only notify ChangeListeners if the input field's TextProperty has 
-     * changed and the input field has a valid value as defined by the input field.
+     * A ChangeListener that can modify the relevant {@link PluginParameter} when a change on the {@link ConstellationInputField} is found
+     * Note: {@link ConstellationInputField} will only notify ChangeListeners if the input field's TextProperty has 
+     * changed and the {@link ConstellationInputField} has a valid value as defined by the {@link ConstellationInputField}.
      * It is the responsibility of implementations of this method to ensure that the input field value is
-     * valid with respect object holding the InputField.
-     * <p> Example Implementation: (T is the generic type that is supported by the respective InputField)
+     * valid with respect to the {@link PluginParameter}.
+     * <p> Example Implementation: (T is the generic type that is supported by the respective {@link ConstellationInputField})
      * <pre>
      * return (ChangeListener<T>) (ObservableValue<? extends T> observable, T oldValue, T newValue) -> {
             if (newValue != null) {
@@ -106,11 +113,12 @@ public abstract class ParameterInputPane<T extends ParameterValue> extends HBox 
     public abstract ChangeListener getFieldChangeListener(final PluginParameter<T> parameter);
     
     /**
-     * A PluginParameterListener that can modify the relevant InputField when a change on the Parameter is found
-     * Note: Ensure that implementations of this method only modify the input field if the value of the 
-     * input field and the value of the Plugin parameter differ. Failing to do so could cause the listener 
+     * A {@link PluginParameterListener} that can modify the relevant {@link ConstellationInputField} when a change on 
+     * the {@link PluginParameter} is found.
+     * Note: Ensure that implementations of this method only modify the {@link ConstellationInputField} if the value of the 
+     * {@link ConstellationInputField} and the value of the {@link PluginParameter} differ. Failing to do so could cause the listener 
      * implementations to call each other cyclically. 
-     * <p> Example Implementation: (T is the ParameterValue for this parameter)
+     * <p> Example Implementation: (T is the {@link ParameterValue} for this {@link PluginParameter})
      * <pre>
      * return (PluginParameter<?> parameter, ParameterChange change) -> Platform.runLater(() -> {
      *      //@SuppressWarnings("unchecked")

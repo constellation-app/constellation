@@ -823,7 +823,7 @@ public final class PluginParametersPane extends GridPane {
 
             final Pane pane;
             switch (id) {
-                case StringParameterType.ID -> pane = new ValueInputPane((PluginParameter<StringParameterValue>) parameter, ValueInputPane.DEFAULT_WIDTH, StringParameterType.getLines((PluginParameter<StringParameterValue>) parameter));
+                case StringParameterType.ID -> pane = new ValueInputPane((PluginParameter<StringParameterValue>) parameter, StringParameterType.getLines((PluginParameter<StringParameterValue>) parameter));
                 case IntegerParameterType.ID -> pane = new NumberInputPane<>((PluginParameter<IntegerParameterValue>) parameter);
                 case FloatParameterType.ID -> pane = new NumberInputPane<>((PluginParameter<FloatParameterValue>) parameter);
                 case BooleanParameterType.ID -> pane = new BooleanInputPane((PluginParameter<BooleanParameterValue>) parameter);
