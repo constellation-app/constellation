@@ -144,8 +144,8 @@ public final class ConversationBox extends StackPane {
      *
      * @param conversation The Conversation that this ConversationBox will display.
      */
-    public ConversationBox(final Conversation newConversation) {
-        this.conversation = newConversation;
+    public ConversationBox(final Conversation conversation) {
+        this.conversation = conversation;
 
         setPrefSize(500, 500);
         setCache(true);
@@ -330,8 +330,9 @@ public final class ConversationBox extends StackPane {
                 return content;
             }
         });
-        this.conversation.setupConversation();
+        
         getChildren().addAll(pagination, tipsPane);
+        conversation.setupConversation();
     }
     
     public Pagination getPagination() {
