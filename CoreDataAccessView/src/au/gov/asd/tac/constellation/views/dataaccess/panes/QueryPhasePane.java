@@ -23,7 +23,7 @@ import au.gov.asd.tac.constellation.plugins.PluginSynchronizer;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPaneListener;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
+import au.gov.asd.tac.constellation.utilities.gui.RecentValue.RecentValueUtility;
 import au.gov.asd.tac.constellation.views.dataaccess.api.DataAccessPaneState;
 import au.gov.asd.tac.constellation.views.dataaccess.components.DataAccessTabPane;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
@@ -335,7 +335,7 @@ public class QueryPhasePane extends VBox {
     }
 
     /**
-     * Store current parameter values for all tabs and plug-ins in the {@link RecentParameterValues} repository. It will store both global and plugin
+     * Store current parameter values for all tabs and plug-ins in the {@link RecentValueUtility} repository. It will store both global and plugin
      * parameters.
      */
     public void storeParameterValues() {
@@ -345,7 +345,7 @@ public class QueryPhasePane extends VBox {
                         -> param.getValue().getStringValue() != null
                 && !param.getValue().getStringValue().isEmpty()
                 )
-                .forEach(param -> RecentParameterValues.storeRecentValue(
+                .forEach(param -> RecentValueUtility.storeRecentValue(
                 param.getKey(), param.getValue().getStringValue()
         ));
 
@@ -359,12 +359,12 @@ public class QueryPhasePane extends VBox {
                 .filter(param -> param.getValue().getObjectValue() != null)
                 .forEach(param -> {
                     if (!param.getValue().getType().toString().contains(DataAccessTabPane.LOCAL_DATE_PARAMETER_TYPE)) {
-                        RecentParameterValues.storeRecentValue(
+                        RecentValueUtility.storeRecentValue(
                                 param.getKey(),
                                 param.getValue().getStringValue()
                         );
                     } else {
-                        RecentParameterValues.storeRecentValue(
+                        RecentValueUtility.storeRecentValue(
                                 param.getKey(),
                                 param.getValue().getObjectValue().toString()
                         );

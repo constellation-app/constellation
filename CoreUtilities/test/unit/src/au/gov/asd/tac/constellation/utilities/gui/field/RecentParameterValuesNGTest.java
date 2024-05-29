@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.parameters;
+package au.gov.asd.tac.constellation.utilities.gui.field;
 
+import au.gov.asd.tac.constellation.utilities.gui.RecentValue.RecentValuesKey;
+import au.gov.asd.tac.constellation.utilities.gui.RecentValue.RecentValueUtility;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -65,72 +67,72 @@ public class RecentParameterValuesNGTest {
     }
 
     /**
-     * Test of storeRecentValue method, of class RecentParameterValues.
+     * Test of storeRecentValue method, of class RecentValueUtility.
      */
     @Test
     public void testStoreRecentValue() {
         final String parameterId = "key";
         final String parameterValue = "[\"✓ Option 1\\\\n✓ Option 2\"]";
 
-        RecentParameterValues.storeRecentValue(parameterId, parameterValue);
-        List<String> result = RecentParameterValues.getRecentValues(parameterId);
+        RecentValueUtility.storeRecentValue(parameterId, parameterValue);
+        List<String> result = RecentValueUtility.getRecentValues(parameterId);
         final List<String> expResult = new ArrayList<>();
         expResult.add(parameterValue);
         assertEquals(result, expResult);
-        RecentParameterValues.storeRecentValue(parameterId, parameterValue);
-        result = RecentParameterValues.getRecentValues(parameterId);
+        RecentValueUtility.storeRecentValue(parameterId, parameterValue);
+        result = RecentValueUtility.getRecentValues(parameterId);
         assertEquals(result, expResult);
     }
 
     /**
-     * Test of saveToPreferences method, of class RecentParameterValues.
+     * Test of saveToPreferences method, of class RecentValueUtility.
      */
     @Test
     public void testSaveToPreferences() {
-        final Preferences prefs = NbPreferences.forModule(RecentParameterValuesKey.class);
-        prefs.put(RecentParameterValuesKey.RECENT_VALUES, recentValues);
-        RecentParameterValues.loadFromPreference();
-        RecentParameterValues.saveToPreferences();
-        final List<String> result = RecentParameterValues.getRecentValues("TestChainer.planets");
+        final Preferences prefs = NbPreferences.forModule(RecentValuesKey.class);
+        prefs.put(RecentValuesKey.RECENT_VALUES, recentValues);
+        RecentValueUtility.loadFromPreference();
+        RecentValueUtility.saveToPreferences();
+        final List<String> result = RecentValueUtility.getRecentValues("TestChainer.planets");
         final String expResult = "Mercury\\nVenus\\n✓ Earth\\nMars\\nJupiter\\nSaturn\\nUranus\\nNeptune\\nCoruscant";
         Assert.assertEquals(result.get(0), expResult);
     }
 
     @Test
     public void testSaveToPreferencesWithUtf8Ticks() {
-        final Preferences prefs = NbPreferences.forModule(RecentParameterValuesKey.class);
+        final Preferences prefs = NbPreferences.forModule(RecentValuesKey.class);
         final String utf8Json = "{\"foo\":[\"✓ Newline ✓ Comma Whitespace\"]}";
-        prefs.put(RecentParameterValuesKey.RECENT_VALUES, utf8Json);
-        RecentParameterValues.loadFromPreference();
-        RecentParameterValues.saveToPreferences();
-        final List<String> result = RecentParameterValues.getRecentValues("foo");
+        prefs.put(RecentValuesKey.RECENT_VALUES, utf8Json);
+        RecentValueUtility.loadFromPreference();
+        RecentValueUtility.saveToPreferences();
+        final List<String> result = RecentValueUtility.getRecentValues("foo");
         final String expResult = "✓ Newline ✓ Comma Whitespace";
         Assert.assertEquals(result.get(0), expResult);
     }
 
     /**
-     * Test of loadFromPreference method, of class RecentParameterValues.
+     * Test of loadFromPreference method, of class RecentValueUtility.
      *
      * @throws java.io.IOException
      * @throws java.util.prefs.BackingStoreException
      */
     @Test
     public void testLoadFromPreference() throws IOException, BackingStoreException {
-        final Preferences prefs = NbPreferences.forModule(RecentParameterValuesKey.class);
-        prefs.put(RecentParameterValuesKey.RECENT_VALUES, recentValues);
-        RecentParameterValues.loadFromPreference();
-        final List<String> result = RecentParameterValues.getRecentValues("TestChainer.planets");
+        final Preferences prefs = NbPreferences.forModule(RecentValuesKey.class);
+        prefs.put(RecentValuesKey.RECENT_VALUES, recentValues);
+        RecentValueUtility.loadFromPreference();
+        final List<String> result = RecentValueUtility.getRecentValues("TestChainer.planets");
         final String expResult = "Mercury\\nVenus\\n✓ Earth\\nMars\\nJupiter\\nSaturn\\nUranus\\nNeptune\\nCoruscant";
         Assert.assertEquals(result.get(0), expResult);
     }
 
     @Test
     public void testLoadFromPreferenceWithUtf8Ticks() throws IOException, BackingStoreException {
-        final Preferences prefs = NbPreferences.forModule(RecentParameterValuesKey.class);
+        final Preferences prefs = NbPreferences.forModule(RecentValuesKey.class);
         final String utf8Json = "{\"foo\":[\"✓ Newline ✓ Comma Whitespace\"]}";
-        prefs.put(RecentParameterValuesKey.RECENT_VALUES, utf8Json);
-        RecentParameterValues.loadFromPreference();
-        final List<String> result = RecentParameterValues.getRecentValues("foo");
+        prefs.put(RecentValuesKey.RECENT_VALUES, utf8Json);
+        RecentValueUtility.loadFromPreference();
+        final List<String> result = RecentValueUtility.getRecentValues("foo");
         final String expResult = "✓ Newline ✓ Comma Whitespace";
         Assert.assertEquals(result.get(0), expResult);
     }
@@ -144,11 +146,11 @@ public class RecentParameterValuesNGTest {
 //        jg.writeString(utf8String);
 //        jg.flush();
 //
-//        final Preferences prefs = NbPreferences.forModule(RecentParameterValuesKey.class);
-//        prefs.put(RecentParameterValuesKey.RECENT_VALUES, json.toString(StandardCharsets.UTF_8.name()));
+//        final Preferences prefs = NbPreferences.forModule(RecentValuesKey.class);
+//        prefs.put(RecentValuesKey.RECENT_VALUES, json.toString(StandardCharsets.UTF_8.name()));
 //        prefs.flush();
 //
-//        final String recentValuesJSON = prefs.get(RecentParameterValuesKey.RECENT_VALUES, "");
+//        final String recentValuesJSON = prefs.get(RecentValuesKey.RECENT_VALUES, "");
 //
 //        final String expResult = "\"✓ Newline\"";
 //        Assert.assertEquals(recentValuesJSON, expResult);

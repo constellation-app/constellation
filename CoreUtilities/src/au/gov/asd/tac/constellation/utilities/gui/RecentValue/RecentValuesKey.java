@@ -13,20 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.parameters;
-
-import org.openide.modules.OnStop;
+package au.gov.asd.tac.constellation.utilities.gui.RecentValue;
 
 /**
- * Saves the parameter recent values on stop
+ * Preference key for anything recent values related.
  *
  * @author twinkle2_little
  */
-@OnStop
-public class RecentParameterSaver implements Runnable {
+public class RecentValuesKey {
 
-    @Override
-    public void run() {
-        RecentParameterValues.saveToPreferences();
-    }
+    public static final String RECENT_VALUES = "recentValues";
+
 }

@@ -17,9 +17,9 @@ package au.gov.asd.tac.constellation.views.layers.components;
 
 import au.gov.asd.tac.constellation.graph.value.utilities.ExpressionUtilities;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
-import au.gov.asd.tac.constellation.plugins.parameters.RecentValuesChangeEvent;
-import au.gov.asd.tac.constellation.plugins.parameters.RecentValuesListener;
+import au.gov.asd.tac.constellation.utilities.gui.RecentValue.RecentValueUtility;
+import au.gov.asd.tac.constellation.utilities.gui.RecentValue.RecentValuesChangeEvent;
+import au.gov.asd.tac.constellation.utilities.gui.RecentValue.RecentValuesListener;
 import au.gov.asd.tac.constellation.views.layers.LayersViewController;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -112,8 +112,8 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
 
         recentValuesCombo.setTooltip(new Tooltip("Recent values"));
         recentValuesCombo.setMaxWidth(5);
-        if (RecentParameterValues.getRecentValues(parameterId) != null) {
-            recentValues = RecentParameterValues.getRecentValues(parameterId);
+        if (RecentValueUtility.getRecentValues(parameterId) != null) {
+            recentValues = RecentValueUtility.getRecentValues(parameterId);
         }
         setRecentValuesCombo(recentValues);
 

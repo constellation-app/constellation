@@ -13,15 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.parameters;
+package au.gov.asd.tac.constellation.utilities.gui.RecentValue;
 
 /**
- * Preference key for anything recent values related.
+ * Interface for objects which need to be informed when recent values are
+ * updated.
  *
- * @author twinkle2_little
+ * @author ruby_crucis
  */
-public class RecentParameterValuesKey {
+public interface RecentValuesListener {
 
-    public static final String RECENT_VALUES = "recentValues";
-
+    /**
+     * Called when any recent value is added.
+     *
+     * @param e the change event.
+     */
+    public void recentValuesChanged(final RecentValuesChangeEvent e);
 }

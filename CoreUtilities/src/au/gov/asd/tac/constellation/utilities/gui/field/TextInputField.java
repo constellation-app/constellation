@@ -15,10 +15,14 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
+import au.gov.asd.tac.constellation.utilities.gui.RecentValue.RecentValuesListener;
+import au.gov.asd.tac.constellation.utilities.gui.RecentValue.RecentValueUtility;
+import au.gov.asd.tac.constellation.utilities.gui.RecentValue.RecentValuesChangeEvent;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.LayoutConstants;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.application.Platform;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
@@ -28,20 +32,24 @@ import javafx.scene.control.MenuItem;
  * 
  * @author capricornunicorn123
  */
-public final class TextInputField extends ConstellationInputField<String> {
+public final class TextInputField extends ConstellationInputField<String> implements RecentValuesListener {
     
-    private List<String> recentValues = new ArrayList<>();
+    private final List<String> recentValues = new ArrayList<>();
+    private final String recentValueListeningId;
     
-    public TextInputField(TextType type, boolean showRecentValues){
-        super(showRecentValues ? LayoutConstants.INPUT_DROPDOWN : LayoutConstants.INPUT, type);
-        if (showRecentValues){
+    public TextInputField(TextType type, String recentValueListeningId){
+        super(recentValueListeningId == null ? LayoutConstants.INPUT : LayoutConstants.INPUT_DROPDOWN, type);
+        this.recentValueListeningId = recentValueListeningId;
+        if (recentValueListeningId != null){
             this.setRightLabel("Recent");
+            
+            this.registerRightButtonEvent(event -> {
+                this.showDropDown();            
+            });
+
+            RecentValueUtility.addListener(this);
+            this.addRecentValues(RecentValueUtility.getRecentValues(recentValueListeningId));
         }
-        
-        this.registerRightButtonEvent(event -> {
-            this.showDropDown();            
-        });
-        
     }
     
     public static void addRecentValues(ConstellationInputField inputField, List<String> options) {
@@ -75,6 +83,16 @@ public final class TextInputField extends ConstellationInputField<String> {
     @Override
     public void setValue(String value) {
         this.setText(value);
+    }
+
+    @Override
+    public void recentValuesChanged(RecentValuesChangeEvent e) {
+        if (e.getId().equals(recentValueListeningId)) {
+            Platform.runLater(() -> {
+                final List<String> recentValues = e.getNewValues();
+                this.addRecentValues(recentValues);
+            });
+        }
     }
     
     private class TextInputDropDown extends ConstellationInputDropDown {

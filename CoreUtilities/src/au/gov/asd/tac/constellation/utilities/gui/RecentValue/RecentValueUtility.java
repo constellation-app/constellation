@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.parameters;
+package au.gov.asd.tac.constellation.utilities.gui.RecentValue;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -35,44 +35,60 @@ import java.util.prefs.Preferences;
 import org.openide.util.NbPreferences;
 
 /**
- * RecentParameterValues stores the most recent value associated with each
- * PluginParameter. This allows new UIs that allow users to edit
- * PluginParameters can show a display with parameter values identical to how
- * the user left them last time they edited the values.
+ * A Utility for managing recent values for inputs.
+ * This class was initially created for Plugin Parameters exclusively.
+ * it has been refactored to serve as a utility for {@link ConstellationInputFields}
+ * 
+ * Some further review of the functionality may be required.
+ * the intention of this calss is toenable inputs to be able to display rcent values. 
+ * Inputs are identifyable by an ID and recent values will be suplied based on that id. 
+ * for this reason, should a pluign be interacted with from two different Interfaces, 
+ * i.e. the data access voew or a interactive dialog. the recent values can be maintaned between interfaces if the 
+ * input fields hae the same id. 
+ * 
+ * These recent values persist between aplication shutdowns and startups.
  *
  * @author sirius
  */
-public class RecentParameterValues {
+public class RecentValueUtility {
     
-    private static final Logger LOGGER = Logger.getLogger(RecentParameterValues.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(RecentValueUtility.class.getName());
 
     private static final Map<String, List<String>> RECENT_VALUES = new HashMap<>();
     private static final List<RecentValuesListener> LISTENERS = new ArrayList<>();
-    private static final Preferences PREFERENCES = NbPreferences.forModule(RecentParameterValuesKey.class);
+    private static final Preferences PREFERENCES = NbPreferences.forModule(RecentValuesKey.class);
     private static final int SAVE_LIMIT = 5;
     private static final JsonFactory FACTORY = new MappingJsonFactory();
 
-    public static void storeRecentValue(String parameterId, String parameterValue) {
+    /**
+     * Stores a string value representing a new recent value associated with an identifiable input
+     * Although recent values are expressed through interaction want a {@link ConstelationInputField}
+     * it is imortant to note that the id that these fields use is comonly a parameter id.
+     * 
+     * @param id the id value of the input.
+     * @param value 
+     */
+    public static void storeRecentValue(String id, String value) {
         synchronized (RECENT_VALUES) {
-            List<String> values = RECENT_VALUES.get(parameterId);
+            List<String> values = RECENT_VALUES.get(id);
             if (values == null) {
                 values = new ArrayList<>();
-                RECENT_VALUES.put(parameterId, values);
-                values.add(parameterValue);
+                RECENT_VALUES.put(id, values);
+                values.add(value);
             } else {
-                values.remove(parameterValue);
-                values.add(0, parameterValue);
+                values.remove(value);
+                values.add(0, value);
             }
-            fireChangeEvent(new RecentValuesChangeEvent(parameterId, RECENT_VALUES.get(parameterId)));
+            fireChangeEvent(new RecentValuesChangeEvent(id, RECENT_VALUES.get(id)));
         }
     }
 
-    public static List<String> getRecentValues(String parameterId) {
+    public static List<String> getRecentValues(String id) {
         synchronized(RECENT_VALUES) {
             if (RECENT_VALUES.isEmpty()) {
                 loadFromPreference();
             }
-            return RECENT_VALUES.get(parameterId);
+            return RECENT_VALUES.get(id);
         }
     }
 
@@ -132,7 +148,7 @@ public class RecentParameterValues {
                 }
                 jg.writeEndObject();
                 jg.flush();
-                PREFERENCES.put(RecentParameterValuesKey.RECENT_VALUES, json.toString(StandardCharsets.UTF_8.name()));
+                PREFERENCES.put(RecentValuesKey.RECENT_VALUES, json.toString(StandardCharsets.UTF_8.name()));
                 try {
                     PREFERENCES.flush();
                 } catch (final BackingStoreException ex) {
@@ -146,7 +162,7 @@ public class RecentParameterValues {
 
     public static void loadFromPreference() {
         synchronized (RECENT_VALUES) {
-            final String recentValuesJSON = PREFERENCES.get(RecentParameterValuesKey.RECENT_VALUES, "");
+            final String recentValuesJSON = PREFERENCES.get(RecentValuesKey.RECENT_VALUES, "");
             if (!recentValuesJSON.isEmpty()) {
                 try (final JsonParser jp = FACTORY.createParser(recentValuesJSON)) {
                     if (jp.nextToken() == JsonToken.START_OBJECT) {

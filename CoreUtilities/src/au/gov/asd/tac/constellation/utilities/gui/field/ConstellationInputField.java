@@ -27,6 +27,7 @@ import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
+import javafx.beans.binding.StringBinding;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -67,6 +68,8 @@ import javafx.scene.text.Text;
 import javafx.stage.Popup;
 import org.apache.commons.lang3.StringUtils;
 import org.fxmisc.richtext.InlineCssTextArea;
+import org.fxmisc.richtext.InlineCssTextField;
+import org.fxmisc.richtext.StyledTextArea;
 import org.fxmisc.richtext.util.UndoUtils;
 
 
@@ -619,18 +622,20 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
         private final Insets insets = new Insets(4, 8, 4, 8);
         
         
-        private final InlineCssTextArea primaryInput;
+        private final StyledTextArea primaryInput;
         private final TextInputControl secondaryInput;
 
         private ConstellationTextArea(ConstellationInputField parent, TextType type){
-
+        switch (type){
+            case MULTILINE -> primaryInput = new InlineCssTextArea();
+            default -> primaryInput = new InlineCssTextField();
+        }
         //Set up the primary InputControl
-        primaryInput = new InlineCssTextArea();
 
         primaryInput.textProperty().addListener(parent);
         primaryInput.focusedProperty().addListener(parent);
-        primaryInput.setStyle("-fx-background-radius: 0; -fx-background-color: transparent; -fx-border-color: transparent; -fx-focus-color: transparent;");
-
+        primaryInput.setStyle("-fx-background-radius: 0; -fx-background-color: transparent; -fx-border-color: transparent; -fx-focus-color: transparent; -fx-text-fill: #FFFFFF;");
+        
         primaryInput.setAutoHeight(false);
         primaryInput.setWrapText(true);
         primaryInput.setPadding(insets);
@@ -667,7 +672,6 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
                 }
                 default -> {
                     secondaryInput = null;
-
                     this.getChildren().add(primaryInput);
                 }
             } 
@@ -856,7 +860,7 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
         }
     }   
     
-    //Mpve this class, concider maving to specific field like the choice input
+    //Move this class, concider maving to specific field like the choice input
     //has been deactivated for text/value input atm
     public void autoComplete(final List<String> suggestions) {
             final Popup popup = new Popup();

@@ -21,9 +21,9 @@ import static au.gov.asd.tac.constellation.plugins.parameters.ParameterChange.VA
 import static au.gov.asd.tac.constellation.plugins.parameters.ParameterChange.VISIBLE;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterListener;
-import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType;
+import au.gov.asd.tac.constellation.utilities.gui.RecentValue.RecentValueUtility;
 import au.gov.asd.tac.constellation.utilities.gui.field.TextInputField;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -61,7 +61,7 @@ public class ValueInputPane extends ParameterInputPane<StringParameterValue, Str
      * @param suggestedHeight suggested hight (in lines)
      */
     public ValueInputPane(final PluginParameter<StringParameterValue> parameter, Integer suggestedHeight) {
-        super(suggestedHeight == null || suggestedHeight <= 1 ? new TextInputField(TextType.SINGLELINE, true) : new TextInputField(TextType.MULTILINE, true), parameter);
+        super(suggestedHeight == null || suggestedHeight <= 1 ? new TextInputField(TextType.SINGLELINE, parameter.getId()) : new TextInputField(TextType.MULTILINE, parameter.getId()), parameter);
         
 //        final boolean isLabel = StringParameterType.isLabel(parameter);
 //        if (isLabel) {
@@ -105,8 +105,6 @@ public class ValueInputPane extends ParameterInputPane<StringParameterValue, Str
             if (parameter.getObjectValue() != null) {
                 this.setFieldValue(pv.get());
             }
-            
-            ((TextInputField )this.field).addRecentValues(RecentParameterValues.getRecentValues(parameter.getId()));
             
             if (suggestedHeight == null){
                 this.setFieldLines(1);

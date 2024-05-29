@@ -78,7 +78,7 @@ public final class SingleChoiceInputPane extends ParameterInputPane<SingleChoice
                     case VALUE -> {
                         // Don't change the value if it isn't necessary.
                         List<ParameterValue> selection = (List<ParameterValue>) getFieldValue();
-                        if (selection.size() == 1 && !selection.getFirst().equals(scParameterValue.getChoiceData())){
+                        if (selection != null && selection.size() == 1 && !selection.getFirst().equals(scParameterValue.getChoiceData())){
                             setFieldValue(selection);
                         }
                     }
