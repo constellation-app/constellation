@@ -131,12 +131,6 @@ public class Conversation {
      * Create a new Conversation.
      */
     public Conversation() {
-    }
-    
-    /**
-     * Set up the updaters for when they need to update the view when the graph changes
-     */
-    public void setupConversation() {
         conversationExistanceUpdater.dependOn(graphUpdateController.getNewGraphUpdateComponent());
 
         conversationStateUpdater.dependOn(conversationExistanceUpdater);
@@ -172,7 +166,7 @@ public class Conversation {
 
         contributorUpdater.dependOn(resultUpdater);
     }
-    
+        
     public int getPageNumber() {
         return pageNumber;
     }
@@ -360,7 +354,7 @@ public class Conversation {
      */
     private UpdateComponent<GraphReadMethods> messageUpdater = new UpdateComponent<GraphReadMethods>("Messages", LOCK_STAGE) {
         @Override
-        public boolean update(GraphReadMethods graph) {
+        public boolean update(final GraphReadMethods graph) {
             try {
                 final CountDownLatch latch = new CountDownLatch(1);
 

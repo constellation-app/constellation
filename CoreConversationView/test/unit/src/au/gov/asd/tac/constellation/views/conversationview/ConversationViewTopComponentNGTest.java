@@ -81,7 +81,6 @@ public class ConversationViewTopComponentNGTest {
 
             final Conversation conversation = controller.getConversation();
             when(controller.getConversation()).thenReturn(conversation);
-            conversation.setupConversation();
             final ConversationBox expResult = new ConversationBox(conversation);
             topComponent = new ConversationViewTopComponent();
             final ConversationBox result = topComponent.createContent();

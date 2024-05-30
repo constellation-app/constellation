@@ -96,7 +96,7 @@ import org.openide.util.HelpCtx;
  * @author sol695510
  */
 public final class ConversationBox extends StackPane {
-    
+
     public static final double PADDING = 5;
 
     private final Conversation conversation;
@@ -154,11 +154,11 @@ public final class ConversationBox extends StackPane {
 
         final VBox content = new VBox();
         content.setStyle(CSS_BACKGROUND_COLOR_TRANSPARENT);
-        
+
         // Hook up the bubbles pane to the conversation.
         final ObservableList<ConversationMessage> messages = FXCollections.observableArrayList();
         final Label contentLabel = new Label("Content per page:");
-  
+
         contentPerPageChoiceBox.getItems().clear();
         contentPerPageChoiceBox.getItems().addAll(50, 100, 250, 1000);
         contentPerPageChoiceBox.getSelectionModel().select(50);
@@ -212,32 +212,105 @@ public final class ConversationBox extends StackPane {
                 isAdjustingContributionProviders = false;
             }
         });
-        
+
         spinner.setMaxSize(50, 50);
 
         pagination.setPageCount(1);
         pagination.setMaxPageIndicatorCount(1);
 
+        // Create the bubbles pane.
+        bubbles = new ListView<>();
+        bubbles.setStyle(CSS_BACKGROUND_COLOR_TRANSPARENT);
+        bubbles.setCellFactory(callback -> new BubbleCell());
+        VBox.setVgrow(bubbles, Priority.ALWAYS);
+        bubbles.setItems(messages);
+        conversation.setResultList(messages);
+
+        // When the list updates like during a selection, if there is any text
+        // in the search field then highlight the text after the bubbles show
+        // and update the found count label
+        messages.addListener((Change<? extends ConversationMessage> c) -> {
+            updatePages(conversation.getTotalPages());
+            highlightRegions(false);
+            refreshCountUI(false);
+        });
+
+        showToolTip.setSelected(true);
+        showToolTip.setOnAction((final ActionEvent t) -> tipsPane.setEnabled(showToolTip.isSelected()));
+
+        conversation.setSenderAttributeListener((possibleSenderAttributes, senderAttributes) -> {
+            isAdjustingSenderLabels = true;
+            senderAttributesMultiChoiceInput.getCheckModel().clearChecks();
+            possibleSenderAttributes = possibleSenderAttributes.stream().filter(Objects::nonNull).toList();
+            senderAttributesChoices.setAll(possibleSenderAttributes);
+            for (final String senderAttribute : senderAttributes) {
+                senderAttributesMultiChoiceInput.getCheckModel().check(senderAttribute);
+            }
+            isAdjustingSenderLabels = false;
+        });
+
+        senderAttributesMultiChoiceInput.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change<? extends String> c) -> {
+            if (!isAdjustingSenderLabels) {
+                updateSenderAttributes(senderAttributesMultiChoiceInput.getCheckModel().getCheckedItems());
+            }
+        });
+
+        // Create controls to allow the user to search and highlight text within contributions.
+        searchTextField.setPromptText("Type to search...");
+        searchTextField.setStyle("-fx-padding: 5 5 5 5;");
+        searchTextField.setOnKeyTyped(e -> {
+            foundLabel.setText("searching...");
+            foundLabel.setStyle(FOUND_PASS_COLOR);
+
+            // If they hit enter iterate through the results
+            searchCount = "\r".equals(e.getCharacter()) && foundCount > 0 ? (searchCount + 1) % foundCount : 0;
+
+            highlightRegions(true);
+            refreshCountUI(false);
+        });
+
+        prevButton.setOnAction(event -> {
+            if (foundCount > 0) {
+                searchCount = searchCount <= 0 ? foundCount - 1 : (searchCount - 1) % foundCount;
+                highlightRegions(true);
+                foundLabel.setText(StringUtils.isBlank(searchTextField.getText()) ? "" : FOUND_TEXT + (searchCount + 1) + " of " + foundCount);
+            }
+        });
+        nextButton.setOnAction(event -> {
+            if (foundCount > 0) {
+                searchCount = Math.abs((searchCount + 1) % foundCount);
+                highlightRegions(true);
+                foundLabel.setText(StringUtils.isBlank(searchTextField.getText()) ? "" : FOUND_TEXT + (searchCount + 1) + " of " + foundCount);
+            }
+        });
+        searchTextField.setPrefWidth(300);
+
+        foundLabel.setPadding(new Insets(4, 8, 4, 8));
+        searchHBox.setSpacing(6);
+        searchHBox.getChildren().clear();
+        searchHBox.getChildren().addAll(searchTextField, prevButton, nextButton, foundLabel);
+
+        final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor()));
+        final Button helpButton = new Button("", helpImage);
+        helpButton.setStyle("-fx-border-color: transparent; -fx-background-color: transparent; -fx-effect: null; ");
+        helpButton.setOnAction(event
+                -> new HelpCtx("ConversationBox").display());
+
+        final Button addAttributesButton = new Button("Add Content Attributes");
+        addAttributesButton.setOnAction(event
+                -> PluginExecution.withPlugin(new AddContentAttributesPlugin()).executeLater(GraphManager.getDefault().getActiveGraph()));
+        final Tooltip aabt = new Tooltip("Adds content related transaction attributes to the graph.");
+        addAttributesButton.setTooltip(aabt);
+
+        optionsPane.getItems().addAll(senderAttributesMultiChoiceInput, showToolTip, addAttributesButton, helpButton, contentLabel, contentPerPageChoiceBox);
+
+        contributionsPane = new BorderPane();
+        contributionsPane.setPadding(new Insets(PADDING));
+        contributionsPane.setCenter(togglesPane);
+
         pagination.setPageFactory(new Callback<Integer, Node>() {
             public Node call(final Integer pageIndex) {
-                
-                // Create the bubbles pane.
-                bubbles = new ListView<>();
-                bubbles.setStyle(CSS_BACKGROUND_COLOR_TRANSPARENT);
-                bubbles.setCellFactory(callback -> new BubbleCell());
-                VBox.setVgrow(bubbles, Priority.ALWAYS);
-                bubbles.setItems(messages);
-                conversation.setResultList(messages);  
-                
-                // When the list updates like during a selection, if there is any text
-                // in the search field then highlight the text after the bubbles show
-                // and update the found count label
-                messages.addListener((Change<? extends ConversationMessage> c) -> {
-                    updatePages(conversation.getTotalPages());
-                    highlightRegions(false);
-                    refreshCountUI(false);
-                });
-                
+
                 // Update the view to the next page and load new messages
                 final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
                 if (activeGraph != null && conversation.getPageNumber() != pageIndex) {
@@ -249,100 +322,23 @@ public final class ConversationBox extends StackPane {
                     updatePages(conversation.getTotalPages());
                     graph.release();
                 }
-                
+
                 content.getChildren().clear();
-                showToolTip.setSelected(true);
-                showToolTip.setOnAction((final ActionEvent t) -> tipsPane.setEnabled(showToolTip.isSelected()));
-
-                conversation.setSenderAttributeListener((possibleSenderAttributes, senderAttributes) -> {
-                    isAdjustingSenderLabels = true;
-                    senderAttributesMultiChoiceInput.getCheckModel().clearChecks();
-                    possibleSenderAttributes = possibleSenderAttributes.stream().filter(Objects::nonNull).toList();
-                    senderAttributesChoices.setAll(possibleSenderAttributes);
-                    for (final String senderAttribute : senderAttributes) {
-                        senderAttributesMultiChoiceInput.getCheckModel().check(senderAttribute);
-                    }
-                    isAdjustingSenderLabels = false;
-                });
-
-                senderAttributesMultiChoiceInput.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change<? extends String> c) -> {
-                    if (!isAdjustingSenderLabels) {
-                        updateSenderAttributes(senderAttributesMultiChoiceInput.getCheckModel().getCheckedItems());
-                    }
-                });
-
-                // Create controls to allow the user to search and highlight text within contributions.
-                searchTextField.setPromptText("Type to search...");
-                searchTextField.setStyle("-fx-padding: 5 5 5 5;");
-                searchTextField.setOnKeyTyped(e -> {
-                    foundLabel.setText("searching...");
-                    foundLabel.setStyle(FOUND_PASS_COLOR);
-
-                    // If they hit enter iterate through the results
-                    searchCount = "\r".equals(e.getCharacter()) && foundCount > 0 ? (searchCount + 1) % foundCount : 0;
-
-                    highlightRegions(true);
-                    refreshCountUI(false);
-                });
-
-                prevButton.setOnAction(event -> {
-                    if (foundCount > 0) {
-                        searchCount = searchCount <= 0 ? foundCount - 1 : (searchCount - 1) % foundCount;
-                        highlightRegions(true);
-                        foundLabel.setText(StringUtils.isBlank(searchTextField.getText()) ? "" : FOUND_TEXT + (searchCount + 1) + " of " + foundCount);
-                    }
-                });
-                nextButton.setOnAction(event -> {
-                    if (foundCount > 0) {
-                        searchCount = Math.abs((searchCount + 1) % foundCount);
-                        highlightRegions(true);
-                        foundLabel.setText(StringUtils.isBlank(searchTextField.getText()) ? "" : FOUND_TEXT + (searchCount + 1) + " of " + foundCount);
-                    }
-                });
-                searchTextField.setPrefWidth(300);
-
-                foundLabel.setPadding(new Insets(4, 8, 4, 8));
-                searchHBox.setSpacing(6);
-                searchHBox.getChildren().clear();
-                searchHBox.getChildren().addAll(searchTextField, prevButton, nextButton, foundLabel);
-
-                final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor()));
-                final Button helpButton = new Button("", helpImage);
-                helpButton.setStyle("-fx-border-color: transparent; -fx-background-color: transparent; -fx-effect: null; ");
-                helpButton.setOnAction(event
-                        -> new HelpCtx("ConversationBox").display());
-
-                final Button addAttributesButton = new Button("Add Content Attributes");
-                addAttributesButton.setOnAction(event
-                        -> PluginExecution.withPlugin(new AddContentAttributesPlugin()).executeLater(GraphManager.getDefault().getActiveGraph()));
-                final Tooltip aabt = new Tooltip("Adds content related transaction attributes to the graph.");
-                addAttributesButton.setTooltip(aabt);
-
-                optionsPane.getItems().clear();
-                optionsPane.getItems().addAll(senderAttributesMultiChoiceInput, showToolTip, addAttributesButton, helpButton, contentLabel, contentPerPageChoiceBox);
-
-                contributionsPane = new BorderPane();
-                contributionsPane.setPadding(new Insets(PADDING));
-
-                contributionsPane.setCenter(togglesPane);
-                  
                 content.getChildren().addAll(optionsPane, searchHBox, contributionsPane, bubbles);
                 return content;
             }
         });
-        
         getChildren().addAll(pagination, tipsPane);
-        conversation.setupConversation();
     }
-    
+
     public Pagination getPagination() {
         return pagination;
     }
-    
+
     protected Conversation getConversation() {
         return conversation;
     }
-   
+
     public void setInProgress() {
         Platform.runLater(() -> getChildren().add(spinner));
         setAlignment(spinner, Pos.CENTER);
@@ -351,7 +347,7 @@ public final class ConversationBox extends StackPane {
     public void setProgressComplete() {
         Platform.runLater(() -> getChildren().remove(spinner));
     }
-    
+
     public void updatePages(final int totalPages) {
         Platform.runLater(() -> {
             pagination.setPageCount(totalPages);
@@ -422,10 +418,10 @@ public final class ConversationBox extends StackPane {
                 // If the next match is on a future page, swap to that page
                 final int indexOfSearch = senderMessages.indexOf(matches.get(searchCount));
                 final int pageNumber = (int) Math.ceil(indexOfSearch / contentPerPageChoiceBox.getValue());
-                
+
                 pagination.setCurrentPageIndex(pageNumber);
                 bubbles.scrollTo(matches.get(searchCount));
-            } 
+            }
         }
     }
 
@@ -552,7 +548,7 @@ public final class ConversationBox extends StackPane {
                     bubbleBox = new BubbleBox(message);
                     bubbleCache.put(message, bubbleBox);
                 }
-                setStyle("-fx-background-color: " + (DARK_MODE ? message.getBackgroundColor() : " #d8d8d8 ")  + "; -fx-padding: 5 5 5 5;");
+                setStyle("-fx-background-color: " + (DARK_MODE ? message.getBackgroundColor() : " #d8d8d8 ") + "; -fx-padding: 5 5 5 5;");
                 setGraphic(bubbleBox);
             }
         }
