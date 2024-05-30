@@ -106,7 +106,7 @@ public class WordCloudIOProvider extends AbstractGraphIOProvider {
                     wordSignificances.put(significance, words);
                     final Iterator<JsonNode> subIter = iter.next().iterator();
                     while (subIter.hasNext()) {
-                        words.add(iter.next().asText());
+                        words.add(subIter.next().asText());
                     }
                 }
             }
