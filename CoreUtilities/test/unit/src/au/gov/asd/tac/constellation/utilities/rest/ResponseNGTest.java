@@ -61,6 +61,7 @@ public class ResponseNGTest {
 
     /**
      * Test of isSuccess method, of class Response.
+     *
      * @throws java.io.IOException
      */
     @Test
@@ -90,6 +91,7 @@ public class ResponseNGTest {
 
     /**
      * Test of isSuccessWithJson method, of class Response.
+     *
      * @throws java.io.IOException
      */
     @Test
@@ -109,7 +111,32 @@ public class ResponseNGTest {
     }
 
     /**
+     * Test of isSuccessWithJson method, of class Response.
+     *
+     * @throws java.io.IOException
+     */
+    @Test
+    public void testIsSuccessWithJsonInvalild() throws IOException {
+        System.out.println("isSuccessWithJson Invalid json");
+
+        final String[] jsonStringArray = {"{\"bad\" : ", "<html></html>", "asdfghjkl;"};
+        for (final String jsonString : jsonStringArray) {
+
+            final Response instance1 = new ResponseImpl(200, "", null, jsonString.getBytes());
+            final Response instance2 = new ResponseImpl(400, "", null, jsonString.getBytes());
+
+            // Also expect SEVERE Error to be caught and logged
+            assertFalse(instance1.isSuccessWithJson());
+            assertTrue(instance1.isSuccess());
+            // Also expect SEVERE Error to be caught and logged
+            assertFalse(instance2.isSuccessWithJson());
+            assertTrue(instance2.isSuccess());
+        }
+    }
+
+    /**
      * Test of getSaveResponseFilename method, of class Response.
+     *
      * @throws java.io.IOException
      */
     @Test
@@ -125,6 +152,7 @@ public class ResponseNGTest {
 
     /**
      * Test of getRootNode method, of class Response.
+     *
      * @throws java.io.IOException
      */
     @Test
@@ -142,6 +170,7 @@ public class ResponseNGTest {
 
     /**
      * Test of getLogMessage method, of class Response.
+     *
      * @throws java.io.IOException
      */
     @Test
@@ -156,16 +185,17 @@ public class ResponseNGTest {
         final Response instance2 = new ResponseImpl(200, "test2", null, json1.toString().getBytes());
         final Response instance3 = new ResponseImpl(200, "test3", null, json2.toString().getBytes());
 
-        assertEquals(instance1.getLogMessage(), "Invalid response 200: test1" + System.getProperty("line.separator") 
+        assertEquals(instance1.getLogMessage(), "Invalid response 200: test1" + System.getProperty("line.separator")
                 + "null" + System.getProperty("line.separator"));
-        assertEquals(instance2.getLogMessage(), "Invalid response 200: test2" + System.getProperty("line.separator") 
-                + "[123, 34, 116, 101, 115, 116, 34, 58, 34, 109, 121, 116, 101, 115, 116, 34, 125]" 
+        assertEquals(instance2.getLogMessage(), "Invalid response 200: test2" + System.getProperty("line.separator")
+                + "[123, 34, 116, 101, 115, 116, 34, 58, 34, 109, 121, 116, 101, 115, 116, 34, 125]"
                 + System.getProperty("line.separator"));
         assertEquals(instance3.getLogMessage(), "my log message!");
     }
 
     /**
      * Test of toString method, of class Response. No headers, bytes, or json
+     *
      * @throws java.io.IOException
      */
     @Test
@@ -189,6 +219,7 @@ public class ResponseNGTest {
 
     /**
      * Test of toString method, of class Response. Headers in response
+     *
      * @throws java.io.IOException
      */
     @Test
@@ -223,6 +254,7 @@ public class ResponseNGTest {
 
     /**
      * Test of toString method, of class Response. Bytes (not json) included
+     *
      * @throws java.io.IOException
      */
     @Test
@@ -248,6 +280,7 @@ public class ResponseNGTest {
 
     /**
      * Test of toString method, of class Response. Bytes that are json included
+     *
      * @throws java.io.IOException
      */
     @Test
@@ -280,6 +313,7 @@ public class ResponseNGTest {
 
     /**
      * Test of jsonToString method, of class Response.
+     *
      * @throws java.io.IOException
      */
     @Test
@@ -315,12 +349,12 @@ public class ResponseNGTest {
 
     private class ResponseImpl extends Response {
 
-        public ResponseImpl(final int code, final String message, final Map<String, List<String>> headers, 
+        public ResponseImpl(final int code, final String message, final Map<String, List<String>> headers,
                 final byte[] bytes) throws IOException {
             super(code, message, headers, bytes);
         }
 
-        public ResponseImpl(final int code, final String message, final Map<String, List<String>> headers, 
+        public ResponseImpl(final int code, final String message, final Map<String, List<String>> headers,
                 final byte[] bytes, final boolean isJson) throws IOException {
             super(code, message, headers, bytes, isJson);
         }
@@ -329,7 +363,7 @@ public class ResponseNGTest {
 
     private class ResponseSaveImpl extends Response {
 
-        public ResponseSaveImpl(final int code, final String message, final Map<String, List<String>> headers, 
+        public ResponseSaveImpl(final int code, final String message, final Map<String, List<String>> headers,
                 final byte[] bytes) throws IOException {
             super(code, message, headers, bytes);
         }

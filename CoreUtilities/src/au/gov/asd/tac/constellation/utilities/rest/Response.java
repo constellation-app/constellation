@@ -90,8 +90,7 @@ public abstract class Response {
     /**
      * Does the HTTP response status code indicate success?
      *
-     * @return True if the HTTP response status code begins with 2 or 4, false
-     * otherwise.
+     * @return True if the HTTP response status code begins with 2 or 4, false otherwise.
      */
     public boolean isSuccess() {
         return isCodeSuccess(this.code);
@@ -102,8 +101,7 @@ public abstract class Response {
      *
      * @param code The HTTP response status code.
      *
-     * @return True if the HTTP response status code begins with 2 or 4, false
-     * otherwise.
+     * @return True if the HTTP response status code begins with 2 or 4, false otherwise.
      */
     public static boolean isCodeSuccess(final int code) {
         final int range = code / 100;
@@ -111,8 +109,7 @@ public abstract class Response {
     }
 
     /**
-     * Does the HTTP response status code indicate success and was json content
-     * returned?
+     * Does the HTTP response status code indicate success and was json content returned?
      *
      * @return True if successful, false otherwise.
      */
@@ -125,19 +122,24 @@ public abstract class Response {
             return null;
         }
 
-        final ObjectMapper mapper = new ObjectMapper();
-        final JsonNode root = getRootNode(mapper, buf);
+        try {
+            final ObjectMapper mapper = new ObjectMapper();
+            final JsonNode root = getRootNode(mapper, buf);
 
-        if (getSaveResponseFilename() != null) {
-            mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-            mapper.configure(SerializationFeature.CLOSE_CLOSEABLE, true);
+            if (getSaveResponseFilename() != null) {
+                mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+                mapper.configure(SerializationFeature.CLOSE_CLOSEABLE, true);
 
-            final File tmp = File.createTempFile(getSaveResponseFilename(), FileExtensionConstants.JSON);
-            mapper.writeValue(tmp, root);
-            LOGGER.log(Level.INFO, "Response saved to {0}", tmp);
+                final File tmp = File.createTempFile(getSaveResponseFilename(), FileExtensionConstants.JSON);
+                mapper.writeValue(tmp, root);
+                LOGGER.log(Level.INFO, "Response saved to {0}", tmp);
+            }
+
+            return root;
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Error caught in getJson in Response.java");
+            return null;
         }
-
-        return root;
     }
 
     /**
@@ -145,8 +147,7 @@ public abstract class Response {
      * <p>
      * The file is saved to the systems temporary folder.
      *
-     * @return Return the filename prefix to save the JSON response to a file,
-     * null otherwise.
+     * @return Return the filename prefix to save the JSON response to a file, null otherwise.
      */
     public String getSaveResponseFilename() {
         return null;
@@ -155,8 +156,7 @@ public abstract class Response {
     /**
      * Return the {@link JsonNode}
      * <p>
-     * This method provides an opportunity to modify the InputStream before
-     * making the {@link JsonNode}
+     * This method provides an opportunity to modify the InputStream before making the {@link JsonNode}
      *
      * @param mapper
      * @param bytes
@@ -184,7 +184,7 @@ public abstract class Response {
         b.append(String.format("code    : %d%n", code));
         b.append(String.format("message : %s%n", message));
         b.append(DASH_STRING);
-        
+
         if (headers != null) {
             headers.entrySet().stream().forEach(header -> {
                 b.append(String.format("header  : %s%n", header.getKey()));
