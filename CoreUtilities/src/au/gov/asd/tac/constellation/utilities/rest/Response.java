@@ -137,7 +137,7 @@ public abstract class Response {
 
             return root;
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Error caught in getJson in Response.java");
+            LOGGER.log(Level.SEVERE, "Error caught in getJson in Response.java. Invalid json {0}", new String(buf));
             return null;
         }
     }
