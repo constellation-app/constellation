@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.api;
 
-import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginType;
 import au.gov.asd.tac.constellation.views.dataaccess.tasks.LookupPluginsTask;
@@ -36,35 +35,34 @@ import java.util.function.Function;
 import javafx.util.Pair;
 
 /**
- * Maintains the active state of the Data Access view. It also holds a loaded copy
- * of all data access plugins that could be located at startup.
+ * Maintains the active state of the Data Access view. It also holds a loaded copy of all data access plugins that could
+ * be located at startup.
  *
  * @author formalhaunt
  */
 public class DataAccessPaneState {
+
     /**
-     * Tracks the states of the Data Access view per graph. The key is the graph ID
-     * and the value is the current state for that graph.
+     * Tracks the states of the Data Access view per graph. The key is the graph ID and the value is the current state
+     * for that graph.
      */
     private static final Map<String, DataAccessPaneStatePerGraph> DATA_ACCESS_PANE_STATES = new HashMap<>();
-    
+
     /**
-     * Function that will generate the {@link DataAccessPaneStatePerGraph} for a graph
-     * that does not yet have an entry.
+     * Function that will generate the {@link DataAccessPaneStatePerGraph} for a graph that does not yet have an entry.
      */
-    private static final Function<String, DataAccessPaneStatePerGraph> COMPUTE_IF_ABSENT =
-            graphId -> new DataAccessPaneStatePerGraph();
-    
+    private static final Function<String, DataAccessPaneStatePerGraph> COMPUTE_IF_ABSENT
+            = graphId -> new DataAccessPaneStatePerGraph();
+
     /**
-     * This is the {@link Future} tracking the load of the plugins. Once this is
-     * complete, the plugins can be accessed.
+     * This is the {@link Future} tracking the load of the plugins. Once this is complete, the plugins can be accessed.
      */
     private static final Future<Map<String, Pair<Integer, List<DataAccessPlugin>>>> PLUGIN_LOAD;
     /**
      * The ID of the currently active graph.
      */
     private static String currentGraphId;
-    
+
     static {
         // As soon as the pane state is interacted with begin loading the plugins
         // in a separate thread so they are ready when requested. They do not change
@@ -73,23 +71,33 @@ public class DataAccessPaneState {
                 new LookupPluginsTask(),
                 Executors.newSingleThreadExecutor()
         ).thenApply(plugins -> {
+            if ((new Pair<Integer, List<DataAccessPlugin>>(0, null)).equals(plugins.get(""))) {
+                System.out.println("plugins empty");
+                return null;
+            }
+            for (Map.Entry entry : plugins.entrySet()) {
+                System.out.println("key:" + entry.getKey() + "value: " + entry.getValue());
+            }
             // Sort the DataAccessPlugin lists within each type including the category type
             // so that favourites category is sorted properly.
+            System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
             final DataAccessPluginComparator comparator = new DataAccessPluginComparator();
+            System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
             plugins.values().forEach(pluginList -> Collections.sort(pluginList.getValue(), comparator));
+            System.out.println("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC");
             return plugins;
         });
     }
-    
+
     /**
      * Private constructor to prevent initialization.
      */
     private DataAccessPaneState() {
     }
-    
+
     /**
-     * Gets the data access plugins that have been found in the class path. If the lookup
-     * has not yet completed, this will block until it is.
+     * Gets the data access plugins that have been found in the class path. If the lookup has not yet completed, this
+     * will block until it is.
      * <p/>
      * The map groups the data access plugins based on their type, see {@link DataAccessPluginType}.
      *
@@ -100,11 +108,11 @@ public class DataAccessPaneState {
     public static Map<String, Pair<Integer, List<DataAccessPlugin>>> getPlugins() throws InterruptedException, ExecutionException {
         return PLUGIN_LOAD.get();
     }
-    
+
     /**
-     * Gets the data access plugins that have been found in the class path. If the lookup
-     * has not yet completed, this will block until it is. If the lookup takes longer
-     * than the passed timeout then a {@link TimeoutException} will be thrown.
+     * Gets the data access plugins that have been found in the class path. If the lookup has not yet completed, this
+     * will block until it is. If the lookup takes longer than the passed timeout then a {@link TimeoutException} will
+     * be thrown.
      * <p/>
      * The map groups the data access plugins based on their type, see {@link DataAccessPluginType}.
      *
@@ -118,7 +126,7 @@ public class DataAccessPaneState {
     public static Map<String, Pair<Integer, List<DataAccessPlugin>>> getPlugins(final long timeout, final TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
         return PLUGIN_LOAD.get(timeout, unit);
     }
-    
+
     /**
      * Set the ID of the current graph.
      *
@@ -127,7 +135,7 @@ public class DataAccessPaneState {
     public static synchronized void setCurrentGraphId(final String currentGraphId) {
         DataAccessPaneState.currentGraphId = currentGraphId;
     }
-    
+
     /**
      * Get the ID of the current graph.
      *
@@ -136,20 +144,18 @@ public class DataAccessPaneState {
     public static synchronized String getCurrentGraphId() {
         return DataAccessPaneState.currentGraphId;
     }
-    
+
     /**
-     * Get a flag indicating if there are any queries or data access plugins
-     * running for the current graph.
+     * Get a flag indicating if there are any queries or data access plugins running for the current graph.
      *
      * @return true if there are queries running for the current graph, false otherwise
      */
     public static synchronized boolean isQueriesRunning() {
         return isQueriesRunning(currentGraphId);
     }
-    
+
     /**
-     * Get a flag indicating if there are any queries or data access plugins
-     * running for the passed graph.
+     * Get a flag indicating if there are any queries or data access plugins running for the passed graph.
      *
      * @param graphId the ID of the graph to check for running plugins
      * @return true if there are queries running for the current graph, false otherwise
@@ -157,37 +163,33 @@ public class DataAccessPaneState {
     public static synchronized boolean isQueriesRunning(final String graphId) {
         return graphId != null && DATA_ACCESS_PANE_STATES
                 .computeIfAbsent(graphId, COMPUTE_IF_ABSENT)
-                    .isQueriesRunning();
+                .isQueriesRunning();
     }
-    
+
     /**
-     * Sets the flag indicating if there are any queries or data access plugins
-     * running for the current graph.
+     * Sets the flag indicating if there are any queries or data access plugins running for the current graph.
      *
-     * @param isQueriesRunning true if there are queries running for the current graph,
-     *     false otherwise
+     * @param isQueriesRunning true if there are queries running for the current graph, false otherwise
      */
     public static synchronized void setQueriesRunning(final boolean isQueriesRunning) {
         setQueriesRunning(currentGraphId, isQueriesRunning);
     }
-    
+
     /**
-     * Sets the flag indicating if there are any queries or data access plugins
-     * running for the passed graph.
+     * Sets the flag indicating if there are any queries or data access plugins running for the passed graph.
      *
      * @param graphId the ID of the graph to set the flag on
-     * @param isQueriesRunning true if there are queries running for the passed graph,
-     *     false otherwise
+     * @param isQueriesRunning true if there are queries running for the passed graph, false otherwise
      */
     public static synchronized void setQueriesRunning(final String graphId,
-                                                      final boolean isQueriesRunning) {
+            final boolean isQueriesRunning) {
         if (graphId != null) {
             DATA_ACCESS_PANE_STATES
-                .computeIfAbsent(graphId, COMPUTE_IF_ABSENT)
+                    .computeIfAbsent(graphId, COMPUTE_IF_ABSENT)
                     .setQueriesRunning(isQueriesRunning);
         }
     }
-    
+
     /**
      * Add a running plugin entry to the state of the current graph.
      *
@@ -195,10 +197,10 @@ public class DataAccessPaneState {
      * @param runningPluginName the name of the running plugin
      */
     public static synchronized void addRunningPlugin(final Future<?> runningPlugin,
-                                                     final String runningPluginName) {
+            final String runningPluginName) {
         addRunningPlugin(currentGraphId, runningPlugin, runningPluginName);
     }
-    
+
     /**
      * Add a running plugin entry to the state of the passed graph.
      *
@@ -207,24 +209,24 @@ public class DataAccessPaneState {
      * @param runningPluginName the name of the running plugin
      */
     public static synchronized void addRunningPlugin(final String graphId,
-                                                     final Future<?> runningPlugin,
-                                                     final String runningPluginName) {
+            final Future<?> runningPlugin,
+            final String runningPluginName) {
         if (graphId == null) {
             throw new IllegalStateException("Cannot add running plugin. Graph ID is null.");
         }
-        
+
         DATA_ACCESS_PANE_STATES
                 .computeIfAbsent(graphId, COMPUTE_IF_ABSENT)
-                    .getRunningPlugins().put(runningPlugin, runningPluginName);
+                .getRunningPlugins().put(runningPlugin, runningPluginName);
     }
-    
+
     /**
      * Remove all running plugins for the current graph.
      */
     public static synchronized void removeAllRunningPlugins() {
         removeAllRunningPlugins(currentGraphId);
     }
-    
+
     /**
      * Remove all running plugins for the passed graph.
      *
@@ -233,27 +235,25 @@ public class DataAccessPaneState {
     public static synchronized void removeAllRunningPlugins(final String graphId) {
         if (graphId != null) {
             DATA_ACCESS_PANE_STATES
-                .computeIfAbsent(graphId, COMPUTE_IF_ABSENT)
+                    .computeIfAbsent(graphId, COMPUTE_IF_ABSENT)
                     .getRunningPlugins().clear();
         }
     }
-    
+
     /**
-     * Get all the running plugins for the current graph or an empty map if there
-     * is not current graph. The returned map is an immutable copy of the running
-     * plugin list in the state.
+     * Get all the running plugins for the current graph or an empty map if there is not current graph. The returned map
+     * is an immutable copy of the running plugin list in the state.
      *
      * @return an immutable copy of the running plugins for the current graph
      */
     public static synchronized Map<Future<?>, String> getRunningPlugins() {
         return getRunningPlugins(currentGraphId);
     }
-    
+
     /**
-     * Get all the running plugins for the passed graph or an empty map if the
-     * passed graph ID is null. The returned map is an immutable copy of the running
-     * plugin list in the state.
-     * 
+     * Get all the running plugins for the passed graph or an empty map if the passed graph ID is null. The returned map
+     * is an immutable copy of the running plugin list in the state.
+     *
      * @param graphId the ID of the graph that the running plugins will be retrieved for
      * @return an immutable copy of the running plugins for the passed graph
      */
@@ -267,71 +267,65 @@ public class DataAccessPaneState {
         }
         return Collections.emptyMap();
     }
-    
+
     /**
      * Gets the execute buttons "Go" state for the current graph.
      * <p/>
-     * The "Go" state essentially means that the button has the text "Go" and
-     * is enabled.
+     * The "Go" state essentially means that the button has the text "Go" and is enabled.
      * <p/>
-     * When it is in this state, it means 
+     * When it is in this state, it means
      * <ul>
      * <li>There are currently no queries running</li>
      * <li>There are enabled and valid plugins to run</li>
      * </ul>
      *
-     * @return true if the execute button for the current graph is in the "Go"
-     *     state, false otherwise
+     * @return true if the execute button for the current graph is in the "Go" state, false otherwise
      */
     public static synchronized boolean isExecuteButtonIsGo() {
         return isExecuteButtonIsGo(currentGraphId);
     }
-    
+
     /**
      * Gets the execute buttons "Go" state for the passed graph.
      *
-     * @param graphId the ID of the graph that the execute button status is being
-     *     checked for
-     * @return true if the execute button for the current graph is in the "Go"
-     *     state, false otherwise
-     * @see #isExecuteButtonIsGo() 
+     * @param graphId the ID of the graph that the execute button status is being checked for
+     * @return true if the execute button for the current graph is in the "Go" state, false otherwise
+     * @see #isExecuteButtonIsGo()
      */
     public static synchronized boolean isExecuteButtonIsGo(final String graphId) {
         return graphId != null && DATA_ACCESS_PANE_STATES
                 .computeIfAbsent(graphId, COMPUTE_IF_ABSENT)
-                    .isExecuteButtonIsGo();
+                .isExecuteButtonIsGo();
     }
-    
+
     /**
      * Updates the execute buttons "Go" state for the current graph.
-     * 
+     *
      * @param isGo true if the execute button is in the "Go" state
-     * @see #isExecuteButtonIsGo() 
+     * @see #isExecuteButtonIsGo()
      */
     public static synchronized void updateExecuteButtonIsGo(final boolean isGo) {
         updateExecuteButtonIsGo(currentGraphId, isGo);
     }
-    
+
     /**
      * Updates the execute buttons "Go" state for the passed graph.
-     * 
-     * @param graphId the ID of the graph that the execute button status is being
-     *     updated for
+     *
+     * @param graphId the ID of the graph that the execute button status is being updated for
      * @param isGo true if the execute button is in the "Go" state, false otherwise
-     * @see #isExecuteButtonIsGo() 
+     * @see #isExecuteButtonIsGo()
      */
     public static synchronized void updateExecuteButtonIsGo(final String graphId,
-                                                            final boolean isGo) {
+            final boolean isGo) {
         if (graphId != null) {
             DATA_ACCESS_PANE_STATES
-                .computeIfAbsent(graphId, COMPUTE_IF_ABSENT)
+                    .computeIfAbsent(graphId, COMPUTE_IF_ABSENT)
                     .setExecuteButtonIsGo(isGo);
         }
     }
-    
+
     /**
-     * Clears all the states for all the graphs. Current graph ID is set to null
-     * and the graph to state map is emptied.
+     * Clears all the states for all the graphs. Current graph ID is set to null and the graph to state map is emptied.
      */
     public static synchronized void clearState() {
         currentGraphId = null;
@@ -342,28 +336,28 @@ public class DataAccessPaneState {
      * Comparator that orders a list of data access plugins based on their type.
      */
     protected static class DataAccessPluginComparator implements Comparator<DataAccessPlugin>, Serializable {
+
         private static final long serialVersionUID = 1;
 
         private final Map<String, Integer> typesWithPosition;
-        
+
         /**
-         * Initializes the data access plugin comparator getting the ordering of
-         * the different plugin types from {@link DataAccessPluginType#getTypeWithPosition()}.
+         * Initializes the data access plugin comparator getting the ordering of the different plugin types from
+         * {@link DataAccessPluginType#getTypeWithPosition()}.
          *
          */
         public DataAccessPluginComparator() {
             typesWithPosition = DataAccessPluginType.getTypeWithPosition();
         }
-        
+
         /**
-         * If the plugins type positions are equal, then order is determined based
-         * on the individual plugins position, otherwise the type postion is used.
+         * If the plugins type positions are equal, then order is determined based on the individual plugins position,
+         * otherwise the type postion is used.
          *
          * @param plugin1 the first plugin to compare
          * @param plugin2 the second plugin to compare
-         * @return 0 if the plugins positions are the same, &lt; 0 if plugin1 position
-         *     is less then plugin2 position and &gt; if plugin1 position is greater than
-         *     plugin2 position
+         * @return 0 if the plugins positions are the same, &lt; 0 if plugin1 position is less then plugin2 position and
+         * &gt; if plugin1 position is greater than plugin2 position
          */
         @Override
         public int compare(final DataAccessPlugin plugin1, final DataAccessPlugin plugin2) {
@@ -379,6 +373,6 @@ public class DataAccessPaneState {
                 );
             }
         }
-        
+
     }
 }
