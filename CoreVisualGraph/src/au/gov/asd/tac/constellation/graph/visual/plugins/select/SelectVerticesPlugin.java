@@ -15,11 +15,8 @@
  */
 package au.gov.asd.tac.constellation.graph.visual.plugins.select;
 
-import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.operations.SetBooleanValuesOperation;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import static au.gov.asd.tac.constellation.graph.visual.plugins.select.SelectUtilities.selectVertices;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
@@ -45,17 +42,7 @@ public class SelectVerticesPlugin extends SimpleEditPlugin {
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
         final Properties properties = new Properties();
-        final int vxSelected = VisualConcept.VertexAttribute.SELECTED.get(graph);
-        if (vxSelected != Graph.NOT_FOUND) {
-            final SetBooleanValuesOperation selectVerticesOperation = new SetBooleanValuesOperation(graph, GraphElementType.VERTEX, vxSelected);
-            final int vertexCount = graph.getVertexCount();
-            for (int position = 0; position < vertexCount; position++) {
-                final int vertex = graph.getVertex(position);
-                selectVerticesOperation.setValue(vertex, true);
-            }
-            graph.executeGraphOperation(selectVerticesOperation);
-            properties.setProperty("vsize", String.valueOf(selectVerticesOperation.size()));
-        }
+        selectVertices(graph, properties);
 
         ConstellationLogger.getDefault().pluginProperties(this, properties);
     }
