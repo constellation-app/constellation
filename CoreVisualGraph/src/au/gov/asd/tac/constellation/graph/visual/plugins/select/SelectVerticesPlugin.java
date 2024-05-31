@@ -36,7 +36,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
-@Messages("SelectVerticesPlugin=Add to Selection: Vertices")
+@Messages("SelectVerticesPlugin=Add to Selection: Nodes")
 public class SelectVerticesPlugin extends SimpleEditPlugin {
 
     @Override

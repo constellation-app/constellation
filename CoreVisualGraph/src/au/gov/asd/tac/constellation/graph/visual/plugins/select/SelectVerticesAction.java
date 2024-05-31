@@ -32,8 +32,8 @@ import org.openide.util.NbBundle.Messages;
 @ActionID(category = "Selection", id = "au.gov.asd.tac.constellation.functionality.select.SelectVerticesAction")
 @ActionRegistration(displayName = "#CTL_SelectVerticesAction", iconBase = "au/gov/asd/tac/constellation/graph/visual/plugins/select/resources/selectNodes.png", surviveFocusChange = false)
 @ActionReferences({
-    @ActionReference(path = "Menu/Selection", position = 0),})
-@Messages("CTL_SelectVerticesAction=Select All Vertices")
+    @ActionReference(path = "Menu/Selection", position = 1),})
+@Messages("CTL_SelectVerticesAction=Select All Nodes")
 public final class SelectVerticesAction extends SimplePluginAction {
 
     /**
