@@ -118,7 +118,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -950,7 +949,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 // graph will get saved each time.
                 requestActive();
 
-                SaveAsAction action = new SaveAsAction();
+                final SaveAsAction action = new SaveAsAction();
                 action.actionPerformed(null);
                 isSaved = action.isSaved();
                 return;
@@ -967,7 +966,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             } else {
                 // File might have been saved over, so just open up the 'save as' menu
                 requestActive();
-                SaveAsAction action = new SaveAsAction();
+                final SaveAsAction action = new SaveAsAction();
                 action.actionPerformed(null);
                 isSaved = action.isSaved();
             }
@@ -1040,7 +1039,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
             // Check if overwriting open graph
             final Path filePath = Paths.get(newFile.getPath());
-            for (Graph g : GraphNode.getAllGraphs().values()) {
+            for (final Graph g : GraphNode.getAllGraphs().values()) {
                 final Path graphPath = Paths.get(GraphNode.getGraphNode(g).getDataObject().getPrimaryFile().getPath());
                 if (graphPath.equals(filePath) && !graphPath.equals(currentFilePath)) {
                     // Send message saying "Sorry, this file is in use"
