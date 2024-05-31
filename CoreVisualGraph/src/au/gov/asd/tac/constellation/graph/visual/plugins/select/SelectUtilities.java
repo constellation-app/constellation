@@ -29,6 +29,9 @@ import java.util.Properties;
  */
 public class SelectUtilities {
 
+    private SelectUtilities() {
+    }
+
     /**
      * Function for selecting all vertices in a given graph
      *
