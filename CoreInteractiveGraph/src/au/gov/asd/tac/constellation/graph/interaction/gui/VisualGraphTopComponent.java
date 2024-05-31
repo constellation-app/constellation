@@ -394,7 +394,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         final UpdateComponent<GraphReadMethods> visualUpdateComponent = new UpdateComponent<GraphReadMethods>() {
 
             @Override
-            protected boolean update(GraphReadMethods updateState) {
+            public boolean update(GraphReadMethods updateState) {
                 visualUpdate();
                 return true;
             }
