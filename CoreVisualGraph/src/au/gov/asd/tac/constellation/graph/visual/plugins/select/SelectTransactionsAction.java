@@ -33,7 +33,7 @@ import org.openide.util.NbBundle.Messages;
 @ActionRegistration(displayName = "#CTL_SelectTransactionsAction", iconBase = "au/gov/asd/tac/constellation/graph/visual/plugins/select/resources/selectTransactions.png", surviveFocusChange = false)
 @ActionReferences({
     @ActionReference(path = "Menu/Selection", position = 2),})
-@Messages("CTL_SelectTransactionsAction=Select All Transactions")
+@Messages("CTL_SelectTransactionsAction=Select Transactions")
 public final class SelectTransactionsAction extends SimplePluginAction {
 
     /**
