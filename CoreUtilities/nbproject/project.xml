@@ -176,6 +176,7 @@
                 <package>au.gov.asd.tac.constellation.utilities.graphics</package>
                 <package>au.gov.asd.tac.constellation.utilities.gui</package>
                 <package>au.gov.asd.tac.constellation.utilities.gui.RecentValue</package>
+                <package>au.gov.asd.tac.constellation.utilities.gui.context</package>
                 <package>au.gov.asd.tac.constellation.utilities.gui.field</package>
                 <package>au.gov.asd.tac.constellation.utilities.gui.filechooser</package>
                 <package>au.gov.asd.tac.constellation.utilities.html</package>

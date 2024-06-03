@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.utilities.gui.field;
 import javafx.scene.control.ContentDisplay;
 
 /**
- * A suite of constants used by C{@link ConstellationInputField} and related sub classes.
+ * A suite of constants used by {@link ConstellationInputField} objects and related sub classes.
  * 
  * @author capricornunicorn123
  */
@@ -69,5 +69,88 @@ public class ConstellationInputFieldConstants {
         SECRET,
         SINGLELINE,
         MULTILINE;
+    }
+    
+    public enum ColorMode {
+        COLOR("Color"),
+        HEX("HEX"),
+        RGB("RGB");
+        
+        final String text;
+        
+        ColorMode(final String text){
+            this.text = text;
+        }
+        
+        @Override
+        public String toString(){
+            return this.text;
+        }
+    }
+    
+        /**
+     * Represents the types of ChoiceInputFields available in Constellation.
+     */
+    public enum ChoiceType {
+        
+        SINGLE_DROPDOWN(LayoutConstants.INPUT_DROPDOWN),
+        SINGLE_SPINNER(LayoutConstants.UPDATER_INPUT_UPDATER),
+        MULTI(LayoutConstants.INPUT_DROPDOWN);
+        
+        LayoutConstants layout;
+        
+        private ChoiceType(LayoutConstants layout) {
+            this.layout = layout;
+        }
+        
+        public LayoutConstants getLayout(){
+            return this.layout;
+        }
+    }
+    
+    /**
+     * Describes the method of file selection for a parameter of this type.
+     * Consider merging with File Chooser Mode
+     */
+    public enum FileInputKind {
+
+        /**
+         * Allows selection of multiple files. Displays "Open" on the button.
+         */
+        OPEN_MULTIPLE("Open"),
+        /**
+         * Allows selection of multiple files. Displays "..." on the button.
+         */
+        OPEN_MULTIPLE_OBSCURED("..."),
+        /**
+         * Allows selection of a single file only. Displays "Open" on the button.
+         */
+        OPEN("Open"),
+        /**
+         * Allows selection of a single file only. Displays "..." on the button.
+         */
+        OPEN_OBSCURED("..."),
+        /**
+         * Allows selection of a file, or entry of a non-existing but valid file
+         * path. Displays "Save" on the button.
+         */
+        SAVE("Save"),
+                /**
+         * Allows selection of a file, or entry of a non-existing but valid file
+         * path. Displays "..." on the button.
+         */
+        SAVE_OBSCURED("..."),;
+
+        
+        private final String text;
+        
+        private FileInputKind(final String text){
+            this.text = text;
+        }
+        
+        @Override
+        public String toString(){
+            return text;
+        }
     }
 }

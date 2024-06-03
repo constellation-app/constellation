@@ -101,10 +101,10 @@ public abstract class ParameterInputPane<T extends ParameterValue, V extends Obj
      * <p> Example Implementation: (T is the generic type that is supported by the respective {@link ConstellationInputField})
      * <pre>
      * return (ChangeListener<T>) (ObservableValue<? extends T> observable, T oldValue, T newValue) -> {
-            if (newValue != null) {
-                // manipulate the local parameter reference accordingly
-            }
-        };
+     *      if (newValue != null) {
+     *          // manipulate the local parameter reference accordingly
+     *      }
+     *   };
      * </pre>
      * </p>
      * @param parameter

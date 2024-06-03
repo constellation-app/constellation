@@ -22,7 +22,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParamete
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.utilities.gui.field.ChoiceInputField;
-import au.gov.asd.tac.constellation.utilities.gui.field.ChoiceInputField.ChoiceType;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ChoiceType;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;

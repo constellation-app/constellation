@@ -15,26 +15,22 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
+import au.gov.asd.tac.constellation.utilities.gui.context.ContextMenuContributor;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.LayoutConstants;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType;
 import au.gov.asd.tac.constellation.utilities.text.SpellChecker;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.BooleanBinding;
-import javafx.beans.binding.StringBinding;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.Node;
@@ -48,13 +44,8 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.PasswordField;
 import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputControl;
 import javafx.scene.control.Tooltip;
-import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
@@ -67,10 +58,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Popup;
 import org.apache.commons.lang3.StringUtils;
-import org.fxmisc.richtext.InlineCssTextArea;
-import org.fxmisc.richtext.InlineCssTextField;
-import org.fxmisc.richtext.StyledTextArea;
-import org.fxmisc.richtext.util.UndoUtils;
 
 
 /**
@@ -115,7 +102,7 @@ import org.fxmisc.richtext.util.UndoUtils;
  * 
  * @author capricornunicorn123
  */
-public abstract class ConstellationInputField<T> extends StackPane implements ObservableValue<T>, ChangeListener<Serializable>{   
+public abstract class ConstellationInputField<T> extends StackPane implements ObservableValue<T>, ChangeListener<Serializable>, ContextMenuContributor{   
     
     final int endCellPrefWidth = 50;
     final int endCellMinWidth = 50;
@@ -156,10 +143,15 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
         this(layout, TextType.SINGLELINE);
     }
     
-    
     public ConstellationInputField(final LayoutConstants layout, final TextType type) {
         textArea = new ConstellationTextArea(this, type);
         gridPane = getGridPaneWithChildCellPanes(layout);
+        
+        //Npt a nice sollution but need to run this later as the base classes neet to actualy exist to access their implementation
+        Platform.runLater(() -> {
+            rightButton.setOnMouseClicked(getRightButtonEventImplementation());
+            leftButton.setOnMouseClicked(getLeftButtonEventImplementation());
+        });
         
         this.setPrefWidth(500);
         this.setMinWidth(200);
@@ -203,6 +195,19 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
         gridPane.setAlignment(Pos.CENTER);
         this.getChildren().addAll(background, gridPane, foreground);
         this.setAlignment(Pos.TOP_LEFT);
+        
+        final ContextMenu contextMenu = new ContextMenu();
+        contextMenu.getItems().clear();
+        contextMenu.getItems().addAll(this.getAllMenuItems());
+        // Set the right click context menu items
+        // we want to update each time the context menu is requested 
+        // can't make a new context menu each time as this event occurs after showing
+        textArea.setContextMenuRequestedEvent(value -> {
+            contextMenu.getItems().clear();
+            contextMenu.getItems().addAll(this.getAllMenuItems());
+            textArea.setContextMenu(contextMenu);
+        });
+        textArea.setContextMenu(contextMenu);
     }
     
     public final void insertBaseFieldIntoGrid(final ConstellationTextArea field) {
@@ -237,7 +242,6 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
 
         content.getChildren().addAll(background, label);
         return content;
-        
     }
     
     protected void addToGridCellGroup(final ContentDisplay groupID, final Node item) {
@@ -293,20 +297,82 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
         this.leftLabel.setText(label);
     };
     
-    public void registerRightButtonEvent(final EventHandler<MouseEvent> event) {
-        this.rightButton.setOnMouseClicked(event);
-    }
-    
-    public void registerLeftButtonEvent(final EventHandler<MouseEvent> event) {
-        this.leftButton.setOnMouseClicked(event);
-    }
-    
+    // <editor-fold defaultstate="collapsed" desc="ChangeListener Interface Support">
     /**
+     * This method manages the handling of changes to the TextProperty and FocusedProperty of the {@link StypledTextArea} used
+     * by the {@link ConstellationTextArea}.
+     * 
+     * This method is declared final to protect the integrity and privacy of the string value being returned. 
+     * Important in the case of use with TextTpye.SECRET.
+     */
+    @Override
+    public final void changed(ObservableValue<? extends Serializable> observable, Serializable oldValue, Serializable newValue) {
+        
+        // String changes are changes to the text value of the ConstellationTextArea
+        if (newValue instanceof String){
+            if (isValid()){
+                textArea.setValid(true);
+                notifyListeners(getValue());
+            } else {
+                textArea.setValid(false);
+            }
+        }
+        
+        //Boolean Changes are changs to the focused propert of the ConstellationTextArea
+        if (newValue instanceof Boolean focused){
+            this.setInFocus(focused);
+        }
+    }
+    // </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="ObservableValue Interface Support">   
+    public void notifyListeners(T newValue){
+        for (ChangeListener listener : InputFieldListeners){
+            listener.changed(this, null, newValue);
+        }
+    }
+    
+    @Override
+    public void addListener(ChangeListener listener) {
+        this.InputFieldListeners.add(listener);
+    }
+
+    @Override
+    public void removeListener(ChangeListener listener) {
+        this.InputFieldListeners.remove(listener);
+    }
+
+    @Override
+    public void addListener(InvalidationListener listener) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void removeListener(InvalidationListener listener) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    // </editor-fold>   
+    
+    // <editor-fold defaultstate="collapsed" desc="Shortcut Support">   
+    /**
+     * Registers shortcut keys specific to each input field implementation. 
+     * Things like up and down arrows are examples of a shortcut that may be handed differently per field.
+     * @param <E>
+     * @param eventType
+     * @param eventFilter 
+     */
+    protected final <E extends Event> void addShortcuts(final EventType<E> eventType, final EventHandler<E> eventFilter) {
+        this.textArea.addEventFilter(eventType, eventFilter);
+    }
+    // </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="ConstelationTextArea Modification Methods">
+        /**
      *
      * @param event
      */
     public void registerTextClickedEvent(final EventHandler<MouseEvent> event){
-        this.textArea.primaryInput.setOnMouseClicked(event);        
+        this.textArea.primaryInputSetOnMouseClicked(event);        
     }
     
     /**
@@ -314,22 +380,16 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
      * @param event
      */
     public void registerTextKeyedEvent(final EventHandler<KeyEvent> event){
-        this.textArea.primaryInput.setOnKeyReleased(event); 
+        this.textArea.primaryInputSetOnKeyReleased(event); 
     }
     
     public void clearTextClickedEvent(){
-        this.textArea.primaryInput.setOnMouseClicked(null);        
+        this.textArea.primaryInputSetOnMouseClicked(null);        
     }
     
     public void clearTextKeyedEvent(){
-        this.textArea.primaryInput.setOnKeyReleased(null);
+        this.textArea.primaryInputSetOnKeyReleased(null);
     }
-    
-    public void setContextButtonDisable(boolean b) {
-        //to do
-        //want to reformat the grid pane to eliminate the context menu when button is disabled. this will be tricky
-    }
-
     public void setPromptText(final String description) {
         this.textArea.setPromptText(description);
     }
@@ -340,10 +400,6 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
 
     public void setEditable(final boolean enabled) {
         this.textArea.setEditable(enabled);
-    }
-    
-    protected final <E extends Event> void addShortcuts(final EventType<E> eventType, final EventHandler<E> eventFilter) {
-        this.textArea.addEventFilter(eventType, eventFilter);
     }
 
     public String getText() {
@@ -402,20 +458,6 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
         textArea.setPreferedRowCount(suggestedHeight);
     }
     
-    public boolean isEmpty(){
-        return this.getText().isBlank();
-    }
-    
-    public void setInFocus(boolean focused){
-
-        if (focused) {
-            foreground.setStroke(Color.web("#1B92E3"));
-        } else {
-            foreground.setStroke(null);
-        }
-
-    }
-    
     protected void hideSecret(){
         textArea.hide();
     }
@@ -423,107 +465,12 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
     protected void showSecret(){
         textArea.reveal();
     }
-    
-    public void notifyListeners(T newValue){
-        for (ChangeListener listener : InputFieldListeners){
-            listener.changed(this, null, newValue);
-        }
-    }
-    
-    /**
-     * Determine if the provided text is a valid value for the input field.
-     * Is implemented differently for different input fields.
-     * 
-     * @return 
-     */
-    public abstract boolean isValid();
-    
-    /**
-     * Gets the value that this input field represents;
-     * @return 
-     */    
-    @Override
-    public abstract T getValue();
-    
-    /**
-     * Sets the value that this input field represents
-     * @param value 
-     */
-    public abstract void setValue(T value);
-
-    
-    public abstract ContextMenu getDropDown();
-    
-    /**
-     * Displays the provided ConstellationInputDropDown to the user.
-     * This functionality has been captured in the base class intentionally to consistency across 
-     * all input fields regarding context displaying 
-     * 
-     * @param menu 
-     */
-    protected final void showDropDown(){
-        getDropDown().show(this, Side.TOP, USE_PREF_SIZE, USE_PREF_SIZE);
-    }
-
-    //ObservableValue Interface Support
-    @Override
-    public void addListener(ChangeListener listener) {
-        this.InputFieldListeners.add(listener);
-    }
-
-    @Override
-    public void removeListener(ChangeListener listener) {
-        this.InputFieldListeners.remove(listener);
-    }
-
-    @Override
-    public void addListener(InvalidationListener listener) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public void removeListener(InvalidationListener listener) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-    
-    /**
-     * ChangeListener Interface Support
-     * This method manages the handeling of changes to the TextValue and Focused property of the TextInputControl used
-     * by the ConstelltionTextArea.
-     * 
-     * This method is declared final to protect the integrity and privacy of the string value being returned. 
-     * Important in the case of use with TextTpye.SECRET.
-     */
-    @Override
-    public final void changed(ObservableValue<? extends Serializable> observable, Serializable oldValue, Serializable newValue) {
-        
-        // String changes are changes to the text value of the ConstellationTextArea
-        if (newValue instanceof String){
-            if (isValid()){
-                textArea.setValid(true);
-                notifyListeners(getValue());
-            } else {
-                textArea.setValid(false);
-            }
-        }
-        
-        //Boolean Changes are changs to the focused propert of the ConstellationTextArea
-        if (newValue instanceof Boolean focused){
-            this.setInFocus(focused);
-        }
-    }
 
     public void clearTextStyles() {
         textArea.clearStyles();
     }
 
-    public void enableSpellCheck(boolean spellCheckEnabled) {
-        if (spellCheckEnabled){
-            SpellChecker.registerArea(this);
-        } else {
-            SpellChecker.deregisterArea(this);
-        }
-    }
+
 
     public void highlightText(int start, int end) {
         textArea.highlightText(start, end);
@@ -536,15 +483,75 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
     public boolean isWordUnderCursorHighlighted() {
         return textArea.isWordUnderCursorHighlighted(getCaretPosition() -1);
     }
+    // </editor-fold>
     
-    public void setLines(Integer suggestedHeight) {
-        Platform.runLater(() -> {
-                final Text t = (Text) textArea.lookup(".text");
-                if (t != null) {
-                    this.textArea.setPrefHeight(suggestedHeight * t.getBoundsInLocal().getHeight() + 3);
-                }
-            });
+    // <editor-fold defaultstate="collapsed" desc="SpellCheck Support">   
+    public void enableSpellCheck(boolean spellCheckEnabled) {
+        if (spellCheckEnabled){
+            SpellChecker.registerArea(this);
+        } else {
+            SpellChecker.deregisterArea(this);
+        }
     }
+    //</editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="Value Modification & Validation Declaration">  
+    /**
+     * Sets the value that this input field represents
+     * @param value 
+     */
+    public abstract void setValue(T value);
+    
+    /**
+     * Gets the value that this input field represents;
+     * @return 
+     */    
+    @Override
+    public abstract T getValue();
+    
+    /**
+     * Determine if the provided text is a valid value for the input field.
+     * Is implemented differently for different input fields.
+     * 
+     * @return 
+     */
+    public abstract boolean isValid();
+    // </editor-fold>  
+    
+    // <editor-fold defaultstate="collapsed" desc="ContextMenuContributor Implementation"> 
+    @Override
+    public final List<MenuItem> getAllMenuItems() {
+        List<MenuItem> list = new ArrayList<>();
+        List<MenuItem> local = this.getLocalMenuItems();
+        list.addAll(local);
+        if (!local.isEmpty()){
+            list.add(new SeparatorMenuItem());
+        }
+        list.addAll(this.textArea.getAllMenuItems());
+        return list;
+    }
+    // </editor-fold> 
+    
+    // <editor-fold defaultstate="collapsed" desc="Button Event Declaration">  
+    public abstract EventHandler<MouseEvent> getRightButtonEventImplementation();
+    
+    public abstract EventHandler<MouseEvent> getLeftButtonEventImplementation();
+    // </editor-fold>  
+    
+    // <editor-fold defaultstate="collapsed" desc="DropDown Decleration & Functionality">   
+    
+    /**
+     * Displays the provided ConstellationInputDropDown to the user.
+     * This functionality has been captured in the base class intentionally to consistency across 
+     * all input fields regarding context displaying 
+     * 
+     * @param menu 
+     */
+    protected final void showDropDown(){
+        getDropDown().show(this, Side.TOP, USE_PREF_SIZE, USE_PREF_SIZE);
+    }
+    
+    public abstract ContextMenu getDropDown();
     
     /**
      * An extension of a ContextMenu to provide features that enable its use as a drop down menu in ConstellationInputFields
@@ -591,275 +598,41 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
         }
         
     }
+    // </editor-fold>
     
-    /**
-     * This class represents the area of text that users can interact with inside of a {@link ConstellationInputFiled}.
-     * 
-     * The {@link ConstellationTextArea} has been designed to provide a minimal interface to the {@link ConstellationIputField} with
-     * the intention of simplifying its use and protecting the integrity of the data it stores from uncontrolled manipulation.
-     * 
-     * To assist with the protection of data within this class, the class and methods are declared private with 
-     * the class being also declared final.
-     * 
-     * The {@linkConstellationTextArea itself} is a HBox that contains children of type {@link TextInputControll}
-     * In almost all cases, the ConstellationText Area will only have one child, a {@link TextArea} or 
-     * a {@link TextField}. In cases where the input field needs to be secret (have the characters hidden) 
-     * a primary input of {@link PasswordField} and a secondary input of {@link TextField} will be used to 
-     * facilitate hiding and showing of the hidden text.
-     * 
-     * the raw inputs can still be grabbed by using the get children methods. is this an issue / vunerability?
-     * 
-     * @author capricornunicorn123
-     */
-    private final class ConstellationTextArea extends StackPane{
-        
-        public static final String VALID_WORD_STYLE = "-rtfx-underline-color: transparent;";
-        public static final String MISSPELT_WORD_STYLE = "-rtfx-underline-color: red; "
-        + "-rtfx-underline-dash-array: 2 2;"
-        + "-rtfx-underline-width: 2.0;";
-        public static final int EXTRA_HEIGHT = 3;
-
-        private final Insets insets = new Insets(4, 8, 4, 8);
-        
-        
-        private final StyledTextArea primaryInput;
-        private final TextInputControl secondaryInput;
-
-        private ConstellationTextArea(ConstellationInputField parent, TextType type){
-        switch (type){
-            case MULTILINE -> primaryInput = new InlineCssTextArea();
-            default -> primaryInput = new InlineCssTextField();
-        }
-        //Set up the primary InputControl
-
-        primaryInput.textProperty().addListener(parent);
-        primaryInput.focusedProperty().addListener(parent);
-        primaryInput.setStyle("-fx-background-radius: 0; -fx-background-color: transparent; -fx-border-color: transparent; -fx-focus-color: transparent; -fx-text-fill: #FFFFFF;");
-        
-        primaryInput.setAutoHeight(false);
-        primaryInput.setWrapText(true);
-        primaryInput.setPadding(insets);
-        final String css = SpellChecker.class.getResource("SpellChecker.css").toExternalForm();//"resources/test.css"
-        primaryInput.getStylesheets().add(css);
-        
-        final ContextMenu contextMenu = new ContextMenu();
-        final List<MenuItem> areaModificationItems = getAreaModificationMenuItems();
-        // Set the right click context menu items
-        // we want to update each time the context menu is requested 
-        // can't make a new context menu each time as this event occurs after showing
-        primaryInput.setOnContextMenuRequested(value -> {
-            contextMenu.getItems().clear();
-            contextMenu.getItems().addAll(SpellChecker.getSpellCheckMenuItem(parent), new SeparatorMenuItem());
-            contextMenu.getItems().addAll(areaModificationItems);
-            primaryInput.setContextMenu(contextMenu);
-        });
-            
-            
-            
-            // Set up the optional secondary InputControl
-            switch (type) {
-                case SECRET -> {
-                    // SecondaryInputs are only used in Secret Inputs and have bound properties wiht the primary input
-                    secondaryInput = new PasswordField();
-                    secondaryInput.textProperty().bindBidirectional(primaryInput.accessibleTextProperty());
-                    //secondaryInput.textFormatterProperty().bindBidirectional(primaryInput.textFormatterProperty());
-                    //secondaryInput.promptTextProperty().bindBidirectional(primaryInput.promptTextProperty());
-                    secondaryInput.styleProperty().bind(primaryInput.styleProperty());
-                    secondaryInput.focusedProperty().addListener(parent);
-                    primaryInput.setVisible(false);
-
-                    this.getChildren().addAll(primaryInput, secondaryInput);
-                }
-                default -> {
-                    secondaryInput = null;
-                    this.getChildren().add(primaryInput);
-                }
-            } 
-        }
-
-        /**
-         * Binds the heightProperty of a Rectangle to the height property of the {@link TextInputControl}. 
-         * @param bindable
-         */
-        private void bindHeightProperty(Rectangle bindable) {
-            bindable.heightProperty().bind(primaryInput.heightProperty());
-        }
-
-        /**
-         * Sets the prompt text of the {@link TextInputControl}.
-         * @param description 
-         */
-        public final void setPromptText(final String promptText) {
-            //TODO
-        }
-
-        /**
-         * Sets the text value of the {@link TextInputControl}.
-         * @param stringValue 
-         */
-        private void setText(String stringValue) {
-            if (stringValue != null) {
-                primaryInput.replaceText(stringValue);
-            }
-        }
-
-        /**
-         * Specifies if the {@link TextInputControl} is editable
-         * @param enabled 
-         */
-        private void setEditable(boolean enabled) {
-            primaryInput.setEditable(enabled);
-        }
-
-        private String getText() {
-            return primaryInput.getText();
-        }
-
-        private void setTooltip(Tooltip tooltip) {
-             Tooltip.install(primaryInput, tooltip);
-        }
-
-        private void selectAll() {
-            primaryInput.selectAll();
-        }
-
-        private void selectBackward() {
-            //primaryInput.selectBackward();
-        }
-
-        private void selectForward() {
-            //primaryInput.selectForward();
-        }
-
-        private void previousWord() {
-            //primaryInput.previousWord();
-        }
-
-        private IndexRange getSelection() {
-            return primaryInput.getSelection();
-        }
-
-        private void deleteNextChar() {
-            primaryInput.deleteNextChar();
-        }
-
-        private void deleteText(IndexRange selection) {
-            primaryInput.deleteText(selection);
-        }
-
-        private void selectNextWord() {
-            //primaryInput.selectNextWord();
-        }
-
-        private void selectPreviousWord() {
-            //primaryInput.selectPreviousWord();
-        }
-
-        private void nextWord() {
-            //primaryInput.nextWord();
-        }
-
-        void setWrapText(boolean wrapText) {
-            primaryInput.setWrapText(true);
-        }
-
-        private void setPreferedRowCount(Integer suggestedHeight) {
-//            if (primaryInput instanceof TextArea textAreaField){
-//                textAreaField.setPrefRowCount(suggestedHeight);
-//            }
-        }
-
-        private void hide() {
-            if (secondaryInput != null){
-                this.primaryInput.setVisible(false);
-                this.secondaryInput.setVisible(true);
-            } else {
-                throw new UnsupportedOperationException("Only ConstellationTextAreas of TextType.SECRET can be hidden");
-            }
-        }
-
-        private void reveal() {
-            if (secondaryInput != null){
-                this.primaryInput.setVisible(true);
-                this.secondaryInput.setVisible(false); 
-            } else {
-                throw new UnsupportedOperationException("Only ConstellationTextAreas of TextType.SECRET can be revealed");
-            }
-        }
-
-        private void setValid(boolean isValid) {
-            if (isValid){
-                primaryInput.setStyle("-fx-background-color: transparent;");
-            } else {
-                primaryInput.setStyle("-fx-background-color: red;");
-            }
-        }
-        
-        /**
-        * underline and highlight the text from start to end.
-        */
-        public void highlightText(final int start, final int end) {
-            primaryInput.setStyle(start, end, MISSPELT_WORD_STYLE);
-        }
-        
-        public boolean isWordUnderCursorHighlighted(int index) {
-            return primaryInput.getStyleOfChar(index) == MISSPELT_WORD_STYLE;
-        }
-        
-        private List<MenuItem> getAreaModificationMenuItems() {
-
-            final MenuItem undoMenuItem = new MenuItem("Undo");
-            final MenuItem redoMenuItem = new MenuItem("Redo");
-            final MenuItem cutMenuItem = new MenuItem("Cut");
-            final MenuItem copyMenuItem = new MenuItem("Copy");
-            final MenuItem pasteMenuItem = new MenuItem("Paste");
-            final MenuItem deleteMenuItem = new MenuItem("Delete");
-            final MenuItem selectAllMenuItem = new MenuItem("Select All");
-
-            undoMenuItem.setOnAction(e -> primaryInput.undo());
-            redoMenuItem.setOnAction(e -> primaryInput.redo());
-            cutMenuItem.setOnAction(e -> primaryInput.cut());
-            copyMenuItem.setOnAction(e -> primaryInput.copy());
-            pasteMenuItem.setOnAction(e -> primaryInput.paste());
-            deleteMenuItem.setOnAction(e -> primaryInput.deleteText(primaryInput.getSelection()));
-            selectAllMenuItem.setOnAction(e -> primaryInput.selectAll());
-
-            // avoid Undo redo of highlighting
-            primaryInput.setUndoManager(UndoUtils.plainTextUndoManager(primaryInput));
-
-            // Listener to enable/disable Undo and Redo menu items based on the undo stack
-            primaryInput.getUndoManager().undoAvailableProperty().addListener((obs, oldValue, newValue) -> {
-                undoMenuItem.setDisable(!(boolean) newValue);
-            });
-
-            primaryInput.getUndoManager().redoAvailableProperty().addListener((obs, oldValue, newValue) -> {
-                redoMenuItem.setDisable(!(boolean) newValue);
-            });
-
-            // Bind the Cut, Copy and Delete menu item's disable property, to enable them only when there's a selection
-            cutMenuItem.disableProperty().bind(getSelectionBinding());
-            copyMenuItem.disableProperty().bind(getSelectionBinding());
-            deleteMenuItem.disableProperty().bind(getSelectionBinding());
-
-            return Arrays.asList(undoMenuItem, redoMenuItem, cutMenuItem, copyMenuItem, pasteMenuItem, deleteMenuItem, selectAllMenuItem);
-        }
-        
-        private BooleanBinding getSelectionBinding() {
-            return Bindings.createBooleanBinding(() -> {
-                final IndexRange selectionRange = primaryInput.getSelection();
-                return selectionRange == null || selectionRange.getLength() == 0;
-            }, primaryInput.selectionProperty());
-        }
-
-        private void clearStyles() {
-            primaryInput.setStyle(0, primaryInput.getText().length(), VALID_WORD_STYLE);
-        }
-
-        private int getCaretPosition() {
-            return primaryInput.getCaretPosition();
-        }
-    }   
     
+    
+    public void setContextButtonDisable(boolean b) {
+        //to do
+        //want to reformat the grid pane to eliminate the context menu when button is disabled. this will be tricky
+    }
+    
+    
+    
+    public boolean isEmpty(){
+        return this.getText().isBlank();
+    }
+    
+    public void setInFocus(boolean focused){
+
+        if (focused) {
+            foreground.setStroke(Color.web("#1B92E3"));
+        } else {
+            foreground.setStroke(null);
+        }
+
+    }
+    
+    
+    public void setLines(Integer suggestedHeight) {
+        Platform.runLater(() -> {
+                final Text t = (Text) textArea.lookup(".text");
+                if (t != null) {
+                    this.textArea.setPrefHeight(suggestedHeight * t.getBoundsInLocal().getHeight() + 3);
+                }
+            });
+    }
+        
     //Move this class, concider maving to specific field like the choice input
     //has been deactivated for text/value input atm
     public void autoComplete(final List<String> suggestions) {

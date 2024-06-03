@@ -17,14 +17,18 @@ package au.gov.asd.tac.constellation.utilities.gui.field;
 
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColorPicker;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ColorMode;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.LayoutConstants;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javafx.embed.swing.JFXPanel;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.input.MouseEvent;
 import javax.swing.JButton;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -41,37 +45,18 @@ public final class ColorInputField extends ConstellationInputField<Constellation
     public ColorInputField(){
         super(LayoutConstants.DROPDOWN_INPUT_POPUP);
         this.setRightLabel(ConstellationInputFieldConstants.SWATCH_BUTTON_LABEL);
-        this.setLeftLabel(mode.toString());
-        this.registerRightButtonEvent(event -> {
-            JFXPanel xp = new JFXPanel();
-            final Scene scene = new Scene(new ConstellationColorPicker());
-
-            xp.setScene(scene);
-            //xp.setPreferredSize(new Dimension((int) scene.getWidth(), (int) scene.getHeight()));
-            
-            
-            final Object[] options = {new JButton("Select"), DialogDescriptor.CANCEL_OPTION};
-            final Object focus = DialogDescriptor.NO_OPTION;
-            
-            final DialogDescriptor dd = new DialogDescriptor(xp, "ChooseYOUR COLORRRR", true, options , focus, DialogDescriptor.DEFAULT_ALIGN, null, null);
-            Object r = DialogDisplayer.getDefault().notify(dd);
-        });
-        
-        this.registerLeftButtonEvent(event -> {
-            this.showDropDown();
-        });
-        
-        
+        this.setLeftLabel(mode.toString());  
     }
     
-    private void setMode(ColorMode mode){
+    // <editor-fold defaultstate="collapsed" desc="Local Private Methods">   
+    private void setMode(final ColorMode mode){
         this.mode = mode;
         this.setLeftLabel(mode.toString());
         this.setColor(getColor());
     }
     
-    private void updateMode(String text){
-        ColorMode localMode;
+    private void updateMode(final String text){
+        final ColorMode localMode;
         if (text.contains(",")){
             localMode = ColorMode.RGB;
         } else if (text.contains("#")){
@@ -165,11 +150,18 @@ public final class ColorInputField extends ConstellationInputField<Constellation
         }                     
         return color;
     }
+    // </editor-fold>   
     
+    // <editor-fold defaultstate="collapsed" desc="Value Modification & Validation Implementation"> 
     @Override
-    public ContextMenu getDropDown() {
-        return new ColorInputDropDown(this);
+    public ConstellationColor getValue() {
+        return this.getColor();
     }
+
+    @Override
+    public void setValue(final ConstellationColor value) {
+        this.setColor(value);
+    }    
     
     @Override
     public boolean isValid(){
@@ -180,15 +172,46 @@ public final class ColorInputField extends ConstellationInputField<Constellation
         }
         return false;
     }
-
+    // </editor-fold> 
+    
+    // <editor-fold defaultstate="collapsed" desc="ContextMenuContributor Implementation"> 
     @Override
-    public ConstellationColor getValue() {
-        return this.getColor();
+    public List<MenuItem> getLocalMenuItems() {
+        final MenuItem format = new MenuItem("Format");
+        format.setOnAction(value -> getLeftButtonEventImplementation().handle(null));
+        return Arrays.asList(format);
+    }
+    // </editor-fold> 
+    
+    // <editor-fold defaultstate="collapsed" desc="Button Event Implementation">   
+    @Override
+    public EventHandler<MouseEvent> getRightButtonEventImplementation() {
+        return event -> {
+            JFXPanel xp = new JFXPanel();
+            final Scene scene = new Scene(new ConstellationColorPicker());
+
+            xp.setScene(scene);
+            //xp.setPreferredSize(new Dimension((int) scene.getWidth(), (int) scene.getHeight()));
+            
+            
+            final Object[] options = {new JButton("Select"), DialogDescriptor.CANCEL_OPTION};
+            final Object focus = DialogDescriptor.NO_OPTION;
+            
+            final DialogDescriptor dd = new DialogDescriptor(xp, "ChooseYOUR COLORRRR", true, options , focus, DialogDescriptor.DEFAULT_ALIGN, null, null);
+            Object r = DialogDisplayer.getDefault().notify(dd);
+        };
     }
 
     @Override
-    public void setValue(final ConstellationColor value) {
-        this.setColor(value);
+    public EventHandler<MouseEvent> getLeftButtonEventImplementation() {
+        return event -> this.showDropDown();
+    }
+    // </editor-fold> 
+    
+    // <editor-fold defaultstate="collapsed" desc="Drop Down Implementation"> 
+    @Override
+    public ContextMenu getDropDown() {
+        return new ColorInputDropDown(this);
     }
     
     private class ColorInputDropDown extends ConstellationInputDropDown {
@@ -196,7 +219,7 @@ public final class ColorInputField extends ConstellationInputField<Constellation
         public ColorInputDropDown(final ColorInputField field){
             super(field);
             
-            List<MenuItem> items = new ArrayList<>();
+            final List<MenuItem> items = new ArrayList<>();
             for (final ColorMode mode : ColorMode.values()){
                 final Label label = new Label(mode.toString());
                 
@@ -208,23 +231,6 @@ public final class ColorInputField extends ConstellationInputField<Constellation
             }
             this.addMenuItems(items);
         }        
-    }
-    
-    public enum ColorMode {
-        COLOR("Color"),
-        HEX("HEX"),
-        RGB("RGB");
-        
-        final String text;
-        
-        ColorMode(final String text){
-            this.text = text;
-        }
-        
-        @Override
-        public String toString(){
-            return this.text;
-        }
-    }
-    
+    }    
+    // </editor-fold> 
 }

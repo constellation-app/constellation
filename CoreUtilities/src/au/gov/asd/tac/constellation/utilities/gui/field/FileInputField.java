@@ -15,21 +15,23 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.FileInputKind;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.LayoutConstants;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
+
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.control.IndexRange;
-import javafx.scene.control.TextInputControl;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
+import javafx.scene.control.MenuItem;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javax.swing.filechooser.FileFilter;
 import org.apache.commons.lang3.StringUtils;
@@ -44,6 +46,7 @@ public final class FileInputField extends ConstellationInputField<List<File>> {
     
     private ExtensionFilter extensionFilter = null;
     private boolean acceptAll = true;
+    private final FileInputKind fileInputKind;
     
     private static final Logger LOGGER = Logger.getLogger(FileInputField.class.getName());
         
@@ -51,15 +54,15 @@ public final class FileInputField extends ConstellationInputField<List<File>> {
         throw new UnsupportedOperationException();
     }
     
-    public FileInputField(FileInputKind fileInputKind){
+    public FileInputField(final FileInputKind fileInputKind){
         this(fileInputKind, null);
     }
     
-    public FileInputField(FileInputKind fileInputKind, TextType textTypeOverride){
+    public FileInputField(final FileInputKind fileInputKind, final TextType textTypeOverride){
         this(fileInputKind, textTypeOverride, 1);
     }
     
-    public FileInputField(FileInputKind fileInputKind, TextType textTypeOverride, int suggestedHeight) {
+    public FileInputField(final FileInputKind fileInputKind, final TextType textTypeOverride, final int suggestedHeight) {
         super(LayoutConstants.INPUT_POPUP, 
                 
                 textTypeOverride != null 
@@ -70,13 +73,107 @@ public final class FileInputField extends ConstellationInputField<List<File>> {
                         }
         );
         
+        this.fileInputKind = fileInputKind;
         if (suggestedHeight > 1){
             setWrapText(false);
             setPrefRowCount(suggestedHeight);
         }
         
         this.setRightLabel(fileInputKind.toString());
-        this.registerRightButtonEvent(event -> {
+    }
+    
+    // <editor-fold defaultstate="collapsed" desc="Local Private Methods">   
+    /**
+     * Sets wether this FileInputField will have an "All Files" filter.
+     * @param acceptAll 
+     */
+    public void setAcceptAll(final boolean acceptAll){
+        this.acceptAll = acceptAll;
+    }
+    
+    /**
+     * Creates a FileChooser for the Parameter
+     * If an extension filter has not been specified, all file types will be accepted by default.
+     * @param parameter
+     * @param title
+     * @return 
+     */
+    private FileChooserBuilder getFileChooser(final String title) {
+        
+        FileChooserBuilder fileChooserBuilder = new FileChooserBuilder(title)
+                .setTitle(title)
+                .setAcceptAllFileFilterUsed(extensionFilter == null ? true : acceptAll)
+                .setFilesOnly(true);
+
+        if (extensionFilter != null) {
+            for (final String extension : extensionFilter.getExtensions()){
+                // Add a file filter for all registered exportable file types.
+                fileChooserBuilder = fileChooserBuilder.addFileFilter(new FileFilter(){
+                    @Override
+                    public boolean accept(final File file) {
+                        final String name = file.getName();
+                        return (file.isFile() && StringUtils.endsWithIgnoreCase(name, extension)) || file.isDirectory();
+                    }
+                    @Override
+                    public String getDescription() {
+                        return extensionFilter.getDescription();
+                    }
+                });
+            }
+        }
+        return fileChooserBuilder;
+    }
+    
+    private List<File> getFiles() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public void setFileFilter(final ExtensionFilter extensionFilter) {
+        this.extensionFilter = extensionFilter;
+    }
+    // </editor-fold> 
+
+    // <editor-fold defaultstate="collapsed" desc="Value Modification & Validation Implementation"> 
+    @Override
+    public List<File> getValue() {
+        return new ArrayList<>();
+    }    
+    
+    /**
+     * Sets the text value of this input field based on a list of provided files.
+     * @param files 
+     */
+    @Override
+    public void setValue(final List<File> files) {
+        final StringBuilder sb = new StringBuilder();
+        files.stream().forEach(file -> {
+            sb.append(file.getAbsolutePath());
+            if (files.indexOf(file) + 1 != files.size()) {
+                sb.append("\n");
+            }
+        });
+        this.setText(sb.toString());     
+    }    
+    
+    @Override
+    public boolean isValid(){
+        return true;
+    }
+    // </editor-fold> 
+    
+    // <editor-fold defaultstate="collapsed" desc="ContextMenuContributor Implementation"> 
+    @Override
+    public List<MenuItem> getLocalMenuItems() {
+        final MenuItem format = new MenuItem("Select File");
+        format.setOnAction(value -> getRightButtonEventImplementation().handle(null));
+        return Arrays.asList(format);
+    }
+    // </editor-fold> 
+    
+    // <editor-fold defaultstate="collapsed" desc="Button Event Implementation">   
+    @Override
+    public EventHandler<MouseEvent> getRightButtonEventImplementation() {
+        return (event) -> {
             final CompletableFuture dialogFuture;
             final List<File> files = new ArrayList<>();
             switch (fileInputKind) {
@@ -122,135 +219,19 @@ public final class FileInputField extends ConstellationInputField<List<File>> {
             if (!files.isEmpty()) { 
                 this.setValue(files);
             }
-        });
+        };
     }
 
-
-    /**
-     * Sets wether this FileInputField will have an "All Files" filter.
-     * @param acceptAll 
-     */
-    public void setAcceptAll(final boolean acceptAll){
-        this.acceptAll = acceptAll;
-    }
-    
-    /**
-     * Creates a FileChooser for the Parameter
-     * If an extension filter has not been specified, all file types will be accepted by default.
-     * @param parameter
-     * @param title
-     * @return 
-     */
-    private FileChooserBuilder getFileChooser(final String title) {
-        
-        FileChooserBuilder fileChooserBuilder = new FileChooserBuilder(title)
-                .setTitle(title)
-                .setAcceptAllFileFilterUsed(extensionFilter == null ? true : acceptAll)
-                .setFilesOnly(true);
-
-        if (extensionFilter != null) {
-            for (final String extension : extensionFilter.getExtensions()){
-                // Add a file filter for all registered exportable file types.
-                fileChooserBuilder = fileChooserBuilder.addFileFilter(new FileFilter(){
-                    @Override
-                    public boolean accept(final File file) {
-                        final String name = file.getName();
-                        return (file.isFile() && StringUtils.endsWithIgnoreCase(name, extension)) || file.isDirectory();
-                    }
-                    @Override
-                    public String getDescription() {
-                        return extensionFilter.getDescription();
-                    }
-                });
-            }
-        }
-        return fileChooserBuilder;
-    }
-
-    /**
-     * Sets the text value of this input field based on a list of provided files.
-     * @param files 
-     */
     @Override
-    public void setValue(List<File> files) {
-        StringBuilder sb = new StringBuilder();
-        files.stream().forEach(file -> {
-            sb.append(file.getAbsolutePath());
-            if (files.indexOf(file) + 1 != files.size()) {
-                sb.append("\n");
-            }
-        });
-        this.setText(sb.toString());     
-    }    
-    
-    private List<File> getFiles() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+    public EventHandler<MouseEvent> getLeftButtonEventImplementation() {
+        return null;
+    } 
+    // </editor-fold>     
 
-    public void setFileFilter(ExtensionFilter extensionFilter) {
-        this.extensionFilter = extensionFilter;
-    }
-    
+    // <editor-fold defaultstate="collapsed" desc="Drop Down Implementation">   
     @Override
     public ContextMenu getDropDown() {
         throw new UnsupportedOperationException("FileInputField does not provide a ContextMenu");
     }
-    
-    @Override
-    public boolean isValid(){
-        return true;
-    }
-
-    @Override
-    public List<File> getValue() {
-        return new ArrayList<>();
-    }
-
-
-
-    /**
-     * Describes the method of file selection for a parameter of this type.
-     */
-    public enum FileInputKind {
-
-        /**
-         * Allows selection of multiple files. Displays "Open" on the button.
-         */
-        OPEN_MULTIPLE("Open"),
-        /**
-         * Allows selection of multiple files. Displays "..." on the button.
-         */
-        OPEN_MULTIPLE_OBSCURED("..."),
-        /**
-         * Allows selection of a single file only. Displays "Open" on the button.
-         */
-        OPEN("Open"),
-        /**
-         * Allows selection of a single file only. Displays "..." on the button.
-         */
-        OPEN_OBSCURED("..."),
-        /**
-         * Allows selection of a file, or entry of a non-existing but valid file
-         * path. Displays "Save" on the button.
-         */
-        SAVE("Save"),
-                /**
-         * Allows selection of a file, or entry of a non-existing but valid file
-         * path. Displays "..." on the button.
-         */
-        SAVE_OBSCURED("..."),;
-
-        
-        private final String text;
-        
-        private FileInputKind(final String text){
-            this.text = text;
-        }
-        
-        @Override
-        public String toString(){
-            return text;
-        }
-    }
-    
+    // </editor-fold> 
 }

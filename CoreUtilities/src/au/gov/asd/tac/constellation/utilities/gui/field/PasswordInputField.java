@@ -17,8 +17,12 @@ package au.gov.asd.tac.constellation.utilities.gui.field;
 
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.LayoutConstants;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType;
+import java.util.ArrayList;
+import java.util.List;
+import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.control.TextInputControl;
+import javafx.scene.control.MenuItem;
+import javafx.scene.input.MouseEvent;
 
 /**
  * A {@link ConstellationinputField} for managing password inputs. 
@@ -37,24 +41,17 @@ public final class PasswordInputField extends ConstellationInputField<String> {
     public PasswordInputField(){
         super(LayoutConstants.INPUT_DROPDOWN, TextType.SECRET);
         this.setRightLabel(ConstellationInputFieldConstants.SHOW_BUTTON_LABEL);    
-        
-        this.registerRightButtonEvent(event -> {
-            if (isVisible){
-                this.hideSecret();
-                this.setRightLabel(ConstellationInputFieldConstants.SHOW_BUTTON_LABEL);  
-                isVisible = false;
-                
-            } else {
-                this.showSecret();
-                this.setRightLabel(ConstellationInputFieldConstants.HIDE_BUTTON_LABEL);  
-                isVisible = true;
-            }
-        });
     }
     
+    // <editor-fold defaultstate="collapsed" desc="Value Modification & Validation Implementation"> 
     @Override
-    public ContextMenu getDropDown() {
-        throw new UnsupportedOperationException("PasswordInputField does not provide a ContextMenu");
+    public String getValue() {
+        return this.getText();
+    }
+
+    @Override
+    public void setValue(final String value) {
+        this.setText(value);
     }
     
     /**
@@ -67,14 +64,42 @@ public final class PasswordInputField extends ConstellationInputField<String> {
     public boolean isValid(){
         return true;
     }
-
+    // </editor-fold> 
+    
+    // <editor-fold defaultstate="collapsed" desc="ContextMenuContributor Implementation">   
     @Override
-    public String getValue() {
-        return this.getText();
+    public List<MenuItem> getLocalMenuItems() {
+        return new ArrayList();
+    }
+    // </editor-fold> 
+    
+    // <editor-fold defaultstate="collapsed" desc="Button Event Implementation">
+    @Override
+    public EventHandler<MouseEvent> getRightButtonEventImplementation() {
+        return event -> {
+            if (isVisible){
+                this.hideSecret();
+                this.setRightLabel(ConstellationInputFieldConstants.SHOW_BUTTON_LABEL);  
+                isVisible = false;
+                
+            } else {
+                this.showSecret();
+                this.setRightLabel(ConstellationInputFieldConstants.HIDE_BUTTON_LABEL);  
+                isVisible = true;
+            }
+        };
     }
 
     @Override
-    public void setValue(String value) {
-        this.setText(value);
+    public EventHandler<MouseEvent> getLeftButtonEventImplementation() {
+        return null;
     }
+    // </editor-fold> 
+
+    // <editor-fold defaultstate="collapsed" desc="Drop Down Implementation">   
+    @Override
+    public ContextMenu getDropDown() {
+        throw new UnsupportedOperationException("PasswordInputField does not provide a ContextMenu");
+    }
+    // </editor-fold>   
 }

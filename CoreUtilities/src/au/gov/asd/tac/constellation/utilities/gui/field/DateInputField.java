@@ -20,14 +20,18 @@ import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldC
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalUtilities;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.util.StringConverter;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.DialogDescriptor;
@@ -58,15 +62,7 @@ public final class DateInputField extends ConstellationInputField<LocalDate> {
         super(LayoutConstants.INPUT_POPUP, TextType.SINGLELINE);
         
         this.setRightLabel(ConstellationInputFieldConstants.SELECT_BUTTON_LABEL);
-        
-        this.registerRightButtonEvent(event -> {
-            DateChooserPanel dc = new DateChooserPanel(this.getDate());
-            final DialogDescriptor dialog = new DialogDescriptor(dc, "Select Date", true, null);
-            Integer result = (Integer) DialogDisplayer.getDefault().notify(dialog);
-            if (result == 0) {
-                setDate(dc.getSelectedDate()); 
-            }       
-        });
+   
         this.addShortcuts(KeyEvent.KEY_PRESSED, event -> {
             switch (event.getCode()){
                 case UP -> this.nextDate();
@@ -75,12 +71,16 @@ public final class DateInputField extends ConstellationInputField<LocalDate> {
         });
     }
     
+    // <editor-fold defaultstate="collapsed" desc="Local Private Methods">   
     /**
      * Gets the LocalDate represented by this input filed.
      * Achieved by parsing the text from the input field to a LocalDate
      * @return LocalDate representing the value of the input field
      */
     private LocalDate getLocalDate(){
+        if (this.getText().isBlank()){
+            return null;
+        }
         return LocalDate.parse(this.getText(), DATE_FORMATTER);
     }
     
@@ -97,7 +97,7 @@ public final class DateInputField extends ConstellationInputField<LocalDate> {
      * Sets this input filed based on a LocalDate object
      * @param date 
      */
-    private void setDate(LocalDate date){
+    private void setDate(final LocalDate date){
         this.setText(converter.toString(date)); 
     }
     
@@ -105,13 +105,28 @@ public final class DateInputField extends ConstellationInputField<LocalDate> {
      * Sets this input filed based on a Date object
      * @param date 
      */
-    private void setDate(Date date){
+    private void setDate(final Date date){
         this.setDate(TemporalUtilities.dateToLocalDate(date)); 
     }
     
+    private void nextDate() {
+        this.setValue(this.getValue().plusDays(1));
+    }
+
+    private void prevDate() {
+        this.setValue(this.getValue().minusDays(1));
+    }
+    // </editor-fold> 
+
+    // <editor-fold defaultstate="collapsed" desc="Value Modification & Validation Implementation"> 
     @Override
-    public ContextMenu getDropDown() {
-        return null;
+    public LocalDate getValue() {
+        return getLocalDate();
+    }
+
+    @Override
+    public void setValue(final LocalDate value) {
+        this.setDate(value);
     }
     
     @Override
@@ -123,23 +138,41 @@ public final class DateInputField extends ConstellationInputField<LocalDate> {
            return false; 
         }
     }   
+    // </editor-fold> 
+    
+    // <editor-fold defaultstate="collapsed" desc="ContextMenuContributor Implementation"> 
+    @Override
+    public List<MenuItem> getLocalMenuItems() {
+        final MenuItem format = new MenuItem("Select Date");
+        format.setOnAction(value -> getRightButtonEventImplementation().handle(null));
+        return Arrays.asList(format);
+    }
+    // </editor-fold> 
+
+    // <editor-fold defaultstate="collapsed" desc="Button Event Implementation">   
+    @Override
+    public EventHandler<MouseEvent> getRightButtonEventImplementation() {
+        return event -> {
+            final DateChooserPanel dc = new DateChooserPanel(this.getDate());
+            final DialogDescriptor dialog = new DialogDescriptor(dc, "Select Date", true, null);
+            final Integer result = (Integer) DialogDisplayer.getDefault().notify(dialog);
+            if (result == 0) {
+                setDate(dc.getSelectedDate()); 
+            }       
+        };
+    }
 
     @Override
-    public LocalDate getValue() {
-        return getLocalDate();
+    public EventHandler<MouseEvent> getLeftButtonEventImplementation() {
+        return null;
     }
-
+    // </editor-fold>  
+    
+    // <editor-fold defaultstate="collapsed" desc="Drop Down Implementation">   
     @Override
-    public void setValue(LocalDate value) {
-        this.setDate(value);
+    public ContextMenu getDropDown() {
+        throw new UnsupportedOperationException("DateInputField does not provide a Drop Down Menu");
     }
-
-    private void nextDate() {
-        this.setValue(this.getValue().plusDays(1));
-    }
-
-    private void prevDate() {
-        this.setValue(this.getValue().minusDays(1));
-    }
+    // </editor-fold>   
 }
 

@@ -15,7 +15,10 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.LayoutConstants;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ChoiceType;
+import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ChoiceType.MULTI;
+import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ChoiceType.SINGLE_DROPDOWN;
+import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ChoiceType.SINGLE_SPINNER;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
@@ -24,6 +27,7 @@ import java.util.stream.Collectors;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
+import javafx.event.EventHandler;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
@@ -33,6 +37,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 
 /**
  * A {@link ConstellationinputField} for managing choice selection. 
@@ -59,22 +64,10 @@ public final class ChoiceInputField<C extends Object> extends ConstellationInput
         super(type.getLayout(), TextType.SINGLELINE);
         switch (type){
             case SINGLE_SPINNER -> {
-                this.setRightLabel(ConstellationInputFieldConstants.NEXT_BUTTON_LABEL);
-                this.registerRightButtonEvent(event -> {
-                    this.incrementChoice();            
-                });
-                
-                this.setLeftLabel(ConstellationInputFieldConstants.PREVIOUS_BUTTON_LABEL);
-                this.registerLeftButtonEvent(event -> {
-                    this.decrementChoice();          
-                });
+                setRightLabel(ConstellationInputFieldConstants.NEXT_BUTTON_LABEL);
+                setLeftLabel(ConstellationInputFieldConstants.PREVIOUS_BUTTON_LABEL);
             }
-            case SINGLE_DROPDOWN, MULTI -> {
-                this.setRightLabel(ConstellationInputFieldConstants.SELECT_BUTTON_LABEL);
-                this.registerRightButtonEvent(event -> {
-                    this.showDropDown();            
-                });
-            }
+            case SINGLE_DROPDOWN, MULTI -> setRightLabel(ConstellationInputFieldConstants.SELECT_BUTTON_LABEL);
         }
         
         //Add shortcuts where users can increment and decrement the date using up and down arrows
@@ -90,6 +83,7 @@ public final class ChoiceInputField<C extends Object> extends ConstellationInput
         this.type = type;
     }
     
+    // <editor-fold defaultstate="collapsed" desc="Local Private Methods">   
     /**
      * Defines the options that users can select from in this field.
      * Any previously defined options will be overwritten with this new list.
@@ -116,46 +110,6 @@ public final class ChoiceInputField<C extends Object> extends ConstellationInput
         this.icons.clear();
         this.icons.addAll(icons);
     }
-    
-    @Override
-    public void setValue(final List<C> value) {
-        this.setChoices(value);
-    }
-    
-    @Override
-    public List<C> getValue() {
-        return this.getChoices();
-    }
-    
-    @Override
-    public boolean isValid() {
-        if (getText().isBlank()){
-            return true;
-        } else {
-            final List<C> items = stringToList(getText());
-            switch (type){
-                case SINGLE_DROPDOWN, SINGLE_SPINNER -> {
-                    return items != null && items.size() == 1 ;
-                }
-                case MULTI -> {
-                    if (items != null){
-                        final List<C> duplicates = items.stream().collect(Collectors.groupingBy(i -> i)).entrySet().stream().filter(entry -> entry.getValue().size() > 1).map(entry -> entry.getKey()).toList();
-                        return duplicates.isEmpty();
-                    } 
-                }
-            }
-            return false;
-        }
-    }  
-    
-    @Override
-    public ContextMenu getDropDown() {
-        try {
-            return new ChoiceInputDropDown(this);
-        } catch (Exception ex) {
-            return null;
-        }
-    } 
  
     /**
      * Changes the List of selected Choices to include the provided choice.
@@ -164,17 +118,14 @@ public final class ChoiceInputField<C extends Object> extends ConstellationInput
      * @param requestedChoices 
      */
     private void setChoices(final List<C> requestedChoices) {
-        if (requestedChoices != null) {
+        if (requestedChoices != null && this.type == ChoiceType.MULTI) {
             //This meethod requres use of an Arraylist. Casting is not possible.
-            ArrayList<C> localList = new ArrayList<>();       
+            final ArrayList<C> localList = new ArrayList<>();       
             localList.addAll(requestedChoices);
-
-            if (this.type == ChoiceType.MULTI) {
-                // Only retain the choices from the selection that in te available options
-                localList.retainAll(options);
-                //Single Modiication
-                this.setText(listToString(localList));
-            }
+            // Only retain the choices from the selection that in te available options
+            localList.retainAll(options);
+            //Single Modiication
+            this.setText(listToString(localList));
         }
     }
     
@@ -185,7 +136,7 @@ public final class ChoiceInputField<C extends Object> extends ConstellationInput
      * @param choice 
      */
     private void setChoice(final C choice){
-        List<C> currentChoices = stringToList(this.getText());
+        final List<C> currentChoices = stringToList(this.getText());
         if (this.options.contains(choice) && ((currentChoices != null && !currentChoices.contains(choice)) || currentChoices == null)) {
             switch (type){
                 case SINGLE_DROPDOWN, SINGLE_SPINNER -> this.setText(choice.toString());
@@ -211,7 +162,7 @@ public final class ChoiceInputField<C extends Object> extends ConstellationInput
      * @param choice 
      */
     private void removeChoice(final C choice){
-        List<C> choices = this.getChoices();
+        final List<C> choices = this.getChoices();
         choices.remove(choice);
         this.setChoices(choices);
     }
@@ -304,6 +255,94 @@ public final class ChoiceInputField<C extends Object> extends ConstellationInput
             this.setChoice(this.options.getFirst());
         }
     }
+    // </editor-fold> 
+        
+    // <editor-fold defaultstate="collapsed" desc="Value Modification & Validation Implementation"> 
+    @Override
+    public List<C> getValue() {
+        return this.getChoices();
+    }
+    
+    @Override
+    public void setValue(final List<C> value) {
+        this.setChoices(value);
+    }
+    
+    @Override
+    public boolean isValid() {
+        if (getText().isBlank()){
+            return true;
+        } else {
+            final List<C> items = stringToList(getText());
+            switch (type){
+                case SINGLE_DROPDOWN, SINGLE_SPINNER -> {
+                    return items != null && items.size() == 1 ;
+                }
+                case MULTI -> {
+                    if (items != null){
+                        final List<C> duplicates = items.stream().collect(Collectors.groupingBy(i -> i)).entrySet().stream().filter(entry -> entry.getValue().size() > 1).map(entry -> entry.getKey()).toList();
+                        return duplicates.isEmpty();
+                    } 
+                }
+            }
+            return false;
+        }
+    }  
+    // </editor-fold> 
+
+    // <editor-fold defaultstate="collapsed" desc="ContextMenuContributor Implementation"> 
+    @Override
+    public List<MenuItem> getLocalMenuItems() {
+        final List<MenuItem> items = new ArrayList();
+        if (type != null){
+            switch (type){
+                case SINGLE_SPINNER -> {
+                    final MenuItem next = new MenuItem("Increment");
+                    next.setOnAction(value -> getRightButtonEventImplementation().handle(null));
+                    items.add(next);
+
+                    final MenuItem prev = new MenuItem("Decrement");
+                    prev.setOnAction(value -> getLeftButtonEventImplementation().handle(null));
+                    items.add(prev);
+                }
+                case SINGLE_DROPDOWN, MULTI -> {
+                    final MenuItem choose = new MenuItem("Select Choice");
+                    choose.setOnAction(value -> getRightButtonEventImplementation().handle(null));
+                    items.add(choose);
+                }
+            }
+        }
+        return items;
+    }
+    // </editor-fold> 
+
+    // <editor-fold defaultstate="collapsed" desc="Button Event Implementation">   
+    @Override
+    public EventHandler<MouseEvent> getRightButtonEventImplementation() {
+        return switch (type){
+            case SINGLE_SPINNER -> event -> this.incrementChoice();
+            case SINGLE_DROPDOWN, MULTI -> event -> this.showDropDown();
+        };
+    }
+
+    @Override
+    public EventHandler<MouseEvent> getLeftButtonEventImplementation() {
+        return switch (type){
+            case SINGLE_SPINNER -> event -> decrementChoice(); 
+            default -> null;
+        };
+    }
+    // </editor-fold> 
+    
+    // <editor-fold defaultstate="collapsed" desc="Drop Down Implementation">   
+    @Override
+    public ContextMenu getDropDown() {
+        try {
+            return new ChoiceInputDropDown(this);
+        } catch (Exception ex) {
+            return null;
+        }
+    } 
 
     /**
      * A Context Menu to be used as a drop down for {@link ChoiceInputFields}.
@@ -328,12 +367,12 @@ public final class ChoiceInputField<C extends Object> extends ConstellationInput
             if (field.type == ChoiceType.MULTI) {
                 
                 //Select All Bulk Selection Feature
-                Label all = new Label("Select All");
+                final Label all = new Label("Select All");
                 all.setOnMouseClicked(event -> field.setChoices(field.options)); 
                 items.add(this.buildCustomMenuItem(all));
 
                 //Clear All Bulk Selection Feature
-                Label clear = new Label("Clear All");
+                final Label clear = new Label("Clear All");
                 clear.setOnMouseClicked(event -> field.clearChoices()); 
                 items.add(this.buildCustomMenuItem(clear));
 
@@ -374,7 +413,7 @@ public final class ChoiceInputField<C extends Object> extends ConstellationInput
                         item.setGraphic(icons.get(i));
                     }
 
-                    CustomMenuItem menuItem = this.buildCustomMenuItem(item);   
+                    final CustomMenuItem menuItem = this.buildCustomMenuItem(item);   
 
                     //If in multiple choice mode the context menu should not be closed after an item is selected.
                     if (type == ChoiceType.MULTI){
@@ -385,9 +424,9 @@ public final class ChoiceInputField<C extends Object> extends ConstellationInput
                 }
             }
             
-            ChangeListener<List<C>> cl = (ObservableValue<? extends List<C>> observable, List<C> oldValue, List<C> newValue) -> {
+            final ChangeListener<List<C>> cl = (ObservableValue<? extends List<C>> observable, List<C> oldValue, List<C> newValue) -> {
                 if (newValue != null) {
-                    List<String> stringrep = newValue.stream().map(Object::toString).toList();
+                    final List<String> stringrep = newValue.stream().map(Object::toString).toList();
                     for (CheckBox box : boxes){
                         box.setSelected(stringrep.contains(box.getText())); 
                     }
@@ -408,24 +447,8 @@ public final class ChoiceInputField<C extends Object> extends ConstellationInput
             this.addMenuItems(items);
         }
     }
+    // </editor-fold> 
     
-    /**
-     * Represents the types of ChoiceInputFields available in Constellation.
-     */
-    public enum ChoiceType {
-        
-        SINGLE_DROPDOWN(LayoutConstants.INPUT_DROPDOWN),
-        SINGLE_SPINNER(LayoutConstants.UPDATER_INPUT_UPDATER),
-        MULTI(LayoutConstants.INPUT_DROPDOWN);
-        
-        LayoutConstants layout;
-        
-        private ChoiceType(LayoutConstants layout) {
-            this.layout = layout;
-        }
-        
-        public LayoutConstants getLayout(){
-            return this.layout;
-        }
-    }
+
+
 }
