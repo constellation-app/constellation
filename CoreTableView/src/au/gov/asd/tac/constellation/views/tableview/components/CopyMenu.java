@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -121,12 +121,9 @@ public class CopyMenu {
      * selected rows in the table, false otherwise
      * @return the created menu item
      */
-    private MenuItem createCopyMenu(final String menuTitle,
-            final boolean selected) {
+    private MenuItem createCopyMenu(final String menuTitle, final boolean selected) {
         final MenuItem menuItem = new MenuItem(menuTitle);
-
         menuItem.setOnAction(new CopyMenuItemActionHandler(selected));
-
         return menuItem;
     }
 
@@ -134,7 +131,7 @@ public class CopyMenu {
      * Action handler for menu items that will copy table rows to the OS
      * clipboard.
      */
-    class CopyMenuItemActionHandler implements EventHandler<ActionEvent> {
+    private class CopyMenuItemActionHandler implements EventHandler<ActionEvent> {
 
         private final boolean selected;
 

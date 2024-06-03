@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,14 +76,13 @@ public class FileListener implements Runnable {
             final String[] files = restPath.toFile().list();
             for (final String f : files) {
                 final Path p = restPath.resolve(f);
-                LOGGER.warning(String.format("Deleting old REST file %s", p));
+                LOGGER.log(Level.WARNING, "{0}", String.format("Deleting old REST file %s", p));
                 Files.delete(p);
             }
 
         } else {
             Files.createDirectories(restPath);
         }
-
         running = false;
     }
 
@@ -131,7 +130,7 @@ public class FileListener implements Runnable {
                 for (final String f : files) {
                     if (f.equals(REQUEST_JSON)) {
                         // If any other files are required, write this file last, so the other files are already present.
-                        LOGGER.info(String.format("Found REST file %s", f));
+                        LOGGER.log(Level.INFO, "{0}", String.format("Found REST file %s", f));
                         final Path p = restPath.resolve(f);
                         JsonNode json = null;
                         try (final InputStream in = new FileInputStream(p.toFile())) {
@@ -246,11 +245,11 @@ public class FileListener implements Runnable {
         final File fqp;
         final InputStream in;
 
-        InStream(final Path p, final String name) throws FileNotFoundException {
+        public InStream(final Path p, final String name) throws FileNotFoundException {
             this(p, name, false);
         }
 
-        InStream(final Path p, final String name, final boolean optional) throws FileNotFoundException {
+        public InStream(final Path p, final String name, final boolean optional) throws FileNotFoundException {
             fqp = p.resolve(name).toFile();
             if (fqp.canRead()) {
                 in = new FileInputStream(fqp);
@@ -267,9 +266,11 @@ public class FileListener implements Runnable {
                 try {
                     in.close();
                 } catch (final IOException ex) {
+                    LOGGER.log(Level.WARNING, "Error occurred while attempting to close input stream");
                 }
-                final boolean fqpIsDeleted = fqp.delete();
-                if (!fqpIsDeleted) {
+                try {
+                    Files.delete(Path.of(fqp.getPath()));
+                } catch (final IOException ex) {
                     //TODO: Handle case where file not successfully deleted
                 }
             }

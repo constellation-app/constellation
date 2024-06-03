@@ -122,6 +122,7 @@ public class LayersViewShortcuts extends AbstractAction {
             case "CA-8" -> triggerLayerSelection(currentGraph, 8);
             case "CA-9" -> triggerLayerSelection(currentGraph, 9);
             default -> {
+                // do nothing
             }
         }
     }

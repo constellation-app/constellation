@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,13 +32,13 @@ import java.util.List;
 public class DefaultConversationBackgroundProvider implements ConversationBackgroundProvider {
 
     @Override
-    public void updateMessageBackgrounds(GraphReadMethods graph, List<ConversationMessage> messages) {
+    public void updateMessageBackgrounds(final GraphReadMethods graph, final List<ConversationMessage> messages) {
 
         final String[] colors = new String[]{"transparent", JavafxStyleManager.isDarkTheme() ? "rgb(60, 60, 60)" : "rgb(200, 200, 200)"};
         int currentColor = 1;
         int currentDay = -1;
 
-        for (ConversationMessage message : messages) {
+        for (final ConversationMessage message : messages) {
             // Get the unique day since the epcoh of the date-time in UTC.
             final int day = (int) ZonedDateTime.of(message.getDatetime().getDate().toLocalDateTime(), TimeZoneUtilities.UTC).getLong(ChronoField.EPOCH_DAY);
 

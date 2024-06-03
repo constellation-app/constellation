@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,12 +48,12 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
     // This is a map from the color names to their RGB color bits used by glColorMask.
     //
     private static final Map<String, boolean[]> COLOR_BITS = Map.of(
-            "Blue",    new boolean[]{false, false, true},
-            "Cyan",    new boolean[]{false, true,  true},
-            "Green",   new boolean[]{false, true,  false},
-            "Magenta", new boolean[]{true,  false, true},
-            "Red",     new boolean[]{true,  false, false},
-            "Yellow",  new boolean[]{true,  true,  false}
+            "Blue", new boolean[]{false, false, true},
+            "Cyan", new boolean[]{false, true, true},
+            "Green", new boolean[]{false, true, false},
+            "Magenta", new boolean[]{true, false, true},
+            "Red", new boolean[]{true, false, false},
+            "Yellow", new boolean[]{true, true, false}
     );
 
     public static boolean[] getColorMask(final String color) {
@@ -80,6 +80,7 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
         applicationOptionsPanel.setDownloadPythonClient(prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT));
         applicationOptionsPanel.setCurrentFont(prefs.get(ApplicationPreferenceKeys.FONT_FAMILY, ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT));
         applicationOptionsPanel.setFontSize(prefs.get(ApplicationPreferenceKeys.FONT_SIZE, ApplicationPreferenceKeys.FONT_SIZE_DEFAULT));
+        applicationOptionsPanel.setEnableSpellChecking(prefs.getBoolean(ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING, ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING_DEFAULT));
         applicationOptionsPanel.setColorModeSelection(prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT));
     }
 
@@ -95,8 +96,8 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
                 final ApplicationOptionsPanel applicationOptionsPanel = getPanel();
 
                 prefs.put(ApplicationPreferenceKeys.USER_DIR, applicationOptionsPanel.getUserDirectory());
-                prefs.putBoolean(ApplicationPreferenceKeys.AUTOSAVE_ENABLED, applicationOptionsPanel.isAustosaveEnabled());
-                prefs.putInt(ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE, applicationOptionsPanel.getAustosaveFrequency());
+                prefs.putBoolean(ApplicationPreferenceKeys.AUTOSAVE_ENABLED, applicationOptionsPanel.isAutosaveEnabled());
+                prefs.putInt(ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE, applicationOptionsPanel.getAutosaveFrequency());
                 prefs.putBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, applicationOptionsPanel.isWelcomeOnStartupSelected());
                 prefs.putBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, applicationOptionsPanel.isWhatsNewOnStartupSelected());
                 prefs.putInt(ApplicationPreferenceKeys.WEBSERVER_PORT, applicationOptionsPanel.getWebserverPort());
@@ -105,6 +106,7 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
                 prefs.putBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, applicationOptionsPanel.isDownloadPythonClientSelected());
                 prefs.put(ApplicationPreferenceKeys.FONT_FAMILY, applicationOptionsPanel.getCurrentFont());
                 prefs.put(ApplicationPreferenceKeys.FONT_SIZE, applicationOptionsPanel.getFontSize());
+                prefs.putBoolean(ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING, applicationOptionsPanel.isEnableSpellCheckingSelected());
                 prefs.put(ApplicationPreferenceKeys.COLORBLIND_MODE, applicationOptionsPanel.getColorModeSelection());
             }
         }
@@ -120,7 +122,7 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
         final ApplicationOptionsPanel applicationOptionsPanel = getPanel();
 
         return applicationOptionsPanel.getUserDirectory() != null
-                && applicationOptionsPanel.getAustosaveFrequency() > 0
+                && applicationOptionsPanel.getAutosaveFrequency() > 0
                 && applicationOptionsPanel.getWebserverPort() > 0
                 && applicationOptionsPanel.getNotebookDirectory() != null
                 && applicationOptionsPanel.getRestDirectory() != null
@@ -135,8 +137,8 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
         final ApplicationOptionsPanel applicationOptionsPanel = getPanel();
 
         return !(applicationOptionsPanel.getUserDirectory().equals(prefs.get(ApplicationPreferenceKeys.USER_DIR, ApplicationPreferenceKeys.USER_DIR_DEFAULT))
-                && applicationOptionsPanel.isAustosaveEnabled() == prefs.getBoolean(ApplicationPreferenceKeys.AUTOSAVE_ENABLED, ApplicationPreferenceKeys.AUTOSAVE_ENABLED_DEFAULT)
-                && applicationOptionsPanel.getAustosaveFrequency() == prefs.getInt(ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE, ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE_DEFAULT)
+                && applicationOptionsPanel.isAutosaveEnabled() == prefs.getBoolean(ApplicationPreferenceKeys.AUTOSAVE_ENABLED, ApplicationPreferenceKeys.AUTOSAVE_ENABLED_DEFAULT)
+                && applicationOptionsPanel.getAutosaveFrequency() == prefs.getInt(ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE, ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE_DEFAULT)
                 && applicationOptionsPanel.isWelcomeOnStartupSelected() == prefs.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, ApplicationPreferenceKeys.WELCOME_ON_STARTUP_DEFAULT)
                 && applicationOptionsPanel.isWhatsNewOnStartupSelected() == prefs.getBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP_DEFAULT)
                 && applicationOptionsPanel.getWebserverPort() == prefs.getInt(ApplicationPreferenceKeys.WEBSERVER_PORT, ApplicationPreferenceKeys.WEBSERVER_PORT_DEFAULT)
@@ -145,6 +147,7 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
                 && applicationOptionsPanel.isDownloadPythonClientSelected() == prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT)
                 && applicationOptionsPanel.getCurrentFont().equals(prefs.get(ApplicationPreferenceKeys.FONT_FAMILY, ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT))
                 && applicationOptionsPanel.getFontSize().equals(prefs.get(ApplicationPreferenceKeys.FONT_SIZE, ApplicationPreferenceKeys.FONT_SIZE_DEFAULT))
+                && applicationOptionsPanel.isEnableSpellCheckingSelected() == prefs.getBoolean(ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING, ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING_DEFAULT)
                 && applicationOptionsPanel.getColorModeSelection().equals(prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT)));
     }
 
@@ -160,7 +163,7 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
 
     private ApplicationOptionsPanel getPanel() {
         if (panel == null) {
-            panel = new ApplicationOptionsPanel(this);
+            panel = new ApplicationOptionsPanel();
         }
         return panel;
     }

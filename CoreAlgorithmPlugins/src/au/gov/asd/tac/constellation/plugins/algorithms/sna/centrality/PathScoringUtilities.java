@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -125,9 +125,9 @@ public class PathScoringUtilities {
 
             // for each neighbour, check if there is any new information it needs to receive
             for (int sourcePosition = update.nextSetBit(0); sourcePosition >= 0; sourcePosition = update.nextSetBit(sourcePosition + 1)) {
-                int vxId = graph.getVertex(sourcePosition);
+                final int vxId = graph.getVertex(sourcePosition);
                 for (int neighbourPosition = 0; neighbourPosition < graph.getVertexNeighbourCount(vxId); neighbourPosition++) {
-                    int destinationPosition = graph.getVertexPosition(graph.getVertexNeighbour(vxId, neighbourPosition));
+                    final int destinationPosition = graph.getVertexPosition(graph.getVertexNeighbour(vxId, neighbourPosition));
                     if (!subgraph.get(destinationPosition)) {
                         continue;
                     }
@@ -185,14 +185,14 @@ public class PathScoringUtilities {
                 int vertexId = graph.getVertex(vertexPosition);
 
                 for (int vertexNeighbourPosition = 0; vertexNeighbourPosition < graph.getVertexNeighbourCount(vertexId); vertexNeighbourPosition++) {
-                    int neighbourId = graph.getVertexNeighbour(vertexId, vertexNeighbourPosition);
-                    int neighbourPosition = graph.getVertexPosition(neighbourId);
+                    final int neighbourId = graph.getVertexNeighbour(vertexId, vertexNeighbourPosition);
+                    final int neighbourPosition = graph.getVertexPosition(neighbourId);
                     if (!subgraph.get(neighbourPosition)) {
                         continue;
                     }
 
                     boolean isRequestedDirection = false;
-                    int linkId = graph.getLink(vertexId, neighbourId);
+                    final int linkId = graph.getLink(vertexId, neighbourId);
                     for (int linkEdgePosition = 0; linkEdgePosition < graph.getLinkEdgeCount(linkId); linkEdgePosition++) {
                         final int edgeId = graph.getLinkEdge(linkId, linkEdgePosition);
                         final int edgeDirection = graph.getEdgeDirection(edgeId);
@@ -262,9 +262,9 @@ public class PathScoringUtilities {
 
             // for each neighbour, check if there is any new information it needs to receive
             for (int sourcePosition = update.nextSetBit(0); sourcePosition >= 0; sourcePosition = update.nextSetBit(sourcePosition + 1)) {
-                int vxId = graph.getVertex(sourcePosition);
+                final int vxId = graph.getVertex(sourcePosition);
                 for (int neighbourPosition = 0; neighbourPosition < graph.getVertexNeighbourCount(vxId); neighbourPosition++) {
-                    int destinationPosition = graph.getVertexPosition(graph.getVertexNeighbour(vxId, neighbourPosition));
+                    final int destinationPosition = graph.getVertexPosition(graph.getVertexNeighbour(vxId, neighbourPosition));
                     if (!traversal[sourcePosition].equals(traversal[destinationPosition])) {
 
                         final BitSet diff = (BitSet) traversal[sourcePosition].clone();
@@ -277,14 +277,9 @@ public class PathScoringUtilities {
             }
             // update scores based on the current traversal state
             switch (scoreType) {
-                case ECCENTRICITY:
-                    updateEccentricityScoresUndirected(scores, turn);
-                    break;
-                case AVERAGE_DISTANCE:
-                    updateAveragePathScoresUndirected(distances, scores, turn, sendBuffer);
-                    break;
-                default:
-                    throw new IllegalArgumentException(String.format(SCORETYPE_ERROR_FORMAT, scoreType));
+                case ECCENTRICITY -> updateEccentricityScoresUndirected(scores, turn);
+                case AVERAGE_DISTANCE -> updateAveragePathScoresUndirected(distances, scores, turn, sendBuffer);
+                default -> throw new IllegalArgumentException(String.format(SCORETYPE_ERROR_FORMAT, scoreType));
             }
 
             turn.clear();
@@ -294,18 +289,18 @@ public class PathScoringUtilities {
             newUpdate.clear();
         }
 
-        switch (scoreType) {
-            case ECCENTRICITY:
-                return Tuple.create(traversal, scores);
-            case AVERAGE_DISTANCE:
+        return switch (scoreType) {
+            case ECCENTRICITY -> Tuple.create(traversal, scores);
+            case AVERAGE_DISTANCE -> {
                 final float[] distanceArray = new float[distances.size()];
                 for (int i = 0; i < distances.size(); i++) {
                     distanceArray[i] = distances.get(i);
                 }
-                return Tuple.create(traversal, distanceArray);
-            default:
+                yield Tuple.create(traversal, distanceArray);
+            }
+            default ->
                 throw new IllegalArgumentException(String.format(SCORETYPE_ERROR_FORMAT, scoreType));
-        }
+        };
     }
 
     private static Tuple<BitSet[], float[]> computeAllPathsDirected(final GraphReadMethods graph, final ScoreType scoreType,
@@ -351,11 +346,11 @@ public class PathScoringUtilities {
                 int vertexId = graph.getVertex(vertexPosition);
 
                 for (int vertexNeighbourPosition = 0; vertexNeighbourPosition < graph.getVertexNeighbourCount(vertexId); vertexNeighbourPosition++) {
-                    int neighbourId = graph.getVertexNeighbour(vertexId, vertexNeighbourPosition);
-                    int neighbourPosition = graph.getVertexPosition(neighbourId);
+                    final int neighbourId = graph.getVertexNeighbour(vertexId, vertexNeighbourPosition);
+                    final int neighbourPosition = graph.getVertexPosition(neighbourId);
 
                     boolean isRequestedDirection = false;
-                    int linkId = graph.getLink(vertexId, neighbourId);
+                    final int linkId = graph.getLink(vertexId, neighbourId);
                     for (int linkEdgePosition = 0; linkEdgePosition < graph.getLinkEdgeCount(linkId); linkEdgePosition++) {
                         final int edgeId = graph.getLinkEdge(linkId, linkEdgePosition);
                         final int edgeDirection = graph.getEdgeDirection(edgeId);
@@ -379,14 +374,9 @@ public class PathScoringUtilities {
 
             // update scores based on the current traversal state
             switch (scoreType) {
-                case ECCENTRICITY:
-                    updateEccentricityScoresDirected(scores, turn);
-                    break;
-                case AVERAGE_DISTANCE:
-                    updateAveragePathScoresUndirected(distances, scores, turn, sendBuffer);
-                    break;
-                default:
-                    throw new IllegalArgumentException(String.format(SCORETYPE_ERROR_FORMAT, scoreType));
+                case ECCENTRICITY -> updateEccentricityScoresDirected(scores, turn);
+                case AVERAGE_DISTANCE -> updateAveragePathScoresUndirected(distances, scores, turn, sendBuffer);
+                default -> throw new IllegalArgumentException(String.format(SCORETYPE_ERROR_FORMAT, scoreType));
             }
 
             turn.clear();
@@ -396,18 +386,18 @@ public class PathScoringUtilities {
             newUpdate.clear();
         }
 
-        switch (scoreType) {
-            case ECCENTRICITY:
-                return Tuple.create(traversal, scores);
-            case AVERAGE_DISTANCE:
+        return switch (scoreType) {
+            case ECCENTRICITY -> Tuple.create(traversal, scores);
+            case AVERAGE_DISTANCE -> {
                 final float[] distanceArray = new float[distances.size()];
                 for (int i = 0; i < distances.size(); i++) {
                     distanceArray[i] = distances.get(i);
                 }
-                return Tuple.create(traversal, distanceArray);
-            default:
+                yield Tuple.create(traversal, distanceArray);
+            }
+            default ->
                 throw new IllegalArgumentException(String.format(SCORETYPE_ERROR_FORMAT, scoreType));
-        }
+        };
     }
 
     private static Tuple<BitSet[], float[]> computeShortestPathsUndirected(final GraphReadMethods graph, final ScoreType scoreType, final boolean selectedOnly) {
@@ -450,11 +440,11 @@ public class PathScoringUtilities {
 
             // for each neighbour, check if there is any new information it needs to receive
             for (int vertexPosition = update.nextSetBit(0); vertexPosition >= 0; vertexPosition = update.nextSetBit(vertexPosition + 1)) {
-                int vertexId = graph.getVertex(vertexPosition);
+                final int vertexId = graph.getVertex(vertexPosition);
 
                 for (int vertexNeighbourPosition = 0; vertexNeighbourPosition < graph.getVertexNeighbourCount(vertexId); vertexNeighbourPosition++) {
-                    int neighbourId = graph.getVertexNeighbour(vertexId, vertexNeighbourPosition);
-                    int neighbourPosition = graph.getVertexPosition(neighbourId);
+                    final int neighbourId = graph.getVertexNeighbour(vertexId, vertexNeighbourPosition);
+                    final int neighbourPosition = graph.getVertexPosition(neighbourId);
                     if (!traversal[vertexPosition].equals(traversal[neighbourPosition])) {
                         turn.set(neighbourPosition, true);
 
@@ -472,18 +462,13 @@ public class PathScoringUtilities {
 
             // update scores based on the current traversal state
             switch (scoreType) {
-                case BETWEENNESS:
+                case BETWEENNESS -> 
                     updateBetweennessScoresUndirected(graph, traversal, scores, sendBuffer, exclusions, turn, selectedOnly);
-                    break;
-                case CLOSENESS:
-                case FARNESS:
+                case CLOSENESS, FARNESS ->
                     updateFarnessScoresUndirected(graph, traversal, scores, sendBuffer, exclusions, turn, selectedOnly);
-                    break;
-                case HARMONIC_CLOSENESS:
-                case HARMONIC_FARNESS:
+                case HARMONIC_CLOSENESS, HARMONIC_FARNESS ->
                     updateHarmonicFarnessScoresUndirected(graph, traversal, scores, sendBuffer, exclusions, turn, selectedOnly);
-                    break;
-                default:
+                default ->
                     throw new IllegalArgumentException(String.format(SCORETYPE_ERROR_FORMAT, scoreType));
             }
 
@@ -577,11 +562,11 @@ public class PathScoringUtilities {
                 int vertexId = graph.getVertex(vertexPosition);
 
                 for (int vertexNeighbourPosition = 0; vertexNeighbourPosition < graph.getVertexNeighbourCount(vertexId); vertexNeighbourPosition++) {
-                    int neighbourId = graph.getVertexNeighbour(vertexId, vertexNeighbourPosition);
-                    int neighbourPosition = graph.getVertexPosition(neighbourId);
+                    final int neighbourId = graph.getVertexNeighbour(vertexId, vertexNeighbourPosition);
+                    final int neighbourPosition = graph.getVertexPosition(neighbourId);
 
                     boolean isRequestedDirection = false;
-                    int linkId = graph.getLink(vertexId, neighbourId);
+                    final int linkId = graph.getLink(vertexId, neighbourId);
                     for (int linkEdgePosition = 0; linkEdgePosition < graph.getLinkEdgeCount(linkId); linkEdgePosition++) {
                         final int edgeId = graph.getLinkEdge(linkId, linkEdgePosition);
                         final int edgeDirection = graph.getEdgeDirection(edgeId);
@@ -613,8 +598,8 @@ public class PathScoringUtilities {
                 int vertexId = graph.getVertex(vertexPosition);
 
                 for (int vertexNeighbourPosition = 0; vertexNeighbourPosition < graph.getVertexNeighbourCount(vertexId); vertexNeighbourPosition++) {
-                    int neighbourId = graph.getVertexNeighbour(vertexId, vertexNeighbourPosition);
-                    int neighbourPosition = graph.getVertexPosition(neighbourId);
+                    final int neighbourId = graph.getVertexNeighbour(vertexId, vertexNeighbourPosition);
+                    final int neighbourPosition = graph.getVertexPosition(neighbourId);
 
                     boolean isOppositeDirection = false;
                     int linkId = graph.getLink(vertexId, neighbourId);
@@ -644,20 +629,14 @@ public class PathScoringUtilities {
 
             // update scores based on the current traversal state
             switch (scoreType) {
-                case BETWEENNESS:
+                case BETWEENNESS ->
                     updateBetweennessScoresDirected(graph, traversalF, traversalB, scores, sendBufferF, sendBufferB, exclusionsF, exclusionsB, turn, selectedOnly);
-                    break;
-                case CLOSENESS:
-                case FARNESS:
+                case CLOSENESS, FARNESS ->
                     updateFarnessScoresDirected(graph, traversalF, traversalB, scores, sendBufferF, sendBufferB, exclusionsF, exclusionsB, turn, selectedOnly);
-                    break;
-                case HARMONIC_CLOSENESS:
-                case HARMONIC_FARNESS:
+                case HARMONIC_CLOSENESS, HARMONIC_FARNESS ->
                     updateHarmonicFarnessScoresDirected(graph, traversalF, traversalB, scores, sendBufferF, sendBufferB, exclusionsF, exclusionsB, turn, selectedOnly);
-                    break;
-                default:
+                default ->
                     throw new IllegalArgumentException(String.format(SCORETYPE_ERROR_FORMAT, scoreType));
-
             }
 
             turn.clear();
@@ -708,16 +687,6 @@ public class PathScoringUtilities {
     }
 
     private static void updateAveragePathScoresUndirected(final ArrayList<Float> distances, final float[] scores, final BitSet turn, final BitSet[] sendBuffer) {
-        // for each node that has a message in transit, update its eccentricity
-        for (int vxId = turn.nextSetBit(0); vxId >= 0; vxId = turn.nextSetBit(vxId + 1)) {
-            scores[vxId]++;
-            for (int nxId = sendBuffer[vxId].nextSetBit(0); nxId >= 0; nxId = sendBuffer[vxId].nextSetBit(nxId + 1)) {
-                distances.add(scores[vxId]);
-            }
-        }
-    }
-
-    private static void updateAveragePathScoresScoresDirected(final ArrayList<Float> distances, final float[] scores, final BitSet turn, final BitSet[] sendBuffer) {
         // for each node that has a message in transit, update its eccentricity
         for (int vxId = turn.nextSetBit(0); vxId >= 0; vxId = turn.nextSetBit(vxId + 1)) {
             scores[vxId]++;

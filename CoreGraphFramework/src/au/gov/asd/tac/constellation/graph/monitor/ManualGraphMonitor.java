@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -98,7 +98,6 @@ public class ManualGraphMonitor {
     }
 
     public void setAttributeListener(final GraphElementType elementType, final String label, final GraphMonitorListener listener) {
-
         if (label == null) {
             return;
         }
@@ -108,7 +107,6 @@ public class ManualGraphMonitor {
 
         // Are we removing this attribute
         if (listener == null) {
-
             // Remove any existing attribute record
             final AttributeRecord attributeRecord = attributes.remove(attributeKey);
             if (attributeRecord != null) {
@@ -117,10 +115,8 @@ public class ManualGraphMonitor {
                     updateAttributes[attributeRecord.updateIndex] = updateAttributes[--updateAttributesCount];
                     updateAttributes[updateAttributesCount] = null;
                 }
-            }
-
-            // Are we setting a listener
-        } else {
+            }            
+        } else { // Are we setting a listener
             AttributeRecord attributeRecord = attributes.get(attributeKey);
             if (attributeRecord == null) {
                 attributeRecord = new AttributeRecord(elementType, label, addListener(listener));
@@ -129,7 +125,6 @@ public class ManualGraphMonitor {
                 removeListener(attributeRecord.listener);
                 attributeRecord.listener = addListener(listener);
             }
-
         }
     }
 
@@ -160,7 +155,6 @@ public class ManualGraphMonitor {
      * @param produceEvents should the update notify the listeners?
      */
     public void update(final GraphReadMethods graph, final boolean produceEvents) {
-
         // Move on to the next update
         currentUpdate++;
 
@@ -171,11 +165,9 @@ public class ManualGraphMonitor {
         final long oldGlobalModificationCounter = globalModificationCounter;
         globalModificationCounter = graph.getGlobalModificationCounter();
         if (globalModificationCounter != oldGlobalModificationCounter) {
-
             final long oldStructureModificationCounter = structureModificationCounter;
             structureModificationCounter = graph.getStructureModificationCounter();
             if (structureModificationCounter != oldStructureModificationCounter) {
-
                 if (VERBOSE) {
                     LOGGER.log(Level.INFO,"GRAPH MONITOR: structure changed");
                 }
@@ -188,7 +180,6 @@ public class ManualGraphMonitor {
             final long oldAttributeModificationCounter = attributeModificationCounter;
             attributeModificationCounter = graph.getAttributeModificationCounter();
             if (attributeModificationCounter != oldAttributeModificationCounter) {
-
                 if (VERBOSE) {
                     LOGGER.log(Level.INFO,"GRAPH MONITOR: attributes added/removed");
                 }
@@ -198,7 +189,6 @@ public class ManualGraphMonitor {
                 }
 
                 resetAttributes(graph);
-
             } else {
                 updateAttributes(graph, produceEvents);
             }
@@ -206,15 +196,13 @@ public class ManualGraphMonitor {
     }
 
     private void resetAttributes(final GraphReadMethods graph) {
-
         if (VERBOSE) {
             LOGGER.log(Level.INFO,"GRAPH MONITOR: recreating attributes");
         }
 
         updateAttributesCount = 0;
         for (final Entry<AttributeKey, AttributeRecord> entry : attributes.entrySet()) {
-
-            AttributeRecord attributeRecord = entry.getValue();
+            final AttributeRecord attributeRecord = entry.getValue();
 
             attributeRecord.attributeId = graph.getAttribute(attributeRecord.elementType, attributeRecord.label);
 
@@ -230,15 +218,13 @@ public class ManualGraphMonitor {
     }
 
     private void updateAttributes(final GraphReadMethods graph, final boolean produceEvents) {
-        AttributeRecord[] copy = Arrays.copyOf(updateAttributes, updateAttributesCount);
+        final AttributeRecord[] copy = Arrays.copyOf(updateAttributes, updateAttributesCount);
 
         for (final AttributeRecord attributeRecord : copy) {
-
             // Has the modification counter changed?
-            long oldModificationCounter = attributeRecord.modificationCounter;
+            final long oldModificationCounter = attributeRecord.modificationCounter;
             attributeRecord.modificationCounter = graph.getValueModificationCounter(attributeRecord.attributeId);
             if (attributeRecord.modificationCounter != oldModificationCounter) {
-
                 if (VERBOSE) {
                     final String log = String.format("GRAPH MONITOR: attribute changed: " + attributeRecord.elementType + " " + attributeRecord.label);
                     LOGGER.log(Level.INFO, log);
@@ -268,11 +254,8 @@ public class ManualGraphMonitor {
 
         @Override
         public boolean equals(final Object other) {
-            if (other instanceof AttributeKey) {
-                AttributeKey attributeKey = (AttributeKey) other;
-                return elementType == attributeKey.elementType && label.equals(attributeKey.label);
-            }
-            return false;
+            return other instanceof AttributeKey attributeKey 
+                    && elementType == attributeKey.elementType && label.equals(attributeKey.label);
         }
     }
 

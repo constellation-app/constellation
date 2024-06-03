@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,20 +56,26 @@ public final class DateAttributeDescription extends AbstractAttributeDescription
     private long defaultValue = DEFAULT_VALUE;
 
     private long convertFromObject(final Object object) throws IllegalArgumentException {
-        if (object == null) {
-            return (long) getDefault();
-        } else if (object instanceof LocalDate) {
-            return ((LocalDate) object).toEpochDay();
-        } else if (object instanceof Date) {
-            return ((Date) object).getTime() / TemporalConstants.MILLISECONDS_IN_DAY;
-        } else if (object instanceof Calendar) {
-            return ((Calendar) object).getTimeInMillis() / TemporalConstants.MILLISECONDS_IN_DAY;
-        } else if (object instanceof Number) {
-            return ((Number) object).longValue();
-        } else if (object instanceof String) {
-            return convertFromString((String) object);
-        } else {
-            throw new IllegalArgumentException(String.format(
+        switch (object) {
+            case LocalDate localDate -> {
+                return localDate.toEpochDay();
+            }       
+            case Date date -> {
+                return date.getTime() / TemporalConstants.MILLISECONDS_IN_DAY;
+            }       
+            case Calendar calendar -> {
+                return calendar.getTimeInMillis() / TemporalConstants.MILLISECONDS_IN_DAY;
+            }       
+            case Number number -> {
+                return number.longValue();
+            }       
+            case String string -> {
+                return convertFromString(string);
+            }
+            case null -> {
+                return (long) getDefault();
+            }
+            default -> throw new IllegalArgumentException(String.format(
                     "Error converting Object '%s' to date", object.getClass()));
         }
     }
@@ -241,12 +247,12 @@ public final class DateAttributeDescription extends AbstractAttributeDescription
     }
 
     @Override
-    public Object createReadObject(IntReadable indexReadable) {
+    public Object createReadObject(final IntReadable indexReadable) {
         return (LongReadable) () -> data[indexReadable.readInt()];
     }
 
     @Override
-    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+    public Object createWriteObject(final GraphWriteMethods graph, final int attribute, final IntReadable indexReadable) {
         return new LongVariable() {
             @Override
             public long readLong() {
@@ -254,7 +260,7 @@ public final class DateAttributeDescription extends AbstractAttributeDescription
             }
 
             @Override
-            public void writeLong(long value) {
+            public void writeLong(final long value) {
                 graph.setLongValue(attribute, indexReadable.readInt(), value);
             }
         };

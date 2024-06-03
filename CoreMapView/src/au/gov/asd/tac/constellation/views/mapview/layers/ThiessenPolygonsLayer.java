@@ -75,7 +75,7 @@ public class ThiessenPolygonsLayer extends MapLayer {
                             && markerPosition.x < bottomRight.x
                             && markerPosition.y < bottomRight.y;
                 })
-                .collect(Collectors.toList());
+                .toList();
 
         onScreenMarkerCount = onScreenMarkers.size();
 

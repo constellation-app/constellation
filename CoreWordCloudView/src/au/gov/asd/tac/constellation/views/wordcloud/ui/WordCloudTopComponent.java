@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -92,9 +92,8 @@ public final class WordCloudTopComponent extends JavaFxTopComponent<WordCloudPan
             panel.setScene(scene);
 
             // Update word cloud pane's size when window size changes
-            scene.heightProperty().addListener((obv, oldVal, newVal) -> {
-                wordCloudPane.setContentHeight(newVal.intValue());
-            });
+            scene.heightProperty().addListener((obv, oldVal, newVal) -> 
+                wordCloudPane.setContentHeight(newVal.intValue()));
         });
     }
 

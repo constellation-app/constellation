@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,32 +65,20 @@ public class MarkdownTreeNGTest {
     }
 
     public String getTypeString(final MarkdownNode.Type type) {
-        switch (type) {
-            case ROOT:
-                return "ROOT";
-            case HEADING:
-                return "HEADING";
-            case PARAGRAPH:
-                return "PARAGRAPH";
-            case BOLD:
-                return "BOLD";
-            case ITALIC:
-                return "ITALIC";
-            case NORMAL:
-                return "NORMAL";
-            case STRIKETHROUGH:
-                return "STRIKETHROUGH";
-            case ORDERED_LIST:
-                return "ORDERED LIST";
-            case LIST_END:
-                return "LIST END";
-            case LIST_ITEM:
-                return "LIST ITEM";
-            case LINE_BREAK:
-                return "LINE BREAK";
-            default:
-                return "Type doesn't exist";
-        }
+        return switch (type) {
+            case ROOT -> "ROOT";
+            case HEADING -> "HEADING";
+            case PARAGRAPH -> "PARAGRAPH";
+            case BOLD -> "BOLD";
+            case ITALIC -> "ITALIC";
+            case NORMAL -> "NORMAL";
+            case STRIKETHROUGH -> "STRIKETHROUGH";
+            case ORDERED_LIST -> "ORDERED LIST";
+            case LIST_END -> "LIST END";
+            case LIST_ITEM -> "LIST ITEM";
+            case LINE_BREAK -> "LINE BREAK";
+            default -> "Type doesn't exist";
+        };
     }
 
     /**

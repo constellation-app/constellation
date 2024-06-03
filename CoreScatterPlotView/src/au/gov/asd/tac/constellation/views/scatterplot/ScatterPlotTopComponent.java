@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -87,14 +87,15 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
             ScatterPlotState state = null;
             try {
                 state = getState(graph);
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException e) {
+                Thread.currentThread().interrupt();
                 ScatterPlotErrorDialog.create("Error getting scatter plot state: " + e.getMessage());
             }
 
             if (state != null && state.isSelectedOnly()) {
                 scatterPlotPane.getChartPane().refreshChart(state);
             } else {
-                Set<ScatterData> selectedElements = scatterPlotPane.getChartPane().getSelectionFromGraph(state);
+                final Set<ScatterData> selectedElements = scatterPlotPane.getChartPane().getSelectionFromGraph(state);
                 scatterPlotPane.getChartPane().selectElementsOnChart(selectedElements, null);
             }
         };
@@ -104,7 +105,8 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
             if (graph != null) {
                 try {
                     state = getState(graph);
-                } catch (InterruptedException e) {
+                } catch (final InterruptedException e) {
+                    Thread.currentThread().interrupt();
                     ScatterPlotErrorDialog.create("Error getting scatter plot state: " + e.getMessage());
                 }
             }
@@ -167,8 +169,7 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
         if (graph == null) {
             return state;
         } else {
-            final ReadableGraph readableGraph = graph.getReadableGraph();
-            try {
+            try (final ReadableGraph readableGraph = graph.getReadableGraph()) {
                 final int stateAttribute = ScatterPlotConcept.MetaAttribute.SCATTER_PLOT_STATE.get(readableGraph);
                 if (stateAttribute == Graph.NOT_FOUND) {
                     state = new ScatterPlotState();
@@ -180,8 +181,6 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
                         newState = true;
                     }
                 }
-            } finally {
-                readableGraph.release();
             }
         }
 
@@ -207,7 +206,7 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
     }
 
     @Override
-    protected void handleNewGraph(Graph graph) {
+    protected void handleNewGraph(final Graph graph) {
         if (!needsUpdate()) {
             return;
         }

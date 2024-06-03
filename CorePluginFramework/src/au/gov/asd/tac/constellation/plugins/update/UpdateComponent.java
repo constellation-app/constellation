@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -216,7 +216,7 @@ public abstract class UpdateComponent<U> implements Comparable<UpdateComponent<U
      * @return true if this component needed to change anything as a result of
      * the update, False if no action was required.
      */
-    protected abstract boolean update(U updateState);
+    public abstract boolean update(U updateState);
 
     @Override
     public String toString() {

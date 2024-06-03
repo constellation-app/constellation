@@ -21,7 +21,6 @@ import au.gov.asd.tac.constellation.views.namedselection.NamedSelection;
 import au.gov.asd.tac.constellation.views.namedselection.NamedSelectionManager;
 import java.util.ArrayList;
 import java.util.BitSet;
-import org.openide.awt.UndoRedo;
 
 /**
  * This class holds the state variables used by the NamedSelection services.
@@ -69,7 +68,7 @@ public final class NamedSelectionState {
 
         // Iterate over all namedSelections to deep copy all content:
         for (final NamedSelection selection : state.getNamedSelections()) {
-            namedSelections.add(selection.clone());
+            namedSelections.add(new NamedSelection(selection));
         }
     }
 
@@ -205,9 +204,8 @@ public final class NamedSelectionState {
      * @throws java.lang.InterruptedException if the process was canceled during
      * execution.
      */
-    public void update(final Graph graph, final UndoRedo.Manager undoRedoManager,
-            final int stateAttr, final String name) throws InterruptedException {
-        update(graph, undoRedoManager, stateAttr, name, false);
+    public void update(final Graph graph, final int stateAttr, final String name) throws InterruptedException {
+        update(graph, stateAttr, name, false);
     }
 
     /**
@@ -218,7 +216,6 @@ public final class NamedSelectionState {
      * GraphUndoableEdit. This is a convenience method to do that.
      *
      * @param graph The graph to update.
-     * @param undoRedoManager The UndoRedo.Manager for the graph.
      * @param stateAttr The attribute id of the find_state attribute.
      * @param name The name of the undoable edit.
      * @param isSignificant Is this a significant edit?
@@ -226,8 +223,7 @@ public final class NamedSelectionState {
      * @throws java.lang.InterruptedException if the process was canceled during
      * execution.
      */
-    public void update(final Graph graph, final UndoRedo.Manager undoRedoManager, final int stateAttr,
-            final String name, final boolean isSignificant) throws InterruptedException {
+    public void update(final Graph graph, final int stateAttr, final String name, final boolean isSignificant) throws InterruptedException {
         WritableGraph wg = graph.getWritableGraph(name, isSignificant);
         try {
             wg.setObjectValue(stateAttr, 0, this);

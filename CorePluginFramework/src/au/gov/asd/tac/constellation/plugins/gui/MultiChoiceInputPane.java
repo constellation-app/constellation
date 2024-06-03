@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,7 +88,7 @@ public class MultiChoiceInputPane extends HBox {
                 @SuppressWarnings("unchecked") //mcPluginParameter is a MultiChoiceParameter
                 final PluginParameter<MultiChoiceParameterValue> mcPluginParameter = (PluginParameter<MultiChoiceParameterValue>) pluginParameter;
                 switch (change) {
-                    case VALUE:
+                    case VALUE -> {
                         isAdjusting = true;
                         field.getCheckModel().clearChecks(); //The order matters here- this should be called before clearing the options.
                         options.clear();
@@ -97,28 +97,23 @@ public class MultiChoiceInputPane extends HBox {
                         final List<ParameterValue> checkedItems = (List<ParameterValue>) MultiChoiceParameterType.getChoicesData(mcPluginParameter);
 
                         field.getCheckModel().getCheckedItems();
-                        checkedItems.forEach(checked -> {
-                            field.getCheckModel().check(checked);
-                        });
+                        checkedItems.forEach(checked -> 
+                            field.getCheckModel().check(checked));
                         
                         // give a visual indicator if a required parameter is empty
                         field.setId(mcPluginParameter.isRequired() && field.getCheckModel().isEmpty() ? "invalid selection" : "");
                         field.setStyle("invalid selection".equals(field.getId()) ? "-fx-color: #8A1D1D" : "");
 
                         isAdjusting = false;
-                        break;
-                    case ENABLED:
-                        field.setDisable(!pluginParameter.isEnabled());
-                        break;
-                    case VISIBLE:
+                    }
+                    case ENABLED -> field.setDisable(!pluginParameter.isEnabled());
+                    case VISIBLE -> {
                         field.setManaged(parameter.isVisible());
                         field.setVisible(parameter.isVisible());
                         this.setVisible(parameter.isVisible());
                         this.setManaged(parameter.isVisible());
-                        break;
-                    default:
-                        LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
-                        break;
+                    }
+                    default -> LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
                 }
             }));
 

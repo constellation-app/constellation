@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,8 +63,7 @@ public class JsonIODialog {
      * @param filePrefix the prefix if any that was removed from the file names
      * @return the selected element text or null if nothing was selected
      */
-    public static Optional<String> getSelection(final List<String> names,
-            final Optional<String> loadDir,
+    public static Optional<String> getSelection(final List<String> names, final Optional<String> loadDir, 
             final Optional<String> filePrefix) {
         final Alert dialog = new Alert(Alert.AlertType.CONFIRMATION);
         dialog.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
@@ -97,11 +96,7 @@ public class JsonIODialog {
         // The remove button has been pressed, delete the selected file and
         // update the list by removing the selected file
         removeButton.addEventFilter(ActionEvent.ACTION, event -> {
-            JsonIO.deleteJsonPreference(
-                    nameList.getSelectionModel().getSelectedItem(),
-                    loadDir,
-                    filePrefix
-            );
+            JsonIO.deleteJsonPreference(nameList.getSelectionModel().getSelectedItem(), loadDir, filePrefix);
 
             observableNamesList.remove(nameList.getSelectionModel().getSelectedItem());
             nameList.setCellFactory(param -> new DraggableCell<>());

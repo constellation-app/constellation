@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,8 @@ public abstract class IntHashSet implements Serializable {
      * @return true if the 2 elements are considered equal for the purposes of
      * this set.
      */
-    protected abstract boolean equals(int element1, int element2);
+    protected abstract boolean equals(final int element1, final int element2);
+    
     private final int[] buckets;
     private final int[] next;
     private final int[] prev;
@@ -103,11 +104,8 @@ public abstract class IntHashSet implements Serializable {
      * in the set.
      */
     public int add(final int element) {
-
-        int hash = getHash(element);
-
-        int bucket = Math.abs(hash) % buckets.length;
-
+        final int hash = getHash(element);
+        final int bucket = Math.abs(hash) % buckets.length;
         int existingElement = buckets[bucket];
 
         while (existingElement >= 0) {
@@ -135,9 +133,8 @@ public abstract class IntHashSet implements Serializable {
      * @param element the id of the element to remove from the set.
      */
     public void remove(final int element) {
-
         if (prev[element] < 0) {
-            int bucket = prev[element] & 0x7FFFFFFF;
+            final int bucket = prev[element] & 0x7FFFFFFF;
             buckets[bucket] = next[element];
         } else {
             next[prev[element]] = next[element];

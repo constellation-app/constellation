@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -574,6 +574,7 @@ public class XmlUtilities {
      * @param url a URL referencing an XML document.
      * @param swap if true then the rows and columns are swapped.
      * @return the table.
+     * @throws java.net.MalformedURLException
      * @throws java.io.FileNotFoundException if file URL references is not found
      * @throws UnsupportedEncodingException if the encoding is not supported.
      * @throws TransformerException if an error occurs while transforming the
@@ -631,7 +632,6 @@ public class XmlUtilities {
     }
 
     private void setCell(final SortedMap<Integer, SortedMap<Integer, String>> table, int rowIndex, int columnIndex, final String value, final boolean swap) {
-
         if (swap) {
             int temp = rowIndex;
             rowIndex = columnIndex;
@@ -665,7 +665,7 @@ public class XmlUtilities {
         }
 
         @Override
-        public int read(byte[] b, int off, int len) throws IOException {
+        public int read(final byte[] b, final int off, final int len) throws IOException {
             final int bytes = in.read(b, off, len);
             if (bytes != -1) {
                 for (int ix = off; ix < off + bytes; ix++) {

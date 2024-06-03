@@ -534,8 +534,10 @@ class Constellation:
             params = {'graph_id':graph_id}
 
         r = self.call_service('get_graph_values', args=params)
-
-        df = pd.read_json(r.content, orient='split', dtype=False, convert_dates=False)
+        content = r.content
+        if isinstance(content, bytes):
+            content = content.decode('utf8')
+        df = pd.read_json(content, orient='split', dtype=False, convert_dates=False)
         df, self.types = self._fix_types(df)
 
         return df
@@ -745,18 +747,27 @@ def _get_rest(rest=None):
     """
 
     if not rest:
-        rest = os.path.join(os.path.expanduser('~'), '.CONSTELLATION', 'rest.json')
+        rest = os.path.join(os.path.expanduser('~'), '.ipython', 'rest.json')
 
     try:
         with open(rest) as f:
+            print('Found REST file {}'.format(rest))
             data = json.load(f)
     except FileNotFoundError:
         print('REST file {} not found'.format(rest), file=sys.stderr)
-        data = {}
+        rest = os.path.join(os.path.expanduser('~'), 'rest.json')
+        print('Checking {} instead...'.format(rest), file=sys.stderr)
+        try:
+            with open(rest) as f:
+                print('Found REST file {}'.format(rest))
+                data = json.load(f)
+        except FileNotFoundError:
+            print('REST file {} not found'.format(rest), file=sys.stderr)
+            data = {}
     except json.decoder.JSONDecodeError as e:
         print('Error decoding REST JSON: {}'.format(e), file=sys.stderr)
         data = {}
-
+    
     return data
 
 def _row_dict(row, names, prefix):

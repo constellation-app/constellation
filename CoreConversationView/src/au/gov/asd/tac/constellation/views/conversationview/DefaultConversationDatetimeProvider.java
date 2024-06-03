@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ import javax.swing.SwingUtilities;
 public class DefaultConversationDatetimeProvider implements ConversationDatetimeProvider {
 
     @Override
-    public void updateDatetimes(GraphReadMethods graph, List<ConversationMessage> messages) {
+    public void updateDatetimes(final GraphReadMethods graph, final List<ConversationMessage> messages) {
         assert !SwingUtilities.isEventDispatchThread();
         if (messages.isEmpty()) {
             return; // No messages means nothing to do.
@@ -46,7 +46,7 @@ public class DefaultConversationDatetimeProvider implements ConversationDatetime
                 message.setDatetime(null);
             }
         } else {
-            for (ConversationMessage message : messages) {
+            for (final ConversationMessage message : messages) {
                 final ZonedDateTime dateTime = (ZonedDateTime) graph.getObjectValue(datetimeAttribute, message.getTransaction());
                 if (dateTime == null) {
                     message.setDatetime(null);
@@ -63,7 +63,7 @@ public class DefaultConversationDatetimeProvider implements ConversationDatetime
         private final ZonedDateTime date;
         private final DateTimeFormatter formatter;
 
-        public DefaultConversationDatetime(ZonedDateTime date, DateTimeFormatter dateFormat) {
+        public DefaultConversationDatetime(final ZonedDateTime date, final DateTimeFormatter dateFormat) {
             this.date = date;
             this.formatter = dateFormat;
         }
@@ -86,7 +86,7 @@ public class DefaultConversationDatetimeProvider implements ConversationDatetime
         }
 
         @Override
-        public int compareTo(ConversationDatetime o) {
+        public int compareTo(final ConversationDatetime o) {
             return date.compareTo(((DefaultConversationDatetime) o).date);
         }
     }

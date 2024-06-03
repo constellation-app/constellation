@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -328,9 +329,8 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
          *
          * @return A list of Strings representing the options.
          */
-        public List<String> getOptions() {
-            final List<String> optionStrings = new ArrayList<>();
-            options.stream().forEach(option -> optionStrings.add(option.toString()));
+        public List<String> getOptions() {            
+            final List<String> optionStrings = options.stream().map(Object::toString).toList();
 
             return Collections.unmodifiableList(optionStrings);
         }
@@ -341,7 +341,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
          * @param options A list of Strings to set the collection of options
          * from.
          */
-        public void setOptions(final List<String> options) {
+        public void setOptions(final Iterable<String> options) {
             this.options.clear();
             for (final String option : options) {
                 final StringParameterValue doOption = new StringParameterValue(option);
@@ -490,15 +490,14 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
                 options.clear();
                 choice = null;
                 valueChanged = true;
-            } else if (o instanceof SingleChoiceParameterValue) {
-                final SingleChoiceParameterValue sc = (SingleChoiceParameterValue) o;
-                if (!Objects.equals(options, sc.options)) {
+            } else if (o instanceof SingleChoiceParameterValue singleChoiceParameterValue) {
+                if (!Objects.equals(options, singleChoiceParameterValue.options)) {
                     options.clear();
-                    options.addAll(sc.options);
+                    options.addAll(singleChoiceParameterValue.options);
                     valueChanged = true;
                 }
-                if (!Objects.equals(choice, sc.choice)) {
-                    choice = sc.choice;
+                if (!Objects.equals(choice, singleChoiceParameterValue.choice)) {
+                    choice = singleChoiceParameterValue.choice;
                     valueChanged = true;
                 }
             } else if (o instanceof ParameterValue) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,9 +55,10 @@ public class SupportPackage {
      * @param sourceFolder The folder to zip
      * @param files A list of files to zip within the sourceFolder
      * @param destinationZipFilename The destination zip filename
+     * @throws java.io.IOException
      */
     public void zipFolder(final String sourceFolder, final Iterable<String> files, final String destinationZipFilename) throws IOException {
-        byte[] buffer = new byte[1024];
+        final byte[] buffer = new byte[1024];
 
         final FileOutputStream fileOutputStream = new FileOutputStream(destinationZipFilename);
         try (final ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream)) {

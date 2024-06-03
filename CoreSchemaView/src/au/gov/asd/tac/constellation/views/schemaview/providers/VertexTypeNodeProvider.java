@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -104,7 +104,7 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
         // A shiny cell factory so the tree nodes show the correct text and graphic.
         treeView.setCellFactory(p -> new TreeCell<SchemaVertexType>() {
             @Override
-            protected void updateItem(final SchemaVertexType item, boolean empty) {
+            protected void updateItem(final SchemaVertexType item, final boolean empty) {
                 super.updateItem(item, empty);
                 if (!empty && item != null) {
                     setText(item.getName());
@@ -220,17 +220,17 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
         treeView.setRoot(root);
     }
 
-    private boolean isFilterMatchCurrentNodeOrAnyChildren(SchemaVertexType treeItem) {
+    private boolean isFilterMatchCurrentNodeOrAnyChildren(final SchemaVertexType treeItem) {
         return StringUtils.isNotBlank(filterText.getText()) && (isFilterMatchText(treeItem.getName())
                 || isFilterMatchAnyProperty(treeItem) || isFilterMatchAnyChildNodes(treeItem));
     }
 
-    private boolean isFilterMatchAnyChildNodes(SchemaVertexType treeItem) {
+    private boolean isFilterMatchAnyChildNodes(final SchemaVertexType treeItem) {
         boolean found = false;
         final List<SchemaVertexType> children = vertexTypes.stream().filter(vertexType
                 -> vertexType.getSuperType() == treeItem && vertexType != treeItem).collect(Collectors.toList());
 
-        for (SchemaVertexType child : children) {
+        for (final SchemaVertexType child : children) {
             found = isFilterMatchCurrentNodeOrAnyChildren(child);
             if (found) {
                 break;
@@ -239,7 +239,7 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
         return found;
     }
 
-    private boolean isFilterMatchAnyProperty(SchemaVertexType treeItem) {
+    private boolean isFilterMatchAnyProperty(final SchemaVertexType treeItem) {
         return isFilterMatchText(treeItem.getName())
                 || isFilterMatchText(treeItem.getDescription())
                 || isFilterMatchText(treeItem.getColor().getName())
@@ -372,11 +372,11 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
                 grid.add(hierarchyLabel, 1, 7);
 
                 int gridPosition = 7;
-                for (String property : vertexType.getProperties().keySet()) {
+                for (final String property : vertexType.getProperties().keySet()) {
                     final Object propertyValue = vertexType.getProperty(property);
                     if (propertyValue != null) {
                         gridPosition++;
-                        Label propertyLabel = new Label(propertyValue.toString());
+                        final Label propertyLabel = new Label(propertyValue.toString());
                         propertyLabel.setWrapText(true);
                         grid.add(boldLabel(property + SeparatorConstants.COLON), 0, gridPosition);
                         grid.add(propertyLabel, 1, gridPosition);
@@ -385,7 +385,7 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
                 for (final Node child : grid.getChildren()) {
                     final Integer column = GridPane.getColumnIndex(child);
                     final Integer row = GridPane.getRowIndex(child);
-                    if ((column > 0 && row != null && child instanceof Label) && (isFilterMatchText(((Label) child).getText()))) {
+                    if (column > 0 && row != null && child instanceof Label childLabel && (isFilterMatchText(childLabel.getText()))) {
                         child.getStyleClass().add("schemaview-highlight-blue");
                     }
                 }

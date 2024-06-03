@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -119,7 +119,7 @@ public class DragAction extends AbstractAction {
         }
 
         @Override
-        public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
+        public Object getTransferData(final DataFlavor flavor) throws UnsupportedFlavorException, IOException {
             final Graph graph = context.getGraph();
             final List<Map<String, String>> vxList = new ArrayList<>();
             final List<Map<String, String>> txList = new ArrayList<>();
@@ -178,7 +178,7 @@ public class DragAction extends AbstractAction {
         }
 
         @Override
-        public void dragGestureRecognized(DragGestureEvent dge) {
+        public void dragGestureRecognized(final DragGestureEvent dge) {
             final Point offset = new Point(DRAG_DROP_ICON.getWidth(null), DRAG_DROP_ICON.getHeight(null));
             source.startDrag(dge, DragSource.DefaultCopyDrop, DRAG_DROP_ICON, offset, this, null);
         }

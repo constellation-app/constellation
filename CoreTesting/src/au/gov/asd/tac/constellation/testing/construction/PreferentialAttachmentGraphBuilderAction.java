@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,13 @@ package au.gov.asd.tac.constellation.testing.construction;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
 import au.gov.asd.tac.constellation.testing.CoreTestingPluginRegistry;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -49,9 +52,8 @@ public final class PreferentialAttachmentGraphBuilderAction implements ActionLis
 
     @Override
     public void actionPerformed(final ActionEvent ev) {
-        ArrayList<String> atypes = new ArrayList<>();
-        atypes.add("Unknown");
-        MultiChoiceParameterType.MultiChoiceParameterValue types = new MultiChoiceParameterType.MultiChoiceParameterValue();
+        final List<String> atypes = Arrays.asList("Unknown");
+        final MultiChoiceParameterValue types = new MultiChoiceParameterType.MultiChoiceParameterValue();
         types.setChoices(atypes);
         PluginExecution.withPlugin(CoreTestingPluginRegistry.PREFERENTIAL_ATTACHMENT_GRAPH_BUILDER)
                 .withParameter(PreferentialAttachmentGraphBuilderPlugin.N_PARAMETER_ID, 10)

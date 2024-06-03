@@ -171,7 +171,7 @@ public class PackagePanel extends JPanel {
             }
 
             @Override
-            public void focusLost(final java.awt.event.FocusEvent e) {
+            public void focusLost(final FocusEvent e) {
                 // Required for implementation of the FocusListener
             }
         });

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,9 @@ public class ConversationStateIOProvider extends AbstractGraphIOProvider {
     }
 
     @Override
-    public void readObject(int attributeId, int elementId, JsonNode jnode, GraphWriteMethods graph, Map<Integer, Integer> vertexMap, Map<Integer, Integer> transactionMap, GraphByteReader byteReader, ImmutableObjectCache cache) throws IOException {
+    public void readObject(final int attributeId, final int elementId, final JsonNode jnode, final GraphWriteMethods graph, 
+            final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, final GraphByteReader byteReader, 
+            final ImmutableObjectCache cache) throws IOException {
         if (!jnode.isNull()) {
             final ConversationState state = new ConversationState();
 
@@ -70,7 +72,8 @@ public class ConversationStateIOProvider extends AbstractGraphIOProvider {
     }
 
     @Override
-    public void writeObject(Attribute attribute, int elementId, JsonGenerator jsonGenerator, GraphReadMethods graph, GraphByteWriter byteWriter, boolean verbose) throws IOException {
+    public void writeObject(final Attribute attribute, final int elementId, final JsonGenerator jsonGenerator, final GraphReadMethods graph, 
+            final GraphByteWriter byteWriter, final boolean verbose) throws IOException {
         if (verbose || !graph.isDefaultValue(attribute.getId(), elementId)) {
             final ConversationState state = (ConversationState) graph.getObjectValue(attribute.getId(), elementId);
             if (state == null) {

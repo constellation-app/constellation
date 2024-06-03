@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,12 +72,8 @@ public class ExportToExcelFilePlugin extends SimplePlugin {
      * otherwise
      * @param sheetName the name of the sheet in the Excel spreadsheet
      */
-    public ExportToExcelFilePlugin(final File file,
-            final TableView<ObservableList<String>> table,
-            final Pagination pagination,
-            final int rowsPerPage,
-            final boolean selectedOnly,
-            final String sheetName) {
+    public ExportToExcelFilePlugin(final File file, final TableView<ObservableList<String>> table, 
+            final Pagination pagination, final int rowsPerPage, final boolean selectedOnly, final String sheetName) {
         this.file = file;
         this.table = table;
         this.pagination = pagination;
@@ -87,8 +83,7 @@ public class ExportToExcelFilePlugin extends SimplePlugin {
     }
 
     @Override
-    public void execute(final PluginGraphs graphs,
-            final PluginInteraction interaction,
+    public void execute(final PluginGraphs graphs, final PluginInteraction interaction,
             final PluginParameters parameters) throws InterruptedException, PluginException {
         try (final SXSSFWorkbook workbook = new SXSSFWorkbook(SXSSFWorkbook.DEFAULT_WINDOW_SIZE)) {
             final Sheet sheet = workbook.createSheet(sheetName);
@@ -97,7 +92,7 @@ public class ExportToExcelFilePlugin extends SimplePlugin {
             final List<Integer> visibleIndices = table.getColumns().stream()
                     .filter(column -> column.isVisible())
                     .map(column -> table.getColumns().indexOf(column))
-                    .collect(Collectors.toList());
+                    .toList();
 
             // iterate through the visible columns and print each ones name to the sheet
             final Row headerRow = sheet.createRow(0);
@@ -246,10 +241,8 @@ public class ExportToExcelFilePlugin extends SimplePlugin {
      * @param data the table rows to write
      * @param startIndex the current index in the sheet that can be written to
      */
-    private static void writeRecords(final Sheet sheet,
-            final List<Integer> visibleIndices,
-            final List<ObservableList<String>> data,
-            final int startIndex) {
+    private static void writeRecords(final Sheet sheet, final List<Integer> visibleIndices,
+            final List<ObservableList<String>> data, final int startIndex) {
         final AtomicInteger rowIndex = new AtomicInteger(startIndex);
         data.forEach(item -> {
             final Row itemRow = sheet.createRow(rowIndex.getAndIncrement());

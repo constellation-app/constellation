@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,13 +32,8 @@ public abstract class UpdateItem implements Comparable<UpdateItem> {
 
     @Override
     public boolean equals(final Object o) {
-        if (o == null) {
-            return false;
-        }
-        if (this.getClass() != o.getClass()) {
-            return false;
-        }
-        return getPriority() == ((UpdateItem) o).getPriority() && getName().equals(((UpdateItem) o).getName());
+        return o != null && this.getClass() == o.getClass() 
+                && getPriority() == ((UpdateItem) o).getPriority() && getName().equals(((UpdateItem) o).getName());
     }
 
     @Override

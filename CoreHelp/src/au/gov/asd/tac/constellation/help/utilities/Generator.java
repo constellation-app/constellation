@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,7 +64,7 @@ public class Generator implements Runnable {
         // Create TOCFile with the location of the resources file
         // Create the root node for application-wide table of contents
         TOCGenerator.createTOCFile(baseDirectory + tocDirectory);
-        final TreeNode root = new TreeNode(new TOCItem(ROOT_NODE_NAME, ""));
+        final TreeNode<?> root = new TreeNode(new TOCItem(ROOT_NODE_NAME, ""));
         final List<File> tocXMLFiles = getXMLFiles(baseDirectory);
 
         try {

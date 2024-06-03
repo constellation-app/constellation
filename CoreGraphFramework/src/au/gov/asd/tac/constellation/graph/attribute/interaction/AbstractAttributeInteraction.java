@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -197,8 +197,8 @@ public abstract class AbstractAttributeInteraction<T> {
     }
 
     private static Set<Class<?>> getAllImplementedInterfaces(final Class<?> concreteClass) {
-        Set<Class<?>> interfaces = new HashSet<>();
-        Queue<Class<?>> classesToCheck = new LinkedList<>();
+        final Set<Class<?>> interfaces = new HashSet<>();
+        final Queue<Class<?>> classesToCheck = new LinkedList<>();
         classesToCheck.add(concreteClass);
         while (!classesToCheck.isEmpty()) {
             final Class<?> currentClass = classesToCheck.remove();
@@ -249,7 +249,7 @@ public abstract class AbstractAttributeInteraction<T> {
         return (o1, o2) -> {
             try {
                 return comparator.compare((T) o1, (T) o2);
-            } catch (ClassCastException ex) {
+            } catch (final ClassCastException ex) {
                 return 0;
             }
         };
@@ -288,9 +288,9 @@ public abstract class AbstractAttributeInteraction<T> {
      * @return the interaction for the specified data type.
      */
     @SuppressWarnings("rawtypes")
-    public static AbstractAttributeInteraction<?> getInteraction(final String dataType) {
+    public static AbstractAttributeInteraction getInteraction(final String dataType) {
         if (ALL_INTERACTIONS.isEmpty()) {
-            Collection<? extends AbstractAttributeInteraction> attributeInteractions = Lookup.getDefault().lookupAll(AbstractAttributeInteraction.class);
+            final Collection<? extends AbstractAttributeInteraction> attributeInteractions = Lookup.getDefault().lookupAll(AbstractAttributeInteraction.class);
             attributeInteractions.forEach(interaction -> {
                 if (!ALL_INTERACTIONS.containsKey(interaction.getDataType()) || ALL_INTERACTIONS.get(interaction.getDataType()).getPriority() < interaction.getPriority()) {
                     ALL_INTERACTIONS.put(interaction.getDataType(), interaction);
@@ -299,6 +299,5 @@ public abstract class AbstractAttributeInteraction<T> {
         }
 
         return ALL_INTERACTIONS.containsKey(dataType) ? ALL_INTERACTIONS.get(dataType) : DefaultAttributeInteraction.DEFAULT_ATTRIBUTE_INTERACTION;
-
     }
 }

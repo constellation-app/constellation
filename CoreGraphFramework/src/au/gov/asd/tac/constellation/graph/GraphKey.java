@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -92,33 +92,20 @@ public class GraphKey {
 
     @Override
     public boolean equals(final Object other) {
-        if (other == null) {
+        if (other == null || this.getClass() != other.getClass()) {
             return false;
         }
-        if (this.getClass() == other.getClass()) {
-            GraphKey key = (GraphKey) other;
-
-            if (!Arrays.equals(elements, key.elements)) {
-                return false;
-            }
-
-            if (sourceKey == null ? key.sourceKey != null : !sourceKey.equals(key.sourceKey)) {
-                return false;
-            }
-
-            if (destinationKey == null ? key.destinationKey != null : !destinationKey.equals(key.destinationKey)) {
-                return false;
-            }
-
-            return undirected == key.undirected;
-        }
-
-        return false;
+        
+        final GraphKey key = (GraphKey) other;
+        return Arrays.equals(elements, key.elements)
+                && (sourceKey == null ? key.sourceKey == null : sourceKey.equals(key.sourceKey))
+                && (destinationKey == null ? key.destinationKey == null : destinationKey.equals(key.destinationKey))
+                && undirected == key.undirected;
     }
 
     @Override
     public String toString() {
-        StringBuilder out = new StringBuilder();
+        final StringBuilder out = new StringBuilder();
 
         out.append(Arrays.toString(elements));
         if (sourceKey != null) {

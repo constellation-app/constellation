@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.openide.util.Lookup;
 
 /**
- * QualityControlEvent for estimating the quality of the data encompassed by a
- * vertex.
+ * QualityControlEvent for estimating the quality of the data encompassed by a vertex.
  *
  * @author cygnus_x-1
  */
@@ -72,10 +71,8 @@ public class QualityControlEvent implements Comparable<QualityControlEvent> {
     }
 
     /**
-     * Of the given rules, find all for which the vertex might be considered to
-     * have low quality, as well as the lowest quality associated with these
-     * rules. Stores the category which is the new highest priority as the event
-     * basis.
+     * Of the given rules, find all for which the vertex might be considered to have low quality, as well as the lowest
+     * quality associated with these rules. Stores the category which is the new highest priority as the event basis.
      *
      * @param rules the list of rules to consider.
      * @return a list of rules that are relevant.
@@ -87,26 +84,14 @@ public class QualityControlEvent implements Comparable<QualityControlEvent> {
                 if (QualityControlRule.testPriority(QualityControlViewPane.getPriorities().get(rule), category) < 0) {
                     category = QualityControlViewPane.getPriorities().get(rule);
 
-                    switch (category) {
-                        case MINOR:
-                            quality = MINOR_VALUE;
-                            break;
-                        case MEDIUM:
-                            quality = MEDIUM_VALUE;
-                            break;
-                        case MAJOR:
-                            quality = MAJOR_VALUE;
-                            break;
-                        case SEVERE:
-                            quality = SEVERE_VALUE;
-                            break;
-                        case CRITICAL:
-                            quality = CRITICAL_VALUE;
-                            break;
-                        default:
-                            quality = OK_VALUE;
-                            break;
-                    }
+                    quality = switch (category) {
+                        case MINOR -> MINOR_VALUE;
+                        case MEDIUM -> MEDIUM_VALUE;
+                        case MAJOR -> MAJOR_VALUE;
+                        case SEVERE -> SEVERE_VALUE;
+                        case CRITICAL -> CRITICAL_VALUE;
+                        default -> OK_VALUE;
+                    };
                 }
             }
         }
@@ -120,21 +105,14 @@ public class QualityControlEvent implements Comparable<QualityControlEvent> {
      */
     public static QualityCategory getCategoryFromString(final String category) {
         if (StringUtils.isNotEmpty(category)) {
-            switch (category.toLowerCase()) {
-                case "minor":
-                    return QualityCategory.MINOR;
-                case "medium":
-                    return QualityCategory.MEDIUM;
-                case "major":
-                    return QualityCategory.MAJOR;
-                case "severe":
-                    return QualityCategory.SEVERE;
-                case "critical":
-                    return QualityCategory.CRITICAL;
-                default:
-                    // default to OK case when not readable.
-                    return QualityCategory.OK;
-            }
+            return switch (category.toLowerCase()) {
+                case "minor" -> QualityCategory.MINOR;
+                case "medium" -> QualityCategory.MEDIUM;
+                case "major" -> QualityCategory.MAJOR;
+                case "severe" -> QualityCategory.SEVERE;
+                case "critical" -> QualityCategory.CRITICAL;
+                default -> QualityCategory.OK;
+            }; // default to OK case when not readable.
         }
         return QualityCategory.OK;
     }
@@ -166,22 +144,18 @@ public class QualityControlEvent implements Comparable<QualityControlEvent> {
     }
 
     /**
-     * Get the String value of the identifier associated with this
-     * QualityControlEvent.
+     * Get the String value of the identifier associated with this QualityControlEvent.
      *
-     * @return the String value of the identifier associated with this
-     * QualityControlEvent.
+     * @return the String value of the identifier associated with this QualityControlEvent.
      */
     public String getIdentifier() {
         return identifier;
     }
 
     /**
-     * Get the String value of the type associated with this
-     * QualityControlEvent.
+     * Get the String value of the type associated with this QualityControlEvent.
      *
-     * @return the String value of the type associated with this
-     * QualityControlEvent.
+     * @return the String value of the type associated with this QualityControlEvent.
      */
     public String getType() {
         return type;
@@ -197,11 +171,9 @@ public class QualityControlEvent implements Comparable<QualityControlEvent> {
     }
 
     /**
-     * Get the String value of the reasons associated with this
-     * QualityControlEvent.
+     * Get the String value of the reasons associated with this QualityControlEvent.
      *
-     * @return the String value of the reasons associated with this
-     * QualityControlEvent.
+     * @return the String value of the reasons associated with this QualityControlEvent.
      */
     public String getReasons() {
         final StringBuilder buf = new StringBuilder();
@@ -216,22 +188,18 @@ public class QualityControlEvent implements Comparable<QualityControlEvent> {
     }
 
     /**
-     * Get the Integer value of the quality associated with this
-     * QualityControlEvent.
+     * Get the Integer value of the quality associated with this QualityControlEvent.
      *
-     * @return the Integer value of the quality associated with this
-     * QualityControlEvent.
+     * @return the Integer value of the quality associated with this QualityControlEvent.
      */
     public int getQuality() {
         return quality;
     }
 
     /**
-     * Get the QualityCategory related to the category of this
-     * QualityControlEvent.
+     * Get the QualityCategory related to the category of this QualityControlEvent.
      *
-     * @return the QualityCategory of the quality associated with this
-     * QualityControlEvent.
+     * @return the QualityCategory of the quality associated with this QualityControlEvent.
      */
     public QualityCategory getCategory() {
         return category;

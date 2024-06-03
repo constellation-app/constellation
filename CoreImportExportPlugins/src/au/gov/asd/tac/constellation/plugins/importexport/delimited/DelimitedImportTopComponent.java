@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,16 +52,20 @@ import org.openide.windows.TopComponent;
 public final class DelimitedImportTopComponent extends ImportTopComponent {
 
     private final DelimitedImportPane delimitedImportPane;
-    private static final String HELP_TEXT = "1. Click on the green plus icon to add files.\n"
-            + "2. Select your destination graph.\n"
-            + "3. Drag and drop attributes onto columns.\n"
-            + "4. Right click an attribute for more options.\n"
-            + "5. Click the 'Import' button to add data to your graph.\n"
-            + "6. Save your configuration using 'Options > Save'.\n\n"
-            + "HINTS:\n* See all supported attributes with 'Options > Show all schema attributes'.\n"
-            + "* Filter in the Configuration Pane by adding searches of the form <column_name>==\"<search text>\"."
-            + "* E.g. first_name==\"Nick\"\n"
-            + "* To filter Attributes, start typing in the Attributes Filter.";
+    private static final String HELP_TEXT = """
+            1. Click on the green plus icon to add files.
+            2. Select your destination graph.
+            3. Drag and drop attributes onto columns.
+            4. Right click an attribute for more options.
+            5. Click the 'Import' button to add data to your graph.
+            6. Save your configuration using 'Options > Save'.
+
+            HINTS:
+            * See all supported attributes with 'Options > Show all schema attributes'.
+            * Filter in the Configuration Pane by adding searches of the form <column_name>==\"<search text>\"."
+            * E.g. first_name==\"Nick\"
+            * To filter Attributes, start typing in the Attributes Filter.";
+            """;
 
     final DelimitedImportController controller = new DelimitedImportController();
     final ConfigurationPane configurationPane = new ConfigurationPane(controller, HELP_TEXT);

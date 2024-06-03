@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -236,27 +236,19 @@ public class ExcelImportFileParser extends ImportFileParser {
         final CellType type = cell.getCellType();
 
         try {
-            switch (type) {
-                case STRING:
-                    result = cell.getStringCellValue();
-                    break;
-                case NUMERIC:
-                case FORMULA:
+            result = switch (type) {
+                case STRING -> cell.getStringCellValue();
+                case NUMERIC, FORMULA -> {
                     final Double temp = cell.getNumericCellValue();
-                    result = temp % 1 == 0 ? Long.toString(temp.longValue()) : Double.toString(temp);
-                    break;
-                case BLANK:
-                    result = "";
-                    break;
-                case BOOLEAN:
-                    result = Boolean.toString(cell.getBooleanCellValue());
-                    break;
-                default:
-                    result = "";
-                    break;
-            }
+                    yield temp % 1 == 0 ? Long.toString(temp.longValue()) : Double.toString(temp);
+                }
+                case BLANK -> "";
+                case BOOLEAN -> Boolean.toString(cell.getBooleanCellValue());
+                
+                default -> "";
+            };
         } catch (IllegalStateException ex) {
-            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage() + " with value " + cell.getStringCellValue(), ex);
+            LOGGER.log(Level.SEVERE, String.format("%s with value %s", ex.getLocalizedMessage(), cell.getStringCellValue()), ex);
             result = "";
         }
         return result;

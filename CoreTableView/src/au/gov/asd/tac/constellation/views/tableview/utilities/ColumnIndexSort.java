@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,8 +69,7 @@ public class ColumnIndexSort implements Comparator<Column>, Serializable {
      * argument is less than, equal to, or greater than the second.
      */
     @Override
-    public int compare(final Column column1,
-            final Column column2) {
+    public int compare(final Column column1, final Column column2) {
         final int column1Index = state.getColumnAttributes()
                 .indexOf(Tuple.create(column1.getAttributeNamePrefix(), column1.getAttribute()));
         final int column2Index = state.getColumnAttributes()

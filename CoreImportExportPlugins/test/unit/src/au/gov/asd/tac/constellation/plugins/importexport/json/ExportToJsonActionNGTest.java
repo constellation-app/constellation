@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,6 +71,14 @@ public class ExportToJsonActionNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         fileChooserStaticMock = mockStatic(FileChooser.class);
+        fileChooserStaticMock.when(()
+                -> FileChooser.createFileChooserBuilderNoFilter(any(String.class), any(String.class)))
+                .thenCallRealMethod();
+
+        fileChooserStaticMock.when(()
+                -> FileChooser.createFileChooserBuilder(any(String.class), any(String.class), any(String.class)))
+                .thenCallRealMethod();
+
         pluginExecutionStaticMock = mockStatic(PluginExecution.class);
         withPluginMock = mock(PluginExecution.class);
         withParameterMock = mock(PluginExecution.class);
@@ -132,8 +140,7 @@ public class ExportToJsonActionNGTest {
     }
 
     /**
-     * Test of testGetExportToJSONFileChooser method, of class
-     * ExportToJsonAction.
+     * Test of testGetExportToJSONFileChooser method, of class ExportToJsonAction.
      *
      * @throws IOException
      */

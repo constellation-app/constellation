@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,38 +63,19 @@ public class QuickSearchUtilities {
         for (int i = 0; i < idData.length(); i++) {
             final char currentChar = idData.charAt(i);
             switch (currentChar) {
-                case '0':
-                    subscriptId.append('\u2080');
-                    break;
-                case '1':
-                    subscriptId.append('\u2081');
-                    break;
-                case '2':
-                    subscriptId.append('\u2082');
-                    break;
-                case '3':
-                    subscriptId.append('\u2083');
-                    break;
-                case '4':
-                    subscriptId.append('\u2084');
-                    break;
-                case '5':
-                    subscriptId.append('\u2085');
-                    break;
-                case '6':
-                    subscriptId.append('\u2086');
-                    break;
-                case '7':
-                    subscriptId.append('\u2087');
-                    break;
-                case '8':
-                    subscriptId.append('\u2088');
-                    break;
-                case '9':
-                    subscriptId.append('\u2089');
-                    break;
-                default:
-                    break;
+                case '0' -> subscriptId.append('\u2080');
+                case '1' -> subscriptId.append('\u2081');
+                case '2' -> subscriptId.append('\u2082');
+                case '3' -> subscriptId.append('\u2083');
+                case '4' -> subscriptId.append('\u2084');
+                case '5' -> subscriptId.append('\u2085');
+                case '6' -> subscriptId.append('\u2086');
+                case '7' -> subscriptId.append('\u2087');
+                case '8' -> subscriptId.append('\u2088');
+                case '9' -> subscriptId.append('\u2089');
+                default -> {
+                    // do nothing
+                }
             }
         }
         return subscriptId.toString();
@@ -105,41 +86,21 @@ public class QuickSearchUtilities {
         for (int i = 0; i < idSubscriptData.length(); i++) {
             final char currentChar = idSubscriptData.charAt(i);
             switch (currentChar) {
-                case '\u2080':
-                    subscriptId.append('0');
-                    break;
-                case '\u2081':
-                    subscriptId.append('1');
-                    break;
-                case '\u2082':
-                    subscriptId.append('2');
-                    break;
-                case '\u2083':
-                    subscriptId.append('3');
-                    break;
-                case '\u2084':
-                    subscriptId.append('4');
-                    break;
-                case '\u2085':
-                    subscriptId.append('5');
-                    break;
-                case '\u2086':
-                    subscriptId.append('6');
-                    break;
-                case '\u2087':
-                    subscriptId.append('7');
-                    break;
-                case '\u2088':
-                    subscriptId.append('8');
-                    break;
-                case '\u2089':
-                    subscriptId.append('9');
-                    break;
-                default:
-                    break;
+                case '\u2080' -> subscriptId.append('0');
+                case '\u2081' -> subscriptId.append('1');
+                case '\u2082' -> subscriptId.append('2');
+                case '\u2083' -> subscriptId.append('3');
+                case '\u2084' -> subscriptId.append('4');
+                case '\u2085' -> subscriptId.append('5');
+                case '\u2086' -> subscriptId.append('6');
+                case '\u2087' -> subscriptId.append('7');
+                case '\u2088' -> subscriptId.append('8');
+                case '\u2089' -> subscriptId.append('9');
+                default -> {
+                    // do nothing
+                }
             }
         }
         return subscriptId.toString();
-    }
-    
+    }  
 }

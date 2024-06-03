@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -94,7 +94,6 @@ public final class GraphConstructionDemoAction extends AbstractAction {
 
         @Override
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-
             final CycleGraphBuilder c = CycleGraphBuilder.addCycle(10, true);
             final PathGraphBuilder p = PathGraphBuilder.addPath(5, true);
             final ProductBuilder prod = ProductBuilder.formProduct(graph, c.graph, p.graph, ProductBuilder.ProductType.CARTESIAN_PRODUCT);
@@ -147,7 +146,5 @@ public final class GraphConstructionDemoAction extends AbstractAction {
 
             PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
         }
-
     }
-
 }

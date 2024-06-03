@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,9 +43,9 @@ public class HyperlinkAttributeDescription extends AbstractObjectAttributeDescri
         try {
             return super.convertFromObject(object);
         } catch (final IllegalArgumentException ex) {
-            if (object instanceof URL) {
+            if (object instanceof URL url) {
                 try {
-                    return ((URL) object).toURI();
+                    return url.toURI();
                 } catch (final URISyntaxException ex2) {
                     throw new IllegalArgumentException(String.format(
                             "Error converting Object '%s' to hyperlink", object.getClass()));

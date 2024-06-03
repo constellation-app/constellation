@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -73,7 +74,7 @@ public class DualGraph implements Graph, Serializable {
 
     private static final Logger LOGGER = Logger.getLogger(DualGraph.class.getName());
 
-    private final ArrayList<GraphChangeListener> graphChangeListeners = new ArrayList<>();
+    private final List<GraphChangeListener> graphChangeListeners = new ArrayList<>();
     private final LockingStoreGraph a;
     private final LockingStoreGraph b;
     private final LockingManager<LockingStoreGraph> lockingManager;
@@ -99,7 +100,6 @@ public class DualGraph implements Graph, Serializable {
     }
 
     public DualGraph(final Schema schema) {
-
         lockingManager = createLockingManager();
 
         a = new LockingStoreGraph(lockingManager, 0, schema);
@@ -108,7 +108,6 @@ public class DualGraph implements Graph, Serializable {
         lockingManager.setTargets(a, b);
 
         this.id = a.getId();
-
         this.schema = schema;
 
         MemoryManager.newObject(DualGraph.class);
@@ -132,7 +131,6 @@ public class DualGraph implements Graph, Serializable {
     }
 
     public DualGraph(final Schema schema, final StoreGraph target, final boolean newId) {
-
         target.validateKeys();
 
         lockingManager = createLockingManager();
@@ -143,7 +141,6 @@ public class DualGraph implements Graph, Serializable {
         lockingManager.setTargets(a, b);
 
         this.id = a.getId();
-
         this.schema = schema == null ? null : schema.getFactory().createSchema();
 
         MemoryManager.newObject(DualGraph.class);

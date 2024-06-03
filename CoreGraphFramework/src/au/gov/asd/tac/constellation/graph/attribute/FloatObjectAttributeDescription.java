@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,14 +40,17 @@ public final class FloatObjectAttributeDescription extends AbstractObjectAttribu
         try {
             return super.convertFromObject(object);
         } catch (final IllegalArgumentException ex) {
-            if (object instanceof Number) {
-                return ((Number) object).floatValue();
-            } else if (object instanceof Boolean) {
-                return ((Boolean) object) ? 1.0F : 0.0F;
-            } else if (object instanceof Character) {
-                return (float) ((Character) object);
-            } else {
-                throw ex;
+            switch (object) {
+                case Number number -> {
+                    return number.floatValue();
+                }
+                case Boolean bool -> {
+                    return Boolean.TRUE.equals(bool) ? 1.0F : 0.0F;
+                }
+                case Character character -> {
+                    return (float) character;
+                }
+                default -> throw ex;
             }
         }
     }
@@ -57,7 +60,7 @@ public final class FloatObjectAttributeDescription extends AbstractObjectAttribu
         if (StringUtils.isBlank(string)) {
             return getDefault();
         } else {
-            return Float.parseFloat(string);
+            return Float.valueOf(string);
         }
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ public final class CipherStrengthAction implements ActionListener {
     private static final Logger LOGGER = Logger.getLogger(CipherStrengthAction.class.getName());
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(final ActionEvent e) {
         try {
             final int maxKeyLen = Cipher.getMaxAllowedKeyLength("AES");
             final String msg = String.format("Maximum key length: %s", maxKeyLen == Integer.MAX_VALUE ? "unlimited" : Integer.toString(maxKeyLen));

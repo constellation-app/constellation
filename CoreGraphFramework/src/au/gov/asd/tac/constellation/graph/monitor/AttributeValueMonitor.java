@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,39 +80,24 @@ public class AttributeValueMonitor extends Monitor {
 
     @Override
     public final MonitorTransition update(final GraphReadMethods graph) {
-
         // If we are passed a null graph then just go the the undefined state
         if (graph == null) {
-
             reset();
-
         } else if (!graph.getId().equals(currentGraphId)) {
-
             reset();
             currentGraphId = graph.getId();
             updateFromUndefined(graph);
-
         } else {
-
             // Update based on the current state
             switch (transition.getCurrentState()) {
-
-                case UNDEFINED:
-                    updateFromUndefined(graph);
-                    break;
-
-                case MISSING:
-                    updateFromMissing(graph);
-                    break;
-
-                case PRESENT:
-                    updateFromPresent(graph);
-                    break;
-                default:
-                    break;
+                case UNDEFINED -> updateFromUndefined(graph);
+                case MISSING -> updateFromMissing(graph);
+                case PRESENT -> updateFromPresent(graph);
+                default -> {
+                    // do nothing
+                }
             }
         }
-
         return transition;
     }
 
@@ -146,37 +131,29 @@ public class AttributeValueMonitor extends Monitor {
     }
 
     private void updateFromPresent(final GraphReadMethods graph) {
-
         // Update the attribute modification counter
         final long currentAttributeModificationCounter = attributeModificationCounter;
         attributeModificationCounter = graph.getAttributeModificationCounter();
 
         // No attributes have been added or removed
         if (currentAttributeModificationCounter == attributeModificationCounter) {
-
             // Update the value modification counter
             final long currentValueModificationCounter = modificationCounter;
             modificationCounter = graph.getValueModificationCounter(id);
 
             // This attribute has no changed values
             if (currentValueModificationCounter == modificationCounter) {
-                transition = MonitorTransition.UNCHANGED;
-
-                // This attribute has changed values
-            } else {
+                transition = MonitorTransition.UNCHANGED;              
+            } else { // This attribute has changed values
                 transition = MonitorTransition.CHANGED;
-            }
-
-            // Attributes have been added or removed
-        } else {
+            }           
+        } else { // Attributes have been added or removed
             id = graph.getAttribute(elementType, name);
 
             // This attribute has been removed
             if (id == Graph.NOT_FOUND) {
-                transition = MonitorTransition.REMOVED;
-
-                // This attribute is still present (perhaps removed and then re-added)
-            } else {
+                transition = MonitorTransition.REMOVED;               
+            } else { // This attribute is still present (perhaps removed and then re-added)
                 final long currentUID = uid;
                 uid = graph.getAttributeUID(id);
 
@@ -187,15 +164,11 @@ public class AttributeValueMonitor extends Monitor {
 
                     // This attribute has no changed values
                     if (currentValueModificationCounter == modificationCounter) {
-                        transition = MonitorTransition.UNCHANGED;
-
-                        // This attribute has changed values
-                    } else {
+                        transition = MonitorTransition.UNCHANGED;                      
+                    } else {  // This attribute has changed values
                         transition = MonitorTransition.CHANGED;
-                    }
-
-                    // This attribute has been removed and then re-added
-                } else {
+                    }                   
+                } else { // This attribute has been removed and then re-added
                     transition = MonitorTransition.REMOVED_AND_ADDED;
                     modificationCounter = graph.getValueModificationCounter(id);
                 }
@@ -205,7 +178,7 @@ public class AttributeValueMonitor extends Monitor {
 
     @Override
     public String toString() {
-        StringBuilder out = new StringBuilder();
+        final StringBuilder out = new StringBuilder();
         out.append("AttributeValueMonitor[");
         out.append("name=").append(name);
         out.append(",elementType=").append(elementType);

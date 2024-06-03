@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ public class SpectralArranger implements Arranger {
     // A method to spread vertices out after an arrangement to reduce overlaps whilst preserving the structure of the graph
     // and avoiding over-exapnsion.
     // This method should probably be refactored so that it can be used by the whole arrangement framework.
-    public void disperseVertices(final GraphWriteMethods wg/*, final boolean rootDispersion*/) {
+    public void disperseVertices(final GraphWriteMethods wg) {
 
         final int xAttr = VisualConcept.VertexAttribute.X.get(wg);
         final int yAttr = VisualConcept.VertexAttribute.Y.get(wg);

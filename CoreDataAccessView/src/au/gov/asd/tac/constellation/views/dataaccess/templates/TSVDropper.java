@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,6 +43,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.logging.Level;
@@ -148,7 +149,7 @@ public class TSVDropper implements GraphDropper {
 
         public TSVDropperToGraphPlugin(final RecordStore recordStore, final List<File> files) {
             this.recordStore = recordStore;
-            this.files = files;
+            this.files = new ArrayList<>(files);
         }
 
         @Override

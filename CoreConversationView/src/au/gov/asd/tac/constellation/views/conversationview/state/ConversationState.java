@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,12 +53,12 @@ public class ConversationState {
      * @param senderAttributes the attributes that will be displayed as the
      * sender of the messages in this conversation.
      */
-    public ConversationState(Set<String> hiddenContributionProviders, List<String> senderAttributes) {
+    public ConversationState(final Set<String> hiddenContributionProviders, final List<String> senderAttributes) {
         this.hiddenContributionProviders = new HashSet<>(hiddenContributionProviders);
         this.senderAttributes = new ArrayList<>(senderAttributes);
     }
 
-    public ConversationState(ConversationState original) {
+    public ConversationState(final ConversationState original) {
 
         if (original == null) {
             this.hiddenContributionProviders = new HashSet<>();
@@ -78,7 +78,7 @@ public class ConversationState {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (o == null) {
             return false;
         }
@@ -86,7 +86,7 @@ public class ConversationState {
             return true;
         }
         if (this.getClass() == o.getClass()) {
-            ConversationState cs = (ConversationState) o;
+            final ConversationState cs = (ConversationState) o;
             return hiddenContributionProviders.equals(cs.hiddenContributionProviders)
                     && senderAttributes.equals(cs.senderAttributes);
         }
@@ -101,11 +101,11 @@ public class ConversationState {
         return hash;
     }
 
-    public void setSenderAttributesToKeys(GraphReadMethods graph) {
+    public void setSenderAttributesToKeys(final GraphReadMethods graph) {
         senderAttributes.clear();
 
-        for (int keyAttributeId : graph.getPrimaryKey(GraphElementType.VERTEX)) {
-            Attribute keyAttribute = new GraphAttribute(graph, keyAttributeId);
+        for (final int keyAttributeId : graph.getPrimaryKey(GraphElementType.VERTEX)) {
+            final Attribute keyAttribute = new GraphAttribute(graph, keyAttributeId);
             senderAttributes.add(keyAttribute.getName());
         }
     }

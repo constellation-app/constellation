@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class LongEditorFactory extends AttributeValueEditorFactory<Long> {
 
     @Override
-    public AbstractEditor<Long> createEditor(EditOperation editOperation, DefaultGetter<Long> defaultGetter, ValueValidator<Long> validator, String editedItemName, Long initialValue) {
+    public AbstractEditor<Long> createEditor(final EditOperation editOperation, final DefaultGetter<Long> defaultGetter, final ValueValidator<Long> validator, final String editedItemName, final Long initialValue) {
         return new LongEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
     }
 

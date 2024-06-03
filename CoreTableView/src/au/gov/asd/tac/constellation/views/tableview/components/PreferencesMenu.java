@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,13 +96,11 @@ public class PreferencesMenu {
         pageSizeMenu = createPageSizeMenu();
 
         savePreferencesMenu = createPreferencesMenu(SAVE_PREFERENCES, e -> {
-            if ((!getTable().getTableView().getColumns().isEmpty())
-                    && (GraphManager.getDefault().getActiveGraph() != null)) {
+            if (!getTable().getTableView().getColumns().isEmpty() && GraphManager.getDefault().getActiveGraph() != null) {
                 TableViewPreferencesIoProvider.savePreferences(
                         getTableViewTopComponent().getCurrentState().getElementType(),
                         getTable().getTableView(),
-                        getActiveTableReference().getUserTablePreferences().getMaxRowsPerPage()
-                );
+                        getActiveTableReference().getUserTablePreferences().getMaxRowsPerPage());
             }
             e.consume();
         });
@@ -112,9 +110,7 @@ public class PreferencesMenu {
                 loadPreferences();
 
                 tablePane.getActiveTableReference().updatePagination(
-                        tablePane.getActiveTableReference().getUserTablePreferences().getMaxRowsPerPage(),
-                        tablePane
-                );
+                        tablePane.getActiveTableReference().getUserTablePreferences().getMaxRowsPerPage(), tablePane);
             }
             e.consume();
         });
@@ -211,23 +207,20 @@ public class PreferencesMenu {
         final Menu menu = new Menu(PAGE_SIZE_PREFERENCES);
         menu.getItems().addAll(IntStream.of(100, 250, 500, 1000)
                 .mapToObj(pageSize -> {
-                    final RadioMenuItem pageSizeOption
-                            = new RadioMenuItem(Integer.toString(pageSize));
+                    final RadioMenuItem pageSizeOption = new RadioMenuItem(Integer.toString(pageSize));
                     pageSizeOption.setToggleGroup(pageSizeToggle);
                     pageSizeOption.setOnAction(e -> {
                         // Perform the page size update and if the update is a change, then reset the pagination
                         if (getActiveTableReference().getUserTablePreferences().updateMaxRowsPerPage(pageSize)) {
                             getActiveTableReference().updatePagination(
-                                    getActiveTableReference().getUserTablePreferences().getMaxRowsPerPage(),
-                                    tablePane
-                            );
+                                    getActiveTableReference().getUserTablePreferences().getMaxRowsPerPage(), tablePane);
                         }
                     });
                     if (pageSize == UserTablePreferences.DEFAULT_MAX_ROWS_PER_PAGE) {
                         pageSizeOption.setSelected(true); // initially set the default as selected
                     }
                     return pageSizeOption;
-                }).collect(Collectors.toList())
+                }).toList()
         );
 
         return menu;
@@ -259,12 +252,9 @@ public class PreferencesMenu {
      * item is selected.
      * @return the created menu item
      */
-    private MenuItem createPreferencesMenu(final String menuTitle,
-            final EventHandler<ActionEvent> action) {
+    private MenuItem createPreferencesMenu(final String menuTitle, final EventHandler<ActionEvent> action) {
         final MenuItem menuItem = new MenuItem(menuTitle);
-
         menuItem.setOnAction(action);
-
         return menuItem;
     }
 
@@ -324,25 +314,17 @@ public class PreferencesMenu {
                                     return null;
                                 })
                                 .filter(Objects::nonNull)
-                                .map(column -> Tuple.create(
-                                column.getAttributeNamePrefix(),
-                                column.getAttribute()
-                        ))
-                                .collect(Collectors.toList());
+                                .map(column -> Tuple.create(column.getAttributeNamePrefix(), column.getAttribute()))
+                                .toList();
 
                 // Update the sort preferences
-                getActiveTableReference().saveSortDetails(
-                        tablePrefs.getSortColumn(),
-                        tablePrefs.getSortDirection()
-                );
+                getActiveTableReference().saveSortDetails(tablePrefs.getSortColumn(), tablePrefs.getSortDirection());
 
                 try {
                     // Update the visibile columns and wait for the state plugin to complete its update
                     getActiveTableReference().updateVisibleColumns(getTableViewTopComponent().getCurrentGraph(),
-                            getTableViewTopComponent().getCurrentState(),
-                            orderedColumns,
-                            UpdateMethod.REPLACE
-                    ).get(1000, TimeUnit.MILLISECONDS);
+                            getTableViewTopComponent().getCurrentState(), orderedColumns, UpdateMethod.REPLACE)
+                            .get(1000, TimeUnit.MILLISECONDS);
                 } catch (final InterruptedException ex) {
                     LOGGER.log(Level.WARNING, "Update state plugin was interrupted");
                     Thread.currentThread().interrupt();

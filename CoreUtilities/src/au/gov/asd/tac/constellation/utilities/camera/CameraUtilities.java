@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -111,14 +111,10 @@ public class CameraUtilities {
     public static void changeMixRatio(final Camera camera, final boolean increaseMix, final boolean toLimit) {
         if (toLimit) {
             camera.setMixRatio(increaseMix ? Camera.MIX_RATIO_MAX : Camera.MIX_RATIO_MIN);
-        } else {
-            if (increaseMix && camera.getMixRatio() < Camera.MIX_RATIO_MAX) {
-                camera.setMixRatio(camera.getMixRatio() + 1);
-            } else if (!increaseMix && camera.getMixRatio() > Camera.MIX_RATIO_MIN) {
-                camera.setMixRatio(camera.getMixRatio() - 1);
-            } else {
-                // Do nothing
-            }
+        } else if (increaseMix && camera.getMixRatio() < Camera.MIX_RATIO_MAX) {
+            camera.setMixRatio(camera.getMixRatio() + 1);
+        } else if (!increaseMix && camera.getMixRatio() > Camera.MIX_RATIO_MIN) {
+            camera.setMixRatio(camera.getMixRatio() - 1);
         }
     }
 
@@ -185,7 +181,7 @@ public class CameraUtilities {
 
     public static void rotate(final Camera camera, final float xDegrees, final float yDegrees, final float zDegrees) {
         // Use a frame to move the eye and centre relative to the rotation point.
-        Frame frame = new Frame(camera.lookAtEye, camera.lookAtCentre, camera.lookAtUp);
+        final Frame frame = new Frame(camera.lookAtEye, camera.lookAtCentre, camera.lookAtUp);
         frame.setOrigin(camera.lookAtRotation);
         final Vector3f localCentre = new Vector3f();
         final Vector3f localEye = new Vector3f();

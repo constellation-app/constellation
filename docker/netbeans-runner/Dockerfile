@@ -59,8 +59,6 @@ COPY common.xml.modified ./
 RUN wget -q "https://dlcdn.apache.org/netbeans/netbeans/${NETBEANS_VERSION}/netbeans-${NETBEANS_VERSION}-bin.zip" \
     && echo "${NETBEANS_CHECKSUM}" | sha512sum -c \
     && unzip -q "netbeans-${NETBEANS_VERSION}-bin.zip" \
-    && wget -q "${NETBEANS_HELP_GITHUB}/org-netbeans-modules-javahelp.jar?raw=true" -O netbeans/platform/modules/org-netbeans-modules-javahelp.jar \
-    && wget -q "${NETBEANS_HELP_GITHUB}/jhall-2.0_05.jar?raw=true" -O netbeans/platform/modules/ext/jhall-2.0_05.jar \
     && mv common.xml.modified "netbeans/harness/common.xml" \
     && mv netbeans "${NETBEANS_HOME}" \
     && rm "netbeans-${NETBEANS_VERSION}-bin.zip"

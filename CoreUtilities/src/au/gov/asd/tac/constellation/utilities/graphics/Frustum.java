@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -412,39 +412,13 @@ public final class Frustum {
      * @return False if it is not in the frustum, true if it intersects the
      * frustum.
      */
-    public boolean inView(final Vector3f point, final float radius){
-        float fDist;
-        
-        // Near Plane - See if it is behind me
-        fDist = Mathf.distanceToPlane(point, nearPlane);
-        if (fDist + radius < 0.0) {
-            return false;
-        }
-
-        // Distance to far plane
-        fDist = Mathf.distanceToPlane(point, farPlane);
-        if (fDist + radius < 0.0) {
-            return false;
-        }
-        
-        fDist = Mathf.distanceToPlane(point, leftPlane);
-        if (fDist + radius < 0.0) {
-            return false;
-        }
-
-        fDist = Mathf.distanceToPlane(point, rightPlane);
-        if (fDist + radius < 0.0) {
-            return false;
-        }
-
-        fDist = Mathf.distanceToPlane(point, bottomPlane);
-        
-        if (fDist + radius < 0.0) {
-            return false;
-        }
-
-        fDist = Mathf.distanceToPlane(point, topPlane);
-        return fDist + radius >= 0.0;
+    public boolean inView(final Vector3f point, final float radius) {       
+        return Mathf.distanceToPlane(point, nearPlane) + radius >= 0.0 // Near Plane - See if it is in front of me
+                && Mathf.distanceToPlane(point, farPlane) + radius >= 0.0 // Distance to far plane
+                && Mathf.distanceToPlane(point, leftPlane) + radius >= 0.0
+                && Mathf.distanceToPlane(point, rightPlane) + radius >= 0.0
+                && Mathf.distanceToPlane(point, bottomPlane) + radius >= 0.0
+                && Mathf.distanceToPlane(point, topPlane) + radius >= 0.0;
     }
     
     /**
@@ -459,8 +433,7 @@ public final class Frustum {
      * @return The point of first entry into the frustum
      * frustum.
      */
-    public Vector3f getEntryPoint(final Vector3f initialEndPoint, final Vector3f finalEndPoint) {
-        
+    public Vector3f getEntryPoint(final Vector3f initialEndPoint, final Vector3f finalEndPoint) {       
         // The point is already within the frustum so return the point as the initial entry point. 
         if (inView(initialEndPoint, 0)){
             return initialEndPoint;
@@ -492,9 +465,6 @@ public final class Frustum {
      */
     private Vector3f getFaceIntersection(final Vector4f plane, final Vector3f initialEndPoint, final Vector3f finalEndPoint) {
         final Vector3f planeIntersectionPoint = Mathf.planeIntersectionPoint(initialEndPoint, finalEndPoint, plane);
-        if(planeIntersectionPoint.isValid() && inView(planeIntersectionPoint, 0.1F)) {
-                return planeIntersectionPoint;
-        }
-        return null;
+        return planeIntersectionPoint.isValid() && inView(planeIntersectionPoint, 0.1F) ? planeIntersectionPoint : null;
     }
 }
