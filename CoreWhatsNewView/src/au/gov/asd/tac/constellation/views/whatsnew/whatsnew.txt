@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2024-06-03 Select Nodes and Select Transactions
+<p>Users can now more easily select all nodes or select all transactions from a graph. These new actions can be found in the "Selection" menu.</p>
+
 == 2024-03-21 Spell checking in Constellation
 <p>Spell checking is available in text areas of Constellation. E.g. Data access view (Extract Types and Extract Words Plugins). It can be added in other text areas as requested.</p>
 <p>When enabled, incorrect spellings and some grammar errors are highlighted and underlined. 
