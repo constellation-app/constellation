@@ -58,7 +58,7 @@ public class ConversationState {
         this.senderAttributes = new ArrayList<>(senderAttributes);
     }
 
-    public ConversationState(ConversationState original) {
+    public ConversationState(final ConversationState original) {
 
         if (original == null) {
             this.hiddenContributionProviders = new HashSet<>();
@@ -86,7 +86,7 @@ public class ConversationState {
             return true;
         }
         if (this.getClass() == o.getClass()) {
-            ConversationState cs = (ConversationState) o;
+            final ConversationState cs = (ConversationState) o;
             return hiddenContributionProviders.equals(cs.hiddenContributionProviders)
                     && senderAttributes.equals(cs.senderAttributes);
         }
@@ -104,8 +104,8 @@ public class ConversationState {
     public void setSenderAttributesToKeys(final GraphReadMethods graph) {
         senderAttributes.clear();
 
-        for (int keyAttributeId : graph.getPrimaryKey(GraphElementType.VERTEX)) {
-            Attribute keyAttribute = new GraphAttribute(graph, keyAttributeId);
+        for (final int keyAttributeId : graph.getPrimaryKey(GraphElementType.VERTEX)) {
+            final Attribute keyAttribute = new GraphAttribute(graph, keyAttributeId);
             senderAttributes.add(keyAttribute.getName());
         }
     }
