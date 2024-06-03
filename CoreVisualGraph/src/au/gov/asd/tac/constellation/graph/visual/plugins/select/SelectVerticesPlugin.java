@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.graph.visual.plugins.select;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import static au.gov.asd.tac.constellation.graph.visual.plugins.select.SelectUtilities.selectTransactions;
 import static au.gov.asd.tac.constellation.graph.visual.plugins.select.SelectUtilities.selectVertices;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
@@ -33,18 +32,17 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Select all vertices and transactions.
  *
- * @author algol
+ * @author Quasar985
  */
 @ServiceProvider(service = Plugin.class)
 @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
-@Messages("SelectAllPlugin=Add to Selection: All")
-public class SelectAllPlugin extends SimpleEditPlugin {
+@Messages("SelectVerticesPlugin=Add to Selection: Nodes")
+public class SelectVerticesPlugin extends SimpleEditPlugin {
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
         final Properties properties = new Properties();
         selectVertices(graph, properties);
-        selectTransactions(graph, properties);
 
         ConstellationLogger.getDefault().pluginProperties(this, properties);
     }
