@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.api;
 
+import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessViewPreferenceKeys;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginType;
 import au.gov.asd.tac.constellation.views.dataaccess.tasks.LookupPluginsTask;
@@ -32,7 +33,10 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
 import javafx.util.Pair;
+import org.openide.util.NbPreferences;
 
 /**
  * Maintains the active state of the Data Access view. It also holds a loaded copy of all data access plugins that could
@@ -40,7 +44,9 @@ import javafx.util.Pair;
  *
  * @author formalhaunt
  */
-public class DataAccessPaneState {
+public class DataAccessPaneState implements PreferenceChangeListener {
+
+    private static final DataAccessPaneState dataAccessPaneStateInstantiation = new DataAccessPaneState();
 
     /**
      * Tracks the states of the Data Access view per graph. The key is the graph ID and the value is the current state
@@ -57,7 +63,7 @@ public class DataAccessPaneState {
     /**
      * This is the {@link Future} tracking the load of the plugins. Once this is complete, the plugins can be accessed.
      */
-    private static final Future<Map<String, Pair<Integer, List<DataAccessPlugin>>>> PLUGIN_LOAD;
+    private static Future<Map<String, Pair<Integer, List<DataAccessPlugin>>>> PLUGIN_LOAD;
     /**
      * The ID of the currently active graph.
      */
@@ -67,32 +73,62 @@ public class DataAccessPaneState {
         // As soon as the pane state is interacted with begin loading the plugins
         // in a separate thread so they are ready when requested. They do not change
         // so only need to be loaded once at initialization.
-        PLUGIN_LOAD = CompletableFuture.supplyAsync(
-                new LookupPluginsTask(),
-                Executors.newSingleThreadExecutor()
-        ).thenApply(plugins -> {
-            if ((new Pair<Integer, List<DataAccessPlugin>>(0, null)).equals(plugins.get(""))) {
-                System.out.println("plugins empty");
-                return null;
-            }
-            for (Map.Entry entry : plugins.entrySet()) {
-                System.out.println("key:" + entry.getKey() + "value: " + entry.getValue());
-            }
-            // Sort the DataAccessPlugin lists within each type including the category type
-            // so that favourites category is sorted properly.
-            System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-            final DataAccessPluginComparator comparator = new DataAccessPluginComparator();
-            System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
-            plugins.values().forEach(pluginList -> Collections.sort(pluginList.getValue(), comparator));
-            System.out.println("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC");
-            return plugins;
-        });
+//        PLUGIN_LOAD = CompletableFuture.supplyAsync(
+//                new LookupPluginsTask(),
+//                Executors.newSingleThreadExecutor()
+//        ).thenApply(plugins -> {
+//            for (Map.Entry entry : plugins.entrySet()) {
+//                System.out.println("key:" + entry.getKey() + "value: " + entry.getValue());
+//            }
+//
+//            if ((new Pair<Integer, List<DataAccessPlugin>>(0, null)).equals(plugins.get(""))) {
+//                return null;
+//            }
+//            System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+//            // Sort the DataAccessPlugin lists within each type including the category type
+//            // so that favourites category is sorted properly.
+//            final DataAccessPluginComparator comparator = new DataAccessPluginComparator();
+//            plugins.values().forEach(pluginList -> Collections.sort(pluginList.getValue(), comparator));
+//            return plugins;
+//        });
+
+        reloadPlugins();
     }
 
     /**
      * Private constructor to prevent initialization.
      */
     private DataAccessPaneState() {
+        NbPreferences.forModule(DataAccessViewPreferenceKeys.class).addPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void preferenceChange(PreferenceChangeEvent evt) {
+        reloadPlugins();
+    }
+
+    public static void reloadPlugins() {
+        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+
+        PLUGIN_LOAD = CompletableFuture.supplyAsync(
+                new LookupPluginsTask(),
+                Executors.newSingleThreadExecutor()
+        ).thenApply(plugins -> {
+            System.out.println("handlePluginChange PLUGINS:");
+            for (Map.Entry entry : plugins.entrySet()) {
+                System.out.println("key:" + entry.getKey() + "value: " + entry.getValue());
+            }
+
+            if ((new Pair<Integer, List<DataAccessPlugin>>(0, null)).equals(plugins.get(""))) {
+                return null;
+            }
+
+            // Sort the DataAccessPlugin lists within each type including the category type
+            // so that favourites category is sorted properly.
+            final DataAccessPluginComparator comparator = new DataAccessPluginComparator();
+            plugins.values().forEach(pluginList -> Collections.sort(pluginList.getValue(), comparator));
+            return plugins;
+        });
     }
 
     /**

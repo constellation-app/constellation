@@ -103,6 +103,14 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>au.gov.asd.tac.constellation.preferences</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>1.0</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>au.gov.asd.tac.constellation.security</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -158,6 +166,14 @@
                     <compile-dependency/>
                     <run-dependency>
                         <specification-version>1.50</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.openide.actions</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>6.62</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>

@@ -40,11 +40,12 @@ import org.openide.util.NbPreferences;
 public class LookupPluginsTask implements Supplier<Map<String, Pair<Integer, List<DataAccessPlugin>>>> {
 
     private static final Preferences PREFERENCES = NbPreferences.forModule(DataAccessViewPreferenceKeys.class);
-    private static final String VISIBLE_CATEGORIES = PREFERENCES.get(DataAccessViewPreferenceKeys.VISIBLE_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV);
-    private static final String HIDDEN_CATEGORIES = PREFERENCES.get(DataAccessViewPreferenceKeys.HIDDEN_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV);
 
     @Override
     public Map<String, Pair<Integer, List<DataAccessPlugin>>> get() {
+        final String visible_categories = PREFERENCES.get(DataAccessViewPreferenceKeys.VISIBLE_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV);
+        final String hidden_categories = PREFERENCES.get(DataAccessViewPreferenceKeys.HIDDEN_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV);
+
         final Map<String, List<DataAccessPlugin>> allPlugins = DataAccessUtilities.getAllPlugins();
         final Map<String, Pair<Integer, List<DataAccessPlugin>>> orderedPlugins = new LinkedHashMap<>();
 
@@ -56,8 +57,8 @@ public class LookupPluginsTask implements Supplier<Map<String, Pair<Integer, Lis
                 .keySet());
 
         // Remove hidden categories if any exist in the preferences.
-        if (StringUtils.isNotBlank(HIDDEN_CATEGORIES)) {
-            final String[] hiddenCategories = (HIDDEN_CATEGORIES.replace("[", "").replace("]", "")).split(SeparatorConstants.COMMA);
+        if (StringUtils.isNotBlank(hidden_categories)) {
+            final String[] hiddenCategories = (hidden_categories.replace("[", "").replace("]", "")).split(SeparatorConstants.COMMA);
 
             for (final String hiddenCategory : hiddenCategories) {
                 availableCategories.remove(hiddenCategory.trim());
@@ -65,8 +66,8 @@ public class LookupPluginsTask implements Supplier<Map<String, Pair<Integer, Lis
         }
 
         // Add visible categories if any exist in the preferences.
-        if (StringUtils.isNotBlank(VISIBLE_CATEGORIES)) {
-            final String[] visibleCategories = (VISIBLE_CATEGORIES.replace("[", "").replace("]", "")).split(SeparatorConstants.COMMA);
+        if (StringUtils.isNotBlank(visible_categories)) {
+            final String[] visibleCategories = (visible_categories.replace("[", "").replace("]", "")).split(SeparatorConstants.COMMA);
 
             if (visibleCategories.length > 0) {
                 for (int i = 0; i < visibleCategories.length; i++) {
@@ -82,7 +83,7 @@ public class LookupPluginsTask implements Supplier<Map<String, Pair<Integer, Lis
                 orderedPlugins.put(category, new Pair<>(position, allPlugins.get(category)));
             });
         }
-
+        
         return orderedPlugins;
     }
 }
