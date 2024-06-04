@@ -71,27 +71,7 @@ public class DataAccessPaneState implements PreferenceChangeListener {
 
     static {
         // As soon as the pane state is interacted with begin loading the plugins
-        // in a separate thread so they are ready when requested. They do not change
-        // so only need to be loaded once at initialization.
-//        PLUGIN_LOAD = CompletableFuture.supplyAsync(
-//                new LookupPluginsTask(),
-//                Executors.newSingleThreadExecutor()
-//        ).thenApply(plugins -> {
-//            for (Map.Entry entry : plugins.entrySet()) {
-//                System.out.println("key:" + entry.getKey() + "value: " + entry.getValue());
-//            }
-//
-//            if ((new Pair<Integer, List<DataAccessPlugin>>(0, null)).equals(plugins.get(""))) {
-//                return null;
-//            }
-//            System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-//            // Sort the DataAccessPlugin lists within each type including the category type
-//            // so that favourites category is sorted properly.
-//            final DataAccessPluginComparator comparator = new DataAccessPluginComparator();
-//            plugins.values().forEach(pluginList -> Collections.sort(pluginList.getValue(), comparator));
-//            return plugins;
-//        });
-
+        // in a separate thread so they are ready when requested. 
         reloadPlugins();
     }
 
@@ -108,17 +88,10 @@ public class DataAccessPaneState implements PreferenceChangeListener {
     }
 
     public static void reloadPlugins() {
-        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-
         PLUGIN_LOAD = CompletableFuture.supplyAsync(
                 new LookupPluginsTask(),
                 Executors.newSingleThreadExecutor()
         ).thenApply(plugins -> {
-            System.out.println("handlePluginChange PLUGINS:");
-            for (Map.Entry entry : plugins.entrySet()) {
-                System.out.println("key:" + entry.getKey() + "value: " + entry.getValue());
-            }
-
             if ((new Pair<Integer, List<DataAccessPlugin>>(0, null)).equals(plugins.get(""))) {
                 return null;
             }
