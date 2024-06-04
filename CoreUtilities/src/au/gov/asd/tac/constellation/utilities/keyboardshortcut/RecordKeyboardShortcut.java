@@ -18,10 +18,13 @@ package au.gov.asd.tac.constellation.utilities.keyboardshortcut;
 
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import com.google.common.collect.HashBiMap;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -43,10 +46,18 @@ public class RecordKeyboardShortcut extends Dialog<String>  {
     private static final String KEYBOARD_SHORTCUT_DIALOG_HEADER_TEXT = "Press keyboard shortcut for template";
     
     private static final String KEYBOARD_SHORTCUT_EXISTS_ALERT_TITLE = "Keyboard shortcut already assigned to other template";
-    private static final String KEYBOARD_SHORTCUT_EXISTS_ALERT_ERROR_MSG_FORMAT
-            = "'%s' already assigned. Do you want to assign it to this template?";
+    //private static final String KEYBOARD_SHORTCUT_EXISTS_ALERT_ERROR_MSG_FORMAT
+    //        = "'%s' already assigned. Do you want to assign it to this template?";
     
-    public Optional<String> start(File preferenceDirectory) {       
+     public static final String KEYBOARD_SHORTCUT_EXISTS_ALERT_ERROR_MSG_FORMAT
+            = "'%s' will be re-assigned to this template";
+     
+     public static final String KEYBOARD_SHORTCUT = "KEYBOARD_SHORTCUT";
+     public static final String ALREADY_ASSIGNED = "ALREADY_ASSIGNED";
+     public static final String YES = "Yes";
+     public static final String NO = "No";
+     
+    public Optional<KeyboardShortcutSelectionResult> start(File preferenceDirectory) {       
         
         final KeyPressLabelDialog td = new KeyPressLabelDialog();
         td.setTitle(KEYBOARD_SHORTCUT_DIALOG_TITLE);
@@ -57,25 +68,18 @@ public class RecordKeyboardShortcut extends Dialog<String>  {
         
         String keyboardShortcut = (td.getLabel().getText().replace('+', ' ') +" ").trim();      
         
+        Optional<KeyboardShortcutSelectionResult> ksOptional = Optional.empty();
         
-        if(StringUtils.isNotEmpty(keyboardShortcut)) {
-            boolean go = true;
+        if(StringUtils.isNotEmpty(keyboardShortcut)) {            
+            boolean alreadyAssigned = false;
             
+                        
             File exisitngTemplateWithKs = keyboardShortCutAlreadyAssigned(preferenceDirectory, keyboardShortcut);
             
             if(exisitngTemplateWithKs != null) {
-                
-                final Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setHeaderText(KEYBOARD_SHORTCUT_EXISTS_ALERT_TITLE);
-                alert.setContentText(String.format(
-                        KEYBOARD_SHORTCUT_EXISTS_ALERT_ERROR_MSG_FORMAT,
-                        keyboardShortcut
-                ));
-
-                final Optional<ButtonType> option = alert.showAndWait();
-                go = option.isPresent() && option.get() == ButtonType.OK;
+                alreadyAssigned = true;              
              
-                if (go) {
+              /*  if (go) {
                     String rename = exisitngTemplateWithKs.getName().replaceAll(keyboardShortcut, StringUtils.EMPTY);
                     exisitngTemplateWithKs.renameTo( new File(
                             preferenceDirectory,
@@ -83,12 +87,14 @@ public class RecordKeyboardShortcut extends Dialog<String>  {
                     ));                    
                 } else {
                     return start(preferenceDirectory);
-                }
+                } */
             }
+            
+           ksOptional = Optional.of(new KeyboardShortcutSelectionResult(keyboardShortcut, alreadyAssigned, exisitngTemplateWithKs));
         }
         
         
-        return Optional.of(keyboardShortcut);
+        return ksOptional;
     }   
     
     public File keyboardShortCutAlreadyAssigned(File preferenceDirectory, String keyboardShortcut) {

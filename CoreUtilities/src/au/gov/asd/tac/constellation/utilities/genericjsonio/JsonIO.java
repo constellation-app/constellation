@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.keyboardshortcut.KeyboardShortcutSelectionResult;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,6 +33,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -140,8 +142,34 @@ public class JsonIO {
             return;
         }
 
-        // Ask the user to provide a file name
-        final Optional<String> userInput = JsonIODialog.getPreferenceFileName();
+         //Record keyboard shortcut
+        Optional<String> ks = Optional.empty();
+        if (keyboardShortcut.isPresent() && keyboardShortcut.get()) {
+           ks = getDefaultKeyboardShortcut(preferenceDirectory);
+        }
+        
+        // Ask the user to provide a file name        
+        Optional<String> userInputWithKs = Optional.empty();
+        Optional<String> userInputWithoutKs = Optional.empty();
+        
+        if(keyboardShortcut.isPresent() && keyboardShortcut.get()) {
+           Optional<KeyboardShortcutSelectionResult> ksResult = JsonIODialog.getPreferenceFileName(keyboardShortcut, ks, preferenceDirectory);
+           if(ksResult.isPresent()) {
+               if(Objects.isNull(ksResult.get().getFileName())) {
+                   return;
+               }
+               
+               userInputWithKs = Optional.ofNullable(ksResult.get().getFileName());
+               ks = Optional.of(ksResult.get().getKeyboardShortcut());
+               
+           } else {
+               return;
+           }
+        } else {
+            userInputWithoutKs = JsonIODialog.getPreferenceFileName();
+        }
+                
+        final Optional<String> userInput = (keyboardShortcut.isPresent() && keyboardShortcut.get()) ? userInputWithKs : userInputWithoutKs;
 
         // Cancel was pressed. So stop the save.
         if (userInput.isEmpty()) {
@@ -161,14 +189,15 @@ public class JsonIO {
         final String prefixedFileName = filePrefix.orElse("").concat(fileName);       
 
         //Record keyboard shortcut
-        Optional<String>  ks = Optional.empty();
+        
+        /* Optional<String>  ks = Optional.empty();
         if (keyboardShortcut.get() != null && keyboardShortcut.get().booleanValue()) {
            ks = getDefaultKeyboardShortcut(preferenceDirectory);
            if (ks.isEmpty()) {
                //Ask for user defined shortcut
                ks = JsonIODialog.getKeyboardShortcut(preferenceDirectory);
            }           
-        }
+        } */
         
         final String fileNameWithKeyboardShortcut = ks.orElse("").concat(" " + prefixedFileName);
         
