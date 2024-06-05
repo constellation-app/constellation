@@ -43,8 +43,8 @@ public class LookupPluginsTask implements Supplier<Map<String, Pair<Integer, Lis
 
     @Override
     public Map<String, Pair<Integer, List<DataAccessPlugin>>> get() {
-        final String visible_categories = PREFERENCES.get(DataAccessViewPreferenceKeys.VISIBLE_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV);
-        final String hidden_categories = PREFERENCES.get(DataAccessViewPreferenceKeys.HIDDEN_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV);
+        final String visibleCategories = PREFERENCES.get(DataAccessViewPreferenceKeys.VISIBLE_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV);
+        final String hiddenCategories = PREFERENCES.get(DataAccessViewPreferenceKeys.HIDDEN_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV);
 
         final Map<String, List<DataAccessPlugin>> allPlugins = DataAccessUtilities.getAllPlugins();
         final Map<String, Pair<Integer, List<DataAccessPlugin>>> orderedPlugins = new LinkedHashMap<>();
@@ -57,21 +57,21 @@ public class LookupPluginsTask implements Supplier<Map<String, Pair<Integer, Lis
                 .keySet());
 
         // Remove hidden categories if any exist in the preferences.
-        if (StringUtils.isNotBlank(hidden_categories)) {
-            final String[] hiddenCategories = (hidden_categories.replace("[", "").replace("]", "")).split(SeparatorConstants.COMMA);
+        if (StringUtils.isNotBlank(hiddenCategories)) {
+            final String[] hiddenCategoriesArray = (hiddenCategories.replace("[", "").replace("]", "")).split(SeparatorConstants.COMMA);
 
-            for (final String hiddenCategory : hiddenCategories) {
+            for (final String hiddenCategory : hiddenCategoriesArray) {
                 availableCategories.remove(hiddenCategory.trim());
             }
         }
 
         // Add visible categories if any exist in the preferences.
-        if (StringUtils.isNotBlank(visible_categories)) {
-            final String[] visibleCategories = (visible_categories.replace("[", "").replace("]", "")).split(SeparatorConstants.COMMA);
+        if (StringUtils.isNotBlank(visibleCategories)) {
+            final String[] visibleCategoriesArray = (visibleCategories.replace("[", "").replace("]", "")).split(SeparatorConstants.COMMA);
 
-            if (visibleCategories.length > 0) {
-                for (int i = 0; i < visibleCategories.length; i++) {
-                    orderedPlugins.put(visibleCategories[i].trim(), new Pair<>(i, allPlugins.get(visibleCategories[i].trim())));
+            if (visibleCategoriesArray.length > 0) {
+                for (int i = 0; i < visibleCategoriesArray.length; i++) {
+                    orderedPlugins.put(visibleCategoriesArray[i].trim(), new Pair<>(i, allPlugins.get(visibleCategoriesArray[i].trim())));
                 }
             }
         } else { // Add available categories if no visible categories exist in the preferences.

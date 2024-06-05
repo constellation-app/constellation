@@ -33,8 +33,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
-import java.util.prefs.PreferenceChangeEvent;
-import java.util.prefs.PreferenceChangeListener;
+import java.util.prefs.Preferences;
 import javafx.util.Pair;
 import org.openide.util.NbPreferences;
 
@@ -44,9 +43,7 @@ import org.openide.util.NbPreferences;
  *
  * @author formalhaunt
  */
-public class DataAccessPaneState implements PreferenceChangeListener {
-
-    private static final DataAccessPaneState dataAccessPaneStateInstantiation = new DataAccessPaneState();
+public class DataAccessPaneState {
 
     /**
      * Tracks the states of the Data Access view per graph. The key is the graph ID and the value is the current state
@@ -63,11 +60,14 @@ public class DataAccessPaneState implements PreferenceChangeListener {
     /**
      * This is the {@link Future} tracking the load of the plugins. Once this is complete, the plugins can be accessed.
      */
-    private static Future<Map<String, Pair<Integer, List<DataAccessPlugin>>>> PLUGIN_LOAD;
+    private static Future<Map<String, Pair<Integer, List<DataAccessPlugin>>>> pluginLoad;
     /**
      * The ID of the currently active graph.
      */
     private static String currentGraphId;
+
+    private static final Preferences PREFERENCES = NbPreferences.forModule(DataAccessViewPreferenceKeys.class);
+    private static String visibleCategories = ""; //Empty to begin with, will be populated later
 
     static {
         // As soon as the pane state is interacted with begin loading the plugins
@@ -79,16 +79,26 @@ public class DataAccessPaneState implements PreferenceChangeListener {
      * Private constructor to prevent initialization.
      */
     private DataAccessPaneState() {
-        NbPreferences.forModule(DataAccessViewPreferenceKeys.class).addPreferenceChangeListener(this);
     }
 
-    @Override
-    public void preferenceChange(PreferenceChangeEvent evt) {
-        reloadPlugins();
+    private static boolean pluginsRequireReload() {
+        final String temp = PREFERENCES.get(DataAccessViewPreferenceKeys.VISIBLE_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV);
+        if (temp.equals(visibleCategories)) {
+            return false;
+        } else {
+            visibleCategories = temp;
+            return true;
+        }
     }
 
-    public static void reloadPlugins() {
-        PLUGIN_LOAD = CompletableFuture.supplyAsync(
+    /**
+     * Function that will retrieve the visible plugins for data access view
+     */
+    public static synchronized void reloadPlugins() {
+        if (!pluginsRequireReload()) {
+            return;
+        }
+        pluginLoad = CompletableFuture.supplyAsync(
                 new LookupPluginsTask(),
                 Executors.newSingleThreadExecutor()
         ).thenApply(plugins -> {
@@ -115,7 +125,8 @@ public class DataAccessPaneState implements PreferenceChangeListener {
      * @throws ExecutionException if there was an error during the plugin lookup
      */
     public static Map<String, Pair<Integer, List<DataAccessPlugin>>> getPlugins() throws InterruptedException, ExecutionException {
-        return PLUGIN_LOAD.get();
+        reloadPlugins();
+        return pluginLoad.get();
     }
 
     /**
@@ -133,7 +144,8 @@ public class DataAccessPaneState implements PreferenceChangeListener {
      * @throws TimeoutException if the plugin lookup took longer than the specified timeout
      */
     public static Map<String, Pair<Integer, List<DataAccessPlugin>>> getPlugins(final long timeout, final TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-        return PLUGIN_LOAD.get(timeout, unit);
+        reloadPlugins();
+        return pluginLoad.get(timeout, unit);
     }
 
     /**
