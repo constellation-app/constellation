@@ -123,10 +123,10 @@ public class DataAccessTabPane implements PreferenceChangeListener {
         final Map<String, Pair<Integer, List<DataAccessPlugin>>> pluginsRetrieved;
         try {
             pluginsRetrieved = DataAccessPaneState.getPlugins();
-        } catch (ExecutionException ex) {
+        } catch (final ExecutionException ex) {
             throw new IllegalStateException("Failed to load data access plugins. "
                     + "Data Access View cannot be created.");
-        } catch (InterruptedException ex) {
+        } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
 
             throw new IllegalStateException("Failed to load data access plugins. "
@@ -135,7 +135,7 @@ public class DataAccessTabPane implements PreferenceChangeListener {
 
         setPlugins(pluginsRetrieved);
 
-        for (Tab tab : tabPane.getTabs()) {
+        for (final Tab tab : tabPane.getTabs()) {
             getQueryPhasePane(tab).updatePlugins(pluginsRetrieved, getDataAccessPane());
         }
     }
