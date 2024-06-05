@@ -81,9 +81,9 @@ public class DataAccessPaneState {
     private DataAccessPaneState() {
     }
 
-    private static boolean pluginsRequireReload() {
+    private static synchronized boolean pluginsRequireReload() {
         final String temp = PREFERENCES.get(DataAccessViewPreferenceKeys.VISIBLE_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV);
-        if (temp.equals(visibleCategories) && !visibleCategories.equals("")) {
+        if (temp.equals(visibleCategories) && !("".equals(visibleCategories))) {
             return false;
         } else {
             visibleCategories = temp;
