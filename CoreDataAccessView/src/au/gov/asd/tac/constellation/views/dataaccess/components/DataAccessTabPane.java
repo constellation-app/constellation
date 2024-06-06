@@ -442,7 +442,7 @@ public class DataAccessTabPane implements PreferenceChangeListener {
         return plugins;
     }
 
-    public void setPlugins(Map<String, Pair<Integer, List<DataAccessPlugin>>> newPlugins) {
+    public void setPlugins(final Map<String, Pair<Integer, List<DataAccessPlugin>>> newPlugins) {
         this.plugins = newPlugins;
     }
 
