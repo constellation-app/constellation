@@ -83,7 +83,11 @@ public class LookupPluginsTask implements Supplier<Map<String, Pair<Integer, Lis
                 orderedPlugins.put(category, new Pair<>(position, allPlugins.get(category)));
             });
         }
-        
         return orderedPlugins;
+    }
+
+    // Only used in testing
+    public static Preferences getPreferences() {
+        return PREFERENCES;
     }
 }

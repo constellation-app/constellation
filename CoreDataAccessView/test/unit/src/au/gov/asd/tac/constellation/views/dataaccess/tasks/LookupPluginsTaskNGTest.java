@@ -36,14 +36,14 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockingDetails;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
 import static org.testng.Assert.assertEquals;
-import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -57,17 +57,31 @@ public class LookupPluginsTaskNGTest {
     private static MockedStatic<Lookup> lookupMockedStatic;
     private static MockedStatic<DataAccessPluginType> dapTypeMockedStatic;
 
-    private static final MockedStatic<NbPreferences> nbPreferencesStatic = Mockito.mockStatic(NbPreferences.class, Mockito.CALLS_REAL_METHODS);
-    private static final Preferences preferenceMock = mock(Preferences.class);
+    private static MockedStatic<NbPreferences> nbPreferencesStatic;
+    private static final Preferences preferenceMock = mock(Preferences.class, Mockito.CALLS_REAL_METHODS);
+    private static Preferences preferenceReal;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        nbPreferencesStatic.when(() -> NbPreferences.forModule(DataAccessViewPreferenceKeys.class)).thenReturn(preferenceMock);
+        try {
+            nbPreferencesStatic = Mockito.mockStatic(NbPreferences.class, Mockito.CALLS_REAL_METHODS);
+            nbPreferencesStatic.when(() -> NbPreferences.forModule(DataAccessViewPreferenceKeys.class)).thenReturn(preferenceMock);
+        } catch (Exception e) {
+            System.out.println("Error creating static mock of NbPreferences");
+        }
+
+        // PREFERENCES should be a mock if done right
+        preferenceReal = LookupPluginsTask.getPreferences();
     }
-    
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+        nbPreferencesStatic.close();
+    }
 
     @Test
     public void get() {
+        System.out.println("get");
         // Setup other static mocks
         defaultLookup = mock(Lookup.class);
         lookupMockedStatic = Mockito.mockStatic(Lookup.class);
@@ -78,9 +92,10 @@ public class LookupPluginsTaskNGTest {
                 DataAccessPluginCoreType.DEVELOPER,
                 DataAccessPluginCoreType.UTILITY));
 
-        when(preferenceMock.get(DataAccessViewPreferenceKeys.VISIBLE_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV)).thenReturn("");
-        when(preferenceMock.get(DataAccessViewPreferenceKeys.HIDDEN_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV)).thenReturn("");
-        
+        if (preferenceReal != null && mockingDetails(preferenceReal).isMock()) {
+            when(preferenceReal.get(DataAccessViewPreferenceKeys.VISIBLE_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV)).thenReturn("");
+            when(preferenceReal.get(DataAccessViewPreferenceKeys.HIDDEN_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV)).thenReturn("");
+        }
         // Plugin Mocks
         // All of the mock creations are being coupled with an interface to force the getClass() call on them to be different. Plugin 1 is disabled and so will be ignored.
         final DataAccessPlugin plugin1 = mock(DataAccessPlugin.class, withSettings().extraInterfaces(DataAccessPluginType.class));
@@ -135,10 +150,10 @@ public class LookupPluginsTaskNGTest {
                 "Developer", new Pair(Integer.MAX_VALUE, List.of(plugin3)),
                 "Utility", new Pair(Integer.MAX_VALUE, List.of(plugin4)),
                 "Favourites", new Pair(Integer.MAX_VALUE, List.of(plugin3)));
-        
+
         // Assert expected plugins match actual
         assertEquals(new LookupPluginsTask().get(), expectedPlugins);
-        
+
         // Close static mocks
         lookupMockedStatic.close();
         dapTypeMockedStatic.close();
@@ -146,27 +161,30 @@ public class LookupPluginsTaskNGTest {
 
     @Test
     public void getCategoriesNotBlank() {
+        System.out.println("getCategoriesNotBlank");
         // Mocks
-        final String visibleString = "[Import, Utility, Developer]";
+        final String visibleString = "[Import,Utility,Developer]";
         final String hiddenString = "[Clean]";
-        when(preferenceMock.get(DataAccessViewPreferenceKeys.VISIBLE_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV)).thenReturn(visibleString);
-        when(preferenceMock.get(DataAccessViewPreferenceKeys.HIDDEN_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV)).thenReturn(hiddenString);
+        if (preferenceReal != null && mockingDetails(preferenceReal).isMock()) {
+            when(preferenceReal.get(DataAccessViewPreferenceKeys.VISIBLE_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV)).thenReturn(visibleString);
+            when(preferenceReal.get(DataAccessViewPreferenceKeys.HIDDEN_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV)).thenReturn(hiddenString);
 
-        // Assert mocks work properly
-        assertEquals(preferenceMock.get(DataAccessViewPreferenceKeys.VISIBLE_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV), visibleString);
-        assertEquals(preferenceMock.get(DataAccessViewPreferenceKeys.HIDDEN_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV), hiddenString);
+            // Assert mocks work properly
+            assertEquals(preferenceReal.get(DataAccessViewPreferenceKeys.VISIBLE_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV), visibleString);
+            assertEquals(preferenceReal.get(DataAccessViewPreferenceKeys.HIDDEN_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV), hiddenString);
+        }
 
         // Expected
-        final Map<String, Pair<Integer, List<DataAccessPlugin>>> expectedPlugins = new LinkedHashMap<>();
-
-        final Map<String, List<DataAccessPlugin>> allPlugins = DataAccessUtilities.getAllPlugins();
         final String[] visibleCategoriesArray = (visibleString.replace("[", "").replace("]", "")).split(SeparatorConstants.COMMA);
+
+        final Map<String, Pair<Integer, List<DataAccessPlugin>>> expectedPlugins = new LinkedHashMap<>();
+        final Map<String, List<DataAccessPlugin>> allPlugins = DataAccessUtilities.getAllPlugins();
+
         for (int i = 0; i < visibleCategoriesArray.length; i++) {
             expectedPlugins.put(visibleCategoriesArray[i].trim(), new Pair<>(i, allPlugins.get(visibleCategoriesArray[i].trim())));
         }
 
         // Assert actual is expected
         assertEquals(new LookupPluginsTask().get(), expectedPlugins);
-
     }
 }
