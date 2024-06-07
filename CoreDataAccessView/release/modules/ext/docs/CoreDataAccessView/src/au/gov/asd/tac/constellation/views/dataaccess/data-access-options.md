@@ -9,6 +9,9 @@ menu in the top left corner of the Data Access View.
 Data access preferences can be saved and loaded using the "Save Templates" and
 "Load Templates" options.
 
+<img src="../ext/docs/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/resources/DataAccessSaveLoadTemplate.png" alt="Save and Load Templates
+Button" />
+
 When a preference is saved, you are prompted to name the preference. If
 a preference of that name has already been saved, you will be asked if
 you want to overwrite it. Preferences are saved by default in the
@@ -27,6 +30,9 @@ and selecting Remove.
 
 The raw results of data access queries can be saved to files using the
 "Save Results" option.
+
+<img src="../ext/docs/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/resources/DataAccessSaveResults.png" alt="Save Results
+Button" />
 
 When you first check the "Save Results" item, a directory chooser dialog
 will appear so you can select the directory that the results will be
@@ -52,6 +58,9 @@ creates.
 
 Data Access plugins can be deselected after pressing the Go button via
 the "Deselect on Go" option.
+
+<img src="../ext/docs/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/resources/DataAccessDeselectOnGo.png" alt="Deselect On Go
+Button" />
 
 When you check the "Deselect on Go" item, data access plugins
 that are ticked will be deselected after pressing "Go". This will
