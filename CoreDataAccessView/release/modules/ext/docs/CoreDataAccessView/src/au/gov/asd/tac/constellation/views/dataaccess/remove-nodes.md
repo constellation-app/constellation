@@ -2,9 +2,9 @@
 
 ## Remove nodes from your graph
 
-
+<br />
 <img src="../ext/docs/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/resources/RemoveNodes.png" alt="Remove Nodes" />
-
+<br />
 
 Remove nodes from the graph based on defined criteria. Only applies to nodes that are currently selected
 
