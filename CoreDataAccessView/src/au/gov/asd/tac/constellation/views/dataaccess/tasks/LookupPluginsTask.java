@@ -87,7 +87,7 @@ public class LookupPluginsTask implements Supplier<Map<String, Pair<Integer, Lis
     }
 
     // Only used in testing
-    public static Preferences getPreferences() {
+    protected static Preferences getPreferences() {
         return PREFERENCES;
     }
 }

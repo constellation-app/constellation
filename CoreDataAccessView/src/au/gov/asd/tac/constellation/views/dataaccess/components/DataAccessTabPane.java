@@ -114,7 +114,7 @@ public class DataAccessTabPane implements PreferenceChangeListener {
     }
 
     @Override
-    public void preferenceChange(PreferenceChangeEvent evt) {
+    public void preferenceChange(final PreferenceChangeEvent evt) {
         handlePluginChange();
     }
 
