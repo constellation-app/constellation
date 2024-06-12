@@ -816,12 +816,17 @@ public class NotesViewPane extends BorderPane {
         final Pane textFlowPane = new Pane();
         textFlowPane.getChildren().add(newNote.getContentTextFlow());
 
+        final Button showMoreButton = new Button(SHOW_MORE);
+        showMoreButton.setMinWidth(100);
+        showMoreButton.setMaxWidth(100);
+        showMoreButton.setVisible(false);
+
         final Rectangle clipRect = new Rectangle();
         textFlowPane.setClip(clipRect);
 
         textFlowPane.layoutBoundsProperty().addListener((obs, oldValue, newValue) -> {
             clipRect.setWidth(newValue.getWidth());
-            clipRect.setHeight(newValue.getHeight() + 60);
+            clipRect.setHeight(newValue.getHeight() + (showMoreButton.getText().equals(SHOW_LESS) ? 4 : -4));
         });
 
         final VBox contentPaneVBox = new VBox(newNote.getContentTextFlow());
@@ -902,10 +907,6 @@ public class NotesViewPane extends BorderPane {
         colourPicker.setMinWidth(100);
         colourPicker.setMaxWidth(100);
         HBox.setHgrow(colourPicker, Priority.NEVER);
-        final Button showMoreButton = new Button(SHOW_MORE);
-        showMoreButton.setMinWidth(100);
-        showMoreButton.setMaxWidth(100);
-        showMoreButton.setVisible(false);
 
         noteButtons = new HBox(15, showMoreButton, gap, editTextButton, deleteButton);
 

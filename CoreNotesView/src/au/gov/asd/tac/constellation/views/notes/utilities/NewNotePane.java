@@ -323,6 +323,7 @@ public class NewNotePane {
     public void clearTextFields() {
         titleField.clear();
         contentField.clear();
+        tabPane.getSelectionModel().select(0);
     }
 
     public void setEditMode(final boolean edit) {
