@@ -39,6 +39,7 @@ import java.util.concurrent.Future;
 import java.util.function.Function;
 import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
+import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
@@ -133,10 +134,15 @@ public class DataAccessTabPane implements PreferenceChangeListener {
                     + "Data Access View cannot be created.");
         }
 
+        // Check if plugins have changed
+        if (pluginsRetrieved.equals(plugins)) {
+            return;
+        }
+        
         setPlugins(pluginsRetrieved);
-
+        
         for (final Tab tab : tabPane.getTabs()) {
-            getQueryPhasePane(tab).updatePlugins(pluginsRetrieved, getDataAccessPane());
+            getQueryPhasePane(tab).updatePlugins(this.plugins, getDataAccessPane());
         }
     }
 
