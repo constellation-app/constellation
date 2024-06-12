@@ -318,7 +318,7 @@ public class NotesViewPane extends BorderPane {
                         );
                         newNotePane.setPreviousColour(newNotePane.getUserChosenColour());
                         if (newNotePane.isApplySelected()) {
-                            LOGGER.log(Level.SEVERE, "Selecting nodes to link to note");
+                            LOGGER.log(Level.FINE, "Selecting nodes to link to note");
                             // Get selected nodes from the graph.
                             final List<Integer> selectedNodes = new ArrayList<>();
                             // Get selected transactions from the graph.
@@ -771,7 +771,7 @@ public class NotesViewPane extends BorderPane {
      * View.
      */
     private void createNote(final NotesViewEntry newNote) {
-        LOGGER.log(Level.INFO, "Creating note");
+        LOGGER.log(Level.FINE, "Creating note");
         if (!Platform.isFxApplicationThread()) {
             throw new IllegalStateException("Not processing on the JavaFX Application Thread");
         }
