@@ -55,7 +55,7 @@ for text.
 ## graph.txt (or name.json) Sections
 
 The outermost structure of the graph is an ordered list containing five
-elements. Each element(apart from "version") contains a dictionary with
+elements. Each element (apart from "version") contains a dictionary with
 a single key defining the graph section contained in that element. The
 sections must appear in the following order:
 
@@ -68,7 +68,7 @@ sections must appear in the following order:
 4.  *transaction* - Contains data relevant to the transactions (e.g.
     line style).
 5.  *meta* - Contains data about the graph environment (e.g. the
-    attributes used for displaying labels).
+    attributes used describe View states).
 
 Why do it like this? Why not just a use a top-level dictionary
 containing the section keys? Unlike XML, JSON objects contain unordered
@@ -324,40 +324,21 @@ on open.
 
 Although the "meta" section has the same "attrs"+"data" format as the
 other sections, the attributes are defined by modules, rather than being
-built-in types. For instance, the module that defines which attribute
-values are displayed as labels on icons saves its state in the attribute
-"labels" of type "labels". When the document is opened, the
-Constellation graph opener will find a "labels" attribute and advertise
-it to the current modules. The module responsible for labels will
-recognise the attribute, claim it, and read its state.
+built-in types. For instance, the module that defines what filters and 
+configurations to display in the Conversation View saves its state in the 
+attribute "conversation_view_state" of type "conversation_view_state". 
+When the document is opened, the Constellation graph opener will find a 
+"conversation_view_state" attribute and advertise it to the current 
+modules. The module responsible for conversation_view_state (Core 
+Conversation View in this case) will recognise the attribute, claim it, 
+and read its state.
 
 The data section array contains a single object, with each key having a
 name corresponding to an attribute name. For instance, the module
-responsible for labels will have a "labels" key in which its state is
-saved.
+responsible for Conversation View state will have a 
+"conversation_view_state" key in which its state is saved.
 
 Generally, the format of the data used by individual modules is
 documented by the modules, rather than Constellation itself. Some
 modules may consider their data to be for internal use only, and not
 document their format.
-
-### Labels
-
-The "labels" object contains the following name/value pairs:
-
--   *bottom* - Defines the labels that appear below the icons. The value
-    is an array of objects. Each object has the following name/value
-    pairs:
-    -   *attr* - the name of the attribute to be displayed
-    -   *color* - the color of the displayed characters
-    -   *radius* - the size of the displayed characters, defaulting to 1
--   *top* - Defines the labels that appear above the icons. See bottom
-    for details.
--   *connections* - Defines the labels that appear on the lines between
-    nodes. See bottom for details.
--   *nw,ne,se,sw* - Defines the decorators that are drawn on icons at
-    the specified corners. The value is a string that contains the name
-    of the attribute which in turn contains the label of an icon. For
-    instance, if "IsValid" is a boolean attribute, then '"nw" :
-    "IsValid"' will display the icon for "True" or "False" in the
-    north-west corner of each icon.
