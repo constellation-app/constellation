@@ -102,7 +102,7 @@ public class TestableGraphBuilder {
      * @param wg
      * @throws InterruptedException 
      */
-    public TestableGraphBuilder(GraphWriteMethods wg) throws InterruptedException{
+    public TestableGraphBuilder(final GraphWriteMethods wg) throws InterruptedException{
         graph = null;
     }
     
@@ -110,7 +110,7 @@ public class TestableGraphBuilder {
         return this.withNodes().withBottomLabels().withTopLabels().withAllTransactions().withDecorators().build();
     }
     
-    public void buildGraphwithEverything(GraphWriteMethods gwm) {
+    public void buildGraphwithEverything(final GraphWriteMethods gwm) {
         withNodes(gwm);
         withBottomLabels(gwm);
         withTopLabels(gwm);
@@ -129,7 +129,7 @@ public class TestableGraphBuilder {
      * @throws InterruptedException 
      */
     public TestableGraphBuilder withDecorators() throws InterruptedException {
-        WritableGraph wg = graph.getWritableGraph("addDecroators", true);
+        final WritableGraph wg = graph.getWritableGraph("addDecroators", true);
         withDecorators(wg);
         wg.commit();
         
@@ -145,7 +145,7 @@ public class TestableGraphBuilder {
      * <li>SW: Nothing</li></ul></p>
      * @param gwm 
      */
-    public void withDecorators(GraphWriteMethods gwm) {
+    public void withDecorators(final GraphWriteMethods gwm) {
         
         // Ensure the attributes exist on the graph
         final int vertexAttributeIdIsGood = gwm.addAttribute(GraphElementType.VERTEX, BooleanAttributeDescription.ATTRIBUTE_NAME, "isGood", null, false, null);
@@ -167,7 +167,7 @@ public class TestableGraphBuilder {
      * @throws InterruptedException 
      */
     public TestableGraphBuilder withBlazes() throws InterruptedException {
-        WritableGraph wg = graph.getWritableGraph("addDecroators", true);
+        final WritableGraph wg = graph.getWritableGraph("addDecroators", true);
         withBlazes(wg);
         wg.commit();
         return this;
@@ -179,7 +179,7 @@ public class TestableGraphBuilder {
      * <ul><li>Fill in the details</li></ul></p>
      * @param gwm 
      */
-    private void withBlazes(GraphWriteMethods gwm) {
+    private void withBlazes(final GraphWriteMethods gwm) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
@@ -192,7 +192,7 @@ public class TestableGraphBuilder {
      * @throws InterruptedException 
      */
     public TestableGraphBuilder withBottomLabels() throws InterruptedException{
-        WritableGraph wg = graph.getWritableGraph("addBottomLabels", true);
+        final WritableGraph wg = graph.getWritableGraph("addBottomLabels", true);
         withBottomLabels(wg);
         wg.commit();
         return this;
@@ -205,7 +205,7 @@ public class TestableGraphBuilder {
      * <li>Attribute:ForegroundIcon, Color:DarkGreen, Size: 0.5</li></ul></p>
      * @param gwm 
      */
-    private void withBottomLabels(GraphWriteMethods gwm) {
+    private void withBottomLabels(final GraphWriteMethods gwm) {
         
         // Ensure the attributes exist on the graph
         final int graphAttributeIdVertexBottomLabels = VisualConcept.GraphAttribute.BOTTOM_LABELS.ensure(gwm);
@@ -229,7 +229,7 @@ public class TestableGraphBuilder {
      * @throws InterruptedException 
      */
     public TestableGraphBuilder withTopLabels() throws InterruptedException{
-        WritableGraph gwm = graph.getWritableGraph("addTopLabels", true);
+        final WritableGraph gwm = graph.getWritableGraph("addTopLabels", true);
         withTopLabels(gwm);
         gwm.commit();
         return this;
@@ -263,7 +263,7 @@ public class TestableGraphBuilder {
      * @throws InterruptedException 
      */
     public TestableGraphBuilder withTransactionLabels() throws InterruptedException{
-        WritableGraph wg = graph.getWritableGraph("addTransactionLabels", true);
+        final WritableGraph wg = graph.getWritableGraph("addTransactionLabels", true);
         withTransactionLabels(wg);
         wg.commit();
         return this;
@@ -275,7 +275,7 @@ public class TestableGraphBuilder {
      * <ul><li>Attribute:Visibility, Color:Light Green, Size: 1</li></ul></p>
      * @param gwm 
      */
-    private void withTransactionLabels(GraphWriteMethods gwm) {
+    private void withTransactionLabels(final GraphWriteMethods gwm) {
         
         // Ensure the attributes exist on the graph
         final int graphAttributeIdTransactionLabels = VisualConcept.GraphAttribute.TRANSACTION_LABELS.ensure(gwm);
@@ -316,7 +316,7 @@ public class TestableGraphBuilder {
      * <ul><li>Attribute:Visibility, Color:Light Green, Size: 1</li></ul></p>
      * @param gwm 
      */
-    public void withAllLabels(GraphWriteMethods gwm){
+    public void withAllLabels(final GraphWriteMethods gwm){
         withTopLabels(gwm);
         withBottomLabels(gwm);
         withTransactionLabels(gwm);
@@ -324,7 +324,7 @@ public class TestableGraphBuilder {
     
     
     public TestableGraphBuilder withNodes() throws InterruptedException{
-        WritableGraph wg = graph.getWritableGraph("addVerticies", true);
+        final WritableGraph wg = graph.getWritableGraph("addVerticies", true);
         withNodes(wg);       
         wg.commit();
         return this;
@@ -350,7 +350,7 @@ public class TestableGraphBuilder {
      * </ul></p>
      * @param gwm 
      */
-    public void withNodes(GraphWriteMethods gwm) {
+    public void withNodes(final GraphWriteMethods gwm) {
         
         // Ensure the attributes exist on the graph
         final int vertexAttributeIdX = VisualConcept.VertexAttribute.X.ensure(gwm);
@@ -392,9 +392,9 @@ public class TestableGraphBuilder {
             vertexIds.add(gwm.addVertex(id));    
                       
             final int shell = (int) Math.ceil(id / 8F);
-            float[] offset = offsets[shell];
+            final float[] offset = offsets[shell];
 
-            int indicator = id % 8;
+            final int indicator = id % 8;
 
             gwm.setFloatValue(vertexAttributeIdX, id, offset[indicator % 2]); // follows pattern 0,1
             gwm.setFloatValue(vertexAttributeIdY, id, offset[(indicator % 4) / 2]); // follows pattern 0,0,1,1
@@ -438,7 +438,7 @@ public class TestableGraphBuilder {
         return withLinearTransactions().withLoopedTransactions();
     }
     
-    public void withAllTransactions(GraphWriteMethods gwm){
+    public void withAllTransactions(final GraphWriteMethods gwm){
         withLinearTransactions(gwm);
         withLoopedTransactions(gwm);
     }
@@ -451,8 +451,8 @@ public class TestableGraphBuilder {
     }
     
     
-    public void withLoopedTransactions(GraphWriteMethods gwm){
-        for (int vertex : vertexIds){
+    public void withLoopedTransactions(final GraphWriteMethods gwm){
+        for (final int vertex : vertexIds){
             if (vertex % 3 == 0){
                 transactionIds.add(gwm.addTransaction(vertex, vertex, true));
             }
@@ -469,14 +469,14 @@ public class TestableGraphBuilder {
     }
     
     public TestableGraphBuilder withLinearTransactions() throws InterruptedException{
-        WritableGraph wg = graph.getWritableGraph("addLinearTransactions", true);
+        final WritableGraph wg = graph.getWritableGraph("addLinearTransactions", true);
         withLinearTransactions(wg);    
         wg.commit();
         return this;
     }
     
-    public void withLinearTransactions(GraphWriteMethods gwm){
-        for (int vertex : vertexIds){
+    public void withLinearTransactions(final GraphWriteMethods gwm){
+        for (final int vertex : vertexIds){
             if (vertex % 2 == 0){
                 transactionIds.add(gwm.addTransaction(vertex, 0, true));
             } else {

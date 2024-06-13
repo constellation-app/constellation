@@ -175,15 +175,15 @@ public class GraphVisualisationReferences {
         return screenDistance / 128;
     }
 
-    public ConstellationColor getVertexColor(int vertexIndex) {
+    public ConstellationColor getVertexColor(final int vertexIndex) {
         return access.getVertexColor(vertexIndex);
     }
 
-    public String getBackgroundIcon(int vertexIndex) {
+    public String getBackgroundIcon(final int vertexIndex) {
         return access.getBackgroundIcon(vertexIndex);
     }
 
-    public String getForegroundIcon(int vertexIndex) {
+    public String getForegroundIcon(final int vertexIndex) {
         return access.getForegroundIcon(vertexIndex);
     }
 
@@ -191,7 +191,7 @@ public class GraphVisualisationReferences {
         return access.getVertexId(vertexIndex);
     }
 
-    public boolean isVertexDimmed(int vertexIndex) {
+    public boolean isVertexDimmed(final int vertexIndex) {
         return access.isVertexDimmed(vertexIndex);
     }
 
@@ -203,31 +203,31 @@ public class GraphVisualisationReferences {
         return viewFrustum.inView(center, radius);
     }
 
-    public boolean isVertexSelected(int vertexIndex) {
+    public boolean isVertexSelected(final int vertexIndex) {
         return access.isVertexSelected(vertexIndex);
     }
 
-    public float getVertexVisibility(int vertexIndex) {
+    public float getVertexVisibility(final int vertexIndex) {
         return access.getVertexVisibility(vertexIndex);
     }
     
-    public String getNWDecorator(int vertexIndex) {
+    public String getNWDecorator(final int vertexIndex) {
         return access.getNWDecorator(vertexIndex);
     }
 
-    public String getNEDecorator(int vertexIndex) {
+    public String getNEDecorator(final int vertexIndex) {
         return access.getNEDecorator(vertexIndex);
     }
 
-    public String getSWDecorator(int vertexIndex) {
+    public String getSWDecorator(final int vertexIndex) {
         return access.getSWDecorator(vertexIndex);
     }
 
-    public String getSEDecorator(int vertexIndex) {
+    public String getSEDecorator(final int vertexIndex) {
         return access.getSEDecorator(vertexIndex);
     }
     
-    public boolean isBlazed(int vertexIndex) {
+    public boolean isBlazed(final int vertexIndex) {
         return access.isBlazed(vertexIndex);
     }
 
@@ -235,15 +235,15 @@ public class GraphVisualisationReferences {
         return access.getBottomLabelCount();
     }
 
-    public String getVertexBottomLabelText(int vertexIndex, int labelIndex) {
+    public String getVertexBottomLabelText(final int vertexIndex, final int labelIndex) {
         return access.getVertexBottomLabelText(vertexIndex, labelIndex);
     }
 
-    public float getBottomLabelSize(int labelIndex) {
+    public float getBottomLabelSize(final int labelIndex) {
         return access.getBottomLabelSize(labelIndex);
     }
 
-    public ConstellationColor getBottomLabelColor(int labelIndex) {
+    public ConstellationColor getBottomLabelColor(final int labelIndex) {
         return access.getBottomLabelColor(labelIndex);
     }
 
@@ -251,23 +251,23 @@ public class GraphVisualisationReferences {
         return access.getTopLabelCount();
     }
 
-    public String getVertexTopLabelText(int vertexIndex, int labelIndex) {
+    public String getVertexTopLabelText(final int vertexIndex, final int labelIndex) {
         return access.getVertexTopLabelText(vertexIndex, labelIndex);
     }
 
-    public float getTopLabelSize(int labelIndex) {
+    public float getTopLabelSize(final int labelIndex) {
         return access.getTopLabelSize(labelIndex);
     }
 
-    public ConstellationColor getTopLabelColor(int labelIndex) {
+    public ConstellationColor getTopLabelColor(final int labelIndex) {
         return access.getTopLabelColor(labelIndex);
     }
     
-    public int getLinkHighVertex(int linkIndex){
+    public int getLinkHighVertex(final int linkIndex){
         return access.getLinkHighVertex(linkIndex);
     }
     
-    public int getLinkLowVertex(int linkIndex){
+    public int getLinkLowVertex(final int linkIndex){
         return access.getLinkLowVertex(linkIndex);
     }
     public int getLinkConnectionCount(final int linkIndex){
@@ -365,7 +365,7 @@ public class GraphVisualisationReferences {
         return access.getBlazeSize();
     }
     
-    public ConstellationColor getBlazeColor(int vertexIndex){
+    public ConstellationColor getBlazeColor(final int vertexIndex){
         return access.getBlazeColor(vertexIndex);
     }
     

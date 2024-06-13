@@ -38,9 +38,9 @@ public class CommonTests {
         assertFalse(graph.getAllChildren().contains(node0));
     }
     
-    public static String getString(SVGData svgObject) {
-        StringBuilder sb = new StringBuilder();
-        for (String line : svgObject.toLines()){
+    public static String getString(final SVGData svgObject) {
+        final StringBuilder sb = new StringBuilder();
+        for (final String line : svgObject.toLines()){
             sb.append(line);
         }
         return sb.toString();

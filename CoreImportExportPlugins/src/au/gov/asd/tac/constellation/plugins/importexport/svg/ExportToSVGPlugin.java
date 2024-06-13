@@ -204,10 +204,10 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         
         // A directory of image assets may have already been created for a graph of the same name.
         // This export will overwire these assets, so empty the directory.
-        for (File file : assetDirectory.listFiles()){
+        for (final File file : assetDirectory.listFiles()){
             try {
                 Files.delete(file.toPath());
-            } catch (IOException ex) {
+            } catch (final IOException ex) {
                 //To Do: when does this get thrwn?
                 Exceptions.printStackTrace(ex);
             }
@@ -217,7 +217,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         if (!ExportMode.LINKED.toString().equals(imageMode)){
             try {
                 Files.delete(assetDirectory.toPath());
-            } catch (IOException ex) {
+            } catch (final IOException ex) {
                 //To Do: when does this get thrwn?
                 Exceptions.printStackTrace(ex);
             }

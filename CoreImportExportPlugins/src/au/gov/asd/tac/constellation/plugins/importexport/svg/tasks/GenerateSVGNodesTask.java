@@ -234,7 +234,7 @@ public class GenerateSVGNodesTask implements Runnable, SharedInteractionRunnable
      * @param color
      * @return 
      */
-    private SVGData getSVGIcon(ConstellationIcon icon, Color color){
+    private SVGData getSVGIcon(final ConstellationIcon icon, final Color color){
         
         // Some common icons are not visable and should not be exported
         if (!DefaultIconProvider.isVisable(icon)){
@@ -254,7 +254,7 @@ public class GenerateSVGNodesTask implements Runnable, SharedInteractionRunnable
      * @param color
      * @return 
      */
-    private String generateSVGColorFilterReference(Color color) {
+    private String generateSVGColorFilterReference(final Color color) {
         final ConstellationColor ccolor = ConstellationColor.fromJavaColor(color);
         final String htmlColor = ccolor.getHtmlColor();
         if (!colorFilters.containsKey(htmlColor)){
@@ -267,7 +267,7 @@ public class GenerateSVGNodesTask implements Runnable, SharedInteractionRunnable
         return String.format("url(#%s)", htmlColor);
     }
     
-    private SVGData generateRasterImageRefrerence(ConstellationIcon icon, Color color){
+    private SVGData generateRasterImageRefrerence(final ConstellationIcon icon, final Color color){
         
         // Build the name of the referenced Raster Image
         final StringBuilder fileNameBuilder = new StringBuilder();             

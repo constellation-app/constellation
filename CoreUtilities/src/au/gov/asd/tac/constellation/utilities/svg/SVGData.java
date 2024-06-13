@@ -348,8 +348,8 @@ public class SVGData {
         return templateSVG;
     }
 
-    public void setChildren(List<SVGObject> nodes) {
-        for (SVGObject node : nodes){
+    public void setChildren(final List<SVGObject> nodes) {
+        for (final SVGObject node : nodes){
             this.setChild(node.toSVGData());
         }
     }

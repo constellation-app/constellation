@@ -78,7 +78,6 @@ public class SVGGraphBuilder {
     // Variables with default values, customisable by the builder pattern 
     private DrawFlags drawFlags = new DrawFlags(true, true, true, true, true);
     private boolean selectedElementsOnly = false;
-    
     private ConstellationColor backgroundColor = VisualGraphDefaults.DEFAULT_BACKGROUND_COLOR;
         
     // Variables without default values, customisable by the builder pattern 
@@ -110,7 +109,7 @@ public class SVGGraphBuilder {
     }
     
     
-    public SVGGraphBuilder withCores(int cores) {
+    public SVGGraphBuilder withCores(final int cores) {
         threadPool = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool("SVG Export", cores);
         return this;
     }
@@ -200,7 +199,7 @@ public class SVGGraphBuilder {
             svgContent.setChildren(buildBlazes());
 
             buildLayout(svgGraph);
-        } catch (InterruptedException ex){
+        } catch (final InterruptedException ex){
             threadPool.shutdown();
             throw ex;
             

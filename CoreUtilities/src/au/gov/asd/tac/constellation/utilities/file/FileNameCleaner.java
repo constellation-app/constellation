@@ -29,10 +29,10 @@ public class FileNameCleaner {
         throw new IllegalStateException("Utility class");
     }
 
-    public static String cleanFileName(String badFileName) {
-        StringBuilder cleanName = new StringBuilder();
+    public static String cleanFileName(final String badFileName) {
+        final StringBuilder cleanName = new StringBuilder();
         for (int i = 0; i < badFileName.length(); i++) {
-            char c = badFileName.charAt(i);
+            final char c = badFileName.charAt(i);
             if (Arrays.binarySearch(ILLEGAL_CHARACTERS, c) < 0) {
                 cleanName.append(c);
             }

@@ -57,7 +57,7 @@ public class MultiTaskInteraction {
      * Registers a tasks to this MultiTaskInteraction.
      * @param task 
      */
-    public void addTask(SharedInteractionRunnable task){
+    public void addTask(final SharedInteractionRunnable task){
         tasks.add(task);
     }
     
