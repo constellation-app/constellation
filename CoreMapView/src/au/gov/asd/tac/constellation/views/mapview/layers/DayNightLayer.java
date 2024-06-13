@@ -26,6 +26,7 @@ import processing.core.PConstants;
 import processing.core.PGraphics;
 import processing.core.PImage;
 
+
 /**
  *
  * @author cygnus_x-1
@@ -40,6 +41,7 @@ public class DayNightLayer extends MapLayer {
     private static final int TWIGHLIGHT_ASTRONOMICAL_COLOR = MarkerUtilities.color(95, 0, 0, 0);
     private static final int NIGHT_COLOR = MarkerUtilities.color(127, 0, 0, 0);
     private static final int EARTH_RADIUS_M = 6_371_008;
+
 
     @Override
     public String getName() {

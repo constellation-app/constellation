@@ -71,6 +71,14 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>au.gov.asd.tac.constellation.preferences</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>1.0</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>au.gov.asd.tac.constellation.utilities</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -95,6 +103,23 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>org.netbeans.modules.settings</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <release-version>1</release-version>
+                        <specification-version>1.49.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.openide.actions</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>6.47</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>org.openide.awt</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -108,6 +133,14 @@
                     <compile-dependency/>
                     <run-dependency>
                         <specification-version>7.70</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.openide.modules</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>7.48.1</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -161,6 +194,9 @@
                 <package>au.gov.asd.tac.constellation.views.mapview.overlays</package>
                 <package>au.gov.asd.tac.constellation.views.mapview.providers</package>
                 <package>au.gov.asd.tac.constellation.views.mapview.utilities</package>
+                <package>au.gov.asd.tac.constellation.views.mapview2</package>
+                <package>au.gov.asd.tac.constellation.views.mapview2.plugins</package>
+                <package>au.gov.asd.tac.constellation.views.mapview2.utilities</package>
             </public-packages>
         </data>
     </configuration>
