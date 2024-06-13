@@ -79,7 +79,8 @@ public class SVGGraphBuilderNGTest {
     private GraphNode contextMock;
     private ConstellationGlobalThreadPool globalThreadPoolMock;
     private Component visualComponentMock;
-    private File fileMock;
+    private File nonExistantFileMock;
+    private File existantFileMock;
     private final DrawFlags drawAllVisualElementsFlag = new DrawFlags(true, true, true, true, false);
     private final DrawFlags drawNoLabelsFlag = new DrawFlags(true, true, false, false, false);
     private final DrawFlags drawNoVisualElementsFlag = new DrawFlags(false, false, false, false, false);
@@ -109,7 +110,8 @@ public class SVGGraphBuilderNGTest {
         interactionMock = mock(DefaultPluginInteraction.class);
         visualComponentMock = mock(Component.class);
         globalThreadPoolMock = mock(ConstellationGlobalThreadPool.class);
-        fileMock = mock(File.class);
+        nonExistantFileMock = mock(File.class);
+        existantFileMock = mock(File.class);
         
         //Getting Graph from GraphNode
         doReturn(graphName).when(contextMock).getDisplayName();
@@ -139,7 +141,8 @@ public class SVGGraphBuilderNGTest {
         threadPoolStaticMock.when(() 
                 -> ConstellationGlobalThreadPool.getThreadPool())
                 .thenReturn(globalThreadPoolMock);
-        doReturn(false).when(fileMock).exists();
+        doReturn(false).when(nonExistantFileMock).exists();
+        doReturn(true).when(existantFileMock).exists();
         
         doReturn(Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())).when(globalThreadPoolMock).getFixedThreadPool(anyString(), anyInt());
     }
@@ -182,7 +185,7 @@ public class SVGGraphBuilderNGTest {
         final SVGGraphBuilder drawFlagsResult = instance.withDrawFlags(drawAllVisualElementsFlag);
         assertEquals(drawFlagsResult, instance);
         
-        final SVGGraphBuilder atDirectoryResult = instance.atDirectory(fileMock);
+        final SVGGraphBuilder atDirectoryResult = instance.atDirectory(nonExistantFileMock);
         assertEquals(atDirectoryResult, instance);
         
         final SVGGraphBuilder withCoresResult = instance.withCores(2);
@@ -247,7 +250,7 @@ public class SVGGraphBuilderNGTest {
     public void testBuildPatternOutput_allVisualElements() throws IllegalArgumentException, InterruptedException {
         System.out.println("build");
         final SVGGraphBuilder instance = new SVGGraphBuilder()
-                .atDirectory(fileMock)
+                .atDirectory(nonExistantFileMock)
                 .withInteraction(interactionMock)
                 .withReadableGraph(graph.getReadableGraph())
                 .withTitle(graphName)
@@ -271,10 +274,30 @@ public class SVGGraphBuilderNGTest {
      * Test of build method, of class SVGGraphBuilder.
      */
     @Test
+    public void testBuildPatternOutput_linkedExport() throws IllegalArgumentException, InterruptedException {
+        System.out.println("build");
+        final SVGGraphBuilder instance = new SVGGraphBuilder()
+                .atDirectory(existantFileMock)
+                .withInteraction(interactionMock)
+                .withReadableGraph(graph.getReadableGraph())
+                .withTitle(graphName)
+                .fromPerspective(AxisConstants.Z_POSITIVE)
+                .withSelectedElementsOnly(false)
+                .withDrawFlags(drawAllVisualElementsFlag)
+                .withCores(2);
+            
+        final SVGObject result = new SVGObject(instance.build());
+        assertNotNull(result.getChild(String.format("node-%s", 0)));
+    }
+    
+    /**
+     * Test of build method, of class SVGGraphBuilder.
+     */
+    @Test
     public void testBuildPatternOutput_SelectedElementsOnly() throws IllegalArgumentException, InterruptedException {
         System.out.println("build");
         final SVGGraphBuilder instance = new SVGGraphBuilder()
-                .atDirectory(fileMock)
+                .atDirectory(nonExistantFileMock)
                 .withInteraction(interactionMock)
                 .withReadableGraph(graph.getReadableGraph())
                 .withTitle(graphName)
@@ -293,8 +316,6 @@ public class SVGGraphBuilderNGTest {
                 assertNull(result.getChild(String.format("node-%s", id)));
             }
         }
-
-
     }
     
     /**
@@ -304,7 +325,7 @@ public class SVGGraphBuilderNGTest {
     public void testBuildPatternOutput_noVisualElements() throws IllegalArgumentException, InterruptedException {
         System.out.println("build");
         final SVGGraphBuilder instance = new SVGGraphBuilder()
-                .atDirectory(fileMock)
+                .atDirectory(nonExistantFileMock)
                 .withInteraction(interactionMock)
                 .withReadableGraph(graph.getReadableGraph())
                 .withTitle(graphName)
@@ -324,7 +345,7 @@ public class SVGGraphBuilderNGTest {
     public void testBuildPatternOutput_noLabels() throws IllegalArgumentException, InterruptedException {
         System.out.println("build");
         final SVGGraphBuilder instance = new SVGGraphBuilder()
-                .atDirectory(fileMock)
+                .atDirectory(nonExistantFileMock)
                 .withInteraction(interactionMock)
                 .withReadableGraph(graph.getReadableGraph())
                 .withTitle(graphName)

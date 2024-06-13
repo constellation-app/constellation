@@ -29,6 +29,8 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess.ConnectionDirection;
 import java.util.List;
 import au.gov.asd.tac.constellation.plugins.MultiTaskInteraction.SharedInteractionRunnable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -39,6 +41,8 @@ import au.gov.asd.tac.constellation.plugins.MultiTaskInteraction.SharedInteracti
  * @author capricornunicorn123
  */
 public class GenerateSVGConnectionsTask implements Runnable, SharedInteractionRunnable {
+
+    private static final Logger LOGGER = Logger.getLogger(GenerateSVGConnectionsTask.class.getName());
     
     private final GraphVisualisationReferences graph;
     private final List<Integer> connectionIndicies;
@@ -58,8 +62,9 @@ public class GenerateSVGConnectionsTask implements Runnable, SharedInteractionRu
     public void run() {
         try {
             graph.initialise();
+            LOGGER.log(Level.SEVERE, "im in connection run");
             connectionIndicies.forEach(linkIndex -> {
-                
+                LOGGER.log(Level.SEVERE, "im in a link");
                 // Create a SVGObject to represent the current link
                 final SVGObject svgLink = SVGTemplateConstants.LINK.getSVGObject();
                 svgLink.setID(String.format("link-%s", linkIndex));
