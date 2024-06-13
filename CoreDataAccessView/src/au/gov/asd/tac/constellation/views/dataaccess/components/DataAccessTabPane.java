@@ -135,7 +135,7 @@ public class DataAccessTabPane implements PreferenceChangeListener {
         }
 
         // Check if plugins have changed
-        if (pluginsRetrieved.equals(plugins)) {
+        if (pluginsRetrieved != null && pluginsRetrieved.equals(plugins)) {
             return;
         }
         
