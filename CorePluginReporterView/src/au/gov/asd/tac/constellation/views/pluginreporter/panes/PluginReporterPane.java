@@ -156,7 +156,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
         filteredTags.removeAll(tagFilterMultiChoiceInput.getCheckModel().getCheckedItems());
 
         // Save the new filtered tags to preferences
-        StringBuilder prefString = new StringBuilder();
+        final StringBuilder prefString = new StringBuilder();
         String delimiter = "";
         for (String filteredTag : filteredTags) {
             prefString.append(delimiter);
@@ -226,7 +226,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
             final List<String> tags = new ArrayList<>(graphReport.getUTags());
             int[] selectedIndices = new int[tags.size()];
             int selectedIndexCount = 0;
-            int tagIndex = 0;
+            int tagIndex;
             for (String tag : tags) {
                 if (!availableTags.contains(tag)) {
                     availableTags.add(tag);

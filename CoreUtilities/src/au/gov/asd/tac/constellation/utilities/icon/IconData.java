@@ -202,7 +202,7 @@ public abstract class IconData {
             scaledGraphics.drawImage(image, x, y, width, height, null);
 
             if (image.getWidth() > size || image.getHeight() > size) {
-                LOGGER.fine(String.format("Scaled icon from %dx%d type %d to %dx%d type %d",
+                LOGGER.log(Level.FINE, "{0}", String.format("Scaled icon from %dx%d type %d to %dx%d type %d",
                         image.getWidth(), image.getHeight(), image.getType(), width, height, BufferedImage.TYPE_4BYTE_ABGR));
             }
 

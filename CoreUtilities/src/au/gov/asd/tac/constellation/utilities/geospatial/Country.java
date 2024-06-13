@@ -296,7 +296,7 @@ public enum Country {
             throw new IllegalArgumentException("Country trigraph must be 3 characters long: " + trigraph);
         }
         if (displayName == null) {
-            throw new NullPointerException("Display name must be specified");
+            throw new IllegalArgumentException("Display name must be specified");
         }
         this.digraph = digraph;
         this.trigraph = trigraph;

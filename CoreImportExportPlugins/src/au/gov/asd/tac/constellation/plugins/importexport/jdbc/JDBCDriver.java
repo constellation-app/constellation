@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,11 +31,15 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import org.apache.commons.lang3.StringUtils;
 
 public class JDBCDriver {
 
+    private static final Logger LOGGER = Logger.getLogger(JDBCDriver.class.getName());
+    
     private String driverName;
     private File jarFile;
 
@@ -93,7 +97,7 @@ public class JDBCDriver {
             }
 
         } catch (final IOException ex) {
-
+            LOGGER.log(Level.WARNING, "Error encountered while getting drivers");
         }
         return driverList;
     }

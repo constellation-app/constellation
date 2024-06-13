@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,11 +54,8 @@ public enum BinIconMode {
                     final String iconLabel = ((ConstellationIcon) key).getName();
                     BufferedImage icon = iconCache.get(iconLabel);
                     if (icon == null) {
-                        try {
-                            icon = IconManager.getIcon(iconLabel).buildBufferedImage();
-                            iconCache.put(iconLabel, icon);
-                        } catch (Exception e) {
-                        }
+                        icon = IconManager.getIcon(iconLabel).buildBufferedImage();
+                        iconCache.put(iconLabel, icon);
                     }
                     if (icon != null) {
                         graphics.drawImage(icon, left, top, height, height, null);

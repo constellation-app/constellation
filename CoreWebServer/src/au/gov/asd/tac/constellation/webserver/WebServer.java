@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.webserver;
 
+import au.gov.asd.tac.constellation.help.utilities.Generator;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
@@ -26,7 +27,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -34,6 +34,8 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.security.MessageDigest;
@@ -46,6 +48,8 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
+import static jnr.constants.PlatformConstants.OS;
+import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -54,6 +58,7 @@ import org.openide.awt.NotificationDisplayer;
 import org.openide.awt.StatusDisplayer;
 import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
+import static processing.core.PApplet.exec;
 
 /**
  * A Web Server.
@@ -70,9 +75,8 @@ public class WebServer {
         /**
          * The HTTP header that contains the REST secret.
          * <p>
-         * Note: RFC6648 has deprecated the use of "X-" because changing it when
-         * it becomes a standard is problematic. Since this header is highly
-         * unlikely to ever to be registered, using "X-" is fine.
+         * Note: RFC6648 has deprecated the use of "X-" because changing it when it becomes a standard is problematic.
+         * Since this header is highly unlikely to ever to be registered, using "X-" is fine.
          */
         public static final String SECRET_HEADER = "X-CONSTELLATION-SECRET";
 
@@ -81,10 +85,9 @@ public class WebServer {
         /**
          * Check that a request contains the correct secret.
          * <p>
-         * If the request does not contain the correct secret, send an
-         * SC_AUTHORIZED error to the client; the caller is expected to honor
-         * the return value and return immediately without doing any work if the
-         * return value is false.
+         * If the request does not contain the correct secret, send an SC_AUTHORIZED error to the client; the caller is
+         * expected to honor the return value and return immediately without doing any work if the return value is
+         * false.
          *
          * @param request The client request.
          * @param response The response.
@@ -123,7 +126,13 @@ public class WebServer {
 
     protected static final String CONSTELLATION_CLIENT = "constellation_client.py";
     private static final String IPYTHON = ".ipython";
-    private static final String RESOURCES = "resources/";
+    private static final String SEP = File.separator;
+    private static final String SCRIPT_SOURCE = Generator.getBaseDirectory() + "ext" + SEP + "package" + SEP + "src" + SEP + "constellation_client" + SEP;
+
+    private static final String PACKAGE_SOURCE = Generator.getBaseDirectory() + "ext" + SEP + "package" + SEP + "package_dist";
+    private static final String[] PACKAGE_INSTALL = {"pip", "install", "constellation_client", "--no-index", "--find-links", "file:" + PACKAGE_SOURCE};
+    private static final String[] WINDOWS_COMMAND = {"cmd", "/C", "start", "/wait"};
+    private static final String[] UNIX_COMMAND = {"&"};
 
     public static boolean isRunning() {
         return running;
@@ -141,20 +150,19 @@ public class WebServer {
                 // Make sure the file is owner read/write.
                 final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
                 final File restFile = new File(userDir, REST_FILE);
-                if (restFile.exists()) {
-                    final boolean restFileIsDeleted = restFile.delete();
-                    if (!restFileIsDeleted) {
-                        //TODO: Handle case where file not successfully deleted
-                    }
-                }
+                cleanupRest(restFile, userDir);
+
+                // Also put rest file in the ipython directory
+                final File restFileIPython = new File(getScriptDir(true), REST_FILE);
+                cleanupRest(restFileIPython, getScriptDir(true).toString());
 
                 // On Posix, we can use stricter file permissions.
                 // On Windows, we just create the new file.
                 final String os = System.getProperty("os.name");
                 if (!os.startsWith("Windows")) {
-                    final Path restPath = restFile.toPath();
                     final Set<PosixFilePermission> perms = EnumSet.of(PosixFilePermission.OWNER_READ, PosixFilePermission.OWNER_WRITE);
-                    Files.createFile(restPath, PosixFilePermissions.asFileAttribute(perms));
+                    Files.createFile(restFile.toPath(), PosixFilePermissions.asFileAttribute(perms));
+                    Files.createFile(restFileIPython.toPath(), PosixFilePermissions.asFileAttribute(perms));
                 }
 
                 // Now write the file contents.
@@ -162,11 +170,15 @@ public class WebServer {
                     // Couldn't be bothered starting up a JSON writer for two simple values.
                     pw.printf("{\"%s\":\"%s\", \"port\":%d}%n", ConstellationHttpServlet.SECRET_HEADER, ConstellationHttpServlet.SECRET, port);
                 }
+                try (final PrintWriter pw = new PrintWriter(restFileIPython)) {
+                    // Couldn't be bothered starting up a JSON writer for two simple values.
+                    pw.printf("{\"%s\":\"%s\", \"port\":%d}%n", ConstellationHttpServlet.SECRET_HEADER, ConstellationHttpServlet.SECRET, port);
+                }
 
                 // Download the Python REST client if enabled.
                 final boolean pythonRestClientDownload = prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT);
                 if (pythonRestClientDownload) {
-                    downloadPythonClient();
+                    installPythonPackage();
                 }
 
                 // Build the server.
@@ -195,7 +207,7 @@ public class WebServer {
                 };
                 server.setRequestLog(requestLog);
 
-                LOGGER.info(String.format("Starting Jetty version %s on%s:%d...", Server.getVersion(), loopback, port));
+                LOGGER.log(Level.INFO, "{0}", String.format("Starting Jetty version %s on%s:%d...", Server.getVersion(), loopback, port));
                 server.start();
 
                 // Wait for the server to stop (if it ever does).
@@ -208,8 +220,9 @@ public class WebServer {
                         throw new RuntimeException(ex);
                     } finally {
                         // Play nice and clean up (if Netbeans lets us).
-                        final boolean restFileIsDeleted = restFile.delete();
-                        if (!restFileIsDeleted) {
+                        try {
+                            Files.delete(Path.of(restFile.getPath()));
+                        } catch (final IOException ex) {
                             //TODO: Handle case where file not successfully deleted
                         }
                     }
@@ -226,7 +239,17 @@ public class WebServer {
         return port;
     }
 
-    static File getScriptDir(final boolean mkdir) {
+    private static void cleanupRest(final File restFile, final String directory) {
+        if (Files.exists(Path.of(directory).resolve(REST_FILE))) {
+            try {
+                Files.delete(Path.of(restFile.getPath()));
+            } catch (final IOException e) {
+                LOGGER.log(Level.WARNING, "Error deleting existing rest file in user directory");
+            }
+        }
+    }
+
+    public static File getScriptDir(final boolean mkdir) {
         final File homeDir = new File(System.getProperty("user.home"));
         final File ipython = new File(homeDir, IPYTHON);
 
@@ -237,42 +260,70 @@ public class WebServer {
         return ipython;
     }
 
+    public static String getNotebookDir() {
+        final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+        // Return path to directory
+        return prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT);
+    }
+
     /**
      * Download the Python REST API client to the user's ~/.ipython directory.
      * <p>
-     * The download is done only if the script doesn't exist, or the existing
-     * script needs updating.
+     * The download is done only if the script doesn't exist, or the existing script needs updating.
      * <p>
      * This is in the path for Jupyter notebooks, but not for standard Python.
      */
     public static void downloadPythonClient() {
         final File ipython = getScriptDir(true);
-        final File download = new File(ipython, CONSTELLATION_CLIENT);
+        downloadPythonClientToDir(ipython);
+    }
+
+    /**
+     * Download the Python REST API client to a given directory.
+     * <p>
+     * The download is done only if the script doesn't exist, or the existing script needs updating.
+     * <p>
+     * This is in the path for Jupyter notebooks, but not for standard Python.
+     *
+     * @param directory The directory for constellation_client.py to be downloaded to.
+     */
+    public static void downloadPythonClientToDir(final File directory) {
+        final File download = new File(directory, CONSTELLATION_CLIENT);
 
         final boolean doDownload = !download.exists() || !equalScripts(download);
 
         if (doDownload) {
-            boolean complete = false;
-            try (final InputStream in = WebServer.class.getResourceAsStream(RESOURCES + CONSTELLATION_CLIENT); final FileOutputStream out = new FileOutputStream(download)) {
-                final byte[] buf = new byte[64 * 1024];
-                while (true) {
-                    final int len = in.read(buf);
-                    if (len == -1) {
-                        break;
-                    }
 
-                    out.write(buf, 0, len);
-                }
-
-                complete = true;
-            } catch (final IOException ex) {
-                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            try {
+                Files.copy(Paths.get(SCRIPT_SOURCE + CONSTELLATION_CLIENT), download.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            } catch (final IOException e) {
+                LOGGER.log(Level.WARNING, "Error retrieving constellation_client.py:", e);
+                return;
             }
 
-            if (complete) {
-                final String msg = String.format("'%s' downloaded to %s", CONSTELLATION_CLIENT, ipython);
-                StatusDisplayer.getDefault().setStatusText(msg);
-            }
+            // Succssfully copied files
+            final String msg = String.format("'%s' downloaded to %s", CONSTELLATION_CLIENT, directory);
+            StatusDisplayer.getDefault().setStatusText(msg);
+
+        }
+    }
+
+    public static void installPythonPackage() {
+        // Run pip install on package
+        final Process p;
+        if (isWindows()) {
+            p = exec(ArrayUtils.addAll(WINDOWS_COMMAND, PACKAGE_INSTALL));
+        } else {
+            p = exec(ArrayUtils.addAll(PACKAGE_INSTALL, UNIX_COMMAND));
+        }
+
+        try {
+            final int result = p.waitFor();
+            LOGGER.log(Level.INFO, "Pip python process result: {0}", result);
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.WARNING, "EXCEPTION CAUGHT in the python process:", ex);
+            p.destroy();
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -309,18 +360,21 @@ public class WebServer {
      * @return True if both exist and are (pseudo-)equal, False otherwise.
      */
     static boolean equalScripts(final File scriptFile) {
-        try (final FileInputStream in1 = new FileInputStream(scriptFile)) {
-            try (final InputStream in2 = WebServer.class.getResourceAsStream(RESOURCES + CONSTELLATION_CLIENT)) {
-                final byte[] dig1 = getDigest(in1);
-                final byte[] dig2 = getDigest(in2);
+        try (final FileInputStream in1 = new FileInputStream(scriptFile); final InputStream in2 = new FileInputStream(SCRIPT_SOURCE + CONSTELLATION_CLIENT)) {
+            final byte[] dig1 = getDigest(in1);
+            final byte[] dig2 = getDigest(in2);
 
-                return MessageDigest.isEqual(dig1, dig2);
-            }
+            return MessageDigest.isEqual(dig1, dig2);
+
         } catch (final FileNotFoundException | NoSuchAlgorithmException ex) {
             return false;
         } catch (final IOException ex) {
             LOGGER.log(Level.SEVERE, "Equal scripts", ex);
             return false;
         }
+    }
+
+    public static boolean isWindows() {
+        return OS.contains("win");
     }
 }

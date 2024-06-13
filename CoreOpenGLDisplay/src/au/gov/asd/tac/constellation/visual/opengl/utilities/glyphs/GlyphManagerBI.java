@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,8 +75,8 @@ public final class GlyphManagerBI implements GlyphManager {
     private final int bufferType;
 
     /**
-     * The size of the rectangle buffer. An arbitrary number, not too small that
-     * we need lots of buffers, but not too large that OpenGL can't cope.
+     * The size of the rectangle buffer. An arbitrary number, not too small that we need lots of buffers, but not too
+     * large that OpenGL can't cope.
      */
     public static final int DEFAULT_TEXTURE_BUFFER_SIZE = 2048;
 
@@ -87,8 +87,8 @@ public final class GlyphManagerBI implements GlyphManager {
     private FontInfo[] fontsInfo;
 
     /**
-     * The glyphs must be scaled down to be rendered at a reasonable size. The
-     * font height seems to be a reasonable scale.
+     * The glyphs must be scaled down to be rendered at a reasonable size. The font height seems to be a reasonable
+     * scale.
      */
     private int maxFontHeight;
 
@@ -102,8 +102,8 @@ public final class GlyphManagerBI implements GlyphManager {
     private final GlyphRectangleBuffer textureBuffer;
 
     /**
-     * A LigatureContext contains all the data required to be cached to improve
-     * the performance of renderTextAsLigatures.
+     * A LigatureContext contains all the data required to be cached to improve the performance of
+     * renderTextAsLigatures.
      */
     private static class LigatureContext {
 
@@ -123,8 +123,7 @@ public final class GlyphManagerBI implements GlyphManager {
     }
 
     /**
-     * Cache the bulk of the work renderTextAsLigature does to greatly improve
-     * performance.
+     * Cache the bulk of the work renderTextAsLigature does to greatly improve performance.
      */
     private static Map<String, LigatureContext> cache = new HashMap<>();
 
@@ -149,12 +148,10 @@ public final class GlyphManagerBI implements GlyphManager {
 
     /**
      *
-     * @param fontsInfo The fonts (and associated info) to be used for rendering
-     * text.
+     * @param fontsInfo The fonts (and associated info) to be used for rendering text.
      * @param textureBufferSize The size of the texture buffer.
-     * @param bufferType For normal font rendering in CONSTELLATION, use
-     * BufferedImage.TYPE_BYTE_GRAY. To see colors in the standalone renderer,
-     * use BufferedImage.TYPE_INT_ARGB.
+     * @param bufferType For normal font rendering in CONSTELLATION, use BufferedImage.TYPE_BYTE_GRAY. To see colors in
+     * the standalone renderer, use BufferedImage.TYPE_INT_ARGB.
      */
     public GlyphManagerBI(final FontInfo[] fontsInfo, final int textureBufferSize, final int bufferType) {
 
@@ -212,19 +209,16 @@ public final class GlyphManagerBI implements GlyphManager {
     /**
      * Set the fonts to be used by the font renderer.
      * <p>
-     * The most specific font (ie the font containing the fewest glyphs) should
-     * be first. This allows a different font to be used for Latin characters.
+     * The most specific font (ie the font containing the fewest glyphs) should be first. This allows a different font
+     * to be used for Latin characters.
      * <p>
-     * Because setting new fonts implies a complete redraw, the existing texture
-     * buffers are reset, so all strings have to be rebuilt.
+     * Because setting new fonts implies a complete redraw, the existing texture buffers are reset, so all strings have
+     * to be rebuilt.
      * <p>
-     * Java doesn't recognise OTF fonts; they have to be created and derived,
-     * rather than just "new Font()". This means fonts such as Google's Noto CJK
-     * fonts need special treatment. Names ending in ".otf" are treated as
-     * filenames.
+     * Java doesn't recognise OTF fonts; they have to be created and derived, rather than just "new Font()". This means
+     * fonts such as Google's Noto CJK fonts need special treatment. Names ending in ".otf" are treated as filenames.
      *
-     * @param fontsInfo The fonts (and associated info) to be used for rendering
-     * text.
+     * @param fontsInfo The fonts (and associated info) to be used for rendering text.
      */
     public void setFonts(final FontInfo[] fontsInfo) {
         // If the fontName array does not contain the default font, add it to the end.
@@ -256,11 +250,9 @@ public final class GlyphManagerBI implements GlyphManager {
     }
 
     /**
-     * Return the names of the fonts being used (including the extra default
-     * font).
+     * Return the names of the fonts being used (including the extra default font).
      *
-     * @return The names of the fonts being used (including the extra default
-     * font).
+     * @return The names of the fonts being used (including the extra default font).
      */
     public FontInfo[] getFonts() {
         return fontsInfo;
@@ -271,14 +263,14 @@ public final class GlyphManagerBI implements GlyphManager {
      * <p>
      * This code feels a bit ugly. Have another look later.
      *
-     * @param boxes A List<Rectangle> representing possibly overlapping glyph
-     * bounding boxes.
+     * @param boxes A List<Rectangle> representing possibly overlapping glyph bounding boxes.
      *
      * @return A List<Rectangle> of non-overlapping bounding boxes.
      */
     private static List<Rectangle> mergeBoxes(final List<Rectangle> boxes) {
         final List<Rectangle> merged = new ArrayList<>();
-        for (int i = boxes.size() - 1; i >= 0;) {
+        int i = boxes.size() - 1;
+        while (i >= 0) {
             Rectangle curr = boxes.get(i--);
             if (i == -1) {
                 merged.add(curr);
@@ -311,29 +303,23 @@ public final class GlyphManagerBI implements GlyphManager {
     /**
      * Draw codepoints that may contain multiple directions and scripts.
      * <p>
-     * This is not a general purpose text drawer. Instead, it caters to the kind
-     * of string that are likely to be found in a CONSTELLLATION label; short,
-     * lacking punctuation, but possibly containing multi-language,
-     * multi-script, multi-directional characters.
+     * This is not a general purpose text drawer. Instead, it caters to the kind of string that are likely to be found
+     * in a CONSTELLLATION label; short, lacking punctuation, but possibly containing multi-language, multi-script,
+     * multi-directional characters.
      * <p>
-     * A String is first broken up into sub-strings that consist of codepoints
-     * of the same direction. These sub-strings are further broken into
-     * sub-sub-strings that contain the same font. Each sub-sub-string can then
-     * be drawn using TextLayout.draw(), and the associated glyphs can be
-     * determined using Font.layoutGlyphVector().
+     * A String is first broken up into sub-strings that consist of codepoints of the same direction. These sub-strings
+     * are further broken into sub-sub-strings that contain the same font. Each sub-sub-string can then be drawn using
+     * TextLayout.draw(), and the associated glyphs can be determined using Font.layoutGlyphVector().
      * <p>
-     * The bounding box of each glyph is determined. Some glyphs (for example,
-     * those used in cursive script such as Arabic and fancy Latin fonts) will
-     * overlap; these bounding boxes are merged. From here on it's all about
+     * The bounding box of each glyph is determined. Some glyphs (for example, those used in cursive script such as
+     * Arabic and fancy Latin fonts) will overlap; these bounding boxes are merged. From here on it's all about
      * rectangles that happen to contain useful images.
      * <p>
-     * The rectangles can then be drawn into an image buffer that can be copied
-     * directly to a texture buffer for use by OpenGL to draw node and
-     * connection labels.
+     * The rectangles can then be drawn into an image buffer that can be copied directly to a texture buffer for use by
+     * OpenGL to draw node and connection labels.
      * <p>
-     * Hashes of the contents of the rectangles are used to determine if the
-     * glyph image has already been drawn. If it has, the same rectangle is
-     * reused.
+     * Hashes of the contents of the rectangles are used to determine if the glyph image has already been drawn. If it
+     * has, the same rectangle is reused.
      *
      * @param text The text top be rendered.
      * @param context

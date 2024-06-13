@@ -42,6 +42,7 @@ import au.gov.asd.tac.constellation.preferences.GraphPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
 import java.util.ArrayList;
@@ -78,10 +79,11 @@ public class VisualConcept extends SchemaConcept {
     public static class GraphAttribute {
 
         static final Preferences PREFERENCES = NbPreferences.forModule(GraphPreferenceKeys.class);
+        private static final boolean DARK_MODE = JavafxStyleManager.isDarkTheme();
 
         public static final SchemaAttribute BACKGROUND_COLOR = new SchemaAttribute.Builder(GraphElementType.GRAPH, ColorAttributeDescription.ATTRIBUTE_NAME, "background_color")
                 .setDescription("The background color of the graph")
-                .setDefaultValue(ConstellationColor.NIGHT_SKY)
+                .setDefaultValue(DARK_MODE ? ConstellationColor.NIGHT_SKY : ConstellationColor.LIGHT_SKY)
                 .create()
                 .build();
         public static final SchemaAttribute BLAZE_OPACITY = new SchemaAttribute.Builder(GraphElementType.GRAPH, FloatAttributeDescription.ATTRIBUTE_NAME, "blaze_opacity")

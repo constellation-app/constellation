@@ -45,6 +45,8 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = AbstractGraphIOProvider.class)
 public class LayersViewStateIoProvider extends AbstractGraphIOProvider {
+    
+    private static final String INDEX_ARRAY_NAME = "index";
 
     @Override
     public String getName() {
@@ -135,7 +137,7 @@ public class LayersViewStateIoProvider extends AbstractGraphIOProvider {
                     if (layer == null) {
                         jsonGenerator.writeNull();
                     } else {
-                        jsonGenerator.writeStartArray("index", layer.getIndex());
+                        jsonGenerator.writeStartArray(INDEX_ARRAY_NAME, layer.getIndex());
                         jsonGenerator.writeNumber(layer.getIndex());
                         jsonGenerator.writeBoolean(layer.isVisible());
                         jsonGenerator.writeString(layer.getQueryString());
@@ -151,7 +153,7 @@ public class LayersViewStateIoProvider extends AbstractGraphIOProvider {
                     if (layer == null) {
                         jsonGenerator.writeNull();
                     } else {
-                        jsonGenerator.writeStartArray("index", layer.getIndex());
+                        jsonGenerator.writeStartArray(INDEX_ARRAY_NAME, layer.getIndex());
                         jsonGenerator.writeNumber(layer.getIndex());
                         jsonGenerator.writeBoolean(layer.isVisible());
                         jsonGenerator.writeString(layer.getQueryString());
@@ -167,7 +169,7 @@ public class LayersViewStateIoProvider extends AbstractGraphIOProvider {
                     if (attr == null) {
                         jsonGenerator.writeNull();
                     } else {
-                        jsonGenerator.writeStartArray("index", count++);
+                        jsonGenerator.writeStartArray(INDEX_ARRAY_NAME, count++);
                         jsonGenerator.writeString(attr.getElementType().toString());
                         jsonGenerator.writeString(attr.getName());
                         jsonGenerator.writeEndArray();

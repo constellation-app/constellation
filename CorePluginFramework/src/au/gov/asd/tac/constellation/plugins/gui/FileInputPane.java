@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.plugins.gui;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.io.File;
 import java.util.ArrayList;
@@ -240,6 +241,7 @@ public class FileInputPane extends HBox {
                         this.setManaged(parameter.isVisible());
                     }
                     default -> {
+                        // do nothing
                     }
                 }
             }));
@@ -260,11 +262,8 @@ public class FileInputPane extends HBox {
     private FileChooserBuilder getFileChooser(final PluginParameter<FileParameterValue> parameter, final String title) {
         
         final ExtensionFilter extensionFilter = FileParameterType.getFileFilters(parameter);
-        
-        FileChooserBuilder fileChooserBuilder = new FileChooserBuilder(title)
-                .setTitle(title)
-                .setAcceptAllFileFilterUsed(extensionFilter == null || FileParameterType.isAcceptAllFileFilterUsed(parameter))
-                .setFilesOnly(true);
+        FileChooserBuilder fileChooserBuilder = FileChooser.createFileChooserBuilderNoFilter(title, FileExtensionConstants.SVG)
+                .setAcceptAllFileFilterUsed(extensionFilter == null || FileParameterType.isAcceptAllFileFilterUsed(parameter));                
 
         if (extensionFilter != null) {
             for (final String extension : extensionFilter.getExtensions()){

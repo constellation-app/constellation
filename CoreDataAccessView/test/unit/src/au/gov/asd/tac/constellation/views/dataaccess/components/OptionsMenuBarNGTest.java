@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.dataaccess.components;
 
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.dataaccess.io.DataAccessParametersIoProvider;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
@@ -109,12 +110,14 @@ public class OptionsMenuBarNGTest {
             optionsMenuBar.init();
         }
 
+        final String iconSet = JavafxStyleManager.isDarkTheme() ? "Light" : "Dark";
+        
         // Load Templates Menu Item
         verifyMenuItem(
                 optionsMenuBar.getLoadMenuItem(),
                 "Load Templates",
                 new Image(OptionsMenuBar.class.getResourceAsStream(
-                        "resources/DataAccessLoadTemplate.png"
+                        "resources/DataAccessLoadTemplate" + iconSet + ".png"
                 ))
         );
 
@@ -134,7 +137,7 @@ public class OptionsMenuBarNGTest {
                 optionsMenuBar.getSaveMenuItem(),
                 "Save Templates",
                 new Image(OptionsMenuBar.class.getResourceAsStream(
-                        "resources/DataAccessSaveTemplate.png"
+                        "resources/DataAccessSaveTemplate" + iconSet + ".png"
                 ))
         );
 
@@ -143,7 +146,7 @@ public class OptionsMenuBarNGTest {
                 optionsMenuBar.getConnectionLoggingMenuItem(),
                 "Connection Logging",
                 new Image(OptionsMenuBar.class.getResourceAsStream(
-                        "resources/DataAccessConnectionLogging.png"
+                        "resources/DataAccessConnectionLogging" + iconSet + ".png"
                 ))
         );
 
@@ -168,7 +171,7 @@ public class OptionsMenuBarNGTest {
                 optionsMenuBar.getSaveResultsItem(),
                 "Save Results",
                 new Image(OptionsMenuBar.class.getResourceAsStream(
-                        "resources/DataAccessSaveResults.png"
+                        "resources/DataAccessSaveResults" + iconSet + ".png"
                 ))
         );
         assertTrue(optionsMenuBar.getSaveResultsItem().isSelected());
@@ -180,7 +183,7 @@ public class OptionsMenuBarNGTest {
                 optionsMenuBar.getDeselectPluginsOnExecutionMenuItem(),
                 "Deselect On Go",
                 new Image(OptionsMenuBar.class.getResourceAsStream(
-                        "resources/DataAccessUnchecked.png"
+                        "resources/DataAccessUnchecked" + iconSet + ".png"
                 ))
         );
         assertTrue(optionsMenuBar.getDeselectPluginsOnExecutionMenuItem().isSelected());

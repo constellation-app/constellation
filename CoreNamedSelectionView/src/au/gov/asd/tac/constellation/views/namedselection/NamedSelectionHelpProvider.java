@@ -45,7 +45,7 @@ public class NamedSelectionHelpProvider extends HelpPageProvider {
         final String namedModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreNamedSelectionView" + sep + "src" + sep + "au" + sep + "gov"
                 + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "namedselection" + sep;
 
-        map.put("au.gov.asd.tac.constellation.views.namedselection", namedModulePath + "named-selections-view.md");
+        map.put("au.gov.asd.tac.constellation.views.namedselection.NamedSelectionTopComponent", namedModulePath + "named-selections-view.md");
         return map;
     }
 

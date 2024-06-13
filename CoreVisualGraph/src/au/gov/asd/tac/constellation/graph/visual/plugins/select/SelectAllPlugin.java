@@ -15,11 +15,9 @@
  */
 package au.gov.asd.tac.constellation.graph.visual.plugins.select;
 
-import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.operations.SetBooleanValuesOperation;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import static au.gov.asd.tac.constellation.graph.visual.plugins.select.SelectUtilities.selectTransactions;
+import static au.gov.asd.tac.constellation.graph.visual.plugins.select.SelectUtilities.selectVertices;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
@@ -45,29 +43,8 @@ public class SelectAllPlugin extends SimpleEditPlugin {
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
         final Properties properties = new Properties();
-        final int vxSelected = VisualConcept.VertexAttribute.SELECTED.get(graph);
-        if (vxSelected != Graph.NOT_FOUND) {
-            final SetBooleanValuesOperation selectVerticesOperation = new SetBooleanValuesOperation(graph, GraphElementType.VERTEX, vxSelected);
-            final int vertexCount = graph.getVertexCount();
-            for (int position = 0; position < vertexCount; position++) {
-                final int vertex = graph.getVertex(position);
-                selectVerticesOperation.setValue(vertex, true);
-            }
-            graph.executeGraphOperation(selectVerticesOperation);
-            properties.setProperty("vsize", String.valueOf(selectVerticesOperation.size()));
-        }
-
-        final int txSelected = VisualConcept.TransactionAttribute.SELECTED.get(graph);
-        if (txSelected != Graph.NOT_FOUND) {
-            final SetBooleanValuesOperation selectTransactionsOperation = new SetBooleanValuesOperation(graph, GraphElementType.TRANSACTION, txSelected);
-            final int transactionCount = graph.getTransactionCount();
-            for (int position = 0; position < transactionCount; position++) {
-                final int transaction = graph.getTransaction(position);
-                selectTransactionsOperation.setValue(transaction, true);
-            }
-            graph.executeGraphOperation(selectTransactionsOperation);
-            properties.setProperty("tsize", String.valueOf(selectTransactionsOperation.size()));
-        }
+        selectVertices(graph, properties);
+        selectTransactions(graph, properties);
 
         ConstellationLogger.getDefault().pluginProperties(this, properties);
     }

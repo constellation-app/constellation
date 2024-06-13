@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -89,19 +89,21 @@ public class FileChooserNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         completableFutureMockedStatic.when(() -> {
-            CompletableFuture.completedFuture(ArgumentMatchers.<Optional<List<File>>> any()); })
+            CompletableFuture.completedFuture(ArgumentMatchers.<Optional<List<File>>>any());
+        })
                 .thenAnswer((InvocationOnMock iom) -> {
                     final Optional<List<File>> optionalFile = Optional.ofNullable(List.of(file));
                     final CompletableFuture<Optional<File>> completableFuture = mock(CompletableFuture.class);
                     doReturn(optionalFile).when(completableFuture).get();
                     return completableFuture;
-        });
+                });
 
         completableFutureMockedStatic.when(() -> {
-            CompletableFuture.supplyAsync(ArgumentMatchers.<Supplier<Optional<File>>> any()); }).thenAnswer((InvocationOnMock iom) -> {
-                    final CompletableFuture<Optional<File>> completableFuture = mock(CompletableFuture.class);
-                    doReturn(List.of(file)).when(completableFuture).get();
-                    return completableFuture;
+            CompletableFuture.supplyAsync(ArgumentMatchers.<Supplier<Optional<File>>>any());
+        }).thenAnswer((InvocationOnMock iom) -> {
+            final CompletableFuture<Optional<File>> completableFuture = mock(CompletableFuture.class);
+            doReturn(List.of(file)).when(completableFuture).get();
+            return completableFuture;
         });
 
         file = mock(File.class);
@@ -130,7 +132,7 @@ public class FileChooserNGTest {
         when(FileChooser.openImmediateSaveDialog(fileChooserBuilder)).thenReturn(completableOptional);
         when(FileChooser.openOpenDialog(fileChooserBuilder)).thenReturn(completableOptional);
         when(FileChooser.openMultiDialog(fileChooserBuilder)).thenReturn(optionalFiles);
-        
+
         reset(fileChooserBuilder);
         openSingleFileDialog(
                 true,
@@ -223,22 +225,16 @@ public class FileChooserNGTest {
     }
 
     /**
-     * Tests the open file dialog method for selecting a single file. Verifies
-     * that the correct methods are called on the correct threads.
+     * Tests the open file dialog method for selecting a single file. Verifies that the correct methods are called on
+     * the correct threads.
      *
-     * @param isFxThread true if this is meant to be running on the FX thread,
-     * false otherwise
-     * @param isSwingThread true if this is meant to be running on the Swing
-     * thread, false otherwise
+     * @param isFxThread true if this is meant to be running on the FX thread, false otherwise
+     * @param isSwingThread true if this is meant to be running on the Swing thread, false otherwise
      * @param fileChooserBuilder the file chooser builder to be passed in
-     * @param fileDialogMode the file dialog mode that the file chooser will be
-     * opened with
-     * @param runner a supplier that calls the file chooser method to be tested,
-     * returning the result
-     * @throws InterruptedException if the thread is interrupted whilst getting
-     * the file chooser result
-     * @throws ExecutionException if there is an issue getting the file chooser
-     * result
+     * @param fileDialogMode the file dialog mode that the file chooser will be opened with
+     * @param runner a supplier that calls the file chooser method to be tested, returning the result
+     * @throws InterruptedException if the thread is interrupted whilst getting the file chooser result
+     * @throws ExecutionException if there is an issue getting the file chooser result
      */
     public void openSingleFileDialog(final boolean isFxThread,
             final boolean isSwingThread,
@@ -251,22 +247,16 @@ public class FileChooserNGTest {
     }
 
     /**
-     * Tests the open file dialog method for selecting multiple files. Verifies
-     * that the correct methods are called on the correct threads.
+     * Tests the open file dialog method for selecting multiple files. Verifies that the correct methods are called on
+     * the correct threads.
      *
-     * @param isFxThread true if this is meant to be running on the FX thread,
-     * false otherwise
-     * @param isSwingThread true if this is meant to be running on the Swing
-     * thread, false otherwise
+     * @param isFxThread true if this is meant to be running on the FX thread, false otherwise
+     * @param isSwingThread true if this is meant to be running on the Swing thread, false otherwise
      * @param fileChooserBuilder the file chooser builder to be passed in
-     * @param fileDialogMode the file dialog mode that the file chooser will be
-     * opened with
-     * @param runner a supplier that calls the file chooser method to be tested,
-     * returning the result
-     * @throws InterruptedException if the thread is interrupted whilst getting
-     * the file chooser result
-     * @throws ExecutionException if there is an issue getting the file chooser
-     * result
+     * @param fileDialogMode the file dialog mode that the file chooser will be opened with
+     * @param runner a supplier that calls the file chooser method to be tested, returning the result
+     * @throws InterruptedException if the thread is interrupted whilst getting the file chooser result
+     * @throws ExecutionException if there is an issue getting the file chooser result
      */
     public void openMultiFileDialog(final boolean isFxThread,
             final boolean isSwingThread,
@@ -276,5 +266,32 @@ public class FileChooserNGTest {
         swingUtilsMockedStatic.when(SwingUtilities::isEventDispatchThread).thenReturn(isSwingThread);
         platformMockedStatic.when(Platform::isFxApplicationThread).thenReturn(isFxThread);
         assertEquals(runner.get().get(), List.of(file));
+    }
+
+    /**
+     * Test of createFileChooserBuilderNoFilter method, of class FileChooser.
+     */
+    @Test
+    public void testCreateFileChooserBuilderNoFilter() {
+        System.out.println("createFileChooserBuilderNoFilter");
+        final String title = "";
+        final String fileExtension = "";
+        
+        final FileChooserBuilder result = FileChooser.createFileChooserBuilderNoFilter(title, fileExtension);
+        assertEquals(FileChooserBuilder.class, result.getClass());
+    }
+
+    /**
+     * Test of createFileChooserBuilder method, of class FileChooser.
+     */
+    @Test
+    public void testCreateFileChooserBuilder() {
+        System.out.println("createFileChooserBuilder");
+        final String title = "";
+        final String fileExtension = "";
+        final String description = "";
+
+        final FileChooserBuilder result = FileChooser.createFileChooserBuilder(title, fileExtension, description);
+        assertEquals(FileChooserBuilder.class, result.getClass());
     }
 }

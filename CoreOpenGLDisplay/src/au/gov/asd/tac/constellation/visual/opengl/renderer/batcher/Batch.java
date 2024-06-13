@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -438,7 +438,7 @@ public final class Batch {
     public int getBufferName(final int target) {
         try {
             return bufferNames[target][0];
-        } catch (ArrayIndexOutOfBoundsException ex) {
+        } catch (final ArrayIndexOutOfBoundsException ex) {
             throw new RenderException("Specified target doesn't exist or its buffer is not yet created.");
         }
     }
@@ -567,7 +567,8 @@ public final class Batch {
             try {
                 getBufferName(target);
                 gl.glEnableVertexAttribArray(target);
-            } catch (RenderException ex) {
+            } catch (final RenderException ex) {
+                LOGGER.log(Level.WARNING, ex.getLocalizedMessage());
             }
         }
     }
@@ -584,7 +585,8 @@ public final class Batch {
             try {
                 getBufferName(target);
                 gl.glDisableVertexAttribArray(target);
-            } catch (RenderException ex) {
+            } catch (final RenderException ex) {
+                LOGGER.log(Level.WARNING, ex.getLocalizedMessage());
             }
         }
     }

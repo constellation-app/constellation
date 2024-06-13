@@ -59,6 +59,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.IOProvider;
@@ -104,6 +105,8 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
 
     // messages
     private static final String GRAPH_NOT_FOUND_ERROR = "Graph %s not found.";
+    
+    private static final Pattern LOWERCASE_REGEX = Pattern.compile("\\p{javaLowerCase}");
 
     @Override
     public PluginParameters createParameters() {
@@ -211,14 +214,14 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
         // ignore lowercase attributes
         final List<String> ignoredVertexAttributes = new ArrayList<>();
         for (final String attribute : registeredVertexAttributes) {
-            if (attribute.substring(0, 1).matches("[a-z]")) {
+            if (LOWERCASE_REGEX.matcher(attribute.substring(0, 1)).matches()) {
                 ignoredVertexAttributes.add(attribute);
             }
         }
 
         final List<String> ignoredTransactionAttributes = new ArrayList<>();
         for (final String attribute : registeredTransactionAttributes) {
-            if (attribute.substring(0, 1).matches("[a-z]")) {
+            if (LOWERCASE_REGEX.matcher(attribute.substring(0, 1)).matches()) {
                 ignoredTransactionAttributes.add(attribute);
             }
         }

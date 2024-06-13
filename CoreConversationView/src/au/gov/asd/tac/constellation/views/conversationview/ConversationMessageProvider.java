@@ -33,4 +33,7 @@ public interface ConversationMessageProvider {
      * @param messages the list of messages to populate.
      */
     public void getMessages(final GraphReadMethods graph, final List<ConversationMessage> messages);
+    
+    public int getTotalMessageCount();
+    
 }
