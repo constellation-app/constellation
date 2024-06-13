@@ -33,6 +33,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -73,6 +74,8 @@ public class QueryPhasePane extends VBox {
     private final Set<MenuItem> graphDependentMenuItems = new HashSet<>();
     private final Set<MenuItem> pluginDependentMenuItems = new HashSet<>();
 
+    private final Map<String, HeadingPane> currentPlugins = new HashMap<>();
+
     /**
      * Creates a new query phase pane.
      *
@@ -98,21 +101,35 @@ public class QueryPhasePane extends VBox {
                 plugins.entrySet().stream()
                         .filter(pluginsOfType -> !pluginsOfType.getValue().getValue().isEmpty())
                         .forEach(pluginsOfType -> {
-                            final HeadingPane heading = new HeadingPane(
-                                    pluginsOfType.getKey(),
-                                    pluginsOfType.getValue().getValue(),
-                                    top,
-                                    globalParametersPane.getParamLabels()
-                            );
+                            // Create entry if plugn not already visable
+                            if (!currentPlugins.containsKey(pluginsOfType.getKey())) {
+                                final HeadingPane heading = new HeadingPane(
+                                        pluginsOfType.getKey(),
+                                        pluginsOfType.getValue().getValue(),
+                                        top,
+                                        globalParametersPane.getParamLabels()
+                                );
+                                currentPlugins.put(pluginsOfType.getKey(), heading);
+                            }
 
-                            orderedPlugins.add(new Pair<>(pluginsOfType.getValue().getKey(), heading));
+                            orderedPlugins.add(new Pair<>(pluginsOfType.getValue().getKey(), currentPlugins.get(pluginsOfType.getKey())));
                         });
             }
             orderedPlugins.sort(Comparator.comparingInt(Pair<Integer, HeadingPane>::getKey));
 
+            final List<String> listOfPluginNames = new ArrayList<>();
             for (final Pair<Integer, HeadingPane> plugin : orderedPlugins) {
+                listOfPluginNames.add(plugin.getValue().getText());
                 dataSourceList.getChildren().add(plugin.getValue());
                 dataSources.addAll(plugin.getValue().getDataSources());
+            }
+
+            // Iterate over map and remove hidden plugins
+            for (var entry : new HashMap<>(currentPlugins).entrySet()) {
+                // If plugin not present, remove
+                if (!listOfPluginNames.contains(entry.getKey())) {
+                    currentPlugins.remove(entry.getKey());
+                }
             }
 
             setFillWidth(true);
