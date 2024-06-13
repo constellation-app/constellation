@@ -17,24 +17,12 @@ package au.gov.asd.tac.constellation.plugins.importexport.svg;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.graph.WritableGraph;
-import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.node.plugins.DefaultPluginInteraction;
-import au.gov.asd.tac.constellation.graph.schema.Schema;
-import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
-import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
-import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel;
-import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Blaze;
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.testing.construction.TestableGraphBuilder;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
-import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import au.gov.asd.tac.constellation.utilities.svg.SVGObject;
 import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
 import au.gov.asd.tac.constellation.utilities.visual.AxisConstants;
@@ -42,16 +30,12 @@ import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import java.awt.Component;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executors;
-import java.util.function.Predicate;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.MockedStatic;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
@@ -100,7 +84,7 @@ public class SVGGraphBuilderNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         
-        graph = new TestableGraphBuilder().withNodes().withDecorators().withBottomLabels().withTopLabels().build();
+        graph = new TestableGraphBuilder().withNodes().withAllTransactions().withDecorators().withBottomLabels().withTopLabels().build();
         graphNodeStaticMock = mockStatic(GraphNode.class);
         graphManagerStaticMock = mockStatic(GraphManager.class);
         threadPoolStaticMock = mockStatic(ConstellationGlobalThreadPool.class);
@@ -267,6 +251,7 @@ public class SVGGraphBuilderNGTest {
 //            sb.append(line);
 //        }
 //        assertEquals("", sb.toString());
+        assertNotNull(result.getChild(String.format("%s", 0)));
         assertNotNull(result.getChild(String.format("node-%s", 0)));
     }
     
@@ -287,6 +272,7 @@ public class SVGGraphBuilderNGTest {
                 .withCores(2);
             
         final SVGObject result = new SVGObject(instance.build());
+        assertNotNull(result.getChild(String.format("%s", 0)));
         assertNotNull(result.getChild(String.format("node-%s", 0)));
     }
     
@@ -335,6 +321,7 @@ public class SVGGraphBuilderNGTest {
                 .withCores(2);
             
         final SVGObject result = new SVGObject(instance.build());
+        assertNull(result.getChild(String.format("%s", 0)));
         assertNull(result.getChild(String.format("node-%s", 2)));
     }
     
@@ -355,6 +342,7 @@ public class SVGGraphBuilderNGTest {
                 .withCores(2);
             
         final SVGObject result = new SVGObject(instance.build());
+        assertNotNull(result.getChild(String.format("%s", 0)));
         assertNotNull(result.getChild(String.format("node-%s", 0)));
     }  
 }
