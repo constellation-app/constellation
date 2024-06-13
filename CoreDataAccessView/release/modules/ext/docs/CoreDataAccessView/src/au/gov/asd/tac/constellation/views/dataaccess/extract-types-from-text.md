@@ -22,7 +22,7 @@ New nodes are added with the following attributes:
 -   Seed - True
 
 
-### Example
+## Example
 Entering the following text:
 <br />
 <br />

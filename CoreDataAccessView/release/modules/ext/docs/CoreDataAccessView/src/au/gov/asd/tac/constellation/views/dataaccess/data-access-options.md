@@ -60,7 +60,7 @@ Data Access plugins can be deselected after pressing the Go button via
 the "Deselect on Go" option.
 
 <img src="../ext/docs/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/resources/DataAccessDeselectOnGo.png" alt="Deselect On Go
-Button" />
+Button" width="160"/>
 
 When you check the "Deselect on Go" item, data access plugins
 that are ticked will be deselected after pressing "Go". This will
