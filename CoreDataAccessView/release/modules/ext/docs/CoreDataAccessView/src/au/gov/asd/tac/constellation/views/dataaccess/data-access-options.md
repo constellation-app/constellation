@@ -54,6 +54,20 @@ Each plugin that saves results will create one or more files in your
 save directory. It is up to each plugin how it names the files it
 creates.
 
+## Connection Logging
+
+The output of functionality responsible for connecting to data sources
+can be saved to constellation log files.
+
+<img src="../ext/docs/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/resources/ConnectionLogging.png" alt="Connection Logging"/>
+
+When you select "Connection Logging" a timer will start that will disable 
+connection logging after 150 minutes. The time remaining is displayed on the 
+connection logging button, as shown below.
+
+<img src="../ext/docs/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/resources/ConnectionLoggingTimer.png" alt="Connection Logging Timer"/>
+<br />
+
 ## Deselecting plugins on Go
 
 Data Access plugins can be deselected after pressing the Go button via
