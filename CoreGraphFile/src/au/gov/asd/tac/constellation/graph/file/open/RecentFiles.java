@@ -200,6 +200,7 @@ public final class RecentFiles {
         synchronized (HISTORY_LOCK) {
             return getRecentFiles().stream()
                     .filter(file -> convertPath2File(file.getPath()) != null)
+                    .filter(file -> !(new File(file.getPath()).isDirectory()))
                     .distinct()
                     .collect(ImmutableList.toImmutableList());
         }
@@ -354,9 +355,12 @@ public final class RecentFiles {
     }
 
     public static FileObject convertPath2File(final String path) {
-        File f = new File(path);
-        f = FileUtil.normalizeFile(f);
-        return f == null ? null : FileUtil.toFileObject(f);
+        final File f = new File(path);
+        if (FileUtil.normalizeFile(f) == null || f.isDirectory()) {
+            return null;
+        } else {
+            return FileUtil.toFileObject(f);
+        }
     }
 
     /**
