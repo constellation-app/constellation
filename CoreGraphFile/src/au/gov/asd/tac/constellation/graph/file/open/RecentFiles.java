@@ -200,7 +200,6 @@ public final class RecentFiles {
         synchronized (HISTORY_LOCK) {
             return getRecentFiles().stream()
                     .filter(file -> convertPath2File(file.getPath()) != null)
-                    .filter(file -> !(new File(file.getPath()).isDirectory()))
                     .distinct()
                     .collect(ImmutableList.toImmutableList());
         }
