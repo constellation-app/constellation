@@ -125,7 +125,7 @@ public class QueryPhasePane extends VBox {
             }
 
             // Iterate over map and remove hidden plugins
-            for (var entry : new HashMap<>(currentPlugins).entrySet()) {
+            for (Map.Entry<String, HeadingPane> entry : new HashMap<>(currentPlugins).entrySet()) {
                 // If plugin not present, remove
                 if (!listOfPluginNames.contains(entry.getKey())) {
                     currentPlugins.remove(entry.getKey());
