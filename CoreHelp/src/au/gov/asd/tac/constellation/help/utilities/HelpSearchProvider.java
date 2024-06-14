@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package au.gov.asd.tac.constellation.help.utilities;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.netbeans.spi.quicksearch.SearchProvider;
 import org.netbeans.spi.quicksearch.SearchRequest;
@@ -34,8 +34,7 @@ import org.netbeans.spi.quicksearch.SearchResponse;
 public class HelpSearchProvider implements SearchProvider {
 
     /**
-     * Collects search results for the quick search
-     * Recognise and Process recent HELP searches
+     * Collects search results for the quick search Recognise and Process recent HELP searches
      *
      * @param request
      * @param response
@@ -66,14 +65,13 @@ public class HelpSearchProvider implements SearchProvider {
         }
 
         // Get the names of all of the help files
-        final Map<String, String> mappings = HelpMapper.getMappings();
-        final Collection<String> values = mappings.values();
+        List<String> distinctValues = new ArrayList(new HashSet<>(HelpMapper.getMappings().values()));
 
         // Match the search to values in the map
-        for (final String value : values) {
+        for (final String value : distinctValues) {
             final int index = value.lastIndexOf(File.separator);
             final String fileName = value.substring(index + 1);
-            
+
             // Create a display name that is easier to search
             String displayName = qs.replaceBrackets(fileName.replace("-", " "));
             final int indexMD = displayName.lastIndexOf(".");
@@ -84,7 +82,7 @@ public class HelpSearchProvider implements SearchProvider {
                 if (!response.addResult(new HelpSearchProviderTask(fileName), displayName)) {
                     return;
                 }
-            } else if (StringUtils.isNotBlank(prevFileName) && fileName.contains(prevFileName)){
+            } else if (StringUtils.isNotBlank(prevFileName) && fileName.contains(prevFileName)) {
                 // Found the recent Help search result. Set it and exit immediately
                 response.addResult(new HelpSearchProviderTask(fileName), displayName);
                 break;
@@ -95,7 +93,7 @@ public class HelpSearchProvider implements SearchProvider {
     public class QuickSearchUtils {
         // Cannot import the QuickSearchUtilities class due to cyclic dependency issues,
         // so the required functions have been put into this stripped down local version of the class.
-        
+
         public static final String LEFT_BRACKET = "\u276a"; // bold left parenthesis
         public static final String RIGHT_BRACKET = "\u276b"; // bold right parenthesis
         public static final String SMALL_SPACE = "\u2005";
