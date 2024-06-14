@@ -1241,7 +1241,6 @@ public class TableNGTest {
         // When looking at a transaction column, it extracts the value from the passed transaction
         final Object transactionColumnValue1 = new Object();
         final Object transactionColumnValue2 = new Object();
-        //when(readableGraph.getObjectValue(102, edgeId)).thenReturn(transactionColumnValue1);
         when(readableGraph.getObjectValue(102, 0)).thenReturn(transactionColumnValue1);
         when(readableGraph.getObjectValue(102, 1)).thenReturn(transactionColumnValue2);
 
