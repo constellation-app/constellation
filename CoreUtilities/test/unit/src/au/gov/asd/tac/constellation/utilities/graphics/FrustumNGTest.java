@@ -234,9 +234,11 @@ public class FrustumNGTest {
      * Makes a copy of a Frustum.
      */
     @Test 
-    public void textCopy() {
+    public void testCopy() {
         Frustum original = new Frustum(PERS_FOV, PERS_ASPECT, PERS_XMIN, 
                 PERS_XMAX, PERS_YMIN, PERS_YMAX, PERS_NEAR, PERS_FAR);
+        Frustum copy = original.getCopy();
+        
         assertPerspective(original.getCopy());
     }
     

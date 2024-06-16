@@ -16,7 +16,12 @@
 package au.gov.asd.tac.constellation.testing.construction;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.locking.DualGraph;
+import au.gov.asd.tac.constellation.graph.schema.Schema;
+import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
+import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import org.junit.Assert;
 import org.openide.util.Exceptions;
 import static org.testng.Assert.*;
@@ -57,12 +62,22 @@ public class TestableGraphBuilderNGTest {
     @Test
     public void fakeTestForCoverage() {
         try {
-            Graph graph = new TestableGraphBuilder().buildGraphwithEverything();
+            Graph graph1 = new TestableGraphBuilder().buildGraphwithEverything();
             TestableGraphBuilder.getSelectedNodeIds();
             TestableGraphBuilder.getNodeIds();
                     
         } catch (InterruptedException ex) {
             fail("The test case is a prototype.");
-        }        
+        }
+
+
+        try {
+            final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
+            Graph graph2 = new DualGraph(schema);
+            GraphWriteMethods gwm = graph2.getWritableGraph("test", true);
+            new TestableGraphBuilder(gwm).buildGraphwithEverything(gwm);
+        } catch (InterruptedException ex) {
+            fail("The test case is a prototype.");
+        }
     }
 }
