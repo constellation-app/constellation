@@ -18,21 +18,32 @@ package au.gov.asd.tac.constellation.utilities.file;
 import java.util.Arrays;
 
 /**
- *
+ * A utility created to help with preparing a procedurally generated file name.
+ * This utility will simply remove all characters from a file name that are illegal.
+ * 
  * @author capricornunicorn123
  */
 public class FileNameCleaner {
     
-    private static final char[] ILLEGAL_CHARACTERS = {'/','\\',':','*','?','"','<','>','|'};
+    //Ensure this list is sorted, as required for binary search.
+    private static final char[] ILLEGAL_CHARACTERS = {34, 42, 47, 58, 60, 62, 63, 92, 124};
     
     private FileNameCleaner(){
         throw new IllegalStateException("Utility class");
     }
 
-    public static String cleanFileName(final String badFileName) {
+    /**
+     * Removes any illegal characters form the filename.
+     * Note the file name should not include the path. as this method removes
+     * path separators.
+     * @param fileName
+     * @return 
+     */
+    public static String cleanFileName(final String fileName) {
+        Arrays.sort(ILLEGAL_CHARACTERS);
         final StringBuilder cleanName = new StringBuilder();
-        for (int i = 0; i < badFileName.length(); i++) {
-            final char c = badFileName.charAt(i);
+        for (int i = 0; i < fileName.length(); i++) {
+            final char c = fileName.charAt(i);
             if (Arrays.binarySearch(ILLEGAL_CHARACTERS, c) < 0) {
                 cleanName.append(c);
             }

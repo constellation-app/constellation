@@ -108,14 +108,13 @@ public class TestableGraphBuilder {
     }
     
     public Graph buildGraphwithEverything() throws InterruptedException {
-        return this.withNodes().withBottomLabels().withTopLabels().withAllTransactions().withDecorators().withBlazes().build();
+        return this.withNodes().withAllTransactions().withAllLabels().withDecorators().withBlazes().build();
     }
     
     public void buildGraphwithEverything(final GraphWriteMethods gwm) {
         withNodes(gwm);
-        withBottomLabels(gwm);
-        withTopLabels(gwm);
         withAllTransactions(gwm);
+        withAllLabels(gwn);
         withDecorators(gwm);
         withBlazes(gwm);
     }
@@ -183,7 +182,6 @@ public class TestableGraphBuilder {
      */
     private void withBlazes(final GraphWriteMethods gwm) {
         final int blazeAttributeID = VisualConcept.VertexAttribute.BLAZE.ensure(gwm);
-        
         final Blaze blaze = new Blaze(90, ConstellationColor.BROWN);
         gwm.setObjectValue(blazeAttributeID, 0, blaze);
     }
