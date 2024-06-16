@@ -65,8 +65,8 @@ public class SVGGraphBuilderNGTest {
     private Component visualComponentMock;
     private File nonExistantFileMock;
     private File existantFileMock;
-    private final DrawFlags drawAllVisualElementsFlag = new DrawFlags(true, true, true, true, false);
-    private final DrawFlags drawNoLabelsFlag = new DrawFlags(true, true, false, false, false);
+    private final DrawFlags drawAllVisualElementsFlag = new DrawFlags(true, true, true, true, true);
+    private final DrawFlags drawNoLabelsFlag = new DrawFlags(true, true, false, false, true);
     private final DrawFlags drawNoVisualElementsFlag = new DrawFlags(false, false, false, false, false);
     private final String graphName = "Test Graph 1";
     public SVGGraphBuilderNGTest() {
