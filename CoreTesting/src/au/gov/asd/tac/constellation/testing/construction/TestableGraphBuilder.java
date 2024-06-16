@@ -114,7 +114,7 @@ public class TestableGraphBuilder {
     public void buildGraphwithEverything(final GraphWriteMethods gwm) {
         withNodes(gwm);
         withAllTransactions(gwm);
-        withAllLabels(gwn);
+        withAllLabels(gwm);
         withDecorators(gwm);
         withBlazes(gwm);
     }
