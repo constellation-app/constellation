@@ -230,4 +230,14 @@ public class FrustumNGTest {
         assertOrthographic(new Frustum(-10F, 20F, -30F, 40F, -50F, 40F));
     }
     
+    /**
+     * Makes a copy of a Frustum.
+     */
+    @Test 
+    public void textCopy() {
+        Frustum original = new Frustum(PERS_FOV, PERS_ASPECT, PERS_XMIN, 
+                PERS_XMAX, PERS_YMIN, PERS_YMAX, PERS_NEAR, PERS_FAR);
+        assertPerspective(original.getCopy());
+    }
+    
 }
