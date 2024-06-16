@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.*;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Blaze;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.utilities.BoundingBoxUtilities;
 import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;
@@ -108,7 +109,7 @@ public class TestableGraphBuilder {
     }
     
     public Graph buildGraphwithEverything() throws InterruptedException {
-        return this.withNodes().withAllTransactions().withAllLabels().withDecorators().withBlazes().build();
+        return this.withNodes().withAllTransactions().withAllLabels().withDecorators().withBlazes().withConnectionMode(ConnectionMode.LINK).build();
     }
     
     public void buildGraphwithEverything(final GraphWriteMethods gwm) {
@@ -117,6 +118,7 @@ public class TestableGraphBuilder {
         withAllLabels(gwm);
         withDecorators(gwm);
         withBlazes(gwm);
+        withConnectionMode(gwm, ConnectionMode.LINK);
     }
     
     /**
@@ -497,6 +499,18 @@ public class TestableGraphBuilder {
                 transactionIds.add(gwm.addTransaction(vertex, 0, false));
             } 
         }
+    }
+    
+    public TestableGraphBuilder withConnectionMode(final ConnectionMode mode) throws InterruptedException{
+        final WritableGraph wg = graph.getWritableGraph("setConnectionMode", true);
+        withConnectionMode(wg, mode);    
+        wg.commit();
+        return this;
+    }
+    
+    public void withConnectionMode(final GraphWriteMethods gwm, final ConnectionMode mode){
+        final int connectionModeattributeId = VisualConcept.GraphAttribute.CONNECTION_MODE.ensure(gwm);
+        gwm.setObjectValue(connectionModeattributeId, 0, mode);
     }
 
     public Graph build(){

@@ -260,7 +260,7 @@ public class SVGGraphBuilderNGTest {
      */
     @Test
     public void testBuildPatternOutput_linkedExport() throws IllegalArgumentException, InterruptedException {
-        System.out.println("build");
+        System.out.println("build");        
         final SVGGraphBuilder instance = new SVGGraphBuilder()
                 .atDirectory(existantFileMock)
                 .withInteraction(interactionMock)
