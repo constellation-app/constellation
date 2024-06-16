@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.*;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Blaze;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.utilities.BoundingBoxUtilities;
 import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;
@@ -107,7 +108,7 @@ public class TestableGraphBuilder {
     }
     
     public Graph buildGraphwithEverything() throws InterruptedException {
-        return this.withNodes().withBottomLabels().withTopLabels().withAllTransactions().withDecorators().build();
+        return this.withNodes().withBottomLabels().withTopLabels().withAllTransactions().withDecorators().withBlazes().build();
     }
     
     public void buildGraphwithEverything(final GraphWriteMethods gwm) {
@@ -116,6 +117,7 @@ public class TestableGraphBuilder {
         withTopLabels(gwm);
         withAllTransactions(gwm);
         withDecorators(gwm);
+        withBlazes(gwm);
     }
     
     /**
@@ -180,7 +182,10 @@ public class TestableGraphBuilder {
      * @param gwm 
      */
     private void withBlazes(final GraphWriteMethods gwm) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        final int blazeAttributeID = VisualConcept.VertexAttribute.BLAZE.ensure(gwm);
+        
+        final Blaze blaze = new Blaze(90, ConstellationColor.BROWN);
+        gwm.setObjectValue(blazeAttributeID, 0, blaze);
     }
     
     /**
