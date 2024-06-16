@@ -58,6 +58,9 @@ public class TestableGraphBuilderNGTest {
     public void fakeTestForCoverage() {
         try {
             Graph graph = new TestableGraphBuilder().buildGraphwithEverything();
+            TestableGraphBuilder.getSelectedNodeIds();
+            TestableGraphBuilder.getNodeIds();
+                    
         } catch (InterruptedException ex) {
             fail("The test case is a prototype.");
         }        

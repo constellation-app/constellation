@@ -309,7 +309,10 @@ public class TestableGraphBuilder {
      * @throws InterruptedException 
      */
     public TestableGraphBuilder withAllLabels() throws InterruptedException{
-        return this.withTopLabels().withBottomLabels().withTransactionLabels();
+        final WritableGraph wg = graph.getWritableGraph("addAllLabels", true);
+        withAllLabels(wg);       
+        wg.commit();
+        return this;
     }
     
     /**
@@ -442,7 +445,10 @@ public class TestableGraphBuilder {
     }
     
     public TestableGraphBuilder withAllTransactions() throws InterruptedException{
-        return withLinearTransactions().withLoopedTransactions();
+        WritableGraph wg = graph.getWritableGraph("addAllTransactions", true);
+        withAllTransactions(wg);    
+        wg.commit();
+        return this;
     }
     
     public void withAllTransactions(final GraphWriteMethods gwm){
