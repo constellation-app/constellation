@@ -23,7 +23,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
- *
+ * Tests for {@link FileNameCleaner}
  * @author capricornunicorn123
  */
 public class FileNameCleanerNGTest {

@@ -38,6 +38,7 @@ import au.gov.asd.tac.constellation.utilities.icon.CharacterIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
+import au.gov.asd.tac.constellation.utilities.visual.AxisConstants;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -109,7 +110,7 @@ public class TestableGraphBuilder {
     }
     
     public Graph buildGraphwithEverything() throws InterruptedException {
-        return this.withNodes().withAllTransactions().withAllLabels().withDecorators().withBlazes().withConnectionMode(ConnectionMode.LINK).build();
+        return this.withNodes().withAllTransactions().withAllLabels().withDecorators().withBlazes().withConnectionMode(ConnectionMode.LINK).refocusCamera(AxisConstants.Z_NEGATIVE).build();
     }
     
     public void buildGraphwithEverything(final GraphWriteMethods gwm) {
@@ -119,6 +120,7 @@ public class TestableGraphBuilder {
         withDecorators(gwm);
         withBlazes(gwm);
         withConnectionMode(gwm, ConnectionMode.LINK);
+        refocusCamera(gwm, AxisConstants.Z_NEGATIVE);
     }
     
     /**
@@ -512,6 +514,25 @@ public class TestableGraphBuilder {
         final int connectionModeattributeId = VisualConcept.GraphAttribute.CONNECTION_MODE.ensure(gwm);
         gwm.setObjectValue(connectionModeattributeId, 0, mode);
     }
+    
+    public TestableGraphBuilder refocusCamera(final AxisConstants axis) throws InterruptedException{
+        final WritableGraph wg = graph.getWritableGraph("setCamera", true);
+        refocusCamera(wg, axis);    
+        wg.commit();
+        return this;
+    }
+    
+    public void refocusCamera(final GraphWriteMethods gwm, final AxisConstants axis){
+        final int cameraAttributeId = VisualConcept.GraphAttribute.CAMERA.ensure(gwm);
+        
+        final Camera camera = new Camera(gwm.getObjectValue(cameraAttributeId, 0));
+        final BoundingBox boundingBox = new BoundingBox();
+        BoundingBoxUtilities.recalculateFromGraph(boundingBox, gwm, false);
+        CameraUtilities.refocus(camera, axis, boundingBox);
+
+        gwm.setObjectValue(cameraAttributeId, 0, camera);
+    }
+    
 
     public Graph build(){
         return graph;
