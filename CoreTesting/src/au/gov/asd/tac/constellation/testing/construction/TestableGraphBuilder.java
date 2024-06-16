@@ -24,7 +24,9 @@ import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
-import au.gov.asd.tac.constellation.graph.schema.visual.*;
+import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel;
+import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
+import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Blaze;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
@@ -37,7 +39,6 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.CharacterIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
-import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
 import au.gov.asd.tac.constellation.utilities.visual.AxisConstants;
 import java.util.ArrayList;
 import java.util.List;
@@ -309,9 +310,9 @@ public class TestableGraphBuilder {
      * @throws InterruptedException 
      */
     public TestableGraphBuilder withAllLabels() throws InterruptedException{
-        final WritableGraph wg = graph.getWritableGraph("addAllLabels", true);
-        withAllLabels(wg);       
-        wg.commit();
+        withTopLabels();  
+        withBottomLabels();     
+        withTransactionLabels();     
         return this;
     }
     
@@ -445,9 +446,8 @@ public class TestableGraphBuilder {
     }
     
     public TestableGraphBuilder withAllTransactions() throws InterruptedException{
-        WritableGraph wg = graph.getWritableGraph("addAllTransactions", true);
-        withAllTransactions(wg);    
-        wg.commit();
+        withLinearTransactions();    
+        withLoopedTransactions(); 
         return this;
     }
     
