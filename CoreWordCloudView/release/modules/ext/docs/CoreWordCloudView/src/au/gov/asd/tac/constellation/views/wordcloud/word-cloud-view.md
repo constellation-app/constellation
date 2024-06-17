@@ -47,8 +47,8 @@ generate a word cloud containing the names of countrys stored in the graph's nod
 -   *Phrase Length* - The number of words in each "phrase" on the word cloud.
 For example, continuing with the "Geo.Country" example above,
 a phrase length of one will seperate each word in a country's name.
-"Hong Kong" would be seperated into two phrases, "Hong" and "Kong".
-Setting the phrase length to two would result in "Hong Kong" staying as one phrase,
+"New Zealand" would be seperated into two phrases, "New" and "Zealand".
+Setting the phrase length to two would result in "New Zealand" staying as one phrase,
 and filter out countries with only one word in their name.
 -   *Phrase Span* - The number of words a phrase can span.
 -   *Threshold* - The minimum number of graph elements the phrase must occur in 
