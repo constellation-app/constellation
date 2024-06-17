@@ -54,7 +54,7 @@ public class MultiTaskInteractionNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        this.interactionMock = mock(TextPluginInteraction.class);
+        interactionMock = mock(TextPluginInteraction.class);
         
         doNothing().when(interactionMock).setProgress(anyInt(), anyInt(), anyBoolean());
         threadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
@@ -72,18 +72,18 @@ public class MultiTaskInteractionNGTest {
     @Test
     public void testTaskRegistration() throws InterruptedException {
         
-        MultiTaskInteraction mti = new MultiTaskInteraction(interactionMock);
+        final MultiTaskInteraction mti = new MultiTaskInteraction(interactionMock);
         
         assertEquals(mti.getTaskCount(), 0);
         
         // Add a task to the MultiTaskInteraction
-        TestTask task1 = new TestTask();
+        final TestTask task1 = new TestTask();
         mti.addTask(task1);
         assertEquals(mti.getTaskCount(), 1);
         
         // Add 2 more tasks to the MultiTaskInteraction
-        TestTask task2 = new TestTask();
-        TestTask task3 = new TestTask();
+        final TestTask task2 = new TestTask();
+        final TestTask task3 = new TestTask();
         mti.addTask(task2);
         mti.addTask(task3);
         assertEquals(mti.getTaskCount(), 3);

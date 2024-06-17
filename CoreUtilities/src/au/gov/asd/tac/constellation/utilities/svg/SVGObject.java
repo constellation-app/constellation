@@ -483,14 +483,32 @@ public class SVGObject {
         setAttribute(SVGAttributeConstants.OPACITY, opacity);
     }
     
+    /**
+     * Creates a color matrix to apply to SVG objects.
+     * @param color 
+     */
     public void setFeColor(final Color color) {
         final float red = color.getRed() / 255F;
         final float green = color.getGreen() / 255F;
         final float blue = color.getBlue() / 255F;
-        
         final String matrix = String.format("%s 0 0 0 0 0 %s 0 0 0 0 0 %s 0 0 0 0 0 1 0", red, green, blue);
-        
         setAttribute(SVGAttributeConstants.VALUES, matrix);
+    }
+    
+    /** 
+     * Sets a reference to an external file as an attribute.
+     * @param reference 
+     */
+    public void setExternalReference(final String reference) {
+        this.setAttribute(SVGAttributeConstants.EXTERNAL_RESOURCE_REFERENCE, reference);
+    }
+
+    /**
+     * Sets a filter attribute that references a filter object elsewhere in the SVG File. 
+     * @param filterReference 
+     */
+    public void setFilter(final String filterReference) {
+        this.setAttribute(SVGAttributeConstants.FILTER, filterReference);
     }
     
     /**
@@ -527,13 +545,5 @@ public class SVGObject {
         if (children != null && !children.isEmpty()){
             svgDataReference.setChildren(children);
         }
-    }
-
-    public void setExternalReference(final String reference) {
-        this.setAttribute(SVGAttributeConstants.EXTERNAL_RESOURCE_REFERENCE, reference);
-    }
-
-    public void setFilter(final String filterReference) {
-        this.setAttribute(SVGAttributeConstants.FILTER, filterReference);
     }
 }

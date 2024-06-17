@@ -97,6 +97,17 @@ public class SVGData {
     }
     
     /**
+     * Adds a list of child SVGObjects to the current SVG element.
+     * Use depth first search.
+     * @param nodes
+     */
+    public void setChildren(final List<SVGObject> nodes) {
+        for (final SVGObject node : nodes){
+            this.setChild(node.toSVGData());
+        }
+    }
+    
+    /**
      * Removes an SVGData with a specified id attribute value.
      * Use depth first search.
      * @param idValue 
@@ -346,11 +357,5 @@ public class SVGData {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
         return templateSVG;
-    }
-
-    public void setChildren(final List<SVGObject> nodes) {
-        for (final SVGObject node : nodes){
-            this.setChild(node.toSVGData());
-        }
     }
 }

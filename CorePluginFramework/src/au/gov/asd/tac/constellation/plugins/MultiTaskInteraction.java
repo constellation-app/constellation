@@ -62,7 +62,7 @@ public class MultiTaskInteraction {
     }
     
     /**
-     * Determines how many tasks have been registered to this MultiTaskInteraction
+     * Determines how many tasks have been registered to this MultiTaskInteraction.
      * 
      * @return 
      */

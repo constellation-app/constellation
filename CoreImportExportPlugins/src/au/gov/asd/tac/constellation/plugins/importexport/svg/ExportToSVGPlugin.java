@@ -59,7 +59,7 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Exports visual data viewed on an active graph to an Scalar Vector Graphic file.
- * SVG generating functionality of this plugin has been abstracted to the {@link SVGGraphBuilder} class.
+ * SVG generation functionality of this plugin has been abstracted to the {@link SVGGraphBuilder} class.
  * This plugin functionality relies heavily on {@link VisualGraphAccess} methods to interpret the graph consistently.
  * 
  * @author capricornunicorn123

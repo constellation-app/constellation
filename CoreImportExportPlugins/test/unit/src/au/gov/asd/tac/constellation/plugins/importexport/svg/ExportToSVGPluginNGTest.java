@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.svg;
 
-import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
@@ -28,7 +26,8 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
- *
+ * Tests for {@link ExportToSVGPlugin}
+ * 
  * @author capricornunicorn123
  */
 public class ExportToSVGPluginNGTest {
@@ -78,19 +77,5 @@ public class ExportToSVGPluginNGTest {
         assertNotNull(result.getObjectValue(ExportToSVGPlugin.SHOW_NODES_PARAMETER_ID));
         assertNotNull(result.getObjectValue(ExportToSVGPlugin.SHOW_NODE_LABELS_PARAMETER_ID));
     }
-
-//    /**
-//     * Test of read method, of class ExportToSVGPlugin.
-//     */
-//    @Test
-//    public void testRead() throws Exception {
-//        System.out.println("read");
-//        GraphReadMethods graph = null;
-//        PluginInteraction interaction = null;
-//        PluginParameters parameters = null;
-//        ExportToSVGPlugin instance = new ExportToSVGPlugin();
-//        instance.read(graph, interaction, parameters);
-//        // TODO review the generated test code and remove the default call to fail.
-//    }
     
 }

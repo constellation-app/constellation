@@ -59,7 +59,7 @@ import org.openide.util.Cancellable;
  * log to this class in enabled</li>
  * </ul>
  * 
- *
+ * @author capricornunicorn123
  * @author sirius
  */
 public class DefaultPluginInteraction implements PluginInteraction, Cancellable {

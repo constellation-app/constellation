@@ -28,7 +28,6 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import org.openide.util.Exceptions;
 
 /**
  * An IconData stores byte data for use as a {@link ConstellationIcon}, provided

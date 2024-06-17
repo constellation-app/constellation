@@ -24,7 +24,6 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
-import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
 import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import java.awt.event.ActionEvent;
 import static org.mockito.ArgumentMatchers.any;
@@ -43,6 +42,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
+ * Tests for {@link ExportToSVGAction}
  * 
  * @author capricornunicorn123
  */

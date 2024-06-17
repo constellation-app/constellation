@@ -23,6 +23,7 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * An IconProvder defining the set of icons required for a graph to work.
  *
+ * @author capricornunicorn123
  * @author cygnus_x-1
  */
 @ServiceProvider(service = ConstellationIconProvider.class)

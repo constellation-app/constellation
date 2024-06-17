@@ -33,9 +33,9 @@ import org.openide.util.NbBundle.Messages;
  */
 @ActionID(category = "Graph", id = "au.gov.asd.tac.constellation.testing.construction.SudokuGraphBuilderAction")
 @ActionRegistration(displayName = "#CTL_SudokuGraphBuilderAction", surviveFocusChange = true)
-@ActionReferences({
-    @ActionReference(path = "Menu/Experimental/Build Graph", position = 0)
-})
+//@ActionReferences({
+//    @ActionReference(path = "Menu/Experimental/Build Graph", position = 0)
+//})
 @Messages("CTL_SudokuGraphBuilderAction=Sudoku Graph")
 public final class SudokuGraphBuilderAction implements ActionListener {
 
