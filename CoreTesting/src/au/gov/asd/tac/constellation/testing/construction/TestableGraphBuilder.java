@@ -66,13 +66,11 @@ import java.util.List;
 public class TestableGraphBuilder {
 
     public static int[] getSelectedNodeIds() {
-        int[] ids = {9, 10, 11, 12, 13, 14, 15, 16};
-        return ids;
+        return new int [] {9, 10, 11, 12, 13, 14, 15, 16};
     }
 
     public static int[] getNodeIds() {
-        int[] ids = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17};
-        return ids;
+        return new int [] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17};
     }
     
     final Graph graph;
@@ -495,10 +493,6 @@ public class TestableGraphBuilder {
             } else {
                 transactionIds.add(gwm.addTransaction(vertex, 0, false));
             }
-            
-            if (vertex % 5 == 0){
-                
-            } 
             
             if (vertex == 10){
                 transactionIds.add(gwm.addTransaction(0, vertex, true));

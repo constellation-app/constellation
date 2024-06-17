@@ -68,7 +68,7 @@ import java.util.concurrent.ExecutorService;
  */
 public class SVGGraphBuilder {
     
-    private static final String buildingReportMessage= "BuildingGraph";
+    private static final String BUILDING_REPORT_MESSAGE= "Building Graph";
     
     // Variables specified when the Builder class is instantiated
     private final Matrix44f modelViewProjectionMatrix = new Matrix44f();
@@ -296,7 +296,7 @@ public class SVGGraphBuilder {
         final List<SVGObject> filters = new ArrayList<>();
 
         // Initate plugin report information
-        interaction.setExecutionStage(0, -1, buildingReportMessage, "Building Nodes", true);
+        interaction.setExecutionStage(0, -1, BUILDING_REPORT_MESSAGE, "Building Nodes", true);
         final MultiTaskInteraction mti = new MultiTaskInteraction(interaction);
         
         if (!drawFlags.drawNodes()) {
@@ -350,7 +350,7 @@ public class SVGGraphBuilder {
     private List<SVGObject> buildConnections() throws InterruptedException {
 
         // Initate plugin report information
-        interaction.setExecutionStage(0, -1 , buildingReportMessage, "Building Connections", false);
+        interaction.setExecutionStage(0, -1 , BUILDING_REPORT_MESSAGE, "Building Connections", false);
         final MultiTaskInteraction mti = new MultiTaskInteraction(interaction);
         
         // Do not export any connections if the show connections parameter is disabled
@@ -394,7 +394,7 @@ public class SVGGraphBuilder {
     private List<SVGObject> buildBlazes() throws InterruptedException {
         
         // Initate plugin report information
-        interaction.setExecutionStage(0, -1, buildingReportMessage, "Building Blazes", true);
+        interaction.setExecutionStage(0, -1, BUILDING_REPORT_MESSAGE, "Building Blazes", true);
         final MultiTaskInteraction mti = new MultiTaskInteraction(interaction);
         
         if (!drawFlags.drawBlazes()) {

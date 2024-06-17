@@ -244,13 +244,6 @@ public class SVGGraphBuilderNGTest {
                 .withCores(2);
             
         final SVGObject result = new SVGObject(instance.build());
-//        assertNotNull(result.getChild(String.format("node-%s", 0)));
-//        StringBuilder sb = new StringBuilder();
-//        List<String> lines = result.toSVGData().toLines();
-//        for (String line : lines){
-//            sb.append(line);
-//        }
-//        assertEquals("", sb.toString());
         assertNotNull(result.getChild(String.format("%s", 0)));
         assertNotNull(result.getChild(String.format("node-%s", 0)));
     }

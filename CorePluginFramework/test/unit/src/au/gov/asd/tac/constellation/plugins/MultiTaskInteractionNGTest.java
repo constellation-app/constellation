@@ -45,11 +45,11 @@ public class MultiTaskInteractionNGTest {
     }
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
+    public static void setUpClass() {
     }
 
     @AfterClass
-    public static void tearDownClass() throws Exception {
+    public static void tearDownClass() {
     }
 
     @BeforeMethod
@@ -61,7 +61,7 @@ public class MultiTaskInteractionNGTest {
     }
 
     @AfterMethod
-    public void tearDownMethod() throws Exception {
+    public void tearDownMethod() {
         threadPool.shutdown();
     }
 

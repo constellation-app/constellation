@@ -239,7 +239,7 @@ public class FrustumNGTest {
                 PERS_XMAX, PERS_YMIN, PERS_YMAX, PERS_NEAR, PERS_FAR);
         Frustum copy = original.getCopy();
         
-        assertPerspective(original.getCopy());
+        assertPerspective(copy);
     }
     
 }

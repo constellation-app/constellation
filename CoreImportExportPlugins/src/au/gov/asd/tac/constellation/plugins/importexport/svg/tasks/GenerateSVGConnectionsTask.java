@@ -218,6 +218,7 @@ public class GenerateSVGConnectionsTask implements Runnable, SharedInteractionRu
                                 // The low arrow head is not in view
                             }
                             default -> {
+                                //Do Nothing
                             }
                         }
                         //Bidirectional connections are Links with two link arrow heads

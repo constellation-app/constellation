@@ -311,7 +311,7 @@ public class GenerateSVGNodesTask implements Runnable, SharedInteractionRunnable
                 ImageIO.write(icon.buildBufferedImage(), "png", outputFile);
             }
         } catch (IOException ex) {
-            //TODO: throw an exception here
+            //Do Nothing
         }
         
         return svgIcon.toSVGData();
