@@ -2,7 +2,7 @@
 
 In graph theory, centrality is any measure that determines how
 structurally important a node is within a graph and a shortest path
-distance between two nodes is path that takes the minimum number of
+distance between two nodes is the path that takes the minimum number of
 hops. The shortest path between two nodes is typically the most likely
 route for information to flow through a network.
 
