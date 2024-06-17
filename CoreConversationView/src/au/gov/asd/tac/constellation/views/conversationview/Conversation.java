@@ -366,6 +366,8 @@ public class Conversation {
                         totalMessageCount = messageProvider.getTotalMessageCount();
                         if (totalMessageCount != 0) {
                             totalPages = (int) Math.ceil((double) totalMessageCount / contentPerPage);
+                        } else {
+                            totalPages = 1;
                         }
                         latch.countDown();
                     }
@@ -593,16 +595,19 @@ public class Conversation {
         public boolean update(final GraphReadMethods graph) {
             visibleMessages.clear();
             int count = 0;
-            for (final ConversationMessage message : senderMessages) {
-                message.filterContributions(conversationState.getHiddenContributionProviders());
-                final int minValue = pageNumber * contentPerPage;
-                final int maxValue = minValue + contentPerPage;
-                if (!message.getVisibleContributions().isEmpty() && visibleMessages.size() < contentPerPage && minValue <= count && count < maxValue) {
-                    visibleMessages.add(message);
+            if (totalMessageCount > 0) {
+                for (final ConversationMessage message : senderMessages) {
+                    message.filterContributions(conversationState.getHiddenContributionProviders());
+                    final int minValue = pageNumber * contentPerPage;
+                    final int maxValue = minValue + contentPerPage;
+                    if (!message.getVisibleContributions().isEmpty() && visibleMessages.size() < contentPerPage && minValue <= count && count < maxValue) {
+                        visibleMessages.add(message);
+                    }
+                    count++;
                 }
-                count++;
+                totalPages = (int) Math.ceil((double) totalMessageCount / contentPerPage);
             }
-            totalPages = (int) Math.ceil((double) totalMessageCount / contentPerPage);
+
             ConversationController.getDefault().getConversationBox().setProgressComplete();
             return true;
         }
