@@ -102,9 +102,8 @@ public class TestableGraphBuilder {
      * TestableGraphBuilder(graphWriteMethods).withNodes(graphWriteMethods).withAllTransactions(graphWriteMethods).withBottomLables(graphWriteMethods);
      * </p>
      * @param wg
-     * @throws InterruptedException 
      */
-    public TestableGraphBuilder(final GraphWriteMethods wg) throws InterruptedException{
+    public TestableGraphBuilder(final GraphWriteMethods wg) {
         graph = null;
     }
     
