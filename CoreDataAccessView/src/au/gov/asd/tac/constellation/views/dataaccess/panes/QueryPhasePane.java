@@ -89,50 +89,52 @@ public class QueryPhasePane extends VBox {
         updatePlugins(plugins, top);
     }
 
-    public final void updatePlugins(final Map<String, Pair<Integer, List<DataAccessPlugin>>> plugins, final PluginParametersPaneListener top) {
+    public synchronized final void updatePlugins(final Map<String, Pair<Integer, List<DataAccessPlugin>>> plugins, final PluginParametersPaneListener top) {
+        dataSources.clear();
+
+        final List<Pair<Integer, HeadingPane>> orderedPlugins = new ArrayList<>();
+        if (plugins != null) {
+            plugins.entrySet().stream()
+                    .filter(pluginsOfType -> !pluginsOfType.getValue().getValue().isEmpty())
+                    .forEach(pluginsOfType -> {
+                        // Create entry if plugn not already visable
+                        if (!currentPlugins.containsKey(pluginsOfType.getKey())) {
+                            final HeadingPane heading = new HeadingPane(
+                                    pluginsOfType.getKey(),
+                                    pluginsOfType.getValue().getValue(),
+                                    top,
+                                    globalParametersPane.getParamLabels()
+                            );
+                            currentPlugins.put(pluginsOfType.getKey(), heading);
+                        }
+
+                        orderedPlugins.add(new Pair<>(pluginsOfType.getValue().getKey(), currentPlugins.get(pluginsOfType.getKey())));
+                    });
+        }
+        orderedPlugins.sort(Comparator.comparingInt(Pair<Integer, HeadingPane>::getKey));
+
+        final List<String> listOfPluginNames = new ArrayList<>();
+        for (final Pair<Integer, HeadingPane> plugin : orderedPlugins) {
+            listOfPluginNames.add(plugin.getValue().getText());
+            dataSources.addAll(plugin.getValue().getDataSources());
+        }
+
+        // Iterate over map and remove hidden plugins
+        for (Map.Entry<String, HeadingPane> entry : new HashMap<>(currentPlugins).entrySet()) {
+            // If plugin not present, remove
+            if (!listOfPluginNames.contains(entry.getKey())) {
+                currentPlugins.remove(entry.getKey());
+            }
+        }
+
+        setFillWidth(true);
+
         // Runlater is used, because when plugins are changed this won't be run in the correct type of thread
         Platform.runLater(() -> {
-            // Clear variables
-            dataSources.clear();
             dataSourceList.getChildren().clear();
-
-            final List<Pair<Integer, HeadingPane>> orderedPlugins = new ArrayList<>();
-            if (plugins != null) {
-                plugins.entrySet().stream()
-                        .filter(pluginsOfType -> !pluginsOfType.getValue().getValue().isEmpty())
-                        .forEach(pluginsOfType -> {
-                            // Create entry if plugn not already visable
-                            if (!currentPlugins.containsKey(pluginsOfType.getKey())) {
-                                final HeadingPane heading = new HeadingPane(
-                                        pluginsOfType.getKey(),
-                                        pluginsOfType.getValue().getValue(),
-                                        top,
-                                        globalParametersPane.getParamLabels()
-                                );
-                                currentPlugins.put(pluginsOfType.getKey(), heading);
-                            }
-
-                            orderedPlugins.add(new Pair<>(pluginsOfType.getValue().getKey(), currentPlugins.get(pluginsOfType.getKey())));
-                        });
-            }
-            orderedPlugins.sort(Comparator.comparingInt(Pair<Integer, HeadingPane>::getKey));
-
-            final List<String> listOfPluginNames = new ArrayList<>();
             for (final Pair<Integer, HeadingPane> plugin : orderedPlugins) {
-                listOfPluginNames.add(plugin.getValue().getText());
                 dataSourceList.getChildren().add(plugin.getValue());
-                dataSources.addAll(plugin.getValue().getDataSources());
             }
-
-            // Iterate over map and remove hidden plugins
-            for (Map.Entry<String, HeadingPane> entry : new HashMap<>(currentPlugins).entrySet()) {
-                // If plugin not present, remove
-                if (!listOfPluginNames.contains(entry.getKey())) {
-                    currentPlugins.remove(entry.getKey());
-                }
-            }
-
-            setFillWidth(true);
             getChildren().clear();
             getChildren().addAll(globalParametersPane, dataSourceList);
         });
