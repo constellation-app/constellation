@@ -70,7 +70,7 @@ value. The set of attribute types that are commonly used include:
 </tr>
 <tr class="odd">
 <td>icon</td>
-<td>A small image used for foreground and background pictures on nodes, as well as node decorators</td>
+<td>A small image used for foreground and background pictures on nodes</td>
 </tr>
 <tr class="even">
 <td>integer</td>
@@ -124,8 +124,10 @@ generally been designed for a specific attribute (usually the type has a
 similar name to the attribute it is for):
 
 -   blaze
+-   camera
 -   composite\_node\_state
 -   connection\_mode
+-   decorators
 -   draw\_flags
 -   graph\_labels\_nodes
 -   graph\_labels\_transactions
