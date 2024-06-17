@@ -44,7 +44,7 @@ you can start one manually using the command above at a command prompt.
 Don't forget to manually start the REST server. You will also have to
 manually shut down the notebook server.
 
-### Common Errors
+## Common Errors
 If the server fails to start and you get an error such as "Failed to start jupyter-notebook", 
 you may not have Jupyter or pip installed, or may have not added these to your 
 command path (in the case of using Windows).
@@ -68,7 +68,7 @@ A tutorial for how to use Jupyter notebook with Constellation can be found on ou
 Simply download the .ipynb file and open it in Jupyter notebook.
 
 <br />
-# Setup
+## Setup
 
 ### Windows
 On Windows, the easiest way to install these and add them to the command path is to install the 

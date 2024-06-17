@@ -61,9 +61,10 @@ can be saved to constellation log files.
 
 <img src="../ext/docs/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/resources/ConnectionLogging.png" alt="Connection Logging"/>
 
-When you select "Connection Logging" a timer will start that will disable 
-connection logging after 150 minutes. The time remaining is displayed on the 
-connection logging button, as shown below.
+Connection Logging is enabled for 150 minutes , the time remaining is 
+displayed on the "Connection Logging" button, as shown below.
+Connection Logging can be re-enabled by simply clicking the "Connection Logging" 
+button.
 
 <img src="../ext/docs/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/resources/ConnectionLoggingTimer.png" alt="Connection Logging Timer"/>
 <br />
