@@ -89,7 +89,7 @@ public class QueryPhasePane extends VBox {
         updatePlugins(plugins, top);
     }
 
-    public synchronized final void updatePlugins(final Map<String, Pair<Integer, List<DataAccessPlugin>>> plugins, final PluginParametersPaneListener top) {
+    public final void updatePlugins(final Map<String, Pair<Integer, List<DataAccessPlugin>>> plugins, final PluginParametersPaneListener top) {
         dataSources.clear();
 
         final List<Pair<Integer, HeadingPane>> orderedPlugins = new ArrayList<>();
