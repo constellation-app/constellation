@@ -37,15 +37,15 @@ JSON file in a zip container.
 The output shown below from a Python script demonstrates the top-level
 structure of a JSON document that describes a Constellation graph:
 
-                [ { u'attribute_mod_count': 65,
-                    u'global_mod_count': 591,
-                    u'schema': u'au.gov.asd.tac.constellation.schema.InteractiveSchemaFactory',
-                    u'structure_mod_count': 65,
-                    u'version': 1},
-                  { u'graph': [{ u'attrs': [...]}, { u'data': [...]}]},
-                  { u'vertex': [{ u'attrs': [...]}, { u'data': [...]}]},
-                  { u'transaction': [{ u'attrs': [...]}, { u'data': [...]}]},
-                  { u'meta': [{ u'attrs': [...]}, { u'data': [...]}]}]
+                [ { "attribute_mod_count": 65,
+                    "global_mod_count": 591,
+                    "schema": "au.gov.asd.tac.constellation.schema.InteractiveSchemaFactory",
+                    "structure_mod_count": 65,
+                    "version": 1},
+                  { "graph": [{ "attrs": [...]}, { "data": [...]}]},
+                  { "vertex": [{ "attrs": [...]}, { "data": [...]}]},
+                  { "transaction": [{ "attrs": [...]}, { "data": [...]}]},
+                  { "meta": [{ "attrs": [...]}, { "data": [...]}]}]
             
 
 Furthermore, Constellation encodes the JSON document in "pretty-printed"
@@ -158,8 +158,8 @@ this round-tripping would work for other string formats such as CSV):
 -   *datetime* - A datetime. The representation is ISO 8601 format with
     'T' replaced by ' ': "YYYY-MMM-DD hh:mm:ss". Datetime values are
     always UTC, but are displayed to the user in a timezone defined by
-    the value of a graph attribute called "time_zone" of type
-    "time_zone" which defaults to "UTC".
+    the value of a graph attribute called "time\_zone" of type
+    "time\_zone" which defaults to "UTC".
 -   *float* - A floating point number. This is represented internally as
     a Java IEEE-754 32-bit float.
 -   *icon* - The name of an icon. Note that icon names need not be fully
@@ -298,18 +298,18 @@ A part of an example "transaction" section is shown below.
             
 
 Two transaction attributes are defined in the "attrs" section: "color"
-(type color), and "line_style" (type line_style).  
+(type color), and "line\_style" (type line\_style).  
 NOTE: "color" has no defined 'default' value, so transactions without an
 explicitly defined color will be null. Two transactions are defined in
 the 'data' section with specific values assigned to their attributes.
 
 The transactions define values for three special attributes:
 
--   *vx_src\_* - The source vertex of the transaction. This must be one
-    of the vx_id\_ integer values defined in the vertex section.
--   *vx_dst\_* - The destination vertex of the transaction. This must be
-    one of the vx_id\_ integer values defined in the vertex section.
--   *tx_dir\_* - A boolean indicating whether the transaction is
+-   *vx\_src\_* - The source vertex of the transaction. This must be one
+    of the vx\_id\_ integer values defined in the vertex section.
+-   *vx\_dst\_* - The destination vertex of the transaction. This must be
+    one of the vx\_id\_ integer values defined in the vertex section.
+-   *tx\_dir\_* - A boolean indicating whether the transaction is
     directed or undirected. If true, the transaction is directed.
 
 ## "meta" Section
