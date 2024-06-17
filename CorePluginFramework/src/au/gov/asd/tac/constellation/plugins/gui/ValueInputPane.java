@@ -21,7 +21,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.RecentValuesChangeEvent;
 import au.gov.asd.tac.constellation.plugins.parameters.RecentValuesListener;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
-import au.gov.asd.tac.constellation.utilities.text.SpellCheckingTextArea;
+import au.gov.asd.tac.constellation.spellcheck.SpellCheckingTextArea;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
