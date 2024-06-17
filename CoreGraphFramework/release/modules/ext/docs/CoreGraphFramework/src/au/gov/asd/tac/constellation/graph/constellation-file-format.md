@@ -326,17 +326,17 @@ Although the "meta" section has the same "attrs"+"data" format as the
 other sections, the attributes are defined by modules, rather than being
 built-in types. For instance, the module that defines what filters and 
 configurations to display in the Conversation View saves its state in the 
-attribute "conversation_view_state" of type "conversation_view_state". 
+attribute "conversation\_view\_state" of type "conversation\_view\_state". 
 When the document is opened, the Constellation graph opener will find a 
-"conversation_view_state" attribute and advertise it to the current 
-modules. The module responsible for conversation_view_state (Core 
+"conversation\_view\_state" attribute and advertise it to the current 
+modules. The module responsible for conversation\_view\_state (Core 
 Conversation View in this case) will recognise the attribute, claim it, 
 and read its state.
 
 The data section array contains a single object, with each key having a
 name corresponding to an attribute name. For instance, the module
 responsible for Conversation View state will have a 
-"conversation_view_state" key in which its state is saved.
+"conversation\_view\_state" key in which its state is saved.
 
 Generally, the format of the data used by individual modules is
 documented by the modules, rather than Constellation itself. Some
