@@ -1,10 +1,9 @@
 # Select Transactions
 
-## Select all transactions on the graph
+This feature will select all the transactions on the graph. 
 
-This feature will select all the transactions on the graph. The selection is 
-additive, meaning any previously selected objects on the graph will remain 
-selected.
+The selection is additive, meaning any previously selected 
+objects on the graph will remain selected.
 
 <br />
 
