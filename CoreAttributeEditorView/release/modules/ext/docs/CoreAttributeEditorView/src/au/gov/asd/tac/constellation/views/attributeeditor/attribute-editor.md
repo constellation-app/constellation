@@ -52,7 +52,8 @@ Attribute Editor:
     a Constellation schema. They have a blue background by default.
 -   *Hidden Attributes* - These are attributes which have been hidden.
     You can hide an attribute by right-clicking on it and selecting
-    "Hide Attribute". They have a grey background by default.
+    "Hide Attribute". They have a grey background by default. These can
+    be shown again by clicking the "Show Hidden" button.
 
 ## Editing An Attribute
 

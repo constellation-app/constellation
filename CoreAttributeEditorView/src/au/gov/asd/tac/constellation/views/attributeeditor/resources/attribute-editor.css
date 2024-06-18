@@ -30,3 +30,9 @@
 .hidden#custom {
     -fx-base:#4f7fba;
 }
+
+#options-menu {
+    -fx-background-color: #121212;
+    -fx-border-color: none;
+}
+
