@@ -410,7 +410,7 @@ public class ApplicationOptionsPanelControllerNGTest {
                         when(mockInstance.getCurrentFont()).thenReturn((index > 9) ? prefs.get(ApplicationPreferenceKeys.FONT_FAMILY, ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT) : "");
 
                         when(mockInstance.getFontSize()).thenReturn((index > 10) ? prefs.get(ApplicationPreferenceKeys.FONT_SIZE, ApplicationPreferenceKeys.FONT_SIZE_DEFAULT) : "");
-                        when(mockInstance.getColorModeSelection()).thenReturn((index > 12) ? prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT) : "");
+                        when(mockInstance.getColorModeSelection()).thenReturn((index > 11) ? prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT) : "");
                     })) {
 
                 ApplicationOptionsPanelController instance = new ApplicationOptionsPanelController();
@@ -433,7 +433,7 @@ public class ApplicationOptionsPanelControllerNGTest {
                 verify(constructed.get(0), times((index > 7) ? 1 : 0)).isDownloadPythonClientSelected();
                 verify(constructed.get(0), times((index > 8) ? 1 : 0)).getCurrentFont();
                 verify(constructed.get(0), times((index > 9) ? 1 : 0)).getFontSize();
-                verify(constructed.get(0), times((index > 11) ? 1 : 0)).getColorModeSelection();
+                verify(constructed.get(0), times((index > 10) ? 1 : 0)).getColorModeSelection();
             }
         }
     }
