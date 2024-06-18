@@ -26,12 +26,14 @@ differences in a new graph. An output window will also displayed with
 descriptions of the differences. Possible detected differences are
 additions, deletions, and attribute value changes.
 
+<br />
 <div style="text-align: center">
 
 <img src="../ext/docs/CoreVisualGraph/src/au/gov/asd/tac/constellation/graph/visual/resources/CompareGraph.png" alt="Compare Graph
 Dialog" />
 
 </div>
+<br />
 
 In the new graph, each node and transaction will be colored according
 to the change detected. An attribute will also be added called Compare
