@@ -388,11 +388,11 @@ public class ApplicationOptionsPanelControllerNGTest {
 
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
 
-        for (int i = 0; i < 14; i++) {
+        for (int i = 0; i < 13; i++) {
             // To use value of i in lambda, it needs to be final
             final int index = i;
             // Expected result should be true for all but the final iteration
-            boolean expResult = (i != 13);
+            boolean expResult = (i != 12);
 
             try (MockedConstruction<ApplicationOptionsPanel> mock = mockConstruction(ApplicationOptionsPanel.class,
                     (mockInstance, context) -> {
