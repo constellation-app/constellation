@@ -24,6 +24,7 @@ import org.testng.annotations.Test;
 
 /**
  * Tests for {@link FileNameCleaner}
+ * 
  * @author capricornunicorn123
  */
 public class FileNameCleanerNGTest {
@@ -61,8 +62,6 @@ public class FileNameCleanerNGTest {
         assertEquals("myFileName.txt",FileNameCleaner.cleanFileName("myFileName<.txt"));
         assertEquals("myFileName.txt",FileNameCleaner.cleanFileName("myFileName>.txt"));
         assertEquals("myFileName.txt",FileNameCleaner.cleanFileName("myFileName|.txt"));
-        
-        
     }
     
 }

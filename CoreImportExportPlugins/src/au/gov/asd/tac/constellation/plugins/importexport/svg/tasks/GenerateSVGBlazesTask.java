@@ -1,5 +1,5 @@
 /*
-* Copyright 2010-2023 Australian Signals Directorate
+* Copyright 2010-2024 Australian Signals Directorate
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ public class GenerateSVGBlazesTask implements SharedInteractionRunnable {
     
     public GenerateSVGBlazesTask(final GraphVisualisationReferences graph, final List<Integer> vertexIndicies, final List<SVGObject> output){
         this.graph = graph;
-        this.vertexIndicies = List.copyOf(vertexIndicies);
+        this.vertexIndicies = vertexIndicies;
         this.output = output;
         this.totalSteps = vertexIndicies.size();
     }

@@ -103,8 +103,8 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         exportCores.setName("Export Processors");
         exportCores.setDescription("""
                                    How much processing power do you want to dedicate to this export?
-                                   Low Value = Slow Export, Maintained Application Responsiveness.
-                                   high Value = Fast Export, Reduced Application Responsiveness."""
+                                   Low Value = Slow Export, Maintained Application Responsiveness
+                                   High Value = Fast Export, Reduced Application Responsiveness"""
         );
         IntegerParameterType.setMinimum(exportCores, 1);
         IntegerParameterType.setMaximum(exportCores, Runtime.getRuntime().availableProcessors());
@@ -115,7 +115,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         imageModeParam.setDescription("""
                                       How do wou want raster images to be handled?
                                       Embedded = Single File, Large Size
-                                      Linked = File & folder of Image Assets, Small Size"""
+                                      Linked = File & Folder of Image Assets, Small Size"""
         );
         SingleChoiceParameterType.setOptions(imageModeParam, Stream.of(ExportMode.values()).map(ExportMode::toString).toList());
         SingleChoiceParameterType.setChoice(imageModeParam, ExportMode.LINKED.toString());
@@ -233,7 +233,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
                     .withSelectedElementsOnly(selectedElements)
                     .withDrawFlags(new DrawFlags(showNodes, showConnections, showNodeLabels, showConnectionLabels, showBlazes))
                     .fromPerspective(AxisConstants.getReference(exportPerspective))
-                    .atDirectory(assetDirectory)
+                    .withAssetDirectory(assetDirectory)
                     .withCores(cores)
                     .build();
             

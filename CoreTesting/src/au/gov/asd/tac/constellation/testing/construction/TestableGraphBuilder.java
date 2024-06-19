@@ -44,22 +44,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This plugin has been designed to create a simple graph network with known elements and attributes for testing purposes.
+ * This class has been designed to create a simple graph with known elements and attributes for testing purposes.
  * 
- * The following properties will be able to be observed from theGraph
- * There will be 17 Nodes.
- * 1 node at the origin.
- * 8 nodes at all possible combinations of -3 and +3 in the XY and Z direction.
- * 8 nodes at all possible combinations of -5 in the X y Z direction.
- * All nodes except the origin will be pinned
- * Even nodes will be good, off nodes will be bad
+ * It is currently quite basic but has potential to enhance tests that require Graph objects.
+ * Both for functional testing and procedural testing. 
  * 
- * Shell 1 triangle back
- * shell 2 round circle
- * shell 3 edge square
+ * The idea is that build methods can be called on this graph to build a {@link Graph} object that has known values. 
  * 
- * All nodes that are evenly divisible by 5 will have transactions to the center node.
- * All nodes evenly divisible by 4 will have looped connections
+ * A relevant test can then run using this Graph object and the output of the test can be verified against static methods 
+ * in this class that return expected values without actually referencing the Graph object.
+ * 
  * 
  * @author capricornunicorn123
  */

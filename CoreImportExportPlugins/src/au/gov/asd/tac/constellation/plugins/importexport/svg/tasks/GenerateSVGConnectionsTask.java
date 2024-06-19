@@ -1,5 +1,5 @@
 /*
-* Copyright 2010-2023 Australian Signals Directorate
+* Copyright 2010-2024 Australian Signals Directorate
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -29,20 +29,16 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess.ConnectionDirection;
 import java.util.List;
 import au.gov.asd.tac.constellation.plugins.MultiTaskInteraction.SharedInteractionRunnable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
  * A runnable task designed to build SVG assets representing graph nodes.
  * This task is designed to run concurrently and can represent anything from the process 
- * of building one node or the process o building all nodes on one thread.
+ * of building one connection or the process of building all connections.
  * 
  * @author capricornunicorn123
  */
 public class GenerateSVGConnectionsTask implements Runnable, SharedInteractionRunnable {
-
-    private static final Logger LOGGER = Logger.getLogger(GenerateSVGConnectionsTask.class.getName());
     
     private final GraphVisualisationReferences graph;
     private final List<Integer> connectionIndicies;
@@ -53,7 +49,7 @@ public class GenerateSVGConnectionsTask implements Runnable, SharedInteractionRu
     
     public GenerateSVGConnectionsTask(final GraphVisualisationReferences graph, final List<Integer> linkIndicies, final List<SVGObject> output){
         this.graph = graph;
-        this.connectionIndicies = List.copyOf(linkIndicies);
+        this.connectionIndicies = linkIndicies;
         this.output = output;
         this.totalSteps = linkIndicies.size();
     }
@@ -62,9 +58,7 @@ public class GenerateSVGConnectionsTask implements Runnable, SharedInteractionRu
     public void run() {
         try {
             graph.initialise();
-            LOGGER.log(Level.SEVERE, "im in connection run");
             connectionIndicies.forEach(linkIndex -> {
-                LOGGER.log(Level.SEVERE, "im in a link");
                 // Create a SVGObject to represent the current link
                 final SVGObject svgLink = SVGTemplateConstants.LINK.getSVGObject();
                 svgLink.setID(String.format("link-%s", linkIndex));
@@ -221,10 +215,6 @@ public class GenerateSVGConnectionsTask implements Runnable, SharedInteractionRu
                                 //Do Nothing
                             }
                         }
-                        //Bidirectional connections are Links with two link arrow heads
-                        // Unidirectional connectsions are Transactions, Edges and links with one transaction arrow head
-                        //Unidirectional connectsions are Transactions, Edges and links with one transaction arrow head
-                        // Undirected connections are Transactions, Edges and Links with no arrow heads.
 
                         buildLinearArrowShaft(svgArrowShaft, highArrowShaftPosition, lowArrowShaftPosition, vertexTagentDirection);
 
@@ -318,7 +308,7 @@ public class GenerateSVGConnectionsTask implements Runnable, SharedInteractionRu
     }
 
     /**
-     * Manipulates an arrow head container to adjust it's position and rotation.
+     * Manipulates an arrow head to adjust it's orientation.
      * @param svgArrowHead
      * @param arrowPointPosition
      * @param arrowBasePosition 
@@ -339,12 +329,11 @@ public class GenerateSVGConnectionsTask implements Runnable, SharedInteractionRu
     }
 
     /**
-     * Manipulates an arrow shaft container to adjust it's position.
+     * Manipulates an arrow shaft to adjust it's orientation.
      * @param svgArrowShaft
      * @param sourcePosition
      * @param destinationPosition 
-     * @param sourceIndex
-     * @param destinationIndex 
+     * @param perpendicularDirection
      */
     private void buildLinearArrowShaft(final SVGObject svgArrowShaft, final Vector3f sourcePosition, final Vector3f destinationPosition, final Vector3f perpendicularDirection) {
 

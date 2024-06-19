@@ -56,7 +56,7 @@ public class ConstellationGlobalThreadPool {
      */
     public ScheduledExecutorService getScheduledExecutorService() {
         if (scheduledExecutorService == null) {
-            scheduledExecutorService = Executors.newScheduledThreadPool(5);
+            scheduledExecutorService = Executors.newScheduledThreadPool(5, new ConstellationThreadFactory("Global Scheduled Thread Pool"));
         }
 
         return scheduledExecutorService;
@@ -69,16 +69,16 @@ public class ConstellationGlobalThreadPool {
      */
     public ExecutorService getFixedThreadPool() {
         if (fixedThreadPool == null) {
-            fixedThreadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+            fixedThreadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), new ConstellationThreadFactory("Global Fixed Thread Pool"));
         }
         
         return fixedThreadPool;
     }
     
     /**
-     * Instantiates exactly 1 FixedThreadPool containing all available threads.
+     * Instantiates exactly a FixedThreadPool containing all available threads.
      * This fixed thread pool will not be referenced by this utility class.
-     * It is the responsibility fo the calling class to monitor and shutdown this ExecutrService as needed
+     * It is the responsibility fo the calling class to monitor and shutdown this ExecutrService as needed.
      *
      * @param poolName
      * @param requestedProcessors
@@ -99,7 +99,7 @@ public class ConstellationGlobalThreadPool {
      */
     public ExecutorService getCachedThreadPool() {
         if (cachedThreadPool == null) {
-            cachedThreadPool = Executors.newCachedThreadPool();
+            cachedThreadPool = Executors.newCachedThreadPool(new ConstellationThreadFactory("Global Cached Thread Pool"));
         }
 
         return cachedThreadPool;

@@ -58,17 +58,16 @@ import java.util.concurrent.ExecutorService;
 /**
  * Builder that generates the the output SVG file.
  * The builder abstracts the responsibility of building an SVG from the {@link ExportToSVGPlugin}.
- * Currently the builder requires a graph to be specified using .withGraph()
- * and for the build to be initialized using .build()
+ * Currently the builder requires a ReadableGraph, a title and a PluginInterraction.
  * <pre>
- * Example Usage: {@code new SVGGraph.SVGGraphBuilder().withAccess(graph).build();}
+ * Example Usage: {@code new SVGGraphBuilder().withTitle("myTitle").withReadableGraph(graph).withInteraction(interaction).build();}
  * </pre>
  * 
  * @author capricornunicorn123
  */
 public class SVGGraphBuilder {
     
-    private static final String BUILDING_REPORT_MESSAGE= "Building Graph";
+    private final String buildingReportMessage= "Building Graph";
     
     // Variables specified when the Builder class is instantiated
     private final Matrix44f modelViewProjectionMatrix = new Matrix44f();
@@ -91,7 +90,7 @@ public class SVGGraphBuilder {
     private Frustum viewFrustum;
     private int[] viewPort;    
     private ExecutorService threadPool;
-    private File directory;
+    private File assetDirectoty;
      
     /**
     * Builder that generates the the output SVG file.
@@ -103,12 +102,27 @@ public class SVGGraphBuilder {
         access = new GraphVisualAccess(currentGraph);
    }
 
-    public SVGGraphBuilder atDirectory(final File directory){
-        this.directory = directory;
+    /**
+     * Specifies the directory for SVG assets to be exported to. 
+     * If a directory is provided, the directory must be in the same folder as the main SVG file.
+     * Passing a directory of null will cause the plugin to embed SVG assets into the main svg file.
+     * 
+     * @param directory
+     * @return 
+     */
+    public SVGGraphBuilder withAssetDirectory(final File directory){
+        assetDirectoty = directory;
         return this;
     }
     
-    
+    /**
+     * Specifies the number of cores that this plugin should utilize to complete its execution.
+     * Due to the processor intensive workload running this plugin, a unique ExecutorService is 
+     * requested to facilitate multi-threading in this export.
+     * 
+     * @param cores
+     * @return 
+     */
     public SVGGraphBuilder withCores(final int cores) {
         threadPool = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool("SVG Export", cores);
         return this;
@@ -120,17 +134,17 @@ public class SVGGraphBuilder {
      * @return SVGGraphBuilder
      */
     public SVGGraphBuilder withReadableGraph(final GraphReadMethods graph) {
-        this.readableGraph = graph;
+        readableGraph = graph;
         return this;
     }
 
     /**
      * Specifies the {@link PluginInteraction} instance to use for updating on plugin progress.
-     * @param interaction 
+     * @param interactionReference 
      * @return SVGGraphBuilder
      */
-    public SVGGraphBuilder withInteraction(final PluginInteraction interaction) {
-        this.interaction = interaction;
+    public SVGGraphBuilder withInteraction(final PluginInteraction interactionReference) {
+        this.interaction = interactionReference;
         return this;
     }
 
@@ -140,7 +154,7 @@ public class SVGGraphBuilder {
      * @return SVGGraphBuilder
      */
     public SVGGraphBuilder withTitle(final String title) {
-        this.graphTitle = title;
+        graphTitle = title;
         return this;
     }
 
@@ -150,36 +164,37 @@ public class SVGGraphBuilder {
      * @return SVGGraphBuilder
      */
     public SVGGraphBuilder withBackground(final ConstellationColor color) {
-        this.backgroundColor = color;
+        backgroundColor = color;
         return this;
     }
 
     /**
      * Specifies if only selected Nodes and related connections are to be included in the export.
-     * @param selectedElementsOnly
+     * @param selectedElementsOnlyFlag
      * @return 
      */
-    public SVGGraphBuilder withSelectedElementsOnly(final boolean selectedElementsOnly) {
-        this.selectedElementsOnly = selectedElementsOnly;
+    public SVGGraphBuilder withSelectedElementsOnly(final boolean selectedElementsOnlyFlag) {
+        selectedElementsOnly = selectedElementsOnlyFlag;
         return this;
     }
 
     /**
      * Specifies which visual elements should be included in the export.
-     * @param drawFlags
+     * @param drawFlagsReference
      * @return 
      */
-    public SVGGraphBuilder withDrawFlags(final DrawFlags drawFlags){
-        this.drawFlags = drawFlags;
+    public SVGGraphBuilder withDrawFlags(final DrawFlags drawFlagsReference){
+        drawFlags = drawFlagsReference;
         return this;
     }
     /**
-     * Specifies the Perspective to set 
-     * @param exportPerspective
+     * Specifies the Perspective to export this graph from.
+     * Setting the value as null will export the graph from the current perspective.
+     * @param exportPerspectiveReference
      * @return 
      */
-    public SVGGraphBuilder fromPerspective(final AxisConstants exportPerspective) {
-        this.exportPerspective = exportPerspective;
+    public SVGGraphBuilder fromPerspective(final AxisConstants exportPerspectiveReference) {
+        exportPerspective = exportPerspectiveReference;
         return this;
     }
 
@@ -189,20 +204,22 @@ public class SVGGraphBuilder {
      */
     public SVGData build() throws InterruptedException, IllegalArgumentException{
  
+        // The layout template is the base for an exported SVG Graph and contains the required styling and child elements for the export
         final SVGObject svgGraph = SVGTemplateConstants.LAYOUT.getSVGObject();
         try {
             preBuild();
-            // Build the SVG image
+            // The content section of the layout is where the graphical visual elements sit.
             final SVGObject svgContent = SVGObjectConstants.CONTENT.findIn(svgGraph);
             buildNodes(svgContent, SVGObjectConstants.DEFINITIONS.findIn(svgGraph));
             svgContent.setChildren(buildConnections());
             svgContent.setChildren(buildBlazes());
 
             buildLayout(svgGraph);
+        
+        // This plugin may be interrupted by users. ensure the localy managed threads are closed off correctly.
         } catch (final InterruptedException ex){
             threadPool.shutdown();
-            throw ex;
-            
+            throw ex;    
         } finally {
             // Clean up the builder
             postBuild();     
@@ -225,14 +242,16 @@ public class SVGGraphBuilder {
         } else if (interaction == null) {
             throw new IllegalArgumentException("SVGGraphBuilder requires a PluginInteraction to build");
         } else if (graphTitle == null) {
-            throw new IllegalArgumentException("SVGGraphBuilder requires a Graph Title to build");
+            throw new IllegalArgumentException("SVGGraphBuilder requires a graph title to build");
         }
         
-        // Set the camera position and add repositioning animation 
+        // Set the camera position
         this.camera = access.getCamera();
-        final Camera oldCamera = new Camera(this.camera);
-        final BoundingBox box = new BoundingBox();
-        if (exportPerspective != null) {
+
+        // Add repositioning animation if the export perspective is from a particular axis.
+        if (exportPerspective != null) {        
+            final Camera oldCamera = new Camera(this.camera);
+            final BoundingBox box = new BoundingBox();
             BoundingBoxUtilities.recalculateFromGraph(box, readableGraph, selectedElementsOnly);
             CameraUtilities.refocus(camera, exportPerspective, box);
             Animation.startAnimation(new PanAnimation(String.format("Reset to %s View", exportPerspective), oldCamera, camera, true));
@@ -247,7 +266,7 @@ public class SVGGraphBuilder {
         final int paneWidth = visualManager.getVisualComponent().getWidth();
 
         // Define the view frustum in local units
-        final float fieldOfView = Camera.FIELD_OF_VIEW; //Increase the field of view to ensure that objects near the end are rendered corretly.
+        final float fieldOfView = Camera.FIELD_OF_VIEW; //Increase the field of view to ensure that objects near the edges are rendered corretly.
         final float aspect = paneWidth / (float) paneHeight;
         final float ymax = Camera.PERSPECTIVE_NEAR * (float) Math.tan(fieldOfView * Math.PI / 360.0);
         final float xmax = ymax * aspect;
@@ -284,34 +303,33 @@ public class SVGGraphBuilder {
     }
     
     /**
-     * Generates SVG Nodes from the graph and assigns them as children to the Content element.
-     * 
-     * This method creates runnable tasks equal to the number of processors available -1. 
-     * This method will complete when all nodes have been created and added to the content element. 
+     * Generates SVG representations of Nodes from the graph and assigns them to the provided container.
+     * This method creates runnable tasks equal to 4 times the number of processors available. 
+     * This method will complete when all tasks have completed, appropriate nodes have been created and added to the correct container. 
      * The template file Node.svg is used to build the node.
-     * @param svgGraph The SVGObject holding all generated SVG data 
+     * @param nodesContainer The SVGObject holding all generated SVG node data 
+     * @param defenitionsContainer The SVGObject holding definition references all generated SVG data 
      */
     private void buildNodes(final SVGObject nodesContainer, final SVGObject definitionsContainer) throws InterruptedException {
-        final List<SVGObject> nodes = new ArrayList<>();
-        final List<SVGObject> filters = new ArrayList<>();
+
 
         // Initate plugin report information
-        interaction.setExecutionStage(0, -1, BUILDING_REPORT_MESSAGE, "Building Nodes", true);
+        interaction.setExecutionStage(0, -1, buildingReportMessage, "Building Nodes", true);
         final MultiTaskInteraction mti = new MultiTaskInteraction(interaction);
         
         if (!drawFlags.drawNodes()) {
             interaction.setProgress(0, -1, "Created 0 nodes", true);
+            
         }  else {
-
             final int taskCount = Runtime.getRuntime().availableProcessors() * 4;
 
             // Get a unique sub list of vertex indicies for each available thread 
             final List<List<Integer>> threadInputLists = createSubListsOfRange(0, access.getVertexCount(), taskCount);
             final List<List<SVGObject>> threadOuputLists = new ArrayList<>();
 
-            // Create a task for each set of inputLists with an array list for their generated output
+            // Create a task for each set of inputLists with an unique list for their generated output
             for (int threadInput = 0; threadInput < threadInputLists.size(); threadInput++){
-                final GraphVisualisationReferences graph = new GraphVisualisationReferences(viewFrustum, modelViewProjectionMatrix, viewPort, camera, drawFlags, selectedElementsOnly, directory);
+                final GraphVisualisationReferences graph = new GraphVisualisationReferences(viewFrustum, modelViewProjectionMatrix, viewPort, camera, drawFlags, selectedElementsOnly, assetDirectoty);
                 final ArrayList<SVGObject> output = new ArrayList<>();
                 final GenerateSVGNodesTask task = new GenerateSVGNodesTask(graph, threadInputLists.get(threadInput), output);
                 mti.addTask(task);
@@ -322,7 +340,10 @@ public class SVGGraphBuilder {
             // Wait until all tasks are complete
             mti.waitForTasksToComplete();
 
-            // Combine the generated nodes into a single list.
+            // Combine and sort the generated elemtns into a two list.        
+            final List<SVGObject> nodes = new ArrayList<>();
+            final List<SVGObject> filters = new ArrayList<>();
+            
             threadOuputLists.forEach(outputList -> outputList.forEach(svgObject -> {
                     if (SVGTypeConstants.FILTER.getTypeString().equals(svgObject.toSVGData().getType())){
                         filters.add(svgObject);
@@ -345,12 +366,12 @@ public class SVGGraphBuilder {
      * Generates representations of transactions, links and edges depending on connectionMode.
      * Labels are supported for all connection types excluding looped connections.
      * Other graph attributes including maxTransactions are considered.
-     * @param svgGraph The SVGObject holding all generated SVG data 
+     * This method creates runnable tasks equal to 4 times the number of processors available. 
      */
     private List<SVGObject> buildConnections() throws InterruptedException {
 
         // Initate plugin report information
-        interaction.setExecutionStage(0, -1 , BUILDING_REPORT_MESSAGE, "Building Connections", false);
+        interaction.setExecutionStage(0, -1 , buildingReportMessage, "Building Connections", false);
         final MultiTaskInteraction mti = new MultiTaskInteraction(interaction);
         
         // Do not export any connections if the show connections parameter is disabled
@@ -360,9 +381,10 @@ public class SVGGraphBuilder {
         }      
                 
         // Get a unique sub list of vertex indicies for each available thread 
-        final List<List<Integer>> threadInputLists = createSubListsOfRange(0, access.getLinkCount(), Runtime.getRuntime().availableProcessors());
+        final List<List<Integer>> threadInputLists = createSubListsOfRange(0, access.getLinkCount(), Runtime.getRuntime().availableProcessors() * 4);
         final List<List<SVGObject>> threadOuputLists = new ArrayList<>(); 
         
+        // Create a task for each set of inputLists with an unique list for their generated output
         for (int linkIndex = 0; linkIndex < threadInputLists.size(); linkIndex++){
             final GraphVisualisationReferences giu = new GraphVisualisationReferences(viewFrustum, modelViewProjectionMatrix, viewPort, camera, drawFlags, selectedElementsOnly);
             final ArrayList<SVGObject> output = new ArrayList<>();
@@ -384,17 +406,15 @@ public class SVGGraphBuilder {
     }    
     
     /**
-     * Generates SVG Nodes from the graph and assigns them as children to the Content element.
+     * Generates SVG representations of blazes.
      * 
-     * This method creates runnable tasks equal to the number of processors available -1. 
-     * This method will complete when all nodes have been created and added to the content element. 
-     * The template file Node.svg is used to build the node.
-     * @param svgGraph The SVGObject holding all generated SVG data 
+     * This method creates runnable tasks equal to the number of processors available. 
+     * This method will complete when all tasks have been run and relevant blazes have been created. 
      */
     private List<SVGObject> buildBlazes() throws InterruptedException {
         
         // Initate plugin report information
-        interaction.setExecutionStage(0, -1, BUILDING_REPORT_MESSAGE, "Building Blazes", true);
+        interaction.setExecutionStage(0, -1, buildingReportMessage, "Building Blazes", true);
         final MultiTaskInteraction mti = new MultiTaskInteraction(interaction);
         
         if (!drawFlags.drawBlazes()) {
@@ -432,6 +452,7 @@ public class SVGGraphBuilder {
 
     /**
      * Builds the header area of the output SVG.
+     * This method will add a title and a date stamp of the export.
      * @param svgGraph The SVGObject holding all generated SVG data 
      */
     private void buildHeader(final SVGObject svgGraph) {
@@ -449,6 +470,7 @@ public class SVGGraphBuilder {
 
     /**
      * Sets the layout of the exported SVG file.
+     * Specifically setts the background color and ensures that the graph is scaled within the output svg width and height.
      * @param svgGraph The SVGObject holding all generated SVG data 
      */
     private void buildLayout(final SVGObject svgGraph) {
@@ -475,19 +497,29 @@ public class SVGGraphBuilder {
         
     }
     
-    private List<List<Integer>> createSubListsOfRange(final int lowIndexIncludive, final int highIndexExclusive, final int subListQuantity) {
+    /**
+     * Creates a 2d array from List objects based on the provided parameters so that each list is approximately equal in size and no element is duplicated across any list. 
+     * Used to separate element indexes into multiple lists.
+     * 
+     * @param lowIndexInclusive 
+     * @param highIndexExclusive
+     * @param subListQuantity
+     * @return 
+     */
+    private List<List<Integer>> createSubListsOfRange(final int lowIndexInclusive, final int highIndexExclusive, final int subListQuantity) {
         
-        final List<List<Integer>> parts = new ArrayList<>();
-        
+        //Create the sublists
+        final List<List<Integer>> returnValue = new ArrayList<>();
         for (int i = 0; i < subListQuantity; i++){
-            parts.add(new ArrayList<>());
+            returnValue.add(new ArrayList<>());
+        }
+        
+        //Add the content
+        for (int i = lowIndexInclusive; i < highIndexExclusive; i++) {
+            returnValue.get(i%subListQuantity).add(i);
         }
 
-        for (int i = lowIndexIncludive; i < highIndexExclusive; i++) {
-            parts.get(i%subListQuantity).add(i);
-        }
-
-        return parts;
+        return returnValue;
     }
 }
 

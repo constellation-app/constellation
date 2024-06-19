@@ -1,5 +1,5 @@
 /*
-* Copyright 2010-2023 Australian Signals Directorate
+* Copyright 2010-2024 Australian Signals Directorate
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ import java.util.Map;
 /**
  * A runnable task designed to build SVG assets representing graph nodes.
  * This task is designed to run concurrently and can represent anything from the process 
- * of building one node or the process o building all nodes on one thread.
+ * of building one node to the process o building all nodes.
  * 
  * @author capricornunicorn123
  */
@@ -240,12 +240,13 @@ public class GenerateSVGNodesTask implements Runnable, SharedInteractionRunnable
         if (!DefaultIconProvider.isVisable(icon)){
             return null; 
 
-        // If there is not a external asset direcotory ConstellationIcon should be used to build an imbeded SVG assets with imbeded image data
-        } else if (!graph.directory.exists()){
-            return icon.buildSVG(color);
-        //    
-        } else {
+        // Raster image reference should be used with linked image data
+        } else if (graph.directory.exists()){
             return this.generateRasterImageRefrerence(icon, color);
+            
+        // ConstellationIcon should be used to build an imbeded SVG assets with imbeded image data
+        } else {
+            return icon.buildSVG(color);
         }
     }
 
@@ -255,8 +256,8 @@ public class GenerateSVGNodesTask implements Runnable, SharedInteractionRunnable
      * @return 
      */
     private String generateSVGColorFilterReference(final Color color) {
-        final ConstellationColor ccolor = ConstellationColor.fromJavaColor(color);
-        final String htmlColor = ccolor.getHtmlColor();
+
+        final String htmlColor = ConstellationColor.fromJavaColor(color).getHtmlColor();
         if (!colorFilters.containsKey(htmlColor)){
             final SVGObject filter = SVGObject.loadFromTemplate(SVGTemplateConstants.FILTER);
             filter.setID(htmlColor);
@@ -267,6 +268,14 @@ public class GenerateSVGNodesTask implements Runnable, SharedInteractionRunnable
         return String.format("url(#%s)", htmlColor);
     }
     
+    /**
+     * This is a funky little method that will do a few things to result in a.
+     * It saves the PNG image to the asset file. it makes a reference to that image file from an SVG element. 
+     * It applies a color filter to the image.
+     * @param icon
+     * @param color
+     * @return 
+     */
     private SVGData generateRasterImageRefrerence(final ConstellationIcon icon, final Color color){
         
         // Build the name of the referenced Raster Image
