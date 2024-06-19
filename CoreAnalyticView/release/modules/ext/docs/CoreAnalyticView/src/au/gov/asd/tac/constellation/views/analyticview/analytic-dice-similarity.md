@@ -7,7 +7,7 @@ The Dice Similarity is the ratio of common neighbours between two nodes
 compared to the median number of neighbours of both nodes. The more
 neighbours two nodes have in common, the more similar they are. The
 features used to determine similarity with the Dice Similarity are a
-node’s neighbours.
+node's neighbours.
 
 ## Parameters
 
