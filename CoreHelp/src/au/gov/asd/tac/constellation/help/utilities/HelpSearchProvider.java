@@ -65,7 +65,7 @@ public class HelpSearchProvider implements SearchProvider {
         }
 
         // Get the names of all of the help files
-        List<String> distinctValues = new ArrayList<String>(new HashSet<>(HelpMapper.getMappings().values()));
+        List<String> distinctValues = new ArrayList<>(new HashSet<>(HelpMapper.getMappings().values()));
 
         // Match the search to values in the map
         for (final String value : distinctValues) {
