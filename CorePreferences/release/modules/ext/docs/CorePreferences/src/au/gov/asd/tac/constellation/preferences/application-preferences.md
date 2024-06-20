@@ -68,6 +68,13 @@ directory.
 This is where the user is able to set their preferred default font and
 default font size for the Constellation application.
 
+## Colorblind Mode
+
+The user is able to set a colorblind mode for constellation. When a 
+colorblind mode is set, nodes drawn are automatically generated with
+colorblind-friendly colors, and existing graphs can be adjusted to 
+the new color scheme using Tools -> Complete with Schema.
+
 ## Spell checking in Constellation
 
 Spell checking is available in specified text areas of Constellation. 
@@ -83,10 +90,3 @@ current text area.
 When this option is set, the right click context menu option "Turn On Spell
 Checking" will be available on fields where it has been enabled, and it 
 can be used to toggle on/off spell checking dynamically.
-
-## Colorblind Mode
-
-The user is able to set a colorblind mode for constellation. When a 
-colorblind mode is set, nodes drawn are automatically generated with
-colorblind-friendly colors, and existing graphs can be adjusted to 
-the new color scheme using Tools -> Complete with Schema.

@@ -830,7 +830,7 @@ public class PluginParameter<V extends ParameterValue> {
         this.required = required;
     }
     
-      /**
+    /**
      * Does the parameter require spell checking?
      *
      * @return True if the parameter requires spell checking, false otherwise.
