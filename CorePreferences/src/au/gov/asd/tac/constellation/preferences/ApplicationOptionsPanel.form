@@ -636,6 +636,9 @@
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
               <ResourceString bundle="au/gov/asd/tac/constellation/preferences/Bundle.properties" key="ApplicationOptionsPanel.enableSpellCheckingCheckBox.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
+            <Property name="actionCommand" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="au/gov/asd/tac/constellation/preferences/Bundle.properties" key="ApplicationOptionsPanel.enableSpellCheckingCheckBox.actionCommand" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+            </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="leftClickReminderLabel">

@@ -461,6 +461,7 @@ final class ApplicationOptionsPanel extends JPanel {
 
         enableSpellCheckingCheckBox.setSelected(true);
         Mnemonics.setLocalizedText(enableSpellCheckingCheckBox, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.enableSpellCheckingCheckBox.text")); // NOI18N
+        enableSpellCheckingCheckBox.setActionCommand(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.enableSpellCheckingCheckBox.actionCommand")); // NOI18N
 
         leftClickReminderLabel.setIcon(new ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/preferences/resources/warning.png"))); // NOI18N
         Mnemonics.setLocalizedText(leftClickReminderLabel, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.leftClickReminderLabel.text")); // NOI18N
