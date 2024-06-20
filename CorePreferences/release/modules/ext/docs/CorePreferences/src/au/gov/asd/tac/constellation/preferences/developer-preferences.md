@@ -48,3 +48,8 @@ NOTE: This option does not work for the standalone version of
 Constellation and it rather applicable to the version of Constellation
 that is continuously updating via the update site mechanism. This
 version is called the "Constellation Shell".
+
+
+<div style="text-align: center">
+<img src="../ext/docs/CorePreferences/src/au/gov/asd/tac/constellation/preferences/resources/developerPanel.png" alt="Developer Options Panel" />
+</div>

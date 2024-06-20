@@ -75,3 +75,8 @@ specific list are both empty, and the default proxy is "myproxy:8080",
 then all hosts will be accessed via the proxy "myproxy" using port 8080.
 
 If a default proxy is not specified, then no proxy will be used.
+
+
+<div style="text-align: center">
+<img src="../ext/docs/CoreSecurity/src/au/gov/asd/tac/constellation/security/resources/proxyPanel.png" alt="Proxy Options Panel" />
+</div>

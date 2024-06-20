@@ -127,3 +127,8 @@ not guarantee that all codepoints can be displayed.
 To ensure that your font configuration is correct, use the Validate
 button. A message will describe the problem if the configuration is
 incorrect.
+
+
+<div style="text-align: center">
+<img src="../ext/docs/CoreOpenGLDisplay/src/au/gov/asd/tac/constellation/visual/opengl/resources/labelFontsPanel.png" alt="Label Font Options Panel" />
+</div>

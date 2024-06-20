@@ -27,6 +27,8 @@ By default, Constellation displays the Welcome page when on startup. The
 Welcome page can be hidden on startup either in preferences or directly
 on the Welcome page via the "Show on Startup" tickbox option.
 
+The What's New page can also be displayed on startup if the tickbox is selected.
+
 ## Internal Webserver
 
 Constellation has a built in Restful web service allowing you to
@@ -50,8 +52,8 @@ Constellation via Tools -> Start Jupyter Notebook.
 
 Selecting to "Download Python REST client" means that when you start the
 Jupyter Notebook server, Constellation will download the
-constellation_client.py file to your .ipython folder. The
-constellation_client.py provides easy access to make Restful calls to
+constellation\_client.py file to your .ipython folder. The
+constellation\_client.py provides easy access to make Restful calls to
 Constellation.
 
 ## Open/Save Location
@@ -74,3 +76,7 @@ The user is able to set a colorblind mode for constellation. When a
 colorblind mode is set, nodes drawn are automatically generated with
 colorblind-friendly colors, and existing graphs can be adjusted to 
 the new color scheme using Tools -> Complete with Schema.
+
+<div style="text-align: center">
+<img src="../ext/docs/CorePreferences/src/au/gov/asd/tac/constellation/preferences/resources/applicationPanel.png" alt="Application Options Panel" />
+</div>
