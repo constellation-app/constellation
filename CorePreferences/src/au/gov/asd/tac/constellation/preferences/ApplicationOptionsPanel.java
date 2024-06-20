@@ -459,6 +459,7 @@ final class ApplicationOptionsPanel extends JPanel {
         spellcheckPanel.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.spellcheckPanel.border.title"))); // NOI18N
         spellcheckPanel.setName(""); // NOI18N
 
+        enableSpellCheckingCheckBox.setSelected(true);
         Mnemonics.setLocalizedText(enableSpellCheckingCheckBox, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.enableSpellCheckingCheckBox.text")); // NOI18N
 
         leftClickReminderLabel.setIcon(new ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/preferences/resources/warning.png"))); // NOI18N
