@@ -20,7 +20,7 @@
 </table>
 
 The Spectral 3D arrangement arranges all the "islands" of nodes, by 
-seperating them from one another. 
+seperating them from one another.
 
 Singleton nodes are arranged together in a grid, similarly for doublets 
 (pairs of nodes only connected to each other).
@@ -34,6 +34,6 @@ Example Spectral 3D Arrangement:
     </figure>
     <figure style = "display: inline-block">
         <img height=400 src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/spectralArrangement.png" alt="Example Spectral 3D Arrangement" />
-        <figcaption>Before Spectral Arrangement</figcaption>
+        <figcaption>After Spectral Arrangement</figcaption>
     </figure>
 </div>

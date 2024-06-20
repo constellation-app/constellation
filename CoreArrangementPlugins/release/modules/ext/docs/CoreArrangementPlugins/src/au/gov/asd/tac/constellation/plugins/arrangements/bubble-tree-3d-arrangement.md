@@ -36,7 +36,12 @@ more than one neighbour.
 Example Bubble Tree 3D Arrangement:
 
 <div style="text-align: center">
-
-<img src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/bubbleTreeArrangement.png" alt="Example Bubble Tree Arrangement" />
-
+    <figure style = "display: inline-block">
+        <img height=400 src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/beforeArrangement.png" alt="Before Arrangement" />
+        <figcaption>Before Bubble Tree Arrangement</figcaption>
+    </figure>
+    <figure style = "display: inline-block">
+        <img height=400 src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/bubbleTreeArrangement.png" alt="Example Bubble Tree Arrangement" />
+        <figcaption>After Bubble Tree Arrangement</figcaption>
+    </figure>
 </div>

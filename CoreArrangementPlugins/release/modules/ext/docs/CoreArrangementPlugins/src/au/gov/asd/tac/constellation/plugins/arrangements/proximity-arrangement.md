@@ -34,6 +34,10 @@ may vary each time the plugin is run.
 
 <div style="text-align: center">
     <figure style = "display: inline-block">
+        <img height=400 src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/beforeArrangement.png" alt="Before Arrangement" />
+        <figcaption>Before Arrangement</figcaption>
+    </figure>
+    <figure style = "display: inline-block">
         <img height=400 src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/proximityArrangement.png" alt="Example Proximity Arrangement" />
         <figcaption>Example Proximity Arrangement</figcaption>
     </figure>
