@@ -14,7 +14,7 @@
 <br />
 
 A composite node is a node that contains 2 or more nodes. 
-It can be expaned to reveal the nodes contained within.
+It can be expanded to reveal the nodes contained within.
 
 
 ## Composite Selected Nodes
