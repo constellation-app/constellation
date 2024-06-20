@@ -14,7 +14,7 @@
 <br />
 
 A composite node is a node that contains 2 or more nodes. 
-It can be expaned to reveal the ndoes contained within.
+It can be expaned to reveal the nodes contained within.
 
 
 ## Composite Selected Nodes
@@ -40,7 +40,7 @@ right-click and select "Composite Selected Nodes".
 To create a composite node by correlation, simply click Tools -&gt; Composite 
 Correlation Nodes. Two nodes are considered correlated if at least one 
 transaction connecting them is of type "Correlation". Multiple nodes chained
-by correlation are compsited together.
+by correlation are composited together.
 
 <br />
 <div style="text-align: center">
