@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.tasks;
 
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessViewPreferenceKeys;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginType;
@@ -22,21 +24,26 @@ import au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeNodeType
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeTransactionType;
 import au.gov.asd.tac.constellation.views.dataaccess.templates.DataAccessPreQueryValidation;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
+import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessUtilities;
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.prefs.Preferences;
 import javafx.util.Pair;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockingDetails;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 import org.openide.util.Lookup;
+import org.openide.util.NbPreferences;
 import static org.testng.Assert.assertEquals;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /**
@@ -50,26 +57,46 @@ public class LookupPluginsTaskNGTest {
     private static MockedStatic<Lookup> lookupMockedStatic;
     private static MockedStatic<DataAccessPluginType> dapTypeMockedStatic;
 
-    @BeforeMethod
-    public void setUpMethod() throws Exception {
-        defaultLookup = mock(Lookup.class);
-        lookupMockedStatic = Mockito.mockStatic(Lookup.class);
-        dapTypeMockedStatic = Mockito.mockStatic(DataAccessPluginType.class);
+    private static MockedStatic<NbPreferences> nbPreferencesStatic;
+    private static final Preferences preferenceMock = mock(Preferences.class, Mockito.CALLS_REAL_METHODS);
+    private static Preferences preferenceReal;
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        try {
+            nbPreferencesStatic = Mockito.mockStatic(NbPreferences.class, Mockito.CALLS_REAL_METHODS);
+            nbPreferencesStatic.when(() -> NbPreferences.forModule(DataAccessViewPreferenceKeys.class)).thenReturn(preferenceMock);
+        } catch (Exception e) {
+            System.out.println("Error creating static mock of NbPreferences");
+        }
+
+        // PREFERENCES should be a mock if done right
+        preferenceReal = LookupPluginsTask.getPreferences();
     }
 
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
-        lookupMockedStatic.close();
-        dapTypeMockedStatic.close();
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+        nbPreferencesStatic.close();
     }
 
     @Test
     public void get() {
+        System.out.println("get");
+        // Setup other static mocks
+        defaultLookup = mock(Lookup.class);
+        lookupMockedStatic = Mockito.mockStatic(Lookup.class);
+        dapTypeMockedStatic = Mockito.mockStatic(DataAccessPluginType.class);
+
         lookupMockedStatic.when(Lookup::getDefault).thenReturn(defaultLookup);
         dapTypeMockedStatic.when(DataAccessPluginType::getTypes).thenReturn(List.of(
                 DataAccessPluginCoreType.DEVELOPER,
                 DataAccessPluginCoreType.UTILITY));
 
+        if (preferenceReal != null && mockingDetails(preferenceReal).isMock()) {
+            when(preferenceReal.get(DataAccessViewPreferenceKeys.VISIBLE_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV)).thenReturn("");
+            when(preferenceReal.get(DataAccessViewPreferenceKeys.HIDDEN_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV)).thenReturn("");
+        }
+        // Plugin Mocks
         // All of the mock creations are being coupled with an interface to force the getClass() call on them to be different. Plugin 1 is disabled and so will be ignored.
         final DataAccessPlugin plugin1 = mock(DataAccessPlugin.class, withSettings().extraInterfaces(DataAccessPluginType.class));
         when(plugin1.isEnabled()).thenReturn(false);
@@ -124,6 +151,40 @@ public class LookupPluginsTaskNGTest {
                 "Utility", new Pair(Integer.MAX_VALUE, List.of(plugin4)),
                 "Favourites", new Pair(Integer.MAX_VALUE, List.of(plugin3)));
 
+        // Assert expected plugins match actual
+        assertEquals(new LookupPluginsTask().get(), expectedPlugins);
+
+        // Close static mocks
+        lookupMockedStatic.close();
+        dapTypeMockedStatic.close();
+    }
+
+    @Test
+    public void getCategoriesNotBlank() {
+        System.out.println("getCategoriesNotBlank");
+        // Mocks
+        final String visibleString = "[Import,Utility,Developer]";
+        final String hiddenString = "[Clean]";
+        if (preferenceReal != null && mockingDetails(preferenceReal).isMock()) {
+            when(preferenceReal.get(DataAccessViewPreferenceKeys.VISIBLE_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV)).thenReturn(visibleString);
+            when(preferenceReal.get(DataAccessViewPreferenceKeys.HIDDEN_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV)).thenReturn(hiddenString);
+
+            // Assert mocks work properly
+            assertEquals(preferenceReal.get(DataAccessViewPreferenceKeys.VISIBLE_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV), visibleString);
+            assertEquals(preferenceReal.get(DataAccessViewPreferenceKeys.HIDDEN_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV), hiddenString);
+        }
+
+        // Expected
+        final String[] visibleCategoriesArray = (visibleString.replace("[", "").replace("]", "")).split(SeparatorConstants.COMMA);
+
+        final Map<String, Pair<Integer, List<DataAccessPlugin>>> expectedPlugins = new LinkedHashMap<>();
+        final Map<String, List<DataAccessPlugin>> allPlugins = DataAccessUtilities.getAllPlugins();
+
+        for (int i = 0; i < visibleCategoriesArray.length; i++) {
+            expectedPlugins.put(visibleCategoriesArray[i].trim(), new Pair<>(i, allPlugins.get(visibleCategoriesArray[i].trim())));
+        }
+
+        // Assert actual is expected
         assertEquals(new LookupPluginsTask().get(), expectedPlugins);
     }
 }

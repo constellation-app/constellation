@@ -25,11 +25,34 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValu
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType;
 import au.gov.asd.tac.constellation.utilities.gui.RecentValue.RecentValueUtility;
 import au.gov.asd.tac.constellation.utilities.gui.field.TextInputField;
+import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
+import au.gov.asd.tac.constellation.plugins.parameters.RecentValuesChangeEvent;
+import au.gov.asd.tac.constellation.plugins.parameters.RecentValuesListener;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.IndexRange;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputControl;
+import javafx.scene.control.Tooltip;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
+import org.apache.commons.lang3.StringUtils;
+import org.controlsfx.control.textfield.TextFields;
 
 /**
  * A text box allowing entry of single line text, multiple line text

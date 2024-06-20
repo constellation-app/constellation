@@ -68,23 +68,6 @@ directory.
 This is where the user is able to set their preferred default font and
 default font size for the Constellation application.
 
-## Spell checking in Constellation
-
-Spell checking is available in specified text areas of Constellation. 
-E.g. Data access view (Extract Types and Extract Words Plugins). 
-It can be added in other text areas as requested.
-
-When this option is enabled, incorrect spellings and some grammar errors 
-are highlighted and underlined. Left Clicking on a highlighted word/phrase 
-will popup a suggestions list to choose from. An "Ignore All" button is 
-available for spelling errors which will ignore the same error in the 
-current text area.
-
-When this option is set, the right click context menu option "Turn On Spell
-Checking" will be available on fields where it has been enabled, and it 
-can be used to toggle on/off spell checking dynamically.
-
-
 ## Colorblind Mode
 
 The user is able to set a colorblind mode for constellation. When a 

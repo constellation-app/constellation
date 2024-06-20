@@ -2,6 +2,10 @@
 
 ## Merge nodes in your graph together
 
+<br />
+<img src="../ext/docs/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/resources/MergeNodes.png" alt="Merge Nodes" />
+<br />
+
 Merge nodes in your graph together based on the defined criteria.
 
 ## Parameters
@@ -18,9 +22,9 @@ Merge nodes in your graph together based on the defined criteria.
         the Identifier attribute. The length to compare is defined by
         the threshold
     -   Supported Type - Will merge nodes based on the type by merging
-        supported types overriding those not supported.
+        supported types overriding those not supported
 -   *Threshold* - The limit to apply to the selected rule (not
-    applicable for Supported Type rule)
+    applicable for Supported Type rule). Nodes are merged if "Merge By" rule's value is less than or equal to threshold
 -   *Merging Rule* - The rule deciding how attributes are merged
 -   *Lead Node* - The rule deciding how to choose the lead node (not
     applicable for Geospatial Distance or Supported Type rules). Options

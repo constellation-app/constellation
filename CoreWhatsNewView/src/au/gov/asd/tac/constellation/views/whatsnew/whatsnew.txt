@@ -1,12 +1,12 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
-== 2024-03-21 Spell checking in Constellation
-<p>Spell checking is available in text areas of Constellation. E.g. Data access view (Extract Types and Extract Words Plugins). It can be added in other text areas as requested.</p>
-<p>When enabled, incorrect spellings and some grammar errors are highlighted and underlined. 
-Left Clicking on a highlighted word/phrase will popup a suggestions list to choose from. An "Ignore All" button is available for spelling errors which will ignore the same error in the current text area.</p>
-<p>Constellation Option "Enable spell checking in specified text areas" (Enabled by default) is used to enable/disable spell checking. 
-If it is set, the right click context menu option "Turn On Spell Checking" will be available on fields where it has been enabled, and it can be used to toggle on/off spell checking dynamically. </p>
+== 2024-06-03 Select Nodes and Select Transactions
+<p>Users can now more easily select all nodes or select all transactions from a graph. These new actions can be found in the "Selection" menu.</p>
+
+== 2024-05-28 Pages in the Conversation View
+<p>Pages have been added to the Conversation View to help with the loading and viewing of Conversations. The page numbers and arrows at the bottom of the view can be used to change between pages.</p>
+<p>A dropdown list has been added to the top of the view to select how many Conversation bubbles to display per page.</p>
 
 == 2024-03-08 More Ways to Zoom In and Out
 <p>Keyboard shortcuts have been added for zooming in and out of the graph view (CTRL-ALT-UP and CTRL-ALT-DOWN respectively).</p>
