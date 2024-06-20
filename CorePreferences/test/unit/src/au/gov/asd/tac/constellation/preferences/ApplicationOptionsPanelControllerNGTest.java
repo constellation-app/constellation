@@ -115,6 +115,7 @@ public class ApplicationOptionsPanelControllerNGTest {
             verify(constructed.get(0), times(1)).setCurrentFont(anyString());
             verify(constructed.get(0), times(1)).setFontSize(anyString());
             verify(constructed.get(0), times(1)).setColorModeSelection(anyString());
+            verify(constructed.get(0), times(1)).setEnableSpellChecking(anyBoolean());
         }
     }
 
@@ -142,6 +143,7 @@ public class ApplicationOptionsPanelControllerNGTest {
                     when(mockInstance.getCurrentFont()).thenReturn(prefs.get(ApplicationPreferenceKeys.FONT_FAMILY, ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT));
                     when(mockInstance.getFontSize()).thenReturn(prefs.get(ApplicationPreferenceKeys.FONT_SIZE, ApplicationPreferenceKeys.FONT_SIZE_DEFAULT));
                     when(mockInstance.getColorModeSelection()).thenReturn(prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT));
+                    when(mockInstance.isEnableSpellCheckingSelected()).thenReturn(prefs.getBoolean(ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING, ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING_DEFAULT));
                 }); MockedConstruction<PropertyChangeSupport> mockPCS = mockConstruction(PropertyChangeSupport.class)) {
 
             ApplicationOptionsPanelController instance = new ApplicationOptionsPanelController();
@@ -168,6 +170,7 @@ public class ApplicationOptionsPanelControllerNGTest {
             verify(constructedAP.get(0), times(2)).getCurrentFont();
             verify(constructedAP.get(0), times(2)).getFontSize();
             verify(constructedAP.get(0), times(2)).getColorModeSelection();
+            verify(constructedAP.get(0), times(1)).isEnableSpellCheckingSelected();
         }
     }
 
@@ -325,6 +328,7 @@ public class ApplicationOptionsPanelControllerNGTest {
             verify(constructed.get(0), times(0)).getCurrentFont();
             verify(constructed.get(0), times(0)).getFontSize();
             verify(constructed.get(0), times(0)).getColorModeSelection();
+            verify(constructed.get(0), times(0)).isEnableSpellCheckingSelected();
         }
     }
 
@@ -354,6 +358,7 @@ public class ApplicationOptionsPanelControllerNGTest {
                     when(mockInstance.getCurrentFont()).thenReturn(prefs.get(ApplicationPreferenceKeys.FONT_FAMILY, ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT));
                     when(mockInstance.getFontSize()).thenReturn(prefs.get(ApplicationPreferenceKeys.FONT_SIZE, ApplicationPreferenceKeys.FONT_SIZE_DEFAULT));
                     when(mockInstance.getColorModeSelection()).thenReturn(prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT));
+                    when(mockInstance.isEnableSpellCheckingSelected()).thenReturn(prefs.getBoolean(ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING, ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING_DEFAULT));
                 })) {
 
             boolean result = instance.isChanged();
@@ -376,6 +381,7 @@ public class ApplicationOptionsPanelControllerNGTest {
             verify(constructed.get(0), times(1)).getCurrentFont();
             verify(constructed.get(0), times(1)).getFontSize();
             verify(constructed.get(0), times(1)).getColorModeSelection();
+            verify(constructed.get(0), times(1)).isEnableSpellCheckingSelected();
         }
     }
 
@@ -388,11 +394,11 @@ public class ApplicationOptionsPanelControllerNGTest {
 
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
 
-        for (int i = 0; i < 13; i++) {
+        for (int i = 0; i < 14; i++) {
             // To use value of i in lambda, it needs to be final
             final int index = i;
             // Expected result should be true for all but the final iteration
-            boolean expResult = (i != 12);
+            boolean expResult = (i != 13);
 
             try (MockedConstruction<ApplicationOptionsPanel> mock = mockConstruction(ApplicationOptionsPanel.class,
                     (mockInstance, context) -> {
@@ -411,6 +417,7 @@ public class ApplicationOptionsPanelControllerNGTest {
 
                         when(mockInstance.getFontSize()).thenReturn((index > 10) ? prefs.get(ApplicationPreferenceKeys.FONT_SIZE, ApplicationPreferenceKeys.FONT_SIZE_DEFAULT) : "");
                         when(mockInstance.getColorModeSelection()).thenReturn((index > 11) ? prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT) : "");
+                        when(mockInstance.isEnableSpellCheckingSelected()).thenReturn((index > 12) ? prefs.getBoolean(ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING, ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING_DEFAULT) : !prefs.getBoolean(ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING, ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING_DEFAULT));
                     })) {
 
                 ApplicationOptionsPanelController instance = new ApplicationOptionsPanelController();
@@ -434,6 +441,7 @@ public class ApplicationOptionsPanelControllerNGTest {
                 verify(constructed.get(0), times((index > 8) ? 1 : 0)).getCurrentFont();
                 verify(constructed.get(0), times((index > 9) ? 1 : 0)).getFontSize();
                 verify(constructed.get(0), times((index > 10) ? 1 : 0)).getColorModeSelection();
+                verify(constructed.get(0), times((index > 11) ? 1 : 0)).isEnableSpellCheckingSelected();
             }
         }
     }
