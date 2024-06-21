@@ -25,7 +25,7 @@ box again.
 - Display INFO Reports
 - Display FINE Reports
 
-
+<br />
 ## Popup Mode
 
 The "Popup Mode" options dictate how popups are displayed and redisplayed.
@@ -36,18 +36,21 @@ The "Popup Mode" options dictate how popups are displayed and redisplayed.
 - 3 : Show one popup per source (max 5)
 - 4 : Show one per source, redisplayable
 
+<br />
 ## Minimise All Error Reports
 
 <img src="../ext/docs/CoreErrorReportView/src/au/gov/asd/tac/constellation/views/errorreport/resources/minimize.png" alt="Minimize Icon" />
 
 Minimises all items in the Error Report View.
 
+<br />
 ## Maximise All Error Reports
 
 <img src="../ext/docs/CoreErrorReportView/src/au/gov/asd/tac/constellation/views/errorreport/resources/maximize.png" alt="Maximize Icon" />
 
 Maxmises all items in the Error Report View.
 
+<br />
 ## Clear All Reports
 
 This button clears all items in the Error Report View.
