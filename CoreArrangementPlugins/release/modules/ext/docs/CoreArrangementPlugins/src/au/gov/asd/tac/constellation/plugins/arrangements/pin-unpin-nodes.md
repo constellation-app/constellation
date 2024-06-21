@@ -33,6 +33,7 @@ an arrangement plugin is run.
 ## Unpin
 Selected nodes are unpinned, removing the "pinned" attribute.
 
+<br />
 <div style="text-align: center">
     <figure style = "display: inline-block">
         <img height=400 src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/unpinnedNode.png" alt="Unpinned" />
