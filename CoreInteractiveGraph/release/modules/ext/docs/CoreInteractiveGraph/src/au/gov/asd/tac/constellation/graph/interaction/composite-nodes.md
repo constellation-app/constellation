@@ -1,5 +1,36 @@
 # Composite Nodes
 
+<table class="table table-striped">
+<thead>
+<tr class="header">
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th style="text-align: center;">Menu Icon</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Run Composite Selected Nodes</td>
+<td></td>
+<td>Tools -&gt; Composite Selected Nodes</td>
+<td style="text-align: center;"><img src="../ext/docs/CoreInteractiveGraph/src/au/gov/asd/tac/constellation/graph/interaction/resources/compositeSelectedNodesIcon.png" alt="Composite Selected Nodes Icon" /></td>
+</tr>
+<tr class="even">
+<td>Run Composite Correlated Nodes</td>
+<td></td>
+<td>Tools -&gt; Composite Correlated Nodes</td>
+<td style="text-align: center;"><img src="../ext/docs/CoreInteractiveGraph/src/au/gov/asd/tac/constellation/graph/interaction/resources/compositeCorrelatedNodesIcon.png" alt="Composite Correlated Nodes Icon" /></td>
+</tr>
+<tr class="odd">
+<td>Run Destroy All Composites</td>
+<td></td>
+<td>Tools -&gt; Destroy All Composites</td>
+<td style="text-align: center;"><img src="../ext/docs/CoreInteractiveGraph/src/au/gov/asd/tac/constellation/graph/interaction/resources/destroyCompositeNodes.png" alt="Destroy Composite Nodes Icon" /></td>
+</tr>
+</tbody>
+</table>
+
 <br />
 <div style="text-align: center">
     <figure style = "display: inline-block">
