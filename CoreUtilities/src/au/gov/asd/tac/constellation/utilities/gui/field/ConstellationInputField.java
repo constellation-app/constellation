@@ -127,11 +127,13 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
     protected final Rectangle leftButton = new Rectangle(endCellPrefWidth, defaultCellHeight); 
     protected final List<ChangeListener> InputFieldListeners = new ArrayList<>();
     private Rectangle foreground;
+    private Rectangle background;
         
     final int corner = 7;
     
     final Color optionColor = Color.color(97/255D, 99/255D, 102/255D);
     final Color fieldColor = Color.color(51/255D, 51/255D, 51/255D);
+    final Color invalidColor = Color.color(238/255D, 66/255D, 49/255D);
     final Color buttonColor = Color.color(25/255D, 84/255D, 154/255D);
    
     public ConstellationInputField(){
@@ -162,7 +164,7 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
         clippingMask.setStroke(Color.BLACK);
         clippingMask.widthProperty().bind(gridPane.widthProperty());
         
-        final Rectangle background = new Rectangle(300, defaultCellHeight);
+        background = new Rectangle(300, defaultCellHeight);
         background.setArcWidth(corner);
         background.setArcHeight(corner);  
         background.setFill(fieldColor);
@@ -310,10 +312,10 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
         // String changes are changes to the text value of the ConstellationTextArea
         if (newValue instanceof String){
             if (isValid()){
-                textArea.setValid(true);
+                setValid(true);
                 notifyListeners(getValue());
             } else {
-                textArea.setValid(false);
+                setValid(false);
             }
         }
         
@@ -541,6 +543,14 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
     }
     
     public abstract ContextMenu getDropDown();
+
+    private void setValid(boolean isValid) {
+        if (isValid){
+            background.setFill(fieldColor);
+        } else {
+            background.setFill(invalidColor);
+        }
+    }
     
     /**
      * An extension of a ContextMenu to provide features that enable its use as a drop down menu in ConstellationInputFields

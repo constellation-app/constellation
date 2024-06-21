@@ -49,6 +49,7 @@ import javafx.collections.ObservableList;
 public final class MultiChoiceInputPane extends ParameterInputPane<MultiChoiceParameterValue, List<ParameterValue>> {
 
     private static final Logger LOGGER = Logger.getLogger(MultiChoiceInputPane.class.getName());
+    //could get rid f this local variable?
     private final ObservableList<ParameterValue> options = FXCollections.observableArrayList();
 
     

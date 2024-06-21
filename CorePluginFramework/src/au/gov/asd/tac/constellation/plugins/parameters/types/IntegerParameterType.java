@@ -147,7 +147,7 @@ public class IntegerParameterType extends PluginParameterType<IntegerParameterVa
      * An implementation of {@link ParameterValue} corresponding to this type.
      * It holds integer values.
      */
-    public static class IntegerParameterValue extends ParameterValue implements NumberParameterValue {
+    public static class IntegerParameterValue extends NumberParameterValue {
 
         private static final NumberStringConverter CONVERTER = new NumberStringConverter();
 

@@ -173,14 +173,6 @@ import javafx.scene.shape.Rectangle;
                 throw new UnsupportedOperationException("Only ConstellationTextAreas of TextType.SECRET can be revealed");
             }
         }
-
-        public void setValid(boolean isValid) {
-            if (isValid){
-                primaryInput.setStyle("-fx-background-color: transparent;");
-            } else {
-                primaryInput.setStyle("-fx-background-color: red;");
-            }
-        }
         
         // <editor-fold defaultstate="collapsed" desc="ContextMenuContributor Implementation"> 
         @Override

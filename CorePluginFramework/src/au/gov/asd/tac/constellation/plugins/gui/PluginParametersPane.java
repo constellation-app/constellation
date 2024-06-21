@@ -35,6 +35,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.LocalDateParameterT
 import au.gov.asd.tac.constellation.plugins.parameters.types.LocalDateParameterType.LocalDateParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.NumberParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterListParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterListParameterType.ParameterListParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.PasswordParameterType;
@@ -824,8 +825,8 @@ public final class PluginParametersPane extends GridPane {
             final Pane pane;
             switch (id) {
                 case StringParameterType.ID -> pane = new ValueInputPane((PluginParameter<StringParameterValue>) parameter, StringParameterType.getLines((PluginParameter<StringParameterValue>) parameter));
-                case IntegerParameterType.ID -> pane = new NumberInputPane<>((PluginParameter<IntegerParameterValue>) parameter);
-                case FloatParameterType.ID -> pane = new NumberInputPane<>((PluginParameter<FloatParameterValue>) parameter);
+                case IntegerParameterType.ID -> pane = new NumberInputPane<Integer>((PluginParameter<NumberParameterValue>) parameter);
+                case FloatParameterType.ID -> pane = new NumberInputPane<Float>((PluginParameter<NumberParameterValue>) parameter);
                 case BooleanParameterType.ID -> pane = new BooleanInputPane((PluginParameter<BooleanParameterValue>) parameter);
                 case SingleChoiceParameterType.ID -> pane = new SingleChoiceInputPane((PluginParameter<SingleChoiceParameterValue>) parameter);
                 case ColorParameterType.ID -> pane = new ColorInputPane((PluginParameter<ColorParameterValue>) parameter);

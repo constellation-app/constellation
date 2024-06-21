@@ -21,14 +21,14 @@ package au.gov.asd.tac.constellation.plugins.parameters.types;
  *
  * @author algol
  */
-public interface NumberParameterValue {
+public abstract class NumberParameterValue extends ParameterValue {
 
     /**
      * The value of this ParameterValue as a Number.
      *
      * @return The value of this ParameterValue as a Number.
      */
-    Number getNumberValue();
+    public abstract Number getNumberValue();
 
     /**
      * Set the value of this ParameterValue.
@@ -37,26 +37,26 @@ public interface NumberParameterValue {
      * @return True if the new value was different to the previous value, false
      * otherwise.
      */
-    boolean setNumberValue(Number n);
+    public abstract boolean setNumberValue(Number n);
 
     /**
      * The minimum value (may be null).
      *
      * @return The minimum value (may be null).
      */
-    Number getMinimumValue();
+    public abstract Number getMinimumValue();
 
     /**
      * The maximum value (may be null).
      *
      * @return The maximum value (may be null).
      */
-    Number getMaximumValue();
+    public abstract Number getMaximumValue();
 
     /**
      * The step value (may be null).
      *
      * @return The step value (may be null).
      */
-    Number getStepValue();
+    public abstract Number getStepValue();
 }
