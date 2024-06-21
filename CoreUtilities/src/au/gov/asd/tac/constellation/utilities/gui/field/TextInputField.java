@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.utilities.gui.RecentValue.RecentValueUtility
 import au.gov.asd.tac.constellation.utilities.gui.RecentValue.RecentValuesChangeEvent;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.LayoutConstants;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType;
-import au.gov.asd.tac.constellation.utilities.text.SpellChecker;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,7 +28,6 @@ import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.input.MouseEvent;
 
 /**
@@ -99,7 +97,7 @@ public final class TextInputField extends ConstellationInputField<String> implem
     public List<MenuItem> getLocalMenuItems() {
         final MenuItem recent = new MenuItem("Recent Values");
         recent.setOnAction(value -> getRightButtonEventImplementation().handle(null));
-        return Arrays.asList(recent, new SeparatorMenuItem(), SpellChecker.getSpellCheckMenuItem(this));
+        return Arrays.asList(recent);
     }
     // </editor-fold>  
          

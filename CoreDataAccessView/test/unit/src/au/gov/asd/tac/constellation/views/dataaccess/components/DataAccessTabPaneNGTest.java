@@ -372,8 +372,8 @@ public class DataAccessTabPaneNGTest {
         when(pluginParameter3.getStringValue()).thenReturn("PluginParam3 String Value");
 
         try (
-                final MockedStatic<RecentParameterValues> recentParamValsMockedStatic
-                = Mockito.mockStatic(RecentParameterValues.class);) {
+                final MockedStatic<RecentValueUtility> recentParamValsMockedStatic
+                = Mockito.mockStatic(RecentValueUtility.class);) {
             dataAccessTabPane.storeParameterValues();
 
             // Verify that only plugin 3 parameter was set in the store

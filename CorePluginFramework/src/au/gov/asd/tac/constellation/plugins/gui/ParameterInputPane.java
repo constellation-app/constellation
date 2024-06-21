@@ -53,7 +53,6 @@ public abstract class ParameterInputPane<T extends ParameterValue, V extends Obj
         updateFieldVisability();
 
         this.field.setPromptText(parameter.getDescription());
-        field.enableSpellCheck(parameter.isSpellCheckEnabled());
         
         this.field.addListener(getFieldChangeListener(parameter));
         parameter.addListener(getPluginParameterListener());
@@ -77,8 +76,8 @@ public abstract class ParameterInputPane<T extends ParameterValue, V extends Obj
         return this.field.getValue();
     }
     
-    public void setFieldLines(int lineCount){
-        field.setLines(lineCount);
+    public void setFieldHeight(int lineCount){
+        field.setPrefRowCount(lineCount);
     }
     
     public final void updateFieldVisability(){

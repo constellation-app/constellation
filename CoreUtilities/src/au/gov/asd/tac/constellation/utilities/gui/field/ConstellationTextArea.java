@@ -18,17 +18,16 @@ package au.gov.asd.tac.constellation.utilities.gui.field;
 import au.gov.asd.tac.constellation.utilities.gui.context.ContextMenuContributor;
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType.MULTILINE;
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType.SECRET;
-import au.gov.asd.tac.constellation.utilities.text.SpellChecker;
 import java.util.Arrays;
 import java.util.List;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.BooleanBinding;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.Group;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.control.IndexRange;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.ContextMenuEvent;
@@ -36,10 +35,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
-import org.fxmisc.richtext.InlineCssTextArea;
-import org.fxmisc.richtext.InlineCssTextField;
-import org.fxmisc.richtext.StyledTextArea;
-import org.fxmisc.richtext.util.UndoUtils;
 
 /**
      * This class represents the area of text that users can interact with inside of a {@link ConstellationInputFiled}.
@@ -62,44 +57,37 @@ import org.fxmisc.richtext.util.UndoUtils;
      */
     public final class ConstellationTextArea extends StackPane implements ContextMenuContributor{
         
-        public static final String VALID_WORD_STYLE = "-rtfx-underline-color: transparent;";
-        public static final String MISSPELT_WORD_STYLE = "-rtfx-underline-color: red; "
-        + "-rtfx-underline-dash-array: 2 2;"
-        + "-rtfx-underline-width: 2.0;";
-        public static final int EXTRA_HEIGHT = 3;
-
         private final Insets insets = new Insets(4, 8, 4, 8);
-        
         private List<MenuItem> menuItems = null;
         
-        private final StyledTextArea<String, String> primaryInput;
+        private final TextInputControl primaryInput;
         private final TextInputControl secondaryInput;
 
         public ConstellationTextArea(ConstellationInputField parent, ConstellationInputFieldConstants.TextType type){
             switch (type){
-                case MULTILINE -> primaryInput = new InlineCssTextArea();
-                default -> primaryInput = new InlineCssTextField();
+                case MULTILINE -> {
+                    TextArea area = new TextArea();
+                    area.setWrapText(true);
+                    primaryInput = area;
+                }
+                default -> {
+                    primaryInput = new TextField();
+                    primaryInput.setPadding(insets);
+                }
             }
             //Set up the primary InputControl
-
             primaryInput.textProperty().addListener(parent);
             primaryInput.focusedProperty().addListener(parent);
-            primaryInput.setStyle("-fx-background-radius: 0; -fx-background-color: transparent; -fx-border-color: transparent; -fx-focus-color: transparent; -fx-text-fill: #FFFFFF;");
-
-            primaryInput.setAutoHeight(false);
-            primaryInput.setWrapText(true);
-            primaryInput.setPadding(insets);
-            final String css = SpellChecker.class.getResource("SpellChecker.css").toExternalForm();//"resources/test.css"
-            primaryInput.getStylesheets().add(css);
+            primaryInput.setStyle("-fx-background-radius: 0; -fx-background-color: transparent; -fx-border-color: transparent; -fx-stroke-width: 0; -fx-border-width: 0 ; -fx-focus-color: transparent; -fx-text-fill: #FFFFFF;");
             
             // Set up the optional secondary InputControl
             switch (type) {
                 case SECRET -> {
                     // SecondaryInputs are only used in Secret Inputs and have bound properties wiht the primary input
                     secondaryInput = new PasswordField();
-                    secondaryInput.textProperty().bindBidirectional(primaryInput.accessibleTextProperty());
-                    //secondaryInput.textFormatterProperty().bindBidirectional(primaryInput.textFormatterProperty());
-                    //secondaryInput.promptTextProperty().bindBidirectional(primaryInput.promptTextProperty());
+                    secondaryInput.textProperty().bindBidirectional(primaryInput.textProperty());
+                    secondaryInput.textFormatterProperty().bindBidirectional(primaryInput.textFormatterProperty());
+                    secondaryInput.promptTextProperty().bindBidirectional(primaryInput.promptTextProperty());
                     secondaryInput.styleProperty().bind(primaryInput.styleProperty());
                     secondaryInput.focusedProperty().addListener(parent);
                     primaryInput.setVisible(false);
@@ -122,21 +110,13 @@ import org.fxmisc.richtext.util.UndoUtils;
         public void bindHeightProperty(Rectangle bindable) {
             bindable.heightProperty().bind(primaryInput.heightProperty());
         }
-        
-        private BooleanBinding getSelectionBinding() {
-            return Bindings.createBooleanBinding(() -> {
-                final IndexRange selectionRange = primaryInput.getSelection();
-                return selectionRange == null || selectionRange.getLength() == 0;
-            }, primaryInput.selectionProperty());
-        }
-
 
         /**
          * Sets the prompt text of the {@link TextInputControl}.
-         * @param description 
+         * @param promptText 
          */
         public final void setPromptText(final String promptText) {
-            //TODO
+            this.primaryInput.setPromptText(promptText);
         }
 
         /**
@@ -145,7 +125,7 @@ import org.fxmisc.richtext.util.UndoUtils;
          */
         public void setText(String stringValue) {
             if (stringValue != null) {
-                primaryInput.replaceText(stringValue);
+                primaryInput.setText(stringValue);
             }
         }
         
@@ -169,54 +149,11 @@ import org.fxmisc.richtext.util.UndoUtils;
              Tooltip.install(primaryInput, tooltip);
         }
 
-        public void selectAll() {
-            primaryInput.selectAll();
-        }
-
-        public void selectBackward() {
-            //primaryInput.selectBackward();
-        }
-
-        public void selectForward() {
-            //primaryInput.selectForward();
-        }
-
-        public void previousWord() {
-            //primaryInput.previousWord();
-        }
-
-        public IndexRange getSelection() {
-            return primaryInput.getSelection();
-        }
-
-        public void deleteNextChar() {
-            primaryInput.deleteNextChar();
-        }
-
-        public void deleteText(IndexRange selection) {
-            primaryInput.deleteText(selection);
-        }
-
-        public void selectNextWord() {
-            //primaryInput.selectNextWord();
-        }
-
-        public void selectPreviousWord() {
-            //primaryInput.selectPreviousWord();
-        }
-
-        public void nextWord() {
-            //primaryInput.nextWord();
-        }
-
-        void setWrapText(boolean wrapText) {
-            primaryInput.setWrapText(true);
-        }
-
         public void setPreferedRowCount(Integer suggestedHeight) {
-//            if (primaryInput instanceof TextArea textAreaField){
-//                textAreaField.setPrefRowCount(suggestedHeight);
-//            }
+            if (primaryInput instanceof TextArea textAreaField){
+                textAreaField.setPrefRowCount(suggestedHeight);
+                textAreaField.setMaxHeight(textAreaField.getPrefHeight() + 3);
+            }
         }
 
         public void hide() {
@@ -245,17 +182,6 @@ import org.fxmisc.richtext.util.UndoUtils;
             }
         }
         
-        /**
-        * underline and highlight the text from start to end.
-        */
-        public void highlightText(final int start, final int end) {
-            primaryInput.setStyle(start, end, MISSPELT_WORD_STYLE);
-        }
-        
-        public boolean isWordUnderCursorHighlighted(int index) {
-            return primaryInput.getStyleOfChar(index) == MISSPELT_WORD_STYLE;
-        }
-        
         // <editor-fold defaultstate="collapsed" desc="ContextMenuContributor Implementation"> 
         @Override
         public List<MenuItem> getAllMenuItems() {
@@ -280,38 +206,11 @@ import org.fxmisc.richtext.util.UndoUtils;
                 deleteMenuItem.setOnAction(e -> primaryInput.deleteText(primaryInput.getSelection()));
                 selectAllMenuItem.setOnAction(e -> primaryInput.selectAll());
 
-                // avoid Undo redo of highlighting
-                primaryInput.setUndoManager(UndoUtils.plainTextUndoManager(primaryInput));
-
-                // Listener to enable/disable Undo and Redo menu items based on the undo stack
-                primaryInput.getUndoManager().undoAvailableProperty().addListener((obs, oldValue, newValue) -> {
-                    undoMenuItem.setDisable(!(boolean) newValue);
-                });
-
-                primaryInput.getUndoManager().redoAvailableProperty().addListener((obs, oldValue, newValue) -> {
-                    redoMenuItem.setDisable(!(boolean) newValue);
-                });
-                undoMenuItem.setDisable(true);
-                redoMenuItem.setDisable(true);
-
-                // Bind the Cut, Copy and Delete menu item's disable property, to enable them only when there's a selection
-                cutMenuItem.disableProperty().bind(getSelectionBinding());
-                copyMenuItem.disableProperty().bind(getSelectionBinding());
-                deleteMenuItem.disableProperty().bind(getSelectionBinding());
-
                 menuItems = Arrays.asList(undoMenuItem, redoMenuItem, cutMenuItem, copyMenuItem, pasteMenuItem, deleteMenuItem, selectAllMenuItem);
             }
             return menuItems;
         }
         // </editor-fold> 
-        
-        public void clearStyles() {
-            primaryInput.setStyle(0, primaryInput.getText().length(), VALID_WORD_STYLE);
-        }
-
-        public int getCaretPosition() {
-            return primaryInput.getCaretPosition();
-        }
 
         public void setContextMenuRequestedEvent(EventHandler<? super ContextMenuEvent> value) {
             this.primaryInput.setOnContextMenuRequested(value);

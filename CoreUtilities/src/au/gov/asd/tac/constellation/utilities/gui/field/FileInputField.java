@@ -75,8 +75,8 @@ public final class FileInputField extends ConstellationInputField<List<File>> {
         
         this.fileInputKind = fileInputKind;
         if (suggestedHeight > 1){
-            setWrapText(false);
-            setPrefRowCount(suggestedHeight);
+//            setWrapText(false);
+            //setPrefRowCount(suggestedHeight);
         }
         
         this.setRightLabel(fileInputKind.toString());

@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.utilities.gui.field;
 import au.gov.asd.tac.constellation.utilities.gui.context.ContextMenuContributor;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.LayoutConstants;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType;
-import au.gov.asd.tac.constellation.utilities.text.SpellChecker;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -410,49 +409,49 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
         this.textArea.setTooltip(tooltip);
     }
 
-    public void selectAll() {
-        this.textArea.selectAll();
-    }
-
-    public void selectBackward() {
-        this.textArea.selectBackward();
-    }
-
-    public void selectForward() {
-        this.textArea.selectForward();
-    }
-
-    public void previousWord() {
-        this.textArea.previousWord();
-    }
-
-    public void nextWord() {
-        this.textArea.nextWord();
-    }
-
-    public void selectPreviousWord() {
-       this.textArea.selectPreviousWord();
-    }
-
-    public void selectNextWord() {
-        this.textArea.selectNextWord();
-    }
-
-    public void deleteText(final IndexRange selection) {
-        this.textArea.deleteText(selection);
-    }
-
-    public void deleteNextChar() {
-        this.textArea.deleteNextChar();
-    }
-
-    public IndexRange getSelection() {
-        return this.textArea.getSelection();
-    }
+//    public void selectAll() {
+//        this.textArea.selectAll();
+//    }
+//
+//    public void selectBackward() {
+//        this.textArea.selectBackward();
+//    }
+//
+//    public void selectForward() {
+//        this.textArea.selectForward();
+//    }
+//
+//    public void previousWord() {
+//        this.textArea.previousWord();
+//    }
+//
+//    public void nextWord() {
+//        this.textArea.nextWord();
+//    }
+//
+//    public void selectPreviousWord() {
+//       this.textArea.selectPreviousWord();
+//    }
+//
+//    public void selectNextWord() {
+//        this.textArea.selectNextWord();
+//    }
+//
+//    public void deleteText(final IndexRange selection) {
+//        this.textArea.deleteText(selection);
+//    }
+//
+//    public void deleteNextChar() {
+//        this.textArea.deleteNextChar();
+//    }
+//
+//    public IndexRange getSelection() {
+//        return this.textArea.getSelection();
+//    }
     
-    public void setWrapText(boolean wrapText) {
-        this.textArea.setWrapText(wrapText);
-    }
+//    public void setWrapText(boolean wrapText) {
+//        this.textArea.setWrapText(wrapText);
+//    }
 
     public void setPrefRowCount(Integer suggestedHeight) {
         textArea.setPreferedRowCount(suggestedHeight);
@@ -466,34 +465,24 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
         textArea.reveal();
     }
 
-    public void clearTextStyles() {
-        textArea.clearStyles();
-    }
+//    public void clearTextStyles() {
+//        textArea.clearStyles();
+//    }
 
 
 
-    public void highlightText(int start, int end) {
-        textArea.highlightText(start, end);
-    }
+//    public void highlightText(int start, int end) {
+//        textArea.highlightText(start, end);
+//    }
 
-    public int getCaretPosition() {
-        return textArea.getCaretPosition();
-    }
+//    public int getCaretPosition() {
+//        return textArea.getCaretPosition();
+//    }
     
-    public boolean isWordUnderCursorHighlighted() {
-        return textArea.isWordUnderCursorHighlighted(getCaretPosition() -1);
-    }
+//    public boolean isWordUnderCursorHighlighted() {
+//        return textArea.isWordUnderCursorHighlighted(getCaretPosition() -1);
+//    }
     // </editor-fold>
-    
-    // <editor-fold defaultstate="collapsed" desc="SpellCheck Support">   
-    public void enableSpellCheck(boolean spellCheckEnabled) {
-        if (spellCheckEnabled){
-            SpellChecker.registerArea(this);
-        } else {
-            SpellChecker.deregisterArea(this);
-        }
-    }
-    //</editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc="Value Modification & Validation Declaration">  
     /**
@@ -621,16 +610,6 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
             foreground.setStroke(null);
         }
 
-    }
-    
-    
-    public void setLines(Integer suggestedHeight) {
-        Platform.runLater(() -> {
-                final Text t = (Text) textArea.lookup(".text");
-                if (t != null) {
-                    this.textArea.setPrefHeight(suggestedHeight * t.getBoundsInLocal().getHeight() + 3);
-                }
-            });
     }
         
     //Move this class, concider maving to specific field like the choice input
