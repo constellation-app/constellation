@@ -23,8 +23,8 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *  Provider to get help pages for the data access view
- * 
+ * Provider to get help pages for the data access view
+ *
  * @author Quasar985
  */
 @ServiceProvider(service = HelpPageProvider.class, position = 1000)
@@ -32,6 +32,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class ErrorReportHelpProvider extends HelpPageProvider {
 
     private static final String CODEBASE_NAME = "constellation";
+    private static final String SEP = File.separator;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file name
@@ -41,9 +42,8 @@ public class ErrorReportHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
-        final String sep = File.separator;
-        final String dataModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreErrorReportView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
-                + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "errorreport" + sep;
+        final String dataModulePath = ".." + SEP + "ext" + SEP + "docs" + SEP + "CoreErrorReportView" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP + "asd"
+                + SEP + "tac" + SEP + CODEBASE_NAME + SEP + "views" + SEP + "errorreport" + SEP;
 
         map.put("au.gov.asd.tac.constellation.views.errorreport", dataModulePath + "error-report.md");
         return map;
@@ -56,10 +56,9 @@ public class ErrorReportHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        final String sep = File.separator;
         final String dataViewPath;
-        dataViewPath = "ext" + sep + "docs" + sep + "ErrorReportView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
-                + CODEBASE_NAME + sep + "views" + sep + "errorreport" + sep + "errorreport-toc.xml";
+        dataViewPath = "ext" + SEP + "docs" + SEP + "ErrorReportView" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP + "asd" + SEP + "tac" + SEP
+                + CODEBASE_NAME + SEP + "views" + SEP + "errorreport" + SEP + "errorreport-toc.xml";
         return dataViewPath;
     }
 }
