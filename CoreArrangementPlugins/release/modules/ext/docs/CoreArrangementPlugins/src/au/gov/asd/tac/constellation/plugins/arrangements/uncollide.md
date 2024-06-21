@@ -40,7 +40,7 @@ Uncollide, contrast to Uncollide 3D, only operates on the X and Y axis.
     </figure>
     <figure style = "display: inline-block">
         <img height=400 src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/afterUncollide3D.png" alt="After Uncollide 3D" />
-        <figcaption>Example Proximity 3D Arrangement</figcaption>
+        <figcaption>Example Uncollide 3D</figcaption>
     </figure>
 </div>
 
