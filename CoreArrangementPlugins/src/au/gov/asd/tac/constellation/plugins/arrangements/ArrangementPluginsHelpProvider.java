@@ -62,6 +62,7 @@ public class ArrangementPluginsHelpProvider extends HelpPageProvider {
         map.put("au.gov.asd.tac.constellation.plugins.arrangements.spectral", arrangementModulePath + "spectral-arrangement.md");
         map.put("au.gov.asd.tac.constellation.plugins.arrangements.hde", arrangementModulePath + "hde-arrangement.md");
         map.put("au.gov.asd.tac.constellation.plugins.arrangements.uncollide", arrangementModulePath + "uncollide.md");
+        map.put("au.gov.asd.tac.constellation.plugins.arrangements.pinUnpin", arrangementModulePath + "pin-unpin-nodes.md");
         return map;
     }
 
