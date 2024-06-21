@@ -18,6 +18,9 @@ package au.gov.asd.tac.constellation.utilities.gui.field;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColorPicker;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ColorMode;
+import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ColorMode.COLOR;
+import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ColorMode.HEX;
+import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ColorMode.RGB;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.LayoutConstants;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,7 +50,7 @@ public final class ColorInputField extends ConstellationInputField<Constellation
         this.setRightLabel(ConstellationInputFieldConstants.SWATCH_BUTTON_LABEL);
         this.setLeftLabel(mode.toString());  
     }
-    
+
     // <editor-fold defaultstate="collapsed" desc="Local Private Methods">   
     private void setMode(final ColorMode mode){
         this.mode = mode;
@@ -57,15 +60,23 @@ public final class ColorInputField extends ConstellationInputField<Constellation
     
     private void updateMode(final String text){
         final ColorMode localMode;
+        
+        //Determine the mode from the sting
         if (text.contains(",")){
             localMode = ColorMode.RGB;
         } else if (text.contains("#")){
             localMode = ColorMode.HEX;
-        } else {
+        } else if (text.contains(":")){
             localMode = ColorMode.COLOR;
+        } else {
+            localMode = null;
         }
-        this.mode = localMode;
-        this.setLeftLabel(localMode.toString());
+        
+        //Update the mode only if it could be determined
+        if (localMode != null) {
+            this.mode = localMode;
+            this.setLeftLabel(localMode.toString());
+        }
     }
     
     private void setColor(final ConstellationColor color){
@@ -166,14 +177,14 @@ public final class ColorInputField extends ConstellationInputField<Constellation
     @Override
     public boolean isValid(){
         final String value = this.getText();
-        if (getColor(value) != null){
+        if (value.isBlank() || getColor(value) != null){
             updateMode(value);
             return true;
         }
         return false;
     }
     // </editor-fold> 
-    
+
     // <editor-fold defaultstate="collapsed" desc="ContextMenuContributor Implementation"> 
     @Override
     public List<MenuItem> getLocalMenuItems() {

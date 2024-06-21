@@ -66,7 +66,7 @@ public final class ColorInputPane extends ParameterInputPane<ColorParameterValue
                         // Don't change the value if it isn't necessary.
                         final ConstellationColor param = parameter.getColorValue();
                         if (getField().isValid()){
-                            if (!param.equals(getField().getValue())) {
+                            if (param != null && !param.equals(getField().getValue())) {
                                 getField().setValue(param);
                             }
                         }
