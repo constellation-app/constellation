@@ -28,9 +28,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRangeParame
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType;
-import au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType.FloatParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
-import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.LocalDateParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.LocalDateParameterType.LocalDateParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;

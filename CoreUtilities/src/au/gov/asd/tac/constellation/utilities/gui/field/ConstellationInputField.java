@@ -36,7 +36,6 @@ import javafx.scene.Node;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
-import javafx.scene.control.IndexRange;
 import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.ListCell;
@@ -47,14 +46,13 @@ import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
 import javafx.stage.Popup;
 import org.apache.commons.lang3.StringUtils;
 
@@ -104,22 +102,9 @@ import org.apache.commons.lang3.StringUtils;
 public abstract class ConstellationInputField<T> extends StackPane implements ObservableValue<T>, ChangeListener<Serializable>, ContextMenuContributor{   
     
     final int endCellPrefWidth = 50;
-    final int endCellMinWidth = 50;
-    final int centerCellPrefWidth = 200;
-    final int centerCellMinWidth = 100;
     final int defaultCellHeight = 22;
     
-    final ColumnConstraints leftConstraint = new ColumnConstraints(50);
-
-    final ColumnConstraints rightConstraint = new ColumnConstraints(50);
-
-    final ColumnConstraints centerConstraint = new ColumnConstraints(100, 400, 500);
-
-    final ColumnConstraints doubleConstraint = new ColumnConstraints(100, 450, 550);
-
-    final ColumnConstraints trippleConstraint = new ColumnConstraints(100, 500, 600);
-    
-    private GridPane gridPane;
+    private HBox interactableContent = new HBox();
     private ConstellationTextArea textArea;
     private final Label leftLabel = new Label();
     private final Label rightLabel = new Label();
@@ -146,9 +131,8 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
     
     public ConstellationInputField(final LayoutConstants layout, final TextType type) {
         textArea = new ConstellationTextArea(this, type);
-        gridPane = getGridPaneWithChildCellPanes(layout);
         
-        //Npt a nice sollution but need to run this later as the base classes neet to actualy exist to access their implementation
+        //Not a nice sollution but need to run this later as the base classes neet to actualy exist to access their implementation
         Platform.runLater(() -> {
             rightButton.setOnMouseClicked(getRightButtonEventImplementation());
             leftButton.setOnMouseClicked(getLeftButtonEventImplementation());
@@ -162,28 +146,28 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
         clippingMask.setArcHeight(corner);        
         clippingMask.setFill(Color.BLACK);
         clippingMask.setStroke(Color.BLACK);
-        clippingMask.widthProperty().bind(gridPane.widthProperty());
+        clippingMask.widthProperty().bind(interactableContent.widthProperty());
         
         background = new Rectangle(300, defaultCellHeight);
         background.setArcWidth(corner);
         background.setArcHeight(corner);  
         background.setFill(fieldColor);
-        background.widthProperty().bind(gridPane.widthProperty());
+        background.widthProperty().bind(interactableContent.widthProperty());
         
         foreground = new Rectangle(300, defaultCellHeight);
         foreground.setArcWidth(corner);
         foreground.setArcHeight(corner);        
         foreground.setFill(Color.TRANSPARENT);
         foreground.setMouseTransparent(true);
-        foreground.widthProperty().bind(gridPane.widthProperty());
+        foreground.widthProperty().bind(interactableContent.widthProperty());
         
         for (final ContentDisplay area : layout.getAreas()) {
             if (null != area) switch (area) {
-                case LEFT -> gridPane.add(this.getEndCellGroup(area, optionColor, leftLabel), 0, 0);
-                case RIGHT -> gridPane.add(this.getEndCellGroup(area, layout.hasButton() ? buttonColor : optionColor, rightLabel), layout.getAreas().length - 1, 0);
-                case CENTER -> {
-                    insertBaseFieldIntoGrid(textArea);
+                case LEFT, RIGHT-> {
+                    final Pane endCell = buildEndCellPane(area, layout);
+                    interactableContent.getChildren().add(endCell);
                 }
+                case CENTER -> interactableContent.getChildren().add(textArea);
                 default -> {
                     //Do Nothing
                 }
@@ -192,9 +176,12 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
         textArea.bindHeightProperty(background);
         textArea.bindHeightProperty(foreground);
         textArea.bindHeightProperty(clippingMask);
-        gridPane.setClip(clippingMask);
-        gridPane.setAlignment(Pos.CENTER);
-        this.getChildren().addAll(background, gridPane, foreground);
+        interactableContent.setClip(clippingMask);
+        HBox.setHgrow(textArea, Priority.ALWAYS);
+        interactableContent.setAlignment(Pos.CENTER);
+        HBox.setHgrow(interactableContent, Priority.ALWAYS);
+        
+        this.getChildren().addAll(background, interactableContent, foreground);
         this.setAlignment(Pos.TOP_LEFT);
         
         final ContextMenu contextMenu = new ContextMenu();
@@ -211,83 +198,80 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
         textArea.setContextMenu(contextMenu);
     }
     
-    public final void insertBaseFieldIntoGrid(final ConstellationTextArea field) {
-        for (final Node node : gridPane.getChildren()) {
-            if (!ContentDisplay.LEFT.toString().equals(node.getId()) && !ContentDisplay.RIGHT.toString().equals(node.getId())) {
-                gridPane.add(field, GridPane.getColumnIndex(node), GridPane.getRowIndex(node));
-                if (ContentDisplay.CENTER.toString().equals(node.getId())) {
-                    gridPane.getChildren().remove(node);
-                }
-                break;
+    private Pane buildEndCellPane(final ContentDisplay side, final LayoutConstants layout) {
+        
+        //Components that will make the end cell
+        final StackPane content = new StackPane();      
+        final Rectangle localBackground;
+        final Label label;
+        
+        //Important attributes for the builder
+        final int position;
+        final Color color;
+        
+        //Build the components      
+        switch (side) {
+            case LEFT -> {
+                localBackground = leftButton;
+                label = leftLabel;
+                position = 0;
             }
-        }
-    }
-    
-    private Pane getEndCellGroup(final ContentDisplay side, final Color color, final Label label) {
-        final StackPane content = new StackPane();
-        content.setId(side.toString());
-        final Rectangle background = switch (side) {
-            case LEFT -> leftButton;
-            case RIGHT -> rightButton;
-            default -> new Rectangle(); // never used but a nioce way to get rid of errors
+            case RIGHT -> {
+                localBackground = rightButton;
+                label = rightLabel;
+                position = layout.getAreas().length - 1;
+            }
+            default -> {
+                localBackground = new Rectangle(); // never used but a nioce way to get rid of errors
+                label = new Label();
+                position = 0;
+            }
         };
         
-        background.setFill(color);
-        background.setOnMouseEntered(event -> background.setFill(color.brighter()));
-        background.setOnMouseExited(event -> background.setFill(color));
-        textArea.bindHeightProperty(background);
+        //Allow this end cell to listen to the width of the tital Input field
+        this.widthProperty().addListener((value, oldValue, newValue)-> {
+    
+            //Node this end cell if the width is too low
+            if (newValue.intValue() < 300){
+                if (content.isVisible()){
+                    interactableContent.getChildren().remove(content);
+                }
+                content.setVisible(false);
+            
+            //Show this end cell if the width is large enough
+            } else {
+                if (!content.isVisible()){
+                    interactableContent.getChildren().add(position, content);
+                }
+                content.setVisible(true);
+            }
+        });
+        
+        if (layout.hasButton()){
+            color = this.buttonColor;
+        } else {
+            color = this.optionColor;
+        }
+        
+        localBackground.setFill(color);
+        localBackground.setOnMouseEntered(event -> localBackground.setFill(color.brighter()));
+        localBackground.setOnMouseExited(event -> localBackground.setFill(color));
+        textArea.bindHeightProperty(localBackground);
 
         label.setMouseTransparent(true);
         label.setPrefWidth(endCellPrefWidth);
         label.setAlignment(Pos.CENTER);
 
-        content.getChildren().addAll(background, label);
+        content.getChildren().addAll(localBackground, label);
         return content;
     }
     
     protected void addToGridCellGroup(final ContentDisplay groupID, final Node item) {
-        for (final Node node : gridPane.getChildren()) {
+        for (final Node node : interactableContent.getChildren()) {
             if (groupID.toString().equals(node.getId())) {
                 ((Pane) node).getChildren().add(item);
             }
         }
-    }
-
-    /**
-     * Constructs a grid pane according to the layout provided. 
-     * the grid pane will have the number of rows equal to the layouts number of areas.
-     * The
-     * @param layout
-     * @return 
-     */
-    private GridPane getGridPaneWithChildCellPanes(final LayoutConstants layout) {
-        final GridPane local = new GridPane();
-               
-        final ContentDisplay[] areas = layout.getAreas();
-        for (final ContentDisplay area : areas) {
-            switch (area) {
-                case LEFT -> local.getColumnConstraints().add(leftConstraint);
-                case CENTER -> {
-                    switch (areas.length) {
-                        case 1 -> local.getColumnConstraints().add(trippleConstraint);
-                        case 2 -> local.getColumnConstraints().add(doubleConstraint);
-                        case 3 -> local.getColumnConstraints().add(centerConstraint);   
-                    }
-                }
-                case RIGHT -> local.getColumnConstraints().add(rightConstraint);
-                default -> {
-                    //Do Nothing
-                }
-            }
-        }
-
-        for (int i = 0 ; i< areas.length ; i++) {
-            final Pane group = new Pane();
-            group.setId(areas[i].toString());
-            local.add(group, i, 0);
-        }
-        
-        return local;
     }
     
     public void setRightLabel(final String label) {
@@ -411,50 +395,6 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
         this.textArea.setTooltip(tooltip);
     }
 
-//    public void selectAll() {
-//        this.textArea.selectAll();
-//    }
-//
-//    public void selectBackward() {
-//        this.textArea.selectBackward();
-//    }
-//
-//    public void selectForward() {
-//        this.textArea.selectForward();
-//    }
-//
-//    public void previousWord() {
-//        this.textArea.previousWord();
-//    }
-//
-//    public void nextWord() {
-//        this.textArea.nextWord();
-//    }
-//
-//    public void selectPreviousWord() {
-//       this.textArea.selectPreviousWord();
-//    }
-//
-//    public void selectNextWord() {
-//        this.textArea.selectNextWord();
-//    }
-//
-//    public void deleteText(final IndexRange selection) {
-//        this.textArea.deleteText(selection);
-//    }
-//
-//    public void deleteNextChar() {
-//        this.textArea.deleteNextChar();
-//    }
-//
-//    public IndexRange getSelection() {
-//        return this.textArea.getSelection();
-//    }
-    
-//    public void setWrapText(boolean wrapText) {
-//        this.textArea.setWrapText(wrapText);
-//    }
-
     public void setPrefRowCount(Integer suggestedHeight) {
         textArea.setPreferedRowCount(suggestedHeight);
     }
@@ -466,24 +406,6 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
     protected void showSecret(){
         textArea.reveal();
     }
-
-//    public void clearTextStyles() {
-//        textArea.clearStyles();
-//    }
-
-
-
-//    public void highlightText(int start, int end) {
-//        textArea.highlightText(start, end);
-//    }
-
-//    public int getCaretPosition() {
-//        return textArea.getCaretPosition();
-//    }
-    
-//    public boolean isWordUnderCursorHighlighted() {
-//        return textArea.isWordUnderCursorHighlighted(getCaretPosition() -1);
-//    }
     // </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc="Value Modification & Validation Declaration">  
@@ -625,46 +547,46 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
     //Move this class, concider maving to specific field like the choice input
     //has been deactivated for text/value input atm
     public void autoComplete(final List<String> suggestions) {
-            final Popup popup = new Popup();
-            popup.setWidth(textArea.getWidth());
-            final ListView<String> listView = new ListView<>();
-            listView.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
-                if (newValue != null) {
-                    textArea.setText​(newValue);
-                }
-                popup.hide();
-            });
+        final Popup popup = new Popup();
+        popup.setWidth(textArea.getWidth());
+        final ListView<String> listView = new ListView<>();
+        listView.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
+            if (newValue != null) {
+                textArea.setText​(newValue);
+            }
+            popup.hide();
+        });
 
-            textArea.setOnKeyTyped((final javafx.scene.input.KeyEvent event) -> {
-                final String input = textArea.getText();
-                popup.hide();
-                popup.setAutoFix(true);
-                popup.setAutoHide(true);
-                popup.setHideOnEscape(true);
-                popup.getContent().clear();
-                listView.getItems().clear();
+        textArea.setOnKeyTyped((final javafx.scene.input.KeyEvent event) -> {
+            final String input = textArea.getText();
+            popup.hide();
+            popup.setAutoFix(true);
+            popup.setAutoHide(true);
+            popup.setHideOnEscape(true);
+            popup.getContent().clear();
+            listView.getItems().clear();
 
-                if (StringUtils.isNotBlank(input) && !suggestions.isEmpty()) {
-                    final List<String> filteredSuggestions = suggestions.stream()
-                            .filter(suggestion -> suggestion.toLowerCase().startsWith(input.toLowerCase()) && !suggestion.equals(input))
-                            .collect(Collectors.toList());
-                    listView.setItems(FXCollections.observableArrayList(filteredSuggestions));
+            if (StringUtils.isNotBlank(input) && !suggestions.isEmpty()) {
+                final List<String> filteredSuggestions = suggestions.stream()
+                        .filter(suggestion -> suggestion.toLowerCase().startsWith(input.toLowerCase()) && !suggestion.equals(input))
+                        .collect(Collectors.toList());
+                listView.setItems(FXCollections.observableArrayList(filteredSuggestions));
 
-                    popup.getContent().add(listView);
+                popup.getContent().add(listView);
 
-                    Platform.runLater(() -> {
-                        final ListCell<?> cell = (ListCell<?>) listView.lookup(".list-cell");
-                        if (cell != null) {
-                            listView.setPrefHeight(listView.getItems().size() * cell.getHeight() + 3);
-                        }
-                    });
-
-                    // Show the popup under this text area
-                    if (!listView.getItems().isEmpty()) {
-                        popup.show(textArea, textArea.localToScreen(0, 0).getX(), textArea.localToScreen(0, 0).getY() + textArea.heightProperty().getValue());
+                Platform.runLater(() -> {
+                    final ListCell<?> cell = (ListCell<?>) listView.lookup(".list-cell");
+                    if (cell != null) {
+                        listView.setPrefHeight(listView.getItems().size() * cell.getHeight() + 3);
                     }
+                });
+
+                // Show the popup under this text area
+                if (!listView.getItems().isEmpty()) {
+                    popup.show(textArea, textArea.localToScreen(0, 0).getX(), textArea.localToScreen(0, 0).getY() + textArea.heightProperty().getValue());
                 }
-            });
-        }
+            }
+        });
+    }
         
 }
