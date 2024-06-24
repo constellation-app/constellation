@@ -79,8 +79,8 @@ public final class ChoiceInputField<C extends Object> extends ConstellationInput
         if (type != ChoiceType.MULTI) {
             this.addShortcuts(KeyEvent.KEY_PRESSED, event -> {
                 switch (event.getCode()){
-                    case UP -> this.incrementChoice();
-                    case DOWN -> this.decrementChoice();
+                    case UP -> this.decrementChoice();
+                    case DOWN -> this.incrementChoice();
                 }
             });
         }
