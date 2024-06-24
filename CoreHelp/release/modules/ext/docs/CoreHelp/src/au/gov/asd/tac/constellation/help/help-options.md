@@ -13,6 +13,6 @@ This is where the user is able to set their preferred method of viewing the help
 documentation. By default the option is not selected, so the help documentation is
 opened on a locally hosted webserver. 
 
-When the option is  selected, the help documentation is opened online. 
+When the option is selected, the help documentation is opened online. 
 
 
