@@ -4,6 +4,11 @@
     <tocitem text="Views" mergetype="javax.help.SortMerge">
         <tocitem text="Schema View">
             <tocitem text="Schema View" target="au.gov.asd.tac.constellation.views.schemaview.SchemaViewTopComponent"/>
+            <tocitem text="Attributes" target="au.gov.asd.tac.constellation.views.schemaview.providers.AttributeNodeProvider"/>
+            <tocitem text="Node Types" target="au.gov.asd.tac.constellation.views.schemaview.providers.VertexTypeNodeProvider"/>
+            <tocitem text="Transaction Types" target="au.gov.asd.tac.constellation.views.schemaview.providers.TransactionTypeNodeProvider"/>
+            <tocitem text="Plugins" target="au.gov.asd.tac.constellation.views.schemaview.providers.PluginsNodeProvider"/>
+            
         </tocitem>
     </tocitem>
 </toc>
