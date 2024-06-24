@@ -7,7 +7,7 @@
 
 ## Report Settings
 The "Allow Popups" options, when checked, allow errors message popups of the 
-respective severity. If unchecked, a popup of the coressponding severity will 
+respective severity. If unchecked, an error of the coressponding severity will 
 not appear as a popup.
 
 - Allow SEVERE Popups
@@ -15,7 +15,7 @@ not appear as a popup.
 - Allow INFO Popups
 - Allow FINE Popups
 
-The "Display Reports" option, when checked, allows error messages of the 
+The "Display Reports" options, when checked, allows error messages of the 
 corresponding severity to appear in the Error Report Window. If unchecked, 
 the message is simply hidden and can be brought back into view by checking the 
 box again.
@@ -53,4 +53,4 @@ Maxmises all items in the Error Report View.
 <br />
 ## Clear All Reports
 
-This button clears all items in the Error Report View.
+Clears all items in the Error Report View.

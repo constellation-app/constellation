@@ -21,12 +21,12 @@
 
 Similar to the "tree arrangement" plugin, the bubble tree 3D arrangement 
 arranges all the nodes in tree-like structures with "root" nodes and "leaf" 
-nodes placed around their root respective nodes.
+nodes placed around their respective root nodes.
 
 Singleton nodes are arranged together in a
-grid, similarly for doublets (pairs of nodes only connected to each
-other). The way nodes are placed on the graph will look slightly
-different each time the arrangement is run.
+grid. Doublets are arranged in a similar fashion. Doublets are pairs of nodes 
+only connected to each other. The way nodes are placed on the graph will look 
+slightly different each time the arrangement is run.
 
 The root nodes are determined by iteratively removing all the nodes with
 only one neighbour until you are left with a set of nodes where each has

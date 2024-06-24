@@ -11,10 +11,10 @@
 </thead>
 <tbody>
 <tr class="odd">
-<td>Run Bubble Tree 3D Arrangement</td>
+<td>Run Spectral 3D Arrangement</td>
 <td>Ctrl + Alt + A</td>
 <td>Arrange -&gt; Spectral 3d</td>
-<td style="text-align: center;"><img src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/arrangeInTree3D.png" alt="Bubble Tree 3D Arrangement Icon" /></td>
+<td style="text-align: center;"><img src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/Spectral3D.png" alt="Spectral 3D Arrangement Icon" /></td>
 </tr>
 </tbody>
 </table>

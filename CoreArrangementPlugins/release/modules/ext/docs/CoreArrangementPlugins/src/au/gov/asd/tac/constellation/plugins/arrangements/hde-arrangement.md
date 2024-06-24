@@ -11,7 +11,7 @@
 </thead>
 <tbody>
 <tr class="odd">
-<td>Run Bubble Tree 3D Arrangement</td>
+<td>Run HDE 3D Arrangement</td>
 <td>Ctrl + Alt + G</td>
 <td>Arrange -&gt; HDE 3D</td>
 <td style="text-align: center;"><img src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/HDE.png" alt="HDE Icon" /></td>
@@ -20,7 +20,7 @@
 </table>
 
 The HDE 3D arrangement arranges all the "islands" of nodes, by 
-using the high dimensional ebemmding algorithm.
+using the high dimensional embedding algorithm.
 
 Info about the alogithm can be found in:
 
