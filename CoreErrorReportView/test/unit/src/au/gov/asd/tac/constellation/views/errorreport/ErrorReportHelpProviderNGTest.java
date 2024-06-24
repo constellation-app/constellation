@@ -55,7 +55,7 @@ public class ErrorReportHelpProviderNGTest {
     public void testGetHelpTOC() {
         System.out.println("getHelpTOC");
         ErrorReportHelpProvider instance = new ErrorReportHelpProvider();
-        final String expResult = "ext" + SEP + "docs" + SEP + "ErrorReportView" + SEP + "src" + SEP + "au" + SEP
+        final String expResult = "ext" + SEP + "docs" + SEP + "CoreErrorReportView" + SEP + "src" + SEP + "au" + SEP
                 + "gov" + SEP + "asd" + SEP + "tac" + SEP + CODEBASE_NAME + SEP + "views" + SEP + "errorreport" + SEP
                 + "errorreport-toc.xml";
 
