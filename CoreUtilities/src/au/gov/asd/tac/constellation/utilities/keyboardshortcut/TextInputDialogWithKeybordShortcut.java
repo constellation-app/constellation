@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.utilities.keyboardshortcut;
 
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.io.File;
-import java.util.List;
 import java.util.Optional;
 import javafx.application.Platform;
 import javafx.beans.NamedArg;
@@ -35,6 +34,9 @@ import javafx.scene.layout.Region;
 import javax.swing.Icon;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
+import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.Tooltip;
+import javafx.scene.image.ImageView;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -100,8 +102,18 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
         keyboardShortcutLabel = createLabel();
         keyboardShortcutLabel.setPrefWidth(Region.USE_COMPUTED_SIZE);
         
+        final ImageView warningImage = new ImageView(UserInterfaceIconProvider.WARNING.buildImage(20, new java.awt.Color(255, 128, 0)));
+        final Tooltip warningToolTip = new Tooltip("This shortcut is currently assigned to another template");
+        keyboardShortcutLabel.setStyle(" -fx-font-size: 16px;");
+        keyboardShortcutLabel.setGraphic(null);
+        keyboardShortcutLabel.setTooltip(null);
+        keyboardShortcutLabel.setContentDisplay(ContentDisplay.RIGHT);
+        keyboardShortcutLabel.setGraphicTextGap(10);
+        
         shorcutWarningLabel = createLabel();
         shorcutWarningLabel.setPrefWidth(Region.USE_COMPUTED_SIZE);
+        GridPane.setHgrow(shorcutWarningLabel, Priority.ALWAYS);
+        GridPane.setFillWidth(shorcutWarningLabel, true);
         
         shorcutWarningIconLabel = createLabel();
         shorcutWarningIconLabel.setPrefWidth(Region.USE_COMPUTED_SIZE);
@@ -123,9 +135,14 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
                  keyboardShortcutSelectionResult.setKeyboardShortcut(ksResult.getKeyboardShortcut());
                  
                  if(ksResult.isAlreadyAssigned() && ksResult.getExisitngTemplateWithKs() != null) {
-                     shorcutWarningLabel.setText(String.format(RecordKeyboardShortcut.KEYBOARD_SHORTCUT_EXISTS_ALERT_ERROR_MSG_FORMAT, ksResult.getKeyboardShortcut()));                     
+                     shorcutWarningLabel.setText(String.format(RecordKeyboardShortcut.KEYBOARD_SHORTCUT_EXISTS_ALERT_ERROR_MSG_FORMAT, ksResult.getKeyboardShortcut()));
                      keyboardShortcutSelectionResult.setAlreadyAssigned(true);
                      keyboardShortcutSelectionResult.setExisitngTemplateWithKs(ksResult.getExisitngTemplateWithKs());
+                     keyboardShortcutLabel.setGraphic(warningImage);
+                     keyboardShortcutLabel.setTooltip(warningToolTip);
+                 } else {
+                     keyboardShortcutLabel.setGraphic(null);
+                     keyboardShortcutLabel.setTooltip(null);
                  }
              }
         });
@@ -135,6 +152,7 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
 
         this.grid = new GridPane();
         this.grid.setHgap(50);
+        this.grid.setVgap(10);
         this.grid.setMaxWidth(Double.MAX_VALUE);
         this.grid.setAlignment(Pos.CENTER_LEFT);
 
