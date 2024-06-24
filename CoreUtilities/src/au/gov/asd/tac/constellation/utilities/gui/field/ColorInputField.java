@@ -22,16 +22,25 @@ import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInpu
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ColorMode.HEX;
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ColorMode.RGB;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.LayoutConstants;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.JFXPanel;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Rectangle;
 import javax.swing.JButton;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -190,6 +199,8 @@ public final class ColorInputField extends ConstellationInputField<Constellation
     public List<MenuItem> getLocalMenuItems() {
         final MenuItem format = new MenuItem("Format");
         format.setOnAction(value -> getLeftButtonEventImplementation().handle(null));
+        final MenuItem swatch = new MenuItem("Swatch");
+        swatch.setOnAction(value -> getRightButtonEventImplementation().handle(null));
         return Arrays.asList(format);
     }
     // </editor-fold> 
@@ -203,7 +214,6 @@ public final class ColorInputField extends ConstellationInputField<Constellation
 
             xp.setScene(scene);
             //xp.setPreferredSize(new Dimension((int) scene.getWidth(), (int) scene.getHeight()));
-            
             
             final Object[] options = {new JButton("Select"), DialogDescriptor.CANCEL_OPTION};
             final Object focus = DialogDescriptor.NO_OPTION;
@@ -244,4 +254,33 @@ public final class ColorInputField extends ConstellationInputField<Constellation
         }        
     }    
     // </editor-fold> 
+    
+    // <editor-fold defaultstate="collapsed" desc="Info Window Implementation">   
+    @Override
+    public InputInfoWindow getInputInfoWindow() {
+         return new colorInputInfoWondow(this);
+    }
+    
+    private class colorInputInfoWondow extends InputInfoWindow{
+        Rectangle label = new Rectangle(14, 14);
+        private colorInputInfoWondow(ConstellationInputField parent){
+            super(parent);
+            
+            label.setArcWidth(6);
+            label.setArcHeight(6);
+
+            this.getChildren().add(label);
+        }
+        
+        @Override
+        protected void refreshWindow() {
+            ConstellationColor color = getColor();
+            if (color == null) {
+                label.setFill(Color.TRANSPARENT);
+            } else {
+                label.setFill(color.getJavaFXColor());
+            }
+        }
+    }   
+    //</editor-fold> 
 }

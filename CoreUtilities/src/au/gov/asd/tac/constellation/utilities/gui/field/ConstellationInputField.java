@@ -30,6 +30,7 @@ import javafx.collections.FXCollections;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.Node;
@@ -113,6 +114,8 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
     protected final List<ChangeListener> InputFieldListeners = new ArrayList<>();
     private Rectangle foreground;
     private Rectangle background;
+    
+    final LayoutConstants layout;
         
     final int corner = 7;
     
@@ -130,6 +133,7 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
     }
     
     public ConstellationInputField(final LayoutConstants layout, final TextType type) {
+        this.layout = layout;
         textArea = new ConstellationTextArea(this, type);
         
         //Not a nice sollution but need to run this later as the base classes neet to actualy exist to access their implementation
@@ -167,7 +171,10 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
                     final Pane endCell = buildEndCellPane(area, layout);
                     interactableContent.getChildren().add(endCell);
                 }
-                case CENTER -> interactableContent.getChildren().add(textArea);
+                case CENTER -> {
+                    interactableContent.getChildren().add(textArea);
+                    insertInputInfoWindow(getInputInfoWindow());
+                }
                 default -> {
                     //Do Nothing
                 }
@@ -206,7 +213,6 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
         final Label label;
         
         //Important attributes for the builder
-        final int position;
         final Color color;
         
         //Build the components      
@@ -214,21 +220,18 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
             case LEFT -> {
                 localBackground = leftButton;
                 label = leftLabel;
-                position = 0;
             }
             case RIGHT -> {
                 localBackground = rightButton;
                 label = rightLabel;
-                position = layout.getAreas().length - 1;
             }
             default -> {
                 localBackground = new Rectangle(); // never used but a nioce way to get rid of errors
                 label = new Label();
-                position = 0;
             }
         };
         
-        //Allow this end cell to listen to the width of the tital Input field
+        //Allow this end cell to listen to the width of the total Input field
         this.widthProperty().addListener((value, oldValue, newValue)-> {
     
             //Node this end cell if the width is too low
@@ -241,7 +244,14 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
             //Show this end cell if the width is large enough
             } else {
                 if (!content.isVisible()){
-                    interactableContent.getChildren().add(position, content);
+                    //Build the components      
+                    switch (side) {
+                        case LEFT -> interactableContent.getChildren().addFirst(content);
+                        case RIGHT -> interactableContent.getChildren().addLast(content);
+                        default -> {
+                            //
+                        }
+                    };
                 }
                 content.setVisible(true);
             }
@@ -264,14 +274,6 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
 
         content.getChildren().addAll(localBackground, label);
         return content;
-    }
-    
-    protected void addToGridCellGroup(final ContentDisplay groupID, final Node item) {
-        for (final Node node : interactableContent.getChildren()) {
-            if (groupID.toString().equals(node.getId())) {
-                ((Pane) node).getChildren().add(item);
-            }
-        }
     }
     
     public void setRightLabel(final String label) {
@@ -300,6 +302,7 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
                 notifyListeners(getValue());
             } else {
                 setValid(false);
+                notifyListeners(null);
             }
         }
         
@@ -521,14 +524,48 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
     }
     // </editor-fold>
     
+    protected final void insertInputInfoWindow(InputInfoWindow window) {
+        if (window != null) {
+            interactableContent.getChildren().add(layout.getAreas().length -1, window);
+        }
+    }
     
+    protected boolean hasInputInfoWindow() {
+        return layout.getAreas().length != interactableContent.getChildren().size();
+    }
     
+    protected void removeInputInfoWindow(InputInfoWindow window) {
+        interactableContent.getChildren().remove(window);
+    }
+    
+    public abstract InputInfoWindow getInputInfoWindow();
+    
+    public abstract class InputInfoWindow extends StackPane implements ChangeListener<Serializable> {
+        public final ConstellationInputField parent;
+                
+        public InputInfoWindow(ConstellationInputField parent){
+            this.parent = parent;
+            setPadding(new Insets(0,6,0,0));
+            setAlignment(Pos.CENTER);
+            Platform.runLater(()->{
+                refreshWindow();
+            });
+            parent.addListener(this);
+        }
+        
+        protected abstract void refreshWindow();
+        
+        @Override
+        public void changed(ObservableValue<? extends Serializable> observable, Serializable oldValue, Serializable newValue) {
+            refreshWindow();
+        }
+        
+    }
+        
     public void setContextButtonDisable(boolean b) {
         //to do
         //want to reformat the grid pane to eliminate the context menu when button is disabled. this will be tricky
     }
-    
-    
     
     public boolean isEmpty(){
         return this.getText().isBlank();

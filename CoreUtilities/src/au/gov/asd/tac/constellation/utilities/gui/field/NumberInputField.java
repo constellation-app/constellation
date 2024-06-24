@@ -27,6 +27,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 
 /**
  * A {@link ConstellationinputField} for managing choice selection. 
@@ -258,6 +259,9 @@ public final class NumberInputField<C extends Number> extends ConstellationInput
     } 
     // </editor-fold> 
     
-
+    @Override
+    public InputInfoWindow getInputInfoWindow() {
+       return null;
+    }
 
 }

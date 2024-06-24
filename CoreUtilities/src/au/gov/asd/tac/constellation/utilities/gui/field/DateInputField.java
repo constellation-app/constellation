@@ -32,6 +32,7 @@ import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.util.StringConverter;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.DialogDescriptor;
@@ -174,5 +175,10 @@ public final class DateInputField extends ConstellationInputField<LocalDate> {
         throw new UnsupportedOperationException("DateInputField does not provide a Drop Down Menu");
     }
     // </editor-fold>   
+    
+    @Override
+    public InputInfoWindow getInputInfoWindow() {
+        return null;
+    }
 }
 

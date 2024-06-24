@@ -24,10 +24,13 @@ import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
@@ -38,6 +41,8 @@ import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 
 /**
  * A {@link ConstellationinputField} for managing choice selection. 
@@ -449,6 +454,36 @@ public final class ChoiceInputField<C extends Object> extends ConstellationInput
     }
     // </editor-fold> 
     
+    // <editor-fold defaultstate="collapsed" desc="Info Window Implementation">   
+    @Override
+    public final InputInfoWindow getInputInfoWindow() {
+         return new choiceInputInfoWondow(this);
+    }
+    
+    private class choiceInputInfoWondow extends InputInfoWindow{
+        Label label = new Label();
+        private choiceInputInfoWondow(ConstellationInputField parent){
+            super(parent);
 
-
+            this.getChildren().add(label);
+        }
+        
+        @Override
+        protected void refreshWindow() {
+            int totalOptions = getOptions().size();
+            int selectedOptions = getChoices().size();
+            String text = String.format("%s/%s", selectedOptions, totalOptions);
+            label.setText(text);
+            if (selectedOptions < 2) {
+                if (hasInputInfoWindow()) {
+                    removeInputInfoWindow(this);
+                }
+            } else {
+                if (!hasInputInfoWindow()){
+                    insertInputInfoWindow(this);
+                }
+            }
+        }
+    }   
+    //</editor-fold> 
 }

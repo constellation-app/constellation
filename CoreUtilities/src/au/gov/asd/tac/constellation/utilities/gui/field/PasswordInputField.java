@@ -23,6 +23,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 
 /**
  * A {@link ConstellationinputField} for managing password inputs. 
@@ -102,4 +103,9 @@ public final class PasswordInputField extends ConstellationInputField<String> {
         throw new UnsupportedOperationException("PasswordInputField does not provide a ContextMenu");
     }
     // </editor-fold>   
+    
+    @Override
+    public InputInfoWindow getInputInfoWindow() {
+        return null;
+    }
 }

@@ -23,15 +23,22 @@ import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javax.swing.filechooser.FileFilter;
 import org.apache.commons.lang3.StringUtils;
@@ -125,7 +132,7 @@ public final class FileInputField extends ConstellationInputField<List<File>> {
     }
     
     private List<File> getFiles() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return new ArrayList<>();
     }
 
     public void setFileFilter(final ExtensionFilter extensionFilter) {
@@ -136,7 +143,7 @@ public final class FileInputField extends ConstellationInputField<List<File>> {
     // <editor-fold defaultstate="collapsed" desc="Value Modification & Validation Implementation"> 
     @Override
     public List<File> getValue() {
-        return new ArrayList<>();
+        return getFiles();
     }    
     
     /**
@@ -234,4 +241,9 @@ public final class FileInputField extends ConstellationInputField<List<File>> {
         throw new UnsupportedOperationException("FileInputField does not provide a ContextMenu");
     }
     // </editor-fold> 
+    
+    @Override
+    public InputInfoWindow getInputInfoWindow() {
+        return null;        
+    }
 }
