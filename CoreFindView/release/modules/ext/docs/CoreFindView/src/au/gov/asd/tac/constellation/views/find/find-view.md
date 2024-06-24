@@ -20,9 +20,7 @@
 <td>Open Find View</td>
 <td>Ctrl + F</td>
 <td>Edit -&gt; Find...</td>
-<td><div style="text-align: center">
-<img src="../ext/docs/CoreFindView/src/au/gov/asd/tac/constellation/views/find/resources/find.png" width="16" height="16" />
-</div></td>
+<td><img src="../ext/docs/CoreFindView/src/au/gov/asd/tac/constellation/views/find/resources/find.png" width="16" height="16" alt="Find View Icon" /></td>
 </tr>
 </tbody>
 </table>
