@@ -32,6 +32,7 @@
 }
 
 #options-menu {
+    -fx-padding: 3;
     -fx-background-color: #121212;
     -fx-border-color: none;
 }
