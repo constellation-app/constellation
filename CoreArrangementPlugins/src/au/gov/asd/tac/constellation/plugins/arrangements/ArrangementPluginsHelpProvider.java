@@ -46,9 +46,9 @@ public class ArrangementPluginsHelpProvider extends HelpPageProvider {
                 + SEP + "asd" + SEP + "tac" + SEP + CODEBASE_NAME + SEP + "plugins" + SEP + "arrangements" + SEP;
 
         map.put("au.gov.asd.tac.constellation.plugins.arrangements.grid", arrangementModulePath + "grid-arrangement.md");
-        map.put("au.gov.asd.tac.constellation.plugins.arrangements.line", arrangementModulePath + "line.md");
+        map.put("au.gov.asd.tac.constellation.plugins.arrangements.line", arrangementModulePath + "line-arrangement.md");
         map.put("au.gov.asd.tac.constellation.plugins.arrangements.hierarchy", arrangementModulePath + "hierarchy.md");
-        map.put("au.gov.asd.tac.constellation.plugins.arrangements.tree", arrangementModulePath + "tree.md");
+        map.put("au.gov.asd.tac.constellation.plugins.arrangements.tree", arrangementModulePath + "tree-arrangement.md");
         map.put("au.gov.asd.tac.constellation.plugins.arrangements.circle", arrangementModulePath + "circle-arrangement.md");
         map.put("au.gov.asd.tac.constellation.plugins.arrangements.scatter3d", arrangementModulePath + "scatter3d.md");
         map.put("au.gov.asd.tac.constellation.plugins.arrangements.sphere", arrangementModulePath + "sphere.md");
