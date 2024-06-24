@@ -33,10 +33,8 @@ expanded displays all the values assigned to that attribute (this won't
 occur if only one graph element selected).
 
 <div style="text-align: center">
-
 <img src="../ext/docs/CoreAttributeEditorView/src/au/gov/asd/tac/constellation/views/attributeeditor/resources/AttributeEditor.png" alt="Attribute
 Editor" />
-
 </div>
 
 There are four different kinds of attributes you can see in the
@@ -51,9 +49,16 @@ Attribute Editor:
 -   *Custom Attributes* - These are attributes which are not defined in
     a Constellation schema. They have a blue background by default.
 -   *Hidden Attributes* - These are attributes which have been hidden.
-    You can hide an attribute by right-clicking on it and selecting
-    "Hide Attribute". They have a grey background by default. These can
+    You can hide an attribute by right-clicking on it and selecting the
+    "Hide Attribute" <img src="../ext/docs/CoreAttributeEditorView/src/au/gov/asd/tac/constellation/views/attributeeditor/resources/ShowHidden.png" alt="Show Hidden" /> 
+    toggle button. They have a grey background by default. These can
     be shown again by clicking the "Show Hidden" button.
+
+By default all attributes are shown in the Attribute Editor. Sometimes these 
+attributes can be empty, meaning no value has been set for that attribute. By 
+deselecting the "Show Empty" <img src="../ext/docs/CoreAttributeEditorView/src/au/gov/asd/tac/constellation/views/attributeeditor/resources/ShowEmpty.png" alt="Show Empty" />
+toggle button, empty attribute fields will be removed from the view. 
+These can be added back to the view by reselecting the "Show Empty" toggle button.
 
 ## Editing An Attribute
 
