@@ -57,7 +57,7 @@ public class ErrorReportHelpProvider extends HelpPageProvider {
     @Override
     public String getHelpTOC() {
         final String dataViewPath;
-        dataViewPath = "ext" + SEP + "docs" + SEP + "ErrorReportView" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP + "asd" + SEP + "tac" + SEP
+        dataViewPath = "ext" + SEP + "docs" + SEP + "CoreErrorReportView" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP + "asd" + SEP + "tac" + SEP
                 + CODEBASE_NAME + SEP + "views" + SEP + "errorreport" + SEP + "errorreport-toc.xml";
         return dataViewPath;
     }
