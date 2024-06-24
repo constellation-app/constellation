@@ -56,7 +56,7 @@ public class ArrangementPluginsHelpProvider extends HelpPageProvider {
         map.put("au.gov.asd.tac.constellation.plugins.arrangements.contractGraph", arrangementModulePath + "contract-graph.md");
         map.put("au.gov.asd.tac.constellation.plugins.arrangements.expandGraph", arrangementModulePath + "expand-graph.md");
         map.put("au.gov.asd.tac.constellation.plugins.arrangements.layerByTime", arrangementModulePath + "layer-by-time.md");
-        map.put("au.gov.asd.tac.constellation.plugins.arrangements.nodeAttribute", arrangementModulePath + "node-attribute.md");
+        map.put("au.gov.asd.tac.constellation.plugins.arrangements.nodeAttribute", arrangementModulePath + "node-attribute-arrangement.md");
         return map;
     }
 
