@@ -3,6 +3,10 @@
 Data Access View Category preferences can be accessed via Setup -> Options -> CONSTELLATION
 -> Data Access View.
 
+<div style="text-align: center">
+<img src="../ext/docs/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/resources/DataAccessCategory.png" alt="Data Access Category" />
+</div>
+
 ## Display/Hide categories
 
 You can display or hide the categories of your choice with Data Access View options menu as shown in the screen below.
@@ -15,8 +19,3 @@ The "right arrow" button [&gt;] will move a selected visible category to the "Hi
 The "left arrow" button [&lt;] will move a selected hidden category to the "Visible Categories" list.
 <br />
 
-<div style="text-align: center">
-
-<img src="../ext/docs/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/resources/DataAccessCategory.png" alt="Data Access Category" />
-
-</div>
