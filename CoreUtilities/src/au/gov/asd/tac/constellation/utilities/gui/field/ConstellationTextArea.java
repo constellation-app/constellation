@@ -20,9 +20,12 @@ import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInpu
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType.SECRET;
 import java.util.Arrays;
 import java.util.List;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
@@ -30,7 +33,9 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.skin.TextAreaSkin;
 import javafx.scene.input.ContextMenuEvent;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
@@ -68,6 +73,21 @@ import javafx.scene.shape.Rectangle;
                 case MULTILINE -> {
                     TextArea area = new TextArea();
                     area.setWrapText(true);
+                    
+                    //Set the next focus event to TAB instead of CTRL + TAB.
+                    area.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
+                        if (event.getCode() == KeyCode.TAB && !event.isControlDown() && !event.isShiftDown() && !event.isMetaDown()) {
+                            KeyEvent newEvent = new KeyEvent(
+                                event.getSource(), event.getTarget(),
+                                KeyEvent.KEY_PRESSED,
+                                "", "", KeyCode.TAB,
+                                false, true, false,false
+                           );
+                           Event.fireEvent( event.getTarget(), newEvent );
+                           event.consume(); 
+                        }
+                    });
+                    
                     primaryInput = area;
                 }
                 default -> {
