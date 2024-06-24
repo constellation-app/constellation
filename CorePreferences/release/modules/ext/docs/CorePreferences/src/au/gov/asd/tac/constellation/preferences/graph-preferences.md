@@ -3,6 +3,10 @@
 Graph preferences can be accessed via Setup -> Options -> CONSTELLATION
 -> Graph.
 
+<div style="text-align: center">
+<img src="../ext/docs/CorePreferences/src/au/gov/asd/tac/constellation/preferences/resources/graphPanel.png" alt="Graph Options Panel" />
+</div>
+
 ## Default Blaze Settings
 
 When you add a blaze to a node, the blaze has a set size and opacity.
@@ -35,7 +39,3 @@ be adjusted.
 
 The Anaglyphic Display plugin can be enabled via Experimental -> Display -> Anaglyphic.
 
-
-<div style="text-align: center">
-<img src="../ext/docs/CorePreferences/src/au/gov/asd/tac/constellation/preferences/resources/graphPanel.png" alt="Graph Options Panel" />
-</div>

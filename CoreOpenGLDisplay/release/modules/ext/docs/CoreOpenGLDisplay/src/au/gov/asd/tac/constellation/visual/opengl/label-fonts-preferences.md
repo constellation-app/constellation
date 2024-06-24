@@ -3,6 +3,10 @@
 Label fonts preferences can be accessed via Setup -> Options ->
 CONSTELLATION -> Label Fonts.
 
+<div style="text-align: center">
+<img src="../ext/docs/CoreOpenGLDisplay/src/au/gov/asd/tac/constellation/visual/opengl/resources/labelFontsPanel.png" alt="Label Font Options Panel" />
+</div>
+
 ## Introduction
 
 The Label Fonts panel lets you configure the fonts used to draw node
@@ -128,7 +132,3 @@ To ensure that your font configuration is correct, use the Validate
 button. A message will describe the problem if the configuration is
 incorrect.
 
-
-<div style="text-align: center">
-<img src="../ext/docs/CoreOpenGLDisplay/src/au/gov/asd/tac/constellation/visual/opengl/resources/labelFontsPanel.png" alt="Label Font Options Panel" />
-</div>

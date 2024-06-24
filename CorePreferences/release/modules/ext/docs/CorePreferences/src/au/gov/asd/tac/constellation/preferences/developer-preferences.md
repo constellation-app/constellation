@@ -3,6 +3,10 @@
 Developer preferences can be accessed via Setup -> Options ->
 CONSTELLATION -> Developer.
 
+<div style="text-align: center">
+<img src="../ext/docs/CorePreferences/src/au/gov/asd/tac/constellation/preferences/resources/developerPanel.png" alt="Developer Options Panel" />
+</div>
+
 ## Memory Usage
 
 Constellation is a java application which means that the memory
@@ -50,6 +54,3 @@ that is continuously updating via the update site mechanism. This
 version is called the "Constellation Shell".
 
 
-<div style="text-align: center">
-<img src="../ext/docs/CorePreferences/src/au/gov/asd/tac/constellation/preferences/resources/developerPanel.png" alt="Developer Options Panel" />
-</div>
