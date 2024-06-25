@@ -17,9 +17,9 @@ package au.gov.asd.tac.constellation.views.layers.components;
 
 import au.gov.asd.tac.constellation.graph.value.utilities.ExpressionUtilities;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.utilities.gui.RecentValue.RecentValueUtility;
-import au.gov.asd.tac.constellation.utilities.gui.RecentValue.RecentValuesChangeEvent;
-import au.gov.asd.tac.constellation.utilities.gui.RecentValue.RecentValuesListener;
+import au.gov.asd.tac.constellation.utilities.gui.recentvalue.RecentValueUtility;
+import au.gov.asd.tac.constellation.utilities.gui.recentvalue.RecentValuesChangeEvent;
+import au.gov.asd.tac.constellation.utilities.gui.recentvalue.RecentValuesListener;
 import au.gov.asd.tac.constellation.views.layers.LayersViewController;
 import java.util.ArrayList;
 import java.util.Collections;

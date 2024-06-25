@@ -15,9 +15,9 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
-import au.gov.asd.tac.constellation.utilities.gui.RecentValue.RecentValuesListener;
-import au.gov.asd.tac.constellation.utilities.gui.RecentValue.RecentValueUtility;
-import au.gov.asd.tac.constellation.utilities.gui.RecentValue.RecentValuesChangeEvent;
+import au.gov.asd.tac.constellation.utilities.gui.recentvalue.RecentValuesListener;
+import au.gov.asd.tac.constellation.utilities.gui.recentvalue.RecentValueUtility;
+import au.gov.asd.tac.constellation.utilities.gui.recentvalue.RecentValuesChangeEvent;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.LayoutConstants;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType;
 import java.util.ArrayList;

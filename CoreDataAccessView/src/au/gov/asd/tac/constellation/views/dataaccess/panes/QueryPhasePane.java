@@ -23,7 +23,7 @@ import au.gov.asd.tac.constellation.plugins.PluginSynchronizer;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPaneListener;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.utilities.gui.RecentValue.RecentValueUtility;
+import au.gov.asd.tac.constellation.utilities.gui.recentvalue.RecentValueUtility;
 import au.gov.asd.tac.constellation.views.dataaccess.api.DataAccessPaneState;
 import au.gov.asd.tac.constellation.views.dataaccess.components.DataAccessTabPane;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;

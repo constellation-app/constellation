@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.utilities.gui.field;
+package au.gov.asd.tac.constellation.utilities.gui.recentvalue;
 
-import au.gov.asd.tac.constellation.utilities.gui.RecentValue.RecentValuesKey;
-import au.gov.asd.tac.constellation.utilities.gui.RecentValue.RecentValueUtility;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -39,11 +37,11 @@ import org.testng.annotations.Test;
  *
  * @author arcturus
  */
-public class RecentParameterValuesNGTest {
+public class RecentValueUtilityNGTest {
 
     private String recentValues;
 
-    public RecentParameterValuesNGTest() {
+    public RecentValueUtilityNGTest() {
     }
 
     @BeforeClass
