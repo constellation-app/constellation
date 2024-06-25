@@ -225,7 +225,7 @@ public final class ColorInputField extends ConstellationInputField<Constellation
 
     @Override
     public EventHandler<MouseEvent> getLeftButtonEventImplementation() {
-        return event -> this.showDropDown();
+        return event -> this.showDropDown(getDropDown());
     }
     // </editor-fold> 
     
@@ -283,4 +283,11 @@ public final class ColorInputField extends ConstellationInputField<Constellation
         }
     }   
     //</editor-fold> 
+    
+    // <editor-fold defaultstate="collapsed" desc="Auto Complete Implementation"> 
+    @Override
+    protected List<MenuItem> getAutoCompleteSuggestions() {
+        return null;
+    }
+    // </editor-fold> 
 }

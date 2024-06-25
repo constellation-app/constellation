@@ -61,12 +61,6 @@ public final class TextInputField extends ConstellationInputField<String> implem
         }
     }
     
-    public static void addRecentValues(ConstellationInputField inputField, List<String> options) {
-        if (inputField instanceof TextInputField textField){
-            textField.addRecentValues(options);
-        }
-    }
-    
     public void addRecentValues(final List<String> options){
         if (options != null){
             this.recentValues.clear();
@@ -104,7 +98,7 @@ public final class TextInputField extends ConstellationInputField<String> implem
     // <editor-fold defaultstate="collapsed" desc="Button Event Implementation">   
     @Override
     public EventHandler<MouseEvent> getRightButtonEventImplementation() {
-        return event -> this.showDropDown();     
+        return event -> this.showDropDown(getDropDown());     
     }
 
     @Override
@@ -129,7 +123,6 @@ public final class TextInputField extends ConstellationInputField<String> implem
                 label.setOnMouseClicked(event -> {
                     field.setText(recentValue);
                 });
-
                 items.add(this.buildCustomMenuItem(label));
             }
             this.addMenuItems(items);
@@ -137,8 +130,30 @@ public final class TextInputField extends ConstellationInputField<String> implem
     }
     // </editor-fold> 
     
+    // <editor-fold defaultstate="collapsed" desc="InfoWindow Implementation"> 
     @Override
     public InputInfoWindow getInputInfoWindow() {
         return null;
     }
+    // </editor-fold> 
+    
+    // <editor-fold defaultstate="collapsed" desc="Auto Complete Implementation"> 
+    @Override
+    protected List<MenuItem> getAutoCompleteSuggestions() {
+        final List<MenuItem> suggestions = new ArrayList<>();
+        this.recentValues
+                .stream()
+                .filter(value -> value.startsWith(this.getText()))
+                .filter(value ->  !value.equals(this.getText()))
+                .map(value -> new MenuItem(value))
+                .forEach(item -> {
+                    item.setOnAction(event -> {
+                        this.setText(item.getText());
+                    });
+                    suggestions.add(item);
+                });
+        
+        return suggestions;
+    }
+    // </editor-fold> 
 }

@@ -259,9 +259,17 @@ public final class NumberInputField<C extends Number> extends ConstellationInput
     } 
     // </editor-fold> 
     
+    // <editor-fold defaultstate="collapsed" desc="InfoWindow Implementation"> 
     @Override
     public InputInfoWindow getInputInfoWindow() {
-       return null;
+        return null;
     }
-
+    // </editor-fold> 
+    
+    // <editor-fold defaultstate="collapsed" desc="Auto Complete Implementation"> 
+    @Override
+    protected List<MenuItem> getAutoCompleteSuggestions() {
+        return null;
+    }
+    // </editor-fold> 
 }

@@ -21,6 +21,8 @@ import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldC
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
@@ -101,6 +103,8 @@ import org.apache.commons.lang3.StringUtils;
  * @author capricornunicorn123
  */
 public abstract class ConstellationInputField<T> extends StackPane implements ObservableValue<T>, ChangeListener<Serializable>, ContextMenuContributor{   
+
+    private static final Logger LOGGER = Logger.getLogger(ConstellationInputField.class.getName());
     
     final int endCellPrefWidth = 50;
     final int defaultCellHeight = 22;
@@ -284,7 +288,7 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
         this.leftLabel.setText(label);
     };
     
-    // <editor-fold defaultstate="collapsed" desc="ChangeListener Interface Support">
+    // <editor-fold defaultstate="collapsed" desc="ObservableValue and ChangeListener Interface Support">
     /**
      * This method manages the handling of changes to the TextProperty and FocusedProperty of the {@link StypledTextArea} used
      * by the {@link ConstellationTextArea}.
@@ -304,16 +308,20 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
                 setValid(false);
                 notifyListeners(null);
             }
+            
+            if (textArea.isInFocus()) {
+                shoAutoCompleteSuggestions();
+            }
+            
+            
         }
         
-        //Boolean Changes are changs to the focused propert of the ConstellationTextArea
+        //Boolean Changes are changs to the focused property of the ConstellationTextArea
         if (newValue instanceof Boolean focused){
             this.setInFocus(focused);
         }
     }
-    // </editor-fold>
-    
-    // <editor-fold defaultstate="collapsed" desc="ObservableValue Interface Support">   
+
     public void notifyListeners(T newValue){
         for (ChangeListener listener : InputFieldListeners){
             listener.changed(this, null, newValue);
@@ -389,7 +397,11 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
     public void setEditable(final boolean enabled) {
         this.textArea.setEditable(enabled);
     }
-
+    
+    public void setCaratPosition(int position) {
+        this.textArea.setCaretPosition(position);
+    }
+        
     public String getText() {
         return this.textArea.getText();
     }
@@ -463,8 +475,8 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
      * 
      * @param menu 
      */
-    protected final void showDropDown(){
-        getDropDown().show(this, Side.TOP, USE_PREF_SIZE, USE_PREF_SIZE);
+    protected final void showDropDown(ContextMenu menu){
+        menu.show(this, Side.TOP, USE_PREF_SIZE, USE_PREF_SIZE);
     }
     
     public abstract ContextMenu getDropDown();
@@ -487,12 +499,14 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
             
             //Constrain drop down menus to a height of 400
             this.setMaxHeight(200);
+            this.setWidth(parent.getWidth());
             addEventHandler(Menu.ON_SHOWING, e -> {
                 Node content = getSkin().getNode();
                 if (content instanceof Region region) {
                     region.setMaxHeight(getMaxHeight());
                 }
             });
+            this.setAutoFix(true);
         }
         
         /**
@@ -508,7 +522,7 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
          * @return 
          */
         public CustomMenuItem buildCustomMenuItem(Labeled text) {
-            text.prefWidthProperty().bind(parent.prefWidthProperty());
+            //text.prefWidthProperty().bind(parent.prefWidthProperty());
             CustomMenuItem item = new CustomMenuItem(text);
             return item;
         }
@@ -524,6 +538,7 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
     }
     // </editor-fold>
     
+    // <editor-fold defaultstate="collapsed" desc="InputInfoWindow Functionality">  
     protected final void insertInputInfoWindow(InputInfoWindow window) {
         if (window != null) {
             interactableContent.getChildren().add(layout.getAreas().length -1, window);
@@ -561,69 +576,45 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
         }
         
     }
-        
+    // </editor-fold>  
+    
     public void setContextButtonDisable(boolean b) {
         //to do
         //want to reformat the grid pane to eliminate the context menu when button is disabled. this will be tricky
     }
     
-    public boolean isEmpty(){
-        return this.getText().isBlank();
-    }
-    
     public void setInFocus(boolean focused){
-
         if (focused) {
             foreground.setStroke(Color.web("#1B92E3"));
         } else {
             foreground.setStroke(null);
         }
-
     }
-        
-    //Move this class, concider maving to specific field like the choice input
-    //has been deactivated for text/value input atm
-    public void autoComplete(final List<String> suggestions) {
-        final Popup popup = new Popup();
-        popup.setWidth(textArea.getWidth());
-        final ListView<String> listView = new ListView<>();
-        listView.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
-            if (newValue != null) {
-                textArea.setText​(newValue);
-            }
-            popup.hide();
-        });
-
-        textArea.setOnKeyTyped((final javafx.scene.input.KeyEvent event) -> {
-            final String input = textArea.getText();
-            popup.hide();
-            popup.setAutoFix(true);
-            popup.setAutoHide(true);
-            popup.setHideOnEscape(true);
-            popup.getContent().clear();
-            listView.getItems().clear();
-
-            if (StringUtils.isNotBlank(input) && !suggestions.isEmpty()) {
-                final List<String> filteredSuggestions = suggestions.stream()
-                        .filter(suggestion -> suggestion.toLowerCase().startsWith(input.toLowerCase()) && !suggestion.equals(input))
-                        .collect(Collectors.toList());
-                listView.setItems(FXCollections.observableArrayList(filteredSuggestions));
-
-                popup.getContent().add(listView);
-
-                Platform.runLater(() -> {
-                    final ListCell<?> cell = (ListCell<?>) listView.lookup(".list-cell");
-                    if (cell != null) {
-                        listView.setPrefHeight(listView.getItems().size() * cell.getHeight() + 3);
-                    }
-                });
-
-                // Show the popup under this text area
-                if (!listView.getItems().isEmpty()) {
-                    popup.show(textArea, textArea.localToScreen(0, 0).getX(), textArea.localToScreen(0, 0).getY() + textArea.heightProperty().getValue());
-                }
-            }
-        });
+    
+    // <editor-fold defaultstate="collapsed" desc="Auto Complete Functionality">  
+    /**
+     * Get the suggestions for the auto complete.
+     * make sure to filter out exact matches as there is no point suggesting what is there.
+     * and set the action, as it is often custom
+     * @return 
+     */
+    protected abstract List<MenuItem> getAutoCompleteSuggestions();
+    
+    public void shoAutoCompleteSuggestions() {
+        final List<MenuItem> suggestions = this.getAutoCompleteSuggestions();
+        if (suggestions != null && !suggestions.isEmpty()){
+            ContextMenu menu = new ContextMenu();
+                        
+            menu.getItems().addAll(suggestions);
+            menu.setAutoHide(true);
+            menu.setAutoFix(true);
+            //Listen for key events for when arrows are pressed or when to hide the menu
+            this.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
+                menu.hide();
+            });
+            showDropDown(menu);
+        }
     }
+    // </editor-fold>  
         
 }

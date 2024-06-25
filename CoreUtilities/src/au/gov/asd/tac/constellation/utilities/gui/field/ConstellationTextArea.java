@@ -18,14 +18,14 @@ package au.gov.asd.tac.constellation.utilities.gui.field;
 import au.gov.asd.tac.constellation.utilities.gui.context.ContextMenuContributor;
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType.MULTILINE;
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType.SECRET;
+import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
@@ -33,7 +33,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.control.Tooltip;
-import javafx.scene.control.skin.TextAreaSkin;
 import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -91,8 +90,18 @@ import javafx.scene.shape.Rectangle;
                     primaryInput = area;
                 }
                 default -> {
-                    primaryInput = new TextField();
-                    primaryInput.setPadding(insets);
+                    TextField field = new TextField();
+                    field.setPadding(insets); 
+                    
+                    //The up down arrows allow for navigation to the begining and start of a line
+                    //This is being remappedt o ALT + left and ALT + right for consistency between textArea and textField
+                    field.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
+                        if ((event.getCode() == KeyCode.UP || event.getCode() == KeyCode.UP) && !event.isAltDown()) {
+                           event.consume(); 
+                        }
+                    });
+                    
+                    primaryInput = field;
                 }
             }
             //Set up the primary InputControl
@@ -116,10 +125,28 @@ import javafx.scene.shape.Rectangle;
                 }
                 default -> {
                     secondaryInput = null;
+                    //The up down arrows allow for navigation to the begining and start of a line
+                    //This is being remappedt o ALT + left and ALT + right for consistency between textArea and textField
+                    primaryInput.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
+                        
+                        // Navigate to extremem ends of line
+                        if (event.getCode() == KeyCode.LEFT && event.isAltDown()) {
+                           primaryInput.positionCaret(0); 
+                           event.consume(); 
+                        }
+                        
+                        if (event.getCode() == KeyCode.RIGHT && event.isAltDown()) {
+                           primaryInput.positionCaret(this.getText().length());
+                           event.consume(); 
+                        }
+                    });
                     this.getChildren().add(primaryInput);
                 }
             } 
-
+        }
+        
+        public boolean isInFocus(){
+            return primaryInput.isFocused();
         }
         
         // <editor-fold defaultstate="collapsed" desc="Local Private Methods"> 
@@ -146,6 +173,7 @@ import javafx.scene.shape.Rectangle;
         public void setText(String stringValue) {
             if (stringValue != null) {
                 primaryInput.setText(stringValue);
+                primaryInput.positionCaret(stringValue.length());
             }
         }
         
@@ -192,6 +220,14 @@ import javafx.scene.shape.Rectangle;
             } else {
                 throw new UnsupportedOperationException("Only ConstellationTextAreas of TextType.SECRET can be revealed");
             }
+        }
+        
+        public int getCaretPosition(){
+            return primaryInput.getCaretPosition();
+        }
+        
+        public void setCaretPosition(int position){
+            primaryInput.positionCaret(position);
         }
         
         // <editor-fold defaultstate="collapsed" desc="ContextMenuContributor Implementation"> 
