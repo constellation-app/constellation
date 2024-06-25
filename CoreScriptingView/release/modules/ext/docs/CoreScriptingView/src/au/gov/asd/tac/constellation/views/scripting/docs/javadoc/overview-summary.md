@@ -1,9 +1,3 @@
-<div>
-
-JavaScript is disabled on your browser.
-
-</div>
-
 <div class="topNav">
 
 <span id="navbar.top"></span>
@@ -19,10 +13,10 @@ JavaScript is disabled on your browser.
 -   Overview
 -   Package
 -   Class
--   [Tree](](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/overview-tree.md)
--   [Deprecated](](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/deprecated-list.md)
--   [Index](](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/index-all.md)
--   [Help](](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/help-doc.md)
+-   [Tree](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/overview-tree.md)
+-   [Deprecated](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/deprecated-list.md)
+-   [Index](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/index-all.md)
+-   [Help](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/help-doc.md)
 
 <div class="aboutLanguage">
 
@@ -39,12 +33,12 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 
 <!-- -->
 
--   [Frames](](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/overview-summary.md)
--   [No Frames](](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/overview-summary.md)
+-   [Frames](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/overview-summary.md)
+-   [No Frames](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/overview-summary.md)
 
 <!-- -->
 
--   [All Classes](](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/allclasses-noframe.md)
+-   [All Classes](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/allclasses-noframe.md)
 
 <div>
 
@@ -72,15 +66,15 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 </thead>
 <tbody>
 <tr class="odd altColor">
-<td class="colFirst"><a href="../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/package-summary.md">au.gov.asd.tac.constellation.views.scripting.graph</a></td>
+<td class="colFirst"><a href="../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/package-summary.md">au.gov.asd.tac.constellation.views.scripting.graph</a></td>
 <td class="colLast"> </td>
 </tr>
 <tr class="even rowColor">
-<td class="colFirst"><a href="../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/iterators/package-summary.md">au.gov.asd.tac.constellation.views.scripting.graph.iterators</a></td>
+<td class="colFirst"><a href="../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/iterators/package-summary.md">au.gov.asd.tac.constellation.views.scripting.graph.iterators</a></td>
 <td class="colLast"> </td>
 </tr>
 <tr class="odd altColor">
-<td class="colFirst"><a href="../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/utilities/package-summary.md">au.gov.asd.tac.constellation.views.scripting.utilities</a></td>
+<td class="colFirst"><a href="../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/utilities/package-summary.md">au.gov.asd.tac.constellation.views.scripting.utilities</a></td>
 <td class="colLast"> </td>
 </tr>
 </tbody>
@@ -105,10 +99,10 @@ Packages<span class="tabEnd"> </span>
 -   Overview
 -   Package
 -   Class
--   [Tree](](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/overview-tree.md)
--   [Deprecated](](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/deprecated-list.md)
--   [Index](](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/index-all.md)
--   [Help](](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/help-doc.md)
+-   [Tree](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/overview-tree.md)
+-   [Deprecated](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/deprecated-list.md)
+-   [Index](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/index-all.md)
+-   [Help](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/help-doc.md)
 
 <div class="aboutLanguage">
 
@@ -125,12 +119,12 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 
 <!-- -->
 
--   [Frames](](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/overview-summary.md)
--   [No Frames](](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/overview-summary.md)
+-   [Frames](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/overview-summary.md)
+-   [No Frames](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/overview-summary.md)
 
 <!-- -->
 
--   [All Classes](](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/allclasses-noframe.md)
+-   [All Classes](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/allclasses-noframe.md)
 
 <div>
 

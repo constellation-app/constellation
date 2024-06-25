@@ -1,9 +1,3 @@
-<div>
-
-JavaScript is disabled on your browser.
-
-</div>
-
 <div class="topNav">
 
 <span id="navbar.top"></span>
@@ -16,13 +10,13 @@ JavaScript is disabled on your browser.
 
 <span id="navbar.top.firstrow"></span>
 
--   [Overview](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/overview-summary.md)
--   [Package](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/package-summary.md)
+-   [Overview](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/overview-summary.md)
+-   [Package](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/package-summary.md)
 -   Class
--   [Tree](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/package-tree.md)
--   [Deprecated](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/deprecated-list.md)
--   [Index](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/index-all.md)
--   [Help](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/help-doc.md)
+-   [Tree](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/package-tree.md)
+-   [Deprecated](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/deprecated-list.md)
+-   [Index](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/index-all.md)
+-   [Help](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/help-doc.md)
 
 <div class="aboutLanguage">
 
@@ -35,17 +29,17 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 <div class="subNav">
 
 -   [<span
-    class="typeNameLink">Prev Class</span>](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SVertex.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
+    class="typeNameLink">Prev Class</span>](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SVertex.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
 -   Next Class
 
 <!-- -->
 
--   [Frames](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md)
--   [No Frames](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md)
+-   [Frames](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SWritableGraph.md)
+-   [No Frames](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SWritableGraph.md)
 
 <!-- -->
 
--   [All Classes](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/allclasses-noframe.md)
+-   [All Classes](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/allclasses-noframe.md)
 
 <div>
 
@@ -88,17 +82,14 @@ au.gov.asd.tac.constellation.views.scripting.graph
 
 -   java.lang.Object
 
--   -   [au.gov.asd.tac.constellation.views.scripting.graph.SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
+-   -   [au.gov.asd.tac.constellation.views.scripting.graph.SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
 
     -   -   au.gov.asd.tac.constellation.views.scripting.graph.SWritableGraph
 
 <div class="description">
 
--   
-
-    ------------------------------------------------------------------------
-
-      
+-   -
+    ------------------------------------------------------------------------ 
 
         public class SWritableGraph
         extends SReadableGraph
@@ -123,7 +114,7 @@ au.gov.asd.tac.constellation.views.scripting.graph
         -   <span
             id="fields.inherited.from.class.au.gov.asd.tac.constellation.views.scripting.graph.SReadableGraph"></span>
 
-            ### Fields inherited from class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
+            ### Fields inherited from class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
 
             `graph, readableGraph`
 
@@ -282,7 +273,7 @@ au.gov.asd.tac.constellation.views.scripting.graph
         -   <span
             id="methods.inherited.from.class.au.gov.asd.tac.constellation.views.scripting.graph.SReadableGraph"></span>
 
-            ### Methods inherited from class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
+            ### Methods inherited from class au.gov.asd.tac.constellation.views.scripting.graph.[SReadableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
 
             `__getitem__, attribute, attribute, attributeCount, attributeModificationCounter, attributes, edge, edgeCount, edges, filterTransactions, filterVertices, getReadableGraph, globalModificationCounter, hasAttribute, hasEdge, hasLink, hasTransaction, hasVertex, link, link, linkCount, links, release, structureModificationCounter, transaction, transactionCount, transactions, valueModificationCounter, vertex, vertexCount, vertices, withTransactions, withVertices`
 
@@ -329,7 +320,7 @@ au.gov.asd.tac.constellation.views.scripting.graph
 
             Commit changes made to the graph using this write lock, then
             release the lock. This or
-            [`rollback()`](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md#rollback--)
+            [`rollback()`](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SWritableGraph.md#rollback--)
             should be called immediately after you finish writing to the
             graph.
 
@@ -345,7 +336,7 @@ au.gov.asd.tac.constellation.views.scripting.graph
 
             Rollback changes made to the graph using this write lock,
             then release the lock. This or
-            [`commit()`](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md#commit--)
+            [`commit()`](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SWritableGraph.md#commit--)
             should be called immediately after you finish writing to the
             graph.
 
@@ -384,7 +375,7 @@ au.gov.asd.tac.constellation.views.scripting.graph
 
             <span class="returnLabel">Returns:</span>  
             the new attribute as a
-            [`SAttribute`](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SAttribute.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
+            [`SAttribute`](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SAttribute.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
 
         <span
         id="ensureAttribute-au.gov.asd.tac.constellation.graph.GraphElementType-java.lang.String-"></span>
@@ -408,7 +399,7 @@ au.gov.asd.tac.constellation.views.scripting.graph
 
             <span class="returnLabel">Returns:</span>  
             the attribute as a
-            [`SAttribute`](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SAttribute.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
+            [`SAttribute`](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SAttribute.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
 
         <span id="removeAttribute-int-"></span>
 
@@ -439,7 +430,7 @@ au.gov.asd.tac.constellation.views.scripting.graph
 
             <span class="returnLabel">Returns:</span>  
             the new vertex as a
-            [`SVertex`](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SVertex.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
+            [`SVertex`](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SVertex.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
 
         <span id="removeVertex-int-"></span>
 
@@ -471,7 +462,7 @@ au.gov.asd.tac.constellation.views.scripting.graph
 
             <span class="paramLabel">Parameters:</span>  
             `vertices` - the vertices to remove as a
-            [`SCollection`](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SCollection.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
+            [`SCollection`](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SCollection.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
 
         <span id="mergeVertices-int-int-"></span>
 
@@ -509,7 +500,7 @@ au.gov.asd.tac.constellation.views.scripting.graph
             `leadVertex` - the id of the consuming vertex.
 
             `vertices` - the consumed vertices as a
-            [`SCollection`](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SCollection.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
+            [`SCollection`](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SCollection.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
 
         <span
         id="addTransaction-au.gov.asd.tac.constellation.views.scripting.graph.SVertex-au.gov.asd.tac.constellation.views.scripting.graph.SVertex-boolean-"></span>
@@ -535,7 +526,7 @@ au.gov.asd.tac.constellation.views.scripting.graph
 
             <span class="returnLabel">Returns:</span>  
             the new transaction as a
-            [`STransaction`](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/STransaction.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
+            [`STransaction`](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/STransaction.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
 
         <span id="removeTransaction-int-"></span>
 
@@ -567,7 +558,7 @@ au.gov.asd.tac.constellation.views.scripting.graph
 
             <span class="paramLabel">Parameters:</span>  
             `transactions` - the transaction to remove as a
-            [`STransaction`](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/STransaction.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
+            [`STransaction`](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/STransaction.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
 
         <span
         id="Z:Z__setitem__-java.lang.Object-java.lang.Object-"></span>
@@ -659,13 +650,13 @@ au.gov.asd.tac.constellation.views.scripting.graph
 
 <span id="navbar.bottom.firstrow"></span>
 
--   [Overview](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/overview-summary.md)
--   [Package](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/package-summary.md)
+-   [Overview](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/overview-summary.md)
+-   [Package](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/package-summary.md)
 -   Class
--   [Tree](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/package-tree.md)
--   [Deprecated](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/deprecated-list.md)
--   [Index](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/index-all.md)
--   [Help](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/help-doc.md)
+-   [Tree](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/package-tree.md)
+-   [Deprecated](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/deprecated-list.md)
+-   [Index](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/index-all.md)
+-   [Help](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/help-doc.md)
 
 <div class="aboutLanguage">
 
@@ -678,17 +669,17 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 <div class="subNav">
 
 -   [<span
-    class="typeNameLink">Prev Class</span>](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SVertex.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
+    class="typeNameLink">Prev Class</span>](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SVertex.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
 -   Next Class
 
 <!-- -->
 
--   [Frames](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md)
--   [No Frames](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md)
+-   [Frames](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SWritableGraph.md)
+-   [No Frames](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SWritableGraph.md)
 
 <!-- -->
 
--   [All Classes](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/allclasses-noframe.md)
+-   [All Classes](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/allclasses-noframe.md)
 
 <div>
 
