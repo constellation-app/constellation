@@ -21,6 +21,9 @@ that you can immediately start playing with:
     [here](../ext/docs/CoreGraphFramework/src/au/gov/asd/tac/constellation/graph/graph-model.md)
     to learn about the graph structure.
 
+Note the Welcome Page which you see when you first load the application 
+will include a number of links to help you get started.
+
 ## Importing Your Own Data
 
 After following the above, you might want to look importing your own

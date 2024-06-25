@@ -4,7 +4,7 @@ The graph window provides a 3D visual display of a graph.
 
 <div style="text-align: center">
 
-<img src="../ext/docs/CoreFunctionality/src/au/gov/asd/tac/constellation/functionality/resources/GraphView.png" width="573" height="378" alt="The Graph Window" />
+<img src="../ext/docs/CoreFunctionality/src/au/gov/asd/tac/constellation/functionality/resources/GraphView.png" width="898" height="400" alt="The Graph Window" />
 
 </div>
 
@@ -117,6 +117,6 @@ than eight transactions between two nodes, they will be drawn as the
 corresponding edge.
 
 Text can be drawn above and below nodes: use the graph-level attributes
-"node\_labels\_bottom" and "node\_labels\_top" to determine what text is
+"node\_bottom\_labels" and "node\_top\_labels" to determine what text is
 drawn. Similarly for transactions using the attribute
 "transaction\_labels".

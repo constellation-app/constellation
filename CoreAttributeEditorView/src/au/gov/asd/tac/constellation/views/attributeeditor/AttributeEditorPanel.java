@@ -102,6 +102,7 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
@@ -127,6 +128,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import org.apache.commons.collections4.CollectionUtils;
+import org.openide.util.HelpCtx;
 import org.openide.util.NbPreferences;
 
 /**
@@ -160,6 +162,7 @@ public class AttributeEditorPanel extends BorderPane {
     private final ScrollPane scrollPane = new ScrollPane();
     private final MenuBar optionsBar = new MenuBar();
     private final Menu optionsMenu = new Menu("Options");
+    private final ToolBar optionsPane = new ToolBar();
     private final CheckMenuItem completeWithSchemaItem = new CheckMenuItem("Complete with Schema After Edits");
     private final Preferences prefs = NbPreferences.forModule(AttributePreferenceKey.class);
     private final AttributeEditorTopComponent topComponent;
@@ -229,9 +232,17 @@ public class AttributeEditorPanel extends BorderPane {
 
             completeWithSchemaItem.setSelected(false);
             optionsMenu.getItems().addAll(createColorsMenu(), completeWithSchemaItem);
+            optionsBar.setId("options-menu");
             optionsBar.getMenus().add(optionsMenu);
+            
+            final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor()));
+            final Button helpButton = new Button("", helpImage);
+            helpButton.setStyle("-fx-border-color: transparent; -fx-background-color: transparent; -fx-effect: null; ");
+            helpButton.setOnAction(event
+                    -> new HelpCtx(this.getClass().getName()).display());
+            optionsPane.getItems().addAll(optionsBar, helpButton);
 
-            borderPane.setTop(optionsBar);
+            borderPane.setTop(optionsPane);
             borderPane.setCenter(scrollPane);
 
             root.getChildren().add(borderPane);

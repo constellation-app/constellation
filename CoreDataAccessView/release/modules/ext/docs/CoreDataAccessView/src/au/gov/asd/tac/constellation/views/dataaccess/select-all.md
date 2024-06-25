@@ -2,5 +2,11 @@
 
 ## Select everything in your graph
 
+<br />
+<img src="../ext/docs/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/resources/SelectAll.png" alt="Select All" />
+<br />
+
+Selects everything on the graph.
+
 This can be useful when creating workflows in the Data Access View, as
 it allows you to select newly added data for further queries.

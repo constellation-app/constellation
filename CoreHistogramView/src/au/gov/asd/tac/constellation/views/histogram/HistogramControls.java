@@ -31,6 +31,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JToggleButton;
+import org.openide.util.HelpCtx;
 
 /**
  * The panel that displays all the UI controls available to the user to
@@ -265,6 +266,7 @@ public class HistogramControls extends JPanel {
         transactionToggle = new javax.swing.JToggleButton();
         edgeToggle = new javax.swing.JToggleButton();
         linkToggle = new javax.swing.JToggleButton();
+        helpButton = new javax.swing.JButton();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -399,6 +401,13 @@ public class HistogramControls extends JPanel {
             }
         });
 
+        helpButton.setText(org.openide.util.NbBundle.getMessage(HistogramControls.class, "HistogramControls.helpButton.text")); // NOI18N
+        helpButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                helpButtonMousePressed(evt);
+            }
+        });
+
         javax.swing.GroupLayout uiPanelLayout = new javax.swing.GroupLayout(uiPanel);
         uiPanel.setLayout(uiPanelLayout);
         uiPanelLayout.setHorizontalGroup(
@@ -435,7 +444,7 @@ public class HistogramControls extends JPanel {
                     .addGroup(uiPanelLayout.createSequentialGroup()
                         .addGroup(uiPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(filterLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(selectionModeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 82, Short.MAX_VALUE))
+                            .addComponent(selectionModeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 82, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(uiPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(uiPanelLayout.createSequentialGroup()
@@ -446,7 +455,9 @@ public class HistogramControls extends JPanel {
                                 .addComponent(filterSelectionButton)
                                 .addGap(10, 10, 10)
                                 .addComponent(clearFilterButton, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 126, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
+                                .addComponent(helpButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(actionsButton)))))
                 .addGap(5, 5, 5))
         );
@@ -484,7 +495,9 @@ public class HistogramControls extends JPanel {
                     .addComponent(filterLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(filterSelectionButton)
                     .addComponent(clearFilterButton)
-                    .addComponent(actionsButton)))
+                    .addGroup(uiPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(actionsButton)
+                        .addComponent(helpButton))))
         );
 
         add(uiPanel, java.awt.BorderLayout.SOUTH);
@@ -604,6 +617,11 @@ public class HistogramControls extends JPanel {
         }
     }//GEN-LAST:event_linkToggleStateChanged
 
+    private void helpButtonMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_helpButtonMousePressed
+        final HelpCtx help = new HelpCtx("au.gov.asd.tac.constellation.views.histogram");
+        help.display();
+    }//GEN-LAST:event_helpButtonMousePressed
+
     private void saveBinsToGraph() {
         topComponent.saveBinsToGraph();
     }
@@ -625,6 +643,7 @@ public class HistogramControls extends JPanel {
     private javax.swing.JButton filterSelectionButton;
     private javax.swing.ButtonGroup graphElementGroup;
     private javax.swing.JLabel graphElementLabel;
+    private javax.swing.JButton helpButton;
     private javax.swing.JToggleButton linkToggle;
     private javax.swing.JLabel propertyLabel;
     private javax.swing.JButton selectButton;

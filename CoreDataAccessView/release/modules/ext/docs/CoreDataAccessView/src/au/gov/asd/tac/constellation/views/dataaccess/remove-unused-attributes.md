@@ -2,6 +2,10 @@
 
 ## Remove unused (non-key) attributes from your graph
 
+<br />
+<img src="../ext/docs/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/resources/RemoveUnusedAttributes.png" alt="Remove Unused Attributes" />
+<br />
+
 This plugin removes any node and transaction attributes on the graph
 that are not being used (i.e. contain no values).
 

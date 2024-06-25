@@ -130,7 +130,7 @@ public class WebServer {
     private static final String SCRIPT_SOURCE = Generator.getBaseDirectory() + "ext" + SEP + "package" + SEP + "src" + SEP + "constellation_client" + SEP;
 
     private static final String PACKAGE_SOURCE = Generator.getBaseDirectory() + "ext" + SEP + "package" + SEP + "package_dist";
-    private static final String[] PACKAGE_INSTALL = {"pip", "install", "constellation_client", "--no-index", "--find-links", "file:" + PACKAGE_SOURCE};
+    private static final String[] PACKAGE_INSTALL = {"pip", "install", "--upgrade", "constellation_client", "--no-index", "--find-links", "file:" + PACKAGE_SOURCE};
     private static final String[] WINDOWS_COMMAND = {"cmd", "/C", "start", "/wait"};
     private static final String[] UNIX_COMMAND = {"&"};
 

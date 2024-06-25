@@ -7,7 +7,7 @@ ohm resistor (or if the weighted parameter is set to true, an n ohm
 resistor, where n is the weight of that link) and using Kirchoff's
 current/voltage laws to measure the resistance at each junction. These
 resistances highlight which paths are easy or difficult to traverse, and
-in general nodes which lie of easily traversable paths can be easily
+in general nodes which lie on easily traversable paths can be easily
 reached.
 
 ## Parameters

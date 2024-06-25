@@ -15,10 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.find.components;
 
-import au.gov.asd.tac.constellation.views.find.components.BasicFindTab;
-import au.gov.asd.tac.constellation.views.find.components.ReplaceTab;
-import au.gov.asd.tac.constellation.views.find.components.FindViewTabs;
-import au.gov.asd.tac.constellation.views.find.components.FindViewPane;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
@@ -140,8 +136,8 @@ public class ReplaceTabNGTest {
          * and getSearchAllGraphs checkbox.
          */
         replaceTab.updateButtons();
-        assertEquals(replaceTab.buttonsHBox.getChildren().get(0), replaceTab.getReplaceAllButton());
-        assertEquals(replaceTab.buttonsHBox.getChildren().get(1), replaceTab.getReplaceNextButton());
+        assertEquals(replaceTab.buttonsHBox.getChildren().get(1), replaceTab.getReplaceAllButton());
+        assertEquals(replaceTab.buttonsHBox.getChildren().get(2), replaceTab.getReplaceNextButton());
     }
 
     /**

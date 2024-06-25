@@ -47,6 +47,7 @@ public class InteractiveGraphHelpProvider extends HelpPageProvider {
 
         map.put("au.gov.asd.tac.constellation.graph.interaction.addselectmode", interactiveModulePath + "add-and-selection-modes.md");
         map.put("au.gov.asd.tac.constellation.graph.interaction.cutcopypaste", interactiveModulePath + "cut-copy-paste.md");
+        map.put("au.gov.asd.tac.constellation.graph.interaction.compositedSelectedNodes", interactiveModulePath + "composite-nodes.md");
         return map;
     }
 
