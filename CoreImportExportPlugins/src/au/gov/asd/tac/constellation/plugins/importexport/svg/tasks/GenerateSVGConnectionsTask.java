@@ -29,6 +29,7 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess.ConnectionDirection;
 import java.util.List;
 import au.gov.asd.tac.constellation.plugins.MultiTaskInteraction.SharedInteractionRunnable;
+import java.util.ArrayList;
 
 
 /**
@@ -41,7 +42,7 @@ import au.gov.asd.tac.constellation.plugins.MultiTaskInteraction.SharedInteracti
 public class GenerateSVGConnectionsTask implements Runnable, SharedInteractionRunnable {
     
     private final GraphVisualisationReferences graph;
-    private final List<Integer> connectionIndicies;
+    private final List<Integer> connectionIndicies = new ArrayList<>();
     private final List<SVGObject> output;
     private final int totalSteps;
     private int currentStep;
@@ -49,7 +50,7 @@ public class GenerateSVGConnectionsTask implements Runnable, SharedInteractionRu
     
     public GenerateSVGConnectionsTask(final GraphVisualisationReferences graph, final List<Integer> linkIndicies, final List<SVGObject> output){
         this.graph = graph;
-        this.connectionIndicies = linkIndicies;
+        this.connectionIndicies.addAll(linkIndicies);
         this.output = output;
         this.totalSteps = linkIndicies.size();
     }

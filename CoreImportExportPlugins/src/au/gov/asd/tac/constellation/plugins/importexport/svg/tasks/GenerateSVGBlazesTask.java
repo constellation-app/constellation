@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.utilities.svg.SVGObject;
 import java.util.List;
 import au.gov.asd.tac.constellation.plugins.MultiTaskInteraction.SharedInteractionRunnable;
+import java.util.ArrayList;
 
 /**
  * A runnable task designed to build SVG assets representing graph blazes.
@@ -32,7 +33,7 @@ import au.gov.asd.tac.constellation.plugins.MultiTaskInteraction.SharedInteracti
 public class GenerateSVGBlazesTask implements SharedInteractionRunnable {
 
     private final GraphVisualisationReferences graph;
-    private final List<Integer> vertexIndicies;
+    private final List<Integer> vertexIndicies = new ArrayList<>();
     private final List<SVGObject> output;
     private final int totalSteps;
     private int currentStep;
@@ -40,7 +41,7 @@ public class GenerateSVGBlazesTask implements SharedInteractionRunnable {
     
     public GenerateSVGBlazesTask(final GraphVisualisationReferences graph, final List<Integer> vertexIndicies, final List<SVGObject> output){
         this.graph = graph;
-        this.vertexIndicies = vertexIndicies;
+        this.vertexIndicies.addAll(vertexIndicies);
         this.output = output;
         this.totalSteps = vertexIndicies.size();
     }
