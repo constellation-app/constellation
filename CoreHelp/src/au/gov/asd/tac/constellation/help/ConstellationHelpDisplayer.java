@@ -239,9 +239,9 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
             // check the meta tag
             final int metaTagEnd = htmlString.substring(metaIndex).indexOf(">");
             String metaString = htmlString.substring(metaIndex, metaIndex + metaTagEnd + 1);
-            int contentIndex = metaString.indexOf("content=\"");
+            final int contentIndex = metaString.indexOf("content=\"");
             if (contentIndex > -1) {
-                int endContentPos = metaString.substring(contentIndex+9).indexOf("\"");
+                final int endContentPos = metaString.substring(contentIndex+9).indexOf("\"");
                 String contentString = metaString.substring(contentIndex + 9, contentIndex + 9 + endContentPos);
                 final int charsetIndex = contentString.indexOf("charset=");
                 if (charsetIndex > -1) {
