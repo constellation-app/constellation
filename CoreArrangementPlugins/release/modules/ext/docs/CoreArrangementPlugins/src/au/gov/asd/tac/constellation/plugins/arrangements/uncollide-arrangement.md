@@ -24,10 +24,15 @@
 </table>
 
 
-Selected nodes are postioned such that they don't "collide" with one another. 
-If no nodes are selected, then all nodes on the graph will be affected. 
+Selected nodes are postioned such that they don't "collide" with one another.
+Nodes are considered "colliding" if they overlap with one another.
+If no nodes are selected, then all nodes on the graph will be affected.
 
-Uncollide, contrast to Uncollide 3D, only operates on the X and Y axis.
+Using uncollide will expand the graph until none of the selected nodes are colliding.
+If none of the nodes are colliding the begin with, nothing will happen.
+
+Uncollide will only operate on the X and Y axis, Z is ignore. Whereas Uncollide 
+3D will ensure node don't overlap on all 3 axis.
 
 <div style="text-align: center">
     <figure style = "display: inline-block">

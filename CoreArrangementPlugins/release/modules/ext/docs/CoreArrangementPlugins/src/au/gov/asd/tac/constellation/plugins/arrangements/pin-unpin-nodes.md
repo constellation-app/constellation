@@ -25,13 +25,18 @@
 </tr>
 </tbody>
 </table>
+<br />
+
+Arrangements normally work by affecting all selected nodes or, if no nodes are 
+selected, all the nodes on the current graph. Should a user want particular nodes 
+to not be effected by an arrangement plugin, they can "pin" those nodes.
 
 ## Pin
 Selected nodes are pinned, meaning they will be ignored (even if selected) when 
-an arrangement plugin is run. 
+an arrangement plugin is run.
 
 ## Unpin
-Selected nodes are unpinned, removing the "pinned" attribute.
+Selected nodes are unpinned, setting their "pinned" attribute to false.
 
 <br />
 <div style="text-align: center">

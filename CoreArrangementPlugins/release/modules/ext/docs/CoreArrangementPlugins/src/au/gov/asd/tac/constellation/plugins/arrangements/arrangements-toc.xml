@@ -12,7 +12,7 @@
         <tocitem text="Sphere" target="au.gov.asd.tac.constellation.plugins.arrangements.sphere"/>
         <tocitem text="Bubble Tree 3D" target="au.gov.asd.tac.constellation.plugins.arrangements.bubbleTree3d"/>
         <tocitem text="Proximity" target="au.gov.asd.tac.constellation.plugins.arrangements.proximity"/>
-        <tocitem text="Spectral" target="au.gov.asd.tac.constellation.plugins.arrangements.spectral"/>
+        <tocitem text="Spectral 3D" target="au.gov.asd.tac.constellation.plugins.arrangements.spectral"/>
         <tocitem text="HDE 3D" target="au.gov.asd.tac.constellation.plugins.arrangements.hde"/>
         <tocitem text="Flatten Z-Field" target="au.gov.asd.tac.constellation.plugins.arrangements.flattenZField"/>
         <tocitem text="Contract Graph" target="au.gov.asd.tac.constellation.plugins.arrangements.contractGraph"/>

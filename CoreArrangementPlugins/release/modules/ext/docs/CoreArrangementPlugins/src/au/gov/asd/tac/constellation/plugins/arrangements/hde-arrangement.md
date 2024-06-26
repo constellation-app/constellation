@@ -22,7 +22,7 @@
 The HDE 3D arrangement arranges all the "islands" of nodes, by 
 using the high dimensional embedding algorithm.
 
-Info about the alogithm can be found in:
+Info about the algorithm can be found in:
 
 D. Harel and Y. Koren, "Graph Drawing by High-Dimensional Embedding", proceedings of Graph Drawing 2002, Volume 2528 of Lecture Notes in Computer Science, pp. 207-219,  Springer Verlag, 2002
 

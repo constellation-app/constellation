@@ -19,7 +19,7 @@
 </tbody>
 </table>
 
-Similar to the "tree arrangement" plugin, the bubble tree 3D arrangement 
+Similar to the [tree arrangement](tree.md) plugin, the bubble tree 3D arrangement 
 arranges all the nodes in tree-like structures with "root" nodes and "leaf" 
 nodes placed around their respective root nodes.
 

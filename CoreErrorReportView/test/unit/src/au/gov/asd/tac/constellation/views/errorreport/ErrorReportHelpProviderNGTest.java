@@ -18,7 +18,8 @@ package au.gov.asd.tac.constellation.views.errorreport;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.Test;
 
 /**
