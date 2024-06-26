@@ -226,14 +226,14 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         html.append(scriptTag);
 
         String htmlString = html.toString();
+        final int headTagIndex = htmlString.indexOf("<head ");
+        int insertPos = 0;
+        if (headTagIndex > -1) {
+            insertPos = htmlString.substring(headTagIndex).indexOf(">") + headTagIndex + 1;                
+        }
         final int metaIndex = htmlString.indexOf("<meta ");
         if (metaIndex == -1) {
             // add a meta tag after the head tag if it exists
-            int insertPos = 0;
-            final int headTagIndex = htmlString.indexOf("<head");
-            if (headTagIndex > -1) {
-                insertPos = htmlString.substring(headTagIndex).indexOf(">") + headTagIndex + 1;                
-            }
             htmlString = htmlString.substring(0, insertPos) + "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">" + htmlString.substring(insertPos);
         } else {
             // check the meta tag
@@ -274,8 +274,9 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
                     metaString = metaString.substring(0, metaString.lastIndexOf("\"") + 1) + " content=\"text/html; charset=utf-8\">";
                 }
             }
-            // replace metastring in htmlString
-            htmlString = htmlString.substring(0, metaIndex) + metaString + htmlString.substring(metaIndex + metaTagEnd + 1);
+            // insert new metastring in htmlString
+            final String nonMetaHtml = htmlString.substring(0, metaIndex) + htmlString.substring(metaIndex + metaTagEnd + 1);
+            htmlString = nonMetaHtml.substring(0, insertPos) + metaString + nonMetaHtml.substring(insertPos);
         }
         return htmlString;
     }
