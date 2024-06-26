@@ -1,52 +1,70 @@
-# Chinese Whispers Clustering
+# Chinese Whispers
 
-**Chinese Whispers - an Efficient Graph Clustering Algorithm and its
-Application to Natural Language Processing Problems.**
+<table class="table table-striped">
+<thead>
+<tr class="header">
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th style="text-align: center;">Menu Icon</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Run Chinese Whispers</td>
+<td></td>
+<td>Tools -&gt; Cluster -&gt; Chinese Whispers</td>
+<td style="text-align: center;"><img src="../ext/docs/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/resources/chineseWhispers.png" alt="Chinese Whispers Icon" /></td>
+</tr>
+</tbody>
+</table>
 
-  
-Chris Biemann  
-University of Liepzig, NLP Department
+Chinese Whispers is a clustering algorithm which forms clusters around the 
+strongest classes in the graph.
 
-Intuitively, the algorithm works as follows in a bottom-up fashion:
-First all nodes get different classes. Then the nodes are processed for
-a small number of iterations and inherit the strongest class in the
-local neighborhood. This is the class whose sum of edge weights to the
-current node is maximal. In case of multiple strongest classes, one is
-chosen randomly. Regions of the same class stabilize during the
-iteration and grow until they reach the border of a stable region of
-another class. Note that classes are updated immediately: a node can
-obtain classes from the neighborhood that were introduced there in the
-same iteration.
+The algorithm works as follows:
 
-                initialize:
-                for all vi in V:
-                  class(vi) = i
-                while changes:
-                  for all v in V, randomized order:
-                    class(v) = highest ranked class in neighborhood of v;
-            
+1. Firstly it assigns all nodes in the graph their own class
+2. It then iterates through each node in a random order. For each node, it 
+changes its class to the one which has the largest sum of edge weights 
+connected to that node. If there is a tie for the largest, it randomly chooses
+one of the largest.
+3. Step 2 is repeated until clusters stabilise.
 
-Apart from ties, the classes usually do not change any more after a
-handful of iterations. The number of iterations depends on the diameter
-of the graph: the larger the distance between two nodes is, the more
-iterations it takes to percolate information from one to another.
+Because of the random nature of the algorithm, multiple runs of the algorithm 
+on the same graph can produce different clusters (depending on the order nodes 
+are iterated through, and which classes are selected in the case of ties).
 
-## Other features
+## Constellation Display
 
-Chinese Whispers in CONSTELLATION makes use of overlay colors. When the
+Chinese Whispers in Constellation makes use of overlay colors. When the
 clustering algorithm has been run, each cluster is assigned a unique
 color. Node backgrounds and intra-cluster transactions are colored using
 the cluster's color, while inter-cluster transactions are colored dark
 grey.
 
-Rather than set the color directly, Chinese Whispers in CONSTELLATION
-creates a new color attribute and tells Constellation to display the
-graph using the new attribute. To switch back to the default color
-attribute, use Edit → Color attribute selection.
+Rather than set the color directly, Chinese Whispers in Constellation
+creates a new color attribute "Cluster.ChineseWhispers.Color" and tells 
+Constellation to display the graph using the new attribute (via the 
+"node\_color\_reference" and "transaction\_color_reference" graph attributes). 
+To switch back to the default color attribute, edit the graph attributes via 
+the Attribute Editor and click on "Restore Default" followed by Ok.
+
+Before Chinese Whispers is run:
+<div style="text-align: center">
+<img src="../ext/docs/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/resources/ChineseWhispersBefore.png" alt="Graph before Chinese Whispers clustering applied" />
+</div>
+
+After Chinese Whispers is run:
+<div style="text-align: center">
+<img src="../ext/docs/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/resources/ChineseWhispersAfter.png" alt="Graph after Chinese Whispers clustering applied" />
+</div>
+<br />
 
 When the clustering algorithm runs, no arrangement is done, so the graph
 can look confusing.
 
-The clustering algorithms add an integer attribute "cluster" to the
-vertices. This attribute has a unique per-cluster value to indicate
-which cluster a vertex belongs to, which other algorithms can later use.
+The clustering algorithms add an integer attribute "Cluster.ChineseWhispers" 
+to the nodes. This attribute has a unique per-cluster value to indicate
+which cluster a node belongs to, which other algorithms can later use 
+(e.g. [Arrange by Node Attribute](../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/node-attribute.md)).
