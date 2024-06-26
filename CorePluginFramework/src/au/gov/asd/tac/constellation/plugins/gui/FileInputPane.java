@@ -25,13 +25,12 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
 import au.gov.asd.tac.constellation.utilities.gui.field.FileInputField;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldListener;
 import java.io.File;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 
 
 /**
@@ -75,8 +74,8 @@ public final class FileInputPane extends ParameterInputPane<FileParameterValue, 
     }
 
     @Override
-    public ChangeListener getFieldChangeListener(PluginParameter<FileParameterValue> parameter) {
-        return (ChangeListener<List<File>>) (ObservableValue<? extends List<File>> observable, List<File> oldValue, List<File> newValue) -> {
+    public ConstellationInputFieldListener getFieldChangeListener(PluginParameter<FileParameterValue> parameter) {
+        return (ConstellationInputFieldListener<List<File>>) (List<File> newValue) -> {
             parameter.setStringValue(field.getText());
         };
     }

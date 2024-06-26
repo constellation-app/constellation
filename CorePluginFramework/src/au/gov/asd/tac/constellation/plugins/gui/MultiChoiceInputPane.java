@@ -23,12 +23,11 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParamete
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.utilities.gui.field.ChoiceInputField;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ChoiceType;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldListener;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -64,8 +63,8 @@ public final class MultiChoiceInputPane extends ParameterInputPane<MultiChoicePa
     }
 
     @Override
-    public ChangeListener getFieldChangeListener(PluginParameter<MultiChoiceParameterValue> parameter) {
-        return (ChangeListener<List<ParameterValue>>) (ObservableValue<? extends List<ParameterValue>> observable, List<ParameterValue> oldValue, List<ParameterValue> newValue) -> {
+    public ConstellationInputFieldListener getFieldChangeListener(PluginParameter<MultiChoiceParameterValue> parameter) {
+        return (ConstellationInputFieldListener<List<ParameterValue>>) (List<ParameterValue> newValue) -> {
             if (newValue != null) {
                 MultiChoiceParameterType.setChoicesData(parameter, newValue);
             }

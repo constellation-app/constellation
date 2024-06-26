@@ -102,7 +102,7 @@ import org.apache.commons.lang3.StringUtils;
  * 
  * @author capricornunicorn123
  */
-public abstract class ConstellationInputField<T> extends StackPane implements ObservableValue<T>, ChangeListener<Serializable>, ContextMenuContributor{   
+public abstract class ConstellationInputField<T> extends StackPane implements ChangeListener<Serializable>, ContextMenuContributor{   
 
     private static final Logger LOGGER = Logger.getLogger(ConstellationInputField.class.getName());
     
@@ -115,7 +115,7 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
     private final Label rightLabel = new Label();
     protected final Rectangle rightButton = new Rectangle(endCellPrefWidth, defaultCellHeight); 
     protected final Rectangle leftButton = new Rectangle(endCellPrefWidth, defaultCellHeight); 
-    protected final List<ChangeListener> InputFieldListeners = new ArrayList<>();
+    protected final List<ConstellationInputFieldListener> InputFieldListeners = new ArrayList<>();
     private Rectangle foreground;
     private Rectangle background;
     
@@ -288,7 +288,7 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
         this.leftLabel.setText(label);
     };
     
-    // <editor-fold defaultstate="collapsed" desc="ObservableValue and ChangeListener Interface Support">
+    // <editor-fold defaultstate="collapsed" desc="ObservableValue and ConstellationInputFieldListener Interface Support">
     /**
      * This method manages the handling of changes to the TextProperty and FocusedProperty of the {@link StypledTextArea} used
      * by the {@link ConstellationTextArea}.
@@ -323,27 +323,23 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
     }
 
     public void notifyListeners(T newValue){
-        for (ChangeListener listener : InputFieldListeners){
-            listener.changed(this, null, newValue);
+        for (ConstellationInputFieldListener listener : InputFieldListeners){
+            listener.changed(newValue);
         }
     }
     
-    @Override
-    public void addListener(ChangeListener listener) {
+    public void addListener(ConstellationInputFieldListener listener) {
         this.InputFieldListeners.add(listener);
     }
 
-    @Override
-    public void removeListener(ChangeListener listener) {
+    public void removeListener(ConstellationInputFieldListener listener) {
         this.InputFieldListeners.remove(listener);
     }
 
-    @Override
     public void addListener(InvalidationListener listener) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    @Override
     public void removeListener(InvalidationListener listener) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
@@ -434,7 +430,6 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
      * Gets the value that this input field represents;
      * @return 
      */    
-    @Override
     public abstract T getValue();
     
     /**
@@ -555,7 +550,7 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
     
     public abstract InputInfoWindow getInputInfoWindow();
     
-    public abstract class InputInfoWindow extends StackPane implements ChangeListener<Serializable> {
+    public abstract class InputInfoWindow extends StackPane implements ConstellationInputFieldListener<Serializable> {
         public final ConstellationInputField parent;
                 
         public InputInfoWindow(ConstellationInputField parent){
@@ -571,7 +566,7 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ob
         protected abstract void refreshWindow();
         
         @Override
-        public void changed(ObservableValue<? extends Serializable> observable, Serializable oldValue, Serializable newValue) {
+        public void changed(Serializable newValue) {
             refreshWindow();
         }
         

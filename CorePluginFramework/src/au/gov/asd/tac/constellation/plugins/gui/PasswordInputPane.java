@@ -21,21 +21,12 @@ import static au.gov.asd.tac.constellation.plugins.parameters.ParameterChange.VA
 import static au.gov.asd.tac.constellation.plugins.parameters.ParameterChange.VISIBLE;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterListener;
-import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
-import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.PasswordParameterValue;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldListener;
 import au.gov.asd.tac.constellation.utilities.gui.field.PasswordInputField;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextInputControl;
-import javafx.scene.control.Tooltip;
-import javafx.scene.layout.HBox;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * A text box allowing entry of passwords corresponding to a {@link PluginParameter} of
@@ -60,8 +51,8 @@ public class PasswordInputPane extends ParameterInputPane<PasswordParameterValue
     }
 
     @Override
-    public ChangeListener getFieldChangeListener(PluginParameter parameter) {
-        return (ChangeListener<String>) (ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+    public ConstellationInputFieldListener getFieldChangeListener(PluginParameter parameter) {
+        return (ConstellationInputFieldListener<String>) (String newValue) -> {
             if (newValue != null) {
                 parameter.setStringValue(field.getText());
             }

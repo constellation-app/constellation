@@ -441,7 +441,7 @@ public final class ChoiceInputField<C extends Object> extends ConstellationInput
                 }
             }
             
-            final ChangeListener<List<C>> cl = (ObservableValue<? extends List<C>> observable, List<C> oldValue, List<C> newValue) -> {
+            final ConstellationInputFieldListener<List<C>> cl = (List<C> newValue) -> {
                 if (newValue != null) {
                     final List<String> stringrep = newValue.stream().map(Object::toString).toList();
                     for (CheckBox box : boxes){

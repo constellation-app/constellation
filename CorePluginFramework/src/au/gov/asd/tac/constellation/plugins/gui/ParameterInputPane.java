@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterListener;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputField;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldListener;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.layout.HBox;
 
@@ -92,8 +93,8 @@ public abstract class ParameterInputPane<T extends ParameterValue, V extends Obj
     }
     
     /**
-     * A ChangeListener that can modify the relevant {@link PluginParameter} when a change on the {@link ConstellationInputField} is found
-     * Note: {@link ConstellationInputField} will only notify ChangeListeners if the input field's TextProperty has 
+     * A {@link ConstellationInputFieldListener} that can modify the relevant {@link PluginParameter} when a change on the {@link ConstellationInputField} is found
+     * Note: {@link ConstellationInputField} will only notify {@link ConstellationInputFieldListeners} if the input field's TextProperty has 
      * changed and the {@link ConstellationInputField} has a valid value as defined by the {@link ConstellationInputField}.
      * It is the responsibility of implementations of this method to ensure that the input field value is
      * valid with respect to the {@link PluginParameter}.
@@ -109,7 +110,7 @@ public abstract class ParameterInputPane<T extends ParameterValue, V extends Obj
      * @param parameter
      * @return A ChangeListener that can be registered to a ConstelationInputField
      */
-    public abstract ChangeListener getFieldChangeListener(final PluginParameter<T> parameter);
+    public abstract ConstellationInputFieldListener getFieldChangeListener(final PluginParameter<T> parameter);
     
     /**
      * A {@link PluginParameterListener} that can modify the relevant {@link ConstellationInputField} when a change on 

@@ -23,13 +23,12 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParamet
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.utilities.gui.field.ChoiceInputField;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ChoiceType;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldListener;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 
 /**
  * A drop-down combo box which is the GUI element corresponding to a
@@ -60,8 +59,8 @@ public final class SingleChoiceInputPane extends ParameterInputPane<SingleChoice
     }
 
     @Override
-    public ChangeListener getFieldChangeListener(PluginParameter<SingleChoiceParameterValue> parameter) {
-        return (ChangeListener<List<ParameterValue>>) (ObservableValue<? extends List<ParameterValue>> observable, List<ParameterValue> oldValue, List<ParameterValue> newValue) -> {
+    public ConstellationInputFieldListener getFieldChangeListener(PluginParameter<SingleChoiceParameterValue> parameter) {
+        return (ConstellationInputFieldListener<List<ParameterValue>>) (List<ParameterValue> newValue) -> {
             if (newValue != null && newValue.size() == 1) {
                 SingleChoiceParameterType.setChoiceData(parameter, newValue.getFirst());
             }

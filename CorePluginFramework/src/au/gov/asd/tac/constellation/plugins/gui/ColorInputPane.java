@@ -21,11 +21,10 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterListener;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType.ColorParameterValue;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.gui.field.ColorInputField;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 
 /**
  * A color picker which is the GUI element corresponding to a
@@ -51,8 +50,8 @@ public final class ColorInputPane extends ParameterInputPane<ColorParameterValue
     }
 
     @Override
-    public final ChangeListener getFieldChangeListener(PluginParameter<ColorParameterValue> parameter) {
-        return (ChangeListener<ConstellationColor>) (ObservableValue<? extends ConstellationColor> observable, ConstellationColor oldValue, ConstellationColor newValue) -> {
+    public final ConstellationInputFieldListener getFieldChangeListener(PluginParameter<ColorParameterValue> parameter) {
+        return (ConstellationInputFieldListener<ConstellationColor>) (ConstellationColor newValue) -> {
             parameter.setColorValue(newValue);
         };
     }

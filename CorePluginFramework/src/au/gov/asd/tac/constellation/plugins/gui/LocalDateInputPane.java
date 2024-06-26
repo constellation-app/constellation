@@ -19,14 +19,12 @@ import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterListener;
 import au.gov.asd.tac.constellation.plugins.parameters.types.LocalDateParameterType.LocalDateParameterValue;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldListener;
 import au.gov.asd.tac.constellation.utilities.gui.field.DateInputField;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 
 /**
  * A Date Picker, which is the GUI element corresponding to a
@@ -54,8 +52,8 @@ public final class LocalDateInputPane extends ParameterInputPane<LocalDateParame
     }
 
     @Override
-    public ChangeListener getFieldChangeListener(PluginParameter<LocalDateParameterValue> parameter) {
-        return (ChangeListener<LocalDate>) (ObservableValue<? extends LocalDate> observable, LocalDate oldValue, LocalDate newValue) -> {
+    public ConstellationInputFieldListener getFieldChangeListener(PluginParameter<LocalDateParameterValue> parameter) {
+        return (ConstellationInputFieldListener<LocalDate>) (LocalDate newValue) -> {
             if (newValue != null) {
                 parameter.setLocalDateValue(newValue);
             }
