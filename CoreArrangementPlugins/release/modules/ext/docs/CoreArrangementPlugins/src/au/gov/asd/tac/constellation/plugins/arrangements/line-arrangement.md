@@ -30,7 +30,7 @@ horizontal or vertical line. The horizontal line orders nodes across the
 x-axis and the vertical line orders nodes across the y-axis. Nodes are
 ordered by their internal node id's.
 
-Example Line Arrangements (Horizontal on left, Vertical on right):
+Example Line Arrangements:
 
 <div style="text-align: center">
     <figure style = "display: inline-block">
