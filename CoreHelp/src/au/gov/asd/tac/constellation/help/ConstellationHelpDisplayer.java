@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.help;
 import au.gov.asd.tac.constellation.help.preferences.HelpPreferenceKeys;
 import au.gov.asd.tac.constellation.help.utilities.Generator;
 import au.gov.asd.tac.constellation.help.utilities.HelpMapper;
-import org.commonmark.node.*;
+import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
 import java.awt.Desktop;
@@ -274,7 +274,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
                     metaString = metaString.substring(0, metaString.lastIndexOf("\"") + 1) + " content=\"text/html; charset=utf-8\">";
                 }
             }
-            // insert new metastring in htmlString
+            // insert the new/updated metastring into htmlString
             final String nonMetaHtml = htmlString.substring(0, metaIndex) + htmlString.substring(metaIndex + metaTagEnd + 1);
             htmlString = nonMetaHtml.substring(0, insertPos) + metaString + nonMetaHtml.substring(insertPos);
         }

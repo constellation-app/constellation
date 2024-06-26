@@ -45,14 +45,14 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 -   Summary: 
 -   Nested | 
 -   [Field](#fields.inherited.from.class.au.gov.asd.tac.constellation.views.scripting.graph.SReadableGraph) | 
--   Constr | 
+-   Constructor | 
 -   [Method](#method.summary)
 
 <!-- -->
 
 -   Detail: 
 -   Field | 
--   Constr | 
+-   Constructor | 
 -   [Method](#method.detail)
 
 </div>
