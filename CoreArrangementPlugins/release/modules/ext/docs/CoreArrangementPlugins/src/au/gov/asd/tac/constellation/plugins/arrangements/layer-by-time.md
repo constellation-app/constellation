@@ -16,7 +16,7 @@ There are two options for defining the layers: "Nodes as Layers" and
 and transactions, with each layer representing a different time bin. It
 also adds guidelines to your graph to help with tracking the same node
 across multiple time layers. The "Transactions as Layers" option bins
-the data in the same way, but puts transactions on a separat e layer
+the data in the same way, but puts transactions on a separate layer
 (between their source and destination nodes). Experiment with both
 options to see which one works best for you.
 
