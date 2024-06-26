@@ -31,8 +31,8 @@ If no nodes are selected, then all nodes on the graph will be affected.
 Using uncollide will expand the graph until none of the selected nodes are colliding.
 If none of the nodes are colliding the begin with, nothing will happen.
 
-Uncollide will only operate on the X and Y axis, Z is ignore. Whereas Uncollide 
-3D will ensure node don't overlap on all 3 axis.
+Uncollide will only calculate with respect to the X and Y axis, whereas Uncollide 
+3D accounts for all three axis.
 
 <div style="text-align: center">
     <figure style = "display: inline-block">

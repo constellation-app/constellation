@@ -19,8 +19,8 @@
 </tbody>
 </table>
 
-The error report view shows a log of the runtime errors experience by 
-constellation. It also allows a user to disable popup notifications of errors 
+The error report view shows a log of the runtime errors experienced by 
+Constellation. It also allows a user to disable popup notifications of errors 
 at different severity levels.
 
 Example:
@@ -32,7 +32,7 @@ Example:
 
 ## Report Settings
 <div style="text-align: center">
-    <img width=400 src="../ext/docs/CoreErrorReportView/src/au/gov/asd/tac/constellation/views/errorreport/resources/ReportSettings.png" alt="Report Settigns" />
+    <img width=400 src="../ext/docs/CoreErrorReportView/src/au/gov/asd/tac/constellation/views/errorreport/resources/ReportSettings.png" alt="Report Settings" />
 </div>
 <br />
 
