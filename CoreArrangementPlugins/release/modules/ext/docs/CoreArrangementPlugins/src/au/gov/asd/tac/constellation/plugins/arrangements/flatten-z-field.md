@@ -31,7 +31,11 @@ Example Flatten:
         <figcaption>Before Flatten</figcaption>
     </figure>
     <figure style = "display: inline-block">
-        <img height=400 src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/ZFlat.png" alt="After Flatten" />
-        <figcaption>After Flatten</figcaption>
+        <img height=400 src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/ZFlat.png" alt="After Flatten Front View" />
+        <figcaption>After Flatten (Front View)</figcaption>
+    </figure>
+    <figure style = "display: inline-block">
+        <img height=400 src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/ZFlatSide.png" alt="After Flatten Side View" />
+        <figcaption>After Flatten (Side View)</figcaption>
     </figure>
 </div>
