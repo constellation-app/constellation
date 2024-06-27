@@ -110,11 +110,4 @@ public final class PasswordInputField extends ConstellationInputField<String> im
         throw new UnsupportedOperationException("PasswordInputField does not provide a ContextMenu");
     }
     // </editor-fold>   
-    
-    // <editor-fold defaultstate="collapsed" desc="Auto Complete Implementation"> 
-    @Override
-    protected List<MenuItem> getAutoCompleteSuggestions() {
-        return null;
-    }
-    // </editor-fold> 
 }

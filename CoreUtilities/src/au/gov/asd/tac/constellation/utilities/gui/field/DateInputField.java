@@ -176,12 +176,5 @@ public final class DateInputField extends ConstellationInputField<LocalDate> imp
         throw new UnsupportedOperationException("DateInputField does not provide a Drop Down Menu");
     }
     // </editor-fold>   
-    
-    // <editor-fold defaultstate="collapsed" desc="Auto Complete Implementation"> 
-    @Override
-    protected List<MenuItem> getAutoCompleteSuggestions() {
-        return null;
-    }
-    // </editor-fold>
 }
 

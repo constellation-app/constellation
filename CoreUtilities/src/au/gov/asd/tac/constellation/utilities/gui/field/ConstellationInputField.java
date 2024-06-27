@@ -299,7 +299,7 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ch
             }
             
             if (textArea.isInFocus()) {
-                shoAutoCompleteSuggestions();
+                showAutoCompleteSuggestions();
             }
             
             
@@ -444,8 +444,7 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ch
     }
     // </editor-fold>  
     
-    // <editor-fold defaultstate="collapsed" desc="DropDown Decleration & Functionality">   
-    
+    // <editor-fold defaultstate="collapsed" desc="DropDown Decleration & Functionality">    
     /**
      * Displays the provided ConstellationInputDropDown to the user.
      * This functionality has been captured in the base class intentionally to consistency across 
@@ -551,22 +550,22 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ch
      * make sure to filter out exact matches as there is no point suggesting what is there.
      * and set the action, as it is often custom
      * @return 
-     */
-    protected abstract List<MenuItem> getAutoCompleteSuggestions();
-    
-    public void shoAutoCompleteSuggestions() {
-        final List<MenuItem> suggestions = this.getAutoCompleteSuggestions();
-        if (suggestions != null && !suggestions.isEmpty()){
-            ContextMenu menu = new ContextMenu();
-                        
-            menu.getItems().addAll(suggestions);
-            menu.setAutoHide(true);
-            menu.setAutoFix(true);
-            //Listen for key events for when arrows are pressed or when to hide the menu
-            this.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
-                menu.hide();
-            });
-            showDropDown(menu);
+     */    
+    public void showAutoCompleteSuggestions() {
+        if (this instanceof AutoCompletable autoComplete){
+            final List<MenuItem> suggestions = autoComplete.getAutoCompleteSuggestions();
+            if (suggestions != null && !suggestions.isEmpty()){
+                ContextMenu menu = new ContextMenu();
+
+                menu.getItems().addAll(suggestions);
+                menu.setAutoHide(true);
+                menu.setAutoFix(true);
+                //Listen for key events for when arrows are pressed or when to hide the menu
+                this.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
+                    menu.hide();
+                });
+                showDropDown(menu);
+            }
         }
     }
     // </editor-fold>  

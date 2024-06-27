@@ -54,7 +54,7 @@ import javafx.scene.input.MouseEvent;
  * @author capricornunicorn123
  * @param <C> The Object type being represented by this ChoiceInputFiled
  */
-public final class ChoiceInputField<C extends Object> extends ConstellationInputField<List<C>> implements ButtonRight, ButtonLeft, Window{
+public final class ChoiceInputField<C extends Object> extends ConstellationInputField<List<C>> implements ButtonRight, ButtonLeft, Window, AutoCompletable{
     
     private final List<C> options = new ArrayList<>();
     private final List<ImageView> icons = new ArrayList<>();
@@ -528,7 +528,7 @@ public final class ChoiceInputField<C extends Object> extends ConstellationInput
     
     // <editor-fold defaultstate="collapsed" desc="Auto Complete Implementation"> 
     @Override
-    protected List<MenuItem> getAutoCompleteSuggestions() {
+    public List<MenuItem> getAutoCompleteSuggestions() {
         List<C> choices = this.getChoices();
         //do not show suggestions in the following cases
         //if there are two unknown choices that the user has enteres, i.e more than 1 null value.

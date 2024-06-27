@@ -278,11 +278,4 @@ public final class NumberInputField<C extends Number> extends ConstellationInput
         throw new UnsupportedOperationException("NumberInputField does not provide a ContextMenu");
     } 
     // </editor-fold> 
-    
-    // <editor-fold defaultstate="collapsed" desc="Auto Complete Implementation"> 
-    @Override
-    protected List<MenuItem> getAutoCompleteSuggestions() {
-        return null;
-    }
-    // </editor-fold> 
 }

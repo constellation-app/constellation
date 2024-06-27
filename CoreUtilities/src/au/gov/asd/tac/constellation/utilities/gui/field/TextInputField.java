@@ -35,7 +35,7 @@ import javafx.scene.input.MouseEvent;
  * 
  * @author capricornunicorn123
  */
-public final class TextInputField extends ConstellationInputField<String> implements RecentValuesListener, ButtonRight{
+public final class TextInputField extends ConstellationInputField<String> implements RecentValuesListener, ButtonRight, AutoCompletable{
     
     private final List<String> recentValues = new ArrayList<>();
     private final String recentValueListeningId;
@@ -137,7 +137,7 @@ public final class TextInputField extends ConstellationInputField<String> implem
     
     // <editor-fold defaultstate="collapsed" desc="Auto Complete Implementation"> 
     @Override
-    protected List<MenuItem> getAutoCompleteSuggestions() {
+    public List<MenuItem> getAutoCompleteSuggestions() {
         final List<MenuItem> suggestions = new ArrayList<>();
         this.recentValues
                 .stream()

@@ -299,11 +299,4 @@ public final class ColorInputField extends ConstellationInputField<Constellation
         return window;
     }
     //</editor-fold> 
-    
-    // <editor-fold defaultstate="collapsed" desc="Auto Complete Implementation"> 
-    @Override
-    protected List<MenuItem> getAutoCompleteSuggestions() {
-        return null;
-    }
-    // </editor-fold> 
 }
