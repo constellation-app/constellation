@@ -58,6 +58,8 @@ public class TableViewStateNGTest {
         assertEquals(state.getElementType(), GraphElementType.TRANSACTION);
         assertEquals(state.getTransactionColumnAttributes(), null);
         assertEquals(state.getVertexColumnAttributes(), null);
+        assertEquals(state.getEdgeColumnAttributes(), null);
+        assertEquals(state.getLinkColumnAttributes(), null);
     }
 
     @Test
@@ -67,6 +69,8 @@ public class TableViewStateNGTest {
         state.setElementType(GraphElementType.VERTEX);
         state.setTransactionColumnAttributes(new ArrayList<>());
         state.setVertexColumnAttributes(new ArrayList<>());
+        state.setEdgeColumnAttributes(new ArrayList<>());
+        state.setLinkColumnAttributes(new ArrayList<>());
 
         final TableViewState copy = new TableViewState(state);
 
@@ -74,6 +78,8 @@ public class TableViewStateNGTest {
         assertEquals(copy.getElementType(), GraphElementType.VERTEX);
         assertEquals(copy.getTransactionColumnAttributes(), new ArrayList<>());
         assertEquals(copy.getVertexColumnAttributes(), new ArrayList<>());
+        assertEquals(copy.getEdgeColumnAttributes(), new ArrayList<>());
+        assertEquals(copy.getLinkColumnAttributes(), new ArrayList<>());
     }
 
     @Test
@@ -82,5 +88,11 @@ public class TableViewStateNGTest {
                 .forClass(TableViewState.class)
                 .suppress(Warning.NONFINAL_FIELDS)
                 .verify();
+    }
+    
+    @Test
+    public void testToString(){
+        final TableViewState state = new TableViewState();
+        assertEquals(state.toString().getClass(), String.class);
     }
 }

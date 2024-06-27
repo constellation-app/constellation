@@ -8,6 +8,9 @@
 <p>Pages have been added to the Conversation View to help with the loading and viewing of Conversations. The page numbers and arrows at the bottom of the view can be used to change between pages.</p>
 <p>A dropdown list has been added to the top of the view to select how many Conversation bubbles to display per page.</p>
 
+== 2024-03-17 Edges and Links in Table View
+<p>Edges and Links can now be viewed in the Table View.</p>
+
 == 2024-03-08 More Ways to Zoom In and Out
 <p>Keyboard shortcuts have been added for zooming in and out of the graph view (CTRL-ALT-UP and CTRL-ALT-DOWN respectively).</p>
 <p>Toolbar buttons have been added for zooming in and out of the graph view.</p>

@@ -73,13 +73,14 @@ options to copy data from the clicked cell, row or column.
     which are not selected on the graph. Note that while this option is
     enabled, selection in the table will not update selection on the
     graph.
--   *Element Type* <img src="../ext/docs/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview/resources/TableElementTypeTransactions.png" alt="Transaction Element Type
-    Button" />
-    \<\> <img src="../ext/docs/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview/resources/TableElementTypeNodes.png" alt="Node Element Type
-    Button" />
-    - Clicking the element type toolbar button will switch between
-    tabular views of transaction data (which includes the nodes at
-    either end), or node data.
+-   *Element Type* <img src="../ext/docs/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview/resources/TableElementTypeNodes.png" alt="Node Element Type Button" />
+    OR <img src="../ext/docs/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview/resources/TableElementTypeTransactions.png" alt="Transaction Element Type Button" />
+    OR <img src="../ext/docs/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview/resources/TableElementTypeEdges.png" alt="Edge Element Type Button" />
+    OR <img src="../ext/docs/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview/resources/TableElementTypeLinks.png" alt="Link Element Type Button" />
+    - Clicking the element type toolbar button will open a menu, allowing
+    you to switch between tabular views of node data, transaction data,
+    edge data or link data. Transaction, edge and link data all include the 
+    nodes at either end.
 -   *Copy Table* <img src="../ext/docs/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview/resources/TableCopy.png" alt="Copy Table
     Button" />
     - Clicking on the copy toolbar button will provide you with options

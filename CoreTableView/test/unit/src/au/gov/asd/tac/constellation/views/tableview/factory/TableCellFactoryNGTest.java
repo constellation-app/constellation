@@ -100,6 +100,8 @@ public class TableCellFactoryNGTest {
         verifyStyle("Test Value", "source.", "Test Value", List.of("element-source"));
         verifyStyle("Test Value", "destination.", "Test Value", List.of("element-destination"));
         verifyStyle("Test Value", "transaction.", "Test Value", List.of("element-transaction"));
+        verifyStyle("Test Value", "low.", "Test Value", List.of("element-low"));
+        verifyStyle("Test Value", "high.", "Test Value", List.of("element-high"));
         verifyStyle(null, "transaction.", "<No Value>", List.of("null-value", "element-transaction"));
     }
 

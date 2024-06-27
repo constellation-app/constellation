@@ -15,6 +15,14 @@
     -fx-background-color: rgba(179, 230, 179, 0.5);
 }
 
+.element-low {
+    -fx-background-color: rgba(153, 179, 255, 0.5);
+}
+
+.element-high {
+    -fx-background-color: rgba(179, 230, 179, 0.5);
+}
+
 .pagination {
     -fx-page-information-visible: false;
 }
