@@ -27,12 +27,12 @@ import java.util.Date;
 import java.util.List;
 import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
 import javafx.util.StringConverter;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.DialogDescriptor;
@@ -43,7 +43,7 @@ import org.openide.DialogDisplayer;
  * 
  * @author capricornunicorn123
  */
-public final class DateInputField extends ConstellationInputField<LocalDate> {
+public final class DateInputField extends ConstellationInputField<LocalDate> implements ButtonRight {
     
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
     
@@ -61,8 +61,6 @@ public final class DateInputField extends ConstellationInputField<LocalDate> {
     
     public DateInputField(){
         super(LayoutConstants.INPUT_POPUP, TextType.SINGLELINE);
-        
-        this.setRightLabel(ConstellationInputFieldConstants.SELECT_BUTTON_LABEL);
    
         this.addShortcuts(KeyEvent.KEY_PRESSED, event -> {
             switch (event.getCode()){
@@ -145,27 +143,30 @@ public final class DateInputField extends ConstellationInputField<LocalDate> {
     @Override
     public List<MenuItem> getLocalMenuItems() {
         final MenuItem format = new MenuItem("Select Date");
-        format.setOnAction(value -> getRightButtonEventImplementation().handle(null));
+        format.setOnAction(value -> executeRightButtonAction());
         return Arrays.asList(format);
     }
     // </editor-fold> 
 
     // <editor-fold defaultstate="collapsed" desc="Button Event Implementation">   
     @Override
-    public EventHandler<MouseEvent> getRightButtonEventImplementation() {
-        return event -> {
-            final DateChooserPanel dc = new DateChooserPanel(this.getDate());
-            final DialogDescriptor dialog = new DialogDescriptor(dc, "Select Date", true, null);
-            final Integer result = (Integer) DialogDisplayer.getDefault().notify(dialog);
-            if (result == 0) {
-                setDate(dc.getSelectedDate()); 
-            }       
-        };
+    public Button getRightButton() {
+        return new Button(new Label(ConstellationInputFieldConstants.SELECT_BUTTON_LABEL), Button.ButtonType.POPUP) {
+                    @Override
+                    public EventHandler<? super MouseEvent> action() {
+                        return event -> executeRightButtonAction();
+                    }
+                };
     }
-
+    
     @Override
-    public EventHandler<MouseEvent> getLeftButtonEventImplementation() {
-        return null;
+    public void executeRightButtonAction() {
+        final DateChooserPanel dc = new DateChooserPanel(this.getDate());
+        final DialogDescriptor dialog = new DialogDescriptor(dc, "Select Date", true, null);
+        final Integer result = (Integer) DialogDisplayer.getDefault().notify(dialog);
+        if (result == 0) {
+            setDate(dc.getSelectedDate()); 
+        }       
     }
     // </editor-fold>  
     
@@ -189,5 +190,7 @@ public final class DateInputField extends ConstellationInputField<LocalDate> {
         return null;
     }
     // </editor-fold> 
+
+
 }
 

@@ -35,7 +35,7 @@ import javafx.scene.input.MouseEvent;
  * 
  * @author capricornunicorn123
  */
-public final class TextInputField extends ConstellationInputField<String> implements RecentValuesListener {
+public final class TextInputField extends ConstellationInputField<String> implements RecentValuesListener, ButtonRight{
     
     private final List<String> recentValues = new ArrayList<>();
     private final String recentValueListeningId;
@@ -44,8 +44,6 @@ public final class TextInputField extends ConstellationInputField<String> implem
         super(recentValueListeningId == null ? LayoutConstants.INPUT : LayoutConstants.INPUT_DROPDOWN, type);
         this.recentValueListeningId = recentValueListeningId;
         if (recentValueListeningId != null){
-            this.setRightLabel("Recent");
-            
             RecentValueUtility.addListener(this);
             this.addRecentValues(RecentValueUtility.getRecentValues(recentValueListeningId));
         }
@@ -90,20 +88,27 @@ public final class TextInputField extends ConstellationInputField<String> implem
     @Override
     public List<MenuItem> getLocalMenuItems() {
         final MenuItem recent = new MenuItem("Recent Values");
-        recent.setOnAction(value -> getRightButtonEventImplementation().handle(null));
+        recent.setOnAction(value -> executeRightButtonAction());
         return Arrays.asList(recent);
     }
     // </editor-fold>  
          
     // <editor-fold defaultstate="collapsed" desc="Button Event Implementation">   
     @Override
-    public EventHandler<MouseEvent> getRightButtonEventImplementation() {
-        return event -> this.showDropDown(getDropDown());     
+    public Button getRightButton() {
+        return new Button(new Label("Recent"), Button.ButtonType.DROPDOWN) {
+            @Override
+            public EventHandler<? super MouseEvent> action() {
+                return event -> {
+                    executeRightButtonAction();
+                };
+            }
+        };
     }
-
+    
     @Override
-    public EventHandler<MouseEvent> getLeftButtonEventImplementation() {
-        return null;
+    public void executeRightButtonAction() {
+        this.showDropDown(getDropDown());     
     }
     // </editor-fold>   
     

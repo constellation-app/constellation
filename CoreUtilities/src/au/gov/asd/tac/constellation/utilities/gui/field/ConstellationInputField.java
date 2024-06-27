@@ -140,12 +140,6 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ch
         this.layout = layout;
         textArea = new ConstellationTextArea(this, type);
         
-        //Not a nice sollution but need to run this later as the base classes neet to actualy exist to access their implementation
-        Platform.runLater(() -> {
-            rightButton.setOnMouseClicked(getRightButtonEventImplementation());
-            leftButton.setOnMouseClicked(getLeftButtonEventImplementation());
-        });
-        
         this.setPrefWidth(500);
         this.setMinWidth(200);
         
@@ -168,12 +162,20 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ch
         foreground.setFill(Color.TRANSPARENT);
         foreground.setMouseTransparent(true);
         foreground.widthProperty().bind(interactableContent.widthProperty());
-        
+        Platform.runLater(() -> {
         for (final ContentDisplay area : layout.getAreas()) {
             if (null != area) switch (area) {
-                case LEFT, RIGHT-> {
-                    final Pane endCell = buildEndCellPane(area, layout);
-                    interactableContent.getChildren().add(endCell);
+                case LEFT -> {
+                    if (this instanceof ButtonLeft leftButton){
+                        
+                            interactableContent.getChildren().add(leftButton.getLeftButton());
+                        
+                    }
+                }
+                case RIGHT -> {
+                    if (this instanceof ButtonRight rightButton){
+                            interactableContent.getChildren().add(rightButton.getRightButton());
+                    }
                 }
                 case CENTER -> {
                     interactableContent.getChildren().add(textArea);
@@ -184,6 +186,7 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ch
                 }
             }
         }
+        });
         textArea.bindHeightProperty(background);
         textArea.bindHeightProperty(foreground);
         textArea.bindHeightProperty(clippingMask);
@@ -279,14 +282,6 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ch
         content.getChildren().addAll(localBackground, label);
         return content;
     }
-    
-    public void setRightLabel(final String label) {
-        this.rightLabel.setText(label);
-    };
-    
-    public void setLeftLabel(final String label) {
-        this.leftLabel.setText(label);
-    };
     
     // <editor-fold defaultstate="collapsed" desc="ObservableValue and ConstellationInputFieldListener Interface Support">
     /**
@@ -453,12 +448,6 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ch
         list.addAll(this.textArea.getAllMenuItems());
         return list;
     }
-    // </editor-fold> 
-    
-    // <editor-fold defaultstate="collapsed" desc="Button Event Declaration">  
-    public abstract EventHandler<MouseEvent> getRightButtonEventImplementation();
-    
-    public abstract EventHandler<MouseEvent> getLeftButtonEventImplementation();
     // </editor-fold>  
     
     // <editor-fold defaultstate="collapsed" desc="DropDown Decleration & Functionality">   

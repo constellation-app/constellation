@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -35,13 +36,13 @@ import javafx.scene.layout.Pane;
  * the {@link PasswordField} is always treated as the base field.
  * @author capricornunicorn123
  */
-public final class PasswordInputField extends ConstellationInputField<String> {
+public final class PasswordInputField extends ConstellationInputField<String> implements ButtonRight{
     
     private boolean isVisible = false;
-    
+    private Label label = new Label();
     public PasswordInputField(){
-        super(LayoutConstants.INPUT_DROPDOWN, TextType.SECRET);
-        this.setRightLabel(ConstellationInputFieldConstants.SHOW_BUTTON_LABEL);    
+        super(LayoutConstants.INPUT_DROPDOWN, TextType.SECRET);  
+        label.setText(ConstellationInputFieldConstants.SHOW_BUTTON_LABEL);    
     }
     
     // <editor-fold defaultstate="collapsed" desc="Value Modification & Validation Implementation"> 
@@ -76,24 +77,30 @@ public final class PasswordInputField extends ConstellationInputField<String> {
     
     // <editor-fold defaultstate="collapsed" desc="Button Event Implementation">
     @Override
-    public EventHandler<MouseEvent> getRightButtonEventImplementation() {
-        return event -> {
-            if (isVisible){
-                this.hideSecret();
-                this.setRightLabel(ConstellationInputFieldConstants.SHOW_BUTTON_LABEL);  
-                isVisible = false;
-                
-            } else {
-                this.showSecret();
-                this.setRightLabel(ConstellationInputFieldConstants.HIDE_BUTTON_LABEL);  
-                isVisible = true;
+    public Button getRightButton() {
+        Button button = new Button(label, Button.ButtonType.POPUP) {
+            @Override
+            public EventHandler<? super MouseEvent> action() {
+                return event -> {
+                    executeRightButtonAction();
+                };
             }
         };
+        return button;
     }
-
+    
     @Override
-    public EventHandler<MouseEvent> getLeftButtonEventImplementation() {
-        return null;
+    public void executeRightButtonAction() {
+        if (isVisible){
+            this.hideSecret();
+            label.setText(ConstellationInputFieldConstants.SHOW_BUTTON_LABEL);    
+            isVisible = false;
+
+        } else {
+            this.showSecret();
+            label.setText(ConstellationInputFieldConstants.HIDE_BUTTON_LABEL);    
+            isVisible = true;
+        }
     }
     // </editor-fold> 
 

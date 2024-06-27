@@ -49,7 +49,7 @@ import org.openide.filesystems.FileChooserBuilder;
  * 
  * @author capricornunicorn123
  */
-public final class FileInputField extends ConstellationInputField<List<File>> {
+public final class FileInputField extends ConstellationInputField<List<File>> implements ButtonRight{
     
     private ExtensionFilter extensionFilter = null;
     private boolean acceptAll = true;
@@ -85,8 +85,6 @@ public final class FileInputField extends ConstellationInputField<List<File>> {
 //            setWrapText(false);
             //setPrefRowCount(suggestedHeight);
         }
-        
-        this.setRightLabel(fileInputKind.toString());
     }
     
     // <editor-fold defaultstate="collapsed" desc="Local Private Methods">   
@@ -172,67 +170,70 @@ public final class FileInputField extends ConstellationInputField<List<File>> {
     @Override
     public List<MenuItem> getLocalMenuItems() {
         final MenuItem format = new MenuItem("Select File");
-        format.setOnAction(value -> getRightButtonEventImplementation().handle(null));
+        format.setOnAction(value -> executeRightButtonAction());
         return Arrays.asList(format);
     }
     // </editor-fold> 
     
-    // <editor-fold defaultstate="collapsed" desc="Button Event Implementation">   
+    // <editor-fold defaultstate="collapsed" desc="Button Event Implementation">    
     @Override
-    public EventHandler<MouseEvent> getRightButtonEventImplementation() {
-        return (event) -> {
-            final CompletableFuture dialogFuture;
-            final List<File> files = new ArrayList<>();
-            switch (fileInputKind) {
-                case OPEN, OPEN_OBSCURED -> dialogFuture = FileChooser.openOpenDialog(getFileChooser("Open")).thenAccept(optionalFile -> optionalFile.ifPresent(openFile -> {
-                    if (openFile != null) {
-                        files.add(openFile);
-                    }
-                }));
-                case OPEN_MULTIPLE, OPEN_MULTIPLE_OBSCURED -> dialogFuture = FileChooser.openMultiDialog(getFileChooser("Open File(s)")).thenAccept(optionalFile -> optionalFile.ifPresent(openFiles -> {
-                    if (openFiles != null) {
-                        files.addAll(openFiles);
-                    }
-                }));
-                case SAVE, SAVE_OBSCURED -> dialogFuture = FileChooser.openSaveDialog(getFileChooser("Save")).thenAccept(optionalFile -> optionalFile.ifPresent(saveFile -> {
-                    if (saveFile != null) {
-                        //Save files may have been typed by the user and an extension may not have been specified.
-                        final String fnam = saveFile.getAbsolutePath();
-                        final String expectedExtension = extensionFilter.getExtensions().get(0);
-                        if (!fnam.toLowerCase().endsWith(expectedExtension)) {
-                            saveFile = new File(fnam + expectedExtension);
-                        }
-                        files.add(saveFile);
-                    }
-                }));
-                default -> {
-                    dialogFuture = null;
-                    LOGGER.log(Level.FINE, "ignoring file selection type {0}.", fileInputKind);
-                }
-            }
-            
-            // As the dialog windows are completed on another thread 
-            // the execution of this method must wait until the thread has finnished executing.
-            if (dialogFuture != null){
-                try {
-                    dialogFuture.get();
-                } catch (final InterruptedException ex){
-                    Thread.currentThread().interrupt();
-                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-                } catch (final ExecutionException ex) {
-                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-                }
-            }
-            if (!files.isEmpty()) { 
-                this.setValue(files);
+    public Button getRightButton() {
+        return new Button(new Label(fileInputKind.toString()), Button.ButtonType.POPUP) {
+            @Override
+            public EventHandler<? super MouseEvent> action() {
+                return event -> executeRightButtonAction();
             }
         };
     }
-
+    
     @Override
-    public EventHandler<MouseEvent> getLeftButtonEventImplementation() {
-        return null;
-    } 
+    public void executeRightButtonAction() {
+        final CompletableFuture dialogFuture;
+        final List<File> files = new ArrayList<>();
+        switch (fileInputKind) {
+            case OPEN, OPEN_OBSCURED -> dialogFuture = FileChooser.openOpenDialog(getFileChooser("Open")).thenAccept(optionalFile -> optionalFile.ifPresent(openFile -> {
+                if (openFile != null) {
+                    files.add(openFile);
+                }
+            }));
+            case OPEN_MULTIPLE, OPEN_MULTIPLE_OBSCURED -> dialogFuture = FileChooser.openMultiDialog(getFileChooser("Open File(s)")).thenAccept(optionalFile -> optionalFile.ifPresent(openFiles -> {
+                if (openFiles != null) {
+                    files.addAll(openFiles);
+                }
+            }));
+            case SAVE, SAVE_OBSCURED -> dialogFuture = FileChooser.openSaveDialog(getFileChooser("Save")).thenAccept(optionalFile -> optionalFile.ifPresent(saveFile -> {
+                if (saveFile != null) {
+                    //Save files may have been typed by the user and an extension may not have been specified.
+                    final String fnam = saveFile.getAbsolutePath();
+                    final String expectedExtension = extensionFilter.getExtensions().get(0);
+                    if (!fnam.toLowerCase().endsWith(expectedExtension)) {
+                        saveFile = new File(fnam + expectedExtension);
+                    }
+                    files.add(saveFile);
+                }
+            }));
+            default -> {
+                dialogFuture = null;
+                LOGGER.log(Level.FINE, "ignoring file selection type {0}.", fileInputKind);
+            }
+        }
+
+        // As the dialog windows are completed on another thread 
+        // the execution of this method must wait until the thread has finnished executing.
+        if (dialogFuture != null){
+            try {
+                dialogFuture.get();
+            } catch (final InterruptedException ex){
+                Thread.currentThread().interrupt();
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+            } catch (final ExecutionException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+            }
+        }
+        if (!files.isEmpty()) { 
+            this.setValue(files);
+        }
+    }
     // </editor-fold>     
 
     // <editor-fold defaultstate="collapsed" desc="Drop Down Implementation">   

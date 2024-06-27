@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
+import au.gov.asd.tac.constellation.utilities.gui.field.Button.ButtonType;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ChoiceType;
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ChoiceType.MULTI;
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ChoiceType.SINGLE_DROPDOWN;
@@ -24,13 +26,8 @@ import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
@@ -41,8 +38,6 @@ import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 
 /**
  * A {@link ConstellationinputField} for managing choice selection. 
@@ -59,7 +54,7 @@ import javafx.scene.layout.StackPane;
  * @author capricornunicorn123
  * @param <C> The Object type being represented by this ChoiceInputFiled
  */
-public final class ChoiceInputField<C extends Object> extends ConstellationInputField<List<C>> {
+public final class ChoiceInputField<C extends Object> extends ConstellationInputField<List<C>> implements ButtonRight, ButtonLeft{
     
     private final List<C> options = new ArrayList<>();
     private final List<ImageView> icons = new ArrayList<>();
@@ -67,13 +62,6 @@ public final class ChoiceInputField<C extends Object> extends ConstellationInput
 
     public ChoiceInputField(final ChoiceType type){
         super(type.getLayout(), TextType.SINGLELINE);
-        switch (type){
-            case SINGLE_SPINNER -> {
-                setRightLabel(ConstellationInputFieldConstants.NEXT_BUTTON_LABEL);
-                setLeftLabel(ConstellationInputFieldConstants.PREVIOUS_BUTTON_LABEL);
-            }
-            case SINGLE_DROPDOWN, MULTI -> setRightLabel(ConstellationInputFieldConstants.SELECT_BUTTON_LABEL);
-        }
         
         //Add shortcuts where users can increment and decrement the date using up and down arrows
         if (type != ChoiceType.MULTI) {
@@ -313,16 +301,16 @@ public final class ChoiceInputField<C extends Object> extends ConstellationInput
             switch (type){
                 case SINGLE_SPINNER -> {
                     final MenuItem next = new MenuItem("Increment");
-                    next.setOnAction(value -> getRightButtonEventImplementation().handle(null));
+                    next.setOnAction(value -> executeRightButtonAction());
                     items.add(next);
 
                     final MenuItem prev = new MenuItem("Decrement");
-                    prev.setOnAction(value -> getLeftButtonEventImplementation().handle(null));
+                    prev.setOnAction(value -> executeLeftButtonAction());
                     items.add(prev);
                 }
                 case SINGLE_DROPDOWN, MULTI -> {
                     final MenuItem choose = new MenuItem("Select Choice");
-                    choose.setOnAction(value -> getRightButtonEventImplementation().handle(null));
+                    choose.setOnAction(value -> executeRightButtonAction());
                     items.add(choose);
                 }
             }
@@ -333,20 +321,65 @@ public final class ChoiceInputField<C extends Object> extends ConstellationInput
 
     // <editor-fold defaultstate="collapsed" desc="Button Event Implementation">   
     @Override
-    public EventHandler<MouseEvent> getRightButtonEventImplementation() {
-        return switch (type){
-            case SINGLE_SPINNER -> event -> this.incrementChoice();
-            case SINGLE_DROPDOWN, MULTI -> event -> this.showDropDown(getDropDown());
+    public Button getLeftButton() {
+        switch (type) {
+            case SINGLE_SPINNER -> {
+                return  new Button(new Label(ConstellationInputFieldConstants.PREVIOUS_BUTTON_LABEL), ButtonType.CHANGER) {
+                    @Override
+                    public EventHandler<? super MouseEvent> action() {
+                        return event -> executeLeftButtonAction();
+                    }
+                };
+            }
+            default -> {
+                return null;
+            }
+        }
+    }
+    
+    @Override
+    public Button getRightButton() {
+        
+        Label label;
+        ButtonType buttonType;
+        
+        switch (type) {
+            case SINGLE_SPINNER -> {
+                label = new Label(ConstellationInputFieldConstants.NEXT_BUTTON_LABEL);
+                buttonType = ButtonType.CHANGER;
+            }
+            case SINGLE_DROPDOWN, MULTI -> {
+                label = new Label(ConstellationInputFieldConstants.SELECT_BUTTON_LABEL);
+                buttonType = ButtonType.DROPDOWN;
+                
+            }
+            default -> {
+                return null;
+            }
+        }
+        
+        return new Button(label, buttonType) {
+                @Override
+                public EventHandler<? super MouseEvent> action() {
+                    return event -> executeRightButtonAction();
+                }
         };
     }
 
     @Override
-    public EventHandler<MouseEvent> getLeftButtonEventImplementation() {
-        return switch (type){
-            case SINGLE_SPINNER -> event -> decrementChoice(); 
-            default -> null;
-        };
+    public void executeLeftButtonAction() {
+        if (type == SINGLE_SPINNER) {
+            decrementChoice(); 
+        }
     }
+    
+    @Override
+    public void executeRightButtonAction() {
+        switch (type){
+            case SINGLE_SPINNER -> this.incrementChoice();
+            case SINGLE_DROPDOWN, MULTI -> this.showDropDown(getDropDown());
+        };
+    }  
     // </editor-fold> 
     
     // <editor-fold defaultstate="collapsed" desc="Drop Down Implementation">   
@@ -358,8 +391,6 @@ public final class ChoiceInputField<C extends Object> extends ConstellationInput
             return null;
         }
     } 
-
-
 
     /**
      * A Context Menu to be used as a drop down for {@link ChoiceInputFields}.

@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.utilities.gui.field;
 
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColorPicker;
+import au.gov.asd.tac.constellation.utilities.gui.field.Button.ButtonType;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ColorMode;
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ColorMode.COLOR;
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ColorMode.HEX;
@@ -50,20 +51,20 @@ import org.openide.DialogDisplayer;
  * 
  * @author capricornunicorn123
  */
-public final class ColorInputField extends ConstellationInputField<ConstellationColor> {
+public final class ColorInputField extends ConstellationInputField<ConstellationColor> implements ButtonRight, ButtonLeft {
     
     ColorMode mode = ColorMode.COLOR;
+    Label label = new Label();
     
     public ColorInputField(){
-        super(LayoutConstants.DROPDOWN_INPUT_POPUP);
-        this.setRightLabel(ConstellationInputFieldConstants.SWATCH_BUTTON_LABEL);
-        this.setLeftLabel(mode.toString());  
+        super(LayoutConstants.DROPDOWN_INPUT_POPUP);  
+        label.setText(mode.toString());
     }
 
     // <editor-fold defaultstate="collapsed" desc="Local Private Methods">   
     private void setMode(final ColorMode mode){
         this.mode = mode;
-        this.setLeftLabel(mode.toString());
+        label.setText(mode.toString());
         this.setColor(getColor());
     }
     
@@ -84,7 +85,7 @@ public final class ColorInputField extends ConstellationInputField<Constellation
         //Update the mode only if it could be determined
         if (localMode != null) {
             this.mode = localMode;
-            this.setLeftLabel(localMode.toString());
+            label.setText(mode.toString());
         }
     }
     
@@ -198,34 +199,53 @@ public final class ColorInputField extends ConstellationInputField<Constellation
     @Override
     public List<MenuItem> getLocalMenuItems() {
         final MenuItem format = new MenuItem("Format");
-        format.setOnAction(value -> getLeftButtonEventImplementation().handle(null));
+        format.setOnAction(value -> executeLeftButtonAction());
         final MenuItem swatch = new MenuItem("Swatch");
-        swatch.setOnAction(value -> getRightButtonEventImplementation().handle(null));
+        swatch.setOnAction(value -> executeRightButtonAction());
         return Arrays.asList(format);
     }
     // </editor-fold> 
     
     // <editor-fold defaultstate="collapsed" desc="Button Event Implementation">   
     @Override
-    public EventHandler<MouseEvent> getRightButtonEventImplementation() {
-        return event -> {
-            JFXPanel xp = new JFXPanel();
-            final Scene scene = new Scene(new ConstellationColorPicker());
-
-            xp.setScene(scene);
-            //xp.setPreferredSize(new Dimension((int) scene.getWidth(), (int) scene.getHeight()));
-            
-            final Object[] options = {new JButton("Select"), DialogDescriptor.CANCEL_OPTION};
-            final Object focus = DialogDescriptor.NO_OPTION;
-            
-            final DialogDescriptor dd = new DialogDescriptor(xp, "ChooseYOUR COLORRRR", true, options , focus, DialogDescriptor.DEFAULT_ALIGN, null, null);
-            Object r = DialogDisplayer.getDefault().notify(dd);
+    public Button getLeftButton() {
+        Button button = new Button(label, ButtonType.CHANGER) {
+                @Override
+                public EventHandler<? super MouseEvent> action() {
+                    return event -> executeLeftButtonAction();
+                }
+        };        
+        return button;
+    }
+    
+    @Override
+    public Button getRightButton() {
+        return new Button(new Label(ConstellationInputFieldConstants.SWATCH_BUTTON_LABEL), ButtonType.POPUP) {
+                @Override
+                public EventHandler<? super MouseEvent> action() {
+                    return event -> executeLeftButtonAction();
+                }
         };
     }
-
+    
     @Override
-    public EventHandler<MouseEvent> getLeftButtonEventImplementation() {
-        return event -> this.showDropDown(getDropDown());
+    public void executeLeftButtonAction() {
+        this.showDropDown(getDropDown());
+    }
+    
+    @Override
+    public void executeRightButtonAction() {
+        JFXPanel xp = new JFXPanel();
+        final Scene scene = new Scene(new ConstellationColorPicker());
+
+        xp.setScene(scene);
+        //xp.setPreferredSize(new Dimension((int) scene.getWidth(), (int) scene.getHeight()));
+
+        final Object[] options = {new JButton("Select"), DialogDescriptor.CANCEL_OPTION};
+        final Object focus = DialogDescriptor.NO_OPTION;
+
+        final DialogDescriptor dd = new DialogDescriptor(xp, "ChooseYOUR COLORRRR", true, options , focus, DialogDescriptor.DEFAULT_ALIGN, null, null);
+        Object r = DialogDisplayer.getDefault().notify(dd);
     }
     // </editor-fold> 
     

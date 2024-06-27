@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
+import au.gov.asd.tac.constellation.utilities.gui.field.Button.ButtonType;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ChoiceType;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.LayoutConstants;
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ import java.util.logging.Logger;
 import javafx.collections.ListChangeListener;
 import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -44,7 +46,7 @@ import javafx.scene.layout.Pane;
  * @author capricornunicorn123
  * @param <C> The Object type being represented by this ChoiceInputFiled
  */
-public final class NumberInputField<C extends Number> extends ConstellationInputField<Number> {
+public final class NumberInputField<C extends Number> extends ConstellationInputField<Number> implements ButtonLeft, ButtonRight{
     
     private final C min;
     private final C max;
@@ -62,8 +64,6 @@ public final class NumberInputField<C extends Number> extends ConstellationInput
         
         this.setValue(init);
 
-        setRightLabel(ConstellationInputFieldConstants.NEXT_BUTTON_LABEL);
-        setLeftLabel(ConstellationInputFieldConstants.PREVIOUS_BUTTON_LABEL);
         this.addShortcuts(KeyEvent.KEY_PRESSED, event -> {
             switch (event.getCode()){
                 case UP -> this.increment();
@@ -229,11 +229,11 @@ public final class NumberInputField<C extends Number> extends ConstellationInput
         final List<MenuItem> items = new ArrayList();
 
         final MenuItem next = new MenuItem("Increment");
-        next.setOnAction(value -> getRightButtonEventImplementation().handle(null));
+        next.setOnAction(value -> executeRightButtonAction());
         items.add(next);
 
         final MenuItem prev = new MenuItem("Decrement");
-        prev.setOnAction(value -> getLeftButtonEventImplementation().handle(null));
+        prev.setOnAction(value -> executeLeftButtonAction());
         items.add(prev);
             
         return items;
@@ -242,13 +242,33 @@ public final class NumberInputField<C extends Number> extends ConstellationInput
 
     // <editor-fold defaultstate="collapsed" desc="Button Event Implementation">   
     @Override
-    public EventHandler<MouseEvent> getRightButtonEventImplementation() {
-        return  event -> this.increment();
+    public Button getLeftButton() {
+        return new Button(new Label(ConstellationInputFieldConstants.PREVIOUS_BUTTON_LABEL), ButtonType.CHANGER) {
+            @Override
+            public EventHandler<? super MouseEvent> action() {
+                return event -> executeLeftButtonAction();
+            }
+        };
     }
 
     @Override
-    public EventHandler<MouseEvent> getLeftButtonEventImplementation() {
-        return event -> decrement(); 
+    public Button getRightButton() {
+        return new Button(new Label(ConstellationInputFieldConstants.NEXT_BUTTON_LABEL), ButtonType.CHANGER) {
+            @Override
+            public EventHandler<? super MouseEvent> action() {
+                return event -> executeRightButtonAction();
+            }
+        };
+    }
+    
+    @Override
+    public void executeLeftButtonAction() {
+        decrement();
+    }
+    
+    @Override
+    public void executeRightButtonAction() {
+        this.increment();
     }
     // </editor-fold> 
     
