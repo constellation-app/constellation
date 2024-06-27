@@ -47,6 +47,10 @@ public final class TextInputField extends ConstellationInputField<String> implem
         initialiseDepedantComponents();
     }    
     
+    @Override
+    public String getRecentValuesListenerID() {
+        return this.recentValueListeningId;
+    }
  
     
     // <editor-fold defaultstate="collapsed" desc="Recent Value Implementation">   

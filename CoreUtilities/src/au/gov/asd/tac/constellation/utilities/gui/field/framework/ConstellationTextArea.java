@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.utilities.gui.field;
+package au.gov.asd.tac.constellation.utilities.gui.field.framework;
 
 import au.gov.asd.tac.constellation.utilities.gui.context.ContextMenuContributor;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputField;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants;
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType.MULTILINE;
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType.SECRET;
-import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.IntStream;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -152,10 +151,12 @@ import javafx.scene.shape.Rectangle;
         // <editor-fold defaultstate="collapsed" desc="Local Private Methods"> 
         /**
          * Binds the heightProperty of a Rectangle to the height property of the {@link TextInputControl}. 
-         * @param bindable
+         * @param bindables
          */
-        public void bindHeightProperty(Rectangle bindable) {
-            bindable.heightProperty().bind(primaryInput.heightProperty());
+        public void bindHeightProperty(Rectangle... bindables) {
+            for (Rectangle bindable : bindables){
+                bindable.heightProperty().bind(primaryInput.heightProperty());
+            }
         }
 
         /**

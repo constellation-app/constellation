@@ -22,11 +22,14 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.AutoCompletabl
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ButtonLeft;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ButtonRight;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationTextArea;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.KeyPressShortcut;
+import au.gov.asd.tac.constellation.utilities.gui.recentvalue.RecentValueUtility;
+import au.gov.asd.tac.constellation.utilities.gui.recentvalue.RecentValuesChangeEvent;
+import au.gov.asd.tac.constellation.utilities.gui.recentvalue.RecentValuesListener;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -95,7 +98,6 @@ import javafx.scene.shape.Rectangle;
  */
 public abstract class ConstellationInputField<T> extends StackPane implements ChangeListener<Serializable>, ContextMenuContributor{   
 
-    private static final Logger LOGGER = Logger.getLogger(ConstellationInputField.class.getName());
     final int defaultCellHeight = 22;
     
     private final HBox interactableContent = new HBox();
@@ -142,10 +144,9 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ch
         foreground.setMouseTransparent(true);
         foreground.widthProperty().bind(interactableContent.widthProperty());
 
-        textArea.bindHeightProperty(background);
-        textArea.bindHeightProperty(foreground);
-        textArea.bindHeightProperty(clippingMask);
+        textArea.bindHeightProperty(background, foreground, clippingMask);
         interactableContent.setClip(clippingMask);
+        
         HBox.setHgrow(textArea, Priority.ALWAYS);
         interactableContent.setAlignment(Pos.CENTER);
         HBox.setHgrow(interactableContent, Priority.ALWAYS);
@@ -154,17 +155,18 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ch
         this.setAlignment(Pos.TOP_LEFT);
         
         final ContextMenu contextMenu = new ContextMenu();
-        contextMenu.getItems().clear();
-        contextMenu.getItems().addAll(this.getAllMenuItems());
+//        contextMenu.getItems().clear();
+//        contextMenu.getItems().addAll(this.getAllMenuItems());
         // Set the right click context menu items
         // we want to update each time the context menu is requested 
         // can't make a new context menu each time as this event occurs after showing
-        textArea.setContextMenuRequestedEvent(value -> {
+        this.setOnContextMenuRequested(value -> {
             contextMenu.getItems().clear();
             contextMenu.getItems().addAll(this.getAllMenuItems());
-            textArea.setContextMenu(contextMenu);
+            this.showDropDown(contextMenu);
+            //textArea.setContextMenu(contextMenu);
         });
-        textArea.setContextMenu(contextMenu);
+        //textArea.setContextMenu(contextMenu);
     }
     
     protected void initialiseDepedantComponents(){
@@ -202,6 +204,40 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ch
                 this.textArea.addEventFilter(KeyEvent.KEY_PRESSED, shortcut.getShortcuts());
             }
         }        
+        
+        //Be carefull with implementing autocomplete and recent values together
+        
+        //Add Recent Values
+        if (this instanceof RecentValuesListener listener){
+            String id = listener.getRecentValuesListenerID();
+            if (id != null){
+                RecentValueUtility.addListener(listener);
+                List<String> values = RecentValueUtility.getRecentValues(id);
+                if (values != null){
+                    listener.recentValuesChanged(new RecentValuesChangeEvent(id, values));
+                }
+            }
+        }
+        
+        //AutoComplete
+        if (this instanceof AutoCompletable autoComplete) {
+            this.addListener(newValue -> {
+                if (textArea.isInFocus()){
+                    final List<MenuItem> suggestions = autoComplete.getAutoCompleteSuggestions();
+                    if (suggestions != null && !suggestions.isEmpty()){
+                        ContextMenu menu = new ContextMenu();
+                        menu.getItems().addAll(suggestions);
+                        menu.setAutoHide(true);
+                        menu.setAutoFix(true);
+                        //Listen for key events for when arrows are pressed or when to hide the menu
+                        this.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
+                            menu.hide();
+                        });
+                        showDropDown(menu);
+                    }
+                }
+            });
+        }
     }
     
     private void createWidthListener(final Button content, ContentDisplay side){      
@@ -252,10 +288,6 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ch
             } else {
                 setValid(false);
                 notifyListeners(null);
-            }
-            
-            if (textArea.isInFocus()) {
-                showAutoCompleteSuggestions();
             }
         }
         
@@ -459,32 +491,5 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ch
         } else {
             foreground.setStroke(null);
         }
-    }
-    
-    // <editor-fold defaultstate="collapsed" desc="Auto Complete Functionality">  
-    /**
-     * Get the suggestions for the auto complete.
-     * make sure to filter out exact matches as there is no point suggesting what is there.
-     * and set the action, as it is often custom
-     * @return 
-     */    
-    public void showAutoCompleteSuggestions() {
-        if (this instanceof AutoCompletable autoComplete) {
-            final List<MenuItem> suggestions = autoComplete.getAutoCompleteSuggestions();
-            if (suggestions != null && !suggestions.isEmpty()){
-                ContextMenu menu = new ContextMenu();
-
-                menu.getItems().addAll(suggestions);
-                menu.setAutoHide(true);
-                menu.setAutoFix(true);
-                //Listen for key events for when arrows are pressed or when to hide the menu
-                this.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
-                    menu.hide();
-                });
-                showDropDown(menu);
-            }
-        }
-    }
-    // </editor-fold>  
-        
+    }        
 }

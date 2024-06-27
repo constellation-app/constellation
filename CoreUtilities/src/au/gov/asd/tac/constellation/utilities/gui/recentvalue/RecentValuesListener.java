@@ -29,4 +29,6 @@ public interface RecentValuesListener {
      * @param e the change event.
      */
     public void recentValuesChanged(final RecentValuesChangeEvent e);
+    
+    public String getRecentValuesListenerID();
 }
