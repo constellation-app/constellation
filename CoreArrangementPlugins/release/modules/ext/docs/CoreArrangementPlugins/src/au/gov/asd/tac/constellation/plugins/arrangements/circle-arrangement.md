@@ -26,7 +26,12 @@ node id's.
 Example Circle Arrangement:
 
 <div style="text-align: center">
-
-<img src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/CircleArrangement.png" alt="Example Circle Arrangement" />
-
+    <figure style = "display: inline-block">
+        <img height=400 src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/BeforeCircleArrangement.png" alt="Before Arrangement" />
+        <figcaption>Before Circle Arrangement</figcaption>
+    </figure>
+    <figure style = "display: inline-block">
+        <img height=400 src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/CircleArrangement.png" alt="Example Circle Arrangement" />
+        <figcaption>After Circle Arrangement</figcaption>
+    </figure>
 </div>

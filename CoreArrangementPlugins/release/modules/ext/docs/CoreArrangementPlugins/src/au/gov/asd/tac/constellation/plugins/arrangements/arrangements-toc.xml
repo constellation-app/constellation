@@ -10,9 +10,15 @@
         <tocitem text="Node Attribute" target="au.gov.asd.tac.constellation.plugins.arrangements.nodeAttribute"/>
         <tocitem text="Scatter 3D" target="au.gov.asd.tac.constellation.plugins.arrangements.scatter3d"/>
         <tocitem text="Sphere" target="au.gov.asd.tac.constellation.plugins.arrangements.sphere"/>
+        <tocitem text="Bubble Tree 3D" target="au.gov.asd.tac.constellation.plugins.arrangements.bubbleTree3d"/>
+        <tocitem text="Proximity" target="au.gov.asd.tac.constellation.plugins.arrangements.proximity"/>
+        <tocitem text="Spectral 3D" target="au.gov.asd.tac.constellation.plugins.arrangements.spectral"/>
+        <tocitem text="HDE 3D" target="au.gov.asd.tac.constellation.plugins.arrangements.hde"/>
         <tocitem text="Flatten Z-Field" target="au.gov.asd.tac.constellation.plugins.arrangements.flattenZField"/>
         <tocitem text="Contract Graph" target="au.gov.asd.tac.constellation.plugins.arrangements.contractGraph"/>
         <tocitem text="Expand Graph" target="au.gov.asd.tac.constellation.plugins.arrangements.expandGraph"/>
+        <tocitem text="Uncollide" target="au.gov.asd.tac.constellation.plugins.arrangements.uncollide"/>
         <tocitem text="Layer by Time" target="au.gov.asd.tac.constellation.plugins.arrangements.layerByTime"/>
+        <tocitem text="Pin and Unpin Nodes" target="au.gov.asd.tac.constellation.plugins.arrangements.pinUnpin"/>
     </tocitem>
 </toc>
