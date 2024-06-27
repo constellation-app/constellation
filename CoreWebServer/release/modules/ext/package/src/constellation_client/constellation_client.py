@@ -13,6 +13,7 @@ import subprocess
 import sys
 import tempfile
 import time
+import io
 
 # A version number of the form yyyymmdd.
 #
