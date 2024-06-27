@@ -33,8 +33,12 @@ more than one neighbour.
 Example Tree Arrangement:
 
 <div style="text-align: center">
-
-<img src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/TreeArrangement.png" alt="Example Tree
-Arrangement" />
-
+    <figure style = "display: inline-block">
+        <img height=400 src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/BeforeTreeArrangement.png" alt="Before Arrangement" />
+        <figcaption>Before Tree Arrangement</figcaption>
+    </figure>
+    <figure style = "display: inline-block">
+        <img height=400 src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/TreeArrangement.png" alt="Example Tree Arrangement" />
+        <figcaption>After Tree Arrangement</figcaption>
+    </figure>
 </div>

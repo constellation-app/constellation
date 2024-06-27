@@ -30,11 +30,19 @@ horizontal or vertical line. The horizontal line orders nodes across the
 x-axis and the vertical line orders nodes across the y-axis. Nodes are
 ordered by their internal node id's.
 
-Example Line Arrangements (Horizontal on left, Vertical on right):
+Example Line Arrangements:
 
 <div style="text-align: center">
-
-<img src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/LineArrangement.png" alt="Example Line
-Arrangements" />
-
+    <figure style = "display: inline-block">
+        <img height=400 src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/BeforeLineArrangement.png" alt="Before Arrangement" />
+        <figcaption>Before Line Arrangement</figcaption>
+    </figure>
+    <figure style = "display: inline-block">
+        <img height=400 src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/HorizontalLineArrangement.png" alt="Example Line Arrangements" />
+        <figcaption>After Horizontal Line Arrangement</figcaption>
+    </figure>
+    <figure style = "display: inline-block">
+        <img height=400 src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/VerticalLineArrangement.png" alt="Example Line Arrangements" />
+        <figcaption>After Vertical Line Arrangement</figcaption>
+    </figure>
 </div>
