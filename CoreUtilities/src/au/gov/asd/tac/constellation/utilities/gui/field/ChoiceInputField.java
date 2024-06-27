@@ -54,7 +54,7 @@ import javafx.scene.input.MouseEvent;
  * @author capricornunicorn123
  * @param <C> The Object type being represented by this ChoiceInputFiled
  */
-public final class ChoiceInputField<C extends Object> extends ConstellationInputField<List<C>> implements ButtonRight, ButtonLeft{
+public final class ChoiceInputField<C extends Object> extends ConstellationInputField<List<C>> implements ButtonRight, ButtonLeft, Window{
     
     private final List<C> options = new ArrayList<>();
     private final List<ImageView> icons = new ArrayList<>();
@@ -499,37 +499,31 @@ public final class ChoiceInputField<C extends Object> extends ConstellationInput
     
     // <editor-fold defaultstate="collapsed" desc="Info Window Implementation">   
     @Override
-    public final InputInfoWindow getInputInfoWindow() {
-         return new choiceInputInfoWondow(this);
-    }
-    
-    private class choiceInputInfoWondow extends InputInfoWindow{
+    public final InfoWindow getInfoWindow() {
         Label label = new Label();
-        private choiceInputInfoWondow(ConstellationInputField parent){
-            super(parent);
-
-            this.getChildren().add(label);
-        }
         
-        @Override
-        protected void refreshWindow() {
-            
-            List<C> selectedOptions = getChoices();
+        InfoWindow window = new InfoWindow(this){
+            @Override
+            protected void refreshWindow() {
+                List<C> selectedOptions = getChoices();
 
-            if (!isValid() || selectedOptions.size() < 2) {
-                if (hasInputInfoWindow()) {
-                    removeInputInfoWindow(this);
-                }
-            } else {
-                String text = String.format("%s/%s", selectedOptions.size(), getOptions().size());
-                label.setText(text);
-                if (!hasInputInfoWindow()){            
-                    
-                    insertInputInfoWindow(this);
+                if (!isValid() || selectedOptions.size() < 2) {
+                    if (hasInfoWindow()) {
+                        removeInfoWindow(this);
+                    }
+                } else {
+                    String text = String.format("%s/%s", selectedOptions.size(), getOptions().size());
+                    label.setText(text);
+                    if (!hasInfoWindow()){            
+
+                        insertInfoWindow(this);
+                    }
                 }
             }
-        }
-    }   
+        };
+        window.setWindowContents(label);
+        return window;
+    }
     //</editor-fold> 
     
     // <editor-fold defaultstate="collapsed" desc="Auto Complete Implementation"> 

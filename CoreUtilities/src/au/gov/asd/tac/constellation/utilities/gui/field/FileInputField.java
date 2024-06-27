@@ -243,13 +243,6 @@ public final class FileInputField extends ConstellationInputField<List<File>> im
     }
     // </editor-fold> 
     
-    // <editor-fold defaultstate="collapsed" desc="InfoWindow Implementation"> 
-    @Override
-    public InputInfoWindow getInputInfoWindow() {
-        return null;
-    }
-    // </editor-fold> 
-    
     // <editor-fold defaultstate="collapsed" desc="Auto Complete Implementation"> 
     @Override
     protected List<MenuItem> getAutoCompleteSuggestions() {

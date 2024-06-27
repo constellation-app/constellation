@@ -51,7 +51,7 @@ import org.openide.DialogDisplayer;
  * 
  * @author capricornunicorn123
  */
-public final class ColorInputField extends ConstellationInputField<ConstellationColor> implements ButtonRight, ButtonLeft {
+public final class ColorInputField extends ConstellationInputField<ConstellationColor> implements ButtonRight, ButtonLeft, Window {
     
     ColorMode mode = ColorMode.COLOR;
     Label label = new Label();
@@ -277,31 +277,27 @@ public final class ColorInputField extends ConstellationInputField<Constellation
     
     // <editor-fold defaultstate="collapsed" desc="Info Window Implementation">   
     @Override
-    public InputInfoWindow getInputInfoWindow() {
-         return new colorInputInfoWondow(this);
-    }
-    
-    private class colorInputInfoWondow extends InputInfoWindow{
-        Rectangle label = new Rectangle(14, 14);
-        private colorInputInfoWondow(ConstellationInputField parent){
-            super(parent);
-            
-            label.setArcWidth(6);
-            label.setArcHeight(6);
-
-            this.getChildren().add(label);
-        }
+    public InfoWindow getInfoWindow() {
+        Rectangle colorPreview = new Rectangle(14, 14);
+        colorPreview.setArcWidth(6);
+        colorPreview.setArcHeight(6);
         
-        @Override
-        protected void refreshWindow() {
-            ConstellationColor color = getColor();
-            if (color == null) {
-                label.setFill(Color.TRANSPARENT);
-            } else {
-                label.setFill(color.getJavaFXColor());
+        InfoWindow window = new InfoWindow(this){
+            @Override
+            protected void refreshWindow() {
+                ConstellationColor color = getColor();
+                if (color == null) {
+                    colorPreview.setFill(Color.TRANSPARENT);
+                } else {
+                    colorPreview.setFill(color.getJavaFXColor());
+                }
             }
-        }
-    }   
+        };
+        
+        window.setWindowContents(colorPreview);
+        
+        return window;
+    }
     //</editor-fold> 
     
     // <editor-fold defaultstate="collapsed" desc="Auto Complete Implementation"> 

@@ -18,17 +18,15 @@ package au.gov.asd.tac.constellation.utilities.gui.field;
 import au.gov.asd.tac.constellation.utilities.gui.context.ContextMenuContributor;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.LayoutConstants;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType;
+import au.gov.asd.tac.constellation.utilities.gui.field.Window.InfoWindow;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
@@ -41,8 +39,6 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
@@ -56,8 +52,6 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.Popup;
-import org.apache.commons.lang3.StringUtils;
 
 
 /**
@@ -167,19 +161,19 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ch
             if (null != area) switch (area) {
                 case LEFT -> {
                     if (this instanceof ButtonLeft leftButton){
-                        
-                            interactableContent.getChildren().add(leftButton.getLeftButton());
-                        
+                        interactableContent.getChildren().add(leftButton.getLeftButton());
                     }
                 }
                 case RIGHT -> {
                     if (this instanceof ButtonRight rightButton){
-                            interactableContent.getChildren().add(rightButton.getRightButton());
+                        interactableContent.getChildren().add(rightButton.getRightButton());
                     }
                 }
                 case CENTER -> {
                     interactableContent.getChildren().add(textArea);
-                    insertInputInfoWindow(getInputInfoWindow());
+                    if (this instanceof Window infoWindow){
+                        insertInfoWindow(infoWindow.getInfoWindow());
+                    }
                 }
                 default -> {
                     //Do Nothing
@@ -522,45 +516,20 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ch
     }
     // </editor-fold>
     
-    // <editor-fold defaultstate="collapsed" desc="InputInfoWindow Functionality">  
-    protected final void insertInputInfoWindow(InputInfoWindow window) {
+    // <editor-fold defaultstate="collapsed" desc="InfoWindow Functionality">  
+    protected final void insertInfoWindow(InfoWindow window) {
         if (window != null) {
             interactableContent.getChildren().add(layout.getAreas().length -1, window);
         }
     }
     
-    protected boolean hasInputInfoWindow() {
+    protected boolean hasInfoWindow() {
         return layout.getAreas().length != interactableContent.getChildren().size();
     }
     
-    protected void removeInputInfoWindow(InputInfoWindow window) {
+    protected void removeInfoWindow(InfoWindow window) {
         interactableContent.getChildren().remove(window);
     }
-    
-    public abstract InputInfoWindow getInputInfoWindow();
-    
-    public abstract class InputInfoWindow extends StackPane implements ConstellationInputFieldListener<Serializable> {
-        public final ConstellationInputField parent;
-                
-        public InputInfoWindow(ConstellationInputField parent){
-            this.parent = parent;
-            setPadding(new Insets(0,6,0,0));
-            setAlignment(Pos.CENTER);
-            Platform.runLater(()->{
-                refreshWindow();
-            });
-            parent.addListener(this);
-        }
-        
-        protected abstract void refreshWindow();
-        
-        @Override
-        public void changed(Serializable newValue) {
-            refreshWindow();
-        }
-        
-    }
-    // </editor-fold>  
     
     public void setContextButtonDisable(boolean b) {
         //to do
