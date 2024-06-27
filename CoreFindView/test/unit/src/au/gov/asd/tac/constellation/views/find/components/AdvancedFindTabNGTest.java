@@ -15,11 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.find.components;
 
-import au.gov.asd.tac.constellation.views.find.components.AdvancedFindTab;
-import au.gov.asd.tac.constellation.views.find.components.BasicFindTab;
-import au.gov.asd.tac.constellation.views.find.components.ReplaceTab;
-import au.gov.asd.tac.constellation.views.find.components.FindViewTabs;
-import au.gov.asd.tac.constellation.views.find.components.FindViewPane;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
@@ -148,10 +143,10 @@ public class AdvancedFindTabNGTest {
          * getFindAllButton and getSearchAllGraphs checkbox.
          */
         advancedTab.updateButtons();
-        assertEquals(advancedTab.buttonsHBox.getChildren().get(0), advancedTab.getDeleteResultsButton());
-        assertEquals(advancedTab.buttonsHBox.getChildren().get(1), advancedTab.getFindAllButton());
-        assertEquals(advancedTab.buttonsHBox.getChildren().get(2), advancedTab.getFindPrevButton());
-        assertEquals(advancedTab.buttonsHBox.getChildren().get(3), advancedTab.getFindNextButton());
+        assertEquals(advancedTab.buttonsHBox.getChildren().get(1), advancedTab.getDeleteResultsButton());
+        assertEquals(advancedTab.buttonsHBox.getChildren().get(2), advancedTab.getFindAllButton());
+        assertEquals(advancedTab.buttonsHBox.getChildren().get(3), advancedTab.getFindPrevButton());
+        assertEquals(advancedTab.buttonsHBox.getChildren().get(4), advancedTab.getFindNextButton());
 
     }
 
