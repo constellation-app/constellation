@@ -16,13 +16,10 @@
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
 import au.gov.asd.tac.constellation.utilities.gui.field.Button.ButtonType;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ChoiceType;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.LayoutConstants;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.KeyPressShortcut;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.collections.ListChangeListener;
 import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
@@ -30,7 +27,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
 
 /**
  * A {@link ConstellationinputField} for managing choice selection. 
@@ -53,8 +49,6 @@ public final class NumberInputField<C extends Number> extends ConstellationInput
     private final C max;
     private final C init;
     private final C step;
-    private static final Logger LOGGER = Logger.getLogger(NumberInputField.class.getName());
-                    
     
     public NumberInputField(Number min, Number max, Number init, Number step) {
         super(LayoutConstants.UPDATER_INPUT_UPDATER);
