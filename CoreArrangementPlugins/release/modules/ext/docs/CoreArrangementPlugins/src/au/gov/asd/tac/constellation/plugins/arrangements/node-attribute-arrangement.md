@@ -27,20 +27,14 @@ specified attribute value being positioned at the same point on the
 z-axis. If you opt not to, nodes with the same specified attribute value
 are grouped together in a square grid arrangement.
 
-Example Node Attribute 2D Arrangement:
 
 <div style="text-align: center">
-
-<img src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/NodeAttribute2DArrangement.png" alt="Example Node Attribute 2D
-Arrangement" />
-
-</div>
-
-Example Node Attribute 3D Arrangement:
-
-<div style="text-align: center">
-
-<img src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/NodeAttribute3DArrangement.png" alt="Example Node Attribute 3D
-Arrangement" />
-
+    <figure style = "display: inline-block">
+        <img height=400 src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/NodeAttribute2DArrangement.png" alt="Example Node Attribute 2D Arrangement" />
+        <figcaption>Example Node Attribute 2D Arrangement</figcaption>
+    </figure>
+    <figure style = "display: inline-block">
+        <img height=400  src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/NodeAttribute3DArrangement.png" alt="Example Node Attribute 3D Arrangement" />
+        <figcaption>Example Node Attribute 3D Arrangement</figcaption>
+    </figure>
 </div>

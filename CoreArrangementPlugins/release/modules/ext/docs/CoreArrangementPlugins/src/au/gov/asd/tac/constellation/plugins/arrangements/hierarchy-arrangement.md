@@ -39,8 +39,12 @@ an arbitrary node chosen to be the root.
 Example Hierarchy Arrangement:
 
 <div style="text-align: center">
-
-<img src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/HierarchyArrangement.png" alt="Example Hierarchy
-Arrangement" />
-
+    <figure style = "display: inline-block">
+        <img height=400 src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/BeforeHierarchyArrangement.png" alt="Before Hierarchy Arrangement" />
+        <figcaption>Before Hierarchy Arrangement</figcaption>
+    </figure>
+    <figure style = "display: inline-block">
+        <img height=400 src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/HierarchyArrangement.png" alt="Example Hierarchy Arrangement" />
+        <figcaption>After Hierarchy Arrangement</figcaption>
+    </figure>
 </div>
