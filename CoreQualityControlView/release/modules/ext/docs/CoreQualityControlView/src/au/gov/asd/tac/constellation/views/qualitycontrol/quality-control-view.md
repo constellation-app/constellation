@@ -119,7 +119,7 @@ View" />
 &nbsp;   
 Each rule can be set and reset individually.  
 If any rules were already modified when opening the Category Priority screen, those rules will have a more informative reset button, indicating the default priority level for each modified rule.  
-
+&nbsp;   
 <div style="text-align: center">
 
 <img src="../ext/docs/CoreQualityControlView/src/au/gov/asd/tac/constellation/views/qualitycontrol/resources/ModifiedCategoryPriority.png" alt="Quality Control
@@ -127,5 +127,6 @@ View" />
 
 </div>
 &nbsp;   
-*Note: A node is considered to have an OK Quality by default. Only when a rule fails will the Quality will be modified, matching the priority value assigned to the rule that failed.*  
-&nbsp; &nbsp; &nbsp; *If multiple rules fail, then the Quality for the node will be set to the highest priority value from among the rules that failed.*
+
+*Note: A node is considered to have an OK Quality by default. Only when a rule fails will the Quality be modified, matching the priority value assigned to the rule that failed.*  
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; *If multiple rules fail, then the Quality for the node will be set to the highest priority value from among the rules that failed.*
