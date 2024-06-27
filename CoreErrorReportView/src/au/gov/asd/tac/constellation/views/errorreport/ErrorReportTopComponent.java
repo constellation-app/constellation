@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.errorreport;
 
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import javafx.scene.layout.BorderPane;
@@ -62,6 +63,7 @@ import javax.swing.SwingUtilities;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
+import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 
@@ -158,7 +160,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
     private final List<String> popupFilters = new ArrayList<>();
     private boolean errorReportRunning = true;
     private boolean waitForGracePeriod = false;
-    
+
     private static final String BLACK = "black";
     private static final String WHITE = "white";
     private static final String INACTIVE_BACKGROUND = DARK_MODE ? BLACK : WHITE;
@@ -178,6 +180,9 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
     private Timer alertTimer = null;
     private Date latestRetrievalDate = null;
     private Date previousRetrievalDate = null;
+
+    private final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor()));
+    private final Button helpButton = new Button("", helpImage);
 
     ErrorReportTopComponent() {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -254,6 +259,9 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
 
         final VBox settingsBox = new VBox();
         final HBox popupSettings = new HBox();
+
+        helpButton.setStyle("-fx-border-color: transparent; -fx-background-color: transparent; -fx-effect: null; ");
+        helpButton.setOnAction(event -> new HelpCtx("au.gov.asd.tac.constellation.views.errorreport").display());
 
         popupSettings.getChildren().addAll(severePopupAllowed, warnPopupAllowed, infoPopupAllowed, finePopupAllowed);
         settingsBox.getChildren().addAll(popupSettings, severeReportFilter, warnReportFilter, infoReportFilter, fineReportFilter);
@@ -361,7 +369,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         filterControl.getItems().add(fineReportItem);
         filterControl.setMinHeight(26);
         filterControl.setMaxHeight(26);
-        
+
         final MenuButton popupControl = new MenuButton("Popup Mode : 2 ");
         final ToggleGroup popupFrequency = new ToggleGroup();
 
@@ -451,7 +459,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         minimizeButton.setMaxHeight(26);
 
         final ToolBar controlToolbar = new ToolBar();
-        controlToolbar.getItems().addAll(settingsBox, filterControl, popupControl, minimizeButton, maximizeButton, clearButton);
+        controlToolbar.getItems().addAll(settingsBox, filterControl, popupControl, minimizeButton, maximizeButton, clearButton, helpButton);
         final HBox toolboxContainer = new HBox();
         toolboxContainer.getChildren().add(controlToolbar);
         toolboxContainer.getChildren().add(new Label("  "));
@@ -828,7 +836,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
                 backgroundColour = "#540000";
                 backgroundFadeColour = "#180000";
             }
-            
+
             if (entry.getErrorLevel() == Level.SEVERE) {
                 alertColour = "#d87070";
                 redBase = 100;
@@ -862,13 +870,13 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
                 blueBase = 60;
                 blueIncrement = 11;
             }
-            
+
         } else {
             backgroundColour = "#ec9696";
             backgroundFadeColour = "#f2ebeb";
             textColour = "#303030";
             dismissButtonColor = "#89A0B5";
-            
+
             if (entry.getOccurrences() > 999) {
                 intensityFactor = 5;
                 backgroundColour = "#dc7676";
@@ -886,7 +894,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
                 backgroundColour = "#e88e8e";
                 backgroundFadeColour = "#eee8e8";
             }
-            
+
             if (entry.getErrorLevel() == Level.SEVERE) {
                 alertColour = "#d87070";
                 redBase = 245;
@@ -920,7 +928,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
                 blueBase = 220;
                 blueIncrement = -11;
             }
-                        
+
         }
         final String areaBackgroundColour = "radial-gradient(radius 100%, " + backgroundColour + " 0%, " + backgroundFadeColour + " 100%)";
 
@@ -931,7 +939,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         final BorderPane bdrPane = new BorderPane();
         final VBox vBox = new VBox();
         vBox.setPadding(new Insets(1));
-        
+
         final TextArea data = new TextArea(entry.getSummaryHeading() + "\n" + entry.getErrorData());
         data.setStyle(FX_TEXT_FILL + textColour + ";" + FX_BACKGROUND + backgroundColour + "; -text-area-background: " + areaBackgroundColour + "; -fx-border-color: #505050; -fx-border-width: 2;");
         data.setEditable(false);
@@ -965,7 +973,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
 
         final String backgroundTextTitleColour = backgroundFadeColour;
         final String backgroundStyle = "-fx-background-color: linear-gradient( " + severityColour + " 1% , " + backgroundTextTitleColour + " 35%, " + backgroundTextTitleColour + " 65%, " + severityColour + " 99% );";
-        
+
         final Button blockPopupsButton = new Button("");
         blockPopupsButton.setStyle(FX_BACKGROUND + (DARK_MODE ? "#404040" : "#aabaca") + ";" + " -fx-border-color: #606060");
         blockPopupsButton.setGraphic(entry.isBlockRepeatedPopups() ? blockPopups : allowPopups);
@@ -982,7 +990,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         redisplay.setOnAction((final ActionEvent event) -> ErrorReportDialogManager.getInstance().showDialog(entry, true));
         contextMenu.getItems().add(redisplay);
         blockPopupsButton.setContextMenu(contextMenu);
-        
+
         blockPopupsButton.setMinHeight(22);
         blockPopupsButton.setMaxHeight(22);
 
@@ -1004,7 +1012,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
                 mouseEvent.consume();
             }
         });
-        dismissButton.setPadding(new Insets(3,1,1,1));
+        dismissButton.setPadding(new Insets(3, 1, 1, 1));
         dismissButton.setMinHeight(22);
         dismissButton.setMaxHeight(22);
         dismissButton.setOnAction((final ActionEvent event) -> {
@@ -1038,7 +1046,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         hBoxTitle.setMinHeight(27);
         hBoxRight.setMinHeight(27);
         hBoxRight.setMinHeight(27);
-        
+
         bdrPane.setLeft(hBoxLeft);
         bdrPane.setCenter(hBoxTitle);
         bdrPane.setRight(hBoxRight);
