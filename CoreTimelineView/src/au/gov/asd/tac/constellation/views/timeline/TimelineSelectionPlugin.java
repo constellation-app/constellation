@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.timeline;
 
+import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
@@ -23,7 +25,9 @@ import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.openide.util.NbBundle.Messages;
 
@@ -50,16 +54,32 @@ public class TimelineSelectionPlugin extends SimpleEditPlugin {
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction,
             final PluginParameters parameters) throws InterruptedException {
+        final boolean vertexAttributeUndefined = Graph.NOT_FOUND == graph.getAttribute(GraphElementType.VERTEX,
+                VisualConcept.VertexAttribute.SELECTED.getName());
+        final boolean transactionAttributeUndefined = Graph.NOT_FOUND == graph.getAttribute(GraphElementType.TRANSACTION,
+                VisualConcept.TransactionAttribute.SELECTED.getName());
         final int selectedVertexAttrID = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
         final int selectedTransactionAttrID = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
 
-        for (final int vxID : vertices) {
-            graph.setBooleanValue(selectedVertexAttrID, vxID, true);
-            vertices.remove(vxID);
+        final List<Integer> removalList = new ArrayList<>();
+        if (vertexAttributeUndefined) {
+            for (final int vxID : vertices) {
+                graph.setBooleanValue(selectedVertexAttrID, vxID, true);
+                removalList.add(vxID);
+            }
+            for (final Integer removalId : removalList) {
+                vertices.remove(removalId);
+            }
         }
-        for (final int txID : transactions) {
-            graph.setBooleanValue(selectedTransactionAttrID, txID, true);
-            transactions.remove(txID);
+        if (transactionAttributeUndefined) {
+            removalList.clear();
+            for (final int txID : transactions) {
+                graph.setBooleanValue(selectedTransactionAttrID, txID, true);
+                removalList.add(txID);
+            }
+            for (final Integer removalId : removalList) {
+                transactions.remove(removalId);
+            }
         }
 
         if (isClearingSelection) {
