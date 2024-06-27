@@ -530,6 +530,7 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ch
     protected void removeInfoWindow(InfoWindow window) {
         interactableContent.getChildren().remove(window);
     }
+    // </editor-fold>
     
     public void setContextButtonDisable(boolean b) {
         //to do
