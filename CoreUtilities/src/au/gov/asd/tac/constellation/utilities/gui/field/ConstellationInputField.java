@@ -16,16 +16,17 @@
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
 import au.gov.asd.tac.constellation.utilities.gui.context.ContextMenuContributor;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.LayoutConstants;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType;
 import au.gov.asd.tac.constellation.utilities.gui.field.Window.InfoWindow;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.AutoCompletable;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ButtonLeft;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ButtonRight;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.KeyPressShortcut;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-import javafx.application.Platform;
-import javafx.beans.InvalidationListener;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -35,16 +36,14 @@ import javafx.scene.Node;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
-import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Tooltip;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
@@ -97,48 +96,28 @@ import javafx.scene.shape.Rectangle;
 public abstract class ConstellationInputField<T> extends StackPane implements ChangeListener<Serializable>, ContextMenuContributor{   
 
     private static final Logger LOGGER = Logger.getLogger(ConstellationInputField.class.getName());
-    
-    final int endCellPrefWidth = 50;
     final int defaultCellHeight = 22;
     
-    private HBox interactableContent = new HBox();
+    private final HBox interactableContent = new HBox();
     private ConstellationTextArea textArea;
-    private final Label leftLabel = new Label();
-    private final Label rightLabel = new Label();
-    protected final Rectangle rightButton = new Rectangle(endCellPrefWidth, defaultCellHeight); 
-    protected final Rectangle leftButton = new Rectangle(endCellPrefWidth, defaultCellHeight); 
+    
     protected final List<ConstellationInputFieldListener> InputFieldListeners = new ArrayList<>();
     private Rectangle foreground;
     private Rectangle background;
-    
-    final LayoutConstants layout;
         
     final int corner = 7;
     
-    final Color optionColor = Color.color(97/255D, 99/255D, 102/255D);
     final Color fieldColor = Color.color(51/255D, 51/255D, 51/255D);
     final Color invalidColor = Color.color(238/255D, 66/255D, 49/255D);
-    final Color buttonColor = Color.color(25/255D, 84/255D, 154/255D);
-   
+
+    
     public ConstellationInputField(){
-        throw new UnsupportedOperationException();
+        this(TextType.SINGLELINE);
     }
     
-    public ConstellationInputField(final LayoutConstants layout){
-        this(layout, TextType.SINGLELINE);
-    }
-    
-    public ConstellationInputField(final LayoutConstants layout, final TextType type) {
-        this.layout = layout;
+    public ConstellationInputField(final TextType type) {
+
         textArea = new ConstellationTextArea(this, type);
-        Platform.runLater(() -> {
-            if (this instanceof KeyPressShortcut shortcut) {
-                EventHandler<KeyEvent> shortcutEvent = shortcut.getShortcuts();
-                if (shortcutEvent != null){
-                    this.textArea.addEventFilter(KeyEvent.KEY_PRESSED, shortcut.getShortcuts());
-                }
-            }
-        });
         
         this.setPrefWidth(500);
         this.setMinWidth(200);
@@ -162,31 +141,7 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ch
         foreground.setFill(Color.TRANSPARENT);
         foreground.setMouseTransparent(true);
         foreground.widthProperty().bind(interactableContent.widthProperty());
-        Platform.runLater(() -> {
-        for (final ContentDisplay area : layout.getAreas()) {
-            if (null != area) switch (area) {
-                case LEFT -> {
-                    if (this instanceof ButtonLeft leftButton){
-                        interactableContent.getChildren().add(leftButton.getLeftButton());
-                    }
-                }
-                case RIGHT -> {
-                    if (this instanceof ButtonRight rightButton){
-                        interactableContent.getChildren().add(rightButton.getRightButton());
-                    }
-                }
-                case CENTER -> {
-                    interactableContent.getChildren().add(textArea);
-                    if (this instanceof Window infoWindow){
-                        insertInfoWindow(infoWindow.getInfoWindow());
-                    }
-                }
-                default -> {
-                    //Do Nothing
-                }
-            }
-        }
-        });
+
         textArea.bindHeightProperty(background);
         textArea.bindHeightProperty(foreground);
         textArea.bindHeightProperty(clippingMask);
@@ -212,32 +167,44 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ch
         textArea.setContextMenu(contextMenu);
     }
     
-    private Pane buildEndCellPane(final ContentDisplay side, final LayoutConstants layout) {
+    protected void initialiseDepedantComponents(){
         
-        //Components that will make the end cell
-        final StackPane content = new StackPane();      
-        final Rectangle localBackground;
-        final Label label;
-        
-        //Important attributes for the builder
-        final Color color;
-        
-        //Build the components      
-        switch (side) {
-            case LEFT -> {
-                localBackground = leftButton;
-                label = leftLabel;
+        //Add Left button
+        if (this instanceof ButtonLeft leftButton){
+            Button button = leftButton.getLeftButton();
+            if (button != null){
+                button.getHeightProperty().bind(textArea.heightProperty());
+                interactableContent.getChildren().addFirst(button);
+                this.createWidthListener(button, ContentDisplay.LEFT);
             }
-            case RIGHT -> {
-                localBackground = rightButton;
-                label = rightLabel;
-            }
-            default -> {
-                localBackground = new Rectangle(); // never used but a nioce way to get rid of errors
-                label = new Label();
-            }
-        };
+        }
+
+        //Add Base
+        interactableContent.getChildren().add(textArea);
         
+        //Add Window
+        if (this instanceof Window infoWindow){
+            insertInfoWindow(infoWindow.getInfoWindow());
+        }
+
+        //Add Right Button
+        if (this instanceof ButtonRight rightButton){
+            Button button = rightButton.getRightButton();
+            button.getHeightProperty().bind(textArea.heightProperty());
+            interactableContent.getChildren().add(button);
+            this.createWidthListener(button, ContentDisplay.RIGHT);
+        }
+        
+        //Add Shortcuts
+        if (this instanceof KeyPressShortcut shortcut) {
+            EventHandler<KeyEvent> shortcutEvent = shortcut.getShortcuts();
+            if (shortcutEvent != null){
+                this.textArea.addEventFilter(KeyEvent.KEY_PRESSED, shortcut.getShortcuts());
+            }
+        }        
+    }
+    
+    private void createWidthListener(final Button content, ContentDisplay side){      
         //Allow this end cell to listen to the width of the total Input field
         this.widthProperty().addListener((value, oldValue, newValue)-> {
     
@@ -264,23 +231,6 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ch
             }
         });
         
-        if (layout.hasButton()){
-            color = this.buttonColor;
-        } else {
-            color = this.optionColor;
-        }
-        
-        localBackground.setFill(color);
-        localBackground.setOnMouseEntered(event -> localBackground.setFill(color.brighter()));
-        localBackground.setOnMouseExited(event -> localBackground.setFill(color));
-        textArea.bindHeightProperty(localBackground);
-
-        label.setMouseTransparent(true);
-        label.setPrefWidth(endCellPrefWidth);
-        label.setAlignment(Pos.CENTER);
-
-        content.getChildren().addAll(localBackground, label);
-        return content;
     }
     
     // <editor-fold defaultstate="collapsed" desc="ObservableValue and ConstellationInputFieldListener Interface Support">
@@ -328,44 +278,22 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ch
     public void removeListener(ConstellationInputFieldListener listener) {
         this.InputFieldListeners.remove(listener);
     }
-
-    public void addListener(InvalidationListener listener) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    public void removeListener(InvalidationListener listener) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
     // </editor-fold>   
     
     // <editor-fold defaultstate="collapsed" desc="ConstelationTextArea Modification Methods">
-        /**
-     *
-     * @param event
-     */
-    public void registerTextClickedEvent(final EventHandler<MouseEvent> event){
-        this.textArea.primaryInputSetOnMouseClicked(event);        
-    }
-    
-    /**
-     *
-     * @param event
-     */
-    public void registerTextKeyedEvent(final EventHandler<KeyEvent> event){
-        this.textArea.primaryInputSetOnKeyReleased(event); 
-    }
-    
-    public void clearTextClickedEvent(){
-        this.textArea.primaryInputSetOnMouseClicked(null);        
-    }
-    
-    public void clearTextKeyedEvent(){
-        this.textArea.primaryInputSetOnKeyReleased(null);
-    }
+
     public void setPromptText(final String description) {
         this.textArea.setPromptText(description);
     }
-
+    
+    public void setTooltip(Tooltip tooltip) {
+        this.textArea.setTooltip(tooltip);
+    }
+    
+    public String getText() {
+        return this.textArea.getText();
+    }
+    
     public void setText(final String stringValue) {
         this.textArea.setText(stringValue);
     }
@@ -376,14 +304,6 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ch
     
     public void setCaratPosition(int position) {
         this.textArea.setCaretPosition(position);
-    }
-        
-    public String getText() {
-        return this.textArea.getText();
-    }
-
-    public void setTooltip(Tooltip tooltip) {
-        this.textArea.setTooltip(tooltip);
     }
 
     public void setPrefRowCount(Integer suggestedHeight) {
@@ -401,16 +321,16 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ch
     
     // <editor-fold defaultstate="collapsed" desc="Value Modification & Validation Declaration">  
     /**
-     * Sets the value that this input field represents
-     * @param value 
-     */
-    public abstract void setValue(T value);
-    
-    /**
      * Gets the value that this input field represents;
      * @return 
      */    
     public abstract T getValue();
+    
+    /**
+     * Sets the value that this input field represents
+     * @param value 
+     */
+    public abstract void setValue(T value);
     
     /**
      * Determine if the provided text is a valid value for the input field.
@@ -444,6 +364,11 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ch
      * @param menu 
      */
     protected final void showDropDown(ContextMenu menu){
+        menu.addEventFilter(KeyEvent.KEY_TYPED, event -> {
+            if (event.getCode() == KeyCode.SPACE){
+                event.consume();
+            }
+        });
         menu.show(this, Side.TOP, USE_PREF_SIZE, USE_PREF_SIZE);
     }
     
@@ -509,12 +434,13 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ch
     // <editor-fold defaultstate="collapsed" desc="InfoWindow Functionality">  
     protected final void insertInfoWindow(InfoWindow window) {
         if (window != null) {
-            interactableContent.getChildren().add(layout.getAreas().length -1, window);
+            int windowIndex = interactableContent.getChildren().indexOf(textArea) + 1;
+            interactableContent.getChildren().add(windowIndex, window);
         }
     }
     
     protected boolean hasInfoWindow() {
-        return layout.getAreas().length != interactableContent.getChildren().size();
+        return interactableContent.getChildren().stream().anyMatch(node -> node instanceof InfoWindow);
     }
     
     protected void removeInfoWindow(InfoWindow window) {

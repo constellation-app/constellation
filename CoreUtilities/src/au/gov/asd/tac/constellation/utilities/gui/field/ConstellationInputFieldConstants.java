@@ -32,39 +32,6 @@ public class ConstellationInputFieldConstants {
     public final static String HIDE_BUTTON_LABEL = "Hide"; 
     public final static String SHOW_BUTTON_LABEL = "Show"; 
     
-    /**
-     * A representation of the different layouts that a ConstellationInputField can take. 
-     * INPUT represents the input area of the field.
-     * DROPDWN represents a button that triggers a drop down menu on the field. 
-     * POPUP represents a button that triggers a pop up window.     
-     * UPDATER represents a button that updates the value of the Field when pressed.
-     * 
-     * The combination of these representative words represents their order in the ConstellationInputField
-     */
-    public enum LayoutConstants {        
-        INPUT(false, ContentDisplay.CENTER),
-        INPUT_DROPDOWN(false, ContentDisplay.CENTER, ContentDisplay.RIGHT),
-        INPUT_POPUP(true, ContentDisplay.CENTER, ContentDisplay.RIGHT),
-        DROPDOWN_INPUT_POPUP(true, ContentDisplay.LEFT, ContentDisplay.CENTER, ContentDisplay.RIGHT),
-        UPDATER_INPUT_UPDATER(false, ContentDisplay.LEFT, ContentDisplay.CENTER, ContentDisplay.RIGHT);
-        
-        private final ContentDisplay[] areas;
-        private final boolean hasButton;
-
-        private LayoutConstants(final boolean hasButton, final ContentDisplay... areas) {
-            this.areas = areas;
-            this.hasButton = hasButton;
-        }
-        
-        public ContentDisplay[] getAreas() {
-            return this.areas;
-        }
-        
-        public boolean hasButton(){
-            return hasButton;
-        }
-    }
-    
     public enum TextType {
         SECRET,
         SINGLELINE,
@@ -92,20 +59,9 @@ public class ConstellationInputFieldConstants {
      * Represents the types of ChoiceInputFields available in Constellation.
      */
     public enum ChoiceType {
-        
-        SINGLE_DROPDOWN(LayoutConstants.INPUT_DROPDOWN),
-        SINGLE_SPINNER(LayoutConstants.UPDATER_INPUT_UPDATER),
-        MULTI(LayoutConstants.INPUT_DROPDOWN);
-        
-        LayoutConstants layout;
-        
-        private ChoiceType(LayoutConstants layout) {
-            this.layout = layout;
-        }
-        
-        public LayoutConstants getLayout(){
-            return this.layout;
-        }
+        SINGLE_DROPDOWN,
+        SINGLE_SPINNER,
+        MULTI;
     }
     
     /**

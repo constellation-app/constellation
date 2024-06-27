@@ -16,10 +16,11 @@
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
 import au.gov.asd.tac.constellation.utilities.gui.recentvalue.RecentValuesListener;
-import au.gov.asd.tac.constellation.utilities.gui.recentvalue.RecentValueUtility;
 import au.gov.asd.tac.constellation.utilities.gui.recentvalue.RecentValuesChangeEvent;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.LayoutConstants;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.AutoCompletable;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ButtonRight;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -41,25 +42,25 @@ public final class TextInputField extends ConstellationInputField<String> implem
     private final String recentValueListeningId;
     
     public TextInputField(final TextType type, final String recentValueListeningId){
-        super(recentValueListeningId == null ? LayoutConstants.INPUT : LayoutConstants.INPUT_DROPDOWN, type);
+        super(type);
         this.recentValueListeningId = recentValueListeningId;
-        if (recentValueListeningId != null){
-            RecentValueUtility.addListener(this);
-            this.addRecentValues(RecentValueUtility.getRecentValues(recentValueListeningId));
-        }
+        initialiseDepedantComponents();
     }    
     
+ 
+    
+    // <editor-fold defaultstate="collapsed" desc="Recent Value Implementation">   
     @Override
     public void recentValuesChanged(final RecentValuesChangeEvent e) {
         if (e.getId().equals(recentValueListeningId)) {
             Platform.runLater(() -> {
                 final List<String> recentValues = e.getNewValues();
-                this.addRecentValues(recentValues);
+                this.setRecentValues(recentValues);
             });
         }
     }
     
-    public void addRecentValues(final List<String> options){
+    public void setRecentValues(final List<String> options){
         if (options != null){
             this.recentValues.clear();
             this.recentValues.addAll(options);

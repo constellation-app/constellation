@@ -15,16 +15,18 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.LayoutConstants;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ButtonRight;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
 
 /**
  * A {@link ConstellationinputField} for managing password inputs. 
@@ -41,8 +43,9 @@ public final class PasswordInputField extends ConstellationInputField<String> im
     private boolean isVisible = false;
     private Label label = new Label();
     public PasswordInputField(){
-        super(LayoutConstants.INPUT_DROPDOWN, TextType.SECRET);  
+        super(TextType.SECRET);  
         label.setText(ConstellationInputFieldConstants.SHOW_BUTTON_LABEL);    
+        initialiseDepedantComponents();
     }
     
     // <editor-fold defaultstate="collapsed" desc="Value Modification & Validation Implementation"> 

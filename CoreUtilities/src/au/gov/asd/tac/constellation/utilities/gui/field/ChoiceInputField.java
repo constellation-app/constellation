@@ -15,12 +15,15 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
-import au.gov.asd.tac.constellation.utilities.gui.field.Button.ButtonType;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ChoiceType;
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ChoiceType.MULTI;
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ChoiceType.SINGLE_DROPDOWN;
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ChoiceType.SINGLE_SPINNER;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.AutoCompletable;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button.ButtonType;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ButtonLeft;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ButtonRight;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.KeyPressShortcut;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
@@ -60,9 +63,9 @@ public final class ChoiceInputField<C extends Object> extends ConstellationInput
     private final List<ImageView> icons = new ArrayList<>();
     private final ChoiceType type;
 
-    public ChoiceInputField(final ChoiceType type){
-        super(type.getLayout(), TextType.SINGLELINE);        
+    public ChoiceInputField(final ChoiceType type){    
         this.type = type;
+        initialiseDepedantComponents();
     }    
     
     // <editor-fold defaultstate="collapsed" desc="Shortcut Support">   

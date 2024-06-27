@@ -15,8 +15,10 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
-import au.gov.asd.tac.constellation.utilities.gui.field.Button.ButtonType;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.LayoutConstants;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button.ButtonType;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ButtonLeft;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ButtonRight;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.KeyPressShortcut;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,13 +53,13 @@ public final class NumberInputField<C extends Number> extends ConstellationInput
     private final C step;
     
     public NumberInputField(Number min, Number max, Number init, Number step) {
-        super(LayoutConstants.UPDATER_INPUT_UPDATER);
         this.min = (C) min;
         this.max = (C) max;
         this.init = (C) init;
         this.step = (C) step;
         
         this.setValue(init);
+        initialiseDepedantComponents();
     }
     
     // <editor-fold defaultstate="collapsed" desc="Shortcut Support">   

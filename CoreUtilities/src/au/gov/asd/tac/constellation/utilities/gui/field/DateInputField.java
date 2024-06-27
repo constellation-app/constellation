@@ -16,8 +16,8 @@
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
 import au.gov.asd.tac.constellation.utilities.gui.DateChooserPanel;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.LayoutConstants;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ButtonRight;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.KeyPressShortcut;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalUtilities;
 import java.time.LocalDate;
@@ -61,7 +61,7 @@ public final class DateInputField extends ConstellationInputField<LocalDate> imp
         };
     
     public DateInputField(){
-        super(LayoutConstants.INPUT_POPUP, TextType.SINGLELINE);
+        initialiseDepedantComponents();
     }
     
     // <editor-fold defaultstate="collapsed" desc="Shortcut Support">   

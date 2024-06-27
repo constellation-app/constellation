@@ -17,30 +17,25 @@ package au.gov.asd.tac.constellation.utilities.gui.field;
 
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColorPicker;
-import au.gov.asd.tac.constellation.utilities.gui.field.Button.ButtonType;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ColorMode;
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ColorMode.COLOR;
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ColorMode.HEX;
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ColorMode.RGB;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.LayoutConstants;
-import java.io.Serializable;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button.ButtonType;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ButtonLeft;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ButtonRight;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.JFXPanel;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javax.swing.JButton;
 import org.openide.DialogDescriptor;
@@ -57,8 +52,8 @@ public final class ColorInputField extends ConstellationInputField<Constellation
     Label label = new Label();
     
     public ColorInputField(){
-        super(LayoutConstants.DROPDOWN_INPUT_POPUP);  
         label.setText(mode.toString());
+        initialiseDepedantComponents();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Local Private Methods">   
