@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
 import au.gov.asd.tac.constellation.utilities.gui.field.Button.ButtonType;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ChoiceType;
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ChoiceType.MULTI;
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ChoiceType.SINGLE_DROPDOWN;

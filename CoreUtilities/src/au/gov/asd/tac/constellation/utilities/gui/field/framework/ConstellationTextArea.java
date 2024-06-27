@@ -264,11 +264,11 @@ import javafx.scene.shape.Rectangle;
             this.primaryInput.setOnContextMenuRequested(value);
         }
 
-    void primaryInputSetOnMouseClicked(EventHandler<MouseEvent> event) {
-        primaryInput.setOnMouseClicked(event);
-    }
+        public void primaryInputSetOnMouseClicked(EventHandler<MouseEvent> event) {
+            primaryInput.setOnMouseClicked(event);
+        }
 
-    void primaryInputSetOnKeyReleased(EventHandler<KeyEvent> event) {
-        primaryInput.setOnKeyReleased(event);
-    }
+        public void primaryInputSetOnKeyReleased(EventHandler<KeyEvent> event) {
+            primaryInput.setOnKeyReleased(event);
+        }
 }   
