@@ -2,13 +2,15 @@
 <!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN" "http://java.sun.com/products/javahelp/toc_2_0.dtd">
 <toc version="2.0">
     <tocitem text="Views" mergetype="javax.help.SortMerge">
-        <tocitem text="Schema View">
+        <tocitem text="Schema View" mergetype="javax.help.SortMerge">
+            <tocitem text="Schemas" target="au.gov.asd.tac.constellation.graph.schema.Schema"/>
             <tocitem text="Schema View" target="au.gov.asd.tac.constellation.views.schemaview.SchemaViewTopComponent"/>
-            <tocitem text="Attributes" target="au.gov.asd.tac.constellation.views.schemaview.providers.AttributeNodeProvider"/>
-            <tocitem text="Node Types" target="au.gov.asd.tac.constellation.views.schemaview.providers.VertexTypeNodeProvider"/>
-            <tocitem text="Transaction Types" target="au.gov.asd.tac.constellation.views.schemaview.providers.TransactionTypeNodeProvider"/>
-            <tocitem text="Plugins" target="au.gov.asd.tac.constellation.views.schemaview.providers.PluginsNodeProvider"/>
-            
+            <tocitem text="Schema View Tabs" mergetype="javax.help.SortMerge">
+                <tocitem text="Attributes" target="au.gov.asd.tac.constellation.views.schemaview.providers.AttributeNodeProvider"/>
+                <tocitem text="Node Types" target="au.gov.asd.tac.constellation.views.schemaview.providers.VertexTypeNodeProvider"/>
+                <tocitem text="Transaction Types" target="au.gov.asd.tac.constellation.views.schemaview.providers.TransactionTypeNodeProvider"/>
+                <tocitem text="Plugins" target="au.gov.asd.tac.constellation.views.schemaview.providers.PluginsNodeProvider"/>
+            </tocitem>
         </tocitem>
     </tocitem>
 </toc>

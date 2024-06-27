@@ -33,12 +33,16 @@ The Schema View is the source of information for all attributes, types,
 and plugins that are available in the Constellation schema(s) of the
 current graph.
 
-<div style="text-align: center">
+It has seperate tabs for:
+
+-   [Attribute](schema-view-attributes.md)  
+-   [Node Types](schema-view-node-types.md)  
+-   [Transaction Types](schema-view-transaction-types.md)  
+-   [Plugins](schema-view-plugins.md)
+
 
 <img src="../ext/docs/CoreSchemaView/src/au/gov/asd/tac/constellation/views/schemaview/resources/SchemaView.png" alt="Schema
 View" />
-
-</div>
 
 
 ## Filtering
