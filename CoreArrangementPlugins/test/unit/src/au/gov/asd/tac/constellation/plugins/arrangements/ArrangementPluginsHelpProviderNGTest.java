@@ -42,18 +42,18 @@ public class ArrangementPluginsHelpProviderNGTest {
         final String arrangementModulePath = ".." + SEP + "ext" + SEP + "docs" + SEP + "CoreArrangementPlugins" + SEP + "src" + SEP + "au" + SEP + "gov"
                 + SEP + "asd" + SEP + "tac" + SEP + CODEBASE_NAME + SEP + "plugins" + SEP + "arrangements" + SEP;
 
-        expResult.put("au.gov.asd.tac.constellation.plugins.arrangements.grid", arrangementModulePath + "grid.md");
-        expResult.put("au.gov.asd.tac.constellation.plugins.arrangements.line", arrangementModulePath + "line.md");
-        expResult.put("au.gov.asd.tac.constellation.plugins.arrangements.hierarchy", arrangementModulePath + "hierarchy.md");
-        expResult.put("au.gov.asd.tac.constellation.plugins.arrangements.tree", arrangementModulePath + "tree.md");
-        expResult.put("au.gov.asd.tac.constellation.plugins.arrangements.circle", arrangementModulePath + "circle.md");
-        expResult.put("au.gov.asd.tac.constellation.plugins.arrangements.scatter3d", arrangementModulePath + "scatter3d.md");
-        expResult.put("au.gov.asd.tac.constellation.plugins.arrangements.sphere", arrangementModulePath + "sphere.md");
+        expResult.put("au.gov.asd.tac.constellation.plugins.arrangements.grid", arrangementModulePath + "grid-arrangement.md");
+        expResult.put("au.gov.asd.tac.constellation.plugins.arrangements.line", arrangementModulePath + "line-arrangement.md");
+        expResult.put("au.gov.asd.tac.constellation.plugins.arrangements.hierarchy", arrangementModulePath + "hierarchy-arrangement.md");
+        expResult.put("au.gov.asd.tac.constellation.plugins.arrangements.tree", arrangementModulePath + "tree-arrangement.md");
+        expResult.put("au.gov.asd.tac.constellation.plugins.arrangements.circle", arrangementModulePath + "circle-arrangement.md");
+        expResult.put("au.gov.asd.tac.constellation.plugins.arrangements.scatter3d", arrangementModulePath + "scatter3d-arrangement.md");
+        expResult.put("au.gov.asd.tac.constellation.plugins.arrangements.sphere", arrangementModulePath + "sphere-arrangement.md");
         expResult.put("au.gov.asd.tac.constellation.plugins.arrangements.flattenZField", arrangementModulePath + "flatten-z-field.md");
         expResult.put("au.gov.asd.tac.constellation.plugins.arrangements.contractGraph", arrangementModulePath + "contract-graph.md");
         expResult.put("au.gov.asd.tac.constellation.plugins.arrangements.expandGraph", arrangementModulePath + "expand-graph.md");
         expResult.put("au.gov.asd.tac.constellation.plugins.arrangements.layerByTime", arrangementModulePath + "layer-by-time.md");
-        expResult.put("au.gov.asd.tac.constellation.plugins.arrangements.nodeAttribute", arrangementModulePath + "node-attribute.md");
+        expResult.put("au.gov.asd.tac.constellation.plugins.arrangements.nodeAttribute", arrangementModulePath + "node-attribute-arrangement.md");
         expResult.put("au.gov.asd.tac.constellation.plugins.arrangements.bubbleTree3d", arrangementModulePath + "bubble-tree-3d-arrangement.md");
         expResult.put("au.gov.asd.tac.constellation.plugins.arrangements.proximity", arrangementModulePath + "proximity-arrangement.md");
         expResult.put("au.gov.asd.tac.constellation.plugins.arrangements.spectral", arrangementModulePath + "spectral-arrangement.md");
