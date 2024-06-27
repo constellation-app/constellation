@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.utilities.gui.field;
 import au.gov.asd.tac.constellation.utilities.gui.DateChooserPanel;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.LayoutConstants;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.KeyPressShortcut;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalUtilities;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -43,7 +44,7 @@ import org.openide.DialogDisplayer;
  * 
  * @author capricornunicorn123
  */
-public final class DateInputField extends ConstellationInputField<LocalDate> implements ButtonRight {
+public final class DateInputField extends ConstellationInputField<LocalDate> implements ButtonRight, KeyPressShortcut {
     
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
     
@@ -61,14 +62,19 @@ public final class DateInputField extends ConstellationInputField<LocalDate> imp
     
     public DateInputField(){
         super(LayoutConstants.INPUT_POPUP, TextType.SINGLELINE);
-   
-        this.addShortcuts(KeyEvent.KEY_PRESSED, event -> {
+    }
+    
+    // <editor-fold defaultstate="collapsed" desc="Shortcut Support">   
+    @Override
+    public EventHandler<KeyEvent> getShortcuts() {
+        return event -> {
             switch (event.getCode()){
                 case UP -> this.nextDate();
                 case DOWN -> this.prevDate();
             }
-        });
+        };
     }
+    // </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc="Local Private Methods">   
     /**

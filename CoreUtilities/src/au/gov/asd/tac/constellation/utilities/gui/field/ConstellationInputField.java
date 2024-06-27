@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldL
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationTextArea;
 import au.gov.asd.tac.constellation.utilities.gui.field.Window;
 import au.gov.asd.tac.constellation.utilities.gui.field.Window.InfoWindow;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.KeyPressShortcut;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -139,6 +140,14 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ch
     public ConstellationInputField(final LayoutConstants layout, final TextType type) {
         this.layout = layout;
         textArea = new ConstellationTextArea(this, type);
+        Platform.runLater(() -> {
+            if (this instanceof KeyPressShortcut shortcut) {
+                EventHandler<KeyEvent> shortcutEvent = shortcut.getShortcuts();
+                if (shortcutEvent != null){
+                    this.textArea.addEventFilter(KeyEvent.KEY_PRESSED, shortcut.getShortcuts());
+                }
+            }
+        });
         
         this.setPrefWidth(500);
         this.setMinWidth(200);
@@ -307,8 +316,6 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ch
             if (textArea.isInFocus()) {
                 showAutoCompleteSuggestions();
             }
-            
-            
         }
         
         //Boolean Changes are changs to the focused property of the ConstellationTextArea
@@ -339,19 +346,6 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ch
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     // </editor-fold>   
-    
-    // <editor-fold defaultstate="collapsed" desc="Shortcut Support">   
-    /**
-     * Registers shortcut keys specific to each input field implementation. 
-     * Things like up and down arrows are examples of a shortcut that may be handed differently per field.
-     * @param <E>
-     * @param eventType
-     * @param eventFilter 
-     */
-    protected final <E extends Event> void addShortcuts(final EventType<E> eventType, final EventHandler<E> eventFilter) {
-        this.textArea.addEventFilter(eventType, eventFilter);
-    }
-    // </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc="ConstelationTextArea Modification Methods">
         /**

@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.utilities.gui.field;
 import au.gov.asd.tac.constellation.utilities.gui.field.Button.ButtonType;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ChoiceType;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.LayoutConstants;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.KeyPressShortcut;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -46,7 +47,7 @@ import javafx.scene.layout.Pane;
  * @author capricornunicorn123
  * @param <C> The Object type being represented by this ChoiceInputFiled
  */
-public final class NumberInputField<C extends Number> extends ConstellationInputField<Number> implements ButtonLeft, ButtonRight{
+public final class NumberInputField<C extends Number> extends ConstellationInputField<Number> implements ButtonLeft, ButtonRight, KeyPressShortcut{
     
     private final C min;
     private final C max;
@@ -63,14 +64,19 @@ public final class NumberInputField<C extends Number> extends ConstellationInput
         this.step = (C) step;
         
         this.setValue(init);
-
-        this.addShortcuts(KeyEvent.KEY_PRESSED, event -> {
+    }
+    
+    // <editor-fold defaultstate="collapsed" desc="Shortcut Support">   
+    @Override
+    public EventHandler<KeyEvent> getShortcuts() {
+        return (event) -> {
             switch (event.getCode()){
                 case UP -> this.increment();
                 case DOWN -> this.decrement();
             }
-        });
+        };
     }
+    // </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc="Local Private Methods">   
 

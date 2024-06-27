@@ -21,11 +21,13 @@ import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInpu
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ChoiceType.SINGLE_DROPDOWN;
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ChoiceType.SINGLE_SPINNER;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.KeyPressShortcut;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javafx.collections.ListChangeListener;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContextMenu;
@@ -53,18 +55,23 @@ import javafx.scene.input.MouseEvent;
  * @author capricornunicorn123
  * @param <C> The Object type being represented by this ChoiceInputFiled
  */
-public final class ChoiceInputField<C extends Object> extends ConstellationInputField<List<C>> implements ButtonRight, ButtonLeft, Window, AutoCompletable{
+public final class ChoiceInputField<C extends Object> extends ConstellationInputField<List<C>> implements ButtonRight, ButtonLeft, Window, AutoCompletable, KeyPressShortcut{
     
     private final List<C> options = new ArrayList<>();
     private final List<ImageView> icons = new ArrayList<>();
     private final ChoiceType type;
 
     public ChoiceInputField(final ChoiceType type){
-        super(type.getLayout(), TextType.SINGLELINE);
-        
+        super(type.getLayout(), TextType.SINGLELINE);        
+        this.type = type;
+    }    
+    
+    // <editor-fold defaultstate="collapsed" desc="Shortcut Support">   
+    @Override
+    public EventHandler<KeyEvent> getShortcuts() {
         //Add shortcuts where users can increment and decrement the date using up and down arrows
         if (type != ChoiceType.MULTI) {
-            this.addShortcuts(KeyEvent.KEY_PRESSED, event -> {
+            return (event) -> {
                 switch (event.getCode()){
                     case UP -> {
                         this.decrementChoice();
@@ -75,12 +82,12 @@ public final class ChoiceInputField<C extends Object> extends ConstellationInput
                         event.consume();
                     }
                 }
-            });
+            };
         }
-        
-        this.type = type;
-    }    
-    
+        return null;
+    }
+    // </editor-fold>
+  
     // <editor-fold defaultstate="collapsed" desc="Local Private Methods">   
     /**
      * Defines the options that users can select from in this field.
