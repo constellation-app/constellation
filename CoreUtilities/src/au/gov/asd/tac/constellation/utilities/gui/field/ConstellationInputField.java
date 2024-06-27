@@ -552,7 +552,7 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ch
      * @return 
      */    
     public void showAutoCompleteSuggestions() {
-        if (this instanceof AutoCompletable autoComplete){
+        if (this instanceof AutoCompletable autoComplete) {
             final List<MenuItem> suggestions = autoComplete.getAutoCompleteSuggestions();
             if (suggestions != null && !suggestions.isEmpty()){
                 ContextMenu menu = new ContextMenu();
