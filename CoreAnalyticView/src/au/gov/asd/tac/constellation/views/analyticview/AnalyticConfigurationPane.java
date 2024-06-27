@@ -32,10 +32,10 @@ import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestio
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticException;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticUtilities;
-import com.github.rjeschke.txtmark.Processor;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -61,6 +61,9 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
+import org.commonmark.node.Node;
+import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.HtmlRenderer;
 import org.openide.util.Lookup;
 
 /**
@@ -426,7 +429,12 @@ public class AnalyticConfigurationPane extends VBox {
                 try {
                     final Path path = Paths.get(plugin.getPlugin().getDocumentationUrl());
                     final InputStream pageInput = new FileInputStream(path.toString());
-                    documentationView.getEngine().loadContent(Processor.process(pageInput), "text/html");
+                    final String pageString =  new String(pageInput.readAllBytes(), StandardCharsets.UTF_8);
+                    final Parser parser = Parser.builder().build();
+                    final HtmlRenderer renderer = HtmlRenderer.builder().build();
+                    final Node tocDocument = parser.parse(pageString);
+                    final String pageHtml = renderer.render(tocDocument);
+                    documentationView.getEngine().loadContent(pageHtml, "text/html");
                 } catch (final IOException ex) {
                     LOGGER.log(Level.WARNING, ex.getMessage());
                 }

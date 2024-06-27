@@ -73,7 +73,7 @@ from and writing to the graph. Under the hood, the graph object is an
 "SGraph", which provides access for interrogation and editing of the
 underlying Constellation graph. The SGraph object, as well as all the
 objects obtainable from an SGraph are documented in the [API
-javadoc](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/index.md).
+javadoc](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/index-all.md).
 
 Using the utilities object, you can access all other open graphs using
 "getOpenGraphs()". This function will return a map or dictionary of
