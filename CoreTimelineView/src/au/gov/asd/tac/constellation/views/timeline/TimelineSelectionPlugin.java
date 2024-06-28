@@ -53,15 +53,6 @@ public class TimelineSelectionPlugin extends SimpleEditPlugin {
         final int selectedVertexAttrID = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
         final int selectedTransactionAttrID = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
 
-        for (final int vxID : vertices) {
-            graph.setBooleanValue(selectedVertexAttrID, vxID, true);
-            vertices.remove(vxID);
-        }
-        for (final int txID : transactions) {
-            graph.setBooleanValue(selectedTransactionAttrID, txID, true);
-            transactions.remove(txID);
-        }
-
         if (isClearingSelection) {
             for (int pos = 0; pos < graph.getVertexCount(); pos++) {
                 final int vxID = graph.getVertex(pos);
