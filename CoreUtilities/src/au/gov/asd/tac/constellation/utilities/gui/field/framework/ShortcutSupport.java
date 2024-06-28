@@ -15,14 +15,15 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field.framework;
 
+import javafx.event.EventHandler;
+import javafx.scene.input.KeyEvent;
+
 /**
  *
  * @author capricornunicorn123
  */
-public interface ButtonLeft {
+public interface ShortcutSupport {
     
-    public Button getLeftButton();
-    
-    public void executeLeftButtonAction();
+    public EventHandler<KeyEvent> getShortcuts();
     
 }

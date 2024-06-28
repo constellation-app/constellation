@@ -18,25 +18,25 @@ package au.gov.asd.tac.constellation.utilities.gui.field;
 import au.gov.asd.tac.constellation.utilities.gui.recentvalue.RecentValuesListener;
 import au.gov.asd.tac.constellation.utilities.gui.recentvalue.RecentValuesChangeEvent;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.AutoCompletable;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.ButtonRight;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.AutoCompleteSupport;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputDropDown;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport;
 
 /**
  * A {@link ConstellationinputField} for managing {@link String} selection. 
  * 
  * @author capricornunicorn123
  */
-public final class TextInputField extends ConstellationInputField<String> implements RecentValuesListener, ButtonRight, AutoCompletable{
+public final class TextInputField extends ConstellationInputField<String> implements RecentValuesListener, RightButtonSupport, AutoCompleteSupport{
     
     private final List<String> recentValues = new ArrayList<>();
     private final String recentValueListeningId;

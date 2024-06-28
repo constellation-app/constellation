@@ -17,8 +17,6 @@ package au.gov.asd.tac.constellation.utilities.gui.field;
 
 import au.gov.asd.tac.constellation.utilities.gui.DateChooserPanel;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.ButtonRight;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.KeyPressShortcut;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalUtilities;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -27,7 +25,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import javafx.event.EventHandler;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import static javafx.scene.input.KeyCode.DOWN;
@@ -38,13 +35,15 @@ import javafx.util.StringConverter;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ShortcutSupport;
 
 /**
  * A {@link ConstellationInputField} for managing {@link LocalDate} selection. 
  * 
  * @author capricornunicorn123
  */
-public final class DateInputField extends ConstellationInputField<LocalDate> implements ButtonRight, KeyPressShortcut {
+public final class DateInputField extends ConstellationInputField<LocalDate> implements RightButtonSupport, ShortcutSupport {
     
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
     

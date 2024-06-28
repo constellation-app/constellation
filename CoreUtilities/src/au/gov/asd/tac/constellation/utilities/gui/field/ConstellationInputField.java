@@ -17,13 +17,8 @@ package au.gov.asd.tac.constellation.utilities.gui.field;
 
 import au.gov.asd.tac.constellation.utilities.gui.context.ContextMenuContributor;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType;
-import au.gov.asd.tac.constellation.utilities.gui.field.Window.InfoWindow;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.AutoCompletable;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.ButtonLeft;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.ButtonRight;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationTextArea;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.KeyPressShortcut;
 import au.gov.asd.tac.constellation.utilities.gui.recentvalue.RecentValueUtility;
 import au.gov.asd.tac.constellation.utilities.gui.recentvalue.RecentValuesChangeEvent;
 import au.gov.asd.tac.constellation.utilities.gui.recentvalue.RecentValuesListener;
@@ -35,23 +30,24 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
-import javafx.scene.Node;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.control.CustomMenuItem;
-import javafx.scene.control.Labeled;
-import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Tooltip;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.AutoCompleteSupport;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputDropDown;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.InfoWindowSupport;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.InfoWindowSupport.InfoWindow;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.LeftButtonSupport;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ShortcutSupport;
 
 
 /**
@@ -171,7 +167,7 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ch
     protected void initialiseDepedantComponents(){
         
         //Add Left button
-        if (this instanceof ButtonLeft leftButton){
+        if (this instanceof LeftButtonSupport leftButton){
             Button button = leftButton.getLeftButton();
             if (button != null){
                 button.getHeightProperty().bind(textArea.heightProperty());
@@ -184,12 +180,12 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ch
         interactableContent.getChildren().add(textArea);
         
         //Add Window
-        if (this instanceof Window infoWindow){
+        if (this instanceof InfoWindowSupport infoWindow){
             insertInfoWindow(infoWindow.getInfoWindow());
         }
 
         //Add Right Button
-        if (this instanceof ButtonRight rightButton){
+        if (this instanceof RightButtonSupport rightButton){
             Button button = rightButton.getRightButton();
             button.getHeightProperty().bind(textArea.heightProperty());
             interactableContent.getChildren().add(button);
@@ -197,7 +193,7 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ch
         }
         
         //Add Shortcuts
-        if (this instanceof KeyPressShortcut shortcut) {
+        if (this instanceof ShortcutSupport shortcut) {
             EventHandler<KeyEvent> shortcutEvent = shortcut.getShortcuts();
             if (shortcutEvent != null){
                 this.textArea.addEventFilter(KeyEvent.KEY_PRESSED, shortcut.getShortcuts());
@@ -219,7 +215,7 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ch
         }
         
         //AutoComplete
-        if (this instanceof AutoCompletable autoComplete) {
+        if (this instanceof AutoCompleteSupport autoComplete) {
             this.addListener(newValue -> {
                 if (textArea.isInFocus()){
                     final List<MenuItem> suggestions = autoComplete.getAutoCompleteSuggestions();

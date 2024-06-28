@@ -19,7 +19,7 @@ package au.gov.asd.tac.constellation.utilities.gui.field.framework;
  *
  * @author capricornunicorn123
  */
-public interface ButtonRight {
+public interface RightButtonSupport {
     
     public Button getRightButton();
     

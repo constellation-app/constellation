@@ -17,18 +17,17 @@ package au.gov.asd.tac.constellation.utilities.gui.field;
 
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button.ButtonType;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.ButtonLeft;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.ButtonRight;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.KeyPressShortcut;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.collections.ListChangeListener;
 import javafx.event.EventHandler;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.LeftButtonSupport;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ShortcutSupport;
 
 /**
  * A {@link ConstellationinputField} for managing choice selection. 
@@ -45,7 +44,7 @@ import javafx.scene.input.MouseEvent;
  * @author capricornunicorn123
  * @param <C> The Object type being represented by this ChoiceInputFiled
  */
-public final class NumberInputField<C extends Number> extends ConstellationInputField<Number> implements ButtonLeft, ButtonRight, KeyPressShortcut{
+public final class NumberInputField<C extends Number> extends ConstellationInputField<Number> implements LeftButtonSupport, RightButtonSupport, ShortcutSupport{
     
     private final C min;
     private final C max;

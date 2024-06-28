@@ -20,31 +20,30 @@ import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldC
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ColorMode.COLOR;
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ColorMode.HEX;
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ColorMode.RGB;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.AutoCompletable;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button.ButtonType;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.ButtonLeft;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.ButtonRight;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import javafx.event.EventHandler;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.AutoCompleteSupport;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputDropDown;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.InfoWindowSupport;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.LeftButtonSupport;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport;
 
 /**
  * A {@link ConstellationInputField} for managing {@link ConstellationColor} selection. 
  * 
  * @author capricornunicorn123
  */
-public final class ColorInputField extends ConstellationInputField<ConstellationColor> implements ButtonRight, ButtonLeft, Window, AutoCompletable {
+public final class ColorInputField extends ConstellationInputField<ConstellationColor> implements RightButtonSupport, LeftButtonSupport, InfoWindowSupport, AutoCompleteSupport {
     
     ColorMode mode = ColorMode.COLOR;
     Label label = new Label();

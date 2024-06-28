@@ -15,13 +15,14 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field.framework;
 
-import java.util.List;
-import javafx.scene.control.MenuItem;
-
 /**
  *
  * @author capricornunicorn123
  */
-public interface AutoCompletable {
-    public abstract List<MenuItem> getAutoCompleteSuggestions();
+public interface LeftButtonSupport {
+    
+    public Button getLeftButton();
+    
+    public void executeLeftButtonAction();
+    
 }

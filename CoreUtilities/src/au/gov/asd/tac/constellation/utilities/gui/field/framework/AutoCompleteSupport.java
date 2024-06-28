@@ -15,15 +15,13 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field.framework;
 
-import javafx.event.EventHandler;
-import javafx.scene.input.KeyEvent;
+import java.util.List;
+import javafx.scene.control.MenuItem;
 
 /**
  *
  * @author capricornunicorn123
  */
-public interface KeyPressShortcut {
-    
-    public EventHandler<KeyEvent> getShortcuts();
-    
+public interface AutoCompleteSupport {
+    public abstract List<MenuItem> getAutoCompleteSuggestions();
 }

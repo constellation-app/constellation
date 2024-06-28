@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.utilities.gui.field;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.FileInputKind;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.ButtonRight;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 
 import java.io.File;
@@ -30,7 +29,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.EventHandler;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
@@ -38,13 +36,14 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javax.swing.filechooser.FileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.filesystems.FileChooserBuilder;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport;
 
 /**
  * A {@link ConstellationinputField} for managing {@link File} selection. 
  * 
  * @author capricornunicorn123
  */
-public final class FileInputField extends ConstellationInputField<List<File>> implements ButtonRight{
+public final class FileInputField extends ConstellationInputField<List<File>> implements RightButtonSupport{
     
     private ExtensionFilter extensionFilter = null;
     private boolean acceptAll = true;

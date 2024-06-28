@@ -19,12 +19,8 @@ import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldC
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ChoiceType.MULTI;
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ChoiceType.SINGLE_DROPDOWN;
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ChoiceType.SINGLE_SPINNER;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.AutoCompletable;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button.ButtonType;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.ButtonLeft;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.ButtonRight;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.KeyPressShortcut;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +36,11 @@ import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.AutoCompleteSupport;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputDropDown;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.LeftButtonSupport;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ShortcutSupport;
 
 /**
  * A {@link ConstellationinputField} for managing choice selection. 
@@ -56,7 +57,7 @@ import javafx.scene.input.MouseEvent;
  * @author capricornunicorn123
  * @param <C> The Object type being represented by this ChoiceInputFiled
  */
-public final class SingleChoiceInputField<C extends Object> extends ConstellationInputField<C> implements ButtonRight, ButtonLeft, AutoCompletable, KeyPressShortcut{
+public final class SingleChoiceInputField<C extends Object> extends ConstellationInputField<C> implements RightButtonSupport, LeftButtonSupport, AutoCompleteSupport, ShortcutSupport{
     
     private final List<C> options = new ArrayList<>();
     private final List<ImageView> icons = new ArrayList<>();

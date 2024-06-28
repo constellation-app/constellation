@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.utilities.gui.field;
+package au.gov.asd.tac.constellation.utilities.gui.field.framework;
 
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputField;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldListener;
 import java.io.Serializable;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -26,7 +28,7 @@ import javafx.scene.layout.StackPane;
  *
  * @author capricornunicorn123
  */
-public interface Window{
+public interface InfoWindowSupport{
     
     public abstract InfoWindow getInfoWindow();
     
