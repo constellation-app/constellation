@@ -58,38 +58,14 @@ import org.openide.util.Exceptions;
  * @author capricornunicorn123
  * @param <C> The Object type being represented by this ChoiceInputFiled
  */
-public final class ChoiceInputField<C extends Object> extends ConstellationInputField<List<C>> implements ButtonRight, ButtonLeft, Window, AutoCompletable, KeyPressShortcut{
+public final class MultiChoiceInputField<C extends Object> extends ConstellationInputField<List<C>> implements ButtonRight, Window, AutoCompletable {
     
     private final List<C> options = new ArrayList<>();
     private final List<ImageView> icons = new ArrayList<>();
-    private final ChoiceType type;
 
-    public ChoiceInputField(final ChoiceType type){    
-        this.type = type;
+    public MultiChoiceInputField(){    
         initialiseDepedantComponents();
     }    
-    
-    // <editor-fold defaultstate="collapsed" desc="Shortcut Support">   
-    @Override
-    public EventHandler<KeyEvent> getShortcuts() {
-        //Add shortcuts where users can increment and decrement the date using up and down arrows
-        if (type != ChoiceType.MULTI) {
-            return (event) -> {
-                switch (event.getCode()){
-                    case UP -> {
-                        this.decrementChoice();
-                        event.consume();
-                    }
-                    case DOWN -> {
-                        this.incrementChoice();
-                        event.consume();
-                    }
-                }
-            };
-        }
-        return null;
-    }
-    // </editor-fold>
   
     // <editor-fold defaultstate="collapsed" desc="Local Private Methods">   
     /**
@@ -126,7 +102,7 @@ public final class ChoiceInputField<C extends Object> extends ConstellationInput
      * @param requestedChoices 
      */
     private void setChoices(final List<C> requestedChoices) {
-        if (requestedChoices != null && this.type == ChoiceType.MULTI) {
+        if (requestedChoices != null) {
             //This meethod requres use of an Arraylist. Casting is not possible.
             final ArrayList<C> localList = new ArrayList<>();       
             localList.addAll(requestedChoices);
@@ -146,13 +122,8 @@ public final class ChoiceInputField<C extends Object> extends ConstellationInput
     private void setChoice(final C choice){
         final List<C> currentChoices = stringToList(this.getText());
         if (this.options.contains(choice) && ((currentChoices != null && !currentChoices.contains(choice)) || currentChoices == null)) {
-            switch (type){
-                case SINGLE_DROPDOWN, SINGLE_SPINNER -> this.setText(choice.toString());
-                case MULTI -> {
-                    currentChoices.add(choice);
-                    this.setText(this.listToString(currentChoices));
-                }
-            } 
+            currentChoices.add(choice);
+            this.setText(this.listToString(currentChoices));
         }
     }
     
@@ -224,44 +195,6 @@ public final class ChoiceInputField<C extends Object> extends ConstellationInput
         }
         return foundChoices;          
     }
-
-    /**
-     * Used in single choice Options to increment a selected choice.
-     * If the choice is the last choice in the list of options the next choice is the first option.
-     */
-    private void incrementChoice() {
-        if (type != ChoiceType.MULTI){
-            final List<C> selections = this.getChoices();
-            if (selections.size() == 1){
-                final int nextSelectionIndex = this.options.indexOf(selections.getFirst()) + 1;
-                if (nextSelectionIndex < this.options.size()){
-                    this.setChoice(this.options.get(nextSelectionIndex));
-                } else {
-                    this.setChoice(this.options.getFirst());
-                }
-            } else {
-                this.setChoice(this.options.getLast());
-            }
-        }
-    }
-    
-    /**
-     * Used in single choice Options to decrement a selected choice.
-     * If the choice is the first choice in the list of options the previous choice is the last option.
-     */
-    private void decrementChoice() {
-        final List<C> selections = this.getChoices();
-        if (selections.size() == 1){
-            final int prevSelectionIndex = this.options.indexOf(selections.getFirst()) - 1;
-            if (prevSelectionIndex < 0){
-                this.setChoice(this.options.getLast());
-            } else {
-                this.setChoice(this.options.get(prevSelectionIndex));
-            }
-        } else {
-            this.setChoice(this.options.getFirst());
-        }
-    }
     // </editor-fold> 
         
     // <editor-fold defaultstate="collapsed" desc="Value Modification & Validation Implementation"> 
@@ -286,16 +219,10 @@ public final class ChoiceInputField<C extends Object> extends ConstellationInput
             return true;
         } else {
             final List<C> items = stringToList(getText());
-            switch (type){
-                case SINGLE_DROPDOWN, SINGLE_SPINNER -> {
-                    return items != null && !items.contains(null) && items.size() == 1 ;
-                }
-                case MULTI -> {
-                    if (items != null && !items.contains(null)){
-                        final List<C> duplicates = items.stream().collect(Collectors.groupingBy(i -> i)).entrySet().stream().filter(entry -> entry.getValue().size() > 1).map(entry -> entry.getKey()).toList();
-                        return duplicates.isEmpty();
-                    } 
-                }
+
+            if (items != null && !items.contains(null)){
+                final List<C> duplicates = items.stream().collect(Collectors.groupingBy(i -> i)).entrySet().stream().filter(entry -> entry.getValue().size() > 1).map(entry -> entry.getKey()).toList();
+                return duplicates.isEmpty();
             }
             return false;
         }
@@ -306,88 +233,30 @@ public final class ChoiceInputField<C extends Object> extends ConstellationInput
     @Override
     public List<MenuItem> getLocalMenuItems() {
         final List<MenuItem> items = new ArrayList();
-        if (type != null){
-            switch (type){
-                case SINGLE_SPINNER -> {
-                    final MenuItem next = new MenuItem("Increment");
-                    next.setOnAction(value -> executeRightButtonAction());
-                    items.add(next);
 
-                    final MenuItem prev = new MenuItem("Decrement");
-                    prev.setOnAction(value -> executeLeftButtonAction());
-                    items.add(prev);
-                }
-                case SINGLE_DROPDOWN, MULTI -> {
-                    final MenuItem choose = new MenuItem("Select Choice");
-                    choose.setOnAction(value -> executeRightButtonAction());
-                    items.add(choose);
-                }
-            }
-        }
+        final MenuItem choose = new MenuItem("Select Choice");
+        choose.setOnAction(value -> executeRightButtonAction());
+        items.add(choose);
+
         return items;
     }
     // </editor-fold> 
 
     // <editor-fold defaultstate="collapsed" desc="Button Event Implementation">   
-    @Override
-    public Button getLeftButton() {
-        switch (type) {
-            case SINGLE_SPINNER -> {
-                return  new Button(new Label(ConstellationInputFieldConstants.PREVIOUS_BUTTON_LABEL), ButtonType.CHANGER) {
-                    @Override
-                    public EventHandler<? super MouseEvent> action() {
-                        return event -> executeLeftButtonAction();
-                    }
-                };
-            }
-            default -> {
-                return null;
-            }
-        }
-    }
     
     @Override
     public Button getRightButton() {
-        
-        Label label;
-        ButtonType buttonType;
-        
-        switch (type) {
-            case SINGLE_SPINNER -> {
-                label = new Label(ConstellationInputFieldConstants.NEXT_BUTTON_LABEL);
-                buttonType = ButtonType.CHANGER;
-            }
-            case SINGLE_DROPDOWN, MULTI -> {
-                label = new Label(ConstellationInputFieldConstants.SELECT_BUTTON_LABEL);
-                buttonType = ButtonType.DROPDOWN;
-                
-            }
-            default -> {
-                return null;
-            }
-        }
-        
-        return new Button(label, buttonType) {
+        return new Button(new Label(ConstellationInputFieldConstants.SELECT_BUTTON_LABEL), ButtonType.DROPDOWN) {
                 @Override
                 public EventHandler<? super MouseEvent> action() {
                     return event -> executeRightButtonAction();
                 }
         };
     }
-
-    @Override
-    public void executeLeftButtonAction() {
-        if (type == SINGLE_SPINNER) {
-            decrementChoice(); 
-        }
-    }
     
     @Override
     public void executeRightButtonAction() {
-        switch (type){
-            case SINGLE_SPINNER -> this.incrementChoice();
-            case SINGLE_DROPDOWN, MULTI -> this.showDropDown(new ChoiceInputDropDown(this));
-        }
+        showDropDown(new ChoiceInputDropDown(this));
     }  
     // </editor-fold> 
     
@@ -407,25 +276,23 @@ public final class ChoiceInputField<C extends Object> extends ConstellationInput
         //A local reference to the check boxes displayed in Multi Choice context menu's
         final List<CheckBox> boxes = new ArrayList<>();
         
-        public ChoiceInputDropDown(final ChoiceInputField field){
+        public ChoiceInputDropDown(final MultiChoiceInputField field){
             super(field);
             
             final List<MenuItem> items = new ArrayList<>(); 
-            
-            if (field.type == ChoiceType.MULTI) {
-                
-                //Select All Bulk Selection Feature
-                final Label all = new Label("Select All");
-                all.setOnMouseClicked(event -> field.setChoices(field.options)); 
-                items.add(this.buildCustomMenuItem(all));
 
-                //Clear All Bulk Selection Feature
-                final Label clear = new Label("Clear All");
-                clear.setOnMouseClicked(event -> field.clearChoices()); 
-                items.add(this.buildCustomMenuItem(clear));
+            //Select All Bulk Selection Feature
+            final Label all = new Label("Select All");
+            all.setOnMouseClicked(event -> field.setChoices(field.options)); 
+            items.add(this.buildCustomMenuItem(all));
 
-                items.add(new SeparatorMenuItem());
-            }       
+            //Clear All Bulk Selection Feature
+            final Label clear = new Label("Clear All");
+            clear.setOnMouseClicked(event -> field.clearChoices()); 
+            items.add(this.buildCustomMenuItem(clear));
+
+            items.add(new SeparatorMenuItem());
+              
             
             if (options != null){
                 final Object[] optionsList = options.toArray();
@@ -433,42 +300,25 @@ public final class ChoiceInputField<C extends Object> extends ConstellationInput
                 for (int i = 0 ; i < optionsList.length ; i ++){
                     final C choice = (C) optionsList[i];
 
-                    final Labeled item = switch(field.type){
-                        case MULTI -> {
-                            final CheckBox box = new CheckBox(choice.toString());
-                            box.setOnAction(event -> {
-                                if (box.isSelected()) {
-                                    field.setChoice(choice);
-                                } else {
-                                    field.removeChoice(choice);
-                                }
-                            }); 
-                            box.setSelected(choices.contains(choice));
-                            boxes.add(box);
-                            yield box;
-                        }
-                        case SINGLE_DROPDOWN -> {
-                            final Label label = new Label(choice.toString());
-                            label.setOnMouseClicked(event -> {
-                                    field.setChoice(choice);
-                            }); 
-                            yield label;
-                        }
-                        //shouldnt reach here
-                        case SINGLE_SPINNER -> new Label();
-                    };
+                        CheckBox item = new CheckBox(choice.toString());
+                        item.setOnAction(event -> {
+                            if (item.isSelected()) {
+                                field.setChoice(choice);
+                            } else {
+                                field.removeChoice(choice);
+                            }
+                        }); 
+                        item.setSelected(choices.contains(choice));
+                        boxes.add(item);
+                            
 
                     if (!icons.isEmpty()){
                         item.setGraphic(icons.get(i));
                     }
 
                     final CustomMenuItem menuItem = this.buildCustomMenuItem(item);   
-
-                    //If in multiple choice mode the context menu should not be closed after an item is selected.
-                    if (type == ChoiceType.MULTI){
-                        menuItem.setHideOnClick(false);
-                    }
-
+                    //context menu should not be closed after an item is selected.
+                    menuItem.setHideOnClick(false);
                     items.add(menuItem);
                 }
             }
@@ -534,7 +384,7 @@ public final class ChoiceInputField<C extends Object> extends ConstellationInput
         //do not show suggestions in the following cases
         //if there are two unknown choices that the user has enteres, i.e more than 1 null value.
         //if there is 1 or more valid choices in the event that this is a single choice input.
-        if (choices.stream().filter(value -> value == null).count() != 1 || (this.type != ChoiceType.MULTI && choices.stream().filter(value -> value != null).count() > 0)){
+        if (choices.stream().filter(value -> value == null).count() != 1){
             return null;
         } else {
             //Remove blank entrys from here

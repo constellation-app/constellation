@@ -321,6 +321,9 @@ public final class ColorInputField extends ConstellationInputField<Constellation
         final List<MenuItem> suggestions = new ArrayList<>();
         if (!this.getText().isBlank()){
             getListOfSortedColors()
+                    .stream()
+                    .filter(value -> value.toString().startsWith(getText()))
+                    .filter(value -> !value.toString().equals(getText()))
                     .forEach(value -> {
                         
                         MenuItem item = new MenuItem(value.getName());

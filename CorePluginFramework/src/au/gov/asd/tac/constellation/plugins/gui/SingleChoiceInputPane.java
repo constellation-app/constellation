@@ -21,7 +21,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterListener;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
-import au.gov.asd.tac.constellation.utilities.gui.field.ChoiceInputField;
+import au.gov.asd.tac.constellation.utilities.gui.field.SingleChoiceInputField;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ChoiceType;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldListener;
 import java.util.Arrays;
@@ -44,25 +44,25 @@ import javafx.application.Platform;
  * @author ruby_crucis
  * @author capricornunicorn123
  */
-public final class SingleChoiceInputPane extends ParameterInputPane<SingleChoiceParameterValue, List<ParameterValue>> {
+public final class SingleChoiceInputPane extends ParameterInputPane<SingleChoiceParameterValue, ParameterValue> {
 
     private static final Logger LOGGER = Logger.getLogger(SingleChoiceInputPane.class.getName());
 
     public SingleChoiceInputPane(final PluginParameter<SingleChoiceParameterValue> parameter) {
-        super(new ChoiceInputField<ParameterValue>(ChoiceType.SINGLE_DROPDOWN), parameter);
+        super(new SingleChoiceInputField<ParameterValue>(ChoiceType.SINGLE_DROPDOWN), parameter);
         
         final SingleChoiceParameterType.SingleChoiceParameterValue pv = parameter.getParameterValue();
 
-        ((ChoiceInputField) field).setOptions(pv.getOptionsData());
-        ((ChoiceInputField) field).setIcons(pv.getIcons()); 
-        setFieldValue(Arrays.asList(pv.getChoiceData()));
+        ((SingleChoiceInputField) field).setOptions(pv.getOptionsData());
+        ((SingleChoiceInputField) field).setIcons(pv.getIcons()); 
+        setFieldValue(pv.getChoiceData());
     }
 
     @Override
     public ConstellationInputFieldListener getFieldChangeListener(PluginParameter<SingleChoiceParameterValue> parameter) {
-        return (ConstellationInputFieldListener<List<ParameterValue>>) (List<ParameterValue> newValue) -> {
-            if (newValue != null && newValue.size() == 1) {
-                SingleChoiceParameterType.setChoiceData(parameter, newValue.getFirst());
+        return (ConstellationInputFieldListener<ParameterValue>) (ParameterValue newValue) -> {
+            if (newValue != null) {
+                SingleChoiceParameterType.setChoiceData(parameter, newValue);
             }
         };
     }
@@ -76,8 +76,8 @@ public final class SingleChoiceInputPane extends ParameterInputPane<SingleChoice
                     
                     case VALUE -> {
                         // Don't change the value if it isn't necessary.
-                        List<ParameterValue> selection = (List<ParameterValue>) getFieldValue();
-                        if (selection != null && selection.size() == 1 && !selection.getFirst().equals(scParameterValue.getChoiceData())){
+                        ParameterValue selection = getFieldValue();
+                        if (selection != null && !selection.equals(scParameterValue.getChoiceData())){
                             setFieldValue(selection);
                         }
                     }
@@ -86,12 +86,12 @@ public final class SingleChoiceInputPane extends ParameterInputPane<SingleChoice
 
                         // Update the Pane if the Optons have changed
                         List<ParameterValue> paramOptions = scParameterValue.getOptionsData();
-                        if (!((ChoiceInputField) field).getOptions().equals(paramOptions)){
-                            ((ChoiceInputField) field).setOptions(paramOptions);
+                        if (!((SingleChoiceInputField) field).getOptions().equals(paramOptions)){
+                            ((SingleChoiceInputField) field).setOptions(paramOptions);
 
                             // Only keep the value if it's in the new choices.
                             if (paramOptions.contains(scParameterValue.getChoiceData())) {
-                                setFieldValue(Arrays.asList(scParameterValue.getChoiceData()));
+                                setFieldValue(scParameterValue.getChoiceData());
                             } else {
                                 setFieldValue(null);
                             }

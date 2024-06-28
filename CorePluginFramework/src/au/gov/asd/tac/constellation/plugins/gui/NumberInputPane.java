@@ -77,7 +77,7 @@ public class NumberInputPane<C extends Number> extends ParameterInputPane<Number
             switch (change) {
                 case VALUE -> {
                     // Don't change the value if it isn't necessary.
-                    C number = (C) getFieldValue();
+                    Number number = getFieldValue();
                     if (!number.equals(nPluginParameter.getNumberValue())){
                         setFieldValue(number);
                     }

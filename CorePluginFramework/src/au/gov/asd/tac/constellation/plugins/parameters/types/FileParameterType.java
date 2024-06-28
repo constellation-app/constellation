@@ -165,51 +165,6 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
     }
 
     /**
-     * Describes the method of file selection for a parameter of this type.
-     */
-    public enum FileParameterKind {
-
-        /**
-         * Allows selection of multiple files. Displays "Open" on the button.
-         */
-        OPEN_MULTIPLE("Open"),
-        /**
-         * Allows selection of multiple files. Displays "..." on the button.
-         */
-        OPEN_MULTIPLE_OBSCURED("..."),
-        /**
-         * Allows selection of a single file only. Displays "Open" on the button.
-         */
-        OPEN("Open"),
-        /**
-         * Allows selection of a single file only. Displays "..." on the button.
-         */
-        OPEN_OBSCURED("..."),
-        /**
-         * Allows selection of a file, or entry of a non-existing but valid file
-         * path. Displays "Save" on the button.
-         */
-        SAVE("Save"),
-                /**
-         * Allows selection of a file, or entry of a non-existing but valid file
-         * path. Displays "..." on the button.
-         */
-        SAVE_OBSCURED("..."),;
-
-        
-        private final String text;
-        
-        private FileParameterKind(final String text){
-            this.text = text;
-        }
-        
-        @Override
-        public String toString(){
-            return text;
-        }
-    }
-
-    /**
      * An implementation of {@link ParameterValue} corresponding to this type.
      * It holds one or more {@link File} values, as well as a
      * {@link FileParameterKind} and an {@link ExtensionFilter} which describe

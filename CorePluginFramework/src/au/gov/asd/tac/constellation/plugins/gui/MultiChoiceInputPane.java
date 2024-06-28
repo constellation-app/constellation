@@ -21,9 +21,9 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterListener;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
-import au.gov.asd.tac.constellation.utilities.gui.field.ChoiceInputField;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ChoiceType;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldListener;
+import au.gov.asd.tac.constellation.utilities.gui.field.MultiChoiceInputField;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -53,11 +53,11 @@ public final class MultiChoiceInputPane extends ParameterInputPane<MultiChoicePa
 
     
     public MultiChoiceInputPane(final PluginParameter<MultiChoiceParameterValue> parameter) {
-        super(new ChoiceInputField<ParameterValue>(ChoiceType.MULTI), parameter);
+        super(new MultiChoiceInputField<ParameterValue>(), parameter);
         final MultiChoiceParameterValue pv = parameter.getParameterValue();
         options.addAll(pv.getOptionsData());
 
-        ((ChoiceInputField) field).setOptions(options);
+        ((MultiChoiceInputField) field).setOptions(options);
         setFieldValue(pv.getChoicesData());
 
     }
@@ -80,7 +80,7 @@ public final class MultiChoiceInputPane extends ParameterInputPane<MultiChoicePa
                 
                 case VALUE -> {
                     // Don't change the value if it isn't necessary.
-                    List<ParameterValue> selection = (List<ParameterValue>) getFieldValue();
+                    List<ParameterValue> selection = getFieldValue();
                     if (!selection.equals(MultiChoiceParameterType.getChoicesData(mcPluginParameter))){
                         setFieldValue(selection);
                     }
@@ -90,8 +90,8 @@ public final class MultiChoiceInputPane extends ParameterInputPane<MultiChoicePa
                     
                     // Update the Pane if the Optons have changed
                     List<ParameterValue> paramOptions = MultiChoiceParameterType.getOptionsData(mcPluginParameter);
-                    if (!((ChoiceInputField) field).getOptions().equals(paramOptions)){
-                        ((ChoiceInputField) field).setOptions(paramOptions);
+                    if (!((MultiChoiceInputField) field).getOptions().equals(paramOptions)){
+                        ((MultiChoiceInputField) field).setOptions(paramOptions);
                         
                         // Only keep the value if it's in the new choices.
                         if (paramOptions.contains(MultiChoiceParameterType.getChoicesData(mcPluginParameter))) {
