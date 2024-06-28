@@ -273,11 +273,4 @@ public final class NumberInputField<C extends Number> extends ConstellationInput
         this.increment();
     }
     // </editor-fold> 
-    
-    // <editor-fold defaultstate="collapsed" desc="Drop Down Implementation">   
-    @Override
-    public ContextMenu getDropDown() {
-        throw new UnsupportedOperationException("NumberInputField does not provide a ContextMenu");
-    } 
-    // </editor-fold> 
 }

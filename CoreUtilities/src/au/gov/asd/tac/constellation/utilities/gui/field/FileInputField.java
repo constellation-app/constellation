@@ -229,11 +229,4 @@ public final class FileInputField extends ConstellationInputField<List<File>> im
         }
     }
     // </editor-fold>     
-
-    // <editor-fold defaultstate="collapsed" desc="Drop Down Implementation">   
-    @Override
-    public ContextMenu getDropDown() {
-        throw new UnsupportedOperationException("FileInputField does not provide a ContextMenu");
-    }
-    // </editor-fold> 
 }

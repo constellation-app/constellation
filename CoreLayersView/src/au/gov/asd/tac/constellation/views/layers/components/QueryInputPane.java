@@ -309,4 +309,9 @@ public class QueryInputPane extends HBox implements RecentValuesListener {
             recentValuesCombo.setDisable(true);
         }
     }
+
+    @Override
+    public String getRecentValuesListenerID() {
+        return parameterId;
+    }
 }

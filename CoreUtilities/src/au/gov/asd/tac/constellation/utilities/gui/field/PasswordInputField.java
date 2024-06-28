@@ -81,7 +81,7 @@ public final class PasswordInputField extends ConstellationInputField<String> im
     // <editor-fold defaultstate="collapsed" desc="Button Event Implementation">
     @Override
     public Button getRightButton() {
-        Button button = new Button(label, Button.ButtonType.POPUP) {
+        Button button = new Button(label, Button.ButtonType.CHANGER) {
             @Override
             public EventHandler<? super MouseEvent> action() {
                 return event -> {
@@ -106,11 +106,4 @@ public final class PasswordInputField extends ConstellationInputField<String> im
         }
     }
     // </editor-fold> 
-
-    // <editor-fold defaultstate="collapsed" desc="Drop Down Implementation">   
-    @Override
-    public ContextMenu getDropDown() {
-        throw new UnsupportedOperationException("PasswordInputField does not provide a ContextMenu");
-    }
-    // </editor-fold>   
 }

@@ -113,15 +113,11 @@ public final class TextInputField extends ConstellationInputField<String> implem
     
     @Override
     public void executeRightButtonAction() {
-        this.showDropDown(getDropDown());     
+        this.showDropDown(new TextInputDropDown(this));     
     }
     // </editor-fold>   
     
     // <editor-fold defaultstate="collapsed" desc="DropDown Implementation">   
-    @Override
-    public ContextMenu getDropDown() {
-        return new TextInputDropDown(this);
-    }
     
     private class TextInputDropDown extends ConstellationInputDropDown {
         public TextInputDropDown(final TextInputField field){

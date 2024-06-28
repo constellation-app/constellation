@@ -16,37 +16,35 @@
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.color.ConstellationColorPicker;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ColorMode;
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ColorMode.COLOR;
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ColorMode.HEX;
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ColorMode.RGB;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.AutoCompletable;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button.ButtonType;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ButtonLeft;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ButtonRight;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
-import javafx.embed.swing.JFXPanel;
 import javafx.event.EventHandler;
-import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
-import javax.swing.JButton;
-import org.openide.DialogDescriptor;
-import org.openide.DialogDisplayer;
 
 /**
  * A {@link ConstellationInputField} for managing {@link ConstellationColor} selection. 
  * 
  * @author capricornunicorn123
  */
-public final class ColorInputField extends ConstellationInputField<ConstellationColor> implements ButtonRight, ButtonLeft, Window {
+public final class ColorInputField extends ConstellationInputField<ConstellationColor> implements ButtonRight, ButtonLeft, Window, AutoCompletable {
     
     ColorMode mode = ColorMode.COLOR;
     Label label = new Label();
@@ -166,6 +164,22 @@ public final class ColorInputField extends ConstellationInputField<Constellation
         }                     
         return color;
     }
+    
+    private List<ConstellationColor> getListOfSortedColors(){
+        return ConstellationColor.NAMED_COLOR_LIST.stream()
+                    .sorted((ConstellationColor o1, ConstellationColor o2) -> {
+                        int hueValue = Double.compare(o1.getJavaFXColor().getHue(), o2.getJavaFXColor().getHue());
+                        int satValue = Double.compare(o1.getJavaFXColor().getSaturation(), o2.getJavaFXColor().getSaturation());
+                        int brightValue = Double.compare(o1.getJavaFXColor().getBrightness(), o2.getJavaFXColor().getBrightness());
+                        if (hueValue != 0){
+                            return hueValue;
+                        } else if (satValue != 0){
+                            return satValue;
+                        } else {
+                            return brightValue;
+                        }
+                    }).toList();
+    }
     // </editor-fold>   
     
     // <editor-fold defaultstate="collapsed" desc="Value Modification & Validation Implementation"> 
@@ -215,44 +229,29 @@ public final class ColorInputField extends ConstellationInputField<Constellation
     
     @Override
     public Button getRightButton() {
-        return new Button(new Label(ConstellationInputFieldConstants.SWATCH_BUTTON_LABEL), ButtonType.POPUP) {
+        return new Button(new Label(ConstellationInputFieldConstants.SWATCH_BUTTON_LABEL), ButtonType.DROPDOWN) {
                 @Override
                 public EventHandler<? super MouseEvent> action() {
-                    return event -> executeLeftButtonAction();
+                    return event -> executeRightButtonAction();
                 }
         };
     }
     
     @Override
     public void executeLeftButtonAction() {
-        this.showDropDown(getDropDown());
+        this.showDropDown(new ColorModeDropDown(this));
     }
     
     @Override
     public void executeRightButtonAction() {
-        JFXPanel xp = new JFXPanel();
-        final Scene scene = new Scene(new ConstellationColorPicker());
-
-        xp.setScene(scene);
-        //xp.setPreferredSize(new Dimension((int) scene.getWidth(), (int) scene.getHeight()));
-
-        final Object[] options = {new JButton("Select"), DialogDescriptor.CANCEL_OPTION};
-        final Object focus = DialogDescriptor.NO_OPTION;
-
-        final DialogDescriptor dd = new DialogDescriptor(xp, "ChooseYOUR COLORRRR", true, options , focus, DialogDescriptor.DEFAULT_ALIGN, null, null);
-        Object r = DialogDisplayer.getDefault().notify(dd);
+        this.showDropDown(new ColorPickerDropDown(this));
     }
     // </editor-fold> 
     
-    // <editor-fold defaultstate="collapsed" desc="Drop Down Implementation"> 
-    @Override
-    public ContextMenu getDropDown() {
-        return new ColorInputDropDown(this);
-    }
-    
-    private class ColorInputDropDown extends ConstellationInputDropDown {
+    // <editor-fold defaultstate="collapsed" desc="Drop Down Implementation">    
+    private class ColorModeDropDown extends ConstellationInputDropDown {
         
-        public ColorInputDropDown(final ColorInputField field){
+        public ColorModeDropDown(final ColorInputField field){
             super(field);
             
             final List<MenuItem> items = new ArrayList<>();
@@ -265,6 +264,27 @@ public final class ColorInputField extends ConstellationInputField<Constellation
 
                 items.add(this.buildCustomMenuItem(label));
             }
+            this.addMenuItems(items);
+        }        
+    }    
+    
+    private class ColorPickerDropDown extends ConstellationInputDropDown {
+        
+    public ColorPickerDropDown(final ColorInputField field){
+            super(field);
+            
+            final List<MenuItem> items = new ArrayList<>();
+            getListOfSortedColors()    
+                    .forEach(value -> {
+                MenuItem item = new MenuItem(value.getName());
+                item.setOnAction(event -> {
+                    setValue(value);
+                });
+                Rectangle icon = new Rectangle(12, 12);
+                icon.setFill(Paint.valueOf(value.getHtmlColor()));
+                item.setGraphic(icon);
+                items.add(item);
+            });
             this.addMenuItems(items);
         }        
     }    
@@ -292,6 +312,28 @@ public final class ColorInputField extends ConstellationInputField<Constellation
         window.setWindowContents(colorPreview);
         
         return window;
+    }
+    //</editor-fold> 
+    
+    // <editor-fold defaultstate="collapsed" desc="Auto Complete Implementation">  
+    @Override
+    public List<MenuItem> getAutoCompleteSuggestions() {
+        final List<MenuItem> suggestions = new ArrayList<>();
+        if (!this.getText().isBlank()){
+            getListOfSortedColors()
+                    .forEach(value -> {
+                        
+                        MenuItem item = new MenuItem(value.getName());
+                        item.setOnAction(event -> {
+                            this.setValue(value);
+                        });
+                        Rectangle icon = new Rectangle(12, 12);
+                        icon.setFill(value.getJavaFXColor());
+                        item.setGraphic(icon);
+                        suggestions.add(item);
+                    });
+        }
+        return suggestions;
     }
     //</editor-fold> 
 }

@@ -175,12 +175,5 @@ public final class DateInputField extends ConstellationInputField<LocalDate> imp
         }       
     }
     // </editor-fold>  
-    
-    // <editor-fold defaultstate="collapsed" desc="Drop Down Implementation">   
-    @Override
-    public ContextMenu getDropDown() {
-        throw new UnsupportedOperationException("DateInputField does not provide a Drop Down Menu");
-    }
-    // </editor-fold>   
 }
 

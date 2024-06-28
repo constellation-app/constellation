@@ -155,18 +155,17 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ch
         this.setAlignment(Pos.TOP_LEFT);
         
         final ContextMenu contextMenu = new ContextMenu();
-//        contextMenu.getItems().clear();
-//        contextMenu.getItems().addAll(this.getAllMenuItems());
+        contextMenu.getItems().clear();
+        contextMenu.getItems().addAll(this.getAllMenuItems());
         // Set the right click context menu items
         // we want to update each time the context menu is requested 
         // can't make a new context menu each time as this event occurs after showing
-        this.setOnContextMenuRequested(value -> {
+        textArea.setOnContextMenuRequested(value -> {
             contextMenu.getItems().clear();
             contextMenu.getItems().addAll(this.getAllMenuItems());
-            this.showDropDown(contextMenu);
-            //textArea.setContextMenu(contextMenu);
+            textArea.setContextMenu(contextMenu);
         });
-        //textArea.setContextMenu(contextMenu);
+        textArea.setContextMenu(contextMenu);
     }
     
     protected void initialiseDepedantComponents(){
@@ -225,7 +224,7 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ch
                 if (textArea.isInFocus()){
                     final List<MenuItem> suggestions = autoComplete.getAutoCompleteSuggestions();
                     if (suggestions != null && !suggestions.isEmpty()){
-                        ContextMenu menu = new ContextMenu();
+                        ConstellationInputDropDown menu = new ConstellationInputDropDown(this);
                         menu.getItems().addAll(suggestions);
                         menu.setAutoHide(true);
                         menu.setAutoFix(true);
@@ -395,71 +394,8 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ch
      * 
      * @param menu 
      */
-    protected final void showDropDown(ContextMenu menu){
-        menu.addEventFilter(KeyEvent.KEY_TYPED, event -> {
-            if (event.getCode() == KeyCode.SPACE){
-                event.consume();
-            }
-        });
+    protected final void showDropDown(ConstellationInputDropDown menu){
         menu.show(this, Side.TOP, USE_PREF_SIZE, USE_PREF_SIZE);
-    }
-    
-    public abstract ContextMenu getDropDown();
-
-    private void setValid(boolean isValid) {
-        if (isValid){
-            background.setFill(fieldColor);
-        } else {
-            background.setFill(invalidColor);
-        }
-    }
-    
-    /**
-     * An extension of a ContextMenu to provide features that enable its use as a drop down menu in ConstellationInputFields
-     */
-    public class ConstellationInputDropDown extends ContextMenu {
-        final ConstellationInputField parent;
-        public ConstellationInputDropDown(final ConstellationInputField field) {
-            parent = field;
-            
-            //Constrain drop down menus to a height of 400
-            this.setMaxHeight(200);
-            this.setWidth(parent.getWidth());
-            addEventHandler(Menu.ON_SHOWING, e -> {
-                Node content = getSkin().getNode();
-                if (content instanceof Region region) {
-                    region.setMaxHeight(getMaxHeight());
-                }
-            });
-            this.setAutoFix(true);
-        }
-        
-        /**
-         * Takes a {@link Labeled} object and converts it to a {@link MenuItem}.
-         * 
-         * The  {@link MenuItem} is not added to the ConstextMenu. it is returned for
-         * Input field specific modification before being added to the COntext menu using
-         *  addMenuItems();
-         * 
-         * This build method is important to correctly bind the width of the context menu to the parnte (but it currently doesnt work as they are bote rea only)....
-         * 
-         * @param text
-         * @return 
-         */
-        public CustomMenuItem buildCustomMenuItem(Labeled text) {
-            //text.prefWidthProperty().bind(parent.prefWidthProperty());
-            CustomMenuItem item = new CustomMenuItem(text);
-            return item;
-        }
-        
-        /**
-         * 
-         * @param items 
-         */
-        public void addMenuItems(List<MenuItem> items){
-            this.getItems().addAll(items);
-        }
-        
     }
     // </editor-fold>
     
@@ -485,6 +421,13 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ch
         //want to reformat the grid pane to eliminate the context menu when button is disabled. this will be tricky
     }
     
+    private void setValid(boolean isValid) {
+        if (isValid){
+            background.setFill(fieldColor);
+        } else {
+            background.setFill(invalidColor);
+        }
+    }
     public void setInFocus(boolean focused){
         if (focused) {
             foreground.setStroke(Color.web("#1B92E3"));

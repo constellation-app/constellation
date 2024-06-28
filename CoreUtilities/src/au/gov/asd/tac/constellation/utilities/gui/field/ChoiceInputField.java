@@ -41,6 +41,7 @@ import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import org.openide.util.Exceptions;
 
 /**
  * A {@link ConstellationinputField} for managing choice selection. 
@@ -385,21 +386,12 @@ public final class ChoiceInputField<C extends Object> extends ConstellationInput
     public void executeRightButtonAction() {
         switch (type){
             case SINGLE_SPINNER -> this.incrementChoice();
-            case SINGLE_DROPDOWN, MULTI -> this.showDropDown(getDropDown());
-        };
+            case SINGLE_DROPDOWN, MULTI -> this.showDropDown(new ChoiceInputDropDown(this));
+        }
     }  
     // </editor-fold> 
     
     // <editor-fold defaultstate="collapsed" desc="Drop Down Implementation">   
-    @Override
-    public ContextMenu getDropDown() {
-        try {
-            return new ChoiceInputDropDown(this);
-        } catch (Exception ex) {
-            return null;
-        }
-    } 
-
     /**
      * A Context Menu to be used as a drop down for {@link ChoiceInputFields}.
      * 
@@ -415,7 +407,7 @@ public final class ChoiceInputField<C extends Object> extends ConstellationInput
         //A local reference to the check boxes displayed in Multi Choice context menu's
         final List<CheckBox> boxes = new ArrayList<>();
         
-        public ChoiceInputDropDown(final ChoiceInputField field) throws Exception{
+        public ChoiceInputDropDown(final ChoiceInputField field){
             super(field);
             
             final List<MenuItem> items = new ArrayList<>(); 
@@ -462,7 +454,8 @@ public final class ChoiceInputField<C extends Object> extends ConstellationInput
                             }); 
                             yield label;
                         }
-                        case SINGLE_SPINNER -> throw new Exception("Spinner inputs do not have context menus");
+                        //shouldnt reach here
+                        case SINGLE_SPINNER -> new Label();
                     };
 
                     if (!icons.isEmpty()){
