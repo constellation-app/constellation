@@ -21,9 +21,9 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterListener;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ChoiceType;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.ChoiceType;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldListener;
-import au.gov.asd.tac.constellation.utilities.gui.field.MultiChoiceInputField;
+import au.gov.asd.tac.constellation.utilities.gui.field.MultiChoiceInput;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -53,11 +53,11 @@ public final class MultiChoiceInputPane extends ParameterInputPane<MultiChoicePa
 
     
     public MultiChoiceInputPane(final PluginParameter<MultiChoiceParameterValue> parameter) {
-        super(new MultiChoiceInputField<ParameterValue>(), parameter);
+        super(new MultiChoiceInput<ParameterValue>(), parameter);
         final MultiChoiceParameterValue pv = parameter.getParameterValue();
         options.addAll(pv.getOptionsData());
 
-        ((MultiChoiceInputField) field).setOptions(options);
+        ((MultiChoiceInput) field).setOptions(options);
         setFieldValue(pv.getChoicesData());
 
     }
@@ -90,8 +90,8 @@ public final class MultiChoiceInputPane extends ParameterInputPane<MultiChoicePa
                     
                     // Update the Pane if the Optons have changed
                     List<ParameterValue> paramOptions = MultiChoiceParameterType.getOptionsData(mcPluginParameter);
-                    if (!((MultiChoiceInputField) field).getOptions().equals(paramOptions)){
-                        ((MultiChoiceInputField) field).setOptions(paramOptions);
+                    if (!((MultiChoiceInput) field).getOptions().equals(paramOptions)){
+                        ((MultiChoiceInput) field).setOptions(paramOptions);
                         
                         // Only keep the value if it's in the new choices.
                         if (paramOptions.contains(MultiChoiceParameterType.getChoicesData(mcPluginParameter))) {

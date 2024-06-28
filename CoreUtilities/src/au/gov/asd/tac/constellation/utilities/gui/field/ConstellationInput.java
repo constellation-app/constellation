@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
 import au.gov.asd.tac.constellation.utilities.gui.context.ContextMenuContributor;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.TextType;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationTextArea;
 import au.gov.asd.tac.constellation.utilities.gui.recentvalue.RecentValueUtility;
@@ -92,7 +92,7 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.ShortcutSuppor
  * 
  * @author capricornunicorn123
  */
-public abstract class ConstellationInputField<T> extends StackPane implements ChangeListener<Serializable>, ContextMenuContributor{   
+public abstract class ConstellationInput<T> extends StackPane implements ChangeListener<Serializable>, ContextMenuContributor{   
 
     final int defaultCellHeight = 22;
     
@@ -109,11 +109,11 @@ public abstract class ConstellationInputField<T> extends StackPane implements Ch
     final Color invalidColor = Color.color(238/255D, 66/255D, 49/255D);
 
     
-    public ConstellationInputField(){
+    public ConstellationInput(){
         this(TextType.SINGLELINE);
     }
     
-    public ConstellationInputField(final TextType type) {
+    public ConstellationInput(final TextType type) {
 
         textArea = new ConstellationTextArea(this, type);
         

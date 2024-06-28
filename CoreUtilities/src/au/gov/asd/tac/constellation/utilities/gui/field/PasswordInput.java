@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.TextType;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,17 +33,17 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSup
  * 
  * To facilitate showing and hiding of passwords an alternate {@link TextField}
  * is used and linked to the {@link PasswordField}.
- * When interacting with the Password Input Field through the ConstellationInputField Interface 
- * the {@link PasswordField} is always treated as the base field.
+ When interacting with the Password Input Field through the ConstellationInput Interface 
+ the {@link PasswordField} is always treated as the base field.
  * @author capricornunicorn123
  */
-public final class PasswordInputField extends ConstellationInputField<String> implements RightButtonSupport{
+public final class PasswordInput extends ConstellationInput<String> implements RightButtonSupport{
     
     private boolean isVisible = false;
     private Label label = new Label();
-    public PasswordInputField(){
+    public PasswordInput(){
         super(TextType.SECRET);  
-        label.setText(ConstellationInputFieldConstants.SHOW_BUTTON_LABEL);    
+        label.setText(ConstellationInputConstants.SHOW_BUTTON_LABEL);    
         initialiseDepedantComponents();
     }
     
@@ -95,12 +95,12 @@ public final class PasswordInputField extends ConstellationInputField<String> im
     public void executeRightButtonAction() {
         if (isVisible){
             this.hideSecret();
-            label.setText(ConstellationInputFieldConstants.SHOW_BUTTON_LABEL);    
+            label.setText(ConstellationInputConstants.SHOW_BUTTON_LABEL);    
             isVisible = false;
 
         } else {
             this.showSecret();
-            label.setText(ConstellationInputFieldConstants.HIDE_BUTTON_LABEL);    
+            label.setText(ConstellationInputConstants.HIDE_BUTTON_LABEL);    
             isVisible = true;
         }
     }

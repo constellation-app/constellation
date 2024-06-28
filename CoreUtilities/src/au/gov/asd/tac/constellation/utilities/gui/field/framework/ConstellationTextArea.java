@@ -16,10 +16,10 @@
 package au.gov.asd.tac.constellation.utilities.gui.field.framework;
 
 import au.gov.asd.tac.constellation.utilities.gui.context.ContextMenuContributor;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputField;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants;
-import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType.MULTILINE;
-import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType.SECRET;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInput;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants;
+import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.TextType.MULTILINE;
+import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.TextType.SECRET;
 import java.util.Arrays;
 import java.util.List;
 import javafx.event.Event;
@@ -66,7 +66,7 @@ import javafx.scene.shape.Rectangle;
         private final TextInputControl primaryInput;
         private final TextInputControl secondaryInput;
 
-        public ConstellationTextArea(ConstellationInputField parent, ConstellationInputFieldConstants.TextType type){
+        public ConstellationTextArea(ConstellationInput parent, ConstellationInputConstants.TextType type){
             switch (type){
                 case MULTILINE -> {
                     TextArea area = new TextArea();

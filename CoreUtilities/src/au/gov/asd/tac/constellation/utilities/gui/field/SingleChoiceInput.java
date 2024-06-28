@@ -15,9 +15,9 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ChoiceType;
-import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ChoiceType.SINGLE_DROPDOWN;
-import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ChoiceType.SINGLE_SPINNER;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.ChoiceType;
+import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.ChoiceType.SINGLE_DROPDOWN;
+import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.ChoiceType.SINGLE_SPINNER;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button.ButtonType;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
@@ -33,6 +33,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.AutoCompleteSupport;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ChoiceInputField;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputDropDown;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.LeftButtonSupport;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport;
@@ -53,11 +54,11 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.ShortcutSuppor
  * @author capricornunicorn123
  * @param <C> The Object type being represented by this ChoiceInputFiled
  */
-public final class SingleChoiceInputField<C extends Object> extends ChoiceInputField<C, C> implements RightButtonSupport, LeftButtonSupport, AutoCompleteSupport, ShortcutSupport{
+public final class SingleChoiceInput<C extends Object> extends ChoiceInputField<C, C> implements RightButtonSupport, LeftButtonSupport, AutoCompleteSupport, ShortcutSupport{
     
     private final ChoiceType type;
 
-    public SingleChoiceInputField(final ChoiceType type){    
+    public SingleChoiceInput(final ChoiceType type){    
         this.type = type;
         initialiseDepedantComponents();
     }    
@@ -245,7 +246,7 @@ public final class SingleChoiceInputField<C extends Object> extends ChoiceInputF
     public Button getLeftButton() {
         switch (type) {
             case SINGLE_SPINNER -> {
-                return  new Button(new Label(ConstellationInputFieldConstants.PREVIOUS_BUTTON_LABEL), ButtonType.CHANGER) {
+                return  new Button(new Label(ConstellationInputConstants.PREVIOUS_BUTTON_LABEL), ButtonType.CHANGER) {
                     @Override
                     public EventHandler<? super MouseEvent> action() {
                         return event -> executeLeftButtonAction();
@@ -266,11 +267,11 @@ public final class SingleChoiceInputField<C extends Object> extends ChoiceInputF
         
         switch (type) {
             case SINGLE_SPINNER -> {
-                label = new Label(ConstellationInputFieldConstants.NEXT_BUTTON_LABEL);
+                label = new Label(ConstellationInputConstants.NEXT_BUTTON_LABEL);
                 buttonType = ButtonType.CHANGER;
             }
             case SINGLE_DROPDOWN -> {
-                label = new Label(ConstellationInputFieldConstants.SELECT_BUTTON_LABEL);
+                label = new Label(ConstellationInputConstants.SELECT_BUTTON_LABEL);
                 buttonType = ButtonType.DROPDOWN;
                 
             }
@@ -319,7 +320,7 @@ public final class SingleChoiceInputField<C extends Object> extends ChoiceInputF
         //A local reference to the check boxes displayed in Multi Choice context menu's
         final List<CheckBox> boxes = new ArrayList<>();
         
-        public ChoiceInputDropDown(final SingleChoiceInputField field){
+        public ChoiceInputDropDown(final SingleChoiceInput field){
             super(field);
             
             final List<MenuItem> items = new ArrayList<>(); 

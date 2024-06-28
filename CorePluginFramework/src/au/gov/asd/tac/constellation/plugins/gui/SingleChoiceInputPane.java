@@ -21,8 +21,8 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterListener;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
-import au.gov.asd.tac.constellation.utilities.gui.field.SingleChoiceInputField;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ChoiceType;
+import au.gov.asd.tac.constellation.utilities.gui.field.SingleChoiceInput;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.ChoiceType;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldListener;
 import java.util.Arrays;
 import java.util.List;
@@ -49,12 +49,12 @@ public final class SingleChoiceInputPane extends ParameterInputPane<SingleChoice
     private static final Logger LOGGER = Logger.getLogger(SingleChoiceInputPane.class.getName());
 
     public SingleChoiceInputPane(final PluginParameter<SingleChoiceParameterValue> parameter) {
-        super(new SingleChoiceInputField<ParameterValue>(ChoiceType.SINGLE_DROPDOWN), parameter);
+        super(new SingleChoiceInput<ParameterValue>(ChoiceType.SINGLE_DROPDOWN), parameter);
         
         final SingleChoiceParameterType.SingleChoiceParameterValue pv = parameter.getParameterValue();
 
-        ((SingleChoiceInputField) field).setOptions(pv.getOptionsData());
-        ((SingleChoiceInputField) field).setIcons(pv.getIcons()); 
+        ((SingleChoiceInput) field).setOptions(pv.getOptionsData());
+        ((SingleChoiceInput) field).setIcons(pv.getIcons()); 
         setFieldValue(pv.getChoiceData());
     }
 
@@ -86,8 +86,8 @@ public final class SingleChoiceInputPane extends ParameterInputPane<SingleChoice
 
                         // Update the Pane if the Optons have changed
                         List<ParameterValue> paramOptions = scParameterValue.getOptionsData();
-                        if (!((SingleChoiceInputField) field).getOptions().equals(paramOptions)){
-                            ((SingleChoiceInputField) field).setOptions(paramOptions);
+                        if (!((SingleChoiceInput) field).getOptions().equals(paramOptions)){
+                            ((SingleChoiceInput) field).setOptions(paramOptions);
 
                             // Only keep the value if it's in the new choices.
                             if (paramOptions.contains(scParameterValue.getChoiceData())) {

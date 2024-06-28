@@ -25,7 +25,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.FileInputKind;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.FileInputKind;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;

@@ -16,10 +16,10 @@
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ColorMode;
-import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ColorMode.COLOR;
-import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ColorMode.HEX;
-import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.ColorMode.RGB;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.ColorMode;
+import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.ColorMode.COLOR;
+import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.ColorMode.HEX;
+import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.ColorMode.RGB;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button.ButtonType;
 import java.util.ArrayList;
@@ -39,16 +39,16 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.LeftButtonSupp
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport;
 
 /**
- * A {@link ConstellationInputField} for managing {@link ConstellationColor} selection. 
+ * A {@link ConstellationInput} for managing {@link ConstellationColor} selection. 
  * 
  * @author capricornunicorn123
  */
-public final class ColorInputField extends ConstellationInputField<ConstellationColor> implements RightButtonSupport, LeftButtonSupport, InfoWindowSupport, AutoCompleteSupport {
+public final class ColorInput extends ConstellationInput<ConstellationColor> implements RightButtonSupport, LeftButtonSupport, InfoWindowSupport, AutoCompleteSupport {
     
     ColorMode mode = ColorMode.COLOR;
     Label label = new Label();
     
-    public ColorInputField(){
+    public ColorInput(){
         label.setText(mode.toString());
         initialiseDepedantComponents();
     }
@@ -228,7 +228,7 @@ public final class ColorInputField extends ConstellationInputField<Constellation
     
     @Override
     public Button getRightButton() {
-        return new Button(new Label(ConstellationInputFieldConstants.SWATCH_BUTTON_LABEL), ButtonType.DROPDOWN) {
+        return new Button(new Label(ConstellationInputConstants.SWATCH_BUTTON_LABEL), ButtonType.DROPDOWN) {
                 @Override
                 public EventHandler<? super MouseEvent> action() {
                     return event -> executeRightButtonAction();
@@ -250,7 +250,7 @@ public final class ColorInputField extends ConstellationInputField<Constellation
     // <editor-fold defaultstate="collapsed" desc="Drop Down Implementation">    
     private class ColorModeDropDown extends ConstellationInputDropDown {
         
-        public ColorModeDropDown(final ColorInputField field){
+        public ColorModeDropDown(final ColorInput field){
             super(field);
             
             final List<MenuItem> items = new ArrayList<>();
@@ -269,7 +269,7 @@ public final class ColorInputField extends ConstellationInputField<Constellation
     
     private class ColorPickerDropDown extends ConstellationInputDropDown {
         
-    public ColorPickerDropDown(final ColorInputField field){
+    public ColorPickerDropDown(final ColorInput field){
             super(field);
             
             final List<MenuItem> items = new ArrayList<>();

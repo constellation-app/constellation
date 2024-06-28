@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field.framework;
 
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputField;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInput;
 import java.util.List;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
@@ -30,8 +30,8 @@ import javafx.scene.layout.Region;
  * @author capricornunicorn123
  */
 public class ConstellationInputDropDown extends ContextMenu {
-        final ConstellationInputField parent;
-        public ConstellationInputDropDown(final ConstellationInputField field) {
+        final ConstellationInput parent;
+        public ConstellationInputDropDown(final ConstellationInput field) {
             parent = field;
             
             //Constrain drop down menus to a height of 400

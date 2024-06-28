@@ -20,7 +20,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterListener;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType.ColorParameterValue;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.gui.field.ColorInputField;
+import au.gov.asd.tac.constellation.utilities.gui.field.ColorInput;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,7 +43,7 @@ public final class ColorInputPane extends ParameterInputPane<ColorParameterValue
     private static final Logger LOGGER = Logger.getLogger(ColorInputPane.class.getName());
     
     public ColorInputPane(final PluginParameter<ColorParameterValue> parameter) {
-        super(new ColorInputField(), parameter);
+        super(new ColorInput(), parameter);
         
         // Set the initial Field value
         setFieldValue(parameter.getParameterValue().get());

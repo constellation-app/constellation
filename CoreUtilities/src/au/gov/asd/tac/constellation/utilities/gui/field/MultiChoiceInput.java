@@ -31,6 +31,7 @@ import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.AutoCompleteSupport;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ChoiceInputField;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputDropDown;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.InfoWindowSupport;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport;
@@ -50,13 +51,13 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSup
  * @author capricornunicorn123
  * @param <C> The Object type being represented by this ChoiceInputFiled
  */
-public final class MultiChoiceInputField<C extends Object> extends ChoiceInputField<List<C>, C> implements RightButtonSupport, InfoWindowSupport, AutoCompleteSupport {
+public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<List<C>, C> implements RightButtonSupport, InfoWindowSupport, AutoCompleteSupport {
 
-    public MultiChoiceInputField(){    
+    public MultiChoiceInput(){    
         initialiseDepedantComponents();
     }    
     
-    public MultiChoiceInputField(List<C> options){    
+    public MultiChoiceInput(List<C> options){    
         super(options);
         initialiseDepedantComponents();
     }    
@@ -206,7 +207,7 @@ public final class MultiChoiceInputField<C extends Object> extends ChoiceInputFi
     
     @Override
     public Button getRightButton() {
-        return new Button(new Label(ConstellationInputFieldConstants.SELECT_BUTTON_LABEL), ButtonType.DROPDOWN) {
+        return new Button(new Label(ConstellationInputConstants.SELECT_BUTTON_LABEL), ButtonType.DROPDOWN) {
                 @Override
                 public EventHandler<? super MouseEvent> action() {
                     return event -> executeRightButtonAction();
@@ -236,7 +237,7 @@ public final class MultiChoiceInputField<C extends Object> extends ChoiceInputFi
         //A local reference to the check boxes displayed in Multi Choice context menu's
         final List<CheckBox> boxes = new ArrayList<>();
         
-        public ChoiceInputDropDown(final MultiChoiceInputField field){
+        public ChoiceInputDropDown(final MultiChoiceInput field){
             super(field);
             
             final List<MenuItem> items = new ArrayList<>(); 

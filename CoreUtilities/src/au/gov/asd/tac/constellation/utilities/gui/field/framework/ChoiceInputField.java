@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.utilities.gui.field;
+package au.gov.asd.tac.constellation.utilities.gui.field.framework;
 
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInput;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.collections.ListChangeListener;
@@ -38,7 +39,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidOperationException;
  * @param <C> The Object type being returned by this ChoiceInputFiled
  * @param <O> The Object type being represnted by this ChoiceINputField.
  */
-public abstract class ChoiceInputField<C extends Object, O extends Object> extends ConstellationInputField<C> {
+public abstract class ChoiceInputField<C extends Object, O extends Object> extends ConstellationInput<C> {
     
     private final List<O> options;
     private final ObservableList<O> observabeOptions;

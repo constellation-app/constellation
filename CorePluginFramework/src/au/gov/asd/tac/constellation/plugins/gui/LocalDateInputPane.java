@@ -20,7 +20,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterListener;
 import au.gov.asd.tac.constellation.plugins.parameters.types.LocalDateParameterType.LocalDateParameterValue;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldListener;
-import au.gov.asd.tac.constellation.utilities.gui.field.DateInputField;
+import au.gov.asd.tac.constellation.utilities.gui.field.DateInput;
 import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -45,7 +45,7 @@ public final class LocalDateInputPane extends ParameterInputPane<LocalDateParame
     private static final Logger LOGGER = Logger.getLogger(LocalDateInputPane.class.getName());
 
     public LocalDateInputPane(final PluginParameter<LocalDateParameterValue> parameter) {
-        super(new DateInputField(), parameter);
+        super(new DateInput(), parameter);
         final LocalDateParameterValue pv = parameter.getParameterValue();
         
         setFieldValue(pv.get());

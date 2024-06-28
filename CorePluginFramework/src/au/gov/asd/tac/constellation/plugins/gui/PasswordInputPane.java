@@ -23,7 +23,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterListener;
 import au.gov.asd.tac.constellation.plugins.parameters.types.PasswordParameterValue;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldListener;
-import au.gov.asd.tac.constellation.utilities.gui.field.PasswordInputField;
+import au.gov.asd.tac.constellation.utilities.gui.field.PasswordInput;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -45,7 +45,7 @@ public class PasswordInputPane extends ParameterInputPane<PasswordParameterValue
     private static final Logger LOGGER = Logger.getLogger(PasswordInputPane.class.getName());
 
     public PasswordInputPane(final PluginParameter<PasswordParameterValue> parameter) {
-        super(new PasswordInputField(), parameter);
+        super(new PasswordInput(), parameter);
         final PasswordParameterValue pv = parameter.getParameterValue();
         setFieldValue(pv.get());
     }

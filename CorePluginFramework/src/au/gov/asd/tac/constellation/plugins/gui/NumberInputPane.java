@@ -23,7 +23,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterListener;
 import au.gov.asd.tac.constellation.plugins.parameters.types.NumberParameterValue;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldListener;
-import au.gov.asd.tac.constellation.utilities.gui.field.NumberInputField;
+import au.gov.asd.tac.constellation.utilities.gui.field.NumberInput;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -52,7 +52,7 @@ public class NumberInputPane<C extends Number> extends ParameterInputPane<Number
     private static final Logger LOGGER = Logger.getLogger(NumberInputPane.class.getName());
 
     public NumberInputPane(final PluginParameter<NumberParameterValue> parameter) {
-        super(new NumberInputField<C>(
+        super(new NumberInput<C>(
                 parameter.getParameterValue().getMinimumValue(),
                 parameter.getParameterValue().getMaximumValue(),
                 parameter.getParameterValue().getNumberValue(),

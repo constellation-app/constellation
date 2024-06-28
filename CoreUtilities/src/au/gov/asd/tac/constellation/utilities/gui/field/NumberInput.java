@@ -44,14 +44,14 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.ShortcutSuppor
  * @author capricornunicorn123
  * @param <C> The Object type being represented by this ChoiceInputFiled
  */
-public final class NumberInputField<C extends Number> extends ConstellationInputField<Number> implements LeftButtonSupport, RightButtonSupport, ShortcutSupport{
+public final class NumberInput<C extends Number> extends ConstellationInput<Number> implements LeftButtonSupport, RightButtonSupport, ShortcutSupport{
     
     private final C min;
     private final C max;
     private final C init;
     private final C step;
     
-    public NumberInputField(Number min, Number max, Number init, Number step) {
+    public NumberInput(Number min, Number max, Number init, Number step) {
         this.min = (C) min;
         this.max = (C) max;
         this.init = (C) init;
@@ -244,7 +244,7 @@ public final class NumberInputField<C extends Number> extends ConstellationInput
     // <editor-fold defaultstate="collapsed" desc="Button Event Implementation">   
     @Override
     public Button getLeftButton() {
-        return new Button(new Label(ConstellationInputFieldConstants.PREVIOUS_BUTTON_LABEL), ButtonType.CHANGER) {
+        return new Button(new Label(ConstellationInputConstants.PREVIOUS_BUTTON_LABEL), ButtonType.CHANGER) {
             @Override
             public EventHandler<? super MouseEvent> action() {
                 return event -> executeLeftButtonAction();
@@ -254,7 +254,7 @@ public final class NumberInputField<C extends Number> extends ConstellationInput
 
     @Override
     public Button getRightButton() {
-        return new Button(new Label(ConstellationInputFieldConstants.NEXT_BUTTON_LABEL), ButtonType.CHANGER) {
+        return new Button(new Label(ConstellationInputConstants.NEXT_BUTTON_LABEL), ButtonType.CHANGER) {
             @Override
             public EventHandler<? super MouseEvent> action() {
                 return event -> executeRightButtonAction();

@@ -23,8 +23,8 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterListener;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
-import au.gov.asd.tac.constellation.utilities.gui.field.FileInputField;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType;
+import au.gov.asd.tac.constellation.utilities.gui.field.FileInput;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.TextType;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldListener;
 import java.io.File;
 import java.util.List;
@@ -63,12 +63,12 @@ public final class FileInputPane extends ParameterInputPane<FileParameterValue, 
      * @param suggestedHeight suggested hight (in lines)
      */
     public FileInputPane(final PluginParameter<FileParameterValue> parameter, int suggestedHeight) {
-        super(suggestedHeight > 1 ? new FileInputField(parameter.getParameterValue().getKind(), TextType.MULTILINE, suggestedHeight) : new FileInputField(parameter.getParameterValue().getKind()), parameter); 
+        super(suggestedHeight > 1 ? new FileInput(parameter.getParameterValue().getKind(), TextType.MULTILINE, suggestedHeight) : new FileInput(parameter.getParameterValue().getKind()), parameter); 
 
         final FileParameterType.FileParameterValue pv = parameter.getParameterValue();
         
-        ((FileInputField) field).setFileFilter(FileParameterType.getFileFilters(parameter));
-        ((FileInputField) field).setAcceptAll(FileParameterType.isAcceptAllFileFilterUsed(parameter));
+        ((FileInput) field).setFileFilter(FileParameterType.getFileFilters(parameter));
+        ((FileInput) field).setAcceptAll(FileParameterType.isAcceptAllFileFilterUsed(parameter));
         
         setFieldValue(pv.get());
     }

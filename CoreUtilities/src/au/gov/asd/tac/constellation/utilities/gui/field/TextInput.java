@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.utilities.gui.field;
 
 import au.gov.asd.tac.constellation.utilities.gui.recentvalue.RecentValuesListener;
 import au.gov.asd.tac.constellation.utilities.gui.recentvalue.RecentValuesChangeEvent;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.TextType;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,12 +36,12 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSup
  * 
  * @author capricornunicorn123
  */
-public final class TextInputField extends ConstellationInputField<String> implements RecentValuesListener, RightButtonSupport, AutoCompleteSupport{
+public final class TextInput extends ConstellationInput<String> implements RecentValuesListener, RightButtonSupport, AutoCompleteSupport{
     
     private final List<String> recentValues = new ArrayList<>();
     private final String recentValueListeningId;
     
-    public TextInputField(final TextType type, final String recentValueListeningId){
+    public TextInput(final TextType type, final String recentValueListeningId){
         super(type);
         this.recentValueListeningId = recentValueListeningId;
         initialiseDepedantComponents();
@@ -120,7 +120,7 @@ public final class TextInputField extends ConstellationInputField<String> implem
     // <editor-fold defaultstate="collapsed" desc="DropDown Implementation">   
     
     private class TextInputDropDown extends ConstellationInputDropDown {
-        public TextInputDropDown(final TextInputField field){
+        public TextInputDropDown(final TextInput field){
             super(field);
             final List<MenuItem> items = new ArrayList<>();
             for (final String recentValue : recentValues){

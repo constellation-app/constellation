@@ -22,7 +22,7 @@ import javafx.scene.control.ContentDisplay;
  * 
  * @author capricornunicorn123
  */
-public class ConstellationInputFieldConstants {
+public class ConstellationInputConstants {
    
     //Button labels
     public final static String SELECT_BUTTON_LABEL = "Select"; 

@@ -39,11 +39,11 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSup
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ShortcutSupport;
 
 /**
- * A {@link ConstellationInputField} for managing {@link LocalDate} selection. 
+ * A {@link ConstellationInput} for managing {@link LocalDate} selection. 
  * 
  * @author capricornunicorn123
  */
-public final class DateInputField extends ConstellationInputField<LocalDate> implements RightButtonSupport, ShortcutSupport {
+public final class DateInput extends ConstellationInput<LocalDate> implements RightButtonSupport, ShortcutSupport {
     
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
     
@@ -59,7 +59,7 @@ public final class DateInputField extends ConstellationInputField<LocalDate> imp
             }
         };
     
-    public DateInputField(){
+    public DateInput(){
         initialiseDepedantComponents();
     }
     
@@ -156,7 +156,7 @@ public final class DateInputField extends ConstellationInputField<LocalDate> imp
     // <editor-fold defaultstate="collapsed" desc="Button Event Implementation">   
     @Override
     public Button getRightButton() {
-        return new Button(new Label(ConstellationInputFieldConstants.SELECT_BUTTON_LABEL), Button.ButtonType.POPUP) {
+        return new Button(new Label(ConstellationInputConstants.SELECT_BUTTON_LABEL), Button.ButtonType.POPUP) {
                     @Override
                     public EventHandler<? super MouseEvent> action() {
                         return event -> executeRightButtonAction();

@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.FileInputKind;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.TextType;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.FileInputKind;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.TextType;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 
@@ -43,27 +43,27 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSup
  * 
  * @author capricornunicorn123
  */
-public final class FileInputField extends ConstellationInputField<List<File>> implements RightButtonSupport{
+public final class FileInput extends ConstellationInput<List<File>> implements RightButtonSupport{
     
     private ExtensionFilter extensionFilter = null;
     private boolean acceptAll = true;
     private final FileInputKind fileInputKind;
     
-    private static final Logger LOGGER = Logger.getLogger(FileInputField.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(FileInput.class.getName());
         
-    public FileInputField(){
+    public FileInput(){
         throw new UnsupportedOperationException();
     }
     
-    public FileInputField(final FileInputKind fileInputKind){
+    public FileInput(final FileInputKind fileInputKind){
         this(fileInputKind, null);
     }
     
-    public FileInputField(final FileInputKind fileInputKind, final TextType textTypeOverride){
+    public FileInput(final FileInputKind fileInputKind, final TextType textTypeOverride){
         this(fileInputKind, textTypeOverride, 1);
     }
     
-    public FileInputField(final FileInputKind fileInputKind, final TextType textTypeOverride, final int suggestedHeight) {
+    public FileInput(final FileInputKind fileInputKind, final TextType textTypeOverride, final int suggestedHeight) {
         super(textTypeOverride != null 
                         ? textTypeOverride 
                         : switch(fileInputKind){
@@ -82,7 +82,7 @@ public final class FileInputField extends ConstellationInputField<List<File>> im
     
     // <editor-fold defaultstate="collapsed" desc="Local Private Methods">   
     /**
-     * Sets wether this FileInputField will have an "All Files" filter.
+     * Sets wether this FileInput will have an "All Files" filter.
      * @param acceptAll 
      */
     public void setAcceptAll(final boolean acceptAll){

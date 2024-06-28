@@ -39,7 +39,7 @@ import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldConstants.FileInputKind;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.FileInputKind;
 import au.gov.asd.tac.constellation.utilities.visual.AxisConstants;
 import java.io.File;
 import java.io.FileWriter;

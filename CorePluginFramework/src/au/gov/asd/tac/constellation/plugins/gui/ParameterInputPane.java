@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.plugins.gui;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterListener;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputField;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInput;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldListener;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.layout.HBox;
@@ -26,27 +26,27 @@ import javafx.scene.layout.HBox;
 /**
  * An abstract base class for Panes that get user input into editing {@link PluginParameter} objects in Constellation.
  * This class and it's extended classes act as the link between {@link PluignParameter} objects
- * and {@link ConstellationInputField} objects.
+ * and {@link ConstellationInput} objects.
  * 
  * This class provides standard functionality for this link and defines some implementation specific 
  * methods to assist in the nuanced interactions across different {@link PluginParameterType} implementations.
  * 
  * Visually, extensions of this class are represented by a {@link HBox} which contains a 
- * {@link ConstellationInputField}. This {@link HBox} is typically added to a {@link GridPane} by
+ * {@link ConstellationInput}. This {@link HBox} is typically added to a {@link GridPane} by
  * the {@link PluginParametersPane}.
  * 
  * Visual examples of the {@link ParameterInputPane} can be found in the DataAccessView or the SphereGraphBuilder.
  * 
  * @author capricornunicorn123
  * @param <T> the Value represented by the {@link PluginParameter}
- * @param <V> the Value represented by the {@link ConstellationInputField}
+ * @param <V> the Value represented by the {@link ConstellationInput}
  */
 public abstract class ParameterInputPane<T extends ParameterValue, V extends Object> extends HBox {
     
-    public final ConstellationInputField<V> field;
+    public final ConstellationInput<V> field;
     public final PluginParameter<T> parameter;
     
-    ParameterInputPane(ConstellationInputField<V> field, PluginParameter<T> parameter){
+    ParameterInputPane(ConstellationInput<V> field, PluginParameter<T> parameter){
         this.field = field;
         this.parameter = parameter;
         
@@ -61,7 +61,7 @@ public abstract class ParameterInputPane<T extends ParameterValue, V extends Obj
         getChildren().add(field);
     }
     
-    public final ConstellationInputField<V> getField(){
+    public final ConstellationInput<V> getField(){
         return this.field;
     }
     
@@ -93,12 +93,12 @@ public abstract class ParameterInputPane<T extends ParameterValue, V extends Obj
     }
     
     /**
-     * A {@link ConstellationInputFieldListener} that can modify the relevant {@link PluginParameter} when a change on the {@link ConstellationInputField} is found
-     * Note: {@link ConstellationInputField} will only notify {@link ConstellationInputFieldListeners} if the input field's TextProperty has 
-     * changed and the {@link ConstellationInputField} has a valid value as defined by the {@link ConstellationInputField}.
+     * A {@link ConstellationInputFieldListener} that can modify the relevant {@link PluginParameter} when a change on the {@link ConstellationInput} is found
+     * Note: {@link ConstellationInput} will only notify {@link ConstellationInputFieldListeners} if the input field's TextProperty has 
+     * changed and the {@link ConstellationInput} has a valid value as defined by the {@link ConstellationInput}.
      * It is the responsibility of implementations of this method to ensure that the input field value is
      * valid with respect to the {@link PluginParameter}.
-     * <p> Example Implementation: (T is the generic type that is supported by the respective {@link ConstellationInputField})
+     * <p> Example Implementation: (T is the generic type that is supported by the respective {@link ConstellationInput})
      * <pre>
      * return (ChangeListener<T>) (ObservableValue<? extends T> observable, T oldValue, T newValue) -> {
      *      if (newValue != null) {
@@ -113,10 +113,10 @@ public abstract class ParameterInputPane<T extends ParameterValue, V extends Obj
     public abstract ConstellationInputFieldListener getFieldChangeListener(final PluginParameter<T> parameter);
     
     /**
-     * A {@link PluginParameterListener} that can modify the relevant {@link ConstellationInputField} when a change on 
+     * A {@link PluginParameterListener} that can modify the relevant {@link ConstellationInput} when a change on 
      * the {@link PluginParameter} is found.
-     * Note: Ensure that implementations of this method only modify the {@link ConstellationInputField} if the value of the 
-     * {@link ConstellationInputField} and the value of the {@link PluginParameter} differ. Failing to do so could cause the listener 
+     * Note: Ensure that implementations of this method only modify the {@link ConstellationInput} if the value of the 
+     * {@link ConstellationInput} and the value of the {@link PluginParameter} differ. Failing to do so could cause the listener 
      * implementations to call each other cyclically. 
      * <p> Example Implementation: (T is the {@link ParameterValue} for this {@link PluginParameter})
      * <pre>
