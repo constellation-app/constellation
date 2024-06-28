@@ -55,6 +55,11 @@ public final class MultiChoiceInputField<C extends Object> extends ChoiceInputFi
     public MultiChoiceInputField(){    
         initialiseDepedantComponents();
     }    
+    
+    public MultiChoiceInputField(List<C> options){    
+        super(options);
+        initialiseDepedantComponents();
+    }    
   
     // <editor-fold defaultstate="collapsed" desc="Local Private Methods">   
     /**

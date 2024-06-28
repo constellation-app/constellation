@@ -18,7 +18,9 @@ package au.gov.asd.tac.constellation.utilities.gui.field;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.scene.image.ImageView;
+import org.apache.poi.openxml4j.exceptions.InvalidOperationException;
 
 /**
  * A {@link ConstellationinputField} for managing choice selection. 
@@ -38,18 +40,38 @@ import javafx.scene.image.ImageView;
  */
 public abstract class ChoiceInputField<C extends Object, O extends Object> extends ConstellationInputField<C> {
     
-    private final List<O> options = new ArrayList<>();
+    private final List<O> options;
+    private final ObservableList<O> observabeOptions;
     protected final List<ImageView> icons = new ArrayList<>();
   
+    public ChoiceInputField(){
+        this.options = new ArrayList();
+        observabeOptions = null;
+    }
+    
+    public ChoiceInputField(List<O> options){
+        if (options instanceof ObservableList observable){
+            observabeOptions = observable;
+            this.options = null;
+        } else {
+            this.options = options;
+            observabeOptions = null;
+        }
+    }
     // <editor-fold defaultstate="collapsed" desc="Local Private Methods">   
+    
     /**
      * Defines the options that users can select from in this field.
      * Any previously defined options will be overwritten with this new list.
      * @param options 
      */
     public final void setOptions(final List<O> options){
-        this.options.clear();
-        this.options.addAll(options);
+        if (this.options != null){
+            this.options.clear();
+            this.options.addAll(options);
+        } else {
+            throw new InvalidOperationException("Attempting to Set Options when this ChoiceInputField is using an observableList of options");
+        }
     }
     
     /**
@@ -57,7 +79,11 @@ public abstract class ChoiceInputField<C extends Object, O extends Object> exten
      * @return List of Options 
      */
     public final List<O> getOptions(){
-        return this.options;
+        if (this.options == null){
+            return this.observabeOptions;
+        } else {
+            return this.options;
+        }
     }
     
     /**
