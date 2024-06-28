@@ -463,7 +463,7 @@ class Constellation:
         if data:
             if isinstance(data, bytes):
                 data = data.decode('utf8')
-            df = pd.read_json(io.StringIO(data), orient='split', dtype=False, convert_dates=False)
+            df = pd.read_json(data, orient='split', dtype=False, convert_dates=False)
             df, self.types = self._fix_types(df)
             return df
         else:
