@@ -57,7 +57,7 @@ class FileResponse:
         with open(response_fnam) as f:
             self.response = json.load(f)
 
-        # We've loaded teh data, so remove the file.
+        # We've loaded the data, so remove the file.
         #
         os.remove(response_fnam)
 
@@ -159,8 +159,9 @@ class Constellation:
 
         if transport is None or transport=='http':
             self.rest_request = self.http_request
-
-            self.data = _get_rest()
+            
+            self.data_path = _get_rest_dir()
+            self.data = _get_rest(self.data_path)
             self.headers = {}
             if _SECRET in self.data:
                 self.headers[_SECRET] = self.data[_SECRET]
@@ -463,7 +464,7 @@ class Constellation:
         if data:
             if isinstance(data, bytes):
                 data = data.decode('utf8')
-            df = pd.read_json(data, orient='split', dtype=False, convert_dates=False)
+            df = pd.read_json(io.StringIO(data), orient='split', dtype=False, convert_dates=False)
             df, self.types = self._fix_types(df)
             return df
         else:
@@ -770,6 +771,35 @@ def _get_rest(rest=None):
         data = {}
     
     return data
+
+def _get_rest_dir():
+    """Get data from the file created by the CONSTELLATION HTTP REST server.
+
+    :param rest: The file to read the REST secret from. The CONSTELLATION default filename is used if not specified.
+    """
+
+    rest = os.path.join(os.path.expanduser('~'), '.ipython', 'rest.json')
+
+    try:
+        with open(rest) as f:
+            print('Found REST file {}'.format(rest))
+            return rest
+    except FileNotFoundError:
+        print('REST file {} not found'.format(rest), file=sys.stderr)
+        rest = os.path.join(os.path.expanduser('~'), 'rest.json')
+        print('Checking {} instead...'.format(rest), file=sys.stderr)
+        try:
+            with open(rest) as f:
+                print('Found REST file {}'.format(rest))
+                return rest
+        except FileNotFoundError:
+            print('REST file {} not found'.format(rest), file=sys.stderr)
+            return "not found"
+    except json.decoder.JSONDecodeError as e:
+        print('Error decoding REST JSON: {}'.format(e), file=sys.stderr)
+        data = {}
+    
+    return rest
 
 def _row_dict(row, names, prefix):
     """Extract the relevant names/values from a DataFrame row and convert them
