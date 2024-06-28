@@ -54,33 +54,8 @@ public class TimelineSelectionPlugin extends SimpleEditPlugin {
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction,
             final PluginParameters parameters) throws InterruptedException {
-        final boolean vertexAttributeUndefined = Graph.NOT_FOUND == graph.getAttribute(GraphElementType.VERTEX,
-                VisualConcept.VertexAttribute.SELECTED.getName());
-        final boolean transactionAttributeUndefined = Graph.NOT_FOUND == graph.getAttribute(GraphElementType.TRANSACTION,
-                VisualConcept.TransactionAttribute.SELECTED.getName());
         final int selectedVertexAttrID = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
         final int selectedTransactionAttrID = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
-
-        final List<Integer> removalList = new ArrayList<>();
-        if (vertexAttributeUndefined) {
-            for (final int vxID : vertices) {
-                graph.setBooleanValue(selectedVertexAttrID, vxID, true);
-                removalList.add(vxID);
-            }
-            for (final Integer removalId : removalList) {
-                vertices.remove(removalId);
-            }
-        }
-        if (transactionAttributeUndefined) {
-            removalList.clear();
-            for (final int txID : transactions) {
-                graph.setBooleanValue(selectedTransactionAttrID, txID, true);
-                removalList.add(txID);
-            }
-            for (final Integer removalId : removalList) {
-                transactions.remove(removalId);
-            }
-        }
 
         if (isClearingSelection) {
             for (int pos = 0; pos < graph.getVertexCount(); pos++) {
