@@ -50,43 +50,13 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSup
  * @author capricornunicorn123
  * @param <C> The Object type being represented by this ChoiceInputFiled
  */
-public final class MultiChoiceInputField<C extends Object> extends ConstellationInputField<List<C>> implements RightButtonSupport, InfoWindowSupport, AutoCompleteSupport {
-    
-    private final List<C> options = new ArrayList<>();
-    private final List<ImageView> icons = new ArrayList<>();
+public final class MultiChoiceInputField<C extends Object> extends ChoiceInputField<List<C>, C> implements RightButtonSupport, InfoWindowSupport, AutoCompleteSupport {
 
     public MultiChoiceInputField(){    
         initialiseDepedantComponents();
     }    
   
     // <editor-fold defaultstate="collapsed" desc="Local Private Methods">   
-    /**
-     * Defines the options that users can select from in this field.
-     * Any previously defined options will be overwritten with this new list.
-     * @param options 
-     */
-    public void setOptions(final List<C> options){
-        this.options.clear();
-        this.options.addAll(options);
-    }
-    
-    /**
-     * Retrieves the options that users can select from in this field.
-     * @return List of Options 
-     */
-    public List<C> getOptions(){
-        return this.options;
-    }
-    
-    /**
-     * Defines the list of icons for the context menu
-     * @param icons
-     */
-    public void setIcons(final List<ImageView> icons) {
-        this.icons.clear();
-        this.icons.addAll(icons);
-    }
- 
     /**
      * Changes the List of selected Choices to include the provided choice.
      * this method will only modify the list of choices for ChoiceInputFields with
@@ -99,7 +69,7 @@ public final class MultiChoiceInputField<C extends Object> extends Constellation
             final ArrayList<C> localList = new ArrayList<>();       
             localList.addAll(requestedChoices);
             // Only retain the choices from the selection that in te available options
-            localList.retainAll(options);
+            localList.retainAll(getOptions());
             //Single Modiication
             this.setText(listToString(localList));
         }
@@ -113,7 +83,7 @@ public final class MultiChoiceInputField<C extends Object> extends Constellation
      */
     private void setChoice(final C choice){
         final List<C> currentChoices = stringToList(this.getText());
-        if (this.options.contains(choice) && ((currentChoices != null && !currentChoices.contains(choice)) || currentChoices == null)) {
+        if (this.getOptions().contains(choice) && ((currentChoices != null && !currentChoices.contains(choice)) || currentChoices == null)) {
             currentChoices.add(choice);
             this.setText(this.listToString(currentChoices));
         }
@@ -136,13 +106,6 @@ public final class MultiChoiceInputField<C extends Object> extends Constellation
         final List<C> choices = this.getChoices();
         choices.remove(choice);
         this.setChoices(choices);
-    }
-    
-    /**
-     * Removes all choices.
-     */
-    private void clearChoices() {
-       this.setText("");
     }
     
     /**
@@ -173,7 +136,7 @@ public final class MultiChoiceInputField<C extends Object> extends Constellation
     private List<C> stringToList(final String value) {
         
         final List<C> foundChoices = new ArrayList<>();
-        final List<String> choiceIndex = this.options.stream().map(Object::toString).toList();
+        final List<String> choiceIndex = this.getOptions().stream().map(Object::toString).toList();
         
         final String[] items = value.split(SeparatorConstants.COMMA);
         for (String item : items){
@@ -182,7 +145,7 @@ public final class MultiChoiceInputField<C extends Object> extends Constellation
                 //return null;
                 foundChoices.add(null);
             } else {
-                foundChoices.add(this.options.get(index));
+                foundChoices.add(this.getOptions().get(index));
             }    
         }
         return foundChoices;          
@@ -275,7 +238,7 @@ public final class MultiChoiceInputField<C extends Object> extends Constellation
 
             //Select All Bulk Selection Feature
             final Label all = new Label("Select All");
-            all.setOnMouseClicked(event -> field.setChoices(field.options)); 
+            all.setOnMouseClicked(event -> field.setChoices(field.getOptions())); 
             items.add(this.buildCustomMenuItem(all));
 
             //Clear All Bulk Selection Feature
@@ -286,8 +249,8 @@ public final class MultiChoiceInputField<C extends Object> extends Constellation
             items.add(new SeparatorMenuItem());
               
             
-            if (options != null){
-                final Object[] optionsList = options.toArray();
+            if (getOptions() != null){
+                final Object[] optionsList = getOptions().toArray();
                 final List<C> choices = field.getChoices();
                 for (int i = 0 ; i < optionsList.length ; i ++){
                     final C choice = (C) optionsList[i];
@@ -385,7 +348,7 @@ public final class MultiChoiceInputField<C extends Object> extends Constellation
 
             final List<MenuItem> suggestions = new ArrayList<>();
             
-            this.options
+            this.getOptions()
                     .stream()
                     .map(value -> value)
                     .filter(value -> !choices.contains(value))

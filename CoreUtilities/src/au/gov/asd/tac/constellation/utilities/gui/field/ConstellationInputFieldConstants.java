@@ -60,8 +60,7 @@ public class ConstellationInputFieldConstants {
      */
     public enum ChoiceType {
         SINGLE_DROPDOWN,
-        SINGLE_SPINNER,
-        MULTI;
+        SINGLE_SPINNER;
     }
     
     /**
