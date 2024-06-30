@@ -5,5 +5,13 @@
         <tocitem text="Import From File" target="au.gov.asd.tac.constellation.plugins.importexport.delimited.DelimitedImportPane"/>
         <tocitem text="Import From Database" target="au.gov.asd.tac.constellation.plugins.importexport.jdbc.JDBCImportPane"/>
         <tocitem text="Export From Constellation" target="au.gov.asd.tac.constellation.plugins.importexport.export"/>
+        <tocitem text="Export">
+            <tocitem text="Export to Image" target="au.gov.asd.tac.constellation.plugins.importexport.image.ExportToImagePlugin"/>
+            <tocitem text="Export to SVG" target="au.gov.asd.tac.constellation.plugins.importexport.svg.ExportToSVGPlugin"/>
+            <tocitem text="Export to Shapefile" target="au.gov.asd.tac.constellation.plugins.importexport.geospatial.ExportToShapefilePlugin"/>
+            <tocitem text="Export to KML" target="au.gov.asd.tac.constellation.plugins.importexport.geospatial.ExportToKmlPlugin"/>
+            <tocitem text="Export to GeoJson" target="au.gov.asd.tac.constellation.plugins.importexport.geospatial.ExportToGeoJsonPlugin"/>
+            <tocitem text="Export to GeoPackage" target="au.gov.asd.tac.constellation.plugins.importexport.geospatial.ExportToGeoPackagePlugin"/>
+        </tocitem>
     </tocitem>
 </toc>
