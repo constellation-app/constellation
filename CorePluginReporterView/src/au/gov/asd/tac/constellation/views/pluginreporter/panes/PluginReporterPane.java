@@ -20,7 +20,8 @@ import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReportFilter;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.gui.MultiChoiceInputField;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldListener;
+import au.gov.asd.tac.constellation.utilities.gui.field.MultiChoiceInput;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
@@ -32,7 +33,6 @@ import java.util.prefs.Preferences;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -54,7 +54,7 @@ import org.openide.util.NbPreferences;
  *
  * @author sirius
  */
-public class PluginReporterPane extends BorderPane implements ListChangeListener<String> {
+public class PluginReporterPane extends BorderPane implements ConstellationInputFieldListener<List<String>> {
 
     private static final String FILTERED_TAGS_KEY = "filteredTags";
 
@@ -65,7 +65,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
     private GraphReport graphReport = null;
 
     private final ObservableList<String> availableTags = FXCollections.observableArrayList();
-    private final MultiChoiceInputField<String> tagFilterMultiChoiceInput = new MultiChoiceInputField<>(availableTags);
+    private final MultiChoiceInput<String> tagFilterInput = new MultiChoiceInput<>(availableTags);
     private final Set<String> filteredTags = new HashSet<>();
     private PluginReportFilter pluginReportFilter = null;
 
@@ -95,12 +95,13 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
 
         // The filter drop down
         Label filterLabel = new Label("Filter: ");
-        tagFilterMultiChoiceInput.setMaxWidth(Double.MAX_VALUE);
-        tagFilterMultiChoiceInput.setMinWidth(50);
+        tagFilterInput.setMaxWidth(Double.MAX_VALUE);
+        tagFilterInput.setMinWidth(50);
+        tagFilterInput.addListener(this);
 
         // Group these together so the Toolbar treats them as a unit.
-        final HBox filterBox = new HBox(filterLabel, tagFilterMultiChoiceInput);
-        filterBox.setAlignment(Pos.BASELINE_LEFT);
+        final HBox filterBox = new HBox(filterLabel, tagFilterInput);
+        filterBox.setAlignment(Pos.CENTER_LEFT);
 
         // The clear button
         Button clearButton = new Button("Clear");
@@ -151,9 +152,9 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
     }
 
     @Override
-    public void onChanged(ListChangeListener.Change<? extends String> c) {
-        filteredTags.addAll(tagFilterMultiChoiceInput.getItems());
-        filteredTags.removeAll(tagFilterMultiChoiceInput.getCheckModel().getCheckedItems());
+    public void changed(List<String> c) {
+        filteredTags.addAll(tagFilterInput.getOptions());
+        filteredTags.removeAll(c);
 
         // Save the new filtered tags to preferences
         final StringBuilder prefString = new StringBuilder();
@@ -220,25 +221,20 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
     }
 
     void updateTags() {
-        tagFilterMultiChoiceInput.getCheckModel().getCheckedItems().removeListener(this);
-        tagFilterMultiChoiceInput.getCheckModel().clearChecks();
+        //tagFilterInput.removeListener(this);
+        //tagFilterInput.clearChoices();
         if (graphReport != null) {
             final List<String> tags = new ArrayList<>(graphReport.getUTags());
-            int[] selectedIndices = new int[tags.size()];
-            int selectedIndexCount = 0;
-            int tagIndex;
             for (String tag : tags) {
                 if (!availableTags.contains(tag)) {
                     availableTags.add(tag);
                 }
                 if (!filteredTags.contains(tag)) {
-                    tagIndex = availableTags.indexOf(tag);
-                    selectedIndices[selectedIndexCount++] = tagIndex; //AIOOBE = DED.
+                    tagFilterInput.setChoice(tag);
                 }
             }
-            tagFilterMultiChoiceInput.getCheckModel().checkIndices(Arrays.copyOfRange(selectedIndices, 0, selectedIndexCount));
         }
-        tagFilterMultiChoiceInput.getCheckModel().getCheckedItems().addListener(this);
+        //tagFilterInput.addListener(this);
     }
 
     public synchronized void setGraphReport(GraphReport graphReport) {

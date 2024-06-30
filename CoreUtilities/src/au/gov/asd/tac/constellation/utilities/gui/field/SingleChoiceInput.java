@@ -20,7 +20,6 @@ import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInpu
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.ChoiceType.SINGLE_SPINNER;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button.ButtonType;
-import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.collections.ListChangeListener;
@@ -40,19 +39,18 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSup
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ShortcutSupport;
 
 /**
- * A {@link ConstellationinputField} for managing choice selection. 
- * 
- * This input has two main mechanisms for managing choice selection:
- * - a list of Options (the list of available options to be selected from)
- * - a list of choices (a sub-list representing options that the user has selected)
- * 
- * This field implements {@link ListChangeListener} enabling this input field to 
- * update its text area when the choices list is changed. 
- * 
- * look into the case where the options list changes but existing valid choices were present but are no longer valid after the change.
+ * A {@link ChoiceInput} for managing single choice selection. 
+ * This input provides the following {@link ConstellationInput} support features
+ * <ul>
+ * <li>{@link RightButtonSupport} - Increments the choice in spinners and triggers a drop down menu to select a choice from the list of options.</li>
+ * <li>{@link LeftButtonSupport} - Only used in Spinner inputs to decrement the choice.</li>
+ * <li>{@link ShortcutSupport} - Increments and decrements the data chronologically with up and down arrow.</li>
+ * <li>{@link AutoCompleteSupport} - Provides a list of colors with a name that matches the text in the input field.</li>
+ * </ul>
+ * See referenced classes and interfaces for further details on inherited and implemented features.
+ * @param <C> The type of object represented by this input.
  * 
  * @author capricornunicorn123
- * @param <C> The Object type being represented by this ChoiceInputFiled
  */
 public final class SingleChoiceInput<C extends Object> extends ChoiceInputField<C, C> implements RightButtonSupport, LeftButtonSupport, AutoCompleteSupport, ShortcutSupport{
     
@@ -84,7 +82,7 @@ public final class SingleChoiceInput<C extends Object> extends ChoiceInputField<
   
     // <editor-fold defaultstate="collapsed" desc="Local Private Methods">    
     
-    private C getChoice(){
+    public C getChoice(){
         List<C> matches = getOptions().stream().filter(choice -> choice.toString().equals(getText())).toList();
         if (matches.isEmpty()){
             return null;
@@ -98,9 +96,9 @@ public final class SingleChoiceInput<C extends Object> extends ChoiceInputField<
      * if multi choice the old choice is retained
      * @param choice 
      */
-    private void setChoice(final C choice){
-        final List<C> currentChoices = stringToList(this.getText());
-        if (this.getOptions().contains(choice) && ((currentChoices != null && !currentChoices.contains(choice)) || currentChoices == null)) {
+    public void setChoice(final C choice){
+        
+        if (choice != null && this.getOptions().contains(choice)) {
             this.setText(choice.toString());
         }
     }
@@ -109,53 +107,10 @@ public final class SingleChoiceInput<C extends Object> extends ChoiceInputField<
      * Removes the provided choice from the currently selected choices.
      * @param choice 
      */
-    private void removeChoice(final C choice){
+    public void removeChoice(final C choice){
         if (getChoice() == choice){
             clearChoices();
         }
-    }
-    
-    /**
-     * Takes a List of Objects and converts the to a comma delimited string. 
-     * The order of this list is not changed and its validity is not checked. 
-     * @param set
-     * @return 
-     */
-    private String listToString(final List<C> set) {
-        final StringBuilder sb = new StringBuilder();
-        for (int i = 0 ; i < set.size() ; i++){
-            final C option = set.get(i);
-                if (i != 0){
-                    sb.append(", ");
-                }
-            sb.append(option.toString());
-        }
-        return sb.toString();          
-    }
-    
-    /**
-     * Takes a comma delimited string and converts it to a list of Objects.
-     * Objects will be present in the possible options.
-     * This list may contain null values in instances where a string could not be converted to an object. 
-     * @param value
-     * @return 
-     */
-    private List<C> stringToList(final String value) {
-        
-        final List<C> foundChoices = new ArrayList<>();
-        final List<String> choiceIndex = this.getOptions().stream().map(Object::toString).toList();
-        
-        final String[] items = value.split(SeparatorConstants.COMMA);
-        for (String item : items){
-            final int index = choiceIndex.indexOf(item.strip());           
-            if (index == -1){
-                //return null;
-                foundChoices.add(null);
-            } else {
-                foundChoices.add(this.getOptions().get(index));
-            }    
-        }
-        return foundChoices;          
     }
 
     /**
@@ -211,8 +166,7 @@ public final class SingleChoiceInput<C extends Object> extends ChoiceInputField<
         if (getText().isBlank()){
             return true;
         } else {
-            final List<C> items = stringToList(getText());
-            return items != null && !items.contains(null) && items.size() == 1 ;
+            return getChoice() != null;
         }
     }  
     // </editor-fold> 

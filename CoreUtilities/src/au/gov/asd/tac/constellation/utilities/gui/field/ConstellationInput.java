@@ -48,6 +48,7 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.InfoWindowSupp
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.LeftButtonSupport;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ShortcutSupport;
+import javafx.application.Platform;
 
 
 /**
@@ -166,32 +167,34 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
     
     protected void initialiseDepedantComponents(){
         
-        //Add Left button
-        if (this instanceof LeftButtonSupport leftButton){
-            Button button = leftButton.getLeftButton();
-            if (button != null){
-                button.getHeightProperty().bind(textArea.heightProperty());
-                interactableContent.getChildren().addFirst(button);
-                this.createWidthListener(button, ContentDisplay.LEFT);
+        Platform.runLater(() -> {
+            //Add Left button
+            if (this instanceof LeftButtonSupport leftButton){
+                Button button = leftButton.getLeftButton();
+                if (button != null){
+                    button.getHeightProperty().bind(textArea.heightProperty());
+                    interactableContent.getChildren().addFirst(button);
+                    this.createWidthListener(button, ContentDisplay.LEFT);
+                }
             }
-        }
 
-        //Add Base
-        interactableContent.getChildren().add(textArea);
-        
-        //Add Window
-        if (this instanceof InfoWindowSupport infoWindow){
-            insertInfoWindow(infoWindow.getInfoWindow());
-        }
+            //Add Base
+            interactableContent.getChildren().add(textArea);
 
-        //Add Right Button
-        if (this instanceof RightButtonSupport rightButton){
-            Button button = rightButton.getRightButton();
-            button.getHeightProperty().bind(textArea.heightProperty());
-            interactableContent.getChildren().add(button);
-            this.createWidthListener(button, ContentDisplay.RIGHT);
-        }
+            //Add Window
+            if (this instanceof InfoWindowSupport infoWindow){
+                insertInfoWindow(infoWindow.getInfoWindow());
+            }
+
+            //Add Right Button
+            if (this instanceof RightButtonSupport rightButton){
+                Button button = rightButton.getRightButton();
+                button.getHeightProperty().bind(textArea.heightProperty());
+                interactableContent.getChildren().add(button);
+                this.createWidthListener(button, ContentDisplay.RIGHT);
+            }
         
+        });
         //Add Shortcuts
         if (this instanceof ShortcutSupport shortcut) {
             EventHandler<KeyEvent> shortcutEvent = shortcut.getShortcuts();
@@ -396,11 +399,14 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
     // </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc="InfoWindow Functionality">  
+    
     protected final void insertInfoWindow(InfoWindow window) {
-        if (window != null) {
+        Platform.runLater(()->{
+            if (window != null) {
             int windowIndex = interactableContent.getChildren().indexOf(textArea) + 1;
             interactableContent.getChildren().add(windowIndex, window);
-        }
+            }
+        });
     }
     
     protected boolean hasInfoWindow() {

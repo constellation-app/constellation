@@ -37,9 +37,23 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationI
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.InfoWindowSupport;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.LeftButtonSupport;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport;
+import javafx.scene.control.ColorPicker;
 
 /**
  * A {@link ConstellationInput} for managing {@link ConstellationColor} selection. 
+ * This input provides the following {@link ConstellationInput} support features
+ * <ul>
+ * <li>{@link RightButtonSupport} - Triggers a drop down menu to select a {@link ContellationColor} from sorted list of hues.</li>
+ * <li>{@link LeftButtonSupport} - Triggers a drop down menu to set the format that this input should display the coos text value.</li>
+ * <li>{@link InfoWindowSupport} - Previews a square of the color represented by this input field.</li>
+ * <li>{@link AutoCompleteSupport} - Provides a list of colors with a name that matches the text in the input field.</li>
+ * </ul>
+ * See referenced classes and interfaces for further details on inherited and implemented features.
+ * 
+ * TODO: {@link ColorPicker} provides an interactive swatch to select colors from. 
+ * This is not accessible as manually and thus cant be triggered by this class and integrated into this input.
+ * Create a Custom Constellation Color Picker pop up equivalent and replace the ConstellationColor Swatch drop down button with a  color picker
+ * pop up that includes: RBG color generation, constellationColor selection, HSB color generation CMYK color generation.
  * 
  * @author capricornunicorn123
  */

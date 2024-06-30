@@ -21,35 +21,32 @@ import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import javafx.collections.ListChangeListener;
 import javafx.event.EventHandler;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.AutoCompleteSupport;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ChoiceInputField;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputDropDown;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.InfoWindowSupport;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport;
+import javafx.collections.ObservableList;
 
 /**
- * A {@link ConstellationinputField} for managing choice selection. 
- * 
- * This input has two main mechanisms for managing choice selection:
- * - a list of Options (the list of available options to be selected from)
- * - a list of choices (a sub-list representing options that the user has selected)
- * 
- * This field implements {@link ListChangeListener} enabling this input field to 
- * update its text area when the choices list is changed. 
- * 
- * look into the case where the options list changes but existing valid choices were present but are no longer valid after the change.
+ * A {@link ChoiceInput} for managing multiple choice selection. 
+ * This input provides the following {@link ConstellationInput} support features
+ * <ul>
+ * <li>{@link RightButtonSupport} - Triggers a drop down menu to select a set of choices from a list of options.</li>
+ * <li>{@link InfoWindowSupport} - informs the user of how many selections they have made as a ratio of the total (only shows with 2 or more selections).</li>
+ * <li>{@link AutoCompleteSupport} - Provides a list of options with a name that matches unknown text in the input field.</li>
+ * </ul>
+ * See referenced classes and interfaces for further details on inherited and implemented features.
+ * @param <C> The type of object represented by this input.
  * 
  * @author capricornunicorn123
- * @param <C> The Object type being represented by this ChoiceInputFiled
  */
 public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<List<C>, C> implements RightButtonSupport, InfoWindowSupport, AutoCompleteSupport {
 
@@ -57,7 +54,7 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
         initialiseDepedantComponents();
     }    
     
-    public MultiChoiceInput(List<C> options){    
+    public MultiChoiceInput(final ObservableList<C> options){    
         super(options);
         initialiseDepedantComponents();
     }    
@@ -69,7 +66,7 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
      * ChoiceType.MULTI
      * @param requestedChoices 
      */
-    private void setChoices(final List<C> requestedChoices) {
+    public void setChoices(final List<C> requestedChoices) {
         if (requestedChoices != null) {
             //This meethod requres use of an Arraylist. Casting is not possible.
             final ArrayList<C> localList = new ArrayList<>();       
@@ -87,11 +84,11 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
      * if multi choice the old choice is retained
      * @param choice 
      */
-    private void setChoice(final C choice){
+    public void setChoice(final C choice){
         final List<C> currentChoices = stringToList(this.getText());
         if (this.getOptions().contains(choice) && ((currentChoices != null && !currentChoices.contains(choice)) || currentChoices == null)) {
             currentChoices.add(choice);
-            this.setText(this.listToString(currentChoices));
+            this.setChoices(currentChoices);
         }
     }
     
@@ -100,9 +97,9 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
      * 
      * @return 
      */
-    private List<C> getChoices() {
-        return stringToList(this.getText());
-        }
+    public List<C> getChoices() {
+        return stringToList(this.getText()); 
+    }
     
     /**
      * Removes the provided choice from the currently selected choices.
@@ -142,18 +139,17 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
     private List<C> stringToList(final String value) {
         
         final List<C> foundChoices = new ArrayList<>();
-        final List<String> choiceIndex = this.getOptions().stream().map(Object::toString).toList();
+            final List<String> choiceIndex = this.getOptions().stream().map(Object::toString).toList();
         
-        final String[] items = value.split(SeparatorConstants.COMMA);
-        for (String item : items){
-            final int index = choiceIndex.indexOf(item.strip());           
-            if (index == -1){
-                //return null;
-                foundChoices.add(null);
-            } else {
-                foundChoices.add(this.getOptions().get(index));
-            }    
-        }
+            final String[] items = value.split(SeparatorConstants.COMMA);
+            for (String item : items){
+                final int index = choiceIndex.indexOf(item.strip());           
+                if (index == -1){
+                    foundChoices.add(null);
+                } else {
+                    foundChoices.add(this.getOptions().get(index));
+                }    
+            }
         return foundChoices;          
     }
     // </editor-fold> 
@@ -165,7 +161,7 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
         if (choices != null && !choices.contains(null) ) {
             return choices;
         } else {
-            return null;
+            return new ArrayList<>();
         }
     }
     
@@ -241,21 +237,21 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
             super(field);
             
             final List<MenuItem> items = new ArrayList<>(); 
-
-            //Select All Bulk Selection Feature
-            final Label all = new Label("Select All");
-            all.setOnMouseClicked(event -> field.setChoices(field.getOptions())); 
-            items.add(this.buildCustomMenuItem(all));
-
-            //Clear All Bulk Selection Feature
-            final Label clear = new Label("Clear All");
-            clear.setOnMouseClicked(event -> field.clearChoices()); 
-            items.add(this.buildCustomMenuItem(clear));
-
-            items.add(new SeparatorMenuItem());
-              
             
             if (getOptions() != null){
+
+                //Select All Bulk Selection Feature
+                final Label all = new Label("Select All");
+                all.setOnMouseClicked(event -> field.setChoices(field.getOptions())); 
+                items.add(this.buildCustomMenuItem(all));
+
+                //Clear All Bulk Selection Feature
+                final Label clear = new Label("Clear All");
+                clear.setOnMouseClicked(event -> field.clearChoices()); 
+                items.add(this.buildCustomMenuItem(clear));
+
+                items.add(new SeparatorMenuItem());
+              
                 final Object[] optionsList = getOptions().toArray();
                 final List<C> choices = field.getChoices();
                 for (int i = 0 ; i < optionsList.length ; i ++){
@@ -345,7 +341,7 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
         //do not show suggestions in the following cases
         //if there are two unknown choices that the user has enteres, i.e more than 1 null value.
         //if there is 1 or more valid choices in the event that this is a single choice input.
-        if (choices.stream().filter(value -> value == null).count() != 1){
+        if (choices.stream().filter(value -> value == null).count() != 1 || this.getText().isBlank()){
             return null;
         } else {
             //Remove blank entrys from here

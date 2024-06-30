@@ -39,11 +39,22 @@ import org.openide.filesystems.FileChooserBuilder;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport;
 
 /**
- * A {@link ConstellationinputField} for managing {@link File} selection. 
+ * A {@link ConstellationInput} for managing file selection. 
+ * This input provides the following {@link ConstellationInput} support features
+ * <ul>
+ * <li>{@link RightButtonSupport} - Triggers a {@link FileChooserdialog} to assist with file selection.</li>
+ * </ul>
+ * See referenced classes and interfaces for further details on inherited and implemented features.
+ * 
+ * TODO: Consider splitting this class into two implementations of ConstellationInput field as below 
+ * SinglefileInput extends ConstellationInput<File>
+ * MultiFileInput extends ConstellationInput<List<File>>
+ * 
+ * TODO: Consider adding AutoComplete to this input suggesting files when the input value represents a directory ()end in (/).
  * 
  * @author capricornunicorn123
  */
-public final class FileInput extends ConstellationInput<List<File>> implements RightButtonSupport{
+public final class FileInput extends ConstellationInput<List<File>> implements RightButtonSupport {
     
     private ExtensionFilter extensionFilter = null;
     private boolean acceptAll = true;

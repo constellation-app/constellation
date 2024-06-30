@@ -24,43 +24,32 @@ import javafx.scene.image.ImageView;
 import org.apache.poi.openxml4j.exceptions.InvalidOperationException;
 
 /**
- * A {@link ConstellationinputField} for managing choice selection. 
+ * A {@link ConstellationInput} for managing choice selection. 
+ * This input provides a set of shared features used by {@link SingleChoiceInputs] and {@link MultiChoiceInput}.
  * 
- * This input has two main mechanisms for managing choice selection:
- * - a list of Options (the list of available options to be selected from)
- * - a list of choices (a sub-list representing options that the user has selected)
- * 
- * This field implements {@link ListChangeListener} enabling this input field to 
- * update its text area when the choices list is changed. 
- * 
- * look into the case where the options list changes but existing valid choices were present but are no longer valid after the change.
+ * See referenced classes and interfaces for further details on inherited and implemented features.
+ * @param <O> The type of object represented by this input field. (An individual choice)
+ * @param <C> The type of object returned by this input. (an individual choice or a set of choices)
  * 
  * @author capricornunicorn123
- * @param <C> The Object type being returned by this ChoiceInputFiled
- * @param <O> The Object type being represnted by this ChoiceINputField.
  */
 public abstract class ChoiceInputField<C extends Object, O extends Object> extends ConstellationInput<C> {
     
-    private final List<O> options;
-    private final ObservableList<O> observabeOptions;
+    private final List<O> options = new ArrayList<>();
     protected final List<ImageView> icons = new ArrayList<>();
   
     public ChoiceInputField(){
-        this.options = new ArrayList();
-        observabeOptions = null;
     }
     
-    public ChoiceInputField(List<O> options){
-        if (options instanceof ObservableList observable){
-            observabeOptions = observable;
-            this.options = null;
-        } else {
-            this.options = options;
-            observabeOptions = null;
-        }
+    public ChoiceInputField(final ObservableList<O> options){
+        options.addAll(options);
+        options.addListener((ListChangeListener.Change<? extends O> change) -> {
+            this.options.clear();
+            this.options.addAll(change.getList());
+        });
     }
+    
     // <editor-fold defaultstate="collapsed" desc="Local Private Methods">   
-    
     /**
      * Defines the options that users can select from in this field.
      * Any previously defined options will be overwritten with this new list.
@@ -80,11 +69,7 @@ public abstract class ChoiceInputField<C extends Object, O extends Object> exten
      * @return List of Options 
      */
     public final List<O> getOptions(){
-        if (this.options == null){
-            return this.observabeOptions;
-        } else {
-            return this.options;
-        }
+        return this.options;
     }
     
     /**
@@ -99,7 +84,7 @@ public abstract class ChoiceInputField<C extends Object, O extends Object> exten
     /**
      * Removes all choices.
      */
-    protected final void clearChoices() {
+    public final void clearChoices() {
        this.setText("");
     }
     // </editor-fold> 

@@ -40,6 +40,15 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.ShortcutSuppor
 
 /**
  * A {@link ConstellationInput} for managing {@link LocalDate} selection. 
+ * This input provides the following {@link ConstellationInput} support features
+ * <ul>
+ * <li>{@link RightButtonSupport} - Triggers a popup menu to select a {@link LocalDate} from a {@link DateChoserPannel}.</li>
+ * <li>{@link ShortcutSupport} - Increments and decrements the data chronologically with up and down arrow.</li>
+ * </ul>
+ * See referenced classes and interfaces for further details on inherited and implemented features.
+ * 
+ * TODO: The {@link DateChooserPannel} is a little dated and could be updated to match the Constellation look and feel. 
+ * Use SingleChoiceInput(ChoiceType.SINGLE_SPINNER) for month and year selection and a grid of dates to select a date.
  * 
  * @author capricornunicorn123
  */

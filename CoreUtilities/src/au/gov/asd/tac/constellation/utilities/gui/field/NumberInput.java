@@ -30,19 +30,18 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSup
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ShortcutSupport;
 
 /**
- * A {@link ConstellationinputField} for managing choice selection. 
- * 
- * This input has two main mechanisms for managing choice selection:
- * - a list of Options (the list of available options to be selected from)
- * - a list of choices (a sub-list representing options that the user has selected)
- * 
- * This field implements {@link ListChangeListener} enabling this input field to 
- * update its text area when the choices list is changed. 
- * 
- * look into the case where the options list changes but existing valid choices were present but are no longer valid after the change.
+ * A {@link ChoiceInput} for managing choice selection. 
+ * This input provides the following {@link ConstellationInput} support features
+ * <ul>
+ * <li>{@link RightButtonSupport} - Increments the choice in spinners and triggers a drop down menu to select a choice from the list of options.</li>
+ * <li>{@link LeftButtonSupport} - Only used in Spinner inputs to decrement the choice.</li>
+ * <li>{@link ShortcutSupport} - Increments and decrements the data chronologically with up and down arrow.</li>
+ * <li>{@link AutoCompleteSupport} - Provides a list of colors with a name that matches the text in the input field.</li>
+ * </ul>
+ * See referenced classes and interfaces for further details on inherited and implemented features.
+ * @param <C> The type of object represented by this input.
  * 
  * @author capricornunicorn123
- * @param <C> The Object type being represented by this ChoiceInputFiled
  */
 public final class NumberInput<C extends Number> extends ConstellationInput<Number> implements LeftButtonSupport, RightButtonSupport, ShortcutSupport{
     
