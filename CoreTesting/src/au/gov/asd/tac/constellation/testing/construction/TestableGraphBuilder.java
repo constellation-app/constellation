@@ -436,7 +436,7 @@ public class TestableGraphBuilder {
         }
     }
     
-    public TestableGraphBuilder withAllTransactions() throws InterruptedException{
+    public TestableGraphBuilder withAllTransactions() throws InterruptedException {
         withLinearTransactions();    
         withLoopedTransactions(); 
         return this;
@@ -447,7 +447,7 @@ public class TestableGraphBuilder {
         withLoopedTransactions(gwm);
     }
     
-    public TestableGraphBuilder withLoopedTransactions() {
+    public TestableGraphBuilder withLoopedTransactions() throws InterruptedException {
             WritableGraph wg = graph.getWritableGraph("addLoopedTransactions", true);
             withLoopedTransactions(wg);    
             wg.commit();
