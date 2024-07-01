@@ -89,7 +89,6 @@ public class NamedSelection {
         this.hotkey = namedSelection.hotkey;
         this.name = namedSelection.name;
         this.isLocked = namedSelection.isLocked;
-        setDefaultName();
     }
 
     /**

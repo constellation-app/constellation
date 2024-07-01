@@ -2,6 +2,10 @@
 
 ## Extract Words from a specified transaction attribute
 
+<br />
+<img src="../ext/docs/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/resources/ExtractWordsFromText.png" alt="Extract Words From Text" />
+<br />
+
 This plugin will extract words from content (that is, words found in the
 specified content attribute of all transactions) and represent them as
 nodes on the graph. The source node will be linked to the word by a

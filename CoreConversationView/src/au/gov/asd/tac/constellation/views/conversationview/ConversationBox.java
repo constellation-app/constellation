@@ -294,7 +294,7 @@ public final class ConversationBox extends StackPane {
         final Button helpButton = new Button("", helpImage);
         helpButton.setStyle("-fx-border-color: transparent; -fx-background-color: transparent; -fx-effect: null; ");
         helpButton.setOnAction(event
-                -> new HelpCtx("ConversationBox").display());
+                -> new HelpCtx(this.getClass().getName()).display());
 
         final Button addAttributesButton = new Button("Add Content Attributes");
         addAttributesButton.setOnAction(event

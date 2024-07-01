@@ -33,7 +33,9 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.concurrent.ExecutionException;
@@ -104,6 +106,7 @@ public final class PerspectiveBookmarkTopComponent extends TopComponent implemen
 
     private void enableUI(final boolean enable) {
         addButton.setEnabled(enable);
+        renameButton.setEnabled(enable);
         removeButton.setEnabled(enable);
     }
 
@@ -167,10 +170,11 @@ public final class PerspectiveBookmarkTopComponent extends TopComponent implemen
         addButton = new javax.swing.JButton();
         renameButton = new javax.swing.JButton();
         removeButton = new javax.swing.JButton();
+        jSeparator1 = new javax.swing.JToolBar.Separator();
+        helpButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         perspectivesList = new javax.swing.JList<>();
 
-        jToolBar1.setFloatable(false);
         jToolBar1.setOrientation(javax.swing.SwingConstants.VERTICAL);
         jToolBar1.setRollover(true);
 
@@ -212,6 +216,20 @@ public final class PerspectiveBookmarkTopComponent extends TopComponent implemen
             }
         });
         jToolBar1.add(removeButton);
+        jToolBar1.add(jSeparator1);
+
+        helpButton.setIcon(UserInterfaceIconProvider.HELP.buildIcon(16, ConstellationColor.SKY.getJavaColor()));
+        org.openide.awt.Mnemonics.setLocalizedText(helpButton, org.openide.util.NbBundle.getMessage(PerspectiveBookmarkTopComponent.class, "PerspectiveBookmarkTopComponent.helpButton.text")); // NOI18N
+        helpButton.setToolTipText(org.openide.util.NbBundle.getMessage(PerspectiveBookmarkTopComponent.class, "PerspectiveBookmarkTopComponent.helpButton.toolTipText")); // NOI18N
+        helpButton.setFocusable(false);
+        helpButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        helpButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        helpButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                helpButtonActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(helpButton);
 
         perspectivesList.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -297,9 +315,15 @@ public final class PerspectiveBookmarkTopComponent extends TopComponent implemen
         renamePerspective();
     }//GEN-LAST:event_renameButtonActionPerformed
 
+    private void helpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpButtonActionPerformed
+        new HelpCtx(PerspectiveBookmarkTopComponent.class.getName()).display();
+    }//GEN-LAST:event_helpButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
+    private javax.swing.JButton helpButton;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JList<Perspective> perspectivesList;
     private javax.swing.JButton removeButton;

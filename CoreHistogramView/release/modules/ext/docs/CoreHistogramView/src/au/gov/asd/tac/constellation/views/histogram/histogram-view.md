@@ -20,9 +20,7 @@
 <td>Open Histogram View</td>
 <td>Ctrl + Shift + H</td>
 <td>Views -&gt; Histogram</td>
-<td><div style="text-align: center">
-<img src="../ext/docs/CoreHistogramView/src/au/gov/asd/tac/constellation/views/histogram/resources/histogram.png" width="16" height="16" />
-</div></td>
+<td><img src="../ext/docs/CoreHistogramView/src/au/gov/asd/tac/constellation/views/histogram/resources/histogram.png" width="16" height="16" /></td>
 </tr>
 </tbody>
 </table>

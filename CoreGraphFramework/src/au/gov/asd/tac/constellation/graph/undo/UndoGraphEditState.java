@@ -150,7 +150,7 @@ public class UndoGraphEditState {
     }
 
     public byte[] getByteStack() {
-        return byteStack.clone();
+        return byteStack;
     }
 
     public void setByteStack(final byte[] byteStack) {
@@ -166,7 +166,7 @@ public class UndoGraphEditState {
     }
 
     public short[] getShortStack() {
-        return shortStack.clone();
+        return shortStack;
     }
 
     public void setShortStack(final short[] shortStack) {
@@ -182,7 +182,7 @@ public class UndoGraphEditState {
     }
 
     public int[] getIntStack() {
-        return intStack.clone();
+        return intStack;
     }
 
     public void setIntStack(final int[] intStack) {
@@ -198,7 +198,7 @@ public class UndoGraphEditState {
     }
 
     public long[] getLongStack() {
-        return longStack.clone();
+        return longStack;
     }
 
     public void setLongStack(final long[] longStack) {
@@ -214,7 +214,7 @@ public class UndoGraphEditState {
     }
 
     public Object[] getObjectStack() {
-        return objectStack.clone();
+        return objectStack;
     }
 
     public void setObjectStack(final Object[] objectStack) {

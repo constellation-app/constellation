@@ -17,10 +17,10 @@ Parameter" />
 
 A relative range indicates a period ending "now" and starting at the
 indicated time in the past. For example, if 2 days is selected, and a
-data access query is run at 2015-01-30 09:30, the range used for the
-query will be 2015-01-28 09:30:00 to 2015-01-30 09:30. If another query
-is run ten minutes later, the range will be 2015-01-28 09:40:00 to
-2015-01-30 09:40.
+data access query is run at 2015-01-30 09:30, the range used for the
+query will be 2015-01-28 09:30:00 to 2015-01-30 09:30. If another query
+is run ten minutes later, the range will be 2015-01-28 09:40:00 to
+2015-01-30 09:40.
 
 This is also true if a relative range is saved and loaded at a later
 time: the datetime range will always end at "now".
@@ -34,8 +34,8 @@ immediately obsolete.
 ## Absolute Range
 
 An absolute range allows you to specify the start and end of the range
-as fixed instances in time. e.g. if 2015-01-23 09:30 and
-2015-01-30 09:30 are used, the same range will be used whenever a query
+as fixed instances in time. e.g. if 2015-01-23 09:30 and
+2015-01-30 09:30 are used, the same range will be used whenever a query
 is run.
 
 The absolute range also allows to you select a timezone to be used to

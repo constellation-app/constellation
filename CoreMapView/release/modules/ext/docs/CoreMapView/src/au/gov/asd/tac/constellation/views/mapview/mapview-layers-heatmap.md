@@ -19,7 +19,7 @@ location. This means that a marker representing a node with two
 neighbours on the graph will appear hotter than a marker representing a
 node with only one neighbour.
 
-## Heatmap (Heatmap)
+## Heatmap (Activity)
 
 The activity heatmap represents the density of transactions connected to
 a location. This means that a marker representing a node with two
