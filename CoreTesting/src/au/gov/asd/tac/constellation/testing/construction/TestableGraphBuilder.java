@@ -447,11 +447,16 @@ public class TestableGraphBuilder {
         withLoopedTransactions(gwm);
     }
     
-    public TestableGraphBuilder withLoopedTransactions() throws InterruptedException {
-        WritableGraph wg = graph.getWritableGraph("addLoopedTransactions", true);
-        withLoopedTransactions(wg);    
-        wg.commit();
-        return this;
+    public TestableGraphBuilder withLoopedTransactions() {
+        try {
+            WritableGraph wg = graph.getWritableGraph("addLoopedTransactions", true);
+            withLoopedTransactions(wg);    
+            wg.commit();
+        } catch (final InterruptedException ex) {
+            //Log that something went wrong
+        } finally {
+            return this;
+        }
     }
     
     

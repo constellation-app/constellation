@@ -263,12 +263,7 @@ public class GenerateSVGConnectionsTask implements Runnable, SharedInteractionRu
     private void addConnectionLabels(final SVGObject svgLabels, final Vector3f highPosition, final Vector3f lowPosition, final int connectionIndex, final int connectionCount) {
         
         // Determine how many segments along the connection length are needed.
-        final int totalSegments;
-        if (connectionCount > 7) {
-            totalSegments = 8;
-        } else{
-            totalSegments = connectionCount + 1;
-        }
+        final int totalSegments = connectionCount > 7 ? 8 : connectionCount + 1;
 
         // Determine which segment this connection label will occupy
         final int labelSegment = (connectionIndex % 7) + 1;

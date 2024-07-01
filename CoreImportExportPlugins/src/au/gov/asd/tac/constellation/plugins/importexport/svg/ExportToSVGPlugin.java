@@ -49,6 +49,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javafx.stage.FileChooser;
@@ -80,6 +82,8 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
     public static final String SHOW_CONNECTION_LABELS_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_transaction_labels");
     public static final String SHOW_BLAZES_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_blazes");
     public static final String EXPORT_PERSPECTIVE_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "export_perspective");
+    
+    private static final Logger LOGGER = Logger.getLogger(ExportToSVGPlugin.class.getName());
     
     @Override
     public PluginParameters createParameters() {
@@ -113,7 +117,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         final PluginParameter<SingleChoiceParameterValue> imageModeParam = SingleChoiceParameterType.build(IMAGE_MODE_PARAMETER_ID);
         imageModeParam.setName("Image Mode");
         imageModeParam.setDescription("""
-                                      How do wou want raster images to be handled?
+                                      How do you want raster images to be handled?
                                       Embedded = Single File, Large Size
                                       Linked = File & Folder of Image Assets, Small Size"""
         );
@@ -208,18 +212,16 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
             try {
                 Files.delete(file.toPath());
             } catch (final IOException ex) {
-                //To Do: when does this get thrwn?
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.INFO, String.format("Deletion of file %s was not successful", file.toPath()));
             }
         }
             
-        // If the user has not selected a linked export he asset fdirectoy can now be deleted. 
+        // If the user has not selected a linked export the asset directoy can now be deleted. 
         if (!ExportMode.LINKED.toString().equals(imageMode)){
             try {
                 Files.delete(assetDirectory.toPath());
             } catch (final IOException ex) {
-                //To Do: when does this get thrwn?
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.INFO, String.format("Deletion of directory %s was not successful", assetDirectory.toPath()));
             }
         }
         

@@ -151,6 +151,6 @@ public class DefaultIconProvider implements ConstellationIconProvider {
      * @return 
      */
     public static boolean isVisable(final ConstellationIcon icon){
-        return !(icon == null || EMPTY.getName().equals(icon.getName()) || TRANSPARENT.getName().equals(icon.getName()));
+        return icon != null && !EMPTY.getName().equals(icon.getName()) && !TRANSPARENT.getName().equals(icon.getName());
     }
 }

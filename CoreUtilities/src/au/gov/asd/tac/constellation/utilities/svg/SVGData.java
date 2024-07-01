@@ -257,10 +257,10 @@ public class SVGData {
      * Recursive function to generate a string equivalent of complex SVG data 
      * captured within this object.
      * @param prefix
-     * @return an ArrayList<String> representation of the current element and all of it's child elements.
+     * @return List<String> representation of the current element and all of it's child elements.
      */
-    private ArrayList<String> toString(final String prefix) {
-        final ArrayList<String> svgString = new ArrayList<>();
+    private List<String> toString(final String prefix) {
+        final List<String> svgString = new ArrayList<>();
         if (this.children.isEmpty() && this.content == null) {
             svgString.add(elementToSVG(prefix));
         } else {
@@ -328,10 +328,10 @@ public class SVGData {
      * manages the indented of child elements
      * 
      * @param prefix
-     * @return an ArrayList<String>
+     * @return List<String>
      */
-    private ArrayList<String> elementChildrenToSVG (final String prefix) {
-        final ArrayList<String> childSVGString = new ArrayList<>();
+    private List<String> elementChildrenToSVG (final String prefix) {
+        final List<String> childSVGString = new ArrayList<>();
         final StringBuilder childPrefix = new StringBuilder(SeparatorConstants.TAB); 
         if (prefix != null) {
             childPrefix.append(prefix);

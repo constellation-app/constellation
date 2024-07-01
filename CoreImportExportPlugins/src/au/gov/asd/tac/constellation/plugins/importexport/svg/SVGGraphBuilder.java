@@ -81,7 +81,7 @@ public class SVGGraphBuilder {
         
     // Variables without default values, customisable by the builder pattern 
     private GraphReadMethods readableGraph = null;
-    private PluginInteraction interaction= null;
+    private PluginInteraction interaction = null;
     private AxisConstants exportPerspective = null;
     private String graphTitle = null;
     
@@ -287,7 +287,7 @@ public class SVGGraphBuilder {
         viewFrustum.transform(camera.getObjectFrame());
         
         // Translate and rotate the camera to get acurate x and y values for the view port 
-        Vector3f transformedCameraEye = new Vector3f();
+        final Vector3f transformedCameraEye = new Vector3f();
         transformedCameraEye.transform(camera.lookAtEye, modelViewMatrix);
         viewPort = new int[] {Math.round(transformedCameraEye.getX()), Math.round(transformedCameraEye.getY()), paneWidth, paneHeight};
     }
@@ -328,10 +328,10 @@ public class SVGGraphBuilder {
             final List<List<SVGObject>> threadOuputLists = new ArrayList<>();
 
             // Create a task for each set of inputLists with an unique list for their generated output
-            for (int threadInput = 0; threadInput < threadInputLists.size(); threadInput++){
+            for (List<Integer> threadInput : threadInputLists) {
                 final GraphVisualisationReferences graph = new GraphVisualisationReferences(viewFrustum, modelViewProjectionMatrix, viewPort, camera, drawFlags, selectedElementsOnly, assetDirectoty);
-                final ArrayList<SVGObject> output = new ArrayList<>();
-                final GenerateSVGNodesTask task = new GenerateSVGNodesTask(graph, threadInputLists.get(threadInput), output);
+                final List<SVGObject> output = new ArrayList<>();
+                final GenerateSVGNodesTask task = new GenerateSVGNodesTask(graph, threadInput, output);
                 mti.addTask(task);
                 threadOuputLists.add(output);
                 CompletableFuture.runAsync(task, threadPool);
@@ -385,10 +385,10 @@ public class SVGGraphBuilder {
         final List<List<SVGObject>> threadOuputLists = new ArrayList<>(); 
         
         // Create a task for each set of inputLists with an unique list for their generated output
-        for (int linkIndex = 0; linkIndex < threadInputLists.size(); linkIndex++){
+        for (List<Integer> threadInput : threadInputLists) {
             final GraphVisualisationReferences giu = new GraphVisualisationReferences(viewFrustum, modelViewProjectionMatrix, viewPort, camera, drawFlags, selectedElementsOnly);
-            final ArrayList<SVGObject> output = new ArrayList<>();
-            final GenerateSVGConnectionsTask task = new GenerateSVGConnectionsTask(giu, threadInputLists.get(linkIndex), output);
+            final List<SVGObject> output = new ArrayList<>();
+            final GenerateSVGConnectionsTask task = new GenerateSVGConnectionsTask(giu, threadInput, output);
             mti.addTask(task);
             threadOuputLists.add(output);
             CompletableFuture.runAsync(task, threadPool);
@@ -427,10 +427,10 @@ public class SVGGraphBuilder {
         final List<List<SVGObject>> threadOuputLists = new ArrayList<>();
 
         // Create a task for each set of inputLists with an array list for their generated output
-        for (int threadInput = 0; threadInput < threadInputLists.size(); threadInput++){
+        for (List<Integer> threadInput : threadInputLists) {
             final GraphVisualisationReferences graph = new GraphVisualisationReferences(viewFrustum, modelViewProjectionMatrix, viewPort, camera, drawFlags, selectedElementsOnly);
-            final ArrayList<SVGObject> output = new ArrayList<>();
-            final GenerateSVGBlazesTask task = new GenerateSVGBlazesTask(graph, threadInputLists.get(threadInput), output);
+            final List<SVGObject> output = new ArrayList<>();
+            final GenerateSVGBlazesTask task = new GenerateSVGBlazesTask(graph, threadInput, output);
             mti.addTask(task);
             threadOuputLists.add(output);
             CompletableFuture.runAsync(task, threadPool);
@@ -484,16 +484,9 @@ public class SVGGraphBuilder {
         final float viewPortWidth = viewPort[2];
         final float viewPortHeight = viewPort[3];           
 
-        // Trim the content window to reflect the users view window.
-        // This is to counteract the increas to the field of view to ensure elements near the edge were drawn correctly
-        final float widthTrimValue = viewPortWidth * 0.0F;
-        final float heightTrimValue = viewPortHeight * 0.0F;
-        final float contentWidth = viewPortWidth - widthTrimValue;
-        final float contentHeight = viewPortHeight - heightTrimValue;
         
-        SVGObjectConstants.CONTENT.findIn(svgGraph).setViewBox(widthTrimValue / 2, heightTrimValue / 2, contentWidth , contentHeight);
-        
-        svgGraph.setDimension(contentWidth, contentHeight + (contentHeight * .05F));
+        SVGObjectConstants.CONTENT.findIn(svgGraph).setViewBox(0F, 0F, viewPortWidth, viewPortHeight);
+        svgGraph.setDimension(viewPortWidth, viewPortHeight + (viewPortHeight * .05F));
         
     }
     

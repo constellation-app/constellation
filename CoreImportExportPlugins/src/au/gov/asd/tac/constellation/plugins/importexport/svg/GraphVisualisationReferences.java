@@ -92,7 +92,7 @@ public class GraphVisualisationReferences {
     /**
      * To be called before use of any utility functions.
      */
-    public void initialise(){
+    public void initialise() {
         access.beginUpdate();
         access.updateInternally();
     }
@@ -100,7 +100,7 @@ public class GraphVisualisationReferences {
     /**
      * To be called once this class is finished being used.
      */
-    public void terminate(){
+    public void terminate() {
         access.endUpdate();
     }
     
@@ -145,7 +145,7 @@ public class GraphVisualisationReferences {
      * @param vertexIndex
      * @return 
      */
-    public float getRadius(final int vertexIndex){
+    public float getRadius(final int vertexIndex) {
         return access.getRadius(vertexIndex);
     }
 
@@ -166,7 +166,6 @@ public class GraphVisualisationReferences {
      * @return 
      */
     public float getVertexScaledRadius(final int vertexIndex) {  
-
         //Get the radius value of the node
         final float radius = getVertexScreenRadius(vertexIndex);
 
@@ -297,7 +296,7 @@ public class GraphVisualisationReferences {
      * @param vertexIndex
      * @return 
      */
-    public int getBlazeAngle(final int vertexIndex){
+    public int getBlazeAngle(final int vertexIndex) {
         return access.getBlazeAngle(vertexIndex);
     }
     
@@ -305,7 +304,7 @@ public class GraphVisualisationReferences {
      * Determines the length of the blaze.
      * @return 
      */
-    public float getBlazeSize(){
+    public float getBlazeSize() {
         return access.getBlazeSize();
     }
     
@@ -314,7 +313,7 @@ public class GraphVisualisationReferences {
      * @param vertexIndex
      * @return 
      */
-    public ConstellationColor getBlazeColor(final int vertexIndex){
+    public ConstellationColor getBlazeColor(final int vertexIndex) {
         return access.getBlazeColor(vertexIndex);
     }
     
@@ -322,7 +321,7 @@ public class GraphVisualisationReferences {
      * Determines the opacity of the blaze.
      * @return 
      */
-    public float getBlazeOpacity(){
+    public float getBlazeOpacity() {
         return access.getBlazeOpacity();
     }
     
@@ -330,7 +329,7 @@ public class GraphVisualisationReferences {
      * Determines if Node labels should be included in this export.
      * @return 
      */
-    public boolean exportNodeLabels(){
+    public boolean exportNodeLabels() {
         return drawFlags.drawNodeLabels();
     }
 
@@ -420,7 +419,7 @@ public class GraphVisualisationReferences {
      * @param linkIndex
      * @return 
      */
-    public int getLinkHighVertex(final int linkIndex){
+    public int getLinkHighVertex(final int linkIndex) {
         return access.getLinkHighVertex(linkIndex);
     }
     
@@ -429,7 +428,7 @@ public class GraphVisualisationReferences {
      * @param linkIndex
      * @return 
      */
-    public int getLinkLowVertex(final int linkIndex){
+    public int getLinkLowVertex(final int linkIndex) {
         return access.getLinkLowVertex(linkIndex);
     }
     
@@ -440,7 +439,7 @@ public class GraphVisualisationReferences {
      * @param linkIndex
      * @return 
      */
-    public int getLinkConnectionCount(final int linkIndex){
+    public int getLinkConnectionCount(final int linkIndex) {
         return access.getLinkConnectionCount(linkIndex);
     }
     
@@ -450,7 +449,7 @@ public class GraphVisualisationReferences {
      * @param connectionIndex
      * @return 
      */
-    public int getLinkConnection(final int linkIndex, final int connectionIndex){
+    public int getLinkConnection(final int linkIndex, final int connectionIndex) {
         return access.getLinkConnection(linkIndex, connectionIndex);
     }
     
@@ -459,7 +458,7 @@ public class GraphVisualisationReferences {
      * @param connection
      * @return 
      */
-    public boolean isConnectionSelected(final int connection){
+    public boolean isConnectionSelected(final int connection) {
         return access.isConnectionSelected(connection);
     }
     
@@ -468,7 +467,7 @@ public class GraphVisualisationReferences {
      * @param connection
      * @return 
      */
-    public float getConnectionVisibility(final int connection){
+    public float getConnectionVisibility(final int connection) {
         return access.getConnectionVisibility(connection);
     }
     
@@ -605,7 +604,6 @@ public class GraphVisualisationReferences {
      * @return 
      */
     public float getDepthScaleFactor(final Vector3f worldPosition) {
-
         // Get the screen position of the worldPosition
         final Vector4f screenPosition = getScreenPosition(worldPosition);
 

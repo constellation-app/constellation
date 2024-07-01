@@ -319,7 +319,7 @@ public class GenerateSVGNodesTask implements Runnable, SharedInteractionRunnable
             if (!outputFile.exists()){
                 ImageIO.write(icon.buildBufferedImage(), "png", outputFile);
             }
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             //Do Nothing
         }
         
