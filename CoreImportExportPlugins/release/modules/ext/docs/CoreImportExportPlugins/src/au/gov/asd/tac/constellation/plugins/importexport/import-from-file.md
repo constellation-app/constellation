@@ -32,7 +32,7 @@ following sources:
 
 <div style="text-align: center">
 
-<img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/DelimitedFileImporter.png" alt="Delimited File
+<img width=500 src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/DelimitedFileImporter.png" alt="Delimited File
 Importer" />
 
 </div>
