@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionTypeUtilities;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import static au.gov.asd.tac.constellation.views.schemaview.providers.HelpIconProvider.populateHelpIconWithCaption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -73,6 +74,7 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
     private final HBox detailsView;
     private final RadioButton startsWithRb;
     private final TextField filterText;
+    private final HBox schemaLabelAndHelp;
 
     public TransactionTypeNodeProvider() {
         schemaLabel = new Label(SeparatorConstants.HYPHEN);
@@ -80,6 +82,7 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
         treeView = new TreeView<>();
         transactionTypes = new ArrayList<>();
         detailsView = new HBox();
+        schemaLabelAndHelp = new HBox();
         detailsView.setPadding(new Insets(5));
         startsWithRb = new RadioButton("Starts with");
         filterText = new TextField();
@@ -167,7 +170,7 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
         headerBox.setAlignment(Pos.CENTER_LEFT);
         headerBox.setPadding(new Insets(5));
 
-        final VBox box = new VBox(schemaLabel, headerBox, treeView);
+        final VBox box = new VBox(schemaLabelAndHelp, headerBox, treeView);
         VBox.setVgrow(treeView, Priority.ALWAYS);
         return box;
     }
@@ -208,6 +211,8 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
     public void setContent(final Tab tab) {
         GraphManager.getDefault().addGraphManagerListener(this);
         final VBox filterBox = addFilter();
+
+        populateHelpIconWithCaption(this.getClass().getName(), "Transaction Types", schemaLabel, schemaLabelAndHelp);
 
         treeView.setShowRoot(false);
         treeView.getSelectionModel().selectedItemProperty().addListener(event -> {
@@ -280,7 +285,7 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
             }
         });
 
-        final VBox contentBox = new VBox(schemaLabel, filterBox, treeView, detailsView);
+        final VBox contentBox = new VBox(schemaLabelAndHelp, filterBox, treeView, detailsView);
         VBox.setVgrow(treeView, Priority.ALWAYS);
         detailsView.prefHeightProperty().bind(contentBox.heightProperty().multiply(0.4));
         final StackPane contentNode = new StackPane(contentBox);
