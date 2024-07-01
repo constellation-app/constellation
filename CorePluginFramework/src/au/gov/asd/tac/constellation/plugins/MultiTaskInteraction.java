@@ -80,6 +80,9 @@ public class MultiTaskInteraction {
         // Wait until all tasks are complete
         while (!isComplete()){
             setProgress(true);
+            
+            // Give progress reporting mechanisms time to update before the calling class is able to update progress again
+            Thread.sleep(500);
         }
     }
     
@@ -89,7 +92,6 @@ public class MultiTaskInteraction {
      * @throws InterruptedException 
      */
     private void setProgress(final boolean cancellable) throws InterruptedException {
-
         int currentStep = 0;
         int totalSteps = 0;
         for (SharedInteractionRunnable task : tasks) {
@@ -97,9 +99,6 @@ public class MultiTaskInteraction {
             totalSteps += task.getTotalSteps();
         }
         interaction.setProgress(currentStep, totalSteps, cancellable);
-        
-        // Give progress reporting mechanisms time to update before the calling class is able to update progress again
-        Thread.sleep(500);
     }
 
     /**
