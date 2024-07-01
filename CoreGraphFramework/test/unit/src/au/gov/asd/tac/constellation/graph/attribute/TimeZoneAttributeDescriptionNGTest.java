@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.attribute;
 
-import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
+import au.gov.asd.tac.constellation.utilities.temporal.TemporalUtilities;
 import java.time.ZoneId;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
@@ -69,7 +69,7 @@ public class TimeZoneAttributeDescriptionNGTest {
     @Test
     public void testConvertFromObject() {
         Object object = null;
-        ZoneId expResult = TimeZoneUtilities.UTC;
+        ZoneId expResult = TemporalUtilities.UTC;
         ZoneId result = instance.convertFromObject(object);
         assertEquals(result, expResult);
     }
@@ -80,7 +80,7 @@ public class TimeZoneAttributeDescriptionNGTest {
     @Test
     public void testConvertFromString() {
         String string = "";
-        ZoneId expResult = TimeZoneUtilities.UTC;
+        ZoneId expResult = TemporalUtilities.UTC;
         ZoneId result = instance.convertFromString(string);
         assertEquals(result, expResult);
     }

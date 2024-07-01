@@ -18,6 +18,8 @@ package au.gov.asd.tac.constellation.views.pluginreporter.panes;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReportFilter;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldListener;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -70,13 +72,13 @@ public class PluginReporterPaneNGTest {
         final Preferences prefs = mock(Preferences.class);
         final String returnValue = "LOW LEVEL";
 
-        final ListChangeListener.Change<? extends String> c = null;
+        final List<String> c = null;
         final PluginReporterPane instance = new PluginReporterPane();
 
         try (MockedStatic<NbPreferences> mockedStatic = Mockito.mockStatic(NbPreferences.class)) {
             mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(PluginReporterPane.class))).thenReturn(prefs);
 
-            instance.onChanged(c);
+            instance.changed(c);
 
             verify(prefs, times(1)).put(Mockito.eq(key), Mockito.eq(returnValue));
         }

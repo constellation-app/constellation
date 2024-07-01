@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.graph.attribute;
 
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalConstants;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
-import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
+import au.gov.asd.tac.constellation.utilities.temporal.TemporalUtilities;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -57,13 +57,13 @@ public final class LocalDateTimeAttributeDescription extends AbstractObjectAttri
         } catch (final IllegalArgumentException ex) {
             switch (object) {
                 case Date date -> {
-                    return LocalDateTime.ofInstant(Instant.ofEpochMilli(date.getTime()), TimeZoneUtilities.UTC);
+                    return LocalDateTime.ofInstant(Instant.ofEpochMilli(date.getTime()), TemporalUtilities.UTC);
                 }
                 case Calendar calendar -> {
                     return LocalDateTime.ofInstant(Instant.ofEpochMilli(calendar.getTimeInMillis()), calendar.getTimeZone().toZoneId());
                 }
                 case Number number -> {
-                    return LocalDateTime.ofInstant(Instant.ofEpochMilli(number.longValue()), TimeZoneUtilities.UTC);
+                    return LocalDateTime.ofInstant(Instant.ofEpochMilli(number.longValue()), TemporalUtilities.UTC);
                 }
                 default -> throw new IllegalArgumentException(String.format(
                         "Error converting Object '%s' to datetime", object.getClass()));
@@ -120,7 +120,7 @@ public final class LocalDateTimeAttributeDescription extends AbstractObjectAttri
 
     @Override
     public void setLong(final int id, final long value) {
-        data[id] = LocalDateTime.ofInstant(Instant.ofEpochMilli(value), TimeZoneUtilities.UTC);
+        data[id] = LocalDateTime.ofInstant(Instant.ofEpochMilli(value), TemporalUtilities.UTC);
     }
 
     @Override

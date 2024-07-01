@@ -13,15 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.parameters;
+package au.gov.asd.tac.constellation.utilities.gui.recentvalue;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
- * Preference key for anything recent values related.
+ * Recent Values Change Event
  *
- * @author twinkle2_little
+ * @author ruby_crucis
  */
-public class RecentParameterValuesKey {
+public class RecentValuesChangeEvent {
 
-    public static final String RECENT_VALUES = "recentValues";
+    private final String id;
+    private final List<String> newValues;
+
+    public RecentValuesChangeEvent(final String id, final List<String> newValues) {
+        this.id = id;
+        this.newValues = newValues;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public List<String> getNewValues() {
+        return Collections.unmodifiableList(newValues);
+    }
 
 }

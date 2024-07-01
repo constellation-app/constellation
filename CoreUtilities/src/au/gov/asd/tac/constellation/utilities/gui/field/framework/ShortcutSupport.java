@@ -13,20 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.parameters;
+package au.gov.asd.tac.constellation.utilities.gui.field.framework;
+
+import javafx.event.EventHandler;
+import javafx.scene.input.KeyEvent;
 
 /**
- * Interface for objects which need to be informed when recent values are
- * updated.
  *
- * @author ruby_crucis
+ * @author capricornunicorn123
  */
-public interface RecentValuesListener {
-
-    /**
-     * Called when any recent value is added.
-     *
-     * @param e the change event.
-     */
-    public void recentValuesChanged(final RecentValuesChangeEvent e);
+public interface ShortcutSupport {
+    
+    public EventHandler<KeyEvent> getShortcuts();
+    
 }

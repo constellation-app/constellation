@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.graph.attribute.interaction;
 
 import au.gov.asd.tac.constellation.graph.attribute.TimeZoneAttributeDescription;
-import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
+import au.gov.asd.tac.constellation.utilities.temporal.TemporalUtilities;
 import java.time.ZoneId;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -39,7 +39,7 @@ public class TimeZoneAttributeInteraction extends AbstractAttributeInteraction<Z
         if (value == null) {
             return null;
         }
-        return TimeZoneUtilities.getTimeZoneAsString((ZoneId) value);
+        return TemporalUtilities.getTimeZoneAsString((ZoneId) value);
     }
 
     @Override

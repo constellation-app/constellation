@@ -13,20 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.parameters;
-
-import org.openide.modules.OnStop;
+package au.gov.asd.tac.constellation.utilities.gui.recentvalue;
 
 /**
- * Saves the parameter recent values on stop
+ * Interface for objects which need to be informed when recent values are
+ * updated.
  *
- * @author twinkle2_little
+ * @author ruby_crucis
  */
-@OnStop
-public class RecentParameterSaver implements Runnable {
+public interface RecentValuesListener {
 
-    @Override
-    public void run() {
-        RecentParameterValues.saveToPreferences();
-    }
+    /**
+     * Called when any recent value is added.
+     *
+     * @param e the change event.
+     */
+    public void recentValuesChanged(final RecentValuesChangeEvent e);
+    
+    public String getRecentValuesListenerID();
 }

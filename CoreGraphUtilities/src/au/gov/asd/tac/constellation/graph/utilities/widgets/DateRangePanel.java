@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.utilities.widgets;
 
+import au.gov.asd.tac.constellation.utilities.gui.DateChooserPanel;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;

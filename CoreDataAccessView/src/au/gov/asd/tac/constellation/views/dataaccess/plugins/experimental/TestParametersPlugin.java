@@ -57,6 +57,8 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValu
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.FileInputKind;
+import au.gov.asd.tac.constellation.utilities.gui.field.TextInput;
 import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
@@ -87,8 +89,6 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
 import javafx.stage.FileChooser.ExtensionFilter;
 import org.netbeans.api.annotations.common.StaticResource;
 import org.openide.util.NbBundle.Messages;
@@ -193,7 +193,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
 
         final StringParameterValue string2pv = new StringParameterValue();
         string2pv.setGuiInit(control -> {
-            final TextArea field = (TextArea) control;
+            final TextInput field = (TextInput) control;
             field.getStylesheets().add(css);
         });
         final PluginParameter<StringParameterValue> string2 = StringParameterType.build(TEST2_PARAMETER_ID, string2pv);
@@ -224,28 +224,29 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
 
         // A single choice list with a subtype of String.
         final SingleChoiceParameterValue robotpv = new SingleChoiceParameterValue(StringParameterValue.class);
-        robotpv.setGuiInit(control -> {
-            @SuppressWarnings("unchecked") //control will be of type ComboBox<ParameterValue> which extends from Region
-            final ComboBox<ParameterValue> field = (ComboBox<ParameterValue>) control;
-            final Image img = new Image(ALIEN_ICON);
-            field.setCellFactory((ListView<ParameterValue> param) -> new ListCell<ParameterValue>() {
-                @Override
-                protected void updateItem(final ParameterValue item, final boolean empty) {
-                    super.updateItem(item, empty);
-                    this.setText(empty ? "" : item.toString());
-                    final float f = empty ? 0 : item.toString().length() / 11F;
-                    final Color c = Color.color(1 - f / 2F, 0, 0);
-                    setTextFill(c);
-                    setGraphic(new ImageView(img));
-                }
-            });
-        });
+//        robotpv.setGuiInit(control -> {
+//            @SuppressWarnings("unchecked") //control will be of type ComboBox<ParameterValue> which extends from Region
+//            final ComboBox<ParameterValue> field = (ComboBox<ParameterValue>) control;
+//            final Image img = new Image(ALIEN_ICON);
+//            field.setCellFactory((ListView<ParameterValue> param) -> new ListCell<ParameterValue>() {
+//                @Override
+//                protected void updateItem(final ParameterValue item, final boolean empty) {
+//                    super.updateItem(item, empty);
+//                    this.setText(empty ? "" : item.toString());
+//                    final float f = empty ? 0 : item.toString().length() / 11F;
+//                    final Color c = Color.color(1 - f / 2F, 0, 0);
+//                    setTextFill(c);
+//                    setGraphic(new ImageView(img));
+//                }
+//            });
+//        });
         final PluginParameter<SingleChoiceParameterValue> robotOptions = SingleChoiceParameterType.build(ROBOT_PARAMETER_ID, robotpv);
         robotOptions.setName("Robot options");
         robotOptions.setDescription("A list of robots to choose from");
 
         // Use the helper method to add string options.
         SingleChoiceParameterType.setOptions(robotOptions, Arrays.asList("Bender", "Gort", "Maximillian", "Robbie", "Tom Servo"));
+        SingleChoiceParameterType.setIcons(robotOptions, Arrays.asList(new Image(ALIEN_ICON), new Image(ALIEN_ICON), new Image(ALIEN_ICON), new Image(ALIEN_ICON), new Image(ALIEN_ICON)));
 
         // Create a ParameterValue of the underlying type (in this case, String) to set the default choice.
         final StringParameterValue robotChoice = new StringParameterValue("Gort");
@@ -286,14 +287,14 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         final PluginParameter<FileParameterValue> openFileParam = FileParameterType.build(INPUT_FILE_PARAMETER_ID);
         openFileParam.setName("Input file");
         openFileParam.setDescription("A file to read stuff from");
-        FileParameterType.setKind(openFileParam, FileParameterType.FileParameterKind.OPEN);
+        FileParameterType.setKind(openFileParam, FileInputKind.OPEN);
         FileParameterType.enableAcceptAllFileFilter(openFileParam);
         params.addParameter(openFileParam);
 
         final PluginParameter<FileParameterValue> saveFileParam = FileParameterType.build(OUTPUT_FILE_PARAMETER_ID);
         saveFileParam.setName("Output file");
         saveFileParam.setDescription("A file to write stuff to");
-        FileParameterType.setKind(saveFileParam, FileParameterType.FileParameterKind.SAVE);
+        FileParameterType.setKind(saveFileParam, FileInputKind.SAVE);
         FileParameterType.setFileFilters(saveFileParam, new ExtensionFilter("Text files", FileExtensionConstants.TEXT));
         params.addParameter(saveFileParam);
 

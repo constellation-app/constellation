@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.plugins.parameters.types;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterKind;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.io.File;
@@ -85,21 +84,7 @@ public class FileParameterTypeNGTest {
         assertEquals(fileParam.getId(), "My File");
         assertEquals(fileParam.getType().getId(), "file");
     }
-
-    /**
-     * Test of setKind method, of class FileParameterType.
-     */
-    @Test
-    public void testSetKind() {
-        System.out.println("setKind");
-        
-        final PluginParameter<FileParameterValue> fileParam = FileParameterType.build("My File");
-        assertEquals(FileParameterType.getKind(fileParam), FileParameterKind.OPEN_MULTIPLE);
-        
-        FileParameterType.setKind(fileParam, FileParameterKind.SAVE);
-        assertEquals(FileParameterType.getKind(fileParam), FileParameterKind.SAVE);
-    }
-
+    
     /**
      * Test of setFileFilters method, of class FileParameterType.
      */
