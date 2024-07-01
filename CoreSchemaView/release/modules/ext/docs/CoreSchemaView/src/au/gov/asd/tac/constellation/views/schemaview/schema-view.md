@@ -30,9 +30,7 @@
 ## Introduction
 
 The Schema View is the source of information for all attributes, types,
-and plugins that are available in the Constellation schema(s) of the
-current graph.
-
+and plugins that are available in the [Constellation schemas](../ext/docs/CoreGraphFramework/src/au/gov/asd/tac/constellation/graph/schemas.md) of the current graph.
 It has seperate tabs for:
 
 -   [Attribute](schema-view-attributes.md)  

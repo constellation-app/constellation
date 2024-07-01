@@ -6,7 +6,8 @@
             <tocitem text="The Constellation Graph Model" target="au.gov.asd.tac.constellation.graph.about"/>
             <tocitem text="Attributes" target="au.gov.asd.tac.constellation.graph.attributes"/>
             <tocitem text="Types" target="au.gov.asd.tac.constellation.graph.types"/>
-            <tocitem text="Expressions Framework" target="au.gov.asd.tac.constellation.graph.expressions"/>
+            <tocitem text="Schemas" target="au.gov.asd.tac.constellation.graph.schema.Schema"/>
+            <tocitem text="Expressions Framework" target="au.gov.asd.tac.constellation.graph.expressions"/>         
         </tocitem>
         <tocitem text="I/O">
             <tocitem text="The Constellation File Format" target="au.gov.asd.tac.constellation.graph.io.fileformat"/>

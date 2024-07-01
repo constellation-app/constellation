@@ -50,7 +50,6 @@ public class SchemaViewHelpProvider extends HelpPageProvider {
         map.put("au.gov.asd.tac.constellation.views.schemaview.providers.VertexTypeNodeProvider", schemaModulePath + "schema-view-node-types.md");
         map.put("au.gov.asd.tac.constellation.views.schemaview.providers.TransactionTypeNodeProvider", schemaModulePath + "schema-view-transaction-types.md");
         map.put("au.gov.asd.tac.constellation.views.schemaview.providers.PluginsNodeProvider", schemaModulePath + "schema-view-plugins.md");
-        map.put("au.gov.asd.tac.constellation.graph.schema.Schema", schemaModulePath + "schemas.md");
         return map;
     }
 
