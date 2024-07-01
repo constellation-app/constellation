@@ -1181,6 +1181,22 @@
                 <package>org.codehaus.jackson.sym</package>
                 <package>org.codehaus.jackson.type</package>
                 <package>org.codehaus.jackson.util</package>
+                <package>org.commonmark</package>
+                <package>org.commonmark.internal</package>
+                <package>org.commonmark.internal.inline</package>
+                <package>org.commonmark.internal.renderer</package>
+                <package>org.commonmark.internal.renderer.text</package>
+                <package>org.commonmark.internal.util</package>
+                <package>org.commonmark.node</package>
+                <package>org.commonmark.parser</package>
+                <package>org.commonmark.parser.beta</package>
+                <package>org.commonmark.parser.block</package>
+                <package>org.commonmark.parser.delimiter</package>
+                <package>org.commonmark.renderer</package>
+                <package>org.commonmark.renderer.html</package>
+                <package>org.commonmark.renderer.markdown</package>
+                <package>org.commonmark.renderer.text</package>
+                <package>org.commonmark.text</package>
                 <package>org.controlsfx.control</package>
                 <package>org.controlsfx.control.action</package>
                 <package>org.controlsfx.control.cell</package>
@@ -2464,6 +2480,10 @@
                 <binary-origin>release/modules/ext/checker-qual-3.41.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/commonmark-0.22.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/commonmark-0.22.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/commons-codec-1.16.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/commons-codec-1.16.0.jar</binary-origin>
             </class-path-extension>
@@ -3122,10 +3142,6 @@
             <class-path-extension>
                 <runtime-relative-path>ext/testfx-core-4.0.18.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/testfx-core-4.0.18.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/txtmark-0.13.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/txtmark-0.13.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/txw2-2.4.0-b180830.0438.jar</runtime-relative-path>

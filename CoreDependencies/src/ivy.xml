@@ -80,7 +80,7 @@
         <dependency org="org.testfx" name="openjfx-monocle" rev="21.0.2" transitive="false" />
         <dependency org="org.testfx" name="testfx-core" rev="4.0.18" />
         
-        <dependency org="com.github.rjeschke" name="txtmark" rev="0.13"/>
+        <dependency org="org.commonmark" name="commonmark" rev="0.22.0"/>
 
         <!-- Exclusions -->
         <exclude org="javax.media" module="jai_core"/>
