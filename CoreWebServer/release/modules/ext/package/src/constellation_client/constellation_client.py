@@ -539,7 +539,7 @@ class Constellation:
         content = r.content
         if isinstance(content, bytes):
             content = content.decode('utf8')
-        df = pd.read_json(content, orient='split', dtype=False, convert_dates=False)
+        df = pd.read_json(io.StringIO(content), orient='split', dtype=False, convert_dates=False)
         df, self.types = self._fix_types(df)
 
         return df
