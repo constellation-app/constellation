@@ -219,7 +219,7 @@ public class SVGGraphBuilder {
         // This plugin may be interrupted by users. ensure the localy managed threads are closed off correctly.
         } catch (final InterruptedException ex){
             threadPool.shutdown();
-            throw ex;    
+            Thread.currentThread().interrupt();  
         } finally {
             // Clean up the builder
             postBuild();     
