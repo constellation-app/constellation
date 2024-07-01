@@ -190,7 +190,7 @@ public class TestableGraphBuilder {
      * @return
      * @throws InterruptedException 
      */
-    public TestableGraphBuilder withBottomLabels() throws InterruptedException{
+    public TestableGraphBuilder withBottomLabels() throws InterruptedException {
         final WritableGraph wg = graph.getWritableGraph("addBottomLabels", true);
         withBottomLabels(wg);
         wg.commit();
@@ -227,7 +227,7 @@ public class TestableGraphBuilder {
      * @return
      * @throws InterruptedException 
      */
-    public TestableGraphBuilder withTopLabels() throws InterruptedException{
+    public TestableGraphBuilder withTopLabels() throws InterruptedException {
         final WritableGraph gwm = graph.getWritableGraph("addTopLabels", true);
         withTopLabels(gwm);
         gwm.commit();
@@ -261,7 +261,7 @@ public class TestableGraphBuilder {
      * @return
      * @throws InterruptedException 
      */
-    public TestableGraphBuilder withTransactionLabels() throws InterruptedException{
+    public TestableGraphBuilder withTransactionLabels() throws InterruptedException {
         final WritableGraph wg = graph.getWritableGraph("addTransactionLabels", true);
         withTransactionLabels(wg);
         wg.commit();
@@ -300,7 +300,7 @@ public class TestableGraphBuilder {
      * @return
      * @throws InterruptedException 
      */
-    public TestableGraphBuilder withAllLabels() throws InterruptedException{
+    public TestableGraphBuilder withAllLabels() throws InterruptedException {
         withTopLabels();  
         withBottomLabels();     
         withTransactionLabels();     
@@ -318,14 +318,13 @@ public class TestableGraphBuilder {
      * <ul><li>Attribute:Visibility, Color:Light Green, Size: 1</li></ul></p>
      * @param gwm 
      */
-    public void withAllLabels(final GraphWriteMethods gwm){
+    public void withAllLabels(final GraphWriteMethods gwm) {
         withTopLabels(gwm);
         withBottomLabels(gwm);
         withTransactionLabels(gwm);
     }
     
-    
-    public TestableGraphBuilder withNodes() throws InterruptedException{
+    public TestableGraphBuilder withNodes() throws InterruptedException {
         final WritableGraph wg = graph.getWritableGraph("addVerticies", true);
         withNodes(wg);       
         wg.commit();
@@ -353,7 +352,6 @@ public class TestableGraphBuilder {
      * @param gwm 
      */
     public void withNodes(final GraphWriteMethods gwm) {
-        
         // Ensure the attributes exist on the graph
         final int vertexAttributeIdX = VisualConcept.VertexAttribute.X.ensure(gwm);
         final int vertexAttributeIdY = VisualConcept.VertexAttribute.Y.ensure(gwm);
@@ -425,14 +423,12 @@ public class TestableGraphBuilder {
             gwm.setBooleanValue(vertexAttributeIdIsGood,id, (id % 2) == 0);
             gwm.setObjectValue(vertexAttributeIdForegroundImage, id, icons[id]);
             
-            
             final Camera oldCamera = VisualGraphUtilities.getCamera(gwm);
             final BoundingBox box = new BoundingBox();
             final Camera camera = new Camera(oldCamera);
             BoundingBoxUtilities.recalculateFromGraph(box, gwm, true);
             CameraUtilities.zoomToBoundingBox(camera, box);
             VisualGraphUtilities.setCamera(gwm, camera);
-           
         }
     }
     
@@ -442,7 +438,7 @@ public class TestableGraphBuilder {
         return this;
     }
     
-    public void withAllTransactions(final GraphWriteMethods gwm){
+    public void withAllTransactions(final GraphWriteMethods gwm) {
         withLinearTransactions(gwm);
         withLoopedTransactions(gwm);
     }
@@ -454,8 +450,7 @@ public class TestableGraphBuilder {
             return this;
     }
     
-    
-    public void withLoopedTransactions(final GraphWriteMethods gwm){
+    public void withLoopedTransactions(final GraphWriteMethods gwm) {
         for (final int vertex : vertexIds){
             if (vertex % 3 == 0){
                 transactionIds.add(gwm.addTransaction(vertex, vertex, true));
@@ -479,7 +474,7 @@ public class TestableGraphBuilder {
         return this;
     }
     
-    public void withLinearTransactions(final GraphWriteMethods gwm){
+    public void withLinearTransactions(final GraphWriteMethods gwm) {
         for (final int vertex : vertexIds){
             if (vertex % 2 == 0){
                 transactionIds.add(gwm.addTransaction(vertex, 0, true));
@@ -503,31 +498,29 @@ public class TestableGraphBuilder {
         return this;
     }
     
-    public void withConnectionMode(final GraphWriteMethods gwm, final ConnectionMode mode){
+    public void withConnectionMode(final GraphWriteMethods gwm, final ConnectionMode mode) {
         final int connectionModeattributeId = VisualConcept.GraphAttribute.CONNECTION_MODE.ensure(gwm);
         gwm.setObjectValue(connectionModeattributeId, 0, mode);
     }
     
-    public TestableGraphBuilder refocusCamera(final AxisConstants axis) throws InterruptedException{
+    public TestableGraphBuilder refocusCamera(final AxisConstants axis) throws InterruptedException {
         final WritableGraph wg = graph.getWritableGraph("setCamera", true);
         refocusCamera(wg, axis);    
         wg.commit();
         return this;
     }
     
-    public void refocusCamera(final GraphWriteMethods gwm, final AxisConstants axis){
+    public void refocusCamera(final GraphWriteMethods gwm, final AxisConstants axis) {
         final int cameraAttributeId = VisualConcept.GraphAttribute.CAMERA.ensure(gwm);
-        
         final Camera camera = new Camera(gwm.getObjectValue(cameraAttributeId, 0));
         final BoundingBox boundingBox = new BoundingBox();
         BoundingBoxUtilities.recalculateFromGraph(boundingBox, gwm, false);
         CameraUtilities.refocus(camera, axis, boundingBox);
-
         gwm.setObjectValue(cameraAttributeId, 0, camera);
     }
     
 
-    public Graph build(){
+    public Graph build() {
         return graph;
     }
 }
