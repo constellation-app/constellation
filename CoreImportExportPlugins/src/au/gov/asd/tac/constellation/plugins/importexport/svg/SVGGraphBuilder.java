@@ -474,7 +474,6 @@ public class SVGGraphBuilder {
      * @param svgGraph The SVGObject holding all generated SVG data 
      */
     private void buildLayout(final SVGObject svgGraph) {
-        
         buildHeader(svgGraph);
         
         // Set the background color of the output file
@@ -484,10 +483,11 @@ public class SVGGraphBuilder {
         final float viewPortWidth = viewPort[2];
         final float viewPortHeight = viewPort[3];           
 
-        
+        //Set the content dimensions
         SVGObjectConstants.CONTENT.findIn(svgGraph).setViewBox(0F, 0F, viewPortWidth, viewPortHeight);
-        svgGraph.setDimension(viewPortWidth, viewPortHeight + (viewPortHeight * .05F));
         
+        //Set the overall dimensions
+        svgGraph.setViewBox(0F, 0F, viewPortWidth, viewPortHeight + (viewPortHeight * .05F));
     }
     
     /**
