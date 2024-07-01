@@ -448,15 +448,10 @@ public class TestableGraphBuilder {
     }
     
     public TestableGraphBuilder withLoopedTransactions() {
-        try {
             WritableGraph wg = graph.getWritableGraph("addLoopedTransactions", true);
             withLoopedTransactions(wg);    
             wg.commit();
-        } catch (final InterruptedException ex) {
-            //Log that something went wrong
-        } finally {
             return this;
-        }
     }
     
     
