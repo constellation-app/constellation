@@ -16,12 +16,11 @@
 package au.gov.asd.tac.constellation.utilities.graphics;
 
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * A viewing frustum.
  * 
+ * @author capricornunicorn123
  * @author algol
  */
 public final class Frustum {
@@ -56,7 +55,7 @@ public final class Frustum {
     private Vector4f rightPlane;
     private Vector4f topPlane;
     private Vector4f bottomPlane;
-
+    
     /**
      * A symmetric perspective projection.
      *
@@ -84,12 +83,85 @@ public final class Frustum {
     public Frustum(final float fov, final float aspect, final float xmin, final float xmax, final float ymin, final float ymax, final float near, final float far) {
         setPerspective(fov, aspect, xmin, xmax, ymin, ymax, near, far);
     }
-
+    
     /**
      * An orthographic projection with reasonable defaults.
      */
     public Frustum() {
         setOrthographic(-1, 1, -1, 1, -1, 1);
+    }
+
+    /**
+     * A private constructor to facilitate a deep copy of a Frustum.
+     * @param projMatrix
+     * @param nearUL untransformed corner of this frustum
+     * @param nearLL untransformed corner of this frustum
+     * @param nearUR untransformed corner of this frustum
+     * @param nearLR untransformed corner of this frustum
+     * @param farUL untransformed corner of this frustum
+     * @param farLL untransformed corner of this frustum
+     * @param farUR untransformed corner of this frustum
+     * @param farLR untransformed corner of this frustum
+     * @param nearULT transformed corner of this frustum
+     * @param nearLLT transformed corner of this frustum
+     * @param nearURT transformed corner of this frustum
+     * @param nearLRT transformed corner of this frustum
+     * @param farULT transformed corner of this frustum
+     * @param farLLT transformed corner of this frustum
+     * @param farURT transformed corner of this frustum
+     * @param farLRT transformed corner of this frustum
+     * @param nearPlane
+     * @param farPlane
+     * @param leftPlane
+     * @param rightPlane
+     * @param topPlane
+     * @param bottomPlane
+     */
+    private Frustum(final Matrix44f projMatrix, 
+            final Vector4f nearUL, final Vector4f nearLL, final Vector4f nearUR, final Vector4f nearLR, final Vector4f farUL, final Vector4f farLL, final Vector4f farUR, final Vector4f farLR,
+            final Vector4f nearULT, final Vector4f nearLLT, final Vector4f nearURT, final Vector4f nearLRT, final Vector4f farULT, final Vector4f farLLT, final Vector4f farURT, final Vector4f farLRT,
+            final Vector4f nearPlane, final Vector4f farPlane, final Vector4f leftPlane, final Vector4f rightPlane, final Vector4f topPlane, final Vector4f bottomPlane) {
+        
+        this.projMatrix = projMatrix;
+
+        // Untransformed corners of this frustum.
+        this.nearUL = nearUL;
+        this.nearLL = nearLL;
+        this.nearUR = nearUR;
+        this.nearLR = nearLR;
+        this.farUL = farUL;
+        this.farLL = farLL;
+        this.farUR = farUR;
+        this.farLR = farLR;
+
+        // Transformed corners of this frustum.
+        this.nearULT = nearULT;
+        this.nearLLT = nearLLT;
+        this.nearURT = nearURT;
+        this.nearLRT = nearLRT;
+        this.farULT = farULT;
+        this.farLLT = farLLT;
+        this.farURT = farURT;
+        this.farLRT = farLRT;
+
+        // Base and transformed plane equations.
+        this.nearPlane = nearPlane;
+        this.farPlane = farPlane;
+        this.leftPlane = leftPlane;
+        this.rightPlane = rightPlane;
+        this.topPlane = topPlane;
+        this.bottomPlane = bottomPlane;
+    }
+    
+    /**
+     * Creates a deep copy of a Frustum.
+     * @return 
+     */
+    public Frustum getCopy(){
+        return new Frustum(this.projMatrix,
+                this.nearUL, this.nearLL, this.nearUR, this.nearLR, this.farUL, this.farLL, this.farUR, this.farLR,
+                this.nearULT, this.nearLLT, this.nearURT, this.nearLRT, this.farULT, this.farLLT, this.farURT, this.farLRT,
+                this.nearPlane, this.farPlane, this.leftPlane, this.rightPlane, this.topPlane, this.bottomPlane);
     }
 
     /**

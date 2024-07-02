@@ -104,7 +104,6 @@ public abstract class CascadingQueryPlugin extends AbstractPlugin {
         interaction.setBusy(graph.getId(), true);
         try {
 
-            
             try {
                 interaction.setExecutionStage(1, totalSteps, PluginExecutionStageConstants.RUNNING, "Executing child plugins", true);
 

@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.utilities.svg;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
+import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -455,7 +456,7 @@ public class SVGObject {
     }
 
     public void applyGrayScaleFilter() {
-        this.setAttribute(SVGAttributeConstants.FILTER, "grayscale(1)");
+        this.setFilter("grayscale(1)");
     }
 
     public void setBaseline(final String baseline) {
@@ -480,6 +481,34 @@ public class SVGObject {
      */
     public void setOpacity(final float opacity) {
         setAttribute(SVGAttributeConstants.OPACITY, opacity);
+    }
+    
+    /**
+     * Creates a color matrix to apply to SVG objects.
+     * @param color 
+     */
+    public void setFeColor(final Color color) {
+        final float red = color.getRed() / 255F;
+        final float green = color.getGreen() / 255F;
+        final float blue = color.getBlue() / 255F;
+        final String matrix = String.format("%s 0 0 0 0 0 %s 0 0 0 0 0 %s 0 0 0 0 0 1 0", red, green, blue);
+        setAttribute(SVGAttributeConstants.VALUES, matrix);
+    }
+    
+    /** 
+     * Sets a reference to an external file as an attribute.
+     * @param reference 
+     */
+    public void setExternalReference(final String reference) {
+        this.setAttribute(SVGAttributeConstants.EXTERNAL_RESOURCE_REFERENCE, reference);
+    }
+
+    /**
+     * Sets a filter attribute that references a filter object elsewhere in the SVG File. 
+     * @param filterReference 
+     */
+    public void setFilter(final String filterReference) {
+        this.setAttribute(SVGAttributeConstants.FILTER, filterReference);
     }
     
     /**
@@ -509,6 +538,12 @@ public class SVGObject {
             return new SVGObject(SVGParser.parse(is));
         } catch (final IOException e) {
             return null;
+        }
+    }
+
+    public void setChildren(final List<SVGObject> children) {
+        if (children != null && !children.isEmpty()){
+            svgDataReference.setChildren(children);
         }
     }
 }

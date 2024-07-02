@@ -42,7 +42,8 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
- *
+ * Tests for {@link ExportToSVGAction}
+ * 
  * @author capricornunicorn123
  */
 public class ExportToSVGActionNGTest {
@@ -91,6 +92,7 @@ public class ExportToSVGActionNGTest {
         doReturn(pluginExecutionMock).when(pluginExecutionMock).withParameter(any(String.class), any(String.class));
         doReturn(pluginExecutionMock).when(pluginExecutionMock).withParameter(any(String.class), anyBoolean());
         doReturn(pluginExecutionMock).when(pluginExecutionMock).withParameter(any(String.class), any(ConstellationColor.class));
+        doReturn(pluginExecutionMock).when(pluginExecutionMock).withParameter(any(String.class), any(Integer.class));
         doReturn(pluginExecutionMock).when(pluginExecutionMock).interactively(anyBoolean(), any(String.class));
         doReturn(graphMock).when(contextMock).getGraph();
         doReturn(readableGraphMock).when(graphMock).getReadableGraph();

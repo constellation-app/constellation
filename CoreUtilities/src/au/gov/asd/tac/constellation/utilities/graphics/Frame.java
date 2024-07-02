@@ -141,6 +141,12 @@ public final class Frame implements Serializable {
     public void getYAxis(final Vector3f vector) {
         getUpVector(vector);
     }
+    
+    public Vector3f getYAxis() {
+        final Vector3f result = new Vector3f();
+        getUpVector(result);
+        return result;
+    }
 
     public void getZAxis(final Vector3f vector) {
         getForwardVector(vector);

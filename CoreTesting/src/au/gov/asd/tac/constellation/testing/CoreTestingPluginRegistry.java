@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.testing.construction.SmallWorldGraphBuilderP
 import au.gov.asd.tac.constellation.testing.construction.SphereGraphBuilderPlugin;
 import au.gov.asd.tac.constellation.testing.construction.StructuredGraphBuilderPlugin;
 import au.gov.asd.tac.constellation.testing.construction.SudokuGraphBuilderPlugin;
+import au.gov.asd.tac.constellation.testing.construction.TestableGraphBuilderPlugin;
 
 /**
  * Core Testing Plugin Registry
@@ -49,5 +50,6 @@ public class CoreTestingPluginRegistry {
     public static final String SPHERE_GRAPH_BUILDER = SphereGraphBuilderPlugin.class.getName();
     public static final String STRUCTURED_GRAPH_BUILDER = StructuredGraphBuilderPlugin.class.getName();
     public static final String SUDOKU_GRAPH_BUILDER = SudokuGraphBuilderPlugin.class.getName();
+    public static final String TESTABLE_GRAPH_BUILDER = TestableGraphBuilderPlugin.class.getName();
     public static final String NULL_PLUGIN = NullPlugin.class.getName();
 }

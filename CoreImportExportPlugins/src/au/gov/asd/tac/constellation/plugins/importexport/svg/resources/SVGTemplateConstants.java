@@ -31,6 +31,7 @@ public enum SVGTemplateConstants implements SVGFile {
     BLAZE("Blaze.svg"),
     CONNECTION_LOOP("ConnectionLoop.svg"),
     CONNECTION_LINEAR("ConnectionLinear.svg"),
+    FILTER("Filter.svg"),
     IMAGE("Image.svg"),
     LABEL("Label.svg"),
     LAYOUT("Layout.svg"),

@@ -377,7 +377,7 @@ public class SVGObjectNGTest {
     public void testLoadFromTemplate() {
         SVGObject object = SVGObject.loadFromTemplate(TestingSVGFile.TESTING_TEMPLATE_COMPLIANT);       
         SVGObject background = object.getChild("background");
-        assertEquals(background.toSVGData().toString(), "\n<rect id=\"background\" width=\"100%\" height=\"100%\" fill=\"#1b1e24\" stroke-width=\"0\" />");
+        assertEquals(CommonTests.getString(background.toSVGData()), "\n<rect id=\"background\" width=\"100%\" height=\"100%\" fill=\"#1b1e24\" stroke-width=\"0\" />");
     }
 
     /**
