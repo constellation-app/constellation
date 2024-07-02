@@ -20,6 +20,8 @@ assets such as node and transaction labels will be included in the export, regar
         <img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/exportToSVGParameters.png" alt="Export to SVG Example"  width="573"/>
     </a>
 </div>
+<br />
+
 -   *File Location* (Required) - the name and location of the output file
 -   *Graph Title* - the title of the graph 
 -   *Background Color* - the color of the graph background

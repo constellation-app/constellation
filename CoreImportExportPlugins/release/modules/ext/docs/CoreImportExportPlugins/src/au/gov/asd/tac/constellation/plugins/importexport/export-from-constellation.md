@@ -5,7 +5,7 @@ of these export options may provide options to customise the export. others will
 
 Exporting from Constelation can be broken into two groups, **Visualisation Exports** and **Data Exports**. 
 
-###Visualisation Exports
+### Visualisation Exports
 Visualisation exports, export the graph as viewed from the Constellation Interactive Graph. These exports will typicaly only contain visual infromation 
 relevant to the visual aspects of the graph but may contain some other identifying information.
 
@@ -34,7 +34,7 @@ relevant to the visual aspects of the graph but may contain some other identifyi
 </tbody>
 </table>
 
-###Data Exports
+### Data Exports
 Data exports, export the entirety of the graph in a format that preserves the data used for analysis and visualsation in constelation.  
 These formats typicly contain ruch information about the element being represent in the graph and are eaily transferable into other platforms. 
 
@@ -104,11 +104,9 @@ These formats typicly contain ruch information about the element being represent
 -   *GeoPackage* - Export the graph as a GeoPackage file
 -   *Shapefile* - Export the graph as a Shapefile file
 -   *KML* - Export the graph as a KML file
-
-
-## Export to CSV and XLSX
-
-Constellation also provides options to export to CSV and Excel (XLSX)
-via the Table View. Refer
-[here](../ext/docs/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview/table-view.md)
-for details.
+-   *CSV* - Export the graph as a CSV file. Refer
+    [here](../ext/docs/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview/table-view.md)
+    for details
+-   *XLSX* - Export the graph as an XLSX (Excel Spreadsheet) file. Refer
+    [here](../ext/docs/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview/table-view.md)
+    for details
