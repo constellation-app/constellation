@@ -33,10 +33,11 @@ rather oddities within patterns in your graph.
 
 <div style="text-align: center">
 
-<img src="../ext/docs/CoreScatterPlotView/src/au/gov/asd/tac/constellation/views/scatterplot/resources/ScatterPlot.png" src="Scatter Plot
+<img width=720 src="../ext/docs/CoreScatterPlotView/src/au/gov/asd/tac/constellation/views/scatterplot/resources/ScatterPlot.png" src="Scatter Plot
 View" />
 
 </div>
+<br />
 
 The Scatter Plot is quite simple to use, you simply need to set values
 for the 6 options in the top toolbar:
