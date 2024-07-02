@@ -12,7 +12,7 @@
 <th>Constellation Action</th>
 <th>Keyboard Shortcut</th>
 <th>User Action</th>
-<th>Menu Icon</th>
+<th style="text-align: center;">Menu Icon</th>
 </tr>
 </thead>
 <tbody>
