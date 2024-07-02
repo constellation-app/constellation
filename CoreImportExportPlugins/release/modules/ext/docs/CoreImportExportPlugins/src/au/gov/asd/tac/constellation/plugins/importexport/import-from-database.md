@@ -69,6 +69,7 @@ drivers example" />
     -   If the username and password are not required, leave them blank.
 
         <img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/DBConnections.png" alt="Database Importer Connection example" />
+<br />
 3.  Select the connection from the "Connection" drop-down in the main
     Import window.
 4.  Enter the username and password if the connection requires them.
@@ -79,7 +80,7 @@ drivers example" />
 9.  Click on the "Import" button to import the data to your destination
     graph.
 
-    <img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/dragging_attributes_jdbc_import.png" alt="Database
+    <img width=575 src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/dragging_attributes_jdbc_import.png" alt="Database
     Importer" />
 
 Hints:
