@@ -45,16 +45,31 @@ The arrows on the right side allow for the number of clusters to be modified and
 <img src="../ext/docs/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/resources/shortestpaths.png" width="16" height="16" />
 button will indicate the Shortest Path between cluster centres. 
 
+## Constellation Display
+
+Hierarchical Clustering in Constellation makes use of overlay colors. When the
+clustering algorithm has been run, each cluster is assigned a unique
+color. Node backgrounds and intra-cluster transactions are colored using
+the cluster's color, while inter-cluster transactions are colored dark
+grey when dimmed.
+
+Rather than set the color directly, Hierarchical Clustering in Constellation
+creates a new color attribute "Cluster.Hierarchical.Color" and tells 
+Constellation to display the graph using the new attribute (via the 
+"node\_color\_reference" and "transaction\_color_reference" graph attributes). 
+To switch back to the default color attribute, edit the graph attributes via 
+the Attribute Editor and click on "Restore Default" followed by Ok.
+
 Before Hierarchical Clustering is run:
 
 <div style="text-align: center">
-<img height=700 src="../ext/docs/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/resources/clusteringBefore.png" alt="Before Hierarchical Clustering" />
+<img height=500 src="../ext/docs/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/resources/clusteringBefore.png" alt="Before Hierarchical Clustering" />
 </div>
 <br />
 
 After Hierarchical Clustering is run:
 
 <div style="text-align: center">
-<img height=750 src="../ext/docs/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/resources/hierarchicalAfter.png" alt="After Hierarchical Clustering" />
+<img height=550 src="../ext/docs/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/resources/hierarchicalAfter.png" alt="After Hierarchical Clustering" />
 </div>
 

@@ -296,7 +296,8 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
             }
         });
 
-        reclusterLabel.setForeground(new java.awt.Color(204, 0, 0));
+        reclusterLabel.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        reclusterLabel.setForeground(new java.awt.Color(242, 122, 61));
         org.openide.awt.Mnemonics.setLocalizedText(reclusterLabel, org.openide.util.NbBundle.getMessage(HierarchicalControllerTopComponent.class, "HierarchicalControllerTopComponent.reclusterLabel.text")); // NOI18N
 
         org.openide.awt.Mnemonics.setLocalizedText(helpButton, org.openide.util.NbBundle.getMessage(HierarchicalControllerTopComponent.class, "HierarchicalControllerTopComponent.helpButton.text")); // NOI18N

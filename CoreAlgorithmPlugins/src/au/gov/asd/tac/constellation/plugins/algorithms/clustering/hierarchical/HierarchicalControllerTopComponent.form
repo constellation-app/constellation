@@ -273,8 +273,11 @@
     </Component>
     <Component class="javax.swing.JLabel" name="reclusterLabel">
       <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Segoe UI" size="12" style="1"/>
+        </Property>
         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="0" green="0" red="cc" type="rgb"/>
+          <Color blue="3d" green="7a" red="f2" type="rgb"/>
         </Property>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="au/gov/asd/tac/constellation/plugins/algorithms/clustering/hierarchical/Bundle.properties" key="HierarchicalControllerTopComponent.reclusterLabel.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
