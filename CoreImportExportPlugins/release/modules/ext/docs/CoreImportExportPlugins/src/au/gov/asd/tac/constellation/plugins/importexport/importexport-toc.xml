@@ -14,6 +14,8 @@
             <tocitem text="Export to KML" target="au.gov.asd.tac.constellation.plugins.importexport.geospatial.ExportToKmlPlugin"/>
             <tocitem text="Export to GeoJson" target="au.gov.asd.tac.constellation.plugins.importexport.geospatial.ExportToGeoJsonPlugin"/>
             <tocitem text="Export to GeoPackage" target="au.gov.asd.tac.constellation.plugins.importexport.geospatial.ExportToGeoPackagePlugin"/>
+            <tocitem text="Export to CSV" target="au.gov.asd.tac.constellation.plugins.importexport.geospatial.ExportToCSV"/>
+            <tocitem text="Export to XLSX" target="au.gov.asd.tac.constellation.plugins.importexport.geospatial.ExportToXLSX"/>
         </tocitem>
     </tocitem>
 </toc>

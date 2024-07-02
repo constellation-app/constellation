@@ -58,6 +58,8 @@ public class ImportExportPluginsHelpProvider extends HelpPageProvider {
         map.put("au.gov.asd.tac.constellation.plugins.importexport.geospatial.ExportToKmlPlugin", importExportModulePath + "export-to-kml.md");
         map.put("au.gov.asd.tac.constellation.plugins.importexport.geospatial.ExportToShapefilePlugin", importExportModulePath + "export-to-shapefile.md");
         map.put("au.gov.asd.tac.constellation.plugins.importexport.svg.ExportToSVGPlugin", importExportModulePath + "export-to-svg.md");
+        map.put("au.gov.asd.tac.constellation.plugins.importexport.svg.ExportToCSV", importExportModulePath + "export-to-csv.md");
+        map.put("au.gov.asd.tac.constellation.plugins.importexport.svg.ExportToXLSX", importExportModulePath + "export-to-xlsx.md");
         
         return map;
     }

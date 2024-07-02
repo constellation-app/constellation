@@ -79,15 +79,15 @@ These formats typicly contain ruch information about the element being represent
 <td style="text-align: center;"><a href="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/export-to-kml.md">More Help</a></td>
 </tr>
 <tr class="even">
-<td>???</td>
-<td>???</td>
-<td style="text-align: center;">???</td>
+<td>Export to CSV</td>
+<td>Views -&gt; Table View -&gt; <img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/TableExport.png" alt="Table Export" /> -&gt; Export To CSV</td>
+<td style="text-align: center;"><img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/table-view.png" alt="Table View Icon" /></td>
 <td style="text-align: center;"><a href="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/export-to-csv.md">More Help</a></td>
 </tr>
 <tr class="odd">
-<td>???</td>
-<td>???</td>
-<td style="text-align: center;">???</td>
+<td>Export to Excel (XLSX)</td>
+<td>Views -&gt; Table View -&gt; <img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/TableExport.png" alt="Table Export" /> -&gt; Export To Excel (XLSX)</td>
+<td style="text-align: center;"><img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/table-view.png" alt="Table View Icon" /></td>
 <td style="text-align: center;"><a href="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/export-to-xlsx.md">More Help</a></td>
 </tr>
 </tbody>
