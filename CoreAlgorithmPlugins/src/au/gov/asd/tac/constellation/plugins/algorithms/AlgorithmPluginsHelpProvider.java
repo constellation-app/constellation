@@ -48,6 +48,8 @@ public class AlgorithmPluginsHelpProvider extends HelpPageProvider {
         map.put("au.gov.asd.tac.constellation.plugins.algorithms.clustering.chinesewhispers.ChineseWhispers", algorithmModulePath + "chinese-whispers.md");
         map.put("au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss.KTruss", algorithmModulePath + "k-truss.md");
         map.put("au.gov.asd.tac.constellation.plugins.algorithms.paths.ShortestPathsPlugin", algorithmModulePath + "shortest-paths.md");
+        map.put("au.gov.asd.tac.constellation.plugins.algorithms.clustering.hierarchical.Hierarchical", algorithmModulePath + "hierarchical-clustering.md");
+        map.put("au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.InfoMap", algorithmModulePath + "info-map-clustering.md");
         return map;
     }
 

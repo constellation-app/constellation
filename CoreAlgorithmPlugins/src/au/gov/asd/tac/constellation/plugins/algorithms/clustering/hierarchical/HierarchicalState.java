@@ -145,12 +145,18 @@ public final class HierarchicalState {
         this.steps = steps;
     }
 
+    /**
+     * These groups cannot be cloned as the state uses this call to update the
+     * list of groups by index 
+     * 
+     * @return groups
+     */
     public FastNewman.Group[] getGroups() {
-        return groups.clone();
+        return groups;
     }
 
     public void setGroups(final FastNewman.Group[] groups) {
-        this.groups = groups.clone();
+        this.groups = groups;
     }
 
     public boolean isColored() {
