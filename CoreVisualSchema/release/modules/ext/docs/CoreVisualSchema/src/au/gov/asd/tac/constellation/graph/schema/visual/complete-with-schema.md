@@ -31,7 +31,7 @@ Complete with Schema is a plugin that can be run to update graph attributes to t
 match the expected values for the graph's schema. Each graph has a schema which 
 defines which attributes are included in that graph. This plugin can be run via 
 the Tools menu and is also run by default after using some Data Access Plugins or
-running an Analytic. 
+running some Analytics. 
 
 ## Schemas
 
@@ -67,6 +67,9 @@ Example of an Analytic Graph
 Other attributes can be added to a schema through the Attribute Editor. These can 
 include Constellation defined attributes or custom attributes that can be user created.
 <br />
+
+More information on the schemas can be found on the Schema help page under 
+Graph -> Graph Overview -> Schemas.
 
 ## Complete With Schema
 

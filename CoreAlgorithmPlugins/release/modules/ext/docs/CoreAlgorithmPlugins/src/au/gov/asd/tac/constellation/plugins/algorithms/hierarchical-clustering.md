@@ -1,0 +1,60 @@
+# Hierarchical Clustering
+
+<table class="table table-striped">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th>Menu Icon</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Run Hierarchical Cluster</td>
+<td></td>
+<td>Tools -&gt; Cluster -&gt; Hierarchical</td>
+<td>
+<img src="../ext/docs/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/resources/hierarchical.png" width="16" height="16" />
+</td>
+</tr>
+</tbody>
+</table>
+
+Hierarchical clustering, also known as hierarchical cluster analysis, is an 
+algorithm that groups similar objects into groups called clusters. The endpoint 
+is a set of clusters, where each cluster is distinct from each other cluster, 
+and the objects within each cluster are broadly similar to each other. When the 
+Hierarchical Clustering plugin is executed, a Fast Newman algorithm is run 
+which clusters the graph hierarchically by initially placing all nodes in 
+their own cluster and then iteratively merging clusters according to a weight 
+function until the optimal state is reached.
+
+To run the Hierarchical Clusters algorithnm, open the Hierarchical Clusters 
+panel from Tools -> Cluster -> Hierarchical. To apply the changes from the clustering
+to the graph click the Cluster button and then Toggle Interactive: Disabled. This
+will change the color of the graph elements to match the clusters. 
+
+The arrows on the right side allow for the number of clusters to be modified and the 
+<img src="../ext/docs/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/resources/shortestpaths.png" width="16" height="16" />
+button will indicate the Shortest Path between cluster centres. 
+
+Before Hierarchical Clustering is run:
+
+<div style="text-align: center">
+<img height=700 src="../ext/docs/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/resources/clusteringBefore.png" alt="Before Hierarchical Clustering" />
+</div>
+<br />
+
+After Hierarchical Clustering is run:
+
+<div style="text-align: center">
+<img height=750 src="../ext/docs/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/resources/hierarchicalAfter.png" alt="After Hierarchical Clustering" />
+</div>
+

@@ -49,6 +49,7 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.nodes.Node;
+import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
@@ -204,6 +205,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
         colorClustersCheckBox = new javax.swing.JCheckBox();
         shortestPathsButton = new javax.swing.JButton();
         reclusterLabel = new javax.swing.JLabel();
+        helpButton = new javax.swing.JButton();
 
         setDisplayName(org.openide.util.NbBundle.getMessage(HierarchicalControllerTopComponent.class, "HierarchicalControllerTopComponent.displayName")); // NOI18N
 
@@ -297,6 +299,13 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
         reclusterLabel.setForeground(new java.awt.Color(204, 0, 0));
         org.openide.awt.Mnemonics.setLocalizedText(reclusterLabel, org.openide.util.NbBundle.getMessage(HierarchicalControllerTopComponent.class, "HierarchicalControllerTopComponent.reclusterLabel.text")); // NOI18N
 
+        org.openide.awt.Mnemonics.setLocalizedText(helpButton, org.openide.util.NbBundle.getMessage(HierarchicalControllerTopComponent.class, "HierarchicalControllerTopComponent.helpButton.text")); // NOI18N
+        helpButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                helpButtonMousePressed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -326,6 +335,8 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                                 .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(helpButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(shortestPathsButton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(downButton)
@@ -345,7 +356,9 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(shortestPathsButton)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(shortestPathsButton)
+                        .addComponent(helpButton))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(returnToOptimumButton)
                         .addComponent(reclusterButton)
@@ -421,6 +434,11 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
         PluginExecution.withPlugin(new HierarchicalShortestPathsPlugin(state)).executeLater(graph);
     }//GEN-LAST:event_shortestPathsButtonActionPerformed
 
+    private void helpButtonMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_helpButtonMousePressed
+        final HelpCtx help = new HelpCtx("au.gov.asd.tac.constellation.plugins.algorithms.clustering.hierarchical.Hierarchical");
+        help.display();
+    }//GEN-LAST:event_helpButtonMousePressed
+
     private void setColoring() {
         if (graphNode == null) {
             return;
@@ -463,6 +481,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
     private javax.swing.JButton downButton;
     private javax.swing.JCheckBox excludeSingleVerticesCheckBox;
     private javax.swing.JLabel excludedElementsLabel;
+    private javax.swing.JButton helpButton;
     private javax.swing.JRadioButton hiddenRadioButton;
     private javax.swing.JLabel infoLabel;
     private javax.swing.JToggleButton interactiveButton;
