@@ -243,6 +243,7 @@ public class AnalyticConfigurationPane extends VBox {
                 } else {
                     item.setParent(this);
                     setGraphic(item.checkbox);
+                    item.checkbox.setId("pluginCheckbox");
                     setText(item.plugin.getName());
                 }
             }
