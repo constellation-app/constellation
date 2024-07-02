@@ -30,16 +30,15 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSup
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ShortcutSupport;
 
 /**
- * A {@link ChoiceInput} for managing choice selection. 
+ * A {@link ConstellationInput} for managing choice selection. 
  * This input provides the following {@link ConstellationInput} support features
  * <ul>
- * <li>{@link RightButtonSupport} - Increments the choice in spinners and triggers a drop down menu to select a choice from the list of options.</li>
- * <li>{@link LeftButtonSupport} - Only used in Spinner inputs to decrement the choice.</li>
- * <li>{@link ShortcutSupport} - Increments and decrements the data chronologically with up and down arrow.</li>
- * <li>{@link AutoCompleteSupport} - Provides a list of colors with a name that matches the text in the input field.</li>
+ * <li>{@link RightButtonSupport} - Increments the number by the provided step value or to the highest value.</li>
+ * <li>{@link LeftButtonSupport} - Decrements the number by the provided step value or to the lowest value.</li>
+ * <li>{@link ShortcutSupport} - Increments and decrements the number chronologically with up and down arrow.</li>
  * </ul>
  * See referenced classes and interfaces for further details on inherited and implemented features.
- * @param <C> The type of object represented by this input.
+ * @param <C> The type of Number represented by this input.
  * 
  * @author capricornunicorn123
  */

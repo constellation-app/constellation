@@ -22,7 +22,6 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button.ButtonType;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.collections.ListChangeListener;
 import javafx.event.EventHandler;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.CustomMenuItem;

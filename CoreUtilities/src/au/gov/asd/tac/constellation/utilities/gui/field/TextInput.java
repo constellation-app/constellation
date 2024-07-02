@@ -32,7 +32,14 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationI
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport;
 
 /**
- * A {@link ConstellationinputField} for managing {@link String} selection. 
+ * A {@link ConstellationInput} for managing choice selection. 
+ * This input provides the following {@link ConstellationInput} support features:
+ * <ul>
+ * <li>{@link RightButtonSupport} - Triggers a drop down menu to display recent values.</li>
+ * <li>{@link RecentValuesListener} - Enables this Input field to be notified when recent values change.</li>
+ * <li>{@link AutoCompleteSupport} - Enables a list of ManuItems to be provided that are candidates fro auto complete text.</li>
+ * </ul>
+ * See referenced classes and interfaces for further details on inherited and implemented features.
  * 
  * @author capricornunicorn123
  */
@@ -46,31 +53,6 @@ public final class TextInput extends ConstellationInput<String> implements Recen
         this.recentValueListeningId = recentValueListeningId;
         initialiseDepedantComponents();
     }    
-    
-    @Override
-    public String getRecentValuesListenerID() {
-        return this.recentValueListeningId;
-    }
- 
-    
-    // <editor-fold defaultstate="collapsed" desc="Recent Value Implementation">   
-    @Override
-    public void recentValuesChanged(final RecentValuesChangeEvent e) {
-        if (e.getId().equals(recentValueListeningId)) {
-            Platform.runLater(() -> {
-                final List<String> recentValues = e.getNewValues();
-                this.setRecentValues(recentValues);
-            });
-        }
-    }
-    
-    public void setRecentValues(final List<String> options){
-        if (options != null){
-            this.recentValues.clear();
-            this.recentValues.addAll(options);
-        }
-    }
-    
 
     // <editor-fold defaultstate="collapsed" desc="Value Modification & Validation Implementation"> 
     @Override
@@ -135,6 +117,26 @@ public final class TextInput extends ConstellationInput<String> implements Recen
         }
     }
     // </editor-fold> 
+    
+    // <editor-fold defaultstate="collapsed" desc="Recent Value Implementation">   
+    @Override
+    public String getRecentValuesListenerID() {
+        return this.recentValueListeningId;
+    }
+    
+    @Override
+    public void recentValuesChanged(final RecentValuesChangeEvent e) {
+        if (e.getId().equals(recentValueListeningId)) {
+            Platform.runLater(() -> {
+                final List<String> recentValues = e.getNewValues();
+                if (recentValues != null){
+                    this.recentValues.clear();
+                    this.recentValues.addAll(recentValues);
+                }
+            });
+        }
+    }   
+    // </editor-fold>  
     
     // <editor-fold defaultstate="collapsed" desc="Auto Complete Implementation"> 
     @Override
