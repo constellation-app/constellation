@@ -49,7 +49,7 @@ public class HelpSearchProvider implements SearchProvider {
         } else {
             return;
         }
-        String prevFileName = "";
+        String helpFileName = "";
         // Locally defined Recent searches will start with a specific unicode left bracket in the search term
         if (text.startsWith(QuickSearchUtils.LEFT_BRACKET)) {
             final int termEnd = text.length();
@@ -57,7 +57,7 @@ public class HelpSearchProvider implements SearchProvider {
             if (termEnd > 0 && text.startsWith(QuickSearchUtils.CIRCLED_H)) {
                 final int termPos = text.indexOf(" ") + 1;
                 // Convert the search term into a Help file name.
-                prevFileName = text.substring(termPos, termEnd).trim().toLowerCase().replace(" ", "-") + ".md";
+                helpFileName = text.substring(termPos, termEnd).trim().toLowerCase().replace(" ", "-") + ".md";
             } else {
                 // This is a recent search for a different category, so we can end the Help search here
                 return;
@@ -77,12 +77,12 @@ public class HelpSearchProvider implements SearchProvider {
             final int indexMD = displayName.lastIndexOf(".");
             displayName = QuickSearchUtils.CIRCLED_H + "  " + displayName.substring(0, indexMD);
 
-            if (fileName.contains(text.toLowerCase()) && "".equals(prevFileName)) {
+            if (displayName.contains(text.toLowerCase()) && "".equals(helpFileName)) {
                 // Display the result and add a runnable for when it is clicked on 
                 if (!response.addResult(new HelpSearchProviderTask(fileName), displayName)) {
                     return;
                 }
-            } else if (StringUtils.isNotBlank(prevFileName) && fileName.contains(prevFileName)) {
+            } else if (StringUtils.isNotBlank(helpFileName) && fileName.contains(helpFileName)) {
                 // Found the recent Help search result. Set it and exit immediately
                 response.addResult(new HelpSearchProviderTask(fileName), displayName);
                 break;
