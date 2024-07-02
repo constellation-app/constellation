@@ -19,8 +19,8 @@
  *                                                                             *
  ******************************************************************************/
 .text-input {
-    -fx-background-color: #d3d3d3;
-    -fx-text-fill: black;
+    -fx-background-color: #333333;
+    -fx-text-fill: white;
 }
 
 body { 
@@ -44,4 +44,8 @@ body {
 
 .titled-pane > .title > .arrow-button > .arrow {
     -fx-background-color: white;
+}
+
+#pluginCheckbox {
+    -fx-color: black;
 }
