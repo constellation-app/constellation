@@ -1,63 +1,98 @@
 # Export From Constellation
 
+Constellation provides a number of options for exporting graphical information. Some
+of these export options may provide options to customise the export. 
+Others will simply request a destination file location. 
+
+Exporting from Constellation can be broken into two groups, **Visualisation Exports** and **Data Exports**. 
+
+### Visualisation Exports
+Visualisation exports, export the graph as viewed from the Constellation Interactive Graph. These exports will typicaly only contain visual information 
+relevant to the visual aspects of the graph, but may contain some other identifying information.
+
 <table class="table table-striped">
 <thead>
 <tr class="header">
 <th>Constellation Action</th>
-<th>Keyboard Shortcut</th>
 <th>User Action</th>
 <th style="text-align: center;">Menu Icon</th>
+<th style="text-align: center;">More Help</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>Export to PNG</td>
-<td></td>
 <td>File -&gt; Export -&gt; To Screenshot Image...</td>
 <td style="text-align: center;"><img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/exportToImage.png" alt="Export to Screenshot Image Icon" /></td>
+<td style="text-align: center;"><a href="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/export-to-png.md">More Help</a></td>
 </tr>
 <tr class="even">
 <td>Export to SVG</td>
-<td></td>
 <td>File -&gt; Export -&gt; To SVG...</td>
 <td style="text-align: center;"><img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/exportToSVG.png" alt="Export to SVG Image Icon" /></td>
-</tr>
-<tr class="odd">
-<td>Export to JSON</td>
-<td></td>
-<td>File -&gt; Export -&gt; To JSON...</td>
-<td style="text-align: center;"><img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/exportToJSON.png" alt="Export to JSON Icon" /></td>
-</tr>
-<tr class="even">
-<td>Export to GeoJSON</td>
-<td></td>
-<td>File -&gt; Export -&gt; To GeoJSON...</td>
-<td style="text-align: center;"><img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/exportToGeoJSON.png" alt="Export to GeoJSON Icon" /></td>
-</tr>
-<tr class="odd">
-<td>Export to GeoPackage</td>
-<td></td>
-<td>File -&gt; Export -&gt; To GeoPackage...</td>
-<td style="text-align: center;"><img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/exportToGeoPackage.png" alt="Export to GeoPackage Icon" /></td>
-</tr>
-<tr class="even">
-<td>Export to Shapefile</td>
-<td></td>
-<td>File -&gt; Export -&gt; To Shapefile...</td>
-<td style="text-align: center;"><img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/exportToShapeFile.png" alt="Export to Shapefile Icon" /></td>
-</tr>
-<tr class="odd">
-<td>Export to KML</td>
-<td></td>
-<td>File -&gt; Export -&gt; To KML...</td>
-<td style="text-align: center;"><img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/exportToKML.png" alt="Export to KML Icon" /></td>
+<td style="text-align: center;"><a href="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/export-to-svg.md">More Help</a></td>
 </tr>
 </tbody>
 </table>
 
-Constellation provides a number of options for exporting a graph. Some
-of these will present dialog boxes and details on those are further down
-this page:
+### Data Exports
+Data exports will export the entirety of the graph in a format that preserves the data used for analysis and visualisation in constellation.  
+These formats typically contain rich information about the element being represented in the graph and are easily transferable into other platforms. 
+
+<table class="table table-striped">
+<thead>
+<tr class="header">
+<th>Constellation Action</th>
+<th>User Action</th>
+<th style="text-align: center;">Menu Icon</th>
+<th style="text-align: center;">More Help</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Export to JSON</td>
+<td>File -&gt; Export -&gt; To JSON...</td>
+<td style="text-align: center;"><img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/exportToJSON.png" alt="Export to JSON Icon" /></td>
+<td style="text-align: center;"><a href="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/export-to-json.md">More Help</a></td>
+</tr>
+<tr class="even">
+<td>Export to GeoJSON</td>
+<td>File -&gt; Export -&gt; To GeoJSON...</td>
+<td style="text-align: center;"><img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/exportToGeoJSON.png" alt="Export to GeoJSON Icon" /></td>
+<td style="text-align: center;"><a href="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/export-to-geojson.md">More Help</a></td>
+</tr>
+<tr class="odd">
+<td>Export to GeoPackage</td>
+<td>File -&gt; Export -&gt; To GeoPackage...</td>
+<td style="text-align: center;"><img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/exportToGeoPackage.png" alt="Export to GeoPackage Icon" /></td>
+<td style="text-align: center;"><a href="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/export-to-geopackage.md">More Help</a></td>
+</tr>
+<tr class="even">
+<td>Export to Shapefile</td>
+<td>File -&gt; Export -&gt; To Shapefile...</td>
+<td style="text-align: center;"><img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/exportToShapeFile.png" alt="Export to Shapefile Icon" /></td>
+<td style="text-align: center;"><a href="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/export-to-shapefile.md">More Help</a></td>
+</tr>
+<tr class="odd">
+<td>Export to KML</td>
+<td>File -&gt; Export -&gt; To KML...</td>
+<td style="text-align: center;"><img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/exportToKML.png" alt="Export to KML Icon" /></td>
+<td style="text-align: center;"><a href="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/export-to-kml.md">More Help</a></td>
+</tr>
+<tr class="even">
+<td>Export to CSV</td>
+<td>Views -&gt; Table View -&gt; <img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/TableExport.png" alt="Table Export" /> -&gt; Export To CSV</td>
+<td style="text-align: center;"><img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/table-view.png" alt="Table View Icon" /></td>
+<td style="text-align: center;"><a href="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/export-to-csv.md">More Help</a></td>
+</tr>
+<tr class="odd">
+<td>Export to Excel (XLSX)</td>
+<td>Views -&gt; Table View -&gt; <img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/TableExport.png" alt="Table Export" /> -&gt; Export To Excel (XLSX)</td>
+<td style="text-align: center;"><img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/table-view.png" alt="Table View Icon" /></td>
+<td style="text-align: center;"><a href="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/export-to-xlsx.md">More Help</a></td>
+</tr>
+</tbody>
+</table>
 
 -   *Screenshot Image* - Export a screenshot of the graph window as a
     .png
@@ -70,73 +105,9 @@ this page:
 -   *GeoPackage* - Export the graph as a GeoPackage file
 -   *Shapefile* - Export the graph as a Shapefile file
 -   *KML* - Export the graph as a KML file
-
-## Export to SVG
-<div style="text-align: center;">
-    <a href="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/exportToSVGParameters.png">
-        <img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/exportToSVGParameters.png" alt="Export to SVG Example"  width="573"/>
-    </a>
-</div>
-### Parameters
-
--   *File Location* (Required) - the name and location of the output file
--   *Graph Title* - the title of the graph 
--   *Background Color* - the color of the graph background
--   *Selected Elements* - only export the selected nodes
--   *Show Nodes* - include nodes in the export
--   *Show Connections* - include connections in the export
--   *Show Node Labels* - include node labels in the export
--   *Show Connection Labels* - include connections labels in the export
--   *Show Blazes* - include blazes in the export
--   *Perspective* - set the camera perspective to export the graph from
-
-Note: When this plugin is executed, parameters will automatically reflect the state of the current graph. 
-Users may modify these parameters during the export stage to include or exclude information from the export.  
-
-## Export to GeoJSON
-
-### Parameters
-
--   *Output File* - the name and location of the output file
--   *Element Type* - the graph element type
--   *Attributes* - the list of attributes to include in the export
--   *Selected Only* - only export the selected elements
-
-## Export to GeoPackage
-
-### Parameters
-
--   *Output File* - the name and location of the output file
--   *Spatial Reference* - the spatial reference to use for the
-    geopackage
--   *Element Type* - the graph element type
--   *Attributes* - the list of attributes to include in the export
--   *Selected Only* - only export the selected elements
-
-## Export to Shapefile
-
-### Parameters
-
--   *Output File* - the name and location of the output file
--   *Spatial Reference* - the spatial reference to use for the
-    geopackage
--   *Element Type* - the graph element type
--   *Attributes* - the list of attributes to include in the export
--   *Selected Only* - only export the selected elements
--   *Geometry Type* - the geometry type to export
-
-## Export to KML
-
-### Parameters
-
--   *Output File* - the name and location of the output file
--   *Element Type* - the graph element type
--   *Attributes* - the list of attributes to include in the export
--   *Selected Only* - only export the selected elements
-
-## Export to CSV and XLSX
-
-Constellation also provides options to export to CSV and Excel (XLSX)
-via the Table View. Refer
-[here](../ext/docs/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview/table-view.md)
-for details.
+-   *CSV* - Export the graph as a CSV file. Refer
+    [here](../ext/docs/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview/table-view.md)
+    for details
+-   *XLSX* - Export the graph as an XLSX (Excel Spreadsheet) file. Refer
+    [here](../ext/docs/CoreTableView/src/au/gov/asd/tac/constellation/views/tableview/table-view.md)
+    for details
