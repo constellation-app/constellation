@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,7 +70,6 @@ public class ListeningGraphMonitor extends ManualGraphMonitor implements GraphCh
      */
     public void setGraph(final Graph graph) {
         if (graph != activeGraph) {
-
             if (VERBOSE) {
                 LOGGER.log(Level.INFO,"Graph Monitor: activeGraphChanged()");
             }
@@ -82,25 +81,17 @@ public class ListeningGraphMonitor extends ManualGraphMonitor implements GraphCh
             activeGraph = graph;
 
             if (activeGraph != null) {
-
-                ReadableGraph rg = activeGraph.getReadableGraph();
-                try {
+                try (final ReadableGraph rg = activeGraph.getReadableGraph()) {
                     setGraph(rg);
 
                     if (activeGraphListener != null) {
                         activeGraphListener.graphChangedAlways(rg);
                     }
-
-                } finally {
-                    rg.release();
                 }
 
                 activeGraph.addGraphChangeListener(this);
-
-            } else {
-                if (activeGraphListener != null) {
-                    activeGraphListener.graphChangedAlways(null);
-                }
+            } else if (activeGraphListener != null) {
+                activeGraphListener.graphChangedAlways(null);
             }
         }
     }
@@ -116,20 +107,16 @@ public class ListeningGraphMonitor extends ManualGraphMonitor implements GraphCh
 
     @Override
     public void graphChanged(final GraphChangeEvent event) {
-
         if (VERBOSE) {
             LOGGER.log(Level.INFO,"Graph Monitor: graphChanged()");
         }
 
         final GraphChangeEvent latestEvent = event.getLatest();
         if (latestEvent.getId() > lastEvent) {
-            lastEvent = latestEvent.getId();
-
-            ReadableGraph rg = latestEvent.getGraph().getReadableGraph();
-            try {
+            lastEvent = latestEvent.getId();  
+            
+            try (final ReadableGraph rg = latestEvent.getGraph().getReadableGraph()) {
                 update(rg, true);
-            } finally {
-                rg.release();
             }
         }
     }
@@ -163,7 +150,6 @@ public class ListeningGraphMonitor extends ManualGraphMonitor implements GraphCh
      * unmanaged.
      */
     public void setManaged(final boolean managed) {
-
         final int currentManageCount = managed ? manageCount.incrementAndGet() : manageCount.decrementAndGet();
         final boolean newManaged = currentManageCount >= requiredManageCount;
 

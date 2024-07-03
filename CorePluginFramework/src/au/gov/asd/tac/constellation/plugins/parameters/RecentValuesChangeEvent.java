@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.parameters;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -27,7 +28,7 @@ public class RecentValuesChangeEvent {
     private final String id;
     private final List<String> newValues;
 
-    public RecentValuesChangeEvent(String id, List<String> newValues) {
+    public RecentValuesChangeEvent(final String id, final List<String> newValues) {
         this.id = id;
         this.newValues = newValues;
     }
@@ -37,7 +38,7 @@ public class RecentValuesChangeEvent {
     }
 
     public List<String> getNewValues() {
-        return newValues;
+        return Collections.unmodifiableList(newValues);
     }
 
 }

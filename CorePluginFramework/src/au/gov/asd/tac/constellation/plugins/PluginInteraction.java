@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ public interface PluginInteraction {
     public String getCurrentMessage();
 
     /**
-     * Signals to the user the current progress of the plugin.
+     * Signals to the user the current progress of the plugin with a message that persists after the plugin has completed.
      *
      * @param currentStep the current step the plugin is currently performing.
      * @param totalSteps the total number of steps the plugin must perform
@@ -60,7 +60,35 @@ public interface PluginInteraction {
      * @throws InterruptedException if the plugin has been canceled.
      */
     void setProgress(final int currentStep, final int totalSteps, final String message, final boolean cancellable) throws InterruptedException;
-
+    
+    /**
+     * Signals to the user the current progress of the plugin.
+     *
+     * @param currentStep the current step the plugin is currently performing.
+     * @param totalSteps the total number of steps the plugin must perform
+     * before completion.
+     * @param cancellable is the plugin able to be canceled at this time?
+     * @throws InterruptedException if the plugin has been canceled.
+     */
+    void setProgress(final int currentStep, final int totalSteps, final boolean cancellable) throws InterruptedException;
+    
+    /**
+     * Signals to the user the current execution stage of the plugin
+     * providing a message that does not persist after the plugin has completed.
+     * Should be used to represent the high level execution of the plugin.
+     * i.e. Navigation through methods, of read(), query(), edit() and execute().
+     * 
+     * @param currentStep the current step the plugin is currently performing.
+     * @param totalSteps the total number of steps the plugin must perform
+     * before completion.
+     * @param executionStage current executionStrate of the plugin
+     * @param message a message describing the step the plugin is currently
+     * performing.
+     * @param cancellable is the plugin able to be canceled at this time?
+     * @throws InterruptedException if the plugin has been canceled.
+     */
+    void setExecutionStage(final int currentStep, final int totalSteps, final String executionStage, final String message, final boolean cancellable) throws InterruptedException;
+    
     /**
      * Sends a notification message to the user. Depending on the notification
      * level, the framework may choose to notify the user in a different way,
@@ -87,8 +115,23 @@ public interface PluginInteraction {
      *
      * @param promptName the name of the dialog box.
      * @param parameters the parameters to be displayed and edited.
+     * @param helpID the help ID of the plugin.
      * @return true if the user selected "OK" or false if the user selected
      * "Cancel".
      */
-    boolean prompt(final String promptName, final PluginParameters parameters);
+    boolean prompt(final String promptName, final PluginParameters parameters, final String helpID);
+    
+    /**
+     * Presents a dialog box to the user showing an auto-generated form for the
+     * specified parameters.This allows the user to set the values for these
+     * parameters.
+     *
+     * @param promptName the name of the dialog box.
+     * @param parameters the parameters to be displayed and edited.
+     * @param disclaimer the disclaimer text for interactively executed plugins.
+     * @param helpID the help ID of the plugin.
+     * @return true if the user selected "OK" or false if the user selected
+     * "Cancel".
+     */
+    boolean prompt(final String promptName, final PluginParameters parameters, final String disclaimer, final String helpID);
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,6 +44,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParamet
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.reporting.PluginReportUtilities;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
@@ -51,14 +52,17 @@ import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCor
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
 
 /**
- * Split Nodes Based on Identifier Plugin
+ * The Split Nodes Plugin replaces a node with a set of new replicated nodes 
+ * containing identifier that comprises the originals nodes identifier. 
+ * The Plugin takes a selection of Nodes and a String representing a sub-string contained in the nodes identifier. 
+ * The selected node is then replicated so that the new nodes contain the identifiers resulting from 
+ * splitting the original identifier with the sub-string.
  *
  * @author canis_majoris
  * @author antares
@@ -161,6 +165,141 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
         }
     }
 
+    @Override
+    public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {        
+        
+        // Retrieve PluginParameter values 
+        final String character = parameters.getParameters().get(SPLIT_PARAMETER_ID) != null && parameters.getParameters().get(SPLIT_PARAMETER_ID).getStringValue() != null ? parameters.getParameters().get(SPLIT_PARAMETER_ID).getStringValue() : "";
+        final ParameterValue transactionTypeChoice = parameters.getParameters().get(TRANSACTION_TYPE_PARAMETER_ID).getSingleChoice();
+        final boolean allOccurrences = parameters.getParameters().get(ALL_OCCURRENCES_PARAMETER_ID).getBooleanValue();
+        final boolean splitIntoSameLevel = parameters.getParameters().get(DUPLICATE_TRANSACTIONS_PARAMETER_ID).getBooleanValue();
+        final boolean completeWithSchema = parameters.getParameters().get(COMPLETE_WITH_SCHEMA_OPTION_ID).getBooleanValue();
+        
+        final String linkType = transactionTypeChoice != null ? transactionTypeChoice.toString() : AnalyticConcept.TransactionType.CORRELATION.getName();        
+        final int vertexSelectedAttributeId = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
+        final int vertexIdentifierAttributeId = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
+
+        // Local process-tracking varables (Process is indeteminate until quantity of merged nodes is known)
+        int currentProcessStep = 0;
+        int totalProcessSteps = -1; 
+        interaction.setProgress(
+                currentProcessStep, 
+                totalProcessSteps, 
+                "Splitting nodes...", 
+                true
+        );
+        
+        //Determine the positions of the selected nodes
+        final List<Integer> selectedVerticies = new ArrayList<>();    
+        final int graphVertexCount = graph.getVertexCount();
+        for (int vertexPosition = 0; vertexPosition < graphVertexCount; vertexPosition++) {
+            final int currentVertexId = graph.getVertex(vertexPosition);
+            if (graph.getBooleanValue(vertexSelectedAttributeId, currentVertexId)) {
+                selectedVerticies.add(vertexPosition);
+            }
+        }
+        
+        totalProcessSteps = selectedVerticies.size();
+        
+        // Loop through the selected vertices and determine how many new verticies need to be added to the graph
+        final List<Integer> newVertices = new ArrayList<>();
+        for (final int position : selectedVerticies) {
+            interaction.setProgress(
+                    ++currentProcessStep, 
+                    totalProcessSteps, 
+                    true
+            );
+            
+            // Check that the current vertex contains the split string being searched for.
+            final int currentVertexId = graph.getVertex(position);
+            final String identifier = graph.getStringValue(vertexIdentifierAttributeId, currentVertexId);
+            if (identifier != null && identifier.contains(character) && identifier.indexOf(character) <= identifier.length() - character.length()) {
+                int createdNodesCount = 0;
+                String leftNodeIdentifier = ""; // Represents the string to the left of the split. The original node will be renamed to this value
+                
+                // Split the identifier for each time the split string is seen.
+                if (allOccurrences) {
+                    final String[] substrings = Arrays.stream(identifier.split(character))
+                            .filter(value
+                                    -> value != null && value.length() > 0
+                            )
+                            .toArray(size -> new String[size]);
+                    
+                    if (substrings.length <= 0) {
+                        continue;
+                    }
+                    
+                    leftNodeIdentifier = substrings[0];
+
+                    for (int i = 1; i < substrings.length; i++) {
+                        newVertices.add(createNewNode(graph, position, substrings[i], linkType, splitIntoSameLevel));
+                        createdNodesCount++;
+                    }
+
+                // Split the identifier for the first time the split string is seen.
+                } else {
+                    final int i = identifier.indexOf(character);
+                    leftNodeIdentifier = identifier.substring(0, i);
+
+                    // There was text found on the left side of the split so ignore it and set the node for the right side
+                    if (StringUtils.isNotBlank(leftNodeIdentifier)) {
+                        leftNodeIdentifier = identifier.substring(0, i);newVertices.add(createNewNode(graph, position, identifier.substring(i + 1), linkType, splitIntoSameLevel));
+                        createdNodesCount++;
+
+                    // There was no text on the left side of the split so set the leftNodeIdentifier to the right side. 
+                    } else {
+                        leftNodeIdentifier = identifier.substring(i + 1);
+                        createdNodesCount++;
+                    }
+                }
+                
+                // Lastly rename the selected node to the leftNodeIdentifier
+                if (StringUtils.isNotBlank(leftNodeIdentifier)) {
+                    graph.setStringValue(vertexIdentifierAttributeId, currentVertexId, leftNodeIdentifier);
+                    newVertices.add(currentVertexId);
+                    interaction.setProgress(currentProcessStep, 
+                            totalProcessSteps, 
+                            String.format("Node %s split into %s", 
+                                    identifier,
+                                    PluginReportUtilities.getNodeCountString(++createdNodesCount)
+                            ), 
+                            true
+                    );
+                }
+            }
+        }
+        
+        //New vertexes were made so add them to the graph
+        if (!newVertices.isEmpty()) {
+            graph.validateKey(GraphElementType.VERTEX, true);
+            graph.validateKey(GraphElementType.TRANSACTION, true);
+            final PluginExecutor arrangement = completionArrangement();
+            
+            if (arrangement != null) {
+                // run the arrangement
+                final VertexListInclusionGraph vlGraph = new VertexListInclusionGraph(graph, AbstractInclusionGraph.Connections.NONE, newVertices);
+                arrangement.executeNow(vlGraph.getInclusionGraph());
+                vlGraph.retrieveCoords();
+            }
+            
+            if (completeWithSchema) {
+                PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
+            }
+            
+            PluginExecutor.startWith(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
+        }
+        
+        // Set process to complete
+        totalProcessSteps = 0;
+        interaction.setProgress(currentProcessStep, 
+                totalProcessSteps, 
+                String.format("Created %s.", 
+                        PluginReportUtilities.getNodeCountString(newVertices.size())
+                ), 
+                true
+        );
+    }
+    
     private int createNewNode(final GraphWriteMethods graph, final int selectedNode, final String newNodeIdentifier, final String linkType, final boolean splitIntoSameLevel) {
         final int vertexIdentifierAttributeId = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
         final int transactionTypeAttributeId = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
@@ -219,81 +358,6 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
             graph.setStringValue(transactionTypeAttributeId, newTransactionId, linkType);
         }
         return newVertexId;
-    }
-
-    @Override
-    public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-        final Map<String, PluginParameter<?>> splitParameters = parameters.getParameters();
-        final String character = splitParameters.get(SPLIT_PARAMETER_ID) != null && splitParameters.get(SPLIT_PARAMETER_ID).getStringValue() != null ? splitParameters.get(SPLIT_PARAMETER_ID).getStringValue() : "";
-        final ParameterValue transactionTypeChoice = splitParameters.get(TRANSACTION_TYPE_PARAMETER_ID).getSingleChoice();
-        final String linkType = transactionTypeChoice != null ? transactionTypeChoice.toString() : AnalyticConcept.TransactionType.CORRELATION.getName();
-        final boolean allOccurrences = splitParameters.get(ALL_OCCURRENCES_PARAMETER_ID).getBooleanValue();
-        final boolean splitIntoSameLevel = splitParameters.get(DUPLICATE_TRANSACTIONS_PARAMETER_ID).getBooleanValue();
-        final int vertexSelectedAttributeId = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
-        final int vertexIdentifierAttributeId = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
-        final List<Integer> newVertices = new ArrayList<>();
-        final int graphVertexCount = graph.getVertexCount();
-
-        for (int position = 0; position < graphVertexCount; position++) {
-            final int currentVertexId = graph.getVertex(position);
-
-            if (graph.getBooleanValue(vertexSelectedAttributeId, currentVertexId)) {
-                final String identifier = graph.getStringValue(vertexIdentifierAttributeId, currentVertexId);
-
-                if (identifier != null && identifier.contains(character) && identifier.indexOf(character) < identifier.length() - character.length()) {
-                    String leftNodeIdentifier = "";
-                    if (allOccurrences) {
-                        final String[] substrings = Arrays.stream(identifier.split(character))
-                                .filter(value
-                                        -> value != null && value.length() > 0
-                                )
-                                .toArray(size -> new String[size]);
-                        if (substrings.length <= 0) {
-                            continue;
-                        }
-
-                        leftNodeIdentifier = substrings[0];
-
-                        for (int i = 1; i < substrings.length; i++) {
-                            newVertices.add(createNewNode(graph, position, substrings[i], linkType, splitIntoSameLevel));
-                        }
-
-                    } else {
-                        final int i = identifier.indexOf(character);
-                        leftNodeIdentifier = identifier.substring(0, i);
-                        if (StringUtils.isNotBlank(leftNodeIdentifier)) {
-                            newVertices.add(createNewNode(graph, position, identifier.substring(i + 1), linkType, splitIntoSameLevel));
-                        } else {
-                            leftNodeIdentifier = identifier.substring(i + 1);
-                        }
-                    }
-                    // Rename the selected node
-                    if (StringUtils.isNotBlank(leftNodeIdentifier)) {
-                        graph.setStringValue(vertexIdentifierAttributeId, currentVertexId, leftNodeIdentifier);
-                        newVertices.add(currentVertexId);
-                    }
-                }
-            }
-        }
-        if (!newVertices.isEmpty()) {
-            // Reset the view
-            graph.validateKey(GraphElementType.VERTEX, true);
-            graph.validateKey(GraphElementType.TRANSACTION, true);
-
-            final PluginExecutor arrangement = completionArrangement();
-            if (arrangement != null) {
-                // run the arrangement
-                final VertexListInclusionGraph vlGraph = new VertexListInclusionGraph(graph, AbstractInclusionGraph.Connections.NONE, newVertices);
-                arrangement.executeNow(vlGraph.getInclusionGraph());
-                vlGraph.retrieveCoords();
-            }
-
-            if (splitParameters.get(COMPLETE_WITH_SCHEMA_OPTION_ID).getBooleanValue()) {
-                PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
-            }
-
-            PluginExecutor.startWith(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
-        }
     }
 
     /**

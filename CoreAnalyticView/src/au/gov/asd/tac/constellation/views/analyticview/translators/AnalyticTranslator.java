@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ public abstract class AnalyticTranslator<R extends AnalyticResult<?>, V extends 
 
     protected AnalyticQuestion<?> question;
     protected R result;
+    protected boolean active;
 
     public void setQuestion(final AnalyticQuestion<?> question) {
         this.question = question;
@@ -37,6 +38,22 @@ public abstract class AnalyticTranslator<R extends AnalyticResult<?>, V extends 
 
     public void setResult(final R result) {
         this.result = result;
+    }
+    
+    public R getResult() {
+        return result;
+    }
+    
+    public AnalyticQuestion<?> getQuestion() {
+        return question;
+    }
+    
+    public boolean isActive() {
+        return active;
+    }
+    
+    public void setActive(final boolean active) {
+        this.active = active;
     }
 
     public abstract String getName();

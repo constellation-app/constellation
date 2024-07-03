@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ public class ImportPane extends BorderPane {
     private final static int GRIDPANE_CONSTRAINT = 200;
     private final static int ACTIONPANE_MIN_HEIGHT = 40;
     private final static Image HELP_IMAGE = UserInterfaceIconProvider.HELP.buildImage(16,
-            ConstellationColor.BLUEBERRY.getJavaColor());
+            ConstellationColor.SKY.getJavaColor());
 
     protected final Preferences importExportPrefs = NbPreferences.forModule(ImportExportPreferenceKeys.class);
     protected final CheckBox showSchemaAttributesCheckBox;

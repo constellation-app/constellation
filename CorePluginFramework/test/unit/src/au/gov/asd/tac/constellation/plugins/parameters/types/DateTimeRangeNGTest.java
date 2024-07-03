@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,12 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.TimeZone;
+import static org.mockito.ArgumentMatchers.any;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -40,7 +45,21 @@ public class DateTimeRangeNGTest {
 
     TimeZone tz;
 
-    public DateTimeRangeNGTest() {
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+    }
+
+    @BeforeMethod
+    public void setUpMethod() throws Exception {
+        tz = TimeZone.getTimeZone("UTC");
+    }
+
+    @AfterMethod
+    public void tearDownMethod() throws Exception {
     }
 
     @Test
@@ -113,6 +132,54 @@ public class DateTimeRangeNGTest {
     public void parseNewZError() {
         DateTimeRange.parse("abc;def");
     }
+    
+    @Test
+    public void parseRelativeRange() {
+        final DateTimeRange dtr = DateTimeRange.parse("P1D");
+        assertEquals(dtr.getPeriod(), Period.of(0, 0, 1));
+        assertEquals(dtr.getZoneId(), ZoneId.of("UTC"));
+        
+        final ZonedDateTime date = ZonedDateTime.of(1970, 1, 3, 0, 0, 0, 0, ZoneId.of("UTC")); 
+        try (final MockedStatic<ZonedDateTime> zonedDateTimeMockedStatic = Mockito.mockStatic(ZonedDateTime.class, Mockito.CALLS_REAL_METHODS)) {
+            zonedDateTimeMockedStatic.when(() -> ZonedDateTime.now(any(ZoneId.class)))
+                    .thenReturn(date);
+            final ZonedDateTime[] dates = dtr.getZonedStartEnd();
+            assertEquals(dates[0].toEpochSecond(), SECONDS_IN_ONE_DAY);
+            assertEquals(dates[1].toEpochSecond(), SECONDS_IN_ONE_DAY + SECONDS_IN_ONE_DAY);
+        }
+    }
+    
+    @Test
+    public void parseRelativeRangeTZ() {
+        final DateTimeRange dtr = DateTimeRange.parse("P1D Australia/Sydney");
+        assertEquals(dtr.getPeriod(), Period.of(0, 0, 1));
+        assertEquals(dtr.getZoneId(), ZoneId.of("Australia/Sydney"));
+        
+        final ZonedDateTime date = ZonedDateTime.of(1970, 1, 3, 10, 0, 0, 0, ZoneId.of("Australia/Sydney")); 
+        try (final MockedStatic<ZonedDateTime> zonedDateTimeMockedStatic = Mockito.mockStatic(ZonedDateTime.class, Mockito.CALLS_REAL_METHODS)) {
+            zonedDateTimeMockedStatic.when(() -> ZonedDateTime.now(any(ZoneId.class)))
+                    .thenReturn(date);
+            final ZonedDateTime[] dates = dtr.getZonedStartEnd();
+            assertEquals(dates[0].toEpochSecond(), SECONDS_IN_ONE_DAY);
+            assertEquals(dates[1].toEpochSecond(), SECONDS_IN_ONE_DAY + SECONDS_IN_ONE_DAY);
+        }
+    }
+    
+    @Test
+    public void parseBadRelativeRange() {
+        final DateTimeRange dtr = DateTimeRange.parse("P bad");
+        assertEquals(dtr.getPeriod(), Period.of(0, 0, 1));
+        assertEquals(dtr.getZoneId(), ZoneId.of("UTC"));
+        
+        final ZonedDateTime date = ZonedDateTime.of(1970, 1, 3, 0, 0, 0, 0, ZoneId.of("UTC")); 
+        try (final MockedStatic<ZonedDateTime> zonedDateTimeMockedStatic = Mockito.mockStatic(ZonedDateTime.class, Mockito.CALLS_REAL_METHODS)) {
+            zonedDateTimeMockedStatic.when(() -> ZonedDateTime.now(any(ZoneId.class)))
+                    .thenReturn(date);
+            final ZonedDateTime[] dates = dtr.getZonedStartEnd();
+            assertEquals(dates[0].toEpochSecond(), SECONDS_IN_ONE_DAY);
+            assertEquals(dates[1].toEpochSecond(), SECONDS_IN_ONE_DAY + SECONDS_IN_ONE_DAY);
+        }
+    }
 
     @Test
     public void testAbsoluteConversionToString() {
@@ -143,21 +210,20 @@ public class DateTimeRangeNGTest {
         final DateTimeRange result = (DateTimeRange) instance.getObjectValue();
         assertEquals(result, objectValue);
     }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
-    @BeforeMethod
-    public void setUpMethod() throws Exception {
-        tz = TimeZone.getTimeZone("UTC");
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
+    
+    @Test
+    public void testEquals() {
+        final DateTimeRange datetimeRange = DateTimeRange.parse("1970-01-02T00:00:00Z[UTC];1970-01-03T00:00:00Z[UTC]");
+        final DateTimeRange datetimePeriod = DateTimeRange.parse("P1Y");
+        final DateTimeRange comp1 = new DateTimeRange(Period.of(1, 0, 0), ZoneId.of("UTC"));
+        final DateTimeRange comp2 = new DateTimeRange(ZonedDateTime.of(1970, 1, 2, 0, 0, 0, 0, ZoneId.of("UTC")), 
+                ZonedDateTime.of(1970, 1, 3, 0, 0, 0, 0, ZoneId.of("UTC")));
+        
+        assertFalse(datetimeRange.equals(null));
+        assertFalse(datetimeRange.equals(true));
+        assertFalse(datetimeRange.equals(comp1));
+        assertTrue(datetimeRange.equals(comp2));
+        assertTrue(datetimePeriod.equals(comp1));
+        assertFalse(datetimePeriod.equals(comp2));
     }
 }

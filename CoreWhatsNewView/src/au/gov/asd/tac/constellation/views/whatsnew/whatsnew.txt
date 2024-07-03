@@ -1,6 +1,68 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2024-06-03 Select Nodes and Select Transactions
+<p>Users can now more easily select all nodes or select all transactions from a graph. These new actions can be found in the "Selection" menu.</p>
+
+== 2024-05-28 Pages in the Conversation View
+<p>Pages have been added to the Conversation View to help with the loading and viewing of Conversations. The page numbers and arrows at the bottom of the view can be used to change between pages.</p>
+<p>A dropdown list has been added to the top of the view to select how many Conversation bubbles to display per page.</p>
+
+== 2024-03-08 More Ways to Zoom In and Out
+<p>Keyboard shortcuts have been added for zooming in and out of the graph view (CTRL-ALT-UP and CTRL-ALT-DOWN respectively).</p>
+<p>Toolbar buttons have been added for zooming in and out of the graph view.</p>
+
+== 2024-02-26 Colorblind Mode in Options
+<p>Colorblind mode options have been added and can be found through Setup -&gt; Options -&gt; CONSTELLATION -&gt; Application.</p>
+<p>The random generation of node colors has been adjusted based on the selected colorblind mode.</p>
+<p>Existing graphs can be displayed in a the selected colorblind scheme through the toolbar with Display -&gt; Apply Colorblind Schema to Open Graphs.</p>
+
+== 2024-02-02 Word Cloud View in Experimental
+<p>A Word Cloud View has been created and can be found under Experimental -&gt; Views -&gt; Word Cloud.</p>
+<p>This view allows you to create a Word Cloud based on words and phrases found in attributes in nodes and transactions.</p>
+
+== 2024-01-09 Data Access View Categories change
+<p>Added a new "Restore to Default" button to the Data Access View Categories </p>
+
+== 2024-01-08 Light and dark mode support
+<p>Light/Dark mode themes have been reworked and now comprehensively cover most of the application.</p>
+<p>The modes can be accessed via SetUp -&gt; Options -&gt; Appearance -&gt; Look and Feel -&gt; FlatLaf Light/FlatLaf Dark respectively.</p>
+
+== 2023-11-15 Rename graphs through REST API and Jupyter Notebooks
+<p>Jupyter notebook users can now specify or change Constellation graph title names within scripts using the client.</p>
+<p>When creating a new graph <strong>new_graph</strong> the graph name can be specified as an optional parameter. There's also a separate function to rename a graph specified by the graph ID <strong>rename_graph</strong>. If a graph ID is not specified, the current active graph will be renamed.</p> 
+<p>For more information refer to the documentation by going to Tools &gt; Display REST Server Documentation.</p>
+
+== 2023-09-28 Hide empty attributes in the Attribute Editor View
+<p>The Attribute Editor view now allows for empty (null) attributes to be hidden to de-clutter the view.</p>
+<p>The heading of each attribute category has replaced the "Show all" toggle with a "Show Hidden" toggle and a new "Show Empty" toggle has been added. The "Show Empty" toggle is enabled each time Constellation is restarted to ensure users make a conscious decision to hide them.</p>
+<p>Attributes that are marked as hidden will only be shown if the "Show Hidden" toggle is enabled while attributes that have no value set (and are empty) will only be shown if the "Show Empty" toggle is enabled. Hidden and empty attributes require both toggles to be enabled.</p>
+
+== 2023-08-28 Markdown support in the Notes View
+<p>The notes can now optionally render markdown text. You can now italicise, bold and strikethrough text. Headings can be added to the note as well as lists and sub lists.</p>
+<p>The new note pop-up window will have a preview tab where you can see how your markdown text will be rendered before adding it as a note.</p>
+<p>Editing notes will also be done through a popup window.</p>
+<p>Markdown can be toggled on and off with a checkbox which appears in the create/edit note popup.</p>
+
+== 2023-08-08 - Enabled of Multi-Choice Drop-down bulk selection feature
+<p>A number of input field drop-downs that enable the selection of multiple items have had a bulk selection feature enabled.</p>
+<p>Right click the input field to access the "Select All" and "Clear All" functionality.</p>
+<p>Some instances have an adjacent drop-down labeled "..." that can be used to access the same functionality as right clicking.</p>
+
+== 2023-07-28 Attribute Editor View - Edit Buttons
+<p>Edit buttons have been removed from attributes in the Attributes View.</p>
+<p>Edit functionality can be achieved by clicking on the field of the attribute.</p>
+
+== 2023-07-28 Replacement of old Find View with new Find View
+<p>The existing Find View accessible using the shortcut Ctrl-F has been replaced with the an updated Find View which has been under development and testing.</p> 
+<p>The new Find View offers an updated interface that opens by default in a separate window.</p> 
+<p>The functionality remains the same with the added option of "Find Next" and "Find Previous" execution options.</p> 
+
+== 2023-06-14 Reorder Plugins in Data Access View
+<p>The Data Access View configuration pane in the settings now has "up" and "down" buttons below the "Visible categories" box.</p>
+<p>The order of the categories within this box can be changed by using the buttons below it.</p>
+<p>The order set in the "Visible categories" box is the order which the plugins on the Data Access View will show up in.</p>
+
 == 2023-05-05 Notes View UI Change
 <p>The controls to add a new note are no longer at the bottom and have been moved to a pop-up window which appears when the "Create Note" button is pressed on the top left.</p>
 <p>You can now change the colour of user notes using a color picker</p>

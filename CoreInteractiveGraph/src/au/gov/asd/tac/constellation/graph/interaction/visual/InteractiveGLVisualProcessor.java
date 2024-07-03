@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.Selecti
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionBoxRenderable;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionFreeformModel;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionFreeformRenderable;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
@@ -54,13 +55,11 @@ import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 /**
- * An extension of the {@link GLVisualProcessor} that adds support for user
- * interaction through implementing {@link VisualInteraction} and
- * {@link VisualAnnotator}.
+ * An extension of the {@link GLVisualProcessor} that adds support for user interaction through implementing
+ * {@link VisualInteraction} and {@link VisualAnnotator}.
  * <p>
- * This provides the same basic visualisation of a graph as
- * {@link GLVisualProcessor} does, adding renderables for a new line, a
- * selection box, overlay planes, and hit testing.
+ * This provides the same basic visualisation of a graph as {@link GLVisualProcessor} does, adding renderables for a new
+ * line, a selection box, overlay planes, and hit testing.
  *
  * @author twilight_sparkle
  */
@@ -88,10 +87,8 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
     /**
      * Create a new InteractiveGLVisualProcessor.
      *
-     * @param debugGl Whether or not to utilise a GLContext that includes
-     * debugging.
-     * @param printGlCapabilities Whether or not to print out a list of GL
-     * capabilities upon initialisation.
+     * @param debugGl Whether or not to utilise a GLContext that includes debugging.
+     * @param printGlCapabilities Whether or not to print out a list of GL capabilities upon initialisation.
      */
     public InteractiveGLVisualProcessor(final boolean debugGl, final boolean printGlCapabilities) {
         super(debugGl, printGlCapabilities);
@@ -107,8 +104,8 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
     /**
      * Set the specified {@link InteractionEventHandler} to use this processor.
      * <p>
-     * This method adds the event handler as a listener (of all the relevant
-     * gesture types) to this processor's AWT component.
+     * This method adds the event handler as a listener (of all the relevant gesture types) to this processor's AWT
+     * component.
      *
      * @param handler The handler using this processor.
      */
@@ -134,8 +131,7 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
      * Add the specified {@link GraphRendererDropTarget} to this processor.
      *
      * @param targetListener The dropper using this processor.
-     * @return A {@link DropTarget} wrapping the supplied target and this
-     * processor's AWT component.
+     * @return A {@link DropTarget} wrapping the supplied target and this processor's AWT component.
      */
     public void addDropTargetToCanvas(final DropTargetListener targetListener) {
         this.targetListener = targetListener;
@@ -174,7 +170,7 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
     @Override
     public VisualOperation hitTestCursor(final int x, final int y, final HitState hitState, final Queue<HitState> notificationQueue) {
         hitTester.queueRequest(new HitTestRequest(x, y, hitState, notificationQueue, resultState -> {
-            if (resultState.getCurrentHitType().equals(HitType.NO_ELEMENT)) {
+            if (resultState.getCurrentHitType() == HitType.NO_ELEMENT && !VisualGraphUtilities.isDrawingMode(GraphManager.getDefault().getActiveGraph())) {
                 getCanvas().setCursor(DEFAULT_CURSOR);
             } else {
                 getCanvas().setCursor(CROSSHAIR_CURSOR);
@@ -324,7 +320,7 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
         }
     }
 
-    private static class NodeCameraDistance {
+    public static class NodeCameraDistance {
 
         final Vector3f nodeLocation;
         final Float distanceFromCamera;
@@ -339,7 +335,11 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
             this.distanceFromCamera = getDistanceFromCamera(nodeLocation, horizontalScale, verticalScale);
         }
 
-        static NodeCameraDistance getClosestNode(NodeCameraDistance ncd1, NodeCameraDistance ncd2) {
+        public Vector3f getNodeLocation() {
+            return nodeLocation;
+        }
+
+        public static NodeCameraDistance getClosestNode(final NodeCameraDistance ncd1, final NodeCameraDistance ncd2) {
             NodeCameraDistance closest = null;
             if (ncd1.distanceFromCamera == null) {
                 closest = ncd2;

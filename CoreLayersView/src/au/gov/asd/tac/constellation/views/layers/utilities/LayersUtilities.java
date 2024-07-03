@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -101,13 +101,13 @@ public class LayersUtilities {
     }
 
     public static Button createHelpButton() {
-        final Button helpDocumentationButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
+        final Button helpDocumentationButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor())));
         helpDocumentationButton.paddingProperty().set(HELP_PADDING);
         helpDocumentationButton.setTooltip(new Tooltip("Display help for Layers View"));
         helpDocumentationButton.setOnAction(event -> new HelpCtx(LayersViewTopComponent.class.getName()).display());
 
         // Get rid of the ugly button look so the icon stands alone.
-        helpDocumentationButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
+        helpDocumentationButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent; -fx-effect: null; ");
 
         return helpDocumentationButton;
     }

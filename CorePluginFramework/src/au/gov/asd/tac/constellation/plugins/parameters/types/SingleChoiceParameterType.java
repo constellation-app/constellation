@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -66,7 +67,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
      * @param id The String id of the parameter to construct.
      * @return A {@link PluginParameter} of ChoiceParameterType.
      */
-    public static PluginParameter<SingleChoiceParameterValue> build(String id) {
+    public static PluginParameter<SingleChoiceParameterValue> build(final String id) {
         return new PluginParameter<>(new SingleChoiceParameterValue(StringParameterValue.class), INSTANCE, id);
     }
 
@@ -79,7 +80,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
      * of options for the constructed parameter.
      * @return A {@link PluginParameter} of ChoiceParameterType.
      */
-    public static PluginParameter<SingleChoiceParameterValue> build(String id, final Class<? extends ParameterValue> innerClass) {
+    public static PluginParameter<SingleChoiceParameterValue> build(final String id, final Class<? extends ParameterValue> innerClass) {
         return new PluginParameter<>(new SingleChoiceParameterValue(innerClass), INSTANCE, id);
     }
 
@@ -92,7 +93,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
      * value of the parameter being constructed.
      * @return A {@link PluginParameter} of ChoiceParameterType.
      */
-    public static PluginParameter<SingleChoiceParameterValue> build(String id, final SingleChoiceParameterValue pv) {
+    public static PluginParameter<SingleChoiceParameterValue> build(final String id, final SingleChoiceParameterValue pv) {
         return new PluginParameter<>(pv, INSTANCE, id);
     }
 
@@ -229,8 +230,10 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
      * @return True if the parameter's choice can be edited by the user, False
      * otherwise.
      */
-    public static boolean isEditable(PluginParameter<?> parameter) {
-        return (Boolean) parameter.getProperty(EDITABLE);
+    public static boolean isEditable(final PluginParameter<?> parameter) {
+        final Boolean isEditable = (Boolean) parameter.getProperty(EDITABLE);
+
+        return isEditable != null && isEditable;
     }
 
     /**
@@ -240,7 +243,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
      * @param editable Whether or not the parameter's choice can be edited by
      * the user.
      */
-    public static void setEditable(PluginParameter<?> parameter, boolean editable) {
+    public static void setEditable(final PluginParameter<?> parameter, boolean editable) {
         parameter.setProperty(EDITABLE, editable);
     }
 
@@ -326,9 +329,8 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
          *
          * @return A list of Strings representing the options.
          */
-        public List<String> getOptions() {
-            final List<String> optionStrings = new ArrayList<>();
-            options.stream().forEach(option -> optionStrings.add(option.toString()));
+        public List<String> getOptions() {            
+            final List<String> optionStrings = options.stream().map(Object::toString).toList();
 
             return Collections.unmodifiableList(optionStrings);
         }
@@ -339,7 +341,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
          * @param options A list of Strings to set the collection of options
          * from.
          */
-        public void setOptions(final List<String> options) {
+        public void setOptions(final Iterable<String> options) {
             this.options.clear();
             for (final String option : options) {
                 final StringParameterValue doOption = new StringParameterValue(option);
@@ -377,7 +379,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
          * @return A String representing the currently selected value.
          */
         public String getChoice() {
-            return choice.toString();
+            return choice != null ? choice.toString() : null;
         }
 
         /**
@@ -486,16 +488,16 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
             boolean valueChanged = false;
             if (o == null) {
                 options.clear();
+                choice = null;
                 valueChanged = true;
-            } else if (o instanceof SingleChoiceParameterValue) {
-                final SingleChoiceParameterValue sc = (SingleChoiceParameterValue) o;
-                if (!Objects.equals(options, sc.options)) {
+            } else if (o instanceof SingleChoiceParameterValue singleChoiceParameterValue) {
+                if (!Objects.equals(options, singleChoiceParameterValue.options)) {
                     options.clear();
-                    options.addAll(sc.options);
+                    options.addAll(singleChoiceParameterValue.options);
                     valueChanged = true;
                 }
-                if (!Objects.equals(choice, sc.choice)) {
-                    choice = sc.choice;
+                if (!Objects.equals(choice, singleChoiceParameterValue.choice)) {
+                    choice = singleChoiceParameterValue.choice;
                     valueChanged = true;
                 }
             } else if (o instanceof ParameterValue) {
@@ -515,10 +517,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
 
         @Override
         public boolean equals(final Object obj) {
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
+            if (obj == null || getClass() != obj.getClass()) {
                 return false;
             }
             final SingleChoiceParameterValue other = (SingleChoiceParameterValue) obj;

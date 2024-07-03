@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,18 +41,18 @@ public class SelectSourcesPlugin extends SimpleEditPlugin {
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-        int vxSelected = VisualConcept.VertexAttribute.SELECTED.get(graph);
+        final int vxSelected = VisualConcept.VertexAttribute.SELECTED.get(graph);
 
         if (vxSelected != Graph.NOT_FOUND) {
-            int vertexCount = graph.getVertexCount();
+            final int vertexCount = graph.getVertexCount();
 
             for (int position = 0; position < vertexCount; position++) {
                 //Convert the position to a vertex
-                int vertex = graph.getVertex(position);
+                final int vertex = graph.getVertex(position);
 
                 //Discover the number of incoming and outgoing transactions
-                int numberOutgoing = graph.getVertexTransactionCount(vertex, Graph.OUTGOING);
-                int numberIncoming = graph.getVertexTransactionCount(vertex, Graph.INCOMING);
+                final int numberOutgoing = graph.getVertexTransactionCount(vertex, Graph.OUTGOING);
+                final int numberIncoming = graph.getVertexTransactionCount(vertex, Graph.INCOMING);
 
                 //Set the Nodes that are sources to be selected.
                 //DO NOT UNSELECT ANY EXISTING VERTICES

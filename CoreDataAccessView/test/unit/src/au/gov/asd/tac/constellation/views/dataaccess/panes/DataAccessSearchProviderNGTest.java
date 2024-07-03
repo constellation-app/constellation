@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.qs.QuickSearchUtilities;
 import au.gov.asd.tac.constellation.views.dataaccess.components.DataAccessTabPane;
 import au.gov.asd.tac.constellation.views.dataaccess.tasks.ShowDataAccessPluginTask;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessUtilities;
@@ -178,15 +179,15 @@ public class DataAccessSearchProviderNGTest {
         when(request.getText()).thenReturn("Select");
 
         // Return a valid response when results are added that match the expected
-        when(response.addResult(Mockito.any(), Mockito.eq("Select Top N"))).thenReturn(true);
-        when(response.addResult(Mockito.any(), Mockito.eq("Select All"))).thenReturn(true);
+        when(response.addResult(Mockito.any(), Mockito.eq(QuickSearchUtilities.CIRCLED_D + "  Select Top N"))).thenReturn(true);
+        when(response.addResult(Mockito.any(), Mockito.eq(QuickSearchUtilities.CIRCLED_D + "  Select All"))).thenReturn(true);
 
         DataAccessSearchProvider instance = new DataAccessSearchProvider();
         instance.evaluate(request, response);
 
         // Verify that addResult was called on the correct plugins
-        verify(response, times(1)).addResult(Mockito.any(), Mockito.eq("Select Top N"));
-        verify(response, times(1)).addResult(Mockito.any(), Mockito.eq("Select All"));
+        verify(response, times(1)).addResult(Mockito.any(), Mockito.eq(QuickSearchUtilities.CIRCLED_D + "  Select Top N"));
+        verify(response, times(1)).addResult(Mockito.any(), Mockito.eq(QuickSearchUtilities.CIRCLED_D + "  Select All"));
     }
 
     ////////////////////////////////////////////////////////////////////////////

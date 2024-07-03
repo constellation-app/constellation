@@ -1,4 +1,39 @@
 # Constellation Changes
+
+## Changes in May 2024
+-   Removed `FloatArray.clone()` and replaced with a constructor that takes a `FloatArray` object. 
+-   Removed `IntArray.clone()` in favour of constructor that takes a `IntArray` object. 
+-   Removed `NamedSelection.clone()` and replaced with a constructor that takes a `NamedSelection` object. 
+-   Updated the method GetNodeLocation() to getNodeLocation() in class InteractiveGLVisualProcessor.
+
+## Changes in April 2024
+-   Removed `graph` parameter from `PermanentMergeTableModel.initialise` as it was unused.
+
+## Changes in March 2024
+-   Removed `dateTimeAttr` parameter from `ClusteringManager.InitDimOrHidePlugin` as it was unused.
+-   Removed `datetimeAtrr` parameter from `TimelinePanel.initExclusionState` as it was unused.
+-   Renamed `exclusionState()`, `setIsShowingSelectedOnly()`, and `setIsShowingNodeLabels()` in `TimelineState` 
+    to `getExclusionState()`, `setShowingSelectedOnly()`, and `setShowingNodeLabels()` to follow naming convention.
+-   Updated `TimeExtents` to be a record instead of a class.
+-   Updated `VideoFrame` to be a record.
+
+## Changes in February 2024
+-   Updated the `constellationapplication/netbeans-runner` docker image
+    to `21` to include updates to Netbeans, Azul JDK, and other tools used as part of image.
+
+## Changes in December 2023
+-   Updated GraphML error messaging for invalid nodes and edges. Transaction Identifiers added as UUIDs if none are found.
+
+## Changes in July 2023
+-   Replaced FindView to express the new interface build in JavaFX and removed the old Swing implementation
+
+## Changes in June 2023
+-   Changed LookupPluginsTask to implement Supplier<Map<String, Pair<Integer, List<DataAccessPlugin>>>>.
+-   Updated return type of `LookupPluginsTask.get()` from Map<String, List<DataAccessPlugin>> to Map<String, Pair<Integer, List<DataAccessPlugin>>>.
+-   Updated `plugins` parameter type in `QueryPhasePane.QueryPhasePane()` from Map<String, List<DataAccessPlugin>> to Map<String, Pair<Integer, List<DataAccessPlugin>>>.
+-   Updated `PLUGIN_LOAD` member variable type in `DataAccessPaneState` from Map<String, List<DataAccessPlugin>> to Map<String, Pair<Integer, List<DataAccessPlugin>>>.
+-   Updated return type of `DataAccessPaneState.getPlugins()` from Map<String, List<DataAccessPlugin>> to Map<String, Pair<Integer, List<DataAccessPlugin>>>.
+
 ## Changes in April 2023
 -   Added global thread pool class called ConstellationGlobalThreadPool has been created and can be called to generate a new thread.
 -   Removed code that created new thread pool every time a new thread was needed.

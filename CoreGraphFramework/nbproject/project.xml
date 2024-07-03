@@ -35,7 +35,7 @@
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>9.7.1</specification-version>
+                        <specification-version>9.31</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -43,7 +43,7 @@
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>8.33.1</specification-version>
+                        <specification-version>8.57</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -51,7 +51,7 @@
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>9.6.1</specification-version>
+                        <specification-version>9.32</specification-version>
                     </run-dependency>
                 </dependency>
             </module-dependencies>
@@ -79,6 +79,7 @@
                 <package>au.gov.asd.tac.constellation.graph.monitor</package>
                 <package>au.gov.asd.tac.constellation.graph.operations</package>
                 <package>au.gov.asd.tac.constellation.graph.processing</package>
+                <package>au.gov.asd.tac.constellation.graph.reporting</package>
                 <package>au.gov.asd.tac.constellation.graph.schema</package>
                 <package>au.gov.asd.tac.constellation.graph.schema.attribute</package>
                 <package>au.gov.asd.tac.constellation.graph.schema.concept</package>

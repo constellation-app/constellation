@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,10 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult.ElementScore;
+import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticTranslatorUtilities;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.ColorVisualisation;
+import java.util.HashMap;
+import java.util.Map;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -43,6 +46,10 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = GraphVisualisationTranslator.class)
 public class ScoreToColorTranslator extends AbstractColorTranslator<ScoreResult, ElementScore> {
+
+    // Maps of the colors of the vertices and transactions before the plugin is run
+    private Map<Integer, ConstellationColor> vertexColors = new HashMap<>();
+    private Map<Integer, ConstellationColor> transactionColors = new HashMap<>();
 
     @Override
     public String getName() {
@@ -65,7 +72,27 @@ public class ScoreToColorTranslator extends AbstractColorTranslator<ScoreResult,
                 .withParameter(ColorElementsPlugin.RESET_PARAMETER_ID, reset)
                 .executeLater(GraphManager.getDefault().getActiveGraph());
     }
+    
+    @Override
+    public Map<Integer, ConstellationColor> getVertexColors() {
+        return vertexColors;
+    }
 
+    @Override
+    public void setVertexColors(final Map<Integer, ConstellationColor> colors) {
+        vertexColors = colors;
+    }
+
+    @Override
+    public Map<Integer, ConstellationColor> getTransactionColors() {
+        return transactionColors;
+    }
+
+    @Override
+    public void setTransactionColors(final Map<Integer, ConstellationColor> colors) {
+        transactionColors = colors;
+    }
+    
     @PluginInfo(tags = {PluginTags.MODIFY})
     private class ColorElementsPlugin extends SimpleEditPlugin {
 
@@ -87,9 +114,25 @@ public class ScoreToColorTranslator extends AbstractColorTranslator<ScoreResult,
 
             // get parameter values
             final boolean reset = parameters.getBooleanValue(RESET_PARAMETER_ID);
+            
+            final String currentGraphKey = GraphManager.getDefault().getActiveGraph().getId();
+
+            // When a new instance of this class is created, it will not know if the current colors are at their original values
+            // This means it won't have valid data to use for the reset function ... in a new instance (ie. a new "Run") it will be empty
+            // Using a static cache gets around the issue. We can retrieve and initialise color data from the cache if available.
+            
+            if (AnalyticTranslatorUtilities.getVertexColorCache().containsKey(currentGraphKey)) {
+                vertexColors = AnalyticTranslatorUtilities.getVertexColorCache().get(currentGraphKey);
+            } else {
+                vertexColors = new HashMap<>();
+            }
+            if (AnalyticTranslatorUtilities.getTransactionColorCache().containsKey(currentGraphKey)) {
+                transactionColors = AnalyticTranslatorUtilities.getTransactionColorCache().get(currentGraphKey);
+            } else {
+                transactionColors = new HashMap<>();
+            }
 
             // ensure attributes
-            final int vertexIconAttribute = VisualConcept.VertexAttribute.FOREGROUND_ICON.ensure(graph);
             final int vertexOverlayColorAttribute = VisualConcept.VertexAttribute.OVERLAY_COLOR.ensure(graph);
             final int vertexColorReferenceAttribute = VisualConcept.GraphAttribute.NODE_COLOR_REFERENCE.ensure(graph);
             final int transactionOverlayColorAttribute = VisualConcept.TransactionAttribute.OVERLAY_COLOR.ensure(graph);
@@ -100,30 +143,19 @@ public class ScoreToColorTranslator extends AbstractColorTranslator<ScoreResult,
             }
 
             final ScoreResult scoreResults = result;
+            
+            vertexColors.keySet().forEach(vertexKey -> 
+                graph.setObjectValue(vertexOverlayColorAttribute, vertexKey, vertexColors.get(vertexKey)));
+            
+            transactionColors.keySet().forEach(transactionKey -> 
+                graph.setObjectValue(transactionOverlayColorAttribute, transactionKey, transactionColors.get(transactionKey)));
+            
+            vertexColors.clear();
+            transactionColors.clear();
+            graph.setObjectValue(vertexColorReferenceAttribute, 0, null);
+            graph.setObjectValue(transactionColorReferenceAttribute, 0, null);
 
-            if (reset) {
-                for (final ElementScore scoreResult : scoreResults.get()) {
-                    final GraphElementType elementType = scoreResult.getElementType();
-                    final int elementId = scoreResult.getElementId();
-                    switch (elementType) {
-                        case VERTEX:
-                            if (graph.getSchema() != null) {
-                                graph.getSchema().completeVertex(graph, elementId);
-                            }
-                            break;
-                        case TRANSACTION:
-                            if (graph.getSchema() != null) {
-                                graph.getSchema().completeTransaction(graph, elementId);
-                            }
-                            break;
-                        default:
-                            throw new InvalidElementTypeException("'Color Elements' is not supported "
-                                    + "for the element type associated with this analytic question.");
-                    }
-                }
-                graph.setObjectValue(vertexColorReferenceAttribute, 0, null);
-                graph.setObjectValue(transactionColorReferenceAttribute, 0, null);
-            } else {
+            if (!reset) {
                 // find highest and lowest mean scores among available analytic events
                 float highestMeanScore = 0.0F;
                 float lowestMeanScore = 0.0F;
@@ -147,21 +179,26 @@ public class ScoreToColorTranslator extends AbstractColorTranslator<ScoreResult,
                             .reduce((x, y) -> x + y).get() / scoreResult.getNamedScores().size();
                     final float colorIntensity = meanScoreRange != 0 ? (elementMeanScore + lowestMeanScore) / meanScoreRange : elementMeanScore + lowestMeanScore;
                     switch (elementType) {
-                        case VERTEX:
+                        case VERTEX -> {
+                            final ConstellationColor vertexColor = graph.getObjectValue(vertexOverlayColorAttribute, elementId);
+                            vertexColors.put(elementId, vertexColor);
                             graph.setObjectValue(vertexOverlayColorAttribute, elementId, ConstellationColor.getColorValue((float) 1.0 - colorIntensity, (float) 1.0 - colorIntensity, 1F, 1F));
-                            graph.setObjectValue(vertexIconAttribute, elementId, "transparent");
-                            break;
-                        case TRANSACTION:
+                        }
+                        case TRANSACTION -> {
+                            final ConstellationColor transactionColor = graph.getObjectValue(transactionOverlayColorAttribute, elementId);
+                            transactionColors.put(elementId, transactionColor);
                             graph.setObjectValue(transactionOverlayColorAttribute, elementId, ConstellationColor.getColorValue((float) 1.0 - colorIntensity, (float) 1.0 - colorIntensity, 1F, 1F));
-                            break;
-                        default:
-                            throw new InvalidElementTypeException("'Color Elements' is not supported "
+                        }
+                        default -> throw new InvalidElementTypeException("'Color Elements' is not supported "
                                     + "for the element type associated with this analytic question.");
                     }
                 }
                 graph.setObjectValue(vertexColorReferenceAttribute, 0, VisualConcept.VertexAttribute.OVERLAY_COLOR.getName());
                 graph.setObjectValue(transactionColorReferenceAttribute, 0, VisualConcept.TransactionAttribute.OVERLAY_COLOR.getName());
             }
+            
+            AnalyticTranslatorUtilities.addToVertexColorCache(currentGraphKey, vertexColors);
+            AnalyticTranslatorUtilities.addToTransactionColorCache(currentGraphKey, transactionColors);
         }
 
         @Override

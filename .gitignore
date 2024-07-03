@@ -10,6 +10,7 @@
 *.pyc
 makefile
 *.DS_Store
+*.bak
 
 .v
 

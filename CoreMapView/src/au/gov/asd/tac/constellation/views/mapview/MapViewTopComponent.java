@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,13 +69,13 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
@@ -153,6 +153,8 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
     private int cachedWidth;
     private int cachedHeight;
     private final Consumer<Graph> updateMarkers;
+    
+    private static final Pattern COMMA_SEPARATED_REGEX = Pattern.compile("[,\\s]+", Pattern.UNICODE_CHARACTER_CLASS);
 
     public MapViewTopComponent() {
         super();
@@ -214,15 +216,13 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
             if (currentGraph != null) {
                 final String zoomAction = (String) event.getSource();
                 switch (zoomAction) {
-                    case ZOOM_ALL:
-                        renderer.zoomToMarkers(markerState);
-                        break;
-                    case ZOOM_SELECTION:
+                    case ZOOM_ALL -> renderer.zoomToMarkers(markerState);
+                    case ZOOM_SELECTION -> {
                         final MarkerState selectedOnlyState = new MarkerState();
                         selectedOnlyState.setShowSelectedOnly(true);
                         renderer.zoomToMarkers(selectedOnlyState);
-                        break;
-                    case ZOOM_LOCATION:
+                    }
+                    case ZOOM_LOCATION -> {
                         final PluginParameters zoomParameters = createParameters();
                         final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(ZOOM_LOCATION, zoomParameters);
                         dialog.showAndWait();
@@ -233,9 +233,10 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
                             final String location = zoomParameters.getStringValue(PARAMETER_LOCATION);
                             zoomLocationBasedOnGeoType(geoType, location);
                         }
-                        break;
-                    default:
-                        break;
+                    }
+                    default -> {
+                        // do nothing
+                    }
                 }
             } else {
                 NotifyDisplayer.display("Zoom options require a graph to be open!", NotifyDescriptor.INFORMATION_MESSAGE);
@@ -378,8 +379,8 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
     private void zoomLocationBasedOnGeoType(final String geoType, final String location) throws AssertionError {
         final ConstellationAbstractMarker marker;
         switch (geoType) {
-            case GEO_TYPE_COORDINATE:
-                final String[] coordinate = location.split("[,\\s]+");
+            case GEO_TYPE_COORDINATE -> {
+                final String[] coordinate = COMMA_SEPARATED_REGEX.split(location);
                 if (coordinate.length != 2 && coordinate.length != 3) {
                     NotifyDisplayer.display("Invalid coordinate syntax provided, should be comma or space separated", NotifyDescriptor.ERROR_MESSAGE);
                     return;
@@ -424,8 +425,8 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
                     final ConstellationPointFeature coordinateFeature = new ConstellationPointFeature(coordinateLocation);
                     marker = renderer.addCustomMarker(coordinateFeature);
                 }
-                break;
-            case GEO_TYPE_GEOHASH:
+            }
+            case GEO_TYPE_GEOHASH -> {
                 final double[] geohashCoordinates = Geohash.decode(location, Geohash.Base.B16);
                 final ConstellationShapeFeature geohashFeature = new ConstellationShapeFeature(ConstellationFeatureType.POLYGON);
                 geohashFeature.addLocation(new Location(geohashCoordinates[0] - geohashCoordinates[2], geohashCoordinates[1] - geohashCoordinates[3]));
@@ -434,16 +435,14 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
                 geohashFeature.addLocation(new Location(geohashCoordinates[0] - geohashCoordinates[2], geohashCoordinates[1] + geohashCoordinates[3]));
                 geohashFeature.addLocation(new Location(geohashCoordinates[0] - geohashCoordinates[2], geohashCoordinates[1] - geohashCoordinates[3]));
                 marker = renderer.addCustomMarker(geohashFeature);
-                break;
-            case GEO_TYPE_MGRS:
+            }
+            case GEO_TYPE_MGRS -> {
                 final double[] mgrsCoordinates = Mgrs.decode(location);
                 final Location mgrsLocation = new Location(mgrsCoordinates[0], mgrsCoordinates[1]);
                 final ConstellationPointFeature mgrsFeature = new ConstellationPointFeature(mgrsLocation);
                 marker = renderer.addCustomMarker(mgrsFeature);
-                break;
-            default:
-                marker = null;
-                break;
+            }
+            default -> marker = null;
         }
         renderer.zoomToLocation(marker == null ? null : marker.getLocation());
     }
@@ -468,21 +467,16 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
             @SuppressWarnings("unchecked") //master will need to be of type SingleChoiceParameter
             final PluginParameter<SingleChoiceParameterValue> typedMaster = (PluginParameter<SingleChoiceParameterValue>) master;
             switch (SingleChoiceParameterType.getChoice(typedMaster)) {
-                case GEO_TYPE_COORDINATE:
-                    params.get(PARAMETER_LOCATION)
+                case GEO_TYPE_COORDINATE -> params.get(PARAMETER_LOCATION)
                             .setDescription("Enter a coordinate in decimal degrees (and optionally a radius "
                                     + "in kilometers) with components separated by spaces or commas");
-                    break;
-                case GEO_TYPE_GEOHASH:
-                    params.get(PARAMETER_LOCATION)
+                case GEO_TYPE_GEOHASH -> params.get(PARAMETER_LOCATION)
                             .setDescription("Enter a base-16 geohash value");
-                    break;
-                case GEO_TYPE_MGRS:
-                    params.get(PARAMETER_LOCATION)
+                case GEO_TYPE_MGRS -> params.get(PARAMETER_LOCATION)
                             .setDescription("Enter an MGRS value");
-                    break;
-                default:
-                    break;
+                default -> {
+                    // do nothing
+                }
             }
         });
         parameters.addController(PARAMETER_TYPE, controller);
@@ -495,7 +489,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
     }
 
     public List<? extends MapProvider> getProviders() {
-        return providers;
+        return Collections.unmodifiableList(providers);
     }
 
     public MarkerState getMarkerState() {
@@ -618,24 +612,25 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         @Override
         protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
             switch (graphElementType) {
-                case VERTEX:
+                case VERTEX -> {
                     final int vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
                     final int vertexCount = graph.getVertexCount();
                     for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
                         final int vertexId = graph.getVertex(vertexPosition);
                         graph.setBooleanValue(vertexSelectedAttribute, vertexId, elementIds.contains(vertexId));
                     }
-                    break;
-                case TRANSACTION:
+                }
+                case TRANSACTION -> {
                     final int transactionSelectedAttribute = VisualConcept.TransactionAttribute.SELECTED.get(graph);
                     final int transactionCount = graph.getTransactionCount();
                     for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
                         final int transactionId = graph.getTransaction(transactionPosition);
                         graph.setBooleanValue(transactionSelectedAttribute, transactionId, elementIds.contains(transactionId));
                     }
-                    break;
-                default:
-                    break;
+                }
+                default -> {
+                    // do nothing
+                }
             }
         }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,6 +44,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = AbstractGraphIOProvider.class)
 public class AnalyticViewStateIoProvider extends AbstractGraphIOProvider {
 
+
     @Override
     public String getName() {
         return AnalyticViewConcept.MetaAttribute.ANALYTIC_VIEW_STATE.getName();
@@ -83,15 +84,11 @@ public class AnalyticViewStateIoProvider extends AbstractGraphIOProvider {
                             final String parameterValue = parametersEntry.getValue().asText();
                             selectablePlugin.setUpdatedParameter(parameterName, parameterValue);
                         }
-
                         selectablePluginList.add(selectablePlugin);
                     }
                 }
-
                 plugins.add(selectablePluginList);
-
             }
-
             final AnalyticViewState state = new AnalyticViewState(currentIndex, questions, plugins);
             graph.setObjectValue(attributeId, elementId, state);
         }

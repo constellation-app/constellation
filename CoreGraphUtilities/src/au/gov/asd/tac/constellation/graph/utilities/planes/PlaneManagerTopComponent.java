@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -621,7 +621,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
                 final PlaneState state = new PlaneState(oldState);
                 for (int ix : selectedPlanes) {
                     final Plane plane = state.getPlane(ix);
-                    final float[] xyz = ppp.getPosition(wg, centre[BBoxf.X], centre[BBoxf.Y], centre[BBoxf.Z], nradius, plane.getWidth(), plane.getHeight());
+                    final float[] xyz = ppp.getPosition(centre[BBoxf.X], centre[BBoxf.Y], centre[BBoxf.Z], nradius, plane.getWidth(), plane.getHeight());
                     plane.setX(xyz[0]);
                     plane.setY(xyz[1]);
                     plane.setZ(xyz[2]);

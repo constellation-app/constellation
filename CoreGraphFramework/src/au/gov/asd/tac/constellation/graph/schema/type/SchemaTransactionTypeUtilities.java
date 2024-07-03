@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -116,7 +116,7 @@ public class SchemaTransactionTypeUtilities {
             });
 
             // add custom types if no concept is specified
-            if (fromConcepts == GET_ALL_TYPES) {
+            if (fromConcepts == null) {
                 transactionTypes.addAll(CUSTOM_TRANSACTION_TYPES);
             }
 
@@ -160,9 +160,8 @@ public class SchemaTransactionTypeUtilities {
             return getDefaultType();
         }
 
-        for (SchemaTransactionType schemaTransactionType : getTypes(fromConcept)) {
-            if (schemaTransactionType.getName().equals(name)
-                    || schemaTransactionType.toString().equals(name)) {
+        for (final SchemaTransactionType schemaTransactionType : getTypes(fromConcept)) {
+            if (schemaTransactionType.getName().equals(name) || schemaTransactionType.toString().equals(name)) {
                 return schemaTransactionType;
             }
         }
@@ -189,9 +188,23 @@ public class SchemaTransactionTypeUtilities {
 
         SchemaTransactionType type = SchemaTransactionTypeUtilities.getType(name);
         if (type.equals(defaultType)) {
-            type = new SchemaTransactionType.Builder(defaultType, name)
-                    .setIncomplete(true)
-                    .build();
+            String hierarchicalName = name;
+            int lastHSCPos = hierarchicalName.lastIndexOf(SchemaElementType.HIERARCHY_SEPARATOR_CHARACTER);
+            boolean foundMatch = false;
+            SchemaTransactionType ancestorType = null;
+            while (lastHSCPos > -1 && !foundMatch) {
+                ancestorType = SchemaTransactionTypeUtilities.getType(hierarchicalName.substring(0, lastHSCPos));
+                if (!ancestorType.equals(defaultType)) {
+                    foundMatch = true;
+                }
+                hierarchicalName = hierarchicalName.substring(0, lastHSCPos);
+                lastHSCPos = hierarchicalName.lastIndexOf(SchemaElementType.HIERARCHY_SEPARATOR_CHARACTER);
+            }
+            if (foundMatch) {
+                type = new SchemaTransactionType.Builder(ancestorType, name).build();
+            } else {
+                type = new SchemaTransactionType.Builder(defaultType, name).setIncomplete(true).build();
+            }
         }
 
         return type;

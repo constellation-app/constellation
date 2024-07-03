@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -315,15 +315,15 @@ class PQNode {
             }
             reverseCount -= lastChange;
             switch (child.label) {
-                case EMPTY:
+                case EMPTY -> {
                     count += child.numLeafDescendants;
                     lastChange = child.numLeafDescendants;
-                    break;
-                case FULL:
+                }
+                case FULL -> {
                     count -= child.numLeafDescendants;
                     lastChange = -child.numLeafDescendants;
-                    break;
-                case PARTIAL:
+                }
+                case PARTIAL -> {
                     for (PQNode grandchild : child.labeledChildren.get(NodeLabel.EMPTY)) {
                         count += grandchild.numLeafDescendants;
                         lastChange += grandchild.numLeafDescendants;
@@ -332,9 +332,10 @@ class PQNode {
                         carry += grandchild.numLeafDescendants;
                         reverseCount += grandchild.numLeafDescendants;
                     }
-                    break;
-                default:
-                    break;
+                }
+                default -> {
+                    // Do nothing 
+                }
             }
             if (count > maxCount) {
                 maxCount = count;
@@ -372,13 +373,11 @@ class PQNode {
             count += carry;
             carry = 0;
             switch (child.label) {
-                case EMPTY:
+                case EMPTY ->
                     carry = -child.numLeafDescendants;
-                    break;
-                case FULL:
+                case FULL ->
                     carry = child.numLeafDescendants;
-                    break;
-                case PARTIAL:
+                case PARTIAL -> {
                     for (PQNode grandchild : child.labeledChildren.get(NodeLabel.EMPTY)) {
                         if (count <= countAtAnchor) {
                             count -= grandchild.numLeafDescendants;
@@ -393,9 +392,10 @@ class PQNode {
                             count += grandchild.numLeafDescendants;
                         }
                     }
-                    break;
-                default:
-                    break;
+                }
+                default -> {
+                    // Do nothing 
+                }
             }
             if (count <= countAtAnchor) {
                 final int zoneScore = maxCountSinceAnchor - countAtAnchor;
@@ -739,14 +739,14 @@ class PQNode {
         public void testReplace() {
 
             Iterator<PQNode> iter;
-            PQNode node = makeNode();
-            PQNode child1 = makeNode();
-            PQNode child2 = makeNode();
-            PQNode replacementChild1 = makeNode();
-            PQNode replacementChild2 = makeNode();
-            PQNode grandChild = makeNode();
-            PQNode grandChild2 = makeNode();
-            PQNode replacementGrandChild = makeNode();
+            final PQNode node = makeNode();
+            final PQNode child1 = makeNode();
+            final PQNode child2 = makeNode();
+            final PQNode replacementChild1 = makeNode();
+            final PQNode replacementChild2 = makeNode();
+            final PQNode grandChild = makeNode();
+            final PQNode grandChild2 = makeNode();
+            final PQNode replacementGrandChild = makeNode();
 
             child1.label = NodeLabel.EMPTY;
             replacementChild1.label = NodeLabel.FULL;
@@ -857,11 +857,11 @@ class PQNode {
 
         public void testReverse() {
             Iterator<PQNode> iter;
-            PQNode node = makeNode();
-            PQNode child1 = makeNode();
-            PQNode child2 = makeNode();
-            PQNode grandChild1 = makeNode();
-            PQNode grandChild2 = makeNode();
+            final PQNode node = makeNode();
+            final PQNode child1 = makeNode();
+            final PQNode child2 = makeNode();
+            final PQNode grandChild1 = makeNode();
+            final PQNode grandChild2 = makeNode();
 
             child1.label = NodeLabel.EMPTY;
             child1.numLeafDescendants = 1;
@@ -941,14 +941,14 @@ class PQNode {
         public void testConcatenate() {
 
             Iterator<PQNode> iter;
-            PQNode node = makeNode();
-            PQNode child1 = makeNode();
-            PQNode child2 = makeNode();
-            PQNode child3 = makeNode();
-            PQNode child2grandChild1 = makeNode();
-            PQNode child2grandChild2 = makeNode();
-            PQNode child3grandChild1 = makeNode();
-            PQNode child3grandChild2 = makeNode();
+            final PQNode node = makeNode();
+            final PQNode child1 = makeNode();
+            final PQNode child2 = makeNode();
+            final PQNode child3 = makeNode();
+            final PQNode child2grandChild1 = makeNode();
+            final PQNode child2grandChild2 = makeNode();
+            final PQNode child3grandChild1 = makeNode();
+            final PQNode child3grandChild2 = makeNode();
 
             child1.label = NodeLabel.EMPTY;
             child1.numLeafDescendants = 0;
@@ -1068,14 +1068,14 @@ class PQNode {
         public void testFlatten() {
 
             Iterator<PQNode> iter;
-            PQNode node = makeNode();
-            PQNode child1 = makeNode();
-            PQNode child2 = makeNode();
-            PQNode child3 = makeNode();
-            PQNode child2grandChild1 = makeNode();
-            PQNode child2grandChild2 = makeNode();
-            PQNode child3grandChild1 = makeNode();
-            PQNode child3grandChild2 = makeNode();
+            final PQNode node = makeNode();
+            final PQNode child1 = makeNode();
+            final PQNode child2 = makeNode();
+            final PQNode child3 = makeNode();
+            final PQNode child2grandChild1 = makeNode();
+            final PQNode child2grandChild2 = makeNode();
+            final PQNode child3grandChild1 = makeNode();
+            final PQNode child3grandChild2 = makeNode();
 
             child1.label = NodeLabel.EMPTY;
             child1.numLeafDescendants = 1;
@@ -1158,11 +1158,11 @@ class PQNode {
 
             Iterator<PQNode> iter;
             PQNode node;
-            PQNode child1 = makeNode();
-            PQNode child2 = makeNode();
-            PQNode child3 = makeNode();
-            PQNode child4 = makeNode();
-            PQNode[] children = {child1, child2, child3, child4};
+            final PQNode child1 = makeNode();
+            final PQNode child2 = makeNode();
+            final PQNode child3 = makeNode();
+            final PQNode child4 = makeNode();
+            final PQNode[] children = {child1, child2, child3, child4};
 
             // Test 1 setup
             child1.label = NodeLabel.EMPTY;
@@ -1288,22 +1288,22 @@ class PQNode {
             assert !iter.hasNext();
 
             // Setup for tests with partial nodes
-            PQNode emptyChild = makeNode();
+            final PQNode emptyChild = makeNode();
             emptyChild.label = NodeLabel.EMPTY;
-            PQNode fullChild = makeNode();
+            final PQNode fullChild = makeNode();
             fullChild.label = NodeLabel.FULL;
             PQNode partialChild = null;
-            PQNode gChild1 = makeNode();
-            PQNode gChild2 = makeNode();
-            PQNode gChild3 = makeNode();
-            PQNode gChild4 = makeNode();
+            final PQNode gChild1 = makeNode();
+            final PQNode gChild2 = makeNode();
+            final PQNode gChild3 = makeNode();
+            final PQNode gChild4 = makeNode();
             gChild1.label = NodeLabel.EMPTY;
             gChild2.label = NodeLabel.EMPTY;
             gChild3.label = NodeLabel.FULL;
             gChild4.label = NodeLabel.FULL;
-            PQNode[] topLevelChildren = {emptyChild, partialChild, fullChild};
-            PQNode[] topLevelChildrenReverse = {fullChild, partialChild, emptyChild};
-            PQNode[] secondLevelChildren = {gChild1, gChild2, gChild3, gChild4};
+            final PQNode[] topLevelChildren = {emptyChild, partialChild, fullChild};
+            final PQNode[] topLevelChildrenReverse = {fullChild, partialChild, emptyChild};
+            final PQNode[] secondLevelChildren = {gChild1, gChild2, gChild3, gChild4};
 
             // Test 9 setup
             partialChild = makeQNodeWithChildren(secondLevelChildren);
@@ -1334,7 +1334,7 @@ class PQNode {
 
             iter = node.children.iterator();
             assert iter.next() == emptyChild;
-            PQNode next = iter.next();
+            final PQNode next = iter.next();
             assert next == gChild3;
             assert iter.next() == gChild4;
             assert iter.next() == fullChild;
@@ -1409,12 +1409,12 @@ class PQNode {
         public void testTrimDoublyPartial() {
             Iterator<PQNode> iter;
             PQNode node;
-            PQNode child1 = makeNode();
-            PQNode child2 = makeNode();
-            PQNode child3 = makeNode();
-            PQNode child4 = makeNode();
-            PQNode child5 = makeNode();
-            PQNode[] children = {child1, child2, child3, child4, child5};
+            final PQNode child1 = makeNode();
+            final PQNode child2 = makeNode();
+            final PQNode child3 = makeNode();
+            final PQNode child4 = makeNode();
+            final PQNode child5 = makeNode();
+            final PQNode[] children = {child1, child2, child3, child4, child5};
 
             // Test 1 setup
             child1.label = NodeLabel.EMPTY;
@@ -1468,22 +1468,22 @@ class PQNode {
             assert !iter.hasNext();
 
             // Setup for tests with partial nodes
-            PQNode emptyChild1 = makeNode();
+            final PQNode emptyChild1 = makeNode();
             emptyChild1.label = NodeLabel.EMPTY;
-            PQNode emptyChild2 = makeNode();
+            final PQNode emptyChild2 = makeNode();
             emptyChild2.label = NodeLabel.EMPTY;
-            PQNode fullChild = makeNode();
+            final PQNode fullChild = makeNode();
             fullChild.label = NodeLabel.FULL;
             PQNode partialChild1 = null;
             PQNode partialChild2 = null;
-            PQNode g1Child1 = makeNode();
-            PQNode g1Child2 = makeNode();
-            PQNode g1Child3 = makeNode();
-            PQNode g1Child4 = makeNode();
-            PQNode g2Child1 = makeNode();
-            PQNode g2Child2 = makeNode();
-            PQNode g2Child3 = makeNode();
-            PQNode g2Child4 = makeNode();
+            final PQNode g1Child1 = makeNode();
+            final PQNode g1Child2 = makeNode();
+            final PQNode g1Child3 = makeNode();
+            final PQNode g1Child4 = makeNode();
+            final PQNode g2Child1 = makeNode();
+            final PQNode g2Child2 = makeNode();
+            final PQNode g2Child3 = makeNode();
+            final PQNode g2Child4 = makeNode();
             g1Child1.label = NodeLabel.EMPTY;
             g1Child2.label = NodeLabel.EMPTY;
             g1Child3.label = NodeLabel.FULL;
@@ -1492,9 +1492,9 @@ class PQNode {
             g2Child2.label = NodeLabel.EMPTY;
             g2Child3.label = NodeLabel.FULL;
             g2Child4.label = NodeLabel.FULL;
-            PQNode[] topLevelChildren = {emptyChild1, partialChild1, fullChild, partialChild2, emptyChild2};
-            PQNode[] secondLevelChildren1 = {g1Child1, g1Child2, g1Child3, g1Child4};
-            PQNode[] secondLevelChildren2 = {g2Child1, g2Child2, g2Child3, g2Child4};
+            final PQNode[] topLevelChildren = {emptyChild1, partialChild1, fullChild, partialChild2, emptyChild2};
+            final PQNode[] secondLevelChildren1 = {g1Child1, g1Child2, g1Child3, g1Child4};
+            final PQNode[] secondLevelChildren2 = {g2Child1, g2Child2, g2Child3, g2Child4};
 
             // Test 4 setup
             partialChild1 = makeQNodeWithChildren(secondLevelChildren1);
@@ -1563,9 +1563,6 @@ class PQNode {
             assert iter.next() == g2Child4;
             assert iter.next() == emptyChild2;
             assert !iter.hasNext();
-
         }
-
     }
-
 }

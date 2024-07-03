@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,9 @@ import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttributeUtilities;
 import au.gov.asd.tac.constellation.graph.value.values.IntValue;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -67,7 +69,7 @@ public class BitMaskQueryCollection {
     }
 
     protected List<BitMaskQuery> getActiveQueries() {
-        return activeQueries;
+        return Collections.unmodifiableList(activeQueries);
     }
 
     /**
@@ -262,7 +264,7 @@ public class BitMaskQueryCollection {
                 }
             }
         }
-        attributes.removeIf(item -> item == null);
+        attributes.removeIf(Objects::isNull);
         
         return attributes;
     }

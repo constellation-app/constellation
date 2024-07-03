@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -139,7 +139,6 @@ public class KTruss {
     }
 
     public static void run(final GraphWriteMethods graph, final KTrussResultHandler resultHandler) {
-
         final BitSet vertices = new BitSet();
         vertices.set(0, graph.getVertexCount());
         final BitSet links = new BitSet();
@@ -276,7 +275,6 @@ public class KTruss {
     // Iterates through the links adjacent of a given link, adding them to the same componenent, clearing them, and then calling itself recursively,
     // until it reaches a link with no adjacent links that haven't already been cleared.
     private static void getComponentsHopper(final GraphWriteMethods graph, final BitSet links, final Map<Integer, Integer> nodeToComponent, final Map<Integer, Integer> linkToComponent, final Map<Integer, Integer> componentTree, final int currentComponentNum, final int initialLinkPosition) {
-
         final Deque<Integer> linksToHopFrom = new LinkedList<>();
         linksToHopFrom.add(initialLinkPosition);
         links.clear(initialLinkPosition);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,12 +47,14 @@ public final class BooleanObjectAttributeDescription extends AbstractObjectAttri
         try {
             return super.convertFromObject(object);
         } catch (final IllegalArgumentException ex) {
-            if (object instanceof Number) {
-                return ((Number) object).intValue() != 0;
-            } else if (object instanceof Character) {
-                return ((char) object) != 0;
-            } else {
-                throw ex;
+            switch (object) {
+                case Number number -> {
+                    return number.intValue() != 0;
+                }
+                case Character character -> {
+                    return character != 0;
+                }
+                default -> throw ex;
             }
         }
     }
@@ -62,7 +64,7 @@ public final class BooleanObjectAttributeDescription extends AbstractObjectAttri
         if (StringUtils.isBlank(string)) {
             return getDefault();
         } else {
-            return Boolean.parseBoolean(string);            
+            return Boolean.valueOf(string);            
         }
     }
 
@@ -184,13 +186,13 @@ public final class BooleanObjectAttributeDescription extends AbstractObjectAttri
 
         @Override
         public void removeElement(final int element) {
-            int position = id2position[element];
+            final int position = id2position[element];
             if (position < nextTrue) {
-                int lastTrue = position2id[--nextTrue];
+                final int lastTrue = position2id[--nextTrue];
                 position2id[position] = lastTrue;
                 id2position[lastTrue] = position;
             } else {
-                int firstFalse = position2id[nextFalse++];
+                final int firstFalse = position2id[nextFalse++];
                 position2id[position] = firstFalse;
                 id2position[firstFalse] = position;
             }
@@ -204,7 +206,7 @@ public final class BooleanObjectAttributeDescription extends AbstractObjectAttri
 
         @Override
         public GraphIndexResult getElementsWithAttributeValue(final Object value) {
-            if ((Boolean) value) {
+            if (Boolean.TRUE.equals(value)) {
                 return new IndexResult(nextTrue, 0);
             } else {
                 return new IndexResult(data.length - nextFalse, nextFalse);
@@ -218,20 +220,19 @@ public final class BooleanObjectAttributeDescription extends AbstractObjectAttri
 
         @Override
         public void expandCapacity(final int newCapacity) {
-
-            int[] i2p = new int[newCapacity];
-            int[] p2i = new int[newCapacity];
+            final int[] i2p = new int[newCapacity];
+            final int[] p2i = new int[newCapacity];
             int nt = 0;
             int nf = newCapacity;
 
             for (int i = 0; i < nextTrue; i++) {
-                int element = position2id[i];
+                final int element = position2id[i];
                 i2p[element] = nt;
                 p2i[nt++] = element;
             }
 
             for (int i = nextFalse; i < position2id.length; i++) {
-                int element = position2id[i];
+                final int element = position2id[i];
                 i2p[element] = --nf;
                 p2i[nf] = element;
             }

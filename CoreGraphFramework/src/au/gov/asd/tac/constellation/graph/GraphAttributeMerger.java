@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ public abstract class GraphAttributeMerger {
 
     public static synchronized Map<String, GraphAttributeMerger> getMergers() {
         if (MERGERS.isEmpty()) {
-            for (GraphAttributeMerger merger : Lookup.getDefault().lookupAll(GraphAttributeMerger.class)) {
+            for (final GraphAttributeMerger merger : Lookup.getDefault().lookupAll(GraphAttributeMerger.class)) {
                 MERGERS.put(merger.getId(), merger);
             }
         }
@@ -48,5 +48,4 @@ public abstract class GraphAttributeMerger {
 
     public abstract boolean mergeAttribute(final GraphWriteMethods graph, final GraphElementType elementType,
             final int survivingElement, final int mergedElement, final int attribute);
-
 }

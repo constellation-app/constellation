@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,10 @@
  */
 package au.gov.asd.tac.constellation.utilities.json;
 
-import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.TokenStreamFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayOutputStream;
@@ -101,7 +101,7 @@ public class JsonUtilities {
             }
             current = current.get(key);
         }
-        Iterator<JsonNode> nodeIter = current.iterator();
+        final Iterator<JsonNode> nodeIter = current.iterator();
         return new Iterator<String>() {
             @Override
             public boolean hasNext() {
@@ -181,7 +181,7 @@ public class JsonUtilities {
             }
             current = current.get(key);
         }
-        Iterator<JsonNode> nodeIter = current.iterator();
+        final Iterator<JsonNode> nodeIter = current.iterator();
         return new Iterator<Integer>() {
             @Override
             public boolean hasNext() {
@@ -231,7 +231,7 @@ public class JsonUtilities {
             }
             current = current.get(key);
         }
-        Iterator<JsonNode> nodeIter = current.iterator();
+        final Iterator<JsonNode> nodeIter = current.iterator();
         return new Iterator<Boolean>() {
             @Override
             public boolean hasNext() {
@@ -249,16 +249,10 @@ public class JsonUtilities {
     }
 
     /**
-<<<<<<< HEAD
-     * Return the {@code JsonNode} found after traversing through nodes with supplied
-     * keys from starting {@code JsonNode} - or null if path doesn't return a valid
-     * node.
-=======
      * Return the {@code JsonNode} found after traversing through nodes with
      * supplied keys from starting {@code JsonNode} - or null if path doesn't
      * return a valid node.
      *
->>>>>>> master
      * @param node Node to start iteration from.
      * @param keys Text names of nodes to traverse through.
      * @return {@code JsonNode} at end of traversal.
@@ -302,10 +296,7 @@ public class JsonUtilities {
      * @return a {@code String} or null if not found
      */
     public static String getTextValue(final String attribute, final JsonNode node) {
-        if (node.has(attribute)) {
-            return getNodeText(node.get(attribute));
-        }
-        return null;
+        return node.has(attribute) ? getNodeText(node.get(attribute)) : null;
     }
 
     /**
@@ -321,7 +312,7 @@ public class JsonUtilities {
         final StringBuilder sb = new StringBuilder();
 
         if (node.has(attribute)) {
-            for (JsonNode entry : node.get(attribute)) {
+            for (final JsonNode entry : node.get(attribute)) {
                 if (sb.length() > 0) {
                     sb.append(delimiter);
                 }
@@ -346,15 +337,9 @@ public class JsonUtilities {
      * @return a {@code String} or null if not found
      */
     public static String getTextValueOfFirstSubElement(final String attribute, final String innerAttribute, final JsonNode node) {
-        if (node.has(attribute)) {
-            if (node.get(attribute).has(0) && node.get(attribute).get(0).has(innerAttribute)) {
-                return getNodeText(node.get(attribute).get(0).get(innerAttribute));
-            } else {
-                return null;
-            }
-        } else {
-            return null;
-        }
+        return node.has(attribute) && node.get(attribute).has(0) && node.get(attribute).get(0).has(innerAttribute) 
+                ? getNodeText(node.get(attribute).get(0).get(innerAttribute)) 
+                : null;
     }
 
     /**
@@ -384,7 +369,7 @@ public class JsonUtilities {
      * @param map the map to convert to a json string
      * @return the JSON String representation of the map
      */
-    public static <K, V> String getMapAsString(final JsonFactory factory, final Map<K, V> map) {
+    public static <K, V> String getMapAsString(final TokenStreamFactory factory, final Map<K, V> map) {
         if (MapUtils.isNotEmpty(map)) {
             final ByteArrayOutputStream json = new ByteArrayOutputStream();
             try (final JsonGenerator jg = factory.createGenerator(json)) {
@@ -416,7 +401,7 @@ public class JsonUtilities {
      * @param mapAsString the JSON String representation of the map
      * @return A String, String map based on the JSON String
      */
-    public static Map<String, String> getStringAsMap(final JsonFactory factory, final String mapAsString) {
+    public static Map<String, String> getStringAsMap(final TokenStreamFactory factory, final String mapAsString) {
         final Map<String, String> map = new HashMap<>();
         if (StringUtils.isNotEmpty(mapAsString)) {
             try (final JsonParser jp = factory.createParser(mapAsString)) {

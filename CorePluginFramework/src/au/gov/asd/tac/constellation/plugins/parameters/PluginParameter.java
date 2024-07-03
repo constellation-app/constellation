@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,7 +75,7 @@ public class PluginParameter<V extends ParameterValue> {
     private String helpID;
     private boolean isSuppressed = false;
     private String requestBodyExample;
-    private boolean isRequired = false;
+    private boolean required = false;
 
     private final List<ParameterChange> suppressedEvents = new ArrayList<>();
 
@@ -394,8 +394,8 @@ public class PluginParameter<V extends ParameterValue> {
             this.error = error;
             if (errorChange) {
                 fireChangeEvent(ParameterChange.ERROR);
-            }
         }
+    }
     }
 
     /**
@@ -430,10 +430,10 @@ public class PluginParameter<V extends ParameterValue> {
      *
      * @return A new instance of PluginParameter.
      */
-    protected PluginParameter<?> create(final ParameterValue value, final PluginParameterType<?> type, final String id) {
-        final PluginParameter<?> p = new PluginParameter(value.copy(), type, id);
-        if (p.value instanceof ParameterListParameterValue) {
-            ((ParameterListParameterValue) p.value).setEnclosingParameter(p);
+    protected PluginParameter<V> create(final ParameterValue value, final PluginParameterType<V> type, final String id) {
+        final PluginParameter<V> p = new PluginParameter(value.copy(), type, id);
+        if (p.value instanceof ParameterListParameterValue parameterListParameterValue) {
+            parameterListParameterValue.setEnclosingParameter(p);
         }
         return p;
     }
@@ -454,7 +454,7 @@ public class PluginParameter<V extends ParameterValue> {
         copy.setEnabled(enabled);
         copy.setVisible(visible);
         copy.setError(error);
-        copy.setRequired(isRequired);
+        copy.setRequired(required);
         copy.enclosingParameter = enclosingParameter;
         copy.properties = new HashMap<>(properties);
         return copy;
@@ -509,11 +509,7 @@ public class PluginParameter<V extends ParameterValue> {
      */
     public final void setStringValue(final String stringValue) {
         setError(value.validateString(stringValue));
-        if (getError() != null) {
-            return;
-        }
-
-        if (value.setStringValue(stringValue)) {
+        if (getError() == null && value.setStringValue(stringValue)) {
             fireChangeEvent(ParameterChange.VALUE);
         }
     }
@@ -576,7 +572,7 @@ public class PluginParameter<V extends ParameterValue> {
      * {@link BooleanParameterValue}.
      */
     public boolean getBooleanValue() {
-        return ((BooleanParameterValue) value).get();
+        return ((BooleanParameterValue) value).getValue();
     }
 
     /**
@@ -797,7 +793,7 @@ public class PluginParameter<V extends ParameterValue> {
 
     /**
      * Get the swagger Request Body Example value.
-     *    
+     *
      */
     public final String getRequestBodyExampleJson() {
         return requestBodyExample;
@@ -820,15 +816,15 @@ public class PluginParameter<V extends ParameterValue> {
      * @return True if the parameter is required, false otherwise.
      */
     public boolean isRequired() {
-        return isRequired;
+        return required;
     }
 
     /**
      * Set whether the parameter is required.
      *
-     * @param isRequired A boolean indicating whether the parameter is required.
+     * @param required A boolean indicating whether the parameter is required.
      */
-    public void setRequired(final boolean isRequired) {
-        this.isRequired = isRequired;
+    public void setRequired(final boolean required) {
+        this.required = required;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,9 +26,9 @@ public class ObjectValueUpdater2 implements ValueUpdater32 {
     public static final ObjectValueUpdater2 INSTANCE = new ObjectValueUpdater2();
 
     @Override
-    public int store(final UndoGraphEditState state, int o) {
+    public int store(final UndoGraphEditState state, final int o) {
         if (o != state.getCurrentObject()) {
-            int delta = o ^ state.getCurrentObject();
+            final int delta = o ^ state.getCurrentObject();
             state.setCurrentObject(o);
             if (delta >= 0 && delta <= 255) {
                 state.addByte((byte) (delta + Byte.MIN_VALUE));
@@ -45,12 +45,12 @@ public class ObjectValueUpdater2 implements ValueUpdater32 {
     }
 
     @Override
-    public void updateExecute(final UndoGraphEditState state, int parameters) {
+    public void updateExecute(final UndoGraphEditState state, final int parameters) {
         OBJECT_GETTERS[parameters & 3].getExecute(state);
     }
 
     @Override
-    public void updateUndo(final UndoGraphEditState state, int parameters) {
+    public void updateUndo(final UndoGraphEditState state, final int parameters) {
         OBJECT_GETTERS[parameters & 3].getUndo(state);
     }
 

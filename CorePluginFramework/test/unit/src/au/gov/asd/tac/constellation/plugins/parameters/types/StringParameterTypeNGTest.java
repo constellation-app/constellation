@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.plugins.parameters.types;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
@@ -95,7 +94,7 @@ public class StringParameterTypeNGTest {
 
         PluginParameter instance = StringParameterType.build("stringParameter");
 
-        // check the expected result and result equal when postivie integers
+        // check the expected result and result equal when positive integers
         Integer expResult = 5;
         instance.setProperty(StringParameterType.LINES, expResult);
         Integer result = StringParameterType.getLines(instance);
@@ -129,7 +128,7 @@ public class StringParameterTypeNGTest {
 
         PluginParameter instance = StringParameterType.build("stringParameter");
 
-        // check the expected result and result equal when postivie integers
+        // check the expected result and result equal when positive integers
         Integer expResult = 5;
         StringParameterType.setLines(instance, expResult);
         Integer result = StringParameterType.getLines(instance);
@@ -159,32 +158,15 @@ public class StringParameterTypeNGTest {
         System.out.println("isLabel");
 
         PluginParameter instance = StringParameterType.build("stringParameter");
+        assertFalse(StringParameterType.isLabel(instance));
 
-        // check if when set to true it reamains true
-        boolean expResult = true;
-        instance.setProperty(StringParameterType.IS_LABEL, expResult);
-        boolean result = StringParameterType.isLabel(instance);
-        assertEquals(result, expResult);
-
-        // check if when set to false it reamains false
-        expResult = false;
-        instance.setProperty(StringParameterType.IS_LABEL, expResult);
-        result = StringParameterType.isLabel(instance);
-        assertEquals(result, expResult);
-
-        // check if when set to false it doesn't think its true
-        expResult = true;
-        instance.setProperty(StringParameterType.IS_LABEL, false);
-        result = StringParameterType.isLabel(instance);
-        assertFalse(result);
-        assertNotEquals(result, expResult);
-
-        // check if when set to true it doesn't think its false
-        expResult = false;
+        // check if when set to true it remains true
         instance.setProperty(StringParameterType.IS_LABEL, true);
-        result = StringParameterType.isLabel(instance);
-        assertTrue(result);
-        assertNotEquals(result, expResult);
+        assertTrue(StringParameterType.isLabel(instance));
+
+        // check if when set to false it remains false
+        instance.setProperty(StringParameterType.IS_LABEL, false);
+        assertFalse(StringParameterType.isLabel(instance));
     }
 
     /**
@@ -196,35 +178,13 @@ public class StringParameterTypeNGTest {
 
         PluginParameter instance = StringParameterType.build("stringParameter");
 
-        // check if when set to true it reamains true
-        boolean expResult = true;
-        StringParameterType.setIsLabel(instance, expResult);
-        boolean result = StringParameterType.isLabel(instance);
-        assertEquals(instance.getProperty(StringParameterType.IS_LABEL), expResult);
-        assertEquals(result, expResult);
-
-        // check if when set to false it reamains false
-        expResult = false;
-        StringParameterType.setIsLabel(instance, expResult);
-        result = StringParameterType.isLabel(instance);
-        assertEquals(instance.getProperty(StringParameterType.IS_LABEL), expResult);
-        assertEquals(result, expResult);
-
-        // check if when set to false it doesn't think its true
-        expResult = true;
-        StringParameterType.setIsLabel(instance, false);
-        result = StringParameterType.isLabel(instance);
-        assertFalse(result);
-        assertNotEquals(instance.getProperty(StringParameterType.IS_LABEL), expResult);
-        assertNotEquals(result, expResult);
-
-        // check if when set to true it doesn't think its false
-        expResult = false;
+        // check if when set to true it remains true
         StringParameterType.setIsLabel(instance, true);
-        result = StringParameterType.isLabel(instance);
-        assertTrue(result);
-        assertNotEquals(instance.getProperty(StringParameterType.IS_LABEL), expResult);
-        assertNotEquals(result, expResult);
+        assertTrue((boolean) instance.getProperty(StringParameterType.IS_LABEL));
+
+        // check if when set to false it remains false
+        StringParameterType.setIsLabel(instance, false);
+        assertFalse((boolean) instance.getProperty(StringParameterType.IS_LABEL));
     }
 
     /**

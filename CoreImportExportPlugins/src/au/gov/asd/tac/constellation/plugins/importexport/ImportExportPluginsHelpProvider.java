@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class ImportExportPluginsHelpProvider extends HelpPageProvider {
 
     private static final String CODEBASE_NAME = "constellation";
+    
+    private static final String EXPORT_HELP_PAGE = "export-from-constellation.md";
 
     /**
      * Provides a map of all the help files Maps the file name to the md file name
@@ -45,9 +47,20 @@ public class ImportExportPluginsHelpProvider extends HelpPageProvider {
         final String importExportModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreImportExportPlugins" + sep + "src" + sep + "au" + sep + "gov"
                 + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "plugins" + sep + "importexport" + sep;
 
-        map.put("au.gov.asd.tac.constellation.plugins.importexport.delimited.DelimitedImportPane", importExportModulePath + "import-from-file.md");
-        map.put("au.gov.asd.tac.constellation.plugins.importexport.export", importExportModulePath + "export-from-constellation.md");
+        //Import Plugins
+        map.put("au.gov.asd.tac.constellation.plugins.importexport.delimited.DelimitedImportPane", importExportModulePath + "import-from-file.md");        
         map.put("au.gov.asd.tac.constellation.plugins.importexport.jdbc.JDBCImportPane", importExportModulePath + "import-from-database.md");
+        
+        //Export Plugins
+        map.put("au.gov.asd.tac.constellation.plugins.importexport.export", importExportModulePath + EXPORT_HELP_PAGE);
+        map.put("au.gov.asd.tac.constellation.plugins.importexport.geospatial.ExportToGeoJsonPlugin", importExportModulePath + EXPORT_HELP_PAGE);
+        map.put("au.gov.asd.tac.constellation.plugins.importexport.geospatial.ExportToGeoPackagePlugin", importExportModulePath + EXPORT_HELP_PAGE);
+        map.put("au.gov.asd.tac.constellation.plugins.importexport.geospatial.ExportToImagePlugin", importExportModulePath + EXPORT_HELP_PAGE);
+        map.put("au.gov.asd.tac.constellation.plugins.importexport.geospatial.ExportToJsonPlugin", importExportModulePath + EXPORT_HELP_PAGE);
+        map.put("au.gov.asd.tac.constellation.plugins.importexport.geospatial.ExportToKmlPlugin", importExportModulePath + EXPORT_HELP_PAGE);
+        map.put("au.gov.asd.tac.constellation.plugins.importexport.geospatial.ExportToShapefilePlugin", importExportModulePath + EXPORT_HELP_PAGE);
+        map.put("au.gov.asd.tac.constellation.plugins.importexport.svg.ExportToSVGPlugin", importExportModulePath + EXPORT_HELP_PAGE);
+        
         return map;
     }
 

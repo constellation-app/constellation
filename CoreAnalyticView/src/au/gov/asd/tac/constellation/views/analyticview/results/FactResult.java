@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ public class FactResult extends AnalyticResult<ElementFact> {
 
     public Set<String> getUniqueFactNames() {
         return result.values().stream()
-                .map(elementFact -> elementFact.getFactName())
+                .map(ElementFact::getFactName)
                 .collect(Collectors.toSet());
     }
 

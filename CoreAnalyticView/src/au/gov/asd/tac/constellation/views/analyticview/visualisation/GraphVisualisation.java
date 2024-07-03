@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.analyticview.visualisation;
 
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
+import au.gov.asd.tac.constellation.views.analyticview.translators.AnalyticTranslator;
 import java.util.List;
 
 /**
@@ -26,4 +27,12 @@ import java.util.List;
 public abstract class GraphVisualisation extends AnalyticVisualisation {
 
     public abstract List<SchemaAttribute> getAffectedAttributes();
+
+    public abstract void deactivate(final boolean reset);
+
+    public abstract boolean isActive();
+
+    public abstract void setSelected(final boolean selected);
+    
+    public abstract AnalyticTranslator getTranslator();
 }

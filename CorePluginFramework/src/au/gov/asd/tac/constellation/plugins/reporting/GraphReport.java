@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,15 @@
 package au.gov.asd.tac.constellation.plugins.reporting;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import static au.gov.asd.tac.constellation.graph.locking.LockingManager.UNDO;
+import au.gov.asd.tac.constellation.graph.reporting.UndoRedoReport;
+import au.gov.asd.tac.constellation.graph.reporting.UndoRedoReportListener;
+import au.gov.asd.tac.constellation.graph.reporting.UndoRedoReportManager;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -31,7 +36,7 @@ import java.util.TreeSet;
  *
  * @author sirius
  */
-public class GraphReport {
+public class GraphReport implements UndoRedoReportListener {
 
     public final String graphId;
 
@@ -51,7 +56,7 @@ public class GraphReport {
      *
      * @param graph the graph
      */
-    public GraphReport(Graph graph) {
+    public GraphReport(final Graph graph) {
         this(graph.getId());
     }
 
@@ -60,8 +65,9 @@ public class GraphReport {
      *
      * @param graphId the graphId.
      */
-    public GraphReport(String graphId) {
+    public GraphReport(final String graphId) {
         this.graphId = graphId;
+        UndoRedoReportManager.addUndoRedoReportListener(this);
     }
 
     /**
@@ -123,5 +129,48 @@ public class GraphReport {
      */
     public Set<String> getUTags() {
         return uTags;
+    }
+
+    /**
+     * Triggers when an UndoRedoReport is added. Update the relevant plugin
+     * report.
+     *
+     * @param undoRedoReport
+     */
+    @Override
+    public void fireNewUndoRedoReport(final UndoRedoReport undoRedoReport) {
+        if (hasMatchingPluginReport(undoRedoReport)) {
+            getMatchingPluginReport(undoRedoReport).setUndone(undoRedoReport.getActionType() == UNDO);
+        }
+    }
+
+    private PluginReport getMatchingPluginReport(final UndoRedoReport undoRedoReport) {
+        if (undoRedoReport.getActionType() == UNDO) {
+            return getPluginReports().stream()
+                    .filter(entry -> undoRedoReport.getActionDescription().equals(entry.getPluginName())
+                    && !entry.isUndone() && entry.getGraphReport().getGraphId().equals(undoRedoReport.getGraphId()))
+                    .max(Comparator.comparing(PluginReport::getStartTime)).get();
+
+        } else {
+            return getPluginReports().stream()
+                    .filter(entry -> undoRedoReport.getActionDescription().equals(entry.getPluginName())
+                    && entry.isUndone() && entry.getGraphReport().getGraphId().equals(undoRedoReport.getGraphId()))
+                    .min(Comparator.comparing(PluginReport::getStartTime)).get();
+        }
+    }
+
+        /**
+     * Check if the action in the UndoRedoReport has a matching PluginReport already
+     * added for the original execution category. This is to ignore the undo redo reports
+     * for activities on the graph that are not run by a plugin such as Drag, Zoom.
+     *
+     * @param undoRedoReport The UndoRedoReport to check.
+     *
+     * @return True if there's any PluginReport with the action in the UndoRedoReport
+     */
+    private boolean hasMatchingPluginReport(final UndoRedoReport undoRedoReport) {
+        return getPluginReports().stream().anyMatch(entry
+                -> undoRedoReport.getActionDescription().equals(entry.getPluginName())
+                && entry.getGraphReport().getGraphId().equals(undoRedoReport.getGraphId()));
     }
 }

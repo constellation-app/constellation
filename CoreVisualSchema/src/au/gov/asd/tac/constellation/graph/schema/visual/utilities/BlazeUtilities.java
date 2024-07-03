@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.prefs.Preferences;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Rectangle;
 import javafx.util.Pair;
 import org.openide.util.NbPreferences;
 
@@ -58,7 +70,7 @@ public class BlazeUtilities {
     private BlazeUtilities() {
         throw new IllegalStateException("Utility class");
     }
-    
+
     /**
      * Selected vertices, and the color of the blaze of the first selected
      * vertex with a blaze.
@@ -114,7 +126,7 @@ public class BlazeUtilities {
         final PluginParameters dlgParams = new PluginParameters();
         final PluginParameter<ColorParameterValue> colorParam = ColorParameterType.build(COLOR_PARAMETER_ID);
         colorParam.setName("Color");
-        colorParam.setDescription(BLAZE_COLOR_PARAMETER_ID);
+        colorParam.setDescription("Set color for Custom Blazes");
         dlgParams.addParameter(colorParam);
 
         final PluginParameter<BooleanParameterValue> presetParam = BooleanParameterType.build(PRESET_PARAMETER_ID);
@@ -123,7 +135,7 @@ public class BlazeUtilities {
         presetParam.setBooleanValue(false);
         dlgParams.addParameter(presetParam);
 
-        final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(BLAZE_COLOR_PARAMETER_ID, dlgParams);
+        final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog("Add Custom Blazes", dlgParams);
         dialog.showAndWait();
         final boolean isOk = PluginParametersDialog.OK.equals(dialog.getResult());
         ConstellationColor colorResult = blazeColor;
@@ -147,12 +159,58 @@ public class BlazeUtilities {
         final int freePosition;
         if (colorsList.indexOf("null") != -1) {
             freePosition = colorsList.indexOf("null");
+            savePreset(newColor, freePosition);
         } else if (colorsList.size() < MAXIMUM_CUSTOM_BLAZE_COLORS) {
             freePosition = colorsList.size();
+            savePreset(newColor, freePosition);
         } else {
-            freePosition = MAXIMUM_CUSTOM_BLAZE_COLORS - 1;
+            Platform.runLater(() -> {
+                final Dialog<ButtonType> dialog = new Dialog<>();
+                dialog.setTitle("Too many presets!");
+
+                final Label titleText = new Label("Please select a preset colour to replace");
+
+                final ListView<String> colourListView = new ListView<>(FXCollections.observableList(colorsList));
+                colourListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+                colourListView.setCellFactory((ListView<String> list) -> {
+                    final ListCell<String> cell = new ListCell<>() {
+                        @Override
+                        public void updateItem(final String item, final boolean empty) {
+                            super.updateItem(item, empty);
+                            if (empty || item == null) {
+                                setText("");
+                                setGraphic(null);
+                            } else {
+                                setText(item);
+                                final Rectangle rect = new Rectangle();
+                                rect.setHeight(24);
+                                rect.setWidth(24);
+                                rect.setFill(Paint.valueOf(item));
+                                setGraphic(rect);
+                            }
+                        }
+                    };
+
+                    return cell;
+                });
+
+                colourListView.getSelectionModel().selectFirst();
+
+                dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
+                dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
+
+                final VBox saveColourVBox = new VBox(3, titleText, colourListView);
+                dialog.setGraphic(saveColourVBox);
+                dialog.getDialogPane().setMaxWidth(269);
+                final Optional<ButtonType> result = dialog.showAndWait();
+
+                if (result.isPresent() && result.get() == ButtonType.OK) {
+                    savePreset(newColor, colourListView.getSelectionModel().getSelectedIndex());
+                }
+
+            });
         }
-        savePreset(newColor, freePosition);
+
     }
 
     /**
@@ -199,7 +257,7 @@ public class BlazeUtilities {
         final int b = color.getBlue();
         return String.format("#%02x%02x%02x", r, g, b);
     }
-    
+
     protected static Preferences getGraphPreferences() {
         return NbPreferences.forModule(GraphPreferenceKeys.class);
     }

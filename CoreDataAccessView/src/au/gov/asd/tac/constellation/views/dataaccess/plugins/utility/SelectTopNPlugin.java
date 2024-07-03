@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,6 +38,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParamete
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.reporting.PluginReportUtilities;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleQueryPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
@@ -134,22 +135,21 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
                 if (mode != null) {
                     final List<String> types = new ArrayList<>();
                     switch (mode) {
-                        case NODE:
+                        case NODE -> {
                             for (final SchemaVertexType type : SchemaVertexTypeUtilities.getTypes()) {
                                 if (type.isTopLevelType()) {
                                     types.add(type.getName());
                                 }
                             }
-                            break;
-                        case TRANSACTION:
+                        }
+                        case TRANSACTION -> {
                             for (final SchemaTransactionType type : SchemaTransactionTypeUtilities.getTypes()) {
                                 if (type.isTopLevelType()) {
                                     types.add(type.getName());
                                 }
                             }
-                            break;
-                        default:
-                            LOGGER.severe("Invalid mode provided. Mode values accepted are " + NODE + " or " + TRANSACTION);
+                        }
+                        default -> LOGGER.severe("Invalid mode provided. Mode values accepted are " + NODE + " or " + TRANSACTION);
                     }
 
                     @SuppressWarnings("unchecked") //TYPE_CATEGORY_PARAMETER will always be of type SingleChoiceParameter
@@ -171,24 +171,25 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
 
                     final List<String> types = new ArrayList<>();
                     switch (mode) {
-                        case NODE:
+                        case NODE -> {
                             final SchemaVertexType typeCategoryVertexType = SchemaVertexTypeUtilities.getType(typeCategory);
                             for (final SchemaVertexType type : SchemaVertexTypeUtilities.getTypes()) {
                                 if (type.getSuperType().equals(typeCategoryVertexType)) {
                                     types.add(type.getName());
                                 }
                             }
-                            break;
-                        case TRANSACTION:
+                        }
+                        case TRANSACTION -> {
                             final SchemaTransactionType typeCategoryTransactionType = SchemaTransactionTypeUtilities.getType(typeCategory);
                             for (final SchemaTransactionType type : SchemaTransactionTypeUtilities.getTypes()) {
                                 if (type.getSuperType().equals(typeCategoryTransactionType)) {
                                     types.add(type.getName());
                                 }
                             }
-                            break;
-                        default:
-                            break;
+                        }
+                        default -> {
+                            // Do nothing
+                        }                        
                     }
                     // update the sub level types
                     @SuppressWarnings("unchecked") //TYPE_PARAMETER will always be of type MultiChoiceParameter
@@ -205,81 +206,91 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
 
     @Override
     protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+        
+        // Retrieve PluginParameter values
         final String mode = parameters.getParameters().get(MODE_PARAMETER_ID).getStringValue();
         final String typeCategory = parameters.getParameters().get(TYPE_CATEGORY_PARAMETER_ID).getStringValue();
         final List<String> subTypes = parameters.getParameters().get(TYPE_PARAMETER_ID).getMultiChoiceValue().getChoices();
         final int limit = parameters.getParameters().get(LIMIT_PARAMETER_ID).getIntegerValue();
-
-        if (mode == null || (!mode.equals(NODE) && !mode.equals(TRANSACTION))) {
-            throw new PluginException(PluginNotificationLevel.ERROR, "Invalid mode value provided");
-        }
-
-        if (typeCategory == null) {
-            throw new PluginException(PluginNotificationLevel.ERROR, "Select a type category");
-        }
-
-        if (subTypes.isEmpty()) {
-            throw new PluginException(PluginNotificationLevel.ERROR, "Select some types to perform the calculation");
-        }
-
-        final int vertexLabelAttribute = VisualConcept.VertexAttribute.LABEL.get(graph);
-        if (vertexLabelAttribute == Graph.NOT_FOUND) {
-            throw new PluginException(PluginNotificationLevel.ERROR, String.format(MISSING_PROPERTY_FORMAT, VisualConcept.VertexAttribute.LABEL.getName()));
-        }
-
+        
+        // Retrieve AttributeID's
         final int vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
-        if (vertexSelectedAttribute == Graph.NOT_FOUND) {
-            throw new PluginException(PluginNotificationLevel.ERROR, String.format(MISSING_PROPERTY_FORMAT, VisualConcept.VertexAttribute.SELECTED.getName()));
-        }
-
+        final int vertexLabelAttribute = VisualConcept.VertexAttribute.LABEL.get(graph);
         final int vertexTypeAttribute = AnalyticConcept.VertexAttribute.TYPE.get(graph);
-        if (vertexTypeAttribute == Graph.NOT_FOUND) {
-            throw new PluginException(PluginNotificationLevel.ERROR, String.format(MISSING_PROPERTY_FORMAT, AnalyticConcept.VertexAttribute.TYPE.getName()));
-        }
-
         final int transactionTypeAttribute = AnalyticConcept.TransactionAttribute.TYPE.get(graph);
-        if (transactionTypeAttribute == Graph.NOT_FOUND) {
-            throw new PluginException(PluginNotificationLevel.ERROR, String.format(MISSING_PROPERTY_FORMAT, AnalyticConcept.TransactionAttribute.TYPE.getName()));
-        }
-
-        // make a set of the highlighted nodes
+        
         final Set<Integer> selectedNodes = new HashSet<>();
-        final int vertexCount = graph.getVertexCount();
-        for (int position = 0; position < vertexCount; position++) {
+        for (int position = 0; position < graph.getVertexCount(); position++) {
             final int vxId = graph.getVertex(position);
             if (graph.getBooleanValue(vertexSelectedAttribute, vxId)) {
                 selectedNodes.add(vxId);
             }
         }
 
+        // Throw errors
+        if (mode == null || (!mode.equals(NODE) && !mode.equals(TRANSACTION))) {
+            throw new PluginException(PluginNotificationLevel.ERROR, "Invalid mode value provided");
+        }
+        if (typeCategory == null) {
+            throw new PluginException(PluginNotificationLevel.ERROR, "Select a type category");
+        }
+        if (subTypes.isEmpty()) {
+            throw new PluginException(PluginNotificationLevel.ERROR, "Select some types to perform the calculation");
+        }
+        if (vertexLabelAttribute == Graph.NOT_FOUND) {
+            throw new PluginException(PluginNotificationLevel.ERROR, String.format(MISSING_PROPERTY_FORMAT, VisualConcept.VertexAttribute.LABEL.getName()));
+        }
+        if (vertexSelectedAttribute == Graph.NOT_FOUND) {
+            throw new PluginException(PluginNotificationLevel.ERROR, String.format(MISSING_PROPERTY_FORMAT, VisualConcept.VertexAttribute.SELECTED.getName()));
+        }
+        if (vertexTypeAttribute == Graph.NOT_FOUND) {
+            throw new PluginException(PluginNotificationLevel.ERROR, String.format(MISSING_PROPERTY_FORMAT, AnalyticConcept.VertexAttribute.TYPE.getName()));
+        }
+        if (transactionTypeAttribute == Graph.NOT_FOUND) {
+            throw new PluginException(PluginNotificationLevel.ERROR, String.format(MISSING_PROPERTY_FORMAT, AnalyticConcept.TransactionAttribute.TYPE.getName()));
+        }
         if (selectedNodes.isEmpty()) {
             throw new PluginException(PluginNotificationLevel.ERROR, "Select at least 1 node");
         }
+        
+        // Local process-tracking and process-reporting varables
+        int selectedNodesCount = 0;
+        final int totalProcessSteps = selectedNodes.size();
+        int currentProcessStep = 0;
+        final int initialSelectedNodesCount = selectedNodes.size(); 
 
-        // calculate the occurrences of destination vertices
-        int txId;
-        int sourceVxId;
-        int destinationVxId;
-        int targetVxId;
-        int step = 0;
-        SchemaVertexType destinationVertexType;
-        SchemaTransactionType transactionType;
-        final Map<Integer, Integer> occurrences = new HashMap<>();
-
+        interaction.setProgress(currentProcessStep, 
+                totalProcessSteps, 
+                String.format("Selecting top %s nodes...", 
+                        PluginReportUtilities.getNodeCountString(limit)
+                ), 
+                true);
+        
+        // Caluclate the Top N for Selected Nodes 
         for (final Integer vxId : selectedNodes) {
+            
             final String label = graph.getStringValue(vertexLabelAttribute, vxId);
-            interaction.setProgress(++step, selectedNodes.size(), String.format("Calculating top %s for %s", limit, label), true);
-
+            final Map<Integer, Integer> occurrences = new HashMap<>();
             final int transactionCount = graph.getVertexTransactionCount(vxId);
+            interaction.setProgress(++currentProcessStep, 
+                    totalProcessSteps, 
+                    String.format("Calculating top %s for %s", 
+                            PluginReportUtilities.getNodeCountString(limit), 
+                            label), 
+                    true
+            );
+            
+            //Itterate through Selected Nodes
             for (int position = 0; position < transactionCount; position++) {
-                txId = graph.getVertexTransaction(vxId, position);
-                sourceVxId = graph.getTransactionSourceVertex(txId);
-                destinationVxId = graph.getTransactionDestinationVertex(txId);
-                targetVxId = vxId == sourceVxId ? destinationVxId : sourceVxId;
+                final int txId = graph.getVertexTransaction(vxId, position);
+                final int sourceVxId = graph.getTransactionSourceVertex(txId);
+                final int destinationVxId = graph.getTransactionDestinationVertex(txId);
+                final int targetVxId = vxId == sourceVxId ? destinationVxId : sourceVxId;
 
+                //Tally the number of transactions between the current node and nodes sharing a transaction
                 switch (mode) {
-                    case NODE:
-                        destinationVertexType = graph.getObjectValue(vertexTypeAttribute, targetVxId);
+                    case NODE -> {
+                        final SchemaVertexType destinationVertexType = graph.getObjectValue(vertexTypeAttribute, targetVxId);
                         if (destinationVertexType != null && subTypes.contains(destinationVertexType.getName())) {
                             if (!occurrences.containsKey(targetVxId)) {
                                 occurrences.put(targetVxId, 0);
@@ -287,9 +298,9 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
 
                             occurrences.put(targetVxId, occurrences.get(targetVxId) + 1);
                         }
-                        break;
-                    case TRANSACTION:
-                        transactionType = graph.getObjectValue(transactionTypeAttribute, txId);
+                    }
+                    case TRANSACTION -> {
+                        final SchemaTransactionType transactionType = graph.getObjectValue(transactionTypeAttribute, txId);
                         if (transactionType != null && subTypes.contains(transactionType.getName())) {
                             if (!occurrences.containsKey(targetVxId)) {
                                 occurrences.put(targetVxId, 0);
@@ -297,13 +308,14 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
 
                             occurrences.put(targetVxId, occurrences.get(targetVxId) + 1);
                         }
-                        break;
-                    default:
-                        break;
+                    }
+                    default -> {
+                        // Do nothing
+                    }
                 }
             }
 
-            // make a map sorted by the count in descending order
+            // Sort the tally of occurances and select the Top N 
             final LinkedHashMap<Integer, Integer> sortedMap = occurrences.entrySet()
                     .stream()
                     .sorted(Map.Entry.comparingByValue(Collections.reverseOrder()))
@@ -315,10 +327,30 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
                     ));
 
             sortedMap.keySet().stream().limit(limit).forEach(id -> graph.setBooleanValue(vertexSelectedAttribute, id, true));
-
-            interaction.setProgress(1, 0, "Selected " + sortedMap.size() + " nodes.", true);
+            
+            // Track the progress and report the number of nodes found 
+            final int newSelections = sortedMap.size() < limit ? sortedMap.size() : limit; 
+            interaction.setProgress(
+                    currentProcessStep, 
+                    totalProcessSteps, 
+                    String.format("Found %s.",
+                            PluginReportUtilities.getNodeCountString(newSelections)
+                    ), 
+                    true
+            );
+            
+            selectedNodesCount += newSelections;
         }
-
-        interaction.setProgress(1, 0, "Completed successfully", true);
+        
+        // Set process to complete
+        interaction.setProgress(currentProcessStep, 
+                0, 
+                String.format("Selected %s, representing the Top %s for the originaly selected %s.", 
+                        PluginReportUtilities.getNodeCountString(selectedNodesCount), 
+                        PluginReportUtilities.getNodeCountString(limit), 
+                        PluginReportUtilities.getNodeCountString(initialSelectedNodesCount)
+                ), 
+                true
+        );
     }
 }

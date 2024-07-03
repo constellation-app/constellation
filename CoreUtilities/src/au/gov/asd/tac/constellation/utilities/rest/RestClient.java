@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,10 @@
  */
 package au.gov.asd.tac.constellation.utilities.rest;
 
+import au.gov.asd.tac.constellation.utilities.log.ConnectionLogging;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.https.HttpsUtilities;
+import au.gov.asd.tac.constellation.utilities.log.LogPreferences;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.MappingJsonFactory;
@@ -28,6 +30,7 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -48,6 +51,7 @@ public abstract class RestClient {
     private static final Logger LOGGER = Logger.getLogger(RestClient.class.getName());
 
     protected static final String HOST = "{HOST}";
+    private static final String DASH_STRING = "----\n";
 
     /**
      * Read the content of the HTTP response.
@@ -71,7 +75,6 @@ public abstract class RestClient {
                 }
             }
         }
-
         return os.toByteArray();
     }
 
@@ -100,11 +103,11 @@ public abstract class RestClient {
                     }
                     query.append(String.format("%s=%s", key, value));
                 } else {
-                    LOGGER.info(String.format("Unable to add rest key/value: %s=%s to URL=%s", key, value, url));
+                    LOGGER.log(Level.INFO, "{0}", String.format("Unable to add rest key/value: %s=%s to URL=%s", key, value, url));
                 } 
             }
         }
-        return new URL(url + (query.length() > 0 ? "?" + query : ""));
+        return URI.create(url + (query.length() > 0 ? "?" + query : "")).toURL();
     }
 
     /**
@@ -158,6 +161,7 @@ public abstract class RestClient {
      * @throws IOException
      */
     public void get(final String url, final List<Tuple<String, String>> params) throws IOException {
+        logRequest(url, params, null);
         beforeGet(url, params);
 
         HttpsURLConnection connection = null;
@@ -178,6 +182,7 @@ public abstract class RestClient {
             }
         }
         afterGet(url, params);
+        logResponse();
     }
 
     /**
@@ -224,6 +229,7 @@ public abstract class RestClient {
      * @throws IOException
      */
     public void post(final String url, final List<Tuple<String, String>> params) throws IOException {
+        logRequest(url, params, null);
         beforePost(url, params);
 
         HttpsURLConnection connection = null;
@@ -252,6 +258,7 @@ public abstract class RestClient {
         }
 
         afterPost(url, params);
+        logResponse();
     }
 
     /**
@@ -265,8 +272,9 @@ public abstract class RestClient {
      * @throws IOException
      */
     public void postWithJson(final String url, final List<Tuple<String, String>> params, final String json) throws IOException {
+        logRequest(url, params, json);
         beforePost(url, params);
-
+        
         HttpsURLConnection connection = null;
         try {
             connection = makePostConnection(url, params);
@@ -293,6 +301,7 @@ public abstract class RestClient {
         }
 
         afterPost(url, params);
+        logResponse();
     }
 
     /**
@@ -307,6 +316,7 @@ public abstract class RestClient {
      * @throws IOException
      */
     public void postWithBytes(final String url, final List<Tuple<String, String>> params, final byte[] bytes) throws IOException {
+        logRequestBytes(url, params, bytes);
         beforePost(url, params);
 
         HttpsURLConnection connection = null;
@@ -334,6 +344,7 @@ public abstract class RestClient {
         }
 
         afterPost(url, params);
+        logResponse();
     }
 
     /**
@@ -372,5 +383,83 @@ public abstract class RestClient {
         }
 
         return json.toString(StandardCharsets.UTF_8.name());
+    }
+    
+    /**
+     * Logs the request if ConnectionLogging is enabled
+     *
+     * @param url The URL to request
+     * @param params A simple key/value pair of request parameters
+     * @param messageBytes The bytes to be posted in the message body
+     *     
+     */
+    public void logRequestBytes(final String url, final List<Tuple<String, String>> params, final byte[] messageBytes) {
+        if (LogPreferences.isConnectionLoggingEnabled()) {
+            final StringBuilder sb = new StringBuilder();
+            if (messageBytes != null && messageBytes.length > 0) {
+                try {
+                    sb.append(new String(messageBytes, StandardCharsets.UTF_8.name()));
+                } catch (final UnsupportedEncodingException ex) {
+                    sb.append(String.format("(message bytes: length %d)", messageBytes.length));
+                }
+                logRequest(url, params, sb.toString());
+            } else {
+                logRequest(url, params, null);
+            }
+        }
+    }
+    
+    /**
+     * Logs the request if ConnectionLogging is enabled
+     *
+     * @param url The URL to request
+     * @param params A simple key/value pair of request parameters
+     * @param messageBody The String to be posted in the message body
+     *     
+     */
+    public void logRequest(final String url, final List<Tuple<String, String>> params, final String messageBody) {
+        if (LogPreferences.isConnectionLoggingEnabled()) {
+            ConnectionLogging.getInstance().log(Level.FINE, "### Connection Request URL = " + url, null);
+            final StringBuilder sb = new StringBuilder();
+            for (final Tuple t : params){
+                sb.append(t.getFirst()).append(" = ").append(t.getSecond()).append("\n");
+            }
+            ConnectionLogging.getInstance().log(Level.FINE, "### Connection Request Parameters:\n" + sb.toString(), null);
+            if (messageBody != null) {
+                ConnectionLogging.getInstance().log(Level.FINE, "### Connection Request Message Body:\n" + messageBody, null);
+            }
+        }
+    }
+    
+    /**
+     * Logs the response if ConnectionLogging is enabled
+     *
+     */
+    public void logResponse() {
+        if (LogPreferences.isConnectionLoggingEnabled()) {
+            final StringBuilder sb = new StringBuilder();
+            sb.append("### Connection Response:\n");
+            sb.append(DASH_STRING);
+            sb.append(String.format("code    : %d%n", responseCode));
+            sb.append(String.format("message : %s%n", responseMessage));
+            sb.append(DASH_STRING);
+            if (headerFields != null) {
+                headerFields.entrySet().stream().forEach(header -> {
+                    sb.append(String.format("header  : %s%n", header.getKey()));
+                    header.getValue().stream().forEach(v -> sb.append(String.format("        : %s%n", v)));
+                });
+
+                sb.append(DASH_STRING);
+            }
+            if (bytes != null) {
+                try {
+                    sb.append(new String(bytes, StandardCharsets.UTF_8.name()));
+                } catch (final UnsupportedEncodingException ex) {
+                    sb.append(String.format("(response bytes: length %d)", bytes.length));
+                }
+            }
+            sb.append(DASH_STRING);
+            ConnectionLogging.getInstance().log(Level.FINE, sb.toString(), null);
+        }
     }
 }

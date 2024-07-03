@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,10 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
     public static final ConstellationColor BLACK = new ConstellationColor("Black", Color.BLACK);
     public static final ConstellationColor BLUE = new ConstellationColor("Blue", Color.BLUE);
     public static final ConstellationColor BLUEBERRY = new ConstellationColor("Blueberry", 153, 179, 255, 255);
+    public static final ConstellationColor BLUSH = new ConstellationColor("Blush", 240, 212, 212, 255);
     public static final ConstellationColor BROWN = new ConstellationColor("Brown", 0.5F, 0.25F, 0.25F, 1.0F);
+    public static final ConstellationColor BURGUNDY = new ConstellationColor("Burgundy", 135, 0, 32, 255);
+    public static final ConstellationColor BUTTERMILK = new ConstellationColor("Buttermilk", 255, 255, 200, 255);
     public static final ConstellationColor CARROT = new ConstellationColor("Carrot", 230, 126, 34, 255);
     public static final ConstellationColor CHERRY = new ConstellationColor("Cherry", 222, 36, 70, 255);
     public static final ConstellationColor CHOCOLATE = new ConstellationColor("Chocolate", 119, 95, 77, 255);
@@ -50,15 +53,19 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
     public static final ConstellationColor DARK_GREEN = new ConstellationColor("DarkGreen", 0.0F, 0.5F, 0.0F, 1.0F);
     public static final ConstellationColor DARK_GREY = new ConstellationColor("DarkGrey", Color.DARK_GRAY);
     public static final ConstellationColor DARK_ORANGE = new ConstellationColor("DarkOrange", 1.0F, 0.5F, 0.25F, 1.0F);
+    public static final ConstellationColor DARK_PURPLE = new ConstellationColor("DarkPurple", 51, 26, 128, 255);
     public static final ConstellationColor EMERALD = new ConstellationColor("Emerald", 46, 204, 79, 255);
     public static final ConstellationColor GOLDEN_ROD = new ConstellationColor("GoldenRod", 1.0F, 0.75F, 0.0F, 1.0F);
     public static final ConstellationColor GREEN = new ConstellationColor("Green", Color.GREEN);
     public static final ConstellationColor GREY = new ConstellationColor("Grey", Color.GRAY);
     public static final ConstellationColor LIGHT_BLUE = new ConstellationColor("LightBlue", 0.0F, 0.5F, 1.0F, 1.0F);
     public static final ConstellationColor LIGHT_GREEN = new ConstellationColor("LightGreen", 0.5F, 1.0F, 0.0F, 1.0F);
+    public static final ConstellationColor LIGHT_SKY = new ConstellationColor("Light Sky", 206, 220, 235, 255);
+    public static final ConstellationColor LIME = new ConstellationColor("Lime", 57, 255, 20, 255);
     public static final ConstellationColor MAGENTA = new ConstellationColor("Magenta", Color.MAGENTA);
     public static final ConstellationColor MANILLA = new ConstellationColor("Manilla", 255, 230, 153, 255);
     public static final ConstellationColor MELON = new ConstellationColor("Melon", 179, 230, 179, 255);
+    public static final ConstellationColor MIDNIGHT = new ConstellationColor("Midnight", 48, 74, 113, 255);
     public static final ConstellationColor MUSK = new ConstellationColor("Musk", 255, 116, 147, 255);
     public static final ConstellationColor NAVY = new ConstellationColor("Navy", 0.0F, 0.0F, 0.5F, 1.0F);
     public static final ConstellationColor NIGHT_SKY = new ConstellationColor("Night Sky", 27, 30, 36, 255);
@@ -68,6 +75,7 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
     public static final ConstellationColor PINK = new ConstellationColor("Pink", Color.PINK);
     public static final ConstellationColor PURPLE = new ConstellationColor("Purple", 0.63F, 0.28F, 0.63F, 1.0F);
     public static final ConstellationColor RED = new ConstellationColor("Red", Color.RED);
+    public static final ConstellationColor SKY = new ConstellationColor("Sky", 48, 148, 219, 255);
     public static final ConstellationColor TEAL = new ConstellationColor("Teal", 0.0F, 0.5F, 0.5F, 1.0F);
     public static final ConstellationColor TURQUOISE = new ConstellationColor("Turquoise", 0, 202, 213, 255);
     public static final ConstellationColor VIOLET = new ConstellationColor("Violet", 0.75F, 0.0F, 1.0F, 1.0F);
@@ -81,8 +89,11 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
                     BANANA,
                     BLACK,
                     BLUE,
+                    BLUSH, 
                     BLUEBERRY,
                     BROWN,
+                    BURGUNDY, 
+                    BUTTERMILK,
                     CARROT,
                     CHERRY,
                     CHOCOLATE,
@@ -91,15 +102,19 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
                     DARK_GREEN,
                     DARK_GREY,
                     DARK_ORANGE,
+                    DARK_PURPLE,
                     EMERALD,
                     GOLDEN_ROD,
                     GREEN,
                     GREY,
                     LIGHT_BLUE,
                     LIGHT_GREEN,
+                    LIGHT_SKY,
+                    LIME,
                     MAGENTA,
                     MANILLA,
                     MELON,
+                    MIDNIGHT,
                     MUSK,
                     NAVY,
                     NIGHT_SKY,
@@ -109,6 +124,7 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
                     PINK,
                     PURPLE,
                     RED,
+                    SKY,
                     TEAL,
                     TURQUOISE,
                     VIOLET,
@@ -126,6 +142,12 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
             NAMED_COLOR_MAP.put(colorValue.name.toUpperCase(), colorValue);
         }
     }
+    
+    private final String name;
+    private final float redColorValue;
+    private final float greenColorValue;
+    private final float blueColorValue;
+    private final float alpha;
 
     /**
      * Return a ColorValue corresponding to the given name.
@@ -153,8 +175,6 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
             return fromRgbWithCommaColor(ucName);
         } else if (ucName.startsWith("#")) {
             return fromHtmlColor(name);
-        } else {
-            // Do nothing
         }
 
         return null;
@@ -169,8 +189,7 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
      * @param alpha the alpha component of the color
      * @return a ColorValue instance
      */
-    public static ConstellationColor getColorValue(final float red,
-            final float green, final float blue, final float alpha) {
+    public static ConstellationColor getColorValue(final float red, final float green, final float blue, final float alpha) {
         for (final ConstellationColor colorValue : NAMED_COLOR_LIST) {
             if (colorValue.getRed() == red
                     && colorValue.getGreen() == green
@@ -182,12 +201,6 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
 
         return new ConstellationColor(null, red, green, blue, alpha);
     }
-
-    private final String name;
-    private final float redColorValue;
-    private final float greenColorValue;
-    private final float blueColorValue;
-    private final float alpha;
 
     /**
      * Create a ColorValue with red, green, blue, and alpha in the range [0, 1].
@@ -466,8 +479,7 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
 
     @Override
     public boolean equals(final Object other) {
-        if (other instanceof ConstellationColor) {
-            final ConstellationColor c = (ConstellationColor) other;
+        if (other instanceof ConstellationColor c) {
             return redColorValue == c.redColorValue && greenColorValue == c.greenColorValue && blueColorValue == c.blueColorValue && alpha == c.alpha;
         }
 
@@ -501,15 +513,13 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
             return 1;
         } else if (o.name != null) {
             return -1;
-        } else {
-            if (redColorValue != o.redColorValue) {
-                return compareColorComponents(redColorValue, o.redColorValue);
-            } else if (greenColorValue != o.greenColorValue) {
-                return compareColorComponents(greenColorValue, o.greenColorValue);
-            }
-            return blueColorValue != o.blueColorValue ? compareColorComponents(blueColorValue, o.blueColorValue)
-                    : compareColorComponents(alpha, o.alpha);
+        } else if (redColorValue != o.redColorValue) {
+            return compareColorComponents(redColorValue, o.redColorValue);
+        } else if (greenColorValue != o.greenColorValue) {
+            return compareColorComponents(greenColorValue, o.greenColorValue);
         }
+        return blueColorValue != o.blueColorValue ? compareColorComponents(blueColorValue, o.blueColorValue)
+                : compareColorComponents(alpha, o.alpha);
     }
     
     /**

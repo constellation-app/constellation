@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,12 +40,14 @@ public class ByteObjectAttributeDescription extends AbstractObjectAttributeDescr
         try {
             return super.convertFromObject(object);
         } catch (final IllegalArgumentException ex) {
-            if (object instanceof Number) {
-                return ((Number) object).byteValue();
-            } else if (object instanceof Boolean) {
-                return ((Boolean) object) ? (byte) 1 : (byte) 0;
-            } else {
-                throw ex;
+            switch (object) {
+                case Number number -> {
+                    return number.byteValue();
+                }
+                case Boolean bool -> {
+                    return Boolean.TRUE.equals(bool) ? (byte) 1 : (byte) 0;
+                }
+                default -> throw ex;
             }
         }
     }
@@ -55,7 +57,7 @@ public class ByteObjectAttributeDescription extends AbstractObjectAttributeDescr
         if (StringUtils.isBlank(string)) {
             return getDefault();
         } else {
-            return Byte.parseByte(string);
+            return Byte.valueOf(string);
         }
     }
 

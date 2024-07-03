@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,6 +42,7 @@ import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Pair;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
@@ -71,7 +72,7 @@ public class QueryPhasePaneNGTest {
     private MenuItem item2;
     private MenuItem item3;
 
-    private Map<String, List<DataAccessPlugin>> plugins;
+    private Map<String, Pair<Integer, List<DataAccessPlugin>>> plugins;
     private List<DataAccessPlugin> pluginList;
 
     @BeforeClass
@@ -98,7 +99,7 @@ public class QueryPhasePaneNGTest {
 
         pluginList = Arrays.asList(new TestDataAccessPlugin(), new AnotherTestDataAccessPlugin());
         plugins = new HashMap<>();
-        plugins.put("test", pluginList);
+        plugins.put("test", new Pair(1, pluginList));
     }
 
     /**
@@ -330,8 +331,8 @@ public class QueryPhasePaneNGTest {
     public void testShowMatchingPluginsOneMatch() {
         System.out.println("showMatchingPluginsOneMatch");
 
-        plugins.put("test", Arrays.asList(new TestDataAccessPlugin()));
-        plugins.put("anothertest", Arrays.asList(new AnotherTestDataAccessPlugin()));
+        plugins.put("test", new Pair(2, Arrays.asList(new TestDataAccessPlugin())));
+        plugins.put("anothertest", new Pair(3, Arrays.asList(new AnotherTestDataAccessPlugin())));
 
         final QueryPhasePane instance = new QueryPhasePane(plugins, null, null);
         for (final Node child : instance.getDataSourceList().getChildren()) {
@@ -357,8 +358,8 @@ public class QueryPhasePaneNGTest {
     public void testShowMatchingPluginsMultipleMatch() {
         System.out.println("showMatchingPluginsMultipleMatch");
 
-        plugins.put("test", Arrays.asList(new TestDataAccessPlugin()));
-        plugins.put("anothertest", Arrays.asList(new AnotherTestDataAccessPlugin()));
+        plugins.put("test", new Pair(4, Arrays.asList(new TestDataAccessPlugin())));
+        plugins.put("anothertest", new Pair(5, Arrays.asList(new AnotherTestDataAccessPlugin())));
 
         final QueryPhasePane instance = new QueryPhasePane(plugins, null, null);
         for (final Node child : instance.getDataSourceList().getChildren()) {

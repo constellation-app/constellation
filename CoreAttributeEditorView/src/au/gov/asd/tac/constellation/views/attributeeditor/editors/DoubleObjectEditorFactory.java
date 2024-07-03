@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,10 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 import au.gov.asd.tac.constellation.graph.attribute.DoubleObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import static au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor.CONTROLS_DEFAULT_VERTICAL_SPACING;
-import static au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor.NO_VALUE_LABEL;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import org.openide.util.lookup.ServiceProvider;
@@ -48,7 +46,6 @@ public class DoubleObjectEditorFactory extends AttributeValueEditorFactory<Doubl
     public class DoubleObjectEditor extends AbstractEditor<Double> {
 
         private TextField numberField;
-        private CheckBox noValueCheckBox;
 
         protected DoubleObjectEditor(final EditOperation editOperation, final DefaultGetter<Double> defaultGetter, final ValueValidator<Double> validator, final String editedItemName, final Double initialValue) {
             super(editOperation, defaultGetter, validator, editedItemName, initialValue);
@@ -56,7 +53,6 @@ public class DoubleObjectEditorFactory extends AttributeValueEditorFactory<Doubl
 
         @Override
         public void updateControlsWithValue(final Double value) {
-            noValueCheckBox.setSelected(value == null);
             if (value != null) {
                 numberField.setText(String.valueOf(value));
             }
@@ -64,9 +60,6 @@ public class DoubleObjectEditorFactory extends AttributeValueEditorFactory<Doubl
 
         @Override
         protected Double getValueFromControls() throws ControlsInvalidException {
-            if (noValueCheckBox.isSelected()) {
-                return null;
-            }
             try {
                 return Double.parseDouble(numberField.getText());
             } catch (final NumberFormatException ex) {
@@ -79,20 +72,15 @@ public class DoubleObjectEditorFactory extends AttributeValueEditorFactory<Doubl
             final GridPane controls = new GridPane();
             controls.setAlignment(Pos.CENTER);
             controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
-
             numberField = new TextField();
             numberField.textProperty().addListener((o, n, v) -> update());
-
-            noValueCheckBox = new CheckBox(NO_VALUE_LABEL);
-            noValueCheckBox.setAlignment(Pos.CENTER);
-            noValueCheckBox.selectedProperty().addListener((v, o, n) -> {
-                numberField.setDisable(noValueCheckBox.isSelected());
-                update();
-            });
-
             controls.addRow(0, numberField);
-            controls.addRow(1, noValueCheckBox);
             return controls;
+        }
+
+        @Override
+        public boolean noValueCheckBoxAvailable() {
+            return true;
         }
     }
 }

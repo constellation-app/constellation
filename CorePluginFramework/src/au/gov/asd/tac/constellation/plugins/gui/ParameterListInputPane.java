@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -170,19 +170,13 @@ public class ParameterListInputPane extends BorderPane {
 
         PluginParameterListener ppl = (PluginParameter<?> parameter1, ParameterChange change) -> {
             switch (change) {
-                case VALUE:
-                    populateListFromParameterValue();
-                    break;
-                case ENABLED:
-                    parameterTitledPane.setDisable(!parameter1.isEnabled());
-                    break;
-                case VISIBLE:
+                case VALUE -> populateListFromParameterValue();
+                case ENABLED -> parameterTitledPane.setDisable(!parameter1.isEnabled());
+                case VISIBLE -> {
                     parameterTitledPane.setManaged(parameter1.isVisible());
                     parameterTitledPane.setVisible(parameter1.isVisible());
-                    break;
-                default:
-                    LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
-                    break;
+                }
+                default -> LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
             }
         };
         parameter.addListener(ppl);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,13 @@
  */
 package au.gov.asd.tac.constellation.utilities.graphics;
 
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * A viewing frustum.
- *
+ * 
  * @author algol
  */
 public final class Frustum {
@@ -320,19 +324,8 @@ public final class Frustum {
         final Vector3f vCross = new Vector3f();
         final Vector3f vOrigin = new Vector3f();
 
-        // Create the transformation matrix. This was the trickiest part
-        // for me. The default view from OpenGL is down the negative Z
-        // axis. However, building a transformation axis from these
-        // directional vectors points the frustum the wrong direction. So
-        // You must reverse them here, or build the initial frustum
-        // backwards - which to do is purely a matter of taste. I chose to
-        // compensate here to allow better operability with some of my other
-        // legacy code and projects. RSW
-        camera.getForwardVector(vForward);
-        vForward.a[0] = -vForward.a[0];
-        vForward.a[1] = -vForward.a[1];
-        vForward.a[2] = -vForward.a[2];
-
+        // Create the transformation matrix. 
+        camera.getForwardVector(vForward);        
         camera.getUpVector(vUp);
         camera.getOrigin(vOrigin);
 
@@ -402,37 +395,76 @@ public final class Frustum {
      * frustum.
      */
     boolean testSphere(final Vector3f point, final float radius) {
-        float fDist;
-
-        // Near Plane - See if it is behind me
-        fDist = Mathf.distanceToPlane(point, nearPlane);
-        if (fDist + radius <= 0.0) {
-            return false;
+        return inView(point, radius);
+    }
+    
+    /**
+     * Evaluate a point against frustum perimeter.
+     * A false value means it is entirely outside the frustum.
+     * A true value means the pint is either inside of the frustum or on the edge of the frustum.
+     * The radius value allows a test for a point (radius==0) or a sphere.
+     * Note: Unless the frustum has been transformed with respect to the view point, then
+     * the frustum perimeter is defined with the assumption that the view point is at worldPosition (0,0,0)
+     *
+     * @param point
+     * @param radius
+     *
+     * @return False if it is not in the frustum, true if it intersects the
+     * frustum.
+     */
+    public boolean inView(final Vector3f point, final float radius) {       
+        return Mathf.distanceToPlane(point, nearPlane) + radius >= 0.0 // Near Plane - See if it is in front of me
+                && Mathf.distanceToPlane(point, farPlane) + radius >= 0.0 // Distance to far plane
+                && Mathf.distanceToPlane(point, leftPlane) + radius >= 0.0
+                && Mathf.distanceToPlane(point, rightPlane) + radius >= 0.0
+                && Mathf.distanceToPlane(point, bottomPlane) + radius >= 0.0
+                && Mathf.distanceToPlane(point, topPlane) + radius >= 0.0;
+    }
+    
+    /**
+     * Evaluate a line drawn from a point against a frustum perimeter to determine at what point this line first enters the frustum.
+     * <p>
+     * A null value means it does not pass through the frustum at any point.
+     * If the point starts in the frustum, that value is returned.
+     *
+     * @param initialEndPoint
+     * @param finalEndPoint
+     *
+     * @return The point of first entry into the frustum
+     * frustum.
+     */
+    public Vector3f getEntryPoint(final Vector3f initialEndPoint, final Vector3f finalEndPoint) {       
+        // The point is already within the frustum so return the point as the initial entry point. 
+        if (inView(initialEndPoint, 0)){
+            return initialEndPoint;
         }
-
-        // Distance to far plane
-        fDist = Mathf.distanceToPlane(point, farPlane);
-        if (fDist + radius <= 0.0) {
-            return false;
-        }
-
-        fDist = Mathf.distanceToPlane(point, leftPlane);
-        if (fDist + radius <= 0.0) {
-            return false;
-        }
-
-        fDist = Mathf.distanceToPlane(point, rightPlane);
-        if (fDist + radius <= 0.0) {
-            return false;
-        }
-
-        fDist = Mathf.distanceToPlane(point, bottomPlane);
-        if (fDist + radius <= 0.0) {
-            return false;
-        }
-
-        fDist = Mathf.distanceToPlane(point, topPlane);
-
-        return fDist + radius > 0.0;
+        
+        // Initialise the entry point with invalid values to indicate no intersection has been found.
+        final Vector3f entryPoint = new Vector3f(Float.NaN, Float.NaN, Float.NaN);
+        
+        // Check each face 
+        Arrays.asList(nearPlane, farPlane, leftPlane, rightPlane, topPlane, bottomPlane).forEach(plane -> {
+            
+            // Get the point that the line intesects the plane
+            final Vector3f candidateEntryPoint = this.getFaceIntersection(plane, initialEndPoint, finalEndPoint);
+            
+            // If a candidate entry point was found, update the entry point with the closest found intersection
+            if (candidateEntryPoint != null && (!entryPoint.isValid() || Mathf.distance(candidateEntryPoint, initialEndPoint) < Mathf.distance(entryPoint, initialEndPoint))) {
+                entryPoint.set(candidateEntryPoint);
+            }
+        });
+        return entryPoint.isValid() ? entryPoint : null;
+    }
+    
+    /**
+     * Evaluates a line drawn between two end points against a plane.
+     * Method also evaluates to ensure that the intersection point is within the bounds of the frustum. 
+     * @param plane
+     * @param initialEndPoint
+     * @param finalEndPoint
+     */
+    private Vector3f getFaceIntersection(final Vector4f plane, final Vector3f initialEndPoint, final Vector3f finalEndPoint) {
+        final Vector3f planeIntersectionPoint = Mathf.planeIntersectionPoint(initialEndPoint, finalEndPoint, plane);
+        return planeIntersectionPoint.isValid() && inView(planeIntersectionPoint, 0.1F) ? planeIntersectionPoint : null;
     }
 }

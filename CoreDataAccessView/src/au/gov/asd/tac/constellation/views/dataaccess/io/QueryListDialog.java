@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.io;
 
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.util.List;
 import java.util.Optional;
 import javafx.collections.FXCollections;
@@ -48,6 +49,7 @@ public final class QueryListDialog {
      */
     public static Optional<String> getQueryName(final List<String> queryNames) {
         final Alert dialog = new Alert(Alert.AlertType.CONFIRMATION);
+        dialog.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
 
         final ListView<String> nameList = new ListView<>(
                 FXCollections.observableArrayList(queryNames)

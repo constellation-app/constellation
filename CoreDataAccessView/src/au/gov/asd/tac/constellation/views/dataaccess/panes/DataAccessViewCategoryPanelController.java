@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.prefs.Preferences;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
+import org.apache.commons.lang3.StringUtils;
 import org.netbeans.spi.options.OptionsPanelController;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
@@ -45,8 +46,16 @@ import org.openide.util.NbPreferences;
 public final class DataAccessViewCategoryPanelController extends OptionsPanelController {
 
     private DataAccessViewCategoryPanel thePanel;
+    private List<String> visibleNow;
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     private boolean panelRefreshed = false;
+    private boolean reorderButtonPressed = false;
+    private boolean moveButtonPressed = false;
+    private boolean orderChanged = false;
+    private boolean firstLoad = true;
+    private boolean noEditsMade = true;
+    private List<String> visibleOnFirstLoad;
+    private List<String> hiddenOnFirstLoad;
 
     /* This method enables to refresh the lists when the panel is opened */
     @Override
@@ -57,7 +66,8 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
             final DataAccessViewCategoryPanel panel = getPanel();
             if (!panelRefreshed) {
                 panel.setVisibleCategory(panel.getVisibleResultList().toString());
-                panel.setHiddenCategory(prefs.get(DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT));
+                panel.setVisibleCategory(prefs.get(DataAccessViewPreferenceKeys.VISIBLE_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV));
+                panel.setHiddenCategory(prefs.get(DataAccessViewPreferenceKeys.HIDDEN_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV));
             }
         });
     }
@@ -72,7 +82,12 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
                 pcs.firePropertyChange(OptionsPanelController.PROP_CHANGED, false, true);
                 final Preferences prefs = NbPreferences.forModule(DataAccessViewPreferenceKeys.class);
                 final DataAccessViewCategoryPanel panel = getPanel();
-                prefs.put(DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW, panel.getHiddenCategory().toString().replace("[,", "["));
+                visibleNow = panel.getVisibleCategory();
+                prefs.put(DataAccessViewPreferenceKeys.HIDDEN_DAV, panel.getHiddenCategory().toString().replace("[,", "["));
+                prefs.put(DataAccessViewPreferenceKeys.VISIBLE_DAV, panel.getVisibleCategory().toString().replace("[,", "["));
+                orderChanged = false;
+                reorderButtonPressed = false;
+                moveButtonPressed = false;
                 panelRefreshed = true;
             }
         }
@@ -80,7 +95,20 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
 
     @Override
     public void cancel() {
-        // need not do anything special, if no changes have been persisted yet
+        final DataAccessViewCategoryPanel panel = getPanel();
+        final Preferences prefs = NbPreferences.forModule(DataAccessViewPreferenceKeys.class);
+
+        final String visibleItems = prefs.get(DataAccessViewPreferenceKeys.VISIBLE_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV);
+        final String hiddenItems = prefs.get(DataAccessViewPreferenceKeys.HIDDEN_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV);
+
+        if (StringUtils.isBlank(visibleItems.replace("[", "").replace("]", "")) && StringUtils.isBlank(hiddenItems.replace("[", "").replace("]", ""))) {
+            panel.setVisibleCategory(visibleOnFirstLoad.toString());
+            panel.setHiddenCategory(hiddenOnFirstLoad.toString());
+            return;
+        }
+
+        panel.setVisibleCategory(visibleItems);
+        panel.setHiddenCategory(hiddenItems);
     }
 
     @Override
@@ -93,11 +121,44 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
 
     @Override
     public boolean isChanged() {
-        final Preferences prefs = NbPreferences.forModule(DataAccessViewPreferenceKeys.class);
         final DataAccessViewCategoryPanel panel = getPanel();
-        final List<String> hiddenCategory = panel.getHiddenCategory();
-        return (!hiddenCategory.isEmpty())
-                || (!prefs.get(DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT).isEmpty());
+        final List<String> visibleCategory = panel.getVisibleCategory();
+
+        if (reorderButtonPressed && !visibleCategory.equals(visibleNow)) {
+            orderChanged = true;
+            noEditsMade = false;
+            visibleNow = panel.getVisibleCategory();
+        }
+
+        if (moveButtonPressed) {
+            noEditsMade = false;
+            firstLoad = false;
+        }
+
+        return visibleEntriesHaveChanged() || orderChanged;
+    }
+
+    private boolean visibleEntriesHaveChanged() {
+        if (noEditsMade) {
+            visibleOnFirstLoad = getPanel().getVisibleCategory();
+            hiddenOnFirstLoad = getPanel().getHiddenCategory();
+        }
+
+        if (firstLoad) {
+            visibleNow = getPanel().getVisibleCategory();
+            return false;
+        }
+
+        if (getPanel().getVisibleCategory().size() == visibleNow.size()) {
+            for (int i = 0; i < visibleNow.size(); ++i) {
+                if (!getPanel().getVisibleCategory().get(i).equals(visibleNow.get(i))) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        return true;
     }
 
     @Override
@@ -123,7 +184,16 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
     public DataAccessViewCategoryPanel getPanel() {
         if (thePanel == null) {
             thePanel = new DataAccessViewCategoryPanel(this);
+            visibleNow = thePanel.getVisibleCategory();
         }
         return thePanel;
+    }
+
+    public void setReorderButtonPressed(final boolean reorderButtonPressed) {
+        this.reorderButtonPressed = reorderButtonPressed;
+    }
+
+    public void setMoveButtonPressed(final boolean moveButtonPressed) {
+        this.moveButtonPressed = moveButtonPressed;
     }
 }

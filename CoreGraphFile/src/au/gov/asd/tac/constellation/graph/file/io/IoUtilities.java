@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.graph.file.io;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -23,7 +24,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
-import java.util.List;
 import java.util.TimeZone;
 
 /**
@@ -88,16 +88,13 @@ public final class IoUtilities {
         for (int i = 0; i < length; i++) {
             final char c = s.charAt(i);
 
-            final char replacement;
-            if (c == 9) {
-                replacement = 't';
-            } else if (c == 10) {
-                replacement = 'n';
-            } else if (c == 13) {
-                replacement = 'r';
-            } else {
-                replacement = c == '\\' ? '\\' : 0;
-            }
+            final char replacement = switch (c) {
+                case 9 -> 't';
+                case 10 -> 'n';
+                case 13 -> 'r';
+                case '\\' -> '\\';
+                default -> 0;
+            };
 
             if (replacement != 0) {
                 t.append(s.substring(begin, i)).append('\\').append(replacement);
@@ -131,7 +128,8 @@ public final class IoUtilities {
         final StringBuilder t = new StringBuilder();
         final int length = s.length();
         int begin = 0;
-        for (int i = 0; i < length; i++) {
+        int i = 0;
+        while (i < length) {
             final char c = s.charAt(i);
             if (c == '\\') {
                 if (i == length - 1) {
@@ -139,7 +137,14 @@ public final class IoUtilities {
                 }
 
                 final char c2 = s.charAt(i + 1);
-                final char replacement = c2 == 't' ? 9 : (c2 == 'n' ? 10 : (c2 == 'r' ? 13 : (c2 == '\\' ? '\\' : 0)));
+                final char replacement = switch (c2) {
+                    case 't' -> 9;
+                    case 'n' -> 10;
+                    case 'r' -> 13;
+                    case '\\' -> '\\';
+                    default -> 0;
+                };
+                
                 if (replacement == 0) {
                     throw new IllegalArgumentException(String.format("Unknown escaped character '%s' in «%s»", c2, s));
                 }
@@ -148,6 +153,7 @@ public final class IoUtilities {
                 i++;
                 begin = i + 1;
             }
+            i++;
         }
 
         if (t.length() > 0) {
@@ -327,16 +333,21 @@ public final class IoUtilities {
      * @return A String representation of the given GraphElementType.
      */
     public static String getGraphElementTypeString(final GraphElementType type) {
-        if (type == GraphElementType.GRAPH) {
-            return "graph";
-        } else if (type == GraphElementType.VERTEX) {
-            return "vertex";
-        } else if (type == GraphElementType.TRANSACTION) {
-            return "transaction";
-        } else if (type == GraphElementType.META) {
-            return "meta";
-        } else {
-            throw new IllegalArgumentException("Unwanted GraphElementType: " + type);
+        switch (type) {
+            case GRAPH -> {
+                return "graph";
+            }
+            case VERTEX -> {
+                return "vertex";
+            }
+            case TRANSACTION -> {
+                return "transaction";
+            }
+            case META -> {
+                return "meta";
+            }
+            case null -> throw new IllegalArgumentException("Unwanted GraphElementType: " + type);
+            default -> throw new IllegalArgumentException("Unwanted GraphElementType: " + type);
         }
     }
 
@@ -358,20 +369,16 @@ public final class IoUtilities {
      * names "_id", "_from", "_to" at the beginning.
      *
      */
-    public static class LCComparator implements Comparator<String> {
+    public static class LCComparator implements Comparator<String>, Serializable {
         // Ensure that the special attributes are at the beginning of the names.
 
         private static String specialCaseSortName(final String name) {
-            switch (name) {
-                case "_from":
-                    return "\u0000";
-                case "_to":
-                    return "\u0001";
-                case "_directed":
-                    return "\u0002";
-                default:
-                    return name.toLowerCase();
-            }
+            return switch (name) {
+                case "_from" -> "\u0000";
+                case "_to" -> "\u0001";
+                case "_directed" -> "\u0002";
+                default -> name.toLowerCase();
+            };
         }
 
         @Override
@@ -390,7 +397,7 @@ public final class IoUtilities {
      *
      * @return The strings joined using the separator character.
      */
-    public static String join(final List<String> a, final char separator) {
+    public static String join(final Iterable<String> a, final char separator) {
         final StringBuilder buf = new StringBuilder();
         for (final String s : a) {
             if (buf.length() > 0) {

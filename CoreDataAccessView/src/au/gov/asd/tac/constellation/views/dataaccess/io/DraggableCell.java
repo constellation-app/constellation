@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,7 +79,7 @@ public class DraggableCell<T> extends ListCell<T> {
             }
 
             boolean success = false;
-            if (event.getGestureSource() instanceof DraggableCell && ((DraggableCell) event.getGestureSource()).getListView() == getListView()) {
+            if (event.getGestureSource() instanceof DraggableCell dCell && dCell.getListView() == getListView()) {
 
                 final Dragboard dragboard = event.getDragboard();
 

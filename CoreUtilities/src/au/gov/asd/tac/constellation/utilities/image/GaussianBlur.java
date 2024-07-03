@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.utilities.image;
 
 import java.util.Arrays;
-import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * Gaussian Blur.
@@ -24,7 +23,7 @@ import org.apache.commons.lang3.ArrayUtils;
  * @author cygnus_x-1
  */
 public class GaussianBlur {
-    
+
     private static final String TARGET_SMALLER_THAN_SOURCE = "Target channel is smaller than source channel.";
 
     protected static final int[] RAINBOW = {
@@ -98,38 +97,46 @@ public class GaussianBlur {
         FASTEST;
     }
 
+    /**
+     * Edits the targetChannel to be a blurred copy of the soruceChannel
+     *
+     * @param sourceChannel Float array containing image data
+     * @param targetChannel Empty float array with size greater than or equal to the size of sourceChannel
+     * @param width Width of image stored in float sourceChannel
+     * @param height Height of image stored in sourceChannel
+     * @param radius Radius of pixel blur
+     * @param passes Number of blur passes
+     * @param type Which blur algorithm to use: STANDARD, FAST or FASTEST
+     */
     public static void gaussianBlurBox(final float[] sourceChannel, float[] targetChannel,
             final int width, final int height, final int radius, final int passes, final BoxBlurType type) {
 
-        if (sourceChannel.length == width * height) {
-            if (sourceChannel.length <= targetChannel.length) {
-                float[] tempChannel = Arrays.copyOf(sourceChannel, sourceChannel.length);
-                final int[] boxes = boxesForGauss(radius, passes);
-                for (int i = 0; i < passes; i++) {
-                    switch (type) {
-                        case STANDARD:
-                            boxBlur(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
-                            break;
-                        case FAST:
-                            targetChannel = ArrayUtils.addAll(tempChannel);
-                            boxBlurFH(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
-                            boxBlurFT(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
-                            break;
-                        case FASTEST:
-                            targetChannel = ArrayUtils.addAll(tempChannel);
-                            boxBlurFFH(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
-                            boxBlurFFT(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
-                            break;
-                    }
-                    tempChannel = targetChannel;
-                }
-            } else {
-                throw new IllegalArgumentException(TARGET_SMALLER_THAN_SOURCE);
-            }
-        } else {
+        // Error Handling
+        if (sourceChannel.length != width * height) {
             throw new IllegalArgumentException("Source channel does not have the dimensions provided.");
         }
 
+        if (sourceChannel.length > targetChannel.length) {
+            throw new IllegalArgumentException(TARGET_SMALLER_THAN_SOURCE);
+        }
+
+        float[] tempChannel = Arrays.copyOf(sourceChannel, sourceChannel.length);
+        final int[] boxes = boxesForGauss(radius, passes);
+        for (int i = 0; i < passes; i++) {
+            switch (type) {
+                case STANDARD ->
+                    boxBlur(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
+                case FAST -> {
+                    boxBlurFH(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
+                    boxBlurFT(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
+                }
+                case FASTEST -> {
+                    boxBlurFFH(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
+                    boxBlurFFT(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
+                }
+            }
+            tempChannel = targetChannel;
+        }
     }
 
     private static int[] boxesForGauss(final float sigma, final int n) {
@@ -207,19 +214,34 @@ public class GaussianBlur {
             final float lv = sourceChannel[ti + width - 1];
             float val = (radius + 1) * fv;
             for (int j = 0; j < radius; j++) {
-                val += sourceChannel[ti + j];
+                if (sourceChannel.length > 0 && isValidElement(ti + j, sourceChannel)) {
+                    val += sourceChannel[ti + j];
+                }
             }
             for (int j = 0; j <= radius; j++) {
-                val += sourceChannel[ri++] - fv;
-                targetChannel[ti++] = val * iarr;
+
+                if (sourceChannel.length > 0 && isValidElement(ri, sourceChannel)) {
+                    val += sourceChannel[ri++] - fv;
+                }
+                if (ti < targetChannel.length && targetChannel.length > 0) {
+                    targetChannel[ti++] = val * iarr;
+                }
             }
             for (int j = radius + 1; j < width - radius; j++) {
-                val += sourceChannel[ri++] - sourceChannel[li++];
-                targetChannel[ti++] = val * iarr;
+                if (sourceChannel.length > 0 && isValidElement(ri, sourceChannel) && isValidElement(li, sourceChannel)) {
+                    val += sourceChannel[ri++] - sourceChannel[li++];
+                }
+                if (targetChannel.length > 0 && isValidElement(ti, targetChannel)) {
+                    targetChannel[ti++] = val * iarr;
+                }
             }
             for (int j = width - radius; j < width; j++) {
-                val += lv - sourceChannel[li++];
-                targetChannel[ti++] = val * iarr;
+                if (sourceChannel.length > 0 && isValidElement(li, sourceChannel)) {
+                    val += lv - sourceChannel[li++];
+                }
+                if (targetChannel.length > 0 && isValidElement(ti, targetChannel)) {
+                    targetChannel[ti++] = val * iarr;
+                }
             }
         }
     }
@@ -235,24 +257,38 @@ public class GaussianBlur {
             final float lv = sourceChannel[ti + width * (height - 1)];
             float val = (radius + 1) * fv;
             for (int j = 0; j < radius; j++) {
-                val += sourceChannel[ti + j * width];
+                if (sourceChannel.length > 0 && isValidElement((ti + j * width), sourceChannel)) {
+                    val += sourceChannel[ti + j * width];
+                }
             }
             for (int j = 0; j <= radius; j++) {
-                val += sourceChannel[ri] - fv;
-                targetChannel[ti] = val * iarr;
+                if (sourceChannel.length > 0 && isValidElement(ri, sourceChannel)) {
+                    val += sourceChannel[ri] - fv;
+                }
+                if (targetChannel.length > 0 && isValidElement(ti, targetChannel)) {
+                    targetChannel[ti] = val * iarr;
+                }
                 ri += width;
                 ti += width;
             }
             for (int j = radius + 1; j < height - radius; j++) {
-                val += sourceChannel[ri] - sourceChannel[li];
-                targetChannel[ti] = val * iarr;
+                if (sourceChannel.length > 0 && isValidElement(ri, sourceChannel) && isValidElement(li, sourceChannel)) {
+                    val += sourceChannel[ri] - sourceChannel[li];
+                }
+                if (targetChannel.length > 0 && isValidElement(ti, targetChannel)) {
+                    targetChannel[ti] = val * iarr;
+                }
                 li += width;
                 ri += width;
                 ti += width;
             }
             for (int j = height - radius; j < height; j++) {
-                val += lv - sourceChannel[li];
-                targetChannel[ti] = val * iarr;
+                if (sourceChannel.length > 0 && isValidElement(li, sourceChannel)) {
+                    val += lv - sourceChannel[li];
+                }
+                if (targetChannel.length > 0 && isValidElement(ti, targetChannel)) {
+                    targetChannel[ti] = val * iarr;
+                }
                 li += width;
                 ri += width;
             }
@@ -288,5 +324,9 @@ public class GaussianBlur {
         } else {
             throw new IllegalArgumentException("Threshold must be a value between 0 and 255");
         }
+    }
+
+    private static boolean isValidElement(final int index, final float[] array) {
+        return (index >= 0) && (index < array.length);
     }
 }

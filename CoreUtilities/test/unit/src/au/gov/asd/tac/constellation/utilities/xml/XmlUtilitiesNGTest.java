@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,11 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -46,7 +50,7 @@ import org.xml.sax.SAXException;
 public class XmlUtilitiesNGTest {
 
     private static final String OUTPUT_FILE = "testOutputFile.xml";
-    private static final String XML_HDR = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+    private static final String XML_HDR = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>";
 
     public XmlUtilitiesNGTest() {
     }
@@ -68,8 +72,7 @@ public class XmlUtilitiesNGTest {
     }
 
     /**
-     * Test of newDocument method, of class XmlUtilities. This effectively
-     * creates a new empty document.
+     * Test of newDocument method, of class XmlUtilities. This effectively creates a new empty document.
      */
     @Test
     public void testNewDocument() {
@@ -106,8 +109,8 @@ public class XmlUtilitiesNGTest {
 
         Document document = getXmlDocument("resources/testWrite_Document.xml", false);
         String results = new String(instance.write(document));
-        
-        assertEquals(removeWhitespacing(results),removeWhitespacing(expectedStr));
+
+        assertEquals(removeWhitespacing(results), removeWhitespacing(expectedStr));
     }
 
     /**
@@ -132,7 +135,7 @@ public class XmlUtilitiesNGTest {
         File outputFile = new File(outputFilename);
         instance.write(document, outputFile);
         String output = Files.readFile(outputFile);
-        
+
         assertEquals(removeWhitespacing(output), removeWhitespacing(expectedOutput));
     }
 
@@ -153,8 +156,8 @@ public class XmlUtilitiesNGTest {
         // Read the test file into a Document object
         Document document = getXmlDocument("resources/testWriteToString_Document.xml", false);
         String output = instance.writeToString(document);
-        
-        assertEquals(removeWhitespacing(output),removeWhitespacing(expectedOutput));
+
+        assertEquals(removeWhitespacing(output), removeWhitespacing(expectedOutput));
     }
 
     /**
@@ -171,7 +174,7 @@ public class XmlUtilitiesNGTest {
         String testFile = XmlUtilitiesNGTest.class.getResource("resources/testWriteToString_InputStream_int.xml").getPath();
         InputStream inputStream = new FileInputStream(new File(testFile));
         String output = instance.writeToString(inputStream, inputStream.available());
-        
+
         assertEquals(removeWhitespacing(output), removeWhitespacing(expectedOutput));
     }
 
@@ -665,8 +668,7 @@ public class XmlUtilitiesNGTest {
     }
 
     /**
-     * Test of map method, of class XmlUtilities, showing file not found
-     * exception thrown if file cant be found.
+     * Test of map method, of class XmlUtilities, showing file not found exception thrown if file cant be found.
      *
      * @throws java.lang.Exception
      */
@@ -681,8 +683,7 @@ public class XmlUtilitiesNGTest {
     }
 
     /**
-     * Test of map method, of class XmlUtilities, showing file not found
-     * exception thrown if file cant be found.
+     * Test of map method, of class XmlUtilities, showing file not found exception thrown if file cant be found.
      *
      * @throws java.lang.Exception
      */
@@ -723,8 +724,7 @@ public class XmlUtilitiesNGTest {
     }
 
     /**
-     * Test of map method, of class XmlUtilities, showing file not found
-     * exception thrown if file cant be found.
+     * Test of map method, of class XmlUtilities, showing file not found exception thrown if file cant be found.
      *
      * @throws java.lang.Exception
      */
@@ -739,8 +739,7 @@ public class XmlUtilitiesNGTest {
     }
 
     /**
-     * Test of map method, of class XmlUtilities, showing file not found
-     * exception thrown if file cant be found.
+     * Test of map method, of class XmlUtilities, showing file not found exception thrown if file cant be found.
      *
      * @throws java.lang.Exception
      */
@@ -797,8 +796,7 @@ public class XmlUtilitiesNGTest {
     }
 
     /**
-     * Test of table method, of class XmlUtilities, showing file not found
-     * exception thrown if file cant be found.
+     * Test of table method, of class XmlUtilities, showing file not found exception thrown if file cant be found.
      *
      * @throws java.lang.Exception
      */
@@ -813,8 +811,7 @@ public class XmlUtilitiesNGTest {
     }
 
     /**
-     * Test of table method, of class XmlUtilities, showing file not found
-     * exception thrown if file cant be found.
+     * Test of table method, of class XmlUtilities, showing file not found exception thrown if file cant be found.
      *
      * @throws java.lang.Exception
      */

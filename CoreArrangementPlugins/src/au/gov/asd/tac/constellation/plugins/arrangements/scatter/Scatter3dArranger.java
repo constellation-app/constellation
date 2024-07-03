@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -192,16 +192,15 @@ public class Scatter3dArranger implements Arranger {
             return 0.0F;
         }
 
-        if (attributeValue instanceof Float) {
-            return scaleValue((float) attributeValue, logarithmic);
+        if (attributeValue instanceof Float value) {
+            return scaleValue(value, logarithmic);
         }
 
         if (attributeValue instanceof Double) {
             return scaleValue((float) attributeValue, logarithmic);
         }
 
-        if (attributeValue instanceof String) {
-            String val = (String) attributeValue;
+        if (attributeValue instanceof String val) {
             float finalVal = 0.0F;
             float multiplier = 1;
             for (int i = 0; i < val.length(); i++) {
@@ -213,21 +212,19 @@ public class Scatter3dArranger implements Arranger {
             return scaleValue(finalVal, logarithmic);
         }
 
-        if (attributeValue instanceof Integer) {
-            float ret = (Integer) attributeValue;
+        if (attributeValue instanceof Integer value) {
+            float ret = value;
             return scaleValue(ret, logarithmic);
         }
 
-        if (attributeValue instanceof ConstellationColor) {
-            ConstellationColor color = (ConstellationColor) attributeValue;
+        if (attributeValue instanceof ConstellationColor color) {
             float red = color.getRed() / 256;
             float green = color.getGreen() / 256;
             float blue = color.getBlue() / 256;
             return scaleValue((red + green + blue) * 100, logarithmic);
         }
 
-        if (attributeValue instanceof ZonedDateTime) {
-            ZonedDateTime c = (ZonedDateTime) attributeValue;
+        if (attributeValue instanceof ZonedDateTime c) {
             float year = c.getYear();
             float month = c.getMonthValue();
             float monthDay = c.getDayOfMonth();
@@ -236,8 +233,8 @@ public class Scatter3dArranger implements Arranger {
             return scaleValue((year - 2010) + month / 12 + monthDay / (366) + hour / (366 * 24) + minute / (366 * 24 * 60), logarithmic);
         }
 
-        if (attributeValue instanceof RawData) {
-            String s = ((RawData) attributeValue).toString();
+        if (attributeValue instanceof RawData value) {
+            String s = value.toString();
             return getFloatValueFromObject(s, logarithmic);
         }
 

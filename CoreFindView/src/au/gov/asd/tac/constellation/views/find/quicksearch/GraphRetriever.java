@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,8 +63,8 @@ public class GraphRetriever implements LookupListener {
     @Override
     public void resultChanged(final LookupEvent lev) {
         final Node[] activatedNodes = TopComponent.getRegistry().getActivatedNodes();
-        if (activatedNodes.length > 0 && activatedNodes[0] instanceof GraphNode) {
-            graphNode = (GraphNode) activatedNodes[0];
+        if (activatedNodes.length > 0 && activatedNodes[0] instanceof GraphNode gNode) {
+            graphNode = gNode;
         } else {
             graphNode = null;
         }

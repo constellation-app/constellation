@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.api.DataAccessPaneState;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
+import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessViewPreferenceKeys;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataSourceTitledPane;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.QueryPhasePane;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
@@ -33,10 +34,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.function.Function;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
+import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
@@ -51,26 +54,25 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
+import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
+import org.openide.util.NbPreferences;
 
 /**
- * Wrapper of the JavaFX tab pane for the CONSTELLATION Data Access View. Provides
- * support for adding, removing and updating the tabs. Also provides functionality
- * to execute one or more tabs with data access plugins.
+ * Wrapper of the JavaFX tab pane for the CONSTELLATION Data Access View. Provides support for adding, removing and
+ * updating the tabs. Also provides functionality to execute one or more tabs with data access plugins.
  *
  * @author formalhaunt
  */
-public class DataAccessTabPane {
-    private static final Logger LOGGER = Logger.getLogger(DataAccessTabPane.class.getName());
-    
+public class DataAccessTabPane implements PreferenceChangeListener {
+
     private static final String TAB_TITLE = "Step %d";
     public static final String LOCAL_DATE_PARAMETER_TYPE = "LocalDateParameterType";
     private static final int DOUBLE_CLICK_COUNT = 2;
-    
+
     /**
-     * Function for determining if a tab is executable. A tab is executable
-     * if it has enabled plugins and all enabled plugins are valid. The tab's
-     * date range also needs to be valid.
+     * Function for determining if a tab is executable. A tab is executable if it has enabled plugins and all enabled
+     * plugins are valid. The tab's date range also needs to be valid.
      */
     private final Function<Tab, Boolean> isExecutableTab = tab -> {
         final boolean hasEnabledPlugins = tabHasEnabledPlugins(tab);
@@ -80,41 +82,74 @@ public class DataAccessTabPane {
 
         return hasEnabledPlugins && allEnabledPluginsValid && hasValidTimeRange;
     };
-    
+
     private final DataAccessPane dataAccessPane;
-    private final Map<String, List<DataAccessPlugin>> plugins;
+    private Map<String, Pair<Integer, List<DataAccessPlugin>>> plugins;
     private final TabPane tabPane;
-    
+
     /**
      * Creates a new data access tab pane.
      *
      * @param dataAccessPane the data access pane that this tab pane will be added to
      * @param plugins the data access plugins found at startup
-     * @see DataAccessPaneState#getPlugins() 
+     * @see DataAccessPaneState#getPlugins()
      */
     public DataAccessTabPane(final DataAccessPane dataAccessPane,
-                             final Map<String, List<DataAccessPlugin>> plugins) {
+            final Map<String, Pair<Integer, List<DataAccessPlugin>>> plugins) {
         this.dataAccessPane = dataAccessPane;
         this.plugins = plugins;
-        
+
         tabPane = new TabPane();
         tabPane.setSide(Side.TOP);
         tabPane.getSelectionModel().selectedIndexProperty().addListener(
-                (final ObservableValue<? extends Number> observable, final Number oldValue, final Number newValue) ->
-                        storeParameterValues()
+                (final ObservableValue<? extends Number> observable, final Number oldValue, final Number newValue)
+                -> storeParameterValues()
         );
 
         // Update the button when the user adds/removes tabs.
         tabPane.getTabs().addListener(
                 (final ListChangeListener.Change<? extends Tab> change) -> this.dataAccessPane.update()
         );
+
+        NbPreferences.forModule(DataAccessViewPreferenceKeys.class).addPreferenceChangeListener(this);
     }
-    
+
+    @Override
+    public void preferenceChange(final PreferenceChangeEvent evt) {
+        handlePluginChange();
+    }
+
+    private void handlePluginChange() {
+        // Plugins are now needed, so wait until the load is complete
+        final Map<String, Pair<Integer, List<DataAccessPlugin>>> pluginsRetrieved;
+        try {
+            pluginsRetrieved = DataAccessPaneState.getPlugins();
+        } catch (final ExecutionException ex) {
+            throw new IllegalStateException("Failed to load data access plugins. "
+                    + "Data Access View cannot be created.");
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+
+            throw new IllegalStateException("Failed to load data access plugins. "
+                    + "Data Access View cannot be created.");
+        }
+
+        // Check if plugins have changed
+        if (pluginsRetrieved != null && pluginsRetrieved.equals(plugins)) {
+            return;
+        }
+        
+        setPlugins(pluginsRetrieved);
+        
+        for (final Tab tab : tabPane.getTabs()) {
+            getQueryPhasePane(tab).updatePlugins(this.plugins, getDataAccessPane());
+        }
+    }
+
     /**
-     * Create a new tab with a default caption, "Step 1", "Step 2" etc. The
-     * {@link QueryPhasePane} that is added to the tab will have no global
-     * parameters initially. It will have the data access plugin     * map generated at start up and the {@link DataAccessPane} that this tab pane
-     * resides on.
+     * Create a new tab with a default caption, "Step 1", "Step 2" etc. The {@link QueryPhasePane} that is added to the
+     * tab will have no global parameters initially. It will have the data access plugin * map generated at start up and
+     * the {@link DataAccessPane} that this tab pane resides on.
      *
      * @return the new {@link QueryPhasePane} that was added to the tab
      * @see #newTab(PluginParameters)
@@ -124,9 +159,8 @@ public class DataAccessTabPane {
     }
 
     /**
-     * Create a new tab with the specified caption. The {@link QueryPhasePane}
-     * that is added to the tab will have no global parameters initially. It
-     * will have the data access plugin map generated at start up and the
+     * Create a new tab with the specified caption. The {@link QueryPhasePane} that is added to the tab will have no
+     * global parameters initially. It will have the data access plugin map generated at start up and the
      * {@link DataAccessPane} that this tab pane resides on.
      *
      * @param tabCaption the caption of the new tab
@@ -136,12 +170,11 @@ public class DataAccessTabPane {
     public QueryPhasePane newTab(final String tabCaption) {
         return newTab((PluginParameters) null, tabCaption);
     }
-    
+
     /**
-     * Create a new tab with passed global parameters added to the new tabs
-     * {@link QueryPhasePane}. The new pane is created with the data access plugin
-     * map generated at start up and the {@link DataAccessPane} that this tab
-     * pane resides on.
+     * Create a new tab with passed global parameters added to the new tabs {@link QueryPhasePane}. The new pane is
+     * created with the data access plugin map generated at start up and the {@link DataAccessPane} that this tab pane
+     * resides on.
      *
      * @param globalPrameters the global parameters to add to the new pane
      * @return the new {@link QueryPhasePane} that was added to the tab
@@ -153,11 +186,11 @@ public class DataAccessTabPane {
         newTab(pane, tabCaption);
         return pane;
     }
-    
+
     /**
-     * Create a new tab and adds it to the end of the tab pane. The new tab will
-     * have a context menu created and added to it.
-     * 
+     * Create a new tab and adds it to the end of the tab pane. The new tab will have a context menu created and added
+     * to it.
+     *
      * @param queryPane the pane that will be added as the content of the new tab
      */
     public void newTab(final QueryPhasePane queryPane, final String userCaption) {
@@ -271,12 +304,11 @@ public class DataAccessTabPane {
     }
 
     /**
-     * Run the given range of tabs inclusively. As each tab is run, the jobs from
-     * the previous tab are passed so that it can block if necessary until they
-     * are complete.
+     * Run the given range of tabs inclusively. As each tab is run, the jobs from the previous tab are passed so that it
+     * can block if necessary until they are complete.
      * <p/>
-     * Before returning a {@link WaitForQueriesToCompleteTask} will be started
-     * that will deal with the clean up of the run once it is complete.
+     * Before returning a {@link WaitForQueriesToCompleteTask} will be started that will deal with the clean up of the
+     * run once it is complete.
      *
      * @param firstTab the first tab to be run
      * @param lastTab the last tab to be run
@@ -284,47 +316,42 @@ public class DataAccessTabPane {
     public void runTabs(final int firstTab, final int lastTab) {
         // Change execute button to stop but do not disable
         getDataAccessPane().setExecuteButtonToStop(false);
-        
+
         // Need to take a copy for when it changes while this thread is still running
         final String activeGraphId = GraphManager.getDefault().getActiveGraph().getId();
-        
+
         DataAccessPaneState.setQueriesRunning(activeGraphId, true);
 
         // TODO This was being called every time runPlugins is called but can't
         //      see the point..could break!!!
         storeParameterValues();
-        
+
         List<Future<?>> barrier = null;
         for (int i = firstTab; i <= lastTab; i++) {
             final Tab tab = getTabPane().getTabs().get(i);
-            
-            LOGGER.log(Level.INFO, String.format("Running tab: %s", tab.getText()));
-            
             barrier = getQueryPhasePane(tab).runPlugins(barrier);
         }
 
         CompletableFuture.runAsync(() -> new WaitForQueriesToCompleteTask(getDataAccessPane(), activeGraphId),
                 getDataAccessPane().getParentComponent().getExecutorService());
     }
-    
+
     /**
-     * Enable or disable the items in the contextual menu for every tab. There are
-     * two types of menu items in the context menu. Menu items relating specifically
-     * to plugins and menu items relating specifically to the graph.
+     * Enable or disable the items in the contextual menu for every tab. There are two types of menu items in the
+     * context menu. Menu items relating specifically to plugins and menu items relating specifically to the graph.
      * <p/>
      * Plugin menu items will be enabled if the tab has enabled plugins.
      * <p/>
-     * Graph menu items will be enabled if the tab has enabled plugins and the
-     * execute button is fully enabled.
+     * Graph menu items will be enabled if the tab has enabled plugins and the execute button is fully enabled.
      */
     public void updateTabMenus() {
         final boolean isExecuteButtonIsGo = DataAccessPaneState.isExecuteButtonIsGo();
         final boolean isExecuteButtonEnabled = !getDataAccessPane().getButtonToolbar()
                 .getExecuteButtonTop().isDisabled();
-                    
+
         getTabPane().getTabs().forEach(tab -> {
             final boolean hasEnabledPlugins = tabHasEnabledPlugins(tab);
-                    
+
             updateTabMenu(
                     tab,
                     hasEnabledPlugins && isExecuteButtonIsGo && isExecuteButtonEnabled,
@@ -332,7 +359,7 @@ public class DataAccessTabPane {
             );
         });
     }
-    
+
     /**
      * Determines if the tab pane is executable by verifying the following for each tab
      * <ol>
@@ -350,11 +377,10 @@ public class DataAccessTabPane {
                 .findAny()
                 .isEmpty(); // For the pane to be valid then all tabs need to be valid
     }
-    
+
     /**
-     * Checks if any tab that contains enabled plugins has any invalid
-     * configurations. If there are no enabled plugins or enabled plugins
-     * with invalid configuration then false is returned.
+     * Checks if any tab that contains enabled plugins has any invalid configurations. If there are no enabled plugins
+     * or enabled plugins with invalid configuration then false is returned.
      *
      * @param tabPane the tab pane to be validated
      * @return true if there are active plugins and they are valid, false otherwise
@@ -363,12 +389,12 @@ public class DataAccessTabPane {
         final List<Tab> tabsWithEnabledPlugins = getTabPane().getTabs().stream()
                 .filter(tab -> tabHasEnabledPlugins(tab))
                 .collect(Collectors.toList());
-                
+
         return !tabsWithEnabledPlugins.isEmpty()
                 && tabsWithEnabledPlugins.stream()
                         .allMatch(tab -> validateTabEnabledPlugins(tab));
     }
-    
+
     /**
      * Gets the {@link QueryPhasePane} of the currently visible tab in the tab pane.
      *
@@ -377,7 +403,7 @@ public class DataAccessTabPane {
     public QueryPhasePane getQueryPhasePaneOfCurrentTab() {
         return getQueryPhasePane(getCurrentTab());
     }
-    
+
     /**
      * Get the currently visible tab in the tab pane.
      *
@@ -393,7 +419,7 @@ public class DataAccessTabPane {
     public void removeTabs() {
         tabPane.getTabs().clear();
     }
-    
+
     /**
      * Get the tab pane.
      *
@@ -416,16 +442,19 @@ public class DataAccessTabPane {
      * Get the currently available loaded and available data access plugins.
      *
      * @return the data access plugins
-     * @see DataAccessPaneState#getPlugins() 
+     * @see DataAccessPaneState#getPlugins()
      */
-    public Map<String, List<DataAccessPlugin>> getPlugins() {
+    public Map<String, Pair<Integer, List<DataAccessPlugin>>> getPlugins() {
         return plugins;
     }
-    
+
+    public void setPlugins(final Map<String, Pair<Integer, List<DataAccessPlugin>>> newPlugins) {
+        this.plugins = newPlugins;
+    }
+
     /**
-     * Store current parameter values for all tabs and plug-ins in the
-     * {@link RecentParameterValues} repository. It will store both global and
-     * plugin parameters.
+     * Store current parameter values for all tabs and plug-ins in the {@link RecentParameterValues} repository. It will
+     * store both global and plugin parameters.
      */
     protected void storeParameterValues() {
         getTabPane().getTabs().parallelStream().forEach(tab -> {
@@ -433,32 +462,30 @@ public class DataAccessTabPane {
             pluginPane.storeParameterValues();
         });
     }
-    
+
     /**
-     * Enable or disable the items in the contextual menu for a tab. There are
-     * two types of menu items in the context menu. Menu items relating specifically
-     * to plugins and menu items relating specifically to the graph.
+     * Enable or disable the items in the contextual menu for a tab. There are two types of menu items in the context
+     * menu. Menu items relating specifically to plugins and menu items relating specifically to the graph.
      * <p/>
      * Plugin menu items will be enabled if the tab has enabled plugins.
      * <p/>
-     * Graph menu items will be enabled if the tab has enabled plugins and the
-     * execute button is fully enabled.
+     * Graph menu items will be enabled if the tab has enabled plugins and the execute button is fully enabled.
      *
      * @param tab the tab to update the menu item status on
      * @param enabled true if the menu items are to be enabled, false otherwise
-     * @see #updateTabMenus() 
+     * @see #updateTabMenus()
      */
     protected void updateTabMenu(final Tab tab,
-                                 final boolean graphDependentMenuItemsEnabled,
-                                 final boolean pluginDependentMenuItemsEnabled) {
+            final boolean graphDependentMenuItemsEnabled,
+            final boolean pluginDependentMenuItemsEnabled) {
         final QueryPhasePane queryPhasePane = getQueryPhasePane(tab);
         queryPhasePane.enableGraphDependentMenuItems(graphDependentMenuItemsEnabled);
         queryPhasePane.enablePluginDependentMenuItems(pluginDependentMenuItemsEnabled);
     }
-    
+
     /**
-     * Convenience method for accessing the {@link QueryPhasePane} of a tab.
-     * This prevents all the casting being littered through the code.
+     * Convenience method for accessing the {@link QueryPhasePane} of a tab. This prevents all the casting being
+     * littered through the code.
      *
      * @param tab the tab to get the {@link QueryPhasePane} from
      * @return the found {@link QueryPhasePane}
@@ -466,7 +493,7 @@ public class DataAccessTabPane {
     public static QueryPhasePane getQueryPhasePane(final Tab tab) {
         return (QueryPhasePane) ((ScrollPane) tab.getContent()).getContent();
     }
-    
+
     /**
      * Check if a tab has any plugins that are enabled.
      *
@@ -481,8 +508,7 @@ public class DataAccessTabPane {
     }
 
     /**
-     * Validate a tab's enabled plugins to see if they contain any parameters
-     * with values that are currently in error.
+     * Validate a tab's enabled plugins to see if they contain any parameters with values that are currently in error.
      *
      * @param tab the tab to validate
      * @return true if the tab's enabled plug-ins have valid parameters, false otherwise
@@ -497,10 +523,10 @@ public class DataAccessTabPane {
                 .flatMap(Collection::stream)
                 .allMatch(entry -> entry.getValue().getError() == null);
     }
-    
+
     /**
-     * Validates the current date/time range settings on the passed tab. A date/time
-     * range is valid if the start date/time is before the end date/time.
+     * Validates the current date/time range settings on the passed tab. A date/time range is valid if the start
+     * date/time is before the end date/time.
      *
      * @param tab the tab to validate
      * @return true if the tab's date/time range is valid, false otherwise
@@ -508,7 +534,7 @@ public class DataAccessTabPane {
     public static boolean validateTabTimeRange(final Tab tab) {
         final DateTimeRange range = getQueryPhasePane(tab).getGlobalParametersPane().getParams()
                 .getDateTimeRangeValue(CoreGlobalParameters.DATETIME_RANGE_PARAMETER_ID);
-        
+
         return !range.getZonedStartEnd()[0].isAfter(range.getZonedStartEnd()[1]);
     }
 }

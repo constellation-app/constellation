@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ public class ElementTypeParameterValue extends ParameterValue {
     public String validateString(final String s) {
         try {
             GraphElementType.getValue(s);
-        } catch (IllegalArgumentException ex) {
+        } catch (final IllegalArgumentException ex) {
             return String.format("%s is not a valid element type", s);
         }
         return null;
@@ -56,7 +56,7 @@ public class ElementTypeParameterValue extends ParameterValue {
         if (!equal) {
             elementType = stringElementType;
         }
-        return equal;
+        return !equal;
     }
 
     @Override
@@ -66,13 +66,12 @@ public class ElementTypeParameterValue extends ParameterValue {
 
     @Override
     public boolean setObjectValue(final Object o) {
-        if (o instanceof GraphElementType) {
-            final GraphElementType type = (GraphElementType) o;
+        if (o instanceof GraphElementType type) {
             final boolean equal = Objects.equals(type, elementType);
             if (!equal) {
                 elementType = type;
+                return true;
             }
-            return equal;
         }
         return false;
     }
@@ -93,14 +92,11 @@ public class ElementTypeParameterValue extends ParameterValue {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
         final ElementTypeParameterValue other = (ElementTypeParameterValue) obj;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,8 +61,7 @@ public class TableSelectionListener implements ChangeListener<ObservableList<Str
      */
     @Override
     public void changed(final ObservableValue<? extends ObservableList<String>> observable,
-            final ObservableList<String> oldValue,
-            final ObservableList<String> newValue) {
+            final ObservableList<String> oldValue, final ObservableList<String> newValue) {
         if (getTableViewTopComponent().getCurrentState() != null
                 && !getTableViewTopComponent().getCurrentState().isSelectedOnly()) {
             TableViewUtilities.copySelectionToGraph(

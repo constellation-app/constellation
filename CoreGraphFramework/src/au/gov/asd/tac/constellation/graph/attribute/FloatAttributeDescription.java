@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,18 +57,23 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
 
     @SuppressWarnings("unchecked") // Casts are manually checked
     private float convertFromObject(final Object object) throws IllegalArgumentException {
-        if (object == null) {
-            return (float) getDefault();
-        } else if (object instanceof Number) {
-            return ((Number) object).floatValue();
-        } else if (object instanceof Boolean) {
-            return ((Boolean) object) ? 1.0F : 0.0F;
-        } else if (object instanceof Character) {
-            return (float) ((Character) object);
-        } else if (object instanceof String) {
-            return convertFromString((String) object);
-        } else {
-            throw new IllegalArgumentException(String.format(
+        switch (object) {
+            case Number number -> {
+                return number.floatValue();
+            }       
+            case Boolean bool -> {
+                return Boolean.TRUE.equals(bool) ? 1.0F : 0.0F;
+            }       
+            case Character character -> {
+                return character;
+            }       
+            case String string -> {
+                return convertFromString(string);
+            }
+            case null -> {
+                return (float) getDefault();
+            }
+            default -> throw new IllegalArgumentException(String.format(
                     "Error converting Object '%s' to float", object.getClass()));
         }
     }
@@ -132,7 +137,7 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
 
     @Override
     public void setByte(final int id, final byte value) {
-        data[id] = (float) value;
+        data[id] = value;
     }
 
     @Override
@@ -142,7 +147,7 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
 
     @Override
     public void setShort(final int id, final short value) {
-        data[id] = (float) value;
+        data[id] = value;
     }
 
     @Override
@@ -152,7 +157,7 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
 
     @Override
     public void setInt(final int id, final int value) {
-        data[id] = (float) value;
+        data[id] = value;
     }
 
     @Override
@@ -162,7 +167,7 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
 
     @Override
     public void setLong(final int id, final long value) {
-        data[id] = (float) value;
+        data[id] = value;
     }
 
     @Override
@@ -177,7 +182,7 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
 
     @Override
     public double getDouble(final int id) {
-        return (double) data[id];
+        return data[id];
     }
 
     @Override
@@ -202,7 +207,7 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
 
     @Override
     public void setChar(final int id, final char value) {
-        data[id] = (float) value;
+        data[id] = value;
     }
 
     @Override

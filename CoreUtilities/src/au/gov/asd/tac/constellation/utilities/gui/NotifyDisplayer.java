@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui;
 
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.awt.EventQueue;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
@@ -85,7 +86,7 @@ public class NotifyDisplayer {
      *
      * @param descriptor the descriptor to display in a dialog
      */
-    public static void display(final NotifyDescriptor descriptor) {
+    public static void display(final NotifyDescriptor descriptor) {  
         if (SwingUtilities.isEventDispatchThread() || Platform.isFxApplicationThread()) {
             // If this was called from one of the UI threads we don't want to
             // display the dialog and block beacasue some OS's (macos) will go into deadlock
@@ -122,12 +123,12 @@ public class NotifyDisplayer {
                 EventQueue.invokeAndWait(showDialogRunner);
 
                 return CompletableFuture.completedFuture(showDialogRunner.getSelection());
-            } catch (InterruptedException ex) {
+            } catch (final InterruptedException ex) {
                 LOGGER.log(Level.WARNING, "Thread displaying the notify dialog was interrupted.", ex);
                 Thread.currentThread().interrupt();
 
                 return CompletableFuture.completedFuture(null);
-            } catch (InvocationTargetException ex) {
+            } catch (final InvocationTargetException ex) {
                 // An error happened when showing the dialog. Send it up the stack.
                 throw new RuntimeException("Error occured during user dialog notification" + ex.getCause());
             }
@@ -145,11 +146,10 @@ public class NotifyDisplayer {
      * @param message the message to display within the alert
      * @param alertType the alert icon to add to the alert
      */
-    public static void displayAlert(final String title,
-            final String header,
-            final String message,
+    public static void displayAlert(final String title, final String header, final String message, 
             final Alert.AlertType alertType) {
         final Alert dialog = new Alert(alertType, "", ButtonType.OK);
+        dialog.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         dialog.setTitle(title);
         dialog.setHeaderText(header);
         dialog.setContentText(message);
@@ -173,11 +173,10 @@ public class NotifyDisplayer {
      * @param message the message to display within the alert
      * @param alertType the alert icon to add to the alert
      */
-    public static void displayLargeAlert(final String title,
-            final String header,
-            final String message,
+    public static void displayLargeAlert(final String title, final String header, final String message,
             final Alert.AlertType alertType) {
         final Alert dialog = new Alert(alertType, "", ButtonType.OK);
+        dialog.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         dialog.setTitle(title);
         dialog.setHeaderText(header);
 
@@ -207,10 +206,9 @@ public class NotifyDisplayer {
      *
      * @return the user confirmation type
      */
-    public static Optional<ButtonType> displayConfirmationAlert(final String title,
-            final String header,
-            final String message) {
+    public static Optional<ButtonType> displayConfirmationAlert(final String title,final String header, final String message) {
         final Alert dialog = new Alert(Alert.AlertType.CONFIRMATION, "", ButtonType.NO, ButtonType.YES);
+        dialog.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         dialog.setTitle(title);
         dialog.setHeaderText(header);
         dialog.setContentText(message);
@@ -220,6 +218,5 @@ public class NotifyDisplayer {
         stage.setAlwaysOnTop(true);
 
         return dialog.showAndWait();
-    }
-    
+    }   
 }

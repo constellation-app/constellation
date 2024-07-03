@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.analyticview.results;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult.ElementScore;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -61,7 +62,7 @@ public class ScoreResult extends AnalyticResult<ElementScore> {
         public ElementScore(final GraphElementType elementType, final int elementId,
                 final String identifier, final boolean isNull, final Map<String, Float> namedScores) {
             super(elementType, elementId, identifier, isNull);
-            this.namedScores = namedScores;
+            this.namedScores = new HashMap<>(namedScores);
         }
 
         public static ElementScore combineReplace(final ElementScore es1, final ElementScore es2) {
@@ -98,7 +99,7 @@ public class ScoreResult extends AnalyticResult<ElementScore> {
          * @return
          */
         public Map<String, Float> getNamedScores() {
-            return namedScores;
+            return Collections.unmodifiableMap(namedScores);
         }
 
         @Override

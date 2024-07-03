@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,7 +79,6 @@ public class JDBCSourcePane extends SourcePane {
     private static final int GAP = 10;
     private static final String ACTION_CANCEL = "Cancel";
     private static final String TITLE_JDBC_IMPORT = "Database Import";
-    private static final String PROMPT_TEXT_COLOR = "-fx-prompt-text-fill: grey";
     private static final String ADD_CONNECTION = "Add Connection";
     private static final String MODIFY_CONNECTION = "Modify Connection";
     private static final String ADD_DRIVER = "Add Driver";
@@ -216,8 +215,13 @@ public class JDBCSourcePane extends SourcePane {
                 final JDBCDriver d = (JDBCDriver) driverTable.getSelectionModel().getSelectedItem();
                 if (d != null) {
                     if (driverManager.isDriverUsed(d.getName())) {
-                        final Optional<ButtonType> res = NotifyDisplayer.displayConfirmationAlert(TITLE_JDBC_IMPORT, "Remove Driver", "Connections exist using this Driver.\nThe "
-                                + "connections that use this driver will be deleted, do you want to proceed?");
+                        final Optional<ButtonType> res = NotifyDisplayer.displayConfirmationAlert(
+                                TITLE_JDBC_IMPORT, 
+                                "Remove Driver", 
+                                """
+                                Connections exist using this Driver.
+                                The connections that use this driver will be deleted, do you want to proceed?"""
+                        );
                         if (!res.isPresent() || res.get() == ButtonType.NO) {
                             return;
                         }
@@ -267,7 +271,7 @@ public class JDBCSourcePane extends SourcePane {
 
             final Scene scene3 = new Scene(root);
             scene3.setFill(Color.WHITESMOKE);
-            scene3.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
+            scene3.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
             dialog.setScene(scene3);
             dialog.setTitle("Manage Connections");
             dialog.centerOnScreen();
@@ -299,6 +303,7 @@ public class JDBCSourcePane extends SourcePane {
 
         final TextArea query = new TextArea();
         query.setPrefRowCount(5);
+
         GridPane.setConstraints(query, 1, 3, 2, 1, HPos.LEFT, VPos.TOP);
 
         final Label destinationLabel = new Label("Destination:");
@@ -349,7 +354,6 @@ public class JDBCSourcePane extends SourcePane {
         gp.add(jarLabel, 0, 0, 1, 1);
         final TextField driverFilePath = new TextField();
         driverFilePath.setPromptText("Select or enter the JDBC driver JAR file");
-        driverFilePath.setStyle(PROMPT_TEXT_COLOR);
         driverFilePath.setFocusTraversable(false);
         gp.add(driverFilePath, 1, 0, 1, 1);
 
@@ -391,8 +395,13 @@ public class JDBCSourcePane extends SourcePane {
 
             if (driverName.getSelectionModel().getSelectedItem() != null) {
                 if (driverManager.isDriverUsed((String) driverName.getSelectionModel().getSelectedItem())) {
-                    final Optional<ButtonType> res = NotifyDisplayer.displayConfirmationAlert(TITLE_JDBC_IMPORT,
-                            ADD_DRIVER, "This Driver already exists.\n Do you want to overwrite?");
+                    final Optional<ButtonType> res = NotifyDisplayer.displayConfirmationAlert(
+                            TITLE_JDBC_IMPORT,
+                            ADD_DRIVER, 
+                            """
+                            This Driver already exists.
+                            Do you want to overwrite?"""
+                    );
                     if (!res.isPresent() || res.get() == ButtonType.NO) {
                         return;
                     }
@@ -424,7 +433,7 @@ public class JDBCSourcePane extends SourcePane {
 
         final Scene scene2 = new Scene(r);
         scene2.setFill(Color.WHITESMOKE);
-        scene2.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
+        scene2.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         d.setScene(scene2);
         d.setTitle(ADD_DRIVER);
         d.centerOnScreen();
@@ -524,12 +533,11 @@ public class JDBCSourcePane extends SourcePane {
         gp.add(nameLabel, 0, 0, 1, 1);
         final TextField cn = new TextField(add ? "" : connection.getConnectionName());
         cn.setPromptText("Enter a name for your connection");
-        cn.setStyle(PROMPT_TEXT_COLOR);
         cn.setFocusTraversable(false);
         cn.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            cn.setStyle(""); 
+            cn.setStyle("");
             if (!newVal && StringUtils.isBlank(cn.getText())){
-                cn.setStyle("-fx-text-box-border: red;");  
+                cn.setStyle("-fx-text-box-border: red;");
             }
         });
         gp.add(cn, 1, 0, 2, 1);
@@ -548,12 +556,11 @@ public class JDBCSourcePane extends SourcePane {
         gp.add(connectionStringLabel, 0, 2, 1, 1);
         final TextField connectionStringF = new TextField(add ? "" : connection.getConnectionString());
         connectionStringF.setPromptText("Enter a URL to connect to, eg. jdbc:sqlite:C:/my_folder/database.sqlite");
-        connectionStringF.setStyle(PROMPT_TEXT_COLOR);
         connectionStringF.setFocusTraversable(false);
         connectionStringF.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            connectionStringF.setStyle(""); 
+            connectionStringF.setStyle("");
             if (!newVal && StringUtils.isBlank(connectionStringF.getText())){
-                connectionStringF.setStyle("-fx-text-box-border: red;");  
+                connectionStringF.setStyle("-fx-text-box-border: red;");
             }
         });
         gp.add(connectionStringF, 1, 2, 2, 1);
@@ -561,14 +568,12 @@ public class JDBCSourcePane extends SourcePane {
         gp.add(usernameLabel, 0, 3, 1, 1);
         final TextField username = new TextField();
         username.setPromptText("Optional: Set a username");
-        username.setStyle(PROMPT_TEXT_COLOR);
         username.setFocusTraversable(false);
         gp.add(username, 1, 3, 2, 1);
         final Label passwordLabel = new Label("Password");
         gp.add(passwordLabel, 0, 4, 1, 1);
         final PasswordField password = new PasswordField();
         password.setPromptText("Optional: Set a password");
-        password.setStyle(PROMPT_TEXT_COLOR);
         password.setFocusTraversable(false);
 
         gp.add(password, 1, 4, 2, 1);
@@ -641,7 +646,7 @@ public class JDBCSourcePane extends SourcePane {
 
         final Scene scene1 = new Scene(r);
         scene1.setFill(Color.WHITESMOKE);
-        scene1.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
+        scene1.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         stage.setScene(scene1);
         stage.setTitle(add ? ADD_CONNECTION : MODIFY_CONNECTION);
         stage.centerOnScreen();

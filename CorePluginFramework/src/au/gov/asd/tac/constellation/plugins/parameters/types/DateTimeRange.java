@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,9 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 /**
  * A date time range, with the start and end times truncated to the second.
@@ -34,13 +37,15 @@ import java.util.Date;
  */
 public class DateTimeRange {
 
-    public static final String SEP = SeparatorConstants.SEMICOLON;
+    private static final Logger LOGGER = Logger.getLogger(DateTimeRange.class.getName());
 
     // If period is null, zstart and zend contain an absolute range.
     // If period is not null, the range is relative, and zstart has the ZoneId the the absolute values are displayed in.
     private final Period period;
     private final ZonedDateTime zstart;
     private final ZonedDateTime zend;
+    
+    private static final Pattern SEP_PATTERN = Pattern.compile(SeparatorConstants.SEMICOLON);
 
     /**
      * A range with the specified ZoneDateTime instances.
@@ -185,7 +190,7 @@ public class DateTimeRange {
 
                 return new DateTimeRange(period, zi);
             } catch (final DateTimeParseException ex) {
-                ex.printStackTrace(System.err);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
 
             // Default period when we couldn't parse the value.
@@ -196,17 +201,17 @@ public class DateTimeRange {
         } else {
             // Absolute range.
             try {
-                final String[] startEnd = s.split(SEP);
+                final String[] startEnd = SEP_PATTERN.split(s);
                 final ZonedDateTime zstart;
                 final ZonedDateTime zend;
-                if (s.contains(SEP)) {
+                if (s.contains(SeparatorConstants.SEMICOLON)) {
                     zstart = DateTimeFormatter.ISO_ZONED_DATE_TIME.parse(startEnd[0], ZonedDateTime::from);
                     zend = DateTimeFormatter.ISO_ZONED_DATE_TIME.parse(startEnd[1], ZonedDateTime::from);
 
                     return new DateTimeRange(zstart, zend);
                 }
             } catch (final DateTimeParseException ex) {
-                ex.printStackTrace(System.err);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
 
             final ZonedDateTime zend = ZonedDateTime.now(ZoneId.of("UTC"));
@@ -229,7 +234,7 @@ public class DateTimeRange {
             return String.format("%s %s", period.toString(), zstart.getZone());
         } else {
             // The absolute values separated by SEP.
-            return String.format("%s%s%s", zstart, SEP, zend);
+            return String.format("%s%s%s", zstart, SeparatorConstants.SEMICOLON, zend);
         }
     }
 }

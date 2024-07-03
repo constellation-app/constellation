@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,7 +61,7 @@ public class StringParameterType extends PluginParameterType<StringParameterValu
      * @param id The String id of the parameter to construct.
      * @return A {@link PluginParameter} of StringParameterType.
      */
-    public static PluginParameter<StringParameterValue> build(String id) {
+    public static PluginParameter<StringParameterValue> build(final String id) {
         return new PluginParameter<>(new StringParameterValue(), INSTANCE, id);
     }
 
@@ -74,7 +74,7 @@ public class StringParameterType extends PluginParameterType<StringParameterValu
      * the parameter being constructed.
      * @return A {@link PluginParameter} of StringParameterType.
      */
-    public static PluginParameter<StringParameterValue> build(String id, final StringParameterValue pv) {
+    public static PluginParameter<StringParameterValue> build(final String id, final StringParameterValue pv) {
         return new PluginParameter<>(pv, INSTANCE, id);
     }
 
@@ -101,7 +101,7 @@ public class StringParameterType extends PluginParameterType<StringParameterValu
      * @return the number of lines that should be shown in a GUI input for the
      * given parameter.
      */
-    public static Integer getLines(PluginParameter<?> parameter) {
+    public static Integer getLines(final PluginParameter<?> parameter) {
         return (Integer) parameter.getProperty(LINES);
     }
 
@@ -112,7 +112,7 @@ public class StringParameterType extends PluginParameterType<StringParameterValu
      * @param parameter A {@link PluginParameter}.
      * @param lines The integer number of lines that should be shown.
      */
-    public static void setLines(PluginParameter<?> parameter, int lines) {
+    public static void setLines(final PluginParameter<?> parameter, final int lines) {
         parameter.setProperty(LINES, lines);
     }
 
@@ -148,7 +148,7 @@ public class StringParameterType extends PluginParameterType<StringParameterValu
      * when invalid
      */
     @Override
-    public String validateString(PluginParameter<StringParameterValue> param, String stringValue) {
+    public String validateString(final PluginParameter<StringParameterValue> param, final String stringValue) {
         if (StringUtils.isBlank(stringValue)) {
             return "Parameter is Empty!";
         }

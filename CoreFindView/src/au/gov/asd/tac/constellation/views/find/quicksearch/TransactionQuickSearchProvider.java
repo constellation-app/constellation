@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,8 @@ package au.gov.asd.tac.constellation.views.find.quicksearch;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.views.find.advanced.FindResult;
+import au.gov.asd.tac.constellation.utilities.qs.QuickSearchUtilities;
+import au.gov.asd.tac.constellation.views.find.utilities.FindResult;
 import au.gov.asd.tac.constellation.views.find.advanced.QuickFindPlugin;
 import au.gov.asd.tac.constellation.views.find.advanced.SelectFindResultsPlugin;
 import java.util.ArrayList;
@@ -32,17 +33,18 @@ import org.netbeans.spi.quicksearch.SearchRequest;
 import org.netbeans.spi.quicksearch.SearchResponse;
 
 /**
- * Class responsible for managing searching for content from the QuickSearch
+ * Class responsible for managing searching for Transaction content from the QuickSearch
  * box.
+ * Recognise and Process recent Node searches
  * <p>
  * Note: This is a Netbeans platform specific feature.
  *
  * @author betelgeuse
  */
 public class TransactionQuickSearchProvider implements SearchProvider {
-    
-    private static final Logger LOGGER = Logger.getLogger(TransactionQuickSearchProvider.class.getName());
 
+    private static final Logger LOGGER = Logger.getLogger(TransactionQuickSearchProvider.class.getName());
+    
     private final GraphRetriever graphRetriever = new GraphRetriever();
 
     /**
@@ -56,9 +58,30 @@ public class TransactionQuickSearchProvider implements SearchProvider {
     @SuppressWarnings("unchecked")
     public void evaluate(final SearchRequest request, final SearchResponse response) {
         final Graph graph = graphRetriever.getGraph();
-
+        
         if (graph != null) {
-            final QuickFindPlugin plugin = new QuickFindPlugin(GraphElementType.TRANSACTION, request.getText());
+            final String searchRequest = QuickSearchUtilities.restoreBrackets(request.getText());
+            String prevSearch = "";
+            int prevId = -1;
+            // Locally defined Recent searches will start with a specific unicode left bracket in the search term
+            if (searchRequest.startsWith(QuickSearchUtilities.LEFT_BRACKET)) {
+                final int codePos = searchRequest.indexOf(QuickSearchUtilities.LH_SUB_BRACKET) + QuickSearchUtilities.LH_SUB_BRACKET.length();
+                if (codePos > QuickSearchUtilities.LH_SUB_BRACKET.length() && searchRequest.startsWith(QuickSearchUtilities.CIRCLED_T)) {
+                    final int termPos = searchRequest.indexOf(" ") + 1;
+                    prevSearch = searchRequest.substring(termPos, codePos - QuickSearchUtilities.LH_SUB_BRACKET.length()).trim();
+                    final String prevIdText = QuickSearchUtilities.buildIDFromSubscript(searchRequest.substring(codePos, searchRequest.length() - QuickSearchUtilities.RH_SUB_BRACKET.length()));
+                    prevId = Integer.parseInt(prevIdText);
+                    final int attrPos = prevSearch.lastIndexOf(FindResult.SEPARATOR);
+                    if (attrPos > -1) {
+                        prevSearch = prevSearch.substring(0, attrPos);
+                    }
+                } else {
+                    // This is a recent search for a different category, so we can end the Transaction search here
+                    return;
+                }
+            }
+            final String convertedSearch = !prevSearch.isEmpty() ? prevSearch : searchRequest;
+            final QuickFindPlugin plugin = new QuickFindPlugin(GraphElementType.TRANSACTION, convertedSearch);
             final Future<?> future = PluginExecution.withPlugin(plugin).interactively(true).executeLater(graph);
 
             // Wait for results:
@@ -72,11 +95,30 @@ public class TransactionQuickSearchProvider implements SearchProvider {
             }
 
             final List<FindResult> results = plugin.getResults();
-            for (FindResult item : results) {
+            final List<FindResult> matchList = new ArrayList<>();
+            for (final FindResult item : results) {
                 if (item != null) {
                     // We have a valid result, so report:
-                    response.addResult(new SelectContent(graph, item), item.toString());
+                    final String subscriptId = QuickSearchUtilities.buildSubscriptFromID(Integer.toString(item.getID()));
+                    final String displayText = QuickSearchUtilities.CIRCLED_T + "  " + QuickSearchUtilities.replaceBrackets(item.toString()) + "   " + QuickSearchUtilities.LH_SUB_BRACKET + subscriptId + QuickSearchUtilities.RH_SUB_BRACKET;
+                    if (prevSearch.isEmpty()) {
+                        response.addResult(new SelectContent(graph, item), displayText);
+                    } else if (item.toString().contains(prevSearch) && item.getID() == prevId) {
+                        // Found the recent Transaction search result. Set it and exit immediately
+                        response.addResult(new SelectContent(graph, item), displayText);
+                        return;
+                    } else if (item.toString().contains(prevSearch)) {
+                        // can potentially match the search term on a different graph, store the matches
+                        matchList.add(item);
+                    }
                 }
+            }
+            if (!matchList.isEmpty()) {
+                // should only return 1 result when using the recent search function
+                final FindResult result = matchList.get(0);
+                final String subscriptId = QuickSearchUtilities.buildSubscriptFromID(Integer.toString(result.getID()));
+                final String displayText = QuickSearchUtilities.CIRCLED_T + "  " + QuickSearchUtilities.replaceBrackets(result.toString()) + "   " + QuickSearchUtilities.LH_SUB_BRACKET + subscriptId + QuickSearchUtilities.RH_SUB_BRACKET;
+                response.addResult(new SelectContent(graph, result), displayText);                
             }
         }
     }
@@ -104,7 +146,7 @@ public class TransactionQuickSearchProvider implements SearchProvider {
         @Override
         @SuppressWarnings("unchecked")
         public void run() {
-            final ArrayList<FindResult> results = new ArrayList<>();
+            final List<FindResult> results = new ArrayList<>();
             results.add(result);
 
             final SelectFindResultsPlugin plugin = new SelectFindResultsPlugin(results, false);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexTypeUtilities;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import static au.gov.asd.tac.constellation.views.schemaview.providers.HelpIconProvider.populateHelpIconWithCaption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -88,6 +89,7 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
     private final Map<SchemaVertexType, Image> foregroundIcons;
     private final RadioButton startsWithRb;
     private final TextField filterText;
+    private HBox schemaLabelAndHelp;
 
     public VertexTypeNodeProvider() {
         schemaLabel = new Label(SeparatorConstants.HYPHEN);
@@ -95,6 +97,7 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
         treeView = new TreeView<>();
         vertexTypes = new ArrayList<>();
         detailsView = new HBox();
+        schemaLabelAndHelp = new HBox();
         detailsView.setPadding(new Insets(5));
         backgroundIcons = new HashMap<>();
         foregroundIcons = new HashMap<>();
@@ -104,7 +107,7 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
         // A shiny cell factory so the tree nodes show the correct text and graphic.
         treeView.setCellFactory(p -> new TreeCell<SchemaVertexType>() {
             @Override
-            protected void updateItem(final SchemaVertexType item, boolean empty) {
+            protected void updateItem(final SchemaVertexType item, final boolean empty) {
                 super.updateItem(item, empty);
                 if (!empty && item != null) {
                     setText(item.getName());
@@ -210,7 +213,7 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
         headerBox.setAlignment(Pos.CENTER_LEFT);
         headerBox.setPadding(new Insets(5));
 
-        final VBox box = new VBox(schemaLabel, headerBox, treeView);
+        final VBox box = new VBox(schemaLabelAndHelp, headerBox, treeView);
         VBox.setVgrow(treeView, Priority.ALWAYS);
         return box;
     }
@@ -220,17 +223,17 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
         treeView.setRoot(root);
     }
 
-    private boolean isFilterMatchCurrentNodeOrAnyChildren(SchemaVertexType treeItem) {
+    private boolean isFilterMatchCurrentNodeOrAnyChildren(final SchemaVertexType treeItem) {
         return StringUtils.isNotBlank(filterText.getText()) && (isFilterMatchText(treeItem.getName())
                 || isFilterMatchAnyProperty(treeItem) || isFilterMatchAnyChildNodes(treeItem));
     }
 
-    private boolean isFilterMatchAnyChildNodes(SchemaVertexType treeItem) {
+    private boolean isFilterMatchAnyChildNodes(final SchemaVertexType treeItem) {
         boolean found = false;
         final List<SchemaVertexType> children = vertexTypes.stream().filter(vertexType
                 -> vertexType.getSuperType() == treeItem && vertexType != treeItem).collect(Collectors.toList());
 
-        for (SchemaVertexType child : children) {
+        for (final SchemaVertexType child : children) {
             found = isFilterMatchCurrentNodeOrAnyChildren(child);
             if (found) {
                 break;
@@ -239,7 +242,7 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
         return found;
     }
 
-    private boolean isFilterMatchAnyProperty(SchemaVertexType treeItem) {
+    private boolean isFilterMatchAnyProperty(final SchemaVertexType treeItem) {
         return isFilterMatchText(treeItem.getName())
                 || isFilterMatchText(treeItem.getDescription())
                 || isFilterMatchText(treeItem.getColor().getName())
@@ -265,6 +268,8 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
     public void setContent(final Tab tab) {
         GraphManager.getDefault().addGraphManagerListener(this);
         final VBox filterBox = addFilter();
+
+        populateHelpIconWithCaption(this.getClass().getName(), "Node Types", schemaLabel, schemaLabelAndHelp);
 
         treeView.setShowRoot(false);
         treeView.setOnDragDetected(event -> {
@@ -372,11 +377,11 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
                 grid.add(hierarchyLabel, 1, 7);
 
                 int gridPosition = 7;
-                for (String property : vertexType.getProperties().keySet()) {
+                for (final String property : vertexType.getProperties().keySet()) {
                     final Object propertyValue = vertexType.getProperty(property);
                     if (propertyValue != null) {
                         gridPosition++;
-                        Label propertyLabel = new Label(propertyValue.toString());
+                        final Label propertyLabel = new Label(propertyValue.toString());
                         propertyLabel.setWrapText(true);
                         grid.add(boldLabel(property + SeparatorConstants.COLON), 0, gridPosition);
                         grid.add(propertyLabel, 1, gridPosition);
@@ -385,7 +390,7 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
                 for (final Node child : grid.getChildren()) {
                     final Integer column = GridPane.getColumnIndex(child);
                     final Integer row = GridPane.getRowIndex(child);
-                    if ((column > 0 && row != null && child instanceof Label) && (isFilterMatchText(((Label) child).getText()))) {
+                    if (column > 0 && row != null && child instanceof Label childLabel && (isFilterMatchText(childLabel.getText()))) {
                         child.getStyleClass().add("schemaview-highlight-blue");
                     }
                 }
@@ -393,7 +398,7 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
             }
         });
 
-        final VBox contentBox = new VBox(schemaLabel, filterBox, treeView, detailsView);
+        final VBox contentBox = new VBox(schemaLabelAndHelp, filterBox, treeView, detailsView);
         VBox.setVgrow(treeView, Priority.ALWAYS);
         detailsView.prefHeightProperty().bind(contentBox.heightProperty().multiply(0.4));
         final StackPane contentNode = new StackPane(contentBox);

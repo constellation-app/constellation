@@ -67,7 +67,8 @@ via the buttons at the bottom of the view.
 View" />
 
 </div>
-
+  
+&nbsp;   
 ## Quality Control Categories
 
 There are six levels of quality control categories for nodes that are
@@ -104,3 +105,28 @@ These options are accessible from the bottom of the Quality Control View
     selected node visible.
 -   *Category Priority* - Allows you to view and change the quality
     category flagged for each of the registered rules.
+
+#### Category Priority
+
+Clicking the Category Priority button opens a small dialog window where you can assign any priority level to each rule.  
+
+<div style="text-align: center">
+
+<img src="../ext/docs/CoreQualityControlView/src/au/gov/asd/tac/constellation/views/qualitycontrol/resources/CategoryPriority.png" alt="Quality Control
+View" />
+
+</div>
+&nbsp;   
+Each rule can be set and reset individually.  
+If any rules were already modified when opening the Category Priority screen, those rules will have a more informative reset button, indicating the default priority level for each modified rule.  
+&nbsp;   
+<div style="text-align: center">
+
+<img src="../ext/docs/CoreQualityControlView/src/au/gov/asd/tac/constellation/views/qualitycontrol/resources/ModifiedCategoryPriority.png" alt="Quality Control
+View" />
+
+</div>
+&nbsp;   
+
+*Note: A node is considered to have an OK Quality by default. Only when a rule fails will the Quality be modified, matching the priority value assigned to the rule that failed.*  
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; *If multiple rules fail, then the Quality for the node will be set to the highest priority value from among the rules that failed.*

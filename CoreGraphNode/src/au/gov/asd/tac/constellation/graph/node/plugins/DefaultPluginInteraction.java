@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.graph.node.plugins;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
-import au.gov.asd.tac.constellation.plugins.gui.PluginParametersDialog;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersSwingDialog;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
@@ -126,43 +125,50 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
     public void setProgress(final int currentStep, final int totalSteps, final String message, final boolean cancellable) throws InterruptedException {
 
         if (pluginReport != null) {
-            pluginReport.setCurrentStep(currentStep);
-            pluginReport.setTotalSteps(totalSteps);
-            pluginReport.setMessage(message);
-            pluginReport.firePluginReportChangedEvent();
+            pluginReport.addMessage(message);
         }
 
         currentMessage = message;
+        
+        this.setProgress(currentStep, totalSteps, cancellable);
+    }
+
+    @Override
+    public void setProgress(final int currentStep, final int totalSteps, final boolean cancellable) throws InterruptedException {     
+        if (pluginReport != null) {
+            pluginReport.setCurrentStep(currentStep);
+            pluginReport.setTotalSteps(totalSteps);
+            pluginReport.firePluginReportChangedEvent();
+        }
 
         // Allow the plugin to be interrupted
         if (cancellable && Thread.interrupted()) {
             throw new InterruptedException();
         }
+        // If the plugin is indeterminate...
+        if (totalSteps < 0) {
 
-        // If the plugin has finished....
-        if (currentStep > totalSteps) {
+            if (progress == null) {
+                progress = ProgressHandle.createHandle(createProgressTitle(), this);
+                progress.start();
+                timer = new Timer();
+                progress.progress(timer.getTime() + " " + currentMessage);
+                timer.start();
+            } else {
+                progress.switchToIndeterminate();
+                progress.progress(timer.getTime() + " " + currentMessage);
+            }
+            
+        // If the plugin has finished....    
+        } else if (currentStep > totalSteps) {
 
             if (progress != null) {
                 timer.interrupt();
                 progress.finish();
                 progress = null;
             }
-
-            // If the plugin is indeterminate...
-        } else if (totalSteps <= 0) {
-
-            if (progress == null) {
-                progress = ProgressHandle.createHandle(createProgressTitle(), this);
-                progress.start();
-                timer = new Timer();
-                progress.progress(timer.getTime() + " " + message);
-                timer.start();
-            } else {
-                progress.switchToIndeterminate();
-                progress.progress(timer.getTime() + " " + message);
-            }
-
-            // If the plugin is determinate...
+            
+        // If the plugin is determinate...
         } else {
 
             if (progress == null) {
@@ -170,21 +176,31 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
                 progress.start();
                 timer = new Timer();
                 progress.switchToDeterminate(totalSteps);
-                progress.progress(timer.getTime() + " " + message, currentStep);
+                progress.progress(timer.getTime() + " " + currentMessage, currentStep);
                 timer.start();
             } else {
                 progress.switchToDeterminate(totalSteps);
-                progress.progress(timer.getTime() + " " + message, currentStep);
+                progress.progress(timer.getTime() + " " + currentMessage, currentStep);
             }
 
         }
     }
-
+    
+    @Override
+    public void setExecutionStage(final int currentStep, final int totalSteps, final String executionStage, final String message, final boolean cancellable) throws InterruptedException {
+        if (pluginReport != null) {
+            pluginReport.setExecutionStage(executionStage);
+            pluginReport.setRunningStateMessage(message);
+        }
+        currentMessage = message;
+        this.setProgress(currentStep, totalSteps, cancellable);
+    }
+    
     @Override
     public void notify(final PluginNotificationLevel level, final String message) {
         final String title = pluginManager.getPlugin().getName();
         switch (level) {
-            case FATAL:
+            case FATAL -> {
                 NotifyDisplayer.display(new NotifyDescriptor(
                         "Fatal Error:\n" + message,
                         title,
@@ -194,9 +210,9 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
                         NotifyDescriptor.OK_OPTION
                 ));
                 LOGGER.log(Level.SEVERE, LOGGING_FORMAT, new Object[]{title, message});
-                break;
+            }
 
-            case ERROR:
+            case ERROR -> {
                 NotifyDisplayer.display(new NotifyDescriptor(
                         "Error:\n" + message,
                         title,
@@ -206,30 +222,29 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
                         NotifyDescriptor.OK_OPTION
                 ));
                 LOGGER.log(Level.SEVERE, LOGGING_FORMAT, new Object[]{title, message});
-                break;
+            }
 
-            case WARNING:
+            case WARNING -> {
                 NotificationDisplayer.getDefault().notify(title,
                         UserInterfaceIconProvider.WARNING.buildIcon(16, ConstellationColor.DARK_ORANGE.getJavaColor()),
                         message,
                         null
                 );
                 LOGGER.log(Level.WARNING, LOGGING_FORMAT, new Object[]{title, message});
-                break;
+            }
 
-            case INFO:
+            case INFO -> {
                 final String statusText = String.format(STRING_FORMAT, title, message);
                 final Message statusMessage = StatusDisplayer.getDefault().setStatusText(statusText, 10);
                 statusMessage.clear(5000);
                 LOGGER.log(Level.INFO, LOGGING_FORMAT, new Object[]{title, message});
-                break;
+            }
 
-            case DEBUG:
-                LOGGER.log(Level.FINE, LOGGING_FORMAT, new Object[]{title, message});
-                break;
+            case DEBUG -> LOGGER.log(Level.FINE, LOGGING_FORMAT, new Object[]{title, message});
 
-            default:
-                break;
+            default -> {
+                // Do Nothing
+            }
         }
     }
 
@@ -263,26 +278,27 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
         pluginManager.getPluginThread().interrupt();
         return true;
     }
-
+  
     @Override
-    public boolean prompt(final String promptName, final PluginParameters parameters) {
+    public boolean prompt(final String promptName, final PluginParameters parameters, final String interaction, final String helpID) {
         if (SwingUtilities.isEventDispatchThread()) {
             throw new IllegalStateException("Plugins should not be run on the EDT!");
         }
 
-        boolean result = false;
+        final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(promptName, parameters, interaction, helpID);
 
-        final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(promptName, parameters);
         if (!parameters.hasMultiLineStringParameter()) {
             dialog.showAndWait();
         } else {
             dialog.showAndWaitNoFocus();
         }
-        if (PluginParametersDialog.OK.equals(dialog.getResult())) {
-            result = true;
-        }
 
-        return result;
+        return dialog.isAccepted();
+    }
+    
+    @Override
+    public boolean prompt(final String promptName, final PluginParameters parameters, final String helpID) {
+        return prompt(promptName, parameters, null, helpID);
     }
 
     protected class Timer extends Thread {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,6 @@ import org.openide.util.NbBundle;
 })
 public class TimeRangePanel extends javax.swing.JPanel {
 
-    private final DateTimeListenerInterface parentPanel;
     private Calendar firstDate = null;
     private Calendar secondDate = null;
 
@@ -45,7 +44,6 @@ public class TimeRangePanel extends javax.swing.JPanel {
      * @param parent The <code>FindCriteriaPanel</code> that owns this panel.
      */
     public TimeRangePanel(final DateTimeListenerInterface parent) {
-        this.parentPanel = parent;
         initialise();
     }
 
@@ -77,7 +75,6 @@ public class TimeRangePanel extends javax.swing.JPanel {
      */
     public TimeRangePanel(final DateTimeListenerInterface parent, final Calendar firstTime,
             final Calendar secondTime, final boolean isBetween) {
-        this.parentPanel = parent;
         this.firstDate = firstTime;
         this.secondDate = secondTime;
 
@@ -117,7 +114,7 @@ public class TimeRangePanel extends javax.swing.JPanel {
      * @param isBetween <code>true</code> if form should show the extended input
      * controls, <code>false</code> if it should not.
      */
-    public void setUIState(final boolean isBetween) {
+    public final void setUIState(final boolean isBetween) {
         lblTime1.setVisible(isBetween);
         spnTime2.setVisible(isBetween);
     }

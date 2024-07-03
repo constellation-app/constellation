@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,11 +32,13 @@ import org.openide.windows.WindowManager;
 
 /**
  * This class contains a collection of separate UI settings to apply for a
- * few different Look and Feels packaged with NetBeans 12.0
+ * few different Look and Feels packaged with NetBeans 20.0
  *
- * Note: Since the code is based on NetBeans 12.0, it may require updating with
+ * *****************************************************************************
+ * Note: Since the code is based on NetBeans 20.0, it may require updating with
  * newer versions NetBeans if the internal Look And Feel packages are changed.
- *
+ *******************************************************************************
+ * 
  * @author OrionsGuardian
  */
 public class ConstellationLAFSettings {
@@ -54,15 +56,19 @@ public class ConstellationLAFSettings {
         if (currentLafName.startsWith("WINDOWS")) {
             initWindowsTabColors();
         } else if (currentLafName.contains("NIMBUS")) {
-            initNimbusTabColors(currentLafName.contains("DARK"));
+            initNimbusTabColors(isDarkTheme());
         } else if (currentLafName.contains("FLAT")) {
-            initFlatLafTabColors(currentLafName.contains("DARK"));
+            initFlatLafTabColors(isDarkTheme());
         } else if (currentLafName.contains("METAL")) {
-            initMetalTabColors(currentLafName.contains("DARK"));
+            initMetalTabColors(isDarkTheme());
         }
         if (mainframe != null) {
             SwingUtilities.updateComponentTreeUI(mainframe);
         }
+    }
+    
+    private static boolean isDarkTheme(){
+        return UIManager.getLookAndFeel().getName().toUpperCase().contains("DARK");
     }
 
     /**
@@ -144,10 +150,18 @@ public class ConstellationLAFSettings {
                     initCols.setAccessible(true); //NOSONAR
                     initCols.invoke(displayerClass);
                 } else {
-                    // Unable to apply changes to Windows LAF
-                    // Possibly caused by a change in a newer NetBeans version
-                    LOGGER.log(Level.WARNING, " >>> Unable to apply Tab coloring to Windows LAF : neither Windows8VectorViewTabDisplayerUI nor WinXPViewTabDisplayerUI are defined :");
-                    ouputUIDefaultValues(null, null);
+                    // check if Windows FlatView settings are being used
+                    displayerClass = (Class<?>) UIManager.getDefaults()
+                        .get("org.netbeans.swing.tabcontrol.plaf.WinFlatViewTabDisplayerUI");
+                    if (displayerClass != null) {
+                        // The Windows FlatView actually uses FlatLaf settings
+                        initFlatLafTabColors(false);                                                                    
+                    } else {                    
+                        // Unable to apply changes to Windows LAF
+                        // Most likely caused by a change to a newer NetBeans version
+                        LOGGER.log(Level.WARNING, " >>> Unable to apply Tab coloring to Windows LAF : neither Windows8VectorViewTabDisplayerUI nor WinXPViewTabDisplayerUI are defined :");
+                        ouputUIDefaultValues(null, null);
+                    }
                 }
             }
         } catch (final IllegalAccessException | IllegalArgumentException | InvocationTargetException |
@@ -176,19 +190,19 @@ public class ConstellationLAFSettings {
         if (darkMode) {
             // Fixed set of Blue shade colors
             // appropriate for Nimbus dark LAF
-            activeBlue = new Color(125, 170, 225);
-            activeDarkBlue = new Color(60, 95, 150);
-            selectedBlue = new Color(110, 155, 200);
-            selectedDarkBlue = new Color(40, 75, 135);
+            activeBlue = new Color(100, 150, 200);
+            activeDarkBlue = new Color(52, 90, 158);
+            selectedBlue = new Color(143, 164, 189);
+            selectedDarkBlue = new Color(79, 103, 157);
             unselectedGreyBlue = new Color(140, 150, 155);
             unselectedDarkGreyBlue = new Color(100, 110, 115);
         } else {
             // Fixed set of Blue shade colors
             // appropriate for standard Nimbus LAF
-            activeBlue = new Color(160, 210, 255);
-            activeDarkBlue = new Color(90, 125, 180);
-            selectedBlue = new Color(145, 185, 250);
-            selectedDarkBlue = new Color(75, 115, 170);
+            activeBlue = new Color(170, 200, 245);
+            activeDarkBlue = new Color(100, 140, 220);
+            selectedBlue = new Color(165, 195, 230);
+            selectedDarkBlue = new Color(110, 140, 190);
             unselectedGreyBlue = new Color(190, 205, 215);
             unselectedDarkGreyBlue = new Color(150, 160, 175);
         }
@@ -218,29 +232,46 @@ public class ConstellationLAFSettings {
         final Color inactiveUnderlineBlue;
         final Color selectedBackgroundBlue;
         final Color hoverBackgroundBlue;
+        final Color selectedHoverBackgroundBlue;
         final Color attentionBackgroundOrange;
+        final Color gradientBackgroundBlue;
+        final Color unselectedHoverBackgroundBlue;
+        final Color unselectedBackground;
 
         if (darkMode) {
             // Fixed set of Blue shade colors
             // appropriate for FlatLafDark LAF
-            selectedUnderlineBlue = new Color(30, 110, 190);
-            inactiveUnderlineBlue = new Color(20, 100, 175);
-            selectedBackgroundBlue = new Color(30, 60, 95);
-            hoverBackgroundBlue = new Color(45, 75, 115);
-            attentionBackgroundOrange = new Color(138, 42, 30);
+            selectedUnderlineBlue = new Color(35, 115, 200);
+            inactiveUnderlineBlue = new Color(20, 95, 140);
+            unselectedBackground = new Color(5,10,20);
+            selectedBackgroundBlue = new Color(30, 60, 100);
+            hoverBackgroundBlue = new Color(35, 65, 110);
+            selectedHoverBackgroundBlue = new Color(40, 70, 120);
+            unselectedHoverBackgroundBlue = new Color(40, 70, 110);
+            gradientBackgroundBlue = new Color(40, 70, 110);
+            attentionBackgroundOrange = new Color(148, 52, 40);
         } else {
             // Fixed set of Blue shade colors
             // appropriate for FlatLafLight LAF
-            selectedUnderlineBlue = new Color(105, 145, 240);
-            inactiveUnderlineBlue = new Color(95, 130, 185);
+            unselectedBackground = new Color(185, 195, 210);
+            selectedUnderlineBlue = new Color(75, 130, 240);
+            inactiveUnderlineBlue = new Color(88, 138, 190);
             selectedBackgroundBlue = new Color(200, 220, 255);
-            hoverBackgroundBlue = new Color(190, 210, 255);
-            attentionBackgroundOrange = new Color(250, 180, 160);
+            gradientBackgroundBlue = new Color(175, 200, 250);
+            hoverBackgroundBlue = new Color(195, 215, 250);
+            selectedHoverBackgroundBlue = new Color(212, 230, 252);
+            unselectedHoverBackgroundBlue = new Color(195, 215, 255);
+            attentionBackgroundOrange = new Color(250, 170, 150);
         }
 
         try {
-            final Class<?> tabDisplayer = (Class<?>) UIManager.getDefaults()
+            Class<?> tabDisplayer = (Class<?>) UIManager.getDefaults()
                     .get("org.netbeans.swing.laf.flatlaf.ui.FlatViewTabDisplayerUI");
+            if (tabDisplayer == null) {
+                // Check for Windows FlatView
+                tabDisplayer = (Class<?>) UIManager.getDefaults()
+                    .get("org.netbeans.swing.tabcontrol.plaf.WinFlatViewTabDisplayerUI");
+            }
             
             if (tabDisplayer != null) {
                 // get Reflection objects before updating any UI settings
@@ -248,19 +279,28 @@ public class ConstellationLAFSettings {
                 final Method initCols = tabDisplayer.getDeclaredMethod("initColors");
 
                 // Update the UIManager with settings appropriate for FlatLaf
+                UIManager.getDefaults().put("ViewTab.background", unselectedBackground);
                 UIManager.getDefaults().put("ViewTab.selectedBackground", selectedBackgroundBlue);
                 UIManager.getDefaults().put("ViewTab.hoverBackground", hoverBackgroundBlue);
-                UIManager.getDefaults().put("ViewTab.underlineHeight", 5);
+                UIManager.getDefaults().put("ViewTab.selectedHoverBackground", selectedHoverBackgroundBlue);
+                UIManager.getDefaults().put("ViewTab.unselectedHoverBackground", unselectedHoverBackgroundBlue);
+                UIManager.getDefaults().put("ViewTab.underlineHeight", 3);
                 UIManager.getDefaults().put("ViewTab.underlineColor", selectedUnderlineBlue);
                 UIManager.getDefaults().put("ViewTab.inactiveUnderlineColor", inactiveUnderlineBlue); // ViewTab.attentionForeground
                 UIManager.getDefaults().put("ViewTab.attentionBackground", attentionBackgroundOrange);
+                UIManager.getDefaults().put("ViewTab.showTabSeparators", true);
                 
+                UIManager.getDefaults().put("EditorTab.background", unselectedBackground);
                 UIManager.getDefaults().put("EditorTab.selectedBackground", selectedBackgroundBlue);
+                UIManager.getDefaults().put("EditorTab.selectedBackgroundBottomGradient", gradientBackgroundBlue);
                 UIManager.getDefaults().put("EditorTab.hoverBackground", hoverBackgroundBlue);
-                UIManager.getDefaults().put("EditorTab.underlineHeight", 5);
+                UIManager.getDefaults().put("EditorTab.selectedHoverBackground", selectedHoverBackgroundBlue);
+                UIManager.getDefaults().put("EditorTab.unselectedHoverBackground", unselectedHoverBackgroundBlue);
+                UIManager.getDefaults().put("EditorTab.underlineHeight", 3);
                 UIManager.getDefaults().put("EditorTab.underlineColor", selectedUnderlineBlue);
                 UIManager.getDefaults().put("EditorTab.inactiveUnderlineColor", inactiveUnderlineBlue);
                 UIManager.getDefaults().put("EditorTab.attentionBackground", attentionBackgroundOrange);
+                UIManager.getDefaults().put("EditorTab.showTabSeparators", true);
 
                 // reset static field "colorsReady" value to false
                 colready.setAccessible(true); //NOSONAR
@@ -360,27 +400,26 @@ public class ConstellationLAFSettings {
         List<Object> uiList = new ArrayList<>();
         uiList.addAll(UIManager.getDefaults().keySet());
         LOGGER.info(">> :: UIDefaults ::");
-        String msg = "";
-        for (Object uiKey : uiList) {
+        for (final Object uiKey : uiList) {
             // check each key stored in UIDefaults
             // filter out any keys which do not contain the keyFilter string
             // filter out any values which do not contain the valueFilter string
             if ( (keyFilter == null || uiKey.toString().contains(keyFilter)) && 
                  (valueFilter == null || UIManager.get(uiKey).toString().contains(valueFilter)) ) {
-                msg = ">> :: " + uiKey + " = " + UIManager.get(uiKey);
+                final String msg = ">> :: " + uiKey + " = " + UIManager.get(uiKey);
                 LOGGER.info(msg);                
             }
         }
         uiList.clear();
         uiList.addAll(UIManager.getLookAndFeelDefaults().keySet());
         LOGGER.info(">> :::: UILookAndFeelDefaults ::::");
-        for (Object uiKey : uiList) {
+        for (final Object uiKey : uiList) {
             // check each key stored in UILookAndFeelDefaults
             // filter out any keys which do not contain the keyFilter string
             // filter out any values which do not contain the valueFilter string
             if ( (keyFilter == null || uiKey.toString().contains(keyFilter)) &&
                  (valueFilter == null || UIManager.getLookAndFeelDefaults().get(uiKey).toString().contains(valueFilter)) ) {
-                msg = ">> :::: " + uiKey + " = " + UIManager.getLookAndFeelDefaults().get(uiKey);
+                final String msg = ">> :::: " + uiKey + " = " + UIManager.getLookAndFeelDefaults().get(uiKey);
                 LOGGER.info(msg);                
             }
         }
@@ -496,5 +535,4 @@ public class ConstellationLAFSettings {
             g.drawLine(w - 1, 1, w - 1, h - 1);
         }
     }
-
 }

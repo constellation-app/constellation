@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ import org.openide.util.NbBundle;
 @ActionReference(path = "Menu/Selection", position = 460)
 public class DeSelectBlazesAction extends SimplePluginAction {
 
-    public DeSelectBlazesAction(GraphNode context) {
+    public DeSelectBlazesAction(final GraphNode context) {
         super(context, VisualGraphPluginRegistry.DESELECT_BLAZES, true);
     }
 }

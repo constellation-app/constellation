@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,18 @@ import static au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters
 import static au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters.DATETIME_RANGE_PARAMETER_ID;
 import static au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters.QUERY_NAME_PARAMETER;
 import static au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters.TIMESTAMP_FORMAT;
+import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessViewPreferenceKeys;
 import java.time.Instant;
 import java.util.List;
+import java.util.prefs.Preferences;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import org.openide.util.NbPreferences;
 import static org.testng.Assert.assertEquals;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /**
@@ -31,6 +40,28 @@ import org.testng.annotations.Test;
  * @author sol695510
  */
 public class CoreGlobalParametersNGTest {
+
+    // Mock of nbPreferences is created to make LookupPluginsTask behave correctly
+    private static MockedStatic<NbPreferences> nbPreferencesStatic;
+    private static final Preferences preferenceMock = mock(Preferences.class);
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        try {
+            nbPreferencesStatic = Mockito.mockStatic(NbPreferences.class, Mockito.CALLS_REAL_METHODS);
+            nbPreferencesStatic.when(() -> NbPreferences.forModule(DataAccessViewPreferenceKeys.class)).thenReturn(preferenceMock);
+
+            when(preferenceMock.get(DataAccessViewPreferenceKeys.VISIBLE_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV)).thenReturn("");
+            when(preferenceMock.get(DataAccessViewPreferenceKeys.HIDDEN_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV)).thenReturn("");
+        } catch (Exception e) {
+            System.out.println("Error creating static mock of NbPreferences");
+        }
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+        nbPreferencesStatic.close();
+    }
 
     /**
      * Test of buildParameterList.

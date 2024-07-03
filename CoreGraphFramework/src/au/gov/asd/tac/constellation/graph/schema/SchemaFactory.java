@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -100,12 +100,11 @@ public abstract class SchemaFactory {
         final List<SchemaTransactionType> registeredTransactionTypes = new ArrayList<>();
         allRegisteredConcepts.forEach((parentConceptClass, childConcepts) -> {
             // instantiate concept
-            SchemaConcept concept;
+            final SchemaConcept concept;
             try {
                 concept = parentConceptClass.getDeclaredConstructor().newInstance();
-            } catch (final IllegalAccessException | IllegalArgumentException
-                    | InstantiationException | NoSuchMethodException
-                    | SecurityException | InvocationTargetException ex) {
+            } catch (final IllegalAccessException | IllegalArgumentException | InstantiationException 
+                    | NoSuchMethodException | SecurityException | InvocationTargetException ex) {
                 throw new RuntimeException(ex);
             }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,8 @@ public class BooleanEditorFactory extends AttributeValueEditorFactory<Boolean> {
 
         @Override
         public void updateControlsWithValue(final Boolean value) {
-            checkBox.setSelected(value);
+            // A null boolean is treated as false
+            checkBox.setSelected((value != null) && value);
         }
 
         @Override
@@ -79,6 +80,11 @@ public class BooleanEditorFactory extends AttributeValueEditorFactory<Boolean> {
             controls.getChildren().add(checkBox);
 
             return controls;
+        }
+
+        @Override
+        public boolean noValueCheckBoxAvailable() {
+            return false;
         }
     }
 }

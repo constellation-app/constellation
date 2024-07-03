@@ -20,9 +20,9 @@
 <td>Open Layers View</td>
 <td>Ctrl + Shift + L</td>
 <td>Views -&gt; Layers View</td>
-<td><div style="text-align: center">
+<td>
 <img src="../ext/docs/CoreLayersView/src/au/gov/asd/tac/constellation/views/layers/resources/layers-view.png" width="16" height="16" />
-</div></td>
+</td>
 </tr>
 <tr class="even">
 <td>Add New Layer</td>

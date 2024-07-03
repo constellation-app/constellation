@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,7 +80,7 @@ public class VertexTypeEditorFactory extends AttributeValueEditorFactory<SchemaV
 
         @Override
         protected SchemaVertexType getValueFromControls() {
-            return typeList.getSelectionModel().getSelectedItem() != null 
+            return typeList.getSelectionModel().getSelectedItem() != null
                     ? typeList.getSelectionModel().getSelectedItem()
                     : SchemaVertexTypeUtilities.getTypeOrBuildNew(nameText.getText());
         }
@@ -144,6 +144,11 @@ public class VertexTypeEditorFactory extends AttributeValueEditorFactory<SchemaV
             controls.addRow(1, listLabel);
             controls.addRow(2, typeList);
             return controls;
+        }
+
+        @Override
+        public boolean noValueCheckBoxAvailable() {
+            return false;
         }
     }
 }

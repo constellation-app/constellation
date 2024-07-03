@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReportFilter;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.gui.MultiChoiceInputField;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
@@ -45,13 +46,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import org.controlsfx.control.CheckComboBox;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbPreferences;
 
 /**
- * A PluginReporterPane provides a UI where all PluginReports for a single graph
- * are displayed.
+ * A PluginReporterPane provides a UI where all PluginReports for a single graph are displayed.
  *
  * @author sirius
  */
@@ -66,10 +65,9 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
     private GraphReport graphReport = null;
 
     private final ObservableList<String> availableTags = FXCollections.observableArrayList();
-    private final CheckComboBox<String> tagComboBox = new CheckComboBox<>(availableTags);
+    private final MultiChoiceInputField<String> tagFilterMultiChoiceInput = new MultiChoiceInputField<>(availableTags);
     private final Set<String> filteredTags = new HashSet<>();
     private PluginReportFilter pluginReportFilter = null;
-
 
     // The height of the report box last time we looked
     // This allows us to see if a change in the vertical scroll
@@ -97,10 +95,11 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
 
         // The filter drop down
         Label filterLabel = new Label("Filter: ");
-        tagComboBox.setMaxWidth(Double.MAX_VALUE);
-        tagComboBox.setMinWidth(50);
+        tagFilterMultiChoiceInput.setMaxWidth(Double.MAX_VALUE);
+        tagFilterMultiChoiceInput.setMinWidth(50);
+
         // Group these together so the Toolbar treats them as a unit.
-        final HBox filterBox = new HBox(filterLabel, tagComboBox);
+        final HBox filterBox = new HBox(filterLabel, tagFilterMultiChoiceInput);
         filterBox.setAlignment(Pos.BASELINE_LEFT);
 
         // The clear button
@@ -119,8 +118,9 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
             setPluginReportFilter(defaultReportFilter);
         });
 
-        final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor()));
+        final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor()));
         Button helpButton = new Button("", helpImage);
+        helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent; -fx-effect: null; ");
         helpButton.setOnAction((ActionEvent event)
                 -> new HelpCtx(getClass().getPackage().getName()).display());
 
@@ -152,11 +152,11 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
 
     @Override
     public void onChanged(ListChangeListener.Change<? extends String> c) {
-        filteredTags.addAll(tagComboBox.getItems());
-        filteredTags.removeAll(tagComboBox.getCheckModel().getCheckedItems());
+        filteredTags.addAll(tagFilterMultiChoiceInput.getItems());
+        filteredTags.removeAll(tagFilterMultiChoiceInput.getCheckModel().getCheckedItems());
 
         // Save the new filtered tags to preferences
-        StringBuilder prefString = new StringBuilder();
+        final StringBuilder prefString = new StringBuilder();
         String delimiter = "";
         for (String filteredTag : filteredTags) {
             prefString.append(delimiter);
@@ -181,8 +181,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
     }
 
     /**
-     * Update the reports shown in the report box to reflect those recorded
-     * against the current graph.
+     * Update the reports shown in the report box to reflect those recorded against the current graph.
      *
      * @param refresh
      */
@@ -221,13 +220,13 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
     }
 
     void updateTags() {
-        tagComboBox.getCheckModel().getCheckedItems().removeListener(this);
-        tagComboBox.getCheckModel().clearChecks();
+        tagFilterMultiChoiceInput.getCheckModel().getCheckedItems().removeListener(this);
+        tagFilterMultiChoiceInput.getCheckModel().clearChecks();
         if (graphReport != null) {
             final List<String> tags = new ArrayList<>(graphReport.getUTags());
             int[] selectedIndices = new int[tags.size()];
             int selectedIndexCount = 0;
-            int tagIndex = 0;
+            int tagIndex;
             for (String tag : tags) {
                 if (!availableTags.contains(tag)) {
                     availableTags.add(tag);
@@ -237,9 +236,9 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
                     selectedIndices[selectedIndexCount++] = tagIndex; //AIOOBE = DED.
                 }
             }
-            tagComboBox.getCheckModel().checkIndices(Arrays.copyOfRange(selectedIndices, 0, selectedIndexCount));
+            tagFilterMultiChoiceInput.getCheckModel().checkIndices(Arrays.copyOfRange(selectedIndices, 0, selectedIndexCount));
         }
-        tagComboBox.getCheckModel().getCheckedItems().addListener(this);
+        tagFilterMultiChoiceInput.getCheckModel().getCheckedItems().addListener(this);
     }
 
     public synchronized void setGraphReport(GraphReport graphReport) {

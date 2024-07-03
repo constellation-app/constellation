@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -145,6 +145,13 @@ public class DataAccessViewCategoryPanelControllerNGTest {
         List<String> result2 = dataAccessViewCategoryPanelSpy.getHiddenCategory();
         verify(dataAccessViewCategoryPanelSpy, times(1)).getHiddenCategory();
         assertEquals(result2, expResult2);
+        
+        dataAccessViewCategoryPanel.setVisibleCategory("[Import, Utility]");
+        dataAccessViewCategoryPanel.setHiddenCategory("[Developer, Clean]");
+        dataAccessViewCategoryPanel.restoreDefaults();
+
+        assertEquals(dataAccessViewCategoryPanel.getVisibleCategory().toString(), "[Import, Clean, Utility, Developer]");
+        assertEquals(dataAccessViewCategoryPanel.getHiddenCategory().toString(), "[]");
     }
 
     /**
@@ -190,10 +197,9 @@ public class DataAccessViewCategoryPanelControllerNGTest {
         when(dataAccessViewCategoryPanelControllerSpy.getPanel()).thenReturn(dataAccessViewCategoryPanelSpy);
         when(dataAccessViewCategoryPanelSpy.getHiddenCategory()).thenReturn(list1);
 
-        boolean expResult = true;
+        boolean expResult = false;
         boolean result = dataAccessViewCategoryPanelControllerSpy.isChanged();
         assertEquals(result, expResult);
-        verify(dataAccessViewCategoryPanelSpy, times(1)).getHiddenCategory();
         verify(dataAccessViewCategoryPanelControllerSpy, times(1)).isChanged();
     }
 

@@ -53,5 +53,3 @@ your favourite text editor and add a "color = \<COLOR>" line (or
 change the existing line). \<COLOR> can be a color name (e.g. red or
 teal), a HTML color (e.g. #ff0000 or #008080), or an RGB color with
 each element having a value between 0 and 1 (e.g. 1,0,0 or 0,0.5,0.5).
-
-NOTE: "color" as a spelling also works

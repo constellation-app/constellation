@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,22 +79,21 @@ public class ImageIconDropper implements GraphDropper {
 
     @Override
     public BiConsumer<Graph, DropInfo> drop(final DropTargetDropEvent dtde) {
-
         try {
             final Transferable transferable = dtde.getTransferable();
             BufferedImage image = null;
             if (transferable.isDataFlavorSupported(IMAGE_FLAVOR)) {
-                Object data = transferable.getTransferData(IMAGE_FLAVOR);
-                if (data instanceof BufferedImage) {
-                    image = (BufferedImage) data;
+                final Object data = transferable.getTransferData(IMAGE_FLAVOR);
+                if (data instanceof BufferedImage bufferedImage) {
+                    image = bufferedImage;
                 }
             } else if (transferable.isDataFlavorSupported(IMAGE_FILE_FLAVOR)) {
-                Object data = transferable.getTransferData(IMAGE_FILE_FLAVOR);
-                if (data instanceof List) {
+                final Object data = transferable.getTransferData(IMAGE_FILE_FLAVOR);
+                if (data instanceof List list) {
                     @SuppressWarnings("unchecked") //data is be list of files which extends from object type
-                    final List<File> fileList = (List<File>) data;
+                    final List<File> fileList = list;
                     if (fileList.size() == 1) {
-                        File file = fileList.get(0);
+                        final File file = fileList.get(0);
                         image = ImageIO.read(file);
                     }
                 }
@@ -106,7 +105,6 @@ public class ImageIconDropper implements GraphDropper {
                 return (graph, dropInfo) -> {
                     final String iconName = loadDraggedImage(resultImage);
                     if (iconName != null) {
-
                         PluginExecution.withPlugin(new SetVertexIconsPlugin(iconName)).interactively(true).executeLater(graph);
                     }
                 };
@@ -118,19 +116,17 @@ public class ImageIconDropper implements GraphDropper {
         return null;
     }
 
-    private static String loadDraggedImage(BufferedImage image) {
-
-        String iconName = "DragAndDropIcon." + UUID.randomUUID();
-        ConstellationIcon icon = IconManager.getIcon(iconName);
+    private static String loadDraggedImage(final BufferedImage image) {
+        final String iconName = "DragAndDropIcon." + UUID.randomUUID();
+        final ConstellationIcon icon = IconManager.getIcon(iconName);
 
         if (icon != null) {
             return iconName;
         }
 
         try {
-            ConstellationIcon customIcon = new ConstellationIcon.Builder(iconName, new ImageIconData(image))
-                    .build();
-            boolean added = IconManager.addIcon(customIcon);
+            final ConstellationIcon customIcon = new ConstellationIcon.Builder(iconName, new ImageIconData(image)).build();
+            final boolean added = IconManager.addIcon(customIcon);
             if (!added) {
                 return null;
             }
@@ -163,11 +159,11 @@ public class ImageIconDropper implements GraphDropper {
 
         @Override
         protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-            int selectedAttr = VisualConcept.VertexAttribute.SELECTED.get(graph);
-            int iconAttr = VisualConcept.VertexAttribute.FOREGROUND_ICON.get(graph);
+            final int selectedAttr = VisualConcept.VertexAttribute.SELECTED.get(graph);
+            final int iconAttr = VisualConcept.VertexAttribute.FOREGROUND_ICON.get(graph);
             if (selectedAttr != Graph.NOT_FOUND && iconAttr != Graph.NOT_FOUND) {
 
-                GraphIndexResult selectionResult = GraphIndexUtilities.filterElements(graph, selectedAttr, true);
+                final GraphIndexResult selectionResult = GraphIndexUtilities.filterElements(graph, selectedAttr, true);
                 int vertex = selectionResult.getNextElement();
                 while (vertex != Graph.NOT_FOUND) {
                     graph.setStringValue(iconAttr, vertex, iconName);
@@ -181,6 +177,5 @@ public class ImageIconDropper implements GraphDropper {
                     ConstellationLoggerHelper.SUCCESS
             );
         }
-
     }
 }

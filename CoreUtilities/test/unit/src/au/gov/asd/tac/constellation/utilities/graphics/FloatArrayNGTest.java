@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,6 +51,11 @@ public class FloatArrayNGTest {
         assertEquals(f2.size(), 0);
         f2.ensureSize(6, 0F);
         assertEquals(f2.toString(), "F[0.0,0.0,0.0,0.0,0.0,0.0]");
+        
+        final FloatArray f3 = new FloatArray();
+        f3.add(F4, F3, F2, F1);
+        final FloatArray fClone = new FloatArray(f3);
+        assertEquals(f3.toString(), fClone.toString());
     }
     
     /**
@@ -160,17 +165,6 @@ public class FloatArrayNGTest {
         assertEquals(f.indexOf(F1), -1);
         f.add(F2, F3, F4, F1);
         assertEquals(f.indexOf(F1), 3);
-    }
-    
-    /**
-     * Can clone a FloatArray.
-     */
-    @Test
-    public void testClone() {
-        final FloatArray f = new FloatArray();
-        f.add(F4, F3, F2, F1);
-        final FloatArray fClone = f.clone();
-        assertEquals(f.toString(), fClone.toString());
     }
     
     /**

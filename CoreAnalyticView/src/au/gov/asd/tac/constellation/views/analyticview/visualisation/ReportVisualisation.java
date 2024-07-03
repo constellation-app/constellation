@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,10 @@
  */
 package au.gov.asd.tac.constellation.views.analyticview.visualisation;
 
-import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.analyticview.analytics.AnalyticPlugin;
 import java.util.List;
+import java.util.Objects;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -30,42 +30,43 @@ import javafx.scene.layout.VBox;
  */
 public class ReportVisualisation extends InternalVisualisation {
 
-    private final VBox report;
+    private VBox report;
     private final Label pluginsRunValue;
     private final Label numberOfResultsValue;
     private final Label aggregationMethodValue;
     private final Label exceptionsValue;
+    private static final String CSS_FONT_WEIGHT_BOLD = "-fx-font-weight: bold";
 
     public ReportVisualisation() {
         final HBox pluginsReportBox = new HBox();
         final Label pluginsRunLabel = new Label("Plugins Run: ");
-        pluginsRunLabel.setStyle(JavafxStyleManager.CSS_FONT_WEIGHT_BOLD);
+        pluginsRunLabel.setStyle(CSS_FONT_WEIGHT_BOLD);
         this.pluginsRunValue = new Label();
         pluginsRunValue.setWrapText(true);
         pluginsReportBox.getChildren().addAll(pluginsRunLabel, pluginsRunValue);
 
         final HBox numberOfResultsReportBox = new HBox();
         final Label numberOfResultsLabel = new Label("Number of Results: ");
-        numberOfResultsLabel.setStyle(JavafxStyleManager.CSS_FONT_WEIGHT_BOLD);
+        numberOfResultsLabel.setStyle(CSS_FONT_WEIGHT_BOLD);
         this.numberOfResultsValue = new Label();
         numberOfResultsValue.setWrapText(true);
         numberOfResultsReportBox.getChildren().addAll(numberOfResultsLabel, numberOfResultsValue);
 
         final HBox aggregationMethodReportBox = new HBox();
         final Label aggregationMethodLabel = new Label("Aggregation Method: ");
-        aggregationMethodLabel.setStyle(JavafxStyleManager.CSS_FONT_WEIGHT_BOLD);
+        aggregationMethodLabel.setStyle(CSS_FONT_WEIGHT_BOLD);
         this.aggregationMethodValue = new Label();
         aggregationMethodValue.setWrapText(true);
         aggregationMethodReportBox.getChildren().addAll(aggregationMethodLabel, aggregationMethodValue);
 
         final HBox exceptionsReportBox = new HBox();
         final Label exceptionsLabel = new Label("Exceptions: ");
-        exceptionsLabel.setStyle(JavafxStyleManager.CSS_FONT_WEIGHT_BOLD);
+        exceptionsLabel.setStyle(CSS_FONT_WEIGHT_BOLD);
         this.exceptionsValue = new Label();
         exceptionsValue.setWrapText(true);
         exceptionsReportBox.getChildren().addAll(exceptionsLabel, exceptionsValue);
 
-        this.report = new VBox(pluginsReportBox, numberOfResultsReportBox, aggregationMethodReportBox, exceptionsReportBox);
+        this.report = new VBox(pluginsReportBox, numberOfResultsReportBox, aggregationMethodReportBox, exceptionsReportBox);  
     }
 
     public void populateReport(final List<AnalyticPlugin<?>> plugins, final int numberOfResults, final String aggregationMethod, final List<Exception> exceptions) {
@@ -96,7 +97,7 @@ public class ReportVisualisation extends InternalVisualisation {
 
         final HBox extensionReportBox = new HBox();
         final Label extensionLabel = new Label(String.format("%s: ", extensionTitle));
-        extensionLabel.setStyle(JavafxStyleManager.CSS_FONT_WEIGHT_BOLD);
+        extensionLabel.setStyle(CSS_FONT_WEIGHT_BOLD);
         final Label extensionValue = new Label(extensionContent);
         extensionValue.setWrapText(true);
         extensionReportBox.getChildren().addAll(extensionLabel, extensionValue);
@@ -112,5 +113,20 @@ public class ReportVisualisation extends InternalVisualisation {
     @Override
     public Node getVisualisation() {
         return report;
+    }
+    
+    @Override
+    public void setVisualisation(final Node report) {
+        this.report = (VBox) report;
+    }
+    
+    @Override
+    public boolean equals(final Object object) {
+        return (object != null && getClass() == object.getClass());
+    }
+    
+    @Override 
+    public int hashCode() {
+        return Objects.hash(this.getClass());
     }
 }

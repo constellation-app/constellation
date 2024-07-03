@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -109,12 +109,10 @@ public final class ImportJDBCIO {
             // Therefore, we only save a schema factory as the destination.
             final ImportDestination<?> importd = importController.getDestination();
             final String destination;
-            if (importd instanceof SchemaDestination) {
-                destination = ((SchemaDestination) importd).getDestination().getName();
-            } else if (importd instanceof GraphDestination) {
-                destination = ((GraphDestination) importd).getGraph().getSchema().getFactory().getName();
-            } else {
-                throw new IllegalArgumentException(String.format("Unrecognised destination '%s'", importd));
+            switch (importd) {
+                case SchemaDestination schemaDestination -> destination = schemaDestination.getDestination().getName();
+                case GraphDestination graphDestination -> destination = graphDestination.getGraph().getSchema().getFactory().getName();
+                default -> throw new IllegalArgumentException(String.format("Unrecognised destination '%s'", importd));
             }
             source.put(DESTINATION, destination);
 
@@ -177,9 +175,9 @@ public final class ImportJDBCIO {
                     }
 
                     type.put(ATTRIBUTE_LABEL, iadef.getAttribute().getName());
-                    if (iadef.getAttribute() instanceof NewAttribute) {
-                        type.put(ATTRIBUTE_TYPE, iadef.getAttribute().getAttributeType());
-                        type.put(ATTRIBUTE_DESCRIPTION, iadef.getAttribute().getDescription());
+                    if (iadef.getAttribute() instanceof NewAttribute newAttribute) {
+                        type.put(ATTRIBUTE_TYPE, newAttribute.getAttributeType());
+                        type.put(ATTRIBUTE_DESCRIPTION, newAttribute.getDescription());
                     }
 
                     type.put(TRANSLATOR, iadef.getTranslator().getClass().getName());

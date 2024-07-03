@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ public class DateTimeRangeParameterType extends PluginParameterType<DateTimeRang
 
     // Absolute start/end dateFormatter.
     public static final String FORMAT = "yyyy-MM-dd HH:mm:ss z";
-    public static final String RANGE_SEPARATOR = "/";
+    public static final String RANGE_SEPARATOR = ";";
 
     /**
      * The singleton instance of the type that should be used to construct all
@@ -72,7 +72,7 @@ public class DateTimeRangeParameterType extends PluginParameterType<DateTimeRang
      * @param id The String id of the parameter to construct.
      * @return A {@link PluginParameter} of BooleanParameterType.
      */
-    public static PluginParameter<DateTimeRangeParameterValue> build(String id) {
+    public static PluginParameter<DateTimeRangeParameterValue> build(final String id) {
         return new PluginParameter<>(new DateTimeRangeParameterValue(), INSTANCE, id);
     }
 
@@ -144,9 +144,8 @@ public class DateTimeRangeParameterType extends PluginParameterType<DateTimeRang
                 DateTimeRange.parse(s);
                 return null;
             } catch (final DateTimeParseException ex) {
+                return String.format("Format is '%s%s%s' or 'PnMnD Z'", FORMAT, RANGE_SEPARATOR, FORMAT);
             }
-
-            return String.format("Format is '%s%s%s' or 'PnMnD Z'", FORMAT, RANGE_SEPARATOR, FORMAT);
         }
 
         @Override
@@ -166,8 +165,8 @@ public class DateTimeRangeParameterType extends PluginParameterType<DateTimeRang
             final DateTimeRange newdtr;
             if (o == null) {
                 newdtr = null;
-            } else if (o instanceof DateTimeRange) {
-                newdtr = (DateTimeRange) o;
+            } else if (o instanceof DateTimeRange dateTimeRange) {
+                newdtr = dateTimeRange;
             } else {
                 throw new IllegalArgumentException(String.format("Unexpected class %s", o.getClass()));
             }

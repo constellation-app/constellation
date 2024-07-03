@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,9 +33,12 @@ public class AttributePreferenceKey {
     protected static final char[] META_CHARS = {SPLIT_CHAR};
     protected static final Set<Character> SPLIT_CHAR_SET = new HashSet<>();
     public static final String HIDDEN_ATTRIBUTES = "hiddenAttribute";
-    public static final String GRAPH_SHOW_ALL = "graphShowAll";
-    public static final String NODE_SHOW_ALL = "nodeShowAll";
-    public static final String TRANSACTION_SHOW_ALL = "transactionShowAll";
+    public static final String GRAPH_SHOW_HIDDEN = "graphShowHidden";
+    public static final String NODE_SHOW_HIDDEN = "nodeShowHidden";
+    public static final String TRANSACTION_SHOW_HIDDEN = "transactionShowHidden";
+    public static final String GRAPH_SHOW_EMPTY = "graphShowEmpty";
+    public static final String NODE_SHOW_EMPTY = "nodeShowEmpty";
+    public static final String TRANSACTION_SHOW_EMPTY = "transactionShowEmpty"; 
     public static final String PRIMARY_KEY_ATTRIBUTE_COLOR = "primaryKeyAttributeColor";
     public static final String CUSTOM_ATTRIBUTE_COLOR = "customAttributeColor";
     public static final String SCHEMA_ATTRIBUTE_COLOR = "schemaAttributeColor";

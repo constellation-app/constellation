@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -213,7 +213,7 @@ public class DataAccessUtilities {
         // Now fetch the DataAccessPlugin instances.
         final Multimap<String, String> pluginNameToType = ArrayListMultimap.create();
         final List<String> pluginOverrides = new ArrayList<>();
-        Lookup.getDefault().lookupAll(DataAccessPlugin.class).parallelStream()
+        Lookup.getDefault().lookupAll(DataAccessPlugin.class).stream()
                 // If plugin is disabled, ignore the plugin.
                 .filter(DataAccessPlugin::isEnabled)
                 // If a plugin type is invalid (that is, not registered as a DataAccessPluginType),

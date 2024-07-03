@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.functionality.dialog;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.ClipboardUtilities;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.awt.Dimension;
 import java.util.List;
 import java.util.logging.Level;
@@ -40,7 +41,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Window;
 
 /**
  * Display a dialog containing a table containing 2 columns of ItemsRow
@@ -66,10 +66,9 @@ public class ItemsDialog<T> extends ConstellationDialog {
     private final Button okButton;
     private final Button cancelButton;
 
-    public ItemsDialog(final Window owner, final String title, final String helpText, final String labelColumnHeading, final String descriptionColumnHeading, final ObservableList<ItemsRow<T>> rows) {
+    public ItemsDialog(final String title, final String helpText, final String labelColumnHeading, final String descriptionColumnHeading, final ObservableList<ItemsRow<T>> rows) {
         final BorderPane root = new BorderPane();
-        root.setStyle("-fx-background-color: #DDDDDD;-fx-border-color: #3a3e43;-fx-border-width: 4px;");
-
+        
         // add a title
         final Label titleLabel = new Label();
         titleLabel.setText(title);
@@ -150,6 +149,7 @@ public class ItemsDialog<T> extends ConstellationDialog {
         buttonPane.getChildren().add(cancelButton);
 
         final Scene scene = new Scene(root);
+        scene.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         fxPanel.setScene(scene);
         fxPanel.setPreferredSize(new Dimension(500, 500));
     }
@@ -161,8 +161,9 @@ public class ItemsDialog<T> extends ConstellationDialog {
     public void setOkButtonAction(final EventHandler<ActionEvent> event) {
         okButton.setOnAction(event);
     }
-
+    
     public void setCancelButtonAction(final EventHandler<ActionEvent> event) {
         cancelButton.setOnAction(event);
     }
+    
 }

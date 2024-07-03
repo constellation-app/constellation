@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConceptUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import static au.gov.asd.tac.constellation.views.schemaview.providers.HelpIconProvider.populateHelpIconWithCaption;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -78,6 +79,7 @@ public class AttributeNodeProvider implements SchemaViewNodeProvider, GraphManag
     private final Label schemaLabel;
     private final TableView<AttributeEntry> table;
     private final ObservableList<AttributeEntry> attributeInfo;
+    private HBox schemaLabelAndHelp;
 
     public AttributeNodeProvider() {
         schemaLabel = new Label(SeparatorConstants.HYPHEN);
@@ -86,12 +88,15 @@ public class AttributeNodeProvider implements SchemaViewNodeProvider, GraphManag
         table = new TableView<>();
         table.setItems(attributeInfo);
         table.setPlaceholder(new Label("No schema available"));
+        schemaLabelAndHelp = new HBox();
     }
 
     @Override
     public void setContent(final Tab tab) {
         GraphManager.getDefault().addGraphManagerListener(this);
         newActiveGraph(GraphManager.getDefault().getActiveGraph());
+
+        populateHelpIconWithCaption(this.getClass().getName(), "Attributes", schemaLabel, schemaLabelAndHelp);
 
         final TextField filterText = new TextField();
         filterText.setPromptText("Filter attribute names");
@@ -113,7 +118,7 @@ public class AttributeNodeProvider implements SchemaViewNodeProvider, GraphManag
         headerBox.setAlignment(Pos.CENTER_LEFT);
         headerBox.setPadding(new Insets(5));
 
-        final VBox box = new VBox(schemaLabel, headerBox, table);
+        final VBox box = new VBox(schemaLabelAndHelp, headerBox, table);
         VBox.setVgrow(table, Priority.ALWAYS);
 
         Platform.runLater(() -> tab.setContent(box));
@@ -193,29 +198,18 @@ public class AttributeNodeProvider implements SchemaViewNodeProvider, GraphManag
             if (p.getValue().keyIx >= 0) {
                 label.setStyle("-fx-background-color: #8a1d1d; -fx-text-fill: white;");
             }
-
+            
             final GraphElementType et = p.getValue().attr.getElementType();
             switch (et) {
-                case VERTEX:
-                    label.setGraphic(new ImageView(vertexImage));
-                    break;
-                case TRANSACTION:
-                    label.setGraphic(new ImageView(transactionImage));
-                    break;
-                case EDGE:
-                    label.setGraphic(new ImageView(edgeImage));
-                    break;
-                case LINK:
-                    label.setGraphic(new ImageView(linkImage));
-                    break;
-                case GRAPH:
-                    label.setGraphic(new ImageView(graphImage));
-                    break;
-                case META:
-                    label.setGraphic(new ImageView(metaImage));
-                    break;
-                default:
-                    break;
+                case VERTEX -> label.setGraphic(new ImageView(vertexImage));
+                case TRANSACTION -> label.setGraphic(new ImageView(transactionImage));
+                case EDGE -> label.setGraphic(new ImageView(edgeImage));
+                case LINK -> label.setGraphic(new ImageView(linkImage));
+                case GRAPH -> label.setGraphic(new ImageView(graphImage));
+                case META -> label.setGraphic(new ImageView(metaImage));
+                default -> {
+                    //do nothing
+                }
             }
 
             return new SimpleObjectProperty<>(label);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -101,12 +101,12 @@ public class HelpSearchProviderNGTest {
         response = mock(SearchResponse.class);
 
         when(request.getText()).thenReturn("help");
-        when(response.addResult(Mockito.any(), Mockito.eq("help options"))).thenReturn(true);
+        when(response.addResult(Mockito.any(), Mockito.eq(HelpSearchProvider.QuickSearchUtils.CIRCLED_H + "  help options"))).thenReturn(true);
 
         HelpSearchProvider instance = new HelpSearchProvider();
         instance.evaluate(request, response);
 
-        verify(response, times(1)).addResult(Mockito.any(), Mockito.eq("help options"));
+        verify(response, times(1)).addResult(Mockito.any(), Mockito.eq(HelpSearchProvider.QuickSearchUtils.CIRCLED_H + "  help options"));
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,11 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.FactResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.FactResult.ElementFact;
+import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticTranslatorUtilities;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.SizeVisualisation;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -41,6 +45,10 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = GraphVisualisationTranslator.class)
 public class FactToSizeTranslator extends AbstractSizeTranslator<FactResult, ElementFact> {
+    
+    // Maps of the sizes of the vertices and transactions before the plugin is run
+    private Map<Integer, Float> vertexSizes = new HashMap<>();
+    private Map<Integer, Float> transactionSizes = new HashMap<>();
 
     @Override
     public String getName() {
@@ -64,6 +72,26 @@ public class FactToSizeTranslator extends AbstractSizeTranslator<FactResult, Ele
                 .executeLater(GraphManager.getDefault().getActiveGraph());
     }
 
+    @Override
+    public Map<Integer, Float> getVertexSizes() {
+        return Collections.unmodifiableMap(vertexSizes);
+    }
+
+    @Override
+    public void setVertexSizes(final Map<Integer, Float> sizes) {
+        vertexSizes = new HashMap<>(sizes);
+    }
+
+    @Override
+    public Map<Integer, Float> getTransactionSizes() {
+        return Collections.unmodifiableMap(transactionSizes);
+    }
+
+    @Override
+    public void setTransactionSizes(final Map<Integer, Float> sizes) {
+        transactionSizes = new HashMap<>(sizes);
+    }
+
     @PluginInfo(tags = {PluginTags.MODIFY})
     private class SizeElementsPlugin extends SimpleEditPlugin {
 
@@ -82,9 +110,25 @@ public class FactToSizeTranslator extends AbstractSizeTranslator<FactResult, Ele
 
         @Override
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-
             // get parameter values
             final boolean reset = parameters.getBooleanValue(RESET_PARAMETER_ID);
+            
+            final String currentGraphKey = GraphManager.getDefault().getActiveGraph().getId();
+
+            // When a new instance of this class is created, it will not know if the current sizes are at their original values
+            // This means it won't have valid data to use for the reset function ... in a new instance (ie. a new "Run") it will be empty
+            // Using a static cache gets around the issue. We can retrieve and initialise size data from the cache if available.
+            
+            if (AnalyticTranslatorUtilities.getVertexSizeCache().containsKey(currentGraphKey)) {
+                vertexSizes = AnalyticTranslatorUtilities.getVertexSizeCache().get(currentGraphKey);
+            } else {
+                vertexSizes = new HashMap<>();
+            }
+            if (AnalyticTranslatorUtilities.getTransactionSizeCache().containsKey(currentGraphKey)) {
+                transactionSizes = AnalyticTranslatorUtilities.getTransactionSizeCache().get(currentGraphKey);
+            } else {
+                transactionSizes = new HashMap<>();
+            }
 
             // ensure attributes
             final int vertexSizeAttribute = VisualConcept.VertexAttribute.NODE_RADIUS.ensure(graph);
@@ -95,24 +139,17 @@ public class FactToSizeTranslator extends AbstractSizeTranslator<FactResult, Ele
             }
 
             final FactResult factResults = result;
+            
+            vertexSizes.keySet().forEach(vertexKey -> 
+                graph.setFloatValue(vertexSizeAttribute, vertexKey, vertexSizes.get(vertexKey)));
+            
+            transactionSizes.keySet().forEach(transactionKey -> 
+                graph.setFloatValue(transactionSizeAttribute, transactionKey, transactionSizes.get(transactionKey)));
+            
+            vertexSizes.clear();
+            transactionSizes.clear();
 
-            if (reset) {
-                for (final ElementFact factResult : factResults.get()) {
-                    final GraphElementType elementType = factResult.getElementType();
-                    final int elementId = factResult.getElementId();
-                    switch (elementType) {
-                        case VERTEX:
-                            graph.setFloatValue(vertexSizeAttribute, elementId, 1.0F);
-                            break;
-                        case TRANSACTION:
-                            graph.setFloatValue(transactionSizeAttribute, elementId, 1.0F);
-                            break;
-                        default:
-                            throw new InvalidElementTypeException("'Size Elements' is not supported "
-                                    + "for the element type associated with this analytic question.");
-                    }
-                }
-            } else {
+            if (!reset) {
                 // estimate size of graph
                 final BBoxf graphBoundingBox = BBoxf.getGraphBoundingBox(graph);
                 float graphEstimatedDiameter = Math.max(graphBoundingBox.getMax()[BBoxf.X] - graphBoundingBox.getMin()[BBoxf.X],
@@ -127,18 +164,24 @@ public class FactToSizeTranslator extends AbstractSizeTranslator<FactResult, Ele
                     final float elementValue = factResult.getFactValue() ? 1F : 0F;
                     final float sizeIntensity = (float) Math.log(elementValue * graphEstimatedDiameter);
                     switch (elementType) {
-                        case VERTEX:
+                        case VERTEX -> {
+                            final float vertexSize = graph.getFloatValue(vertexSizeAttribute, elementId);
+                            vertexSizes.put(elementId, vertexSize);
                             graph.setFloatValue(vertexSizeAttribute, elementId, sizeIntensity > 1.0F ? sizeIntensity : 1.0F);
-                            break;
-                        case TRANSACTION:
+                        }
+                        case TRANSACTION -> {
+                            final float transactionSize = graph.getFloatValue(transactionSizeAttribute, elementId);
+                            transactionSizes.put(elementId, transactionSize);
                             graph.setFloatValue(transactionSizeAttribute, elementId, sizeIntensity > 1.0F ? sizeIntensity : 1.0F);
-                            break;
-                        default:
-                            throw new InvalidElementTypeException("'Size Elements' is not supported "
+                        }
+                        default -> throw new InvalidElementTypeException("'Size Elements' is not supported "
                                     + "for the element type associated with this analytic question.");
                     }
                 }
             }
+            
+            AnalyticTranslatorUtilities.addToVertexSizeCache(currentGraphKey, vertexSizes);
+            AnalyticTranslatorUtilities.addToTransactionSizeCache(currentGraphKey, transactionSizes);
         }
 
         @Override

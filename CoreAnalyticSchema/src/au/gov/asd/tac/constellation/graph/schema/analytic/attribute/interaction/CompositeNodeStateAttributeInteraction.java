@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,13 +46,13 @@ public class CompositeNodeStateAttributeInteraction extends AbstractAttributeInt
         }
         final CompositeNodeState state = (CompositeNodeState) value;
         final CompositeStatus status = state.getStatus();
-        if (status.equals(CompositeStatus.NOT_A_COMPOSITE)) {
-            return "";
-        } else if (status.equals(CompositeStatus.IS_A_COMPOSITE)) {
-            return String.format("%s comprising %d nodes.", status.compositeName, state.getNumberOfNodes());
-        } else {
-            return String.format("%s with %d other node%s.", status.compositeName, state.getNumberOfNodes() - 1, state.getNumberOfNodes() == 1 ? "" : "s");
-        }
+        return switch (status) {
+            case NOT_A_COMPOSITE -> "";
+            case IS_A_COMPOSITE ->
+                String.format("%s comprising %d nodes.", status.compositeName, state.getNumberOfNodes());
+            default ->
+                String.format("%s with %d other node%s.", status.compositeName, state.getNumberOfNodes() - 1, state.getNumberOfNodes() == 1 ? "" : "s");
+        };
     }
 
     @Override

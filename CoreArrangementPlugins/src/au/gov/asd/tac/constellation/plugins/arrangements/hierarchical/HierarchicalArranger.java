@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,7 +60,7 @@ public class HierarchicalArranger implements Arranger {
     private boolean maintainMean;
 
     public HierarchicalArranger(final Set<Integer> roots) {
-        this.roots = roots;
+        this.roots = new HashSet<>(roots);
     }
 
     @Override
@@ -331,7 +331,7 @@ public class HierarchicalArranger implements Arranger {
 
         public ExplicitTaxonomyArranger(final Map<Integer, Set<Integer>> taxa) {
             super(new GridArranger(), new CircleArranger(), Connections.NONE, InducedSubgraph.getSubgraphFactory());
-            this.taxa = taxa;
+            this.taxa = new HashMap<>(taxa);
         }
 
         @Override

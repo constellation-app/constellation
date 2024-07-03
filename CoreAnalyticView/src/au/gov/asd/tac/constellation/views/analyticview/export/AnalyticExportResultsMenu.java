@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -127,6 +127,7 @@ public class AnalyticExportResultsMenu {
     private MenuButton createMenuButton(final ImageView icon) {
         final MenuButton button = new MenuButton();
         button.setText("Export");
+        button.setStyle("-fx-label-fill: #FFFFFF; ");
         button.setGraphic(icon);
         button.setMaxWidth(WIDTH);
         button.setPopupSide(Side.RIGHT);

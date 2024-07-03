@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,10 +30,9 @@ public final class ApplicationPreferenceKeys {
     /**
      * The directory where various user data is stored.
      * <p>
-     * Note that this is separate from NbPreferences, which stores stuff in a
-     * mysterious place that the user doesn't necessarily know about. Rather,
-     * this is a directory in an obvious that the user knows about and may
-     * access outside of the application.
+     * Note that this is separate from NbPreferences, which stores stuff in a mysterious place that the user doesn't
+     * necessarily know about. Rather, this is a directory in an obvious that the user knows about and may access
+     * outside of the application.
      *
      * @param prefs Application preferences.
      *
@@ -107,12 +106,6 @@ public final class ApplicationPreferenceKeys {
     public static final String JUPYTER_NOTEBOOK_DIR_DEFAULT = new File(System.getProperty("user.dir")).getPath();
 
     /**
-     * Remember Open and Save location.
-     */
-    public static final String REMEMBER_OPEN_AND_SAVE_LOCATION = "rememberOpenAndSaveLocation";
-    public static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT = true;
-
-    /**
      * File Save location.
      */
     public static final String FILE_OPEN_AND_SAVE_LOCATION = "fileOpenAndSaveLocation";
@@ -184,7 +177,7 @@ public final class ApplicationPreferenceKeys {
      * Quality Control View Priorities
      */
     public static final String RULE_PRIORITIES = "customRules";
-    
+
     /**
      * Quality Control View Rule Enabled Statuses
      */
@@ -195,9 +188,15 @@ public final class ApplicationPreferenceKeys {
      */
     public static final String FONT_PREFERENCES = "au/gov/asd/tac/constellation/preferences";
     public static final String FONT_FAMILY = "fontFamily";
-    public static String FONT_FAMILY_DEFAULT = "Arial";
     public static final String FONT_SIZE = "fontSize";
-    public static String FONT_SIZE_DEFAULT = "12";
+    public static final String FONT_FAMILY_DEFAULT = "Arial";
+    public static final String FONT_SIZE_DEFAULT = "12";
+   
+    /**
+     * Colorblind mode.
+     */
+    public static final String COLORBLIND_MODE_DEFAULT = "None";
+    public static final String COLORBLIND_MODE = "colorblindMode";
 
     private ApplicationPreferenceKeys() {
     }

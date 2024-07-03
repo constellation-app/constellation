@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPaneListener;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
 import java.util.Arrays;
@@ -167,7 +168,7 @@ public class HeadingPaneNGTest {
         }
 
         @Override
-        public void validityChanged(boolean valid) {
+        public void validityChanged(final boolean valid) {
             didValidityUpdate = true;
         }
 
@@ -176,8 +177,11 @@ public class HeadingPaneNGTest {
             didHierarchicalUpdate = true;
         }
 
+        @Override
+        public void notifyParameterValidityChange(final PluginParameter<?> parameter, final boolean currentlySatisfied) {
+            //Not used by heading pane class
+        }
     }
-
     /**
      * TODO: Test of hierarchicalUpdate method, of class HeadingPane, when pane is
      * QueryEnabled. Tricky because HeadingPane is creating a List of new

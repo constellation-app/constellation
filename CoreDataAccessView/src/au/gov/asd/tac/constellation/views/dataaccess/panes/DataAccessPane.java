@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.dataaccess.panes;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPaneListener;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessViewTopComponent;
 import au.gov.asd.tac.constellation.views.dataaccess.api.DataAccessPaneState;
@@ -34,6 +35,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.util.Pair;
 
 /**
  * JavaFX Data Access View. The main pane containing the tab pane, button tool
@@ -80,7 +82,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         );
 
         // Plugins are now needed, so wait until the load is complete
-        final Map<String, List<DataAccessPlugin>> plugins;
+        final Map<String, Pair<Integer, List<DataAccessPlugin>>> plugins;
         try {
             plugins = DataAccessPaneState.getPlugins();
         } catch (ExecutionException ex) {
@@ -112,7 +114,6 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                     );
             contextMenuEvent.consume();
         });
-
         // Refresh all the status of menu items, execute buttons etc.
         // based on the current state of the data access view
         update();
@@ -325,7 +326,12 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
     }
 
     @Override
-    public void validityChanged(boolean enabled) {
+    public void validityChanged(final boolean enabled) {
+        // Must be overriden to implement PluginParametersPaneListener
+    }
+    
+    @Override
+    public void notifyParameterValidityChange(final PluginParameter<?> parameter, final boolean currentlySatisfied) {
         // Must be overriden to implement PluginParametersPaneListener
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ public class ObjectParameterType extends PluginParameterType<ObjectParameterValu
      * @param id The String id of the parameter to construct.
      * @return A {@link PluginParameter} of BooleanParameterType.
      */
-    public static PluginParameter<ObjectParameterValue> build(String id) {
+    public static PluginParameter<ObjectParameterValue> build(final String id) {
         return new PluginParameter<>(new ObjectParameterValue(), INSTANCE, id);
     }
 
@@ -130,14 +130,10 @@ public class ObjectParameterType extends PluginParameterType<ObjectParameterValu
 
         @Override
         public boolean equals(final Object obj) {
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
+            if (obj == null || getClass() != obj.getClass()) {
                 return false;
             }
             final ObjectParameterValue other = (ObjectParameterValue) obj;
-
             return Objects.equals(this.o, other.o);
         }
 

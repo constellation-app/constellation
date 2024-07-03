@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -92,7 +92,7 @@ public class Tuple<F, S> implements Serializable, Comparable<Tuple<F, S>> {
     @Override
     public String toString() {
         return String.format("(%s, %s)",
-                first.toString(), second.toString());
+                first == null ? "[null]" : first.toString(), second == null ? "[null]" : second.toString());
     }
 
     /**
@@ -111,9 +111,9 @@ public class Tuple<F, S> implements Serializable, Comparable<Tuple<F, S>> {
     public int compareTo(final Tuple<F, S> o) {
         int compare;
 
-        if (first instanceof Comparable && o.first instanceof Comparable) {
+        if (first instanceof Comparable compFirst && o.first instanceof Comparable compOFirst) {
             // compare the first using Comparable
-            compare = ((Comparable) first).compareTo((Comparable) o.first);
+            compare = compFirst.compareTo(compOFirst);
             if (compare != 0) {
                 return compare;
             }
@@ -125,9 +125,9 @@ public class Tuple<F, S> implements Serializable, Comparable<Tuple<F, S>> {
             }
         }
 
-        if (second instanceof Comparable && o.second instanceof Comparable) {
+        if (second instanceof Comparable compSecond && o.second instanceof Comparable compOSecond) {
             // compare the second using Comparable
-            compare = ((Comparable) second).compareTo((Comparable) o.second);
+            compare = compSecond.compareTo(compOSecond);
             if (compare != 0) {
                 return compare;
             }

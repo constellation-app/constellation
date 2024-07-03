@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,9 @@
  */
 package au.gov.asd.tac.constellation.graph.processing;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * An AppendDatumProcessor processes an input datum object through the specified
  * append {@link DatumProcessor} and appends this result to the each record
@@ -28,6 +31,8 @@ package au.gov.asd.tac.constellation.graph.processing;
  * @author capella
  */
 public abstract class AppendDatumProcessor<T, U> implements DatumProcessor<T, U> {
+
+    private static final Logger LOGGER = Logger.getLogger(AppendDatumProcessor.class.getName());
 
     protected final DatumProcessor<T, U> leadProcessor;
     protected final DatumProcessor<T, U> appendProcessor;
@@ -49,10 +54,11 @@ public abstract class AppendDatumProcessor<T, U> implements DatumProcessor<T, U>
 
     @Override
     public void process(final U parameters, final T input, final RecordStore output) throws ProcessingException {
-        HookRecordStore hookOutput = new HookRecordStore(output, (RecordStore recordStore) -> {
+        final HookRecordStore hookOutput = new HookRecordStore(output, recordStore -> {
             try {
                 appendProcessor.process(parameters, input, recordStore);
-            } catch (ProcessingException ex) {
+            } catch (final ProcessingException ex) {
+                LOGGER.log(Level.WARNING, "Error encountered during processing of appending processor");
             }
         });
         leadProcessor.process(parameters, input, hookOutput);

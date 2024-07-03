@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.reporting.PluginExecutionStageConstants;
 import java.util.logging.Logger;
 
 /**
@@ -42,8 +43,6 @@ import java.util.logging.Logger;
  */
 public abstract class SimpleReadPlugin extends AbstractPlugin {
 
-    private static final Logger LOGGER = Logger.getLogger(SimpleReadPlugin.class.getName());
-
     protected SimpleReadPlugin() {
     }
 
@@ -54,24 +53,24 @@ public abstract class SimpleReadPlugin extends AbstractPlugin {
     @Override
     public final void run(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         final Graph graph = graphs.getGraph();
-
+        final int totalSteps = -1;
         // Make the graph appear busy
         interaction.setBusy(graph.getId(), true);
         try {
             // Make the progress bar appear nondeterminent
-            interaction.setProgress(0, 0, "Waiting...", true);
+            interaction.setExecutionStage(0, totalSteps, PluginExecutionStageConstants.WAITING, "Waiting...", true);
 
             try {
                 ReadableGraph readableGraph = graph.getReadableGraph();
 
                 try {
-                    interaction.setProgress(0, 0, "Working...", true);
+                    interaction.setExecutionStage(1, totalSteps, PluginExecutionStageConstants.RUNNING, "Working...", true);
                     read(readableGraph, interaction, parameters);
                 } finally {
                     readableGraph.release();
                 }
             } finally {
-                interaction.setProgress(2, 1, "Finished", true);
+                interaction.setExecutionStage(2, 1, PluginExecutionStageConstants.COMPLETE, "Finished", true);
             }
         } finally {
             interaction.setBusy(graph.getId(), false);
@@ -84,12 +83,12 @@ public abstract class SimpleReadPlugin extends AbstractPlugin {
         interaction.setBusy(graph.getId(), true);
         try {
             // Make the progress bar appear nondeterminent
-            interaction.setProgress(0, 0, "Working...", true);
+            interaction.setExecutionStage(0, -1, PluginExecutionStageConstants.RUNNING, "Working...", true);
 
             try {
                 read(graph, interaction, parameters);
             } finally {
-                interaction.setProgress(2, 1, "Finished", true);
+                interaction.setExecutionStage(1, 0, PluginExecutionStageConstants.COMPLETE, "Finished", true);
             }
         } finally {
             interaction.setBusy(graph.getId(), false);

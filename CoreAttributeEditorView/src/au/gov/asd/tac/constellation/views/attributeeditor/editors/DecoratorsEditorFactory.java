@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,7 +71,12 @@ public class DecoratorsEditorFactory extends AttributeValueEditorFactory<VertexD
         }
 
         @Override
-        public void updateControlsWithValue(final VertexDecorators value) {
+        public void updateControlsWithValue(VertexDecorators value) {
+            // Ensure a null value is translated to an empty/default VertexDecorators object
+            if (value == null) {
+                value = new VertexDecorators(null, null, null, null);
+            }
+
             setDecoratorChoice(nwCombo, value.getNorthWestDecoratorAttribute());
             setDecoratorChoice(neCombo, value.getNorthEastDecoratorAttribute());
             setDecoratorChoice(seCombo, value.getSouthEastDecoratorAttribute());
@@ -121,6 +126,11 @@ public class DecoratorsEditorFactory extends AttributeValueEditorFactory<VertexD
             controls.addRow(1, swLabel, swCombo);
 
             return controls;
+        }
+
+        @Override
+        public boolean noValueCheckBoxAvailable() {
+            return false;
         }
 
         private void setDecoratorChoice(final ComboBox<String> comboBox, final String choice) {

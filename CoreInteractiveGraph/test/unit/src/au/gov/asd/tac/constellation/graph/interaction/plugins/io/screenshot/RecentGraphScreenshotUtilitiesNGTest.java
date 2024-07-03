@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,15 @@ import au.gov.asd.tac.constellation.graph.file.open.RecentFiles;
 import au.gov.asd.tac.constellation.graph.file.open.RecentFiles.HistoryItem;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.logging.Logger;
+import javax.xml.bind.DatatypeConverter;
 import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -49,6 +52,7 @@ public class RecentGraphScreenshotUtilitiesNGTest {
     private static MockedStatic<RecentFiles> recentFilesMock;
     private static MockedStatic<Files> filesMock;
     private static MockedStatic<Logger> loggerMock;
+    private static MockedStatic<DatatypeConverter> dataTypeConverter;
 
     public RecentGraphScreenshotUtilitiesNGTest() {
     }
@@ -59,6 +63,7 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         recentFilesMock = Mockito.mockStatic(RecentFiles.class);
         filesMock = Mockito.mockStatic(Files.class);
         loggerMock = Mockito.mockStatic(Logger.class);
+        dataTypeConverter = Mockito.mockStatic(DatatypeConverter.class);
     }
 
     @AfterClass
@@ -67,6 +72,7 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         recentFilesMock.close();
         filesMock.close();
         loggerMock.close();
+        dataTypeConverter.close();
     }
 
     @BeforeMethod
@@ -240,6 +246,7 @@ public class RecentGraphScreenshotUtilitiesNGTest {
     @Test
     public void testHashFilePath() {
         recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.hashFilePath(anyString())).thenCallRealMethod();
+        dataTypeConverter.when(() -> DatatypeConverter.printHexBinary(Mockito.any())).thenReturn("0c695c8bff7af91d321c237bdf969addbfb859be8095d880f1d034737fbc35d2");
         final String actual = RecentGraphScreenshotUtilities.hashFilePath("/test/path");
         final String expected = "0C695C8BFF7AF91D321C237BDF969ADDBFB859BE8095D880F1D034737FBC35D2";
 

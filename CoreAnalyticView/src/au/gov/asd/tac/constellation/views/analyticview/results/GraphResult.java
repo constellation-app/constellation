@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.views.analyticview.results;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.views.analyticview.results.GraphResult.GraphScore;
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Stores {@link GraphScore} objects which represent a float score which applies
@@ -34,7 +34,7 @@ public class GraphResult extends AnalyticResult<GraphScore> {
     }
 
     @Override
-    public void setSelectionOnVisualisation(final GraphElementType elementType, final List<Integer> elementIds) {
+    public void setSelectionOnVisualisation(final GraphElementType elementType, final Collection<Integer> elementIds) {
         // Overridden method intentionally left blank
     }
 

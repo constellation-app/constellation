@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,13 @@ package au.gov.asd.tac.constellation.views.analyticview.questions;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewController;
 import au.gov.asd.tac.constellation.views.analyticview.aggregators.AnalyticAggregator;
 import au.gov.asd.tac.constellation.views.analyticview.analytics.AnalyticPlugin;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -99,11 +101,15 @@ public class AnalyticQuestion<R extends AnalyticResult<?>> {
     }
 
     public List<Exception> getExceptions() {
-        return exceptions;
+        return Collections.unmodifiableList(exceptions);
     }
 
     public void addException(final Exception exception) {
         this.exceptions.add(exception);
+    }
+
+    public void setResult(final R result) {
+        this.result = result;
     }
 
     public AnalyticQuestion<R> answer(final Graph graph) {
@@ -141,6 +147,7 @@ public class AnalyticQuestion<R extends AnalyticResult<?>> {
             exceptions.add(ex);
         }
 
+        AnalyticViewController.getDefault().setQuestion(this);
         return this;
     }
 }

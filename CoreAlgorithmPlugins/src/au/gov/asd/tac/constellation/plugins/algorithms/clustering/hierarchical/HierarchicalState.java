@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,8 +31,8 @@ public final class HierarchicalState {
     private int[] clusterNumbers;
     private int[] clusterSeenBefore;
     private int redrawCount = 0;
-    private transient long modificationCounter = -1;
-    private transient long strucModificationCount = -1;
+    private long modificationCounter = -1;
+    private long strucModificationCount = -1;
     private boolean interactive = true;
     private boolean colored = true;
 

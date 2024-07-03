@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,7 +70,6 @@ public class NotesViewController {
         }
 
         PluginExecution.withPlugin(new NotesViewStateReader(pane)).executeLater(graph);
-
     }
 
     /**
@@ -110,6 +109,8 @@ public class NotesViewController {
 
             final int notesViewStateAttributeId = NotesViewConcept.MetaAttribute.NOTES_VIEW_STATE.get(graph);
             if (notesViewStateAttributeId == Graph.NOT_FOUND) {
+                //Try to populate autonotes from the graph report for new graphs where the state is not saved yet
+                pane.setGraphReport();
                 return;
             }
 
@@ -177,4 +178,9 @@ public class NotesViewController {
             return NOTES_WRITE_STATE;
         }
     }
+
+    public NotesViewTopComponent getParent() {
+        return parent;
+    }
+
 }

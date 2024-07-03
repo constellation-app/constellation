@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.reporting.PluginReportUtilities;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleQueryPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
@@ -64,29 +65,51 @@ public class SelectAllPlugin extends SimpleQueryPlugin implements DataAccessPlug
 
     @Override
     protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+        
+        // Local process-tracking varables (Process is indeteminate until quantity of merged nodes is known)
+        int currentProcessStep = 0;
+        int totalProcessSteps = -1; 
+        interaction.setProgress(currentProcessStep, totalProcessSteps, "Selecting all...", true);
+        
+        // Retrieve attribute IDs for graph element "Selected" attribute
+        final int selectedVertexID = VisualConcept.VertexAttribute.SELECTED.get(graph);
+        final int selectedTransactionID = VisualConcept.TransactionAttribute.SELECTED.get(graph);
 
-        interaction.setProgress(0, 0, "Selecting all...", true);
-
-        final int selectedVertex = VisualConcept.VertexAttribute.SELECTED.get(graph);
-        if (selectedVertex == Graph.NOT_FOUND) {
+        // Throw errors if elementID's are not found
+        if (selectedVertexID == Graph.NOT_FOUND) {
             throw new PluginException(PluginNotificationLevel.ERROR, String.format(ATTRIBUTE_ERROR, "Select Vertex Attribute: 'Selected'"));
         }
-        final int vertexCount = graph.getVertexCount();
-        for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
-            final int vertex = graph.getVertex(vertexPosition);
-            graph.setBooleanValue(selectedVertex, vertex, true);
-        }
-
-        final int selectedTransaction = VisualConcept.TransactionAttribute.SELECTED.get(graph);
-        if (selectedTransaction == Graph.NOT_FOUND) {
+        if (selectedTransactionID == Graph.NOT_FOUND) {
             throw new PluginException(PluginNotificationLevel.ERROR, String.format(ATTRIBUTE_ERROR, "Select Transaction Attribute: 'Selected'"));
-        }
+        } 
+        
+        // Determine how many elements are to be selected
+        final int vertexCount = graph.getVertexCount();
         final int transactionCount = graph.getTransactionCount();
-        for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
-            final int transaction = graph.getTransaction(transactionPosition);
-            graph.setBooleanValue(selectedTransaction, transaction, true);
+        totalProcessSteps = vertexCount + transactionCount;
+        
+        // Select all Vertexs
+        for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
+            graph.setBooleanValue(selectedVertexID, graph.getVertex(vertexPosition), true);
+            interaction.setProgress(++currentProcessStep, totalProcessSteps, true);
         }
 
-        interaction.setProgress(1, 0, "Finished", true);
+        // Select all Transactions
+        for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
+            graph.setBooleanValue(selectedTransactionID, graph.getTransaction(transactionPosition), true);
+            currentProcessStep++;
+            interaction.setProgress(currentProcessStep, totalProcessSteps, true);
+        }
+        
+        // Set process to complete
+        totalProcessSteps = 0;
+        interaction.setProgress(
+                currentProcessStep, 
+                totalProcessSteps, 
+                String.format("Selected %s & %s.", 
+                        PluginReportUtilities.getNodeCountString(vertexCount),
+                        PluginReportUtilities.getTransactionCountString(transactionCount)
+                ),
+                true);
     }
 }

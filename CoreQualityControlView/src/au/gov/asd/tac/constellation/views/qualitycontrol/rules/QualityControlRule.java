@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,8 +37,7 @@ public abstract class QualityControlRule {
     private static final int CATEGORIES_EQUAL = 0;
 
     /**
-     * Test the priority between the two categories and determine which priority
-     * is highest.
+     * Test the priority between the two categories and determine which priority is highest.
      *
      * @param category1 the QualityCategory to compare with category2
      * @param category2 the QualityCategory to compare with category1
@@ -120,11 +119,9 @@ public abstract class QualityControlRule {
     }
 
     /**
-     * Get the results of the Rule, consisting of a set of vertex id's for any
-     * vertices which matched this Rule.
+     * Get the results of the Rule, consisting of a set of vertex id's for any vertices which matched this Rule.
      *
-     * @return A {@link Set} or {@link Integer} objects representing the id's of
-     * any vertices who match this Rule.
+     * @return A {@link Set} or {@link Integer} objects representing the id's of any vertices who match this Rule.
      */
     public Set<Integer> getResults() {
         return Collections.unmodifiableSet(results);
@@ -133,9 +130,8 @@ public abstract class QualityControlRule {
     /**
      * Clear the results of this Rule.
      * <p>
-     * Rules are found using {@link Lookup}, which caches instances of
-     * registered classes, meaning the same rules will be reused. Therefore, the
-     * results of any previous runs must be cleared before re-running this Rule.
+     * Rules are found using {@link Lookup}, which caches instances of registered classes, meaning the same rules will
+     * be reused. Therefore, the results of any previous runs must be cleared before re-running this Rule.
      */
     public void clearResults() {
         results.clear();
@@ -162,7 +158,7 @@ public abstract class QualityControlRule {
     public void setEnabled(final boolean enabled) {
         this.enabled = enabled;
     }
-    
+
     /**
      * Get the name of this Rule.
      *
@@ -178,13 +174,10 @@ public abstract class QualityControlRule {
     public abstract String getDescription();
 
     /**
-     * Get the quality of the given vertex as identified by this Rule, where
-     * higher scores indicate lesser quality.
+     * Get the quality of the given vertex as identified by this Rule, where higher scores indicate lesser quality.
      *
-     * @param vertexId An {@link Integer} object representing the id of a
-     * vertex.
-     * @return An integer value representing the quality of the specified
-     * vertex.
+     * @param vertexId An {@link Integer} object representing the id of a vertex.
+     * @return An integer value representing the quality of the specified vertex.
      */
     public abstract int getQuality(final int vertexId);
 
@@ -248,13 +241,12 @@ public abstract class QualityControlRule {
     }
 
     /**
-     * Execute the logic of this Rule against a single vertex and return a
-     * {@link Boolean} object representing whether the vertex passed or not.
+     * Execute the logic of this Rule against a single vertex and return a {@link Boolean} object representing whether
+     * the vertex passed or not.
      *
      * @param graph A {@link GraphReadMethods} on which to execute this Rule.
      * @param vertexId The id of the vertex to on which to execute this Rule.
-     * @return True if the vertex matched this QualityControlRule, false
-     * otherwise.
+     * @return True if the vertex matched this QualityControlRule, false otherwise.
      */
     protected abstract boolean executeRule(final GraphReadMethods graph, final int vertexId);
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -101,22 +101,15 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
 
     @Override
     public List<SchemaAttribute> getKeyAttributes(final GraphElementType elementType) {
-        final List<SchemaAttribute> keys;
-        switch (elementType) {
-            case VERTEX:
-                keys = Arrays.asList(
+        final List<SchemaAttribute> keys = switch (elementType) {
+            case VERTEX -> Arrays.asList(
                         VisualConcept.VertexAttribute.IDENTIFIER,
                         AnalyticConcept.VertexAttribute.TYPE);
-                break;
-            case TRANSACTION:
-                keys = Arrays.asList(VisualConcept.TransactionAttribute.IDENTIFIER,
+            case TRANSACTION -> Arrays.asList(VisualConcept.TransactionAttribute.IDENTIFIER,
                         AnalyticConcept.TransactionAttribute.TYPE,
                         TemporalConcept.TransactionAttribute.DATETIME);
-                break;
-            default:
-                keys = Collections.emptyList();
-                break;
-        }
+            default -> Collections.emptyList();
+        };
 
         return Collections.unmodifiableList(keys);
     }
@@ -233,13 +226,14 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
             }
 
             if (type != null && (type != SchemaVertexTypeUtilities.getDefaultType() || graph.isDefaultValue(vertexForegroundIconAttribute, vertexId))) {
-                if (IconManager.iconExists(type.toString())) {
-                    if (!Objects.equals(type.toString(), graph.getObjectValue(vertexForegroundIconAttribute, vertexId))) {
-                        graph.setObjectValue(vertexForegroundIconAttribute, vertexId, type.toString());
-                    }
-                } else if (!Objects.equals(type.getForegroundIcon(), graph.getObjectValue(vertexForegroundIconAttribute, vertexId))) {
-                    graph.setObjectValue(vertexForegroundIconAttribute, vertexId, type.getForegroundIcon().getExtendedName());
-                }
+                if (type.getForegroundIcon() != null) {
+                    if (!Objects.equals(type.getForegroundIcon(), graph.getObjectValue(vertexForegroundIconAttribute, vertexId))) {
+                        graph.setObjectValue(vertexForegroundIconAttribute, vertexId, type.getForegroundIcon().getExtendedName());
+                    } 
+                } else if (IconManager.iconExists(type.toString()) 
+                        && !Objects.equals(type.toString(), graph.getObjectValue(vertexForegroundIconAttribute, vertexId))) {
+                    graph.setObjectValue(vertexForegroundIconAttribute, vertexId, type.toString());
+                } 
             }
 
             // analytic attribute cleanup
@@ -251,6 +245,7 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
                     graph.setStringValue(vertexCountryAttribute, vertexId, country.getDisplayName());
                 }
             }
+            applyColorblindVertex(graph, vertexId);
         }
 
         @Override
@@ -372,6 +367,7 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
 
                 graph.removeTransaction(transactionId);
             }
+            applyColorblindTransaction(graph, transactionId);            
         }
 
         @Override

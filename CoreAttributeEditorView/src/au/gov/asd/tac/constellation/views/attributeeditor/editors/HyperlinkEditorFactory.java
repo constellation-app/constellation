@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import org.openide.util.lookup.ServiceProvider;
@@ -47,7 +46,6 @@ public class HyperlinkEditorFactory extends AttributeValueEditorFactory<URI> {
 
     public class HyperlinkEditor extends AbstractEditor<URI> {
 
-        private CheckBox noValueCheckBox;
         private TextField textField;
 
         protected HyperlinkEditor(final EditOperation editOperation, final DefaultGetter<URI> defaultGetter, final ValueValidator<URI> validator, final String editedItemName, final URI initialValue) {
@@ -56,7 +54,6 @@ public class HyperlinkEditorFactory extends AttributeValueEditorFactory<URI> {
 
         @Override
         public void updateControlsWithValue(final URI value) {
-            noValueCheckBox.setSelected(value == null);
             if (value != null) {
                 textField.setText(String.valueOf(value));
             }
@@ -64,9 +61,6 @@ public class HyperlinkEditorFactory extends AttributeValueEditorFactory<URI> {
 
         @Override
         protected URI getValueFromControls() throws ControlsInvalidException {
-            if (noValueCheckBox.isSelected()) {
-                return null;
-            }
             try {
                 return new URI(textField.getText());
             } catch (final URISyntaxException ex) {
@@ -79,20 +73,15 @@ public class HyperlinkEditorFactory extends AttributeValueEditorFactory<URI> {
             final GridPane controls = new GridPane();
             controls.setAlignment(Pos.CENTER);
             controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
-
             textField = new TextField();
             textField.textProperty().addListener((o, n, v) -> update());
-
-            noValueCheckBox = new CheckBox(NO_VALUE_LABEL);
-            noValueCheckBox.setAlignment(Pos.CENTER);
-            noValueCheckBox.selectedProperty().addListener((v, o, n) -> {
-                textField.setDisable(noValueCheckBox.isSelected());
-                update();
-            });
-
             controls.addRow(0, textField);
-            controls.addRow(1, noValueCheckBox);
             return controls;
+        }
+
+        @Override
+        public boolean noValueCheckBoxAvailable() {
+            return true;
         }
     }
 }

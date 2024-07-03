@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ public class VisualSchemaV3UpdateProvider extends SchemaUpdateProvider {
     }
 
     @Override
-    protected void schemaUpdate(StoreGraph graph) {
+    protected void schemaUpdate(final StoreGraph graph) {
         VisualConcept.GraphAttribute.DISPLAY_MODE_3D.ensure(graph);
         VisualConcept.GraphAttribute.DRAWING_MODE.ensure(graph);
         VisualConcept.GraphAttribute.DRAW_DIRECTED_TRANSACTIONS.ensure(graph);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,7 +60,7 @@ public class ColorParameterType extends PluginParameterType<ColorParameterValue>
      * @param id The String id of the parameter to construct.
      * @return A {@link PluginParameter} of ColorParameterType.
      */
-    public static PluginParameter<ColorParameterValue> build(String id) {
+    public static PluginParameter<ColorParameterValue> build(final String id) {
         return new PluginParameter<>(new ColorParameterValue(), INSTANCE, id);
     }
 
@@ -73,7 +73,7 @@ public class ColorParameterType extends PluginParameterType<ColorParameterValue>
      * the parameter being constructed.
      * @return A {@link PluginParameter} of ColorParameterType.
      */
-    public static PluginParameter<ColorParameterValue> build(String id, final ColorParameterValue pv) {
+    public static PluginParameter<ColorParameterValue> build(final String id, final ColorParameterValue pv) {
         return new PluginParameter<>(pv, INSTANCE, id);
     }
 
@@ -132,6 +132,9 @@ public class ColorParameterType extends PluginParameterType<ColorParameterValue>
 
         @Override
         public String validateString(final String s) {
+            // TODO: re-evaluate this logic. ConstellationColor.getColorValue doesn't throw an exception
+            // either this should simply return null, or logic should be modified to check something else
+            // e.g. should it return a message if the color is null?
             try {
                 ConstellationColor.getColorValue(s);
             } catch (final IllegalArgumentException ex) {
@@ -162,8 +165,8 @@ public class ColorParameterType extends PluginParameterType<ColorParameterValue>
             final ConstellationColor newc;
             if (o == null) {
                 newc = ConstellationColor.CLOUDS;
-            } else if (o instanceof ConstellationColor) {
-                newc = (ConstellationColor) o;
+            } else if (o instanceof ConstellationColor constellationColor) {
+                newc = constellationColor;
             } else {
                 throw new IllegalArgumentException(String.format("Unexpected class %s", o.getClass()));
             }

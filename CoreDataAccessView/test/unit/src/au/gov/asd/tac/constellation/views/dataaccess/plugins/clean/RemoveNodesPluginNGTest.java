@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,14 @@
 package au.gov.asd.tac.constellation.views.dataaccess.plugins.clean;
 
 import au.gov.asd.tac.constellation.graph.StoreGraph;
+import au.gov.asd.tac.constellation.graph.node.plugins.DefaultPluginInteraction;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import static au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.RemoveNodesPlugin.REMOVE_TYPE_PARAMETER_ID;
 import static au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.RemoveNodesPlugin.THRESHOLD_PARAMETER_ID;
+import static org.mockito.Mockito.mock;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.BeforeMethod;
@@ -80,22 +82,38 @@ public class RemoveNodesPluginNGTest {
     }
 
     /**
-     * Test of edit method, of class RemoveNodesPlugin. selected and identifier
-     * attributes not found
+     * Test of edit method, of class RemoveNodesPlugin. 
+     * Identifier attribute not found
      *
      * @throws InterruptedException
      * @throws PluginException
      */
-    @Test
-    public void testEditAttributesNotFound() throws InterruptedException, PluginException {
-        System.out.println("editAttributesNotFound");
-
+    @Test(expectedExceptions = PluginException.class)
+    public void testIdentifierAttributesNotFound() throws InterruptedException, PluginException {
+        System.out.println("identifierAttributesNotFound");
         final RemoveNodesPlugin instance = new RemoveNodesPlugin();
         final PluginParameters parameters = instance.createParameters();
-        PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
-
-        assertEquals(graph.getVertexCount(), 4);
-        assertEquals(graph.getTransactionCount(), 4);
+        final DefaultPluginInteraction interaction = mock(DefaultPluginInteraction.class);
+        
+        vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
+        instance.edit(graph, interaction, parameters); 
+    }
+    
+    /**
+     * Test of edit method, of class RemoveNodesPlugin.
+     * Selected attribute not found
+     *
+     * @throws InterruptedException
+     */
+    @Test(expectedExceptions = PluginException.class)
+    public void testSelectedAttributesNotFound() throws InterruptedException, PluginException {
+        System.out.println("selectedAttributesNotFound");
+        final RemoveNodesPlugin instance = new RemoveNodesPlugin();
+        final PluginParameters parameters = instance.createParameters(); 
+        final DefaultPluginInteraction interaction = mock(DefaultPluginInteraction.class);
+        
+        vertexIdentifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
+        instance.edit(graph, interaction, parameters); 
     }
 
     /**

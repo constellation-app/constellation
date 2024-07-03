@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -55,7 +54,6 @@ public class ColorEditorFactory extends AttributeValueEditorFactory<Constellatio
 
     public class ColorEditor extends AbstractEditor<ConstellationColor> {
 
-        private CheckBox noValueCheckBox;
         private ComboBox<ConstellationColor> colorCombo;
         private ColorPicker picker;
 
@@ -65,7 +63,6 @@ public class ColorEditorFactory extends AttributeValueEditorFactory<Constellatio
 
         @Override
         public void updateControlsWithValue(final ConstellationColor value) {
-            noValueCheckBox.setSelected(value == null);
             if (value != null) {
                 picker.setValue(value.getJavaFXColor());
             }
@@ -73,12 +70,10 @@ public class ColorEditorFactory extends AttributeValueEditorFactory<Constellatio
 
         @Override
         protected ConstellationColor getValueFromControls() {
-            if (noValueCheckBox.isSelected()) {
-                return null;
-            }
             if (colorCombo.getValue() != null) {
                 return colorCombo.getValue();
             }
+
             return ConstellationColor.fromFXColor(picker.getValue());
         }
 
@@ -107,6 +102,7 @@ public class ColorEditorFactory extends AttributeValueEditorFactory<Constellatio
                     }
                 }
             };
+
             colorCombo.setCellFactory(cellFactory);
             colorCombo.setButtonCell(cellFactory.call(null));
             namedLabel.setLabelFor(colorCombo);
@@ -136,21 +132,18 @@ public class ColorEditorFactory extends AttributeValueEditorFactory<Constellatio
                         colorCombo.setValue(null);
                     }
                 }
-                update();
-            });
 
-            noValueCheckBox = new CheckBox(NO_VALUE_LABEL);
-            noValueCheckBox.setAlignment(Pos.CENTER);
-            noValueCheckBox.selectedProperty().addListener((v, o, n) -> {
-                colorCombo.setDisable(noValueCheckBox.isSelected());
-                picker.setDisable(noValueCheckBox.isSelected());
                 update();
             });
 
             controls.addRow(0, namedLabel, colorCombo);
             controls.addRow(1, pickerLabel, picker);
-            controls.addRow(2, noValueCheckBox);
             return controls;
+        }
+
+        @Override
+        public boolean noValueCheckBoxAvailable() {
+            return true;
         }
     }
 }

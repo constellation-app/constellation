@@ -14,7 +14,7 @@ jobs:
     name: Unit Tests
     runs-on: ubuntu-latest
     env:
-      RUNNER_IMAGE: "constellationapplication/netbeans-runner:12.0.4"
+      RUNNER_IMAGE: "constellationapplication/netbeans-runner:21.0.2"
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       TRAVIS_REPO_SLUG: "${{ github.repository }}"

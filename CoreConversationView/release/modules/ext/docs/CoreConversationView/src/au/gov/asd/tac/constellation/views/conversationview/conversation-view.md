@@ -27,7 +27,13 @@ messaging application. Like a messaging application, the content is
 ordered chronologically by the "DateTime" attribute. Only the content
 for selected transactions with datetime values are displayed. If
 transactions between more than two sets of unique nodes are selected
-then no conversation text will be displayed.
+then no conversation text will be displayed. 
+
+If there are more than 50 transactions to be displayed, the transactions
+will be split across multiple pages to help with loading times. These 
+pages can be accessed via the arrow and number buttons at the bottom 
+of the view. The number of transactions displayed per page can be changed
+via the Content per page dropdown list at the top of the view.
 
 <div style="text-align: center">
 
@@ -57,7 +63,7 @@ certain languages using the check box at the top of the Conversation
 View. Disabling this will make it easier to select and copy text from
 the window.
 
-## Adding Content attributes
+## Adding Content Attributes
 
 The "Content" Attribute needs to be present in order to be able to use
 the Conversation View. If it is not already there, you can click on the

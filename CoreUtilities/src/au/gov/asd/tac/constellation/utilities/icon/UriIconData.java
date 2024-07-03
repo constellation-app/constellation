@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,9 +50,8 @@ public class UriIconData extends IconData {
     }
 
     @Override
-    protected InputStream createInputStream() throws IOException {
+    protected InputStream createRasterInputStream() throws IOException {
         InputStream stream;
-
         try {
             if (StringUtils.equalsIgnoreCase(uri.getScheme(), "HTTPS")) {
                 final HttpsURLConnection connection = HttpsConnection.withUrl(uri.toURL().toString()).get();
@@ -66,5 +65,10 @@ public class UriIconData extends IconData {
         }
 
         return stream;
+    }
+
+    @Override
+    protected InputStream createVectorInputStream() throws IOException {
+        throw new UnsupportedOperationException("URI data can not be converted to vector input stream.");
     }
 }

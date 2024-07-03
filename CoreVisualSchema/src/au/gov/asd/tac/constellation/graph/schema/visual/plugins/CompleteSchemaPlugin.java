@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,20 @@
 package au.gov.asd.tac.constellation.graph.schema.visual.plugins;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.schema.visual.utilities.ColorblindUtilities;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.reporting.PluginReportUtilities;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import java.util.prefs.Preferences;
 import org.openide.util.NbBundle;
+import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -39,28 +45,77 @@ public class CompleteSchemaPlugin extends SimpleEditPlugin {
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
         if (graph.getSchema() != null) {
-            int currentProgress = 0;
-            int maxProgress = graph.getVertexCount() + graph.getTransactionCount();
 
-            // vertices
-            for (int vertexPosition = 0; vertexPosition < graph.getVertexCount(); vertexPosition++) {
+            // Retrieve graph details
+            final int vertexCount = graph.getVertexCount();
+            final int transactionCount = graph.getTransactionCount();
+
+            // Retrieve colorblind preferences 
+            final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+            final String colorMode = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
+
+            // Local process-tracking varables (Process is indeteminate until node and transaction quantity is needed.)
+            int currentProgress = 0;
+            int maxProgress = -1;
+            interaction.setProgress(currentProgress, maxProgress, "Completing schema...", true);
+            
+            final int vxColorblindAttr = VisualConcept.VertexAttribute.COLORBLIND_LAYER.ensure(graph);
+            final int txColorblindAttr = VisualConcept.TransactionAttribute.COLORBLIND_LAYER.ensure(graph);
+            
+
+            // Process Vertices
+            maxProgress = vertexCount;
+            interaction.setProgress(currentProgress,
+                    maxProgress,
+                    String.format("Completing %s.",
+                            PluginReportUtilities.getNodeCountString(vertexCount)
+                    ),
+                    true
+            );
+            for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
                 final int vertexId = graph.getVertex(vertexPosition);
                 graph.getSchema().completeVertex(graph, vertexId);
-                currentProgress++;
-                interaction.setProgress(currentProgress, maxProgress, "Completing schema...", true);
+                interaction.setProgress(++currentProgress, maxProgress, true);
             }
 
-            // transactions
-            for (int transactionPosition = 0; transactionPosition < graph.getTransactionCount(); transactionPosition++) {
+            // Process Transactions
+            maxProgress = transactionCount;
+            currentProgress = 0;
+            interaction.setProgress(currentProgress,
+                    maxProgress,
+                    String.format("Completing %s.",
+                            PluginReportUtilities.getTransactionCountString(transactionCount)
+                    ),
+                    true
+            );
+            interaction.setProgress(currentProgress, maxProgress, "Completing transaction(s)...", true);
+            for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
                 final int transactionId = graph.getTransaction(transactionPosition);
-
                 graph.getSchema().completeTransaction(graph, transactionId);
-                currentProgress++;
-                interaction.setProgress(currentProgress, maxProgress, "Completing schema...", true);
+                interaction.setProgress(++currentProgress, maxProgress, true);
             }
 
-            // graph
+            // Set process to complete
+            maxProgress = 0;
+            interaction.setProgress(currentProgress,
+                    maxProgress,
+                    String.format("Completed %s & %s.",
+                            PluginReportUtilities.getNodeCountString(vertexCount),
+                            PluginReportUtilities.getTransactionCountString(transactionCount)
+                    ),
+                    true
+            );
+          
+            
+            if (!"None".equals(colorMode)) {
+                ColorblindUtilities.setColorRef(graph, graph.getAttributeName(vxColorblindAttr), graph.getAttributeName(txColorblindAttr));
+            } else {
+                graph.removeAttribute(vxColorblindAttr);
+                graph.removeAttribute(txColorblindAttr);
+            }
+
             graph.getSchema().completeGraph(graph);
         }
     }
+
 }

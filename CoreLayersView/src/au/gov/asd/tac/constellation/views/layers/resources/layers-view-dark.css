@@ -1,0 +1,69 @@
+/* Layers View */
+
+.root {
+    -fx-control-inner-background: #111111;
+    -fx-background: #222222;
+    -fx-base: #111111;
+    -fx-cell-hover-color: -fx-shadow-highlight-color;
+}
+
+.menu-button {
+    -fx-background-color: #181818;
+    -fx-border-color: #444444;
+}
+
+.menu:hover{
+    -fx-background-color: #0093FF;
+}
+
+.description-label {
+    -fx-text-fill: rgb(200,200,200);
+    -fx-font-size: smaller;
+}
+
+.accordion .titled-pane-heading .title, .titled-pane-heading > .title {
+    -fx-background-color: linear-gradient(to bottom, derive(#1f6fba,100%), derive(#1f6fba,0%) 5%, derive(#1f6fba,-25%) 95%, derive(#1f6fba,50%) 100%);
+    -fx-padding: 3;
+}
+
+.titled-pane > .title {
+    -fx-base: #333333;
+}
+
+.titled-pane-selected > .title {
+    -fx-background-color: linear-gradient(to bottom, derive(#5E9656,100%), derive(#5E9656,0%) 5%, derive(#5E9656,-25%) 95%, derive(#5E9656,50%) 100%);
+}
+
+.titled-pane-selected-invalid > .title {
+    -fx-background-color: linear-gradient(to bottom, derive(#5E9656,0%), derive(#5E9656,0%) 60%, derive(#B31D2F,0%) 85%, derive(#B31D2F,0%) 100%);
+}
+
+.titled-pane-matched > .title {
+    -fx-background-color: linear-gradient(to bottom, derive(#1c5aa6,100%), derive(#1c5aa6,0%) 5%, derive(#1c5aa6,-25%) 95%, derive(#1c5aa6,50%) 100%);
+}
+
+.titled-pane-invalid > .title {
+    -fx-background-color: linear-gradient(to bottom, derive(#B31D2F,100%), derive(#B31D2F,0%) 5%, derive(#B31D2F,-25%) 95%, derive(#B31D2F,50%) 100%);
+}
+
+.titled-pane-heading > .title {
+    -fx-background-insets: 0, 1, 2;
+    -fx-background-radius: 5 5 0 0, 4 4 0 0, 3 3 0 0;
+    -fx-padding: 0.166667em 0.833333em 0.25em 0.833333em;  /*2 10 3 10*/
+}
+
+.page-corner {
+    -fx-padding: 4.5 4.5 4.5 4.5;
+    -fx-background-color: linear-gradient( from 0% 0% to 50% 50%, rgba(252,247,182,0.5), rgba(165,156,49,0.5));
+    -fx-shape: "M0,0H9L0,9Z";
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 4 , 0.0 , 0 , 0 );
+}
+
+.text-input {
+    -fx-prompt-text-fill: gray;
+}
+
+#invalid {
+    -fx-background-color: #8a1d1d;
+    -fx-control-inner-background: #8a1d1d;
+}

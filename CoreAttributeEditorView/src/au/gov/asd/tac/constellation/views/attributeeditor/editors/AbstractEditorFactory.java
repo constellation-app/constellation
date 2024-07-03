@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,7 +54,6 @@ public abstract class AbstractEditorFactory<V> {
     public abstract static class AbstractEditor<V> {
 
         private static final String HEADING_DEFAULT_STYLE = "header";
-        protected static final String NO_VALUE_LABEL = "No Value";
         protected static final int CONTROLS_DEFAULT_HORIZONTAL_SPACING = 5;
         protected static final int CONTROLS_DEFAULT_VERTICAL_SPACING = 10;
 
@@ -65,6 +64,7 @@ public abstract class AbstractEditorFactory<V> {
         protected final StringProperty errorMessageProperty;
         protected final String editedItemName;
         protected V currentValue;
+        protected V savedValue;
         protected Node editorHeading = null;
         protected Node editorControls = null;
 
@@ -82,6 +82,17 @@ public abstract class AbstractEditorFactory<V> {
 
         protected final V getCurrentValue() {
             return currentValue;
+        }
+
+        public final void storeValue() {
+            if (currentValue != null) {
+                savedValue = currentValue;
+            }
+        }
+
+        public final void restoreValue() {
+            setCurrentValue(savedValue);
+            update();
         }
 
         public final ReadOnlyBooleanProperty getEditDisabledProperty() {
@@ -124,7 +135,7 @@ public abstract class AbstractEditorFactory<V> {
             return true;
         }
 
-        protected final void setCurrentValue(final V value) {
+        public final void setCurrentValue(final V value) {
             if (canSet(value)) {
                 this.currentValue = value;
                 if (editorControls != null) {
@@ -142,6 +153,10 @@ public abstract class AbstractEditorFactory<V> {
             setCurrentValue(defaultGetter.getDefaultValue());
         }
 
+        public final boolean isDefaultValueNull() {
+            return defaultGetter.getDefaultValue() == null;
+        }
+
         public final Node getEditorControls() {
             if (editorControls == null) {
                 editorControls = createEditorControls();
@@ -150,6 +165,7 @@ public abstract class AbstractEditorFactory<V> {
                 updateInProgress = false;
                 update();
             }
+
             return editorControls;
         }
 
@@ -157,6 +173,7 @@ public abstract class AbstractEditorFactory<V> {
             if (editorHeading == null) {
                 editorHeading = createEditorHeading();
             }
+
             return editorHeading;
         }
 
@@ -174,6 +191,7 @@ public abstract class AbstractEditorFactory<V> {
                     ((PluginSequenceEditOperation) editOperation).setPreEdit(preEdit());
                     ((PluginSequenceEditOperation) editOperation).setPostEdit(postEdit());
                 }
+
                 editOperation.performEdit(getCurrentValue());
             }
         }
@@ -217,6 +235,7 @@ public abstract class AbstractEditorFactory<V> {
 
         protected abstract Node createEditorControls();
 
+        public abstract boolean noValueCheckBoxAvailable();
     }
 
     /**

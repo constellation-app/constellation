@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -89,6 +89,7 @@ public class AttributeUtilitiesNGTest {
         expResult.put(VisualConcept.VertexAttribute.COLOR.getName(), graph.getAttribute(graphElementType, VisualConcept.VertexAttribute.COLOR.getName()));
         expResult.put(VisualConcept.VertexAttribute.FOREGROUND_ICON.getName(), graph.getAttribute(graphElementType, VisualConcept.VertexAttribute.FOREGROUND_ICON.getName()));
         expResult.put(VisualConcept.VertexAttribute.BACKGROUND_ICON.getName(), graph.getAttribute(graphElementType, VisualConcept.VertexAttribute.BACKGROUND_ICON.getName()));
+        expResult.put(VisualConcept.VertexAttribute.COLORBLIND_LAYER.getName(), graph.getAttribute(graphElementType, VisualConcept.VertexAttribute.COLORBLIND_LAYER.getName()));
 
         final Map<String, Integer> result = AttributeUtilities.getRegisteredAttributeIdsFromGraph(graph, graphElementType);
         assertEquals(result, expResult);

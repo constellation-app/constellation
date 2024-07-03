@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,8 +79,6 @@ import au.gov.asd.tac.constellation.plugins.update.GraphUpdateController;
 import au.gov.asd.tac.constellation.plugins.update.GraphUpdateManager;
 import au.gov.asd.tac.constellation.plugins.update.UpdateComponent;
 import au.gov.asd.tac.constellation.plugins.update.UpdateController;
-import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
-import au.gov.asd.tac.constellation.preferences.DeveloperPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
@@ -111,6 +109,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -124,6 +124,8 @@ import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.Icon;
 import javax.swing.InputMap;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
@@ -149,7 +151,6 @@ import org.openide.util.HelpCtx;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
-import org.openide.util.NbPreferences;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
 import org.openide.windows.CloneableTopComponent;
@@ -183,7 +184,7 @@ import org.openide.windows.TopComponent;
     "HINT_VisualGraphTopComponent=Visual Graph"
 })
 public final class VisualGraphTopComponent extends CloneableTopComponent implements GraphChangeListener, UndoRedo.Provider {
-    
+
     private static final Logger LOGGER = Logger.getLogger(VisualGraphTopComponent.class.getName());
 
     public static final String NEW_GRAPH_NAME_PARAMETER_ID = PluginParameter.buildId(VisualGraphTopComponent.class, "graph_name");
@@ -222,15 +223,12 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     private final GraphNode graphNode;
 
     /**
-     * The countBase is the value of the counter at the most recent save when
-     * the graph became unmodified).
+     * The countBase is the value of the counter at the most recent save when the graph became unmodified).
      */
     private long graphModificationCountBase;
     private long graphModificationCount;
 
     // Sidebar actions.
-    private ContractAllCompositesAction contractCompositesAction;
-    private ExpandAllCompositesAction expandCompositesAction;
     private DrawNodesAction drawNodesAction;
     private DrawConnectionsAction drawConnectionsAction;
     private DrawNodeLabelsAction drawNodeLabelsAction;
@@ -310,8 +308,8 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         // NetBeans creates a single instance of an action and uses it globally, which doesn't do us any good,
         // because we want to have different toggle states on different graphs, for instance.
         // Therefore, we'll ignore NetBeans and create our own per-graph action instances.
-        expandCompositesAction = new ExpandAllCompositesAction(graphNode);
-        contractCompositesAction = new ContractAllCompositesAction(graphNode);
+        final ExpandAllCompositesAction expandCompositesAction = new ExpandAllCompositesAction(graphNode);
+        final ContractAllCompositesAction contractCompositesAction = new ContractAllCompositesAction(graphNode);
         drawNodesAction = new DrawNodesAction(graphNode);
         drawConnectionsAction = new DrawConnectionsAction(graphNode);
         drawNodeLabelsAction = new DrawNodeLabelsAction(graphNode);
@@ -395,7 +393,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         final UpdateComponent<GraphReadMethods> visualUpdateComponent = new UpdateComponent<GraphReadMethods>() {
 
             @Override
-            protected boolean update(GraphReadMethods updateState) {
+            public boolean update(GraphReadMethods updateState) {
                 visualUpdate();
                 return true;
             }
@@ -451,8 +449,8 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         visualManager.startProcessing();
 
         Schema schema = graph.getSchema();
-        if (schema instanceof GraphNodeFactory) {
-            graphNode = ((GraphNodeFactory) schema).createGraphNode(graph, gdo, this, visualManager);
+        if (schema instanceof GraphNodeFactory graphNodeFactory) {
+            graphNode = graphNodeFactory.createGraphNode(graph, gdo, this, visualManager);
         } else {
             graphNode = new GraphNode(graph, gdo, this, visualManager);
         }
@@ -469,8 +467,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     }
 
     /**
-     * This is required to display the name of the DataObject in the "Save?"
-     * dialog box.
+     * This is required to display the name of the DataObject in the "Save?" dialog box.
      *
      * @return The display name of the DataObject.
      */
@@ -492,20 +489,19 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     }
 
     /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
+     * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The
+     * content of this method is always regenerated by the Form Editor.
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        displayPanel = new javax.swing.JPanel();
+        displayPanel = new JPanel();
 
-        setLayout(new java.awt.BorderLayout());
+        setLayout(new BorderLayout());
 
-        displayPanel.setBackground(new java.awt.Color(0, 0, 0));
-        displayPanel.setLayout(new java.awt.BorderLayout());
-        add(displayPanel, java.awt.BorderLayout.CENTER);
+        displayPanel.setBackground(new Color(0, 0, 0));
+        displayPanel.setLayout(new BorderLayout());
+        add(displayPanel, BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel displayPanel;
@@ -514,12 +510,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     @Override
     public void componentOpened() {
         super.componentOpened();
-
-        // Try to free up any unused memory
-        final boolean forceGarbageCollectOnOpen = NbPreferences.forModule(ApplicationPreferenceKeys.class).getBoolean(DeveloperPreferenceKeys.FORCE_GC_ON_OPEN, DeveloperPreferenceKeys.FORCE_GC_ON_OPEN_DEFAULT);
-        if (forceGarbageCollectOnOpen) {
-            System.gc();
-        }
 
         graphUpdateManager.setManaged(true);
     }
@@ -552,12 +542,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
         if (GraphManager.getDefault().getAllGraphs().isEmpty()) {
             ConstellationIcon.clearCache();
-        }
-
-        // Try to free up any unused memory
-        final boolean forceGarbageCollectOnClose = NbPreferences.forModule(ApplicationPreferenceKeys.class).getBoolean(DeveloperPreferenceKeys.FORCE_GC_ON_CLOSE, DeveloperPreferenceKeys.FORCE_GC_ON_CLOSE_DEFAULT);
-        if (forceGarbageCollectOnClose) {
-            System.gc();
         }
 
         graphUpdateManager.setManaged(false);
@@ -641,17 +625,10 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             toggleDrawDirectedAction.setEnabled(isDrawingMode);
 
             switch (connectionMode) {
-                case LINK:
-                    drawLinksAction.putValue(Action.SELECTED_KEY, true);
-                    break;
-                case EDGE:
-                    drawEdgesAction.putValue(Action.SELECTED_KEY, true);
-                    break;
-                case TRANSACTION:
-                    drawTransactionsAction.putValue(Action.SELECTED_KEY, true);
-                    break;
-                default:
-                    throw new IllegalStateException("Unknown ConnectionMode: " + connectionMode);
+                case LINK -> drawLinksAction.putValue(Action.SELECTED_KEY, true);
+                case EDGE -> drawEdgesAction.putValue(Action.SELECTED_KEY, true);
+                case TRANSACTION -> drawTransactionsAction.putValue(Action.SELECTED_KEY, true);
+                default -> throw new IllegalStateException("Unknown ConnectionMode: " + connectionMode);
             }
         } finally {
             rg.release();
@@ -674,7 +651,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 try {
                     savable.handleSave();
                     return savable.isSaved();
-                    
+
                 } catch (final IOException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
@@ -708,7 +685,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             final Action discardNebula = new AbstractAction("Discard nebula") {
                 @Override
                 public void actionPerformed(final ActionEvent e) {
-                    TopComponent.getRegistry().getOpened().stream().filter(tc -> (tc instanceof VisualGraphTopComponent)).map(tc -> (VisualGraphTopComponent) tc).forEach(vtc -> {
+                    TopComponent.getRegistry().getOpened().stream().filter(VisualGraphTopComponent.class::isInstance).map(tc -> (VisualGraphTopComponent) tc).forEach(vtc -> {
                         final NebulaDataObject ndo = vtc.getGraphNode().getDataObject().getNebulaDataObject();
                         if (nebula.equalsPath(ndo)) {
                             vtc.savable.setModified(false);
@@ -741,7 +718,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 final Action closeNebula = new AbstractAction("Close nebula") {
                     @Override
                     public void actionPerformed(final ActionEvent e) {
-                        TopComponent.getRegistry().getOpened().stream().filter(tc -> (tc instanceof VisualGraphTopComponent)).map(tc -> (VisualGraphTopComponent) tc).forEach(vtc -> {
+                        TopComponent.getRegistry().getOpened().stream().filter(VisualGraphTopComponent.class::isInstance).map(tc -> (VisualGraphTopComponent) tc).forEach(vtc -> {
                             final NebulaDataObject ndo = vtc.getGraphNode().getDataObject().getNebulaDataObject();
                             if (nebula.equalsPath(ndo)) {
                                 vtc.close();
@@ -767,7 +744,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog("Rename Graph", parameters);
                 dialog.showAndWait();
 
-                if (PluginParametersSwingDialog.OK.equals(dialog.getResult())) {
+                if (dialog.isAccepted()) {
                     final String newGraphName = parameters.getStringValue(NEW_GRAPH_NAME_PARAMETER_ID);
 
                     if (!newGraphName.isEmpty()) {
@@ -820,7 +797,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     private static List<Savable> getNebulaSavables(final NebulaDataObject nebula) {
         final List<Savable> savableList = new ArrayList<>();
         final Collection<? extends Savable> savables = Savable.REGISTRY.lookupAll(Savable.class);
-        savables.stream().filter(s -> (s instanceof MySavable)).forEach(s -> {
+        savables.stream().filter(MySavable.class::isInstance).forEach(s -> {
             final NebulaDataObject otherNDO = ((MySavable) s).tc().getGraphNode().getDataObject().getNebulaDataObject();
             if (nebula.equalsPath(otherNDO)) {
                 savableList.add(s);
@@ -856,8 +833,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     }
 
     /**
-     * Cache a BufferedImage per schema so that it can be retrieved to avoid an
-     * icon rebuild
+     * Cache a BufferedImage per schema so that it can be retrieved to avoid an icon rebuild
      *
      * @param schema The Schema representing the graph
      * @return A BufferedImage for the schema
@@ -900,8 +876,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         /**
          * Set this savable as modified/unmodified.
          * <p>
-         * The Savable will be registered/unregistered with the SavableRegistry
-         * as required.
+         * The Savable will be registered/unregistered with the SavableRegistry as required.
          *
          * @param modified Modification flag.
          */
@@ -956,11 +931,9 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         /**
          * Save the graph.
          * <p>
-         * The graph file is not overwritten. This would be dangerous, since a
-         * large graph may take some time to write, and an interruption would
-         * leave a corrupted file. Instead, the graph is written to a new file;
-         * when the write is complete, the old file is deleted and the new file
-         * is renamed.
+         * The graph file is not overwritten. This would be dangerous, since a large graph may take some time to write,
+         * and an interruption would leave a corrupted file. Instead, the graph is written to a new file; when the write
+         * is complete, the old file is deleted and the new file is renamed.
          *
          * @throws IOException When I/O errors happen.
          */
@@ -976,20 +949,27 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 // graph will get saved each time.
                 requestActive();
 
-                SaveAsAction action = new SaveAsAction();               
+                final SaveAsAction action = new SaveAsAction();
                 action.actionPerformed(null);
                 isSaved = action.isSaved();
                 return;
             }
 
-            final String name = gdo.getName();
-
-            // Create a new file and write to it.
-            final String tmpnam = String.format("%s_tmp%08x", name, gdo.hashCode());
-            final GraphDataObject freshGdo = (GraphDataObject) gdo.createFromTemplate(gdo.getFolder(), tmpnam);
-            final BackgroundWriter writer = new BackgroundWriter(name, freshGdo, true);
-            writer.execute();
-            isSaved = true;
+            if (gdo.isValid()) {
+                final String name = gdo.getName();
+                // Create a new file and write to it.
+                final String tmpnam = String.format("%s_tmp%08x", name, gdo.hashCode());
+                final GraphDataObject freshGdo = (GraphDataObject) gdo.createFromTemplate(gdo.getFolder(), tmpnam);
+                final BackgroundWriter writer = new BackgroundWriter(name, freshGdo, true);
+                writer.execute();
+                isSaved = true;
+            } else {
+                // File might have been saved over, so just open up the 'save as' menu
+                requestActive();
+                final SaveAsAction action = new SaveAsAction();
+                action.actionPerformed(null);
+                isSaved = action.isSaved();
+            }
         }
 
         /**
@@ -1047,6 +1027,28 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         public void saveAs(final FileObject folder, String name) throws IOException {
             StatusDisplayer.getDefault().setStatusText("Save as " + folder.getPath() + "(" + name + ")");
 
+            final String ext = FileExtensionConstants.STAR;
+            if (name.endsWith(ext)) {
+                name = name.substring(0, name.length() - ext.length());
+            }
+
+            final File newFile = new File(folder.getPath(), name + ext);
+
+            // One last check if file were saving over doesn't have it's grpah open UNLESS were saving over the file with the same graph
+            final Path currentFilePath = Paths.get(graphNode.getDataObject().getPrimaryFile().getPath());
+
+            // Check if overwriting open graph
+            final Path filePath = Paths.get(newFile.getPath());
+            for (final Graph g : GraphNode.getAllGraphs().values()) {
+                final Path graphPath = Paths.get(GraphNode.getGraphNode(g).getDataObject().getPrimaryFile().getPath());
+                if (graphPath.equals(filePath) && !graphPath.equals(currentFilePath)) {
+                    // Send message saying "Sorry, this file is in use"
+                    JOptionPane.showMessageDialog(null,
+                            "The file " + filePath + " is still open in graph view. Please close the graph if you wish to overwrite it", "Error: Graph Still Open in Graph View", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
+
             // The Save As dialog box has already asked if we want to overwrite an existing file,
             // so just go ahead and delete it if it exists.
             final FileObject existing = folder.getFileObject(name);
@@ -1054,12 +1056,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 existing.delete();
             }
 
-            final String ext = FileExtensionConstants.STAR;
-            if (name.endsWith(ext)) {
-                name = name.substring(0, name.length() - ext.length());
-            }
-
-            final File newFile = new File(folder.getPath(), name + ext);
             final FileObject fo = FileUtil.createData(newFile);
             final GraphDataObject freshGdo = (GraphDataObject) DataObject.find(fo);
             final BackgroundWriter writer = new BackgroundWriter(name, freshGdo, false);
@@ -1082,10 +1078,8 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
          * Construct a new BackgroundWriter.
          *
          * @param name The name of the file to write.
-         * @param freshGdo The current GraphDataObject will be replaced by this
-         * GDO in the Lookup if the write succeeds.
-         * @param deleteOldGdo If true, delete the file represented by the old
-         * GDO.
+         * @param freshGdo The current GraphDataObject will be replaced by this GDO in the Lookup if the write succeeds.
+         * @param deleteOldGdo If true, delete the file represented by the old GDO.
          */
         BackgroundWriter(final String name, final GraphDataObject freshGdo, final boolean deleteOldGdo) {
             this.name = name;

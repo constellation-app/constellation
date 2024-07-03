@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -124,7 +124,7 @@ public class DefaultPluginInteractionNGTest {
 
         assertEquals(interaction.getPluginReport().getCurrentStep(), 1);
         assertEquals(interaction.getPluginReport().getTotalSteps(), 2);
-        assertEquals(interaction.getPluginReport().getMessage(), message);
+        assertEquals(interaction.getPluginReport().getLastMessage(), message);
 
         interaction.setProgress(1, 1, message, false);
 

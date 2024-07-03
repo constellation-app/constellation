@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,7 +37,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * Present the user with a list of plugins and allow it to select one, then
  * expand that plugin.
- * <p/>
+ * <p>
  * This saves users from having to hunt through the various sections for a
  * plugin when they don't know where it is.
  *
@@ -50,7 +51,7 @@ public class PluginFinder {
 
     /**
      * Build a cooperative TextArea and ListView.
-     * <p/>
+     * <p>
      * The TextArea acts as a filter on the ListView. If there is only one item
      * in the filtered list, it will be used when the user fires the OK action.
      *
@@ -90,6 +91,7 @@ public class PluginFinder {
         dialog.setTitle(PLUGIN_FINDER_TITLE);
         dialog.setHeaderText(PLUGIN_FINDER_HEADER);
         dialog.setResizable(true);
+        dialog.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
 
         return dialog;
     }
@@ -107,20 +109,21 @@ public class PluginFinder {
         @Override
         public void handle(final MouseEvent mouseEvent) {
             switch (mouseEvent.getClickCount()) {
-                case 1:
+                case 1 -> {
                     final ObservableList<String> items = listView.getSelectionModel().getSelectedItems();
                     if (items.size() == 1) {
                         result = listView.getSelectionModel().getSelectedItem();
                     } else {
                         result = null;
                     }
-                    break;
-                case 2:
+                }
+                case 2 -> {
                     result = listView.getSelectionModel().getSelectedItem();
                     dialog.setResult(ButtonType.OK);
-                    break;
-                default:
-                    break;
+                }
+                default -> {
+                    // Do nothing
+                }
             }
         }
 
