@@ -198,9 +198,9 @@ import javafx.scene.shape.Rectangle;
              Tooltip.install(primaryInput, tooltip);
         }
 
-        public void setPreferedRowCount(Integer suggestedHeight) {
+        public void setPreferedRowCount(Integer suggestedRowCount) {
             if (primaryInput instanceof TextArea textAreaField){
-                textAreaField.setPrefRowCount(suggestedHeight);
+                textAreaField.setPrefRowCount(suggestedRowCount);
                 textAreaField.setMaxHeight(textAreaField.getPrefHeight() + 3);
             }
         }

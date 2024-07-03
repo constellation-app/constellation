@@ -19,11 +19,11 @@ import javafx.event.EventHandler;
 import javafx.scene.input.KeyEvent;
 
 /**
- *
+ * An Interface for {@link ConstellationInput} extensions.
+ * Provides required functionality to allow an extension to have a key shortcuts.
+ * 
  * @author capricornunicorn123
  */
 public interface ShortcutSupport {
-    
     public EventHandler<KeyEvent> getShortcuts();
-    
 }

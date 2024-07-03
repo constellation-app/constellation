@@ -19,7 +19,9 @@ import java.util.List;
 import javafx.scene.control.MenuItem;
 
 /**
- *
+ * An Interface for {@link ConstellationInput} extensions.
+ * provides required functionality to allow an extension to provide a list of auto complete suggestions.
+ * 
  * @author capricornunicorn123
  */
 public interface AutoCompleteSupport {

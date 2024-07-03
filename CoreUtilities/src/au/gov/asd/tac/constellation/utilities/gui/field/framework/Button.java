@@ -25,7 +25,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 /**
- *
+ * 
  * @author capricornunicorn123
  */
 public abstract class Button extends StackPane {

@@ -25,7 +25,9 @@ import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 
 /**
- *
+ * An Interface for {@link ConstellationInput} extensions.
+ * Provides required functionality to build an info window for insertion to an input extenesion.
+ * 
  * @author capricornunicorn123
  */
 public interface InfoWindowSupport{

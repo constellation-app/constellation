@@ -26,7 +26,8 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.layout.Region;
 
 /**
- * An extension of a ContextMenu to provide features that enable its use as a drop down menu in ConstellationInputFields
+ * An extension of a ContextMenu to provide features that enable its use as a drop down menu in ConstellationInputFields.
+ * 
  * @author capricornunicorn123
  */
 public class ConstellationInputDropDown extends ContextMenu {
