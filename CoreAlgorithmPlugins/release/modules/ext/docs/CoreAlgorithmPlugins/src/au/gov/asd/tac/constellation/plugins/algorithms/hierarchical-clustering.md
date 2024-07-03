@@ -27,14 +27,11 @@
 </tbody>
 </table>
 
-Hierarchical clustering, also known as hierarchical cluster analysis, is an 
-algorithm that groups similar objects into groups called clusters. The endpoint 
-is a set of clusters, where each cluster is distinct from each other cluster, 
-and the objects within each cluster are broadly similar to each other. When the 
-Hierarchical Clustering plugin is executed, a Fast Newman algorithm is run 
-which clusters the graph hierarchically by initially placing all nodes in 
-their own cluster and then iteratively merging clusters according to a weight 
-function until the optimal state is reached.
+Hierarchical clustering, as the name suggests, forms clusters on the graph in 
+a hierarchical manner. When the Hierarchical Clustering plugin is executed, a 
+Fast Newman algorithm is run which clusters the graph hierarchically by initially 
+placing all nodes in their own cluster and then iteratively merging clusters 
+according to a weight function until the optimal state is reached.
 
 To run the Hierarchical Clusters algorithnm, open the Hierarchical Clusters 
 panel from Tools -> Cluster -> Hierarchical. To apply the changes from the clustering

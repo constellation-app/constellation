@@ -36,16 +36,17 @@
 </table>
 
 Info Map is a network clustering algorithm based on the Map Equation. 
-Real-world networks have a complex topology comprising many elements often 
-structured into communities. Revealing these communities helps researchers 
-uncover the organizational and functional structure of the system that the network 
-represents. The Info Map algorithm clusters groups of nodes into communities 
+The Info Map algorithm clusters groups of nodes into communities 
 based on the flow of the network. 
 
 More information about the Map Equation can be found <a href="https://www.mapequation.org/publications.html#Rosvall-Axelsson-Bergstrom-2009-Map-equation">here</a>.
 
 When the Info Map... option is chosen from the Tools -> Cluster menu, an options 
 panel opens, allowing for the algorithm to be customised. 
+
+<div style="text-align: center">
+<img src="../ext/docs/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/resources/infoMapOptionsPanel.png" alt="Info Map Options Pane" />
+</div>
 
 ## Constellation Display
 
@@ -62,10 +63,6 @@ Constellation to display the graph using the new attribute (via the
 To switch back to the default color attribute, edit the graph attributes via 
 the Attribute Editor and click on "Restore Default" followed by Ok.
  
-<div style="text-align: center">
-<img src="../ext/docs/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/resources/infoMapOptionsPanel.png" alt="Info Map Options Pane" />
-</div>
-
 
 Before Info Map Clustering is run:
 
