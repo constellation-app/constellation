@@ -7,7 +7,7 @@ Others will simply request a destination file location.
 Exporting from Constellation can be broken into two groups, **Visualisation Exports** and **Data Exports**. 
 
 ### Visualisation Exports
-Visualisation exports, export the graph as viewed from the Constellation Interactive Graph. These exports will typicaly only contain visual infromation 
+Visualisation exports, export the graph as viewed from the Constellation Interactive Graph. These exports will typicaly only contain visual information 
 relevant to the visual aspects of the graph, but may contain some other identifying information.
 
 <table class="table table-striped">
