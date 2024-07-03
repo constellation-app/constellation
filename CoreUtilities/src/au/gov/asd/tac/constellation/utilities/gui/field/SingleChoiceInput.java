@@ -81,7 +81,7 @@ public final class SingleChoiceInput<C extends Object> extends ChoiceInputField<
     // <editor-fold defaultstate="collapsed" desc="Local Private Methods">    
     
     public C getChoice(){
-        List<C> matches = getOptions().stream().filter(choice -> choice.toString().equals(getText())).toList();
+        final List<C> matches = getOptions().stream().filter(choice -> choice.toString().equals(getText())).toList();
         if (matches.isEmpty()){
             return null;
         } else {
@@ -95,7 +95,6 @@ public final class SingleChoiceInput<C extends Object> extends ChoiceInputField<
      * @param choice 
      */
     public void setChoice(final C choice){
-        
         if (choice != null && this.getOptions().contains(choice)) {
             this.setText(choice.toString());
         }
@@ -198,7 +197,7 @@ public final class SingleChoiceInput<C extends Object> extends ChoiceInputField<
     public LeftButton getLeftButton() {
         switch (type) {
             case SINGLE_SPINNER -> {
-                return  new LeftButton(new Label(ConstellationInputConstants.PREVIOUS_BUTTON_LABEL), ButtonType.CHANGER) {
+                return new LeftButton(new Label(ConstellationInputConstants.PREVIOUS_BUTTON_LABEL), ButtonType.CHANGER) {
                     @Override
                     public EventHandler<? super MouseEvent> action() {
                         return event -> executeLeftButtonAction();
@@ -214,8 +213,8 @@ public final class SingleChoiceInput<C extends Object> extends ChoiceInputField<
     @Override
     public RightButton getRightButton() {
         
-        Label label;
-        ButtonType buttonType;
+        final Label label;
+        final ButtonType buttonType;
         
         switch (type) {
             case SINGLE_SPINNER -> {
@@ -305,7 +304,7 @@ public final class SingleChoiceInput<C extends Object> extends ChoiceInputField<
                 }
             }
             
-            final ConstellationInputFieldListener<List<C>> cl = (List<C> newValue) -> {
+            final ConstellationInputFieldListener<List<C>> cl = (final List<C> newValue) -> {
                 if (newValue != null) {
                     final List<String> stringrep = newValue.stream().map(Object::toString).toList();
                     for (CheckBox box : boxes){
@@ -334,18 +333,17 @@ public final class SingleChoiceInput<C extends Object> extends ChoiceInputField<
     @Override
     public List<MenuItem> getAutoCompleteSuggestions() {
         final List<MenuItem> suggestions = new ArrayList<>();
-        C choice = this.getChoice();
         //do not show suggestions in the following cases
         //if there are two unknown choices that the user has enteres, i.e more than 1 null value.
         //if there is 1 or more valid choices in the event that this is a single choice input.
-        if (choice == null){
+        if (this.getChoice() == null){
             //Remove blank entrys from here
             this.getOptions()
                     .stream()
                     .map(value -> value)
                     .filter(value -> value.toString().startsWith(getText()))
                     .forEach(value -> {
-                        MenuItem item = new MenuItem(value.toString());
+                        final MenuItem item = new MenuItem(value.toString());
                         item.setOnAction(event -> {
                             this.setChoice(value);
                         });

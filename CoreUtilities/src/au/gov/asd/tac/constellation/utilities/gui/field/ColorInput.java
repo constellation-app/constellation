@@ -59,7 +59,7 @@ import javafx.scene.control.ColorPicker;
 public final class ColorInput extends ConstellationInput<ConstellationColor> implements RightButtonSupport, LeftButtonSupport, InfoWindowSupport, AutoCompleteSupport {
     
     ColorMode mode = ColorMode.COLOR;
-    Label label = new Label();
+    final Label label = new Label();
     
     public ColorInput(){
         label.setText(mode.toString());
@@ -281,17 +281,17 @@ public final class ColorInput extends ConstellationInput<ConstellationColor> imp
     
     private class ColorPickerDropDown extends ConstellationInputDropDown {
         
-    public ColorPickerDropDown(final ColorInput field){
+    public ColorPickerDropDown(final ColorInput field) {
             super(field);
             
             final List<MenuItem> items = new ArrayList<>();
             getListOfSortedColors()    
                     .forEach(value -> {
-                MenuItem item = new MenuItem(value.getName());
+                final MenuItem item = new MenuItem(value.getName());
                 item.setOnAction(event -> {
                     setValue(value);
                 });
-                Rectangle icon = new Rectangle(12, 12);
+                final Rectangle icon = new Rectangle(12, 12);
                 icon.setFill(Paint.valueOf(value.getHtmlColor()));
                 item.setGraphic(icon);
                 items.add(item);
@@ -304,14 +304,14 @@ public final class ColorInput extends ConstellationInput<ConstellationColor> imp
     // <editor-fold defaultstate="collapsed" desc="Info Window Implementation">   
     @Override
     public InfoWindow getInfoWindow() {
-        Rectangle colorPreview = new Rectangle(14, 14);
+        final Rectangle colorPreview = new Rectangle(14, 14);
         colorPreview.setArcWidth(6);
         colorPreview.setArcHeight(6);
         
-        InfoWindow window = new InfoWindow(this){
+        final InfoWindow window = new InfoWindow(this){
             @Override
             protected void refreshWindow() {
-                ConstellationColor color = getColor();
+                final ConstellationColor color = getColor();
                 if (color == null) {
                     colorPreview.setFill(Color.TRANSPARENT);
                 } else {
@@ -319,9 +319,7 @@ public final class ColorInput extends ConstellationInput<ConstellationColor> imp
                 }
             }
         };
-        
         window.setWindowContents(colorPreview);
-        
         return window;
     }
     //</editor-fold> 
@@ -337,11 +335,11 @@ public final class ColorInput extends ConstellationInput<ConstellationColor> imp
                     .filter(value -> !value.toString().equals(getText()))
                     .forEach(value -> {
                         
-                        MenuItem item = new MenuItem(value.getName());
+                        final MenuItem item = new MenuItem(value.getName());
                         item.setOnAction(event -> {
                             this.setValue(value);
                         });
-                        Rectangle icon = new Rectangle(12, 12);
+                        final Rectangle icon = new Rectangle(12, 12);
                         icon.setFill(value.getJavaFXColor());
                         item.setGraphic(icon);
                         suggestions.add(item);

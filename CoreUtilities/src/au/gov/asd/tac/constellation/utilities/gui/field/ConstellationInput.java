@@ -134,11 +134,11 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
     final int defaultCellHeight = 22;
     final int buttonVisibilityThreshold = 300;
     
-    private ConstellationTextArea textArea;
+    private final ConstellationTextArea textArea;
     
     protected final List<ConstellationInputFieldListener> InputFieldListeners = new ArrayList<>();
         
-    final int corner = 7;
+    private final int corner = 7;
     
     final Color fieldColor = Color.color(51/255D, 51/255D, 51/255D);
     final Color invalidColor = Color.color(238/255D, 66/255D, 49/255D);
@@ -231,7 +231,7 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
         Platform.runLater(() -> {
             // Add Left button
             if (this instanceof LeftButtonSupport leftButton){
-                LeftButton button = leftButton.getLeftButton();
+                final LeftButton button = leftButton.getLeftButton();
                 if (button != null){
                     button.getHeightProperty().bind(textArea.heightProperty());
                     interactableContent.getChildren().addFirst(button);
@@ -249,7 +249,7 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
 
             // Add Right Button
             if (this instanceof RightButtonSupport rightButton){
-                RightButton button = rightButton.getRightButton();
+                final RightButton button = rightButton.getRightButton();
                 button.getHeightProperty().bind(textArea.heightProperty());
                 interactableContent.getChildren().add(button);
                 this.createWidthListener(button);
@@ -259,7 +259,7 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
         
         // Add Shortcuts
         if (this instanceof ShortcutSupport shortcut) {
-            EventHandler<KeyEvent> shortcutEvent = shortcut.getShortcuts();
+            final EventHandler<KeyEvent> shortcutEvent = shortcut.getShortcuts();
             if (shortcutEvent != null){
                 this.textArea.addEventFilter(KeyEvent.KEY_PRESSED, shortcut.getShortcuts());
             }
@@ -269,10 +269,10 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
         // Why? i cant remember
         // Add Recent Values
         if (this instanceof RecentValuesListener listener){
-            String id = listener.getRecentValuesListenerID();
+            final String id = listener.getRecentValuesListenerID();
             if (id != null){
                 RecentValueUtility.addListener(listener);
-                List<String> values = RecentValueUtility.getRecentValues(id);
+                final List<String> values = RecentValueUtility.getRecentValues(id);
                 if (values != null){
                     listener.recentValuesChanged(new RecentValuesChangeEvent(id, values));
                 }
@@ -285,7 +285,7 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
                 if (textArea.isInFocus()){
                     final List<MenuItem> suggestions = autoComplete.getAutoCompleteSuggestions();
                     if (suggestions != null && !suggestions.isEmpty()){
-                        ConstellationInputDropDown menu = new ConstellationInputDropDown(this);
+                        final ConstellationInputDropDown menu = new ConstellationInputDropDown(this);
                         menu.getItems().addAll(suggestions);
                         menu.setAutoHide(true);
                         menu.setAutoFix(true);
@@ -337,7 +337,7 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
         });
     }
     
-    private void setValid(boolean isValid) {
+    private void setValid(final boolean isValid) {
         if (isValid){
             getBackgroundShape().setFill(fieldColor);
         } else {
@@ -345,7 +345,7 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
         }
     }
     
-    private void setInFocus(boolean focused){
+    private void setInFocus(final boolean focused){
         if (focused) {
             getForegroundShape().setStroke(Color.web("#1B92E3"));
         } else {
@@ -373,7 +373,7 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
      * by the {@link ConstellationTextArea}.
      */
     @Override
-    public final void changed(ObservableValue<? extends Serializable> observable, Serializable oldValue, Serializable newValue) {
+    public final void changed(final ObservableValue<? extends Serializable> observable, final Serializable oldValue, final Serializable newValue) {
         
         // String changes are changes to the text value of the ConstellationTextArea
         if (newValue instanceof String){
@@ -397,7 +397,7 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
      * 
      * @param newValue 
      */
-    public final void notifyListeners(T newValue){
+    public final void notifyListeners(final T newValue){
         for (ConstellationInputFieldListener listener : InputFieldListeners){
             listener.changed(newValue);
         }
@@ -408,7 +408,7 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
      * 
      * @param listener
      */
-    public final void addListener(ConstellationInputFieldListener listener) {
+    public final void addListener(final ConstellationInputFieldListener listener) {
         this.InputFieldListeners.add(listener);
     }
 
@@ -417,15 +417,15 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
      * 
      * @param listener
      */
-    public final void removeListener(ConstellationInputFieldListener listener) {
+    public final void removeListener(final ConstellationInputFieldListener listener) {
         this.InputFieldListeners.remove(listener);
     }
     // </editor-fold>   
     
     // <editor-fold defaultstate="collapsed" desc="ConstelationTextArea Modification Methods">
-
     /**
      * Sets the prompt text of the {@link ConstellationTextArea}.
+     * @param description
      */
     public final void setPromptText(final String description) {
         this.textArea.setPromptText(description);
@@ -434,8 +434,9 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
     /**
      * Sets the default {@link ToolTip} of the {@link ConstellationTextArea}.
      * The tool tip may be temporarily overwritten when the Input field becomes invalidated.
+     * @param tooltip
      */
-    public final void setTooltip(Tooltip tooltip) {
+    public final void setTooltip(final Tooltip tooltip) {
         this.textArea.setTooltip(tooltip);
     }
     
@@ -476,7 +477,7 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
      * Sets the preferred number of rows that this input field should have.
      * @param suggestedHeight the number of rows in this input field.
      */
-    public void setPrefRowCount(Integer suggestedHeight) {
+    public void setPrefRowCount(final Integer suggestedHeight) {
         textArea.setPreferedRowCount(suggestedHeight);
     }
     
@@ -506,7 +507,7 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
      * Sets the value that this input field represents
      * @param value 
      */
-    public abstract void setValue(T value);
+    public abstract void setValue(final T value);
     
     /**
      * Determine if the provided text is a valid value for the input field.
@@ -519,8 +520,8 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
     // <editor-fold defaultstate="collapsed" desc="ContextMenuContributor Implementation"> 
     @Override
     public final List<MenuItem> getAllMenuItems() {
-        List<MenuItem> list = new ArrayList<>();
-        List<MenuItem> local = this.getLocalMenuItems(); // This method is implmented by extensions of this class.
+        final List<MenuItem> list = new ArrayList<>();
+        final List<MenuItem> local = this.getLocalMenuItems(); // This method is implmented by extensions of this class.
         list.addAll(local);
         if (!local.isEmpty()){
             list.add(new SeparatorMenuItem());
@@ -540,7 +541,7 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
      * 
      * @param menu 
      */
-    protected final void showDropDown(ConstellationInputDropDown menu){
+    protected final void showDropDown(final ConstellationInputDropDown menu){
         menu.show(this, Side.TOP, USE_PREF_SIZE, USE_PREF_SIZE);
     }
     // </editor-fold>
@@ -551,7 +552,7 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
      * Input windows are placed directly after the {@link ConstellationTextArea}
      * @param window 
      */
-    protected final void insertInfoWindow(InfoWindow window) {
+    protected final void insertInfoWindow(final InfoWindow window) {
         Platform.runLater(()->{
             if (window != null) {
             final HBox interactableContent = getInteractableContent();
@@ -565,7 +566,7 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
      * Removes the info window into this input field.
      * @param window 
      */
-    protected void removeInfoWindow(InfoWindow window) {
+    protected void removeInfoWindow(final InfoWindow window) {
         final HBox interactableContent = getInteractableContent();
         interactableContent.getChildren().remove(window);
     }
@@ -578,7 +579,5 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
         final HBox interactableContent = getInteractableContent();
         return interactableContent.getChildren().stream().anyMatch(node -> node instanceof InfoWindow);
     }
-    
-
     // </editor-fold>
 }

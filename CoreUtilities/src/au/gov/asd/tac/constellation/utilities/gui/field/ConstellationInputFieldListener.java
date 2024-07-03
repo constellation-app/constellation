@@ -26,6 +26,6 @@ public interface ConstellationInputFieldListener<T>{
      *
      * @param newValue The new value
      */
-    void changed(T newValue);
+    void changed(final T newValue);
     
 }

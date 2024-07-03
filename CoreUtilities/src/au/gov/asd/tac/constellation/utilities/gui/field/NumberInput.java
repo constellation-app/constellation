@@ -47,7 +47,7 @@ public final class NumberInput<C extends Number> extends ConstellationInput<Numb
     private final C init;
     private final C step;
     
-    public NumberInput(Number min, Number max, Number init, Number step) {
+    public NumberInput(final Number min, final Number max, final Number init, final Number step) {
         this.min = (C) min;
         this.max = (C) max;
         this.init = (C) init;
@@ -75,12 +75,12 @@ public final class NumberInput<C extends Number> extends ConstellationInput<Numb
      * Used increment a selected a number.
      */
     private void increment() {
-        Number value = this.getValue();
+        final Number value = this.getValue();
         if (value != null) {
-            float current = value.floatValue();
-            float step = getStep().floatValue();
+            final float current = value.floatValue();
+            final float step = getStep().floatValue();
 
-            float desired = current + step;
+            final float desired = current + step;
             if (desired > getMax().floatValue()){
                 this.setValue(getMax());
             } else {
@@ -97,12 +97,12 @@ public final class NumberInput<C extends Number> extends ConstellationInput<Numb
      * If the choice is the first choice in the list of options the previous choice is the last option.
      */
     private void decrement() {
-        Number value = this.getValue();
+        final Number value = this.getValue();
         if (value != null){
-            float current = value.floatValue();
-            float step = getStep().floatValue();
+            final float current = value.floatValue();
+            final float step = getStep().floatValue();
 
-            float desired = current - step;
+            final float desired = current - step;
             if (desired < getMin().floatValue()){
                 this.setValue(getMin());
             } else {
@@ -159,7 +159,7 @@ public final class NumberInput<C extends Number> extends ConstellationInput<Numb
         return step;
     }
     
-    private void setNumber(Number value){
+    private void setNumber(final Number value){
         switch (init) {
             case Integer integerValue -> this.setText(Integer.toString(value.intValue()));
             case Float floatvalue -> this.setText(Float.toString(value.floatValue()));
@@ -170,14 +170,14 @@ public final class NumberInput<C extends Number> extends ConstellationInput<Numb
     }
     
     private Number getNumber() throws NumberFormatException{
-        String text = this.getText();
+        final String text = this.getText();
         if (!text.isBlank()){
             switch (init) {
                 case Integer integerValue -> {
-                    return Integer.parseInt(text);
+                    return Integer.valueOf(text);
                 }
                 case Float floatValue -> {
-                    return Float.parseFloat(text);
+                    return Float.valueOf(text);
                 }
                 default -> {
                     throw new UnsupportedOperationException(String.format("Numbers of type %s are not supported", init.getClass()));
@@ -192,9 +192,9 @@ public final class NumberInput<C extends Number> extends ConstellationInput<Numb
     // <editor-fold defaultstate="collapsed" desc="Value Modification & Validation Implementation"> 
     @Override
     public Number getValue() {
-        try{
+        try {
             return getNumber();
-        } catch(NumberFormatException ex){
+        } catch(final NumberFormatException ex){
             return null;
         }
     }
@@ -207,14 +207,14 @@ public final class NumberInput<C extends Number> extends ConstellationInput<Numb
     @Override
     public boolean isValid() {
         try{
-            Number value = this.getNumber();
+            final Number value = this.getNumber();
 
             if (value == null){
                 return true;
             } else {        
                 return value.floatValue() >= getMin().floatValue() && value.floatValue() <= getMax().floatValue();
             }
-        } catch (NumberFormatException ex){
+        } catch (final NumberFormatException ex){
             return false;
         }
     }  

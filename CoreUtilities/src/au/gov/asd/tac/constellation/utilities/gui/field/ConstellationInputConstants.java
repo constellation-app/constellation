@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
-import javafx.scene.control.ContentDisplay;
-
 /**
  * A suite of constants used by {@link ConstellationInputField} objects and related sub classes.
  * 

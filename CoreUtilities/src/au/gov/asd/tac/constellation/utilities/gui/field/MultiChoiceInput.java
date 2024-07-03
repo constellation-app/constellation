@@ -157,7 +157,7 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
     // <editor-fold defaultstate="collapsed" desc="Value Modification & Validation Implementation"> 
     @Override
     public List<C> getValue() {
-        List<C> choices = getChoices();
+        final List<C> choices = getChoices();
         if (choices != null && !choices.contains(null) ) {
             return choices;
         } else {
@@ -257,16 +257,16 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
                 for (int i = 0 ; i < optionsList.length ; i ++){
                     final C choice = (C) optionsList[i];
 
-                        CheckBox item = new CheckBox(choice.toString());
-                        item.setOnAction(event -> {
-                            if (item.isSelected()) {
-                                field.setChoice(choice);
-                            } else {
-                                field.removeChoice(choice);
-                            }
-                        }); 
-                        item.setSelected(choices.contains(choice));
-                        boxes.add(item);
+                    final CheckBox item = new CheckBox(choice.toString());
+                    item.setOnAction(event -> {
+                        if (item.isSelected()) {
+                            field.setChoice(choice);
+                        } else {
+                            field.removeChoice(choice);
+                        }
+                    }); 
+                    item.setSelected(choices.contains(choice));
+                    boxes.add(item);
                             
 
                     if (!icons.isEmpty()){
@@ -280,7 +280,7 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
                 }
             }
             
-            final ConstellationInputFieldListener<List<C>> cl = (List<C> newValue) -> {
+            final ConstellationInputFieldListener<List<C>> cl = (final List<C> newValue) -> {
                 if (newValue != null) {
                     final List<String> stringrep = newValue.stream().map(Object::toString).toList();
                     for (CheckBox box : boxes){
@@ -308,22 +308,20 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
     // <editor-fold defaultstate="collapsed" desc="Info Window Implementation">   
     @Override
     public final InfoWindow getInfoWindow() {
-        Label label = new Label();
+        final Label label = new Label();
         
         InfoWindow window = new InfoWindow(this){
             @Override
             protected void refreshWindow() {
-                List<C> selectedOptions = getChoices();
+                final List<C> selectedOptions = getChoices();
 
                 if (!isValid() || selectedOptions.size() < 2) {
                     if (hasInfoWindow()) {
                         removeInfoWindow(this);
                     }
                 } else {
-                    String text = String.format("%s/%s", selectedOptions.size(), getOptions().size());
-                    label.setText(text);
+                    label.setText(String.format("%s/%s", selectedOptions.size(), getOptions().size()));
                     if (!hasInfoWindow()){            
-
                         insertInfoWindow(this);
                     }
                 }
@@ -337,7 +335,7 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
     // <editor-fold defaultstate="collapsed" desc="Auto Complete Implementation"> 
     @Override
     public List<MenuItem> getAutoCompleteSuggestions() {
-        List<C> choices = this.getChoices();
+        final List<C> choices = this.getChoices();
         //do not show suggestions in the following cases
         //if there are two unknown choices that the user has enteres, i.e more than 1 null value.
         //if there is 1 or more valid choices in the event that this is a single choice input.
@@ -345,8 +343,8 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
             return null;
         } else {
             //Remove blank entrys from here
-            String[] candidateArray = this.getText().split(SeparatorConstants.COMMA);
-            String invalidEntry = candidateArray[choices.indexOf(null)].stripLeading().stripTrailing();
+            final String[] candidateArray = this.getText().split(SeparatorConstants.COMMA);
+            final String invalidEntry = candidateArray[choices.indexOf(null)].stripLeading().stripTrailing();
 
             final List<MenuItem> suggestions = new ArrayList<>();
             
@@ -356,7 +354,7 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
                     .filter(value -> !choices.contains(value))
                     .filter(value -> value.toString().startsWith(invalidEntry))
                     .forEach(value -> {
-                        MenuItem item = new MenuItem(value.toString());
+                        final MenuItem item = new MenuItem(value.toString());
                         item.setOnAction(event -> {
                                 choices.add(choices.indexOf(null), value);
                                 this.setChoices(choices);

@@ -147,7 +147,7 @@ public final class DateInput extends ConstellationInput<LocalDate> implements Ri
         try{
             converter.fromString(getText());
             return true;
-        } catch (DateTimeParseException ex){
+        } catch (final DateTimeParseException ex){
            return false; 
         }
     }   
