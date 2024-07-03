@@ -164,8 +164,8 @@ public final class DateInput extends ConstellationInput<LocalDate> implements Ri
 
     // <editor-fold defaultstate="collapsed" desc="Button Event Implementation">   
     @Override
-    public Button getRightButton() {
-        return new Button(new Label(ConstellationInputConstants.SELECT_BUTTON_LABEL), Button.ButtonType.POPUP) {
+    public RightButton getRightButton() {
+        return new RightButton(new Label(ConstellationInputConstants.SELECT_BUTTON_LABEL), Button.ButtonType.POPUP) {
                     @Override
                     public EventHandler<? super MouseEvent> action() {
                         return event -> executeRightButtonAction();

@@ -30,7 +30,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
-import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
@@ -46,21 +45,24 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationI
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.InfoWindowSupport;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.InfoWindowSupport.InfoWindow;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.LeftButtonSupport;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.LeftButtonSupport.LeftButton;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport.RightButton;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ShortcutSupport;
 import javafx.application.Platform;
+import javafx.scene.control.TextInputControl;
 
 
 /**
- * An Abstract base class for all input fields in Constellation. 
- * These input fields have been designed to be robust and adaptable to as many use cases as possible
- * whilst maintaining a strict design language. 
- * Amend this class and any classes which extend from it with caution as the impact of changes to functionality of 
- * this class may effect many components with Constellation.
+ * An Abstract base class for all inputs in Constellation.
  * 
- * To achieve this adaptive layout a number fo nuanced javaFX structures have been integrated into the input field 
- * that should be understood before extending this class. 
- * Input fields follow a magic-wand-like layout with three main sections. 
+ * Input fields follow a magic-wand-like layout with four main sections:
+ * <ol>
+ * <li>{@link Button} - LeftButton Optional</li>
+ * <li>{@link ConstellationTextArea} - Interactable Area</li>
+ * <li>{@link InfoWindow} - Interactable Area</li>
+ * <li>{@link Button} - LeftButton Optional</li>
+ * </ol>
  * +--------------------------------------------+
  * |  Button  |      Input Area      |  Button  |
  * +--------------------------------------------+
@@ -69,20 +71,54 @@ import javafx.application.Platform;
  * +--------------------------------------------+
  * |           Input Area            |  Button  |
  * +--------------------------------------------+
- * When extending an input field the following considerations should be made:
- * For single button input fields, the button shall be placed on the Right. 
- * Buttons that initiate a context menu or modify the value or apperance of the text area should be grey.
- * Buttons that initiate a pop-up window shall be blue.
- * Buttons that initiate a pop-up window shall always be positioned on the right.
  * 
- * The Node construction of the class is as follows 
- *  StackPane
- *      Shape - A rounded rectangle acting as the background
- *      GridPane
- *          for each cell
- *              Group
- *                  cell contents
- *      Shape - A rounded transparent rectangle acting as the border
+ * Current usage of these inputs is limited to {@link PluginParameterPane}
+ * and the {@link PluginReporterPane} but should be slowly integrated into all views
+ * and windows.
+ * 
+ * Supported Input Fields:
+ * <ul>
+ * <li>{@link ColorInput}</li>
+ * <li>{@link DateInput}</li>
+ * <li>{@link FileInput}</li>
+ * <li>{@link MultiChoiceInput}</li>
+ * <li>{@link SingleChoiceInput}</li>
+ * <li>{@link TextInput}</li>
+ * <li>{@link NumberInput}</li>
+ * </ul>
+ * 
+ * Input Fields yet to be supported:
+ * <ul>
+ * <li>DateRangeInput</li>
+ * <li>BooelanInput</li>
+ * <li>ActionInput</li>
+ * </ul>
+ * 
+ * Inputs should be developed and maintained with the following considerations:
+ * <ul>
+ * <li>Independence from third party providers</li>
+ * <li>Visual Consistency</li>
+ * <li>Adaptability to various use cases</li>
+ * <li>Simplicity</li>
+ * <li>Adaptability to various use cases</li>
+ * </ul>
+ * 
+ * The following interfaces have been developed to support input functionality
+ * <ul>
+ * <li>{@link AutoCompleteSupport}</li>
+ * <li>{@link InfoWindowSupport}</li>
+ * <li>{@link LeftButtonSupport}</li>
+ * <li>{@link RightButtonSupport}</li>
+ * <li>{@link ShortcutSupport}</li>
+ * </ul>
+ * 
+ * When designing an extension of an input field the following considerations should be made:
+ * <ul>
+ * <li>For single button input fields, the button shall be placed on the Right. </li>
+ * <li>Buttons that initiate a context menu or modify the value or appearance of the text area should be gray.</li>
+ * <li>Buttons that initiate a pop-up window shall be blue.</li>
+ * <li>Buttons that initiate a pop-up window shall always be positioned on the right.</li>
+ * </ul>
  * 
  * //TODO: Lock down the Text property on all input fields. this includes getText get stringValue etc. 
  * there should only be 1 way in and out of the input field for selection data and that is getValue() and setValue().
@@ -96,61 +132,30 @@ import javafx.application.Platform;
 public abstract class ConstellationInput<T> extends StackPane implements ChangeListener<Serializable>, ContextMenuContributor{   
 
     final int defaultCellHeight = 22;
+    final int buttonVisibilityThreshold = 300;
     
-    private final HBox interactableContent = new HBox();
     private ConstellationTextArea textArea;
     
     protected final List<ConstellationInputFieldListener> InputFieldListeners = new ArrayList<>();
-    private Rectangle foreground;
-    private Rectangle background;
         
     final int corner = 7;
     
     final Color fieldColor = Color.color(51/255D, 51/255D, 51/255D);
     final Color invalidColor = Color.color(238/255D, 66/255D, 49/255D);
 
-    
     public ConstellationInput(){
         this(TextType.SINGLELINE);
     }
     
     public ConstellationInput(final TextType type) {
-
         textArea = new ConstellationTextArea(this, type);
+        buildInputFieldLayers(textArea);
+        HBox.setHgrow(textArea, Priority.ALWAYS);
         
         this.setPrefWidth(500);
         this.setMinWidth(200);
-        
-        final Rectangle clippingMask = new Rectangle(300, defaultCellHeight);
-        clippingMask.setArcWidth(corner);
-        clippingMask.setArcHeight(corner);        
-        clippingMask.setFill(Color.BLACK);
-        clippingMask.setStroke(Color.BLACK);
-        clippingMask.widthProperty().bind(interactableContent.widthProperty());
-        
-        background = new Rectangle(300, defaultCellHeight);
-        background.setArcWidth(corner);
-        background.setArcHeight(corner);  
-        background.setFill(fieldColor);
-        background.widthProperty().bind(interactableContent.widthProperty());
-        
-        foreground = new Rectangle(300, defaultCellHeight);
-        foreground.setArcWidth(corner);
-        foreground.setArcHeight(corner);        
-        foreground.setFill(Color.TRANSPARENT);
-        foreground.setMouseTransparent(true);
-        foreground.widthProperty().bind(interactableContent.widthProperty());
+        this.setAlignment(Pos.TOP_LEFT);                
 
-        textArea.bindHeightProperty(background, foreground, clippingMask);
-        interactableContent.setClip(clippingMask);
-        
-        HBox.setHgrow(textArea, Priority.ALWAYS);
-        interactableContent.setAlignment(Pos.CENTER);
-        HBox.setHgrow(interactableContent, Priority.ALWAYS);
-        
-        this.getChildren().addAll(background, interactableContent, foreground);
-        this.setAlignment(Pos.TOP_LEFT);
-        
         final ContextMenu contextMenu = new ContextMenu();
         contextMenu.getItems().clear();
         contextMenu.getItems().addAll(this.getAllMenuItems());
@@ -165,37 +170,94 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
         textArea.setContextMenu(contextMenu);
     }
     
-    protected void initialiseDepedantComponents(){
+    // <editor-fold defaultstate="collapsed" desc="Local Private Methods">
+    
+    /**
+     * Builds out the three layers to a ConstellationInput. 
+     * Each of these layers needs to have their height bound to the height of a TextArea to 
+     * ensure appropreate resizing with contained text.  
+     * The first layer is the background layer, a {@link Rectangle} which acts a a shape to provide the 
+     * fill color to an input field. When a field becomes invalid, it should be this 
+     * rectangle that changes color.
+     * The second Layer is the interactable content layer a {@link HBox} that hosts all of the "clickable"
+     * UI components. This layer need to have a clipping mask that this the same size as the foreground 
+     * to enable smooth corners. 
+     * The third layer is the foreground layer a {@link Rectangle} which acts as a boarder around the 
+     * input field to provide the focus effect for when the input is selected. 
+     */
+    private void buildInputFieldLayers(final ConstellationTextArea textArea){
+        final HBox interactableContentLayer = new HBox();
+        interactableContentLayer.setAlignment(Pos.CENTER);
+        HBox.setHgrow(interactableContentLayer, Priority.ALWAYS);
         
+        final Rectangle backgroundLayer = new Rectangle(300, defaultCellHeight);
+        backgroundLayer.setArcWidth(corner);
+        backgroundLayer.setArcHeight(corner);  
+        backgroundLayer.setFill(fieldColor);
+        backgroundLayer.widthProperty().bind(interactableContentLayer.widthProperty());
+        
+        final Rectangle interactableContentClipingMask = new Rectangle(300, defaultCellHeight);
+        interactableContentClipingMask.setArcWidth(corner);
+        interactableContentClipingMask.setArcHeight(corner);        
+        interactableContentClipingMask.setFill(Color.BLACK);
+        interactableContentClipingMask.setStroke(Color.BLACK);
+        interactableContentClipingMask.widthProperty().bind(interactableContentLayer.widthProperty());
+        interactableContentLayer.setClip(interactableContentClipingMask);
+        
+        final Rectangle foregroundLayer = new Rectangle(300, defaultCellHeight);
+        foregroundLayer.setArcWidth(corner);
+        foregroundLayer.setArcHeight(corner);        
+        foregroundLayer.setFill(Color.TRANSPARENT);
+        foregroundLayer.setMouseTransparent(true);
+        foregroundLayer.widthProperty().bind(interactableContentLayer.widthProperty());
+        
+        textArea.bindHeightProperty(foregroundLayer, backgroundLayer, interactableContentClipingMask);
+        
+        this.getChildren().addAll(backgroundLayer, interactableContentLayer, foregroundLayer);
+    }
+    
+    /**
+     * To be called at the end of the constructor for extensions of this class.
+     * Builds out all of the implemented input features such as buttons, context, shortcuts and info windows.
+     * The framework of allowing each extension of the ConstellationInput to implement its own combination
+     * of input features leads to one slightly ugly requirement that this class cannot build its visual aspects
+     * until the extended class has finished initializing. If not done this way, we get some ugly errors where methods and 
+     * objects don't exist...  
+     */
+    protected void initialiseDepedantComponents(){
+        final HBox interactableContent = getInteractableContent();
+                
+        // Build out the visual Input components on the FX thread.
         Platform.runLater(() -> {
-            //Add Left button
+            // Add Left button
             if (this instanceof LeftButtonSupport leftButton){
-                Button button = leftButton.getLeftButton();
+                LeftButton button = leftButton.getLeftButton();
                 if (button != null){
                     button.getHeightProperty().bind(textArea.heightProperty());
                     interactableContent.getChildren().addFirst(button);
-                    this.createWidthListener(button, ContentDisplay.LEFT);
+                    this.createWidthListener(button);
                 }
             }
 
-            //Add Base
+            // Add Base
             interactableContent.getChildren().add(textArea);
 
-            //Add Window
+            // Add Window
             if (this instanceof InfoWindowSupport infoWindow){
                 insertInfoWindow(infoWindow.getInfoWindow());
             }
 
-            //Add Right Button
+            // Add Right Button
             if (this instanceof RightButtonSupport rightButton){
-                Button button = rightButton.getRightButton();
+                RightButton button = rightButton.getRightButton();
                 button.getHeightProperty().bind(textArea.heightProperty());
                 interactableContent.getChildren().add(button);
-                this.createWidthListener(button, ContentDisplay.RIGHT);
+                this.createWidthListener(button);
             }
         
         });
-        //Add Shortcuts
+        
+        // Add Shortcuts
         if (this instanceof ShortcutSupport shortcut) {
             EventHandler<KeyEvent> shortcutEvent = shortcut.getShortcuts();
             if (shortcutEvent != null){
@@ -203,9 +265,9 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
             }
         }        
         
-        //Be carefull with implementing autocomplete and recent values together
-        
-        //Add Recent Values
+        // Be carefull with implementing autocomplete and recent values together
+        // Why? i cant remember
+        // Add Recent Values
         if (this instanceof RecentValuesListener listener){
             String id = listener.getRecentValuesListenerID();
             if (id != null){
@@ -217,7 +279,7 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
             }
         }
         
-        //AutoComplete
+        // AutoComplete
         if (this instanceof AutoCompleteSupport autoComplete) {
             this.addListener(newValue -> {
                 if (textArea.isInFocus()){
@@ -238,12 +300,21 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
         }
     }
     
-    private void createWidthListener(final Button content, ContentDisplay side){      
+    /**
+     * Creates a generic listener that amends the visibility of a button based on the width of the input field.
+     * 
+     * @param content
+     * @param side 
+     */
+    private void createWidthListener(final Button content){      
+        
+        final HBox interactableContent = getInteractableContent();
+        
         //Allow this end cell to listen to the width of the total Input field
         this.widthProperty().addListener((value, oldValue, newValue)-> {
     
-            //Node this end cell if the width is too low
-            if (newValue.intValue() < 300){
+            //Hide this end cell if the width is too low
+            if (newValue.intValue() < buttonVisibilityThreshold){
                 if (content.isVisible()){
                     interactableContent.getChildren().remove(content);
                 }
@@ -253,27 +324,53 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
             } else {
                 if (!content.isVisible()){
                     //Build the components      
-                    switch (side) {
-                        case LEFT -> interactableContent.getChildren().addFirst(content);
-                        case RIGHT -> interactableContent.getChildren().addLast(content);
+                    switch (content) {
+                        case LeftButton leftButton -> interactableContent.getChildren().addFirst(leftButton);
+                        case RightButton rightButton -> interactableContent.getChildren().addLast(rightButton);
                         default -> {
-                            //
+                            // Do Nothing
                         }
-                    };
+                    }
                 }
                 content.setVisible(true);
             }
         });
-        
     }
     
+    private void setValid(boolean isValid) {
+        if (isValid){
+            getBackgroundShape().setFill(fieldColor);
+        } else {
+            getBackgroundShape().setFill(invalidColor);
+        }
+    }
+    
+    private void setInFocus(boolean focused){
+        if (focused) {
+            getForegroundShape().setStroke(Color.web("#1B92E3"));
+        } else {
+            getForegroundShape().setStroke(null);
+        }
+    }        
+
+    private HBox getInteractableContent() {
+       //A clunky way of getting the InteractableCOntent...
+       return (HBox) this.getChildren().stream().filter(child -> child instanceof HBox).toList().getFirst();
+    }
+
+    private Rectangle getForegroundShape() {
+        return (Rectangle) this.getChildren().getLast();
+    }
+
+    private Rectangle getBackgroundShape() {
+        return (Rectangle) this.getChildren().getFirst();
+    }
+    // </editor-fold>
+
     // <editor-fold defaultstate="collapsed" desc="ObservableValue and ConstellationInputFieldListener Interface Support">
     /**
-     * This method manages the handling of changes to the TextProperty and FocusedProperty of the {@link StypledTextArea} used
+     * This method manages the handling of changes to the TextProperty and FocusedProperty of the {@link TextInputControl} used
      * by the {@link ConstellationTextArea}.
-     * 
-     * This method is declared final to protect the integrity and privacy of the string value being returned. 
-     * Important in the case of use with TextTpye.SECRET.
      */
     @Override
     public final void changed(ObservableValue<? extends Serializable> observable, Serializable oldValue, Serializable newValue) {
@@ -295,55 +392,104 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
         }
     }
 
-    public void notifyListeners(T newValue){
+    /**
+     * Notifies any {@link ConstellationInputFieldListener} listening to this input.
+     * 
+     * @param newValue 
+     */
+    public final void notifyListeners(T newValue){
         for (ConstellationInputFieldListener listener : InputFieldListeners){
             listener.changed(newValue);
         }
     }
     
-    public void addListener(ConstellationInputFieldListener listener) {
+    /**
+     * Registers a {@link ConstellationInputFieldListener} as a listener of this input.
+     * 
+     * @param listener
+     */
+    public final void addListener(ConstellationInputFieldListener listener) {
         this.InputFieldListeners.add(listener);
     }
 
-    public void removeListener(ConstellationInputFieldListener listener) {
+    /**
+     * Removes a {@link ConstellationInputFieldListener} as a listener of this input.
+     * 
+     * @param listener
+     */
+    public final void removeListener(ConstellationInputFieldListener listener) {
         this.InputFieldListeners.remove(listener);
     }
     // </editor-fold>   
     
     // <editor-fold defaultstate="collapsed" desc="ConstelationTextArea Modification Methods">
 
-    public void setPromptText(final String description) {
+    /**
+     * Sets the prompt text of the {@link ConstellationTextArea}.
+     */
+    public final void setPromptText(final String description) {
         this.textArea.setPromptText(description);
     }
     
-    public void setTooltip(Tooltip tooltip) {
+    /**
+     * Sets the default {@link ToolTip} of the {@link ConstellationTextArea}.
+     * The tool tip may be temporarily overwritten when the Input field becomes invalidated.
+     */
+    public final void setTooltip(Tooltip tooltip) {
         this.textArea.setTooltip(tooltip);
     }
     
-    public String getText() {
+    /**
+     * Gets the current string value of the {@link ConstellationTextArea}.
+     * 
+     * ToDo: Ideally this method would become private and input information could only be retrieved by 
+     * using the getValue method.
+     * @return 
+     */
+    public final String getText() {
         return this.textArea.getText();
     }
     
-    public void setText(final String stringValue) {
+    /**
+     * Sets the current string value of the {@link ConstellationTextArea}.
+     * 
+     * ToDo: Ideally this method would become private and input information could only be set by 
+     * using the setValue method.
+     * @param stringValue
+     */
+    public final void setText(final String stringValue) {
         this.textArea.setText(stringValue);
     }
 
-    public void setEditable(final boolean enabled) {
+    /**
+     * Determines if the input should be editable by the user.
+     * ToDo: review usages of this method and it's effects on the user interaction. 
+     * I believe the current use disables the input field from being selected but visually provides no change.
+     * Should probably grey-out the field and not enable it to become focused.
+     * @param enabled 
+     */
+    public final void setEditable(final boolean enabled) {
         this.textArea.setEditable(enabled);
     }
     
-    public void setCaratPosition(int position) {
-        this.textArea.setCaretPosition(position);
-    }
-
+    /**
+     * Sets the preferred number of rows that this input field should have.
+     * @param suggestedHeight the number of rows in this input field.
+     */
     public void setPrefRowCount(Integer suggestedHeight) {
         textArea.setPreferedRowCount(suggestedHeight);
     }
     
+    /**
+     * A feature for use in secret inputs, turns the input text value from plain text to obscured values.
+     */
     protected void hideSecret(){
         textArea.hide();
     }
     
+    /**
+     * A feature for use in secret inputs, turns the input text value from obscured values to plain text.
+     */
     protected void showSecret(){
         textArea.reveal();
     }
@@ -364,7 +510,6 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
     
     /**
      * Determine if the provided text is a valid value for the input field.
-     * Is implemented differently for different input fields.
      * 
      * @return 
      */
@@ -375,7 +520,7 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
     @Override
     public final List<MenuItem> getAllMenuItems() {
         List<MenuItem> list = new ArrayList<>();
-        List<MenuItem> local = this.getLocalMenuItems();
+        List<MenuItem> local = this.getLocalMenuItems(); // This method is implmented by extensions of this class.
         list.addAll(local);
         if (!local.isEmpty()){
             list.add(new SeparatorMenuItem());
@@ -391,6 +536,8 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
      * This functionality has been captured in the base class intentionally to consistency across 
      * all input fields regarding context displaying 
      * 
+     * ToDo: find a way to make the width o these context menus span the width of the input field area.
+     * 
      * @param menu 
      */
     protected final void showDropDown(ConstellationInputDropDown menu){
@@ -399,42 +546,39 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
     // </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc="InfoWindow Functionality">  
-    
+    /**
+     * Inserts an info window into this input field.
+     * Input windows are placed directly after the {@link ConstellationTextArea}
+     * @param window 
+     */
     protected final void insertInfoWindow(InfoWindow window) {
         Platform.runLater(()->{
             if (window != null) {
-            int windowIndex = interactableContent.getChildren().indexOf(textArea) + 1;
+            final HBox interactableContent = getInteractableContent();
+            final int windowIndex = interactableContent.getChildren().indexOf(textArea) + 1;
             interactableContent.getChildren().add(windowIndex, window);
             }
         });
     }
     
+    /**
+     * Removes the info window into this input field.
+     * @param window 
+     */
+    protected void removeInfoWindow(InfoWindow window) {
+        final HBox interactableContent = getInteractableContent();
+        interactableContent.getChildren().remove(window);
+    }
+    
+    /**
+     * Checks if this input currently has an info window showing in its interactable content.
+     * @return 
+     */
     protected boolean hasInfoWindow() {
+        final HBox interactableContent = getInteractableContent();
         return interactableContent.getChildren().stream().anyMatch(node -> node instanceof InfoWindow);
     }
     
-    protected void removeInfoWindow(InfoWindow window) {
-        interactableContent.getChildren().remove(window);
-    }
+
     // </editor-fold>
-    
-    public void setContextButtonDisable(boolean b) {
-        //to do
-        //want to reformat the grid pane to eliminate the context menu when button is disabled. this will be tricky
-    }
-    
-    private void setValid(boolean isValid) {
-        if (isValid){
-            background.setFill(fieldColor);
-        } else {
-            background.setFill(invalidColor);
-        }
-    }
-    public void setInFocus(boolean focused){
-        if (focused) {
-            foreground.setStroke(Color.web("#1B92E3"));
-        } else {
-            foreground.setStroke(null);
-        }
-    }        
 }

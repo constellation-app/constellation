@@ -15,14 +15,24 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field.framework;
 
+import javafx.scene.control.Label;
+
 /**
- *
+ * An Interface for {@link ConstellationInput} extensions.
+ * Provides required functionality to allow an extension to have a {@link LeftButton}.
+ * 
  * @author capricornunicorn123
  */
 public interface LeftButtonSupport {
     
-    public Button getLeftButton();
+    public LeftButton getLeftButton();
     
     public void executeLeftButtonAction();
+    
+    public abstract class LeftButton extends Button {
+        public LeftButton(Label label, Button.ButtonType type) {
+            super(label, type);
+        }
+    }
     
 }

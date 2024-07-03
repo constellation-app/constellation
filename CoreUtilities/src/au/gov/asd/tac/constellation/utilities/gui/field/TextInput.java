@@ -43,7 +43,7 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSup
  * 
  * @author capricornunicorn123
  */
-public final class TextInput extends ConstellationInput<String> implements RecentValuesListener, RightButtonSupport, AutoCompleteSupport{
+public final class TextInput extends ConstellationInput<String> implements RecentValuesListener, AutoCompleteSupport, RightButtonSupport {
     
     private final List<String> recentValues = new ArrayList<>();
     private final String recentValueListeningId;
@@ -79,44 +79,6 @@ public final class TextInput extends ConstellationInput<String> implements Recen
         return Arrays.asList(recent);
     }
     // </editor-fold>  
-         
-    // <editor-fold defaultstate="collapsed" desc="Button Event Implementation">   
-    @Override
-    public Button getRightButton() {
-        return new Button(new Label("Recent"), Button.ButtonType.DROPDOWN) {
-            @Override
-            public EventHandler<? super MouseEvent> action() {
-                return event -> {
-                    executeRightButtonAction();
-                };
-            }
-        };
-    }
-    
-    @Override
-    public void executeRightButtonAction() {
-        this.showDropDown(new TextInputDropDown(this));     
-    }
-    // </editor-fold>   
-    
-    // <editor-fold defaultstate="collapsed" desc="DropDown Implementation">   
-    
-    private class TextInputDropDown extends ConstellationInputDropDown {
-        public TextInputDropDown(final TextInput field){
-            super(field);
-            final List<MenuItem> items = new ArrayList<>();
-            for (final String recentValue : recentValues){
-                final Label label = new Label(recentValue);
-                
-                label.setOnMouseClicked(event -> {
-                    field.setText(recentValue);
-                });
-                items.add(this.buildCustomMenuItem(label));
-            }
-            this.addMenuItems(items);
-        }
-    }
-    // </editor-fold> 
     
     // <editor-fold defaultstate="collapsed" desc="Recent Value Implementation">   
     @Override
@@ -155,6 +117,41 @@ public final class TextInput extends ConstellationInput<String> implements Recen
                 });
         
         return suggestions;
+    }
+    // </editor-fold>    
+
+    // <editor-fold defaultstate="collapsed" desc="RightButtonSupport Implementation">   
+    @Override
+    public RightButton getRightButton() {
+        return new RightButton(new Label("Recent"), Button.ButtonType.DROPDOWN) {
+            @Override
+            public EventHandler<? super MouseEvent> action() {
+                return event -> {
+                    executeRightButtonAction();
+                };
+            }
+        };
+    }
+    
+    @Override
+    public void executeRightButtonAction() {
+        this.showDropDown(new TextInputDropDown(this));     
+    }
+    
+    private class TextInputDropDown extends ConstellationInputDropDown {
+        public TextInputDropDown(final TextInput field){
+            super(field);
+            final List<MenuItem> items = new ArrayList<>();
+            for (final String recentValue : recentValues){
+                final Label label = new Label(recentValue);
+                
+                label.setOnMouseClicked(event -> {
+                    field.setText(recentValue);
+                });
+                items.add(this.buildCustomMenuItem(label));
+            }
+            this.addMenuItems(items);
+        }
     }
     // </editor-fold> 
 }

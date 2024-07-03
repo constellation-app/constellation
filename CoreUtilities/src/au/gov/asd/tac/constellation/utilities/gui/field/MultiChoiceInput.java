@@ -202,8 +202,8 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
     // <editor-fold defaultstate="collapsed" desc="Button Event Implementation">   
     
     @Override
-    public Button getRightButton() {
-        return new Button(new Label(ConstellationInputConstants.SELECT_BUTTON_LABEL), ButtonType.DROPDOWN) {
+    public RightButton getRightButton() {
+        return new RightButton(new Label(ConstellationInputConstants.SELECT_BUTTON_LABEL), ButtonType.DROPDOWN) {
                 @Override
                 public EventHandler<? super MouseEvent> action() {
                     return event -> executeRightButtonAction();

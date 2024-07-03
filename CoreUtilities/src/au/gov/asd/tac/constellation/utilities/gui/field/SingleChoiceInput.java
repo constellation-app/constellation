@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.utilities.gui.field;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.ChoiceType;
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.ChoiceType.SINGLE_DROPDOWN;
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.ChoiceType.SINGLE_SPINNER;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button.ButtonType;
 import java.util.ArrayList;
 import java.util.List;
@@ -196,10 +195,10 @@ public final class SingleChoiceInput<C extends Object> extends ChoiceInputField<
 
     // <editor-fold defaultstate="collapsed" desc="Button Event Implementation">   
     @Override
-    public Button getLeftButton() {
+    public LeftButton getLeftButton() {
         switch (type) {
             case SINGLE_SPINNER -> {
-                return  new Button(new Label(ConstellationInputConstants.PREVIOUS_BUTTON_LABEL), ButtonType.CHANGER) {
+                return  new LeftButton(new Label(ConstellationInputConstants.PREVIOUS_BUTTON_LABEL), ButtonType.CHANGER) {
                     @Override
                     public EventHandler<? super MouseEvent> action() {
                         return event -> executeLeftButtonAction();
@@ -213,7 +212,7 @@ public final class SingleChoiceInput<C extends Object> extends ChoiceInputField<
     }
     
     @Override
-    public Button getRightButton() {
+    public RightButton getRightButton() {
         
         Label label;
         ButtonType buttonType;
@@ -233,7 +232,7 @@ public final class SingleChoiceInput<C extends Object> extends ChoiceInputField<
             }
         }
         
-        return new Button(label, buttonType) {
+        return new RightButton(label, buttonType) {
                 @Override
                 public EventHandler<? super MouseEvent> action() {
                     return event -> executeRightButtonAction();

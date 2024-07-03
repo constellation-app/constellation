@@ -77,8 +77,8 @@ public final class PasswordInput extends ConstellationInput<String> implements R
     
     // <editor-fold defaultstate="collapsed" desc="Button Event Implementation">
     @Override
-    public Button getRightButton() {
-        Button button = new Button(label, Button.ButtonType.CHANGER) {
+    public RightButton getRightButton() {
+        return new RightButton(label, Button.ButtonType.CHANGER) {
             @Override
             public EventHandler<? super MouseEvent> action() {
                 return event -> {
@@ -86,7 +86,6 @@ public final class PasswordInput extends ConstellationInput<String> implements R
                 };
             }
         };
-        return button;
     }
     
     @Override

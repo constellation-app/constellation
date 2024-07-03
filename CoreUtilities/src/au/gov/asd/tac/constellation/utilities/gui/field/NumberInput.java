@@ -15,11 +15,9 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button.ButtonType;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.collections.ListChangeListener;
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
@@ -241,8 +239,8 @@ public final class NumberInput<C extends Number> extends ConstellationInput<Numb
 
     // <editor-fold defaultstate="collapsed" desc="Button Event Implementation">   
     @Override
-    public Button getLeftButton() {
-        return new Button(new Label(ConstellationInputConstants.PREVIOUS_BUTTON_LABEL), ButtonType.CHANGER) {
+    public LeftButton getLeftButton() {
+        return new LeftButton(new Label(ConstellationInputConstants.PREVIOUS_BUTTON_LABEL), ButtonType.CHANGER) {
             @Override
             public EventHandler<? super MouseEvent> action() {
                 return event -> executeLeftButtonAction();
@@ -251,8 +249,8 @@ public final class NumberInput<C extends Number> extends ConstellationInput<Numb
     }
 
     @Override
-    public Button getRightButton() {
-        return new Button(new Label(ConstellationInputConstants.NEXT_BUTTON_LABEL), ButtonType.CHANGER) {
+    public RightButton getRightButton() {
+        return new RightButton(new Label(ConstellationInputConstants.NEXT_BUTTON_LABEL), ButtonType.CHANGER) {
             @Override
             public EventHandler<? super MouseEvent> action() {
                 return event -> executeRightButtonAction();

@@ -181,8 +181,8 @@ public final class FileInput extends ConstellationInput<List<File>> implements R
     
     // <editor-fold defaultstate="collapsed" desc="Button Event Implementation">    
     @Override
-    public Button getRightButton() {
-        return new Button(new Label(fileInputKind.toString()), Button.ButtonType.POPUP) {
+    public RightButton getRightButton() {
+        return new RightButton(new Label(fileInputKind.toString()), Button.ButtonType.POPUP) {
             @Override
             public EventHandler<? super MouseEvent> action() {
                 return event -> executeRightButtonAction();

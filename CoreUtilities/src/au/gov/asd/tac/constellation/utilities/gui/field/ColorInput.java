@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConsta
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.ColorMode.COLOR;
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.ColorMode.HEX;
 import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.ColorMode.RGB;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button.ButtonType;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -230,19 +229,18 @@ public final class ColorInput extends ConstellationInput<ConstellationColor> imp
     
     // <editor-fold defaultstate="collapsed" desc="Button Event Implementation">   
     @Override
-    public Button getLeftButton() {
-        Button button = new Button(label, ButtonType.CHANGER) {
+    public LeftButton getLeftButton() {
+        return new LeftButton(label, ButtonType.CHANGER) {
                 @Override
                 public EventHandler<? super MouseEvent> action() {
                     return event -> executeLeftButtonAction();
                 }
         };        
-        return button;
     }
     
     @Override
-    public Button getRightButton() {
-        return new Button(new Label(ConstellationInputConstants.SWATCH_BUTTON_LABEL), ButtonType.DROPDOWN) {
+    public RightButton getRightButton() {
+        return new RightButton(new Label(ConstellationInputConstants.SWATCH_BUTTON_LABEL), ButtonType.DROPDOWN) {
                 @Override
                 public EventHandler<? super MouseEvent> action() {
                     return event -> executeRightButtonAction();
