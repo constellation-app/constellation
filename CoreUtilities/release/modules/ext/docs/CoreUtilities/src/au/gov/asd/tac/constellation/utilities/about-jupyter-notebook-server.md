@@ -68,6 +68,7 @@ A tutorial for how to use Jupyter notebook with Constellation can be found on ou
 Simply download the .ipynb file and open it in Jupyter notebook.
 
 <br />
+
 ## Setup
 
 ### Windows
@@ -82,6 +83,7 @@ Anaconda Python distribution and check the box "Add Anaconda3 to my PATH environ
 If you believe adding commands to PATH using this method will cause issues, simply search online for guides on manually adding commands to PATH.
 
 <br />
+
 ### Linux and Mac
 Similar to Windows, the Anaconda Python distribution can also be used to install 
 all the required software on Linux and Mac.
