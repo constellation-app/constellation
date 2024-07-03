@@ -292,7 +292,7 @@ public class SVGDataNGTest {
         
         svgObjectBlank2.setAttribute(SVGAttributeConstants.WIDTH, width);
         
-        assertEquals(svgObjectBlank1.toString(), expectedString);
+        assertEquals(CommonTests.getString(svgObjectBlank1), expectedString);
 
     }
 

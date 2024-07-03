@@ -17,37 +17,40 @@ package au.gov.asd.tac.constellation.testing.construction;
 
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
 import au.gov.asd.tac.constellation.testing.CoreTestingPluginRegistry;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
+import java.util.List;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
-import org.openide.util.NbBundle.Messages;
+import org.openide.util.NbBundle;
 
 /**
- * Create a sudoku puzzle graph.
  *
- * @author algol
+ * @author capricornunicorn123
  */
-@ActionID(category = "Graph", id = "au.gov.asd.tac.constellation.testing.construction.SudokuGraphBuilderAction")
-@ActionRegistration(displayName = "#CTL_SudokuGraphBuilderAction", surviveFocusChange = true)
-//@ActionReferences({
-//    @ActionReference(path = "Menu/Experimental/Build Graph", position = 0)
-//})
-@Messages("CTL_SudokuGraphBuilderAction=Sudoku Graph")
-public final class SudokuGraphBuilderAction implements ActionListener {
+@ActionID(category = "Developer", id = "au.gov.asd.tac.constellation.testing.construction.TestableGraphBuilderAction")
+@ActionRegistration(displayName = "#CTL_TestableGraphBuilderAction")
+@ActionReferences({
+    @ActionReference(path = "Menu/Experimental/Developer", position = 1000)
+})
+@NbBundle.Messages("CTL_TestableGraphBuilderAction=Testable Graph Builder")
+public final class TestableGraphBuilderAction implements ActionListener {
 
     private final GraphNode context;
 
-    public SudokuGraphBuilderAction(final GraphNode context) {
+    public TestableGraphBuilderAction(final GraphNode context) {
         this.context = context;
     }
 
     @Override
-    public void actionPerformed(final ActionEvent e) {
-        PluginExecution.withPlugin(CoreTestingPluginRegistry.SUDOKU_GRAPH_BUILDER)
+    public void actionPerformed(final ActionEvent ev) {
+        PluginExecution.withPlugin(CoreTestingPluginRegistry.TESTABLE_GRAPH_BUILDER)
+                .interactively(false)
                 .executeLater(context.getGraph());
     }
 }
