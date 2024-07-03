@@ -33,43 +33,9 @@ defines which attributes are included in that graph. This plugin can be run via
 the Tools menu and is also run by default after using some Data Access Plugins or
 running some Analytics. 
 
-## Schemas
-
-### Visual Schema
-
-The base level schema in Constellation is the Visual Schema which only includes 
-visual attributes such as Identifier, Label, Color and the coordinates of the 
-object on the graph. This schema is used when a Visual Graph <img src="../ext/docs/CoreVisualSchema/src/au/gov/asd/tac/constellation/graph/schema/visual/resources/visual_graph.png" alt="Visual Graph" />
-is created.
-
-Example of a Visual Graph 
-<div style="text-align: center">
-<img height=400 src="../ext/docs/CoreVisualSchema/src/au/gov/asd/tac/constellation/graph/schema/visual/resources/visual_graph_example.png" alt="Visual Graph Example" />
-</div>
-
-<br />
-
-### Analytic Schema
-
-The other commonly used schema in Constellation is the Analytic Schema. This schema 
-adds attributes such as Type, Source and Raw. This schema is used when a Analytic
-Graph <img src="../ext/docs/CoreVisualSchema/src/au/gov/asd/tac/constellation/graph/schema/visual/resources/analytic_graph.png" alt="Analytic Graph" /> 
-is created.
-
-Example of an Analytic Graph 
-<div style="text-align: center">
-<img height=400 src="../ext/docs/CoreVisualSchema/src/au/gov/asd/tac/constellation/graph/schema/visual/resources/analytic_graph_example.png" alt="Analytic Graph Example" />
-</div>
-<br />
-
-### Other Attributes
-
-Other attributes can be added to a schema through the Attribute Editor. These can 
-include Constellation defined attributes or custom attributes that can be user created.
-<br />
-
-More information on the schemas can be found on the Schema help page under 
-Graph -> Graph Overview -> Schemas.
+More information on the schemas can be found on the 
+[Schema](../ext/docs/CoreGraphFramework/src/au/gov/asd/tac/constellation/graph/schemas.md)
+help page. 
 
 ## Complete With Schema
 

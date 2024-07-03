@@ -48,7 +48,7 @@ Hierarchical Clustering in Constellation makes use of overlay colors. When the
 clustering algorithm has been run, each cluster is assigned a unique
 color. Node backgrounds and intra-cluster transactions are colored using
 the cluster's color, while inter-cluster transactions are colored dark
-grey when dimmed.
+grey when the Excluded Elements is set to dimmed.
 
 Rather than set the color directly, Hierarchical Clustering in Constellation
 creates a new color attribute "Cluster.Hierarchical.Color" and tells 

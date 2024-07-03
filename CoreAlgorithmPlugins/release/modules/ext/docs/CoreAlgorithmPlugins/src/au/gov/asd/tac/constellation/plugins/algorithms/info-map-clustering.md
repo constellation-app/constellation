@@ -64,16 +64,13 @@ To switch back to the default color attribute, edit the graph attributes via
 the Attribute Editor and click on "Restore Default" followed by Ok.
  
 
-Before Info Map Clustering is run:
-
 <div style="text-align: center">
-<img height=500 src="../ext/docs/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/resources/clusteringBefore.png" alt="Before Info Map Clustering" />
+    <figure style="display: inline-block">
+        <img height=500 src="../ext/docs/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/resources/infoMapBefore.png" alt="Before Info Map Clustering" />
+        <figcaption>Before Info Map Clustering</figcaption>
+    </figure>
+    <figure style="display: inline-block">
+        <img height=500 src="../ext/docs/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/resources/infoMapAfter.png" alt="After Info Map Clustering" />
+        <figcaption>After Info Map Clustering</figcaption>
+    </figure>
 </div>
-<br />
-
-After Info Map Clustering is run:
-
-<div style="text-align: center">
-<img height=500 src="../ext/docs/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/resources/infoMapAfter.png" alt="After Info Map Clustering" />
-</div>
-
