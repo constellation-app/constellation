@@ -127,9 +127,11 @@ public class TestableGraphBuilder {
      */
     public TestableGraphBuilder withDecorators() throws InterruptedException {
         final WritableGraph wg = graph.getWritableGraph("addDecroators", true);
-        withDecorators(wg);
-        wg.commit();
-        
+        try {
+            withDecorators(wg);
+        } finally {
+            wg.commit();
+        }
         return this;
     }
     
@@ -165,8 +167,11 @@ public class TestableGraphBuilder {
      */
     public TestableGraphBuilder withBlazes() throws InterruptedException {
         final WritableGraph wg = graph.getWritableGraph("addDecroators", true);
-        withBlazes(wg);
-        wg.commit();
+        try {
+            withBlazes(wg);
+        } finally {
+            wg.commit();
+        }
         return this;
     }
     
@@ -192,8 +197,11 @@ public class TestableGraphBuilder {
      */
     public TestableGraphBuilder withBottomLabels() throws InterruptedException {
         final WritableGraph wg = graph.getWritableGraph("addBottomLabels", true);
-        withBottomLabels(wg);
-        wg.commit();
+        try {
+            withBottomLabels(wg);
+        } finally {
+            wg.commit();
+        }
         return this;
     }
     
@@ -228,9 +236,12 @@ public class TestableGraphBuilder {
      * @throws InterruptedException 
      */
     public TestableGraphBuilder withTopLabels() throws InterruptedException {
-        final WritableGraph gwm = graph.getWritableGraph("addTopLabels", true);
-        withTopLabels(gwm);
-        gwm.commit();
+        final WritableGraph wg = graph.getWritableGraph("addTopLabels", true);
+        try {
+            withTopLabels(wg);
+        } finally {
+            wg.commit();
+        }
         return this;
     }
     
@@ -263,8 +274,11 @@ public class TestableGraphBuilder {
      */
     public TestableGraphBuilder withTransactionLabels() throws InterruptedException {
         final WritableGraph wg = graph.getWritableGraph("addTransactionLabels", true);
-        withTransactionLabels(wg);
-        wg.commit();
+        try {
+            withTransactionLabels(wg);
+        } finally {
+            wg.commit();
+        }
         return this;
     }
     
@@ -326,8 +340,11 @@ public class TestableGraphBuilder {
     
     public TestableGraphBuilder withNodes() throws InterruptedException {
         final WritableGraph wg = graph.getWritableGraph("addVerticies", true);
-        withNodes(wg);       
-        wg.commit();
+        try {
+            withNodes(wg);       
+        } finally {
+            wg.commit();
+        }
         return this;
     }
     
@@ -444,10 +461,13 @@ public class TestableGraphBuilder {
     }
     
     public TestableGraphBuilder withLoopedTransactions() throws InterruptedException {
-            WritableGraph wg = graph.getWritableGraph("addLoopedTransactions", true);
+        WritableGraph wg = graph.getWritableGraph("addLoopedTransactions", true);
+        try {
             withLoopedTransactions(wg);    
+        } finally {
             wg.commit();
-            return this;
+        }
+        return this;
     }
     
     public void withLoopedTransactions(final GraphWriteMethods gwm) {
@@ -469,8 +489,11 @@ public class TestableGraphBuilder {
     
     public TestableGraphBuilder withLinearTransactions() throws InterruptedException{
         final WritableGraph wg = graph.getWritableGraph("addLinearTransactions", true);
-        withLinearTransactions(wg);    
-        wg.commit();
+        try {
+            withLinearTransactions(wg);    
+        } finally {
+            wg.commit();
+        }
         return this;
     }
     
@@ -493,8 +516,11 @@ public class TestableGraphBuilder {
     
     public TestableGraphBuilder withConnectionMode(final ConnectionMode mode) throws InterruptedException{
         final WritableGraph wg = graph.getWritableGraph("setConnectionMode", true);
-        withConnectionMode(wg, mode);    
-        wg.commit();
+        try {
+            withConnectionMode(wg, mode);    
+        } finally {
+            wg.commit();
+        }
         return this;
     }
     
@@ -505,8 +531,11 @@ public class TestableGraphBuilder {
     
     public TestableGraphBuilder refocusCamera(final AxisConstants axis) throws InterruptedException {
         final WritableGraph wg = graph.getWritableGraph("setCamera", true);
-        refocusCamera(wg, axis);    
-        wg.commit();
+        try {
+            refocusCamera(wg, axis);    
+        } finally {
+            wg.commit();
+        }
         return this;
     }
     

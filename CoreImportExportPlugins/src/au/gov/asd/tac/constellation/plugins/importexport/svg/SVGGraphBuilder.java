@@ -328,7 +328,7 @@ public class SVGGraphBuilder {
             final List<List<SVGObject>> threadOuputLists = new ArrayList<>();
 
             // Create a task for each set of inputLists with an unique list for their generated output
-            for (List<Integer> threadInput : threadInputLists) {
+            for (final List<Integer> threadInput : threadInputLists) {
                 final GraphVisualisationReferences graph = new GraphVisualisationReferences(viewFrustum, modelViewProjectionMatrix, viewPort, camera, drawFlags, selectedElementsOnly, assetDirectoty);
                 final List<SVGObject> output = new ArrayList<>();
                 final GenerateSVGNodesTask task = new GenerateSVGNodesTask(graph, threadInput, output);
@@ -385,7 +385,7 @@ public class SVGGraphBuilder {
         final List<List<SVGObject>> threadOuputLists = new ArrayList<>(); 
         
         // Create a task for each set of inputLists with an unique list for their generated output
-        for (List<Integer> threadInput : threadInputLists) {
+        for (final List<Integer> threadInput : threadInputLists) {
             final GraphVisualisationReferences giu = new GraphVisualisationReferences(viewFrustum, modelViewProjectionMatrix, viewPort, camera, drawFlags, selectedElementsOnly);
             final List<SVGObject> output = new ArrayList<>();
             final GenerateSVGConnectionsTask task = new GenerateSVGConnectionsTask(giu, threadInput, output);
@@ -427,7 +427,7 @@ public class SVGGraphBuilder {
         final List<List<SVGObject>> threadOuputLists = new ArrayList<>();
 
         // Create a task for each set of inputLists with an array list for their generated output
-        for (List<Integer> threadInput : threadInputLists) {
+        for (final List<Integer> threadInput : threadInputLists) {
             final GraphVisualisationReferences graph = new GraphVisualisationReferences(viewFrustum, modelViewProjectionMatrix, viewPort, camera, drawFlags, selectedElementsOnly);
             final List<SVGObject> output = new ArrayList<>();
             final GenerateSVGBlazesTask task = new GenerateSVGBlazesTask(graph, threadInput, output);
@@ -446,7 +446,6 @@ public class SVGGraphBuilder {
         // Update the PluginInteraction of the Nodes generated 
         interaction.setProgress(0, -1, String.format("Created %s blazes", blazes.size()), true);
         return blazes;
-        
     }
     
 

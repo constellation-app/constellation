@@ -212,7 +212,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
             try {
                 Files.delete(file.toPath());
             } catch (final IOException ex) {
-                LOGGER.log(Level.INFO, String.format("Deletion of file %s was not successful", file.toPath()));
+                LOGGER.log(Level.WARNING, String.format("Deletion of file %s was not successful", file.toPath()));
             }
         }
             
@@ -221,7 +221,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
             try {
                 Files.delete(assetDirectory.toPath());
             } catch (final IOException ex) {
-                LOGGER.log(Level.INFO, String.format("Deletion of directory %s was not successful", assetDirectory.toPath()));
+                LOGGER.log(Level.WARNING, String.format("Deletion of directory %s was not successful", assetDirectory.toPath()));
             }
         }
         
