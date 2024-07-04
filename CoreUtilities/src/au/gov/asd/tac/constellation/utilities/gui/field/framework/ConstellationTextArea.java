@@ -201,6 +201,7 @@ import javafx.scene.shape.Rectangle;
         public void setPreferedRowCount(Integer suggestedRowCount) {
             if (primaryInput instanceof TextArea textAreaField){
                 textAreaField.setPrefRowCount(suggestedRowCount);
+                //For some reason the text area grows in height with key preses, so ensure the max height has been set.
                 textAreaField.setMaxHeight(suggestedRowCount * 16);
             }
         }

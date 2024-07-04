@@ -152,8 +152,26 @@ public final class NumberInput<C extends Number> extends ConstellationInput<Numb
         return min;
     }
     
+    /**
+     * Gets the step value for this NumberInput.
+     * if a step value has not been defined the following generic steps will be returned. 
+     * 1 for Integer types
+     * 0.1 for Float types.
+     * @return 
+     */
     private Number getStep(){
         if (step == null) {
+            switch(init) {
+                case Float floatvalue-> {
+                    return 0.1;
+                }
+                case Integer intValue -> {
+                    return 1;
+                }
+                default -> {
+                    //Do Nothing
+                }
+            }
             return getMax().floatValue() - getMin().floatValue();
         }
         return step;
