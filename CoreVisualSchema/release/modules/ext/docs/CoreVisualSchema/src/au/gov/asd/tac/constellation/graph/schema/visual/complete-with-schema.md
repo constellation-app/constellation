@@ -12,7 +12,7 @@
 <th>Constellation Action</th>
 <th>Keyboard Shortcut</th>
 <th>User Action</th>
-<th>Menu Icon</th>
+<th style="text-align: center;">Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -20,9 +20,7 @@
 <td>Run Complete With Schema</td>
 <td>F5</td>
 <td>Tools -&gt; Complete With Schema</td>
-<td>
-<img src="../ext/docs/CoreVisualSchema/src/au/gov/asd/tac/constellation/graph/schema/visual/resources/completeWithSchema.png" width="16" height="16" />
-</td>
+<td style="text-align: center;"><img src="../ext/docs/CoreVisualSchema/src/au/gov/asd/tac/constellation/graph/schema/visual/resources/completeWithSchema.png" alt="Complete with Schema Icon" /></td>
 </tr>
 </tbody>
 </table>
