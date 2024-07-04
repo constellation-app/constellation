@@ -262,7 +262,7 @@ public class FileInputPane extends HBox {
     private FileChooserBuilder getFileChooser(final PluginParameter<FileParameterValue> parameter, final String title) {
         
         final ExtensionFilter extensionFilter = FileParameterType.getFileFilters(parameter);
-        FileChooserBuilder fileChooserBuilder = FileChooser.createFileChooserBuilderNoFilter(title, FileExtensionConstants.SVG)
+        FileChooserBuilder fileChooserBuilder = FileChooser.createFileChooserBuilderNoFilter(title)
                 .setAcceptAllFileFilterUsed(extensionFilter == null || FileParameterType.isAcceptAllFileFilterUsed(parameter));                
 
         if (extensionFilter != null) {

@@ -209,11 +209,10 @@ public class FileChooser {
      * @param fileExtension the file extension associated with this FileChooserBuilder.
      * @return the constructed FileChooserBuilder
      */
-    public static FileChooserBuilder createFileChooserBuilderNoFilter(final String title, final String fileExtension) {
+    public static FileChooserBuilder createFileChooserBuilderNoFilter(final String title) {
         return new FileChooserBuilder(title)
                 .setTitle(title)
-                .setFilesOnly(true)
-                .setSelectionApprover((final File[] selection) -> approver(selection, fileExtension));
+                .setFilesOnly(true);
     }
 
     /**
@@ -226,8 +225,9 @@ public class FileChooser {
      * @return the constructed FileChooserBuilder
      */
     public static FileChooserBuilder createFileChooserBuilder(final String title, final String fileExtension, final String description) {
-        return createFileChooserBuilderNoFilter(title, fileExtension)
+        return createFileChooserBuilderNoFilter(title)
                 .setAcceptAllFileFilterUsed(false)
+                .setSelectionApprover((final File[] selection) -> approver(selection, fileExtension))
                 .setFileFilter(new FileFilter() {
                     @Override
                     public boolean accept(final File file) {
