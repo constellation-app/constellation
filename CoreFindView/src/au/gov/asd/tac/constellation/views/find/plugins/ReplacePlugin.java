@@ -72,7 +72,11 @@ public class ReplacePlugin extends SimpleEditPlugin {
         final String searchString = regex ? findString : Pattern.quote(findString);
         final int caseSensitivity = ignorecase ? Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE : 0;
         final Pattern searchPattern = Pattern.compile(searchString, caseSensitivity);
-
+        
+        if (!currentSelection) {
+            FindViewUtilities.clearSelection(graph);
+        }
+        
         /**
          * Loop through all selected attributes, get the current element of the
          * selected type and its value, check the value isn't null, then compare
@@ -94,7 +98,7 @@ public class ReplacePlugin extends SimpleEditPlugin {
                     final String value = graph.getStringValue(a.getId(), currElement);
 
                     // get the selected value of that graph element
-                    boolean selected = graph.getBooleanValue(selectedAttribute, currElement);
+                    final boolean selected = graph.getBooleanValue(selectedAttribute, currElement);
 
                     // If the value isnt null
                     if (value != null) {
@@ -108,6 +112,7 @@ public class ReplacePlugin extends SimpleEditPlugin {
                                 // set the string of the element types attribute
                                 // to the new value
                                 graph.setStringValue(a.getId(), currElement, newValue);
+                                graph.setBooleanValue(selectedAttribute, currElement, true);
                                 // Swap to view the graph where the element is found
                                 if (searchAllGraphs) {
                                     FindViewUtilities.searchAllGraphs(graph);

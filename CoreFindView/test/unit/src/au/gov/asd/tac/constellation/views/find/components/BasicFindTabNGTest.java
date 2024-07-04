@@ -38,6 +38,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import org.mockito.MockedStatic;
@@ -444,10 +445,13 @@ public class BasicFindTabNGTest {
         lookForChoiceBox.getItems().add("Node");
         lookForChoiceBox.getSelectionModel().select(0);
         final TextField findTextField = new TextField("test");
+        final CheckBox zoomToSelectionCheckBox = new CheckBox("Zoom to Selection");
 
         //Mock the getters to return the newly made java fx element.
         when(basicFindMock.getLookForChoiceBox()).thenReturn(lookForChoiceBox);
         when(basicFindMock.getFindTextField()).thenReturn(findTextField);
+        when(basicFindMock.getZoomToSelection()).thenReturn(zoomToSelectionCheckBox);
+        zoomToSelectionCheckBox.setSelected(false);
 
         //Do nothing on saveSelected() and updateBasicFindParamters()
         doCallRealMethod().when(basicFindMock).findAllAction();
@@ -492,9 +496,12 @@ public class BasicFindTabNGTest {
         lookForChoiceBox.getItems().add("Node");
         lookForChoiceBox.getSelectionModel().select(0);
         final TextField findTextField = new TextField("test");
+        final CheckBox zoomToSelectionCheckBox = new CheckBox("Zoom to Selection");
 
         when(basicFindMock.getLookForChoiceBox()).thenReturn(lookForChoiceBox);
         when(basicFindMock.getFindTextField()).thenReturn(findTextField);
+        when(basicFindMock.getZoomToSelection()).thenReturn(zoomToSelectionCheckBox);
+        zoomToSelectionCheckBox.setSelected(false);
 
         doCallRealMethod().when(basicFindMock).findNextAction();
         doNothing().when(basicFindMock).saveSelected(Mockito.any());
@@ -534,10 +541,13 @@ public class BasicFindTabNGTest {
 
         when(basicFindMock.getLookForChoiceBox()).thenReturn(lookForChoiceBox);
         when(basicFindMock.getFindTextField()).thenReturn(findTextField);
+        final CheckBox zoomToSelectionCheckBox = new CheckBox("Zoom to Selection");
 
         doCallRealMethod().when(basicFindMock).findPrevAction();
         doNothing().when(basicFindMock).saveSelected(Mockito.any());
         doNothing().when(basicFindMock).updateBasicFindParamters();
+        when(basicFindMock.getZoomToSelection()).thenReturn(zoomToSelectionCheckBox);
+        zoomToSelectionCheckBox.setSelected(false);
 
         try (MockedStatic<FindViewController> mockedStatic = Mockito.mockStatic(FindViewController.class)) {
             mockedStatic.when(() -> FindViewController.getDefault()).thenReturn(mockController);

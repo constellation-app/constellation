@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.views.find;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.views.find.components.advanced.utilities.AdvancedSearchParameters;
@@ -254,19 +253,6 @@ public class FindViewController {
             ActiveFindResultsList.getAdvancedResultsList().setCurrentIndex(-1);
         }
         currentAdvancedSearchParameters.copyParameters(parameters);
-    }
-
-    /**
-     * Updates the view to the bounding box of the currently selected nodes.
-     */
-    public void zoomToSelection() {
-        ActiveFindResultsList.getBasicResultsList().stream().forEach(graph -> {
-            if (graph != null) {
-                PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(GraphManager.getDefault().getAllGraphs().get(graph.getGraphId()));
-            }
-        });
-        // check to see the graph is not null
-        
     }
 
     /**

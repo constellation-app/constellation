@@ -1,8 +1,8 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
-== 2024-07-04 Added Find and Zoom to Basic Find
-<p> Added a "Find All and Zoom" button to the Basic Find dialog</p>
+== 2024-07-05 Added Zoom to Selection to Find View
+<p> Added a "Zoom to Selection" checkbox to the Find View. Having this selected will make the graph zoom in to the results found.</p>
 
 == 2024-06-25 Exporting to SVG
 <p>Graphs can now be exported to an SVG image format enabling graphs to be viewed in web browsers and other vector image viewers.</p>

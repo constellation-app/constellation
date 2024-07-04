@@ -32,6 +32,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import org.mockito.MockedStatic;
@@ -208,11 +209,14 @@ public class ReplaceTabNGTest {
         lookForChoiceBox.getSelectionModel().select(0);
         final TextField findTextField = new TextField("test");
         final TextField repalceTextField = new TextField("replace");
+        final CheckBox zoomToSelectionCheckBox = new CheckBox("Zoom to Selection");
 
         //Mock the getters to return the newly made java fx element.
         when(replaceMock.getLookForChoiceBox()).thenReturn(lookForChoiceBox);
         when(replaceMock.getFindTextField()).thenReturn(findTextField);
         when(replaceMock.getReplaceTextField()).thenReturn(repalceTextField);
+        when(replaceMock.getZoomToSelection()).thenReturn(zoomToSelectionCheckBox);
+        zoomToSelectionCheckBox.setSelected(false);
 
         //Do nothing on saveSelected() and updateBasicFindParamters()
         doCallRealMethod().when(replaceMock).replaceAllAction();
@@ -261,11 +265,14 @@ public class ReplaceTabNGTest {
         lookForChoiceBox.getSelectionModel().select(0);
         final TextField findTextField = new TextField("test");
         final TextField repalceTextField = new TextField("replace");
+        final CheckBox zoomToSelectionCheckBox = new CheckBox("Zoom to Selection");
 
         //Mock the getters to return the newly made java fx element.
         when(replaceMock.getLookForChoiceBox()).thenReturn(lookForChoiceBox);
         when(replaceMock.getFindTextField()).thenReturn(findTextField);
         when(replaceMock.getReplaceTextField()).thenReturn(repalceTextField);
+        when(replaceMock.getZoomToSelection()).thenReturn(zoomToSelectionCheckBox);
+        zoomToSelectionCheckBox.setSelected(false);
 
         //Do nothing on saveSelected() and updateBasicFindParamters()
         doCallRealMethod().when(replaceMock).replaceNextAction();

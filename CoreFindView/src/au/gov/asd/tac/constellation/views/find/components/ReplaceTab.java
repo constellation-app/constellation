@@ -17,6 +17,9 @@ package au.gov.asd.tac.constellation.views.find.components;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.find.FindViewController;
@@ -43,7 +46,7 @@ public class ReplaceTab extends BasicFindTab {
     private final Button replaceAllButton = new Button("Replace All");
     private final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor()));
     private final Button helpButton = new Button("", helpImage);
-
+    
     public ReplaceTab(final FindViewTabs parentComponent) {
         super(parentComponent);
         this.setText("Replace");
@@ -85,7 +88,7 @@ public class ReplaceTab extends BasicFindTab {
         // ensure the parameters for the search are determined correctly 
         settingsGrid.getChildren().remove(postSearchChoiceBox);
         settingsGrid.getChildren().remove(postSearchLabel);
-
+        
         // remove exact match checkBox
         preferencesGrid.getChildren().remove(exactMatchCB);
     }
@@ -150,6 +153,9 @@ public class ReplaceTab extends BasicFindTab {
             saveSelected(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
             updateBasicReplaceParamters();
             FindViewController.getDefault().replaceMatchingElements(true, false);
+            if (getZoomToSelection().isSelected()) {
+                PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(GraphManager.getDefault().getActiveGraph());
+            }
         }
     }
 
@@ -165,6 +171,9 @@ public class ReplaceTab extends BasicFindTab {
             saveSelected(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
             updateBasicReplaceParamters();
             FindViewController.getDefault().replaceMatchingElements(false, true);
+            if (getZoomToSelection().isSelected()) {
+                PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(GraphManager.getDefault().getActiveGraph());
+            }
         }
     }
 

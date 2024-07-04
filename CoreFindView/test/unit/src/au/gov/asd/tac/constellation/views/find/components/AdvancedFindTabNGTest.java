@@ -38,6 +38,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -394,12 +395,16 @@ public class AdvancedFindTabNGTest {
         final List<FindCriteriaValues> findCriteriaValues = new ArrayList<>();
         final StringCriteriaValues stringCriteriaValue = new StringCriteriaValues("string", "Identifer", "Is", "hello", false, false);
         findCriteriaValues.add(stringCriteriaValue);
+        final CheckBox zoomToSelectionCheckBox = new CheckBox("Zoom to Selection");
 
         //When each function is called return the temporarily created elements above
         when(advancedFindMock.getCorrespondingCriteriaList(graphElementType)).thenReturn(criteriaPaneList);
         when(advancedFindMock.getCriteriaValues(criteriaPaneList)).thenReturn(findCriteriaValues);
         when(advancedFindMock.getLookForChoiceBox()).thenReturn(lookForChoiceBox);
         when(advancedFindMock.getDeleteResultsButton()).thenReturn(mockButton);
+        when(advancedFindMock.getZoomToSelection()).thenReturn(zoomToSelectionCheckBox);
+        
+        zoomToSelectionCheckBox.setSelected(false);
 
         //Do real call on findAllAction
         doCallRealMethod().when(advancedFindMock).findAllAction();
@@ -455,11 +460,15 @@ public class AdvancedFindTabNGTest {
         final List<FindCriteriaValues> findCriteriaValues = new ArrayList<>();
         final StringCriteriaValues stringCriteriaValue = new StringCriteriaValues("string", "Identifer", "Is", "hello", false, false);
         findCriteriaValues.add(stringCriteriaValue);
+        final CheckBox zoomToSelectionCheckBox = new CheckBox("Zoom to Selection");
 
         //When each function is called return the temporarily created elements above
         when(advancedFindMock.getCorrespondingCriteriaList(graphElementType)).thenReturn(criteriaPaneList);
         when(advancedFindMock.getCriteriaValues(criteriaPaneList)).thenReturn(findCriteriaValues);
         when(advancedFindMock.getLookForChoiceBox()).thenReturn(lookForChoiceBox);
+        when(advancedFindMock.getZoomToSelection()).thenReturn(zoomToSelectionCheckBox);
+        
+        zoomToSelectionCheckBox.setSelected(false);
 
         //Do real call on findAllAction
         doCallRealMethod().when(advancedFindMock).findNextAction();
@@ -515,11 +524,15 @@ public class AdvancedFindTabNGTest {
         final List<FindCriteriaValues> findCriteriaValues = new ArrayList<>();
         final StringCriteriaValues stringCriteriaValue = new StringCriteriaValues("string", "Identifer", "Is", "hello", false, false);
         findCriteriaValues.add(stringCriteriaValue);
+        final CheckBox zoomToSelectionCheckBox = new CheckBox("Zoom to Selection");
 
         //When each function is called return the temporarily created elements above
         when(advancedFindMock.getCorrespondingCriteriaList(graphElementType)).thenReturn(criteriaPaneList);
         when(advancedFindMock.getCriteriaValues(criteriaPaneList)).thenReturn(findCriteriaValues);
         when(advancedFindMock.getLookForChoiceBox()).thenReturn(lookForChoiceBox);
+        when(advancedFindMock.getZoomToSelection()).thenReturn(zoomToSelectionCheckBox);
+
+        zoomToSelectionCheckBox.setSelected(false);
 
         //Do real call on findAllAction
         doCallRealMethod().when(advancedFindMock).findPreviousAction();

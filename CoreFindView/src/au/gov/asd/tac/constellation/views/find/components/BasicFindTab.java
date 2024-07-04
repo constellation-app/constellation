@@ -17,6 +17,9 @@ package au.gov.asd.tac.constellation.views.find.components;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.gui.MultiChoiceInputField;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
@@ -110,8 +113,8 @@ public class BasicFindTab extends Tab {
     private final Button findNextButton = new Button("Find Next");
     private final Button findPrevButton = new Button("Find Previous");
     private final Button findAllButton = new Button("Find All");
-    private final Button findAllZoomButton = new Button("Find All and Zoom");
     private final Button deleteResultsButton = new Button("Delete Results From Graph(s)");
+    private final CheckBox zoomToSelection = new CheckBox("Zoom to Selection");
 
     protected static final int LABEL_WIDTH = 90;
     protected static final int DROP_DOWN_WIDTH = 120;
@@ -163,7 +166,6 @@ public class BasicFindTab extends Tab {
 
         //Set the actions for the 5 bottom buttons
         findAllButton.setOnAction(action -> findAllAction());
-        findAllZoomButton.setOnAction(action -> findAllZoomAction(true));
         findNextButton.setOnAction(action -> findNextAction());
         findPrevButton.setOnAction(action -> findPrevAction());
         deleteResultsButton.setOnAction(action -> deleteResultsAction());
@@ -272,6 +274,7 @@ public class BasicFindTab extends Tab {
         postSearchChoiceBox.setMinWidth(DROP_DOWN_WIDTH);
         settingsGrid.add(postSearchLabel, 2, 2);
         settingsGrid.add(postSearchChoiceBox, 3, 2);
+        settingsGrid.add(zoomToSelection, 0, 5);
 
         // Set the preferences for the buttonsHbox and all relevant Buttons
         buttonsHBox.setAlignment(Pos.CENTER_LEFT);
@@ -528,12 +531,9 @@ public class BasicFindTab extends Tab {
             updateBasicFindParamters();
             FindViewController.getDefault().retriveMatchingElements(true, false);
             getDeleteResultsButton().setDisable(false);
-        }
-    }
-    public void findAllZoomAction(final boolean zoom) {
-        if (!getFindTextField().getText().isEmpty()) {
-            findAllAction();
-            FindViewController.getDefault().zoomToSelection();
+            if (getZoomToSelection().isSelected()) {
+                PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(GraphManager.getDefault().getActiveGraph());
+            }
         }
     }
 
@@ -549,6 +549,9 @@ public class BasicFindTab extends Tab {
             saveSelected(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
             updateBasicFindParamters();
             FindViewController.getDefault().retriveMatchingElements(false, true);
+            if (getZoomToSelection().isSelected()) {
+                PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(GraphManager.getDefault().getActiveGraph());
+            }
         }
     }
 
@@ -564,6 +567,9 @@ public class BasicFindTab extends Tab {
             saveSelected(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
             updateBasicFindParamters();
             FindViewController.getDefault().retriveMatchingElements(false, false);
+            if (getZoomToSelection().isSelected()) {
+                PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(GraphManager.getDefault().getActiveGraph());
+            }
         }
     }
 
@@ -624,15 +630,6 @@ public class BasicFindTab extends Tab {
     }
 
     /**
-     * Gets and returns the findAllButton
-     *
-     * @return findAllButton
-     */
-    public Button getFindAllZoomButton() {
-        return findAllZoomButton;
-    }
-
-    /**
      * Gets and returns the lookForChoiceBox
      *
      * @return lookForChoiceBox
@@ -650,4 +647,10 @@ public class BasicFindTab extends Tab {
         return deleteResultsButton;
     }
     
+    /**
+     * Get Zoom to Selection checkbox
+     */
+    public CheckBox getZoomToSelection() {
+        return zoomToSelection;
+    }    
 }
