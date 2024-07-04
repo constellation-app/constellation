@@ -51,6 +51,7 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSup
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ShortcutSupport;
 import javafx.application.Platform;
 import javafx.scene.control.TextInputControl;
+import javafx.scene.layout.VBox;
 
 
 /**
@@ -187,9 +188,9 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
      */
     private void buildInputFieldLayers(final ConstellationTextArea textArea){
         final HBox interactableContentLayer = new HBox();
-        interactableContentLayer.setAlignment(Pos.CENTER);
+        interactableContentLayer.setAlignment(Pos.TOP_CENTER);
         HBox.setHgrow(interactableContentLayer, Priority.ALWAYS);
-        
+
         final Rectangle backgroundLayer = new Rectangle(300, defaultCellHeight);
         backgroundLayer.setArcWidth(corner);
         backgroundLayer.setArcHeight(corner);  
@@ -433,7 +434,8 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
     
     /**
      * Sets the default {@link ToolTip} of the {@link ConstellationTextArea}.
-     * The tool tip may be temporarily overwritten when the Input field becomes invalidated.
+     * toDo: enable to Tooltip to be temporarily overwritten to provide extra context 
+     * when the Input field becomes invalidated.
      * @param tooltip
      */
     public final void setTooltip(final Tooltip tooltip) {

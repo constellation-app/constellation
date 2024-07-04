@@ -71,7 +71,7 @@ public final class FileInput extends ConstellationInput<List<File>> implements R
     }
     
     public FileInput(final FileInputKind fileInputKind, final TextType textTypeOverride){
-        this(fileInputKind, textTypeOverride, 1);
+        this(fileInputKind, textTypeOverride, textTypeOverride == TextType.MULTILINE ? 3 : 1);
     }
     
     public FileInput(final FileInputKind fileInputKind, final TextType textTypeOverride, final int suggestedHeight) {
@@ -84,9 +84,10 @@ public final class FileInput extends ConstellationInput<List<File>> implements R
         );
         
         this.fileInputKind = fileInputKind;
+        
         if (suggestedHeight > 1){
-//            setWrapText(false);
-            //setPrefRowCount(suggestedHeight);
+            //setWrapText(false);
+            setPrefRowCount(suggestedHeight);
         }
         initialiseDepedantComponents();
     }

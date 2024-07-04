@@ -70,7 +70,7 @@ import javafx.scene.shape.Rectangle;
             switch (type){
                 case MULTILINE -> {
                     TextArea area = new TextArea();
-                    area.setWrapText(true);
+                    //area.setWrapText(true);
                     
                     //Set the next focus event to TAB instead of CTRL + TAB.
                     area.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
@@ -201,7 +201,7 @@ import javafx.scene.shape.Rectangle;
         public void setPreferedRowCount(Integer suggestedRowCount) {
             if (primaryInput instanceof TextArea textAreaField){
                 textAreaField.setPrefRowCount(suggestedRowCount);
-                textAreaField.setMaxHeight(textAreaField.getPrefHeight() + 3);
+                textAreaField.setMaxHeight(suggestedRowCount * 16);
             }
         }
 
