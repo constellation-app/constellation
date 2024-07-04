@@ -66,6 +66,6 @@ public final class ExportToJsonAction implements ActionListener {
      * @return the created file chooser.
      */
     public FileChooserBuilder getExportToJSONFileChooser() {
-        return FileChooser.createFileChooserBuilder(TITLE, FileExtensionConstants.JSON, "JSON Files (" + FileExtensionConstants.JSON + ")" );
+        return FileChooser.createFileChooserBuilder(TITLE, FileExtensionConstants.JSON, "JSON Files (" + FileExtensionConstants.JSON + ")", true);
     }
 }

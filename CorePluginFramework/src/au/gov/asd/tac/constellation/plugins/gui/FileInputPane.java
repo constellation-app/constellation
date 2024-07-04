@@ -93,12 +93,12 @@ public class FileInputPane extends HBox {
             final List<File> files = new ArrayList<>();
             final CompletableFuture dialogFuture;
             switch (paramaterValue.getKind()) {
-                case OPEN, OPEN_OBSCURED -> dialogFuture = FileChooser.openOpenDialog(getFileChooser(parameter, "Open")).thenAccept(optionalFile -> optionalFile.ifPresent(openFile -> {
+                case OPEN, OPEN_OBSCURED -> dialogFuture = FileChooser.openOpenDialog(getFileChooser(parameter, "Open", FileExtensionConstants.TEXT)).thenAccept(optionalFile -> optionalFile.ifPresent(openFile -> {
                     if (openFile != null) {
                         files.add(openFile);
                     }
                 }));
-                case OPEN_MULTIPLE, OPEN_MULTIPLE_OBSCURED -> dialogFuture = FileChooser.openMultiDialog(getFileChooser(parameter, "Open File(s)")).thenAccept(optionalFile -> optionalFile.ifPresent(openFiles -> {
+                case OPEN_MULTIPLE, OPEN_MULTIPLE_OBSCURED -> dialogFuture = FileChooser.openMultiDialog(getFileChooser(parameter, "Open File(s)", FileExtensionConstants.TEXT)).thenAccept(optionalFile -> optionalFile.ifPresent(openFiles -> {
                     if (openFiles != null) {
                         files.addAll(openFiles);
                     }
@@ -262,7 +262,7 @@ public class FileInputPane extends HBox {
     private FileChooserBuilder getFileChooser(final PluginParameter<FileParameterValue> parameter, final String title) {
         
         final ExtensionFilter extensionFilter = FileParameterType.getFileFilters(parameter);
-        FileChooserBuilder fileChooserBuilder = FileChooser.createFileChooserBuilderNoFilter(title)
+        FileChooserBuilder fileChooserBuilder = FileChooser.createFileChooserBuilder(title)
                 .setAcceptAllFileFilterUsed(extensionFilter == null || FileParameterType.isAcceptAllFileFilterUsed(parameter));                
 
         if (extensionFilter != null) {
@@ -282,5 +282,18 @@ public class FileInputPane extends HBox {
             }
         }
         return fileChooserBuilder;
+    }
+    
+    /**
+     * Creates a FileChooser for the Parameter
+     * If an extension filter has not been specified, all file types will be accepted by default.
+     * @param parameter
+     * @param title
+     * @return 
+     */
+    private FileChooserBuilder getFileChooser(final PluginParameter<FileParameterValue> parameter, final String title, final String fileExtension) {
+        
+        return FileChooser.createFileChooserBuilder(title, fileExtension)
+                .setAcceptAllFileFilterUsed(FileParameterType.isAcceptAllFileFilterUsed(parameter));        
     }
 }

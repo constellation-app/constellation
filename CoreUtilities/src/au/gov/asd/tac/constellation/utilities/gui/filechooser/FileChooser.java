@@ -206,10 +206,9 @@ public class FileChooser {
      * Creates a FileChooserBuilder with no file filter
      *
      * @param title the title of the FileChooserBuilder
-     * @param fileExtension the file extension associated with this FileChooserBuilder.
      * @return the constructed FileChooserBuilder
      */
-    public static FileChooserBuilder createFileChooserBuilderNoFilter(final String title) {
+    public static FileChooserBuilder createFileChooserBuilder(final String title) {
         return new FileChooserBuilder(title)
                 .setTitle(title)
                 .setFilesOnly(true);
@@ -221,13 +220,13 @@ public class FileChooser {
      *
      * @param title the title of the FileChooserBuilder
      * @param fileExtension the file extension associated with this FileChooserBuilder.
-     * @param description the description of the file filter
+     * @param filterDescription the description of the file filter
+     * @param warnOverwrite true if user will be warned of overwriting a file
      * @return the constructed FileChooserBuilder
      */
-    public static FileChooserBuilder createFileChooserBuilder(final String title, final String fileExtension, final String description) {
-        return createFileChooserBuilderNoFilter(title)
+    public static FileChooserBuilder createFileChooserBuilder(final String title, final String fileExtension, final String filterDescription, final boolean warnOverwrite) {
+        final FileChooserBuilder builder = createFileChooserBuilder(title)
                 .setAcceptAllFileFilterUsed(false)
-                .setSelectionApprover((final File[] selection) -> approver(selection, fileExtension))
                 .setFileFilter(new FileFilter() {
                     @Override
                     public boolean accept(final File file) {
@@ -237,8 +236,39 @@ public class FileChooser {
 
                     @Override
                     public String getDescription() {
-                        return description;
+                        return filterDescription;
                     }
                 });
+
+        if (warnOverwrite) {
+            builder.setSelectionApprover((final File[] selection) -> approver(selection, fileExtension));
+        }
+        return builder;
+    }
+
+    /**
+     * Creates a FileChooserBuilder with a file filter, File filter accepts if either: file is a normal file and either:
+     * filename ends with given file extension, or file is a directory
+     *
+     * @param title the title of the FileChooserBuilder
+     * @param fileExtension the file extension associated with this FileChooserBuilder.
+     * @param filterDescription the description of the file filter
+     * @return the constructed FileChooserBuilder
+     */
+    public static FileChooserBuilder createFileChooserBuilder(final String title, final String fileExtension, final String filterDescription) {
+        return createFileChooserBuilder(title, fileExtension, filterDescription, false);
+    }
+    
+    /**
+     * Creates a FileChooserBuilder with a file filter, File filter accepts if either: file is a normal file and either:
+     * filename ends with given file extension, or file is a directory
+     *
+     * @param title the title of the FileChooserBuilder
+     * @param fileExtension the file extension associated with this FileChooserBuilder.
+     * @param filterDescription the description of the file filter
+     * @return the constructed FileChooserBuilder
+     */
+    public static FileChooserBuilder createFileChooserBuilder(final String title, final String fileExtension) {
+        return createFileChooserBuilder(title, fileExtension, fileExtension, false);
     }
 }

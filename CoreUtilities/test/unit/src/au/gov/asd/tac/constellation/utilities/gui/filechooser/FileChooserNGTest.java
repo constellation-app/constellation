@@ -277,7 +277,7 @@ public class FileChooserNGTest {
         final String title = "";
         final String fileExtension = "";
         
-        final FileChooserBuilder result = FileChooser.createFileChooserBuilderNoFilter(title);
+        final FileChooserBuilder result = FileChooser.createFileChooserBuilder(title);
         assertEquals(FileChooserBuilder.class, result.getClass());
     }
 

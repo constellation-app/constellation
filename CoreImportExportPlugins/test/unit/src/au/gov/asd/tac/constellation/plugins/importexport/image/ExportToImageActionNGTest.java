@@ -72,7 +72,7 @@ public class ExportToImageActionNGTest {
     public void setUpMethod() throws Exception {
         fileChooserStaticMock = mockStatic(FileChooser.class);
         fileChooserStaticMock.when(()
-                -> FileChooser.createFileChooserBuilderNoFilter(any(String.class)))
+                -> FileChooser.createFileChooserBuilder(any(String.class)))
                 .thenCallRealMethod();
 
         fileChooserStaticMock.when(()

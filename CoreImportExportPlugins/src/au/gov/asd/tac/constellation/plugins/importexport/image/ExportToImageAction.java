@@ -68,6 +68,6 @@ public final class ExportToImageAction implements ActionListener {
      * @return the created file chooser.
      */
     public FileChooserBuilder getExportToImageFileChooser() {
-        return FileChooser.createFileChooserBuilder(TITLE, FileExtensionConstants.PNG, "Image Files (" + FileExtensionConstants.PNG + ")");
+        return FileChooser.createFileChooserBuilder(TITLE, FileExtensionConstants.PNG, "Image Files (" + FileExtensionConstants.PNG + ")", true);
     }
 }
