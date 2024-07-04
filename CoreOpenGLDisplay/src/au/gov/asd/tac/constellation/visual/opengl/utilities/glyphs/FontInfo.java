@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
@@ -46,6 +47,8 @@ public class FontInfo {
     final Set<Character.UnicodeScript> mustHave;
     final Set<Character.UnicodeScript> mustNotHave;
     final Font font;
+    
+    private static final Pattern FONT_INFO_REGEX = Pattern.compile("\\p{Zs}*,\\p{Zs}*");
 
     public FontInfo(final String fontName, final int fontStyle, final Set<Character.UnicodeScript> mustHave, final Set<Character.UnicodeScript> mustNotHave, final Font font) {
         this.fontName = fontName;
@@ -212,7 +215,7 @@ public class FontInfo {
             boolean ok = true;
             line = line.trim();
             if (line.length() > 0 && !line.startsWith("#")) {
-                final String[] parts = line.trim().split("\\p{Zs}*,\\p{Zs}*");
+                final String[] parts = FONT_INFO_REGEX.split(line.trim());
                 final String fontName = parts[0];
                 if (fontName.isEmpty()) {
                     ok = false;
@@ -225,19 +228,11 @@ public class FontInfo {
                             messages.add(String.format("Line %d: Blank font description", lineno));
                         } else {
                             switch (part) {
-                                case "PLAIN":
-                                    fontStyle = Font.PLAIN;
-                                    break;
-                                case "BOLD":
-                                    fontStyle = Font.BOLD;
-                                    break;
-                                case "ITALIC":
-                                    fontStyle = Font.ITALIC;
-                                    break;
-                                case "BOLD_ITALIC":
-                                    fontStyle = Font.BOLD | Font.ITALIC;
-                                    break;
-                                default:
+                                case "PLAIN" -> fontStyle = Font.PLAIN;
+                                case "BOLD" -> fontStyle = Font.BOLD;
+                                case "ITALIC" -> fontStyle = Font.ITALIC;
+                                case "BOLD_ITALIC" -> fontStyle = Font.BOLD | Font.ITALIC;
+                                default -> {
                                     final boolean mustNot = part.startsWith("!");
                                     if (mustNot) {
                                         part = part.substring(1);
@@ -250,7 +245,7 @@ public class FontInfo {
                                         ok = false;
                                         messages.add(String.format("Line %d: Font style or unicode script '%s' does not exist", lineno, part));
                                     }
-                                    break;
+                                }
                             }
                         }
                     }

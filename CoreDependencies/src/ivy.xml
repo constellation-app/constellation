@@ -10,88 +10,77 @@
     </configurations>
 
     <dependencies defaultconf="runtime">
-        <!-- OpenGL - uncomment when JOGL 2.4.0+ is available on Maven -->
-        <!-- <dependency org="org.jogamp.gluegen" name="gluegen-rt" rev="2.4.0" >
-            <artifact name="gluegen-rt" type="jar" ext="jar"/>
+        <!-- OpenGL - uncomment when JOGL 2.5.0+ is available on Maven -->
+         <!--<dependency org="org.jogamp.gluegen" name="gluegen-rt" rev="2.5.0" />-->
+<!--            <artifact name="gluegen-rt" type="jar" ext="jar"/>
             <artifact name="gluegen-rt" type="jar" ext="jar" e:classifier="natives-linux-amd64"/>
-            <artifact name="gluegen-rt" type="jar" ext="jar" e:classifier="natives-linux-i586"/>
             <artifact name="gluegen-rt" type="jar" ext="jar" e:classifier="natives-macosx-universal"/>
             <artifact name="gluegen-rt" type="jar" ext="jar" e:classifier="natives-windows-amd64"/>
-            <artifact name="gluegen-rt" type="jar" ext="jar" e:classifier="natives-windows-i586"/>
-        </dependency>
-        <dependency org="org.jogamp.jocl" name="jocl" rev="2.4.0">
-            <artifact name="jocl" type="jar" ext="jar"/>
+        </dependency>-->
+        <!--<dependency org="org.jogamp.jocl" name="jocl" rev="2.5.0"/>-->
+<!--            <artifact name="jocl" type="jar" ext="jar"/>
             <artifact name="jocl" type="jar" ext="jar" e:classifier="natives-linux-amd64"/>
-            <artifact name="jocl" type="jar" ext="jar" e:classifier="natives-linux-i586"/>
             <artifact name="jocl" type="jar" ext="jar" e:classifier="natives-macosx-universal"/>
             <artifact name="jocl" type="jar" ext="jar" e:classifier="natives-windows-amd64"/>
-            <artifact name="jocl" type="jar" ext="jar" e:classifier="natives-windows-i586"/>
-        </dependency>
-        <dependency org="org.jogamp.jogl" name="jogl-all" rev="2.4.0">
-            <artifact name="jogl-all" type="jar" ext="jar"/>
+        </dependency>-->
+        <!--<dependency org="org.jogamp.jogl" name="jogl-all" rev="2.5.0"/>-->
+<!--            <artifact name="jogl-all" type="jar" ext="jar"/>
             <artifact name="jogl-all" type="jar" ext="jar" e:classifier="natives-linux-amd64"/>
-            <artifact name="jogl-all" type="jar" ext="jar" e:classifier="natives-linux-i586"/>
             <artifact name="jogl-all" type="jar" ext="jar" e:classifier="natives-macosx-universal"/>
             <artifact name="jogl-all" type="jar" ext="jar" e:classifier="natives-windows-amd64"/>
-            <artifact name="jogl-all" type="jar" ext="jar" e:classifier="natives-windows-i586"/>
         </dependency> -->
 
         <!-- Geotools -->
-        <!--<dependency org="org.geotools" name="gt-coverage" rev="25.1"/>-->
-        <dependency org="org.geotools" name="gt-cql" rev="25.1"/>
-        <dependency org="org.geotools" name="gt-jdbc" rev="25.1"/>
-        <dependency org="org.geotools" name="gt-main" rev="25.1"/>
-        <dependency org="org.geotools" name="gt-metadata" rev="25.1"/>
-        <dependency org="org.geotools" name="gt-opengis" rev="25.1"/>
-        <dependency org="org.geotools" name="gt-referencing" rev="25.1"/>
-        <!--<dependency org="org.geotools" name="gt-render" rev="25.1"/>-->
-        <dependency org="org.geotools" name="gt-xml" rev="25.1"/>
-        <dependency org="org.geotools" name="gt-epsg-hsql" rev="25.1"/>
-        <dependency org="org.geotools" name="gt-geopkg" rev="25.1"/>
-        <dependency org="org.geotools" name="gt-shapefile" rev="25.1"/>
-        <dependency org="org.geotools" name="gt-geojson" rev="25.1"/>
-        <dependency org="org.geotools.xsd" name="gt-xsd-core" rev="25.1"/>
-        <dependency org="org.geotools.xsd" name="gt-xsd-kml" rev="25.1"/>
+        <dependency org="org.geotools" name="gt-cql" rev="26.4"/>
+        <dependency org="org.geotools" name="gt-jdbc" rev="26.4"/>
+        <dependency org="org.geotools" name="gt-main" rev="26.4"/>
+        <dependency org="org.geotools" name="gt-metadata" rev="26.4"/>
+        <dependency org="org.geotools" name="gt-opengis" rev="26.4"/>
+        <dependency org="org.geotools" name="gt-referencing" rev="26.4"/>
+        <dependency org="org.geotools" name="gt-xml" rev="26.4"/>
+        <dependency org="org.geotools" name="gt-epsg-hsql" rev="26.4"/>
+        <dependency org="org.geotools" name="gt-geopkg" rev="26.4"/>
+        <dependency org="org.geotools" name="gt-shapefile" rev="26.4"/>
+        <dependency org="org.geotools" name="gt-geojson" rev="26.4"/>
+        <dependency org="org.geotools.xsd" name="gt-xsd-core" rev="26.4"/>
+        <dependency org="org.geotools.xsd" name="gt-xsd-kml" rev="26.4"/>
 
         <!-- Apache -->
         <dependency org="org.apache.commons" name="commons-collections4" rev="4.4"/>
-        <dependency org="org.apache.commons" name="commons-csv" rev="1.9.0"/>
-        <dependency org="org.apache.commons" name="commons-lang3" rev="3.12.0"/>
+        <dependency org="org.apache.commons" name="commons-csv" rev="1.10.0"/>
+        <dependency org="org.apache.commons" name="commons-lang3" rev="3.14.0"/>
         <dependency org="org.apache.commons" name="commons-math3" rev="3.6.1"/>
-        <dependency org="org.apache.commons" name="commons-text" rev="1.9"/>
-        <dependency org="org.apache.poi" name="poi" rev="5.0.0"/>
-        <dependency org="org.apache.poi" name="poi-ooxml" rev="5.0.0"/>
+        <dependency org="org.apache.commons" name="commons-text" rev="1.11.0"/>
+        <dependency org="org.apache.poi" name="poi" rev="5.2.5"/>
+        <dependency org="org.apache.poi" name="poi-ooxml" rev="5.2.5"/>
 
         <!-- Other -->
-        <dependency org="com.fasterxml.jackson.core" name="jackson-annotations" rev="2.12.3"/> 
-        <dependency org="com.fasterxml.jackson.core" name="jackson-core" rev="2.12.3"/>
-        <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.12.3"/>
-        <dependency org="com.fifesoft" name="rsyntaxtextarea" rev="3.1.3"/>
-        <dependency org="com.google.guava" name="guava" rev="30.1.1-jre" />
+        <dependency org="com.fasterxml.jackson.core" name="jackson-annotations" rev="2.16.1"/> 
+        <dependency org="com.fasterxml.jackson.core" name="jackson-core" rev="2.16.1"/>
+        <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.16.1"/>
+        <dependency org="com.fifesoft" name="rsyntaxtextarea" rev="3.4.0"/>
+        <dependency org="com.google.guava" name="guava" rev="33.0.0-jre" />
         <dependency org="gov.nasa" name="worldwind" rev="2.0.0-986"/>
         <dependency org="javax.help" name="javahelp" rev="2.0.05"/>
         <dependency org="log4j" name="log4j" rev="1.2.17"/>
-        <dependency org="org.assertj" name="assertj-core" rev="3.20.2" />
-        <dependency org="org.controlsfx" name="controlsfx" rev="11.1.0"/>
-        <dependency org="org.eclipse.jetty" name="jetty-server" rev="11.0.6"/>
-        <dependency org="org.eclipse.jetty" name="jetty-servlet" rev="11.0.6"/>
-        <dependency org="org.ejml" name="ejml-all" rev="0.41"/>
-        <dependency org="org.json" name="json" rev="20210307"/>
-        <dependency org="org.mockito" name="mockito-inline" rev="3.11.2"/>
-        <dependency org="org.python" name="jython-standalone" rev="2.7.2"/>
+        <dependency org="org.controlsfx" name="controlsfx" rev="11.1.2"/>
+        <dependency org="org.eclipse.jetty" name="jetty-server" rev="11.0.20"/>
+        <dependency org="org.eclipse.jetty" name="jetty-servlet" rev="11.0.20"/>
+        <dependency org="org.ejml" name="ejml-all" rev="0.43.1"/>
+        <dependency org="org.json" name="json" rev="20240205"/>
+        <dependency org="org.python" name="jython-standalone" rev="2.7.3"/>
         <dependency org="org.swinglabs" name="swingx" rev="1.6.1"/>
-        <dependency org="org.fxmisc.richtext" name="richtextfx" rev="0.10.6"/>
-        
+        <dependency org="org.fxmisc.richtext" name="richtextfx" rev="0.11.2"/>
+        <dependency org="org.openjdk.nashorn" name="nashorn-core" rev="15.4"/>
+                
         <!-- Testing -->
-        <dependency org="nl.jqno.equalsverifier" name="equalsverifier" rev="3.7"/>
-        <dependency org="org.testfx" name="openjfx-monocle" rev="jdk-11+26" transitive="false" />
-        <dependency org="org.testfx" name="testfx-core" rev="4.0.16-alpha" />
+        <dependency org="org.assertj" name="assertj-core" rev="3.25.3" />
+        <dependency org="org.mockito" name="mockito-inline" rev="5.2.0"/>
+        <dependency org="nl.jqno.equalsverifier" name="equalsverifier" rev="3.15.7"/>
+        <dependency org="org.testfx" name="openjfx-monocle" rev="21.0.2" transitive="false" />
+        <dependency org="org.testfx" name="testfx-core" rev="4.0.18" />
         
-        <!-- Downloaded Manually -->
-        <!--<dependency org="unfolding" name="unfolding" rev="0.9.6"/>-->
-        <!--<dependency org="org.processing" name="core" rev="3.3.7"/>-->
-        
-        <dependency org="com.github.rjeschke" name="txtmark" rev="0.13"/>
+        <dependency org="org.commonmark" name="commonmark" rev="0.22.0"/>
 
         <!-- Exclusions -->
         <exclude org="javax.media" module="jai_core"/>

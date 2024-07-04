@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -116,7 +116,7 @@ public class SchemaTransactionTypeUtilities {
             });
 
             // add custom types if no concept is specified
-            if (fromConcepts == GET_ALL_TYPES) {
+            if (fromConcepts == null) {
                 transactionTypes.addAll(CUSTOM_TRANSACTION_TYPES);
             }
 
@@ -160,9 +160,8 @@ public class SchemaTransactionTypeUtilities {
             return getDefaultType();
         }
 
-        for (SchemaTransactionType schemaTransactionType : getTypes(fromConcept)) {
-            if (schemaTransactionType.getName().equals(name)
-                    || schemaTransactionType.toString().equals(name)) {
+        for (final SchemaTransactionType schemaTransactionType : getTypes(fromConcept)) {
+            if (schemaTransactionType.getName().equals(name) || schemaTransactionType.toString().equals(name)) {
                 return schemaTransactionType;
             }
         }

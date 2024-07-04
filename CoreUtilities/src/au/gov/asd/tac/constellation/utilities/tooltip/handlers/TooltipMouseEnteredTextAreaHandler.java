@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,18 +45,15 @@ public class TooltipMouseEnteredTextAreaHandler implements EventHandler {
     
     @Override
     public void handle(final Event event) {
-        if(event instanceof MouseOverTextEvent){
-            final MouseOverTextEvent mote = (MouseOverTextEvent)event;
-            if (tooltipPane.isEnabled()) {
-                characterIndex[0] = mote.getCharacterIndex();
-                final List<TooltipProvider.TooltipDefinition> definitions = TooltipProvider.getTooltips(textArea.getText(), characterIndex[0]);
-                textArea.requestFocus();
-                TooltipUtilities.selectActiveArea(textArea, definitions);
-                if (!definitions.isEmpty()) {
-                    tooltipNode[0] = createTooltipNode(definitions);
-                    final Point2D location = mote.getScreenPosition();
-                    tooltipPane.showTooltip(tooltipNode[0], location.getX(), location.getY());
-                }
+        if(event instanceof MouseOverTextEvent mote && tooltipPane.isEnabled()){
+            characterIndex[0] = mote.getCharacterIndex();
+            final List<TooltipProvider.TooltipDefinition> definitions = TooltipProvider.getTooltips(textArea.getText(), characterIndex[0]);
+            textArea.requestFocus();
+            TooltipUtilities.selectActiveArea(textArea, definitions);
+            if (!definitions.isEmpty()) {
+                tooltipNode[0] = createTooltipNode(definitions);
+                final Point2D location = mote.getScreenPosition();
+                tooltipPane.showTooltip(tooltipNode[0], location.getX(), location.getY());
             }
         }
     }

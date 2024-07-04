@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,6 +40,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class SelectionContextMenu implements ContextMenuProvider {
 
     private static final String SELECT_ALL = "Select All";
+    private static final String SELECT_VERTICES = "Select Nodes";
+    private static final String SELECT_TRANSACTIONS = "Select Transactions";
     private static final String DESELECT_ALL = "Deselect All";
     private static final String DESELECT_VERTICES = "Deselect Nodes";
     private static final String DESELECT_TRANSACTIONS = "Deselect Transactions";
@@ -51,6 +53,10 @@ public class SelectionContextMenu implements ContextMenuProvider {
 
     @StaticResource
     private static final String SELECT_ALL_ICON = "au/gov/asd/tac/constellation/graph/visual/plugins/select/resources/select_all.png";
+    @StaticResource
+    private static final String SELECT_VERTICES_ICON = "au/gov/asd/tac/constellation/graph/visual/plugins/select/resources/selectNodes.png";
+    @StaticResource
+    private static final String SELECT_TRANSACTIONS_ICON = "au/gov/asd/tac/constellation/graph/visual/plugins/select/resources/selectTransactions.png";
     @StaticResource
     private static final String DESELECT_ALL_ICON = "au/gov/asd/tac/constellation/graph/visual/plugins/select/resources/deselect_all.png";
     @StaticResource
@@ -76,32 +82,43 @@ public class SelectionContextMenu implements ContextMenuProvider {
     @Override
     public List<String> getItems(final GraphReadMethods graph, final GraphElementType elementType, final int entity) {
         if (elementType == GraphElementType.GRAPH) {
-            return Arrays.asList(SELECT_ALL, DESELECT_ALL, DESELECT_VERTICES, DESELECT_TRANSACTIONS, INVERT_SELECTION, SELECT_BLAZES, DESELECT_BLAZES, SELECT_DIMMED, SELECT_UNDIMMED);
+            return Arrays.asList(SELECT_ALL, SELECT_VERTICES, SELECT_TRANSACTIONS, DESELECT_ALL, DESELECT_VERTICES, DESELECT_TRANSACTIONS, INVERT_SELECTION, SELECT_BLAZES, DESELECT_BLAZES, SELECT_DIMMED, SELECT_UNDIMMED);
         } else {
             return Collections.emptyList();
         }
     }
 
     @Override
-    public void selectItem(String item, Graph graph, GraphElementType elementType, int entity, Vector3f unprojected) {
-        if (SELECT_ALL.equals(item)) {
-            PluginExecution.withPlugin(VisualGraphPluginRegistry.SELECT_ALL).executeLater(graph);
-        } else if (DESELECT_ALL.equals(item)) {
-            PluginExecution.withPlugin(VisualGraphPluginRegistry.DESELECT_ALL).executeLater(graph);
-        } else if (DESELECT_VERTICES.equals(item)) {
-            PluginExecution.withPlugin(VisualGraphPluginRegistry.DESELECT_VERTICES).executeLater(graph);
-        } else if (DESELECT_TRANSACTIONS.equals(item)) {
-            PluginExecution.withPlugin(VisualGraphPluginRegistry.DESELECT_TRANSACTIONS).executeLater(graph);
-        } else if (INVERT_SELECTION.equals(item)) {
-            PluginExecution.withPlugin(VisualGraphPluginRegistry.INVERT_SELECTION).executeLater(graph);
-        } else if (SELECT_BLAZES.equals(item)) {
-            PluginExecution.withPlugin(VisualGraphPluginRegistry.SELECT_BLAZES).executeLater(graph);
-        } else if (DESELECT_BLAZES.equals(item)) {
-            PluginExecution.withPlugin(VisualGraphPluginRegistry.DESELECT_BLAZES).executeLater(graph);
-        } else if (SELECT_DIMMED.equals(item)) {
-            PluginExecution.withPlugin(VisualGraphPluginRegistry.SELECT_DIMMED).executeLater(graph);
-        } else if (SELECT_UNDIMMED.equals(item)) {
-            PluginExecution.withPlugin(VisualGraphPluginRegistry.SELECT_UNDIMMED).executeLater(graph);
+    public void selectItem(final String item, final Graph graph, final GraphElementType elementType, final int entity, final Vector3f unprojected) {
+        switch (item) {
+            case null -> {
+                // Do nothing
+            }
+            case SELECT_ALL ->
+                PluginExecution.withPlugin(VisualGraphPluginRegistry.SELECT_ALL).executeLater(graph);
+            case SELECT_VERTICES ->
+                PluginExecution.withPlugin(VisualGraphPluginRegistry.SELECT_VERTICES).executeLater(graph);
+            case SELECT_TRANSACTIONS ->
+                PluginExecution.withPlugin(VisualGraphPluginRegistry.SELECT_TRANSACTIONS).executeLater(graph);
+            case DESELECT_ALL ->
+                PluginExecution.withPlugin(VisualGraphPluginRegistry.DESELECT_ALL).executeLater(graph);
+            case DESELECT_VERTICES ->
+                PluginExecution.withPlugin(VisualGraphPluginRegistry.DESELECT_VERTICES).executeLater(graph);
+            case DESELECT_TRANSACTIONS ->
+                PluginExecution.withPlugin(VisualGraphPluginRegistry.DESELECT_TRANSACTIONS).executeLater(graph);
+            case INVERT_SELECTION ->
+                PluginExecution.withPlugin(VisualGraphPluginRegistry.INVERT_SELECTION).executeLater(graph);
+            case SELECT_BLAZES ->
+                PluginExecution.withPlugin(VisualGraphPluginRegistry.SELECT_BLAZES).executeLater(graph);
+            case DESELECT_BLAZES ->
+                PluginExecution.withPlugin(VisualGraphPluginRegistry.DESELECT_BLAZES).executeLater(graph);
+            case SELECT_DIMMED ->
+                PluginExecution.withPlugin(VisualGraphPluginRegistry.SELECT_DIMMED).executeLater(graph);
+            case SELECT_UNDIMMED ->
+                PluginExecution.withPlugin(VisualGraphPluginRegistry.SELECT_UNDIMMED).executeLater(graph);
+            default -> {
+                // Do nothing
+            }
         }
     }
 
@@ -118,6 +135,8 @@ public class SelectionContextMenu implements ContextMenuProvider {
         if (elementType == GraphElementType.GRAPH) {
             final List<ImageIcon> icons = new ArrayList<>();
             icons.add(ImageUtilities.loadImageIcon(SELECT_ALL_ICON, false));
+            icons.add(ImageUtilities.loadImageIcon(SELECT_VERTICES_ICON, false));
+            icons.add(ImageUtilities.loadImageIcon(SELECT_TRANSACTIONS_ICON, false));
             icons.add(ImageUtilities.loadImageIcon(DESELECT_ALL_ICON, false));
             icons.add(ImageUtilities.loadImageIcon(DESELECT_VERTICES_ICON, false));
             icons.add(ImageUtilities.loadImageIcon(DESELECT_TRANSACTIONS_ICON, false));

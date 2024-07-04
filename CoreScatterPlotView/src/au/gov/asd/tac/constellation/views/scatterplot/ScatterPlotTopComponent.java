@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.monitor.AttributeValueMonitor;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.scatterplot.state.ScatterPlotConcept;
 import au.gov.asd.tac.constellation.views.scatterplot.state.ScatterPlotState;
@@ -86,14 +87,15 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
             ScatterPlotState state = null;
             try {
                 state = getState(graph);
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException e) {
+                Thread.currentThread().interrupt();
                 ScatterPlotErrorDialog.create("Error getting scatter plot state: " + e.getMessage());
             }
 
             if (state != null && state.isSelectedOnly()) {
                 scatterPlotPane.getChartPane().refreshChart(state);
             } else {
-                Set<ScatterData> selectedElements = scatterPlotPane.getChartPane().getSelectionFromGraph(state);
+                final Set<ScatterData> selectedElements = scatterPlotPane.getChartPane().getSelectionFromGraph(state);
                 scatterPlotPane.getChartPane().selectElementsOnChart(selectedElements, null);
             }
         };
@@ -103,7 +105,8 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
             if (graph != null) {
                 try {
                     state = getState(graph);
-                } catch (InterruptedException e) {
+                } catch (final InterruptedException e) {
+                    Thread.currentThread().interrupt();
                     ScatterPlotErrorDialog.create("Error getting scatter plot state: " + e.getMessage());
                 }
             }
@@ -143,25 +146,20 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
     }
 
     /**
-     * Get the current ScatterPlotState of the active graph, or create one if
-     * none exists.
+     * Get the current ScatterPlotState of the active graph, or create one if none exists.
      *
-     * @return the current ScatterPlotState of the active graph, or create one
-     * if none exists.
-     * @throws InterruptedException if the operation is interrupted during
-     * execution.
+     * @return the current ScatterPlotState of the active graph, or create one if none exists.
+     * @throws InterruptedException if the operation is interrupted during execution.
      */
     public ScatterPlotState getState() throws InterruptedException {
         return getState(currentGraph);
     }
 
     /**
-     * Get the current ScatterPlotState of the given graph, or create one if
-     * none exists.
+     * Get the current ScatterPlotState of the given graph, or create one if none exists.
      *
      * @param graph the state will be read from the graph using this read lock.
-     * @return the current ScatterPlotState of the given graph, or create one if
-     * none exists.
+     * @return the current ScatterPlotState of the given graph, or create one if none exists.
      * @throws InterruptedException if the operation is interrupted or canceled.
      */
     public ScatterPlotState getState(final Graph graph) throws InterruptedException {
@@ -171,8 +169,7 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
         if (graph == null) {
             return state;
         } else {
-            final ReadableGraph readableGraph = graph.getReadableGraph();
-            try {
+            try (final ReadableGraph readableGraph = graph.getReadableGraph()) {
                 final int stateAttribute = ScatterPlotConcept.MetaAttribute.SCATTER_PLOT_STATE.get(readableGraph);
                 if (stateAttribute == Graph.NOT_FOUND) {
                     state = new ScatterPlotState();
@@ -184,8 +181,6 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
                         newState = true;
                     }
                 }
-            } finally {
-                readableGraph.release();
             }
         }
 
@@ -205,11 +200,13 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
 
     @Override
     protected String createStyle() {
-        return "resources/scatter-plot.css";
+        return JavafxStyleManager.isDarkTheme()
+            ? "resources/scatter-pane-dark.css"
+            : "resources/scatter-pane-light.css";
     }
 
     @Override
-    protected void handleNewGraph(Graph graph) {
+    protected void handleNewGraph(final Graph graph) {
         if (!needsUpdate()) {
             return;
         }
@@ -232,9 +229,7 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
     }
 
     /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
+     * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The content of this method is always regenerated by the Form Editor.
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

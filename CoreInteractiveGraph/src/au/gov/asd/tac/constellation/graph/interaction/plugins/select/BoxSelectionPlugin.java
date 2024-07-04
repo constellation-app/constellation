@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -432,7 +432,8 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
         // We know now that the end-points are outside the rectangle, so we only have to worry
         // that the line is between the sides.
         if (x1 == x2) {
-            return minX <= x1 && x1 <= maxX;
+            // At this point minX <= x1 is always true
+            return x1 <= maxX;
         }
 
         // Slope of line segment.

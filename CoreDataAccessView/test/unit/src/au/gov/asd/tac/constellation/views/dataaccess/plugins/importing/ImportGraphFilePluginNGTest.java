@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,7 +96,7 @@ public class ImportGraphFilePluginNGTest {
         
         final PluginParameter<FileParameterValue> fileName = (PluginParameter<FileParameterValue>) params.getParameters().get("ImportGraphFilePlugin.file_name");
         fileName.setStringValue(ImportGraphFilePluginNGTest.class.getResource("file/resources/test.gml").getPath());
-        
+       
         final PluginManager manager = mock(PluginManager.class);        
         when(manager.getGraphNode()).thenReturn(null);
         when(manager.getPlugin()).thenReturn(instance);

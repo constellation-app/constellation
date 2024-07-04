@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,6 +42,7 @@ import au.gov.asd.tac.constellation.preferences.GraphPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
 import java.util.ArrayList;
@@ -78,10 +79,11 @@ public class VisualConcept extends SchemaConcept {
     public static class GraphAttribute {
 
         static final Preferences PREFERENCES = NbPreferences.forModule(GraphPreferenceKeys.class);
+        private static final boolean DARK_MODE = JavafxStyleManager.isDarkTheme();
 
         public static final SchemaAttribute BACKGROUND_COLOR = new SchemaAttribute.Builder(GraphElementType.GRAPH, ColorAttributeDescription.ATTRIBUTE_NAME, "background_color")
                 .setDescription("The background color of the graph")
-                .setDefaultValue(ConstellationColor.NIGHT_SKY)
+                .setDefaultValue(DARK_MODE ? ConstellationColor.NIGHT_SKY : ConstellationColor.LIGHT_SKY)
                 .create()
                 .build();
         public static final SchemaAttribute BLAZE_OPACITY = new SchemaAttribute.Builder(GraphElementType.GRAPH, FloatAttributeDescription.ATTRIBUTE_NAME, "blaze_opacity")
@@ -198,6 +200,10 @@ public class VisualConcept extends SchemaConcept {
                 .setDescription("The color of the vertex")
                 .create()
                 .build();
+        public static final SchemaAttribute COLORBLIND_LAYER = new SchemaAttribute.Builder(GraphElementType.VERTEX, ColorAttributeDescription.ATTRIBUTE_NAME, "colorblind_layer")
+                .setDescription("The colorblind value of the vertex")
+                .create()
+                .build();
         public static final SchemaAttribute DIMMED = new SchemaAttribute.Builder(GraphElementType.VERTEX, BooleanAttributeDescription.ATTRIBUTE_NAME, "dim")
                 .setDescription("Specifies whether the vertex is displayed in a dimmed state")
                 .setDefaultValue(false)
@@ -283,6 +289,10 @@ public class VisualConcept extends SchemaConcept {
                 .setDescription("The color of the transaction")
                 .create()
                 .build();
+        public static final SchemaAttribute COLORBLIND_LAYER = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, ColorAttributeDescription.ATTRIBUTE_NAME, "colorblind_layer")
+                .setDescription("The colorblind value of the transaction")
+                .create()
+                .build();
         public static final SchemaAttribute DIMMED = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, BooleanAttributeDescription.ATTRIBUTE_NAME, "dim")
                 .setDescription("Specified whether the transaction is displayed in a dimmed state")
                 .setDefaultValue(false)
@@ -307,7 +317,7 @@ public class VisualConcept extends SchemaConcept {
                 .create()
                 .build();
         public static final SchemaAttribute OVERLAY_COLOR = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, ColorAttributeDescription.ATTRIBUTE_NAME, "overlay_color")
-                .setDescription("The overlay colore of the transaction")
+                .setDescription("The overlay color of the transaction")
                 .build();
         public static final SchemaAttribute SELECTED = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, BooleanAttributeDescription.ATTRIBUTE_NAME, "selected")
                 .setDescription("Is the transaction selected?")
@@ -354,6 +364,7 @@ public class VisualConcept extends SchemaConcept {
         schemaAttributes.add(VertexAttribute.BACKGROUND_ICON);
         schemaAttributes.add(VertexAttribute.BLAZE);
         schemaAttributes.add(VertexAttribute.COLOR);
+        schemaAttributes.add(VertexAttribute.COLORBLIND_LAYER);
         schemaAttributes.add(VertexAttribute.DIMMED);
         schemaAttributes.add(VertexAttribute.FOREGROUND_ICON);
         schemaAttributes.add(VertexAttribute.IDENTIFIER);
@@ -371,6 +382,7 @@ public class VisualConcept extends SchemaConcept {
         schemaAttributes.add(VertexAttribute.Z2);
         schemaAttributes.add(VertexAttribute.PINNED);
         schemaAttributes.add(TransactionAttribute.COLOR);
+        schemaAttributes.add(TransactionAttribute.COLORBLIND_LAYER);
         schemaAttributes.add(TransactionAttribute.DIMMED);
         schemaAttributes.add(TransactionAttribute.DIRECTED);
         schemaAttributes.add(TransactionAttribute.IDENTIFIER);

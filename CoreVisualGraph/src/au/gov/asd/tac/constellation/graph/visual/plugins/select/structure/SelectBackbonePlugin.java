@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.IntStream;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
@@ -41,8 +42,7 @@ public class SelectBackbonePlugin extends SimpleEditPlugin {
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-        final ArrayList<Integer> selected_nodes = new ArrayList<>();
-
+        final List<Integer> selected_nodes = new ArrayList<>();
         final int selectedNodeAttrId = VisualConcept.VertexAttribute.SELECTED.get(graph);
         final int selectedTransactionAttrId = VisualConcept.TransactionAttribute.SELECTED.get(graph);
 
@@ -68,7 +68,6 @@ public class SelectBackbonePlugin extends SimpleEditPlugin {
             if (selected_nodes.contains(destVert) && selected_nodes.contains(srcVert) && srcVert != destVert) {
                 graph.setBooleanValue(selectedTransactionAttrId, txId, true);
             }
-
         }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import javafx.collections.FXCollections;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
@@ -35,15 +34,10 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 
 /**
- * A pane with 2 DateTimePicker objects which represent a time range This class
- * provides a way to define a time range and a function to check if a certain
- * time falls within the range. A CLEAR and APPLY button can be accessed
- * publicly and appropriate event handlers can be set to them to handle if a
- * time falls within the range. Different timezones can be set
+ * A pane with 2 DateTimePicker objects which represent a time range This class provides a way to define a time range and a function to check if a certain time falls within the range. A CLEAR and APPLY button can be accessed publicly and appropriate event handlers can be set to them to handle if a time falls within the range. Different timezones can be set
  *
  * @author altair1673
  */
@@ -135,9 +129,7 @@ public class DateTimeRangePicker {
         final HBox timeZoneHBox = new HBox(1, utcButton, localButton);
         dateTimePane.getChildren().add(timeZoneHBox);
 
-        clearButton.setStyle("-fx-background-color: #7FFFD4; ");
-        clearButton.setTextFill(Color.BLACK);
-        applyButton.setStyle("-fx-background-color: #0080FF; ");
+        clearButton.setStyle("-fx-background-color: #7FFFD4; -fx-text-fill: #111111; -fx-font-size: 11px; -fx-padding: 0px 9px;");
 
         // Convert time to local time zone
         localButton.setOnAction(event -> {
@@ -153,30 +145,26 @@ public class DateTimeRangePicker {
             timeZoneChoiceBox.getSelectionModel().select("+00:00 UTC");
         });
 
-        // Event handler for when user hovers over active and apply button
+        // Event handler for when user hovers over clear
         clearButton.setOnMouseEntered(event -> {
-            clearButton.setStyle("-fx-background-color: #23FFB5; ");
+            clearButton.setStyle("-fx-background-color: #23FFB5; -fx-text-fill: #111111; -fx-font-size: 11px; -fx-padding: 0px 9px;");
             clearButton.setCursor(Cursor.HAND);
         });
         clearButton.setOnMouseExited(event -> {
-            clearButton.setStyle("-fx-background-color: #7FFFD4;  ");
+            clearButton.setStyle("-fx-background-color: #7FFFD4; -fx-text-fill: #111111; -fx-font-size: 11px; -fx-padding: 0px 9px;");
             clearButton.setCursor(Cursor.DEFAULT);
         });
-        applyButton.setOnMouseEntered(event -> applyButton.setStyle("-fx-background-color: #078BC9; "));
-        applyButton.setOnMouseExited(event -> applyButton.setStyle("-fx-background-color: #0080FF; "));
 
         dateTimePane.getChildren().add(applyButton);
 
         // Set up title bar
         titleText = new Label(TITLE);
-        titleText.setTextFill(Color.WHITE);
-        titleText.setStyle("-fx-text-fill:WHITE;");
         titleText.setMinWidth(115);
+        titleText.setId("filter-label");
         topBarGridPane.add(titleText, 0, 0);
         clearButton.setMinHeight(17);
         clearButton.setMaxHeight(17);
         clearButton.setTextAlignment(TextAlignment.JUSTIFY);
-        clearButton.setPadding(new Insets(0, 8, 0, 8));
 
         applyButton.setTextAlignment(TextAlignment.JUSTIFY);
 
@@ -198,7 +186,6 @@ public class DateTimeRangePicker {
         return applyButton;
     }
 
-
     public void showClearButton() {
         if (!topBarGridPane.getChildren().contains(clearButton)) {
             topBarGridPane.add(clearButton, 1, 0);
@@ -215,8 +202,7 @@ public class DateTimeRangePicker {
     }
 
     /**
-     * Whether or not the time range selector is active, can be used to
-     * determine a on/off state
+     * Whether or not the time range selector is active, can be used to determine a on/off state
      *
      * @return
      */
@@ -225,19 +211,16 @@ public class DateTimeRangePicker {
     }
 
     /**
-     * Set whether or not this is active, changes title based on active status
-     * Also changes visibility of clear button
+     * Set whether or not this is active, changes title based on active status Also changes visibility of clear button
      *
      * @param active
      */
     public void setActive(final boolean active) {
         if (active) {
             titleText.setText("Filter applied");
-            titleText.setStyle("-fx-text-fill:YELLOW;");
             clearButton.setVisible(true);
         } else {
             titleText.setText(TITLE);
-            titleText.setStyle("-fx-text-fill:WHITE;");
             clearButton.setVisible(false);
         }
 
@@ -257,7 +240,6 @@ public class DateTimeRangePicker {
         return timeFilterMenu;
     }
 
-
     /**
      * Check if a passed in time is within the time range
      *
@@ -273,6 +255,5 @@ public class DateTimeRangePicker {
 
         return entryTime.isEqual(fromTime) || entryTime.isEqual(toTime) || (entryTime.isAfter(fromTime) && entryTime.isBefore(toTime));
     }
-
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.analyticview.aggregators.AnalyticAggregator;
 import au.gov.asd.tac.constellation.views.analyticview.analytics.AnalyticInfo;
 import au.gov.asd.tac.constellation.views.analyticview.analytics.AnalyticPlugin;
@@ -31,10 +32,10 @@ import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestio
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticException;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticUtilities;
-import com.github.rjeschke.txtmark.Processor;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -60,11 +61,13 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
+import org.commonmark.node.Node;
+import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.HtmlRenderer;
 import org.openide.util.Lookup;
 
 /**
- * The pane holding gui elements related to configuration of an analytic
- * question.
+ * The pane holding gui elements related to configuration of an analytic question.
  *
  * @author cygnus_x-1
  */
@@ -240,6 +243,7 @@ public class AnalyticConfigurationPane extends VBox {
                 } else {
                     item.setParent(this);
                     setGraphic(item.checkbox);
+                    item.checkbox.setId("pluginCheckbox");
                     setText(item.plugin.getName());
                 }
             }
@@ -282,8 +286,9 @@ public class AnalyticConfigurationPane extends VBox {
         final CountDownLatch cdl = new CountDownLatch(1);
         Platform.runLater(() -> {
             this.documentationView = new WebView();
-            documentationView.getEngine().setUserStyleSheetLocation(
-                    getClass().getResource("resources/analytic-view.css").toExternalForm());
+            if (JavafxStyleManager.isDarkTheme()) {
+                documentationView.getEngine().setUserStyleSheetLocation(getClass().getResource("resources/analytic-view-dark.css").toExternalForm());
+            }        
             populateDocumentationPane(null);
             cdl.countDown();
         });
@@ -403,7 +408,7 @@ public class AnalyticConfigurationPane extends VBox {
         if (selectedPlugins.isEmpty()) {
             throw new AnalyticException("You must select at least one analytic!");
         }
-        
+
         final Graph currentGraph = GraphManager.getDefault().getActiveGraph();
 
         AnalyticViewController.getDefault().updateState(true, pluginList);
@@ -425,13 +430,19 @@ public class AnalyticConfigurationPane extends VBox {
                 try {
                     final Path path = Paths.get(plugin.getPlugin().getDocumentationUrl());
                     final InputStream pageInput = new FileInputStream(path.toString());
-                    documentationView.getEngine().loadContent(Processor.process(pageInput), "text/html");
+                    final String pageString =  new String(pageInput.readAllBytes(), StandardCharsets.UTF_8);
+                    final Parser parser = Parser.builder().build();
+                    final HtmlRenderer renderer = HtmlRenderer.builder().build();
+                    final Node tocDocument = parser.parse(pageString);
+                    final String pageHtml = renderer.render(tocDocument);
+                    documentationView.getEngine().loadContent(pageHtml, "text/html");
                 } catch (final IOException ex) {
                     LOGGER.log(Level.WARNING, ex.getMessage());
                 }
             }
         }
     }
+
 
     private void createGlobalParameters() {
         globalAnalyticParameters.addGroup(GLOBAL_PARAMS_GROUP, new PluginParametersPane.TitledSeparatedParameterLayout(GLOBAL_PARAMS_GROUP, 14, false));

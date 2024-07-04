@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,21 +68,11 @@ class FontDirectionalRun {
     private static char codepointDirection(final int codepoint) {
         final byte d = Character.getDirectionality(codepoint);
 
-        switch (d) {
-            case Character.DIRECTIONALITY_RIGHT_TO_LEFT:
-            case Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC:
-            case Character.DIRECTIONALITY_RIGHT_TO_LEFT_EMBEDDING:
-            case Character.DIRECTIONALITY_RIGHT_TO_LEFT_OVERRIDE:
-                return 'R';
-
-            case Character.DIRECTIONALITY_LEFT_TO_RIGHT:
-            case Character.DIRECTIONALITY_LEFT_TO_RIGHT_EMBEDDING:
-            case Character.DIRECTIONALITY_LEFT_TO_RIGHT_OVERRIDE:
-                return 'L';
-
-            default:
-                return 'U';
-        }
+        return switch (d) {
+            case Character.DIRECTIONALITY_RIGHT_TO_LEFT, Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC, Character.DIRECTIONALITY_RIGHT_TO_LEFT_EMBEDDING, Character.DIRECTIONALITY_RIGHT_TO_LEFT_OVERRIDE -> 'R';
+            case Character.DIRECTIONALITY_LEFT_TO_RIGHT, Character.DIRECTIONALITY_LEFT_TO_RIGHT_EMBEDDING, Character.DIRECTIONALITY_LEFT_TO_RIGHT_OVERRIDE -> 'L';
+            default -> 'U';
+        };
     }
 
     /**

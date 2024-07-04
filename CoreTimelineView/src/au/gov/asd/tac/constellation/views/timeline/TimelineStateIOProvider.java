@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,7 +67,7 @@ public class TimelineStateIOProvider extends AbstractGraphIOProvider {
             state.setUpperTimeExtent(jnode.get(UTE).asDouble());
             state.setDateTimeAttr(jnode.get(DTA).asText());
             if (jnode.get(HNL).asBoolean()) {
-                state.setIsShowingNodeLabels(jnode.get(INL).asBoolean());
+                state.setShowingNodeLabels(jnode.get(INL).asBoolean());
                 state.setNodeLabelsAttr(jnode.get(NLA).asText());
             }
 
@@ -76,7 +76,7 @@ public class TimelineStateIOProvider extends AbstractGraphIOProvider {
             }
 
             if (jnode.has(SSO)) {
-                state.setIsShowingSelectedOnly(jnode.get(SSO).asBoolean());
+                state.setShowingSelectedOnly(jnode.get(SSO).asBoolean());
             }
 
             if (jnode.has(TIME_ZONE)) {
@@ -106,7 +106,7 @@ public class TimelineStateIOProvider extends AbstractGraphIOProvider {
                     jsonGenerator.writeStringField(NLA, state.getNodeLabelsAttr());
                 }
 
-                jsonGenerator.writeNumberField(EXN, state.exclusionState());
+                jsonGenerator.writeNumberField(EXN, state.getExclusionState());
                 jsonGenerator.writeBooleanField(SSO, state.isShowingSelectedOnly());
                 jsonGenerator.writeStringField(TIME_ZONE, state.getTimeZone().getId());
 

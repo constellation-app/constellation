@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ public class ScatterPlotErrorDialog {
      *
      * @param message the message to display in the dialog.
      */
-    public static void create(String message) {
+    public static void create(final String message) {
         final NotifyDescriptor nd = new NotifyDescriptor.Message(message, NotifyDescriptor.WARNING_MESSAGE);
         DialogDisplayer.getDefault().notify(nd);
     }

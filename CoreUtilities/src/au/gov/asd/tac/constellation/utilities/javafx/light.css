@@ -1,0 +1,157 @@
+/*******************************************************************************
+ *                                                                             *
+ * Fixed colour constants                                                      *
+ *                                                                             *
+ ******************************************************************************/
+
+* {
+    -consty-fadeblue: #b0d0f0;
+    -consty-ltblue: #51a5f8;
+    -consty-blue: #4191e8;
+    -consty-dkblue: #317fee;
+    -consty-diabled: #7aa2cd;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * List / Tree                                                                 *
+ *                                                                             *
+ ******************************************************************************/
+.list-view .list-cell:selected {
+    -fx-background-color: -consty-ltblue;
+    -fx-text-fill: white;
+}
+.list-view .list-cell:hover {
+    -fx-background-color: -consty-ltblue;
+    -fx-text-fill: white;
+}
+
+.tree-cell:selected {
+    -fx-background-color: -consty-ltblue;
+    -fx-text-fill: white;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Label                                                                       *
+ *                                                                             *
+ ******************************************************************************/
+.label {
+    -fx-text-fill: #000000;
+}
+
+.text {
+    -fx-text-fill: #000000;
+}
+
+.text-field {
+    -fx-prompt-text-fill: gray;
+}
+
+.text-area {
+    -fx-prompt-text-fill: gray;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Menu                                                                        *
+ *                                                                             *
+ ******************************************************************************/
+.menu-button {
+    -fx-background-color: -consty-blue;
+    -fx-border-color: -consty-dkblue;
+    -fx-border-radius: 2px;
+    -fx-mark-color: white;
+}
+
+.menu-button .label {
+    -fx-text-fill: white;
+}
+
+.menu-button:hover {
+    -fx-color: -fx-hover-base;
+    -fx-background-color: -consty-ltblue;
+}
+
+.menu-bar .label {
+    -fx-text-fill: #ffffff;
+}
+
+.menu-item .label {
+    -fx-text-fill: black;
+}
+
+.menu-item:hover .label {
+    -fx-text-fill: white;
+    -fx-background-color: -consty-ltblue;
+}
+
+.menu:hover {
+    -fx-background-color: -consty-ltblue;
+}
+
+.menu-item:focused .label {
+    -fx-text-fill: white;
+}
+
+.context-menu {
+    -fx-background-color: white;
+    -fx-mark-color: black;
+}
+
+.context-menu .menu-item:hover {
+    -fx-background-color: -consty-ltblue;
+}
+
+.context-menu .menu-item:focused {
+    -fx-background-color: -consty-ltblue;
+}
+/*******************************************************************************
+ *                                                                             *
+ * Button                                                                      *
+ *                                                                             *
+ ******************************************************************************/
+.button {
+    -fx-base: -consty-blue;
+    -fx-text-fill: #ffffff;
+}
+
+.button:hover {
+    -fx-color: -fx-hover-base;
+    -fx-text-fill: #ffffff;
+    -fx-background-color: -consty-ltblue;
+}
+
+.toggle-button {
+    -fx-text-fill: #ffffff;
+    -fx-background-color: #999999;
+}
+
+.toggle-button:focused {
+    -fx-background-color: #999999;
+}
+
+
+.toggle-button:selected {
+    -fx-background-color: -consty-blue;
+}
+
+.toggle-button:selected:focused {
+    -fx-background-color: -consty-blue;
+}
+
+/* Uncategorised */
+
+#invalid {
+    -fx-background-color: #8a1d1d;
+    -fx-control-inner-background: #8a1d1d;
+}
+
+#errorDialog{
+    -fx-border-color: #808080;
+    -fx-background-color: #e0e0e0;
+}
+
+#errorDialogOccBox{
+    -fx-background-color: #bcbcbc;
+}

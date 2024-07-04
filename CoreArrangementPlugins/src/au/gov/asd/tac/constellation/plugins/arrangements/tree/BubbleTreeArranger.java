@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUt
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3d;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -48,7 +49,7 @@ public class BubbleTreeArranger implements Arranger {
     private int[] vxDepth;
 
     public BubbleTreeArranger(final Set<Integer> roots, final boolean isMinimal) {
-        this.roots = roots;
+        this.roots = new HashSet<>(roots);
         this.isMinimal = isMinimal;
         nAlgo = true;
         maintainMean = false;

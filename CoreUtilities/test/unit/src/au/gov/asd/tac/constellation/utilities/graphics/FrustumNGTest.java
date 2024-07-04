@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ public class FrustumNGTest {
         // then assert the bounds of the frustum after a transform
         final Frame camera = new Frame();
         camera.setOrigin(0.001f, 0.002f, 0.003f);
-        camera.setForwardVector(0.004f, 0.005f, -1.006f);
+        camera.setForwardVector(0.004f, 0.005f, 1.006f);
         camera.setUpVector(0.007f, 1.008f, 0.009f);
         frustum.transform(camera);
         
@@ -127,7 +127,7 @@ public class FrustumNGTest {
         // then assert the bounds of the frustum after a transform
         final Frame camera = new Frame();
         camera.setOrigin(0.004f, 0.005f, 0.006f);
-        camera.setForwardVector(0.007f, 0.008f, -1.009f);
+        camera.setForwardVector(0.007f, 0.008f, 1.009f);
         camera.setUpVector(0.003f, 1.002f, 0.001f);
         frustum.transform(camera);
         
@@ -145,7 +145,7 @@ public class FrustumNGTest {
         // Outside the right plane
         assertFalse(frustum.testSphere(47.728646F, 20.185148F, -27.042248F, 10F));
         // Outside the left plane
-        assertFalse(frustum.testSphere(-37.502388F, -9.7534895F, -27.351847F, 10F));
+        assertFalse(frustum.testSphere(-39.502388F, -9.7534895F, -27.351847F, 10F));
         // Outside the top plane
         assertFalse(frustum.testSphere(-14.912388F, 39.46507F, -27.321848F, 10F));
         // Outside the bottom plane
@@ -228,6 +228,18 @@ public class FrustumNGTest {
     @Test
     public void testConstructorOrthographic() {
         assertOrthographic(new Frustum(-10F, 20F, -30F, 40F, -50F, 40F));
+    }
+    
+    /**
+     * Makes a copy of a Frustum.
+     */
+    @Test 
+    public void testCopy() {
+        Frustum original = new Frustum(PERS_FOV, PERS_ASPECT, PERS_XMIN, 
+                PERS_XMAX, PERS_YMIN, PERS_YMAX, PERS_NEAR, PERS_FAR);
+        Frustum copy = original.getCopy();
+        
+        assertPerspective(copy);
     }
     
 }

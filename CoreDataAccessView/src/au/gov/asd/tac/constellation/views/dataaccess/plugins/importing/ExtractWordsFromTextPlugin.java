@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -94,6 +94,8 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
 
     private static final String OUTGOING = "outgoing";
     private static final String INCOMING = "incoming";
+    
+    private static final Pattern SPECIAL_CHARS_PATTERN = Pattern.compile("\\W", Pattern.UNICODE_CHARACTER_CLASS);
 
     @Override
     public String getType() {
@@ -304,11 +306,11 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
         interaction.setProgress(currentProcessStep, totalProcessSteps, "Extracting...", true);
         
         if (regexOnly) {
-            /* 
-             This choice ignores several other parameters, so is a bit simpler 
+            /*
+             This choice ignores several other parameters, so is a bit simpler
              even if there code commonalities, but combining the if/else
              code would make things even more complex.
-            
+
              The input words are treated as trusted regular expressions,
              so the caller has to know what they're doing.
              This is power-use mode.
@@ -468,7 +470,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
                             word = word.toLowerCase();
                         }
                         if (removeSpecialChars) {
-                            word = word.replaceAll("\\W", "");
+                            word = SPECIAL_CHARS_PATTERN.matcher(word).replaceAll("");
                         }
                         if (word.length() < wordLength) {
                             continue;

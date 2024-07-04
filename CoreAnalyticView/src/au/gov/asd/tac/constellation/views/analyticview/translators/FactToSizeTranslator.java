@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,7 @@ import au.gov.asd.tac.constellation.views.analyticview.results.FactResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.FactResult.ElementFact;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticTranslatorUtilities;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.SizeVisualisation;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.openide.util.lookup.ServiceProvider;
@@ -73,22 +74,22 @@ public class FactToSizeTranslator extends AbstractSizeTranslator<FactResult, Ele
 
     @Override
     public Map<Integer, Float> getVertexSizes() {
-        return vertexSizes;
+        return Collections.unmodifiableMap(vertexSizes);
     }
 
     @Override
     public void setVertexSizes(final Map<Integer, Float> sizes) {
-        vertexSizes = sizes;
+        vertexSizes = new HashMap<>(sizes);
     }
 
     @Override
     public Map<Integer, Float> getTransactionSizes() {
-        return transactionSizes;
+        return Collections.unmodifiableMap(transactionSizes);
     }
 
     @Override
     public void setTransactionSizes(final Map<Integer, Float> sizes) {
-        transactionSizes = sizes;
+        transactionSizes = new HashMap<>(sizes);
     }
 
     @PluginInfo(tags = {PluginTags.MODIFY})
@@ -109,7 +110,6 @@ public class FactToSizeTranslator extends AbstractSizeTranslator<FactResult, Ele
 
         @Override
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-
             // get parameter values
             final boolean reset = parameters.getBooleanValue(RESET_PARAMETER_ID);
             
@@ -164,18 +164,17 @@ public class FactToSizeTranslator extends AbstractSizeTranslator<FactResult, Ele
                     final float elementValue = factResult.getFactValue() ? 1F : 0F;
                     final float sizeIntensity = (float) Math.log(elementValue * graphEstimatedDiameter);
                     switch (elementType) {
-                        case VERTEX:
+                        case VERTEX -> {
                             final float vertexSize = graph.getFloatValue(vertexSizeAttribute, elementId);
                             vertexSizes.put(elementId, vertexSize);
                             graph.setFloatValue(vertexSizeAttribute, elementId, sizeIntensity > 1.0F ? sizeIntensity : 1.0F);
-                            break;
-                        case TRANSACTION:
+                        }
+                        case TRANSACTION -> {
                             final float transactionSize = graph.getFloatValue(transactionSizeAttribute, elementId);
                             transactionSizes.put(elementId, transactionSize);
                             graph.setFloatValue(transactionSizeAttribute, elementId, sizeIntensity > 1.0F ? sizeIntensity : 1.0F);
-                            break;
-                        default:
-                            throw new InvalidElementTypeException("'Size Elements' is not supported "
+                        }
+                        default -> throw new InvalidElementTypeException("'Size Elements' is not supported "
                                     + "for the element type associated with this analytic question.");
                     }
                 }

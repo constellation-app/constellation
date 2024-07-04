@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,11 +75,11 @@ public class SaveResultsFileWriterNGTest {
     }
 
     /**
-     * Test of generateFilename method. Ensure that generated filename is of the
-     * correct format yyyyMMddTHHmmssSSS.
+     * Test of generateFilename method. Ensure that generated filename is of the correct format yyyyMMddTHHmmssSSS.
      */
     @Test
     public void testGenerateFilename() {
+        System.out.println("testGenerateFilename");
         Plugin plugin = new ExampleClass();
         String filename = SaveResultsFileWriter.generateFilename(plugin, "xml");
         Pattern pattern = Pattern.compile("[0-9]{8}T[0-9]{9}-ExampleClass.xml");
@@ -88,16 +88,15 @@ public class SaveResultsFileWriterNGTest {
     }
 
     /**
-     * Test of writeRecordStore method for case when
-     * DataAccessPreferenceKeys.getDataAccessResultsDir() returns null. The
-     * expectation is that no attempted writes are made. This test executes a
-     * code path through SaveResultsFileWriter.writeRecordStore that does not
-     * throw an exception.
+     * Test of writeRecordStore method for case when DataAccessPreferenceKeys.getDataAccessResultsDir() returns null.
+     * The expectation is that no attempted writes are made. This test executes a code path through
+     * SaveResultsFileWriter.writeRecordStore that does not throw an exception.
      *
      * @throws java.lang.Exception
      */
     @Test
     public void testWriteRecordStoreNoDataAccessResultsDir() throws Exception {
+        System.out.println("testWriteRecordStoreNoDataAccessResultsDir");
         Plugin plugin = new ExampleClass();
         TabularRecordStore tabularRecordStore = new TabularRecordStore();
 
@@ -107,15 +106,13 @@ public class SaveResultsFileWriterNGTest {
     }
 
     /**
-     * Test of writeRecordStore method for case when
-     * DataAccessPreferenceKeys.getDataAccessResultsDir() returns an invalid
-     * directory. Because directory (and hence generated file path) is invalid,
-     * and exception will be thrown and
-     * ConstellationLoggerHelper.exportPropertyBuilder called with appropriate
-     * ERROR status.
+     * Test of writeRecordStore method for case when DataAccessPreferenceKeys.getDataAccessResultsDir() returns an
+     * invalid directory. Because directory (and hence generated file path) is invalid, and exception will be thrown and
+     * ConstellationLoggerHelper.exportPropertyBuilder called with appropriate ERROR status.
      */
     @Test
     public void testWriteRecordStoreInvalidDataAccessResultsDir() {
+        System.out.println("testWriteRecordStoreInvalidDataAccessResultsDir");
         Plugin plugin = new ExampleClass();
         TabularRecordStore tabularRecordStore = new TabularRecordStore();
 
@@ -141,8 +138,8 @@ public class SaveResultsFileWriterNGTest {
             // Execution should not make it this far, an invalid file should result in an exception.
             Assert.fail("PluginException is expected.");
 
-        } catch (Exception ex) {
-            mockedRecordStoreUtilities.verify(times(0), () -> RecordStoreUtilities.toCsv(Mockito.any(), Mockito.any()));
+        } catch (PluginException ex) {
+            mockedRecordStoreUtilities.verify(() -> RecordStoreUtilities.toCsv(Mockito.any(), Mockito.any()), times(0));
             Assert.assertFalse(fileCreated, "Record store file was not created.");
             Assert.assertEquals(constellationLoggerHelperStatus, ConstellationLoggerHelper.FAILURE,
                     "ConstellationLoggerHelper passed status = FAILURE.");
@@ -150,18 +147,16 @@ public class SaveResultsFileWriterNGTest {
     }
 
     /**
-     * Test of writeRecordStore method for case when
-     * DataAccessPreferenceKeys.getDataAccessResultsDir() returns a valid
-     * directory. Confirm file is created with expected contents and that no
-     * exception is thrown. confirm
-     * ConstellationLoggerHelper.exportPropertyBuilder called with appropriate
-     * SUCCESS status. This test executes a code path through
-     * SaveResultsFileWriter.writeRecordStore that does not throw an exception.
+     * Test of writeRecordStore method for case when DataAccessPreferenceKeys.getDataAccessResultsDir() returns a valid
+     * directory. Confirm file is created with expected contents and that no exception is thrown. confirm
+     * ConstellationLoggerHelper.exportPropertyBuilder called with appropriate SUCCESS status. This test executes a code
+     * path through SaveResultsFileWriter.writeRecordStore that does not throw an exception.
      *
      * @throws java.lang.Exception
      */
     @Test
     public void testWriteRecordStore() throws Exception {
+        System.out.println("testWriteRecordStore");
         Plugin plugin = new ExampleClass();
         TabularRecordStore tabularRecordStore = new TabularRecordStore();
         String key = "TEST1KEY";
@@ -182,22 +177,23 @@ public class SaveResultsFileWriterNGTest {
             if (fileCreated) {
                 // Read file and confirm it contains 3 rows
                 int rows = 0;
-                Scanner reader = new Scanner(passedFile);
-                while (reader.hasNextLine()) {
-                    rows++;
-                    String data = reader.nextLine();
-                    if (rows == 1) {
-                        dataValid = dataValid && (data.equals(key));
+                try (Scanner reader = new Scanner(passedFile)) {
+                    while (reader.hasNextLine()) {
+                        rows++;
+                        String data = reader.nextLine();
+                        if (rows == 1) {
+                            dataValid = dataValid && (data.equals(key));
+                        }
+                        if (rows == 2) {
+                            dataValid = dataValid && (data.equals(value));
+                        }
+                        if (rows >= 3) {
+                            dataValid = false;
+                        }
                     }
-                    if (rows == 2) {
-                        dataValid = dataValid && (data.equals(value));
-                    }
-                    if (rows >= 3) {
+                    if (rows == 0) {
                         dataValid = false;
                     }
-                }
-                if (rows == 0) {
-                    dataValid = false;
                 }
                 passedFile.delete();
             }
@@ -206,9 +202,8 @@ public class SaveResultsFileWriterNGTest {
             Properties properties = new Properties();
             return properties;
         });
-
         SaveResultsFileWriter.writeRecordStore(plugin, tabularRecordStore);
-        mockedRecordStoreUtilities.verify(times(1), () -> RecordStoreUtilities.toCsv(Mockito.any(), Mockito.any()));
+        mockedRecordStoreUtilities.verify(() -> RecordStoreUtilities.toCsv(Mockito.any(), Mockito.any()), times(1));
 
         Assert.assertTrue(fileCreated, "Record store file was created.");
         Assert.assertEquals(constellationLoggerHelperStatus, ConstellationLoggerHelper.SUCCESS,

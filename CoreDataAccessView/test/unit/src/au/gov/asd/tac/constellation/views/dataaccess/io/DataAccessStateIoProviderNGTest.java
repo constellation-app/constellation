@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -198,9 +198,8 @@ public class DataAccessStateIoProviderNGTest {
         jsonGenerator.flush();
 
         final ObjectMapper objectMapper = new ObjectMapper();
-        final JsonNode expected = objectMapper.readTree(
-                "{\"ATTR NAME\": null}"
-        );
+        final JsonNode expected = objectMapper.readTree("""
+                                                        {"ATTR NAME": null}""");
 
         final JsonNode actual = objectMapper.readTree(new String(output.toByteArray(), StandardCharsets.UTF_8));
 

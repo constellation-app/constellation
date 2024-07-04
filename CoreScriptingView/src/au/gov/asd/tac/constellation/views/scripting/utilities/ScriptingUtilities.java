@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,12 +82,9 @@ public class ScriptingUtilities implements ScriptingModule {
      * @return a copy of the given graph as an {@link SGraph}.
      */
     public SGraph copyGraph(final SGraph graph) {
-        final ReadableGraph readableGraph = graph.getGraph().getReadableGraph();
-        try {
+        try (final ReadableGraph readableGraph = graph.getGraph().getReadableGraph()) {
             final StoreGraph copyGraph = SubgraphUtilities.copyGraph(readableGraph);
             return new SGraph(new DualGraph(copyGraph, false));
-        } finally {
-            readableGraph.release();
         }
 
     }

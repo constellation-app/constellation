@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ public class VisualSchemaV2UpdateProvider extends SchemaUpdateProvider {
     }
 
     @Override
-    protected void schemaUpdate(StoreGraph graph) {
+    protected void schemaUpdate(final StoreGraph graph) {
         final int backgroundIconAttribute = VisualConcept.VertexAttribute.BACKGROUND_ICON.ensure(graph);
 
         graph.updateAttributeDefaultValue(backgroundIconAttribute, "Background.Flat Square");
@@ -62,25 +62,13 @@ public class VisualSchemaV2UpdateProvider extends SchemaUpdateProvider {
             final int vertexId = graph.getVertex(vertexPosition);
             final ConstellationIcon vertexBackgroundIcon = graph.getObjectValue(backgroundIconAttribute, vertexId);
             switch (vertexBackgroundIcon.getExtendedName()) {
-                case "Sphere":
-                case "Background.Sphere":
-                    graph.setObjectValue(backgroundIconAttribute, vertexId, IconManager.getIcon("Background.Round Circle"));
-                    break;
-                case "Square":
-                case "Background.Square":
-                    graph.setObjectValue(backgroundIconAttribute, vertexId, IconManager.getIcon("Background.Round Square"));
-                    break;
-                case "Circle":
-                case "Background.Circle":
-                    graph.setObjectValue(backgroundIconAttribute, vertexId, IconManager.getIcon("Background.Flat Circle"));
-                    break;
-                case "SoftSquare":
-                case "Background.SoftSquare":
-                case "Background.Soft Square":
-                    graph.setObjectValue(backgroundIconAttribute, vertexId, IconManager.getIcon("Background.Flat Square"));
-                    break;
-                default:
-                    break;
+                case "Sphere", "Background.Sphere" -> graph.setObjectValue(backgroundIconAttribute, vertexId, IconManager.getIcon("Background.Round Circle"));
+                case "Square", "Background.Square" -> graph.setObjectValue(backgroundIconAttribute, vertexId, IconManager.getIcon("Background.Round Square"));
+                case "Circle", "Background.Circle" -> graph.setObjectValue(backgroundIconAttribute, vertexId, IconManager.getIcon("Background.Flat Circle"));
+                case "SoftSquare", "Background.SoftSquare", "Background.Soft Square" -> graph.setObjectValue(backgroundIconAttribute, vertexId, IconManager.getIcon("Background.Flat Square"));
+                default -> {
+                    // Do nothing
+                }
             }
         }
     }

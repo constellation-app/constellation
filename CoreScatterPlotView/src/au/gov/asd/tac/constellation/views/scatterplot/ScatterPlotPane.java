@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ public class ScatterPlotPane extends BorderPane {
         this.scatterOptions = new ScatterOptionsPane(ScatterPlotPane.this);
         try {
             scatterOptions.refreshOptions(scatterPlot.getState());
-        } catch (InterruptedException e) {
+        } catch (final InterruptedException e) {
             ScatterPlotErrorDialog.create("Error refreshing scatter plot: " + e.getMessage());
             Thread.currentThread().interrupt();
         }
@@ -47,7 +47,7 @@ public class ScatterPlotPane extends BorderPane {
         this.scatterChart = new ScatterChartPane(ScatterPlotPane.this);
         try {
             scatterChart.refreshChart(scatterPlot.getState());
-        } catch (InterruptedException e) {
+        } catch (final InterruptedException e) {
             ScatterPlotErrorDialog.create("Error refreshing scatter plot: " + e.getMessage());
             Thread.currentThread().interrupt();
         }
@@ -67,7 +67,7 @@ public class ScatterPlotPane extends BorderPane {
      *
      * @param state the ScatterPlotState.
      */
-    protected void refreshScatterPlot(ScatterPlotState state) {
+    protected void refreshScatterPlot(final ScatterPlotState state) {
         scatterOptions.refreshOptions(state);
         scatterChart.refreshChart(state);
     }

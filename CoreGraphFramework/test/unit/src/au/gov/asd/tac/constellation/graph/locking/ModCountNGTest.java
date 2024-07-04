@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import au.gov.asd.tac.constellation.graph.attribute.LongAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.ObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.BareSchemaFactory;
-import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.Assert.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;

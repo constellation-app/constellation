@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,8 +77,8 @@ final class LabelFontsOptionsPanel extends javax.swing.JPanel {
 
     private void setLabelFontsPanelEnabled(final boolean useDefaultSettings) {
         for (final Component c : labelFontsPanel.getComponents()) {
-            if (c instanceof JScrollPane) {
-                ((JScrollPane) c).getViewport().getView().setEnabled(useDefaultSettings);
+            if (c instanceof JScrollPane scrollPane) {
+                scrollPane.getViewport().getView().setEnabled(useDefaultSettings);
             } else {
                 c.setEnabled(useDefaultSettings);
             }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,13 @@ public class PluginException extends Exception {
      * to be thrown
      */
     public PluginException(Plugin plugin, PluginNotificationLevel notificationLevel, String message, Throwable cause) {
-        super(String.format("%s failed with the following message:\n%s", plugin.getName(), message), cause);
+        super("""
+              %s failed with the following message:
+              %s"""
+                .formatted(
+                      plugin.getName(), 
+                      message
+                ), cause);
         this.notificationLevel = notificationLevel;
     }
 

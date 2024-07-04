@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,6 @@ import org.apache.commons.math3.linear.MatrixUtils;
 public class GraphSpectrumEmbedder {
 
     public static Map<Integer, double[]> spectralEmbedding(final GraphReadMethods rg, final Set<Integer> includedVertices) {
-
         final Map<Integer, double[]> vertexPositions = new HashMap<>();
 
         // Don't position anything if there are fewer than 3 vertices to embedd - this embedding shouldn't be used in these cases.
@@ -75,7 +74,7 @@ public class GraphSpectrumEmbedder {
 
         private GraphMatrix(final double[][] laplacianMatrix, final Map<Integer, Integer> matrixPositionToID) {
             this.laplacianMatrix = laplacianMatrix;
-            this.matrixPositionToID = matrixPositionToID;
+            this.matrixPositionToID = new HashMap<>(matrixPositionToID);
             this.dimension = laplacianMatrix.length;
         }
 
@@ -88,7 +87,6 @@ public class GraphSpectrumEmbedder {
         }
 
         public static GraphMatrix matrixFromGraph(final GraphReadMethods rg, final Collection<Integer> includedVertices, final Collection<Integer> excludedLinks, final MatrixType type) {
-
             final int numVertices = includedVertices.size();
             final double[][] matrixEntries = new double[numVertices][];
             for (int i = 0; i < numVertices; i++) {

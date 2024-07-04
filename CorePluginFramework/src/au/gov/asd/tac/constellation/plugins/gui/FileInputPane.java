@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.F
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.io.File;
-import javax.swing.filechooser.FileFilter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -39,9 +38,9 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javax.swing.filechooser.FileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.filesystems.FileChooserBuilder;
-import org.openide.util.Exceptions;
 
 
 /**
@@ -94,40 +93,31 @@ public class FileInputPane extends HBox {
             final List<File> files = new ArrayList<>();
             final CompletableFuture dialogFuture;
             switch (paramaterValue.getKind()) {
-                case OPEN:
-                case OPEN_OBSCURED:
-                    dialogFuture = FileChooser.openOpenDialog(getFileChooser(parameter, "Open")).thenAccept(optionalFile -> optionalFile.ifPresent(openFile -> {
-                        if (openFile != null) {
-                            files.add(openFile);
+                case OPEN, OPEN_OBSCURED -> dialogFuture = FileChooser.openOpenDialog(getFileChooser(parameter, "Open")).thenAccept(optionalFile -> optionalFile.ifPresent(openFile -> {
+                    if (openFile != null) {
+                        files.add(openFile);
+                    }
+                }));
+                case OPEN_MULTIPLE, OPEN_MULTIPLE_OBSCURED -> dialogFuture = FileChooser.openMultiDialog(getFileChooser(parameter, "Open File(s)")).thenAccept(optionalFile -> optionalFile.ifPresent(openFiles -> {
+                    if (openFiles != null) {
+                        files.addAll(openFiles);
+                    }
+                }));
+                case SAVE, SAVE_OBSCURED -> dialogFuture = FileChooser.openSaveDialog(getFileChooser(parameter, "Save")).thenAccept(optionalFile -> optionalFile.ifPresent(saveFile -> {
+                    if (saveFile != null) {
+                        //Save files may have been typed by the user and an extension may not have been specified.
+                        final String fnam = saveFile.getAbsolutePath();
+                        final String expectedExtension = FileParameterType.getFileFilters(parameter).getExtensions().get(0);
+                        if (!fnam.toLowerCase().endsWith(expectedExtension)) {
+                            saveFile = new File(fnam + expectedExtension);
                         }
-                    }));
-                    break;
-                case OPEN_MULTIPLE:
-                case OPEN_MULTIPLE_OBSCURED:
-                    dialogFuture = FileChooser.openMultiDialog(getFileChooser(parameter, "Open File(s)")).thenAccept(optionalFile -> optionalFile.ifPresent(openFiles -> {
-                        if (openFiles != null) {
-                            files.addAll(openFiles);
-                        }
-                    }));
-                    break;
-                case SAVE:
-                case SAVE_OBSCURED:
-                    dialogFuture = FileChooser.openSaveDialog(getFileChooser(parameter, "Save")).thenAccept(optionalFile -> optionalFile.ifPresent(saveFile -> {
-                        if (saveFile != null) {
-                            //Save files may have been typed by the user and an extension may not have been specified.
-                            final String fnam = saveFile.getAbsolutePath();
-                            final String expectedExtension = FileParameterType.getFileFilters(parameter).getExtensions().get(0);
-                            if (!fnam.toLowerCase().endsWith(expectedExtension)) {
-                                saveFile = new File(fnam + expectedExtension);
-                            }
-                            files.add(saveFile);
-                        }
-                    }));
-                    break;
-                default:
+                        files.add(saveFile);
+                    }
+                }));
+                default -> {
                     dialogFuture = null;
                     LOGGER.log(Level.FINE, "ignoring file selection type {0}.", paramaterValue.getKind());
-                    break;
+                }
             }
             
             // As the dialog windows are completed on another thread 
@@ -164,7 +154,7 @@ public class FileInputPane extends HBox {
         field.setManaged(parameter.isVisible());
         this.setManaged(parameter.isVisible());
         this.setVisible(parameter.isVisible());
-
+        
         field.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.DELETE) {
                 final IndexRange selection = field.getSelection();
@@ -211,11 +201,14 @@ public class FileInputPane extends HBox {
         field.setPrefWidth(defaultWidth);
 
         final Tooltip tooltip = new Tooltip("");
-        tooltip.setStyle("-fx-text-fill: black;");
-        field.textProperty().addListener((observableValue, oldValue, newValue) -> {
-            // Validation
-            final String error = parameter.validateString(field.getText());
-            if ((required && StringUtils.isBlank(field.getText())) || error != null) {
+        
+        // Looks for changes to the input field
+        // Triggers a change to the parameter
+        field.textProperty().addListener((observableValue, oldValue, newValue) -> {            
+            
+            // As the change is happening in the field, the parameter object will not have updated its error value yet
+            final String error = parameter.validateString(newValue);
+            if ((required && StringUtils.isBlank(newValue)) || error != null) {
                 tooltip.setText(StringUtils.isNotBlank(error) ? error : "File is required!");
                 field.setTooltip(tooltip);
                 field.setId("invalid");
@@ -227,30 +220,31 @@ public class FileInputPane extends HBox {
             parameter.setStringValue(field.getText());
         });
 
-        parameter.addListener((pluginParameter, change) -> {
+        // Looks for changes to the plugin parameter
+        // Can be triggered by a change from the application or a change from the respective input field
+        // Can trigger a change to the input field which will cause this listner to be triggered a second time.
+        parameter.addListener((pluginParameter, change) -> 
             Platform.runLater(() -> {
                 switch (change) {
-                    case VALUE:
-                        // Don't change the value if it isn't necessary.
+                    case VALUE -> {
+                        // Do not retrigger the fieled listner if this event was triggered by the field listner.
                         final String param = parameter.getStringValue();
                         if (!field.getText().equals(param)) {
                             field.setText(param);
                         }
-                        break;
-                    case ENABLED:
-                        field.setDisable(!pluginParameter.isEnabled());
-                        break;
-                    case VISIBLE:
+                    }
+                    case ENABLED -> field.setDisable(!pluginParameter.isEnabled());
+                    case VISIBLE -> {
                         field.setManaged(parameter.isVisible());
                         field.setVisible(parameter.isVisible());
                         this.setVisible(parameter.isVisible());
                         this.setManaged(parameter.isVisible());
-                        break;
-                    default:
-                        break;
+                    }
+                    default -> {
+                        // do nothing
+                    }
                 }
-            });
-        });
+            }));
 
         final HBox fieldAndAddButton = new HBox();
         fieldAndAddButton.setSpacing(2);
@@ -260,30 +254,32 @@ public class FileInputPane extends HBox {
     
     /**
      * Creates a FileChooser for the Parameter
+     * If an extension filter has not been specified, all file types will be accepted by default.
      * @param parameter
      * @param title
      * @return 
      */
     private FileChooserBuilder getFileChooser(final PluginParameter<FileParameterValue> parameter, final String title) {
-        FileChooserBuilder fileChooserBuilder = new FileChooserBuilder(title)
-                .setTitle(title)
-                .setAcceptAllFileFilterUsed(FileParameterType.isAcceptAllFileFilterUsed(parameter))
-                .setFilesOnly(false);
         
-        final ExtensionFilter cef = FileParameterType.getFileFilters(parameter);
-        for (final String extension : cef.getExtensions()){
-            //Add a file filter for all registered exportable file types.
-            fileChooserBuilder = fileChooserBuilder.addFileFilter(new FileFilter(){
-                @Override
-                public boolean accept(final File file) {
-                    final String name = file.getName();
-                    return (file.isFile() && StringUtils.endsWithIgnoreCase(name, extension)) || file.isDirectory();
-                }
-                @Override
-                public String getDescription() {
-                    return cef.getDescription();
-                }
-            });
+        final ExtensionFilter extensionFilter = FileParameterType.getFileFilters(parameter);
+        FileChooserBuilder fileChooserBuilder = FileChooser.createFileChooserBuilderNoFilter(title, FileExtensionConstants.SVG)
+                .setAcceptAllFileFilterUsed(extensionFilter == null || FileParameterType.isAcceptAllFileFilterUsed(parameter));                
+
+        if (extensionFilter != null) {
+            for (final String extension : extensionFilter.getExtensions()){
+                // Add a file filter for all registered exportable file types.
+                fileChooserBuilder = fileChooserBuilder.addFileFilter(new FileFilter(){
+                    @Override
+                    public boolean accept(final File file) {
+                        final String name = file.getName();
+                        return (file.isFile() && StringUtils.endsWithIgnoreCase(name, extension)) || file.isDirectory();
+                    }
+                    @Override
+                    public String getDescription() {
+                        return extensionFilter.getDescription();
+                    }
+                });
+            }
         }
         return fileChooserBuilder;
     }

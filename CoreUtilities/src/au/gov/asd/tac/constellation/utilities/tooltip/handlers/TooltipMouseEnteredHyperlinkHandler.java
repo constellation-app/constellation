@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,8 +51,8 @@ public class TooltipMouseEnteredHyperlinkHandler implements EventHandler {
             hyperlink.requestFocus();
             if (!definitions.isEmpty()) {
                 tooltipNode[0] = createTooltipNode(definitions);
-                if(event instanceof MouseEvent){
-                    final Point2D location = hyperlink.localToScene(((MouseEvent)event).getX(), ((MouseEvent)event).getY() + hyperlink.getHeight() + HYPERLINK_TOOLTIP_VERTICAL_GAP);
+                if (event instanceof MouseEvent mouseEvent) {
+                    final Point2D location = hyperlink.localToScene(mouseEvent.getX(), mouseEvent.getY() + hyperlink.getHeight() + HYPERLINK_TOOLTIP_VERTICAL_GAP);
                     tooltipPane.showTooltip(tooltipNode[0], location.getX(), location.getY());
                 }
             }

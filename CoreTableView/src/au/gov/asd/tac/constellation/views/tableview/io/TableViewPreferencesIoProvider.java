@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,9 +54,8 @@ public class TableViewPreferencesIoProvider {
      * @param table the current table
      * @param pageSize the current table page size
      */
-    public static void savePreferences(final GraphElementType tableElementType,
-            final TableView<ObservableList<String>> table,
-            final int pageSize) {
+    public static void savePreferences(final GraphElementType tableElementType, 
+            final TableView<ObservableList<String>> table, final int pageSize) {
         final String filePrefix = tableElementType == GraphElementType.VERTEX
                 ? VERTEX_FILE_PREFIX : TRANSACTION_FILE_PREFIX;
 
@@ -66,17 +65,15 @@ public class TableViewPreferencesIoProvider {
                 table.getColumns().stream()
                         .filter(column -> column.isVisible())
                         .map(column -> column.getText())
-                        .collect(Collectors.toList())
+                        .toList()
         );
 
         tablePreferences.setMaxRowsPerPage(pageSize);
 
         if (!table.getSortOrder().isEmpty()) {
             tablePreferences.setSortByColumn(
-                    ImmutablePair.of(
-                            table.getSortOrder().get(0).getText(),
-                            table.getSortOrder().get(0).getSortType()
-                    )
+                    ImmutablePair.of(table.getSortOrder().get(0).getText(),
+                            table.getSortOrder().get(0).getSortType())
             );
         }
 

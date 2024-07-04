@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,8 +55,8 @@ public abstract class AbstractObjectAttributeDescription<T extends Object> exten
             return defaultValue;
         } else if (nativeClass.isAssignableFrom(object.getClass())) {
             return (T) object;
-        } else if (object instanceof String) {
-            return convertFromString((String) object);
+        } else if (object instanceof String string) {
+            return convertFromString(string);
         } else {
             throw new IllegalArgumentException(String.format(
                     "Error converting Object '%s' to %s", object.getClass(), nativeClass));
@@ -105,7 +105,7 @@ public abstract class AbstractObjectAttributeDescription<T extends Object> exten
     @SuppressWarnings("unchecked")
     @Override
     public String getString(final int id) {
-        return data[id] != null ? String.valueOf((T) data[id]) : null;
+        return data[id] != null ? String.valueOf(data[id]) : null;
     }
 
     @Override
@@ -149,9 +149,8 @@ public abstract class AbstractObjectAttributeDescription<T extends Object> exten
         final AbstractObjectAttributeDescription<T> attribute;
         try {
             attribute = this.getClass().getDeclaredConstructor().newInstance();
-        } catch (final IllegalAccessException | IllegalArgumentException
-                | InstantiationException | NoSuchMethodException
-                | SecurityException | InvocationTargetException ex) {
+        } catch (final IllegalAccessException | IllegalArgumentException| InstantiationException 
+                | NoSuchMethodException | SecurityException | InvocationTargetException ex) {
             throw new RuntimeException("Unable to create instance of " + this.getClass().getCanonicalName(), ex);
         }
         attribute.data = Arrays.copyOf(data, data.length);
@@ -196,12 +195,12 @@ public abstract class AbstractObjectAttributeDescription<T extends Object> exten
     }
 
     @Override
-    public Object createReadObject(IntReadable indexReadable) {
+    public Object createReadObject(final IntReadable indexReadable) {
         return (ObjectReadable) () -> data[indexReadable.readInt()];
     }
 
     @Override
-    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+    public Object createWriteObject(final GraphWriteMethods graph, final int attribute, final IntReadable indexReadable) {
         return new ObjectVariable() {
             @Override
             public Object readObject() {
@@ -209,7 +208,7 @@ public abstract class AbstractObjectAttributeDescription<T extends Object> exten
             }
 
             @Override
-            public void writeObject(Object value) {
+            public void writeObject(final Object value) {
                 graph.setObjectValue(attribute, indexReadable.readInt(), value);
             }
         };

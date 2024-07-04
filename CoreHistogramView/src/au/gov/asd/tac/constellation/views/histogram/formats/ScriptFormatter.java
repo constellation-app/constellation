@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,8 @@ import au.gov.asd.tac.constellation.views.histogram.Bin;
 import au.gov.asd.tac.constellation.views.histogram.bins.ObjectBin;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.script.Bindings;
 import javax.script.Compilable;
 import javax.script.CompiledScript;
@@ -41,6 +43,8 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = BinFormatter.class)
 public class ScriptFormatter extends BinFormatter {
+
+    private static final Logger LOGGER = Logger.getLogger(ScriptFormatter.class.getName());   
 
     public static final String SCRIPT_PARAMETER_ID = PluginParameter.buildId(ScriptFormatter.class, "script");
 
@@ -81,7 +85,8 @@ public class ScriptFormatter extends BinFormatter {
             engine = manager.getEngineByName(LANGUAGES.get("Python"));
             bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
             compiledScript = ((Compilable) engine).compile(script);
-        } catch (Exception e) {
+        } catch (final ScriptException e) {
+            LOGGER.log(Level.WARNING, "Error occurred while compiling script");
         }
 
         return new ScriptFormatBin(bin, bindings, compiledScript);

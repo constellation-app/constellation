@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.dataaccess.components;
 
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.log.LogPreferences;
 import au.gov.asd.tac.constellation.views.dataaccess.io.DataAccessParametersIoProvider;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
@@ -55,6 +56,7 @@ public class OptionsMenuBar {
     private static final String TITLE = "Folder to save data access results to";
 
     private static final String OPTIONS_MENU_TEXT = "Workflow Options";
+    private static final String ICON_SET = JavafxStyleManager.isDarkTheme() ? "Light" : "Dark";
 
     static {
         SETTINGS_ICON = new ImageView(new Image(
@@ -63,27 +65,27 @@ public class OptionsMenuBar {
         SETTINGS_ICON.setFitWidth(20);
 
         SAVE_TEMPLATE_ICON = new ImageView(new Image(
-                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessSaveTemplate.png")));
+                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessSaveTemplate" + ICON_SET + ".png")));
         SAVE_TEMPLATE_ICON.setFitHeight(15);
         SAVE_TEMPLATE_ICON.setFitWidth(15);
 
         LOAD_TEMPLATE_ICON = new ImageView(new Image(
-                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessLoadTemplate.png")));
+                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessLoadTemplate" + ICON_SET + ".png")));
         LOAD_TEMPLATE_ICON.setFitHeight(15);
         LOAD_TEMPLATE_ICON.setFitWidth(15);
 
         SAVE_RESULTS_ICON = new ImageView(new Image(
-                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessSaveResults.png")));
+                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessSaveResults" + ICON_SET + ".png")));
         SAVE_RESULTS_ICON.setFitHeight(15);
         SAVE_RESULTS_ICON.setFitWidth(15);
 
         UNCHECKED_ICON = new ImageView(new Image(
-                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessUnchecked.png")));
+                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessUnchecked" + ICON_SET + ".png")));
         UNCHECKED_ICON.setFitHeight(15);
         UNCHECKED_ICON.setFitWidth(15);
 
         LOGGER_ICON = new ImageView(new Image(
-                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessConnectionLogging.png")));
+                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessConnectionLogging" + ICON_SET + ".png")));
         LOGGER_ICON.setFitHeight(15);
         LOGGER_ICON.setFitWidth(15);
     }
@@ -104,16 +106,14 @@ public class OptionsMenuBar {
     /**
      * Creates a new option menu bar.
      *
-     * @param dataAccessPane the data access pane that the menu bar will be
-     * added to
+     * @param dataAccessPane the data access pane that the menu bar will be added to
      */
     public OptionsMenuBar(final DataAccessPane dataAccessPane) {
         this.dataAccessPane = dataAccessPane;
     }
 
     /**
-     * Initializes the options menu. Until this method is called, all menu UI
-     * components will be null.
+     * Initializes the options menu. Until this method is called, all menu UI components will be null.
      */
     public void init() {
 
@@ -181,16 +181,15 @@ public class OptionsMenuBar {
 
             event.consume();
         });
-        
+
         ////////////////////
         // Menu Setup
         ////////////////////
         optionsMenu = new Menu(OPTIONS_MENU_TEXT, SETTINGS_ICON);
         optionsMenu.getItems().addAll(loadMenuItem, saveMenuItem, saveResultsItem,
-                 connectionLoggingMenuItem, deselectPluginsOnExecutionMenuItem);
-        optionsMenu.setStyle("-fx-background-color: #181818; -fx-border-color: #444444");
+                connectionLoggingMenuItem, deselectPluginsOnExecutionMenuItem);
+        optionsMenu.setId("options-menu");
         optionsMenu.addEventHandler(Menu.ON_SHOWING, event -> updateMenuEntry());
-
         menuBar = new MenuBar();
         menuBar.getMenus().add(optionsMenu);
         menuBar.setMinHeight(36);
@@ -200,17 +199,17 @@ public class OptionsMenuBar {
     /*
     * Show the amount of time remaining in which Connection Logging will be active.
     * After a fixed timeout period, Connection Logging will be automatically disabled.
-    */
+     */
     private void updateMenuEntry() {
         connectionLoggingMenuItem.setSelected(LogPreferences.isConnectionLoggingEnabled());
         final long remainingTime = LogPreferences.logTimeRemaining();
-        final long remainingMinutes = remainingTime/60000;
-        final long remainingSeconds = remainingTime/1000;
+        final long remainingMinutes = remainingTime / 60000;
+        final long remainingSeconds = remainingTime / 1000;
         final String remainingText = remainingMinutes > 0 ? "  \u23F3 " + remainingMinutes + "m" : "  \u23F3 " + remainingSeconds + "s";
         final String remainingMessage = LogPreferences.isConnectionLoggingEnabled() ? remainingText : "";
-        connectionLoggingMenuItem.setText(CONNECTION_LOGGING_TEXT + remainingMessage);      
+        connectionLoggingMenuItem.setText(CONNECTION_LOGGING_TEXT + remainingMessage);
     }
-    
+
     /**
      * Get the data access pane that this options menu will be attached to.
      *
@@ -239,8 +238,7 @@ public class OptionsMenuBar {
     }
 
     /**
-     * Get the load menu item that loads previously save data access view tabs
-     * into the UI from a JSON file.
+     * Get the load menu item that loads previously save data access view tabs into the UI from a JSON file.
      *
      * @return the load menu item
      */
@@ -249,8 +247,7 @@ public class OptionsMenuBar {
     }
 
     /**
-     * Get the menu item that save the current tab structure to a JSON file so
-     * that it can be loaded back in at a later stage.
+     * Get the menu item that save the current tab structure to a JSON file so that it can be loaded back in at a later stage.
      *
      * @return the save menu item
      */
@@ -259,8 +256,7 @@ public class OptionsMenuBar {
     }
 
     /**
-     * A checkbox menu item representing if the results of running a tab's
-     * plugins should be saved.
+     * A checkbox menu item representing if the results of running a tab's plugins should be saved.
      *
      * @return the save results menu item
      */
@@ -269,9 +265,7 @@ public class OptionsMenuBar {
     }
 
     /**
-     * Gets a checkbox menu item that when selected will cause all selected
-     * plugins in the data access view to be de-selected once the execute button
-     * has been clicked and the plugins completed.
+     * Gets a checkbox menu item that when selected will cause all selected plugins in the data access view to be de-selected once the execute button has been clicked and the plugins completed.
      *
      * @return the de-select plugins on execution menu item
      */
@@ -289,20 +283,16 @@ public class OptionsMenuBar {
     }
 
     /**
-     * This is a listener that is attached to the save results menu item and
-     * listens for changes in the selection.
+     * This is a listener that is attached to the save results menu item and listens for changes in the selection.
      */
     protected class SaveResultsListener implements ChangeListener<Boolean> {
 
         private CompletableFuture<Void> lastChange = CompletableFuture.completedFuture(null);
 
         /**
-         * If the save result menu checkbox becomes selected then present the
-         * user with a directory chooser to select the save directory. If the
-         * user cancels then de-select the save result menu checkbox.
+         * If the save result menu checkbox becomes selected then present the user with a directory chooser to select the save directory. If the user cancels then de-select the save result menu checkbox.
          * <p/>
-         * If the save result menu checkbox becomes de-selected then clear the
-         * users save directory preferences.
+         * If the save result menu checkbox becomes de-selected then clear the users save directory preferences.
          *
          * @param observable the {@code ObservableValue} which value changed
          * @param oldValue the old value of the save results menu checkbox
@@ -312,7 +302,7 @@ public class OptionsMenuBar {
         public void changed(final ObservableValue<? extends Boolean> observable,
                 final Boolean oldValue,
                 final Boolean newValue) {
-            if (newValue) {
+            if (Boolean.TRUE.equals(newValue)) {
                 lastChange = FileChooser.openOpenDialog(getDataAccessResultsFileChooser()).thenAccept(optionalFolder
                         -> optionalFolder.ifPresentOrElse(
                                 folder -> DataAccessPreferenceUtilities.setDataAccessResultsDir(folder),
@@ -324,11 +314,9 @@ public class OptionsMenuBar {
         }
 
         /**
-         * This is primarily present for testing purposes to ensure all work in
-         * the changed method is complete before verifying functionality.
+         * This is primarily present for testing purposes to ensure all work in the changed method is complete before verifying functionality.
          *
-         * @return the future work to be completed by the lister after its last
-         * call
+         * @return the future work to be completed by the lister after its last call
          */
         public CompletableFuture getLastChange() {
             return lastChange;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.gui;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -65,7 +66,12 @@ public class PluginParametersDialog extends Stage {
      * @param parameters The plugin parameters.
      * @param options The dialog box button labels, one for each button.
      */
-    public PluginParametersDialog(final Window owner, final String title, final PluginParameters parameters, final String... options) {
+    public PluginParametersDialog(final Window owner, final String title, final PluginParameters parameters, final String... options) throws IllegalArgumentException {
+
+        if (parameters == null) {
+            throw new IllegalArgumentException("Parameters must not be null");
+        }
+        
         initStyle(StageStyle.UTILITY);
         initModality(Modality.WINDOW_MODAL);
         initOwner(owner);
@@ -74,8 +80,8 @@ public class PluginParametersDialog extends Stage {
 
         final BorderPane root = new BorderPane();
         root.setPadding(new Insets(10));
-        root.setStyle("-fx-background-color: #DDDDDD;");
         final Scene scene = new Scene(root);
+        scene.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         setScene(scene);
 
         final PluginParametersPane parametersPane = PluginParametersPane.buildPane(parameters, null);

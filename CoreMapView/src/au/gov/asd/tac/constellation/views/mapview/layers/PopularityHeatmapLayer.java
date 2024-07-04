@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,18 +45,17 @@ public class PopularityHeatmapLayer extends AbstractHeatmapLayer {
                 final Set<Integer> seenLinks = new HashSet<>();
                 for (final GraphElement element : renderer.getMarkerCache().get(marker)) {
                     switch (element.getType()) {
-                        case VERTEX:
-                            popularityCount += readableGraph.getVertexNeighbourCount(element.getId());
-                            break;
-                        case TRANSACTION:
+                        case VERTEX -> popularityCount += readableGraph.getVertexNeighbourCount(element.getId());
+                        case TRANSACTION -> {
                             final int linkId = readableGraph.getTransactionLink(element.getId());
                             if (!seenLinks.contains(linkId)) {
                                 seenLinks.add(linkId);
                                 popularityCount += 1;
                             }
-                            break;
-                        default:
-                            break;
+                        }
+                        default -> {
+                            // do nothing
+                        }
                     }
                 }
             } finally {

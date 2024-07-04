@@ -9,7 +9,7 @@ server listens for HTTP requests on localhost: this cannot be changed.
 The listen port can be changed in the application options.
 
 When the server starts, it writes a JSON document to a file called
-"rest.json" in your ".CONSTELLATION" directory. This JSON document
+"rest.json" in your ".ipython" directory. This JSON document
 records the port that the server is listening on (the "port" key) and a
 secret to be used when communicating with the server (the
 "X-CONSTELLATION-SECRET" key). This secret must be used in the
@@ -17,8 +17,8 @@ secret to be used when communicating with the server (the
 header with the secret will be rejected. This stops other clients on the
 same system from using your REST server to interact with your graphs.
 
-When started, the server also optionally writes a Python file called
-"constellation_client.py" to your "~/.ipython" directory. This provides
+When started, the server also optionally installs a Python package called
+"constellation_client" using pip. This provides
 a convenient interface to the REST API for Python scripts in Jupyter
 notebooks. Python 3.6 is required. See the built-in help documentation
 in the script for details.
@@ -27,14 +27,14 @@ The Python client library reads the "rest.json" document and uses it to
 communicate with the REST server: client code that uses
 "constellation_client" does not need to worry about the details.
 
-If downloading is enabled in the options, the Python script file will be
-downloaded if:
+If downloading is enabled in the options, the Python package file will be
+installed if:
 
--   The script file does not already exist; or
--   The script file exists, but is different to the latest version known
+-   The package does not already exist; or
+-   The package exists, but is different to the latest version known
     to Constellation.
 
-This means that when the script is updated, the new version will
+This means that when the package is updated, the new version will
 automatically overwrite an existing version the next time the REST
 server is started.
 
@@ -54,8 +54,8 @@ emulated by placing the files "response.json" and "content.out" in the
 directory.
 
 The file listener can be started and stopped using Tools -> Start/Stop
-File Listener. Starting the file listener will also write
-"constellation_client.py" to the "~/.ipython" directory.
+File Listener. Starting the file listener will also install the
+"constellation_client" package.
 
 Constellation polls the directory waiting for the request files to
 appear. The client places the files in the directory, and polls waiting
@@ -70,7 +70,7 @@ made, the polling period increases to once per five seconds, to decrease
 resource usage on the filesystem. If a request is found, the polling
 time is reset to once per second.
 
-"constellation_client.py" client provides two ways of getting the files
+"constellation_client" client provides two ways of getting the files
 into the directory and retrieving the response:
 
 -   *Shared filesystem* - If the Constellation workstation and the
@@ -82,5 +82,8 @@ into the directory and retrieving the response:
     sftp to transfer files to and from the Constellation workstation.
     This method is as secure as sftp.
 
-See "constellation_client.py" for the details of how the filesystem
-transport is implemented.
+To see the details of how the filesystem transport is implemented, the 
+unpackaged version of "constellation\_client" is included in constellation. 
+The python script implementing this funcitonality, "constellation\_client.py",
+can be found in the following directory: 
+"&lt;directory of constellation installation&gt;\constellation\constellation\modules\ext\package\src\constellation_client". 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,13 +28,10 @@ public class BoxFactory {
     }
 
     protected static AbstractBoundingBox create(final GraphReadMethods wg, final Dimensions d) {
-        switch (d) {
-            case TWO:
-                return new BoundingBox2D(wg);
-            case THREE:
-                return new BoundingBox3D(wg);
-            default:
-                return null;
-        }
+        return switch (d) {
+            case TWO ->  new BoundingBox2D(wg);
+            case THREE ->  new BoundingBox3D(wg);
+            default -> null;
+        };
     }
 }

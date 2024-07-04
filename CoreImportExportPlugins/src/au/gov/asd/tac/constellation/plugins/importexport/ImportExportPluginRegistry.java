@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.plugins.importexport.image.ExportToImagePlug
 import au.gov.asd.tac.constellation.plugins.importexport.jdbc.ImportJDBCPlugin;
 import au.gov.asd.tac.constellation.plugins.importexport.json.ExportToJsonPlugin;
 import au.gov.asd.tac.constellation.plugins.importexport.text.ExportToTextPlugin;
+import au.gov.asd.tac.constellation.plugins.importexport.svg.ExportToSVGPlugin;
 
 /**
  * A registry of import and export plugins
@@ -44,4 +45,5 @@ public class ImportExportPluginRegistry {
     public static final String EXPORT_KML = ExportToKmlPlugin.class.getName();
     public static final String EXPORT_TEXT = ExportToTextPlugin.class.getName();
     public static final String EXPORT_SHAPEFILE = ExportToShapefilePlugin.class.getName();
+    public static final String EXPORT_SVG = ExportToSVGPlugin.class.getName();
 }

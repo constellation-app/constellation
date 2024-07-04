@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -155,6 +155,12 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
     public static void enableAcceptAllFileFilter(final PluginParameter<FileParameterValue> parameter) {
         parameter.getParameterValue().enableAcceptAllFileFilter();
     }
+    
+    @Override
+    public String validateString(final PluginParameter<FileParameterValue> param, final String stringValue) {
+        final FileParameterValue v = param.getParameterValue();
+        return v.validateString(stringValue);
+    }
 
     /**
      * Describes the method of file selection for a parameter of this type.
@@ -213,6 +219,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
         private FileParameterKind kind;
         private ExtensionFilter filter;
         private boolean acceptAllFileFilterUsed;
+        
 
         /**
          * Constructs a new FileParameterValue
@@ -343,7 +350,8 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
 
         @Override
         public String validateString(final String s) {
-            return null;
+            final File validationFile = new File(s);
+            return (validationFile.isDirectory() || (validationFile.getParentFile() != null && validationFile.getParentFile().exists())) ? null : "The specified file path doe not contain valid directories";
         }
 
         @Override

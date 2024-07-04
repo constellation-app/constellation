@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,11 +43,8 @@ public class ShowInTableViewContextMenuProvider implements ContextMenuProvider {
 
     @Override
     public List<String> getItems(final GraphReadMethods graph, final GraphElementType elementType, final int entity) {
-        if (elementType == GraphElementType.VERTEX || elementType == GraphElementType.TRANSACTION) {
-            return Arrays.asList("Show in Table View");
-        } else {
-            return Collections.emptyList();
-        }
+        return elementType == GraphElementType.VERTEX || elementType == GraphElementType.TRANSACTION 
+                ? Arrays.asList("Show in Table View") : Collections.emptyList();
     }
 
     @Override

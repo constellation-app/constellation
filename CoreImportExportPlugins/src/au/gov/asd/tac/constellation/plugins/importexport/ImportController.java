@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -116,6 +117,7 @@ public abstract class ImportController<D> {
     public void displayAlert(final String header, final String message, final AlertType alertType) {
         final Alert dialog;
         dialog = new Alert(alertType, "", ButtonType.OK);
+        dialog.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         dialog.setTitle("Delimited Importer");
         dialog.setHeaderText(header);
         dialog.setContentText(message);
@@ -216,12 +218,15 @@ public abstract class ImportController<D> {
      */
     public boolean hasAttribute(final GraphElementType elementType, final String label) {
         switch (elementType) {
-            case VERTEX:
+            case VERTEX -> {
                 return autoAddedVertexAttributes.containsKey(label);
-            case TRANSACTION:
+            }   
+            case TRANSACTION -> {
                 return autoAddedTransactionAttributes.containsKey(label);
-            default:
+            }
+            default -> {
                 throw new IllegalArgumentException("Element type must be VERTEX or TRANSACTION");
+            }
         }
     }
 

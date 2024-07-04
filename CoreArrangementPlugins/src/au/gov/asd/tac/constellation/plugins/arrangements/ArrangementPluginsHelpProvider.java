@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class ArrangementPluginsHelpProvider extends HelpPageProvider {
 
     private static final String CODEBASE_NAME = "constellation";
+    private static final String SEP = File.separator;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file name
@@ -41,22 +42,27 @@ public class ArrangementPluginsHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
-        final String sep = File.separator;
-        final String arrangementModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreArrangementPlugins" + sep + "src" + sep + "au" + sep + "gov"
-                + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "plugins" + sep + "arrangements" + sep;
+        final String arrangementModulePath = ".." + SEP + "ext" + SEP + "docs" + SEP + "CoreArrangementPlugins" + SEP + "src" + SEP + "au" + SEP + "gov"
+                + SEP + "asd" + SEP + "tac" + SEP + CODEBASE_NAME + SEP + "plugins" + SEP + "arrangements" + SEP;
 
-        map.put("au.gov.asd.tac.constellation.plugins.arrangements.grid", arrangementModulePath + "grid.md");
-        map.put("au.gov.asd.tac.constellation.plugins.arrangements.line", arrangementModulePath + "line.md");
-        map.put("au.gov.asd.tac.constellation.plugins.arrangements.hierarchy", arrangementModulePath + "hierarchy.md");
-        map.put("au.gov.asd.tac.constellation.plugins.arrangements.tree", arrangementModulePath + "tree.md");
-        map.put("au.gov.asd.tac.constellation.plugins.arrangements.circle", arrangementModulePath + "circle.md");
-        map.put("au.gov.asd.tac.constellation.plugins.arrangements.scatter3d", arrangementModulePath + "scatter3d.md");
-        map.put("au.gov.asd.tac.constellation.plugins.arrangements.sphere", arrangementModulePath + "sphere.md");
+        map.put("au.gov.asd.tac.constellation.plugins.arrangements.grid", arrangementModulePath + "grid-arrangement.md");
+        map.put("au.gov.asd.tac.constellation.plugins.arrangements.line", arrangementModulePath + "line-arrangement.md");
+        map.put("au.gov.asd.tac.constellation.plugins.arrangements.hierarchy", arrangementModulePath + "hierarchy-arrangement.md");
+        map.put("au.gov.asd.tac.constellation.plugins.arrangements.tree", arrangementModulePath + "tree-arrangement.md");
+        map.put("au.gov.asd.tac.constellation.plugins.arrangements.circle", arrangementModulePath + "circle-arrangement.md");
+        map.put("au.gov.asd.tac.constellation.plugins.arrangements.scatter3d", arrangementModulePath + "scatter3d-arrangement.md");
+        map.put("au.gov.asd.tac.constellation.plugins.arrangements.sphere", arrangementModulePath + "sphere-arrangement.md");
         map.put("au.gov.asd.tac.constellation.plugins.arrangements.flattenZField", arrangementModulePath + "flatten-z-field.md");
         map.put("au.gov.asd.tac.constellation.plugins.arrangements.contractGraph", arrangementModulePath + "contract-graph.md");
         map.put("au.gov.asd.tac.constellation.plugins.arrangements.expandGraph", arrangementModulePath + "expand-graph.md");
         map.put("au.gov.asd.tac.constellation.plugins.arrangements.layerByTime", arrangementModulePath + "layer-by-time.md");
-        map.put("au.gov.asd.tac.constellation.plugins.arrangements.nodeAttribute", arrangementModulePath + "node-attribute.md");
+        map.put("au.gov.asd.tac.constellation.plugins.arrangements.nodeAttribute", arrangementModulePath + "node-attribute-arrangement.md");
+        map.put("au.gov.asd.tac.constellation.plugins.arrangements.bubbleTree3d", arrangementModulePath + "bubble-tree-3d-arrangement.md");
+        map.put("au.gov.asd.tac.constellation.plugins.arrangements.proximity", arrangementModulePath + "proximity-arrangement.md");
+        map.put("au.gov.asd.tac.constellation.plugins.arrangements.spectral", arrangementModulePath + "spectral-arrangement.md");
+        map.put("au.gov.asd.tac.constellation.plugins.arrangements.hde", arrangementModulePath + "hde-arrangement.md");
+        map.put("au.gov.asd.tac.constellation.plugins.arrangements.uncollide", arrangementModulePath + "uncollide-arrangement.md");
+        map.put("au.gov.asd.tac.constellation.plugins.arrangements.pinUnpin", arrangementModulePath + "pin-unpin-nodes.md");
         return map;
     }
 
@@ -67,10 +73,9 @@ public class ArrangementPluginsHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        final String sep = File.separator;
         final String arrangementsPath;
-        arrangementsPath = "ext" + sep + "docs" + sep + "CoreArrangementPlugins" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
-                + sep + CODEBASE_NAME + sep + "plugins" + sep + "arrangements" + sep + "arrangements-toc.xml";
+        arrangementsPath = "ext" + SEP + "docs" + SEP + "CoreArrangementPlugins" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP + "asd" + SEP + "tac"
+                + SEP + CODEBASE_NAME + SEP + "plugins" + SEP + "arrangements" + SEP + "arrangements-toc.xml";
 
         return arrangementsPath;
     }

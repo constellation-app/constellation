@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -181,8 +181,7 @@ public class NebulaDataObject extends MultiDataObject implements OpenCookie {
 
         for (final Enumeration<DataObject> i = getFolder().children(); i.hasMoreElements();) {
             final DataObject dobj = i.nextElement();
-            if (dobj instanceof GraphDataObject) {
-                final GraphDataObject gdo = (GraphDataObject) dobj;
+            if (dobj instanceof GraphDataObject gdo) {
                 gdo.setNebulaDataObject(this);
                 gdo.setNebulaColor(c);
                 GraphOpener.getDefault().openGraph(gdo);

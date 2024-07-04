@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +25,9 @@ import au.gov.asd.tac.constellation.graph.value.readables.StringReadable;
  */
 public interface StringOperation {
 
-    boolean execute(String p1, String p2);
+    boolean execute(final String p1, final String p2);
 
-    default void register(OperatorRegistry registry) {
+    default void register(final OperatorRegistry registry) {
 
         registry.register(StringReadable.class, StringReadable.class, BooleanReadable.class, (p1, p2)
                 -> () -> execute(p1.readString(), p2.readString()));

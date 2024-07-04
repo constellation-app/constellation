@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,10 +38,8 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParamet
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
@@ -138,8 +136,6 @@ public class LevenshteinDistancePlugin extends SimpleEditPlugin {
             return;
         }
 
-        final Map<Tuple<Integer, Integer>, Integer> distances = new HashMap<>();
-
         // compare each pair of vertices
         final int vertexCount = graph.getVertexCount();
         for (int one = 0; one < vertexCount; one++) {
@@ -165,11 +161,6 @@ public class LevenshteinDistancePlugin extends SimpleEditPlugin {
                 if (caseInsensitive) {
                     stringOne = stringOne.toLowerCase();
                     stringTwo = stringTwo.toLowerCase();
-                }
-
-                if (stringOne.equals(stringTwo)) {
-                    distances.put(Tuple.create(vxOneId, vxTwoId), 0);
-                    continue;
                 }
 
                 final LevenshteinDistanceFunction ldf = new LevenshteinDistanceFunction(maxDistance);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,12 +24,11 @@ import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
 import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 import org.openide.util.NbBundle;
 
 /**
@@ -80,17 +79,17 @@ public class JoinCommWelcomePlugin implements WelcomePluginInterface {
     public Button getButton() {
         joinView.setFitHeight(25);
         joinView.setFitWidth(25);
-        final Text title = new Text("Join our Community");
-        title.setFill(Color.WHITE);
-        final Text subtitle = new Text("Become a member");
-        subtitle.setId("smallInfoText");
-        subtitle.setFill(Color.WHITE);
+        final Label title = new Label("Join our Community");
+        title.setId("label");
+        final Label subtitle = new Label("Become a member");
+        subtitle.setId("infoText");
         final VBox layoutVBox = new VBox(title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER_LEFT);
         final HBox layoutHBox = new HBox(joinView, layoutVBox);
         layoutHBox.setSpacing(8);
         layoutHBox.setAlignment(Pos.CENTER_LEFT);
         joinBtn.setGraphic(layoutHBox);
+        joinBtn.setId("left-button");
         return joinBtn;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -160,18 +160,17 @@ public class FactColorTranslator extends AbstractColorTranslator<FactResult, Ele
                     final int elementId = scoreResult.getElementId();
                     final float colorIntensity = scoreResult.getFactValue() ? 1F : 0F;
                     switch (elementType) {
-                        case VERTEX:
+                        case VERTEX -> {
                             final ConstellationColor vertexColor = graph.getObjectValue(vertexOverlayColorAttribute, elementId);
                             vertexColors.put(elementId, vertexColor);
                             graph.setObjectValue(vertexOverlayColorAttribute, elementId, ConstellationColor.getColorValue((float) 1.0 - colorIntensity, (float) 1.0 - colorIntensity, 1F, 1F));
-                            break;
-                        case TRANSACTION:
+                        }
+                        case TRANSACTION -> {
                             final ConstellationColor transactionColor = graph.getObjectValue(transactionOverlayColorAttribute, elementId);
                             transactionColors.put(elementId, transactionColor);
                             graph.setObjectValue(transactionOverlayColorAttribute, elementId, ConstellationColor.getColorValue((float) 1.0 - colorIntensity, (float) 1.0 - colorIntensity, 1F, 1F));
-                            break;
-                        default:
-                            throw new InvalidElementTypeException("'Color Elements' is not supported "
+                        }
+                        default -> throw new InvalidElementTypeException("'Color Elements' is not supported "
                                     + "for the element type associated with this analytic question.");
                     }
                 }

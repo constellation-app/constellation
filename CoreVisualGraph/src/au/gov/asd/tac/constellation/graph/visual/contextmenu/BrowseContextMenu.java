@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -38,6 +40,8 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = ContextMenuProvider.class, position = 10000)
 public class BrowseContextMenu implements ContextMenuProvider {
+
+    private static final Logger LOGGER = Logger.getLogger(BrowseContextMenu.class.getName());
 
     @Override
     public List<String> getMenuPath(final GraphElementType elementType) {
@@ -62,7 +66,7 @@ public class BrowseContextMenu implements ContextMenuProvider {
     }
 
     @Override
-    public void selectItem(String item, Graph graph, GraphElementType elementType, int elementId, Vector3f unprojected) {
+    public void selectItem(final String item, final Graph graph, final GraphElementType elementType, final int elementId, final Vector3f unprojected) {
         final ReadableGraph rg = graph.getReadableGraph();
         try {
             final int attribute = rg.getAttribute(elementType, item);
@@ -77,8 +81,8 @@ public class BrowseContextMenu implements ContextMenuProvider {
 //                            .executeLater(null);
                 }
             }
-        } catch (IOException ex) {
-
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
         } finally {
             rg.release();
         }

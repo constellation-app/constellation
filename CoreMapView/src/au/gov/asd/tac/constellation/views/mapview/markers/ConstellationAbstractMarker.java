@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 import processing.core.PGraphics;
 import processing.core.PVector;
 
@@ -183,8 +182,8 @@ public abstract class ConstellationAbstractMarker implements Marker {
     @Override
     public String getStringProperty(final String key) {
         final Object value = properties.get(key);
-        if (value instanceof String) {
-            return (String) value;
+        if (value instanceof String string) {
+            return string;
         } else {
             return null;
         }
@@ -193,8 +192,8 @@ public abstract class ConstellationAbstractMarker implements Marker {
     @Override
     public Integer getIntegerProperty(final String key) {
         final Object value = properties.get(key);
-        if (value instanceof Integer) {
-            return (Integer) value;
+        if (value instanceof Integer integer) {
+            return integer;
         } else {
             return null;
         }
@@ -222,7 +221,7 @@ public abstract class ConstellationAbstractMarker implements Marker {
         final PGraphics graphics = map.mapDisplay.getOuterPG();
         final List<MapPosition> positions = locations.stream()
                 .map(location -> new MapPosition(map.mapDisplay.getObjectFromLocation(location)))
-                .collect(Collectors.toList());
+                .toList();
 
         final boolean validMarker = draw(graphics, positions, map);
 

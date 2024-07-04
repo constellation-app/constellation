@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,6 +47,8 @@ import au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.PreviousViewP
 import au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.ResetViewPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.RotateCameraPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.SetCameraVisibilityRange;
+import au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.ZoomInPlugin;
+import au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.ZoomOutPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.ZoomToSelectionPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.ZoomToVerticesPlugin;
 
@@ -90,6 +92,8 @@ public class InteractiveGraphPluginRegistry {
     public static final String TOGGLE_DRAW_FLAG = ToggleDrawFlagPlugin.class.getName();
     public static final String TOGGLE_DRAW_DIRECTED = ToggleDrawDirectedPlugin.class.getName();
     public static final String TOGGLE_SELECTION_MODE = ToggleSelectionModePlugin.class.getName();
+    public static final String ZOOM_IN = ZoomInPlugin.class.getName();
+    public static final String ZOOM_OUT = ZoomOutPlugin.class.getName();
     public static final String ZOOM_TO_SELECTION = ZoomToSelectionPlugin.class.getName();
     public static final String ZOOM_TO_VERTICES = ZoomToVerticesPlugin.class.getName();
 }

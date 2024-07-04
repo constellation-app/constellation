@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,8 @@ public class DoubleArithmeticConverters {
         // added private constructor to hide implicit public constructor - S1118.
     }
 
-    public static <P1 extends DoubleReadable, P2 extends DoubleReadable> void register(ConverterRegistry r, Class<P1> parameterClass1, Class<P2> parameterClass2) {
+    public static <P1 extends DoubleReadable, P2 extends DoubleReadable> void register(final ConverterRegistry r, 
+            final Class<P1> parameterClass1, final Class<P2> parameterClass2) {
         r.register(parameterClass1, parameterClass2, Product.class, new ProductConverter());
         r.register(parameterClass1, parameterClass2, Quotient.class, new QuotientConverter());
         r.register(parameterClass1, parameterClass2, Modulus.class, new ModulusConverter());
@@ -60,7 +61,7 @@ public class DoubleArithmeticConverters {
         r.register(parameterClass1, parameterClass2, LessThanOrEquals.class, new LessThanOrEqualsConverter());
     }
 
-    public static <P1 extends DoubleReadable> void register(ConverterRegistry r, Class<P1> parameterClass) {
+    public static <P1 extends DoubleReadable> void register(final ConverterRegistry r, final Class<P1> parameterClass) {
         r.register(parameterClass, Negative.class, new NegativeConverter());
         r.register(parameterClass, Positive.class, new PositiveConverter());
     }
@@ -68,7 +69,7 @@ public class DoubleArithmeticConverters {
     public static class NegativeConverter implements Converter<DoubleReadable, Negative<DoubleValue>> {
 
         @Override
-        public Negative<DoubleValue> convert(DoubleReadable source) {
+        public Negative<DoubleValue> convert(final DoubleReadable source) {
             return new Negative<>() {
                 @Override
                 public DoubleValue createValue() {
@@ -76,7 +77,7 @@ public class DoubleArithmeticConverters {
                 }
 
                 @Override
-                public void read(DoubleValue value) {
+                public void read(final DoubleValue value) {
                     value.writeDouble(-source.readDouble());
                 }
             };
@@ -86,7 +87,7 @@ public class DoubleArithmeticConverters {
     public static class PositiveConverter implements Converter<DoubleReadable, Positive<DoubleValue>> {
 
         @Override
-        public Positive<DoubleValue> convert(DoubleReadable source) {
+        public Positive<DoubleValue> convert(final DoubleReadable source) {
             return new Positive<>() {
                 @Override
                 public DoubleValue createValue() {
@@ -94,7 +95,7 @@ public class DoubleArithmeticConverters {
                 }
 
                 @Override
-                public void read(DoubleValue value) {
+                public void read(final DoubleValue value) {
                     value.writeDouble(source.readDouble());
                 }
             };
@@ -104,7 +105,7 @@ public class DoubleArithmeticConverters {
     public static class ComparisonConverter implements Biconverter<DoubleReadable, DoubleReadable, Comparison> {
 
         @Override
-        public Comparison convert(DoubleReadable source1, DoubleReadable source2) {
+        public Comparison convert(final DoubleReadable source1, final DoubleReadable source2) {
             return new Comparison() {
                 @Override
                 public IntValue createValue() {
@@ -112,7 +113,7 @@ public class DoubleArithmeticConverters {
                 }
 
                 @Override
-                public void read(IntValue value) {
+                public void read(final IntValue value) {
                     value.writeInt(Double.compare(source1.readDouble(), source2.readDouble()));
                 }
             };
@@ -122,7 +123,7 @@ public class DoubleArithmeticConverters {
     public static class DifferenceConverter implements Biconverter<DoubleReadable, DoubleReadable, Difference<DoubleValue>> {
 
         @Override
-        public Difference<DoubleValue> convert(DoubleReadable source1, DoubleReadable source2) {
+        public Difference<DoubleValue> convert(final DoubleReadable source1, final DoubleReadable source2) {
             return new Difference<>() {
                 @Override
                 public DoubleValue createValue() {
@@ -130,7 +131,7 @@ public class DoubleArithmeticConverters {
                 }
 
                 @Override
-                public void read(DoubleValue value) {
+                public void read(final DoubleValue value) {
                     value.writeDouble(source1.readDouble() - source2.readDouble());
                 }
             };
@@ -140,7 +141,7 @@ public class DoubleArithmeticConverters {
     public static class EqualsConverter implements Biconverter<DoubleReadable, DoubleReadable, Equals> {
 
         @Override
-        public Equals convert(DoubleReadable source1, DoubleReadable source2) {
+        public Equals convert(final DoubleReadable source1, final DoubleReadable source2) {
             return new Equals() {
                 @Override
                 public BooleanValue createValue() {
@@ -148,7 +149,7 @@ public class DoubleArithmeticConverters {
                 }
 
                 @Override
-                public void read(BooleanValue value) {
+                public void read(final BooleanValue value) {
                     value.writeBoolean(source1.readDouble() == source2.readDouble());
                 }
             };
@@ -158,7 +159,7 @@ public class DoubleArithmeticConverters {
     public static class NotEqualsConverter implements Biconverter<DoubleReadable, DoubleReadable, NotEquals> {
 
         @Override
-        public NotEquals convert(DoubleReadable source1, DoubleReadable source2) {
+        public NotEquals convert(final DoubleReadable source1, final DoubleReadable source2) {
             return new NotEquals() {
                 @Override
                 public BooleanValue createValue() {
@@ -166,7 +167,7 @@ public class DoubleArithmeticConverters {
                 }
 
                 @Override
-                public void read(BooleanValue value) {
+                public void read(final BooleanValue value) {
                     value.writeBoolean(source1.readDouble() != source2.readDouble());
                 }
             };
@@ -176,7 +177,7 @@ public class DoubleArithmeticConverters {
     public static class GreaterThanConverter implements Biconverter<DoubleReadable, DoubleReadable, GreaterThan> {
 
         @Override
-        public GreaterThan convert(DoubleReadable source1, DoubleReadable source2) {
+        public GreaterThan convert(final DoubleReadable source1, final DoubleReadable source2) {
             return new GreaterThan() {
                 @Override
                 public BooleanValue createValue() {
@@ -184,7 +185,7 @@ public class DoubleArithmeticConverters {
                 }
 
                 @Override
-                public void read(BooleanValue value) {
+                public void read(final BooleanValue value) {
                     value.writeBoolean(source1.readDouble() > source2.readDouble());
                 }
             };
@@ -194,7 +195,7 @@ public class DoubleArithmeticConverters {
     public static class GreaterThanOrEqualsConverter implements Biconverter<DoubleReadable, DoubleReadable, GreaterThanOrEquals> {
 
         @Override
-        public GreaterThanOrEquals convert(DoubleReadable source1, DoubleReadable source2) {
+        public GreaterThanOrEquals convert(final DoubleReadable source1, final DoubleReadable source2) {
             return new GreaterThanOrEquals() {
                 @Override
                 public BooleanValue createValue() {
@@ -202,7 +203,7 @@ public class DoubleArithmeticConverters {
                 }
 
                 @Override
-                public void read(BooleanValue value) {
+                public void read(final BooleanValue value) {
                     value.writeBoolean(source1.readDouble() >= source2.readDouble());
                 }
             };
@@ -212,7 +213,7 @@ public class DoubleArithmeticConverters {
     public static class LessThanConverter implements Biconverter<DoubleReadable, DoubleReadable, LessThan> {
 
         @Override
-        public LessThan convert(DoubleReadable source1, DoubleReadable source2) {
+        public LessThan convert(final DoubleReadable source1, final DoubleReadable source2) {
             return new LessThan() {
                 @Override
                 public BooleanValue createValue() {
@@ -220,7 +221,7 @@ public class DoubleArithmeticConverters {
                 }
 
                 @Override
-                public void read(BooleanValue value) {
+                public void read(final BooleanValue value) {
                     value.writeBoolean(source1.readDouble() < source2.readDouble());
                 }
             };
@@ -230,7 +231,7 @@ public class DoubleArithmeticConverters {
     public static class LessThanOrEqualsConverter implements Biconverter<DoubleReadable, DoubleReadable, LessThanOrEquals> {
 
         @Override
-        public LessThanOrEquals convert(DoubleReadable source1, DoubleReadable source2) {
+        public LessThanOrEquals convert(final DoubleReadable source1, final DoubleReadable source2) {
             return new LessThanOrEquals() {
                 @Override
                 public BooleanValue createValue() {
@@ -238,7 +239,7 @@ public class DoubleArithmeticConverters {
                 }
 
                 @Override
-                public void read(BooleanValue value) {
+                public void read(final BooleanValue value) {
                     value.writeBoolean(source1.readDouble() <= source2.readDouble());
                 }
             };
@@ -248,7 +249,7 @@ public class DoubleArithmeticConverters {
     public static class ProductConverter implements Biconverter<DoubleReadable, DoubleReadable, Product<DoubleValue>> {
 
         @Override
-        public Product<DoubleValue> convert(DoubleReadable source1, DoubleReadable source2) {
+        public Product<DoubleValue> convert(final DoubleReadable source1, final DoubleReadable source2) {
             return new Product<>() {
                 @Override
                 public DoubleValue createValue() {
@@ -256,7 +257,7 @@ public class DoubleArithmeticConverters {
                 }
 
                 @Override
-                public void read(DoubleValue value) {
+                public void read(final DoubleValue value) {
                     value.writeDouble(source1.readDouble() * source2.readDouble());
                 }
             };
@@ -266,7 +267,7 @@ public class DoubleArithmeticConverters {
     public static class QuotientConverter implements Biconverter<DoubleReadable, DoubleReadable, Quotient<DoubleValue>> {
 
         @Override
-        public Quotient<DoubleValue> convert(DoubleReadable source1, DoubleReadable source2) {
+        public Quotient<DoubleValue> convert(final DoubleReadable source1, final DoubleReadable source2) {
             return new Quotient<>() {
                 @Override
                 public DoubleValue createValue() {
@@ -274,7 +275,7 @@ public class DoubleArithmeticConverters {
                 }
 
                 @Override
-                public void read(DoubleValue value) {
+                public void read(final DoubleValue value) {
                     value.writeDouble(source1.readDouble() / source2.readDouble());
                 }
             };
@@ -284,7 +285,7 @@ public class DoubleArithmeticConverters {
     public static class ModulusConverter implements Biconverter<DoubleReadable, DoubleReadable, Modulus<DoubleValue>> {
 
         @Override
-        public Modulus<DoubleValue> convert(DoubleReadable source1, DoubleReadable source2) {
+        public Modulus<DoubleValue> convert(final DoubleReadable source1, final DoubleReadable source2) {
             return new Modulus<>() {
                 @Override
                 public DoubleValue createValue() {
@@ -292,7 +293,7 @@ public class DoubleArithmeticConverters {
                 }
 
                 @Override
-                public void read(DoubleValue value) {
+                public void read(final DoubleValue value) {
                     value.writeDouble(source1.readDouble() % source2.readDouble());
                 }
             };
@@ -302,7 +303,7 @@ public class DoubleArithmeticConverters {
     public static class SumConverter implements Biconverter<DoubleReadable, DoubleReadable, Sum<DoubleValue>> {
 
         @Override
-        public Sum<DoubleValue> convert(DoubleReadable source1, DoubleReadable source2) {
+        public Sum<DoubleValue> convert(final DoubleReadable source1, final DoubleReadable source2) {
             return new Sum<>() {
                 @Override
                 public DoubleValue createValue() {
@@ -310,7 +311,7 @@ public class DoubleArithmeticConverters {
                 }
 
                 @Override
-                public void read(DoubleValue value) {
+                public void read(final DoubleValue value) {
                     value.writeDouble(source1.readDouble() + source2.readDouble());
                 }
             };

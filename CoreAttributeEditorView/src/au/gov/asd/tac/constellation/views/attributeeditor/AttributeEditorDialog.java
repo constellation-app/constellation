@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,14 @@
 package au.gov.asd.tac.constellation.views.attributeeditor;
 
 import au.gov.asd.tac.constellation.functionality.dialog.ConstellationDialog;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -38,14 +40,16 @@ import javafx.scene.paint.Color;
  */
 public class AttributeEditorDialog extends ConstellationDialog {
 
-    private static final String DARK_THEME = "/au/gov/asd/tac/constellation/views/attributeeditor/resources/editor-dark.css";
+    private static final String DARK_THEME = "/au/gov/asd/tac/constellation/views/attributeeditor/resources/attribute-editor-dialog-dark.css";
     private final HBox okCancelHBox;
     private final Label errorLabel;
     private final Button okButton;
     private final Button cancelButton;
     private final Button defaultButton;
+    private final CheckBox noValueCheckBox;
+    private final VBox noValueVBox;
 
-    public AttributeEditorDialog(final boolean restoreDefaultButton, final AbstractEditor<?> editor) {
+    public AttributeEditorDialog(final boolean defaultButtonAvailable, final AbstractEditor<?> editor) {
         final VBox root = new VBox();
         root.setPadding(new Insets(10));
         root.setAlignment(Pos.CENTER);
@@ -57,6 +61,15 @@ public class AttributeEditorDialog extends ConstellationDialog {
         okButton = new Button("OK");
         cancelButton = new Button("Cancel");
         defaultButton = new Button("Restore Default");
+        noValueCheckBox = new CheckBox("No Value");
+
+        okCancelHBox = new HBox(20);
+        okCancelHBox.setPadding(new Insets(10));
+        okCancelHBox.setAlignment(Pos.CENTER);
+
+        noValueVBox = new VBox(20);
+        noValueVBox.setPadding(new Insets(10));
+        noValueVBox.setAlignment(Pos.CENTER);
 
         okButton.setOnAction(e -> {
             editor.performEdit();
@@ -65,27 +78,55 @@ public class AttributeEditorDialog extends ConstellationDialog {
 
         cancelButton.setOnAction(e -> hideDialog());
 
-        defaultButton.setOnAction(e -> editor.setDefaultValue());
+        defaultButton.setOnAction(e -> {
+            if (editor.noValueCheckBoxAvailable()) {
+                noValueCheckBox.setSelected(editor.isDefaultValueNull());
+            }
 
-        okCancelHBox = new HBox(20);
-        okCancelHBox.setPadding(new Insets(10));
-        okCancelHBox.setAlignment(Pos.CENTER);
-        if (restoreDefaultButton) {
+            editor.setDefaultValue();
+        });
+
+        noValueCheckBox.selectedProperty().addListener(e -> {
+            if (noValueCheckBox.isSelected()) {
+                editor.storeValue();
+                editor.getEditorControls().setDisable(true);
+                editor.setCurrentValue(null);
+            } else {
+                editor.restoreValue();
+                editor.getEditorControls().setDisable(false);
+            }
+        });
+
+        if (defaultButtonAvailable) {
             okCancelHBox.getChildren().addAll(okButton, cancelButton, defaultButton);
         } else {
             okCancelHBox.getChildren().addAll(okButton, cancelButton);
         }
 
+        if (editor.noValueCheckBoxAvailable()) {
+            noValueVBox.getChildren().addAll(noValueCheckBox, okCancelHBox);
+        }
+
         okButton.disableProperty().bind(editor.getEditDisabledProperty());
         errorLabel.visibleProperty().bind(editor.getEditDisabledProperty());
         errorLabel.textProperty().bind(editor.getErrorMessageProperty());
+
         final Node ec = editor.getEditorControls();
         VBox.setVgrow(ec, Priority.ALWAYS);
-        root.getChildren().addAll(editor.getEditorHeading(), ec, errorLabel, okCancelHBox);
+        root.getChildren().addAll(
+                editor.getEditorHeading(),
+                ec,
+                errorLabel,
+                editor.noValueCheckBoxAvailable() ? noValueVBox : okCancelHBox);
 
         final Scene scene = new Scene(root);
         scene.setFill(Color.rgb(0, 0, 0, 0));
-        scene.getStylesheets().add(AttributeEditorDialog.class.getResource(DARK_THEME).toExternalForm());
+        scene.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
+
+        if (JavafxStyleManager.isDarkTheme()) {
+            scene.getStylesheets().add(AttributeEditorDialog.class.getResource(DARK_THEME).toExternalForm());
+        }
+
         fxPanel.setScene(scene);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doCallRealMethod;
@@ -83,14 +84,14 @@ public class HashmodCSVImportFileParserNGTest {
         System.out.println("testParse");
 
         final HashmodCSVImportFileParser instance = spy(new HashmodCSVImportFileParser());
-        doCallRealMethod().when(instance).parse(any(HashmodInputSource.class), any(PluginParameters.class));
+        doCallRealMethod().when(instance).parse(any(HashmodInputSource.class));
 
         // When the CSV file is empty.
         doReturn(CSVParserMock).when(instance).getCSVParser(hashmodInputSourceMock);
         doReturn(iteratorMock).when(CSVParserMock).iterator();
 
         final List<String[]> expResult1 = new ArrayList<>();
-        final List<String[]> result1 = instance.parse(hashmodInputSourceMock, pluginParametersMock);
+        final List<String[]> result1 = instance.parse(hashmodInputSourceMock);
 
         assertEquals(result1, expResult1);
 
@@ -108,9 +109,9 @@ public class HashmodCSVImportFileParserNGTest {
         list.add(line);
 
         final List<String[]> expResult2 = list;
-        final List<String[]> result2 = instance.parse(hashmodInputSourceMock, pluginParametersMock);
+        final List<String[]> result2 = instance.parse(hashmodInputSourceMock);
 
-        assertEquals(result2, expResult2);
+        assertThat(result2).usingRecursiveComparison().isEqualTo(expResult2);
     }
 
     /**
@@ -123,7 +124,7 @@ public class HashmodCSVImportFileParserNGTest {
         System.out.println("testPreview");
 
         final HashmodCSVImportFileParser instance = spy(new HashmodCSVImportFileParser());
-        doCallRealMethod().when(instance).preview(any(HashmodInputSource.class), any(PluginParameters.class), anyInt());
+        doCallRealMethod().when(instance).preview(any(HashmodInputSource.class), anyInt());
 
         // When the CSV file is empty.
         doReturn(CSVParserMock).when(instance).getCSVParser(hashmodInputSourceMock);
@@ -134,7 +135,7 @@ public class HashmodCSVImportFileParserNGTest {
         final int limit = rand.nextInt(10) + 1;
 
         final List<String[]> expResult1 = new ArrayList<>();
-        final List<String[]> result1 = instance.preview(hashmodInputSourceMock, pluginParametersMock, limit);
+        final List<String[]> result1 = instance.preview(hashmodInputSourceMock, limit);
 
         assertEquals(result1, expResult1);
 
@@ -152,9 +153,9 @@ public class HashmodCSVImportFileParserNGTest {
 
         // Only 1 record should be returned by preview().
         final List<String[]> expResult2 = explist;
-        final List<String[]> result2 = instance.preview(hashmodInputSourceMock, pluginParametersMock, 0);
+        final List<String[]> result2 = instance.preview(hashmodInputSourceMock, 0);
 
-        assertEquals(result2, expResult2);
+        assertThat(result2).usingRecursiveComparison().isEqualTo(expResult2);
 
         // When there are 4 CSV records to be parsed in the file and the limit is 2
         doReturn(true, true, true, true, false).when(iteratorMock).hasNext();
@@ -164,8 +165,8 @@ public class HashmodCSVImportFileParserNGTest {
 
         // Only 2 records should be returned by preview().
         final List<String[]> expResult3 = explist;
-        final List<String[]> result3 = instance.preview(hashmodInputSourceMock, pluginParametersMock, 2);
+        final List<String[]> result3 = instance.preview(hashmodInputSourceMock, 2);
 
-        assertEquals(result3, expResult3);
+        assertThat(result3).usingRecursiveComparison().isEqualTo(expResult3);
     }
 }

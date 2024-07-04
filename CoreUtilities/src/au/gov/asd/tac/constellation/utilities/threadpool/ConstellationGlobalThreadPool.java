@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ public class ConstellationGlobalThreadPool {
      */
     public ScheduledExecutorService getScheduledExecutorService() {
         if (scheduledExecutorService == null) {
-            scheduledExecutorService = Executors.newScheduledThreadPool(5);
+            scheduledExecutorService = Executors.newScheduledThreadPool(5, new ConstellationThreadFactory("Global Scheduled Thread Pool"));
         }
 
         return scheduledExecutorService;
@@ -69,10 +69,27 @@ public class ConstellationGlobalThreadPool {
      */
     public ExecutorService getFixedThreadPool() {
         if (fixedThreadPool == null) {
-            fixedThreadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+            fixedThreadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), new ConstellationThreadFactory("Global Fixed Thread Pool"));
         }
-
+        
         return fixedThreadPool;
+    }
+    
+    /**
+     * Instantiates exactly a FixedThreadPool containing all available threads.
+     * This fixed thread pool will not be referenced by this utility class.
+     * It is the responsibility fo the calling class to monitor and shutdown this ExecutrService as needed.
+     *
+     * @param poolName
+     * @param requestedProcessors
+     * @return a FixedThreadPool objects
+     */
+    public ExecutorService getFixedThreadPool(final String poolName, final int requestedProcessors) {
+        if (requestedProcessors > Runtime.getRuntime().availableProcessors()){
+            //Do something here probably
+            return Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), new ConstellationThreadFactory(poolName));
+        } 
+        return Executors.newFixedThreadPool(requestedProcessors, new ConstellationThreadFactory(poolName));
     }
 
     /**
@@ -82,7 +99,7 @@ public class ConstellationGlobalThreadPool {
      */
     public ExecutorService getCachedThreadPool() {
         if (cachedThreadPool == null) {
-            cachedThreadPool = Executors.newCachedThreadPool();
+            cachedThreadPool = Executors.newCachedThreadPool(new ConstellationThreadFactory("Global Cached Thread Pool"));
         }
 
         return cachedThreadPool;

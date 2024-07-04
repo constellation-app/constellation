@@ -132,7 +132,6 @@
   <SubComponents>
     <Container class="javax.swing.JToolBar" name="tlbActions">
       <Properties>
-        <Property name="floatable" type="boolean" value="false"/>
         <Property name="orientation" type="int" value="1"/>
         <Property name="rollover" type="boolean" value="true"/>
       </Properties>
@@ -142,7 +141,7 @@
         <Component class="javax.swing.JButton" name="btnAdd">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/au/gov/asd/tac/constellation/functionality/select/named/namedselection_add.png"/>
+              <Image iconType="3" name="/au/gov/asd/tac/constellation/views/namedselection/resources/namedselection_add.png"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
               <ResourceString bundle="au/gov/asd/tac/constellation/views/namedselection/Bundle.properties" key="NamedSelectionTopComponent.btnAdd.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
@@ -161,7 +160,7 @@
         <Component class="javax.swing.JButton" name="btnRemove">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/au/gov/asd/tac/constellation/functionality/select/named/namedselection_trash.png"/>
+              <Image iconType="3" name="/au/gov/asd/tac/constellation/views/namedselection/resources/namedselection_trash.png"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
               <ResourceString bundle="au/gov/asd/tac/constellation/views/namedselection/Bundle.properties" key="NamedSelectionTopComponent.btnRemove.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
@@ -182,7 +181,7 @@
         <Component class="javax.swing.JToggleButton" name="btnSelectResults">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/au/gov/asd/tac/constellation/functionality/select/named/namedselection_selected.png"/>
+              <Image iconType="3" name="/au/gov/asd/tac/constellation/views/namedselection/resources/namedselection_selected.png"/>
             </Property>
             <Property name="selected" type="boolean" value="true"/>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
@@ -202,7 +201,7 @@
         <Component class="javax.swing.JToggleButton" name="btnDimMode">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/au/gov/asd/tac/constellation/functionality/select/named/namedselection_dimmed.png"/>
+              <Image iconType="3" name="/au/gov/asd/tac/constellation/views/namedselection/resources/namedselection_dimmed.png"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
               <ResourceString bundle="au/gov/asd/tac/constellation/views/namedselection/Bundle.properties" key="NamedSelectionTopComponent.btnDimMode.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
@@ -223,7 +222,7 @@
         <Component class="javax.swing.JButton" name="btnUnion">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/au/gov/asd/tac/constellation/functionality/select/named/namedselection_union.png"/>
+              <Image iconType="3" name="/au/gov/asd/tac/constellation/views/namedselection/resources/namedselection_union.png"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
               <ResourceString bundle="au/gov/asd/tac/constellation/views/namedselection/Bundle.properties" key="NamedSelectionTopComponent.btnUnion.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
@@ -242,7 +241,7 @@
         <Component class="javax.swing.JButton" name="btnIntersection">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/au/gov/asd/tac/constellation/functionality/select/named/namedselection_intersection.png"/>
+              <Image iconType="3" name="/au/gov/asd/tac/constellation/views/namedselection/resources/namedselection_intersection.png"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
               <ResourceString bundle="au/gov/asd/tac/constellation/views/namedselection/Bundle.properties" key="NamedSelectionTopComponent.btnIntersection.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
@@ -256,6 +255,27 @@
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnIntersectionActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JToolBar$Separator" name="jSeparator2">
+        </Component>
+        <Component class="javax.swing.JButton" name="helpButton">
+          <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="UserInterfaceIconProvider.HELP.buildIcon(16, ConstellationColor.SKY.getJavaColor())" type="code"/>
+            </Property>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="au/gov/asd/tac/constellation/views/namedselection/Bundle.properties" key="NamedSelectionTopComponent.helpButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+            </Property>
+            <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="au/gov/asd/tac/constellation/views/namedselection/Bundle.properties" key="NamedSelectionTopComponent.helpButton.toolTipText" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+            </Property>
+            <Property name="focusable" type="boolean" value="false"/>
+            <Property name="horizontalTextPosition" type="int" value="0"/>
+            <Property name="verticalTextPosition" type="int" value="3"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="helpButtonActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>

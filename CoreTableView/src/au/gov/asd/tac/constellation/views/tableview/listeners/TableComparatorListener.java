@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,14 +56,13 @@ public class TableComparatorListener implements ChangeListener<Comparator<? supe
      */
     @Override
     public void changed(final ObservableValue<? extends Comparator<? super ObservableList<String>>> observable,
-            final Comparator<? super ObservableList<String>> oldValue,
+            final Comparator<? super ObservableList<String>> oldValue, 
             final Comparator<? super ObservableList<String>> newValue) {
         if (!tablePane.getActiveTableReference().isSortingListenerActive()) {
             tablePane.getActiveTableReference().setSortingListenerActive(true);
-            tablePane.getActiveTableReference().updatePagination(
-                    tablePane.getActiveTableReference().getUserTablePreferences().getMaxRowsPerPage(),
-                    tablePane
-            );
+            tablePane.getActiveTableReference()
+                    .updatePagination(tablePane.getActiveTableReference().getUserTablePreferences().getMaxRowsPerPage(), 
+                            tablePane);
 
             tablePane.getActiveTableReference().setSortingListenerActive(false);
         }

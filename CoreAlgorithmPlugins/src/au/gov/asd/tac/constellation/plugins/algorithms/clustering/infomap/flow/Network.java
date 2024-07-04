@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Config;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Config.ConnectionType;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -137,11 +138,11 @@ public class Network {
     }
 
     public Map<NodePair, Double> getMap() {
-        return connectionMap;
+        return Collections.unmodifiableMap(connectionMap);
     }
 
     public double[] getNodeTeleportRates() {
-        return nodeWeights;
+        return nodeWeights.clone();
     }
 
     public double getSumNodeWeights() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@ package au.gov.asd.tac.constellation.views.find.components;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.find.FindViewController;
 import au.gov.asd.tac.constellation.views.find.utilities.BasicFindReplaceParameters;
 import java.util.ArrayList;
@@ -24,6 +26,8 @@ import java.util.List;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
+import org.openide.util.HelpCtx;
 
 /**
  * This class contains all the UI elements for the replace Tab
@@ -37,15 +41,19 @@ public class ReplaceTab extends BasicFindTab {
 
     private final Button replaceNextButton = new Button("Replace Next");
     private final Button replaceAllButton = new Button("Replace All");
+    private final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor()));
+    private final Button helpButton = new Button("", helpImage);
 
     public ReplaceTab(final FindViewTabs parentComponent) {
         super(parentComponent);
         this.setText("Replace");
         setReplaceGridContent();
 
-        // Sets the actions for the replace all and replace next buttons.
+        // Sets the actions for the replace all, replace next and help buttons.
         replaceAllButton.setOnAction(action -> replaceAllAction());
         replaceNextButton.setOnAction(action -> replaceNextAction());
+        helpButton.setStyle("-fx-border-color: transparent; -fx-background-color: transparent; -fx-effect: null; ");
+        helpButton.setOnAction(event -> new HelpCtx("au.gov.asd.tac.constellation.views.find").display());
 
     }
 
@@ -63,7 +71,7 @@ public class ReplaceTab extends BasicFindTab {
         buttonsHBox.getChildren().clear();
 
         // add the replace buttons
-        buttonsHBox.getChildren().addAll(replaceNextButton, replaceAllButton);
+        buttonsHBox.getChildren().addAll(helpButton, replaceNextButton, replaceAllButton);
 
         // remove addTo, findIn, removeFrom
         postSearchChoiceBox.getItems().remove(0, 3);
@@ -89,7 +97,7 @@ public class ReplaceTab extends BasicFindTab {
     @Override
     public void updateButtons() {
         buttonsHBox.getChildren().clear();
-        buttonsHBox.getChildren().addAll(replaceAllButton, replaceNextButton);
+        buttonsHBox.getChildren().addAll(helpButton, replaceAllButton, replaceNextButton);
         getParentComponent().getParentComponent().setBottom(buttonsVBox);
     }
 
@@ -117,17 +125,9 @@ public class ReplaceTab extends BasicFindTab {
         boolean currentSelection = false;
 
         switch (searchInChoiceBox.getSelectionModel().getSelectedIndex()) {
-            case 0:
-                currentGraph = true;
-                break;
-            case 1:
-                currentSelection = true;
-                break;
-            case 2:
-                searchAllGraphs = true;
-                break;
-            default:
-                break;
+            case 0 -> currentGraph = true;
+            case 1 -> currentSelection = true;
+            case 2 -> searchAllGraphs = true;
         }
         // Create the paramters with the current UI selections
         final BasicFindReplaceParameters parameters = new BasicFindReplaceParameters(findTextField.getText(), replaceTextField.getText(),

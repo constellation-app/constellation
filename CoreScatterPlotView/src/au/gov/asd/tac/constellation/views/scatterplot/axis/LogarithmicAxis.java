@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.scatterplot.axis;
 
-//import com.sun.javafx.charts.ChartLayoutAnimator;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,14 +27,14 @@ import javafx.scene.chart.ValueAxis;
  * LogarithmicAxis class available in the ExtFX library.
  *
  * TODO: {@link ChartLayoutAnimator} is not longer supported, fix it.
- *
+ * Commented out code in this class is related to this issue. Ticket has been created to address.
  * @author cygnus_x-1
  */
 public class LogarithmicAxis extends ValueAxis<Number> {
 
     private final DoubleProperty currentUpperBound = new SimpleDoubleProperty();
 //    private final ChartLayoutAnimator animator = new ChartLayoutAnimator(this);
-    private Object currentAnimationID;
+//    private Object currentAnimationID;
 
     /**
      * Default constructor. Creates an auto-ranging logarithmic axis.
@@ -51,12 +50,12 @@ public class LogarithmicAxis extends ValueAxis<Number> {
      * @param lowerBound The lower bound.
      * @param upperBound The upper bound.
      */
-    public LogarithmicAxis(double lowerBound, double upperBound) {
+    public LogarithmicAxis(final double lowerBound, final double upperBound) {
         super(lowerBound, upperBound);
     }
 
     @Override
-    protected Object autoRange(double minValue, double maxValue, double length, double labelSize) {
+    protected Object autoRange(double minValue, final double maxValue, final double length, final double labelSize) {
         if (isAutoRanging()) {
             if (minValue == 0) { // Can only be reached if graph is empty due to ChartBuilder:77,85 checks.
                 minValue = 1; //When graph is empty set override default minimum of 0 (which is incomaptible with the logartihmic axis) and set it to 1. This results in behaviour similiar to that of the non-log axis for an empty chart.
@@ -77,7 +76,7 @@ public class LogarithmicAxis extends ValueAxis<Number> {
     }
 
     @Override
-    public double getDisplayPosition(Number value) {
+    public double getDisplayPosition(final Number value) {
         // get the logarithmic difference between the value and the lower bound.
         final double diffValue = Math.log10(value.doubleValue() / currentLowerBound.get());
 
@@ -95,7 +94,7 @@ public class LogarithmicAxis extends ValueAxis<Number> {
     }
 
     @Override
-    public Number getValueForDisplay(double displayPosition) {
+    public Number getValueForDisplay(final double displayPosition) {
         // this is basically only the equivalence transformation of the getDisplayPosition method.
         if (getSide().isHorizontal()) {
             return Math.pow(10, displayPosition / getWidth() * Math.log10(currentUpperBound.get() / currentLowerBound.get())) * currentLowerBound.get();
@@ -105,7 +104,7 @@ public class LogarithmicAxis extends ValueAxis<Number> {
     }
 
     @Override
-    protected void setRange(Object range, boolean animate) {
+    protected void setRange(final Object range, final boolean animate) {
         final double lowerBound = ((double[]) range)[0];
         final double upperBound = ((double[]) range)[1];
         final double[] r = (double[]) range;
@@ -139,7 +138,7 @@ public class LogarithmicAxis extends ValueAxis<Number> {
     }
 
     @Override
-    protected List<Number> calculateTickValues(double length, Object range) {
+    protected List<Number> calculateTickValues(final double length, final Object range) {
         final List<Number> tickValues = new ArrayList<>();
 
         final double[] rangeProps = (double[]) range;
@@ -151,7 +150,7 @@ public class LogarithmicAxis extends ValueAxis<Number> {
         // we should always start with an "even" integer, so floor the start value
         // (otherwise the scale would contain odd values, rather then normal 1, 2, 3, 4, ... values)
         for (double major = Math.floor(logLowerBound); major < logUpperBound; major++) {
-            double p = Math.pow(10, major);
+            final double p = Math.pow(10, major);
             for (double j = 1; j < 10; j++) {
                 tickValues.add(j * p);
             }
@@ -176,7 +175,7 @@ public class LogarithmicAxis extends ValueAxis<Number> {
     }
 
     @Override
-    protected String getTickMarkLabel(Number value) {
+    protected String getTickMarkLabel(final Number value) {
         final NumberFormat formatter = NumberFormat.getInstance();
         return formatter.format(value);
     }

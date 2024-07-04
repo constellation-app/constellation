@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,6 @@ public class DeSelectBlazesPlugin extends SimpleEditPlugin {
 
     @Override
     protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-
         final int selectedAttr = VisualConcept.VertexAttribute.SELECTED.get(graph);
         final int blazeAttr = VisualConcept.VertexAttribute.BLAZE.get(graph);
 
@@ -57,6 +56,5 @@ public class DeSelectBlazesPlugin extends SimpleEditPlugin {
                 }
             }
         }
-
     }
 }

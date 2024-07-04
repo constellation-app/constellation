@@ -23,6 +23,14 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>au.gov.asd.tac.constellation.graph.node</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>1.0.4</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>au.gov.asd.tac.constellation.graph.schema.visual</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -39,6 +47,14 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>au.gov.asd.tac.constellation.preferences</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>1.0</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>au.gov.asd.tac.constellation.utilities</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -47,11 +63,19 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>org.openide.awt</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>7.91</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>org.openide.util</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>9.7.1</specification-version>
+                        <specification-version>9.31</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -59,7 +83,7 @@
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>8.33.1</specification-version>
+                        <specification-version>8.57</specification-version>
                     </run-dependency>
                 </dependency>
             </module-dependencies>

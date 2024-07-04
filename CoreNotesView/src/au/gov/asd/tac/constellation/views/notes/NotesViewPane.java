@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.notes;
 
-import au.gov.asd.tac.constellation.views.notes.utilities.NewNotePane;
-import au.gov.asd.tac.constellation.views.notes.utilities.DateTimeRangePicker;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
@@ -36,12 +34,16 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.gui.MultiChoiceInputField;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.notes.state.NotesViewEntry;
+import au.gov.asd.tac.constellation.views.notes.utilities.DateTimeRangePicker;
 import au.gov.asd.tac.constellation.views.notes.utilities.MarkdownTree;
+import au.gov.asd.tac.constellation.views.notes.utilities.NewNotePane;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.Comparator;
@@ -96,6 +98,7 @@ import org.openide.windows.WindowManager;
  * @author sol695510
  */
 public class NotesViewPane extends BorderPane {
+
     private final NotesViewController notesViewController;
     private final List<NotesViewEntry> notesViewEntries;
 
@@ -113,17 +116,16 @@ public class NotesViewPane extends BorderPane {
 
     private final VBox notesListVBox;
     private final ScrollPane notesListScrollPane;
-
-    private static final double NOTE_HEIGHT = 147.0;
+    private static final double NOTE_HEIGHT = 157.0;
     private static final double NOTE_INFO_SPACING = 1;
     private static final double NOTE_BODY_SPACING = 5;
     private static final int DEFAULT_BUTTON_SPACING = 10;
+
     private static final String SHOW_MORE = "Show more";
     private static final String SHOW_LESS = "Show less";
 
-    private static final String USER_COLOR = "#942483";
-    private static final String AUTO_COLOR = "#1c5aa6";
-    private static String USER_CHOSEN_COLOUR = USER_COLOR;
+    private static final String USER_COLOR = "#a26fc0";
+    private static final String AUTO_COLOR = "#236fcc";
     private static final String DATETIME_PATTERN = "hh:mm:ss a 'on' dd/MM/yyyy"; // TODO: make this a preference so that we can support their local timestamp format instead.
 
     private static final String AUTO_NOTES_FILTER = "Auto Notes";
@@ -135,8 +137,11 @@ public class NotesViewPane extends BorderPane {
 
     private static final Object LOCK = new Object();
 
-    private final String fontStyle = String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize());
+    private static final boolean DARK_MODE = JavafxStyleManager.isDarkTheme();
+    private final String fontStyle = String.format("-fx-text-fill: " + (DARK_MODE ? "white" : "black") + "; -fx-font-size:%d;", FontUtilities.getApplicationFontSize());
     private static final String BOLD_STYLE = "-fx-font-weight: bold;";
+    private static String fontSize = String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize());
+    private static String userChosenColour = USER_COLOR;
 
     private final List<Integer> nodesSelected = new ArrayList<>();
     private final List<Integer> transactionsSelected = new ArrayList<>();
@@ -144,14 +149,12 @@ public class NotesViewPane extends BorderPane {
     private ObservableList<String> tagsFiltersList;
     private final List<String> tagsSelectedFiltersList = new ArrayList<>();
 
-
     private final DateTimeRangePicker dateTimeRangePicker = new DateTimeRangePicker();
     private final Button createNewNoteButton = new Button();
     private boolean creatingFirstNote = true;
     private final NewNotePane newNotePane;
     private int noteID = 0;
     private final Map<Integer, String> previouseColourMap = new HashMap<>();
-
 
     private static final Logger LOGGER = Logger.getLogger(NotesViewPane.class.getName());
 
@@ -173,12 +176,11 @@ public class NotesViewPane extends BorderPane {
         filterSelectionMultiChoiceInput = new MultiChoiceInputField(availableFilters);
         filterSelectionMultiChoiceInput.setTitle("Select a filter...");
         filterSelectionMultiChoiceInput.setMinWidth(165);
-        filterSelectionMultiChoiceInput.setMaxWidth(165);
-        filterSelectionMultiChoiceInput.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+
+        filterSelectionMultiChoiceInput.setStyle(fontSize);
         filterSelectionMultiChoiceInput.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change event) -> {
             if (!isSelectedFiltersUpdating) {
                 setFilters(filterSelectionMultiChoiceInput.getCheckModel().getCheckedItems());
-
                 final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
                 if (activeGraph != null) {
                     updateNotesUI();
@@ -187,9 +189,9 @@ public class NotesViewPane extends BorderPane {
             }
             final ObservableList<String> filters = filterSelectionMultiChoiceInput.getCheckModel().getCheckedItems();
             final String checkedFilters = String.join(", ", filters);
-            filterSelectionMultiChoiceInput.setTitle(filters.isEmpty()? "Select a filter..." : checkedFilters);
+            filterSelectionMultiChoiceInput.setTitle(filters.isEmpty() ? "Select a filter..." : checkedFilters);
         });
-        
+
         notesViewEntries.forEach(entry -> {
             if (!entry.isUserCreated()) {
 
@@ -206,7 +208,7 @@ public class NotesViewPane extends BorderPane {
 
         // CheckComboBox for the Auto Note filters.
         autoFilterCheckComboBox = new MultiChoiceInputField(tagsFiltersList);
-        autoFilterCheckComboBox.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+        autoFilterCheckComboBox.setStyle(fontSize);
         autoFilterCheckComboBox.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change event) -> {
             if (!isAutoSelectedFiltersUpdating) {
                 updateSelectedTagsCombo(autoFilterCheckComboBox.getCheckModel().getCheckedItems());
@@ -246,23 +248,22 @@ public class NotesViewPane extends BorderPane {
             event.consume();
         });
 
-        final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
+        final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor())));
         helpButton.paddingProperty().set(new Insets(2, 0, 0, 0));
         helpButton.setTooltip(new Tooltip("Display help for Notes View"));
         helpButton.setOnAction(event -> new HelpCtx(NotesViewTopComponent.class.getName()).display());
         // Get rid of the ugly button look so the icon stands alone.
-        helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
+        helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent; -fx-effect: null; ");
 
         // FlowPane to store control items used to filter notes.
         final ToolBar toolBar = new ToolBar();
         toolBar.getItems().addAll(createNewNoteButton, filterSelectionMultiChoiceInput, autoFilterCheckComboBox, dateTimeRangePicker.getTimeFilterMenu(), helpButton);
         // Create the actual node that allows user to add new notes
-        newNotePane = new NewNotePane(USER_CHOSEN_COLOUR);
+        newNotePane = new NewNotePane(userChosenColour);
 
         // Button to trigger pop-up window to make a new note
         createNewNoteButton.setText("Create Note");
-        createNewNoteButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
-        createNewNoteButton.setStyle("-fx-text-fill: #00FF00;");
+        createNewNoteButton.setStyle(fontStyle);
 
         createNewNoteButton.setOnAction(event -> {
             if (creatingFirstNote) {
@@ -277,6 +278,7 @@ public class NotesViewPane extends BorderPane {
 
         // Event handler to add new note
         newNotePane.getAddButtion().setOnAction(event -> {
+
             final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
             if (activeGraph != null) {
                 newNotePane.getColourPicker().setValue(ConstellationColor.fromHtmlColor(USER_COLOR).getJavaFXColor());
@@ -316,7 +318,7 @@ public class NotesViewPane extends BorderPane {
                         );
                         newNotePane.setPreviousColour(newNotePane.getUserChosenColour());
                         if (newNotePane.isApplySelected()) {
-                            LOGGER.log(Level.SEVERE, "Selecting nodes to link to note");
+                            LOGGER.log(Level.FINE, "Selecting nodes to link to note");
                             // Get selected nodes from the graph.
                             final List<Integer> selectedNodes = new ArrayList<>();
                             // Get selected transactions from the graph.
@@ -411,7 +413,6 @@ public class NotesViewPane extends BorderPane {
 
         });
 
-
         // VBox in a ScrollPane for holding expanding list of user and plugin generated notes.
         notesListVBox = new VBox(DEFAULT_BUTTON_SPACING);
         notesListVBox.setAlignment(Pos.BOTTOM_CENTER);
@@ -424,7 +425,6 @@ public class NotesViewPane extends BorderPane {
         setCenter(notesListScrollPane);
 
     }
-
 
     /**
      * Set the plugin reports that have executed on the current graph report.
@@ -480,11 +480,8 @@ public class NotesViewPane extends BorderPane {
             );
 
             note.setUndone(pluginReport.isUndone());
-            final String[] tags = pluginReport.getTags();
-            final List<String> tagsList = new ArrayList<>();
-            for (final String tag : tags) {
-                tagsList.add(tag);
-            }
+            final List<String> tagsList = Arrays.asList(pluginReport.getTags());
+
             note.setTags(tagsList);
 
             /**
@@ -502,14 +499,14 @@ public class NotesViewPane extends BorderPane {
     }
 
     /**
-     * Adds details of the Undo or Redo action to the Notes
-     * View Entry object in notesViewEntries
+     * Adds details of the Undo or Redo action to the Notes View Entry object in
+     * notesViewEntries
      *
      * @param undoRedoReport UndoRedoReport report to be added.
      */
     protected void processNewUndoRedoReport(final UndoRedoReport undoRedoReport) {
         if (hasMatchingNote(undoRedoReport)) {
-            getMatchingNoteOfUndoRedoReport(undoRedoReport).setUndone(undoRedoReport.getActionType() == UNDO);
+            getMatchingNoteOfUndoRedoReport(undoRedoReport).setUndone(undoRedoReport.getActionType().equals(UNDO));
             updateTagsFiltersAvailable();
             updateNotesAndFiltersUI();
         }
@@ -644,7 +641,7 @@ public class NotesViewPane extends BorderPane {
 
                 } else if (selectedFilters.contains(SELECTED_FILTER) && entry.isUserCreated() && entry.getShowing()) {
                     // If no nodes or transactions are selected, show notes applied to the whole graph.
-                    if (entry.isGraphAttribute()) {
+                    if (Boolean.TRUE.equals(entry.isGraphAttribute())) {
                         notesToRender.add(entry);
                     }
                     // Show notes related to the selected nodes.
@@ -733,7 +730,7 @@ public class NotesViewPane extends BorderPane {
     }
 
     private NotesViewEntry getMatchingNoteOfUndoRedoReport(final UndoRedoReport undoRedoReport) {
-        if (undoRedoReport.getActionType() == UNDO) {
+        if (undoRedoReport.getActionType().equals(UNDO)) {
             return notesViewEntries.stream()
                     .filter(entry -> undoRedoReport.getActionDescription().equals(entry.getNoteTitle()) && !entry.getUndone())
                     .max(Comparator.comparing(NotesViewEntry::getDateTime)).get();
@@ -744,7 +741,6 @@ public class NotesViewPane extends BorderPane {
                     .min(Comparator.comparing(NotesViewEntry::getDateTime)).get();
         }
     }
-
 
     /**
      * A convenient method to add a note to the various lists that are used to
@@ -775,7 +771,7 @@ public class NotesViewPane extends BorderPane {
      * View.
      */
     private void createNote(final NotesViewEntry newNote) {
-        LOGGER.log(Level.INFO, "Creating note");
+        LOGGER.log(Level.FINE, "Creating note");
         if (!Platform.isFxApplicationThread()) {
             throw new IllegalStateException("Not processing on the JavaFX Application Thread");
         }
@@ -800,7 +796,6 @@ public class NotesViewPane extends BorderPane {
         final Label titleLabel = new Label(newNote.getNoteTitle());
         titleLabel.setWrapText(true);
         titleLabel.setStyle(BOLD_STYLE + fontStyle);
-        titleLabel.setStyle("-fx-font-color: #FFFFFF;");
 
         // Define content label
         final Label contentLabel = new Label(newNote.getNoteContent());
@@ -808,6 +803,7 @@ public class NotesViewPane extends BorderPane {
         contentLabel.setWrapText(true);
         contentLabel.setMinWidth(50);
         contentLabel.setAlignment(Pos.TOP_LEFT);
+        contentLabel.setStyle(fontStyle);
 
         final MarkdownTree md = new MarkdownTree(newNote.getNoteTitle() + "\n\n" + newNote.getNoteContent());
         md.setMarkdownEnabled(newNote.isInMarkdown());
@@ -820,12 +816,17 @@ public class NotesViewPane extends BorderPane {
         final Pane textFlowPane = new Pane();
         textFlowPane.getChildren().add(newNote.getContentTextFlow());
 
+        final Button showMoreButton = new Button(SHOW_MORE);
+        showMoreButton.setMinWidth(100);
+        showMoreButton.setMaxWidth(100);
+        showMoreButton.setVisible(false);
+
         final Rectangle clipRect = new Rectangle();
         textFlowPane.setClip(clipRect);
 
         textFlowPane.layoutBoundsProperty().addListener((obs, oldValue, newValue) -> {
             clipRect.setWidth(newValue.getWidth());
-            clipRect.setHeight(newValue.getHeight() + 13);
+            clipRect.setHeight(newValue.getHeight() + (showMoreButton.getText().equals(SHOW_LESS) ? 4 : -4));
         });
 
         final VBox contentPaneVBox = new VBox(newNote.getContentTextFlow());
@@ -839,7 +840,7 @@ public class NotesViewPane extends BorderPane {
 
         // If the note is user created add the selection details.
         if (newNote.isUserCreated()) {
-            if (newNote.isGraphAttribute()) {
+            if (Boolean.TRUE.equals(newNote.isGraphAttribute())) {
                 selectionLabelText = "Note linked to: the graph.";
             } else {
                 selectionLabelText = "Note linked to: ";
@@ -875,12 +876,11 @@ public class NotesViewPane extends BorderPane {
         // Define buttons (edit, save, add, renove, delete)
         final Button editTextButton = new Button("Edit");
         editTextButton.setMinWidth(92);
-        editTextButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+        editTextButton.setStyle(fontStyle);
 
         final Button deleteButton = new Button("Delete Note");
         deleteButton.setMinWidth(92);
-        deleteButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
-
+        deleteButton.setStyle(fontStyle);
 
         // If the note to be created is in edit mode, ensure it is created with
         // the correct java fx elements
@@ -907,10 +907,6 @@ public class NotesViewPane extends BorderPane {
         colourPicker.setMinWidth(100);
         colourPicker.setMaxWidth(100);
         HBox.setHgrow(colourPicker, Priority.NEVER);
-        final Button showMoreButton = new Button(SHOW_MORE);
-        showMoreButton.setMinWidth(100);
-        showMoreButton.setMaxWidth(100);
-        showMoreButton.setVisible(false);
 
         noteButtons = new HBox(15, showMoreButton, gap, editTextButton, deleteButton);
 
@@ -923,7 +919,13 @@ public class NotesViewPane extends BorderPane {
         noteTop.setAlignment(Pos.CENTER_RIGHT);
         HBox.setHgrow(topGap, Priority.ALWAYS);
 
-        final VBox noteBody = newNote.isUserCreated() ? new VBox(NOTE_BODY_SPACING, noteTop, noteInformation, noteButtons) : new VBox(DEFAULT_BUTTON_SPACING, dateTimeLabel, noteInformation);
+        final VBox noteBody = newNote.isUserCreated() ? new VBox(NOTE_BODY_SPACING, noteTop, noteInformation) : new VBox(DEFAULT_BUTTON_SPACING, dateTimeLabel, noteInformation);
+        final BorderPane noteBodyBorderPane = new BorderPane();
+        noteBodyBorderPane.setCenter(noteBody);
+        if (newNote.isUserCreated()) {
+            noteBodyBorderPane.setBottom(noteButtons);
+        }
+        
         noteBody.prefWidthProperty().bind(this.widthProperty());
         noteBody.setMinWidth(500);
         noteBody.setMaxHeight(Double.MAX_VALUE);
@@ -945,12 +947,12 @@ public class NotesViewPane extends BorderPane {
         });
 
         if (newNote.isUserCreated()) {
-            noteBody.setStyle(PADDING_BG_COLOUR_STYLE + newNote.getNodeColour() + BG_RADIUS_STYLE);
-            notesListVBox.getChildren().add(noteBody);
+            noteBodyBorderPane.setStyle(PADDING_BG_COLOUR_STYLE + newNote.getNodeColour() + BG_RADIUS_STYLE);
         } else {
-            noteBody.setStyle(PADDING_BG_COLOUR_STYLE + AUTO_COLOR + BG_RADIUS_STYLE);
-            notesListVBox.getChildren().add(noteBody);
+            noteBodyBorderPane.setStyle(PADDING_BG_COLOUR_STYLE + AUTO_COLOR + BG_RADIUS_STYLE); 
         }
+        
+        notesListVBox.getChildren().add(noteBodyBorderPane);
 
         noteBody.prefWidthProperty().bind(this.widthProperty());
         newNote.getContentTextFlow().prefWidthProperty().bind(noteBody.widthProperty().subtract(10));
@@ -964,6 +966,7 @@ public class NotesViewPane extends BorderPane {
                 final VBox textFlowVBox = new VBox(newNote.getContentTextFlow());
                 containerPane.getChildren().add(textFlowVBox);
                 noteInformation.setSpacing(1);
+
             } else if (showMoreButton.getText().equals(SHOW_LESS)) {
                 contentLabel.setText(newNote.getNoteContent());
                 showMoreButton.setText(SHOW_MORE);
@@ -1098,7 +1101,7 @@ public class NotesViewPane extends BorderPane {
             newNotePane.setParent(this.getScene().getWindow());
             newNotePane.showPopUp();
         });
-    
+
     }
 
     /**
@@ -1147,7 +1150,7 @@ public class NotesViewPane extends BorderPane {
         updateSelectedElements();
 
         if (!nodesSelected.isEmpty()) {
-            if (noteToEdit.isGraphAttribute()) {
+            if (Boolean.TRUE.equals(noteToEdit.isGraphAttribute())) {
                 noteToEdit.setGraphAttribute(false);
             }
             final List<Integer> originalNodes = noteToEdit.getNodesSelected();
@@ -1160,7 +1163,7 @@ public class NotesViewPane extends BorderPane {
         }
 
         if (!transactionsSelected.isEmpty()) {
-            if (noteToEdit.isGraphAttribute()) {
+            if (Boolean.TRUE.equals(noteToEdit.isGraphAttribute())) {
                 noteToEdit.setGraphAttribute(false);
             }
             final List<Integer> originalTransactions = noteToEdit.getTransactionsSelected();
@@ -1239,7 +1242,7 @@ public class NotesViewPane extends BorderPane {
      */
     public void updateSelectedTagsCombo(final List<String> selectedTagsFilters) {
         this.tagsSelectedFiltersList.clear();
-        selectedTagsFilters.forEach(filter -> this.tagsSelectedFiltersList.add(filter));
+        selectedTagsFilters.forEach(this.tagsSelectedFiltersList::add);
         updateTagFilters();
     }
 

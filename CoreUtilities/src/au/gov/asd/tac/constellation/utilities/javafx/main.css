@@ -1,103 +1,16 @@
-/*
-    This should be used as the base css file for all javafx modules
-    in order to provide a consistent look across the application.
-
-    Created on : 24/06/2014, 5:34:13 PM
-    Author     : twinkle2_little
-*/
 /*******************************************************************************
  *                                                                             *
  * Common                                                                      *
  *                                                                             *
  ******************************************************************************/
 .root {
-    /***************************************************************************
-     *                                                                         *
-     * The main color palette from which the rest of the colors are derived.   *
-     *                                                                         *
-     **************************************************************************/
-
-    /* The base color for objects. Instead of using -fx-base directly, 
-     * the sections in this file will typically use -fx-color.
-     */
-    -fx-base: #111111;
-
-    /* The background of windows. See also -fx-text-background-color, which 
-     * should be used as the -fx-text-fill value for text painted on top of 
-     * backgrounds colored with -fx-background.
-     */
-    -fx-background: #222222;
-
-    /* Used for the inside of text boxes, password boxes, lists, trees, and
-     * tables. See also -fx-text-inner-color, which should be used as the
-     * -fx-text-fill value for text painted on top of backgrounds colored
-     * with -fx-control-inner-background.
-     */
-    -fx-control-inner-background: #111111;
-
-    /* One of these colors will be chosen based upon a ladder calculation
-     * that uses the brightness of a background color.  Instead of using these
-     * colors directly as -fx-text-fill values, the sections in this file should
-     * use a derived color to match the background in use.  See also:
-     *
-     * -fx-text-base-color for text on top of -fx-base, -fx-color, and -fx-body-color
-     * -fx-text-background-color for text on top of -fx-background
-     * -fx-text-inner-color for text on top of -fx-control-inner-color
-     * -fx-selection-bar-text for text on top of -fx-selection-bar
-     */
-    -fx-light-text-color: #e0e0e0;
-    -fx-mid-text-color: derive(-fx-light-text-color,-40%);
-    -fx-dark-text-color: derive(-fx-light-text-color,-80%);
-
-    /* For highlighting/accenting objects.  For example: selected text; 
-     * selected items in menus, lists, trees, and tables; progress bars;
-     * default buttons.
-     */
-    -fx-accent: #0093ff;
-
-    /* For the focus indicator of objects. Typically used as the first color 
-     * in -fx-background-color for the "focused" pseudo-class. Also
-     * typically used with insets of -1.4 to provide a glowing effect.
-     */
-    -fx-focus-color: -fx-accent;
-
-    /* The color that is used in styling controls. The default value is based
-     * on -fx-base, but is changed by pseudoclasses to change the base color.
-     * For example, the "hover" pseudoclass will typically set -fx-color to
-     * -fx-hover-base (see below) and the "armed" pseudoclass will typically
-     * set -fx-color to -fx-pressed-base.
-     */
-    -fx-color: -fx-base;
-
     /* The opacity level to use for the "disabled" pseudoclass.
      */
     -fx-disabled-opacity: 0.4;
 
-    /***************************************************************************
-     *                                                                         *
-     * Colors that are derived from the main color palette.                    *
-     *                                                                         *
-     **************************************************************************/
-
-    /* Used as the -fx-color for the "hovered" pseudoclass state.
-     */
-    -fx-cell-hover-color: -fx-shadow-highlight-color;
-
     /* The default font size.
      */
     -fx-font-size: 1.000001em; /* 12pt */
-}
-
-/*******************************************************************************
- *                                                                             *
- * Label                                                                       *
- *                                                                             *
- ******************************************************************************/
-.label {
-    -fx-text-fill: #e0e0e0
-}
-.text {
-    -fx-text-fill: #e0e0e0
 }
 
 /*******************************************************************************
@@ -108,9 +21,6 @@
 .tooltip {
     -fx-padding: 0.333333em 1.666667em 0.333333em 1.666667em; /* 4 8 4 8 */
 }
-.tooltip .text{
-    -fx-fill: #e0e0e0;
-}
 
 /*******************************************************************************
  *                                                                             *
@@ -118,73 +28,47 @@
  *                                                                             *
  ******************************************************************************/
 .scroll-bar:vertical .track {
-    -fx-background-color:#333333;
     -fx-background-insets:  0, 1;
     -fx-background-radius: 0.5em; /* makes sure this remains circular */
 }
-.scroll-bar .increment-button {
-    -fx-background-color: #333333;
-}
-
-.scroll-bar .decrement-button {
-    -fx-background-color: #333333;
-}
 
 .scroll-bar:vertical .increment-arrow {
-    -fx-background-color: -fx-mark-highlight-color, #D3D3D3;
     -fx-background-insets: 1 0 -1 0, 0;
     -fx-padding: 0.333333em 0.5em 0.0em 0.0em; /* 4 6 0 0 */
     -fx-shape: "M -3 0 L 0 4 L 3 0 z";
 }
 
 .scroll-bar:vertical .track-background {
-    -fx-background-color: #333333;
     -fx-background-insets:  0, 1;
 }
 
 .scroll-bar:vertical .decrement-arrow {
-    -fx-background-color: -fx-mark-highlight-color, #D3D3D3;
     -fx-background-insets: 1 0 -1 0, 0;
     -fx-padding: 0.333333em 0.5em 0.0em 0.0em; /* 4 6 0 0 */
     -fx-shape: "M -3 0 L 0 -4 L 3 0 z";
 }
 
 .scroll-bar:horizontal .increment-arrow {
-    -fx-background-color: -fx-mark-highlight-color, #D3D3D3;
     -fx-background-insets: 1 0 -1 0, 0;
     -fx-padding: 0.333333em 0.5em 0.0em 0.0em; /* 4 6 0 0 */
     -fx-shape: "M 0 3 L 3 0 L 0 -3 z";
 }
 .scroll-bar:horizontal .track-background {
-    -fx-background-color: #333333;
     -fx-background-insets:  0, 1;
 }
 .scroll-bar:horizontal .decrement-arrow {
-    -fx-background-color: -fx-mark-highlight-color, #D3D3D3;
     -fx-background-insets: 1 0 -1 0, 0;
     -fx-padding: 0.333333em 0.5em 0.0em 0.0em; /* 4 6 0 0 */
     -fx-shape: "M 0 3 L -3 0 L 0 -3 z";
 }
 .scroll-bar:horizontal .thumb {
-    -fx-background-color:#bbbbbb;
     -fx-background-insets: 0, 1, 2;
     -fx-background-radius: 0.5em; /* makes sure this remains circular */
 }
 
 .scroll-bar:vertical .thumb {
-    -fx-background-color:#bbbbbb;
     -fx-background-insets: 0, 1, 2;
     -fx-background-radius: 0.5em; /* makes sure this remains circular */
-}
-
-/*******************************************************************************
- *                                                                             *
- * TitledPane                                                                  *
- *                                                                             *
- ******************************************************************************/
-
-.titled-pane{
-    -fx-base: #333333;
 }
 
 /*******************************************************************************
@@ -192,9 +76,48 @@
  * WebView                                                                     *
  *                                                                             *
  ******************************************************************************/
-
 .web-view {
     -fx-font-scale: 0.75;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Button                                                                      *
+ *                                                                             *
+ ******************************************************************************/
+.button {
+    -fx-background-radius: 5 5 5 5;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 3, 0.0, 0, 1);
+    -fx-padding: 5 5 5 5;
+}
+
+.button:cancel {
+}
+
+.button:disabled {
+    -fx-opacity: -fx-disabled-opacity;
+}
+
+.button:default {
+    -fx-base: -fx-accent;
+}
+
+.button:focused {
+    -fx-background-insets: -1.4, 0, 1, 2;
+    -fx-background-radius:  6.4, 5, 4, 3;
+}
+
+.button:armed {
+    -fx-color: -fx-pressed-base;
+}
+
+.button:show-mnemonics .mnemonic-underline {
+    -fx-stroke: -fx-text-fill;
+}
+
+/* Uncategorised */
+.scroll-pane {
+    -fx-background-insets: -1.4 0 1;
 }
 
 /* size guide */

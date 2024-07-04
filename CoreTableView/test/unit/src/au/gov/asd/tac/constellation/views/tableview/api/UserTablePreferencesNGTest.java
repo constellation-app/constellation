@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,10 +25,11 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertFalse;
-import static org.testng.AssertJUnit.assertNull;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.Test;
 
 /**
@@ -44,11 +45,11 @@ public class UserTablePreferencesNGTest {
     @Test
     public void serialization() throws IOException {
         final JsonNode serialization = OBJECT_MAPPER.valueToTree(fixture());
-
         final JsonNode expected = OBJECT_MAPPER.readTree(
                 new FileInputStream(getClass().getResource(JSON_RESOURCE).getPath()));
-
-        assertEquals(expected, serialization);
+        final String column = "ColumnOrder";
+        
+        assertThat(expected).usingRecursiveComparison().isEqualTo(serialization);
     }
 
     @Test

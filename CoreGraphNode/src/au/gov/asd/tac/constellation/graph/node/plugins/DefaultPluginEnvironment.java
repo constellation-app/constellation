@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,7 +63,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
 
     @Override
     public Future<?> executePluginLater(final Graph graph, final Plugin plugin,
-            final PluginParameters parameters, final boolean interactive,
+            final PluginParameters parameters, final boolean interactive, final String disclaimer,
             final List<Future<?>> async, final PluginSynchronizer synchronizer) {
 
         if (graph == null) {
@@ -126,7 +126,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
                     plugin.updateParameters(graph, parameters);
                 }
                 if (interactive && parameters != null) {
-                    if (interaction.prompt(plugin.getName(), parameters)) {
+                    if (interaction.prompt(plugin.getName(), parameters, disclaimer, plugin.getHelpCtx().getHelpID())) {
                         ThreadConstraints calledConstraints = ThreadConstraints.getConstraints();
                         calledConstraints.setAlwaysSilent(alwaysSilent);
                         try {
@@ -223,7 +223,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
                 plugin.updateParameters(graph, parameters);
             }
             if (interactive && parameters != null) {
-                if (interaction.prompt(plugin.getName(), parameters)) {
+                if (interaction.prompt(plugin.getName(), parameters, plugin.getHelpCtx().getHelpID())) {
                     plugin.run(graphs, interaction, parameters);
                 }
             } else {
@@ -486,21 +486,13 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             } else {
                 final String message = String.format("Unexpected exception caught in %s", pluginName);
                 switch (level) {
-                    case FATAL:
-                    case ERROR:
-                        LOGGER.log(Level.SEVERE, message, ex);
-                        break;
-                    case WARNING:
-                        LOGGER.log(Level.WARNING, message, ex);
-                        break;
-                    case INFO:
-                        LOGGER.log(Level.INFO, message, ex);
-                        break;
-                    case DEBUG:
-                        LOGGER.log(Level.FINE, message, ex);
-                        break;
-                    default:
-                        break;
+                    case FATAL, ERROR -> LOGGER.log(Level.SEVERE, message, ex);
+                    case WARNING -> LOGGER.log(Level.WARNING, message, ex);
+                    case INFO -> LOGGER.log(Level.INFO, message, ex);
+                    case DEBUG -> LOGGER.log(Level.FINE, message, ex);
+                    default -> {
+                        // Do Nothing
+                    }
                 }
             }
         }

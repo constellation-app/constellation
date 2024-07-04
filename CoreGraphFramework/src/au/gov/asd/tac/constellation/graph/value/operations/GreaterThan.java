@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,36 +35,32 @@ public class GreaterThan {
 
     public static final ComparisonOperation COMPARISON_OPERATION = new ComparisonOperation() {
         @Override
-        public boolean execute(double p1, double p2) {
+        public boolean execute(final double p1, final double p2) {
             return p1 > p2;
         }
 
         @Override
-        public boolean execute(float p1, float p2) {
+        public boolean execute(final float p1, final float p2) {
             return p1 > p2;
         }
 
         @Override
-        public boolean execute(long p1, long p2) {
+        public boolean execute(final long p1, final long p2) {
             return p1 > p2;
         }
 
         @Override
-        public boolean execute(int p1, int p2) {
+        public boolean execute(final int p1, final int p2) {
             return p1 > p2;
         }
 
         @Override
-        public boolean execute(String p1, String p2) {
-            if (p1 == null) {
-                return false;
-            } else {
-                return p2 == null || p1.compareTo(p2) > 0;
-            }
+        public boolean execute(final String p1, final String p2) {
+            return p1 != null && (p2 == null || p1.compareTo(p2) > 0);
         }
     };
 
-    public static void register(Operators operators) {
+    public static void register(final Operators operators) {
         final OperatorRegistry registry = operators.getRegistry(NAME);
         COMPARISON_OPERATION.register(registry);
     }

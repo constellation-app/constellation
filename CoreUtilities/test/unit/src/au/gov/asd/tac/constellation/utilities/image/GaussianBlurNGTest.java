@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,8 @@ public class GaussianBlurNGTest {
     }
 
     /**
-     * Test of gaussianBlurReal method, of class GaussianBlur. When the dimensions of the source channel is not equal to height x width
+     * Test of gaussianBlurReal method, of class GaussianBlur. When the dimensions of the source channel is not equal to
+     * height x width
      */
     @Test(expectedExceptions = {IllegalArgumentException.class}, expectedExceptionsMessageRegExp = "Source channel does not have the dimensions provided.")
     public void testGaussianBlurRealBadSourceChannelDimensions() {
@@ -90,7 +91,8 @@ public class GaussianBlurNGTest {
     }
 
     /**
-     * Test of gaussianBlurBox method, of class GaussianBlur. When the dimensions of the source channel is not equal to height x width
+     * Test of gaussianBlurBox method, of class GaussianBlur. When the dimensions of the source channel is not equal to
+     * height x width
      */
     @Test(expectedExceptions = {IllegalArgumentException.class}, expectedExceptionsMessageRegExp = "Source channel does not have the dimensions provided.")
     public void testGaussianBlurBoxBadSourceChannelDimensions() {
@@ -153,7 +155,7 @@ public class GaussianBlurNGTest {
     public void testGaussianBlurBoxFast() {
         System.out.println("gaussianBlurBoxFast");
         final float[] sourceChannel = {1F, 2F, 3F, 4F, 5F, 6F};
-        final float[] targetChannel = new float[8];
+        final float[] targetChannel = new float[6];
         final int width = 3;
         final int height = 2;
         final int radius = 2;
@@ -161,7 +163,61 @@ public class GaussianBlurNGTest {
 
         GaussianBlur.gaussianBlurBox(sourceChannel, targetChannel, width, height, radius, passes, BoxBlurType.FAST);
 
-        final float[] expResult = {0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F};
+        final float[] expResult = {2.2857144F, 3.2857144F, 4.285714F, 2.7142856F, 3.7142856F, 4.714286F};
+        assertEquals(targetChannel, expResult);
+    }
+
+    /**
+     * Test of gaussianBlurBox method, of class GaussianBlur. Fastest BoxBlurType
+     */
+    @Test
+    public void testGaussianBlurBoxFastest() {
+        System.out.println("gaussianBlurBoxFastest");
+        final float[] sourceChannel = {1F, 2F, 3F, 4F, 5F, 6F};
+        final float[] targetChannel = new float[6];
+        final int width = 2;
+        final int height = 3;
+        final int radius = 2;
+        final int passes = 1;
+
+        GaussianBlur.gaussianBlurBox(sourceChannel, targetChannel, width, height, radius, passes, BoxBlurType.FASTEST);
+
+        final float[] expResult = {1.8571429F, 2.857143F, 1.8571429F, 2.857143F, 1.8571429F, 2.857143F};
+        assertEquals(targetChannel, expResult);
+    }
+
+    /**
+     * Test of gaussianBlurBox method, of class GaussianBlur. Fastest BoxBlurType
+     */
+    @Test
+    public void testGaussianBlurBoxFastestAgain() {
+        System.out.println("gaussianBlurBoxFastestAgain");
+        final float[] sourceChannel = {
+            1F, 2F, 3F, 4F, 5F, 6F,
+            1F, 2F, 3F, 4F, 5F, 6F,
+            1F, 2F, 3F, 4F, 5F, 6F,
+            1F, 2F, 3F, 4F, 5F, 6F,
+            1F, 2F, 3F, 4F, 5F, 6F,
+            1F, 2F, 3F, 4F, 5F, 6F,
+            1F, 2F, 3F, 4F, 5F, 6F,
+            1F, 2F, 3F, 4F, 5F, 6F};
+        final float[] targetChannel = new float[48];
+        final int width = 6;
+        final int height = 8;
+        final int radius = 16;
+        final int passes = 3;
+
+        GaussianBlur.gaussianBlurBox(sourceChannel, targetChannel, width, height, radius, passes, BoxBlurType.FASTEST);
+
+        final float[] expResult = {
+            1.1539671F, 1.156901F, 1.1569738F, 1.1579818F, 1.1601517F, 1.1623536F,
+            1.1539671F, 1.156901F, 1.1569738F, 1.1579818F, 1.1601517F, 1.1623536F,
+            1.1539671F, 1.156901F, 1.1569738F, 1.1579818F, 1.1601517F, 1.1623536F,
+            1.1539671F, 1.156901F, 1.1569738F, 1.1579818F, 1.1601517F, 1.1623536F,
+            1.1539671F, 1.156901F, 1.1569738F, 1.1579818F, 1.1601517F, 1.1623536F,
+            1.1539671F, 1.156901F, 1.1569738F, 1.1579818F, 1.1601517F, 1.1623536F,
+            1.1539671F, 1.156901F, 1.1569738F, 1.1579818F, 1.1601517F, 1.1623536F,
+            1.1539671F, 1.156901F, 1.1569738F, 1.1579818F, 1.1601517F, 1.1623536F};
         assertEquals(targetChannel, expResult);
     }
 
@@ -226,7 +282,6 @@ public class GaussianBlurNGTest {
         // since the result numbers don't really say much 
         // (due to using the using the signed bit as part of the ARGB value), 
         // we'll compare the expected alpha and color values contained within
-
         // alpha
         assertEquals(targetChannel[0] >>> 24, 0);
         assertEquals(targetChannel[1] >>> 24, 0);
@@ -240,5 +295,5 @@ public class GaussianBlurNGTest {
         assertEquals(targetChannel[2] & 0xFFFFFF, 0xB2C01A);
         assertEquals(targetChannel[3] & 0xFFFFFF, 0xFFA413);
         assertEquals(targetChannel[4] & 0xFFFFFF, 0xFF2A00);
-    }   
+    }
 }

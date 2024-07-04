@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -112,8 +112,8 @@ public class GraphObjectUtilities {
     }
 
     private static String getNewFileName(final String name, final boolean numbered, final FileObject root) {
-        final List<FileObject> files = Arrays.stream(root.getChildren()).filter(file -> file.getName().equals(name)).collect(Collectors.toList());
-        if (files.size() > 0) {
+        final List<FileObject> files = Arrays.stream(root.getChildren()).filter(file -> file.getName().equals(name)).toList();
+        if (!files.isEmpty()) {
             if (name.endsWith(COPY_STRING)) {
                 return String.format("%s (%d)", name, 1);
             }

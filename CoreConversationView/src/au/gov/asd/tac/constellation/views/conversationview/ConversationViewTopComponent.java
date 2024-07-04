@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,9 @@
  */
 package au.gov.asd.tac.constellation.views.conversationview;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
+import java.util.Properties;
 import javafx.application.Platform;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
@@ -64,46 +66,45 @@ import org.openide.windows.TopComponent;
 })
 public final class ConversationViewTopComponent extends JavaFxTopComponent<ConversationBox> {
 
-    private final Conversation conversation = new Conversation();
-    private final ConversationBox conversationBox;
+    private final ConversationController controller;
 
     public ConversationViewTopComponent() {
         initComponents();
         setName(Bundle.CTL_ConversationViewTopComponent());
         setToolTipText(Bundle.HINT_ConversationViewTopComponent());
         Platform.setImplicitExit(false);
-        conversationBox = new ConversationBox(conversation);
-        conversation.getGraphUpdateManager().setManaged(true);
+        controller = ConversationController.getDefault(); 
+        controller.getConversation().getGraphUpdateManager().setManaged(true);
         initContent();
     }
 
     @Override
     protected void handleComponentOpened() {
         super.handleComponentOpened();
-        conversation.getGraphUpdateManager().setManaged(true);
+        controller.getConversation().getGraphUpdateManager().setManaged(needsUpdate());
     }
 
     @Override
     protected void handleComponentClosed() {
         super.handleComponentClosed();
-        conversation.getGraphUpdateManager().setManaged(false);
+        controller.getConversation().getGraphUpdateManager().setManaged(false);
     }
 
     @Override
     protected void componentActivated() {
-        conversation.getGraphUpdateManager().setManaged(needsUpdate());
+        controller.getConversation().getGraphUpdateManager().setManaged(needsUpdate());
     }
 
     @Override
     protected void componentDeactivated() {
-        conversation.getGraphUpdateManager().setManaged(needsUpdate());
+        controller.getConversation().getGraphUpdateManager().setManaged(false);
     }
 
-    void writeProperties(java.util.Properties p) {
+    public void writeProperties(final Properties p) {
         // Required for @ConvertAsProperties
     }
 
-    void readProperties(java.util.Properties p) {
+    public void readProperties(final Properties p) {
         // Required for @ConvertAsProperties
     }
 
@@ -114,9 +115,14 @@ public final class ConversationViewTopComponent extends JavaFxTopComponent<Conve
 
     @Override
     protected ConversationBox createContent() {
-        return conversationBox;
+        return controller.getConversationBox();
     }
-
+    
+    @Override
+    protected void handleNewGraph(final Graph graph) {
+        controller.updateComponent();
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

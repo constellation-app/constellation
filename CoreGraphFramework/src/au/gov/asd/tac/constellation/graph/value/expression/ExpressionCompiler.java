@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,8 +84,9 @@ public class ExpressionCompiler {
 
     // Operator does not exist error
     private static final String OPERATOR_NOT_FOUND = "Operator Not Found";
-    private static final String OPERATOR_ERROR_MSG = "The operator %s cannot be found.\n"
-            + "Refer to The Constellation Expressions Framework Help if you need assistance with the query language.";
+    private static final String OPERATOR_ERROR_MSG = """
+                                                     The operator %s cannot be found.
+                                                     Refer to The Constellation Expressions Framework Help if you need assistance with the query language.""";
 
     static {
         OPERATOR_CLASSES.put(Operator.ADD, Sum.NAME);
@@ -118,15 +119,17 @@ public class ExpressionCompiler {
         // added private constructor to hide implicit public constructor - S1118.
     }
 
-    public static Object compileSequenceExpression(SequenceExpression expression, VariableProvider variableProvider, IntReadable indexReadable, Operators operators) {
+    public static Object compileSequenceExpression(final SequenceExpression expression, final VariableProvider variableProvider, 
+            final IntReadable indexReadable, final Operators operators) {
         if (expression == null) {
             return null;
         }
         final List<Expression> children = expression.getUnmodifiableChildren();
         switch (children.size()) {
-            case 1:
+            case 1 -> {
                 return compileExpression(children.get(0), variableProvider, indexReadable, operators);
-            case 2:
+            }
+            case 2 -> {
                 final OperatorExpression operator = (OperatorExpression) children.get(0);
                 final Object right = compileExpression(children.get(1), variableProvider, indexReadable, operators);
                 final String operatorName = CONVERTER_CLASSES.get(operator.getOperator());
@@ -157,7 +160,8 @@ public class ExpressionCompiler {
                     LOGGER.log(Level.WARNING, errorMessage);
                 }
                 return result;
-            case 3:
+            }
+            case 3 -> {
                 final Object left = compileExpression(children.get(0), variableProvider, indexReadable, operators);
                 final OperatorExpression secondOperator = (OperatorExpression) children.get(1);
                 final Object right2 = compileExpression(children.get(2), variableProvider, indexReadable, operators);
@@ -196,31 +200,35 @@ public class ExpressionCompiler {
                     LOGGER.log(Level.WARNING, errorMessage2);
                 }
                 return result2;
-            default:
+            }
+            default -> {
                 Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR, MALFORMED_QUERY,
                         String.format("Invalid expression size: ", children.size()), Alert.AlertType.ERROR));
                 LOGGER.log(Level.WARNING, "There was a query error: Invalid expression size: {0}", children.size());
                 return null;
+            }
         }
     }
 
-    private static Object compileExpression(Expression expression, VariableProvider variableProvider, IntReadable indexReadable, Operators operators) {
-        if (expression instanceof SequenceExpression) {
-            return compileSequenceExpression((SequenceExpression) expression, variableProvider, indexReadable, operators);
-        } else if (expression instanceof VariableExpression) {
-            final String variableName = ((VariableExpression) expression).getContent();
-            final Object variable = variableProvider.getVariable(variableName, indexReadable);
-            if (variable == null) {
+    private static Object compileExpression(final Expression expression, final VariableProvider variableProvider, 
+            final IntReadable indexReadable, final Operators operators) {
+        switch (expression) {
+            case SequenceExpression sequenceExpression -> {
+                return compileSequenceExpression(sequenceExpression, variableProvider, indexReadable, operators);
+            }
+            case VariableExpression variableExpression -> {
+                final String variableName = variableExpression.getContent();
+                return variableProvider.getVariable(variableName, indexReadable);
+            }
+            case StringExpression stringExpression -> {
+                final String content = stringExpression.getContent();
+                return (StringConstant) () -> content;
+            }
+            default -> {
+                Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR, MALFORMED_QUERY, UNEXPECTED_QUERY_ERROR, Alert.AlertType.ERROR));
+                LOGGER.log(Level.SEVERE, QUERY_ERROR + UNEXPECTED_QUERY_ERROR);
                 return null;
             }
-            return variable;
-        } else if (expression instanceof StringExpression) {
-            final String content = ((StringExpression) expression).getContent();
-            return (StringConstant) () -> content;
-        } else {
-            Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR, MALFORMED_QUERY, UNEXPECTED_QUERY_ERROR, Alert.AlertType.ERROR));
-            LOGGER.log(Level.SEVERE, QUERY_ERROR + UNEXPECTED_QUERY_ERROR);
-            return null;
         }
     }
 }

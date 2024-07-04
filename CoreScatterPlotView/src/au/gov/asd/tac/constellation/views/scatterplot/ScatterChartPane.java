@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -87,9 +87,7 @@ public class ScatterChartPane extends BorderPane {
     private final EventHandler<Event> mouseHandler = new EventHandler<Event>() {
         @Override
         public void handle(final Event t) {
-            if (t instanceof MouseEvent) {
-                // Register the event as a MouseEvent:
-                final MouseEvent me = (MouseEvent) t;
+            if (t instanceof MouseEvent me) {
                 final double mouseX = me.getX();
                 final double mouseY = me.getY();
 
@@ -100,8 +98,9 @@ public class ScatterChartPane extends BorderPane {
                 // Mouse cursor enters chart
                 if (!me.isPrimaryButtonDown() && me.getEventType().equals(MouseEvent.MOUSE_ENTERED)) {
                     scatterChart.setCursor(Cursor.CROSSHAIR);
-                } // Mouse moved to new position within chart
-                else if (!me.isPrimaryButtonDown() && me.getEventType().equals(MouseEvent.MOUSE_MOVED)) {
+                
+                // Mouse moved to new position within chart
+                } else if (!me.isPrimaryButtonDown() && me.getEventType().equals(MouseEvent.MOUSE_MOVED)) {
                     // create buffer around mouse position
                     selectionXOrigin = mouseX;
                     selectionYOrigin = mouseY;
@@ -132,8 +131,7 @@ public class ScatterChartPane extends BorderPane {
                         // remove tooltip
                         Tooltip.uninstall(scatterChart, tooltip);
                     }
-                } // Mouse primary button pressed, selection started
-                else if (me.isPrimaryButtonDown() && me.getEventType().equals(MouseEvent.MOUSE_PRESSED)) {
+                } else if (me.isPrimaryButtonDown() && me.getEventType().equals(MouseEvent.MOUSE_PRESSED)) { // Mouse primary button pressed, selection started
                     selectionXOrigin = mouseX;
                     selectionYOrigin = mouseY;
                     isSelecting = true;
@@ -144,8 +142,7 @@ public class ScatterChartPane extends BorderPane {
                     selection.setWidth(0);
                     selection.setHeight(0);
                     selection.setVisible(true);
-                } // Mouse dragged with primary button pressed, selection continues
-                else if (me.isPrimaryButtonDown() && me.getEventType().equals(MouseEvent.MOUSE_DRAGGED)) {
+                } else if (me.isPrimaryButtonDown() && me.getEventType().equals(MouseEvent.MOUSE_DRAGGED)) { // Mouse dragged with primary button pressed, selection continues
                     mouseDistanceFromXOrigin += selectionXOrigin - mouseX;
                     mouseDistanceFromYOrigin += selectionYOrigin - mouseY;
 
@@ -157,8 +154,6 @@ public class ScatterChartPane extends BorderPane {
                     // Update variables based on current mouse pointer position
                     selectionXOrigin = mouseX;
                     selectionYOrigin = mouseY;
-                } else {
-                    // Do nothing
                 }
 
                 // Selection was made
@@ -186,18 +181,15 @@ public class ScatterChartPane extends BorderPane {
                             if (me.isControlDown()) {
                                 selectionMode = SelectionMode.INVERT;
                             }
-                        } // double click clear selection
-                        else if (me.getClickCount() == 2) {
+                        } else if (me.getClickCount() == 2) { // double click clear selection
                             selectedData = null;
-                        } else {
-                            // Do nothing
                         }
                     }
 
                     // make selection
                     try {
                         selectElementsOnGraph(selectedData, selectionMode);
-                    } catch (InterruptedException e) {
+                    } catch (final InterruptedException e) {
                         ScatterPlotErrorDialog.create("Selection interrupted: " + e.getMessage());
                         Thread.currentThread().interrupt();
                     }
@@ -254,7 +246,8 @@ public class ScatterChartPane extends BorderPane {
      * @param state the ScatterPlotState.
      */
     protected void refreshChart(final ScatterPlotState state) {
-        if (scatterPlot.getScatterPlot().getCurrentGraph() == null || state == null || state.getXAttribute() == null || state.getYAttribute() == null) {
+        if (scatterPlot.getScatterPlot().getCurrentGraph() == null || state == null || state.getXAttribute() == null 
+                || state.getYAttribute() == null) {
             resetChart();
             return;
         }
@@ -265,14 +258,15 @@ public class ScatterChartPane extends BorderPane {
             scatterPlot.getChartPane().setCenter(progressIndicator);
         });
 
-        final Future<?> pluginFuture = PluginExecution.withPlugin(new ScatterPlotRefresher(state)).executeLater(scatterPlot.getScatterPlot().getCurrentGraph());
+        final Future<?> pluginFuture = PluginExecution.withPlugin(new ScatterPlotRefresher(state))
+                .executeLater(scatterPlot.getScatterPlot().getCurrentGraph());
         final Thread waitingThread = new Thread(() -> {
             try {
                 pluginFuture.get();
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException e) {
                 ScatterPlotErrorDialog.create("Error refreshing scatter plot: " + e.getMessage());
                 Thread.currentThread().interrupt();
-            } catch (ExecutionException e) {
+            } catch (final ExecutionException e) {
                 ScatterPlotErrorDialog.create("Error refreshing scatter plot: " + e.getMessage());
             }
 
@@ -339,15 +333,14 @@ public class ScatterChartPane extends BorderPane {
             return selectedData;
         }
 
-        final ReadableGraph readableGraph = scatterPlot.getScatterPlot().getCurrentGraph().getReadableGraph();
-        try {
+        try (final ReadableGraph readableGraph = scatterPlot.getScatterPlot().getCurrentGraph().getReadableGraph()) {
             final int selectedAttribute = readableGraph.getAttribute(state.getElementType(), "selected");
             final int elementCount = state.getElementType().getElementCount(readableGraph);
             for (int elementPosition = 0; elementPosition < elementCount; elementPosition++) {
                 final int elementId = state.getElementType().getElement(readableGraph, elementPosition);
                 if (readableGraph.getBooleanValue(selectedAttribute, elementId)) {
                     synchronized (currentData) {
-                        for (ScatterData data : currentData) {
+                        for (final ScatterData data : currentData) {
                             if (data.getElementId() == elementId) {
                                 selectedData.add(data);
                             }
@@ -355,8 +348,6 @@ public class ScatterChartPane extends BorderPane {
                     }
                 }
             }
-        } finally {
-            readableGraph.release();
         }
 
         return selectedData;
@@ -374,8 +365,8 @@ public class ScatterChartPane extends BorderPane {
      * secondary selection.
      */
     protected void selectElementsOnChart(final Set<ScatterData> primarySelection, final Set<ScatterData> secondarySelection) {
-        final DropShadow primarySelectionShadow = new DropShadow(BlurType.THREE_PASS_BOX, Color.RED, 20.0, 0.85, 0.0, 0.0);
-        final DropShadow secondarySelectionShadow = new DropShadow(BlurType.THREE_PASS_BOX, Color.YELLOW, 20.0, 0.85, 0.0, 0.0);
+        final DropShadow primarySelectionShadow = new DropShadow(BlurType.THREE_PASS_BOX, Color.BLUE, 20.0, 0.85, 0.0, 0.0);
+        final DropShadow secondarySelectionShadow = new DropShadow(BlurType.THREE_PASS_BOX, Color.RED, 20.0, 0.85, 0.0, 0.0);
 
         Platform.runLater(() -> {
             synchronized (currentData) {
@@ -391,8 +382,8 @@ public class ScatterChartPane extends BorderPane {
                     }
 
                     @SuppressWarnings("unchecked") // getData will return data of type number and number
-                    Data<Number, Number> data2 = (Data<Number, Number>) data.getData();
-                    Node dataNode = data2.getNode();
+                    final Data<Number, Number> data2 = (Data<Number, Number>) data.getData();
+                    final Node dataNode = data2.getNode();
                     dataNode.setEffect(null);
                 }
             }
@@ -465,7 +456,8 @@ public class ScatterChartPane extends BorderPane {
                 final Attribute xAttribute = scatterPlotState.getXAttribute();
                 final Attribute yAttribute = scatterPlotState.getYAttribute();
 
-                final ChartBuilder<?, ?> chartBuilder = new ChartBuilder<>(ScatterOptionsPane.VALID_TYPES_X.getOrDefault(xAttribute.getAttributeType(), ScatterOptionsPane.DEFAULT_AXIS_BUILDER), ScatterOptionsPane.VALID_TYPES_Y.getOrDefault(yAttribute.getAttributeType(), ScatterOptionsPane.DEFAULT_AXIS_BUILDER));
+                final ChartBuilder<?, ?> chartBuilder = new ChartBuilder<>(ScatterOptionsPane.VALID_TYPES_X.getOrDefault(xAttribute.getAttributeType(), ScatterOptionsPane.DEFAULT_AXIS_BUILDER), 
+                        ScatterOptionsPane.VALID_TYPES_Y.getOrDefault(yAttribute.getAttributeType(), ScatterOptionsPane.DEFAULT_AXIS_BUILDER));
                 scatterChart = chartBuilder.build(graph, scatterPlotState, currentData, currentSelectedData);
 
                 scatterChart.setOnMouseEntered(mouseHandler);

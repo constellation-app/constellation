@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,8 +53,8 @@ public class ListSelectionEditorFactory extends AbstractEditorFactory<List<Strin
             super(editOperation, defaultGetter, validator, editedItemName, initialValue);
         }
 
-        public void setPossibleItems(List<String> possibleItems) {
-            this.possibleItems = possibleItems;
+        public void setPossibleItems(final List<String> possibleItems) {
+            this.possibleItems = new ArrayList<>(possibleItems);
         }
 
         @Override
@@ -85,20 +85,20 @@ public class ListSelectionEditorFactory extends AbstractEditorFactory<List<Strin
             final GridPane controls = new GridPane();
             controls.setAlignment(Pos.CENTER);
 
-            VBox nonSelectedItemsBox = new VBox(CONTROLS_DEFAULT_VERTICAL_SPACING);
-            VBox selectedItemsBox = new VBox(CONTROLS_DEFAULT_VERTICAL_SPACING);
-            VBox addAndRemoveButtons = new VBox(CONTROLS_DEFAULT_VERTICAL_SPACING);
+            final VBox nonSelectedItemsBox = new VBox(CONTROLS_DEFAULT_VERTICAL_SPACING);
+            final VBox selectedItemsBox = new VBox(CONTROLS_DEFAULT_VERTICAL_SPACING);
+            final VBox addAndRemoveButtons = new VBox(CONTROLS_DEFAULT_VERTICAL_SPACING);
 
             availableItemsList = FXCollections.observableArrayList();
             selectedItemsList = FXCollections.observableArrayList();
 
-            Label nonSelectedLabel = new Label("Available Items:");
-            Label selcetedLabel = new Label("Selected Items:");
-            ListView<String> availableItems = new ListView<>(availableItemsList);
-            ListView<String> selectedItems = new ListView<>(selectedItemsList);
+            final Label nonSelectedLabel = new Label("Available Items:");
+            final Label selcetedLabel = new Label("Selected Items:");
+            final ListView<String> availableItems = new ListView<>(availableItemsList);
+            final ListView<String> selectedItems = new ListView<>(selectedItemsList);
 
-            Button addButton = new Button("", new ImageView(UserInterfaceIconProvider.CHEVRON_RIGHT.buildImage(16)));
-            Button removeButton = new Button("", new ImageView(UserInterfaceIconProvider.CHEVRON_LEFT.buildImage(16)));
+            final Button addButton = new Button("", new ImageView(UserInterfaceIconProvider.CHEVRON_RIGHT.buildImage(16)));
+            final Button removeButton = new Button("", new ImageView(UserInterfaceIconProvider.CHEVRON_LEFT.buildImage(16)));
             addButton.setOnAction(event -> {
                 String selectedItem = availableItems.getSelectionModel().getSelectedItem();
                 if (selectedItem == null) {
@@ -109,7 +109,7 @@ public class ListSelectionEditorFactory extends AbstractEditorFactory<List<Strin
                 update();
             });
             removeButton.setOnAction(event -> {
-                String selectedItem = selectedItems.getSelectionModel().getSelectedItem();
+                final String selectedItem = selectedItems.getSelectionModel().getSelectedItem();
                 if (selectedItem == null) {
                     return;
                 }
@@ -126,6 +126,11 @@ public class ListSelectionEditorFactory extends AbstractEditorFactory<List<Strin
             addAndRemoveButtons.setAlignment(Pos.CENTER);
 
             return controls;
+        }
+
+        @Override
+        public boolean noValueCheckBoxAvailable() {
+            return false;
         }
     }
 }

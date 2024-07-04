@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -185,6 +185,18 @@ public class HelpServlet extends HttpServlet {
                                     HelpServlet.redirect = true;
                                     return fileUrl;
                                 }
+                            }
+                            
+                            // did not match any toc mapped pages, try direct url after removing any repeated src path segment
+                            final int srcPosEnd = requestPath.lastIndexOf("/src/");
+                            if (srcPosEnd > firstIndex) {
+                                // remove repeated segment to recreate the target url
+                                final int colonPos = requestPath.indexOf(":");
+                                final String compactedRequestPath = requestPath.substring(colonPos + 1, firstIndex) + requestPath.substring(srcPosEnd);
+                                final File pageFile = new File(compactedRequestPath);
+                                final URL fileUrl = pageFile.toURI().toURL();
+                                HelpServlet.redirect = true;
+                                return fileUrl;                                
                             }
                         }
                     }

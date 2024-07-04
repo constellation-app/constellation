@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,12 @@
  */
 package au.gov.asd.tac.constellation.utilities.graphics;
 
+import java.util.Arrays;
+
 /**
  * A viewing frustum.
- *
+ * 
+ * @author capricornunicorn123
  * @author algol
  */
 public final class Frustum {
@@ -52,7 +55,7 @@ public final class Frustum {
     private Vector4f rightPlane;
     private Vector4f topPlane;
     private Vector4f bottomPlane;
-
+    
     /**
      * A symmetric perspective projection.
      *
@@ -80,12 +83,85 @@ public final class Frustum {
     public Frustum(final float fov, final float aspect, final float xmin, final float xmax, final float ymin, final float ymax, final float near, final float far) {
         setPerspective(fov, aspect, xmin, xmax, ymin, ymax, near, far);
     }
-
+    
     /**
      * An orthographic projection with reasonable defaults.
      */
     public Frustum() {
         setOrthographic(-1, 1, -1, 1, -1, 1);
+    }
+
+    /**
+     * A private constructor to facilitate a deep copy of a Frustum.
+     * @param projMatrix
+     * @param nearUL untransformed corner of this frustum
+     * @param nearLL untransformed corner of this frustum
+     * @param nearUR untransformed corner of this frustum
+     * @param nearLR untransformed corner of this frustum
+     * @param farUL untransformed corner of this frustum
+     * @param farLL untransformed corner of this frustum
+     * @param farUR untransformed corner of this frustum
+     * @param farLR untransformed corner of this frustum
+     * @param nearULT transformed corner of this frustum
+     * @param nearLLT transformed corner of this frustum
+     * @param nearURT transformed corner of this frustum
+     * @param nearLRT transformed corner of this frustum
+     * @param farULT transformed corner of this frustum
+     * @param farLLT transformed corner of this frustum
+     * @param farURT transformed corner of this frustum
+     * @param farLRT transformed corner of this frustum
+     * @param nearPlane
+     * @param farPlane
+     * @param leftPlane
+     * @param rightPlane
+     * @param topPlane
+     * @param bottomPlane
+     */
+    private Frustum(final Matrix44f projMatrix, 
+            final Vector4f nearUL, final Vector4f nearLL, final Vector4f nearUR, final Vector4f nearLR, final Vector4f farUL, final Vector4f farLL, final Vector4f farUR, final Vector4f farLR,
+            final Vector4f nearULT, final Vector4f nearLLT, final Vector4f nearURT, final Vector4f nearLRT, final Vector4f farULT, final Vector4f farLLT, final Vector4f farURT, final Vector4f farLRT,
+            final Vector4f nearPlane, final Vector4f farPlane, final Vector4f leftPlane, final Vector4f rightPlane, final Vector4f topPlane, final Vector4f bottomPlane) {
+        
+        this.projMatrix = projMatrix;
+
+        // Untransformed corners of this frustum.
+        this.nearUL = nearUL;
+        this.nearLL = nearLL;
+        this.nearUR = nearUR;
+        this.nearLR = nearLR;
+        this.farUL = farUL;
+        this.farLL = farLL;
+        this.farUR = farUR;
+        this.farLR = farLR;
+
+        // Transformed corners of this frustum.
+        this.nearULT = nearULT;
+        this.nearLLT = nearLLT;
+        this.nearURT = nearURT;
+        this.nearLRT = nearLRT;
+        this.farULT = farULT;
+        this.farLLT = farLLT;
+        this.farURT = farURT;
+        this.farLRT = farLRT;
+
+        // Base and transformed plane equations.
+        this.nearPlane = nearPlane;
+        this.farPlane = farPlane;
+        this.leftPlane = leftPlane;
+        this.rightPlane = rightPlane;
+        this.topPlane = topPlane;
+        this.bottomPlane = bottomPlane;
+    }
+    
+    /**
+     * Creates a deep copy of a Frustum.
+     * @return 
+     */
+    public Frustum getCopy(){
+        return new Frustum(this.projMatrix,
+                this.nearUL, this.nearLL, this.nearUR, this.nearLR, this.farUL, this.farLL, this.farUR, this.farLR,
+                this.nearULT, this.nearLLT, this.nearURT, this.nearLRT, this.farULT, this.farLLT, this.farURT, this.farLRT,
+                this.nearPlane, this.farPlane, this.leftPlane, this.rightPlane, this.topPlane, this.bottomPlane);
     }
 
     /**
@@ -320,19 +396,8 @@ public final class Frustum {
         final Vector3f vCross = new Vector3f();
         final Vector3f vOrigin = new Vector3f();
 
-        // Create the transformation matrix. This was the trickiest part
-        // for me. The default view from OpenGL is down the negative Z
-        // axis. However, building a transformation axis from these
-        // directional vectors points the frustum the wrong direction. So
-        // You must reverse them here, or build the initial frustum
-        // backwards - which to do is purely a matter of taste. I chose to
-        // compensate here to allow better operability with some of my other
-        // legacy code and projects. RSW
-        camera.getForwardVector(vForward);
-        vForward.a[0] = -vForward.a[0];
-        vForward.a[1] = -vForward.a[1];
-        vForward.a[2] = -vForward.a[2];
-
+        // Create the transformation matrix. 
+        camera.getForwardVector(vForward);        
         camera.getUpVector(vUp);
         camera.getOrigin(vOrigin);
 
@@ -402,37 +467,76 @@ public final class Frustum {
      * frustum.
      */
     boolean testSphere(final Vector3f point, final float radius) {
-        float fDist;
-
-        // Near Plane - See if it is behind me
-        fDist = Mathf.distanceToPlane(point, nearPlane);
-        if (fDist + radius <= 0.0) {
-            return false;
+        return inView(point, radius);
+    }
+    
+    /**
+     * Evaluate a point against frustum perimeter.
+     * A false value means it is entirely outside the frustum.
+     * A true value means the pint is either inside of the frustum or on the edge of the frustum.
+     * The radius value allows a test for a point (radius==0) or a sphere.
+     * Note: Unless the frustum has been transformed with respect to the view point, then
+     * the frustum perimeter is defined with the assumption that the view point is at worldPosition (0,0,0)
+     *
+     * @param point
+     * @param radius
+     *
+     * @return False if it is not in the frustum, true if it intersects the
+     * frustum.
+     */
+    public boolean inView(final Vector3f point, final float radius) {       
+        return Mathf.distanceToPlane(point, nearPlane) + radius >= 0.0 // Near Plane - See if it is in front of me
+                && Mathf.distanceToPlane(point, farPlane) + radius >= 0.0 // Distance to far plane
+                && Mathf.distanceToPlane(point, leftPlane) + radius >= 0.0
+                && Mathf.distanceToPlane(point, rightPlane) + radius >= 0.0
+                && Mathf.distanceToPlane(point, bottomPlane) + radius >= 0.0
+                && Mathf.distanceToPlane(point, topPlane) + radius >= 0.0;
+    }
+    
+    /**
+     * Evaluate a line drawn from a point against a frustum perimeter to determine at what point this line first enters the frustum.
+     * <p>
+     * A null value means it does not pass through the frustum at any point.
+     * If the point starts in the frustum, that value is returned.
+     *
+     * @param initialEndPoint
+     * @param finalEndPoint
+     *
+     * @return The point of first entry into the frustum
+     * frustum.
+     */
+    public Vector3f getEntryPoint(final Vector3f initialEndPoint, final Vector3f finalEndPoint) {       
+        // The point is already within the frustum so return the point as the initial entry point. 
+        if (inView(initialEndPoint, 0)){
+            return initialEndPoint;
         }
-
-        // Distance to far plane
-        fDist = Mathf.distanceToPlane(point, farPlane);
-        if (fDist + radius <= 0.0) {
-            return false;
-        }
-
-        fDist = Mathf.distanceToPlane(point, leftPlane);
-        if (fDist + radius <= 0.0) {
-            return false;
-        }
-
-        fDist = Mathf.distanceToPlane(point, rightPlane);
-        if (fDist + radius <= 0.0) {
-            return false;
-        }
-
-        fDist = Mathf.distanceToPlane(point, bottomPlane);
-        if (fDist + radius <= 0.0) {
-            return false;
-        }
-
-        fDist = Mathf.distanceToPlane(point, topPlane);
-
-        return fDist + radius > 0.0;
+        
+        // Initialise the entry point with invalid values to indicate no intersection has been found.
+        final Vector3f entryPoint = new Vector3f(Float.NaN, Float.NaN, Float.NaN);
+        
+        // Check each face 
+        Arrays.asList(nearPlane, farPlane, leftPlane, rightPlane, topPlane, bottomPlane).forEach(plane -> {
+            
+            // Get the point that the line intesects the plane
+            final Vector3f candidateEntryPoint = this.getFaceIntersection(plane, initialEndPoint, finalEndPoint);
+            
+            // If a candidate entry point was found, update the entry point with the closest found intersection
+            if (candidateEntryPoint != null && (!entryPoint.isValid() || Mathf.distance(candidateEntryPoint, initialEndPoint) < Mathf.distance(entryPoint, initialEndPoint))) {
+                entryPoint.set(candidateEntryPoint);
+            }
+        });
+        return entryPoint.isValid() ? entryPoint : null;
+    }
+    
+    /**
+     * Evaluates a line drawn between two end points against a plane.
+     * Method also evaluates to ensure that the intersection point is within the bounds of the frustum. 
+     * @param plane
+     * @param initialEndPoint
+     * @param finalEndPoint
+     */
+    private Vector3f getFaceIntersection(final Vector4f plane, final Vector3f initialEndPoint, final Vector3f finalEndPoint) {
+        final Vector3f planeIntersectionPoint = Mathf.planeIntersectionPoint(initialEndPoint, finalEndPoint, plane);
+        return planeIntersectionPoint.isValid() && inView(planeIntersectionPoint, 0.1F) ? planeIntersectionPoint : null;
     }
 }

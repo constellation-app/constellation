@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,17 +85,12 @@ public class HopOutPlugin extends SimpleEditPlugin {
         final boolean undirected = parameters.getParameters().get(UNDIRECTED_PARAMETER_ID).getBooleanValue();
 
         switch (hops) {
-            case HopUtilities.HOP_OUT_HALF:
-                HopUtilities.hopOutHalf(graph, outgoing, incoming, undirected);
-                break;
-            case HopUtilities.HOP_OUT_ONE:
-                HopUtilities.hopOutOne(graph, outgoing, incoming, undirected);
-                break;
-            case HopUtilities.HOP_OUT_FULL:
-                HopUtilities.hopOutFull(graph, outgoing, incoming, undirected);
-                break;
-            default:
-                break;
+            case HopUtilities.HOP_OUT_HALF -> HopUtilities.hopOutHalf(graph, outgoing, incoming, undirected);
+            case HopUtilities.HOP_OUT_ONE -> HopUtilities.hopOutOne(graph, outgoing, incoming, undirected);
+            case HopUtilities.HOP_OUT_FULL -> HopUtilities.hopOutFull(graph, outgoing, incoming, undirected);
+            default -> {
+                // Do nothing
+            }
         }
     }
 }

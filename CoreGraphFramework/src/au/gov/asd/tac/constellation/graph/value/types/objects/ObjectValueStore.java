@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ public class ObjectValueStore<V> implements ValueStore<ObjectValue<V>> {
         this.values = EMPTY_VALUES;
     }
 
-    public ObjectValueStore(V[] values) {
+    public ObjectValueStore(final V[] values) {
         this.values = values;
     }
 
@@ -47,18 +47,18 @@ public class ObjectValueStore<V> implements ValueStore<ObjectValue<V>> {
     }
 
     @Override
-    public void setCapacity(int capacity) {
+    public void setCapacity(final int capacity) {
         values = Arrays.copyOf(values, capacity);
     }
 
     @Override
-    public void write(int id, ObjectValue<V> value) {
+    public void write(final int id, final ObjectValue<V> value) {
         values[id] = value.readObject();
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public void read(int id, ObjectValue<V> value) {
+    public void read(final int id, final ObjectValue<V> value) {
         value.writeObject((V) values[id]);
     }
 }

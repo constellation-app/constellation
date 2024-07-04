@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -99,10 +99,8 @@ public class LayersViewShortcuts extends AbstractAction {
         final String hotkey = e.getActionCommand();
         final Graph currentGraph = GraphManager.getDefault().getActiveGraph();
         switch (hotkey) {
-            case "CA-L":
-                PluginExecution.withPlugin(new NewLayerPlugin()).executeLater(currentGraph);
-                break;
-            case "CA-D":
+            case "CA-L" -> PluginExecution.withPlugin(new NewLayerPlugin()).executeLater(currentGraph);
+            case "CA-D" -> {
                 final Future<?> deselectFuture = PluginExecution.withPlugin(new DeselectAllLayersPlugin()).executeLater(currentGraph);
                 try {
                     deselectFuture.get();
@@ -113,36 +111,19 @@ public class LayersViewShortcuts extends AbstractAction {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
                 LayersViewController.getDefault().updateQueriesFuture(currentGraph);
-                break;
-            case "CA-1":
-                triggerLayerSelection(currentGraph, 1);
-                break;
-            case "CA-2":
-                triggerLayerSelection(currentGraph, 2);
-                break;
-            case "CA-3":
-                triggerLayerSelection(currentGraph, 3);
-                break;
-            case "CA-4":
-                triggerLayerSelection(currentGraph, 4);
-                break;
-            case "CA-5":
-                triggerLayerSelection(currentGraph, 5);
-                break;
-            case "CA-6":
-                triggerLayerSelection(currentGraph, 6);
-                break;
-            case "CA-7":
-                triggerLayerSelection(currentGraph, 7);
-                break;
-            case "CA-8":
-                triggerLayerSelection(currentGraph, 8);
-                break;
-            case "CA-9":
-                triggerLayerSelection(currentGraph, 9);
-                break;
-            default:
-                break;
+            }
+            case "CA-1" -> triggerLayerSelection(currentGraph, 1);
+            case "CA-2" -> triggerLayerSelection(currentGraph, 2);
+            case "CA-3" -> triggerLayerSelection(currentGraph, 3);
+            case "CA-4" -> triggerLayerSelection(currentGraph, 4);
+            case "CA-5" -> triggerLayerSelection(currentGraph, 5);
+            case "CA-6" -> triggerLayerSelection(currentGraph, 6);
+            case "CA-7" -> triggerLayerSelection(currentGraph, 7);
+            case "CA-8" -> triggerLayerSelection(currentGraph, 8);
+            case "CA-9" -> triggerLayerSelection(currentGraph, 9);
+            default -> {
+                // do nothing
+            }
         }
     }
 }

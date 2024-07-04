@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,6 +70,8 @@ public final class SimpleGraphOpener extends GraphOpener {
         private final Runnable doAfter;
         private Exception gex;
         private long time;
+        private static final Logger LOGGER = Logger.getLogger(SimpleGraphFileOpener.class.getName());
+        
 
         SimpleGraphFileOpener(final GraphDataObject gdo, final Graph graph, Runnable doAfter) {
             this.gdo = gdo;
@@ -87,7 +89,7 @@ public final class SimpleGraphOpener extends GraphOpener {
                     time = System.currentTimeMillis() - t0;
                 } catch (final GraphParseException ex) {
                     gex = ex;
-                    ex.printStackTrace(System.out);
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
             }
 

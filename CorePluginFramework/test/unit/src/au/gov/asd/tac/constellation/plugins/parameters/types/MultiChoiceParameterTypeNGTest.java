@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -212,7 +212,10 @@ public class MultiChoiceParameterTypeNGTest {
         assertTrue(multiChoiceValue.getOptions().isEmpty());
         assertTrue(multiChoiceValue.getChoices().isEmpty());
                
-        multiChoiceValue.setStringValue("option1\noption2\n\u2713 option3");
+        multiChoiceValue.setStringValue("""
+                                        option1
+                                        option2
+                                        \u2713 option3""");
         assertEquals(multiChoiceValue.getOptions().size(), 3);
         assertEquals(multiChoiceValue.getChoices().size(), 1);
         assertTrue(multiChoiceValue.getChoices().contains("option3"));
@@ -294,6 +297,9 @@ public class MultiChoiceParameterTypeNGTest {
         final MultiChoiceParameterValue multiChoiceValue = new MultiChoiceParameterValue();
         multiChoiceValue.setOptions(Arrays.asList("option1", "option2", "option3"));
         multiChoiceValue.setChoices(Arrays.asList("option2"));
-        assertEquals(multiChoiceValue.toString(), "option1\n\u2713 option2\noption3");
+        assertEquals(multiChoiceValue.toString(), """
+                                                  option1
+                                                  \u2713 option2
+                                                  option3""");
     }
 }

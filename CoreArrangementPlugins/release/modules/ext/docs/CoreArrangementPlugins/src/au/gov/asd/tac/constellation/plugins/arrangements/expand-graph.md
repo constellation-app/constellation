@@ -1,6 +1,12 @@
 # Expand Graph
 
 <table class="table table-striped">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th>Constellation Action</th>
@@ -22,3 +28,16 @@
 Expand Graph alters the X, Y, and Z attributes of the selected nodes and
 transactions to expand the graph. This spreads the graph to a larger
 physical space.
+
+Example Expand:
+
+<div style="text-align: center">
+    <figure style = "display: inline-block">
+        <img height=400 src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/BeforeExpand.png" alt="Before Expand" />
+        <figcaption>Before Expand</figcaption>
+    </figure>
+    <figure style = "display: inline-block">
+        <img height=400 src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/AfterExpand.png" alt="After Expand" />
+        <figcaption>After Expanding Many Times</figcaption>
+    </figure>
+</div>

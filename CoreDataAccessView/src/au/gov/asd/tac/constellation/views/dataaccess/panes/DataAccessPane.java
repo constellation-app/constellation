@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.dataaccess.panes;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPaneListener;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessViewTopComponent;
 import au.gov.asd.tac.constellation.views.dataaccess.api.DataAccessPaneState;
@@ -103,6 +104,16 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                 .get(CoreGlobalParameters.DATETIME_RANGE_PARAMETER_ID)
                 .addListener((oldValue, newValue) -> update());
 
+        // Right click anywhere and get the tab's context menu
+        setOnContextMenuRequested(contextMenuEvent -> {
+            getDataAccessTabPane().getCurrentTab().getContextMenu()
+                    .show(
+                            DataAccessPane.this,
+                            contextMenuEvent.getScreenX(),
+                            contextMenuEvent.getScreenY()
+                    );
+            contextMenuEvent.consume();
+        });
         // Refresh all the status of menu items, execute buttons etc.
         // based on the current state of the data access view
         update();
@@ -315,7 +326,12 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
     }
 
     @Override
-    public void validityChanged(boolean enabled) {
+    public void validityChanged(final boolean enabled) {
+        // Must be overriden to implement PluginParametersPaneListener
+    }
+    
+    @Override
+    public void notifyParameterValidityChange(final PluginParameter<?> parameter, final boolean currentlySatisfied) {
         // Must be overriden to implement PluginParametersPaneListener
     }
 

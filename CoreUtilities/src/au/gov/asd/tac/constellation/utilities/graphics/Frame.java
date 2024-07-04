@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -131,9 +131,21 @@ public final class Frame implements Serializable {
     public void getXAxis(final Vector3f vector) {
         vector.crossProduct(up, forward);
     }
+    
+    public Vector3f getXAxis() {
+        final Vector3f result = new Vector3f();
+        result.crossProduct(up, forward);
+        return result;
+    }
 
     public void getYAxis(final Vector3f vector) {
         getUpVector(vector);
+    }
+    
+    public Vector3f getYAxis() {
+        final Vector3f result = new Vector3f();
+        getUpVector(result);
+        return result;
     }
 
     public void getZAxis(final Vector3f vector) {
@@ -459,7 +471,7 @@ public final class Frame implements Serializable {
      */
     public void localToWorld(final Vector3f local, final Vector3f world, final boolean rotationOnly) {
         // Create the rotation matrix based on the vectors
-        Matrix44f rotMat = new Matrix44f();
+        final Matrix44f rotMat = new Matrix44f();
 
         getMatrix(rotMat, true);
 

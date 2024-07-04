@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ public class ScatterPlotState {
         this.selectedOnly = false;
     }
 
-    public ScatterPlotState(ScatterPlotState scatterState) {
+    public ScatterPlotState(final ScatterPlotState scatterState) {
         this.elementType = scatterState == null ? null : scatterState.getElementType();
         this.xAttribute = scatterState == null ? null : scatterState.getXAttribute();
         this.yAttribute = scatterState == null ? null : scatterState.getYAttribute();
@@ -61,7 +61,7 @@ public class ScatterPlotState {
      *
      * @param elementType the new element type.
      */
-    public void setElementType(GraphElementType elementType) {
+    public void setElementType(final GraphElementType elementType) {
         this.elementType = elementType;
     }
 
@@ -82,7 +82,7 @@ public class ScatterPlotState {
      *
      * @param xAttribute the new attribute to visualise on the x-axis.
      */
-    public void setXAttribute(Attribute xAttribute) {
+    public void setXAttribute(final Attribute xAttribute) {
         this.xAttribute = xAttribute;
     }
 
@@ -103,7 +103,7 @@ public class ScatterPlotState {
      *
      * @param yAttribute the new attribute to visualise on the y-axis.
      */
-    public void setYAttribute(Attribute yAttribute) {
+    public void setYAttribute(final Attribute yAttribute) {
         this.yAttribute = yAttribute;
     }
 
@@ -124,13 +124,13 @@ public class ScatterPlotState {
      *
      * @param selectedOnly the new selectedOnly value.
      */
-    public void setSelectedOnly(boolean selectedOnly) {
+    public void setSelectedOnly(final boolean selectedOnly) {
         this.selectedOnly = selectedOnly;
     }
 
     @Override
     public String toString() {
-        StringBuilder out = new StringBuilder();
+        final StringBuilder out = new StringBuilder();
         out.append("ScatterPlotState[elementType=");
         out.append(elementType);
         out.append(", xAttribute=");

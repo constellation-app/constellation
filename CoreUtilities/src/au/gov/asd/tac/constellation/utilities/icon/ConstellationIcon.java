@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,19 @@
 package au.gov.asd.tac.constellation.utilities.icon;
 
 import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
+import au.gov.asd.tac.constellation.utilities.svg.SVGAttributeConstants;
+import au.gov.asd.tac.constellation.utilities.svg.SVGData;
+import au.gov.asd.tac.constellation.utilities.svg.SVGObject;
+import au.gov.asd.tac.constellation.utilities.svg.SVGTypeConstants;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,9 +72,9 @@ public class ConstellationIcon {
     /**
      * A cache to store icons
      */
-    private static final Map<ThreeTuple<Integer, Integer, Color>, Object> ICON_CACHE = new HashMap<>();
-    private static final Map<ThreeTuple<Integer, Integer, Color>, Object> IMAGE_CACHE = new HashMap<>();
-    private static final Map<ThreeTuple<Integer, Integer, Color>, Object> BUFFERED_IMAGE_CACHE = new HashMap<>();
+    private static final Map<ThreeTuple<Integer, Integer, Color>, ImageIcon> ICON_CACHE = new HashMap<>();
+    private static final Map<ThreeTuple<Integer, Integer, Color>, Image> IMAGE_CACHE = new HashMap<>();
+    private static final Map<ThreeTuple<Integer, Integer, Color>, BufferedImage> BUFFERED_IMAGE_CACHE = new HashMap<>();
 
     private final String name;
     private final IconData iconData;
@@ -98,7 +105,7 @@ public class ConstellationIcon {
     }
 
     private String createExtendedName() {
-        StringBuilder fullyQualifiedname = new StringBuilder();
+        final StringBuilder fullyQualifiedname = new StringBuilder();
         if (categories != null) {
             categories.forEach(category -> fullyQualifiedname.append(category).append(DEFAULT_ICON_SEPARATOR));
         }
@@ -137,7 +144,7 @@ public class ConstellationIcon {
      * ConstellationIcon.
      */
     public List<String> getAliases() {
-        return aliases;
+        return Collections.unmodifiableList(aliases);
     }
 
     /**
@@ -148,7 +155,7 @@ public class ConstellationIcon {
      * ConstellationIcon.
      */
     public List<String> getCategories() {
-        return categories;
+        return Collections.unmodifiableList(categories);
     }
 
     /**
@@ -171,7 +178,7 @@ public class ConstellationIcon {
      * @param editable True if this ConstellationIcon should be editable, false
      * otherwise.
      */
-    public void setEditable(boolean editable) {
+    public void setEditable(final boolean editable) {
         this.editable = editable;
     }
 
@@ -235,7 +242,7 @@ public class ConstellationIcon {
 
         BufferedImage icon;
         if (BUFFERED_IMAGE_CACHE.containsKey(key)) {
-            icon = (BufferedImage) BUFFERED_IMAGE_CACHE.get(key);
+            icon = BUFFERED_IMAGE_CACHE.get(key);
         } else {
             // build the icon
             LOGGER.log(Level.FINE, BUILDING_ICON_FORMAT, name);
@@ -245,7 +252,7 @@ public class ConstellationIcon {
 
                 // cache the icon data
                 BUFFERED_IMAGE_CACHE.put(key, icon);
-            } catch (IOException ex) {
+            } catch (final IOException ex) {
                 LOGGER.severe(ex.getLocalizedMessage());
                 icon = null;
             }
@@ -302,7 +309,7 @@ public class ConstellationIcon {
 
         final ImageIcon icon;
         if (ICON_CACHE.containsKey(key)) {
-            icon = (ImageIcon) ICON_CACHE.get(key);
+            icon = ICON_CACHE.get(key);
         } else {
             // build the icon
             LOGGER.log(Level.FINE, BUILDING_ICON_FORMAT, name);
@@ -377,6 +384,67 @@ public class ConstellationIcon {
 
         return image;
     }
+    
+    /**
+     * Build a {@link SVGData} object representing this ConstellationIcon's data,
+     * scaled to the specified size.
+     *
+     * @return A {@link SVGData} of the specified size.
+     */
+    public SVGData buildSVG() {
+        return buildSVG(DEFAULT_ICON_SIZE, null);
+    }
+    
+        /**
+     * Build a {@link SVGData} object representing this ConstellationIcon's data,
+     * scaled to the specified size.
+     *
+     * @param size An integer value representing both the height and width of
+     * the output {@link SVGData}.
+     * @return A {@link SVGData} of the specified size.
+     */
+    public SVGData buildSVG(final int size) {
+        return buildSVG(size, null);
+    }
+    
+    /**
+     * Build a {@link SVGData} object representing this ConstellationIcon's data,
+     * scaled to the specified size.
+     *
+     * @param color A {@link Color} representing the color of the icon.
+     * @return A {@link SVGData} of the specified size.
+     */
+    public SVGData buildSVG(final Color color) {
+        return buildSVG(DEFAULT_ICON_SIZE, color);
+    }
+    
+    /**
+     * Build an {@link SVGData} object representing this ConstellationIcon's data,
+     * scaled to the specified size.
+     *
+     * @param size A integer value representing both the height and width of
+     * the output {@link SVGData}.
+     * @param color A {@link Color} representing the color of the icon.
+     * @return A {@link SVGData} of the specified size.
+     */
+    public SVGData buildSVG(final int size, final Color color) {       
+        // Attempt to export the Constelation icon using a stored SVG image.
+        final SVGData vectorImage = this.iconData.getSVGData(size, color);
+        if (vectorImage != null) {
+            return vectorImage;
+        
+        //The icon does not have a svg equivelant so create one by embedding raster data into an SVG image.
+        } else {
+            final byte[] rasterData = this.buildByteArray();
+            final byte[] colorisedRasterData = this.applyColorFilter(rasterData, color);
+            final String encodedString = Base64.getEncoder().encodeToString(colorisedRasterData);
+            
+            final SVGData rasterImage = new SVGData(SVGTypeConstants.IMAGE, null, null);
+            rasterImage.setAttribute(SVGAttributeConstants.EXTERNAL_RESOURCE_REFERENCE, String.format("data:image/png;base64,%s", encodedString));
+            new SVGObject(rasterImage).setDimension(size, size);
+            return rasterImage;
+        }
+    }
 
     /**
      * Used to clear cache images in the ConstellationIcon cache. This should be
@@ -414,6 +482,47 @@ public class ConstellationIcon {
      */
     private byte[] retrieveIconData(final IconData iconData, final int size, final Color color) {
         return iconData.getData(size, color);
+    }
+    
+    /**
+     * Applies a color filter to enhance colors in a raster image. 
+     * This effect is achieved in open GL within the graph view, however is replicated here
+     * to achieve similar effects within other non-GL plugins such as the SVGExportPlugin.
+     * 
+     * @param original
+     * @param color
+     * @return 
+     */
+    private byte[] applyColorFilter(final byte[] original, final Color color) {
+        final ByteArrayInputStream bais = new ByteArrayInputStream(original);
+        try {
+            final BufferedImage img = ImageIO.read(bais);
+            if (img == null || color == null) {
+                return original;
+            } else {
+                final BufferedImage coloredImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
+                for (int x = 0; x < img.getWidth(); x++) {
+                    for (int y = 0; y < img.getHeight(); y++) {
+                        final Color pixel = new Color(img.getRGB(x, y), true);
+                        final float redFilter = (color.getRed() / 255F);
+                        final float blueFilter = (color.getBlue() / 255F);
+                        final float greenFilter = (color.getGreen() / 255F);
+
+                        final float blendRed = pixel.getRed() * redFilter / 255;
+                        final float blendGreen = pixel.getGreen() * greenFilter / 255;
+                        final float blendBlue = pixel.getBlue() * blueFilter / 255;
+                        final Color blend = new Color(blendRed, blendGreen, blendBlue, pixel.getAlpha() / 255.0F);
+                        coloredImage.setRGB(x, y, blend.getRGB());
+                    }
+                }
+                final ByteArrayOutputStream os = new ByteArrayOutputStream();
+                ImageIO.write(coloredImage, ConstellationIcon.DEFAULT_ICON_FORMAT, os);
+                return os.toByteArray();
+            }
+        } catch (final IOException ex) {
+            LOGGER.log(Level.WARNING, ex.getLocalizedMessage());
+            return original;
+        }
     }
 
     @Override

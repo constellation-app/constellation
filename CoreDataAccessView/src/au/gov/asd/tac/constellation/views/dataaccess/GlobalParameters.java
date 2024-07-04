@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.views.dataaccess;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
@@ -120,7 +120,7 @@ public abstract class GlobalParameters {
                         final int ix = line.indexOf(',');
                         container.put(line.substring(0, ix), line.substring(ix + 1));
                     });
-        } catch (final IOException ex) {
+        } catch (final UncheckedIOException ex) {
             LOGGER.log(Level.SEVERE, "Failed to read data properly", ex);
         }
     }

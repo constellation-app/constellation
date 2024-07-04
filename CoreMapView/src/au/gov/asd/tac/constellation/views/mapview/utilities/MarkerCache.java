@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -92,35 +92,30 @@ public abstract class MarkerCache extends ObjectCache<ConstellationAbstractMarke
                         final int elementShapeAttributeId;
                         final int elementCount;
                         switch (graphElementType) {
-                            case VERTEX:
+                            case VERTEX -> {
                                 elementLatitudeAttributeId = SpatialConcept.VertexAttribute.LATITUDE.get(readableGraph);
                                 elementLongitudeAttributeId = SpatialConcept.VertexAttribute.LONGITUDE.get(readableGraph);
                                 elementShapeAttributeId = SpatialConcept.VertexAttribute.SHAPE.get(readableGraph);
                                 elementCount = readableGraph.getVertexCount();
-                                break;
-                            case TRANSACTION:
+                            }
+                            case TRANSACTION -> {
                                 elementLatitudeAttributeId = SpatialConcept.TransactionAttribute.LATITUDE.get(readableGraph);
                                 elementLongitudeAttributeId = SpatialConcept.TransactionAttribute.LONGITUDE.get(readableGraph);
                                 elementShapeAttributeId = SpatialConcept.TransactionAttribute.SHAPE.get(readableGraph);
                                 elementCount = readableGraph.getTransactionCount();
-                                break;
-                            default:
+                            }
+                            default -> {
                                 continue;
+                            }
                         }
 
                         for (int elementPosition = 0; elementPosition < elementCount; elementPosition++) {
                             final int elementId;
-                            switch (graphElementType) {
-                                case VERTEX:
-                                    elementId = readableGraph.getVertex(elementPosition);
-                                    break;
-                                case TRANSACTION:
-                                    elementId = readableGraph.getTransaction(elementPosition);
-                                    break;
-                                default:
-                                    elementId = GraphConstants.NOT_FOUND;
-                                    break;
-                            }
+                            elementId = switch (graphElementType) {
+                                case VERTEX -> readableGraph.getVertex(elementPosition);
+                                case TRANSACTION -> readableGraph.getTransaction(elementPosition);
+                                default -> GraphConstants.NOT_FOUND;
+                            };
 
                             boolean shapeAdded = false;
                             if (elementShapeAttributeId != GraphConstants.NOT_FOUND) {
@@ -129,7 +124,7 @@ public abstract class MarkerCache extends ObjectCache<ConstellationAbstractMarke
                                     final List<ConstellationAbstractFeature> shapes = new ArrayList<>();
                                     try {
                                         final List<ConstellationAbstractFeature> features = GeoJSONReader.loadDataFromJSON(null, elementShape).stream()
-                                                .map(FeatureUtilities::convert).collect(Collectors.toList());
+                                                .map(FeatureUtilities::convert).toList();
                                         shapes.addAll(features);
                                         shapeAdded = true;
                                         markerFactory.createMarkers(shapes).forEach(marker -> {
@@ -201,7 +196,7 @@ public abstract class MarkerCache extends ObjectCache<ConstellationAbstractMarke
                     final List<ConstellationAbstractMarker> markersInCluster = cluster.getPoints().stream()
                             .map(markerPoints::get)
                             .flatMap(List::stream)
-                            .collect(Collectors.toList());
+                            .toList();
                     final ConstellationClusterMarker clusterMarker = new ConstellationClusterMarker();
                     clusterMarker.setColor(MarkerUtilities.DEFAULT_CLUSTER_COLOR);
                     clusterMarker.setMarkers(markersInCluster);
@@ -242,7 +237,7 @@ public abstract class MarkerCache extends ObjectCache<ConstellationAbstractMarke
                             int elementColorAttributeId;
                             for (final GraphElement element : elementList) {
                                 switch (element.getType()) {
-                                    case VERTEX:
+                                    case VERTEX -> {
                                         if (markerState.getLabel() == null) {
                                             elementLabelAttributeId = GraphConstants.NOT_FOUND;
                                         } else {
@@ -259,8 +254,8 @@ public abstract class MarkerCache extends ObjectCache<ConstellationAbstractMarke
                                         elementSelectedAttributeId = VisualConcept.VertexAttribute.SELECTED.get(readableGraph);
                                         elementDimmedAttributeId = VisualConcept.VertexAttribute.DIMMED.get(readableGraph);
                                         elementVisibilityAttributeId = VisualConcept.VertexAttribute.VISIBILITY.get(readableGraph);
-                                        break;
-                                    case TRANSACTION:
+                                    }
+                                    case TRANSACTION -> {
                                         if (markerState.getLabel() == null) {
                                             elementLabelAttributeId = GraphConstants.NOT_FOUND;
                                         } else {
@@ -278,14 +273,15 @@ public abstract class MarkerCache extends ObjectCache<ConstellationAbstractMarke
                                         elementSelectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
                                         elementDimmedAttributeId = VisualConcept.TransactionAttribute.DIMMED.get(readableGraph);
                                         elementVisibilityAttributeId = VisualConcept.TransactionAttribute.VISIBILITY.get(readableGraph);
-                                        break;
-                                    default:
+                                    }
+                                    default -> {
                                         if (marker.isCustom()) {
                                             colors.add(MarkerUtilities.value(MarkerUtilities.DEFAULT_CUSTOM_COLOR));
                                             selected |= marker.isSelected();
                                             dimmed |= marker.isDimmed();
                                         }
                                         continue;
+                                    }
                                 }
 
                                 final int elementId = element.getId();
@@ -298,18 +294,16 @@ public abstract class MarkerCache extends ObjectCache<ConstellationAbstractMarke
                                 // get color
                                 if (elementColorAttributeId != GraphConstants.NOT_FOUND) {
                                     switch (markerState.getColorScheme()) {
-                                        case COLOR:
-                                        case OVERLAY:
-                                            colors.add(readableGraph.getObjectValue(elementColorAttributeId, elementId));
-                                            break;
-                                        case BLAZE:
+                                        case COLOR, OVERLAY -> colors.add(readableGraph.getObjectValue(elementColorAttributeId, elementId));
+                                        case BLAZE -> {
                                             // give the blazes a color and default to the color scheme for non blazed nodes
                                             if (readableGraph.getObjectValue(elementColorAttributeId, elementId) != null) {
                                                 colors.add(((Blaze) readableGraph.getObjectValue(elementColorAttributeId, elementId)).getColor());
                                             }
-                                            break;
-                                        default:
-                                            break;
+                                        }
+                                        default -> {
+                                            // do nothing
+                                        }
                                     }
                                 }
 

@@ -1,0 +1,14 @@
+.buttonGrid {
+    -fx-background-color: #FFFFFF;
+}
+
+.rulesScrollPane {
+    -fx-min-height: 138px;
+    -fx-background-color: #FFFFFF;
+}
+
+.button:default {
+    -fx-base: #0093FF;
+    -fx-text-fill: #ffffff;
+}
+

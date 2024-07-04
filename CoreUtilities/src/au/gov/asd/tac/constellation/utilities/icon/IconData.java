@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,9 @@
  */
 package au.gov.asd.tac.constellation.utilities.icon;
 
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.svg.SVGData;
+import au.gov.asd.tac.constellation.utilities.svg.SVGObject;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -29,7 +32,8 @@ import javax.imageio.ImageIO;
 /**
  * An IconData stores byte data for use as a {@link ConstellationIcon}, provided
  * via an InputStream.
- *
+ * 
+ * @author capricornunicorn123
  * @author cygnus_x-1
  */
 public abstract class IconData {
@@ -37,6 +41,40 @@ public abstract class IconData {
     private static final Logger LOGGER = Logger.getLogger(IconData.class.getName());
 
     private byte[] data = null;
+    private SVGData svgData = null;
+    
+    public SVGData getSVGData() {
+        return getSVGData(ConstellationIcon.DEFAULT_ICON_SIZE, null);
+    }
+    
+    public SVGData getSVGData(final int size, final Color color) {
+        if (size != ConstellationIcon.DEFAULT_ICON_SIZE || color != null) {
+            return createSVGData(size, color);
+        }
+
+        if (svgData == null) {
+            svgData = createSVGData(ConstellationIcon.DEFAULT_ICON_SIZE, null);
+        }
+        return svgData;
+    }
+    
+    protected SVGData createSVGData(final int size, final Color color) {
+        try {
+            final InputStream is = createVectorInputStream();
+            final SVGObject svg = SVGObject.loadFromInputStream(is);
+            if (svg != null){
+                svg.setDimension(size, size);
+                if (color != null) {
+                    svg.saturateSVG(ConstellationColor.fromJavaColor(color));
+                }
+                return svg.toSVGData();
+            }
+        } catch (final IOException | UnsupportedOperationException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+            return null;
+        }
+        return null;
+    }
 
     /**
      * Get an array of bytes representing the data of a
@@ -81,7 +119,7 @@ public abstract class IconData {
     /**
      * Build an array of bytes representing the data of a
      * {@link ConstellationIcon} from the {@link InputStream} specified by
-     * {@link #createInputStream()}.
+     * {@link #createRasterInputStream()}.
      *
      * @param size An integer value representing both the height and width of
      * the icon.
@@ -92,7 +130,7 @@ public abstract class IconData {
     protected byte[] createData(final int size, final Color color) {
         final ByteArrayOutputStream os = new ByteArrayOutputStream();
         try {
-            final InputStream is = createInputStream();
+            final InputStream is = createRasterInputStream();
             if (is != null) {
                 BufferedImage image = ImageIO.read(is);
                 if (color != null) {
@@ -129,7 +167,6 @@ public abstract class IconData {
                     coloredImage.setRGB(x, y, blend.getRGB());
                 }
             }
-
             return coloredImage;
         }
     }
@@ -164,7 +201,7 @@ public abstract class IconData {
             scaledGraphics.drawImage(image, x, y, width, height, null);
 
             if (image.getWidth() > size || image.getHeight() > size) {
-                LOGGER.fine(String.format("Scaled icon from %dx%d type %d to %dx%d type %d",
+                LOGGER.log(Level.FINE, "{0}", String.format("Scaled icon from %dx%d type %d to %dx%d type %d",
                         image.getWidth(), image.getHeight(), image.getType(), width, height, BufferedImage.TYPE_4BYTE_ABGR));
             }
 
@@ -179,14 +216,10 @@ public abstract class IconData {
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj == null) {
+        if (obj == null || this.getClass() != obj.getClass()) {
             return false;
         }
-
-        if (this.getClass() != obj.getClass()) {
-            return false;
-        }
-
+        
         return Arrays.equals(this.data, ((IconData) obj).data);
     }
 
@@ -205,5 +238,7 @@ public abstract class IconData {
      * @throws IOException If the {@link InputStream} encounters an issue while
      * transmitting the icon data.
      */
-    protected abstract InputStream createInputStream() throws IOException;
+    protected abstract InputStream createRasterInputStream() throws IOException;
+    
+    protected abstract InputStream createVectorInputStream() throws IOException;
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,9 +81,14 @@ public class TextPluginInteraction implements PluginInteraction {
     public boolean confirm(final String message) {
         throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
     }
+     
+    @Override
+    public boolean prompt(final String promptName, final PluginParameters parameters, final String helpID) {
+        throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
+    }
 
     @Override
-    public boolean prompt(final String promptName, final PluginParameters parameters) {
+    public boolean prompt(final String promptName, final PluginParameters parameters, final String disclaimer, final String helpID) {
         throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
     }
 

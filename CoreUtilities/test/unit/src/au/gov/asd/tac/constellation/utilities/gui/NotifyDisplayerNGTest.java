@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -109,6 +110,7 @@ public class NotifyDisplayerNGTest {
         final DialogPane dialogPane = mock(DialogPane.class);
         final Scene scene = mock(Scene.class);
         final Stage stage = mock(Stage.class);
+        final ObservableList list = mock(ObservableList.class);
 
         try (final MockedConstruction<Alert> alertMockedConstruction = Mockito.mockConstruction(Alert.class,
                 (mock, cnxt) -> {
@@ -119,6 +121,7 @@ public class NotifyDisplayerNGTest {
                     when(mock.getDialogPane()).thenReturn(dialogPane);
                     when(dialogPane.getScene()).thenReturn(scene);
                     when(scene.getWindow()).thenReturn(stage);
+                    when(dialogPane.getStylesheets()).thenReturn(list);
                 })) {
             NotifyDisplayer.displayAlert(title, header, message, alertType);
 
@@ -148,6 +151,7 @@ public class NotifyDisplayerNGTest {
         final DialogPane dialogPane = mock(DialogPane.class);
         final Scene scene = mock(Scene.class);
         final Stage stage = mock(Stage.class);
+        final ObservableList list = mock(ObservableList.class);
 
         try (final MockedConstruction<Alert> alertMockedConstruction = Mockito.mockConstruction(Alert.class,
                 (mock, cnxt) -> {
@@ -158,6 +162,7 @@ public class NotifyDisplayerNGTest {
                     when(mock.getDialogPane()).thenReturn(dialogPane);
                     when(dialogPane.getScene()).thenReturn(scene);
                     when(scene.getWindow()).thenReturn(stage);
+                    when(dialogPane.getStylesheets()).thenReturn(list);
                 })) {
             NotifyDisplayer.displayLargeAlert(title, header, message, alertType);
 
@@ -192,6 +197,7 @@ public class NotifyDisplayerNGTest {
         final DialogPane dialogPane = mock(DialogPane.class);
         final Scene scene = mock(Scene.class);
         final Stage stage = mock(Stage.class);
+        final ObservableList list = mock(ObservableList.class);
 
         try (final MockedConstruction<Alert> alertMockedConstruction = Mockito.mockConstruction(Alert.class,
                 (mock, cnxt) -> {
@@ -202,6 +208,7 @@ public class NotifyDisplayerNGTest {
                     when(mock.getDialogPane()).thenReturn(dialogPane);
                     when(dialogPane.getScene()).thenReturn(scene);
                     when(scene.getWindow()).thenReturn(stage);
+                    when(dialogPane.getStylesheets()).thenReturn(list);
                 })) {
             NotifyDisplayer.displayConfirmationAlert(title, header, message);
 

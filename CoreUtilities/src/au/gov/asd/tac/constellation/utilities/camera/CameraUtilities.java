@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.utilities.camera;
 import au.gov.asd.tac.constellation.utilities.graphics.Frame;
 import au.gov.asd.tac.constellation.utilities.graphics.Mathf;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
+import au.gov.asd.tac.constellation.utilities.visual.AxisConstants;
 
 /**
  *
@@ -34,21 +35,34 @@ public class CameraUtilities {
     }
 
     public static void refocusOnXAxis(final Camera camera, final BoundingBox bb, final boolean reverseDirection) {
-        refocus(camera, new Vector3f(reverseDirection ? -1 : 1, 0, 0), new Vector3f(0, 1, 0), bb);
+        refocus(camera, reverseDirection ? AxisConstants.X_NEGATIVE : AxisConstants.X_POSITIVE, bb);
     }
 
     public static void refocusOnYAxis(final Camera camera, final BoundingBox bb, final boolean reverseDirection) {
-        refocus(camera, new Vector3f(0, reverseDirection ? -1 : 1, 0), new Vector3f(0, 0, reverseDirection ? 1 : -1), bb);
+        refocus(camera, reverseDirection ? AxisConstants.Y_NEGATIVE : AxisConstants.Y_POSITIVE, bb);
     }
 
     public static void refocusOnZAxis(final Camera camera, final BoundingBox bb, final boolean reverseDirection) {
-        refocus(camera, new Vector3f(0, 0, reverseDirection ? -1 : 1), new Vector3f(0, 1, 0), bb);
+        refocus(camera, reverseDirection ? AxisConstants.Z_NEGATIVE : AxisConstants.Z_POSITIVE, bb);
     }
 
     public static void moveEyeToOrigin(final Camera camera) {
         camera.lookAtCentre.subtract(camera.lookAtEye);
         camera.lookAtCentre.normalize();
         camera.lookAtEye.set(0, 0, 0);
+    }
+    
+    /*
+     * A helper method to refocuses the camera to look in a default direction at a specified
+     * region.
+     *
+     * @param camera The camera object to refocus
+     * @param axis A constant reference to specify fixed axis alignment
+     * @param region The bounding box representing the region the camera should
+     * be looking at
+    */
+    public static void refocus(final Camera camera, final AxisConstants axis, final BoundingBox region) {
+        refocus(camera, axis.getForward(), axis.getUp(), region);
     }
 
     /**
@@ -97,14 +111,10 @@ public class CameraUtilities {
     public static void changeMixRatio(final Camera camera, final boolean increaseMix, final boolean toLimit) {
         if (toLimit) {
             camera.setMixRatio(increaseMix ? Camera.MIX_RATIO_MAX : Camera.MIX_RATIO_MIN);
-        } else {
-            if (increaseMix && camera.getMixRatio() < Camera.MIX_RATIO_MAX) {
-                camera.setMixRatio(camera.getMixRatio() + 1);
-            } else if (!increaseMix && camera.getMixRatio() > Camera.MIX_RATIO_MIN) {
-                camera.setMixRatio(camera.getMixRatio() - 1);
-            } else {
-                // Do nothing
-            }
+        } else if (increaseMix && camera.getMixRatio() < Camera.MIX_RATIO_MAX) {
+            camera.setMixRatio(camera.getMixRatio() + 1);
+        } else if (!increaseMix && camera.getMixRatio() > Camera.MIX_RATIO_MIN) {
+            camera.setMixRatio(camera.getMixRatio() - 1);
         }
     }
 
@@ -171,7 +181,7 @@ public class CameraUtilities {
 
     public static void rotate(final Camera camera, final float xDegrees, final float yDegrees, final float zDegrees) {
         // Use a frame to move the eye and centre relative to the rotation point.
-        Frame frame = new Frame(camera.lookAtEye, camera.lookAtCentre, camera.lookAtUp);
+        final Frame frame = new Frame(camera.lookAtEye, camera.lookAtCentre, camera.lookAtUp);
         frame.setOrigin(camera.lookAtRotation);
         final Vector3f localCentre = new Vector3f();
         final Vector3f localEye = new Vector3f();
