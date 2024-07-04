@@ -51,7 +51,6 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSup
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ShortcutSupport;
 import javafx.application.Platform;
 import javafx.scene.control.TextInputControl;
-import javafx.scene.layout.VBox;
 
 
 /**
@@ -191,13 +190,13 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
         interactableContentLayer.setAlignment(Pos.TOP_CENTER);
         HBox.setHgrow(interactableContentLayer, Priority.ALWAYS);
 
-        final Rectangle backgroundLayer = new Rectangle(300, defaultCellHeight);
+        final Rectangle backgroundLayer = new Rectangle();
         backgroundLayer.setArcWidth(corner);
         backgroundLayer.setArcHeight(corner);  
         backgroundLayer.setFill(fieldColor);
         backgroundLayer.widthProperty().bind(interactableContentLayer.widthProperty());
         
-        final Rectangle interactableContentClipingMask = new Rectangle(300, defaultCellHeight);
+        final Rectangle interactableContentClipingMask = new Rectangle();
         interactableContentClipingMask.setArcWidth(corner);
         interactableContentClipingMask.setArcHeight(corner);        
         interactableContentClipingMask.setFill(Color.BLACK);
@@ -205,7 +204,7 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
         interactableContentClipingMask.widthProperty().bind(interactableContentLayer.widthProperty());
         interactableContentLayer.setClip(interactableContentClipingMask);
         
-        final Rectangle foregroundLayer = new Rectangle(300, defaultCellHeight);
+        final Rectangle foregroundLayer = new Rectangle();
         foregroundLayer.setArcWidth(corner);
         foregroundLayer.setArcHeight(corner);        
         foregroundLayer.setFill(Color.TRANSPARENT);

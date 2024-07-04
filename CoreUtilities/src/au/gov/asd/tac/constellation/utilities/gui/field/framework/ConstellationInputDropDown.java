@@ -17,6 +17,8 @@ package au.gov.asd.tac.constellation.utilities.gui.field.framework;
 
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInput;
 import java.util.List;
+import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
@@ -27,6 +29,7 @@ import javafx.scene.layout.Region;
 
 /**
  * An extension of a ContextMenu to provide features that enable its use as a drop down menu in ConstellationInputFields.
+ * Do not add items using getItems()
  * 
  * @author capricornunicorn123
  */
@@ -35,10 +38,9 @@ public class ConstellationInputDropDown extends ContextMenu {
         public ConstellationInputDropDown(final ConstellationInput field) {
             parent = field;
             
-            //Constrain drop down menus to a height of 400
+            //Constrain drop down menus to a height of 200
             this.setMaxHeight(200);
             this.setPrefHeight(200);
-            this.setWidth(parent.getWidth());
             addEventHandler(Menu.ON_SHOWING, e -> {
                 Node content = getSkin().getNode();
                 if (content instanceof Region region) {
@@ -51,7 +53,7 @@ public class ConstellationInputDropDown extends ContextMenu {
          * Takes a {@link Labeled} object and converts it to a {@link MenuItem}.
          * 
          * The  {@link MenuItem} is not added to the ConstextMenu. it is returned for
-         * Input field specific modification before being added to the COntext menu using
+         * Input field specific modification before being added to the Context menu using
          *  addMenuItems();
          * 
          * This build method is important to correctly bind the width of the context menu to the parnte (but it currently doesnt work as they are bote rea only)....
@@ -59,18 +61,10 @@ public class ConstellationInputDropDown extends ContextMenu {
          * @param text
          * @return 
          */
-        public CustomMenuItem buildCustomMenuItem(Labeled text) {
-            //text.prefWidthProperty().bind(parent.prefWidthProperty());
+        public CustomMenuItem registerCustomMenuItem(Labeled text) {
+            text.prefWidthProperty().bind(parent.widthProperty());
             CustomMenuItem item = new CustomMenuItem(text);
+            getItems().add(item);
             return item;
         }
-        
-        /**
-         * 
-         * @param items 
-         */
-        public void addMenuItems(List<MenuItem> items){
-            this.getItems().addAll(items);
-        }
-        
     }

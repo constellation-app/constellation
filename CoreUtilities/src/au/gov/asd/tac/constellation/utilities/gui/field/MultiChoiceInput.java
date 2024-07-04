@@ -236,21 +236,17 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
         public ChoiceInputDropDown(final MultiChoiceInput field){
             super(field);
             
-            final List<MenuItem> items = new ArrayList<>(); 
-            
             if (getOptions() != null){
 
                 //Select All Bulk Selection Feature
                 final Label all = new Label("Select All");
                 all.setOnMouseClicked(event -> field.setChoices(field.getOptions())); 
-                items.add(this.buildCustomMenuItem(all));
+                this.registerCustomMenuItem(all);
 
                 //Clear All Bulk Selection Feature
                 final Label clear = new Label("Clear All");
                 clear.setOnMouseClicked(event -> field.clearChoices()); 
-                items.add(this.buildCustomMenuItem(clear));
-
-                items.add(new SeparatorMenuItem());
+                this.registerCustomMenuItem(clear);
               
                 final Object[] optionsList = getOptions().toArray();
                 final List<C> choices = field.getChoices();
@@ -273,10 +269,9 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
                         item.setGraphic(icons.get(i));
                     }
 
-                    final CustomMenuItem menuItem = this.buildCustomMenuItem(item);   
+                    final CustomMenuItem menuItem = this.registerCustomMenuItem(item);   
                     //context menu should not be closed after an item is selected.
                     menuItem.setHideOnClick(false);
-                    items.add(menuItem);
                 }
             }
             
@@ -298,9 +293,6 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
             this.setOnHiding(value -> {
                 field.removeListener(cl);
             });
-            
-            //Add all of the items to the context menu
-            this.addMenuItems(items);
         }
     }
     // </editor-fold> 

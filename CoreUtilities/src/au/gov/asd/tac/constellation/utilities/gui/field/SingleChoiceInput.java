@@ -274,8 +274,6 @@ public final class SingleChoiceInput<C extends Object> extends ChoiceInputField<
         public ChoiceInputDropDown(final SingleChoiceInput field){
             super(field);
             
-            final List<MenuItem> items = new ArrayList<>(); 
-            
             if (getOptions() != null){
                 final Object[] optionsList = getOptions().toArray();
                 for (int i = 0 ; i < optionsList.length ; i ++){
@@ -297,10 +295,7 @@ public final class SingleChoiceInput<C extends Object> extends ChoiceInputField<
                         item.setGraphic(icons.get(i));
                     }
 
-                    final CustomMenuItem menuItem = this.buildCustomMenuItem(item);   
-
-
-                    items.add(menuItem);
+                    this.registerCustomMenuItem(item);   
                 }
             }
             
@@ -322,9 +317,6 @@ public final class SingleChoiceInput<C extends Object> extends ChoiceInputField<
             this.setOnHiding(value -> {
                 field.removeListener(cl);
             });
-            
-            //Add all of the items to the context menu
-            this.addMenuItems(items);
         }
     }
     // </editor-fold> 

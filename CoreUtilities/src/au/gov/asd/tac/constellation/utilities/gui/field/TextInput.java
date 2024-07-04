@@ -141,16 +141,14 @@ public final class TextInput extends ConstellationInput<String> implements Recen
     private class TextInputDropDown extends ConstellationInputDropDown {
         public TextInputDropDown(final TextInput field){
             super(field);
-            final List<MenuItem> items = new ArrayList<>();
             for (final String recentValue : recentValues){
                 final Label label = new Label(recentValue);
                 
                 label.setOnMouseClicked(event -> {
                     field.setText(recentValue);
                 });
-                items.add(this.buildCustomMenuItem(label));
+                this.registerCustomMenuItem(label);
             }
-            this.addMenuItems(items);
         }
     }
     // </editor-fold> 

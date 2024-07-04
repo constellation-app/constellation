@@ -37,6 +37,8 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.InfoWindowSupp
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.LeftButtonSupport;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport;
 import javafx.scene.control.ColorPicker;
+import javafx.scene.control.CustomMenuItem;
+import javafx.scene.control.Labeled;
 
 /**
  * A {@link ConstellationInput} for managing {@link ConstellationColor} selection. 
@@ -265,7 +267,6 @@ public final class ColorInput extends ConstellationInput<ConstellationColor> imp
         public ColorModeDropDown(final ColorInput field){
             super(field);
             
-            final List<MenuItem> items = new ArrayList<>();
             for (final ColorMode mode : ColorMode.values()){
                 final Label label = new Label(mode.toString());
                 
@@ -273,9 +274,8 @@ public final class ColorInput extends ConstellationInput<ConstellationColor> imp
                     field.setMode(mode);
                 });
 
-                items.add(this.buildCustomMenuItem(label));
+                this.registerCustomMenuItem(label);
             }
-            this.addMenuItems(items);
         }        
     }    
     
@@ -284,19 +284,23 @@ public final class ColorInput extends ConstellationInput<ConstellationColor> imp
     public ColorPickerDropDown(final ColorInput field) {
             super(field);
             
-            final List<MenuItem> items = new ArrayList<>();
             getListOfSortedColors()    
                     .forEach(value -> {
-                final MenuItem item = new MenuItem(value.getName());
-                item.setOnAction(event -> {
-                    setValue(value);
-                });
-                final Rectangle icon = new Rectangle(12, 12);
+                        
+                final Labeled item = new Label(value.getName());
+
+                final Rectangle icon = new Rectangle();
+                icon.heightProperty().bind(item.heightProperty());
+                icon.widthProperty().bind(item.heightProperty());
                 icon.setFill(Paint.valueOf(value.getHtmlColor()));
                 item.setGraphic(icon);
-                items.add(item);
+                
+                item.setOnMouseClicked(event -> {
+                    setValue(value);
+                });
+                
+                this.registerCustomMenuItem(item);                
             });
-            this.addMenuItems(items);
         }        
     }    
     // </editor-fold> 
