@@ -71,12 +71,21 @@ public class ExportToJsonActionNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         fileChooserStaticMock = mockStatic(FileChooser.class);
+        
+        fileChooserStaticMock.when(()
+                -> FileChooser.createFileChooserBuilder(any(String.class)))
+                .thenCallRealMethod();
+        
         fileChooserStaticMock.when(()
                 -> FileChooser.createFileChooserBuilder(any(String.class), any(String.class)))
                 .thenCallRealMethod();
-
+        
         fileChooserStaticMock.when(()
                 -> FileChooser.createFileChooserBuilder(any(String.class), any(String.class), any(String.class)))
+                .thenCallRealMethod();
+        
+        fileChooserStaticMock.when(()
+                -> FileChooser.createFileChooserBuilder(any(String.class), any(String.class), any(String.class), any(Boolean.class)))
                 .thenCallRealMethod();
 
         pluginExecutionStaticMock = mockStatic(PluginExecution.class);
