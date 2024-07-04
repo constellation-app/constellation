@@ -344,7 +344,7 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
                     .stream()
                     .map(value -> value)
                     .filter(value -> !choices.contains(value))
-                    .filter(value -> value.toString().startsWith(invalidEntry))
+                    .filter(value -> value.toString().toUpperCase().contains(invalidEntry.toUpperCase()))
                     .forEach(value -> {
                         final MenuItem item = new MenuItem(value.toString());
                         item.setOnAction(event -> {

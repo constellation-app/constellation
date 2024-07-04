@@ -333,7 +333,7 @@ public final class SingleChoiceInput<C extends Object> extends ChoiceInputField<
             this.getOptions()
                     .stream()
                     .map(value -> value)
-                    .filter(value -> value.toString().startsWith(getText()))
+                    .filter(value -> value.toString().toUpperCase().contains(getText().toUpperCase()))
                     .forEach(value -> {
                         final MenuItem item = new MenuItem(value.toString());
                         item.setOnAction(event -> {

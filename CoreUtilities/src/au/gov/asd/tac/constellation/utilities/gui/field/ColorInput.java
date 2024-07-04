@@ -335,7 +335,7 @@ public final class ColorInput extends ConstellationInput<ConstellationColor> imp
         if (!this.getText().isBlank()){
             getListOfSortedColors()
                     .stream()
-                    .filter(value -> value.toString().startsWith(getText()))
+                    .filter(value -> value.toString().toUpperCase().contains(getText().toUpperCase()))
                     .filter(value -> !value.toString().equals(getText()))
                     .forEach(value -> {
                         
