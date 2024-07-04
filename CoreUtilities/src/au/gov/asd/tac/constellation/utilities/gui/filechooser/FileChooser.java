@@ -203,18 +203,6 @@ public class FileChooser {
     }
 
     /**
-     * Creates a FileChooserBuilder with no file filter
-     *
-     * @param title the title of the FileChooserBuilder
-     * @return the constructed FileChooserBuilder
-     */
-    public static FileChooserBuilder createFileChooserBuilder(final String title) {
-        return new FileChooserBuilder(title)
-                .setTitle(title)
-                .setFilesOnly(true);
-    }
-
-    /**
      * Creates a FileChooserBuilder with a file filter, File filter accepts if either: file is a normal file and either:
      * filename ends with given file extension, or file is a directory
      *
@@ -258,7 +246,7 @@ public class FileChooser {
     public static FileChooserBuilder createFileChooserBuilder(final String title, final String fileExtension, final String filterDescription) {
         return createFileChooserBuilder(title, fileExtension, filterDescription, false);
     }
-    
+
     /**
      * Creates a FileChooserBuilder with a file filter, File filter accepts if either: file is a normal file and either:
      * filename ends with given file extension, or file is a directory
@@ -270,5 +258,17 @@ public class FileChooser {
      */
     public static FileChooserBuilder createFileChooserBuilder(final String title, final String fileExtension) {
         return createFileChooserBuilder(title, fileExtension, fileExtension, false);
+    }
+
+    /**
+     * Creates a FileChooserBuilder with no file filter
+     *
+     * @param title the title of the FileChooserBuilder
+     * @return the constructed FileChooserBuilder
+     */
+    public static FileChooserBuilder createFileChooserBuilder(final String title) {
+        return new FileChooserBuilder(title)
+                .setTitle(title)
+                .setFilesOnly(true);
     }
 }

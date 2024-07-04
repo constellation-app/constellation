@@ -272,10 +272,9 @@ public class FileChooserNGTest {
      * Test of createFileChooserBuilderNoFilter method, of class FileChooser.
      */
     @Test
-    public void testCreateFileChooserBuilderNoFilter() {
+    public void testCreateFileChooserBuilderOneArg() {
         System.out.println("createFileChooserBuilderNoFilter");
         final String title = "";
-        final String fileExtension = "";
         
         final FileChooserBuilder result = FileChooser.createFileChooserBuilder(title);
         assertEquals(FileChooserBuilder.class, result.getClass());
@@ -285,13 +284,41 @@ public class FileChooserNGTest {
      * Test of createFileChooserBuilder method, of class FileChooser.
      */
     @Test
-    public void testCreateFileChooserBuilder() {
+    public void testCreateFileChooserBuilderTwoArgs() {
+        System.out.println("createFileChooserBuilder");
+        final String title = "";
+        final String fileExtension = "";
+
+        final FileChooserBuilder result = FileChooser.createFileChooserBuilder(title, fileExtension);
+        assertEquals(FileChooserBuilder.class, result.getClass());
+    }
+    
+    /**
+     * Test of createFileChooserBuilder method, of class FileChooser.
+     */
+    @Test
+    public void testCreateFileChooserBuilderThreeArgs() {
         System.out.println("createFileChooserBuilder");
         final String title = "";
         final String fileExtension = "";
         final String description = "";
 
         final FileChooserBuilder result = FileChooser.createFileChooserBuilder(title, fileExtension, description);
+        assertEquals(FileChooserBuilder.class, result.getClass());
+    }
+    
+    /**
+     * Test of createFileChooserBuilder method, of class FileChooser.
+     */
+    @Test
+    public void testCreateFileChooserBuilderFourArgs() {
+        System.out.println("createFileChooserBuilder");
+        final String title = "";
+        final String fileExtension = "";
+        final String description = "";
+        final boolean showWarning = true;
+
+        final FileChooserBuilder result = FileChooser.createFileChooserBuilder(title, fileExtension, description, showWarning);
         assertEquals(FileChooserBuilder.class, result.getClass());
     }
 }
