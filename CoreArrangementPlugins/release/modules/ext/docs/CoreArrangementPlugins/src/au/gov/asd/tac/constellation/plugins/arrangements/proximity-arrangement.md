@@ -1,6 +1,12 @@
 # Proximity
 
 <table class="table table-striped">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th>Constellation Action</th>
@@ -16,7 +22,6 @@
 <td>Arrange -&gt; Proximity</td>
 <td style="text-align: center;"><img src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/arrangeByProximity.png" alt="Proximity Arrangement Icon" /></td>
 </tr>
-
 <tr class="even">
 <td>Run Proximity 3D Arrangement</td>
 <td>Ctrl + Alt + P</td>

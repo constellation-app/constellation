@@ -12,7 +12,7 @@
 <th>Constellation Action</th>
 <th>Keyboard Shortcut</th>
 <th>User Action</th>
-<th>Menu Icon</th>
+<th style="text-align: center;">Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -20,9 +20,7 @@
 <td>Open Schema View</td>
 <td>Ctrl + Shift + S</td>
 <td>Views -&gt; Schema View</td>
-<td><div style="text-align: center">
-<img src="../ext/docs/CoreSchemaView/src/au/gov/asd/tac/constellation/views/schemaview/resources/schema_view.png" width="16" height="16" />
-</div></td>
+<td style="text-align: center"><img src="../ext/docs/CoreSchemaView/src/au/gov/asd/tac/constellation/views/schemaview/resources/schema_view.png" alt="Schema View Icon" /></td>
 </tr>
 </tbody>
 </table>
