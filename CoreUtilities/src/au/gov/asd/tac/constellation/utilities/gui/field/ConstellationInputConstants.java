@@ -26,7 +26,6 @@ public class ConstellationInputConstants {
     public final static String SELECT_BUTTON_LABEL = "Select"; 
     public final static String NEXT_BUTTON_LABEL = "Next"; 
     public final static String PREVIOUS_BUTTON_LABEL = "Prev"; 
-    public final static String SWATCH_BUTTON_LABEL = "Swatch"; 
     public final static String HIDE_BUTTON_LABEL = "Hide"; 
     public final static String SHOW_BUTTON_LABEL = "Show"; 
     

@@ -223,9 +223,9 @@ public final class ColorInput extends ConstellationInput<ConstellationColor> imp
     public List<MenuItem> getLocalMenuItems() {
         final MenuItem format = new MenuItem("Format");
         format.setOnAction(value -> executeLeftButtonAction());
-        final MenuItem swatch = new MenuItem("Swatch");
-        swatch.setOnAction(value -> executeRightButtonAction());
-        return Arrays.asList(format);
+        final MenuItem select = new MenuItem("Select");
+        select.setOnAction(value -> executeRightButtonAction());
+        return Arrays.asList(format, select);
     }
     // </editor-fold> 
     
@@ -242,7 +242,7 @@ public final class ColorInput extends ConstellationInput<ConstellationColor> imp
     
     @Override
     public RightButton getRightButton() {
-        return new RightButton(new Label(ConstellationInputConstants.SWATCH_BUTTON_LABEL), ButtonType.DROPDOWN) {
+        return new RightButton(new Label(ConstellationInputConstants.SELECT_BUTTON_LABEL), ButtonType.DROPDOWN) {
                 @Override
                 public EventHandler<? super MouseEvent> action() {
                     return event -> executeRightButtonAction();
