@@ -70,7 +70,15 @@ public class ExportGlyphTexturesActionNGTest {
                 .thenCallRealMethod();
         
         fileChooserStaticMock.when(()
+                -> FileChooser.createFileChooserBuilder(any(String.class), any(String.class)))
+                .thenCallRealMethod();
+        
+        fileChooserStaticMock.when(()
                 -> FileChooser.createFileChooserBuilder(any(String.class), any(String.class), any(String.class)))
+                .thenCallRealMethod();
+        
+        fileChooserStaticMock.when(()
+                -> FileChooser.createFileChooserBuilder(any(String.class), any(String.class), any(String.class), any(Boolean.class)))
                 .thenCallRealMethod();
         
         sharedDrawableStaticMock = mockStatic(SharedDrawable.class);
@@ -95,6 +103,9 @@ public class ExportGlyphTexturesActionNGTest {
         final ActionEvent e = null;
         final File file = new File("test.png");
         final Optional<File> optionalFile = Optional.ofNullable(file);
+        
+        System.out.println("is optional file null");
+        System.out.println(optionalFile == null);
 
         fileChooserStaticMock.when(()
                 -> FileChooser.openSaveDialog(any(FileChooserBuilder.class)))
