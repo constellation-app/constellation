@@ -500,6 +500,8 @@ public class AdvancedFindTab extends Tab {
             getDeleteResultsButton().setDisable(false);
             if (getZoomToSelection().isSelected()) {
                 PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(GraphManager.getDefault().getActiveGraph());
+            } else {
+                PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeLater(GraphManager.getDefault().getActiveGraph());
             }
         }
     }
@@ -515,6 +517,8 @@ public class AdvancedFindTab extends Tab {
             FindViewController.getDefault().retrieveAdvancedSearch(false, true);
             if (getZoomToSelection().isSelected()) {
                 PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(GraphManager.getDefault().getActiveGraph());
+            } else {
+                PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeLater(GraphManager.getDefault().getActiveGraph());
             }
         }
     }
@@ -531,6 +535,8 @@ public class AdvancedFindTab extends Tab {
             FindViewController.getDefault().retrieveAdvancedSearch(false, false);
             if (getZoomToSelection().isSelected()) {
                 PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(GraphManager.getDefault().getActiveGraph());
+            } else {
+                PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeLater(GraphManager.getDefault().getActiveGraph());
             }
         }
     }

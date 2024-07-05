@@ -155,6 +155,8 @@ public class ReplaceTab extends BasicFindTab {
             FindViewController.getDefault().replaceMatchingElements(true, false);
             if (getZoomToSelection().isSelected()) {
                 PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(GraphManager.getDefault().getActiveGraph());
+            } else {
+                PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeLater(GraphManager.getDefault().getActiveGraph());
             }
         }
     }
@@ -173,6 +175,8 @@ public class ReplaceTab extends BasicFindTab {
             FindViewController.getDefault().replaceMatchingElements(false, true);
             if (getZoomToSelection().isSelected()) {
                 PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(GraphManager.getDefault().getActiveGraph());
+            } else {
+                PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeLater(GraphManager.getDefault().getActiveGraph());
             }
         }
     }

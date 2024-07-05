@@ -533,6 +533,8 @@ public class BasicFindTab extends Tab {
             getDeleteResultsButton().setDisable(false);
             if (getZoomToSelection().isSelected()) {
                 PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(GraphManager.getDefault().getActiveGraph());
+            } else {
+                PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeLater(GraphManager.getDefault().getActiveGraph());
             }
         }
     }
@@ -551,6 +553,8 @@ public class BasicFindTab extends Tab {
             FindViewController.getDefault().retriveMatchingElements(false, true);
             if (getZoomToSelection().isSelected()) {
                 PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(GraphManager.getDefault().getActiveGraph());
+            } else {
+                PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeLater(GraphManager.getDefault().getActiveGraph());
             }
         }
     }
@@ -569,6 +573,8 @@ public class BasicFindTab extends Tab {
             FindViewController.getDefault().retriveMatchingElements(false, false);
             if (getZoomToSelection().isSelected()) {
                 PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(GraphManager.getDefault().getActiveGraph());
+            } else {
+                PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeLater(GraphManager.getDefault().getActiveGraph());
             }
         }
     }
