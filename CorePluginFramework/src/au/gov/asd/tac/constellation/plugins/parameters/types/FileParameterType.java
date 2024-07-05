@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.plugins.parameters.types;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.io.File;
 import java.util.ArrayList;
@@ -87,7 +88,23 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
     public static PluginParameter<FileParameterValue> build(final String id, final FileParameterValue pv) {
         return new PluginParameter<>(pv, INSTANCE, id);
     }
-
+    
+    /**
+     * Construct a new {@link PluginParameter} of this type with initial value
+     * represented by the given {@link FileParameterValue}.
+     *
+     * @param id The String id of the parameter to construct.
+     * @param pv A {@link FileParameterValue} describing the initial value of
+     * @param filter the file extension to filter by
+     * the parameter being constructed.
+     * @return A {@link PluginParameter} of FileParameterType.
+     */
+    public static PluginParameter<FileParameterValue> build(final String id, final ExtensionFilter filter) {
+       final PluginParameter<FileParameterValue> p = new PluginParameter<>(new FileParameterValue(), INSTANCE, id);
+       setFileFilters(p, filter);
+       return p;
+    }
+    
     /**
      * Set the kind of file selection for the given parameter.
      *

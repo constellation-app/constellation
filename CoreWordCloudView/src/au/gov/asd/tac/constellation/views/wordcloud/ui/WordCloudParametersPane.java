@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.wordcloud.phraseanalysis.PhrasiphyContentParameters;
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import org.openide.util.HelpCtx;
 
 /**
@@ -100,8 +102,8 @@ public class WordCloudParametersPane extends TitledPane implements PluginParamet
         threshold.setStringValue(Integer.toString(phrasiphyContentParams.getThreshold()));
         IntegerParameterType.setMinimum(threshold, PhrasiphyContentParameters.THRESHOLD_MIN_VALUE);
         params.addParameter(threshold);
-
-        final PluginParameter<FileParameterValue> backgroundFile = FileParameterType.build(PhrasiphyContentParameters.BACKGROUND_PARAMETER_ID);
+        
+        final PluginParameter<FileParameterValue> backgroundFile = FileParameterType.build(PhrasiphyContentParameters.BACKGROUND_PARAMETER_ID, new FileChooser.ExtensionFilter("Text files", FileExtensionConstants.TEXT));
         backgroundFile.setName(PhrasiphyContentParameters.BACKGROUND_NAME);
         backgroundFile.setDescription(PhrasiphyContentParameters.BACKGROUND_DESCRIPTION);
         backgroundFile.setStringValue(EMPTY_STRING);
