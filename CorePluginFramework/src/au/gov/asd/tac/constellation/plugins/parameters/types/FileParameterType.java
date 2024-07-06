@@ -49,6 +49,11 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
     public static final String ID = "file";
 
     /**
+     * The property of this type referring to the file filters used
+     */
+    public static final String FILE_FILTER = "islabel";
+    
+    /**
      * Constructs a new instance of this type.
      * <p>
      * Note: This constructor should not be called directly; it is public for
@@ -121,7 +126,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
      * files should be filtered by extension.
      */
     public static void setFileFilters(final PluginParameter<FileParameterValue> parameter, final ExtensionFilter fileFilter) {
-        parameter.getParameterValue().setFilter(fileFilter);
+        parameter.setProperty(FILE_FILTER, fileFilter);
     }
 
     /**
@@ -134,7 +139,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
      * should be filtered by extension for the given parameter.
      */
     public static ExtensionFilter getFileFilters(final PluginParameter<FileParameterValue> parameter) {
-        return parameter.getParameterValue().getFilter();
+        return (ExtensionFilter) parameter.getProperty(FILE_FILTER);
     }
     
     /**
@@ -174,7 +179,6 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
 
         private final List<String> files;
         private FileInputKind kind;
-        private ExtensionFilter filter;
         private boolean acceptAllFileFilterUsed;
         
 
@@ -184,7 +188,6 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
         public FileParameterValue() {
             files = new ArrayList<>();
             kind = FileInputKind.OPEN_MULTIPLE; // backward-compatible default.
-            filter = null;
             acceptAllFileFilterUsed = false;
         }
 
@@ -199,7 +202,6 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
             this.files = new ArrayList<>();
             this.files.addAll(files);
             kind = FileInputKind.OPEN_MULTIPLE; // backward-compatible default.
-            filter = null;
             acceptAllFileFilterUsed = false;
         }
 
@@ -212,7 +214,6 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
         public FileParameterValue(final FileParameterValue fpv) {
             files = new ArrayList<>(fpv.files);
             kind = fpv.kind;
-            filter = fpv.filter;
             acceptAllFileFilterUsed = fpv.acceptAllFileFilterUsed;
         }
 
@@ -267,26 +268,6 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
          */
         public void setKind(final FileInputKind kind) {
             this.kind = kind;
-        }
-
-        /**
-         * Get the {@link ExtensionFilter}.
-         *
-         * @return An {@link ExtensionFilter} indicating the filtering of file
-         * selection.
-         */
-        public ExtensionFilter getFilter() {
-            return filter;
-        }
-
-        /**
-         * Set the {@link ExtensionFilter}.
-         *
-         * @param filter The {@link ExtensionFilter} indicating the filtering of
-         * file selection.
-         */
-        public void setFilter(final ExtensionFilter filter) {
-            this.filter = filter;
         }
         
         /**

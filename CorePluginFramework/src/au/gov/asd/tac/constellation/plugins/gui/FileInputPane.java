@@ -92,9 +92,11 @@ public final class FileInputPane extends ParameterInputPane<FileParameterValue, 
                         field.setText(param);
                     }
                 }
+                case PROPERTY -> {
+                    ((FileInput) field).setFileFilter(FileParameterType.getFileFilters(parameter));
+                }
                 case ENABLED -> updateFieldEnablement();
                 case VISIBLE -> updateFieldVisability();
-                default -> LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
             }
         });
     }
