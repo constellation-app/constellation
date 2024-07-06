@@ -140,6 +140,9 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
         
     private final int corner = 7;
     
+    private boolean isValid = true;
+    private boolean focused = false;
+    
     final Color fieldColor = Color.color(51/255D, 51/255D, 51/255D);
     final Color invalidColor = Color.color(238/255D, 66/255D, 49/255D);
 
@@ -337,19 +340,29 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
         });
     }
     
-    private void setValid(final boolean isValid) {
-        if (isValid){
-            getBackgroundShape().setFill(fieldColor);
-        } else {
-            getBackgroundShape().setFill(invalidColor);
+    /** 
+     * Set this field as valid or invalid. 
+     * 
+     * If the field is not in focus the background color will be updated by this method.   
+     * if the field is in focus, the background color change will be deferred to the serInFocus method();
+     * 
+     * @param fieldValidity 
+     */
+    private void setValid(final boolean fieldValidity) {
+        this.isValid = fieldValidity;
+        if (!this.focused){
+            this.updateFieldValidityVisuals(this.isValid);
         }
     }
     
     private void setInFocus(final boolean focused){
+        this.focused = focused;
         if (focused) {
             getForegroundShape().setStroke(Color.web("#1B92E3"));
+            this.updateFieldValidityVisuals(true);
         } else {
             getForegroundShape().setStroke(null);
+            this.updateFieldValidityVisuals(this.isValid);
         }
     }        
 
@@ -581,4 +594,18 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
         return interactableContent.getChildren().stream().anyMatch(node -> node instanceof InfoWindow);
     }
     // </editor-fold>
+
+    /**
+     * Responsible for updating the color of the background of an input field.
+     * Uses a boolean parameter to override the expression of validty in some cases. 
+     * Typically the isValid attribute will be passed in to ensure that the input field reflects
+     * the validity of its contents.
+     */
+    private void updateFieldValidityVisuals(final boolean valid) {
+        if (valid){
+            getBackgroundShape().setFill(fieldColor);
+        } else {
+            getBackgroundShape().setFill(invalidColor);
+        }
+    }
 }
