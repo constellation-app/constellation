@@ -122,11 +122,8 @@ public class ReplacePlugin extends SimpleEditPlugin {
                                 if (searchAllGraphs) {
                                     FindViewUtilities.searchAllGraphs(graph, zoomToSelection);
                                 }
-                                if (replaceNext && zoomToSelection) {
-                                    PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(GraphManager.getDefault().getActiveGraph());
-                                    return;
-                                } else if (replaceNext) {
-                                    PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeLater(GraphManager.getDefault().getActiveGraph());
+                                if (replaceNext) {
+                                    doZoomToSelection(zoomToSelection);
                                     return;
                                 }
                             } else {
@@ -139,11 +136,8 @@ public class ReplacePlugin extends SimpleEditPlugin {
                                     if (searchAllGraphs) {
                                         FindViewUtilities.searchAllGraphs(graph, zoomToSelection);
                                     }
-                                    if (replaceNext && zoomToSelection) {
-                                        PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(GraphManager.getDefault().getActiveGraph());
-                                        return;
-                                    } else  if (replaceNext) {
-                                        PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeLater(GraphManager.getDefault().getActiveGraph());
+                                    if (replaceNext) {
+                                        doZoomToSelection(zoomToSelection);
                                         return;
                                     }
                                 }
@@ -153,6 +147,15 @@ public class ReplacePlugin extends SimpleEditPlugin {
                 }
             }
         }  
+        doZoomToSelection(zoomToSelection);
+    }
+    
+    private void doZoomToSelection(final boolean zoomToSelection) {
+        if (zoomToSelection) {
+            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(GraphManager.getDefault().getActiveGraph());
+        } else {
+            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeLater(GraphManager.getDefault().getActiveGraph());
+        }
     }
 
     @Override
