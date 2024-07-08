@@ -122,7 +122,11 @@ public class ReplacePlugin extends SimpleEditPlugin {
                                 if (searchAllGraphs) {
                                     FindViewUtilities.searchAllGraphs(graph, zoomToSelection);
                                 }
-                                if (replaceNext) {
+                                if (replaceNext && zoomToSelection) {
+                                    PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(GraphManager.getDefault().getActiveGraph());
+                                    return;
+                                } else {
+                                    PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeLater(GraphManager.getDefault().getActiveGraph());
                                     return;
                                 }
                             } else {
@@ -135,7 +139,11 @@ public class ReplacePlugin extends SimpleEditPlugin {
                                     if (searchAllGraphs) {
                                         FindViewUtilities.searchAllGraphs(graph, zoomToSelection);
                                     }
-                                    if (replaceNext) {
+                                    if (replaceNext && zoomToSelection) {
+                                        PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(GraphManager.getDefault().getActiveGraph());
+                                        return;
+                                    } else {
+                                        PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeLater(GraphManager.getDefault().getActiveGraph());
                                         return;
                                     }
                                 }
@@ -145,11 +153,6 @@ public class ReplacePlugin extends SimpleEditPlugin {
                 }
             }
         }  
-        if (zoomToSelection) {
-            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(GraphManager.getDefault().getActiveGraph());
-        } else {
-            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeLater(GraphManager.getDefault().getActiveGraph());
-        }
     }
 
     @Override
