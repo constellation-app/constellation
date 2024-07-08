@@ -62,7 +62,10 @@ public class FindViewUtilities {
                             PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeLater(GraphManager.getDefault().getActiveGraph());
                         }
                         break;
-                    } catch (final InterruptedException | InvocationTargetException ex) {
+                    } catch (final InterruptedException ex) {
+                        LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                        Thread.currentThread().interrupt();
+                    } catch (final InvocationTargetException ex) {
                         LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                     }
                 }
