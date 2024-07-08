@@ -24,11 +24,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -58,7 +60,6 @@ import org.openide.awt.NotificationDisplayer;
 import org.openide.awt.StatusDisplayer;
 import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
-import static processing.core.PApplet.exec;
 
 /**
  * A Web Server.
@@ -125,7 +126,7 @@ public class WebServer {
                         null
                 );
             }
-            
+
             if (!SECRET.equals(header)) {
                 final String msg = String.format("REST API secret %s is invalid. HEADER NOT EQUAL", SECRET_HEADER);
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, msg);
@@ -157,7 +158,8 @@ public class WebServer {
 
     private static final String PACKAGE_SOURCE = Generator.getBaseDirectory() + "ext" + SEP + "package" + SEP + "package_dist";
     private static final String[] PACKAGE_INSTALL = {"pip", "install", "--upgrade", "constellation_client", "--no-index", "--find-links", "file:" + PACKAGE_SOURCE};
-    private static final String[] WINDOWS_COMMAND = {"cmd", "/C", "start", "/wait"};
+//    private static final String[] WINDOWS_COMMAND = {"cmd", "/C", "start", "/wait"};
+    private static final String[] WINDOWS_COMMAND = {"cmd.exe", "/C"};
     private static final String[] UNIX_COMMAND = {"&"};
 
     public static boolean isRunning() {
@@ -334,22 +336,45 @@ public class WebServer {
         }
     }
 
+    // Run pip install on package
     public static void installPythonPackage() {
-        // Run pip install on package
-        final Process p;
+        // Create the process buillder with required arguments
+        final ProcessBuilder pb;
+
         if (isWindows()) {
-            p = exec(ArrayUtils.addAll(WINDOWS_COMMAND, PACKAGE_INSTALL));
+            pb = new ProcessBuilder(ArrayUtils.addAll(WINDOWS_COMMAND, PACKAGE_INSTALL)).redirectErrorStream(true);
         } else {
-            p = exec(ArrayUtils.addAll(PACKAGE_INSTALL, UNIX_COMMAND));
+            pb = new ProcessBuilder(ArrayUtils.addAll(PACKAGE_INSTALL, UNIX_COMMAND)).redirectErrorStream(true);
         }
 
+        // Srart installed process
+        Process p = null;
         try {
+            LOGGER.log(Level.INFO, "PYTHON INSTALLTION PROCESS BEGUN");
+            p = pb.start();
+
+            String line;
+            BufferedReader inputBuffer = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            while ((line = inputBuffer.readLine()) != null) {
+                LOGGER.log(Level.INFO, "{0}", line);
+            }
+
             final int result = p.waitFor();
+            LOGGER.log(Level.INFO, "PYTHON INSTALLTION PROCESS FINISHED");
             LOGGER.log(Level.INFO, "Pip python process result: {0}", result);
+
         } catch (final InterruptedException ex) {
             LOGGER.log(Level.WARNING, "EXCEPTION CAUGHT in the python process:", ex);
-            p.destroy();
             Thread.currentThread().interrupt();
+
+        } catch (final IOException ex) {
+            LOGGER.log(Level.WARNING, "IO EXCEPTION CAUGHT reading python process:", ex);
+            Thread.currentThread().interrupt();
+
+        } finally {
+            if (p != null) {
+                p.destroy();
+            }
         }
     }
 
