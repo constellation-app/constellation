@@ -34,6 +34,8 @@ import javafx.scene.layout.Region;
 import javax.swing.Icon;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
+import java.awt.MouseInfo;
+import java.awt.Point;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
@@ -222,6 +224,9 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
         
         grid.add(shorcutWarningLabel, 0, 2, 3, 1);
         
+        Point mouseLocation = MouseInfo.getPointerInfo().getLocation();
+        setX(mouseLocation.getX() + 500 );
+        setY(mouseLocation.getY() + 500 );
         
         getDialogPane().setContent(grid);
 
