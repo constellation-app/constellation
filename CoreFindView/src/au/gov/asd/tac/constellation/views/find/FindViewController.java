@@ -263,9 +263,9 @@ public class FindViewController {
      * @param selectAll true if finding all graph elements
      * @param getNext true if finding the next element, false if the previous
      */
-    public void retriveMatchingElements(final boolean selectAll, final boolean getNext) {
+    public void retriveMatchingElements(final boolean selectAll, final boolean getNext, final boolean zoomToSelection) {
         final BasicFindPlugin basicFindPlugin = new BasicFindPlugin(currentBasicFindParameters, selectAll, getNext);
-        final BasicFindGraphSelectionPlugin findGraphSelectionPlugin = new BasicFindGraphSelectionPlugin(currentBasicFindParameters, selectAll);
+        final BasicFindGraphSelectionPlugin findGraphSelectionPlugin = new BasicFindGraphSelectionPlugin(currentBasicFindParameters, selectAll, zoomToSelection);
         setGraphsSearched(0);
 
         /**
@@ -331,8 +331,8 @@ public class FindViewController {
      * @param replaceAll true if replacing all matching elements
      * @param replaceNext true if replacing just the next element
      */
-    public void replaceMatchingElements(final boolean replaceAll, final boolean replaceNext) {
-        final ReplacePlugin basicReplacePlugin = new ReplacePlugin(currentBasicReplaceParameters, replaceAll, replaceNext);
+    public void replaceMatchingElements(final boolean replaceAll, final boolean replaceNext, final boolean zoomToSelection) {
+        final ReplacePlugin basicReplacePlugin = new ReplacePlugin(currentBasicReplaceParameters, replaceAll, replaceNext, zoomToSelection);
 
         /**
          * If search all graphs is true, execute the replace plugin on all open
@@ -354,9 +354,9 @@ public class FindViewController {
         }
     }
 
-    public void retrieveAdvancedSearch(final boolean findAll, final boolean findNext) {
+    public void retrieveAdvancedSearch(final boolean findAll, final boolean findNext, final boolean zoomToSelection) {
         final AdvancedSearchPlugin advancedSearchPlugin = new AdvancedSearchPlugin(currentAdvancedSearchParameters, findAll, findNext);
-        final AdvancedFindGraphSelectionPlugin findGraphSelectionPlugin = new AdvancedFindGraphSelectionPlugin(currentAdvancedSearchParameters, findAll, findNext);
+        final AdvancedFindGraphSelectionPlugin findGraphSelectionPlugin = new AdvancedFindGraphSelectionPlugin(currentAdvancedSearchParameters, findAll, findNext, zoomToSelection);
         setGraphsSearched(0);
 
         /**

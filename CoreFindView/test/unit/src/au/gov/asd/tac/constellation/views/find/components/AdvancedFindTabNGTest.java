@@ -371,7 +371,7 @@ public class AdvancedFindTabNGTest {
         //Create a controller mock and do nothing on retriveMatchingElements()
         FindViewController mockController = mock(FindViewController.class);
         mockController.init(spyTopComponent);
-        doNothing().when(mockController).retrieveAdvancedSearch(Mockito.eq(true), Mockito.eq(false));
+        doNothing().when(mockController).retrieveAdvancedSearch(Mockito.eq(true), Mockito.eq(false), Mockito.eq(false));
         Button mockButton = mock(Button.class);
 
         GraphElementType graphElementType = GraphElementType.VERTEX;
@@ -421,7 +421,7 @@ public class AdvancedFindTabNGTest {
 
             advancedFindMock.findAllAction();
             verify(advancedFindMock, times(1)).updateAdvancedSearchParameters(graphElementType);
-            verify(mockController, times(1)).retrieveAdvancedSearch(true, false);
+            verify(mockController, times(1)).retrieveAdvancedSearch(true, false, false);
         }
     }
 
@@ -437,7 +437,7 @@ public class AdvancedFindTabNGTest {
         //Create a controller mock and do nothing on retriveMatchingElements()
         FindViewController mockController = mock(FindViewController.class);
         mockController.init(spyTopComponent);
-        doNothing().when(mockController).retrieveAdvancedSearch(Mockito.eq(false), Mockito.eq(true));
+        doNothing().when(mockController).retrieveAdvancedSearch(Mockito.eq(false), Mockito.eq(true), Mockito.eq(false));
 
         GraphElementType graphElementType = GraphElementType.VERTEX;
 
@@ -485,7 +485,7 @@ public class AdvancedFindTabNGTest {
 
             advancedFindMock.findNextAction();
             verify(advancedFindMock, times(1)).updateAdvancedSearchParameters(graphElementType);
-            verify(mockController, times(1)).retrieveAdvancedSearch(false, true);
+            verify(mockController, times(1)).retrieveAdvancedSearch(false, true, false);
         }
     }
 
@@ -501,7 +501,7 @@ public class AdvancedFindTabNGTest {
         //Create a controller mock and do nothing on retriveMatchingElements()
         FindViewController mockController = mock(FindViewController.class);
         mockController.init(spyTopComponent);
-        doNothing().when(mockController).retrieveAdvancedSearch(Mockito.eq(false), Mockito.eq(false));
+        doNothing().when(mockController).retrieveAdvancedSearch(Mockito.eq(false), Mockito.eq(false), Mockito.eq(false));
 
         GraphElementType graphElementType = GraphElementType.VERTEX;
 
@@ -549,7 +549,7 @@ public class AdvancedFindTabNGTest {
 
             advancedFindMock.findPreviousAction();
             verify(advancedFindMock, times(1)).updateAdvancedSearchParameters(graphElementType);
-            verify(mockController, times(1)).retrieveAdvancedSearch(false, false);
+            verify(mockController, times(1)).retrieveAdvancedSearch(false, false, false);
         }
     }
 

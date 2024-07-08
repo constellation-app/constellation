@@ -47,8 +47,9 @@ public class ReplacePlugin extends SimpleEditPlugin {
     private final boolean replaceNext;
     private final boolean currentSelection;
     private final boolean searchAllGraphs;
+    private final boolean zoomToSelection;
 
-    public ReplacePlugin(final BasicFindReplaceParameters parameters, final boolean replaceAll, final boolean replaceNext) {
+    public ReplacePlugin(final BasicFindReplaceParameters parameters, final boolean replaceAll, final boolean replaceNext, final boolean zoomToSelection) {
         this.elementType = parameters.getGraphElement();
         this.selectedAttributes = parameters.getAttributeList();
         this.findString = parameters.getFindString();
@@ -58,6 +59,7 @@ public class ReplacePlugin extends SimpleEditPlugin {
         this.replaceNext = replaceNext;
         this.searchAllGraphs = parameters.isSearchAllGraphs();
         this.currentSelection = parameters.isCurrentSelection();
+        this.zoomToSelection = zoomToSelection;
     }
 
     @Override
@@ -115,7 +117,7 @@ public class ReplacePlugin extends SimpleEditPlugin {
                                 graph.setBooleanValue(selectedAttribute, currElement, true);
                                 // Swap to view the graph where the element is found
                                 if (searchAllGraphs) {
-                                    FindViewUtilities.searchAllGraphs(graph);
+                                    FindViewUtilities.searchAllGraphs(graph, zoomToSelection);
                                 }
                                 if (replaceNext) {
                                     return;
@@ -128,7 +130,7 @@ public class ReplacePlugin extends SimpleEditPlugin {
                                     graph.setStringValue(a.getId(), currElement, newValue);
                                     // Swap to view the graph where the element is found
                                     if (searchAllGraphs) {
-                                        FindViewUtilities.searchAllGraphs(graph);
+                                        FindViewUtilities.searchAllGraphs(graph, zoomToSelection);
                                     }
                                     if (replaceNext) {
                                         return;

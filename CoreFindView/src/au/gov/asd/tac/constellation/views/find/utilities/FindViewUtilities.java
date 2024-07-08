@@ -18,10 +18,15 @@ package au.gov.asd.tac.constellation.views.find.utilities;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.interaction.gui.VisualGraphTopComponent;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import java.awt.EventQueue;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
+import org.openide.util.Exceptions;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
@@ -41,16 +46,28 @@ public class FindViewUtilities {
      * 
      * @param graph
      */
-    public static void searchAllGraphs(final GraphWriteMethods graph) {
+    public static void searchAllGraphs(final GraphWriteMethods graph, final boolean zoomToSelection) {
         final Set<TopComponent> topComponents = WindowManager.getDefault().getRegistry().getOpened();
         if (topComponents != null) {
             for (final TopComponent component : topComponents) {
                 if (component instanceof VisualGraphTopComponent vgtComponent && vgtComponent.getGraphNode().getGraph().getId().equals(graph.getId())) {
-                    EventQueue.invokeLater(vgtComponent::requestActive);
-                    break;
+                    try {
+                        EventQueue.invokeAndWait(vgtComponent::requestActive);
+                        if (zoomToSelection) {
+                            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(GraphManager.getDefault().getActiveGraph());
+                        } else {
+                            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeLater(GraphManager.getDefault().getActiveGraph());
+                        }
+                        break;
+                    } catch (InterruptedException ex) {
+                        Exceptions.printStackTrace(ex);
+                    } catch (InvocationTargetException ex) {
+                        Exceptions.printStackTrace(ex);
+                    }
                 }
             }
         }
+
     }
 
     /**

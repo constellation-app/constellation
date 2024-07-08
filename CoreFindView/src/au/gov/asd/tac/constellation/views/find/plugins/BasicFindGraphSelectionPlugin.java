@@ -38,12 +38,14 @@ public class BasicFindGraphSelectionPlugin extends SimpleEditPlugin {
     private final boolean removeFromCurrentSelection;
     private final boolean selectAll;
     private final boolean searchAllGraphs;
+    private final boolean zoomToSelection;
 
-    public BasicFindGraphSelectionPlugin(final BasicFindReplaceParameters parameters, final boolean selectAll) {
+    public BasicFindGraphSelectionPlugin(final BasicFindReplaceParameters parameters, final boolean selectAll, final boolean zoomToSelection) {
         this.elementType = parameters.getGraphElement();
         this.selectAll = selectAll;
         this.removeFromCurrentSelection = parameters.isRemoveFrom();
         this.searchAllGraphs = parameters.isSearchAllGraphs();
+        this.zoomToSelection = zoomToSelection;
     }
 
     @Override
@@ -65,7 +67,7 @@ public class BasicFindGraphSelectionPlugin extends SimpleEditPlugin {
          
         // Swap to view the graph where the element is selected
         if (searchAllGraphs && !ActiveFindResultsList.getBasicResultsList().isEmpty()) {
-            FindViewUtilities.searchAllGraphs(graph);
+            FindViewUtilities.searchAllGraphs(graph, zoomToSelection);
         }
     }
 

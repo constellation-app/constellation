@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.find;
 
-import au.gov.asd.tac.constellation.views.find.FindViewTopComponent;
-import au.gov.asd.tac.constellation.views.find.FindViewController;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
@@ -308,7 +306,7 @@ public class FindViewControllerNGTest {
                 when(pluginExecution.executeLater(Mockito.eq(graph))).thenReturn(null);
                 mockedStaticPlugin.when(() -> PluginExecution.withPlugin(Mockito.any(Plugin.class))).thenReturn(pluginExecution);
 
-                instance.replaceMatchingElements(true, false);
+                instance.replaceMatchingElements(true, false, false);
                 verify(pluginExecution).executeLater(Mockito.eq(graph));
 
                 /**
@@ -321,7 +319,7 @@ public class FindViewControllerNGTest {
                 when(pluginExecution.executeLater(Mockito.any(Graph.class))).thenReturn(null);
                 mockedStaticPlugin.when(() -> PluginExecution.withPlugin(Mockito.any(Plugin.class))).thenReturn(pluginExecution);
 
-                instance.replaceMatchingElements(true, false);
+                instance.replaceMatchingElements(true, false, false);
                 verify(pluginExecution, times(2)).executeLater(Mockito.eq(graph));
                 verify(pluginExecution).executeLater(Mockito.eq(graph2));
             }

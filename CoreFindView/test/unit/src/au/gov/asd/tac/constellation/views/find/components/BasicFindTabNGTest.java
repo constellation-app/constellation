@@ -433,7 +433,7 @@ public class BasicFindTabNGTest {
         //Create a controller mock and do nothing on retriveMatchingElements()
         FindViewController mockController = mock(FindViewController.class);
         mockController.init(spyTopComponent);
-        doNothing().when(mockController).retriveMatchingElements(Mockito.eq(true), Mockito.eq(false));
+        doNothing().when(mockController).retriveMatchingElements(Mockito.eq(true), Mockito.eq(false), Mockito.eq(false));
         Button mockButton = mock(Button.class);
 
         /**
@@ -472,7 +472,7 @@ public class BasicFindTabNGTest {
 
             verify(basicFindMock, times(1)).saveSelected(Mockito.eq(GraphElementType.VERTEX));
             verify(basicFindMock, times(1)).updateBasicFindParamters();
-            verify(mockController, times(1)).retriveMatchingElements(true, false);
+            verify(mockController, times(1)).retriveMatchingElements(true, false, false);
         }
     }
 
@@ -488,7 +488,7 @@ public class BasicFindTabNGTest {
 
         FindViewController mockController = mock(FindViewController.class);
         mockController.init(spyTopComponent);
-        doNothing().when(mockController).retriveMatchingElements(Mockito.eq(false), Mockito.eq(true));
+        doNothing().when(mockController).retriveMatchingElements(Mockito.eq(false), Mockito.eq(true), Mockito.eq(false));
 
         BasicFindTab basicFindMock = mock(BasicFindTab.class);
 
@@ -514,7 +514,7 @@ public class BasicFindTabNGTest {
 
             verify(basicFindMock, times(1)).saveSelected(Mockito.eq(GraphElementType.VERTEX));
             verify(basicFindMock, times(1)).updateBasicFindParamters();
-            verify(mockController, times(1)).retriveMatchingElements(false, true);
+            verify(mockController, times(1)).retriveMatchingElements(false, true, false);
         }
     }
 
@@ -530,7 +530,7 @@ public class BasicFindTabNGTest {
 
         FindViewController mockController = mock(FindViewController.class);
         mockController.init(spyTopComponent);
-        doNothing().when(mockController).retriveMatchingElements(Mockito.eq(false), Mockito.eq(false));
+        doNothing().when(mockController).retriveMatchingElements(Mockito.eq(false), Mockito.eq(false), Mockito.eq(false));
 
         BasicFindTab basicFindMock = mock(BasicFindTab.class);
 
@@ -556,7 +556,7 @@ public class BasicFindTabNGTest {
 
             verify(basicFindMock, times(1)).saveSelected(Mockito.eq(GraphElementType.VERTEX));
             verify(basicFindMock, times(1)).updateBasicFindParamters();
-            verify(mockController, times(1)).retriveMatchingElements(false, false);
+            verify(mockController, times(1)).retriveMatchingElements(false, false, false);
         }
     }
 

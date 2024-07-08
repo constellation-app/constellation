@@ -23,11 +23,8 @@ import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.LongAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
-import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.IconAttributeDescription;
-import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.find.FindViewController;
@@ -496,13 +493,9 @@ public class AdvancedFindTab extends Tab {
     public void findAllAction() {
         if (!getCriteriaValues(getCorrespondingCriteriaList(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()))).isEmpty()) {
             updateAdvancedSearchParameters(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
-            FindViewController.getDefault().retrieveAdvancedSearch(true, false);
+            FindViewController.getDefault().retrieveAdvancedSearch(true, false, getZoomToSelection().isSelected());
             getDeleteResultsButton().setDisable(false);
-            if (getZoomToSelection().isSelected()) {
-                PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(GraphManager.getDefault().getActiveGraph());
-            } else {
-                PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeLater(GraphManager.getDefault().getActiveGraph());
-            }
+            
         }
     }
 
@@ -514,12 +507,7 @@ public class AdvancedFindTab extends Tab {
     public void findNextAction() {
         if (!getCriteriaValues(getCorrespondingCriteriaList(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()))).isEmpty()) {
             updateAdvancedSearchParameters(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
-            FindViewController.getDefault().retrieveAdvancedSearch(false, true);
-            if (getZoomToSelection().isSelected()) {
-                PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(GraphManager.getDefault().getActiveGraph());
-            } else {
-                PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeLater(GraphManager.getDefault().getActiveGraph());
-            }
+            FindViewController.getDefault().retrieveAdvancedSearch(false, true, getZoomToSelection().isSelected());
         }
     }
 
@@ -532,12 +520,7 @@ public class AdvancedFindTab extends Tab {
     public void findPreviousAction() {
         if (!getCriteriaValues(getCorrespondingCriteriaList(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()))).isEmpty()) {
             updateAdvancedSearchParameters(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
-            FindViewController.getDefault().retrieveAdvancedSearch(false, false);
-            if (getZoomToSelection().isSelected()) {
-                PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(GraphManager.getDefault().getActiveGraph());
-            } else {
-                PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeLater(GraphManager.getDefault().getActiveGraph());
-            }
+            FindViewController.getDefault().retrieveAdvancedSearch(false, false, getZoomToSelection().isSelected());
         }
     }
 

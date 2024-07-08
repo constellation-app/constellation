@@ -17,9 +17,6 @@ package au.gov.asd.tac.constellation.views.find.components;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.gui.MultiChoiceInputField;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
@@ -529,13 +526,8 @@ public class BasicFindTab extends Tab {
         if (!getFindTextField().getText().isEmpty()) {
             saveSelected(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
             updateBasicFindParamters();
-            FindViewController.getDefault().retriveMatchingElements(true, false);
+            FindViewController.getDefault().retriveMatchingElements(true, false, getZoomToSelection().isSelected());
             getDeleteResultsButton().setDisable(false);
-            if (getZoomToSelection().isSelected()) {
-                PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(GraphManager.getDefault().getActiveGraph());
-            } else {
-                PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeLater(GraphManager.getDefault().getActiveGraph());
-            }
         }
     }
 
@@ -550,12 +542,7 @@ public class BasicFindTab extends Tab {
         if (!getFindTextField().getText().isEmpty()) {
             saveSelected(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
             updateBasicFindParamters();
-            FindViewController.getDefault().retriveMatchingElements(false, true);
-            if (getZoomToSelection().isSelected()) {
-                PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(GraphManager.getDefault().getActiveGraph());
-            } else {
-                PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeLater(GraphManager.getDefault().getActiveGraph());
-            }
+            FindViewController.getDefault().retriveMatchingElements(false, true, getZoomToSelection().isSelected());
         }
     }
 
@@ -570,12 +557,7 @@ public class BasicFindTab extends Tab {
         if (!getFindTextField().getText().isEmpty()) {
             saveSelected(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
             updateBasicFindParamters();
-            FindViewController.getDefault().retriveMatchingElements(false, false);
-            if (getZoomToSelection().isSelected()) {
-                PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(GraphManager.getDefault().getActiveGraph());
-            } else {
-                PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeLater(GraphManager.getDefault().getActiveGraph());
-            }
+            FindViewController.getDefault().retriveMatchingElements(false, false, getZoomToSelection().isSelected());
         }
     }
 

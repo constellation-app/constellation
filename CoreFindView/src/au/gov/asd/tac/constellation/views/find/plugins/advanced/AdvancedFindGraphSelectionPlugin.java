@@ -40,12 +40,14 @@ public class AdvancedFindGraphSelectionPlugin extends SimpleEditPlugin {
     private final String postSearchAction;
     private static final String REPLACE = "Replace Selection";
     private static final String ALL_GRAPHS = "All Open Graphs";
+    private final boolean zoomToSelection;
 
-    public AdvancedFindGraphSelectionPlugin(final AdvancedSearchParameters parameters, final boolean selectAll, final boolean getNext) {
+    public AdvancedFindGraphSelectionPlugin(final AdvancedSearchParameters parameters, final boolean selectAll, final boolean getNext, final boolean zoomToSelection) {
         this.selectAll = selectAll;
         this.searchInLocation = parameters.getSearchInLocation();
         this.elementType = parameters.getGraphElementType();
         this.postSearchAction = parameters.getPostSearchAction();
+        this.zoomToSelection = zoomToSelection;
     }
 
     @Override
@@ -73,8 +75,10 @@ public class AdvancedFindGraphSelectionPlugin extends SimpleEditPlugin {
 
         // Swap to view the graph where the element is selected
         if (searchInLocation.equals(ALL_GRAPHS) && !ActiveFindResultsList.getAdvancedResultsList().isEmpty()) {
-            FindViewUtilities.searchAllGraphs(graph);
+            FindViewUtilities.searchAllGraphs(graph, zoomToSelection);
         }
+        
+        
     }
 
     @Override
