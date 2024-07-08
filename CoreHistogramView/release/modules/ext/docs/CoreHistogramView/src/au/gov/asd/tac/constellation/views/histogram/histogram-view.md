@@ -12,7 +12,7 @@
 <th>Constellation Action</th>
 <th>Keyboard Shortcut</th>
 <th>User Action</th>
-<th>Menu Icon</th>
+<th style="text-align: center;">Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -20,7 +20,7 @@
 <td>Open Histogram View</td>
 <td>Ctrl + Shift + H</td>
 <td>Views -&gt; Histogram</td>
-<td><img src="../ext/docs/CoreHistogramView/src/au/gov/asd/tac/constellation/views/histogram/resources/histogram.png" width="16" height="16" /></td>
+<td style="text-align: center;"><img src="../ext/docs/CoreHistogramView/src/au/gov/asd/tac/constellation/views/histogram/resources/histogram.png" alt="Histogram View Icon" /></td>
 </tr>
 </tbody>
 </table>

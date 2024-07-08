@@ -1,6 +1,12 @@
 # Attribute Editor
 
 <table class="table table-striped">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th>Constellation Action</th>
@@ -14,7 +20,7 @@
 <td>Open Attribute Editor</td>
 <td>Ctrl + Shift + E</td>
 <td>Views -&gt; Attribute Editor</td>
-<td style="text-align: center;"><img src="../ext/docs/CoreAttributeEditorView/src/au/gov/asd/tac/constellation/views/attributeeditor/resources/attribute_editor.png" width="16" height="16" alt="Attribute Editor Icon" /></td>
+<td style="text-align: center;"><img src="../ext/docs/CoreAttributeEditorView/src/au/gov/asd/tac/constellation/views/attributeeditor/resources/attribute_editor.png" alt="Attribute Editor Icon" /></td>
 </tr>
 </tbody>
 </table>

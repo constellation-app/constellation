@@ -6,12 +6,12 @@
         <tocitem text="Line" target="au.gov.asd.tac.constellation.plugins.arrangements.line"/>
         <tocitem text="Circle" target="au.gov.asd.tac.constellation.plugins.arrangements.circle"/>
         <tocitem text="Tree" target="au.gov.asd.tac.constellation.plugins.arrangements.tree"/>
+        <tocitem text="Proximity" target="au.gov.asd.tac.constellation.plugins.arrangements.proximity"/>
         <tocitem text="Hierarchy" target="au.gov.asd.tac.constellation.plugins.arrangements.hierarchy"/>
         <tocitem text="Node Attribute" target="au.gov.asd.tac.constellation.plugins.arrangements.nodeAttribute"/>
         <tocitem text="Scatter 3D" target="au.gov.asd.tac.constellation.plugins.arrangements.scatter3d"/>
         <tocitem text="Sphere" target="au.gov.asd.tac.constellation.plugins.arrangements.sphere"/>
         <tocitem text="Bubble Tree 3D" target="au.gov.asd.tac.constellation.plugins.arrangements.bubbleTree3d"/>
-        <tocitem text="Proximity" target="au.gov.asd.tac.constellation.plugins.arrangements.proximity"/>
         <tocitem text="Spectral 3D" target="au.gov.asd.tac.constellation.plugins.arrangements.spectral"/>
         <tocitem text="HDE 3D" target="au.gov.asd.tac.constellation.plugins.arrangements.hde"/>
         <tocitem text="Flatten Z-Field" target="au.gov.asd.tac.constellation.plugins.arrangements.flattenZField"/>

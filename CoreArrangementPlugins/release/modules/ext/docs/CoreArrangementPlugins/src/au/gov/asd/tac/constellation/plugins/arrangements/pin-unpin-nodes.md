@@ -1,6 +1,12 @@
 # Pin and Unpin Nodes
 
 <table class="table table-striped">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th>Constellation Action</th>
@@ -16,7 +22,6 @@
 <td>Arrange -&gt; Pin Vertex Positions</td>
 <td style="text-align: center;"><img src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/pin.png" alt="Pin Icon" /></td>
 </tr>
-
 <tr class="even">
 <td>Run Unpin Vertex Positions</td>
 <td></td>

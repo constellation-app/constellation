@@ -2,8 +2,20 @@
 <!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN" "http://java.sun.com/products/javahelp/toc_2_0.dtd">
 <toc version="2.0">
     <tocitem text="Import/Export">
-        <tocitem text="Import From File" target="au.gov.asd.tac.constellation.plugins.importexport.delimited.DelimitedImportPane"/>
-        <tocitem text="Import From Database" target="au.gov.asd.tac.constellation.plugins.importexport.jdbc.JDBCImportPane"/>
-        <tocitem text="Export From Constellation" target="au.gov.asd.tac.constellation.plugins.importexport.export"/>
+        <tocitem text="Import ">
+            <tocitem text="Import From File" target="au.gov.asd.tac.constellation.plugins.importexport.delimited.DelimitedImportPane"/>
+            <tocitem text="Import From Database" target="au.gov.asd.tac.constellation.plugins.importexport.jdbc.JDBCImportPane"/>
+        </tocitem>
+        <tocitem text="Export">
+            <tocitem text="Export From Constellation" target="au.gov.asd.tac.constellation.plugins.importexport.export"/>
+            <tocitem text="Export to Image" target="au.gov.asd.tac.constellation.plugins.importexport.geospatial.ExportToImagePlugin"/>
+            <tocitem text="Export to SVG" target="au.gov.asd.tac.constellation.plugins.importexport.svg.ExportToSVGPlugin"/>
+            <tocitem text="Export to Shapefile" target="au.gov.asd.tac.constellation.plugins.importexport.geospatial.ExportToShapefilePlugin"/>
+            <tocitem text="Export to KML" target="au.gov.asd.tac.constellation.plugins.importexport.geospatial.ExportToKmlPlugin"/>
+            <tocitem text="Export to GeoJson" target="au.gov.asd.tac.constellation.plugins.importexport.geospatial.ExportToGeoJsonPlugin"/>
+            <tocitem text="Export to GeoPackage" target="au.gov.asd.tac.constellation.plugins.importexport.geospatial.ExportToGeoPackagePlugin"/>
+            <tocitem text="Export to CSV" target="au.gov.asd.tac.constellation.plugins.importexport.svg.ExportToCSV"/>
+            <tocitem text="Export to XLSX" target="au.gov.asd.tac.constellation.plugins.importexport.svg.ExportToXLSX"/>
+        </tocitem>
     </tocitem>
 </toc>

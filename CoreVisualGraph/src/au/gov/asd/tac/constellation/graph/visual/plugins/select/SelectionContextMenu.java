@@ -40,6 +40,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class SelectionContextMenu implements ContextMenuProvider {
 
     private static final String SELECT_ALL = "Select All";
+    private static final String SELECT_VERTICES = "Select Nodes";
+    private static final String SELECT_TRANSACTIONS = "Select Transactions";
     private static final String DESELECT_ALL = "Deselect All";
     private static final String DESELECT_VERTICES = "Deselect Nodes";
     private static final String DESELECT_TRANSACTIONS = "Deselect Transactions";
@@ -51,6 +53,10 @@ public class SelectionContextMenu implements ContextMenuProvider {
 
     @StaticResource
     private static final String SELECT_ALL_ICON = "au/gov/asd/tac/constellation/graph/visual/plugins/select/resources/select_all.png";
+    @StaticResource
+    private static final String SELECT_VERTICES_ICON = "au/gov/asd/tac/constellation/graph/visual/plugins/select/resources/selectNodes.png";
+    @StaticResource
+    private static final String SELECT_TRANSACTIONS_ICON = "au/gov/asd/tac/constellation/graph/visual/plugins/select/resources/selectTransactions.png";
     @StaticResource
     private static final String DESELECT_ALL_ICON = "au/gov/asd/tac/constellation/graph/visual/plugins/select/resources/deselect_all.png";
     @StaticResource
@@ -76,7 +82,7 @@ public class SelectionContextMenu implements ContextMenuProvider {
     @Override
     public List<String> getItems(final GraphReadMethods graph, final GraphElementType elementType, final int entity) {
         if (elementType == GraphElementType.GRAPH) {
-            return Arrays.asList(SELECT_ALL, DESELECT_ALL, DESELECT_VERTICES, DESELECT_TRANSACTIONS, INVERT_SELECTION, SELECT_BLAZES, DESELECT_BLAZES, SELECT_DIMMED, SELECT_UNDIMMED);
+            return Arrays.asList(SELECT_ALL, SELECT_VERTICES, SELECT_TRANSACTIONS, DESELECT_ALL, DESELECT_VERTICES, DESELECT_TRANSACTIONS, INVERT_SELECTION, SELECT_BLAZES, DESELECT_BLAZES, SELECT_DIMMED, SELECT_UNDIMMED);
         } else {
             return Collections.emptyList();
         }
@@ -90,6 +96,10 @@ public class SelectionContextMenu implements ContextMenuProvider {
             }
             case SELECT_ALL ->
                 PluginExecution.withPlugin(VisualGraphPluginRegistry.SELECT_ALL).executeLater(graph);
+            case SELECT_VERTICES ->
+                PluginExecution.withPlugin(VisualGraphPluginRegistry.SELECT_VERTICES).executeLater(graph);
+            case SELECT_TRANSACTIONS ->
+                PluginExecution.withPlugin(VisualGraphPluginRegistry.SELECT_TRANSACTIONS).executeLater(graph);
             case DESELECT_ALL ->
                 PluginExecution.withPlugin(VisualGraphPluginRegistry.DESELECT_ALL).executeLater(graph);
             case DESELECT_VERTICES ->
@@ -125,6 +135,8 @@ public class SelectionContextMenu implements ContextMenuProvider {
         if (elementType == GraphElementType.GRAPH) {
             final List<ImageIcon> icons = new ArrayList<>();
             icons.add(ImageUtilities.loadImageIcon(SELECT_ALL_ICON, false));
+            icons.add(ImageUtilities.loadImageIcon(SELECT_VERTICES_ICON, false));
+            icons.add(ImageUtilities.loadImageIcon(SELECT_TRANSACTIONS_ICON, false));
             icons.add(ImageUtilities.loadImageIcon(DESELECT_ALL_ICON, false));
             icons.add(ImageUtilities.loadImageIcon(DESELECT_VERTICES_ICON, false));
             icons.add(ImageUtilities.loadImageIcon(DESELECT_TRANSACTIONS_ICON, false));

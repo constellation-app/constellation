@@ -1,7 +1,32 @@
 # Layer by Time
 
+<table class="table table-striped">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th style="text-align: center;">Menu Icon</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Run Layer by Time</td>
+<td></td>
+<td>Arrange -&gt; Layer by Time</td>
+<td style="text-align: center;"><img src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/layerByTime.png" alt="Layer by Time Icon" /></td>
+</tr>
+</tbody>
+</table>
+
 Layer by Time is an analytic using the Z-axis or 3D capability of
-CONSTELLATION. It uses a transaction attribute of type datetime to split
+Constellation. It uses a transaction attribute of type datetime to split
 the data in the graph into a series of time bins. Select a range using
 the First Datetime and Last Datetime selection boxes, or use the default
 values of the earliest and latest timestamps in the current graph data.

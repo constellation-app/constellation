@@ -20,9 +20,7 @@
 <td>Open Timeline</td>
 <td>Ctrl + Shift + T</td>
 <td>Views -&gt; Timeline</td>
-<td><div style="text-align: center">
-<img src="../ext/docs/CoreTimelineView/src/au/gov/asd/tac/constellation/views/timeline/resources/timeline.png" width="16" height="16" />
-</div></td>
+<td style="text-align: center"><img src="../ext/docs/CoreTimelineView/src/au/gov/asd/tac/constellation/views/timeline/resources/timeline.png" alt="Timeline Icon" /></td>
 </tr>
 </tbody>
 </table>
