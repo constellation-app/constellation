@@ -26,7 +26,8 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import java.awt.EventQueue;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
@@ -36,6 +37,8 @@ import org.openide.windows.WindowManager;
  * @author Delphinus8821
  */
 public class FindViewUtilities {
+
+    private static final Logger LOGGER = Logger.getLogger(FindViewUtilities.class.getName());
 
     private FindViewUtilities() {
         throw new IllegalStateException("Utility class");
@@ -59,10 +62,8 @@ public class FindViewUtilities {
                             PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeLater(GraphManager.getDefault().getActiveGraph());
                         }
                         break;
-                    } catch (InterruptedException ex) {
-                        Exceptions.printStackTrace(ex);
-                    } catch (InvocationTargetException ex) {
-                        Exceptions.printStackTrace(ex);
+                    } catch (final InterruptedException | InvocationTargetException ex) {
+                        LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                     }
                 }
             }
