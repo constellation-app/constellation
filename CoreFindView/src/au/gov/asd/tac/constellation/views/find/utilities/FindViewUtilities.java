@@ -48,6 +48,7 @@ public class FindViewUtilities {
      * Changes the active graph to the one where a graph element has been found and selected
      * 
      * @param graph
+     * @param zoomToSelection
      */
     public static void searchAllGraphs(final GraphWriteMethods graph, final boolean zoomToSelection) {
         final Set<TopComponent> topComponents = WindowManager.getDefault().getRegistry().getOpened();

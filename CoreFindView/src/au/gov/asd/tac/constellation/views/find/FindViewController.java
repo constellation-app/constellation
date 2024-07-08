@@ -262,6 +262,7 @@ public class FindViewController {
      *
      * @param selectAll true if finding all graph elements
      * @param getNext true if finding the next element, false if the previous
+     * @param zoomToSelection true if zoomToSelection checkbox is checked
      */
     public void retriveMatchingElements(final boolean selectAll, final boolean getNext, final boolean zoomToSelection) {
         final BasicFindPlugin basicFindPlugin = new BasicFindPlugin(currentBasicFindParameters, selectAll, getNext);
@@ -352,6 +353,11 @@ public class FindViewController {
                 PluginExecution.withPlugin(basicReplacePlugin).executeLater(graph);
             }
         }
+//        if (zoomToSelection) {
+//            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(GraphManager.getDefault().getActiveGraph());
+//        } else {
+//            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeLater(GraphManager.getDefault().getActiveGraph());
+//        }
     }
 
     public void retrieveAdvancedSearch(final boolean findAll, final boolean findNext, final boolean zoomToSelection) {
