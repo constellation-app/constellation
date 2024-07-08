@@ -125,7 +125,7 @@ public class ReplacePlugin extends SimpleEditPlugin {
                                 if (replaceNext && zoomToSelection) {
                                     PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(GraphManager.getDefault().getActiveGraph());
                                     return;
-                                } else {
+                                } else if (replaceNext) {
                                     PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeLater(GraphManager.getDefault().getActiveGraph());
                                     return;
                                 }
@@ -142,7 +142,7 @@ public class ReplacePlugin extends SimpleEditPlugin {
                                     if (replaceNext && zoomToSelection) {
                                         PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(GraphManager.getDefault().getActiveGraph());
                                         return;
-                                    } else {
+                                    } else  if (replaceNext) {
                                         PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeLater(GraphManager.getDefault().getActiveGraph());
                                         return;
                                     }
