@@ -31,6 +31,7 @@ import java.util.EnumSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.prefs.Preferences;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
@@ -59,7 +60,8 @@ public class WebServerNGTest {
     private static final String REST_FILE = "rest.json";
     private static final String TEST_TEXT = "TEST FILE";
     private static final Path NOTEBOOK_PATH = Path.of(NbPreferences.forModule(ApplicationPreferenceKeys.class).get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT));
-
+    private static final Preferences PREFS = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+    
     @BeforeMethod
     public void setUpMethod() throws Exception {
     }
