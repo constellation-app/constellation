@@ -62,15 +62,25 @@ public class WebServerNGTest {
     private static final String REST_FILE = "rest.json";
     private static final String TEST_TEXT = "TEST FILE";
 
-    public WebServerNGTest() {
-    }
+    // Mock of nbPreferences is created to make LookupPluginsTask behave correctly
+    private static MockedStatic<NbPreferences> nbPreferencesStatic;
+    private static final Preferences preferenceMock = mock(Preferences.class);
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        try {
+            nbPreferencesStatic = Mockito.mockStatic(NbPreferences.class, Mockito.CALLS_REAL_METHODS);
+            nbPreferencesStatic.when(() -> NbPreferences.forModule(ApplicationPreferenceKeys.class)).thenReturn(preferenceMock);
+
+            when(preferenceMock.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT)).thenReturn(false);
+        } catch (Exception e) {
+            System.out.println("Error creating static mock of NbPreferences");
+        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        nbPreferencesStatic.close();
     }
 
     @BeforeMethod
