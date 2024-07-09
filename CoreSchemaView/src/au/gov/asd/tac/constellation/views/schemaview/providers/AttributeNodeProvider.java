@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConceptUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import static au.gov.asd.tac.constellation.views.schemaview.providers.HelpIconProvider.populateHelpIconWithCaption;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -78,6 +79,7 @@ public class AttributeNodeProvider implements SchemaViewNodeProvider, GraphManag
     private final Label schemaLabel;
     private final TableView<AttributeEntry> table;
     private final ObservableList<AttributeEntry> attributeInfo;
+    private HBox schemaLabelAndHelp;
 
     public AttributeNodeProvider() {
         schemaLabel = new Label(SeparatorConstants.HYPHEN);
@@ -86,12 +88,15 @@ public class AttributeNodeProvider implements SchemaViewNodeProvider, GraphManag
         table = new TableView<>();
         table.setItems(attributeInfo);
         table.setPlaceholder(new Label("No schema available"));
+        schemaLabelAndHelp = new HBox();
     }
 
     @Override
     public void setContent(final Tab tab) {
         GraphManager.getDefault().addGraphManagerListener(this);
         newActiveGraph(GraphManager.getDefault().getActiveGraph());
+
+        populateHelpIconWithCaption(this.getClass().getName(), "Attributes", schemaLabel, schemaLabelAndHelp);
 
         final TextField filterText = new TextField();
         filterText.setPromptText("Filter attribute names");
@@ -113,7 +118,7 @@ public class AttributeNodeProvider implements SchemaViewNodeProvider, GraphManag
         headerBox.setAlignment(Pos.CENTER_LEFT);
         headerBox.setPadding(new Insets(5));
 
-        final VBox box = new VBox(schemaLabel, headerBox, table);
+        final VBox box = new VBox(schemaLabelAndHelp, headerBox, table);
         VBox.setVgrow(table, Priority.ALWAYS);
 
         Platform.runLater(() -> tab.setContent(box));

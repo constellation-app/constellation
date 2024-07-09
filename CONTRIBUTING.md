@@ -44,14 +44,11 @@ Repositories](#constellation-modules-and-repositories)
 
 This project and everyone participating in it is governed by the
 [Constellation Code of Conduct](CODE_OF_CONDUCT.md). By participating,
-you are expected to uphold this code. Please report unacceptable
-behaviour to <stellar.admin@csiro.au>.
+you are expected to uphold this code.
 
 ## I don’t want to read this whole thing I just have a question!
 
-To start, you can create an issue to ask your question and please be
-patient until we respond. In the near future, we will consider using a
-different forum like Stack Overflow, Slack, etc.
+Ask your question [here](https://gitter.im/constellation-app/community)
 
 ## What should I know before I get started?
 
@@ -70,7 +67,7 @@ Note that if some of the functionality you develop can be developed in a
 domain agnostic approach then you can contribute that functionality to
 Core and develop the domain specific functionality in your own module.
 Refer to the [developer
-guide](https://github.com/constellation-app/constellation-training/blob/master/CONSTELLATION%20Developer%20Guide.pdf)
+guide](https://github.com/constellation-app/constellation-training/blob/master/Developer%20Training/docs/Developer%20Guide.pdf)
 for information on how this is achieved.
 
 ### Constellation Modules and Repositories
@@ -331,7 +328,7 @@ change will have.
 
 If you want to read about developing modules for Constellation, please
 make sure you complete the self-paced [Constellation Developer
-Guide](https://github.com/constellation-app/constellation-training/blob/master/CONSTELLATION%20Developer%20Guide.pdf).
+Guide](https://github.com/constellation-app/constellation-training/blob/master/Developer%20Training/docs/Developer%20Guide.pdf).
 
 #### Local development
 

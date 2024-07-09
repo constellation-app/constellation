@@ -65,7 +65,7 @@ public class SVGAttributeConstantsNGTest {
         assertEquals(SVGAttributeConstants.DESTINATION_X.getName(),"x2");
         assertEquals(SVGAttributeConstants.DESTINATION_Y.getName(),"y2");
         assertEquals(SVGAttributeConstants.DASH_ARRAY.getName(),"stroke-dasharray");
-        assertEquals(SVGAttributeConstants.EXTERNAL_RESOURCE_REFERENCE.getName(),"xlink:href");
+        assertEquals(SVGAttributeConstants.EXTERNAL_RESOURCE_REFERENCE.getName(),"href");
         assertEquals(SVGAttributeConstants.FILL_COLOR.getName(),"fill");
         assertEquals(SVGAttributeConstants.FILTER.getName(),"filter");
         assertEquals(SVGAttributeConstants.FONT_SIZE.getName(),"font-size");

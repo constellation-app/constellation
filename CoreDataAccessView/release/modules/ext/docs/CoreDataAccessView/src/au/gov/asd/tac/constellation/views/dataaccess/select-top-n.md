@@ -2,6 +2,10 @@
 
 ## Select the top N nodes based on a type
 
+<br />
+<img src="../ext/docs/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/resources/SelectTopN.png" alt="Select Top N" />
+<br />
+
 Select the top N nodes based on a node/transaction type and the count of
 transactions between the nodes.
 

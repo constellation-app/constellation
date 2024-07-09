@@ -354,9 +354,13 @@ public final class RecentFiles {
     }
 
     public static FileObject convertPath2File(final String path) {
-        File f = new File(path);
-        f = FileUtil.normalizeFile(f);
-        return f == null ? null : FileUtil.toFileObject(f);
+        final File file = new File(path);
+        final File normalizedFile = FileUtil.normalizeFile(file);
+        if (normalizedFile == null || file.isDirectory()) {
+            return null;
+        } else {
+            return FileUtil.toFileObject(normalizedFile);
+        }
     }
 
     /**

@@ -25,6 +25,8 @@ import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.IconAttributeDescription;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.find.FindViewController;
 import au.gov.asd.tac.constellation.views.find.components.advanced.AdvancedCriteriaBorderPane;
 import au.gov.asd.tac.constellation.views.find.components.advanced.BooleanCriteriaPanel;
@@ -49,12 +51,14 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import org.openide.util.HelpCtx;
 
 /**
  * This class contains the UI tab for the Advanced Find Tab.
@@ -110,6 +114,8 @@ public class AdvancedFindTab extends Tab {
     private final Button findPrevButton = new Button("Find Previous");
     private final Button findAllButton = new Button("Find All");
     private final Button deleteResultsButton = new Button("Delete Results From Graph(s)");
+    private final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor()));
+    private final Button helpButton = new Button("", helpImage);
 
     public AdvancedFindTab(final FindViewTabs parentComponent) {
         this.parentComponent = parentComponent;
@@ -128,6 +134,8 @@ public class AdvancedFindTab extends Tab {
         findNextButton.setOnAction(action -> findNextAction());
         findPrevButton.setOnAction(action -> findPreviousAction());
         deleteResultsButton.setOnAction(action -> deleteResultsAction());
+        helpButton.setStyle("-fx-border-color: transparent; -fx-background-color: transparent; -fx-effect: null; ");
+        helpButton.setOnAction(event -> new HelpCtx("au.gov.asd.tac.constellation.views.find").display());
 
         matchesFoundPane.add(matchesFoundLabel, 0, 0);
         matchesFoundPane.add(matchesFoundCountLabel, 1, 0);
@@ -140,7 +148,6 @@ public class AdvancedFindTab extends Tab {
 
             matchesFoundCountLabel.setText("" + newValue);
         });
-
     }
 
     /**
@@ -208,7 +215,7 @@ public class AdvancedFindTab extends Tab {
     public void updateButtons() {
         //Clears all existing buttons, then adds this panes buttons
         buttonsHBox.getChildren().clear();
-        buttonsHBox.getChildren().addAll(deleteResultsButton, findAllButton, findPrevButton, findNextButton);
+        buttonsHBox.getChildren().addAll(helpButton, deleteResultsButton, findAllButton, findPrevButton, findNextButton);
 
         deleteResultsButton.setDisable(true);
 

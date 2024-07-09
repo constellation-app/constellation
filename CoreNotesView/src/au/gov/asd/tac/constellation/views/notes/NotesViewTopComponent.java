@@ -105,7 +105,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
             notesViewPane.getCreateNewNoteButton().setDisable(true);
         }
 
-        LOGGER.log(Level.SEVERE, "Handling new graph");
+        LOGGER.log(Level.FINE, "Handling new graph");
     }
 
 
@@ -116,7 +116,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
         }
         populateNotes();
 
-        LOGGER.log(Level.SEVERE, "Handling graph closed");
+        LOGGER.log(Level.FINE, "Handling graph closed");
     }
 
     @Override
@@ -127,7 +127,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
          */
         GraphReportManager.addGraphReportListener(this);
         UndoRedoReportManager.addUndoRedoReportListener(this);
-        LOGGER.log(Level.SEVERE, "Handling Component opened");
+        LOGGER.log(Level.FINE, "Handling Component opened");
     }
 
     private void populateNotes() {
@@ -143,7 +143,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
     @Override
     protected void handleComponentClosed() {
         super.handleComponentClosed();
-        LOGGER.log(Level.SEVERE, "Handling component closed");
+        LOGGER.log(Level.FINE, "Handling component closed");
     }
 
     @Override
