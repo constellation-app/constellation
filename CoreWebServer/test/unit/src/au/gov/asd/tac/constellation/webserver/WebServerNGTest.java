@@ -44,7 +44,9 @@ import org.openide.util.NbPreferences;
 import static org.testng.Assert.assertNotEquals;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -61,7 +63,20 @@ public class WebServerNGTest {
     private static final String TEST_TEXT = "TEST FILE";
     private static final Path NOTEBOOK_PATH = Path.of(NbPreferences.forModule(ApplicationPreferenceKeys.class).get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT));
     private static final Preferences PREFS = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-    
+
+    private static final boolean OLD_PREF_VALUE = PREFS.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT);
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        PREFS.putBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, false);
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+        // Set the parameter back to its old value
+        PREFS.putBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, OLD_PREF_VALUE);
+    }
+
     @BeforeMethod
     public void setUpMethod() throws Exception {
     }
