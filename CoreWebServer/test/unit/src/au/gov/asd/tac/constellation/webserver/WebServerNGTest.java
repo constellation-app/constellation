@@ -31,7 +31,7 @@ import java.util.EnumSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.prefs.Preferences;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -43,9 +43,7 @@ import org.openide.util.NbPreferences;
 import static org.testng.Assert.assertNotEquals;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -60,25 +58,7 @@ public class WebServerNGTest {
     private static final String IPYTHON = ".ipython";
     private static final String REST_FILE = "rest.json";
     private static final String TEST_TEXT = "TEST FILE";
-
     private static final Path NOTEBOOK_PATH = Path.of(NbPreferences.forModule(ApplicationPreferenceKeys.class).get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT));
-
-    // Mock of nbPreferences is created to make LookupPluginsTask behave correctly
-//    private static MockedStatic<NbPreferences> nbPreferencesStatic;
-//    private static final Preferences preferenceMock = mock(Preferences.class);
-    private static final Preferences PREFS = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-    private static final boolean OLD_PREF_VALUE = PREFS.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT);
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        PREFS.putBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, false);
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-        // Set the parameter back to its old value
-        PREFS.putBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, OLD_PREF_VALUE);
-    }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
@@ -136,6 +116,7 @@ public class WebServerNGTest {
             when(processMock.waitFor()).thenReturn(0); // Return success
         } catch (InterruptedException ex) {
         }
+        when(processMock.getInputStream()).thenReturn(null);
 
         // Make rest files first
         final String userDir = ApplicationPreferenceKeys.getUserDir(PREFS);
@@ -175,37 +156,60 @@ public class WebServerNGTest {
         // Check server NOT running
         assertEquals(false, WebServer.isRunning());
 
+        // Run start
+        int expResult = 1517;
+        int result = WebServer.start();
+
+        // Check port number
+        assertEquals(expResult, result);
+
+        // Check server running
+        assertEquals(true, WebServer.isRunning());
+
+        // Check file contents DO NOT match the initial values
+        try {
+            assertNotEquals(Files.readString(Path.of(userDir).resolve(REST_FILE), StandardCharsets.UTF_8), TEST_TEXT);
+            assertNotEquals(Files.readString(Path.of(scriptDir).resolve(REST_FILE), StandardCharsets.UTF_8), TEST_TEXT);
+        } catch (final IOException e) {
+            LOGGER.log(Level.WARNING, "Error matching files");
+        }
+
+    }
+
+    @Test
+    public void testInstallPythonPackage() {
+        System.out.println("testInstallPythonPackage");
+        // Mocks
+        Process processMock = mock(Process.class);
+        try {
+            when(processMock.waitFor()).thenReturn(0); // Return success
+        } catch (InterruptedException ex) {
+        }
+        when(processMock.getInputStream()).thenReturn(null);
+
         try (MockedStatic<Generator> generatorMock = Mockito.mockStatic(Generator.class); MockedConstruction<ProcessBuilder> processBuilderMock = Mockito.mockConstruction(ProcessBuilder.class, (mock, context)
                 -> {
+            // Return our mocked process when start is called
             when(mock.start()).thenReturn(processMock);
+            when(mock.redirectErrorStream(anyBoolean())).thenReturn(mock);
         })) {
             generatorMock.when(Generator::getBaseDirectory).thenReturn("");
+
+            //Run function
+            WebServer.installPythonPackage();
+
             // Return our mocked process when exec is called
             //execute.when(() -> PApplet.exec(any(String[].class))).thenReturn(processMock);
+            verify(processMock, times(1)).getInputStream();
 
-            // Run start
-            int expResult = 1517;
-            int result = WebServer.start();
-
-            // Check port number
-            assertEquals(expResult, result);
-
-            // Check server running
-            assertEquals(true, WebServer.isRunning());
+            // Assert processBuilder was made
+            assertEquals(processBuilderMock.constructed().size(), 1);
 
             // Assert cmd command was run
             //execute.verify(() -> PApplet.exec(any(String[].class)), times(1));
-//            try {
-//                verify(processMock, times(1)).waitFor();
-//            } catch (InterruptedException ex) {
-//            }
-
-            // Check file contents DO NOT match the initial values
             try {
-                assertNotEquals(Files.readString(Path.of(userDir).resolve(REST_FILE), StandardCharsets.UTF_8), TEST_TEXT);
-                assertNotEquals(Files.readString(Path.of(scriptDir).resolve(REST_FILE), StandardCharsets.UTF_8), TEST_TEXT);
-            } catch (final IOException e) {
-                LOGGER.log(Level.WARNING, "Error matching files");
+                verify(processMock, times(1)).waitFor();
+            } catch (InterruptedException ex) {
             }
         }
     }
@@ -248,6 +252,25 @@ public class WebServerNGTest {
 
             pathsStaticMock.when(() -> Paths.get(Mockito.anyString())).thenReturn(testFilePath);
             WebServer.downloadPythonClient();
+            assertTrue(Files.exists(filePath));
+        }
+    }
+
+    /**
+     * Test of downloadPythonClient method, of class WebServer.
+     */
+    @Test
+    public void testDownloadPythonClientNotebookDir() {
+        System.out.println("DownloadPythonClientNotebookDir");
+        final String notebookDir = WebServer.getNotebookDir();
+        final Path filePath = Path.of(notebookDir).resolve(WebServer.CONSTELLATION_CLIENT);
+
+        final Path testFilePath = createTestFile();
+
+        try (MockedStatic<Paths> pathsStaticMock = Mockito.mockStatic(Paths.class)) {
+
+            pathsStaticMock.when(() -> Paths.get(Mockito.anyString())).thenReturn(testFilePath);
+            WebServer.downloadPythonClientNotebookDir();
             assertTrue(Files.exists(filePath));
         }
     }

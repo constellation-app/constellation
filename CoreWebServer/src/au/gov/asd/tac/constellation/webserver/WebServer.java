@@ -285,7 +285,7 @@ public class WebServer {
      * <p>
      * The download is done only if the package installation fails
      */
-    private static void downloadPythonClientNotebookDir() {
+    public static void downloadPythonClientNotebookDir() {
         downloadPythonClientToDir(new File(getNotebookDir()));
     }
 
@@ -323,7 +323,6 @@ public class WebServer {
     public static void installPythonPackage() {
         // Create the process buillder with required arguments
         final ProcessBuilder pb;
-
         if (isWindows()) {
             pb = new ProcessBuilder(ArrayUtils.addAll(WINDOWS_COMMAND, PACKAGE_INSTALL)).redirectErrorStream(true);
         } else {
@@ -336,10 +335,13 @@ public class WebServer {
             LOGGER.log(Level.INFO, "Python package installation begun...");
             p = pb.start();
 
-            String line;
-            BufferedReader inputBuffer = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            while ((line = inputBuffer.readLine()) != null) {
-                LOGGER.log(Level.INFO, "{0}", line);
+            // If inputStream available, log output
+            if (p.getInputStream() != null) {
+                String line;
+                BufferedReader inputBuffer = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                while ((line = inputBuffer.readLine()) != null) {
+                    LOGGER.log(Level.INFO, "{0}", line);
+                }
             }
 
             final int result = p.waitFor();
