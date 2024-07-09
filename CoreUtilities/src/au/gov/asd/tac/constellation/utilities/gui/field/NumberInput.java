@@ -223,7 +223,7 @@ public final class NumberInput<C extends Number> extends ConstellationInput<Numb
     }
     
     @Override
-    public boolean isValid() {
+    public boolean isValidContent() {
         try{
             final Number value = this.getNumber();
 

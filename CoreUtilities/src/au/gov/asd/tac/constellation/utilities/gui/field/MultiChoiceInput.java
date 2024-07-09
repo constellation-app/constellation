@@ -171,7 +171,7 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
     }
     
     @Override
-    public boolean isValid() {
+    public boolean isValidContent() {
         if (getText().isBlank()){
             return true;
         } else {
@@ -275,7 +275,7 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
                 }
             }
             
-            final ConstellationInputFieldListener<List<C>> cl = (final List<C> newValue) -> {
+            final ConstellationInputListener<List<C>> cl = (final List<C> newValue) -> {
                 if (newValue != null) {
                     final List<String> stringrep = newValue.stream().map(Object::toString).toList();
                     for (CheckBox box : boxes){

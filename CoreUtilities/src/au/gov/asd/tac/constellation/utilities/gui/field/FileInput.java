@@ -166,7 +166,7 @@ public final class FileInput extends ConstellationInput<List<File>> implements R
     }    
     
     @Override
-    public boolean isValid(){
+    public boolean isValidContent(){
         return true;
     }
     // </editor-fold> 

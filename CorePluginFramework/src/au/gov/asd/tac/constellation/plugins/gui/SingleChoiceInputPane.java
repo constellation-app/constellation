@@ -23,12 +23,11 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParamet
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.utilities.gui.field.SingleChoiceInput;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.ChoiceType;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldListener;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputListener;
 
 /**
  * A drop-down combo box which is the GUI element corresponding to a
@@ -53,14 +52,14 @@ public final class SingleChoiceInputPane extends ParameterInputPane<SingleChoice
         
         final SingleChoiceParameterType.SingleChoiceParameterValue pv = parameter.getParameterValue();
 
-        ((SingleChoiceInput) field).setOptions(pv.getOptionsData());
-        ((SingleChoiceInput) field).setIcons(pv.getIcons()); 
+        ((SingleChoiceInput) input).setOptions(pv.getOptionsData());
+        ((SingleChoiceInput) input).setIcons(pv.getIcons()); 
         setFieldValue(pv.getChoiceData());
     }
 
     @Override
-    public ConstellationInputFieldListener getFieldChangeListener(PluginParameter<SingleChoiceParameterValue> parameter) {
-        return (ConstellationInputFieldListener<ParameterValue>) (ParameterValue newValue) -> {
+    public ConstellationInputListener getFieldChangeListener(PluginParameter<SingleChoiceParameterValue> parameter) {
+        return (ConstellationInputListener<ParameterValue>) (ParameterValue newValue) -> {
             if (newValue != null) {
                 SingleChoiceParameterType.setChoiceData(parameter, newValue);
             }
@@ -86,8 +85,8 @@ public final class SingleChoiceInputPane extends ParameterInputPane<SingleChoice
 
                         // Update the Pane if the Optons have changed
                         List<ParameterValue> paramOptions = scParameterValue.getOptionsData();
-                        if (!((SingleChoiceInput) field).getOptions().equals(paramOptions)){
-                            ((SingleChoiceInput) field).setOptions(paramOptions);
+                        if (!((SingleChoiceInput) input).getOptions().equals(paramOptions)){
+                            ((SingleChoiceInput) input).setOptions(paramOptions);
 
                             // Only keep the value if it's in the new choices.
                             if (paramOptions.contains(scParameterValue.getChoiceData())) {

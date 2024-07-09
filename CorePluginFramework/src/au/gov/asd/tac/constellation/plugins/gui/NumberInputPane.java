@@ -22,11 +22,11 @@ import static au.gov.asd.tac.constellation.plugins.parameters.ParameterChange.VI
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterListener;
 import au.gov.asd.tac.constellation.plugins.parameters.types.NumberParameterValue;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldListener;
 import au.gov.asd.tac.constellation.utilities.gui.field.NumberInput;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputListener;
 
 /**
  * A NumberSpinner allowing numeric entries, which is the GUI element
@@ -61,8 +61,8 @@ public class NumberInputPane<C extends Number> extends ParameterInputPane<Number
     }
 
     @Override
-    public ConstellationInputFieldListener getFieldChangeListener(PluginParameter<NumberParameterValue> parameter) {
-        return (ConstellationInputFieldListener<Number>) (Number newValue) -> {
+    public ConstellationInputListener getFieldChangeListener(PluginParameter<NumberParameterValue> parameter) {
+        return (ConstellationInputListener<Number>) (Number newValue) -> {
             if (newValue != null) {
                 parameter.setNumberValue(newValue);
             }

@@ -63,7 +63,7 @@ public final class PasswordInput extends ConstellationInput<String> implements R
      * @return 
      */
     @Override
-    public boolean isValid(){
+    public boolean isValidContent(){
         return true;
     }
     // </editor-fold> 

@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReportFilter;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldListener;
 import au.gov.asd.tac.constellation.utilities.gui.field.MultiChoiceInput;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
@@ -48,13 +47,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbPreferences;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputListener;
 
 /**
  * A PluginReporterPane provides a UI where all PluginReports for a single graph are displayed.
  *
  * @author sirius
  */
-public class PluginReporterPane extends BorderPane implements ConstellationInputFieldListener<List<String>> {
+public class PluginReporterPane extends BorderPane implements ConstellationInputListener<List<String>> {
 
     private static final String FILTERED_TAGS_KEY = "filteredTags";
 

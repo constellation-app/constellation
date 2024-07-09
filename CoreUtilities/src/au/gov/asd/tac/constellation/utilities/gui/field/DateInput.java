@@ -143,7 +143,7 @@ public final class DateInput extends ConstellationInput<LocalDate> implements Ri
     }
     
     @Override
-    public boolean isValid(){
+    public boolean isValidContent(){
         try{
             converter.fromString(getText());
             return true;

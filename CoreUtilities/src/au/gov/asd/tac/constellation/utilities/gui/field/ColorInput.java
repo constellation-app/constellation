@@ -208,7 +208,7 @@ public final class ColorInput extends ConstellationInput<ConstellationColor> imp
     }    
     
     @Override
-    public boolean isValid(){
+    public boolean isValidContent(){
         final String value = this.getText();
         if (value.isBlank() || getColor(value) != null){
             updateMode(value);

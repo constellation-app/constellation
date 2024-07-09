@@ -19,7 +19,7 @@ package au.gov.asd.tac.constellation.utilities.gui.field;
  *
  * @author capricornunicorn123
  */
-public interface ConstellationInputFieldListener<T>{
+public interface ConstellationInputListener<T>{
     
     /**
      * Called when the value of a {@link ConstellationInputFiled} changes.

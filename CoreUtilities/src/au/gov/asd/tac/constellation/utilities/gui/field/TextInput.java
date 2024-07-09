@@ -66,7 +66,7 @@ public final class TextInput extends ConstellationInput<String> implements Recen
     }    
     
     @Override
-    public boolean isValid(){
+    public boolean isValidContent(){
         return true;
     }
     // </editor-fold> 

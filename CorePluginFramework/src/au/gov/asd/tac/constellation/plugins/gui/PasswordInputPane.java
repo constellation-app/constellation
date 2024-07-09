@@ -22,11 +22,11 @@ import static au.gov.asd.tac.constellation.plugins.parameters.ParameterChange.VI
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterListener;
 import au.gov.asd.tac.constellation.plugins.parameters.types.PasswordParameterValue;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldListener;
 import au.gov.asd.tac.constellation.utilities.gui.field.PasswordInput;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputListener;
 
 /**
  * A text box allowing entry of passwords corresponding to a {@link PluginParameter} of
@@ -51,10 +51,10 @@ public class PasswordInputPane extends ParameterInputPane<PasswordParameterValue
     }
 
     @Override
-    public ConstellationInputFieldListener getFieldChangeListener(PluginParameter parameter) {
-        return (ConstellationInputFieldListener<String>) (String newValue) -> {
+    public ConstellationInputListener getFieldChangeListener(PluginParameter parameter) {
+        return (ConstellationInputListener<String>) (String newValue) -> {
             if (newValue != null) {
-                parameter.setStringValue(field.getText());
+                parameter.setStringValue(input.getText());
             }
         };
     }
@@ -68,8 +68,8 @@ public class PasswordInputPane extends ParameterInputPane<PasswordParameterValue
                     // Setting the text changes the cursor position, which makes it look like text is
                     // being entered right-to-left.
                     final String param = pluginParameter.getStringValue();
-                    if (!field.getText().equals(param)) {
-                        field.setText(param != null ? param : "");
+                    if (!input.getText().equals(param)) {
+                        input.setText(param != null ? param : "");
                     }
                 }
                 case ENABLED -> updateFieldEnablement();

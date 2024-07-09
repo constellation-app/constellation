@@ -25,12 +25,11 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
 import au.gov.asd.tac.constellation.utilities.gui.field.FileInput;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.TextType;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldListener;
 import java.io.File;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputListener;
 
 
 /**
@@ -67,16 +66,16 @@ public final class FileInputPane extends ParameterInputPane<FileParameterValue, 
 
         final FileParameterType.FileParameterValue pv = parameter.getParameterValue();
         
-        ((FileInput) field).setFileFilter(FileParameterType.getFileFilters(parameter));
-        ((FileInput) field).setAcceptAll(FileParameterType.isAcceptAllFileFilterUsed(parameter));
+        ((FileInput) input).setFileFilter(FileParameterType.getFileFilters(parameter));
+        ((FileInput) input).setAcceptAll(FileParameterType.isAcceptAllFileFilterUsed(parameter));
         
         setFieldValue(pv.get());
     }
 
     @Override
-    public ConstellationInputFieldListener getFieldChangeListener(PluginParameter<FileParameterValue> parameter) {
-        return (ConstellationInputFieldListener<List<File>>) (List<File> newValue) -> {
-            parameter.setStringValue(field.getText());
+    public ConstellationInputListener getFieldChangeListener(PluginParameter<FileParameterValue> parameter) {
+        return (ConstellationInputListener<List<File>>) (List<File> newValue) -> {
+            parameter.setStringValue(input.getText());
         };
     }
 
@@ -86,14 +85,14 @@ public final class FileInputPane extends ParameterInputPane<FileParameterValue, 
             switch (change) {
                 case VALUE -> {
 
-                    // Do not retrigger the fieled listner if this event was triggered by the field listner.
+                    // Do not retrigger the fieled listner if this event was triggered by the input listner.
                     final String param = pluginParameter.getStringValue();
-                    if (!field.getText().equals(param)) {
-                        field.setText(param);
+                    if (!input.getText().equals(param)) {
+                        input.setText(param);
                     }
                 }
                 case PROPERTY -> {
-                    ((FileInput) field).setFileFilter(FileParameterType.getFileFilters(parameter));
+                    ((FileInput) input).setFileFilter(FileParameterType.getFileFilters(parameter));
                 }
                 case ENABLED -> updateFieldEnablement();
                 case VISIBLE -> updateFieldVisability();

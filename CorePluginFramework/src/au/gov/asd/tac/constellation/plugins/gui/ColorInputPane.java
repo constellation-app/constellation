@@ -21,10 +21,10 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterListener;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType.ColorParameterValue;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.gui.field.ColorInput;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputListener;
 
 /**
  * A color picker which is the GUI element corresponding to a
@@ -50,8 +50,8 @@ public final class ColorInputPane extends ParameterInputPane<ColorParameterValue
     }
 
     @Override
-    public final ConstellationInputFieldListener getFieldChangeListener(PluginParameter<ColorParameterValue> parameter) {
-        return (ConstellationInputFieldListener<ConstellationColor>) (ConstellationColor newValue) -> {
+    public final ConstellationInputListener getFieldChangeListener(PluginParameter<ColorParameterValue> parameter) {
+        return (ConstellationInputListener<ConstellationColor>) (ConstellationColor newValue) -> {
             parameter.setColorValue(newValue);
         };
     }
@@ -64,9 +64,9 @@ public final class ColorInputPane extends ParameterInputPane<ColorParameterValue
                     case VALUE -> {
                         // Don't change the value if it isn't necessary.
                         final ConstellationColor param = parameter.getColorValue();
-                        if (getField().isValid()){
-                            if (param != null && !param.equals(getField().getValue())) {
-                                getField().setValue(param);
+                        if (getInputReference().isValid()){
+                            if (param != null && !param.equals(getInputReference().getValue())) {
+                                getInputReference().setValue(param);
                             }
                         }
                     }

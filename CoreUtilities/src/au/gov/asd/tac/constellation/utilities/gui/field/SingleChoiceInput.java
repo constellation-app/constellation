@@ -159,7 +159,7 @@ public final class SingleChoiceInput<C extends Object> extends ChoiceInputField<
     }
     
     @Override
-    public boolean isValid() {
+    public boolean isValidContent() {
         if (getText().isBlank()){
             return true;
         } else {
@@ -299,7 +299,7 @@ public final class SingleChoiceInput<C extends Object> extends ChoiceInputField<
                 }
             }
             
-            final ConstellationInputFieldListener<List<C>> cl = (final List<C> newValue) -> {
+            final ConstellationInputListener<List<C>> cl = (final List<C> newValue) -> {
                 if (newValue != null) {
                     final List<String> stringrep = newValue.stream().map(Object::toString).toList();
                     for (CheckBox box : boxes){

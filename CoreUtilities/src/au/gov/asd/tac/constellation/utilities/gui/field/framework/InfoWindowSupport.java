@@ -16,13 +16,13 @@
 package au.gov.asd.tac.constellation.utilities.gui.field.framework;
 
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInput;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldListener;
 import java.io.Serializable;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputListener;
 
 /**
  * An Interface for {@link ConstellationInput} extensions.
@@ -34,7 +34,7 @@ public interface InfoWindowSupport{
     
     public abstract InfoWindow getInfoWindow();
     
-    public abstract class InfoWindow extends StackPane implements ConstellationInputFieldListener<Serializable> {
+    public abstract class InfoWindow extends StackPane implements ConstellationInputListener<Serializable> {
         public final ConstellationInput parent;
 
         public InfoWindow(ConstellationInput parent){

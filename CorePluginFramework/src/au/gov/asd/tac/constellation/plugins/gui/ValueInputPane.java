@@ -23,11 +23,11 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterListener;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.TextType;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputFieldListener;
 import au.gov.asd.tac.constellation.utilities.gui.field.TextInput;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputListener;
 
 /**
  * A text box allowing entry of single line text, multiple line text
@@ -70,8 +70,8 @@ public class ValueInputPane extends ParameterInputPane<StringParameterValue, Str
         }
 
     @Override
-    public ConstellationInputFieldListener getFieldChangeListener(PluginParameter<StringParameterValue> parameter) {
-        return (ConstellationInputFieldListener<String>) (String newValue) -> {
+    public ConstellationInputListener getFieldChangeListener(PluginParameter<StringParameterValue> parameter) {
+        return (ConstellationInputListener<String>) (String newValue) -> {
             if (newValue != null) {
                 parameter.setStringValue(getFieldValue());
             }

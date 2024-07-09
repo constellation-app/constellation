@@ -44,6 +44,7 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.AutoCompleteSu
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputDropDown;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.InfoWindowSupport;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.InfoWindowSupport.InfoWindow;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.InputValidator;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.LeftButtonSupport;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.LeftButtonSupport.LeftButton;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport;
@@ -136,7 +137,8 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
     
     private final ConstellationTextArea textArea;
     
-    protected final List<ConstellationInputFieldListener> InputFieldListeners = new ArrayList<>();
+    protected final List<ConstellationInputListener> InputFieldListeners = new ArrayList<>();
+    private final List<InputValidator> validators = new ArrayList<>();
         
     private final int corner = 7;
     
@@ -340,29 +342,24 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
         });
     }
     
-    /** 
-     * Set this field as valid or invalid. 
-     * 
-     * If the field is not in focus the background color will be updated by this method.   
-     * if the field is in focus, the background color change will be deferred to the serInFocus method();
-     * 
-     * @param fieldValidity 
+    /**
+     * Requests that this InputField be in focus. 
+     * This does not modify the actual java fx-focus properties, 
+     * it simply gives the visual and logical appearance of being focused from
+     * the perspective of the custom ConstellationInput. classes and methods.
+     * If the requested focus state is the same as the current focus state, nothing happens.
+     * @param focused 
      */
-    private void setValid(final boolean fieldValidity) {
-        this.isValid = fieldValidity;
-        if (!this.focused){
-            this.updateFieldValidityVisuals(this.isValid);
-        }
-    }
-    
-    private void setInFocus(final boolean focused){
-        this.focused = focused;
-        if (focused) {
-            getForegroundShape().setStroke(Color.web("#1B92E3"));
-            this.updateFieldValidityVisuals(true);
-        } else {
-            getForegroundShape().setStroke(null);
-            this.updateFieldValidityVisuals(this.isValid);
+    private void ensureInFocus(final boolean focused){
+        if (this.focused != focused){
+            if (focused) {
+                getForegroundShape().setStroke(Color.web("#1B92E3"));
+                this.updateFieldValidityVisuals(true);
+            } else {
+                getForegroundShape().setStroke(null);
+                this.updateFieldValidityVisuals(this.isValid);
+            }
+            this.focused = focused;
         }
     }        
 
@@ -380,7 +377,7 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
     }
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="ObservableValue and ConstellationInputFieldListener Interface Support">
+    // <editor-fold defaultstate="collapsed" desc="ObservableValue and ConstellationInputListener Interface Support">
     /**
      * This method manages the handling of changes to the TextProperty and FocusedProperty of the {@link TextInputControl} used
      * by the {@link ConstellationTextArea}.
@@ -401,36 +398,36 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
         
         //Boolean Changes are changs to the focused property of the ConstellationTextArea
         if (newValue instanceof Boolean focused){
-            this.setInFocus(focused);
+            this.ensureInFocus(focused);
         }
     }
 
     /**
-     * Notifies any {@link ConstellationInputFieldListener} listening to this input.
+     * Notifies any {@link ConstellationInputListener} listening to this input.
      * 
      * @param newValue 
      */
     public final void notifyListeners(final T newValue){
-        for (ConstellationInputFieldListener listener : InputFieldListeners){
+        for (ConstellationInputListener listener : InputFieldListeners){
             listener.changed(newValue);
         }
     }
     
     /**
-     * Registers a {@link ConstellationInputFieldListener} as a listener of this input.
+     * Registers a {@link ConstellationInputListener} as a listener of this input.
      * 
      * @param listener
      */
-    public final void addListener(final ConstellationInputFieldListener listener) {
+    public final void addListener(final ConstellationInputListener listener) {
         this.InputFieldListeners.add(listener);
     }
 
     /**
-     * Removes a {@link ConstellationInputFieldListener} as a listener of this input.
+     * Removes a {@link ConstellationInputListener} as a listener of this input.
      * 
      * @param listener
      */
-    public final void removeListener(final ConstellationInputFieldListener listener) {
+    public final void removeListener(final ConstellationInputListener listener) {
         this.InputFieldListeners.remove(listener);
     }
     // </editor-fold>   
@@ -525,10 +522,59 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
     
     /**
      * Determine if the provided text is a valid value for the input field.
+     * Validity is determined by the conditions of this inputField and the registeredInputValidators
      * 
      * @return 
      */
-    public abstract boolean isValid();
+    public boolean isValid(){
+        for (InputValidator validator : this.validators){
+            if (null != validator.validateString(this.getText())){
+                return false;
+            }
+        }
+        return isValidContent();
+    }
+    
+    /**
+     * Determine if the provided text is a valid value for the input field.
+     * 
+     * @return 
+     */
+    public abstract boolean isValidContent();
+    
+    /** 
+     * Set this field as valid or invalid. 
+     * 
+     * If the field is not in focus the background color will be updated by this method.   
+     * if the field is in focus, the background color change will be deferred to the serInFocus method();
+     * 
+     * @param fieldValidity 
+     */
+    private void setValid(final boolean fieldValidity) {
+        this.isValid = fieldValidity;
+        if (!this.focused){
+            this.updateFieldValidityVisuals(this.isValid);
+        }
+    }
+    
+    /**
+     * Responsible for updating the color of the background of an input field.
+     * Uses a boolean parameter to override the expression of validty in some cases. 
+     * Typically the isValid attribute will be passed in to ensure that the input field reflects
+     * the validity of its contents.
+     */
+    private void updateFieldValidityVisuals(final boolean valid) {
+        if (valid){
+            getBackgroundShape().setFill(fieldColor);
+        } else {
+            getBackgroundShape().setFill(invalidColor);
+        }
+    }
+    
+    public void addValidator(final InputValidator validator){
+        this.validators.add(validator);
+    }
+    
     // </editor-fold>  
     
     // <editor-fold defaultstate="collapsed" desc="ContextMenuContributor Implementation"> 
@@ -594,18 +640,4 @@ public abstract class ConstellationInput<T> extends StackPane implements ChangeL
         return interactableContent.getChildren().stream().anyMatch(node -> node instanceof InfoWindow);
     }
     // </editor-fold>
-
-    /**
-     * Responsible for updating the color of the background of an input field.
-     * Uses a boolean parameter to override the expression of validty in some cases. 
-     * Typically the isValid attribute will be passed in to ensure that the input field reflects
-     * the validity of its contents.
-     */
-    private void updateFieldValidityVisuals(final boolean valid) {
-        if (valid){
-            getBackgroundShape().setFill(fieldColor);
-        } else {
-            getBackgroundShape().setFill(invalidColor);
-        }
-    }
 }
