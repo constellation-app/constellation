@@ -33,6 +33,7 @@ import java.util.Map;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
+import org.openide.util.HelpCtx;
 
 /**
  * This class is the main panel for the Copy Attributes function.
@@ -306,6 +307,7 @@ public final class PermanentMergePanel extends JPanel {
         jPanel3 = new javax.swing.JPanel();
         includeAllButton = new javax.swing.JButton();
         excludeAllButton = new javax.swing.JButton();
+        helpButton = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         selectedNodesLabel = new javax.swing.JLabel();
 
@@ -357,6 +359,14 @@ public final class PermanentMergePanel extends JPanel {
         });
         jPanel3.add(excludeAllButton);
 
+        helpButton.setText(org.openide.util.NbBundle.getMessage(PermanentMergePanel.class, "PermanentMergePanel.helpButton.text")); // NOI18N
+        helpButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                helpButtonMousePressed(evt);
+            }
+        });
+        jPanel3.add(helpButton);
+
         jPanel2.add(jPanel3, java.awt.BorderLayout.WEST);
 
         jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
@@ -388,8 +398,15 @@ public final class PermanentMergePanel extends JPanel {
     private void nodeTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_nodeTableMouseClicked
         this.processCellSelection(nodeTable.getSelectedRow(), nodeTable.getSelectedColumn());
     }//GEN-LAST:event_nodeTableMouseClicked
+
+    private void helpButtonMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_helpButtonMousePressed
+        final HelpCtx help = new HelpCtx("au.gov.asd.tac.constellation.graph.visual.mergeNodes");
+        help.display();
+    }//GEN-LAST:event_helpButtonMousePressed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton excludeAllButton;
+    private javax.swing.JButton helpButton;
     private javax.swing.JButton includeAllButton;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
