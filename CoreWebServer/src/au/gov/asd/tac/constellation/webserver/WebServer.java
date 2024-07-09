@@ -158,9 +158,10 @@ public class WebServer {
 
     private static final String PACKAGE_SOURCE = Generator.getBaseDirectory() + "ext" + SEP + "package" + SEP + "package_dist";
     private static final String[] PACKAGE_INSTALL = {"pip", "install", "--upgrade", "constellation_client", "--no-index", "--find-links", "file:" + PACKAGE_SOURCE};
-//    private static final String[] WINDOWS_COMMAND = {"cmd", "/C", "start", "/wait"};
     private static final String[] WINDOWS_COMMAND = {"cmd.exe", "/C"};
-    private static final String[] UNIX_COMMAND = {"&"};
+    private static final String[] UNIX_COMMAND = {"&"}; // Untested, on linux
+
+    private static final int INSTALL_SUCCESS = 0; // Untested on linux
 
     public static boolean isRunning() {
         return running;
@@ -307,6 +308,15 @@ public class WebServer {
     }
 
     /**
+     * Download the Python REST API client to the user's Jupyter Notebook directory.
+     * <p>
+     * The download is done only if the package installation fails
+     */
+    private static void downloadPythonClientNotebookDir() {
+        downloadPythonClientToDir(new File(getNotebookDir()));
+    }
+
+    /**
      * Download the Python REST API client to a given directory.
      * <p>
      * The download is done only if the script doesn't exist, or the existing script needs updating.
@@ -350,7 +360,7 @@ public class WebServer {
         // Srart installed process
         Process p = null;
         try {
-            LOGGER.log(Level.INFO, "PYTHON INSTALLTION PROCESS BEGUN");
+            LOGGER.log(Level.INFO, "Python package installation begun...");
             p = pb.start();
 
             String line;
@@ -360,15 +370,21 @@ public class WebServer {
             }
 
             final int result = p.waitFor();
-            LOGGER.log(Level.INFO, "PYTHON INSTALLTION PROCESS FINISHED");
-            LOGGER.log(Level.INFO, "Pip python process result: {0}", result);
+            LOGGER.log(Level.INFO, "Python package installation finished...");
+            LOGGER.log(Level.INFO, "Python install process result: {0}", result);
+
+            // If not successful
+            if (result != INSTALL_SUCCESS) {
+                LOGGER.log(Level.INFO, "Python package installation unsuccessful, copying script to notebook directory...");
+                downloadPythonClientNotebookDir();
+            }
 
         } catch (final InterruptedException ex) {
-            LOGGER.log(Level.WARNING, "EXCEPTION CAUGHT in the python process:", ex);
+            LOGGER.log(Level.WARNING, "INTERRUPTED EXCEPTION CAUGHT in the python package installation:", ex);
             Thread.currentThread().interrupt();
 
         } catch (final IOException ex) {
-            LOGGER.log(Level.WARNING, "IO EXCEPTION CAUGHT reading python process:", ex);
+            LOGGER.log(Level.WARNING, "IO EXCEPTION CAUGHT reading python package installation:", ex);
             Thread.currentThread().interrupt();
 
         } finally {
