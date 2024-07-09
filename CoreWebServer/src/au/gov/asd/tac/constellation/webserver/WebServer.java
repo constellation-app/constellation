@@ -101,24 +101,11 @@ public class WebServer {
         public static boolean checkSecret(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
             final String header = request.getHeader(SECRET_HEADER);
             final boolean ok = header != null && SECRET.equals(header);
-//            if (!ok) {
-//                final String msg = String.format("REST API secret %s is invalid.", SECRET_HEADER);
-//                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, msg);
-//
-//                final String msg2 = String.format("<html>REST API secret %s not provided.<br>Please download the external scripting Python client again.</html>",
-//                        SECRET_HEADER);
-//                NotificationDisplayer.getDefault().notify("REST API server",
-//                        UserInterfaceIconProvider.WARNING.buildIcon(16, ConstellationColor.DARK_ORANGE.getJavaColor()),
-//                        msg2,
-//                        null
-//                );
-//            }
-
-            if (header == null) {
-                final String msg = String.format("REST API secret %s is invalid. HEADER NULL", SECRET_HEADER);
+            if (!ok) {
+                final String msg = String.format("REST API secret %s is invalid.", SECRET_HEADER);
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, msg);
 
-                final String msg2 = String.format("<html>REST API secret %s not provided.<br>Please download the external scripting Python client again. HEADER NULL</html>",
+                final String msg2 = String.format("<html>REST API secret %s not provided.<br>Please download the external scripting Python client again.</html>",
                         SECRET_HEADER);
                 NotificationDisplayer.getDefault().notify("REST API server",
                         UserInterfaceIconProvider.WARNING.buildIcon(16, ConstellationColor.DARK_ORANGE.getJavaColor()),
@@ -126,20 +113,6 @@ public class WebServer {
                         null
                 );
             }
-
-            if (!SECRET.equals(header)) {
-                final String msg = String.format("REST API secret %s is invalid. HEADER NOT EQUAL", SECRET_HEADER);
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, msg);
-
-                final String msg2 = String.format("<html>REST API secret %s not provided.<br>Please download the external scripting Python client again. HEADER NOT EQUAL</html>",
-                        SECRET_HEADER);
-                NotificationDisplayer.getDefault().notify("REST API server",
-                        UserInterfaceIconProvider.WARNING.buildIcon(16, ConstellationColor.DARK_ORANGE.getJavaColor()),
-                        msg2,
-                        null
-                );
-            }
-
             return ok;
         }
     }
