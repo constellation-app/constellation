@@ -175,7 +175,6 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
             } else {
                 field = new TextField();
                 Platform.runLater(() -> TextFields.bindAutoCompletion((TextField) field, recentValuesCombo.getItems()));
-                //TextFields.bindAutoCompletion((TextField) field, recentValuesCombo.getItems());
             }
 
             field.setPrefWidth(defaultWidth);
