@@ -12,7 +12,7 @@
 <th>Constellation Action</th>
 <th>Keyboard Shortcut</th>
 <th>User Action</th>
-<th>Menu Icon</th>
+<th style="text-align: center;">Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -20,27 +20,25 @@
 <td>Open Layers View</td>
 <td>Ctrl + Shift + L</td>
 <td>Views -&gt; Layers View</td>
-<td>
-<img src="../ext/docs/CoreLayersView/src/au/gov/asd/tac/constellation/views/layers/resources/layers-view.png" width="16" height="16" />
-</td>
+<td style="text-align: center;"><img src="../ext/docs/CoreLayersView/src/au/gov/asd/tac/constellation/views/layers/resources/layers-view.png" alt="Layers View Icon" /></td>
 </tr>
 <tr class="even">
 <td>Add New Layer</td>
 <td>Ctrl + Alt + L</td>
 <td>Click "Add New Layer"</td>
-<td>N/A</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td>Deselect All Layers</td>
 <td>Ctrl + Alt + D</td>
 <td>Click "Deselect All Layers"</td>
-<td>N/A</td>
+<td></td>
 </tr>
 <tr class="even">
 <td>Toggle On/Off Layer</td>
 <td>Ctrl + Alt + x (x is layer number)</td>
 <td>Toggle Visibility Checkbox</td>
-<td>N/A</td>
+<td></td>
 </tr>
 </tbody>
 </table>

@@ -31,8 +31,10 @@ import au.gov.asd.tac.constellation.plugins.parameters.DefaultPluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.file.ConstellationInstalledFileLocator;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -105,6 +107,7 @@ public class ScriptingViewPane extends JPanel {
     private final JPopupMenu optionsMenu;
     private final JButton optionsButton;
     private final JButton executeButton;
+    private final JButton helpButton;
 
     private File scriptFile;
     private boolean newOutput;
@@ -186,7 +189,7 @@ public class ScriptingViewPane extends JPanel {
         optionsMenu.add(newOutputItem);
 
         final JMenuItem apiItem = new JMenuItem("API Documentation");
-        apiItem.addActionListener(e -> new HelpCtx(this.getClass().getPackage().getName()).display());
+        apiItem.addActionListener(e -> new HelpCtx(this.getClass().getPackage().getName() + ".javadocs").display());
         optionsMenu.add(apiItem);
 
         final Collection<? extends ScriptingAbstractAction> scriptingActions = Lookup.getDefault().lookupAll(ScriptingAbstractAction.class);
@@ -205,6 +208,14 @@ public class ScriptingViewPane extends JPanel {
             }
         });
 
+        this.helpButton = new JButton();
+        helpButton.setIcon(UserInterfaceIconProvider.HELP.buildIcon(16, ConstellationColor.SKY.getJavaColor()));
+        helpButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                new HelpCtx(this.getClass().getPackage().getName()).display();
+            }
+        });
+        
         this.executeButton = new JButton();
         executeButton.setText("Execute");
         executeButton.setIcon(ImageUtilities.loadImageIcon("execute.png", false));
@@ -219,6 +230,8 @@ public class ScriptingViewPane extends JPanel {
                                         .addComponent(scriptPane, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addGroup(Alignment.TRAILING, layout.createSequentialGroup()
                                                 .addComponent(optionsButton)
+                                                .addPreferredGap(ComponentPlacement.RELATED, 1, 1)
+                                                .addComponent(helpButton)
                                                 .addPreferredGap(ComponentPlacement.RELATED, 344, Short.MAX_VALUE)
                                                 .addComponent(executeButton)))
                                 .addContainerGap())
@@ -231,7 +244,8 @@ public class ScriptingViewPane extends JPanel {
                                 .addPreferredGap(ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(Alignment.BASELINE)
                                         .addComponent(executeButton)
-                                        .addComponent(optionsButton))
+                                        .addComponent(optionsButton)
+                                        .addComponent(helpButton))
                                 .addContainerGap())
         );
         ScriptingViewPane.this.setLayout(layout);

@@ -12,7 +12,7 @@
 <th>Constellation Action</th>
 <th>Keyboard Shortcut</th>
 <th>User Action</th>
-<th>Menu Icon</th>
+<th style="text-align: center;">Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -20,9 +20,7 @@
 <td>Open Scatter Plot</td>
 <td>Ctrl + Shift + O</td>
 <td>Views -&gt; Scatter Plot</td>
-<td><div style="text-align: center">
-<img src="../ext/docs/CoreScatterPlotView/src/au/gov/asd/tac/constellation/views/scatterplot/resources/scatter-plot.png" width="16" height="16" />
-</div></td>
+<td style="text-align: center"><img src="../ext/docs/CoreScatterPlotView/src/au/gov/asd/tac/constellation/views/scatterplot/resources/scatter-plot.png" alt="Scatter Plot Icon" /></td>
 </tr>
 </tbody>
 </table>
@@ -33,10 +31,11 @@ rather oddities within patterns in your graph.
 
 <div style="text-align: center">
 
-<img src="../ext/docs/CoreScatterPlotView/src/au/gov/asd/tac/constellation/views/scatterplot/resources/ScatterPlot.png" src="Scatter Plot
+<img width=720 src="../ext/docs/CoreScatterPlotView/src/au/gov/asd/tac/constellation/views/scatterplot/resources/ScatterPlot.png" src="Scatter Plot
 View" />
 
 </div>
+<br />
 
 The Scatter Plot is quite simple to use, you simply need to set values
 for the 6 options in the top toolbar:

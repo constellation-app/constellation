@@ -12,7 +12,7 @@
 <th>Constellation Action</th>
 <th>Keyboard Shortcut</th>
 <th>User Action</th>
-<th>Menu Icon</th>
+<th style="text-align: center;">Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -20,9 +20,7 @@
 <td>Open Scripting View</td>
 <td>Ctrl + Shift + X</td>
 <td>Views -&gt; Scripting View</td>
-<td><div style="text-align: center">
-<img src="../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/resources/scripting_view.png" width="16" height="16" />
-</div></td>
+<td style="text-align: center"><img src="../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/resources/scripting_view.png" alt="Scripting View Icon" /></td>
 </tr>
 </tbody>
 </table>
@@ -73,7 +71,7 @@ from and writing to the graph. Under the hood, the graph object is an
 "SGraph", which provides access for interrogation and editing of the
 underlying Constellation graph. The SGraph object, as well as all the
 objects obtainable from an SGraph are documented in the [API
-javadoc](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/index.md).
+javadoc](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/index-all.md).
 
 Using the utilities object, you can access all other open graphs using
 "getOpenGraphs()". This function will return a map or dictionary of
