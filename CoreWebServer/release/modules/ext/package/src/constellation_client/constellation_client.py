@@ -21,7 +21,7 @@ import io
 # For example, if a new function is added, clients that require that function
 # to be present can check the version.
 #
-__version__ = 20231115
+__version__ = 20240709
 
 # The HTTP header to be used to convey the server secret (if HTTP is used).
 #
