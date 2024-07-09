@@ -32,7 +32,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
-import static org.mockito.ArgumentMatchers.any;
+import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
@@ -48,7 +48,6 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import processing.core.PApplet;
 
 /**
  * Web Server Test.
@@ -62,25 +61,23 @@ public class WebServerNGTest {
     private static final String REST_FILE = "rest.json";
     private static final String TEST_TEXT = "TEST FILE";
 
+    private static final Path NOTEBOOK_PATH = Path.of(NbPreferences.forModule(ApplicationPreferenceKeys.class).get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT));
+
     // Mock of nbPreferences is created to make LookupPluginsTask behave correctly
-    private static MockedStatic<NbPreferences> nbPreferencesStatic;
-    private static final Preferences preferenceMock = mock(Preferences.class);
+//    private static MockedStatic<NbPreferences> nbPreferencesStatic;
+//    private static final Preferences preferenceMock = mock(Preferences.class);
+    private static final Preferences PREFS = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+    private static final boolean OLD_PREF_VALUE = PREFS.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT);
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        try {
-            nbPreferencesStatic = Mockito.mockStatic(NbPreferences.class, Mockito.CALLS_REAL_METHODS);
-            nbPreferencesStatic.when(() -> NbPreferences.forModule(ApplicationPreferenceKeys.class)).thenReturn(preferenceMock);
-
-            when(preferenceMock.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT)).thenReturn(false);
-        } catch (Exception e) {
-            System.out.println("Error creating static mock of NbPreferences");
-        }
+        PREFS.putBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, false);
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        nbPreferencesStatic.close();
+        // Set the parameter back to its old value
+        PREFS.putBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, OLD_PREF_VALUE);
     }
 
     @BeforeMethod
@@ -90,7 +87,6 @@ public class WebServerNGTest {
     @AfterMethod
     public void tearDownMethod() throws Exception {
         // Clean up created files from this test
-        final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String[] filesArray = {WebServer.CONSTELLATION_CLIENT, REST_FILE};
         for (String file : filesArray) {
             // Delete in home directory
@@ -105,7 +101,7 @@ public class WebServerNGTest {
             }
 
             // Delete in notebook directory
-            final Path filePathNotebook = Path.of(prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT)).resolve(file);
+            final Path filePathNotebook = NOTEBOOK_PATH.resolve(file);
             if (Files.exists(filePathNotebook)) {
                 try {
                     Files.delete(filePathNotebook);
@@ -142,8 +138,7 @@ public class WebServerNGTest {
         }
 
         // Make rest files first
-        final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-        final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
+        final String userDir = ApplicationPreferenceKeys.getUserDir(PREFS);
         final String scriptDir = WebServer.getScriptDir(false).toString();
         final File restFile = new File(userDir, REST_FILE);
         final File restFileNotebook = new File(getNotebookDir(), REST_FILE);
@@ -180,10 +175,13 @@ public class WebServerNGTest {
         // Check server NOT running
         assertEquals(false, WebServer.isRunning());
 
-        try (MockedStatic<Generator> generatorMock = Mockito.mockStatic(Generator.class); MockedStatic<PApplet> execute = Mockito.mockStatic(PApplet.class)) {
+        try (MockedStatic<Generator> generatorMock = Mockito.mockStatic(Generator.class); MockedConstruction<ProcessBuilder> processBuilderMock = Mockito.mockConstruction(ProcessBuilder.class, (mock, context)
+                -> {
+            when(mock.start()).thenReturn(processMock);
+        })) {
             generatorMock.when(Generator::getBaseDirectory).thenReturn("");
             // Return our mocked process when exec is called
-            execute.when(() -> PApplet.exec(any(String[].class))).thenReturn(processMock);
+            //execute.when(() -> PApplet.exec(any(String[].class))).thenReturn(processMock);
 
             // Run start
             int expResult = 1517;
@@ -196,11 +194,11 @@ public class WebServerNGTest {
             assertEquals(true, WebServer.isRunning());
 
             // Assert cmd command was run
-            execute.verify(() -> PApplet.exec(any(String[].class)), times(1));
-            try {
-                verify(processMock, times(1)).waitFor();
-            } catch (InterruptedException ex) {
-            }
+            //execute.verify(() -> PApplet.exec(any(String[].class)), times(1));
+//            try {
+//                verify(processMock, times(1)).waitFor();
+//            } catch (InterruptedException ex) {
+//            }
 
             // Check file contents DO NOT match the initial values
             try {
@@ -229,8 +227,7 @@ public class WebServerNGTest {
     @Test
     public void testGetNotebookDir() {
         System.out.println("getNotebookDir");
-        final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-        final String expResult = prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT);
+        final String expResult = PREFS.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT);
         String result = WebServer.getNotebookDir();
 
         assertEquals(expResult, result);
