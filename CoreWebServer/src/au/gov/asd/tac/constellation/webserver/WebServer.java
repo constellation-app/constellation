@@ -132,7 +132,7 @@ public class WebServer {
     private static final String PACKAGE_SOURCE = Generator.getBaseDirectory() + "ext" + SEP + "package" + SEP + "package_dist";
     private static final String[] PACKAGE_INSTALL = {"pip", "install", "--upgrade", "constellation_client", "--no-index", "--find-links", "file:" + PACKAGE_SOURCE};
     private static final String[] WINDOWS_COMMAND = {"cmd.exe", "/C"};
-    private static final String[] UNIX_COMMAND = {"&"}; // Untested, on linux
+    private static final String[] UNIX_COMMAND = {"/bin/sh", "-c"}; // Untested, on linux
 
     private static final int INSTALL_SUCCESS = 0; // Untested on linux
 
@@ -326,7 +326,7 @@ public class WebServer {
         if (isWindows()) {
             pb = new ProcessBuilder(ArrayUtils.addAll(WINDOWS_COMMAND, PACKAGE_INSTALL)).redirectErrorStream(true);
         } else {
-            pb = new ProcessBuilder(ArrayUtils.addAll(PACKAGE_INSTALL, UNIX_COMMAND)).redirectErrorStream(true);
+            pb = new ProcessBuilder(ArrayUtils.addAll(UNIX_COMMAND, PACKAGE_INSTALL)).redirectErrorStream(true);
         }
 
         // Srart installed process
