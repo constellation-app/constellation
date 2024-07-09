@@ -320,7 +320,7 @@ public class WebServer {
     }
 
     // Run pip install on package
-    public static void installPythonPackage() {
+    public static void installPythonPackage() throws IOException {
         // Create the process buillder with required arguments
         final ProcessBuilder pb;
         if (isWindows()) {
@@ -330,15 +330,26 @@ public class WebServer {
         }
 
         // Srart installed process
+        LOGGER.log(Level.INFO, "Python package installation begun...");
         Process p = null;
         try {
-            LOGGER.log(Level.INFO, "Python package installation begun...");
             p = pb.start();
+        } catch (final IOException ex) {
+            LOGGER.log(Level.WARNING, "IO EXCEPTION CAUGHT reading python package installation:", ex);
+            Thread.currentThread().interrupt();
+
+        }
+
+        if (p == null) {
+            return;
+        }
+
+        try (final BufferedReader inputBuffer = new BufferedReader(new InputStreamReader(p.getInputStream()));) {
 
             // If inputStream available, log output
             if (p.getInputStream() != null) {
                 String line;
-                BufferedReader inputBuffer = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
                 while ((line = inputBuffer.readLine()) != null) {
                     LOGGER.log(Level.INFO, "{0}", line);
                 }
@@ -358,15 +369,9 @@ public class WebServer {
             LOGGER.log(Level.WARNING, "INTERRUPTED EXCEPTION CAUGHT in the python package installation:", ex);
             Thread.currentThread().interrupt();
 
-        } catch (final IOException ex) {
-            LOGGER.log(Level.WARNING, "IO EXCEPTION CAUGHT reading python package installation:", ex);
-            Thread.currentThread().interrupt();
-
-        } finally {
-            if (p != null) {
-                p.destroy();
-            }
         }
+
+        p.destroy();
     }
 
     /**

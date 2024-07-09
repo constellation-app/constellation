@@ -67,12 +67,12 @@ public class WebServerNGTest {
     private static final boolean OLD_PREF_VALUE = PREFS.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT);
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
+    public static void setUpClass() {
         PREFS.putBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, false);
     }
 
     @AfterClass
-    public static void tearDownClass() throws Exception {
+    public static void tearDownClass() {
         // Set the parameter back to its old value
         PREFS.putBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, OLD_PREF_VALUE);
     }
@@ -201,6 +201,7 @@ public class WebServerNGTest {
         try {
             when(processMock.waitFor()).thenReturn(0); // Return success
         } catch (InterruptedException ex) {
+            return;
         }
         when(processMock.getInputStream()).thenReturn(null);
 
@@ -215,15 +216,11 @@ public class WebServerNGTest {
             //Run function
             WebServer.installPythonPackage();
 
-            // Return our mocked process when exec is called
-            //execute.when(() -> PApplet.exec(any(String[].class))).thenReturn(processMock);
             verify(processMock, times(1)).getInputStream();
 
             // Assert processBuilder was made
             assertEquals(processBuilderMock.constructed().size(), 1);
 
-            // Assert cmd command was run
-            //execute.verify(() -> PApplet.exec(any(String[].class)), times(1));
             try {
                 verify(processMock, times(1)).waitFor();
             } catch (InterruptedException ex) {
