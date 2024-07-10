@@ -214,9 +214,9 @@ public class WebServerNGTest {
             generatorMock.when(Generator::getBaseDirectory).thenReturn("");
 
             //Run function
-            try{
-            WebServer.installPythonPackage();
-            } catch (IOException ex){
+            try {
+                WebServer.installPythonPackage();
+            } catch (IOException ex) {
                 System.out.println("Caught IOException when running WebServer.installPythonPackage()");
             }
             verify(processMock, times(1)).getInputStream();
