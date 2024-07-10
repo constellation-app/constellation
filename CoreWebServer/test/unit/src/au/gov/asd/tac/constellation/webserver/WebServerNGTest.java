@@ -38,6 +38,7 @@ import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -158,14 +159,12 @@ public class WebServerNGTest {
         }
         // Windows
         try (final PrintWriter pw = new PrintWriter(restFile)) {
-            // Couldn't be bothered starting up a JSON writer for two simple values.
             pw.printf(TEST_TEXT);
         } catch (final IOException e) {
             LOGGER.log(Level.WARNING, "Error making file");
         }
 
         try (final PrintWriter pw = new PrintWriter(restFileNotebook)) {
-            // Couldn't be bothered starting up a JSON writer for two simple values.
             pw.printf(TEST_TEXT);
         } catch (final IOException e) {
             LOGGER.log(Level.WARNING, "Error making file");
@@ -195,8 +194,18 @@ public class WebServerNGTest {
     }
 
     @Test
-    public void testInstallPythonPackage() {
-        System.out.println("testInstallPythonPackage");
+    public void testInstallPythonPackageWindows() {
+        System.out.println("testInstallPythonPackageWindows");
+        installPythonPackageHelper(true);
+    }
+
+    @Test
+    public void testInstallPythonPackageLinux() {
+        System.out.println("testInstallPythonPackageLinux");
+        installPythonPackageHelper(false);
+    }
+
+    public void installPythonPackageHelper(final boolean isWindows) {
         // Mocks
         Process processMock = mock(Process.class);
         try {
@@ -206,7 +215,7 @@ public class WebServerNGTest {
         }
         when(processMock.getInputStream()).thenReturn(InputStream.nullInputStream());
 
-        try (MockedStatic<Generator> generatorMock = Mockito.mockStatic(Generator.class); MockedConstruction<ProcessBuilder> processBuilderMock = Mockito.mockConstruction(ProcessBuilder.class, (mock, context)
+        try (MockedStatic<WebServer> webserverMock = Mockito.mockStatic(WebServer.class, Mockito.CALLS_REAL_METHODS); MockedStatic<Generator> generatorMock = Mockito.mockStatic(Generator.class); MockedConstruction<ProcessBuilder> processBuilderMock = Mockito.mockConstruction(ProcessBuilder.class, (mock, context)
                 -> {
             // Return our mocked process when start is called
             when(mock.start()).thenReturn(processMock);
@@ -214,7 +223,10 @@ public class WebServerNGTest {
         })) {
             generatorMock.when(Generator::getBaseDirectory).thenReturn("");
 
-            //Run function
+            // Webserver is mocked, but calles real methods aside from isWindows()
+            webserverMock.when(WebServer::isWindows).thenReturn(isWindows);
+
+            // Run function
             try {
                 WebServer.installPythonPackage();
             } catch (IOException ex) {
@@ -228,6 +240,84 @@ public class WebServerNGTest {
             try {
                 verify(processMock, times(1)).waitFor();
             } catch (InterruptedException ex) {
+            }
+        }
+    }
+    
+//        @Test
+//    public void testInstallPythonPackageIOException() {
+//        System.out.println("testInstallPythonPackageIOException");
+//        // Mocks
+//        Process processMock = mock(Process.class);
+//        try {
+//            when(processMock.waitFor()).thenReturn(0); // Return success
+//        } catch (InterruptedException ex) {
+//            return;
+//        }
+//        when(processMock.getInputStream()).thenReturn(InputStream.nullInputStream());
+//
+//        try (MockedStatic<Generator> generatorMock = Mockito.mockStatic(Generator.class); MockedConstruction<ProcessBuilder> processBuilderMock = Mockito.mockConstruction(ProcessBuilder.class, (mock, context)
+//                -> {
+//            // Return our mocked process when start is called
+//            when(mock.start()).thenThrow(IOException.class);
+//            when(mock.redirectErrorStream(anyBoolean())).thenReturn(mock);
+//        })) {
+//            generatorMock.when(Generator::getBaseDirectory).thenReturn("");
+//            
+//            // Run function
+//            try {
+//                WebServer.installPythonPackage();
+//            } catch (IOException ex) {
+//                System.out.println("Caught IOException when running WebServer.installPythonPackage()");
+//            }
+//
+//            // Assert processBuilder was made
+//            assertEquals(processBuilderMock.constructed().size(), 1);
+//
+//            // Assert process never got to run
+//            try {
+//                verify(processMock, never()).waitFor();
+//            } catch (InterruptedException ex) {
+//                System.out.println("Caught InterruptedException in testInstallPythonPackageIOException");
+//            }
+//        }
+//    }
+    
+    @Test
+    public void testInstallPythonPackageNotSuccessfull() {
+        System.out.println("testInstallPythonPackageIOException");
+        // Mocks
+        Process processMock = mock(Process.class);
+        try {
+            when(processMock.waitFor()).thenReturn(-1); // Return NOT success
+        } catch (InterruptedException ex) {
+            return;
+        }
+        when(processMock.getInputStream()).thenReturn(InputStream.nullInputStream());
+
+        try (MockedStatic<Generator> generatorMock = Mockito.mockStatic(Generator.class); MockedConstruction<ProcessBuilder> processBuilderMock = Mockito.mockConstruction(ProcessBuilder.class, (mock, context)
+                -> {
+            // Return our mocked process when start is called
+            when(mock.start()).thenThrow(IOException.class);
+            when(mock.redirectErrorStream(anyBoolean())).thenReturn(mock);
+        })) {
+            generatorMock.when(Generator::getBaseDirectory).thenReturn("");
+            
+            // Run function
+            try {
+                WebServer.installPythonPackage();
+            } catch (IOException ex) {
+                System.out.println("Caught IOException when running WebServer.installPythonPackage()");
+            }
+
+            // Assert processBuilder was made
+            assertEquals(processBuilderMock.constructed().size(), 1);
+
+            // Assert process never got to run
+            try {
+                verify(processMock, never()).waitFor();
+            } catch (InterruptedException ex) {
+                System.out.println("Caught InterruptedException in testInstallPythonPackageIOException");
             }
         }
     }

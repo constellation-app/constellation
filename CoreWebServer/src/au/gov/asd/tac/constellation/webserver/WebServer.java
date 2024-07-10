@@ -50,7 +50,6 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
-import static jnr.constants.PlatformConstants.OS;
 import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.server.Server;
@@ -160,8 +159,7 @@ public class WebServer {
 
                 // On Posix, we can use stricter file permissions.
                 // On Windows, we just create the new file.
-                final String os = System.getProperty("os.name");
-                if (!os.startsWith("Windows")) {
+                if (!isWindows()) {
                     final Set<PosixFilePermission> perms = EnumSet.of(PosixFilePermission.OWNER_READ, PosixFilePermission.OWNER_WRITE);
                     Files.createFile(restFile.toPath(), PosixFilePermissions.asFileAttribute(perms));
                     Files.createFile(restFileIPython.toPath(), PosixFilePermissions.asFileAttribute(perms));
@@ -331,16 +329,13 @@ public class WebServer {
 
         // Srart installed process
         LOGGER.log(Level.INFO, "Python package installation begun...");
-        Process p = null;
+        final Process p;
         try {
             p = pb.start();
         } catch (final IOException ex) {
-            LOGGER.log(Level.WARNING, "IO EXCEPTION CAUGHT reading python package installation:", ex);
-            Thread.currentThread().interrupt();
-
-        }
-
-        if (p == null) {
+            LOGGER.log(Level.WARNING, "IO EXCEPTION CAUGHT starting python package installation:", ex);
+            LOGGER.log(Level.INFO, "Copying python script to notebook directory instead...");
+            downloadPythonClientNotebookDir();
             return;
         }
 
@@ -366,7 +361,6 @@ public class WebServer {
         } catch (final InterruptedException ex) {
             LOGGER.log(Level.WARNING, "INTERRUPTED EXCEPTION CAUGHT in the python package installation:", ex);
             Thread.currentThread().interrupt();
-
         }
 
         p.destroy();
@@ -420,6 +414,6 @@ public class WebServer {
     }
 
     public static boolean isWindows() {
-        return OS.contains("win");
+        return System.getProperty("os.name").startsWith("Windows");
     }
 }
