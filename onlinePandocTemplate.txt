@@ -37,7 +37,7 @@
       <li><a href="../../../index.html#features" class="scrolly">Features</a></li>
       <li><a href="../../../download.html" class="scrolly">Download</a></li>
       <li><a href="../../../blog.html" class="scrolly">Blog</a></li>
-      <li><a href="CoreFunctionality/src/au/gov/asd/tac/constellation/functionality/about-constellation.html" class="scrolly">Documentation</a></li>
+      <li><a href="../ext/docs/CoreFunctionality/src/au/gov/asd/tac/constellation/functionality/about-constellation.html" class="scrolly">Documentation</a></li>
       <li><a href="../../../index.html#contact" class="scrolly">Contact</a></li>
     </ul>
   </nav>
@@ -77,7 +77,7 @@
           <!-- Copyright -->
           <div class="copyright">
             <ul class="menu">
-              <li>&copy; 2023 | Website developed by the <a href="https://github.com/constellation-app">Constellation community</a>. All rights reserved.</li>
+              <li>&copy; 2024 | Website developed by the <a href="https://github.com/constellation-app">Constellation community</a>. All rights reserved.</li>
             </ul>
           </div>
         </div>
