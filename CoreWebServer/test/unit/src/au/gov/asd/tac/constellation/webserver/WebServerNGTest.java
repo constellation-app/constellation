@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import static au.gov.asd.tac.constellation.webserver.WebServer.getNotebookDir;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -203,7 +204,7 @@ public class WebServerNGTest {
         } catch (InterruptedException ex) {
             return;
         }
-        when(processMock.getInputStream()).thenReturn(null);
+        when(processMock.getInputStream()).thenReturn(InputStream.nullInputStream());
 
         try (MockedStatic<Generator> generatorMock = Mockito.mockStatic(Generator.class); MockedConstruction<ProcessBuilder> processBuilderMock = Mockito.mockConstruction(ProcessBuilder.class, (mock, context)
                 -> {

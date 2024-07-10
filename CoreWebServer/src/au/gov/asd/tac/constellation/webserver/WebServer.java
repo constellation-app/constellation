@@ -347,12 +347,10 @@ public class WebServer {
         try (final BufferedReader inputBuffer = new BufferedReader(new InputStreamReader(p.getInputStream()));) {
 
             // If inputStream available, log output
-            if (p.getInputStream() != null) {
-                String line;
+            String line;
 
-                while ((line = inputBuffer.readLine()) != null) {
-                    LOGGER.log(Level.INFO, "{0}", line);
-                }
+            while ((line = inputBuffer.readLine()) != null) {
+                LOGGER.log(Level.INFO, "{0}", line);
             }
 
             final int result = p.waitFor();
