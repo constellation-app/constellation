@@ -149,9 +149,12 @@ public class WebServer {
 
                 // Put the session secret and port number in a JSON file in the .CONSTELLATION directory.
                 // Make sure the file is owner read/write.
-                final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
-                final File restFile = new File(userDir, REST_FILE);
-                cleanupRest(restFile, userDir);
+                
+                // Get rest directory, if path to directory is empty (default), use the user directory
+                final String restPref = prefs.get(ApplicationPreferenceKeys.REST_DIR, ApplicationPreferenceKeys.REST_DIR_DEFAULT);
+                final String restDir = "".equals(restPref) ? ApplicationPreferenceKeys.getUserDir(prefs) : restPref;
+                final File restFile = new File(restDir, REST_FILE);
+                cleanupRest(restFile, restDir);
 
                 // Also put rest file in the ipython directory
                 final File restFileIPython = new File(getScriptDir(true), REST_FILE);
@@ -327,7 +330,7 @@ public class WebServer {
             pb = new ProcessBuilder(ArrayUtils.addAll(UNIX_COMMAND, PACKAGE_INSTALL)).redirectErrorStream(true);
         }
 
-        // Srart installed process
+        // Start installed process
         LOGGER.log(Level.INFO, "Python package installation begun...");
         final Process p;
         try {
