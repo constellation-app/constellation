@@ -151,7 +151,7 @@ class Constellation:
             'file [= directory]',
             'sftp = [user@]host[:dir]'.
         """
-
+        
         if transport is None:
             env = os.getenv(ENV_VAR)
             if env:
@@ -743,6 +743,12 @@ class Constellation:
         r = self.rest_request(verb=verb, endpoint=f'/v2/service', path=name, params=args, json_=json, data=data, headers=headers)
 
         return r
+    
+            
+    def update_rest(self, path : str):
+        rest_data = _get_rest(path)
+        self.data = rest_data[0]
+        self.data_path = rest_data[1]
 
 
 def _get_rest(rest : str = None ) -> tuple[dict, str]:
