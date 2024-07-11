@@ -145,8 +145,12 @@ public class Generator implements Runnable {
     
     protected static String getOnlineHelpTOCDirectory(final String filePath) {
         final int index = filePath.indexOf("constellation");
-        final String newPath = filePath.substring(0, index + 14);
-        return newPath + TOC_FILE_NAME;
+        if (index <= 0) {
+            return filePath;
+        } else {
+            final String newPath = filePath.substring(0, index + 14);
+            return newPath + TOC_FILE_NAME;
+        }
     }
 
 }
