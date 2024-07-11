@@ -21,7 +21,7 @@ import io
 # For example, if a new function is added, clients that require that function
 # to be present can check the version.
 #
-__version__ = 20240709
+__version__ = 20240711
 
 # The HTTP header to be used to convey the server secret (if HTTP is used).
 #
@@ -160,8 +160,10 @@ class Constellation:
         if transport is None or transport=='http':
             self.rest_request = self.http_request
             
-            self.data_path = _get_rest_dir()
-            self.data = _get_rest(self.data_path)
+            rest_data = _get_rest()
+            self.data = rest_data[0]
+            self.data_path = rest_data[1]
+
             self.headers = {}
             if _SECRET in self.data:
                 self.headers[_SECRET] = self.data[_SECRET]
@@ -742,64 +744,52 @@ class Constellation:
 
         return r
 
-def _get_rest(rest=None):
+
+def _get_rest(rest : str = None ) -> tuple[dict, str]:
     """Get data from the file created by the CONSTELLATION HTTP REST server.
 
     :param rest: The file to read the REST secret from. The CONSTELLATION default filename is used if not specified.
     """
+    
+    data = {}
+    
+    # If rest path given and it exists, read
+    if rest != None and os.path.exists(rest):
+        data = _get_rest_helper(rest)
+        if data != {}:
+            return(data, rest)
+    
+    # Either rest path not given or couldn't read the file, so check various folders in home
+    HOME_LOCATIONS = ['.ipython', '.CONSTELLATION', '']
+    for location in HOME_LOCATIONS:
+        rest = os.path.join(os.path.expanduser('~'), location, 'rest.json')
+        data = _get_rest_helper(rest)
+        if data != {}:
+            return(data, rest)
+            
+    # Either not found in home, or could'nt read, so finally check current folder
+    rest = os.path.join(os.getcwd(), 'rest.json')
+    data = _get_rest_helper(rest)
+    if data != {}:
+        return(data, rest)
+     
+    # Return empty if still not found
+    return ({}, '')
 
-    if not rest:
-        rest = os.path.join(os.path.expanduser('~'), '.ipython', 'rest.json')
-
-    try:
-        with open(rest) as f:
-            print('Found REST file {}'.format(rest))
-            data = json.load(f)
-    except FileNotFoundError:
-        print('REST file {} not found'.format(rest), file=sys.stderr)
-        rest = os.path.join(os.path.expanduser('~'), 'rest.json')
-        print('Checking {} instead...'.format(rest), file=sys.stderr)
+def _get_rest_helper(rest : str) -> dict:
+    print('Looking for REST file in {}'.format(rest))
+    if os.path.exists(rest):
         try:
             with open(rest) as f:
                 print('Found REST file {}'.format(rest))
                 data = json.load(f)
-        except FileNotFoundError:
-            print('REST file {} not found'.format(rest), file=sys.stderr)
-            data = {}
-    except json.decoder.JSONDecodeError as e:
-        print('Error decoding REST JSON: {}'.format(e), file=sys.stderr)
-        data = {}
+                return data
+        except json.decoder.JSONDecodeError as e:
+            print('Error decoding REST JSON: {}'.format(e))
+    else:
+        print('REST file {} not found'.format(rest))
     
-    return data
-
-def _get_rest_dir():
-    """Get data from the file created by the CONSTELLATION HTTP REST server.
-
-    :param rest: The file to read the REST secret from. The CONSTELLATION default filename is used if not specified.
-    """
-
-    rest = os.path.join(os.path.expanduser('~'), '.ipython', 'rest.json')
-
-    try:
-        with open(rest) as f:
-            print('Found REST file {}'.format(rest))
-            return rest
-    except FileNotFoundError:
-        print('REST file {} not found'.format(rest), file=sys.stderr)
-        rest = os.path.join(os.path.expanduser('~'), 'rest.json')
-        print('Checking {} instead...'.format(rest), file=sys.stderr)
-        try:
-            with open(rest) as f:
-                print('Found REST file {}'.format(rest))
-                return rest
-        except FileNotFoundError:
-            print('REST file {} not found'.format(rest), file=sys.stderr)
-            return "not found"
-    except json.decoder.JSONDecodeError as e:
-        print('Error decoding REST JSON: {}'.format(e), file=sys.stderr)
-        data = {}
-    
-    return rest
+    return {}
 
 def _row_dict(row, names, prefix):
     """Extract the relevant names/values from a DataFrame row and convert them
