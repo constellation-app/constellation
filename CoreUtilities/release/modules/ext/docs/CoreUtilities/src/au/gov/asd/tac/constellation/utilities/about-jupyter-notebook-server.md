@@ -16,11 +16,10 @@ The Constellation Client API package that is installed when starting the
 notebook server will look for the "rest secret" created by the rest server.
 It is stored in a file called `rest.json`.
 By default the package will check the ".IPython" folder in the 
-home directory, as well as the current notebook directory for the rest secret.
-If the "restDirectory" has been changed, the user will have to point Constellation
+home directory, as well as the current notebook directory.
+If the "REST Directory" has been changed in Constellation's options, the user will have to point Constellation
 Client to the new path of `rest.json`. Information on how to do that can be found 
 on our github [here](https://github.com/constellation-app/constellation-training/blob/master/Analyst%20Training/Exercise%2010%20-%20Network%20Analysis%20With%20Python/notebooks_and_constellation.ipynb).
-
 Simply download the .ipynb file and open it in Jupyter notebook to view.
 
 ## Starting your own Jupyter notebook
