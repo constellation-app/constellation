@@ -569,7 +569,7 @@ final class ApplicationOptionsPanel extends JPanel {
     }//GEN-LAST:event_resetBtnActionPerformed
 
     private void restDirectoryTextKeyTyped(KeyEvent evt) {//GEN-FIRST:event_restDirectoryTextKeyTyped
-        restWarningText.setVisible(!restDirectoryText.getText().equals(""));
+        restWarningText.setVisible(!"".equals(restDirectoryText.getText()));
     }//GEN-LAST:event_restDirectoryTextKeyTyped
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
