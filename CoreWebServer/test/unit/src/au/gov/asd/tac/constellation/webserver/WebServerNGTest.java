@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.webserver;
 
 import au.gov.asd.tac.constellation.help.utilities.Generator;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
-import static au.gov.asd.tac.constellation.webserver.WebServer.getNotebookDir;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -137,11 +136,10 @@ public class WebServerNGTest {
         }
         when(processMock.getInputStream()).thenReturn(null);
 
-        // Make rest files first
-        final String userDir = ApplicationPreferenceKeys.getUserDir(PREFS);
-        final String scriptDir = WebServer.getScriptDir(false).toString();
-        final File restFile = new File(userDir, REST_FILE);
-        final File restFileNotebook = new File(getNotebookDir(), REST_FILE);
+        // Make rest file first
+        final String restPref = PREFS.get(ApplicationPreferenceKeys.REST_DIR, ApplicationPreferenceKeys.REST_DIR_DEFAULT);
+        final String restDir = "".equals(restPref) ? WebServer.getScriptDir(true).toString() : restPref;
+        final File restFile = new File(restDir, REST_FILE);
         // Unix
         final String os = System.getProperty("os.name");
         if (!os.startsWith("Windows")) {
@@ -151,20 +149,9 @@ public class WebServerNGTest {
             } catch (final IOException e) {
                 LOGGER.log(Level.WARNING, "Error making file");
             }
-            try {
-                Files.createFile(restFileNotebook.toPath(), PosixFilePermissions.asFileAttribute(perms));
-            } catch (final IOException e) {
-                LOGGER.log(Level.WARNING, "Error making file");
-            }
         }
         // Windows
         try (final PrintWriter pw = new PrintWriter(restFile)) {
-            pw.printf(TEST_TEXT);
-        } catch (final IOException e) {
-            LOGGER.log(Level.WARNING, "Error making file");
-        }
-
-        try (final PrintWriter pw = new PrintWriter(restFileNotebook)) {
             pw.printf(TEST_TEXT);
         } catch (final IOException e) {
             LOGGER.log(Level.WARNING, "Error making file");
@@ -185,8 +172,8 @@ public class WebServerNGTest {
 
         // Check file contents DO NOT match the initial values
         try {
-            assertNotEquals(Files.readString(Path.of(userDir).resolve(REST_FILE), StandardCharsets.UTF_8), TEST_TEXT);
-            assertNotEquals(Files.readString(Path.of(scriptDir).resolve(REST_FILE), StandardCharsets.UTF_8), TEST_TEXT);
+            //assertNotEquals(Files.readString(Path.of(userDir).resolve(REST_FILE), StandardCharsets.UTF_8), TEST_TEXT);
+            assertNotEquals(Files.readString(Path.of(restDir).resolve(REST_FILE), StandardCharsets.UTF_8), TEST_TEXT);
         } catch (final IOException e) {
             LOGGER.log(Level.WARNING, "Error matching files");
         }
@@ -243,7 +230,7 @@ public class WebServerNGTest {
             }
         }
     }
-    
+
     @Test
     public void testInstallPythonPackageIOException() {
         System.out.println("testInstallPythonPackageIOException");
@@ -256,7 +243,7 @@ public class WebServerNGTest {
         }
         when(processMock.getInputStream()).thenReturn(InputStream.nullInputStream());
 
-        try ( MockedStatic<Generator> generatorMock = Mockito.mockStatic(Generator.class); MockedConstruction<ProcessBuilder> processBuilderMock = Mockito.mockConstruction(ProcessBuilder.class, (mock, context)
+        try (MockedStatic<Generator> generatorMock = Mockito.mockStatic(Generator.class); MockedConstruction<ProcessBuilder> processBuilderMock = Mockito.mockConstruction(ProcessBuilder.class, (mock, context)
                 -> {
             // Return our mocked process when start is called
             when(mock.start()).thenThrow(IOException.class);
@@ -282,7 +269,7 @@ public class WebServerNGTest {
             }
         }
     }
-    
+
     @Test
     public void testInstallPythonPackageNotSuccessfull() {
         System.out.println("testInstallPythonPackageNotSuccessfull");
@@ -294,7 +281,7 @@ public class WebServerNGTest {
             return;
         }
         when(processMock.getInputStream()).thenReturn(InputStream.nullInputStream());
-        
+
         // Mocking Webserver only to verify functions were run
         try (MockedStatic<WebServer> webserverMock = Mockito.mockStatic(WebServer.class, Mockito.CALLS_REAL_METHODS); MockedStatic<Generator> generatorMock = Mockito.mockStatic(Generator.class); MockedConstruction<ProcessBuilder> processBuilderMock = Mockito.mockConstruction(ProcessBuilder.class, (mock, context)
                 -> {
@@ -303,7 +290,7 @@ public class WebServerNGTest {
             when(mock.redirectErrorStream(anyBoolean())).thenReturn(mock);
         })) {
             generatorMock.when(Generator::getBaseDirectory).thenReturn("");
-            
+
             // Run function
             try {
                 WebServer.installPythonPackage();
@@ -320,7 +307,7 @@ public class WebServerNGTest {
             } catch (InterruptedException ex) {
                 System.out.println("Caught InterruptedException in testInstallPythonPackageIOException");
             }
-            
+
             // Assert function was called to download script
             webserverMock.verify(WebServer::downloadPythonClientNotebookDir, times(1));
         }

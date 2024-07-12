@@ -173,10 +173,6 @@ public class WebServer {
                     // Couldn't be bothered starting up a JSON writer for two simple values.
                     pw.printf("{\"%s\":\"%s\", \"port\":%d}%n", ConstellationHttpServlet.SECRET_HEADER, ConstellationHttpServlet.SECRET, port);
                 }
-                try (final PrintWriter pw = new PrintWriter(restFileIPython)) {
-                    // Couldn't be bothered starting up a JSON writer for two simple values.
-                    pw.printf("{\"%s\":\"%s\", \"port\":%d}%n", ConstellationHttpServlet.SECRET_HEADER, ConstellationHttpServlet.SECRET, port);
-                }
 
                 // Download the Python REST client if enabled.
                 final boolean pythonRestClientDownload = prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT);
