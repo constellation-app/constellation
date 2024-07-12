@@ -749,6 +749,15 @@ class Constellation:
         rest_data = _get_rest(path)
         self.data = rest_data[0]
         self.data_path = rest_data[1]
+        
+        self.headers = {}
+        if _SECRET in self.data:
+            self.headers[_SECRET] = self.data[_SECRET]
+
+        if _PORT in self.data:
+            self.port = self.data[_PORT]
+        else:
+            self.port = _DEFAULT_PORT
 
 
 def _get_rest(rest : str = None ) -> tuple[dict, str]:
@@ -761,9 +770,16 @@ def _get_rest(rest : str = None ) -> tuple[dict, str]:
     
     # If rest path given and it exists, read
     if rest != None and os.path.exists(rest):
+        # Could be path direct to file
         data = _get_rest_helper(rest)
         if data != {}:
             return(data, rest)
+        else:
+            # Or could be path to folder
+            rest = os.path.join(rest, 'rest.json')
+            data = _get_rest_helper(rest)
+            if data != {}:
+                return(data, rest)
     
     # Either rest path not given or couldn't read the file, so check various folders in home
     HOME_LOCATIONS = ['.ipython', '.CONSTELLATION', '']
@@ -792,6 +808,8 @@ def _get_rest_helper(rest : str) -> dict:
                 return data
         except json.decoder.JSONDecodeError as e:
             print('Error decoding REST JSON: {}'.format(e))
+        except PermissionError as e:
+            print('Error opening REST JSON: {}'.format(e))
     else:
         print('REST file {} not found'.format(rest))
     
