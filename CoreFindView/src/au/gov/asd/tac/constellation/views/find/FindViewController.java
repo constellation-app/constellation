@@ -353,11 +353,6 @@ public class FindViewController {
                 PluginExecution.withPlugin(basicReplacePlugin).executeLater(graph);
             }
         }
-//        if (zoomToSelection) {
-//            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(GraphManager.getDefault().getActiveGraph());
-//        } else {
-//            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeLater(GraphManager.getDefault().getActiveGraph());
-//        }
     }
 
     public void retrieveAdvancedSearch(final boolean findAll, final boolean findNext, final boolean zoomToSelection) {
