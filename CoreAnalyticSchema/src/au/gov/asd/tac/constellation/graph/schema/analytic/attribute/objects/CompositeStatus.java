@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,17 +47,12 @@ public enum CompositeStatus {
     }
 
     public static final CompositeStatus getCompositeStatus(final int statusId) {
-        switch (statusId) {
-            case 0:
-                return NOT_A_COMPOSITE;
-            case 1:
-                return IS_A_COMPOSITE;
-            case 2:
-                return LEADER_OF_A_COMPOSITE;
-            case 3:
-                return PART_OF_A_COMPOSITE;
-            default:
-                return null;
-        }
+        return switch (statusId) {
+            case 0 -> NOT_A_COMPOSITE;
+            case 1 -> IS_A_COMPOSITE;
+            case 2 -> LEADER_OF_A_COMPOSITE;
+            case 3 -> PART_OF_A_COMPOSITE;
+            default -> null;
+        };
     }
 }

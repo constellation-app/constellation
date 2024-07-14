@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ public class ClusterDocumentsParameters {
     public static final String ELEMENT_TYPE_NAME = "Element Type";
     public static final String ELEMENT_TYPE_DESCRIPTION = "The type of graph element to cluster";
     public static final String ELEMENT_TYPE_DEFAULT = "transaction";
-    public static final List<String> ELEMENT_TYPE_CHOICES = Arrays.asList(ELEMENT_TYPE_DEFAULT, "node");
+    protected static final List<String> ELEMENT_TYPE_CHOICES = Arrays.asList(ELEMENT_TYPE_DEFAULT, "node");
 
     public static final String ATTRIBUTE_TO_ANALYSE_PARAMETER_ID = PluginParameter.buildId(ClusterDocumentsParameters.class, "attribute_to_analyse");
     public static final String ATTRIBUTE_TO_ANALYSE_NAME = "Attribute to Analyse";

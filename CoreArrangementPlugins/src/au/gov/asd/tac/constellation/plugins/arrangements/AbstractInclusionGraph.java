@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -305,8 +305,8 @@ public abstract class AbstractInclusionGraph {
             final int txId = wg.getTransaction(position);
             final boolean directed = wg.getTransactionDirection(txId) != Graph.FLAT;
 
-            int lo = wg.getTransactionSourceVertex(txId);
-            int hi = wg.getTransactionDestinationVertex(txId);
+            final int lo = wg.getTransactionSourceVertex(txId);
+            final int hi = wg.getTransactionDestinationVertex(txId);
 
             if (vertices.get(lo) && vertices.get(hi)) {
                 inclusionGraph.addTransaction(txId, lo, hi, directed);
@@ -328,8 +328,8 @@ public abstract class AbstractInclusionGraph {
             final int edgeId = wg.getEdge(position);
             final boolean directed = wg.getEdgeDirection(edgeId) != Graph.FLAT;
 
-            int lo = wg.getEdgeSourceVertex(edgeId);
-            int hi = wg.getEdgeDestinationVertex(edgeId);
+            final int lo = wg.getEdgeSourceVertex(edgeId);
+            final int hi = wg.getEdgeDestinationVertex(edgeId);
 
             if (vertices.get(lo) && vertices.get(hi)) {
                 inclusionGraph.addTransaction(lo, hi, directed);
@@ -350,8 +350,8 @@ public abstract class AbstractInclusionGraph {
         for (int position = 0; position < linkCount; position++) {
             final int linkId = wg.getLink(position);
 
-            int lo = wg.getLinkLowVertex(linkId);
-            int hi = wg.getLinkHighVertex(linkId);
+            final int lo = wg.getLinkLowVertex(linkId);
+            final int hi = wg.getLinkHighVertex(linkId);
 
             if (vertices.get(lo) && vertices.get(hi)) {
                 inclusionGraph.addTransaction(lo, hi, false);

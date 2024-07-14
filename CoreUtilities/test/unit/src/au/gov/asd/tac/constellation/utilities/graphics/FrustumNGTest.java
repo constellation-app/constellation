@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -228,6 +228,18 @@ public class FrustumNGTest {
     @Test
     public void testConstructorOrthographic() {
         assertOrthographic(new Frustum(-10F, 20F, -30F, 40F, -50F, 40F));
+    }
+    
+    /**
+     * Makes a copy of a Frustum.
+     */
+    @Test 
+    public void testCopy() {
+        Frustum original = new Frustum(PERS_FOV, PERS_ASPECT, PERS_XMIN, 
+                PERS_XMAX, PERS_YMIN, PERS_YMAX, PERS_NEAR, PERS_FAR);
+        Frustum copy = original.getCopy();
+        
+        assertPerspective(copy);
     }
     
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,7 +81,7 @@ public final class Vertex extends Group {
 
     private void updateSelectedVisualIndication() {
         if (isSelected) {
-            Color highlightColor = selectedWithTransaction ? Color.RED : Color.YELLOW;
+            final Color highlightColor = selectedWithTransaction ? Color.RED : Color.YELLOW;
             triangle.setEffect(new DropShadow(BlurType.GAUSSIAN, highlightColor, 15.0, 0.45, 0.0, 0.0));
         } else {
             // Remove the selection effect:
@@ -101,7 +101,6 @@ public final class Vertex extends Group {
 
         if (isShowingLabel && label != null) {
             lblVertexLabel.setLayoutX(8.0);
-
             lblVertexLabel.setLayoutY(this.isNorthernVertex ? -15.0 : -2.0);
         }
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ public class NamedSelectionHelpProvider extends HelpPageProvider {
         final String namedModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreNamedSelectionView" + sep + "src" + sep + "au" + sep + "gov"
                 + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "namedselection" + sep;
 
-        map.put("au.gov.asd.tac.constellation.views.namedselection", namedModulePath + "named-selections-view.md");
+        map.put("au.gov.asd.tac.constellation.views.namedselection.NamedSelectionTopComponent", namedModulePath + "named-selections-view.md");
         return map;
     }
 

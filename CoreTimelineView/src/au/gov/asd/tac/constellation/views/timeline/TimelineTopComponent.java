@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,8 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.geometry.Orientation;
@@ -97,6 +99,8 @@ import org.openide.windows.TopComponent;
 })
 public final class TimelineTopComponent extends TopComponent implements LookupListener, GraphChangeListener, UndoRedo.Provider {
 
+    private static final Logger LOGGER = Logger.getLogger(TimelineTopComponent.class.getName());
+    
     private static final double DEFAULT_DIVIDER_LOCATION = 0.8;
     private static final String UPDATE_TIMELINE_THREAD_NAME = "Update Timeline from Graph";
     public static final List<String> SUPPORTED_DATETIME_ATTRIBUTE_TYPES = Arrays.asList(
@@ -201,7 +205,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
             }
 
             timelinePanel.updateExclusionState(graphNode.getGraph(),
-                    (long) state.getLowerTimeExtent(), (long) state.getUpperTimeExtent(), state.exclusionState());
+                    (long) state.getLowerTimeExtent(), (long) state.getUpperTimeExtent(), state.getExclusionState());
             overviewPanel.setExtentPOV(state.getLowerTimeExtent(), state.getUpperTimeExtent());
         }
     }
@@ -254,7 +258,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
             }
 
             timelinePanel.updateExclusionState(graphNode.getGraph(),
-                    (long) state.getLowerTimeExtent(), (long) state.getUpperTimeExtent(), state.exclusionState());
+                    (long) state.getLowerTimeExtent(), (long) state.getUpperTimeExtent(), state.getExclusionState());
             overviewPanel.setExtentPOV(state.getLowerTimeExtent(), state.getUpperTimeExtent());
         }
     }
@@ -314,6 +318,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                 // Ensure that this happens after the initial setup.
                 Platform.runLater(() -> splitPane.getDividers().get(0).setPosition(splitPanePosition));
             } catch (final NumberFormatException ex) {
+                LOGGER.log(Level.WARNING, "Divider location could not be parsed");
             }
         }
     }
@@ -377,8 +382,9 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
             populateFromGraph(graph, true);
 
             graph.addGraphChangeListener(this);
-        } // Moving to nothing:
-        else {
+        
+        // Moving to nothing:
+        } else {
             persistStateToGraph();
 
             graphNode = null;
@@ -485,7 +491,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                                 if (state.getLowerTimeExtent() == 0) {
                                     setExtents(getTimelineLowerTimeExtent(), getTimelineUpperTimeExtent());
                                 }
-                                timelinePanel.setExclusionState(state.exclusionState());
+                                timelinePanel.setExclusionState(state.getExclusionState());
                             } else {
                                 // There is no state, so lets create a new one:
                                 state = new TimelineState(getTimelineLowerTimeExtent(), getTimelineUpperTimeExtent(),
@@ -553,14 +559,14 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
         if (state != null) {
             state.setExclusionState(exclusionState);
             // Enable dimming if just enabled:
-            timelinePanel.initExclusionState(graphNode.getGraph(), state.getDateTimeAttr(),
-                    (long) state.getLowerTimeExtent(), (long) state.getUpperTimeExtent(), exclusionState);
+            timelinePanel.initExclusionState(graphNode.getGraph(), (long) state.getLowerTimeExtent(), 
+                    (long) state.getUpperTimeExtent(), exclusionState);
         }
     }
 
     protected void setIsShowingSelectedOnly(final boolean isShowingSelectedOnly) {
         if (state != null) {
-            state.setIsShowingSelectedOnly(isShowingSelectedOnly);
+            state.setShowingSelectedOnly(isShowingSelectedOnly);
         }
 
         persistStateToGraph();
@@ -578,7 +584,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
 
     protected void setIsShowingNodeLabels(final boolean isShowingNodeLabels) {
         if (state != null) {
-            state.setIsShowingNodeLabels(isShowingNodeLabels);
+            state.setShowingNodeLabels(isShowingNodeLabels);
             persistStateToGraph();
 
             if (!isShowingNodeLabels || state.getNodeLabelsAttr() != null) {
@@ -724,15 +730,16 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                         timelinePanel.setNodeLabelAttributes(GraphManager.getDefault().getVertexAttributeNames());
                         populateFromGraphNode(true);
                     });
-                } //Detect value change on the temporal attribute
-                else if (currentTemporalAttributeModificationCount != oldTemporalAttributeModificationCount) {
+                
+                // Detect value change on the temporal attribute
+                } else if (currentTemporalAttributeModificationCount != oldTemporalAttributeModificationCount) {
                     populateFromGraphNode(true);
-                } // Detect graph structural changes (such as adding and removal of nodes etc):
-                else if (currentStructureModificationCount != oldStructureModificationCount) {
+                // Detect graph structural changes (such as adding and removal of nodes etc):
+                } else if (currentStructureModificationCount != oldStructureModificationCount) {
                     // Re-populate charts:
                     populateFromGraphNode(true);
-                } // Detect changes of selection to transactions or vertices:
-                else if (currentTransSelectedModificationCount != oldTransSelectedModificationCount
+                // Detect changes of selection to transactions or vertices:
+                } else if (currentTransSelectedModificationCount != oldTransSelectedModificationCount
                         || currentVertSelectedModificationCount != oldVertSelectedModificationCount) {
                     // Do only a partial update, ie the timeline and selection area for histogram:
                     populateFromGraphNode(false);

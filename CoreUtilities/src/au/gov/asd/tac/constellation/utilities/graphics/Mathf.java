@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -123,8 +123,7 @@ public final class Mathf {
      *
      * @return the distance between the given point and the given plane.
      */
-    public static Vector3f planeIntersectionPoint(final Vector3f initialEndPoint, final Vector3f finalEndPoint, final Vector4f plane) {
-        
+    public static Vector3f planeIntersectionPoint(final Vector3f initialEndPoint, final Vector3f finalEndPoint, final Vector4f plane) {       
         //Represents the distance from the initial point to the intersectionpoint
         final float t;
         
@@ -155,7 +154,7 @@ public final class Mathf {
     public static void getPointOnPlane(final Vector3f planePoint, final Vector4f plane){
         //The plane does not have a constant Z value and therefore coresses all points on the X-Y Axis. 
         final float origin = 0F;
-        final float planePointX = origin;;
+        final float planePointX = origin;
         final float planePointY;
         final float planePointZ;
         if (plane.getZ() != 0){
@@ -310,23 +309,19 @@ public final class Mathf {
         vTangent.scale(M);  // This potentially changes the direction of the vector
         vTangent.normalize();
 
-        Vector3f B = new Vector3f();
-        B.crossProduct(N, vTangent);
-        vTangent.crossProduct(B, N);
+        final Vector3f b = new Vector3f();
+        b.crossProduct(N, vTangent);
+        vTangent.crossProduct(b, N);
         vTangent.normalize();
     }
 
     public static float smoothStep(final float edge1, final float edge2, final float x) {
-        float t;
-        t = (x - edge1) / (edge2 - edge1);
+        float t = (x - edge1) / (edge2 - edge1);
         if (t > 1.0F) {
             t = 1.0F;
-        }
-
-        if (t < 0.0) {
+        } else if (t < 0.0) {
             t = 0.0F;
         }
-
         return t * t * (3.0F - 2.0F * t);
     }
 

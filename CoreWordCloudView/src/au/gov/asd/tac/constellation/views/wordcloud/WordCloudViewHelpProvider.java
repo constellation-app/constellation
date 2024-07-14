@@ -31,6 +31,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class WordCloudViewHelpProvider extends HelpPageProvider {
 
     private static final String CODEBASE_NAME = "constellation";
+    private static final String SEP = File.separator;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file name
@@ -40,9 +41,8 @@ public class WordCloudViewHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
-        final String sep = File.separator;
-        final String wordCloudModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreWordCloudView" + sep + "src" + sep + "au" + sep
-                + "gov" + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "wordcloud" + sep;
+        final String wordCloudModulePath = ".." + SEP + "ext" + SEP + "docs" + SEP + "CoreWordCloudView" + SEP + "src" + SEP + "au" + SEP
+                + "gov" + SEP + "asd" + SEP + "tac" + SEP + CODEBASE_NAME + SEP + "views" + SEP + "wordcloud" + SEP;
 
         map.put("au.gov.asd.tac.constellation.views.wordcloud.ui.WordCloudTopComponent", wordCloudModulePath + "word-cloud-view.md");
         return map;
@@ -55,10 +55,9 @@ public class WordCloudViewHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        final String sep = File.separator;
         final String wordCloudViewPath;
-        wordCloudViewPath = "ext" + sep + "docs" + sep + "CoreWordCloudView" + sep + "src" + sep + "au" + sep
-                + "gov" + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "wordcloud" + sep + "word-cloud-toc.xml";
+        wordCloudViewPath = "ext" + SEP + "docs" + SEP + "CoreWordCloudView" + SEP + "src" + SEP + "au" + SEP
+                + "gov" + SEP + "asd" + SEP + "tac" + SEP + CODEBASE_NAME + SEP + "views" + SEP + "wordcloud" + SEP + "word-cloud-toc.xml";
 
         return wordCloudViewPath;
     }

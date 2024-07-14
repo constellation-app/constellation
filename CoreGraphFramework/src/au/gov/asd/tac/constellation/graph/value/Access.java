@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,7 +74,7 @@ public class Access {
 
     private final Map<Class<?>, AccessRegistry<?>> registries = new HashMap<>();
 
-    public final <D> AccessRegistry<D> getRegistry(Class<D> destinationClass) {
+    public final <D> AccessRegistry<D> getRegistry(final Class<D> destinationClass) {
         synchronized (registries) {
             AccessRegistry<D> registry = (AccessRegistry<D>) registries.get(destinationClass);
             if (registry == null) {

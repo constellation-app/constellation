@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -135,8 +135,7 @@ public final class Vector4f {
         result.a[3] = a.a[3] - b.a[3];
     }
     
-    public static void reflect(final Vector4f result, final Vector4f referencePoint, final Vector4f reflectionPoint) {
-        
+    public static void reflect(final Vector4f result, final Vector4f referencePoint, final Vector4f reflectionPoint) {       
         // Determine the distance between the reference point and reflection point
         final Vector4f distance = new Vector4f();
         Vector4f.subtract(distance, reflectionPoint, referencePoint);

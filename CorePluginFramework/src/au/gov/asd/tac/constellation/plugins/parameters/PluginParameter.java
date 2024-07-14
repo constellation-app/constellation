@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -430,10 +430,10 @@ public class PluginParameter<V extends ParameterValue> {
      *
      * @return A new instance of PluginParameter.
      */
-    protected PluginParameter<?> create(final ParameterValue value, final PluginParameterType<?> type, final String id) {
-        final PluginParameter<?> p = new PluginParameter(value.copy(), type, id);
-        if (p.value instanceof ParameterListParameterValue) {
-            ((ParameterListParameterValue) p.value).setEnclosingParameter(p);
+    protected PluginParameter<V> create(final ParameterValue value, final PluginParameterType<V> type, final String id) {
+        final PluginParameter<V> p = new PluginParameter(value.copy(), type, id);
+        if (p.value instanceof ParameterListParameterValue parameterListParameterValue) {
+            parameterListParameterValue.setEnclosingParameter(p);
         }
         return p;
     }
@@ -509,10 +509,8 @@ public class PluginParameter<V extends ParameterValue> {
      */
     public final void setStringValue(final String stringValue) {
         setError(value.validateString(stringValue));
-        if (getError() == null) {
-            if (value.setStringValue(stringValue)) {
-                fireChangeEvent(ParameterChange.VALUE);
-            } 
+        if (getError() == null && value.setStringValue(stringValue)) {
+            fireChangeEvent(ParameterChange.VALUE);
         }
     }
 
@@ -574,7 +572,7 @@ public class PluginParameter<V extends ParameterValue> {
      * {@link BooleanParameterValue}.
      */
     public boolean getBooleanValue() {
-        return ((BooleanParameterValue) value).get();
+        return ((BooleanParameterValue) value).getValue();
     }
 
     /**
@@ -795,7 +793,7 @@ public class PluginParameter<V extends ParameterValue> {
 
     /**
      * Get the swagger Request Body Example value.
-     *    
+     *
      */
     public final String getRequestBodyExampleJson() {
         return requestBodyExample;

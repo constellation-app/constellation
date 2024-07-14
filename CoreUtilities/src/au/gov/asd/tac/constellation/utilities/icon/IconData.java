@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -201,7 +201,7 @@ public abstract class IconData {
             scaledGraphics.drawImage(image, x, y, width, height, null);
 
             if (image.getWidth() > size || image.getHeight() > size) {
-                LOGGER.fine(String.format("Scaled icon from %dx%d type %d to %dx%d type %d",
+                LOGGER.log(Level.FINE, "{0}", String.format("Scaled icon from %dx%d type %d to %dx%d type %d",
                         image.getWidth(), image.getHeight(), image.getType(), width, height, BufferedImage.TYPE_4BYTE_ABGR));
             }
 
@@ -216,14 +216,10 @@ public abstract class IconData {
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj == null) {
+        if (obj == null || this.getClass() != obj.getClass()) {
             return false;
         }
-
-        if (this.getClass() != obj.getClass()) {
-            return false;
-        }
-
+        
         return Arrays.equals(this.data, ((IconData) obj).data);
     }
 

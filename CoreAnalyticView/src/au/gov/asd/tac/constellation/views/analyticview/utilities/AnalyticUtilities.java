@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,13 +60,13 @@ public class AnalyticUtilities {
     public static Collection<AnalyticQuestionDescription> lookupAnalyticQuestionDescriptions(final Class<? extends AnalyticResult<?>> analyticResultType) {
         return Collections.unmodifiableCollection(ANALYTIC_QUESTION_DESCRIPTIONS.values().stream()
                 .filter(aggregator -> aggregator.getResultType().isAssignableFrom(analyticResultType))
-                .collect(Collectors.toList()));
+                .toList());
     }
 
     public static AnalyticQuestionDescription<?> lookupAnalyticQuestionDescription(final Class<? extends AnalyticQuestionDescription<?>> questionDescriptionType) {
         return ANALYTIC_QUESTION_DESCRIPTIONS.values().stream()
                 .filter(questionDescriptionType::isInstance)
-                .collect(Collectors.toList()).get(0);
+                .toList().get(0);
     }
 
     public static AnalyticQuestionDescription<?> lookupAnalyticQuestionDescription(final String analyticQuestionDescriptionName) {
@@ -80,13 +80,13 @@ public class AnalyticUtilities {
     public static Collection<AnalyticAggregator<?>> lookupAnalyticAggregators(final Class<? extends AnalyticResult<?>> analyticResultType) {
         return Collections.unmodifiableCollection(ANALYTIC_AGGREGATORS.values().stream()
                 .filter(aggregator -> aggregator.getResultType().isAssignableFrom(analyticResultType))
-                .collect(Collectors.toList()));
+                .toList());
     }
 
     public static AnalyticAggregator<?> lookupAnalyticAggregator(final Class<? extends AnalyticAggregator<?>> analyticAggregatorType) {
         return ANALYTIC_AGGREGATORS.values().stream()
                 .filter(analyticAggregatorType::isInstance)
-                .collect(Collectors.toList()).get(0);
+                .toList().get(0);
     }
 
     public static AnalyticAggregator<?> lookupAnalyticAggregator(final String analyticAggregatorName) {

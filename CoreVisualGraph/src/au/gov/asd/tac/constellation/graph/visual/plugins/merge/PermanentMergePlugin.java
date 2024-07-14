@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -149,7 +149,6 @@ public class PermanentMergePlugin extends SimpleEditPlugin implements HelpCtx.Pr
         for (final Map.Entry<Integer, String> entry : attributes.entrySet()) {
             graph.setObjectValue(entry.getKey(), vxId, entry.getValue());
         }
-
         return vxId;
     }
 
@@ -160,7 +159,7 @@ public class PermanentMergePlugin extends SimpleEditPlugin implements HelpCtx.Pr
      * @param selections set of selected nodes to be merged
      * @param newVxId id of the new vertex
      */
-    private void processTransactions(final GraphWriteMethods wg, final List<Integer> selections, final int newVxId, boolean createLoops, boolean keepSimple) {
+    private void processTransactions(final GraphWriteMethods wg, final List<Integer> selections, final int newVxId, final boolean createLoops, final boolean keepSimple) {
         final ArrayList<Integer> transactionAttributes = new ArrayList<>();
         for (int i = 0; i < wg.getAttributeCount(GraphElementType.TRANSACTION); i++) {
             transactionAttributes.add(wg.getAttribute(GraphElementType.TRANSACTION, i));
@@ -221,7 +220,7 @@ public class PermanentMergePlugin extends SimpleEditPlugin implements HelpCtx.Pr
                     // Instead, just forge ahead and duplicate the transactions. When the old vertices are removed below,
                     // the associated transactions that have been duplicated will implicitly be removed, and the problem
                     // will be gone. We then allow the graph commit to merge duplicate new transactions, and everyone's happy.
-                } catch (DuplicateKeyException ex) {
+                } catch (final DuplicateKeyException ex) {
                     wg.removeTransaction(ex.getNewId());
                 }
             }

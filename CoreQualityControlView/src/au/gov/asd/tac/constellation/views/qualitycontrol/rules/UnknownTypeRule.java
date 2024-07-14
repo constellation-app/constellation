@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,10 +32,9 @@ public class UnknownTypeRule extends QualityControlRule {
 
     private static final String NAME = "Unknown type";
     private static final String DESCRIPTION
-            = "This rule is used to identify nodes which have the 'Unknown' "
-            + "type.\n"
-            + "Nodes without specific types might represent valid entities, but "
-            + "they could also indicate errors in the data.";
+            = """
+              This rule is used to identify nodes which have the 'Unknown' type.
+              Nodes without specific types might represent valid entities, but they could also indicate errors in the data.""";
     private static final int RISK = 20;
 
     @Override
@@ -54,9 +53,8 @@ public class UnknownTypeRule extends QualityControlRule {
     }
 
     /**
-     * ExecuteRule will return true when the vertex type exists and the type is
-     * 'Unknown'. False will be returned when the type is null or when the type
-     * is not 'Unknown'
+     * ExecuteRule will return true when the vertex type exists and the type is 'Unknown'. False will be returned when
+     * the type is null or when the type is not 'Unknown'
      *
      * @param graph the readable graph
      * @param vertexId the vertex to check against the rule

@@ -1,5 +1,38 @@
 /*******************************************************************************
  *                                                                             *
+ * Fixed colour constants                                                      *
+ *                                                                             *
+ ******************************************************************************/
+
+* {
+    -consty-fadeblue: #b0d0f0;
+    -consty-ltblue: #51a5f8;
+    -consty-blue: #4191e8;
+    -consty-dkblue: #317fee;
+    -consty-diabled: #7aa2cd;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * List / Tree                                                                 *
+ *                                                                             *
+ ******************************************************************************/
+.list-view .list-cell:selected {
+    -fx-background-color: -consty-ltblue;
+    -fx-text-fill: white;
+}
+.list-view .list-cell:hover {
+    -fx-background-color: -consty-ltblue;
+    -fx-text-fill: white;
+}
+
+.tree-cell:selected {
+    -fx-background-color: -consty-ltblue;
+    -fx-text-fill: white;
+}
+
+/*******************************************************************************
+ *                                                                             *
  * Label                                                                       *
  *                                                                             *
  ******************************************************************************/
@@ -25,9 +58,9 @@
  *                                                                             *
  ******************************************************************************/
 .menu-button {
-    -fx-background-color: #0093FF;
-    -fx-border-color: #999999;
-    -fx-border-radius: 4px;
+    -fx-background-color: -consty-blue;
+    -fx-border-color: -consty-dkblue;
+    -fx-border-radius: 2px;
     -fx-mark-color: white;
 }
 
@@ -37,7 +70,7 @@
 
 .menu-button:hover {
     -fx-color: -fx-hover-base;
-    -fx-background-color: #009eff;
+    -fx-background-color: -consty-ltblue;
 }
 
 .menu-bar .label {
@@ -50,10 +83,11 @@
 
 .menu-item:hover .label {
     -fx-text-fill: white;
+    -fx-background-color: -consty-ltblue;
 }
 
 .menu:hover {
-    -fx-background-color: #009eff;
+    -fx-background-color: -consty-ltblue;
 }
 
 .menu-item:focused .label {
@@ -65,20 +99,27 @@
     -fx-mark-color: black;
 }
 
+.context-menu .menu-item:hover {
+    -fx-background-color: -consty-ltblue;
+}
+
+.context-menu .menu-item:focused {
+    -fx-background-color: -consty-ltblue;
+}
 /*******************************************************************************
  *                                                                             *
  * Button                                                                      *
  *                                                                             *
  ******************************************************************************/
 .button {
-    -fx-base: #0093FF;
+    -fx-base: -consty-blue;
     -fx-text-fill: #ffffff;
 }
 
 .button:hover {
     -fx-color: -fx-hover-base;
     -fx-text-fill: #ffffff;
-    -fx-background-color: #009eff;
+    -fx-background-color: -consty-ltblue;
 }
 
 .toggle-button {
@@ -92,11 +133,11 @@
 
 
 .toggle-button:selected {
-    -fx-background-color: #009eff;
+    -fx-background-color: -consty-blue;
 }
 
 .toggle-button:selected:focused {
-    -fx-background-color: #009eff;
+    -fx-background-color: -consty-blue;
 }
 
 /* Uncategorised */
@@ -104,4 +145,13 @@
 #invalid {
     -fx-background-color: #8a1d1d;
     -fx-control-inner-background: #8a1d1d;
+}
+
+#errorDialog{
+    -fx-border-color: #808080;
+    -fx-background-color: #e0e0e0;
+}
+
+#errorDialogOccBox{
+    -fx-background-color: #bcbcbc;
 }

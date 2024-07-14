@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.namedselection;
 
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.SwingTopComponent;
 import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionListElement;
 import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionModDescPanel;
@@ -44,6 +46,7 @@ import org.openide.NotifyDescriptor;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
+import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
 
@@ -99,8 +102,9 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
                 if (e.getClickCount() == 2) {
                     retrieveSelection();
                 }
-            } // Right click: open context menu on the named selection 'under' the mouse pointer:
-            else if (e.getButton() == MouseEvent.BUTTON3) {
+                
+            // Right click: open context menu on the named selection 'under' the mouse pointer:
+            } else if (e.getButton() == MouseEvent.BUTTON3) {
                 lstNamedSelections.setSelectedIndex(lstNamedSelections.locationToIndex(e.getPoint()));
 
                 boolean isEnabled = true;
@@ -133,17 +137,13 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
         @Override
         public void keyPressed(final KeyEvent e) {
             switch (e.getKeyCode()) {
-                case KeyEvent.VK_ENTER:
-                    // On enter, retrieve the selection:
+                case KeyEvent.VK_ENTER -> // On enter, retrieve the selection:
                     retrieveSelection();
-                    break;
-                case KeyEvent.VK_F2:
-                    // On F2, rename the selection:
+                case KeyEvent.VK_F2 -> // On F2, rename the selection:
                     renameElement();
-                    break;
-                default:
-                    // Do nothing
-                    break;
+                default -> {
+                    // do nothing
+                }
             }
         }
     };
@@ -286,6 +286,8 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
         jSeparator1 = new javax.swing.JToolBar.Separator();
         btnUnion = new javax.swing.JButton();
         btnIntersection = new javax.swing.JButton();
+        jSeparator2 = new javax.swing.JToolBar.Separator();
+        helpButton = new javax.swing.JButton();
         scrlContent = new javax.swing.JScrollPane();
         lstNamedSelections = new NamedSelectionList();
 
@@ -358,7 +360,6 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
         });
         popContext.add(mnuDescription);
 
-        tlbActions.setFloatable(false);
         tlbActions.setOrientation(javax.swing.SwingConstants.VERTICAL);
         tlbActions.setRollover(true);
 
@@ -442,6 +443,20 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
             }
         });
         tlbActions.add(btnIntersection);
+        tlbActions.add(jSeparator2);
+
+        helpButton.setIcon(UserInterfaceIconProvider.HELP.buildIcon(16, ConstellationColor.SKY.getJavaColor()));
+        org.openide.awt.Mnemonics.setLocalizedText(helpButton, org.openide.util.NbBundle.getMessage(NamedSelectionTopComponent.class, "NamedSelectionTopComponent.helpButton.text")); // NOI18N
+        helpButton.setToolTipText(org.openide.util.NbBundle.getMessage(NamedSelectionTopComponent.class, "NamedSelectionTopComponent.helpButton.toolTipText")); // NOI18N
+        helpButton.setFocusable(false);
+        helpButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        helpButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        helpButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                helpButtonActionPerformed(evt);
+            }
+        });
+        tlbActions.add(helpButton);
 
         scrlContent.setAutoscrolls(true);
 
@@ -649,6 +664,11 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     private void mnuOverwriteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuOverwriteActionPerformed
         overwriteSelection();
     }//GEN-LAST:event_mnuOverwriteActionPerformed
+
+    private void helpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpButtonActionPerformed
+        new HelpCtx(NamedSelectionTopComponent.class.getName()).display();
+    }//GEN-LAST:event_helpButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JToggleButton btnDimMode;
@@ -656,7 +676,9 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     private javax.swing.JButton btnRemove;
     private javax.swing.JToggleButton btnSelectResults;
     private javax.swing.JButton btnUnion;
+    private javax.swing.JButton helpButton;
     private javax.swing.JToolBar.Separator jSeparator1;
+    private javax.swing.JToolBar.Separator jSeparator2;
     private javax.swing.JList lstNamedSelections;
     private javax.swing.JCheckBoxMenuItem mnuCheckLocked;
     private javax.swing.JMenuItem mnuClone;

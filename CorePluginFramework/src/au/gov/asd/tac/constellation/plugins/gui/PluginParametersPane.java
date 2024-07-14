@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -766,18 +766,15 @@ public final class PluginParametersPane extends GridPane {
         public void linkParameterLabelToTop(final PluginParameter<?> parameter, final LabelDescriptionBox ldb) {
             parameter.addListener((parameter1, change) -> {
                 switch (change) {
-                    case NAME:
-                        ldb.label.setText(parameter1.getName());
-                        break;
-                    case DESCRIPTION:
-                        ldb.description.setText(parameter1.getDescription());
-                        break;
-                    case VISIBLE:
+                    case NAME -> ldb.label.setText(parameter1.getName());
+                    case DESCRIPTION -> ldb.description.setText(parameter1.getDescription());
+                    case VISIBLE -> {
                         ldb.setManaged(parameter.isVisible());
                         ldb.setVisible(parameter.isVisible());
-                        break;
-                    default:
-                        break;
+                    }
+                    default -> {
+                        // do nothing
+                    }
                 }
             });
         }
@@ -787,19 +784,18 @@ public final class PluginParametersPane extends GridPane {
             
             parameter.addListener((parameter1, change) -> {
                 switch (change) {
-                    case ERROR:
+                    case ERROR -> {
                         if (parameter1.getError() == null) {
                             validParams++;
                         } else {
                             validParams--;
                         }
                         Platform.runLater(this::parameterHasChanged);
-                        break;
-                    case VALUE: 
-                        Platform.runLater(this::parameterHasChanged);
-                        break;
-                    default:
-                        break;
+                    }
+                    case VALUE -> Platform.runLater(this::parameterHasChanged);
+                    default -> {
+                        // do nothing
+                    }
                 }
                 updateTop(parameter);
             });
@@ -827,47 +823,20 @@ public final class PluginParametersPane extends GridPane {
 
             final Pane pane;
             switch (id) {
-                case StringParameterType.ID:
-                    pane = new ValueInputPane((PluginParameter<StringParameterValue>) parameter, ValueInputPane.DEFAULT_WIDTH, StringParameterType.getLines((PluginParameter<StringParameterValue>) parameter));
-                    break;
-                case IntegerParameterType.ID:
-                    pane = new NumberInputPane<>((PluginParameter<IntegerParameterValue>) parameter);
-                    break;
-                case FloatParameterType.ID:
-                    pane = new NumberInputPane<>((PluginParameter<FloatParameterValue>) parameter);
-                    break;
-                case BooleanParameterType.ID:
-                    pane = new BooleanInputPane((PluginParameter<BooleanParameterValue>) parameter);
-                    break;
-                case SingleChoiceParameterType.ID:
-                    pane = new SingleChoiceInputPane((PluginParameter<SingleChoiceParameterValue>) parameter);
-                    break;
-                case ColorParameterType.ID:
-                    pane = new ColorInputPane((PluginParameter<ColorParameterValue>) parameter);
-                    break;
-                case DateTimeRangeParameterType.ID:
-                    pane = new DateTimeRangeInputPane((PluginParameter<DateTimeRangeParameterValue>) parameter);
-                    break;
-                case FileParameterType.ID:
-                    pane = new FileInputPane((PluginParameter<FileParameterValue>) parameter);
-                    break;
-                case LocalDateParameterType.ID:
-                    pane = new LocalDateInputPane((PluginParameter<LocalDateParameterValue>) parameter);
-                    break;
-                case MultiChoiceParameterType.ID:
-                    pane = new MultiChoiceInputPane((PluginParameter<MultiChoiceParameterValue>) parameter);
-                    break;
-                case ParameterListParameterType.ID:
-                    pane = new ParameterListInputPane((PluginParameter<ParameterListParameterValue>) parameter);
-                    break;
-                case ActionParameterType.ID:
-                    pane = new ActionInputPane(parameter);
-                    break;
-                case PasswordParameterType.ID:
-                    pane = new ValueInputPane((PluginParameter<PasswordParameterValue>) parameter, ValueInputPane.DEFAULT_WIDTH);
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unsupported parameter type ID: " + id);
+                case StringParameterType.ID -> pane = new ValueInputPane((PluginParameter<StringParameterValue>) parameter, ValueInputPane.DEFAULT_WIDTH, StringParameterType.getLines((PluginParameter<StringParameterValue>) parameter));
+                case IntegerParameterType.ID -> pane = new NumberInputPane<>((PluginParameter<IntegerParameterValue>) parameter);
+                case FloatParameterType.ID -> pane = new NumberInputPane<>((PluginParameter<FloatParameterValue>) parameter);
+                case BooleanParameterType.ID -> pane = new BooleanInputPane((PluginParameter<BooleanParameterValue>) parameter);
+                case SingleChoiceParameterType.ID -> pane = new SingleChoiceInputPane((PluginParameter<SingleChoiceParameterValue>) parameter);
+                case ColorParameterType.ID -> pane = new ColorInputPane((PluginParameter<ColorParameterValue>) parameter);
+                case DateTimeRangeParameterType.ID -> pane = new DateTimeRangeInputPane((PluginParameter<DateTimeRangeParameterValue>) parameter);
+                case FileParameterType.ID -> pane = new FileInputPane((PluginParameter<FileParameterValue>) parameter);
+                case LocalDateParameterType.ID -> pane = new LocalDateInputPane((PluginParameter<LocalDateParameterValue>) parameter);
+                case MultiChoiceParameterType.ID -> pane = new MultiChoiceInputPane((PluginParameter<MultiChoiceParameterValue>) parameter);
+                case ParameterListParameterType.ID -> pane = new ParameterListInputPane((PluginParameter<ParameterListParameterValue>) parameter);
+                case ActionParameterType.ID -> pane = new ActionInputPane(parameter);
+                case PasswordParameterType.ID -> pane = new PasswordInputPane((PluginParameter<PasswordParameterValue>) parameter);
+                default -> throw new IllegalArgumentException("Unsupported parameter type ID: " + id);
             }
 
             linkParameterWidgetToTop(parameter);

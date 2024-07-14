@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ public class FontUtilities {
     // and shared amongst everything.
     private static final Map<String, Font> FONTS = new HashMap<>();
     private static final Map<String, Font> OUTPUT_FONTS = new HashMap<>();
-    
+
     private FontUtilities() {
         throw new IllegalStateException("Utility class");
     }
@@ -53,10 +53,9 @@ public class FontUtilities {
     /**
      * Set the default font size and family preferences if they are not already defined.
      * <p>
-     * Top Components listen for changes in
-     * ApplicationFontPreferenceKeys.FONT_PREFERENCES and if its not defined
-     * then the listener will not be registered. This initialise method is
-     * called when the application starts to make sure a preference is defined.
+     * Top Components listen for changes in ApplicationFontPreferenceKeys.FONT_PREFERENCES and if its not defined then
+     * the listener will not be registered. This initialise method is called when the application starts to make sure a
+     * preference is defined.
      */
     public static synchronized void initialiseApplicationFontPreferenceOnFirstUse() {
         final Preferences p = NbPreferences.root();
@@ -64,11 +63,6 @@ public class FontUtilities {
             if (!p.nodeExists(ApplicationPreferenceKeys.FONT_PREFERENCES)) {
                 p.node(ApplicationPreferenceKeys.FONT_PREFERENCES).put(ApplicationPreferenceKeys.FONT_SIZE, ApplicationPreferenceKeys.FONT_SIZE_DEFAULT);
                 p.node(ApplicationPreferenceKeys.FONT_PREFERENCES).put(ApplicationPreferenceKeys.FONT_FAMILY, ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT);
-            } else {
-                ApplicationPreferenceKeys.FONT_SIZE_DEFAULT = p.node(ApplicationPreferenceKeys.FONT_PREFERENCES).get(ApplicationPreferenceKeys.FONT_SIZE,
-                        ApplicationPreferenceKeys.FONT_SIZE_DEFAULT);
-                ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT = p.node(ApplicationPreferenceKeys.FONT_PREFERENCES).get(ApplicationPreferenceKeys.FONT_FAMILY,
-                        ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT);
             }
         } catch (final BackingStoreException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
@@ -95,9 +89,8 @@ public class FontUtilities {
     /**
      * Return the user's default font size.
      * <p>
-     * This retrieves the font size specified in Setup &rarr; Options &rarr;
-     * Constellation &rarr; Application Font &rarr; Font Size. The default if
-     * not specified is 12.
+     * This retrieves the font size specified in Setup &rarr; Options &rarr; Constellation &rarr; Application Font
+     * &rarr; Font Size. The default if not specified is 12.
      *
      * @return The user's default font size.
      */
@@ -123,9 +116,8 @@ public class FontUtilities {
     /**
      * Return the user's default font family.
      * <p>
-     * This retrieves the font family specified in Setup &rarr; Options &rarr;
-     * Constellation &rarr; Application Font &rarr; Default Font. The default if
-     * not specified is Arial.
+     * This retrieves the font family specified in Setup &rarr; Options &rarr; Constellation &rarr; Application Font
+     * &rarr; Default Font. The default if not specified is Arial.
      *
      * @return The user's default font family.
      */
@@ -148,13 +140,11 @@ public class FontUtilities {
     }
 
     /**
-     * Set the default font size and family as preferences if they are not 
-     * already defined.
+     * Set the default font size and family as preferences if they are not already defined.
      * <p>
-     * Top Components listen for changes in
-     * ApplicationPreferenceKeys.OUTPUT2_PREFERENCE and if its not defined then
-     * the listener will not be registered. This initialise method is called
-     * when the application starts to make sure a preference is defined.
+     * Top Components listen for changes in ApplicationPreferenceKeys.OUTPUT2_PREFERENCE and if its not defined then the
+     * listener will not be registered. This initialise method is called when the application starts to make sure a
+     * preference is defined.
      */
     public static synchronized void initialiseOutputFontPreferenceOnFirstUse() {
         final Preferences p = NbPreferences.root();
@@ -188,15 +178,13 @@ public class FontUtilities {
     /**
      * Return the user's default font size.
      * <p>
-     * This retrieves the font size specified in Setup &rarr; Options &rarr;
-     * Miscellaneous &rarr; Output &rarr; Font Size. The default if not
-     * specified is 11.
+     * This retrieves the font size specified in Setup &rarr; Options &rarr; Miscellaneous &rarr; Output &rarr; Font
+     * Size. The default if not specified is 11.
      *
      * @return The user's default font size.
      */
     public static int getOutputFontSize() {
         int fontSize;
-
         try {
             final Preferences p = NbPreferences.root();
             if (p.nodeExists(ApplicationPreferenceKeys.OUTPUT2_PREFERENCE)) {
@@ -217,15 +205,13 @@ public class FontUtilities {
     /**
      * Return the user's default font family.
      * <p>
-     * This retrieves the font family specified in Setup &rarr; Options &rarr;
-     * Miscellaneous &rarr; Output &rarr; Font Size. The default if not
-     * specified is Dialog.
+     * This retrieves the font family specified in Setup &rarr; Options &rarr; Miscellaneous &rarr; Output &rarr; Font
+     * Size. The default if not specified is Dialog.
      *
      * @return The user's default font family.
      */
     public static String getOutputFontFamily() {
         String fontFamily;
-
         try {
             final Preferences p = NbPreferences.root();
             if (p.nodeExists(ApplicationPreferenceKeys.OUTPUT2_PREFERENCE)) {

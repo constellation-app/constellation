@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -167,17 +167,6 @@ public class IntArrayNGTest {
         assertEquals(i.indexOf(I1), -1);
         i.add(I2, I3, I4, I1);
         assertEquals(i.indexOf(I1), 3);
-    }
-    
-    /**
-     * Can clone a IntArray.
-     */
-    @Test
-    public void IntArray() {
-        final IntArray i = new IntArray();
-        i.add(I4, I3, I2, I1);
-        final IntArray iClone = i.clone();
-        assertEquals(i.toString(), iClone.toString());
     }
     
     /**

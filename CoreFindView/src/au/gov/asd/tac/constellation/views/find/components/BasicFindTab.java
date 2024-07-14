@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,9 @@ package au.gov.asd.tac.constellation.views.find.components;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.gui.MultiChoiceInputField;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.find.FindViewController;
 import au.gov.asd.tac.constellation.views.find.utilities.ActiveFindResultsList;
 import au.gov.asd.tac.constellation.views.find.utilities.BasicFindReplaceParameters;
@@ -42,11 +44,13 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import org.openide.util.HelpCtx;
 
 /**
  * BasicFindTab contains all the UI elements for the Basic find tab.
@@ -100,6 +104,8 @@ public class BasicFindTab extends Tab {
     protected final ChoiceBox postSearchChoiceBox = new ChoiceBox();
 
     private final Label resultsFoundLabel = new Label();
+    private final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor()));
+    private final Button helpButton = new Button("", helpImage);
 
     private final Button findNextButton = new Button("Find Next");
     private final Button findPrevButton = new Button("Find Previous");
@@ -154,11 +160,13 @@ public class BasicFindTab extends Tab {
             }
         });
 
-        //Set the actions for the 3 bottom buttons
+        //Set the actions for the 5 bottom buttons
         findAllButton.setOnAction(action -> findAllAction());
         findNextButton.setOnAction(action -> findNextAction());
         findPrevButton.setOnAction(action -> findPrevAction());
         deleteResultsButton.setOnAction(action -> deleteResultsAction());
+        helpButton.setStyle("-fx-border-color: transparent; -fx-background-color: transparent; -fx-effect: null; ");
+        helpButton.setOnAction(event -> new HelpCtx("au.gov.asd.tac.constellation.views.find").display());
 
         FindViewController.getDefault().getNumResultsFound().addListener((observable, oldValue, newValue) -> resultsFoundLabel.setText("Results Found: " + newValue));
     }
@@ -267,7 +275,7 @@ public class BasicFindTab extends Tab {
         buttonsHBox.setAlignment(Pos.CENTER_LEFT);
         buttonsHBox.setPadding(new Insets(5, 10, 5, 10));
         buttonsHBox.setSpacing(5);
-        buttonsHBox.getChildren().addAll(deleteResultsButton, findAllButton, findPrevButton, findNextButton);
+        buttonsHBox.getChildren().addAll(helpButton, deleteResultsButton, findAllButton, findPrevButton, findNextButton);
         buttonsHBox.setAlignment(Pos.CENTER_RIGHT);
 
         deleteResultsButton.setDisable(true);
@@ -301,7 +309,7 @@ public class BasicFindTab extends Tab {
          * to the buttonsHbox
          */
         buttonsHBox.getChildren().clear();
-        buttonsHBox.getChildren().addAll(deleteResultsButton, findAllButton, findPrevButton, findNextButton);
+        buttonsHBox.getChildren().addAll(helpButton, deleteResultsButton, findAllButton, findPrevButton, findNextButton);
         parentComponent.getParentComponent().setBottom(buttonsVBox);
     }
 
@@ -403,16 +411,12 @@ public class BasicFindTab extends Tab {
      */
     public List<Attribute> getMatchingAttributeList(final GraphElementType type) {
         // based on the element type return the matching list
-        switch (type) {
-            case VERTEX:
-                return selectedNodeAttributes;
-            case TRANSACTION:
-                return selectedTransAttributes;
-            case EDGE:
-                return selectedEdgeAttributes;
-            default:
-                return selectedLinkAttributes;
-        }
+        return switch (type) {
+            case VERTEX -> selectedNodeAttributes;
+            case TRANSACTION -> selectedTransAttributes;
+            case EDGE -> selectedEdgeAttributes;
+            default -> selectedLinkAttributes;
+        };
     }
 
 
@@ -478,31 +482,15 @@ public class BasicFindTab extends Tab {
         // retrieves the currently selected index, setting the relevent boolean
         // to true
         switch (postSearchChoiceBox.getSelectionModel().getSelectedIndex()) {
-            case 0:
-                replaceSelection = true;
-                break;
-            case 1:
-                addTo = true;
-                break;
-            case 2:
-                removeFrom = true;
-                break;
-            default:
-                break;
+            case 0 -> replaceSelection = true;
+            case 1 -> addTo = true;
+            case 2 -> removeFrom = true;
         }
 
         switch (searchInChoiceBox.getSelectionModel().getSelectedIndex()) {
-            case 0:
-                currentGraph = true;
-                break;
-            case 1:
-                currentSelection = true;
-                break;
-            case 2:
-                searchAllGraphs = true;
-                break;
-            default:
-                break;
+            case 0 -> currentGraph = true;
+            case 1 -> currentSelection = true;
+            case 2 -> searchAllGraphs = true;
         }
 
         // creates a new basicFindReplaceParameter with the currently selected

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,17 +34,7 @@ public class GraphBuildException extends IllegalArgumentException {
      *
      * @param s the detail message.
      */
-    public GraphBuildException(String s) {
+    public GraphBuildException(final String s) {
         super(s);
-    }
-
-    /**
-     * Factory method for making a <code>NumberFormatException</code> given the
-     * specified input which caused the error.
-     *
-     * @param s the input causing the error
-     */
-    static GraphBuildException forInputString(String s) {
-        return new GraphBuildException("For input string: \"" + s + "\"");
     }
 }

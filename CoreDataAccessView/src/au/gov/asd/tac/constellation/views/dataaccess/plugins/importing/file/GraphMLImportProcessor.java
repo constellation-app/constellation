@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,6 +55,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
 /**
  * Importer for the GraphML file type
  *
@@ -63,9 +64,11 @@ import org.w3c.dom.NodeList;
  */
 @ServiceProvider(service = GraphFileImportProcessor.class)
 public class GraphMLImportProcessor implements GraphFileImportProcessor {
-    
+
     private static final Logger LOGGER = Logger.getLogger(GraphMLImportProcessor.class.getName());
     
+    private static final String PLUGIN_NAME = "Import GraphML File";
+
     public static final String GRAPHML_TAG = "graphml";
     public static final String GRAPH_TAG = "graph";
     public static final String DIRECTION_TAG = "edgedefault";
@@ -97,11 +100,11 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
         if (input == null) {
             throw new ProcessingException("Please specify a file to read from");
         }
-        
+
         if (output == null) {
             throw new ProcessingException("Please specify a record store to output to");
         }
-        
+
         final RecordStore nodeRecords = new GraphRecordStore();
         final RecordStore edgeRecords = new GraphRecordStore();
 
@@ -136,7 +139,7 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
                 } else {
                     transactionAttributes.put(id, name);
                 }
-                
+
                 // Check for default values
                 if (key.hasChildNodes()) {
                     final NodeList children = key.getChildNodes();
@@ -163,10 +166,10 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
                         final Node childNode = children.item(childIndex);
                         if (childNode != null) {
                             switch (childNode.getNodeName()) {
-                                case NODE_TAG: {
+                                case NODE_TAG -> {
                                     final NamedNodeMap attributes = childNode.getAttributes();
                                     final Node id = attributes.getNamedItem(ID_TAG);
-                                    if (id == null){
+                                    if (id == null) {
                                         processingErrors.add("%s Node%s have a required identifier field.");
                                         continue;
                                     }
@@ -191,9 +194,8 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
                                     if (retrieveTransactions) {
                                         nodeIdToType.put(stringID, nodeRecords.get(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE));
                                     }
-                                    break;
                                 }
-                                case EDGE_TAG: {
+                                case EDGE_TAG -> {
                                     if (retrieveTransactions) {
                                         final NamedNodeMap attributes = childNode.getAttributes();
                                         final Node id = attributes.getNamedItem(ID_TAG);
@@ -202,25 +204,24 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
                                         ** but this isn't a requirement in the graphML specification
                                         ** http://graphml.graphdrawing.org/specification/xsd.html
                                         ** If no edge ID is given a UUID will be generated and assigned.
-                                        */
+                                         */
                                         final String stringID = (id == null) ? UUID.randomUUID().toString() : id.getNodeValue();
                                         final Node source = attributes.getNamedItem(EDGE_SRC_TAG);
                                         final Node target = attributes.getNamedItem(EDGE_DST_TAG);
 
                                         // Error checking for required edge fields
-                                        if(source == null){
+                                        if (source == null) {
                                             processingErrors.add("%s Edge%s have a required source field.");
                                             continue;
                                         }
-                                        if(target == null){
+                                        if (target == null) {
                                             processingErrors.add("%s Edge%s have a required target field.");
                                             continue;
                                         }
 
                                         final String targetString = target.getNodeValue();
                                         final String sourceString = source.getNodeValue();
-                                        
-                                        
+
                                         edgeRecords.add();
                                         edgeRecords.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, sourceString);
                                         edgeRecords.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, targetString);
@@ -242,26 +243,26 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
                                             GraphMLUtilities.addAttributes(childNode, transactionAttributes, edgeRecords, GraphRecordStoreUtilities.TRANSACTION);
                                         }
                                     }
-                                    break;
                                 }
-                                default:
-                                    break;
+                                default -> {
+                                    // Do nothing
+                                }
                             }
                         }
                     }
-                    
+
                     // resolve the node types between edges so that each edge is correctly added to the graph
                     for (int i = 0; i < edgeRecords.size(); i++) {
-                        edgeRecords.set(i, GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, 
+                        edgeRecords.set(i, GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE,
                                 nodeIdToType.get(edgeRecords.get(i, GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER)));
-                        edgeRecords.set(i, GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.TYPE, 
+                        edgeRecords.set(i, GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.TYPE,
                                 nodeIdToType.get(edgeRecords.get(i, GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER)));
                     }
                 }
             }
         } catch (final FileNotFoundException ex) {
             final String errorMsg = StringUtils.isEmpty(filename) ? "File not specified" : "File not found: " + filename;
-            NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + errorMsg, "Import GraphML File", DEFAULT_OPTION, 
+            NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + errorMsg, PLUGIN_NAME, DEFAULT_OPTION,
                     NotifyDescriptor.ERROR_MESSAGE, new Object[]{NotifyDescriptor.OK_OPTION}, NotifyDescriptor.OK_OPTION));
             final Throwable fnfEx = new FileNotFoundException(NotifyDisplayer.BLOCK_POPUP_FLAG + errorMsg);
             fnfEx.setStackTrace(ex.getStackTrace());
@@ -270,7 +271,7 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         } catch (final IOException ex) {
             final String errorMsg = StringUtils.isEmpty(filename) ? "File not specified " : "Error reading file: " + filename;
-            NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + errorMsg, "Import GraphML File", DEFAULT_OPTION, 
+            NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + errorMsg, PLUGIN_NAME, DEFAULT_OPTION,
                     NotifyDescriptor.ERROR_MESSAGE, new Object[]{NotifyDescriptor.OK_OPTION}, NotifyDescriptor.OK_OPTION));
             final Throwable ioEx = new IOException(NotifyDisplayer.BLOCK_POPUP_FLAG + errorMsg);
             ioEx.setStackTrace(ex.getStackTrace());
@@ -281,29 +282,29 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
         output.add(edgeRecords);
 
         // Add a warning for nodes and edges that were invalid snd not imported
-        if(!processingErrors.isEmpty()){
-            
+        if (!processingErrors.isEmpty()) {
+
             // Count distinct processing errors
             final Map<String, Long> processingErrorTypes = processingErrors.stream()
-                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+                    .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
             final String errorMsg = processingErrorTypes.entrySet().stream()
                     .map(e -> {
                         String plural = " doesn't";
                         final long errorCount = e.getValue();
-                        if(errorCount > 1){
+                        if (errorCount > 1) {
                             plural = "s don't";
                         }
-                        
+
                         return String.format(e.getKey(), errorCount, plural);
                     })
                     .collect(Collectors.joining(SeparatorConstants.NEWLINE));
 
             NotifyDisplayer.display(new NotifyDescriptor("Warning - Some elements weren't able to be imported:\n" + errorMsg,
-                    "Import GraphML File", DEFAULT_OPTION,
+                    PLUGIN_NAME, DEFAULT_OPTION,
                     NotifyDescriptor.WARNING_MESSAGE, new Object[]{NotifyDescriptor.OK_OPTION}, NotifyDescriptor.OK_OPTION));
             LOGGER.log(Level.WARNING, errorMsg);
         }
     }
-    
+
 }

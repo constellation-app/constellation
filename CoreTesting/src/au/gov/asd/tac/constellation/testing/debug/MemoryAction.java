@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ public final class MemoryAction implements ActionListener {
     private static final float DIVIDE_BY = 1024;
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(final ActionEvent e) {
         final float freemem = (Runtime.getRuntime().freeMemory() / DIVIDE_BY) / DIVIDE_BY;
         final float totalmem = (Runtime.getRuntime().totalMemory() / DIVIDE_BY) / DIVIDE_BY;
         final float maxmem = (Runtime.getRuntime().maxMemory() / DIVIDE_BY) / DIVIDE_BY;

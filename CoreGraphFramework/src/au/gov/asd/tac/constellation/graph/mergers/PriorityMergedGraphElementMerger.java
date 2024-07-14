@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,26 +32,25 @@ public class PriorityMergedGraphElementMerger implements GraphElementMerger {
 
     @Override
     public boolean mergeElement(final GraphWriteMethods graph, final GraphElementType elementType, final int survivingElement, final int mergedElement) {
-
-        int elementAttributeCount = graph.getAttributeCount(elementType);
+        final int elementAttributeCount = graph.getAttributeCount(elementType);
         for (int elementAttributePosition = 0; elementAttributePosition < elementAttributeCount; elementAttributePosition++) {
-            int elementAttribute = graph.getAttribute(elementType, elementAttributePosition);
+            final int elementAttribute = graph.getAttribute(elementType, elementAttributePosition);
             if (!graph.isDefaultValue(elementAttribute, mergedElement)) {
                 graph.getNativeAttributeType(elementAttribute).copyAttributeValue(graph, elementAttribute, mergedElement, survivingElement);
             }
         }
 
         if (elementType == GraphElementType.VERTEX) {
-            int transactionCount = graph.getVertexTransactionCount(mergedElement);
+            final int transactionCount = graph.getVertexTransactionCount(mergedElement);
             for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
-                int mergedTransaction = graph.getVertexTransaction(mergedElement, 0);
+                final int mergedTransaction = graph.getVertexTransaction(mergedElement, 0);
 
-                int sourceVertex = graph.getTransactionSourceVertex(mergedTransaction);
+                final int sourceVertex = graph.getTransactionSourceVertex(mergedTransaction);
                 if (sourceVertex == mergedElement) {
                     graph.setTransactionSourceVertex(mergedTransaction, survivingElement);
                 }
 
-                int destinationVertex = graph.getTransactionDestinationVertex(mergedTransaction);
+                final int destinationVertex = graph.getTransactionDestinationVertex(mergedTransaction);
                 if (destinationVertex == mergedElement) {
                     graph.setTransactionDestinationVertex(mergedTransaction, survivingElement);
                 }

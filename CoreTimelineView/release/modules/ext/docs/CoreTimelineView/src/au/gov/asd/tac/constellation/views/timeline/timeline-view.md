@@ -12,7 +12,7 @@
 <th>Constellation Action</th>
 <th>Keyboard Shortcut</th>
 <th>User Action</th>
-<th>Menu Icon</th>
+<th style="text-align: center;">Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -20,9 +20,7 @@
 <td>Open Timeline</td>
 <td>Ctrl + Shift + T</td>
 <td>Views -&gt; Timeline</td>
-<td><div style="text-align: center">
-<img src="../ext/docs/CoreTimelineView/src/au/gov/asd/tac/constellation/views/timeline/resources/timeline.png" width="16" height="16" />
-</div></td>
+<td style="text-align: center"><img src="../ext/docs/CoreTimelineView/src/au/gov/asd/tac/constellation/views/timeline/resources/timeline.png" alt="Timeline Icon" /></td>
 </tr>
 </tbody>
 </table>
@@ -32,11 +30,9 @@ its transactions, it can be viewed using the Timeline View. The Timeline
 will plot the data from the graph relative to its occurrence in time.
 
 <div style="text-align: center">
-
-<img src="../ext/docs/CoreTimelineView/src/au/gov/asd/tac/constellation/views/timeline/resources/TimelineView.png" alt="Timeline
-View" />
-
+    <img width=1100 src="../ext/docs/CoreTimelineView/src/au/gov/asd/tac/constellation/views/timeline/resources/TimelineView.png" alt="Timeline View" />
 </div>
+<br />
 
 ## Temporal Clusters
 

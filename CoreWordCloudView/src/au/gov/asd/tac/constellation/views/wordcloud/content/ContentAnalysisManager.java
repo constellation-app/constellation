@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -77,7 +78,7 @@ public class ContentAnalysisManager {
         private final List<String> list;
         private final int workload;
 
-        protected StringListThreadedPhraseAdaptor(final ThreadAllocator allocator, final List<String> list) {
+        protected StringListThreadedPhraseAdaptor(final ThreadAllocator allocator, final Collection<String> list) {
             this.list = new ArrayList<>(list);
             elCurrentPosition = elLowPosition = allocator.getLowerPos();
             workload = allocator.getWorkload();
@@ -114,7 +115,7 @@ public class ContentAnalysisManager {
         }
     }
 
-    public ThreadAllocator getStringListAllocator(final List<String> list) {
+    public ThreadAllocator getStringListAllocator(final Collection<String> list) {
         return ThreadAllocator.buildThreadAllocator(AVAILABLE_THREADS, MAX_THRESHOLD, list.size(), (final ThreadAllocator forAllocator) -> new StringListThreadedPhraseAdaptor(forAllocator, list));
     }
 
@@ -171,7 +172,7 @@ public class ContentAnalysisManager {
         ContentTokenizingServices.createDocumentClusteringTokenizingService(th, clusterDocumentsParams, allocator);
 
        final  ContentVectorClusteringServices cvcs = ContentVectorClusteringServices.createKMeansClusteringService(th, clusterDocumentsParams, querySize);
-        cvcs.createAndRunThreads(allocator);
+       cvcs.createAndRunThreads(allocator);
 
         final ContentAnalysisGraphProcessing gp = new ContentAnalysisGraphProcessing(graph, cvcs, elementType, clusterDocumentsParams.getFollowUpChoice());
         gp.performFollowUp();

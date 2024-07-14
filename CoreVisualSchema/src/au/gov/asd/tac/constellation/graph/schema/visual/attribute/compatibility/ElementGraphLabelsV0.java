@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * An object that holds the descriptions of node and connections labels and node
@@ -53,7 +52,7 @@ public final class ElementGraphLabelsV0 {
     public ElementGraphLabelsV0(final ElementGraphLabelsV0 graphLabels, final List<ElementGraphLabelV0> additionalLabels) {
         final List<ElementGraphLabelV0> allLabels = new ArrayList<>();
         graphLabels.labels.forEach(label -> allLabels.add(new ElementGraphLabelV0(label)));
-        additionalLabels.forEach(label -> allLabels.add(label));
+        additionalLabels.forEach(allLabels::add);
         labels = allLabels.size() > MAX_LABELS ? allLabels.subList(0, MAX_LABELS) : allLabels;
     }
 
@@ -75,7 +74,7 @@ public final class ElementGraphLabelsV0 {
 
     @Override
     public String toString() {
-        return StringUtilities.quoteAndDelimitString(labels.stream().map(label -> label.toString()).collect(Collectors.toList()), LABEL_DELIMITER);
+        return StringUtilities.quoteAndDelimitString(labels.stream().map(Object::toString).toList(), LABEL_DELIMITER);
     }
 
     public static ElementGraphLabelsV0 valueOf(final String graphLabelsString) {

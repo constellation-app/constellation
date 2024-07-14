@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -90,11 +90,8 @@ public class TableToolbar {
      */
     public void init() {
         columnVisibilityButton = createButton(COLUMNS_ICON, COLUMN_VISIBILITY, e -> {
-            final ColumnVisibilityContextMenu columnVisibilityMenu
-                    = createColumnVisibilityContextMenu();           
-            columnVisibilityMenu.getContextMenu()
-                    .show(columnVisibilityButton, Side.RIGHT, 0, 0);
-
+            final ColumnVisibilityContextMenu columnVisibilityMenu = createColumnVisibilityContextMenu();           
+            columnVisibilityMenu.getContextMenu().show(columnVisibilityButton, Side.RIGHT, 0, 0);
             e.consume();
         });
 
@@ -105,15 +102,11 @@ public class TableToolbar {
                 final TableViewState newState = new TableViewState(getTableViewTopComponent().getCurrentState());
                 newState.setSelectedOnly(!getTableViewTopComponent().getCurrentState().isSelectedOnly());
 
-                selectedOnlyButton.setGraphic(
-                        newState.isSelectedOnly() ? SELECTED_VISIBLE_ICON : ALL_VISIBLE_ICON
-                );
+                selectedOnlyButton.setGraphic(newState.isSelectedOnly() ? SELECTED_VISIBLE_ICON : ALL_VISIBLE_ICON);
 
-                PluginExecution.withPlugin(
-                        new UpdateStatePlugin(newState)
-                ).executeLater(getTableViewTopComponent().getCurrentGraph());
+                PluginExecution.withPlugin(new UpdateStatePlugin(newState))
+                        .executeLater(getTableViewTopComponent().getCurrentGraph());
             }
-
             e.consume();
         });
 
@@ -124,16 +117,12 @@ public class TableToolbar {
                 newState.setElementType(getTableViewTopComponent().getCurrentState().getElementType() == GraphElementType.TRANSACTION
                         ? GraphElementType.VERTEX : GraphElementType.TRANSACTION);
 
-                elementTypeButton.setGraphic(
-                        newState.getElementType() == GraphElementType.TRANSACTION
-                        ? TRANSACTION_ICON : VERTEX_ICON
-                );
+                elementTypeButton.setGraphic(newState.getElementType() == GraphElementType.TRANSACTION 
+                        ? TRANSACTION_ICON : VERTEX_ICON);
 
-                PluginExecution.withPlugin(
-                        new UpdateStatePlugin(newState)
-                ).executeLater(getTableViewTopComponent().getCurrentGraph());
+                PluginExecution.withPlugin(new UpdateStatePlugin(newState))
+                        .executeLater(getTableViewTopComponent().getCurrentGraph());
             }
-
             e.consume();
         });
 
@@ -143,14 +132,12 @@ public class TableToolbar {
 
         helpButton = createButton(HELP_ICON, HELP, e -> {
             getHelpContext().display();
-
             e.consume();
         });
 
         toolbar = new ToolBar(columnVisibilityButton, selectedOnlyButton,
                 elementTypeButton, new Separator(), copyMenu.getCopyButton(),
-                exportMenu.getExportButton(), preferencesMenu.getPreferencesButton(),
-                helpButton);
+                exportMenu.getExportButton(), preferencesMenu.getPreferencesButton(), helpButton);
 
         toolbar.setOrientation(Orientation.VERTICAL);
         toolbar.setPadding(new Insets(5));
@@ -387,9 +374,7 @@ public class TableToolbar {
      * @param eventHandler the action handler for when the button is pressed
      * @return the created button
      */
-    private Button createButton(final ImageView icon,
-            final String tooltip,
-            final EventHandler<ActionEvent> eventHandler) {
+    private Button createButton(final ImageView icon, final String tooltip, final EventHandler<ActionEvent> eventHandler) {
         final Button button = new Button();
 
         button.setGraphic(icon);
@@ -409,8 +394,7 @@ public class TableToolbar {
      * @param eventHandler the action handler for when the button is pressed
      * @return the created toggle button
      */
-    private ToggleButton createToggleButton(final ImageView icon,
-            final String tooltip,
+    private ToggleButton createToggleButton(final ImageView icon, final String tooltip, 
             final EventHandler<ActionEvent> eventHandler) {
         final ToggleButton button = new ToggleButton();
 

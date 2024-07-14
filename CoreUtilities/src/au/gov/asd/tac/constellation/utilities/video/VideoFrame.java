@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,26 +22,5 @@ import java.awt.image.BufferedImage;
  *
  * @author algol
  */
-public final class VideoFrame {
-
-    private final BufferedImage videoFrame;
-    private final long timestamp;
-
-    public VideoFrame(final BufferedImage videoFrame, final long timestamp) {
-        this.videoFrame = videoFrame;
-        this.timestamp = timestamp;
-    }
-
-    public BufferedImage getVideoFrame() {
-        return videoFrame;
-    }
-
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("[VideoFrame %d %s]", timestamp, videoFrame);
-    }
+public record VideoFrame(BufferedImage videoFrame, long timestamp) {
 }

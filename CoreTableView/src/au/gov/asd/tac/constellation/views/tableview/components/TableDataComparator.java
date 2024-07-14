@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,12 +31,16 @@ public class TableDataComparator implements Comparator<String>, Serializable{
 
     @Override
     public int compare(final String str0, final String str1) {
-        if (str0 == null) return -1;
-        if (str1 == null) return 1;
+        if (str0 == null) {
+            return -1;
+        } else if (str1 == null) {
+            return 1;
+        }
+        
         try {
             // if both strings are numeric we can do a numeric comparison
-            final Double dbl0 = Double.parseDouble(str0);
-            final Double dbl1 = Double.parseDouble(str1);
+            final Double dbl0 = Double.valueOf(str0);
+            final Double dbl1 = Double.valueOf(str1);
             return dbl0.compareTo(dbl1);
         } catch (final NumberFormatException nfe) {
             // when one or both of the strings are not numeric,

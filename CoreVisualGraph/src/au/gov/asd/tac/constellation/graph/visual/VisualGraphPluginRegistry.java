@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,8 @@ import au.gov.asd.tac.constellation.graph.visual.plugins.select.DeselectTransact
 import au.gov.asd.tac.constellation.graph.visual.plugins.select.DeselectVerticesPlugin;
 import au.gov.asd.tac.constellation.graph.visual.plugins.select.InvertSelectionPlugin;
 import au.gov.asd.tac.constellation.graph.visual.plugins.select.SelectAllPlugin;
+import au.gov.asd.tac.constellation.graph.visual.plugins.select.SelectTransactionsPlugin;
+import au.gov.asd.tac.constellation.graph.visual.plugins.select.SelectVerticesPlugin;
 import au.gov.asd.tac.constellation.graph.visual.plugins.select.structure.SelectBackbonePlugin;
 import au.gov.asd.tac.constellation.graph.visual.plugins.select.structure.SelectHalfHopInducedSubgraphPlugin;
 import au.gov.asd.tac.constellation.graph.visual.plugins.select.structure.SelectLoopsPlugin;
@@ -68,6 +70,8 @@ public class VisualGraphPluginRegistry {
     public static final String PERMANENT_MERGE = PermanentMergePlugin.class.getName();
     public static final String REMOVE_BLAZE = RemoveBlazePlugin.class.getName();
     public static final String SELECT_ALL = SelectAllPlugin.class.getName();
+    public static final String SELECT_VERTICES = SelectVerticesPlugin.class.getName();
+    public static final String SELECT_TRANSACTIONS = SelectTransactionsPlugin.class.getName();
     public static final String SELECT_BACKBONE = SelectBackbonePlugin.class.getName();
     public static final String SELECT_BLAZES = SelectBlazesPlugin.class.getName();
     public static final String SELECT_DIMMED = SelectDimmedPlugin.class.getName();

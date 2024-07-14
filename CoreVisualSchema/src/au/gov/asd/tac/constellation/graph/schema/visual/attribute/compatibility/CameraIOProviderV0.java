@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,7 +75,7 @@ public final class CameraIOProviderV0 extends AbstractGraphIOProvider {
      * @throws IOException
      */
     @Override
-    public void writeObject(final Attribute attr, final int elementId, final com.fasterxml.jackson.core.JsonGenerator jsonGenerator, final GraphReadMethods graph, final GraphByteWriter byteWriter, final boolean verbose) throws IOException {
+    public void writeObject(final Attribute attr, final int elementId, final JsonGenerator jsonGenerator, final GraphReadMethods graph, final GraphByteWriter byteWriter, final boolean verbose) throws IOException {
         if (verbose || !graph.isDefaultValue(attr.getId(), elementId)) {
             final Camera camera = (Camera) graph.getObjectValue(attr.getId(), elementId);
             if (camera == null) {
@@ -111,7 +111,7 @@ public final class CameraIOProviderV0 extends AbstractGraphIOProvider {
      * @param graph
      */
     @Override
-    public void readObject(int attributeId, int elementId, final JsonNode jnode, final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, final GraphByteReader byteReader, ImmutableObjectCache cache) {
+    public void readObject(int attributeId, int elementId, final JsonNode jnode, final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, final GraphByteReader byteReader, final ImmutableObjectCache cache) {
         if (!jnode.isNull()) {
             final Camera camera = new Camera();
 

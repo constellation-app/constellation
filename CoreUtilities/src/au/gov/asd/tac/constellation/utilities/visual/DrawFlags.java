@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -114,11 +114,8 @@ public final class DrawFlags {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof DrawFlags) {
-            return drawFlgs == ((DrawFlags) obj).drawFlgs;
-        }
-        return false;
+    public boolean equals(final Object obj) {
+        return obj instanceof DrawFlags drawFlagsObj && drawFlgs == drawFlagsObj.drawFlgs;
     }
 
     @Override

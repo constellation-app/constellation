@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,7 +77,7 @@ public final class GraphLabels {
 
     @Override
     public String toString() {
-        return StringUtilities.escape(labels.stream().map(label -> label.toString()).collect(Collectors.toList()), DELIMITER);
+        return StringUtilities.escape(labels.stream().map(label -> label.toString()).toList(), DELIMITER);
     }
 
     public static GraphLabels valueOf(final String graphLabelsString) {
@@ -90,7 +90,7 @@ public final class GraphLabels {
         try {
             labelStrings = StringUtilities.splitEscaped(graphLabelsString, DELIMITER);
             labelStrings.forEach(label -> labels.add(GraphLabel.valueOf(label)));
-            } catch (IllegalArgumentException ex) {
+            } catch (final IllegalArgumentException ex) {
             throw new IllegalArgumentException("String does not represent a graph label: " + graphLabelsString + "\nCaused by: " + ex.getMessage());
         }
         return new GraphLabels(labels);

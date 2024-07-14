@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -32,6 +33,7 @@ import java.util.Map;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
+import org.openide.util.HelpCtx;
 
 /**
  * This class is the main panel for the Copy Attributes function.
@@ -42,8 +44,7 @@ public final class PermanentMergePanel extends JPanel {
 
     private static final String NUM_NODES_STR = "Number of Selected Nodes: ";
 
-    final Graph graph;
-    JPanel selectedPanel;
+    private final Graph graph;
     private final int primaryNode;
     private final ArrayList<Integer> nodeList;
     private ArrayList<Attribute> nodeAttrbiutes;
@@ -87,7 +88,7 @@ public final class PermanentMergePanel extends JPanel {
     private void populateTable() {
         this.getVertexAttributes();
         tableModel = (PermanentMergeTableModel) nodeTable.getModel();
-        tableModel.initialise(graph, nodeAttrbiutes);
+        tableModel.initialise(nodeAttrbiutes);
         this.setupVertexData();
         this.includeAllVertices();
     }
@@ -141,7 +142,7 @@ public final class PermanentMergePanel extends JPanel {
      */
     private void setColumnHeader(final int row, final int column) {
         if (column >= 2) {
-            String field = tableModel.getColumnName(column);
+            final String field = tableModel.getColumnName(column);
             String value = (String) (tableModel.getValueAt(row, column));
             if (value == null) {
                 value = "";
@@ -159,7 +160,7 @@ public final class PermanentMergePanel extends JPanel {
      *
      */
     private void getVertexAttributes() {
-        ReadableGraph rg = graph.getReadableGraph();
+        final ReadableGraph rg = graph.getReadableGraph();
         try {
             int attrCount = rg.getAttributeCount(GraphElementType.VERTEX);
             nodeAttrbiutes = new ArrayList<>();
@@ -172,7 +173,6 @@ public final class PermanentMergePanel extends JPanel {
         }
 
         Collections.sort(nodeAttrbiutes, new AttributeComparator());
-
         nodeAttrbiutes.add(0, new GraphAttribute(GraphElementType.VERTEX, NODE_ID_COLUMN, NODE_ID_COLUMN, NODE_ID_COLUMN));
         nodeAttrbiutes.add(0, new GraphAttribute(GraphElementType.VERTEX, SELECTED_COLUMN, SELECTED_COLUMN, SELECTED_COLUMN));
     }
@@ -182,7 +182,7 @@ public final class PermanentMergePanel extends JPanel {
      * that the panel is responsible for.
      */
     public void setupVertexData() {
-        ReadableGraph rg = graph.getReadableGraph();
+        final ReadableGraph rg = graph.getReadableGraph();
         try {
             if (primaryNode != Graph.NOT_FOUND) {
                 tableModel.addRow(populateTableRow(rg, primaryNode));
@@ -205,7 +205,7 @@ public final class PermanentMergePanel extends JPanel {
      * @param vxId node id
      */
     private Object[] populateTableRow(final ReadableGraph graph, final int vxId) {
-        Object[] row = new Object[nodeAttrbiutes.size() + 1];
+        final Object[] row = new Object[nodeAttrbiutes.size() + 1];
         row[0] = true;
         row[1] = Integer.toString(vxId);
 
@@ -231,7 +231,7 @@ public final class PermanentMergePanel extends JPanel {
     private void udpateSelectedNodeCount() {
         int count = 0;
         for (int i = 0; i < tableModel.getRowCount(); i++) {
-            if ((Boolean) tableModel.getValueAt(i, 0)) {
+            if (Boolean.TRUE.equals(tableModel.getValueAt(i, 0))) {
                 count++;
             }
         }
@@ -264,7 +264,7 @@ public final class PermanentMergePanel extends JPanel {
      * @return ArrayList
      */
     public HashMap<Integer, String> getAttributes() {
-        HashMap<Integer, String> list = new HashMap<>();
+        final HashMap<Integer, String> list = new HashMap<>();
         for (int i = 2; i < tableModel.getColumnCount(); i++) {
             Object value = tableModel.getValueAt(selectedAttributes.get(i), i);
             if (value == null) {
@@ -281,10 +281,10 @@ public final class PermanentMergePanel extends JPanel {
      * @return ArrayList
      */
     public ArrayList<Integer> getSelectedVertices() {
-        ArrayList<Integer> list = new ArrayList<>();
+        final ArrayList<Integer> list = new ArrayList<>();
         for (int i = 0; i < tableModel.getRowCount(); i++) {
-            if ((Boolean) tableModel.getValueAt(i, 0)) {
-                Integer key = Integer.parseInt((String) (tableModel.getValueAt(i, 1)));
+            if (Boolean.TRUE.equals(tableModel.getValueAt(i, 0))) {
+                final Integer key = Integer.valueOf((String) (tableModel.getValueAt(i, 1)));
                 list.add(key);
             }
         }
@@ -307,6 +307,7 @@ public final class PermanentMergePanel extends JPanel {
         jPanel3 = new javax.swing.JPanel();
         includeAllButton = new javax.swing.JButton();
         excludeAllButton = new javax.swing.JButton();
+        helpButton = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         selectedNodesLabel = new javax.swing.JLabel();
 
@@ -358,6 +359,14 @@ public final class PermanentMergePanel extends JPanel {
         });
         jPanel3.add(excludeAllButton);
 
+        helpButton.setText(org.openide.util.NbBundle.getMessage(PermanentMergePanel.class, "PermanentMergePanel.helpButton.text")); // NOI18N
+        helpButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                helpButtonMousePressed(evt);
+            }
+        });
+        jPanel3.add(helpButton);
+
         jPanel2.add(jPanel3, java.awt.BorderLayout.WEST);
 
         jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
@@ -389,8 +398,15 @@ public final class PermanentMergePanel extends JPanel {
     private void nodeTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_nodeTableMouseClicked
         this.processCellSelection(nodeTable.getSelectedRow(), nodeTable.getSelectedColumn());
     }//GEN-LAST:event_nodeTableMouseClicked
+
+    private void helpButtonMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_helpButtonMousePressed
+        final HelpCtx help = new HelpCtx("au.gov.asd.tac.constellation.graph.visual.mergeNodes");
+        help.display();
+    }//GEN-LAST:event_helpButtonMousePressed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton excludeAllButton;
+    private javax.swing.JButton helpButton;
     private javax.swing.JButton includeAllButton;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -400,7 +416,7 @@ public final class PermanentMergePanel extends JPanel {
     private javax.swing.JLabel selectedNodesLabel;
     // End of variables declaration//GEN-END:variables
 
-    private class AttributeComparator implements Comparator<Attribute> {
+    private static class AttributeComparator implements Comparator<Attribute>, Serializable {
 
         @Override
         public int compare(final Attribute a1, final Attribute a2) {
@@ -408,7 +424,7 @@ public final class PermanentMergePanel extends JPanel {
         }
     }
 
-    private class AttributeCellRenderer extends DefaultTableCellRenderer {
+    private static class AttributeCellRenderer extends DefaultTableCellRenderer {
 
         private final PermanentMergePanel panel;
 
@@ -421,7 +437,7 @@ public final class PermanentMergePanel extends JPanel {
         public Component getTableCellRendererComponent(final JTable table, final Object value,
                 final boolean isSelected, final boolean hasFocus,
                 final int row, final int column) {
-            Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            final Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
             if (panel.isCellSelected(row, column)) {
                 cell.setForeground(table.getSelectionForeground());

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -157,7 +157,6 @@ public class ScriptingExecutePlugin extends SimplePlugin {
         final PluginParameter<BooleanParameterValue> showOutputParam = BooleanParameterType.build(NEW_OUTPUT_PARAMETER_ID);
         showOutputParam.setName("New Output");
         showOutputParam.setDescription("Show script output in output window");
-        showOutputParam.setBooleanValue(false);
         parameters.addParameter(showOutputParam);
 
         final PluginParameter<StringParameterValue> nameParam = StringParameterType.build(GRAPH_NAME_PARAMETER_ID);
@@ -169,7 +168,6 @@ public class ScriptingExecutePlugin extends SimplePlugin {
         final PluginParameter<ObjectParameterValue> exceptionParam = ObjectParameterType.build(OUTPUT_EXCEPTION_PARAMETER_ID);
         exceptionParam.setName("Script Exception");
         exceptionParam.setDescription("If there is an exception when the script runs, this will hold a reference to the exception object");
-        exceptionParam.setObjectValue(null);
         parameters.addParameter(exceptionParam);
 
         return parameters;

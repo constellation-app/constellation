@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 package au.gov.asd.tac.constellation.views.conversationview;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import static au.gov.asd.tac.constellation.views.conversationview.ConversationSide.LEFT;
+import static au.gov.asd.tac.constellation.views.conversationview.ConversationSide.RIGHT;
 import java.util.List;
 import javafx.scene.paint.Color;
 import javax.swing.SwingUtilities;
@@ -31,7 +33,7 @@ import javax.swing.SwingUtilities;
 public class DefaultConversationColorProvider implements ConversationColorProvider {
 
     @Override
-    public void updateMessageColors(GraphReadMethods graph, List<ConversationMessage> messages) {
+    public void updateMessageColors(final GraphReadMethods graph, final List<ConversationMessage> messages) {
         assert !SwingUtilities.isEventDispatchThread();
 
         if (graph == null || messages.isEmpty()) {
@@ -52,18 +54,20 @@ public class DefaultConversationColorProvider implements ConversationColorProvid
 
         for (final ConversationMessage message : messages) {
             final int sender = message.getSender();
-            final int senderPosition = graph.getVertexPosition(sender);
-            final int colorPosition = colorPositions[senderPosition];
-            if (colorPosition == 0) {
-                switch (message.getConversationSide()) {
-                    case LEFT:
-                        colorPositions[senderPosition] = ++leftVertexCount;
-                        break;
-                    case RIGHT:
-                        colorPositions[senderPosition] = rightVertexCount--;
-                        break;
-                    default:
-                        break;
+            if (sender < colorPositions.length) {
+                final int senderPosition = graph.getVertexPosition(sender);
+                final int colorPosition = colorPositions[senderPosition];
+                if (colorPosition == 0) {
+                    switch (message.getConversationSide()) {
+                        case LEFT:
+                            colorPositions[senderPosition] = ++leftVertexCount;
+                            break;
+                        case RIGHT:
+                            colorPositions[senderPosition] = rightVertexCount--;
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         }
@@ -83,10 +87,12 @@ public class DefaultConversationColorProvider implements ConversationColorProvid
 
         for (final ConversationMessage message : messages) {
             final int sender = message.getSender();
-            final int senderPosition = graph.getVertexPosition(sender);
-            final int colorPosition = colorPositions[senderPosition] - 1;
-            final Color vertexColor = vertexColors[colorPosition];
-            message.setColor(vertexColor);
+            if (sender < colorPositions.length) {
+                final int senderPosition = graph.getVertexPosition(sender);
+                final int colorPosition = colorPositions[senderPosition] - 1;
+                final Color vertexColor = vertexColors[colorPosition];
+                message.setColor(vertexColor);
+            }
         }
     }
 
@@ -98,7 +104,7 @@ public class DefaultConversationColorProvider implements ConversationColorProvid
         private int hue = 0;
         private int total = 1;
 
-        public DefaultConversationColor(float saturation, float brightness) {
+        public DefaultConversationColor(final float saturation, final float brightness) {
             this.saturation = saturation;
             this.brightness = brightness;
         }

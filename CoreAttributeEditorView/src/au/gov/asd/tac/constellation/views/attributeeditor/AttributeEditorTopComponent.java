@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilities;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import java.util.ArrayList;
 import java.util.List;
@@ -113,6 +114,7 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
     private final Preferences prefs = NbPreferences.forModule(AttributePreferenceKey.class);
     private LinkedBlockingQueue<Object> queue = new LinkedBlockingQueue<>();
     private Thread refreshThread;
+    private static final boolean DARK_MODE = JavafxStyleManager.isDarkTheme();
 
     public AttributeEditorTopComponent() {
         attributePanel = new AttributeEditorPanel(this);
@@ -223,18 +225,18 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
     }
 
     @Override
-    protected void handleGraphChange(GraphChangeEvent event) {
+    protected void handleGraphChange(final GraphChangeEvent event) {
         if (event == null) { // can be null at this point in time
             return;
         }
-        event = event.getLatest();
-        if (event == null) { // latest event may be null - defensive check
+        final GraphChangeEvent newEvent = event.getLatest();
+        if (newEvent == null) { // latest event may be null - defensive check
             return;
         }
-        if (event.getId() > latestGraphChangeID) {
-            latestGraphChangeID = event.getId();
+        if (newEvent.getId() > latestGraphChangeID) {
+            latestGraphChangeID = newEvent.getId();
             if (activeGraph != null && reader != null) {
-                queue.add(event);
+                queue.add(newEvent);
                 if (refreshThread == null || !refreshThread.isAlive()) {
                     refreshThread = new Thread(refreshRunnable);
                     refreshThread.setName(ATTRIBUTE_EDITOR_GRAPH_CHANGED_THREAD_NAME);
@@ -258,7 +260,7 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
 
     @Override
     protected String createStyle() {
-        return "resources/attribute-editor.css";
+        return DARK_MODE ? "resources/attribute-editor.css" : "resources/attribute-editor-light.css";
     }
 
     @Override

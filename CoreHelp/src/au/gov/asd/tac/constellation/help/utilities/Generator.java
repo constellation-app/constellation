@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,6 +46,7 @@ public class Generator implements Runnable {
     private static final Logger LOGGER = Logger.getLogger(Generator.class.getName());
     private static String baseDirectory = "";
     private static String tocDirectory = "";
+    private static String onlineTocDirectory = "";
     public static final String TOC_FILE_NAME = "toc.md";
     public static final String ROOT_NODE_NAME = "Constellation Documentation";
 
@@ -60,11 +61,15 @@ public class Generator implements Runnable {
     public void run() {
         baseDirectory = getBaseDirectory();
         tocDirectory = String.format("ext%1$s%2$s", File.separator, TOC_FILE_NAME);
+        onlineTocDirectory = getOnlineHelpTOCDirectory(baseDirectory);
 
         // Create TOCFile with the location of the resources file
         // Create the root node for application-wide table of contents
         TOCGenerator.createTOCFile(baseDirectory + tocDirectory);
-        final TreeNode root = new TreeNode(new TOCItem(ROOT_NODE_NAME, ""));
+        
+        // Also create the TOCFile in the base directory for online help
+        TOCGenerator.createTOCFile(onlineTocDirectory);
+        final TreeNode<?> root = new TreeNode(new TOCItem(ROOT_NODE_NAME, ""));
         final List<File> tocXMLFiles = getXMLFiles(baseDirectory);
 
         try {
@@ -136,6 +141,16 @@ public class Generator implements Runnable {
         final int jarIx = path.toString().lastIndexOf(File.separator);
         final String newPath = jarIx > -1 ? path.toString().substring(0, jarIx) : "";
         return newPath != null ? newPath + File.separator + "ext" : "";
+    }
+    
+    protected static String getOnlineHelpTOCDirectory(final String filePath) {
+        final int index = filePath.indexOf("constellation");
+        if (index <= 0) {
+            return filePath;
+        } else {
+            final String newPath = filePath.substring(0, index + 14);
+            return newPath + TOC_FILE_NAME;
+        }
     }
 
 }

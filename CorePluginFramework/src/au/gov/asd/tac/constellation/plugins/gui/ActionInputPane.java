@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,18 +69,14 @@ public class ActionInputPane extends Pane {
 
         parameter.addListener((final PluginParameter<?> pluginParameter, final ParameterChange change) -> Platform.runLater(() -> {
                 switch (change) {
-                    case ENABLED:
-                        field.setDisable(!pluginParameter.isEnabled());
-                        break;
-                    case VISIBLE:
+                    case ENABLED -> field.setDisable(!pluginParameter.isEnabled());
+                    case VISIBLE -> {
                         field.setManaged(parameter.isVisible());
                         field.setVisible(parameter.isVisible());
                         this.setVisible(parameter.isVisible());
                         this.setManaged(parameter.isVisible());
-                        break;
-                    default:
-                        LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
-                        break;
+                    }
+                    default -> LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
                 }
 
             }));

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,7 +82,7 @@ public class DnaGraphBuilderPlugin extends SimpleEditPlugin {
 
             final float ry = (float) (RADIUS_BIG * Math.sin(Math.toRadians(theta)));
             final float rz = (float) (RADIUS_BIG * Math.cos(Math.toRadians(theta)));
-            final Color vc = new Color(Color.HSBtoRGB((float) i / NPAIRS, 0.5F, 1));
+            final Color vc = new Color(Color.HSBtoRGB(i / NPAIRS, 0.5F, 1));
 
             final int n0 = graph.addVertex();
             graph.setStringValue(vxNameAttr, n0, String.valueOf(i * 2));

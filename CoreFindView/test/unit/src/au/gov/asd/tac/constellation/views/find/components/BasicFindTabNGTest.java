@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.find.components;
 
-import au.gov.asd.tac.constellation.views.find.components.BasicFindTab;
-import au.gov.asd.tac.constellation.views.find.components.ReplaceTab;
-import au.gov.asd.tac.constellation.views.find.components.FindViewTabs;
-import au.gov.asd.tac.constellation.views.find.components.FindViewPane;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
@@ -156,10 +152,10 @@ public class BasicFindTabNGTest {
          * getFindAllButton and getSearchAllGraphs checkbox.
          */
         basicFindTab.updateButtons();
-        assertEquals(basicFindTab.buttonsHBox.getChildren().get(0), basicFindTab.getDeleteResultsButton());
-        assertEquals(basicFindTab.buttonsHBox.getChildren().get(1), basicFindTab.getFindAllButton());
-        assertEquals(basicFindTab.buttonsHBox.getChildren().get(2), basicFindTab.getFindPrevButton());
-        assertEquals(basicFindTab.buttonsHBox.getChildren().get(3), basicFindTab.getFindNextButton());
+        assertEquals(basicFindTab.buttonsHBox.getChildren().get(1), basicFindTab.getDeleteResultsButton());
+        assertEquals(basicFindTab.buttonsHBox.getChildren().get(2), basicFindTab.getFindAllButton());
+        assertEquals(basicFindTab.buttonsHBox.getChildren().get(3), basicFindTab.getFindPrevButton());
+        assertEquals(basicFindTab.buttonsHBox.getChildren().get(4), basicFindTab.getFindNextButton());
     }
 
     /**

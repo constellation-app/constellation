@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class DateTimePicker {
 
-    private static final String pickerLabel = "picker-label";
+    private static final String PICKER_LABEL = "picker-label";
     private final Pane dateTimePane;
     private final DatePicker datePicker = new DatePicker();
     private final Spinner<Integer> hourPicker = new Spinner<>(0, 23, 0);
@@ -85,10 +85,10 @@ public class DateTimePicker {
 
         if (from) {
             datePickerLabel.setText(FROM_TEXT);
-            datePickerLabel.setId(pickerLabel);
+            datePickerLabel.setId(PICKER_LABEL);
         } else {
             datePickerLabel.setText(TO_TEXT);
-            datePickerLabel.setId(pickerLabel);
+            datePickerLabel.setId(PICKER_LABEL);
         }
 
 
@@ -99,9 +99,9 @@ public class DateTimePicker {
         final Label hourLabel = new Label("Hour");
         final Label minLabel = new Label("Minute");
         final Label secLabel = new Label("Second");
-        hourLabel.setId(pickerLabel);
-        minLabel.setId(pickerLabel);
-        secLabel.setId(pickerLabel);
+        hourLabel.setId(PICKER_LABEL);
+        minLabel.setId(PICKER_LABEL);
+        secLabel.setId(PICKER_LABEL);
 
         timePickerGrid.add(hourLabel, 0, 0);
         timePickerGrid.add(minLabel, 1, 0);

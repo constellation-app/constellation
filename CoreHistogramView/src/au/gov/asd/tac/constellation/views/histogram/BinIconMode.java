@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,19 +46,16 @@ public enum BinIconMode {
      */
     ICON(1.5F) {
         @Override
-        public void draw(Graphics2D graphics, Bin bin, int left, int top, int height) {
-            if (bin instanceof ObjectBin) {
-                Object key = ((ObjectBin) bin).getKeyAsObject();
+        public void draw(final Graphics2D graphics, final Bin bin, final int left, final int top, final int height) {
+            if (bin instanceof ObjectBin objectBin) {
+                final Object key = objectBin.getKeyAsObject();
 
                 if (key != null) {
-                    String iconLabel = ((ConstellationIcon) key).getName();
+                    final String iconLabel = ((ConstellationIcon) key).getName();
                     BufferedImage icon = iconCache.get(iconLabel);
                     if (icon == null) {
-                        try {
-                            icon = IconManager.getIcon(iconLabel).buildBufferedImage();
-                            iconCache.put(iconLabel, icon);
-                        } catch (Exception e) {
-                        }
+                        icon = IconManager.getIcon(iconLabel).buildBufferedImage();
+                        iconCache.put(iconLabel, icon);
                     }
                     if (icon != null) {
                         graphics.drawImage(icon, left, top, height, height, null);
@@ -74,10 +71,10 @@ public enum BinIconMode {
      */
     COLOR(1.5F) {
         @Override
-        public void draw(Graphics2D graphics, Bin bin, int left, int top, int height) {
-            if (bin instanceof ObjectBin) {
-                Object key = ((ObjectBin) bin).getKeyAsObject();
-                ConstellationColor colorValue = (ConstellationColor) key;
+        public void draw(final Graphics2D graphics, final Bin bin, final int left, final int top, final int height) {
+            if (bin instanceof ObjectBin objectBin) {
+                final Object key = objectBin.getKeyAsObject();
+                final ConstellationColor colorValue = (ConstellationColor) key;
                 if (colorValue != null) {
                     graphics.setColor(colorValue.getJavaColor());
                 }
@@ -88,7 +85,7 @@ public enum BinIconMode {
 
     private final float width;
 
-    private BinIconMode(float width) {
+    private BinIconMode(final float width) {
         this.width = width;
     }
 
@@ -96,7 +93,7 @@ public enum BinIconMode {
         return width;
     }
 
-    public abstract void draw(Graphics2D graphics, Bin bin, int left, int top, int height);
+    public abstract void draw(final Graphics2D graphics, final Bin bin, final int left, final int top, final int height);
 
     private static Map<String, BufferedImage> iconCache = new HashMap<>();
 

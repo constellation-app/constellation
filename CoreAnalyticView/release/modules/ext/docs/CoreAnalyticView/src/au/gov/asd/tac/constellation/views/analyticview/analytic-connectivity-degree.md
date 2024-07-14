@@ -1,7 +1,7 @@
 # Connectivity Degree
 
 In graph theory, a component is a group of nodes that are completely
-connected and a node’s component size is the number of nodes in its
+connected and a node's component size is the number of nodes in its
 component.
 
 The connectivity degree of a node is the number of components that node

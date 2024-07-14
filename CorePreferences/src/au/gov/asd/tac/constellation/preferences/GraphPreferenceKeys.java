@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ public final class GraphPreferenceKeys {
     public static final String BLAZE_OPACITY = "blazeOpacity";
     public static final int BLAZE_OPACITY_DEFAULT = 100;
     public static final String BLAZE_PRESET_COLORS = "blazePresetColors";
-    public static String BLAZE_PRESET_COLORS_DEFAULT = "#FF0000;#0000FF;#FFFF00;";
+    public static final String BLAZE_PRESET_COLORS_DEFAULT = "#FF0000;#0000FF;#FFFF00;";
     public static final String BLAZE_RECENT_COLORS = "blazeRecentColors";
     public static final String BLAZE_RECENT_COLORS_DEFAULT = "";
 
@@ -54,4 +54,5 @@ public final class GraphPreferenceKeys {
 
     private GraphPreferenceKeys() {
     }
+
 }

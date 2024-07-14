@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import de.fhpotsdam.unfolding.data.MultiFeature;
 import de.fhpotsdam.unfolding.data.PointFeature;
 import de.fhpotsdam.unfolding.data.ShapeFeature;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Utility methods for features in the Map View.
@@ -41,22 +40,17 @@ public class FeatureUtilities {
     public static ConstellationAbstractFeature convert(final Feature feature) {
         final ConstellationAbstractFeature constellationFeature;
         switch (feature.getType()) {
-            case POINT:
-                constellationFeature = new ConstellationPointFeature(((PointFeature) feature).getLocation());
-                break;
-            case LINES:
-                constellationFeature = new ConstellationShapeFeature(ConstellationFeatureType.LINE, ((ShapeFeature) feature).getLocations());
-                break;
-            case POLYGON:
-                constellationFeature = new ConstellationShapeFeature(ConstellationFeatureType.POLYGON, ((ShapeFeature) feature).getLocations());
-                break;
-            case MULTI:
+            case POINT -> constellationFeature = new ConstellationPointFeature(((PointFeature) feature).getLocation());
+            case LINES -> constellationFeature = new ConstellationShapeFeature(ConstellationFeatureType.LINE, ((ShapeFeature) feature).getLocations());
+            case POLYGON -> constellationFeature = new ConstellationShapeFeature(ConstellationFeatureType.POLYGON, ((ShapeFeature) feature).getLocations());
+            case MULTI -> {
                 final List<ConstellationAbstractFeature> constellationFeatures = ((MultiFeature) feature).getFeatures().stream()
-                        .map(FeatureUtilities::convert).collect(Collectors.toList());
+                        .map(FeatureUtilities::convert).toList();
                 constellationFeature = new ConstellationMultiFeature(ConstellationFeatureType.MULTI, constellationFeatures);
-                break;
-            default:
+            }
+            default -> {
                 return null;
+            }
         }
         return constellationFeature;
     }

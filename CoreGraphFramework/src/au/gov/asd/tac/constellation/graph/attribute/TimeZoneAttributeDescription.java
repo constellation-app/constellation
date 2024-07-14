@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,8 +49,8 @@ public final class TimeZoneAttributeDescription extends AbstractObjectAttributeD
         try {
             return super.convertFromObject(object);
         } catch (final IllegalArgumentException ex) {
-            if (object instanceof TimeZone) {
-                return ((TimeZone) object).toZoneId();
+            if (object instanceof TimeZone timeZone) {
+                return timeZone.toZoneId();
             } else {
                 throw ex;
             }
@@ -63,8 +63,9 @@ public final class TimeZoneAttributeDescription extends AbstractObjectAttributeD
             return getDefault();
         } else {
             try {
-                final String offsetId = string.substring(0, 6);
-                final String regionId = string.length() > 6 ? string.substring(8, string.length() - 1) : null;
+                final String timeString = string.length() < 6 ? "+ 00:00 UTC" : string;
+                final String offsetId = timeString.substring(0, 6);
+                final String regionId = timeString.length() > 6 ? timeString.substring(8, timeString.length() - 1) : null;
                 return regionId == null ? ZoneOffset.of(offsetId) : ZoneId.of(regionId);
             } catch (final StringIndexOutOfBoundsException | NumberFormatException ex) {
                 throw new IllegalArgumentException(String.format(

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -165,8 +165,8 @@ public class ColorParameterType extends PluginParameterType<ColorParameterValue>
             final ConstellationColor newc;
             if (o == null) {
                 newc = ConstellationColor.CLOUDS;
-            } else if (o instanceof ConstellationColor) {
-                newc = (ConstellationColor) o;
+            } else if (o instanceof ConstellationColor constellationColor) {
+                newc = constellationColor;
             } else {
                 throw new IllegalArgumentException(String.format("Unexpected class %s", o.getClass()));
             }

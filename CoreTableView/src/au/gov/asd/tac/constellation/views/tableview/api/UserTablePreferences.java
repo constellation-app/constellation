@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,8 +45,7 @@ public final class UserTablePreferences {
 
     @JsonProperty("SortByColumn")
     @JsonDeserialize(using = ColumnSortOrderDeserializer.class)
-    private Pair<String, TableColumn.SortType> sortByColumn
-            = ImmutablePair.of("", TableColumn.SortType.ASCENDING);
+    private Pair<String, TableColumn.SortType> sortByColumn = ImmutablePair.of("", TableColumn.SortType.ASCENDING);
 
     public synchronized int getMaxRowsPerPage() {
         return maxRowsPerPage;
@@ -80,10 +79,7 @@ public final class UserTablePreferences {
      */
     @JsonIgnore
     public synchronized String getSortColumn() {
-        if (getSortByColumn() != null) {
-            return getSortByColumn().getKey();
-        }
-        return null;
+        return getSortByColumn() != null ? getSortByColumn().getKey() : null;
     }
 
     /**
@@ -94,10 +90,7 @@ public final class UserTablePreferences {
      */
     @JsonIgnore
     public synchronized TableColumn.SortType getSortDirection() {
-        if (getSortByColumn() != null) {
-            return getSortByColumn().getValue();
-        }
-        return null;
+        return getSortByColumn() != null ? getSortByColumn().getValue() : null;
     }
 
     /**

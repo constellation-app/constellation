@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -124,7 +124,7 @@ class PQTree {
         pertinentRoot = node;
     }
 
-    public void vertexAddition(List<Integer> virtualNodeNums) {
+    public void vertexAddition(final List<Integer> virtualNodeNums) {
         final PQNode nextPNode = new PQNode(NodeType.PNODE);
         if (pertinentRoot.getLabel().equals(NodeLabel.FULL)) {
             subtreeReplace(pertinentRoot, nextPNode);
@@ -184,25 +184,26 @@ class PQTree {
 
     private void readPertinentFrontier(final PQNode node, final List<Integer> frontier) {
         switch (node.type) {
-            case PNODE:
+            case PNODE -> {
                 for (final PQNode child : node.labeledChildren.get(NodeLabel.FULL)) {
                     readPertinentFrontier(child, frontier);
                 }
-                break;
-            case QNODE:
+            }
+            case QNODE -> {
                 for (final PQNode child : node.children) {
                     if (child.getLabel().equals(NodeLabel.FULL)) {
                         readPertinentFrontier(child, frontier);
                     }
                 }
-                break;
-            case LEAF_NODE:
+            }
+            case LEAF_NODE -> {
                 if (node.getVirtualNum() == currentNumber) {
                     frontier.add(node.getRealNum());
                 }
-                break;
-            default:
-                break;
+            }
+            default -> {
+                // Do nothing 
+            }
         }
     }
 

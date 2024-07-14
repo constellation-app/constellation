@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<filter id="filter">
+    <feColorMatrix id="color-matrix" in="SourceGraphic" type="matrix" color-interpolation-filters="sRGB" />
+</filter>

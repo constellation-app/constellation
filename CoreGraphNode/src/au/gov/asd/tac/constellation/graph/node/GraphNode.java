@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -358,6 +358,8 @@ public class GraphNode extends AbstractNode {
     /**
      * method to check whether the file name is already used in any opened graph
      * (saved or in-memory)
+     * @param name name of file
+     * @return whether file exists or not
      */
     public static boolean fileNameExists(final String name) {
         final Iterator<Graph> iter = GraphNode.getAllGraphs().values().iterator();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,7 +62,7 @@ public interface PluginInteraction {
     void setProgress(final int currentStep, final int totalSteps, final String message, final boolean cancellable) throws InterruptedException;
     
     /**
-     * Signals to the user the current progress of the plugin.
+     * Signals to the user the current progress of the plugin with a message that persists after the plugin has completed.
      *
      * @param currentStep the current step the plugin is currently performing.
      * @param totalSteps the total number of steps the plugin must perform

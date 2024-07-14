@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,6 +40,8 @@ import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Properties;
@@ -76,6 +78,8 @@ import org.openide.windows.TopComponent;
 public final class VisualGraphOpener extends GraphOpener {
 
     private static final Logger LOGGER = Logger.getLogger(VisualGraphOpener.class.getName());
+    
+    private static final String UNABLE_TO_REMOVE_SECONDARY_BACKUP_MESSAGE = "Unable to remove old secondary backup file: {0}";
 
     /**
      * Open a graph file into a VisualTopComponent.
@@ -206,8 +210,12 @@ public final class VisualGraphOpener extends GraphOpener {
                     time = System.currentTimeMillis() - t0;
                     
                     // Everything worked, there was no need for any bakbak file
-                    if (backupBackupFile.exists() && !backupBackupFile.delete()) {
-                        LOGGER.log(Level.WARNING, "Unable to remove old secondary backup file: {0}", backupBackupFile);
+                    if (backupBackupFile.exists()) {
+                        try {
+                            Files.delete(Path.of(backupBackupFile.getPath()));
+                        } catch (final IOException ex) {
+                            LOGGER.log(Level.WARNING, UNABLE_TO_REMOVE_SECONDARY_BACKUP_MESSAGE, backupBackupFile);
+                        }
                     }
                     
                 } catch (final GraphParseException | IOException | RuntimeException ex) {
@@ -239,8 +247,12 @@ public final class VisualGraphOpener extends GraphOpener {
                             LOGGER.log(Level.INFO, "Successfully opened backup file: {0}, replacing star file", backupFile);
                             FileUtils.copyFile(new File(backupFile.toString()), new File(graphFile.toString()));
                             // Everything worked, there was no need for any bakbak file
-                            if (backupBackupFile.exists() && !backupBackupFile.delete()) {
-                                LOGGER.log(Level.WARNING, "Unable to remove old secondary backup file: {0}", backupBackupFile);
+                            if (backupBackupFile.exists()) {
+                                try {
+                                    Files.delete(Path.of(backupBackupFile.getPath()));
+                                } catch (final IOException ex) {
+                                    LOGGER.log(Level.WARNING, UNABLE_TO_REMOVE_SECONDARY_BACKUP_MESSAGE, backupBackupFile);
+                                }
                             }
                         }
                     }
@@ -271,13 +283,16 @@ public final class VisualGraphOpener extends GraphOpener {
                         LOGGER.log(Level.INFO, "Successfully opened secondary backup file: {0}, replacing star file", backupBackupFile);
                         FileUtils.copyFile(new File(backupBackupFile.toString()), new File(graphFile.toString()));
 
-                        if (!backupFile.delete()) {
+                        try {
+                            Files.delete(Path.of(backupFile.getPath()));
+                        } catch (final IOException ex) {
                             LOGGER.log(Level.WARNING, "Unable to remove old backup file: {0}", backupFile);
-                        }         
-                        if (!backupBackupFile.delete()) {
-                            LOGGER.log(Level.WARNING, "Unable to remove old secondary backup file: {0}", backupBackupFile);
                         }
-
+                        try {
+                            Files.delete(Path.of(backupBackupFile.getPath()));
+                        } catch (final IOException ex) {
+                            LOGGER.log(Level.WARNING, UNABLE_TO_REMOVE_SECONDARY_BACKUP_MESSAGE, backupBackupFile);
+                        }
                     } catch (final GraphParseException | IOException | RuntimeException ex) {
                         LOGGER.log(Level.WARNING, "Unable to open requested file ({0}) or associated backups", graphFile);
                         ioProgressHandler.finish();

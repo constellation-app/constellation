@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,10 +51,10 @@ public final class VertexGraphLabelsAttributeDescriptionV0 extends AbstractObjec
     protected ElementGraphLabelsV0 convertFromObject(final Object object) {
         if (object == null) {
             return DEFAULT_VALUE;
-        } else if (object instanceof ElementGraphLabelsV0) {
-            return (ElementGraphLabelsV0) object;
-        } else if (object instanceof String) {
-            return convertFromString((String) object);
+        } else if (object instanceof ElementGraphLabelsV0 elementGraphLabelsV0) {
+            return elementGraphLabelsV0;
+        } else if (object instanceof String string) {
+            return convertFromString(string);
         } else {
             final String msg = String.format("Error converting Object '%s' to GraphLabels", object.getClass());
             throw new IllegalArgumentException(msg);

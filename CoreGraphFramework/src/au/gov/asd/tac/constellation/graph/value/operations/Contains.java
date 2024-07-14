@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,14 +38,9 @@ public class Contains {
         // added private constructor to hide implicit public constructor - S1118.
     }
 
-    public static final StringOperation STRING_OPERATION = new StringOperation() {
-        @Override
-        public boolean execute(String p1, String p2) {
-            return p1 != null && p2 != null && p1.contains(p2);
-        }
-    };
+    public static final StringOperation STRING_OPERATION = (p1, p2) -> p1 != null && p2 != null && p1.contains(p2);
 
-    public static void register(Operators operators) {
+    public static void register(final Operators operators) {
         final OperatorRegistry registry = operators.getRegistry(NAME);
         STRING_OPERATION.register(registry);
 

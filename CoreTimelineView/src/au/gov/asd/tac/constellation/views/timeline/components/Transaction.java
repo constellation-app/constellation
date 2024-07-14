@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,8 +41,6 @@ public final class Transaction extends Group {
     public static final int BIDIRECTIONAL = 3;
 
     private final int transactionID;
-    private final Color transactionColor;
-    private final String transactionLabel;
 
     private boolean isSelected = false;
 
@@ -62,10 +60,7 @@ public final class Transaction extends Group {
     public Transaction(final int transactionID, final Color transactionColor,
             final String transactionLabel, final boolean isSelected) {
         this.setAutoSizeChildren(false);
-
         this.transactionID = transactionID;
-        this.transactionColor = transactionColor;
-        this.transactionLabel = transactionLabel;
 
         transactionLine.setStroke(transactionColor);
 
@@ -95,8 +90,6 @@ public final class Transaction extends Group {
         this.setAutoSizeChildren(false);
 
         this.transactionID = transactionID;
-        this.transactionColor = transactionColor;
-        this.transactionLabel = transactionLabel;
 
         transactionLine.setStroke(transactionColor);
         transactionLine.setStrokeWidth(2.0);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -135,10 +135,7 @@ public final class SchemaTransactionType extends SchemaElementType<SchemaTransac
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
         final SchemaTransactionType other = (SchemaTransactionType) obj;
@@ -204,11 +201,7 @@ public final class SchemaTransactionType extends SchemaElementType<SchemaTransac
         }
 
         public Builder(final SchemaTransactionType type, final String name, final boolean overrideType) {
-            if (name != null) {
-                this.name = name;
-            } else {
-                this.name = type.getName();
-            }
+            this.name = name != null ? name : type.getName();
             this.description = type.getDescription();
             this.color = type.getColor();
             this.style = type.getStyle();

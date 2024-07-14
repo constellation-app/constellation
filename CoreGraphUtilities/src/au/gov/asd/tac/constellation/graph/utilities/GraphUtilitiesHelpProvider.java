@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ public class GraphUtilitiesHelpProvider extends HelpPageProvider {
         final String graphUtilitiesModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreGraphUtilities" + sep + "src" + sep + "au" + sep + "gov"
                 + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "graph" + sep + "utilities" + sep;
 
-        map.put("au.gov.asd.tac.constellation.graph.utilities.perspectives", graphUtilitiesModulePath + "perspective-bookmarks-view.md");
+        map.put("au.gov.asd.tac.constellation.graph.utilities.perspectives.PerspectiveBookmarkTopComponent", graphUtilitiesModulePath + "perspective-bookmarks-view.md");
         return map;
     }
 

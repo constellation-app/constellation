@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -250,26 +250,15 @@ public class DateTimeCriteriaPanel extends AdvancedCriteriaBorderPane {
             // Switch statment that determines the date string one value based
             // off the choiceSelection
             switch (choiceSelection) {
-                case LAST_3_DAYS:
-                    dateString = calculatedDate.minusDays(3).toString();
-                    break;
-                case LAST_WEEK:
-                    dateString = calculatedDate.minusDays(7).toString();
-                    break;
-                case LAST_MONTH:
-                    dateString = calculatedDate.minusMonths(1).toString();
-                    break;
-                case LAST_3_MONTHS:
-                    dateString = calculatedDate.minusMonths(3).toString();
-                    break;
-                case LAST_6_MONTHS:
-                    dateString = calculatedDate.minusMonths(6).toString();
-                    break;
-                case LAST_YEAR:
-                    dateString = calculatedDate.minusYears(1).toString();
-                    break;
-                default:
-                    break;
+                case LAST_3_DAYS -> dateString = calculatedDate.minusDays(3).toString();
+                case LAST_WEEK -> dateString = calculatedDate.minusDays(7).toString();
+                case LAST_MONTH -> dateString = calculatedDate.minusMonths(1).toString();
+                case LAST_3_MONTHS -> dateString = calculatedDate.minusMonths(3).toString();
+                case LAST_6_MONTHS -> dateString = calculatedDate.minusMonths(6).toString();
+                case LAST_YEAR -> dateString = calculatedDate.minusYears(1).toString();
+                default -> {
+                    // Do nothing
+                }
             }
             // set the button texts to represent the current date, time and
             // timeZones

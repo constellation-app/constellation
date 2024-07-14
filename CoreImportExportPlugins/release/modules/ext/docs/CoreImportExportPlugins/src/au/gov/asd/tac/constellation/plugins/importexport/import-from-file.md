@@ -1,6 +1,12 @@
 # Import From File
 
 <table class="table table-striped">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th>Constellation Action</th>
@@ -32,10 +38,11 @@ following sources:
 
 <div style="text-align: center">
 
-<img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/DelimitedFileImporter.png" alt="Delimited File
+<img width=500 src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/DelimitedFileImporter.png" alt="Delimited File
 Importer" />
 
 </div>
+<br />
 
 ## High Level Workflow Steps
 
@@ -43,7 +50,7 @@ The following is a high level workflow an analyst can follow (explained
 in detail later on):
 
 1.  Select the file type you want to import with File Parser
-2.  Click on the <img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/plus_colored.png" alt="Add File
+2.  Click on the <img width=16 src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/plus_colored.png" alt="Add File
     Button" />
     to add files.
 3.  Select your destination graph.
@@ -63,9 +70,9 @@ Hints:
 
 ## Add and Remove Files to Import
 
-Add files to import using the <img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/plus_colored.png" alt="Add File
+Add files to import using the <img width=16 src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/plus_colored.png" alt="Add File
 Button" />
-and remove a file using the <img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/minus_colored.png" alt="Remove File
+and remove a file using the <img width=16 src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/minus_colored.png" alt="Remove File
 Button" />.
 
 All the files that are being added should have the same column structure. When the "Files Include Headers" option is enabled, the column headings of all 

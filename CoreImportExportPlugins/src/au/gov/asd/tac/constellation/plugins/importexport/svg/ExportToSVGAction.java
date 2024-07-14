@@ -1,5 +1,5 @@
 /*
-* Copyright 2010-2023 Australian Signals Directorate
+* Copyright 2010-2024 Australian Signals Directorate
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -78,7 +78,7 @@ public final class ExportToSVGAction implements ActionListener {
             //This plugin is not performant so warn users when exporting large graphs. 
             final String disclaimer;
             if (graph.getVertexCount() + graph.getTransactionCount() > 5000){
-                disclaimer = "This export plugin is processor and memory intensive and is likely to take more than 3 minutes. Please consider saving your graph before running this plugin.";     
+                disclaimer = "This export plugin is processor and memory intensive and is likely cause Constellation and your machine to respond slowly. Please consider saving your graph before running this plugin.";     
             } else {
                 disclaimer = null;
             }
@@ -86,6 +86,7 @@ public final class ExportToSVGAction implements ActionListener {
             PluginExecution.withPlugin(ImportExportPluginRegistry.EXPORT_SVG)
                     .withParameter(ExportToSVGPlugin.GRAPH_TITLE_PARAMETER_ID, graphName)
                     .withParameter(ExportToSVGPlugin.SELECTED_ELEMENTS_PARAMETER_ID, false)
+                    .withParameter(ExportToSVGPlugin.EXPORT_CORES_PARAMETER_ID, (int) Math.ceil(Runtime.getRuntime().availableProcessors() / 2D))
                     .withParameter(ExportToSVGPlugin.SHOW_NODES_PARAMETER_ID, flags.drawNodes())
                     .withParameter(ExportToSVGPlugin.SHOW_CONNECTIONS_PARAMETER_ID, flags.drawConnections())
                     .withParameter(ExportToSVGPlugin.SHOW_NODE_LABELS_PARAMETER_ID, flags.drawNodeLabels())

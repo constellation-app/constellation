@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,6 @@ public class SelectionFreeformRenderable implements GLRenderable {
     // How many vertices do we need to draw a freeform shape?
     // What color is the selection freeform shape?
     private static final Vector4f SELECTION_COLOR = new Vector4f(0, 0.5F, 1, 0.375F);
-    private static final Vector4f SECOND_SELECTION_COLOR = new Vector4f(1, 0.5F, 0, 0.375F);
     private static final Vector3f ZERO_3F = new Vector3f(0, 0, 0);
     private int shader;
     private int shaderMvp;
@@ -131,8 +130,6 @@ public class SelectionFreeformRenderable implements GLRenderable {
     @Override
     public void display(final GLAutoDrawable drawable, final Matrix44f pMatrix) {
         if (selectionFreeformModel != null && selectionFreeformModel.isClear()) {
-            final Point begin = selectionFreeformModel.getStartPoint();
-            final Point end = selectionFreeformModel.getEndPoint();
             final GL3 gl = drawable.getGL().getGL3();
 
             // Map the vertex buffer.

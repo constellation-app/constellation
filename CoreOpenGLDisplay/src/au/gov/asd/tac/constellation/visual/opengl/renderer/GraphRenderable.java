@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -252,9 +252,8 @@ public final class GraphRenderable implements GLRenderable {
                     });
                 };
             case CONNECTION_LABEL_COLOR:
-                return (change, access) -> {
+                return (change, access) -> 
                     addTask(connectionLabelBatcher.setLabelColors(access));
-                };
             case CONNECTION_LABELS_REBUILD:
                 return (change, access) -> {
                     addTask(connectionLabelBatcher.setLabelColors(access));
@@ -360,9 +359,13 @@ public final class GraphRenderable implements GLRenderable {
             // there will be subsequent NullPointerExceptions, but there's nothing we can do about that.
             // Without shaders, we're dead in the water anyway.
             final String msg
-                    = "This error may have occurred because your video card and/or driver is\n"
-                    + "incompatible with CONSTELLATION.\n\n"
-                    + "Please inform CONSTELLATION support, including the text of this message.\n\n"
+                    = """
+                      This error may have occurred because your video card and/or driver is
+                      incompatible with CONSTELLATION.
+                      
+                      Please inform CONSTELLATION support, including the text of this message.
+                      
+                      """
                     + ex.getMessage();
             LOGGER.log(Level.SEVERE, msg, ex);
             final InfoTextPanel itp = new InfoTextPanel(msg);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -423,103 +423,50 @@ public class GLVisualProcessor extends VisualProcessor {
 
     @Override
     protected final Set<VisualProperty> getTrumpedProperties(final VisualProperty property) {
-        switch (property) {
-            case VERTICES_REBUILD:
-                return new HashSet<>(Arrays.asList(
-                        VisualProperty.VERTEX_SELECTED, VisualProperty.VERTEX_X,
-                        VisualProperty.VERTEX_COLOR, VisualProperty.VERTEX_FOREGROUND_ICON,
-                        VisualProperty.VERTEX_BLAZED, VisualProperty.BOTTOM_LABELS_REBUILD,
-                        VisualProperty.TOP_LABELS_REBUILD, VisualProperty.DRAW_FLAGS
-                ));
-            case CONNECTIONS_REBUILD:
-                return new HashSet<>(Arrays.asList(
-                        VisualProperty.CONNECTION_SELECTED, VisualProperty.CONNECTION_COLOR,
-                        VisualProperty.CONNECTION_LABELS_REBUILD
-                ));
-            case CONNECTION_LABELS_REBUILD:
-                return new HashSet<>(Arrays.asList(
-                        VisualProperty.CONNECTION_LABEL_COLOR
-                ));
-            case TOP_LABELS_REBUILD:
-                return new HashSet<>(Arrays.asList(
-                        VisualProperty.TOP_LABEL_COLOR
-                ));
-            case BOTTOM_LABELS_REBUILD:
-                return new HashSet<>(Arrays.asList(
-                        VisualProperty.BOTTOM_LABEL_COLOR
-                ));
-            default:
-                return super.getTrumpedProperties(property);
-        }
+        return switch (property) {
+            case VERTICES_REBUILD -> new HashSet<>(Arrays.asList(
+                    VisualProperty.VERTEX_SELECTED, VisualProperty.VERTEX_X,
+                    VisualProperty.VERTEX_COLOR, VisualProperty.VERTEX_FOREGROUND_ICON,
+                    VisualProperty.VERTEX_BLAZED, VisualProperty.BOTTOM_LABELS_REBUILD,
+                    VisualProperty.TOP_LABELS_REBUILD, VisualProperty.DRAW_FLAGS
+            ));
+            case CONNECTIONS_REBUILD -> new HashSet<>(Arrays.asList(
+                    VisualProperty.CONNECTION_SELECTED, VisualProperty.CONNECTION_COLOR,
+                    VisualProperty.CONNECTION_LABELS_REBUILD
+            ));
+            case CONNECTION_LABELS_REBUILD -> new HashSet<>(Arrays.asList(
+                    VisualProperty.CONNECTION_LABEL_COLOR
+            ));
+            case TOP_LABELS_REBUILD -> new HashSet<>(Arrays.asList(
+                    VisualProperty.TOP_LABEL_COLOR
+            ));
+            case BOTTOM_LABELS_REBUILD -> new HashSet<>(Arrays.asList(
+                    VisualProperty.BOTTOM_LABEL_COLOR
+            ));
+            default -> super.getTrumpedProperties(property);
+        };
     }
 
     @Override
     protected final VisualProperty getMasterProperty(final VisualProperty property) {
 
-        switch (property) {
-            case BLAZE_SIZE:
-            case BLAZE_OPACITY:
-                return VisualProperty.BLAZE_SIZE;
-            case VISIBLE_ABOVE_THRESHOLD:
-            case VISIBILITY_THRESHOLD:
-                return VisualProperty.DRAW_FLAGS;
-            case VERTEX_SELECTED:
-            case VERTEX_DIM:
-                return VisualProperty.VERTEX_SELECTED;
-            case VERTEX_RADIUS:
-            case VERTEX_X:
-            case VERTEX_Y:
-            case VERTEX_Z:
-            case VERTEX_X2:
-            case VERTEX_Y2:
-            case VERTEX_Z2:
-                return VisualProperty.VERTEX_X;
-            case VERTEX_COLOR:
-                return VisualProperty.VERTEX_COLOR;
-            case VERTEX_FOREGROUND_ICON:
-            case VERTEX_BACKGROUND_ICON:
-            case VERTEX_NW_DECORATOR:
-            case VERTEX_NE_DECORATOR:
-            case VERTEX_SW_DECORATOR:
-            case VERTEX_SE_DECORATOR:
-                return VisualProperty.VERTEX_FOREGROUND_ICON;
-            case VERTEX_BLAZED:
-            case VERTEX_BLAZE_ANGLE:
-            case VERTEX_BLAZE_COLOR:
-                return VisualProperty.VERTEX_BLAZED;
-            case VERTEX_VISIBILITY:
-            case VERTICES_ADDED:
-            case VERTICES_REMOVED:
-            case VERTICES_REBUILD:
-                return VisualProperty.VERTICES_REBUILD;
-            case CONNECTION_COLOR:
-                return VisualProperty.CONNECTION_COLOR;
-            case CONNECTION_SELECTED:
-            case CONNECTION_DIRECTED:
-            case CONNECTION_DIM:
-            case CONNECTION_LINESTYLE:
-                return VisualProperty.CONNECTION_SELECTED;
-            case CONNECTION_VISIBILITY:
-            case CONNECTION_WIDTH:
-            case CONNECTIONS_ADDED:
-            case CONNECTIONS_REMOVED:
-            case CONNECTIONS_REBUILD:
-                return VisualProperty.CONNECTIONS_REBUILD;
-            case TOP_LABEL_SIZE:
-            case TOP_LABELS_REBUILD:
-            case TOP_LABEL_TEXT:
-                return VisualProperty.TOP_LABELS_REBUILD;
-            case BOTTOM_LABEL_SIZE:
-            case BOTTOM_LABELS_REBUILD:
-            case BOTTOM_LABEL_TEXT:
-                return VisualProperty.BOTTOM_LABELS_REBUILD;
-            case CONNECTION_LABEL_SIZE:
-            case CONNECTION_LABELS_REBUILD:
-            case CONNECTION_LABEL_TEXT:
-                return VisualProperty.CONNECTION_LABELS_REBUILD;
-            default:
-                return super.getMasterProperty(property);
-        }
+        return switch (property) {
+            case BLAZE_SIZE, BLAZE_OPACITY -> VisualProperty.BLAZE_SIZE;
+            case VISIBLE_ABOVE_THRESHOLD, VISIBILITY_THRESHOLD -> VisualProperty.DRAW_FLAGS;
+            case VERTEX_SELECTED, VERTEX_DIM -> VisualProperty.VERTEX_SELECTED;
+            case VERTEX_RADIUS, VERTEX_X, VERTEX_Y, VERTEX_Z, VERTEX_X2, VERTEX_Y2, VERTEX_Z2 -> VisualProperty.VERTEX_X;
+            case VERTEX_COLOR -> VisualProperty.VERTEX_COLOR;
+            case VERTEX_FOREGROUND_ICON, VERTEX_BACKGROUND_ICON, VERTEX_NW_DECORATOR, VERTEX_NE_DECORATOR, VERTEX_SW_DECORATOR, VERTEX_SE_DECORATOR -> VisualProperty.VERTEX_FOREGROUND_ICON;
+            case VERTEX_BLAZED, VERTEX_BLAZE_ANGLE, VERTEX_BLAZE_COLOR -> VisualProperty.VERTEX_BLAZED;
+            case VERTEX_VISIBILITY, VERTICES_ADDED, VERTICES_REMOVED, VERTICES_REBUILD -> VisualProperty.VERTICES_REBUILD;
+            case CONNECTION_COLOR -> VisualProperty.CONNECTION_COLOR;
+            case CONNECTION_SELECTED, CONNECTION_DIRECTED, CONNECTION_DIM, CONNECTION_LINESTYLE -> VisualProperty.CONNECTION_SELECTED;
+            case CONNECTION_VISIBILITY, CONNECTION_WIDTH, CONNECTIONS_ADDED, CONNECTIONS_REMOVED, CONNECTIONS_REBUILD -> VisualProperty.CONNECTIONS_REBUILD;
+            case TOP_LABEL_SIZE, TOP_LABELS_REBUILD, TOP_LABEL_TEXT -> VisualProperty.TOP_LABELS_REBUILD;
+            case BOTTOM_LABEL_SIZE, BOTTOM_LABELS_REBUILD, BOTTOM_LABEL_TEXT -> VisualProperty.BOTTOM_LABELS_REBUILD;
+            case CONNECTION_LABEL_SIZE, CONNECTION_LABELS_REBUILD, CONNECTION_LABEL_TEXT -> VisualProperty.CONNECTION_LABELS_REBUILD;
+            default -> super.getMasterProperty(property);
+        };
 
     }
 

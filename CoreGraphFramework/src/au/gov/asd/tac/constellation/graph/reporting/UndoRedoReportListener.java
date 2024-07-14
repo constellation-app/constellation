@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.graph.reporting;
 
-import au.gov.asd.tac.constellation.graph.reporting.UndoRedoReport;
-
 /**
  * A listener that gets alerted whenever a new undo/redo report is created.
  *
@@ -31,5 +29,4 @@ public interface UndoRedoReportListener {
      * @param undoRedoReport the newly created {@link UndoRedoReport}.
      */
     public void fireNewUndoRedoReport(final UndoRedoReport undoRedoReport);
-
 }

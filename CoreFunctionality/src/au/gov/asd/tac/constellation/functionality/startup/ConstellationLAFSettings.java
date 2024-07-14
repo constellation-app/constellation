@@ -190,19 +190,19 @@ public class ConstellationLAFSettings {
         if (darkMode) {
             // Fixed set of Blue shade colors
             // appropriate for Nimbus dark LAF
-            activeBlue = new Color(125, 170, 225);
-            activeDarkBlue = new Color(60, 95, 150);
-            selectedBlue = new Color(105, 155, 200);
-            selectedDarkBlue = new Color(50, 85, 145);
+            activeBlue = new Color(100, 150, 200);
+            activeDarkBlue = new Color(52, 90, 158);
+            selectedBlue = new Color(143, 164, 189);
+            selectedDarkBlue = new Color(79, 103, 157);
             unselectedGreyBlue = new Color(140, 150, 155);
             unselectedDarkGreyBlue = new Color(100, 110, 115);
         } else {
             // Fixed set of Blue shade colors
             // appropriate for standard Nimbus LAF
-            activeBlue = new Color(160, 210, 255);
-            activeDarkBlue = new Color(92, 130, 188);
-            selectedBlue = new Color(145, 185, 250);
-            selectedDarkBlue = new Color(82, 122, 178);
+            activeBlue = new Color(170, 200, 245);
+            activeDarkBlue = new Color(100, 140, 220);
+            selectedBlue = new Color(165, 195, 230);
+            selectedDarkBlue = new Color(110, 140, 190);
             unselectedGreyBlue = new Color(190, 205, 215);
             unselectedDarkGreyBlue = new Color(150, 160, 175);
         }
@@ -249,7 +249,7 @@ public class ConstellationLAFSettings {
             selectedHoverBackgroundBlue = new Color(40, 70, 120);
             unselectedHoverBackgroundBlue = new Color(40, 70, 110);
             gradientBackgroundBlue = new Color(40, 70, 110);
-            attentionBackgroundOrange = new Color(138, 42, 30);
+            attentionBackgroundOrange = new Color(148, 52, 40);
         } else {
             // Fixed set of Blue shade colors
             // appropriate for FlatLafLight LAF
@@ -261,7 +261,7 @@ public class ConstellationLAFSettings {
             hoverBackgroundBlue = new Color(195, 215, 250);
             selectedHoverBackgroundBlue = new Color(212, 230, 252);
             unselectedHoverBackgroundBlue = new Color(195, 215, 255);
-            attentionBackgroundOrange = new Color(250, 180, 160);
+            attentionBackgroundOrange = new Color(250, 170, 150);
         }
 
         try {
@@ -284,7 +284,7 @@ public class ConstellationLAFSettings {
                 UIManager.getDefaults().put("ViewTab.hoverBackground", hoverBackgroundBlue);
                 UIManager.getDefaults().put("ViewTab.selectedHoverBackground", selectedHoverBackgroundBlue);
                 UIManager.getDefaults().put("ViewTab.unselectedHoverBackground", unselectedHoverBackgroundBlue);
-                UIManager.getDefaults().put("ViewTab.underlineHeight", 4);
+                UIManager.getDefaults().put("ViewTab.underlineHeight", 3);
                 UIManager.getDefaults().put("ViewTab.underlineColor", selectedUnderlineBlue);
                 UIManager.getDefaults().put("ViewTab.inactiveUnderlineColor", inactiveUnderlineBlue); // ViewTab.attentionForeground
                 UIManager.getDefaults().put("ViewTab.attentionBackground", attentionBackgroundOrange);
@@ -296,7 +296,7 @@ public class ConstellationLAFSettings {
                 UIManager.getDefaults().put("EditorTab.hoverBackground", hoverBackgroundBlue);
                 UIManager.getDefaults().put("EditorTab.selectedHoverBackground", selectedHoverBackgroundBlue);
                 UIManager.getDefaults().put("EditorTab.unselectedHoverBackground", unselectedHoverBackgroundBlue);
-                UIManager.getDefaults().put("EditorTab.underlineHeight", 4);
+                UIManager.getDefaults().put("EditorTab.underlineHeight", 3);
                 UIManager.getDefaults().put("EditorTab.underlineColor", selectedUnderlineBlue);
                 UIManager.getDefaults().put("EditorTab.inactiveUnderlineColor", inactiveUnderlineBlue);
                 UIManager.getDefaults().put("EditorTab.attentionBackground", attentionBackgroundOrange);
@@ -400,27 +400,26 @@ public class ConstellationLAFSettings {
         List<Object> uiList = new ArrayList<>();
         uiList.addAll(UIManager.getDefaults().keySet());
         LOGGER.info(">> :: UIDefaults ::");
-        String msg = "";
-        for (Object uiKey : uiList) {
+        for (final Object uiKey : uiList) {
             // check each key stored in UIDefaults
             // filter out any keys which do not contain the keyFilter string
             // filter out any values which do not contain the valueFilter string
             if ( (keyFilter == null || uiKey.toString().contains(keyFilter)) && 
                  (valueFilter == null || UIManager.get(uiKey).toString().contains(valueFilter)) ) {
-                msg = ">> :: " + uiKey + " = " + UIManager.get(uiKey);
+                final String msg = ">> :: " + uiKey + " = " + UIManager.get(uiKey);
                 LOGGER.info(msg);                
             }
         }
         uiList.clear();
         uiList.addAll(UIManager.getLookAndFeelDefaults().keySet());
         LOGGER.info(">> :::: UILookAndFeelDefaults ::::");
-        for (Object uiKey : uiList) {
+        for (final Object uiKey : uiList) {
             // check each key stored in UILookAndFeelDefaults
             // filter out any keys which do not contain the keyFilter string
             // filter out any values which do not contain the valueFilter string
             if ( (keyFilter == null || uiKey.toString().contains(keyFilter)) &&
                  (valueFilter == null || UIManager.getLookAndFeelDefaults().get(uiKey).toString().contains(valueFilter)) ) {
-                msg = ">> :::: " + uiKey + " = " + UIManager.getLookAndFeelDefaults().get(uiKey);
+                final String msg = ">> :::: " + uiKey + " = " + UIManager.getLookAndFeelDefaults().get(uiKey);
                 LOGGER.info(msg);                
             }
         }
@@ -536,5 +535,4 @@ public class ConstellationLAFSettings {
             g.drawLine(w - 1, 1, w - 1, h - 1);
         }
     }
-
 }

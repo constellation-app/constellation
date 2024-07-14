@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.graph.undo;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.operations.GraphOperation;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import java.io.DataOutput;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -146,7 +146,7 @@ public class UndoGraphEditState {
         }
 
         objectStack = new Object[objectCount];
-        Arrays.setAll(objectStack, index -> classMap.get(index));
+        Arrays.setAll(objectStack, classMap::get);
     }
 
     public byte[] getByteStack() {
@@ -405,10 +405,14 @@ public class UndoGraphEditState {
         }
 
         final int total = (operationCount * 2) + byteCount + (shortCount * 2) + (intCount * 4) + (longCount * 8) + (objectCount * 4) + graphOperationCount;
-        final String log = String.format("STATS: OPERATIONS = " + operationCount + " BYTES = " + byteCount + " SHORTS = " + shortCount + " INTS = " + intCount + " LONGS = " + longCount + " OBJECTS = " + objectCount + " GRAPH_OPERATIONS = " + graphOperationCount + " TOTAL = " + total);
+        final String log = String.format(
+                "STATS: OPERATIONS = %s BYTES = %s SHORTS = %s INTS = %s LONGS = %s OBJECTS = %s GRAPH_OPERATIONS = %s TOTAL = %s",
+                operationCount, byteCount, shortCount, intCount, longCount,objectCount, graphOperationCount, total
+        );
+        
         LOGGER.log(Level.INFO, log);
         for (final UndoGraphEditOperation operation : UndoGraphEditOperation.values()) {
-            LOGGER.log(Level.INFO, "    " + operation.ordinal() + " " + operation.getName());
+            LOGGER.log(Level.INFO, "    {0} {1}", new Object[]{operation.ordinal(), operation.getName()});
             final int[] counts = stats[operation.ordinal()];
             for (int i = 0; i < 6; i++) {
                 LOGGER.log(Level.INFO, "{0}", counts[i]);
@@ -419,7 +423,6 @@ public class UndoGraphEditState {
     }
 
     public void execute(final GraphWriteMethods graph) {
-
         bytePointer = 0;
         shortPointer = 0;
         intPointer = 0;
@@ -443,7 +446,6 @@ public class UndoGraphEditState {
     }
 
     public void undo(final GraphWriteMethods graph) {
-
         bytePointer = byteCount;
         shortPointer = shortCount;
         intPointer = intCount;
@@ -467,7 +469,7 @@ public class UndoGraphEditState {
         }
     }
 
-    public void write(final DataOutputStream out) throws IOException {
+    public void write(final DataOutput out) throws IOException {
         out.writeInt(operationCount);
         for (int i = 0; i < operationCount; i++) {
             out.writeShort(operationStack[i]);

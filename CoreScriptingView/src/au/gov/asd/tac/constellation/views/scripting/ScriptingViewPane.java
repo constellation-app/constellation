@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,8 +31,10 @@ import au.gov.asd.tac.constellation.plugins.parameters.DefaultPluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.file.ConstellationInstalledFileLocator;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -105,9 +107,13 @@ public class ScriptingViewPane extends JPanel {
     private final JPopupMenu optionsMenu;
     private final JButton optionsButton;
     private final JButton executeButton;
+    private final JButton helpButton;
 
     private File scriptFile;
     private boolean newOutput;
+    
+    private static final Pattern COLUMN_PATTERN = Pattern.compile(" at column number (\\d+)");
+    private static final Pattern LINE_PATTERN = Pattern.compile(" at line number (\\d+)");
 
     public ScriptingViewPane(final ScriptingViewTopComponent topComponent) {
         this.topComponent = topComponent;
@@ -133,14 +139,11 @@ public class ScriptingViewPane extends JPanel {
                 final boolean isCtrl = ke.isControlDown();
                 if (isCtrl) {
                     switch (ke.getKeyCode()) {
-                        case KeyEvent.VK_ENTER:
-                            executeScript();
-                            break;
-                        case KeyEvent.VK_S:
-                            saveScript();
-                            break;
-                        default:
-                            break;
+                        case KeyEvent.VK_ENTER -> executeScript();
+                        case KeyEvent.VK_S -> saveScript();
+                        default -> {
+                            // do nothing
+                        }
                     }
                 }
             }
@@ -151,7 +154,7 @@ public class ScriptingViewPane extends JPanel {
                 throw new FileNotFoundException("The file could not be located.");
             }
             try (final BufferedReader reader = new BufferedReader(new FileReader(new File(GET_STARTED_FILE.getPath())))) {
-                StringBuilder getStartedText = new StringBuilder();
+                final StringBuilder getStartedText = new StringBuilder();
                 reader.lines().forEach(line -> getStartedText.append(line).append(SeparatorConstants.NEWLINE));
                 scriptEditor.setText(getStartedText.toString());
             } catch (final IOException ex) {
@@ -186,7 +189,7 @@ public class ScriptingViewPane extends JPanel {
         optionsMenu.add(newOutputItem);
 
         final JMenuItem apiItem = new JMenuItem("API Documentation");
-        apiItem.addActionListener(e -> new HelpCtx(this.getClass().getPackage().getName()).display());
+        apiItem.addActionListener(e -> new HelpCtx(this.getClass().getPackage().getName() + ".javadocs").display());
         optionsMenu.add(apiItem);
 
         final Collection<? extends ScriptingAbstractAction> scriptingActions = Lookup.getDefault().lookupAll(ScriptingAbstractAction.class);
@@ -205,6 +208,14 @@ public class ScriptingViewPane extends JPanel {
             }
         });
 
+        this.helpButton = new JButton();
+        helpButton.setIcon(UserInterfaceIconProvider.HELP.buildIcon(16, ConstellationColor.SKY.getJavaColor()));
+        helpButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                new HelpCtx(this.getClass().getPackage().getName()).display();
+            }
+        });
+        
         this.executeButton = new JButton();
         executeButton.setText("Execute");
         executeButton.setIcon(ImageUtilities.loadImageIcon("execute.png", false));
@@ -219,19 +230,22 @@ public class ScriptingViewPane extends JPanel {
                                         .addComponent(scriptPane, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addGroup(Alignment.TRAILING, layout.createSequentialGroup()
                                                 .addComponent(optionsButton)
+                                                .addPreferredGap(ComponentPlacement.RELATED, 1, 1)
+                                                .addComponent(helpButton)
                                                 .addPreferredGap(ComponentPlacement.RELATED, 344, Short.MAX_VALUE)
                                                 .addComponent(executeButton)))
                                 .addContainerGap())
         );
         layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                layout.createParallelGroup(Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                                 .addContainerGap()
                                 .addComponent(scriptPane, GroupLayout.DEFAULT_SIZE, 544, Short.MAX_VALUE)
                                 .addPreferredGap(ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(Alignment.BASELINE)
                                         .addComponent(executeButton)
-                                        .addComponent(optionsButton))
+                                        .addComponent(optionsButton)
+                                        .addComponent(helpButton))
                                 .addContainerGap())
         );
         ScriptingViewPane.this.setLayout(layout);
@@ -357,8 +371,7 @@ public class ScriptingViewPane extends JPanel {
                         LOGGER.log(Level.SEVERE, "Cause of error is {0}", cause.getClass());
 
                         // If this is Jython, we can walk the traceback to find the line where things went bad.
-                        if (cause instanceof PyException) {
-                            final PyException pyex = (PyException) cause;
+                        if (cause instanceof PyException pyex) {
                             PyTraceback tb = pyex.traceback;
                             while (tb != null) {
                                 line = tb.tb_lineno - 1;
@@ -372,14 +385,12 @@ public class ScriptingViewPane extends JPanel {
                         scriptParser.setError(msg, line);
                     } else {
                         // Search the exception message to find the line (and possibly column) where the error occurred.
-                        final Pattern linePattern = Pattern.compile(" at line number (\\d+)");
-                        final Matcher lineMatcher = linePattern.matcher(msg);
+                        final Matcher lineMatcher = LINE_PATTERN.matcher(msg);
                         if (lineMatcher.find()) {
                             final String ln = lineMatcher.group(1);
                             line = Integer.parseInt(ln) - 1;
 
-                            final Pattern columnPattern = Pattern.compile(" at column number (\\d+)");
-                            final Matcher columnMatcher = columnPattern.matcher(msg);
+                            final Matcher columnMatcher = COLUMN_PATTERN.matcher(msg);
                             if (columnMatcher.find()) {
                                 final String col = columnMatcher.group(1);
                                 final int column = Integer.parseInt(col) - 1;
@@ -431,7 +442,7 @@ public class ScriptingViewPane extends JPanel {
         }
 
         @Override
-        protected void execute(final PluginGraphs _graphs, final PluginInteraction _interaction, final PluginParameters _parameters) throws InterruptedException, PluginException {
+        protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
             try {
                 try (final BufferedReader reader = new BufferedReader(new InputStreamReader(
                         new FileInputStream(fileChooser.getSelectedFile()), StandardCharsets.UTF_8.name()))) {
@@ -453,7 +464,5 @@ public class ScriptingViewPane extends JPanel {
                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         }
-
     }
-
 }

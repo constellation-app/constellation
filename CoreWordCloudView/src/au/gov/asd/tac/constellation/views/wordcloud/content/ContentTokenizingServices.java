@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,13 +82,11 @@ public class ContentTokenizingServices {
     public static void createDocumentClusteringTokenizingService(final TokenHandler handler, final ClusterDocumentsParameters clusterDocumentsParams, final ThreadAllocator allocator) {
         final ContentTokenizingServices cts = new ContentTokenizingServices();
         switch (clusterDocumentsParams.getTokenizingMethod()) {
-            case NWORDS:
+            case NWORDS -> 
                 cts.tokenizer = new NWordTokenizer(handler, clusterDocumentsParams.getDelimiter().getChar(), clusterDocumentsParams.getTokenLength());
-                break;
-            case DELIMITED_NGRAMS:
+            case DELIMITED_NGRAMS -> 
                 cts.tokenizer = new DelimitedNGramTokenizer(handler, clusterDocumentsParams.getTokenLength(), clusterDocumentsParams.getDelimiter().getChar());
-                break;
-            case NGRAMS:
+            case NGRAMS -> 
                 cts.tokenizer = new NGramTokenizer(handler, clusterDocumentsParams.getTokenLength());
         }
         cts.sanitizer = new FilteringSanitizer(clusterDocumentsParams.getDelimiter().getChar(), clusterDocumentsParams.getToFilterSet()).setInnerSanitizer(new CaseSanitizer(clusterDocumentsParams.isCaseSensitive()));
@@ -658,8 +656,8 @@ public class ContentTokenizingServices {
         public void tokenizePhrase(final char[] phrase, final int elementPos) {
             final TokenizerState state = getNewState(phrase);
             while (state.findNextToken()) {
-                if (handler instanceof PhraseTokenHandler) {
-                    ((PhraseTokenHandler) handler).registerToken(new String(state.getToken()), elementPos, ((PhraseTokenizerState) state).currentSingleWords, ((PhraseTokenizerState) state).storeSingleWords);
+                if (handler instanceof PhraseTokenHandler phraseTokenHandler) {
+                    phraseTokenHandler.registerToken(new String(state.getToken()), elementPos, ((PhraseTokenizerState) state).currentSingleWords, ((PhraseTokenizerState) state).storeSingleWords);
                 } else {
                     handler.registerToken(new String(phrase), elementPos);
                 }
@@ -942,11 +940,13 @@ public class ContentTokenizingServices {
         @Override
         protected String sanitizeString(final String str) {
             String newStr = str;
-            for (int i = 0; i < str.length(); i++) {
+            int i = 0;
+            while (i < str.length()) {
                 if (toFilter.contains(str.charAt(i)) && replacement.length() > 0) {
                     newStr = str.substring(0, i) + replacement + str.substring(i + 1, str.length());
                     i += (replacement.length() - 1);
                 }
+                i++;
             }
             return newStr;
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class TimelineViewHelpProvider extends HelpPageProvider {
 
     private static final String CODEBASE_NAME = "constellation";
+    private static final String SEP = File.separator;
 
     /**
      * Provides a map of all the help files Maps the file name to the md file name
@@ -41,9 +42,8 @@ public class TimelineViewHelpProvider extends HelpPageProvider {
     @Override
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
-        final String sep = File.separator;
-        final String timelineModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreTimelineView" + sep + "src" + sep + "au" + sep + "gov" + sep
-                + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "timeline" + sep;
+        final String timelineModulePath = ".." + SEP + "ext" + SEP + "docs" + SEP + "CoreTimelineView" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP
+                + "asd" + SEP + "tac" + SEP + CODEBASE_NAME + SEP + "views" + SEP + "timeline" + SEP;
 
         map.put("au.gov.asd.tac.constellation.views.timeline.TimelineTopComponent", timelineModulePath + "timeline-view.md");
         return map;
@@ -56,10 +56,7 @@ public class TimelineViewHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        final String sep = File.separator;
-        final String timelineViewPath;
-        timelineViewPath = "ext" + sep + "docs" + sep + "CoreTimelineView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
-                + sep + CODEBASE_NAME + sep + "views" + sep + "timeline" + sep + "timeline-toc.xml";
-        return timelineViewPath;
+        return "ext" + SEP + "docs" + SEP + "CoreTimelineView" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP + "asd" + SEP + "tac"
+                + SEP + CODEBASE_NAME + SEP + "views" + SEP + "timeline" + SEP + "timeline-toc.xml";
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -98,9 +98,9 @@ public abstract class JavaFxTopComponent<P extends Pane> extends ListeningTopCom
             if (getHorizontalScrollPolicy() == ScrollBarPolicy.NEVER) {
                 scrollPane.setFitToWidth(true);
             } else {
+                // TODO: fix a bug where the width of the scroll can grow infinitely
                 scrollPane.viewportBoundsProperty().addListener((observable, oldValue, newValue)
-                        ->                    // TODO: fix a bug where the width of the scroll can grow infinitely
-                    scrollPane.setFitToWidth(content.prefWidth(-1) <= newValue.getWidth()));
+                        -> scrollPane.setFitToWidth(content.prefWidth(-1) <= newValue.getWidth()));
             }
             scrollPane.setVbarPolicy(getVerticalScrollPolicy());
             if (getVerticalScrollPolicy() == ScrollBarPolicy.NEVER) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -172,7 +172,7 @@ public abstract class InfomapGreedy extends InfomapBase {
     @Override
     protected int optimizeModules() {
         int numOptimizationRounds = 0;
-        double oldCodelength = codelength;
+        final double oldCodelength = codelength;
         int loopLimit = config.getCoreLoopLimit();
         if (config.getCoreLoopLimit() > 0 && config.isRandomizeCoreLoopLimit()) {
             loopLimit = (int) (rand.nextDouble() * config.getCoreLoopLimit()) + 1;
@@ -180,7 +180,6 @@ public abstract class InfomapGreedy extends InfomapBase {
 
         // Iterate while the optimization loop moves some nodes within the dynamic modular structure.
         do {
-            oldCodelength = codelength;
             tryMoveEachNodeIntoBestModule(); // returns numNodesMoved
             ++numOptimizationRounds;
         } while (numOptimizationRounds != loopLimit
@@ -473,7 +472,7 @@ public abstract class InfomapGreedy extends InfomapBase {
         }
 
         if (DEBUG) {
-            final String log = String.format("Done! Moved %d nodes into %d modules to codelength: %.5f\n",
+            final String log = String.format("Done! Moved %d nodes into %d modules to codelength: %.5f%n",
                     numMoved, getNumActiveModules(), codelength);
             LOGGER.log(Level.INFO, log);
         }
@@ -494,7 +493,7 @@ public abstract class InfomapGreedy extends InfomapBase {
      *
      * @return The number of nodes moved.
      */
-    int tryMoveEachNodeIntoBestModule() {
+    public int tryMoveEachNodeIntoBestModule() {
         if (DEBUG) {
             LOGGER.log(Level.INFO, "{0}.tryMoveEachNodeIntoBestModule", getClass().getSimpleName());
         }
@@ -693,7 +692,7 @@ public abstract class InfomapGreedy extends InfomapBase {
             // Happens after optimizing fine-tune and when moving leaf nodes to super clusters.
             if (activeNetworkAlreadyHaveModuleLevel) {
                 if (DEBUG) {
-                    final String log = String.format("Replace existing %d modules with its children before consolidating the %d dynamic modules...\n",
+                    final String log = String.format("Replace existing %d modules with its children before consolidating the %d dynamic modules...%n",
                             getNumTopModules(), getNumActiveModules());
                     LOGGER.log(Level.INFO, log);
                 }
@@ -719,7 +718,7 @@ public abstract class InfomapGreedy extends InfomapBase {
 
         if (asSubModules) {
             if (DEBUG) {
-                final String log = String.format("Consolidated %d submodules under %d modules, store module structure before releasing it...\n",
+                final String log = String.format("Consolidated %d submodules under %d modules, store module structure before releasing it...%n",
                         getNumActiveModules(), getNumTopModules());
                 LOGGER.log(Level.INFO, log);
             }

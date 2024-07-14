@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -103,7 +103,7 @@ public abstract class RestClient {
                     }
                     query.append(String.format("%s=%s", key, value));
                 } else {
-                    LOGGER.info(String.format("Unable to add rest key/value: %s=%s to URL=%s", key, value, url));
+                    LOGGER.log(Level.INFO, "{0}", String.format("Unable to add rest key/value: %s=%s to URL=%s", key, value, url));
                 } 
             }
         }

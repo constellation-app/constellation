@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.conversationview;
 
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
 import java.util.List;
 import javafx.geometry.Insets;
@@ -54,6 +55,7 @@ public class ConversationBubble extends VBox {
     private final Rectangle bubbleGraphic;
     private final Path tail;
     private final Line tailTop;
+    private static final boolean DARK_MODE = JavafxStyleManager.isDarkTheme();
 
     /**
      * Creates a new Bubble.
@@ -88,7 +90,7 @@ public class ConversationBubble extends VBox {
         bubbleContent.getChildren().add(bubbleGraphic);
 
         Region previousContent = null;
-        for (Region content : contents) {
+        for (final Region content : contents) {
             if (previousContent != null) {
                 final Pane separator = new Pane();
                 separator.setPrefHeight(3);
@@ -159,8 +161,8 @@ public class ConversationBubble extends VBox {
     }
 
     public final void setColor(final Color color) {
-        Color bottomColor = color.darker();
-        Color topColor = color.brighter();
+        Color bottomColor = DARK_MODE ? color.darker() : color;
+        Color topColor = DARK_MODE ? color.brighter() : color.brighter().brighter();
 
         Stop[] stops = new Stop[]{
             new Stop(0, topColor),

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,9 @@ package au.gov.asd.tac.constellation.help;
 import au.gov.asd.tac.constellation.help.preferences.HelpPreferenceKeys;
 import au.gov.asd.tac.constellation.help.utilities.Generator;
 import au.gov.asd.tac.constellation.help.utilities.HelpMapper;
-import com.github.rjeschke.txtmark.Processor;
+import org.commonmark.node.Node;
+import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.HtmlRenderer;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,6 +32,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.ExecutorService;
@@ -55,16 +58,14 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
 
     private static final String OFFICIAL_CONSTELLATION_WEBSITE = "https://www.constellation-app.com/help";
     private static final String NEWLINE = "\n";
+    
+    // Run in a different thread, not the JavaFX thread
+    private static final ExecutorService pluginExecutor = Executors.newCachedThreadPool();
 
     public static void copy(final String filePath, final OutputStream out) throws IOException {
         final String sep = File.separator;
         final InputStream pageInput = getInputStream(filePath);
         final InputStream tocInput = getInputStream(Generator.getBaseDirectory() + sep + Generator.getTOCDirectory());
-
-        if (pageInput == null || tocInput == null) {
-            // files could not be found, don't progress.
-            return;
-        }
 
         // avoid parsing utility files or images into html
         if (filePath.contains(".css") || filePath.contains(".js") || filePath.contains(".png") || filePath.contains(".jpg")) {
@@ -101,8 +102,8 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
     }
 
     /**
-     * Generate a String which represents the table of contents, the currently
-     * displayed page, and the necessary html tags for formatting.
+     * Generate a String which represents the table of contents, the currently displayed page, and the necessary html
+     * tags for formatting.
      *
      * @param separator
      * @param tocInput
@@ -200,13 +201,21 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         html.append(NEWLINE);
         html.append(startColDiv);
         html.append(NEWLINE);
-        html.append(Processor.process(tocInput));
+        final String tocString =  new String(tocInput.readAllBytes(), StandardCharsets.UTF_8);
+        final Parser parser = Parser.builder().build();
+        final HtmlRenderer renderer = HtmlRenderer.builder().build();
+        final Node tocDocument = parser.parse(tocString);
+        final String tocHtml = renderer.render(tocDocument);
+        html.append(tocHtml);
         html.append(NEWLINE);
         html.append(endDiv);
         html.append(NEWLINE);
         html.append(startInnerColDiv);
-        html.append(NEWLINE);
-        html.append(Processor.process(pageInput));
+        html.append(NEWLINE);        
+        final String rawInput = new String(pageInput.readAllBytes(), StandardCharsets.UTF_8);
+        final Node pageDocument = parser.parse(rawInput);
+        final String pageHtml = renderer.render(pageDocument);
+        html.append(pageHtml);
         html.append(NEWLINE);
         html.append(endDiv);
         html.append(NEWLINE);
@@ -216,7 +225,60 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         html.append(NEWLINE);
         html.append(scriptTag);
 
-        return html.toString();
+        String htmlString = html.toString();
+        final int headTagIndex = htmlString.indexOf("<head ");
+        int insertPos = 0;
+        if (headTagIndex > -1) {
+            insertPos = htmlString.substring(headTagIndex).indexOf(">") + headTagIndex + 1;                
+        }
+        final int metaIndex = htmlString.indexOf("<meta ");
+        if (metaIndex == -1) {
+            // add a meta tag after the head tag if it exists
+            htmlString = htmlString.substring(0, insertPos) + "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">" + htmlString.substring(insertPos);
+        } else {
+            // check the meta tag
+            final int metaTagEnd = htmlString.substring(metaIndex).indexOf(">");
+            String metaString = htmlString.substring(metaIndex, metaIndex + metaTagEnd + 1);
+            final int contentIndex = metaString.indexOf("content=\"");
+            if (contentIndex > -1) {
+                final int endContentPos = metaString.substring(contentIndex+9).indexOf("\"");
+                String contentString = metaString.substring(contentIndex + 9, contentIndex + 9 + endContentPos);
+                final int charsetIndex = contentString.indexOf("charset=");
+                if (charsetIndex > -1) {
+                    // find end of charset info and overwrite it
+                    int charsetEndIndex = contentString.substring(charsetIndex).indexOf(";");
+                    // a value of -1 means id was the last entry of the content attribute
+                    if (charsetEndIndex == -1) {
+                        charsetEndIndex = contentString.length();
+                    }
+                    // replace the charset value with utf-8
+                    contentString = contentString.substring(0, charsetIndex + 8) + "utf-8" + contentString.substring(charsetEndIndex);                    
+                } else {
+                    // no charset specified in the content attribute, add it to the content string
+                    contentString = contentString + "; charset=utf-8";
+                }
+                // insert new content string into metastring
+                metaString = metaString.substring(0, contentIndex + 9) + contentString + metaString.substring(contentIndex + 9 + endContentPos);
+            } else {
+                // no content attribute
+                // check for charset attribute
+                final int charsetAttrIndex = metaString.indexOf("charset=\"");
+                if (charsetAttrIndex > -1) {
+                    int charsetEndIndex = metaString.substring(charsetAttrIndex + 9).indexOf("\"");
+                    if (charsetEndIndex > -1) {
+                        // put utf-8 in the charset string
+                        metaString = metaString.substring(0, charsetAttrIndex + 9) + "utf-8" + metaString.substring(charsetAttrIndex + 9 + charsetEndIndex);
+                    }
+                } else {
+                    // add a content attribute to the metaString
+                    metaString = metaString.substring(0, metaString.lastIndexOf("\"") + 1) + " content=\"text/html; charset=utf-8\">";
+                }
+            }
+            // insert the new/updated metastring into htmlString
+            final String nonMetaHtml = htmlString.substring(0, metaIndex) + htmlString.substring(metaIndex + metaTagEnd + 1);
+            htmlString = nonMetaHtml.substring(0, insertPos) + metaString + nonMetaHtml.substring(insertPos);
+        }
+        return htmlString;
     }
 
     /**
@@ -281,8 +343,6 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
     public static Future<?> browse(final URI uri) {
         LOGGER.log(Level.INFO, "Loading help uri {0}", uri);
 
-        // Run in a different thread, not the JavaFX thread
-        final ExecutorService pluginExecutor = Executors.newCachedThreadPool();
         return pluginExecutor.submit(() -> {
             Thread.currentThread().setName("Browse Help");
             try {

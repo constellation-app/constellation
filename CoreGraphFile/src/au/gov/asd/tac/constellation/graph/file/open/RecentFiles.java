@@ -278,7 +278,7 @@ public final class RecentFiles {
         final Preferences localPrefs = getPrefs();
         for (int i = 0; i < history.size(); i++) {
             final HistoryItem hi = history.get(i);
-            if ((hi.id != i) && (hi.id >= history.size())) {
+            if (hi.id != i && hi.id >= history.size()) {
                 localPrefs.remove(PROP_URL_PREFIX + hi.id);
             }
             hi.id = i;
@@ -313,7 +313,7 @@ public final class RecentFiles {
             historyProbablyValid = false;
             synchronized (HISTORY_LOCK) {
                 // avoid duplicates
-                HistoryItem hItem = null;
+                HistoryItem hItem;
                 do {
                     hItem = findHistoryItem(path);
                 } while (HISTORY.remove(hItem));
@@ -327,26 +327,7 @@ public final class RecentFiles {
             }
         }
     }
-
-    /**
-     * Removes file represented by given TopComponent from the list
-     */
-    private static void removeFile(final TopComponent tc) {
-        historyProbablyValid = false;
-        if (tc instanceof CloneableTopComponent) {
-            final String path = obtainPath(tc);
-            if (path != null) {
-                synchronized (HISTORY_LOCK) {
-                    final HistoryItem hItem = findHistoryItem(path);
-                    if (hItem != null) {
-                        HISTORY.remove(hItem);
-                    }
-                    store();
-                }
-            }
-        }
-    }
-
+    
     private static String obtainPath(final TopComponent tc) {
         final DataObject dObj = tc.getLookup().lookup(DataObject.class);
         if (dObj != null) {
@@ -373,9 +354,13 @@ public final class RecentFiles {
     }
 
     public static FileObject convertPath2File(final String path) {
-        File f = new File(path);
-        f = FileUtil.normalizeFile(f);
-        return f == null ? null : FileUtil.toFileObject(f);
+        final File file = new File(path);
+        final File normalizedFile = FileUtil.normalizeFile(file);
+        if (normalizedFile == null || file.isDirectory()) {
+            return null;
+        } else {
+            return FileUtil.toFileObject(normalizedFile);
+        }
     }
 
     /**
@@ -420,8 +405,8 @@ public final class RecentFiles {
 
         public String getFileName() {
             if (fileName == null) {
-                int pos = path.lastIndexOf(File.separatorChar);
-                if ((pos != -1) && (pos < path.length())) {
+                final int pos = path.lastIndexOf(File.separatorChar);
+                if (pos != -1 && pos < path.length()) {
                     fileName = path.substring(pos + 1);
                 } else {
                     fileName = path;

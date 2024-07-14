@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -97,7 +97,7 @@ public class GeneratorNGTest {
                     generator.run();
 
                     // verify that the toc file was called to be created, and that the xml mappings were to be converted
-                    tocgeneratorStaticMock.verify(() -> TOCGenerator.createTOCFile(Mockito.anyString()));
+                    tocgeneratorStaticMock.verify(() -> TOCGenerator.createTOCFile(Mockito.anyString()), times(2));
                     tocgeneratorStaticMock.verify(() -> TOCGenerator.convertXMLMappings(Mockito.any(), Mockito.any()));
 
                     generatorStaticMock.verify(() -> Generator.getBaseDirectory(), times(2));
