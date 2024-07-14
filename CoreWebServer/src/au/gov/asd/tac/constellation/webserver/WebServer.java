@@ -165,7 +165,10 @@ public class WebServer {
                 if (!isWindows()) {
                     final Set<PosixFilePermission> perms = EnumSet.of(PosixFilePermission.OWNER_READ, PosixFilePermission.OWNER_WRITE);
                     Files.createFile(restFile.toPath(), PosixFilePermissions.asFileAttribute(perms));
-                    Files.createFile(restFileIPython.toPath(), PosixFilePermissions.asFileAttribute(perms));
+                    if (!restFile.toPath().equals(restFileIPython.toPath())){
+                        Files.createFile(restFileIPython.toPath(), PosixFilePermissions.asFileAttribute(perms));
+                    }
+                    
                 }
 
                 // Now write the file contents.
