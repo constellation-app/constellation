@@ -149,7 +149,6 @@ public class WebServer {
 
                 // Put the session secret and port number in a JSON file in the .CONSTELLATION directory.
                 // Make sure the file is owner read/write.
-                
                 // Get rest directory, if path to directory is empty (default), use the ipython directory
                 final String restPref = prefs.get(ApplicationPreferenceKeys.REST_DIR, ApplicationPreferenceKeys.REST_DIR_DEFAULT);
                 final String restDir = "".equals(restPref) ? getScriptDir(true).toString() : restPref;
@@ -165,10 +164,10 @@ public class WebServer {
                 if (!isWindows()) {
                     final Set<PosixFilePermission> perms = EnumSet.of(PosixFilePermission.OWNER_READ, PosixFilePermission.OWNER_WRITE);
                     Files.createFile(restFile.toPath(), PosixFilePermissions.asFileAttribute(perms));
-                    if (!restFile.toPath().equals(restFileIPython.toPath())){
+                    if (!restFile.toPath().equals(restFileIPython.toPath())) {
                         Files.createFile(restFileIPython.toPath(), PosixFilePermissions.asFileAttribute(perms));
                     }
-                    
+
                 }
 
                 // Now write the file contents.
@@ -250,7 +249,7 @@ public class WebServer {
             }
         }
     }
-        
+
     public static File getScriptDir(final boolean mkdir) {
         final File homeDir = new File(System.getProperty("user.home"));
         final File ipython = new File(homeDir, IPYTHON);
