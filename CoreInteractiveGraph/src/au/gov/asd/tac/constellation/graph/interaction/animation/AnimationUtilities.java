@@ -142,7 +142,10 @@ public class AnimationUtilities {
      * @param animation 
      */
     public static void notifyComplete(final Animation animation) {
-        AnimationUtilities.getGraphAnimationManager(animation.graphID).notifyComplete(animation);
+        AnimationManager manager = AnimationUtilities.getGraphAnimationManager(animation.graphID);
+        if (manager != null){
+                manager.notifyComplete(animation);
+        }
     }
 
     public static void pauseAllAnimations(final String graphId, long time) {

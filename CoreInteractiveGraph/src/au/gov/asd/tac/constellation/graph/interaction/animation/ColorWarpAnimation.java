@@ -109,7 +109,7 @@ public final class ColorWarpAnimation extends Animation {
 
     @Override
     public long getIntervalInMillis() {
-        return 5;
+        return 15;
     }
 
     private ConstellationColor getNextColor(final ConstellationColor color) {

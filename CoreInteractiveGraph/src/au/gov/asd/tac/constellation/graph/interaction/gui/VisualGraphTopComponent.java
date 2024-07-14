@@ -535,6 +535,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
     @Override
     public void componentClosed() {
+        animationManager.interruptAllAnimations();
         super.componentClosed();
 
         setActivatedNodes(new Node[]{});
@@ -811,6 +812,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     }
 
     public boolean forceClose() {
+        animationManager.interruptAllAnimations();
         savable.setModified(false);
         return close();
     }

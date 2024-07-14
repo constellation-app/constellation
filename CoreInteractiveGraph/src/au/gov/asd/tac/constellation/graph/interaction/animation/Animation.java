@@ -19,6 +19,8 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Base class for animations.
@@ -44,6 +46,7 @@ public abstract class Animation {
     private boolean finished = false;
     private Thread animationThread;
     private long pause = 0;
+    private static final Logger LOGGER = Logger.getLogger(Animation.class.getName());
     
     public void setGraphID(final String graphID){
         this.graphID = graphID;
@@ -141,9 +144,8 @@ public abstract class Animation {
                         wg.commit();
                         editGraph(graph);
                     } 
-                    
                 } catch (final InterruptedException ex) {
-
+                    LOGGER.log(Level.INFO, String.format("Animation %s was interrupted", this.getName()));
                 } finally {
                     if (lockGraphSafely(graph)) {                    
                         reset(wg);
