@@ -98,7 +98,7 @@ public class GeneratorNGTest {
 
                     // verify that the toc file was called to be created, and that the xml mappings were to be converted
                     tocgeneratorStaticMock.verify(() -> TOCGenerator.createTOCFile(Mockito.anyString()), times(2));
-                    tocgeneratorStaticMock.verify(() -> TOCGenerator.convertXMLMappings(Mockito.any(), Mockito.any()));
+                    tocgeneratorStaticMock.verify(() -> TOCGenerator.convertXMLMappings(Mockito.any(), Mockito.any()), times(2));
 
                     generatorStaticMock.verify(() -> Generator.getBaseDirectory(), times(2));
                 }
