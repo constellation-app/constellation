@@ -64,9 +64,9 @@ public class Generator implements Runnable {
         onlineTocDirectory = getOnlineHelpTOCDirectory(baseDirectory);
 
         // First: create the TOCFile in the base directory for ONLINE help
-        // Create the root node for application-wide table of contents
+        // Create the online root node for application-wide table of contents
         TOCGenerator.createTOCFile(onlineTocDirectory);        
-        final TreeNode<?> root = new TreeNode(new TOCItem(ROOT_NODE_NAME, ""));
+        final TreeNode<?> root = new TreeNode<>(new TOCItem(ROOT_NODE_NAME, ""));
         final List<File> tocXMLFiles = getXMLFiles(baseDirectory);
         try {
             TOCGenerator.convertXMLMappings(tocXMLFiles, root);
@@ -76,9 +76,9 @@ public class Generator implements Runnable {
         }
 
         // Second: Create TOCFile for OFFLINE help with the location of the resources file
-        // Create the root node for application-wide table of contents
+        // Create the offline root node for application-wide table of contents
         TOCGenerator.createTOCFile(baseDirectory + tocDirectory);
-        final TreeNode<?> rootOffline = new TreeNode(new TOCItem(ROOT_NODE_NAME, ""));
+        final TreeNode<?> rootOffline = new TreeNode<>(new TOCItem(ROOT_NODE_NAME, ""));
         try {
             TOCGenerator.convertXMLMappings(tocXMLFiles, rootOffline);
         } catch (final IOException ex) {
@@ -151,9 +151,14 @@ public class Generator implements Runnable {
     }
     
     protected static String getOnlineHelpTOCDirectory(final String filePath) {
-        final int index = filePath.indexOf("constellation" + File.separator + "modules");
+        // include "modules" in the check, because looking for "constellation" alone can match earlier in the path
+        // ie. /home/constellation/test/rc1/constellation/modules/ext/
+        int index = filePath.indexOf("constellation" + File.separator + "modules");
         if (index <= 0) {
-            return filePath;
+            index = filePath.indexOf("constellation" + File.separator);
+        }
+        if (index <= 0) {
+            return filePath + TOC_FILE_NAME;
         } else {
             final String newPath = filePath.substring(0, index + 14);
             return newPath + TOC_FILE_NAME;
