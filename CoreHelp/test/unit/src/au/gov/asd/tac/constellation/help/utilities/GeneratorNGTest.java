@@ -85,6 +85,7 @@ public class GeneratorNGTest {
 
                 tocXMLFiles.add(new File(System.getProperty("user.dir") + layersTOC));
                 tocXMLFiles.add(new File(System.getProperty("user.dir") + notesTOC));
+                tocXMLFiles.add(new File("/non_consty_path/missing_file.md"));
                 generatorStaticMock.when(() -> Generator.getXMLFiles(Mockito.any())).thenReturn(tocXMLFiles);
                 generatorStaticMock.when(() -> Generator.getBaseDirectory()).thenCallRealMethod();
                 generatorStaticMock.when(() -> Generator.getResource()).thenCallRealMethod();
