@@ -148,26 +148,18 @@ public class WebServer {
                 port = prefs.getInt(ApplicationPreferenceKeys.WEBSERVER_PORT, ApplicationPreferenceKeys.WEBSERVER_PORT_DEFAULT);
 
                 // Put the session secret and port number in a JSON file in the .CONSTELLATION directory.
-                // Make sure the file is owner read/write.
                 // Get rest directory, if path to directory is empty (default), use the ipython directory
                 final String restPref = prefs.get(ApplicationPreferenceKeys.REST_DIR, ApplicationPreferenceKeys.REST_DIR_DEFAULT);
                 final String restDir = "".equals(restPref) ? getScriptDir(true).toString() : restPref;
                 final File restFile = new File(restDir, REST_FILE);
                 cleanupRest(restFile, restDir);
 
-                // Also put rest file in the ipython directory
-                final File restFileIPython = new File(getScriptDir(true), REST_FILE);
-                cleanupRest(restFileIPython, getScriptDir(true).toString());
-
                 // On Posix, we can use stricter file permissions.
                 // On Windows, we just create the new file.
                 if (!isWindows()) {
+                    // Make sure the file is owner read/write.
                     final Set<PosixFilePermission> perms = EnumSet.of(PosixFilePermission.OWNER_READ, PosixFilePermission.OWNER_WRITE);
                     Files.createFile(restFile.toPath(), PosixFilePermissions.asFileAttribute(perms));
-                    if (!restFile.toPath().equals(restFileIPython.toPath())) {
-                        Files.createFile(restFileIPython.toPath(), PosixFilePermissions.asFileAttribute(perms));
-                    }
-
                 }
 
                 // Now write the file contents.

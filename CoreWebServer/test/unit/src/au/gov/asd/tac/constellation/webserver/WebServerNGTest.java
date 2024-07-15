@@ -172,7 +172,6 @@ public class WebServerNGTest {
 
         // Check file contents DO NOT match the initial values
         try {
-            //assertNotEquals(Files.readString(Path.of(userDir).resolve(REST_FILE), StandardCharsets.UTF_8), TEST_TEXT);
             assertNotEquals(Files.readString(Path.of(restDir).resolve(REST_FILE), StandardCharsets.UTF_8), TEST_TEXT);
         } catch (final IOException e) {
             LOGGER.log(Level.WARNING, "Error matching files");
