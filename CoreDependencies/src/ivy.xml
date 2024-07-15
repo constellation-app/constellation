@@ -31,7 +31,7 @@
         </dependency> -->
 
         <!-- Geotools -->
-        <dependency org="org.geotools" name="gt-cql" rev="26.4"/>
+        <dependency org="org.geotools" name="gt-cql" rev="26.4"/> <!-- test 31.1 -->
         <dependency org="org.geotools" name="gt-jdbc" rev="26.4"/>
         <dependency org="org.geotools" name="gt-main" rev="26.4"/>
         <dependency org="org.geotools" name="gt-metadata" rev="26.4"/>
@@ -47,36 +47,36 @@
 
         <!-- Apache -->
         <dependency org="org.apache.commons" name="commons-collections4" rev="4.4"/>
-        <dependency org="org.apache.commons" name="commons-csv" rev="1.10.0"/>
+        <dependency org="org.apache.commons" name="commons-csv" rev="1.10.0"/> <!-- test 1.11.0 -->
         <dependency org="org.apache.commons" name="commons-lang3" rev="3.14.0"/>
         <dependency org="org.apache.commons" name="commons-math3" rev="3.6.1"/>
-        <dependency org="org.apache.commons" name="commons-text" rev="1.11.0"/>
-        <dependency org="org.apache.poi" name="poi" rev="5.2.5"/>
-        <dependency org="org.apache.poi" name="poi-ooxml" rev="5.2.5"/>
+        <dependency org="org.apache.commons" name="commons-text" rev="1.11.0"/> <!-- test 1.12.0 -->
+        <dependency org="org.apache.poi" name="poi" rev="5.2.5"/> <!-- test 5.3.0 -->
+        <dependency org="org.apache.poi" name="poi-ooxml" rev="5.2.5"/> <!-- test 5.3.0 -->
 
         <!-- Other -->
-        <dependency org="com.fasterxml.jackson.core" name="jackson-annotations" rev="2.16.1"/> 
-        <dependency org="com.fasterxml.jackson.core" name="jackson-core" rev="2.16.1"/>
-        <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.16.1"/>
-        <dependency org="com.fifesoft" name="rsyntaxtextarea" rev="3.4.0"/>
-        <dependency org="com.google.guava" name="guava" rev="33.0.0-jre" />
+        <dependency org="com.fasterxml.jackson.core" name="jackson-annotations" rev="2.16.1"/> <!-- test 2.17.2 -->
+        <dependency org="com.fasterxml.jackson.core" name="jackson-core" rev="2.16.1"/> <!-- test 2.17.2 -->
+        <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.16.1"/> <!-- test 2.17.2 -->
+        <dependency org="com.fifesoft" name="rsyntaxtextarea" rev="3.4.0"/> <!-- test 3.4.1 -->
+        <dependency org="com.google.guava" name="guava" rev="33.0.0-jre" /> <!-- test 33.2.1-jre -->
         <dependency org="gov.nasa" name="worldwind" rev="2.0.0-986"/>
         <dependency org="javax.help" name="javahelp" rev="2.0.05"/>
         <dependency org="log4j" name="log4j" rev="1.2.17"/>
-        <dependency org="org.controlsfx" name="controlsfx" rev="11.1.2"/>
-        <dependency org="org.eclipse.jetty" name="jetty-server" rev="11.0.20"/>
-        <dependency org="org.eclipse.jetty" name="jetty-servlet" rev="11.0.20"/>
+        <dependency org="org.controlsfx" name="controlsfx" rev="11.1.2"/> <!-- test 11.2.1 -->
+        <dependency org="org.eclipse.jetty" name="jetty-server" rev="11.0.20"/> <!-- test 12.0.11 -->
+        <dependency org="org.eclipse.jetty" name="jetty-servlet" rev="11.0.20"/> <!-- test 12.0.11 new org -->
         <dependency org="org.ejml" name="ejml-all" rev="0.43.1"/>
-        <dependency org="org.json" name="json" rev="20240205"/>
+        <dependency org="org.json" name="json" rev="20240205"/> <!-- test 20240303 -->
         <dependency org="org.python" name="jython-standalone" rev="2.7.3"/>
         <dependency org="org.swinglabs" name="swingx" rev="1.6.1"/>
-        <dependency org="org.fxmisc.richtext" name="richtextfx" rev="0.11.2"/>
+        <dependency org="org.fxmisc.richtext" name="richtextfx" rev="0.11.2"/> <!-- test 0.11.3 -->
         <dependency org="org.openjdk.nashorn" name="nashorn-core" rev="15.4"/>
                 
         <!-- Testing -->
-        <dependency org="org.assertj" name="assertj-core" rev="3.25.3" />
+        <dependency org="org.assertj" name="assertj-core" rev="3.25.3" /> <!-- test 3.26.3 -->
         <dependency org="org.mockito" name="mockito-inline" rev="5.2.0"/>
-        <dependency org="nl.jqno.equalsverifier" name="equalsverifier" rev="3.15.7"/>
+        <dependency org="nl.jqno.equalsverifier" name="equalsverifier" rev="3.15.7"/> <!-- test 3.16.1 -->
         <dependency org="org.testfx" name="openjfx-monocle" rev="21.0.2" transitive="false" />
         <dependency org="org.testfx" name="testfx-core" rev="4.0.18" />
         
