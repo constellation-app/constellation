@@ -86,7 +86,6 @@ public final class ColorWarpAnimation extends Animation {
                 
                 wg.setObjectValue(transactionColorAttr, transactionID, this.getNextColor(transactionColor));
             }
-            
         }
     }
 
@@ -104,7 +103,6 @@ public final class ColorWarpAnimation extends Animation {
             final int transactionID = wg.getTransaction(transactionPosition);
             wg.setObjectValue(transactionColorAttr, transactionID, transactionOriginals.get(transactionID));
         }
-        
     }
 
     @Override
