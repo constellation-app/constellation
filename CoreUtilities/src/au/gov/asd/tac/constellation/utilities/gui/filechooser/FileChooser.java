@@ -229,7 +229,7 @@ public class FileChooser {
                 });
 
         if (warnOverwrite) {
-            builder.setSelectionApprover((final File[] selection) -> approver(selection, fileExtension));
+            setWarnOverwrite(builder, fileExtension);
         }
         return builder;
     }
@@ -270,5 +270,11 @@ public class FileChooser {
         return new FileChooserBuilder(title)
                 .setTitle(title)
                 .setFilesOnly(true);
+    }
+
+    public static void setWarnOverwrite(final FileChooserBuilder fileChooserBuilder, final String fileExtension) {
+        LOGGER.log(Level.INFO, "setWarnOverwrite CALLED");
+
+        fileChooserBuilder.setSelectionApprover((final File[] selection) -> approver(selection, fileExtension));
     }
 }
