@@ -21,7 +21,14 @@ import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.control.Button;
 import javafx.stage.FileChooser;
+import org.mockito.ArgumentMatchers;
+import org.mockito.MockedConstruction;
+import org.mockito.Mockito;
+import static org.mockito.Mockito.doCallRealMethod;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
@@ -80,9 +87,82 @@ public class FileInputPaneNGTest {
     @Test
     public void testConstructor() {
         System.out.println("testConstructor");
-        final String something = "";
+
+        final PluginParameter<FileParameterType.FileParameterValue> paramInstance = paramInstanceHelper();
+        final FileInputPane instance = new FileInputPane(paramInstance);
+
+        assertEquals(instance.getClass(), FileInputPane.class);
+    }
+
+    @Test
+    public void testConstructorTwoParams() {
+        System.out.println("testConstructorTwoParams");
+
+        final PluginParameter<FileParameterType.FileParameterValue> paramInstance = paramInstanceHelper();
+        final FileInputPane instance = new FileInputPane(paramInstance, FileInputPane.DEFAULT_WIDTH);
+
+        assertEquals(instance.getClass(), FileInputPane.class);
+    }
+
+    @Test
+    public void testConstructorThreeParams() {
+        System.out.println("testConstructorThreeParams");
+
+        final PluginParameter<FileParameterType.FileParameterValue> paramInstance = paramInstanceHelper();
+        final FileInputPane instance = new FileInputPane(paramInstance, FileInputPane.DEFAULT_WIDTH, 1);
+
+        assertEquals(instance.getClass(), FileInputPane.class);
+    }
+    
+    @Test
+    public void testGetFileChooser() {
+        System.out.println("testGetFileChooser");
+
         
-        final PluginParameter<FileParameterType.FileParameterValue> paramInstance = FileParameterType.build(something);
+        final PluginParameter<FileParameterType.FileParameterValue> paramInstance = paramInstanceHelper();
+        
+            final FileInputPane instance = new FileInputPane(paramInstance);
+            
+            final Button button = instance.getFileAddButton();
+            System.out.println(button.getText());
+            
+            System.out.println(button.getOnAction());
+            assertEquals(instance.getClass(), FileInputPane.class);
+        
+
+    }
+
+//    @Test
+//    public void testGetFileChooser() {
+//        System.out.println("testGetFileChooser");
+//
+//        //final Button dummyButton = new Button(FileParameterType.FileParameterKind.SAVE.toString());
+//        final Button dummyButton = new Button("hah");
+//        System.out.println(dummyButton.getText());
+//                 
+//        final PluginParameter<FileParameterType.FileParameterValue> paramInstance = paramInstanceHelper();
+//        try (MockedConstruction<Button> mockButtonConstructor = Mockito.mockConstruction(Button.class, (mock, context) -> {
+//            //doCallRealMethod().when(mock).setOnAction(ArgumentMatchers.<EventHandler<ActionEvent>>any());
+//            mock = dummyButton;
+//        })) {
+//        //try (MockedConstruction<Button> mockButtonConstructor = Mockito.mockConstruction(Button.class)) {
+//            // Setup mock constructor
+//            //when(mockButtonConstructor.Button()).thenReturn(dummyButton);
+//            
+//            final FileInputPane instance = new FileInputPane(paramInstance);
+//            
+//            assertEquals(1, mockButtonConstructor.constructed().size());
+//            final Button mockButton = mockButtonConstructor.constructed().get(0);
+//            System.out.println(mockButton.getText());
+//            
+//            System.out.println(mockButton.getOnAction());
+//            assertEquals(instance.getClass(), FileInputPane.class);
+//        }
+//
+//    }
+
+    private PluginParameter<FileParameterType.FileParameterValue> paramInstanceHelper() {
+        final PluginParameter<FileParameterType.FileParameterValue> paramInstance = FileParameterType.build("");
         paramInstance.setName("File Location");
         paramInstance.setDescription("File location and name for export");
         FileParameterType.setKind(paramInstance, FileParameterType.FileParameterKind.SAVE);
@@ -90,9 +170,6 @@ public class FileInputPaneNGTest {
         FileParameterType.setWarnOverwrite(paramInstance, true);
         paramInstance.setRequired(true);
 
-        final FileInputPane instance = new FileInputPane(paramInstance);
-        
-        assertEquals(instance.getClass(), FileInputPane.class);
+        return paramInstance;
     }
-
 }
