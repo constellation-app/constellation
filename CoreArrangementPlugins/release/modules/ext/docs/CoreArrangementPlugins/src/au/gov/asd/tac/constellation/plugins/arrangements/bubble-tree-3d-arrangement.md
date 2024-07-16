@@ -1,6 +1,12 @@
 # Bubble Tree 3D
 
 <table class="table table-striped">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th>Constellation Action</th>

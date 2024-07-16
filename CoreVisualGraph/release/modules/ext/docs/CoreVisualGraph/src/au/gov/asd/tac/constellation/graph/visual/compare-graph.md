@@ -3,6 +3,12 @@
 ## Compare two graphs and show the differences in a new graph
 
 <table class="table table-striped">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th>Constellation Action</th>

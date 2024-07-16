@@ -12,7 +12,7 @@
 <th>Constellation Action</th>
 <th>Keyboard Shortcut</th>
 <th>User Action</th>
-<th>Menu Icon</th>
+<th style="text-align: center;">Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -20,9 +20,7 @@
 <td>Open Scripting View</td>
 <td>Ctrl + Shift + X</td>
 <td>Views -&gt; Scripting View</td>
-<td><div style="text-align: center">
-<img src="../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/resources/scripting_view.png" width="16" height="16" />
-</div></td>
+<td style="text-align: center"><img src="../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/resources/scripting_view.png" alt="Scripting View Icon" /></td>
 </tr>
 </tbody>
 </table>

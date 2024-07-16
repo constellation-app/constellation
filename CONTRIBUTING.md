@@ -44,14 +44,11 @@ Repositories](#constellation-modules-and-repositories)
 
 This project and everyone participating in it is governed by the
 [Constellation Code of Conduct](CODE_OF_CONDUCT.md). By participating,
-you are expected to uphold this code. Please report unacceptable
-behaviour to <stellar.admin@csiro.au>.
+you are expected to uphold this code.
 
 ## I don’t want to read this whole thing I just have a question!
 
-To start, you can create an issue to ask your question and please be
-patient until we respond. In the near future, we will consider using a
-different forum like Stack Overflow, Slack, etc.
+Ask your question [here](https://gitter.im/constellation-app/community)
 
 ## What should I know before I get started?
 
