@@ -178,8 +178,8 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
      * @param parameter A {@link PluginParameter} of this type.
      * @return boolean that indicates if user will be warned of overwriting file.
      */
-    public static boolean getWarnOverwrite(final PluginParameter<FileParameterValue> parameter) {
-        return parameter.getParameterValue().getWarningOverwrite();
+    public static boolean isWarnOverwriteUsed(final PluginParameter<FileParameterValue> parameter) {
+        return parameter.getParameterValue().isWarningOverwriteUsed();
     }
 
     @Override
@@ -364,6 +364,8 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
 
         /**
          * Set if user should be warning when overwriting file
+         * 
+         * @param b whether the user should be warning when overwriting file
          */
         public void setWarningOverwrite(final boolean b) {
             this.warnOverwrite = b;
@@ -374,7 +376,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
          *
          * @return boolean indicating if user will be warned.
          */
-        public boolean getWarningOverwrite() {
+        public boolean isWarningOverwriteUsed() {
             return warnOverwrite;
         }
 

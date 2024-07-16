@@ -273,8 +273,6 @@ public class FileChooser {
     }
 
     public static void setWarnOverwrite(final FileChooserBuilder fileChooserBuilder, final String fileExtension) {
-        LOGGER.log(Level.INFO, "setWarnOverwrite CALLED");
-
         fileChooserBuilder.setSelectionApprover((final File[] selection) -> approver(selection, fileExtension));
     }
 }

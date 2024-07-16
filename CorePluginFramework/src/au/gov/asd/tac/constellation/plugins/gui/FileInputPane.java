@@ -103,19 +103,19 @@ public class FileInputPane extends HBox {
             final CompletableFuture dialogFuture;
             switch (paramaterValue.getKind()) {
                 case OPEN, OPEN_OBSCURED ->
-                    dialogFuture = FileChooser.openOpenDialog(getFileChooser(parameter, "Open", fileExtension, false)).thenAccept(optionalFile -> optionalFile.ifPresent(openFile -> {
+                    dialogFuture = FileChooser.openOpenDialog(getFileChooser(parameter, "Open", fileExtension)).thenAccept(optionalFile -> optionalFile.ifPresent(openFile -> {
                         if (openFile != null) {
                             files.add(openFile);
                         }
                     }));
                 case OPEN_MULTIPLE, OPEN_MULTIPLE_OBSCURED ->
-                    dialogFuture = FileChooser.openMultiDialog(getFileChooser(parameter, "Open File(s)", fileExtension, false)).thenAccept(optionalFile -> optionalFile.ifPresent(openFiles -> {
+                    dialogFuture = FileChooser.openMultiDialog(getFileChooser(parameter, "Open File(s)", fileExtension)).thenAccept(optionalFile -> optionalFile.ifPresent(openFiles -> {
                         if (openFiles != null) {
                             files.addAll(openFiles);
                         }
                     }));
                 case SAVE, SAVE_OBSCURED ->
-                    dialogFuture = FileChooser.openSaveDialog(getFileChooser(parameter, "Save", fileExtension, true)).thenAccept(optionalFile -> optionalFile.ifPresent(saveFile -> {
+                    dialogFuture = FileChooser.openSaveDialog(getFileChooser(parameter, "Save", fileExtension)).thenAccept(optionalFile -> optionalFile.ifPresent(saveFile -> {
                         if (saveFile != null) {
                             //Save files may have been typed by the user and an extension may not have been specified.
                             final String fnam = saveFile.getAbsolutePath();
@@ -279,7 +279,7 @@ public class FileInputPane extends HBox {
         FileChooserBuilder fileChooserBuilder = FileChooser.createFileChooserBuilder(title)
                 .setAcceptAllFileFilterUsed(extensionFilter == null || FileParameterType.isAcceptAllFileFilterUsed(parameter));
 
-        final boolean warnOverwrite = FileParameterType.getWarnOverwrite(parameter);
+        final boolean warnOverwrite = FileParameterType.isWarnOverwriteUsed(parameter);
         if (extensionFilter != null) {
             for (final String extension : extensionFilter.getExtensions()) {
                 if (warnOverwrite) {
@@ -312,7 +312,7 @@ public class FileInputPane extends HBox {
      * @param title
      * @return
      */
-    private FileChooserBuilder getFileChooser(final PluginParameter<FileParameterValue> parameter, final String title, final String fileExtension, final boolean warnOverwrite) {
+    private FileChooserBuilder getFileChooser(final PluginParameter<FileParameterValue> parameter, final String title, final String fileExtension) {
         final FileChooserBuilder fcb;
 
         if (fileExtension != null) {
@@ -322,7 +322,7 @@ public class FileInputPane extends HBox {
             fcb = getFileChooser(parameter, title);
         }
 
-        if (FileParameterType.getWarnOverwrite(parameter)) {
+        if (FileParameterType.isWarnOverwriteUsed(parameter)) {
             for (final String extension : FileParameterType.getFileFilters(parameter).getExtensions()) {
                 FileChooser.setWarnOverwrite(fcb, extension);
             }
