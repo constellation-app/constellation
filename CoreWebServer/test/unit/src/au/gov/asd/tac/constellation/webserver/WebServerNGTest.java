@@ -396,7 +396,7 @@ public class WebServerNGTest {
             webserverMock.verify(WebServer::downloadPythonClientNotebookDir, times(1));
         }
     }
-    
+
     @Test
     public void testVerifyPythonPackageNotSuccessful() {
         System.out.println("testVerifyPythonPackageIOException");
