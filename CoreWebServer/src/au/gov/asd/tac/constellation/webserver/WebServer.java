@@ -400,7 +400,6 @@ public class WebServer {
 
             while ((currentLine = inputBuffer.readLine()) != null) {
                 allLines = allLines.concat(currentLine);
-                //LOGGER.log(Level.INFO, "{0}", currentLine);
             }
 
             final int result = p.waitFor();
@@ -411,10 +410,7 @@ public class WebServer {
             if (result != INSTALL_SUCCESS) {
                 LOGGER.log(Level.INFO, "Python package verification unsuccessful, copying script to notebook directory...");
                 downloadPythonClientNotebookDir();
-            }
-
-            //LOGGER.log(Level.INFO, "allLines: {0}", allLines);
-            if (allLines.contains(PACKAGE_NAME)) {
+            } else if (allLines.contains(PACKAGE_NAME)) {  // Result must be success, so if output of listed packages include constellation_client
                 LOGGER.log(Level.INFO, "Python package was installed!");
             } else {
                 LOGGER.log(Level.INFO, "Could not find python package, copying script to notebook directory...");
