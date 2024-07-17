@@ -243,12 +243,13 @@ public class WebServerNGTest {
         }
         when(processMock.getInputStream()).thenReturn(InputStream.nullInputStream());
 
-        try (MockedStatic<Generator> generatorMock = Mockito.mockStatic(Generator.class); MockedConstruction<ProcessBuilder> processBuilderMock = Mockito.mockConstruction(ProcessBuilder.class, (mock, context)
+        try (MockedStatic<WebServer> webserverMock = Mockito.mockStatic(WebServer.class, Mockito.CALLS_REAL_METHODS); MockedStatic<Generator> generatorMock = Mockito.mockStatic(Generator.class); MockedConstruction<ProcessBuilder> processBuilderMock = Mockito.mockConstruction(ProcessBuilder.class, (mock, context)
                 -> {
             // Return our mocked process when start is called
             when(mock.start()).thenThrow(IOException.class);
             when(mock.redirectErrorStream(anyBoolean())).thenReturn(mock);
         })) {
+            // Setup mocks
             generatorMock.when(Generator::getBaseDirectory).thenReturn("");
 
             // Run function
@@ -267,6 +268,9 @@ public class WebServerNGTest {
             } catch (InterruptedException ex) {
                 System.out.println("Caught InterruptedException in testInstallPythonPackageIOException");
             }
+
+            // Assert function was called to download script
+            webserverMock.verify(WebServer::downloadPythonClientNotebookDir, times(1));
         }
     }
 
@@ -289,6 +293,7 @@ public class WebServerNGTest {
             when(mock.start()).thenReturn(processMock);
             when(mock.redirectErrorStream(anyBoolean())).thenReturn(mock);
         })) {
+            // Setup mocks
             generatorMock.when(Generator::getBaseDirectory).thenReturn("");
 
             // Run function
@@ -332,6 +337,7 @@ public class WebServerNGTest {
             when(mock.start()).thenReturn(processMock);
             when(mock.redirectErrorStream(anyBoolean())).thenReturn(mock);
         })) {
+            //Setup mocks
             generatorMock.when(Generator::getBaseDirectory).thenReturn("");
 
             // Run function
@@ -373,6 +379,7 @@ public class WebServerNGTest {
             when(mock.start()).thenThrow(IOException.class);
             when(mock.redirectErrorStream(anyBoolean())).thenReturn(mock);
         })) {
+            //Setup mocks
             generatorMock.when(Generator::getBaseDirectory).thenReturn("");
 
             // Run verification function
@@ -415,6 +422,7 @@ public class WebServerNGTest {
             when(mock.start()).thenThrow(IOException.class);
             when(mock.redirectErrorStream(anyBoolean())).thenReturn(mock);
         })) {
+            //Setup mocks
             generatorMock.when(Generator::getBaseDirectory).thenReturn("");
 
             // Run verification function
@@ -531,7 +539,7 @@ public class WebServerNGTest {
                 System.out.println("File already exists.");
             }
         } catch (IOException e) {
-            System.out.println("An error occurred.");
+            System.out.println("An error occurred");
             e.printStackTrace();
         }
 

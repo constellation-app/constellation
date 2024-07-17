@@ -327,7 +327,7 @@ public class WebServer {
             pb = new ProcessBuilder(PACKAGE_INSTALL).redirectErrorStream(true);
         }
 
-        // Start installed process
+        // Start install process
         LOGGER.log(Level.INFO, "Python package installation begun...");
         final Process p;
         try {
@@ -380,7 +380,7 @@ public class WebServer {
         // Create the process buillder with required arguments
         final ProcessBuilder pb = new ProcessBuilder(CHECK_INSTALL).redirectErrorStream(true);
 
-        // Start installed process
+        // Verify process
         LOGGER.log(Level.INFO, "Verifying package installation...");
         final Process p;
         try {
