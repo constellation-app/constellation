@@ -46,6 +46,7 @@ public class Generator implements Runnable {
     private static final Logger LOGGER = Logger.getLogger(Generator.class.getName());
     private static String baseDirectory = "";
     private static String tocDirectory = "";
+    private static String onlineTocDirectory = "";
     public static final String TOC_FILE_NAME = "toc.md";
     public static final String ROOT_NODE_NAME = "Constellation Documentation";
 
@@ -60,18 +61,29 @@ public class Generator implements Runnable {
     public void run() {
         baseDirectory = getBaseDirectory();
         tocDirectory = String.format("ext%1$s%2$s", File.separator, TOC_FILE_NAME);
+        onlineTocDirectory = getOnlineHelpTOCDirectory(baseDirectory);
 
-        // Create TOCFile with the location of the resources file
-        // Create the root node for application-wide table of contents
-        TOCGenerator.createTOCFile(baseDirectory + tocDirectory);
-        final TreeNode<?> root = new TreeNode(new TOCItem(ROOT_NODE_NAME, ""));
+        // First: create the TOCFile in the base directory for ONLINE help
+        // Create the online root node for application-wide table of contents
+        TOCGenerator.createTOCFile(onlineTocDirectory);        
+        final TreeNode<?> root = new TreeNode<>(new TOCItem(ROOT_NODE_NAME, ""));
         final List<File> tocXMLFiles = getXMLFiles(baseDirectory);
-
         try {
             TOCGenerator.convertXMLMappings(tocXMLFiles, root);
         } catch (final IOException ex) {
             LOGGER.log(Level.WARNING, String.format("There was an error creating the documentation file %s "
-                    + "- Documentation may not be complete", baseDirectory + tocDirectory), ex);
+                    + "- Documentation may not be complete", baseDirectory), ex);
+        }
+
+        // Second: Create TOCFile for OFFLINE help with the location of the resources file
+        // Create the offline root node for application-wide table of contents
+        TOCGenerator.createTOCFile(baseDirectory + tocDirectory);
+        final TreeNode<?> rootOffline = new TreeNode<>(new TOCItem(ROOT_NODE_NAME, ""));
+        try {
+            TOCGenerator.convertXMLMappings(tocXMLFiles, rootOffline);
+        } catch (final IOException ex) {
+            LOGGER.log(Level.WARNING, String.format("There was an error creating the documentation file %s "
+                    + "- Documentation may not be complete.", baseDirectory + tocDirectory), ex);
         }
     }
 
@@ -136,6 +148,21 @@ public class Generator implements Runnable {
         final int jarIx = path.toString().lastIndexOf(File.separator);
         final String newPath = jarIx > -1 ? path.toString().substring(0, jarIx) : "";
         return newPath != null ? newPath + File.separator + "ext" : "";
+    }
+    
+    protected static String getOnlineHelpTOCDirectory(final String filePath) {
+        // include "modules" in the check, because looking for "constellation" alone can match earlier in the path
+        // ie. /home/constellation/test/rc1/constellation/modules/ext/
+        int index = filePath.indexOf("constellation" + File.separator + "modules");
+        if (index <= 0) {
+            index = filePath.indexOf("constellation" + File.separator);
+        }
+        if (index <= 0) {
+            return filePath + TOC_FILE_NAME;
+        } else {
+            final String newPath = filePath.substring(0, index + 14);
+            return newPath + TOC_FILE_NAME;
+        }
     }
 
 }

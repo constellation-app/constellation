@@ -45,6 +45,7 @@ public class HelpIconProvider {
     }
 
     public static void populateHelpIconWithCaption(final String className, final String toolTipText, final Label caption, final HBox schemaLabelAndHelp) {
+        schemaLabelAndHelp.getChildren().clear();
         final Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
         final Button helpButton = HelpIconProvider.populateHelpIcon(className, toolTipText);
