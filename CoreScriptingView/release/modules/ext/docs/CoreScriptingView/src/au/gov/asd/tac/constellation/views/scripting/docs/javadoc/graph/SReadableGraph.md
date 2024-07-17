@@ -4,7 +4,7 @@
 
 <div class="skipNav">
 
-[Skip navigation links](#skip.navbar.top "Skip navigation links")
+[Skip navigation links](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SReadableGraph.md#skip.navbar.top "Skip navigation links")
 
 </div>
 
@@ -45,16 +45,16 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 
 -   Summary: 
 -   Nested | 
--   [Field](#field.summary) | 
+-   [Field](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SReadableGraph.md#field.summary) | 
 -   Constructor | 
--   [Method](#method.summary)
+-   [Method](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SReadableGraph.md#method.summary)
 
 <!-- -->
 
 -   Detail: 
--   [Field](#field.detail) | 
+-   [Field](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SReadableGraph.md#field.detail) | 
 -   Constructor | 
--   [Method](#method.detail)
+-   [Method](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SReadableGraph.md#method.detail)
 
 </div>
 
