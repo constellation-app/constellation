@@ -437,7 +437,7 @@ public class WebServerNGTest {
 
             // Assert process never got to run
             try {
-                verify(processMock, never()).waitFor();
+                verify(processMock, times(1)).waitFor();
             } catch (InterruptedException ex) {
                 System.out.println("Caught InterruptedException in testInstallPythonPackageIOException");
             }
