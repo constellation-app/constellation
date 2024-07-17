@@ -227,6 +227,7 @@ public class WebServerNGTest {
             try {
                 verify(processMock, times(1)).waitFor();
             } catch (InterruptedException ex) {
+                System.out.println("Caught InterruptedException when running WebServer.installPythonPackage()");
             }
         }
     }
