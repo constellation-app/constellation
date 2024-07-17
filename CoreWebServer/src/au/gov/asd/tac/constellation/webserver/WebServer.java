@@ -123,15 +123,18 @@ public class WebServer {
     private static boolean running = false;
     private static int port = 0;
 
-    protected static final String CONSTELLATION_CLIENT = "constellation_client.py";
+    private static final String PACKAGE_NAME = "constellation_client";
+    protected static final String CONSTELLATION_CLIENT = PACKAGE_NAME + ".py";
+
     private static final String IPYTHON = ".ipython";
     private static final String SEP = File.separator;
-    private static final String SCRIPT_SOURCE = Generator.getBaseDirectory() + "ext" + SEP + "package" + SEP + "src" + SEP + "constellation_client" + SEP;
+    private static final String SCRIPT_SOURCE = Generator.getBaseDirectory() + "ext" + SEP + "package" + SEP + "src" + SEP + PACKAGE_NAME + SEP;
 
     private static final String PACKAGE_SOURCE = Generator.getBaseDirectory() + "ext" + SEP + "package" + SEP + "package_dist";
-    private static final String[] PACKAGE_INSTALL = {"pip", "install", "--upgrade", "constellation_client", "--no-index", "--find-links", "file:" + PACKAGE_SOURCE};
+    private static final String[] PACKAGE_INSTALL = {"pip", "install", "--upgrade", PACKAGE_NAME, "--no-index", "--find-links", "file:" + PACKAGE_SOURCE};
     private static final String[] WINDOWS_COMMAND = {"cmd.exe", "/C"};
 
+    private static final String[] CHECK_INSTALL = {"pip", "freeze"};
     private static final int INSTALL_SUCCESS = 0;
 
     public static boolean isRunning() {
@@ -309,10 +312,15 @@ public class WebServer {
         }
     }
 
-    // Run pip install on package
+    /**
+     * Install the Python REST API client package using pip install
+     *
+     */
     public static void installPythonPackage() throws IOException {
         // Create the process buillder with required arguments
         final ProcessBuilder pb;
+        int processResult = -1; // Fail by default
+
         if (isWindows()) {
             pb = new ProcessBuilder(ArrayUtils.addAll(WINDOWS_COMMAND, PACKAGE_INSTALL)).redirectErrorStream(true);
         } else {
@@ -340,12 +348,12 @@ public class WebServer {
                 LOGGER.log(Level.INFO, "{0}", line);
             }
 
-            final int result = p.waitFor();
+            processResult = p.waitFor();
             LOGGER.log(Level.INFO, "Python package installation finished...");
-            LOGGER.log(Level.INFO, "Python install process result: {0}", result);
+            LOGGER.log(Level.INFO, "Python install process result: {0}", processResult);
 
             // If not successful
-            if (result != INSTALL_SUCCESS) {
+            if (processResult != INSTALL_SUCCESS) {
                 LOGGER.log(Level.INFO, "Python package installation unsuccessful, copying script to notebook directory...");
                 downloadPythonClientNotebookDir();
             }
@@ -355,6 +363,70 @@ public class WebServer {
             Thread.currentThread().interrupt();
         }
 
+        p.destroy();
+
+        // Verify install worked, unsuccessful process would have already been caught
+        if (processResult == INSTALL_SUCCESS) {
+            verifyPythonPackage();
+        }
+    }
+
+    /**
+     * Verify that the Python REST API client package was installed. Otherwise copy the script file to the notebook
+     * directory
+     *
+     */
+    public static void verifyPythonPackage() throws IOException {
+        // Create the process buillder with required arguments
+        final ProcessBuilder pb = new ProcessBuilder(CHECK_INSTALL).redirectErrorStream(true);
+
+        // Start installed process
+        LOGGER.log(Level.INFO, "Verifying package installation...");
+        final Process p;
+        try {
+            p = pb.start();
+        } catch (final IOException ex) {
+            LOGGER.log(Level.WARNING, "IO EXCEPTION CAUGHT verifying package installation:", ex);
+            LOGGER.log(Level.INFO, "Copying python script to notebook directory instead...");
+            downloadPythonClientNotebookDir();
+            return;
+        }
+
+        try (final BufferedReader inputBuffer = new BufferedReader(new InputStreamReader(p.getInputStream()));) {
+
+            // If inputStream available, log output
+            String allLines = "";
+            String currentLine;
+
+            while ((currentLine = inputBuffer.readLine()) != null) {
+                allLines = allLines.concat(currentLine);
+                //LOGGER.log(Level.INFO, "{0}", currentLine);
+            }
+
+            final int result = p.waitFor();
+
+            LOGGER.log(Level.INFO, "Verification process result: {0}", result);
+
+            // If not successful
+            if (result != INSTALL_SUCCESS) {
+                LOGGER.log(Level.INFO, "Python package verification unsuccessful, copying script to notebook directory...");
+                downloadPythonClientNotebookDir();
+            }
+
+            //LOGGER.log(Level.INFO, "allLines: {0}", allLines);
+            if (allLines.contains(PACKAGE_NAME)) {
+                LOGGER.log(Level.INFO, "Python package was installed!");
+            } else {
+                LOGGER.log(Level.INFO, "Could not find python package, copying script to notebook directory...");
+                downloadPythonClientNotebookDir();
+            }
+
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.WARNING, "INTERRUPTED EXCEPTION CAUGHT in the python package verification:", ex);
+            Thread.currentThread().interrupt();
+        }
+
+        LOGGER.log(Level.INFO, "Verification of package finished...");
         p.destroy();
     }
 
