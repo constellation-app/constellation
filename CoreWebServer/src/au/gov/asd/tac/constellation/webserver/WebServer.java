@@ -315,6 +315,7 @@ public class WebServer {
     /**
      * Install the Python REST API client package using pip install
      *
+     * @throws IOException
      */
     public static void installPythonPackage() throws IOException {
         // Create the process buillder with required arguments
@@ -328,14 +329,8 @@ public class WebServer {
         }
 
         // Start install process
-        LOGGER.log(Level.INFO, "Python package installation begun...");
-        final Process p;
-        try {
-            p = pb.start();
-        } catch (final IOException ex) {
-            LOGGER.log(Level.WARNING, "IO EXCEPTION CAUGHT starting python package installation:", ex);
-            LOGGER.log(Level.INFO, "Copying python script to notebook directory instead...");
-            downloadPythonClientNotebookDir();
+        final Process p = startPythonProcess(pb, "installation");
+        if (p == null) {
             return;
         }
 
@@ -381,14 +376,8 @@ public class WebServer {
         final ProcessBuilder pb = new ProcessBuilder(CHECK_INSTALL).redirectErrorStream(true);
 
         // Verify process
-        LOGGER.log(Level.INFO, "Verifying package installation...");
-        final Process p;
-        try {
-            p = pb.start();
-        } catch (final IOException ex) {
-            LOGGER.log(Level.WARNING, "IO EXCEPTION CAUGHT verifying package installation:", ex);
-            LOGGER.log(Level.INFO, "Copying python script to notebook directory instead...");
-            downloadPythonClientNotebookDir();
+        final Process p = startPythonProcess(pb, "verification");
+        if (p == null) {
             return;
         }
 
@@ -424,6 +413,20 @@ public class WebServer {
 
         LOGGER.log(Level.INFO, "Verification of package finished...");
         p.destroy();
+    }
+
+    public static Process startPythonProcess(final ProcessBuilder pb, final String warning) {
+        LOGGER.log(Level.INFO, "Python package {0} begun...", warning);
+        final Process p;
+        try {
+            p = pb.start();
+        } catch (final IOException ex) {
+            LOGGER.log(Level.WARNING, "IO EXCEPTION CAUGHT in process for python package {0}: {1}", new Object[]{warning, ex});
+            LOGGER.log(Level.INFO, "Copying python script to notebook directory instead...");
+            downloadPythonClientNotebookDir();
+            return null;
+        }
+        return p;
     }
 
     /**
