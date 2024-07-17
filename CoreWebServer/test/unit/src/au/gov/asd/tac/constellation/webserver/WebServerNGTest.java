@@ -419,7 +419,7 @@ public class WebServerNGTest {
         try (MockedStatic<WebServer> webserverMock = Mockito.mockStatic(WebServer.class, Mockito.CALLS_REAL_METHODS); MockedStatic<Generator> generatorMock = Mockito.mockStatic(Generator.class); MockedConstruction<ProcessBuilder> processBuilderMock = Mockito.mockConstruction(ProcessBuilder.class, (mock, context)
                 -> {
             // Return our mocked process when start is called
-            when(mock.start()).thenThrow(IOException.class);
+            when(mock.start()).thenReturn(processMock);
             when(mock.redirectErrorStream(anyBoolean())).thenReturn(mock);
         })) {
             //Setup mocks
