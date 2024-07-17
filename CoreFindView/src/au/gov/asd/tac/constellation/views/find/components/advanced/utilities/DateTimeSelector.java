@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.views.find.components.advanced.utilities;
 
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
-import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
+import au.gov.asd.tac.constellation.utilities.temporal.TemporalUtilities;
 import au.gov.asd.tac.constellation.views.find.components.advanced.DateTimeCriteriaPanel;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -124,7 +124,7 @@ public class DateTimeSelector extends Stage {
         datePickerLabel.setLabelFor(datePicker);
 
         // Set the date picker value to the date passed in or the default date
-        datePicker.setValue(!"".equals(date) ? LocalDate.parse(date) : LocalDate.now(TimeZoneUtilities.UTC));
+        datePicker.setValue(!"".equals(date) ? LocalDate.parse(date) : LocalDate.now(TemporalUtilities.UTC));
 
         // set the labels for each of the spinners
         final Label hourSpinnerLabel = new Label("hr:");
@@ -179,7 +179,7 @@ public class DateTimeSelector extends Stage {
         timeZoneComboBox = new ComboBox<>();
         final List<ZoneId> timeZoneList = timeZones.sorted(zoneIdComparator);
         for (ZoneId id : timeZoneList) {
-            timeZoneComboBox.getItems().add(TimeZoneUtilities.getTimeZoneAsString(id));
+            timeZoneComboBox.getItems().add(TemporalUtilities.getTimeZoneAsString(id));
         }
         // if the timeZone is not the default format it so it can be read
         // as a zoneID
@@ -189,7 +189,7 @@ public class DateTimeSelector extends Stage {
         }
 
         // select the default timeZone or the one passed in
-        timeZoneComboBox.getSelectionModel().select(!"".equals(selectedTimeZone) ? selectedTimeZone : TimeZoneUtilities.getTimeZoneAsString(TimeZoneUtilities.UTC));
+        timeZoneComboBox.getSelectionModel().select(!"".equals(selectedTimeZone) ? selectedTimeZone : TemporalUtilities.getTimeZoneAsString(TemporalUtilities.UTC));
 
         final Label timeZoneLabel = new Label("Time Zone:");
         timeZoneLabel.setLabelFor(timeZoneComboBox);

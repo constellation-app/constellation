@@ -19,10 +19,10 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRange;
 import au.gov.asd.tac.constellation.plugins.parameters.types.LocalDateParameterType;
+import au.gov.asd.tac.constellation.utilities.gui.recentvalue.RecentValueUtility;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessViewTopComponent;
 import au.gov.asd.tac.constellation.views.dataaccess.api.DataAccessPaneState;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
@@ -372,12 +372,12 @@ public class DataAccessTabPaneNGTest {
         when(pluginParameter3.getStringValue()).thenReturn("PluginParam3 String Value");
 
         try (
-                final MockedStatic<RecentParameterValues> recentParamValsMockedStatic
-                = Mockito.mockStatic(RecentParameterValues.class);) {
+                final MockedStatic<RecentValueUtility> recentParamValsMockedStatic
+                = Mockito.mockStatic(RecentValueUtility.class);) {
             dataAccessTabPane.storeParameterValues();
 
             // Verify that only plugin 3 parameter was set in the store
-            recentParamValsMockedStatic.verify(() -> RecentParameterValues
+            recentParamValsMockedStatic.verify(() -> RecentValueUtility
                     .storeRecentValue("plugin3", "PluginParam3 String Value"));
         }
     }
@@ -456,14 +456,15 @@ public class DataAccessTabPaneNGTest {
         when(pluginParameter3.getStringValue()).thenReturn("PluginParam3 String Value");
 
         try (
-                final MockedStatic<RecentParameterValues> recentParamValsMockedStatic
-                = Mockito.mockStatic(RecentParameterValues.class);) {
+                final MockedStatic<RecentValueUtility> recentParamValsMockedStatic =
+                        Mockito.mockStatic(RecentValueUtility.class);
+        ) {
             dataAccessTabPane.storeParameterValues();
 
             // Verify that parameters for plugins 2 and 3 were set to the store correctly
-            recentParamValsMockedStatic.verify(() -> RecentParameterValues
+            recentParamValsMockedStatic.verify(() -> RecentValueUtility
                     .storeRecentValue("plugin2", "PluginParam2 Object Value"));
-            recentParamValsMockedStatic.verify(() -> RecentParameterValues
+            recentParamValsMockedStatic.verify(() -> RecentValueUtility
                     .storeRecentValue("plugin3", "PluginParam3 String Value"));
         }
     }

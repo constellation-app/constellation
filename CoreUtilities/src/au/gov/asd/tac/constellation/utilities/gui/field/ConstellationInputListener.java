@@ -13,20 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.parameters;
-
-import org.openide.modules.OnStop;
+package au.gov.asd.tac.constellation.utilities.gui.field;
 
 /**
- * Saves the parameter recent values on stop
  *
- * @author twinkle2_little
+ * @author capricornunicorn123
  */
-@OnStop
-public class RecentParameterSaver implements Runnable {
-
-    @Override
-    public void run() {
-        RecentParameterValues.saveToPreferences();
-    }
+public interface ConstellationInputListener<T>{
+    
+    /**
+     * Called when the value of a {@link ConstellationInputFiled} changes.
+     *
+     * @param newValue The new value
+     */
+    void changed(final T newValue);
+    
 }

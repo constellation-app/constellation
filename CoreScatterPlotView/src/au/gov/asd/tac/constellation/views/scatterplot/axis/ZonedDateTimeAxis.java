@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.views.scatterplot.axis;
 
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalConstants;
-import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
+import au.gov.asd.tac.constellation.utilities.temporal.TemporalUtilities;
 import java.time.Instant;
 import java.time.Month;
 import java.time.ZonedDateTime;
@@ -266,10 +266,10 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
 
         if (getSide().isVertical()) {
             final long datetime = (long) ((displayPosition - getZeroPosition() - getHeight()) / -range * diff + currentLowerBound.get());
-            return ZonedDateTime.ofInstant(Instant.ofEpochMilli(datetime), TimeZoneUtilities.UTC);
+            return ZonedDateTime.ofInstant(Instant.ofEpochMilli(datetime), TemporalUtilities.UTC);
         } else {
             final long datetime = (long) ((displayPosition - getZeroPosition()) / range * diff + currentLowerBound.get());
-            return ZonedDateTime.ofInstant(Instant.ofEpochMilli(datetime), TimeZoneUtilities.UTC);
+            return ZonedDateTime.ofInstant(Instant.ofEpochMilli(datetime), TemporalUtilities.UTC);
         }
     }
 
@@ -285,7 +285,7 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
 
     @Override
     public ZonedDateTime toRealValue(final double v) {
-        return ZonedDateTime.ofInstant(Instant.ofEpochMilli((long) v), TimeZoneUtilities.UTC);
+        return ZonedDateTime.ofInstant(Instant.ofEpochMilli((long) v), TemporalUtilities.UTC);
     }
 
     @Override

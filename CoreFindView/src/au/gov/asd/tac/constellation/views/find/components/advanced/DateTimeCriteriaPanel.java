@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.views.find.components.advanced;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
-import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
+import au.gov.asd.tac.constellation.utilities.temporal.TemporalUtilities;
 import au.gov.asd.tac.constellation.views.find.components.AdvancedFindTab;
 import au.gov.asd.tac.constellation.views.find.components.advanced.criteriavalues.DateTimeCriteriaValues;
 import au.gov.asd.tac.constellation.views.find.components.advanced.criteriavalues.FindCriteriaValues;
@@ -237,15 +237,15 @@ public class DateTimeCriteriaPanel extends AdvancedCriteriaBorderPane {
             // and the previously selected timeZone
             dateStringTwo = LocalDate.now().toString();
             timeStringTwo = "23:59:59.999";
-            timeZoneStringTwo = (StringUtils.isEmpty(timeZoneString) ? TimeZoneUtilities.getTimeZoneAsString(TimeZoneUtilities.UTC) : TimeZoneUtilities.getTimeZoneAsString(ZoneId.of(formattedTimeZoneString)));
+            timeZoneStringTwo = (StringUtils.isEmpty(timeZoneString) ? TemporalUtilities.getTimeZoneAsString(TemporalUtilities.UTC) : TemporalUtilities.getTimeZoneAsString(ZoneId.of(formattedTimeZoneString)));
 
             // set dateTime one data to the min time of today
             // and the previously selected timeZone
             timeString = "00:00:00.000";
-            timeZoneString = (StringUtils.isEmpty(timeZoneString) ? TimeZoneUtilities.getTimeZoneAsString(TimeZoneUtilities.UTC) : TimeZoneUtilities.getTimeZoneAsString(ZoneId.of(formattedTimeZoneString)));
+            timeZoneString = (StringUtils.isEmpty(timeZoneString) ? TemporalUtilities.getTimeZoneAsString(TemporalUtilities.UTC) : TemporalUtilities.getTimeZoneAsString(ZoneId.of(formattedTimeZoneString)));
 
             // The Local Date value of the current date based of the timeZone
-            final LocalDate calculatedDate = LocalDate.now(dateString.equals("") ? TimeZoneUtilities.UTC : ZoneId.of(formattedTimeZoneString));
+            final LocalDate calculatedDate = LocalDate.now(dateString.equals("") ? TemporalUtilities.UTC : ZoneId.of(formattedTimeZoneString));
 
             // Switch statment that determines the date string one value based
             // off the choiceSelection

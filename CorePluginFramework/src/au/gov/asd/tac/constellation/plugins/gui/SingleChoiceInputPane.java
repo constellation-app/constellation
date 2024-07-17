@@ -15,20 +15,19 @@
  */
 package au.gov.asd.tac.constellation.plugins.gui;
 
+import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterListener;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.utilities.gui.field.SingleChoiceInput;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.ChoiceType;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.layout.HBox;
-import org.controlsfx.control.SearchableComboBox;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputListener;
 
 /**
  * A drop-down combo box which is the GUI element corresponding to a
@@ -42,95 +41,68 @@ import org.controlsfx.control.SearchableComboBox;
  * au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType
  *
  * @author ruby_crucis
+ * @author capricornunicorn123
  */
-public class SingleChoiceInputPane extends HBox {
+public final class SingleChoiceInputPane extends ParameterInputPane<SingleChoiceParameterValue, ParameterValue> {
 
     private static final Logger LOGGER = Logger.getLogger(SingleChoiceInputPane.class.getName());
-    
-    public static final int DEFAULT_WIDTH = 300;
-
-    private final SearchableComboBox<ParameterValue> field;
-    private boolean initialRun = true;
 
     public SingleChoiceInputPane(final PluginParameter<SingleChoiceParameterValue> parameter) {
-        field = new SearchableComboBox<>();
-        field.setPromptText(parameter.getDescription());
-        field.setItems(FXCollections.observableList(SingleChoiceParameterType.getOptionsData(parameter)));
-        final ParameterValue initialValue = parameter.getParameterValue();
-        if (initialValue.getObjectValue() != null) {
-            field.getSelectionModel().select(initialValue);
-        }
+        super(new SingleChoiceInput<ParameterValue>(ChoiceType.SINGLE_DROPDOWN), parameter);
+        
+        final SingleChoiceParameterType.SingleChoiceParameterValue pv = parameter.getParameterValue();
 
-        field.setPrefWidth(DEFAULT_WIDTH);
-        field.setDisable(!parameter.isEnabled());
-        field.setManaged(parameter.isVisible());
-        field.setVisible(parameter.isVisible());
-        this.setManaged(parameter.isVisible());
-        this.setVisible(parameter.isVisible());
+        ((SingleChoiceInput) input).setOptions(pv.getOptionsData());
+        ((SingleChoiceInput) input).setIcons(pv.getIcons()); 
+        setFieldValue(pv.getChoiceData());
+    }
 
-        if (parameter.getParameterValue().getGuiInit() != null) {
-            parameter.getParameterValue().getGuiInit().init(field);
-        }
+    @Override
+    public ConstellationInputListener getFieldChangeListener(PluginParameter<SingleChoiceParameterValue> parameter) {
+        return (ConstellationInputListener<ParameterValue>) (ParameterValue newValue) -> {
+            if (newValue != null) {
+                SingleChoiceParameterType.setChoiceData(parameter, newValue);
+            }
+        };
+    }
 
-        field.setOnAction(event -> SingleChoiceParameterType.setChoiceData(parameter, field.getSelectionModel().getSelectedItem()));
-
-        parameter.addListener((scParameter, change) -> Platform.runLater(() -> {
-                if (scParameter.getParameterValue() instanceof SingleChoiceParameterValue scParameterValue){
-                    switch (change) {
-                        case VALUE -> {
-                            // Don't change the value if it isn't necessary.
-                            final List<ParameterValue> param = scParameterValue.getOptionsData();
-                            final ParameterValue value = field.getSelectionModel().getSelectedItem();
-
-                            //Checks that the currently selected value is in the new parameters list
-                            if (!param.contains(value)) {
-                                field.getSelectionModel().select(scParameterValue.getChoiceData());
-                            }
-
-                            // give a visual indicator if a required parameter is empty
-                            field.setId(scParameter.isRequired() && field.getSelectionModel().isEmpty() ? "invalid selection" : "");
-                            field.setStyle("invalid selection".equals(field.getId()) ? "-fx-color: #8A1D1D" : "");
+    @Override
+    public PluginParameterListener getPluginParameterListener() {
+        return (PluginParameter<?> parameter, ParameterChange change) -> Platform.runLater(() -> {
+            
+            if (parameter.getParameterValue() instanceof SingleChoiceParameterValue scParameterValue){
+                switch (change) {
+                    
+                    case VALUE -> {
+                        // Don't change the value if it isn't necessary.
+                        ParameterValue selection = getFieldValue();
+                        if (selection != null && !selection.equals(scParameterValue.getChoiceData())){
+                            setFieldValue(selection);
                         }
-                        case PROPERTY -> {
-                            final ObservableList<ParameterValue> options = FXCollections.observableArrayList();
-                            final EventHandler<ActionEvent> handler = field.getOnAction();
-                            field.setOnAction(null);
+                    }
+                    
+                    case PROPERTY -> {
 
-                            options.setAll(scParameterValue.getOptionsData());
-                            field.setItems(options);
-                            field.setOnAction(handler);
-
-                            if (initialRun) {
-                                // This is a workaround to fix dynamically changing drop downs.
-                                // Otherwise when the Constellation is loaded for the first time,
-                                // such lists wouldn't populate until clicked twice on the arrow.
-                                // E.g. `Type Category` drop down in `Select Top N` plugin
-                                field.show();
-                                field.hide();
-                                field.requestFocus();
-                                initialRun = false;
-                            }
+                        // Update the Pane if the Optons have changed
+                        List<ParameterValue> paramOptions = scParameterValue.getOptionsData();
+                        if (!((SingleChoiceInput) input).getOptions().equals(paramOptions)){
+                            ((SingleChoiceInput) input).setOptions(paramOptions);
 
                             // Only keep the value if it's in the new choices.
-                            if (options.contains(scParameterValue.getChoiceData())) {
-                                field.getSelectionModel().select(scParameter.getSingleChoice());
+                            if (paramOptions.contains(scParameterValue.getChoiceData())) {
+                                setFieldValue(scParameterValue.getChoiceData());
                             } else {
-                                field.getSelectionModel().clearSelection();
+                                setFieldValue(null);
                             }
                         }
-
-                        case ENABLED -> field.setDisable(!scParameter.isEnabled());
-                        case VISIBLE -> {
-                            field.setManaged(scParameter.isVisible());
-                            field.setVisible(scParameter.isVisible());
-                            this.setVisible(scParameter.isVisible());
-                            this.setManaged(scParameter.isVisible());
-                        }
-                        default -> LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
                     }
+                    case ENABLED -> updateFieldEnablement();
+                    case VISIBLE -> updateFieldVisability();
+                    default -> LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
                 }
-            }));
-
-        getChildren().add(field);
+            }
+        });
+        
+            
     }
 }

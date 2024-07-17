@@ -13,32 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.parameters;
-
-import java.util.Collections;
-import java.util.List;
+package au.gov.asd.tac.constellation.utilities.gui.recentvalue;
 
 /**
- * Recent Values Change Event
+ * Interface for objects which need to be informed when recent values are
+ * updated.
  *
  * @author ruby_crucis
  */
-public class RecentValuesChangeEvent {
+public interface RecentValuesListener {
 
-    private final String id;
-    private final List<String> newValues;
-
-    public RecentValuesChangeEvent(final String id, final List<String> newValues) {
-        this.id = id;
-        this.newValues = newValues;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public List<String> getNewValues() {
-        return Collections.unmodifiableList(newValues);
-    }
-
+    /**
+     * Called when any recent value is added.
+     *
+     * @param e the change event.
+     */
+    public void recentValuesChanged(final RecentValuesChangeEvent e);
+    
+    public String getRecentValuesListenerID();
 }
