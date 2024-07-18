@@ -5,19 +5,19 @@
 
 <div class="skipNav">
 
-[Skip navigation links](#skip.navbar.top "Skip navigation links")
+[Skip navigation links](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SAttribute.md#skip.navbar.top "Skip navigation links")
 
 </div>
 
 <span id="navbar.top.firstrow"></span>
 
--   [Overview](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/overview-summary.md)
--   [Package](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/package-summary.md)
+-   [Overview](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/overview-summary.md)
+-   [Package](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/package-summary.md)
 -   Class
--   [Tree](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/package-tree.md)
--   [Deprecated](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/deprecated-list.md)
--   [Index](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/index-all.md)
--   [Help](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/help-doc.md)
+-   [Tree](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/package-tree.md)
+-   [Deprecated](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/deprecated-list.md)
+-   [Index](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/index-all.md)
+-   [Help](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/help-doc.md)
 
 <div class="aboutLanguage">
 
@@ -31,11 +31,11 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 
 -   Prev Class
 -   [<span
-    class="typeNameLink">Next Class</span>](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SCollection.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
+    class="typeNameLink">Next Class</span>](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SCollection.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
 
 <!-- -->
 
--   [All Classes](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/allclasses-noframe.md)
+-   [All Classes](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/allclasses-noframe.md)
 
 <div>
 
@@ -46,15 +46,15 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 -   Summary: 
 -   Nested | 
 -   Field | 
--   [Constructor](#constructor.summary) | 
--   [Method](#method.summary)
+-   [Constructor](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SAttribute.md#constructor.summary) | 
+-   [Method](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SAttribute.md#method.summary)
 
 <!-- -->
 
 -   Detail: 
 -   Field | 
--   [Constructor](#constructor.detail) | 
--   [Method](#method.detail)
+-   [Constructor](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SAttribute.md#constructor.detail) | 
+-   [Method](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SAttribute.md#method.detail)
 
 </div>
 
