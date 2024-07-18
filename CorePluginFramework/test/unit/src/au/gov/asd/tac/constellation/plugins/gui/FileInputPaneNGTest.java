@@ -30,6 +30,8 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextInputControl;
 import javafx.scene.input.KeyCode;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedStatic;
@@ -202,15 +204,17 @@ public class FileInputPaneNGTest {
         final PluginParameter<FileParameterType.FileParameterValue> paramInstance = paramInstanceHelper(FileParameterType.FileParameterKind.SAVE, FileExtensionConstants.SVG);
         final FileInputPane instance = new FileInputPane(paramInstance);
 
+        final TextInputControl field = new TextArea();
+
         for (final KeyEvent e : events) {
-            instance.handleEventFilter(e);
+            instance.handleEventFilter(e, field);
             assertTrue(e.isConsumed());
         }
 
         // Test for else do nothing
         final KeyEvent doNothingEvent = new KeyEvent(null, null, null, "", "", KeyCode.B, false, false, false, false);
 
-        instance.handleEventFilter(doNothingEvent);
+        instance.handleEventFilter(doNothingEvent, field);
         assertFalse(doNothingEvent.isConsumed());
 
     }

@@ -124,7 +124,7 @@ public class FileInputPane extends HBox {
         this.setManaged(parameter.isVisible());
         this.setVisible(parameter.isVisible());
 
-        field.addEventFilter(KeyEvent.KEY_PRESSED, event -> handleEventFilter(event));
+        field.addEventFilter(KeyEvent.KEY_PRESSED, event -> handleEventFilter(event, field));
 
         field.setPromptText(parameter.getDescription());
         if (parameter.getObjectValue() != null) {
@@ -234,14 +234,13 @@ public class FileInputPane extends HBox {
                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
             }
         }
-        
+
         if (!files.isEmpty()) {
             parameter.setObjectValue(files);
         }
     }
 
-    // Public for testing
-    public void handleEventFilter(final KeyEvent event) {
+    public static void handleEventFilter(final KeyEvent event, final TextInputControl field) {
         if (event.getCode() == KeyCode.DELETE) {
             final IndexRange selection = field.getSelection();
             if (selection.getLength() == 0) {
@@ -334,7 +333,7 @@ public class FileInputPane extends HBox {
         } else {
             fcb = getFileChooser(parameter, title);
         }
-        
+
         if (FileParameterType.isWarnOverwriteUsed(parameter) && FileParameterType.getFileFilters(parameter) != null) {
             for (final String extension : FileParameterType.getFileFilters(parameter).getExtensions()) {
                 FileChooser.setWarnOverwrite(fcb, extension);
