@@ -221,7 +221,7 @@ public class FileInputPane extends HBox {
                 LOGGER.log(Level.FINE, "ignoring file selection type {0}.", parameterValue.getKind());
             }
         }
-        System.out.println("A");
+
         // As the dialog windows are completed on another thread 
         // the execution of this method must wait until the thread has finnished executing.
         if (dialogFuture != null) {
@@ -234,11 +234,10 @@ public class FileInputPane extends HBox {
                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
             }
         }
-        System.out.println("B");
+        
         if (!files.isEmpty()) {
             parameter.setObjectValue(files);
         }
-        System.out.println("C");
     }
 
     // Public for testing
@@ -330,12 +329,15 @@ public class FileInputPane extends HBox {
         final FileChooserBuilder fcb;
 
         if (fileExtension != null) {
+            System.out.println("A");
             fcb = FileChooser.createFileChooserBuilder(title, fileExtension)
                     .setAcceptAllFileFilterUsed(FileParameterType.isAcceptAllFileFilterUsed(parameter));
         } else {
+            System.out.println("B");
             fcb = getFileChooser(parameter, title);
         }
-
+        
+        System.out.println(fcb);
         if (FileParameterType.isWarnOverwriteUsed(parameter)) {
             for (final String extension : FileParameterType.getFileFilters(parameter).getExtensions()) {
                 FileChooser.setWarnOverwrite(fcb, extension);

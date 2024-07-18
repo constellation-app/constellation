@@ -17,16 +17,28 @@ package au.gov.asd.tac.constellation.plugins.gui;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
+import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
+import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooserMode;
+import java.io.File;
 import javafx.scene.input.KeyEvent;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
+import org.eclipse.jetty.util.Promise;
+import org.mockito.ArgumentMatchers;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import org.openide.filesystems.FileChooserBuilder;
 
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
@@ -159,22 +171,60 @@ public class FileInputPaneNGTest {
 //        }
 //
 //    }
-//    @Test
-//    public void testHandleButtonOnAction() {
-//        System.out.println("testHandleButtonOnAction");
-//
-//        final PluginParameter<FileParameterType.FileParameterValue> paramInstance = paramInstanceHelper();
-//        final FileInputPane instance = new FileInputPane(paramInstance);
-//
-//        final FileParameterType.FileParameterValue paramaterValue = paramInstance.getParameterValue();
-//        final String fileExtension = null;
-//
-////        try (MockedStatic<au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser> fileChooserStaticMock = Mockito.mockStatic(au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser.class)) {
-////            instance.handleButtonOnAction(paramaterValue, paramInstance, fileExtension);
-////        }
-//
-//        instance.handleButtonOnAction(paramaterValue, paramInstance, fileExtension);
-//    }
+    private static Optional<File> test(final FileChooserBuilder fileChooserBuilder, final FileChooserMode fileDialogMode) {
+
+        return Optional.empty();
+    }
+
+    @Test
+    public void testHandleButtonOnAction() {
+        System.out.println("testHandleButtonOnAction");
+
+        final PluginParameter<FileParameterType.FileParameterValue> paramInstance = paramInstanceHelper();
+        final FileInputPane instance = new FileInputPane(paramInstance);
+
+        final FileParameterType.FileParameterValue paramaterValue = paramInstance.getParameterValue();
+        //final String fileExtension = null;
+
+        //try (MockedStatic<au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser> fileChooserStaticMock = Mockito.mockStatic(au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser.class);
+//        try (MockedConstruction<FileChooserBuilder> mockFileChooserBuilder = Mockito.mockConstruction(FileChooserBuilder.class, (mock, context) -> {
+//            when(mock.setAcceptAllFileFilterUsed(anyBoolean())).thenReturn(mock);
+//            when(mock.setTitle(anyString())).thenReturn(mock);
+//            when(mock.setFilesOnly(anyBoolean())).thenReturn(mock);
+//            when(mock.setSelectionApprover(any(SelectionApprover.class))).thenReturn(mock);
+//            
+//            //when(mock.setWarn(anyBoolean())).thenReturn(mock);
+//            
+//        })) {
+        try (MockedStatic<FileChooser> fileChooserStaticMock = Mockito.mockStatic(FileChooser.class, Mockito.CALLS_REAL_METHODS)) {
+
+            //createFileChooserBuilder
+            // test mock
+            final String title = "title here";
+            final String fileExtension = "";
+            final FileChooserBuilder fcb = FileChooser.createFileChooserBuilder(title, fileExtension);
+
+            final List<File> testList = new ArrayList<>();
+
+            //final CompletableFuture<Void> dialogFuture = CompletableFuture.thenApply(f -> new File("Test"));
+            //final CompletableFuture<Void> dialogFuture = CompletableFuture.completedFuture(openFileDialog(fcb, FileChooserMode.MULTI));
+            final CompletableFuture dialogFuture = CompletableFuture.completedFuture(test(fcb, FileChooserMode.MULTI));
+
+            // Setup static mock
+            //fileChooserStaticMock.when(() -> FileChooser.createFileChooserBuilder(anyString(), anyString(),anyString(), anyBoolean())).thenReturn(fcb);
+            // ArgumentMatchers.<PluginParameter<FileParameterValue>>any()
+            fileChooserStaticMock.when(() -> FileChooser.openOpenDialog(any(FileChooserBuilder.class))).thenReturn(dialogFuture);
+            fileChooserStaticMock.when(() -> FileChooser.openMultiDialog(any(FileChooserBuilder.class))).thenReturn(dialogFuture);
+            fileChooserStaticMock.when(() -> FileChooser.openSaveDialog(any(FileChooserBuilder.class))).thenReturn(dialogFuture);
+
+            assertEquals(FileChooserBuilder.class, fcb.setSelectionApprover((final File[] selection) -> true).getClass());
+            System.out.println(fcb.setSelectionApprover((final File[] selection) -> true).getClass());
+
+            instance.handleButtonOnAction(paramaterValue, paramInstance, fileExtension);
+        }
+
+        //instance.handleButtonOnAction(paramaterValue, paramInstance, fileExtension);
+    }
 
     @Test
     public void testHandleEventFilter() {
@@ -184,9 +234,9 @@ public class FileInputPaneNGTest {
         final KeyCode[] keyCodes = {KeyCode.RIGHT, KeyCode.LEFT};
 
         for (final KeyCode k : keyCodes) {
-            events.add(new KeyEvent(null, null, null, "", "", KeyCode.RIGHT, true, false, false, false));
-            events.add(new KeyEvent(null, null, null, "", "", KeyCode.RIGHT, false, true, false, false));
-            events.add(new KeyEvent(null, null, null, "", "", KeyCode.RIGHT, true, true, false, false));
+            events.add(new KeyEvent(null, null, null, "", "", k, true, false, false, false));
+            events.add(new KeyEvent(null, null, null, "", "", k, false, true, false, false));
+            events.add(new KeyEvent(null, null, null, "", "", k, true, true, false, false));
         }
 
         events.add(new KeyEvent(null, null, null, "", "", KeyCode.DELETE, false, false, false, false));
