@@ -335,7 +335,7 @@ public class FileInputPane extends HBox {
             fcb = getFileChooser(parameter, title);
         }
         
-        if (FileParameterType.isWarnOverwriteUsed(parameter)) {
+        if (FileParameterType.isWarnOverwriteUsed(parameter) && FileParameterType.getFileFilters(parameter) != null) {
             for (final String extension : FileParameterType.getFileFilters(parameter).getExtensions()) {
                 FileChooser.setWarnOverwrite(fcb, extension);
             }
