@@ -5,7 +5,7 @@
 
 <div class="skipNav">
 
-[Skip navigation links](#skip.navbar.top "Skip navigation links")
+[Skip navigation links](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SGraph.md#skip.navbar.top "Skip navigation links")
 
 </div>
 
@@ -46,16 +46,16 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 
 -   Summary: 
 -   Nested | 
--   [Field](#field.summary) | 
--   [Constructor](#constructor.summary) | 
--   [Method](#method.summary)
+-   [Field](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SGraph.md#field.summary) | 
+-   [Constructor](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SGraph.md#constructor.summary) | 
+-   [Method](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SGraph.md#method.summary)
 
 <!-- -->
 
 -   Detail: 
--   [Field](#field.detail) | 
--   [Constructor](#constructor.detail) | 
--   [Method](#method.detail)
+-   [Field](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SGraph.md#field.detail) | 
+-   [Constructor](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SGraph.md#constructor.detail) | 
+-   [Method](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SGraph.md#method.detail)
 
 </div>
 

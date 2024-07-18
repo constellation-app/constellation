@@ -2,7 +2,7 @@
 
 <div class="indexHeader">
 
-[All Classes](allclasses-frame.md)
+[All Classes](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/allclasses-frame.md)
 
 </div>
 
