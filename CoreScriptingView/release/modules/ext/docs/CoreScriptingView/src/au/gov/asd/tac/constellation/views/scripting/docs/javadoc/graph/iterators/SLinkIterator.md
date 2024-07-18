@@ -4,7 +4,7 @@
 
 <div class="skipNav">
 
-[Skip navigation links](#skip.navbar.top "Skip navigation links")
+[Skip navigation links](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/iterators/SLinkIterator.md#skip.navbar.top "Skip navigation links")
 
 </div>
 
@@ -46,15 +46,15 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 -   Summary: 
 -   Nested | 
 -   Field | 
--   [Constructor](#constructor.summary) | 
--   [Method](#method.summary)
+-   [Constructor](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/iterators/SLinkIterator.md#constructor.summary) | 
+-   [Method](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/iterators/SLinkIterator.md#method.summary)
 
 <!-- -->
 
 -   Detail: 
 -   Field | 
--   [Constructor](#constructor.detail) | 
--   [Method](#method.detail)
+-   [Constructor](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/iterators/SLinkIterator.md#constructor.detail) | 
+-   [Method](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/iterators/SLinkIterator.md#method.detail)
 
 </div>
 
