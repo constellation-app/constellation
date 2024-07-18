@@ -329,15 +329,12 @@ public class FileInputPane extends HBox {
         final FileChooserBuilder fcb;
 
         if (fileExtension != null) {
-            System.out.println("A");
             fcb = FileChooser.createFileChooserBuilder(title, fileExtension)
                     .setAcceptAllFileFilterUsed(FileParameterType.isAcceptAllFileFilterUsed(parameter));
         } else {
-            System.out.println("B");
             fcb = getFileChooser(parameter, title);
         }
         
-        System.out.println(fcb);
         if (FileParameterType.isWarnOverwriteUsed(parameter)) {
             for (final String extension : FileParameterType.getFileFilters(parameter).getExtensions()) {
                 FileChooser.setWarnOverwrite(fcb, extension);

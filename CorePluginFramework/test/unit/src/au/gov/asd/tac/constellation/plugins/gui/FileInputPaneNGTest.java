@@ -143,35 +143,7 @@ public class FileInputPaneNGTest {
 
     }
 
-//    @Test
-//    public void testGetFileChooser() {
-//        System.out.println("testGetFileChooser");
-//
-//        //final Button dummyButton = new Button(FileParameterType.FileParameterKind.SAVE.toString());
-//        final Button dummyButton = new Button("hah");
-//        System.out.println(dummyButton.getText());
-//                 
-//        final PluginParameter<FileParameterType.FileParameterValue> paramInstance = paramInstanceHelper();
-//        try (MockedConstruction<Button> mockButtonConstructor = Mockito.mockConstruction(Button.class, (mock, context) -> {
-//            //doCallRealMethod().when(mock).setOnAction(ArgumentMatchers.<EventHandler<ActionEvent>>any());
-//            mock = dummyButton;
-//        })) {
-//        //try (MockedConstruction<Button> mockButtonConstructor = Mockito.mockConstruction(Button.class)) {
-//            // Setup mock constructor
-//            //when(mockButtonConstructor.Button()).thenReturn(dummyButton);
-//            
-//            final FileInputPane instance = new FileInputPane(paramInstance);
-//            
-//            assertEquals(1, mockButtonConstructor.constructed().size());
-//            final Button mockButton = mockButtonConstructor.constructed().get(0);
-//            System.out.println(mockButton.getText());
-//            
-//            System.out.println(mockButton.getOnAction());
-//            assertEquals(instance.getClass(), FileInputPane.class);
-//        }
-//
-//    }
-    private static Optional<File> test(final FileChooserBuilder fileChooserBuilder, final FileChooserMode fileDialogMode) {
+    private static Optional<File> stubLambda(final FileChooserBuilder fileChooserBuilder, final FileChooserMode fileDialogMode) {
 
         return Optional.empty();
     }
@@ -182,48 +154,33 @@ public class FileInputPaneNGTest {
 
         final PluginParameter<FileParameterType.FileParameterValue> paramInstance = paramInstanceHelper();
         final FileInputPane instance = new FileInputPane(paramInstance);
-
         final FileParameterType.FileParameterValue paramaterValue = paramInstance.getParameterValue();
-        //final String fileExtension = null;
 
-        //try (MockedStatic<au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser> fileChooserStaticMock = Mockito.mockStatic(au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser.class);
-//        try (MockedConstruction<FileChooserBuilder> mockFileChooserBuilder = Mockito.mockConstruction(FileChooserBuilder.class, (mock, context) -> {
-//            when(mock.setAcceptAllFileFilterUsed(anyBoolean())).thenReturn(mock);
-//            when(mock.setTitle(anyString())).thenReturn(mock);
-//            when(mock.setFilesOnly(anyBoolean())).thenReturn(mock);
-//            when(mock.setSelectionApprover(any(SelectionApprover.class))).thenReturn(mock);
-//            
-//            //when(mock.setWarn(anyBoolean())).thenReturn(mock);
-//            
-//        })) {
+        final String[] titleArray = {"title open", "title open_multiple", "title save"};
+        final String[] fileExtensionArray = {null, "", "svg"};
+
+        final CompletableFuture dialogFuture = CompletableFuture.completedFuture(stubLambda(null, null));
+
         try (MockedStatic<FileChooser> fileChooserStaticMock = Mockito.mockStatic(FileChooser.class, Mockito.CALLS_REAL_METHODS)) {
 
-            //createFileChooserBuilder
-            // test mock
-            final String title = "title here";
-            final String fileExtension = "";
-            final FileChooserBuilder fcb = FileChooser.createFileChooserBuilder(title, fileExtension);
-
-            final List<File> testList = new ArrayList<>();
-
-            //final CompletableFuture<Void> dialogFuture = CompletableFuture.thenApply(f -> new File("Test"));
-            //final CompletableFuture<Void> dialogFuture = CompletableFuture.completedFuture(openFileDialog(fcb, FileChooserMode.MULTI));
-            final CompletableFuture dialogFuture = CompletableFuture.completedFuture(test(fcb, FileChooserMode.MULTI));
-
             // Setup static mock
-            //fileChooserStaticMock.when(() -> FileChooser.createFileChooserBuilder(anyString(), anyString(),anyString(), anyBoolean())).thenReturn(fcb);
-            // ArgumentMatchers.<PluginParameter<FileParameterValue>>any()
             fileChooserStaticMock.when(() -> FileChooser.openOpenDialog(any(FileChooserBuilder.class))).thenReturn(dialogFuture);
             fileChooserStaticMock.when(() -> FileChooser.openMultiDialog(any(FileChooserBuilder.class))).thenReturn(dialogFuture);
             fileChooserStaticMock.when(() -> FileChooser.openSaveDialog(any(FileChooserBuilder.class))).thenReturn(dialogFuture);
 
-            assertEquals(FileChooserBuilder.class, fcb.setSelectionApprover((final File[] selection) -> true).getClass());
-            System.out.println(fcb.setSelectionApprover((final File[] selection) -> true).getClass());
+            for (int i = 0; i < titleArray.length; i++) {
+                final String title = titleArray[i];
+                final String fileExtension = fileExtensionArray[i];
+                
+                final FileChooserBuilder fcb = FileChooser.createFileChooserBuilder(title, fileExtension);
 
-            instance.handleButtonOnAction(paramaterValue, paramInstance, fileExtension);
+                assertEquals(FileChooserBuilder.class, fcb.setSelectionApprover((final File[] selection) -> true).getClass());
+                System.out.println(fcb.setSelectionApprover((final File[] selection) -> true).getClass());
+
+                instance.handleButtonOnAction(paramaterValue, paramInstance, fileExtension);
+            }
         }
 
-        //instance.handleButtonOnAction(paramaterValue, paramInstance, fileExtension);
     }
 
     @Test
