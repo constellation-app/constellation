@@ -17,6 +17,12 @@ package au.gov.asd.tac.constellation.plugins.gui;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
+import static au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterKind.OPEN;
+import static au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterKind.OPEN_MULTIPLE;
+import static au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterKind.OPEN_MULTIPLE_OBSCURED;
+import static au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterKind.OPEN_OBSCURED;
+import static au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterKind.SAVE;
+import static au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterKind.SAVE_OBSCURED;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.io.File;
@@ -98,56 +104,7 @@ public class FileInputPane extends HBox {
 
         final FileParameterValue paramaterValue = parameter.getParameterValue();
         fileAddButton = new Button(paramaterValue.getKind().toString());
-        fileAddButton.setOnAction(event -> {
-            final List<File> files = new ArrayList<>();
-            final CompletableFuture dialogFuture;
-            switch (paramaterValue.getKind()) {
-                case OPEN, OPEN_OBSCURED ->
-                    dialogFuture = FileChooser.openOpenDialog(getFileChooser(parameter, "Open", fileExtension)).thenAccept(optionalFile -> optionalFile.ifPresent(openFile -> {
-                        if (openFile != null) {
-                            files.add(openFile);
-                        }
-                    }));
-                case OPEN_MULTIPLE, OPEN_MULTIPLE_OBSCURED ->
-                    dialogFuture = FileChooser.openMultiDialog(getFileChooser(parameter, "Open File(s)", fileExtension)).thenAccept(optionalFile -> optionalFile.ifPresent(openFiles -> {
-                        if (openFiles != null) {
-                            files.addAll(openFiles);
-                        }
-                    }));
-                case SAVE, SAVE_OBSCURED ->
-                    dialogFuture = FileChooser.openSaveDialog(getFileChooser(parameter, "Save", fileExtension)).thenAccept(optionalFile -> optionalFile.ifPresent(saveFile -> {
-                        if (saveFile != null) {
-                            //Save files may have been typed by the user and an extension may not have been specified.
-                            final String fnam = saveFile.getAbsolutePath();
-                            final String expectedExtension = FileParameterType.getFileFilters(parameter).getExtensions().get(0);
-                            if (!fnam.toLowerCase().endsWith(expectedExtension)) {
-                                saveFile = new File(fnam + expectedExtension);
-                            }
-                            files.add(saveFile);
-                        }
-                    }));
-                default -> {
-                    dialogFuture = null;
-                    LOGGER.log(Level.FINE, "ignoring file selection type {0}.", paramaterValue.getKind());
-                }
-            }
-
-            // As the dialog windows are completed on another thread 
-            // the execution of this method must wait until the thread has finnished executing.
-            if (dialogFuture != null) {
-                try {
-                    dialogFuture.get();
-                } catch (final InterruptedException ex) {
-                    Thread.currentThread().interrupt();
-                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-                } catch (final ExecutionException ex) {
-                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-                }
-            }
-            if (!files.isEmpty()) {
-                parameter.setObjectValue(files);
-            }
-        });
+        fileAddButton.setOnAction(event -> handleButtonOnAction(paramaterValue, parameter, fileExtension));
 
         if (suggestedHeight > 1) {
             field = new TextArea();
@@ -167,42 +124,7 @@ public class FileInputPane extends HBox {
         this.setManaged(parameter.isVisible());
         this.setVisible(parameter.isVisible());
 
-        field.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            if (event.getCode() == KeyCode.DELETE) {
-                final IndexRange selection = field.getSelection();
-                if (selection.getLength() == 0) {
-                    field.deleteNextChar();
-                } else {
-                    field.deleteText(selection);
-                }
-                event.consume();
-            } else if (event.isShortcutDown() && event.isShiftDown() && (event.getCode() == KeyCode.RIGHT)) {
-                field.selectNextWord();
-                event.consume();
-            } else if (event.isShortcutDown() && event.isShiftDown() && (event.getCode() == KeyCode.LEFT)) {
-                field.selectPreviousWord();
-                event.consume();
-            } else if (event.isShortcutDown() && (event.getCode() == KeyCode.RIGHT)) {
-                field.nextWord();
-                event.consume();
-            } else if (event.isShortcutDown() && (event.getCode() == KeyCode.LEFT)) {
-                field.previousWord();
-                event.consume();
-            } else if (event.isShiftDown() && (event.getCode() == KeyCode.RIGHT)) {
-                field.selectForward();
-                event.consume();
-            } else if (event.isShiftDown() && (event.getCode() == KeyCode.LEFT)) {
-                field.selectBackward();
-                event.consume();
-            } else if (event.isShortcutDown() && (event.getCode() == KeyCode.A)) {
-                field.selectAll();
-                event.consume();
-            } else if (event.getCode() == KeyCode.ESCAPE) {
-                event.consume();
-            } else {
-                // Do nothing
-            }
-        });
+        field.addEventFilter(KeyEvent.KEY_PRESSED, event -> handleEventFilter(event));
 
         field.setPromptText(parameter.getDescription());
         if (parameter.getObjectValue() != null) {
@@ -263,6 +185,98 @@ public class FileInputPane extends HBox {
         fieldAndAddButton.setSpacing(2);
         fieldAndAddButton.getChildren().addAll(field, fileAddButton);
         getChildren().add(fieldAndAddButton);
+    }
+
+    // Public for testing
+    public void handleButtonOnAction(final FileParameterValue parameterValue, final PluginParameter<FileParameterValue> parameter, final String fileExtension) {
+        final List<File> files = new ArrayList<>();
+        final CompletableFuture<Void> dialogFuture;
+        switch (parameterValue.getKind()) {
+            case OPEN, OPEN_OBSCURED ->
+                dialogFuture = FileChooser.openOpenDialog(getFileChooser(parameter, "Open", fileExtension)).thenAccept(optionalFile -> optionalFile.ifPresent(openFile -> {
+                    if (openFile != null) {
+                        files.add(openFile);
+                    }
+                }));
+            case OPEN_MULTIPLE, OPEN_MULTIPLE_OBSCURED ->
+                dialogFuture = FileChooser.openMultiDialog(getFileChooser(parameter, "Open File(s)", fileExtension)).thenAccept(optionalFile -> optionalFile.ifPresent(openFiles -> {
+                    if (openFiles != null) {
+                        files.addAll(openFiles);
+                    }
+                }));
+            case SAVE, SAVE_OBSCURED ->
+                dialogFuture = FileChooser.openSaveDialog(getFileChooser(parameter, "Save", fileExtension)).thenAccept(optionalFile -> optionalFile.ifPresent(saveFile -> {
+                    if (saveFile != null) {
+                        //Save files may have been typed by the user and an extension may not have been specified.
+                        final String fnam = saveFile.getAbsolutePath();
+                        final String expectedExtension = FileParameterType.getFileFilters(parameter).getExtensions().get(0);
+                        if (!fnam.toLowerCase().endsWith(expectedExtension)) {
+                            saveFile = new File(fnam + expectedExtension);
+                        }
+                        files.add(saveFile);
+                    }
+                }));
+            default -> {
+                dialogFuture = null;
+                LOGGER.log(Level.FINE, "ignoring file selection type {0}.", parameterValue.getKind());
+            }
+        }
+        System.out.println("A");
+        // As the dialog windows are completed on another thread 
+        // the execution of this method must wait until the thread has finnished executing.
+        if (dialogFuture != null) {
+            try {
+                dialogFuture.get();
+            } catch (final InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+            } catch (final ExecutionException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+            }
+        }
+        System.out.println("B");
+        if (!files.isEmpty()) {
+            parameter.setObjectValue(files);
+        }
+        System.out.println("C");
+    }
+
+    // Public for testing
+    public void handleEventFilter(final KeyEvent event) {
+        if (event.getCode() == KeyCode.DELETE) {
+            final IndexRange selection = field.getSelection();
+            if (selection.getLength() == 0) {
+                field.deleteNextChar();
+            } else {
+                field.deleteText(selection);
+            }
+            event.consume();
+        } else if (event.isShortcutDown() && event.isShiftDown() && (event.getCode() == KeyCode.RIGHT)) {
+            field.selectNextWord();
+            event.consume();
+        } else if (event.isShortcutDown() && event.isShiftDown() && (event.getCode() == KeyCode.LEFT)) {
+            field.selectPreviousWord();
+            event.consume();
+        } else if (event.isShortcutDown() && (event.getCode() == KeyCode.RIGHT)) {
+            field.nextWord();
+            event.consume();
+        } else if (event.isShortcutDown() && (event.getCode() == KeyCode.LEFT)) {
+            field.previousWord();
+            event.consume();
+        } else if (event.isShiftDown() && (event.getCode() == KeyCode.RIGHT)) {
+            field.selectForward();
+            event.consume();
+        } else if (event.isShiftDown() && (event.getCode() == KeyCode.LEFT)) {
+            field.selectBackward();
+            event.consume();
+        } else if (event.isShortcutDown() && (event.getCode() == KeyCode.A)) {
+            field.selectAll();
+            event.consume();
+        } else if (event.getCode() == KeyCode.ESCAPE) {
+            event.consume();
+        } else {
+            // Do nothing
+        }
     }
 
     /**

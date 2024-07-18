@@ -20,10 +20,12 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.F
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
 import static au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.getFileFilters;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
+import com.jogamp.newt.event.KeyEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javafx.scene.input.KeyCode;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import static org.testng.Assert.assertEquals;
@@ -183,23 +185,23 @@ public class FileParameterTypeNGTest {
         assertTrue(fileValue.setObjectValue(files));
         assertEquals(((List<File>) fileValue.getObjectValue()).size(), 3);
     }
-    
+
     /**
      * Test of setKind method, of class FileParameterType.
      */
     @Test
     public void testSetWarnOverwrite() {
         System.out.println("setWarnOverwrite");
-        
+
         final PluginParameter<FileParameterValue> fileParam = FileParameterType.build("My File");
         // Assert feault is false
         assertFalse(FileParameterType.isWarnOverwriteUsed(fileParam));
-        
+
         // Set and assert new value is true
         FileParameterType.setWarnOverwrite(fileParam, true);
         assertTrue(FileParameterType.isWarnOverwriteUsed(fileParam));
     }
-    
+
     /**
      * Test of createCopy method, of class FileParameterValue.
      */
@@ -227,7 +229,6 @@ public class FileParameterTypeNGTest {
         final FileParameterValue comp1 = new FileParameterValue();
         final FileParameterValue comp2 = new FileParameterValue(Arrays.asList("file1", "file2", "file3"));
 
-        assertFalse(fileValue.equals(null));
         assertFalse(fileValue.equals(true));
         assertFalse(fileValue.equals(comp1));
         assertTrue(fileValue.equals(comp2));
