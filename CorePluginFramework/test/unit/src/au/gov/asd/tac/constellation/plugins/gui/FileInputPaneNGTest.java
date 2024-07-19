@@ -122,21 +122,6 @@ public class FileInputPaneNGTest {
         assertEquals(instance.getClass(), FileInputPane.class);
     }
 
-//    @Test
-//    public void testGetFileChooser() {
-//        System.out.println("testGetFileChooser");
-//
-//        final PluginParameter<FileParameterType.FileParameterValue> paramInstance = paramInstanceHelper(SAVE_TYPE, FileExtensionConstants.SVG);
-//
-//        final FileInputPane instance = new FileInputPane(paramInstance);
-//
-//        final Button button = instance.getFileAddButton();
-//        System.out.println(button.getText());
-//
-//        System.out.println(button.getOnAction());
-//        assertEquals(instance.getClass(), FileInputPane.class);
-//
-//    }
     private static Optional<File> stubLambda(final FileChooserBuilder fileChooserBuilder, final FileChooserMode fileDialogMode) {
         System.out.print("Stubbed Lambda called. FileChooserBuilder: " + fileChooserBuilder + " FileChooserMode: " + fileDialogMode);
         return Optional.empty();
@@ -266,24 +251,36 @@ public class FileInputPaneNGTest {
     public void testHandleEventFilter() {
         System.out.println("testHandleEventFilter");
 
-        final ArrayList<KeyEvent> events = new ArrayList<>();
+        final ArrayList<KeyEvent> eventsSuccess = new ArrayList<>();
+        final ArrayList<KeyEvent> eventsFail = new ArrayList<>();
+        final TextInputControl field = new TextArea();
         final KeyCode[] keyCodes = {KeyCode.RIGHT, KeyCode.LEFT};
 
+        // Setup tests that should succeed
         for (final KeyCode k : keyCodes) {
-            events.add(new KeyEvent(null, null, null, "", "", k, true, false, false, false));
-            events.add(new KeyEvent(null, null, null, "", "", k, false, true, false, false));
-            events.add(new KeyEvent(null, null, null, "", "", k, true, true, false, false));
+            eventsSuccess.add(new KeyEvent(null, null, null, "", "", k, true, false, false, false));
+            eventsSuccess.add(new KeyEvent(null, null, null, "", "", k, false, true, false, false));
+            eventsSuccess.add(new KeyEvent(null, null, null, "", "", k, true, true, false, false));
         }
 
-        events.add(new KeyEvent(null, null, null, "", "", KeyCode.DELETE, false, false, false, false));
-        events.add(new KeyEvent(null, null, null, "", "", KeyCode.ESCAPE, false, false, false, false));
-        events.add(new KeyEvent(null, null, null, "", "", KeyCode.A, false, true, false, false));
+        eventsSuccess.add(new KeyEvent(null, null, null, "", "", KeyCode.DELETE, false, false, false, false));
+        eventsSuccess.add(new KeyEvent(null, null, null, "", "", KeyCode.ESCAPE, false, false, false, false));
+        eventsSuccess.add(new KeyEvent(null, null, null, "", "", KeyCode.A, false, true, false, false));
 
-        final TextInputControl field = new TextArea();
-
-        for (final KeyEvent e : events) {
+        // All should consume event
+        for (final KeyEvent e : eventsSuccess) {
             FileInputPane.handleEventFilter(e, field);
             assertTrue(e.isConsumed());
+        }
+        // Setup tests that should fail
+        for (final KeyCode k : keyCodes) {
+            eventsSuccess.add(new KeyEvent(null, null, null, "", "", k, false, false, false, false));
+        }
+
+        // None should consume event
+        for (final KeyEvent e : eventsFail) {
+            FileInputPane.handleEventFilter(e, field);
+            assertFalse(e.isConsumed());
         }
 
         // Test for else do nothing
