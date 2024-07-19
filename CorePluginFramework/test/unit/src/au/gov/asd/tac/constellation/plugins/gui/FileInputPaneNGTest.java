@@ -29,7 +29,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.input.KeyCode;
@@ -43,9 +42,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.AssertJUnit.assertTrue;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -59,9 +56,6 @@ public class FileInputPaneNGTest {
     private static final FileParameterKind OPEN_TYPE = FileParameterType.FileParameterKind.OPEN;
     private static final FileParameterKind OPEN_MULTIPLE_TYPE = FileParameterType.FileParameterKind.OPEN_MULTIPLE;
     private static final FileParameterKind SAVE_TYPE = FileParameterType.FileParameterKind.SAVE;
-
-    public FileInputPaneNGTest() {
-    }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -136,9 +130,8 @@ public class FileInputPaneNGTest {
 //        assertEquals(instance.getClass(), FileInputPane.class);
 //
 //    }
-
     private static Optional<File> stubLambda(final FileChooserBuilder fileChooserBuilder, final FileChooserMode fileDialogMode) {
-
+        System.out.print("Stubbed Lambda called. FileChooserBuilder: " + fileChooserBuilder.toString() + "FileChooserMode: " + fileDialogMode);
         return Optional.empty();
     }
 
@@ -177,7 +170,7 @@ public class FileInputPaneNGTest {
             }
         }
     }
-    
+
     @Test
     public void testGetFileChooser() {
         System.out.println("testGetFileChooser");
