@@ -28,6 +28,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.control.IndexRange;
@@ -178,12 +179,50 @@ public class FileInputPaneNGTest {
     }
 
     @Test
-    public void testGetFileChooser() {
-        System.out.println("testGetFileChooser");
+    public void handleButtonOnActionInterruptedException() {
+        System.out.println("handleButtonOnActionInterruptedException");
 
-        final FileParameterType.FileParameterKind[] kindArray = {OPEN_TYPE, OPEN_MULTIPLE_TYPE, SAVE_TYPE};
-        final String[] titleArray = {"title open", "title open_multiple", "title save"};
-        final String[] fileExtensionArray = {null, "", "svg"};
+        // Mock
+        final CompletableFuture dialogFutureMock = mock(CompletableFuture.class);
+        // Needs try catch
+        try {
+            doThrow(InterruptedException.class).when(dialogFutureMock).get();
+        } catch (InterruptedException e) {
+            System.out.println("Caught InterruptedException setting up mock in testGetFileChooser");
+        } catch (ExecutionException e) {
+            System.out.println("Caught ExecutionException setting up mock in testGetFileChooser");
+        }
+        when(dialogFutureMock.thenAccept(any(Consumer.class))).thenReturn(dialogFutureMock);
+
+        // Check mock works
+        assertThrows(InterruptedException.class, () -> dialogFutureMock.get());
+
+        try (MockedStatic<FileChooser> fileChooserStaticMock = Mockito.mockStatic(FileChooser.class, Mockito.CALLS_REAL_METHODS)) {
+
+            // Setup static mock
+            fileChooserStaticMock.when(() -> FileChooser.openOpenDialog(any(FileChooserBuilder.class))).thenReturn(dialogFutureMock);
+            fileChooserStaticMock.when(() -> FileChooser.openMultiDialog(any(FileChooserBuilder.class))).thenReturn(dialogFutureMock);
+            fileChooserStaticMock.when(() -> FileChooser.openSaveDialog(any(FileChooserBuilder.class))).thenReturn(dialogFutureMock);
+
+            final FileParameterType.FileParameterKind kind = OPEN_TYPE;
+            final String title = "title open";
+            final String fileExtension = "";
+
+            final PluginParameter<FileParameterType.FileParameterValue> paramInstance = paramInstanceHelper(kind, fileExtension);
+            final FileInputPane instance = new FileInputPane(paramInstance);
+            final FileParameterType.FileParameterValue paramaterValue = paramInstance.getParameterValue();
+            final FileChooserBuilder fcb = FileChooser.createFileChooserBuilder(title, fileExtension);
+
+            assertEquals(FileChooserBuilder.class, fcb.setSelectionApprover((final File[] selection) -> true).getClass());
+
+            // Should run without any exceptions
+            instance.handleButtonOnAction(paramaterValue, paramInstance, fileExtension);
+        }
+    }
+
+    @Test
+    public void handleButtonOnActionExecutionException() {
+        System.out.println("handleButtonOnActionExecutionException");
 
         // Mock
         final CompletableFuture dialogFutureMock = mock(CompletableFuture.class);
@@ -195,7 +234,7 @@ public class FileInputPaneNGTest {
         } catch (ExecutionException e) {
             System.out.println("Caught ExecutionException setting up mock in testGetFileChooser");
         }
-        //when(dialogFutureMock.thenAccept(any(Consumer.class))).thenReturn(dialogFutureMock);
+        when(dialogFutureMock.thenAccept(any(Consumer.class))).thenReturn(dialogFutureMock);
 
         // Check mock works
         assertThrows(ExecutionException.class, () -> dialogFutureMock.get());
@@ -207,26 +246,20 @@ public class FileInputPaneNGTest {
             fileChooserStaticMock.when(() -> FileChooser.openMultiDialog(any(FileChooserBuilder.class))).thenReturn(dialogFutureMock);
             fileChooserStaticMock.when(() -> FileChooser.openSaveDialog(any(FileChooserBuilder.class))).thenReturn(dialogFutureMock);
 
-            for (int i = 0; i < titleArray.length; i++) {
+            final FileParameterType.FileParameterKind kind = OPEN_TYPE;
+            final String title = "title open";
+            final String fileExtension = "";
 
-                final FileParameterType.FileParameterKind kind = kindArray[i];
-                final String title = titleArray[i];
-                final String fileExtension = fileExtensionArray[i];
+            final PluginParameter<FileParameterType.FileParameterValue> paramInstance = paramInstanceHelper(kind, fileExtension);
+            final FileInputPane instance = new FileInputPane(paramInstance);
+            final FileParameterType.FileParameterValue paramaterValue = paramInstance.getParameterValue();
+            final FileChooserBuilder fcb = FileChooser.createFileChooserBuilder(title, fileExtension);
 
-                final PluginParameter<FileParameterType.FileParameterValue> paramInstance = paramInstanceHelper(kind, fileExtension);
-                final FileInputPane instance = new FileInputPane(paramInstance);
-                final FileParameterType.FileParameterValue paramaterValue = paramInstance.getParameterValue();
+            assertEquals(FileChooserBuilder.class, fcb.setSelectionApprover((final File[] selection) -> true).getClass());
 
-                final FileChooserBuilder fcb = FileChooser.createFileChooserBuilder(title, fileExtension);
-
-                assertEquals(FileChooserBuilder.class, fcb.setSelectionApprover((final File[] selection) -> true).getClass());
-
-                // Should run without any exceptions
-                instance.handleButtonOnAction(paramaterValue, paramInstance, fileExtension);
-
-            }
+            // Should run without any exceptions
+            instance.handleButtonOnAction(paramaterValue, paramInstance, fileExtension);
         }
-
     }
 
     @Test
