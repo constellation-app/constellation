@@ -337,13 +337,4 @@ public class FileInputPane extends HBox {
 
         return fcb;
     }
-
-//    /**
-//     * Used only in testing
-//     *
-//     * @return fileAddButton
-//     */
-//    public Button getFileAddButton() {
-//        return fileAddButton;
-//    }
 }
