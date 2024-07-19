@@ -26,20 +26,26 @@ import javafx.scene.input.KeyEvent;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.control.IndexRange;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.input.KeyCode;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import org.openide.filesystems.FileChooserBuilder;
 
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertThrows;
 import static org.testng.AssertJUnit.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -131,7 +137,7 @@ public class FileInputPaneNGTest {
 //
 //    }
     private static Optional<File> stubLambda(final FileChooserBuilder fileChooserBuilder, final FileChooserMode fileDialogMode) {
-        System.out.print("Stubbed Lambda called. FileChooserBuilder: " + fileChooserBuilder.toString() + "FileChooserMode: " + fileDialogMode);
+        System.out.print("Stubbed Lambda called. FileChooserBuilder: " + fileChooserBuilder + " FileChooserMode: " + fileDialogMode);
         return Optional.empty();
     }
 
@@ -179,14 +185,27 @@ public class FileInputPaneNGTest {
         final String[] titleArray = {"title open", "title open_multiple", "title save"};
         final String[] fileExtensionArray = {null, "", "svg"};
 
-        final CompletableFuture dialogFuture = CompletableFuture.completedFuture(stubLambda(null, null));
+        // Mock
+        final CompletableFuture dialogFutureMock = mock(CompletableFuture.class);
+        // Needs try catch
+        try {
+            doThrow(ExecutionException.class).when(dialogFutureMock).get();
+        } catch (InterruptedException e) {
+            System.out.println("Caught InterruptedException setting up mock in testGetFileChooser");
+        } catch (ExecutionException e) {
+            System.out.println("Caught ExecutionException setting up mock in testGetFileChooser");
+        }
+        //when(dialogFutureMock.thenAccept(any(Consumer.class))).thenReturn(dialogFutureMock);
+
+        // Check mock works
+        assertThrows(ExecutionException.class, () -> dialogFutureMock.get());
 
         try (MockedStatic<FileChooser> fileChooserStaticMock = Mockito.mockStatic(FileChooser.class, Mockito.CALLS_REAL_METHODS)) {
 
             // Setup static mock
-            fileChooserStaticMock.when(() -> FileChooser.openOpenDialog(any(FileChooserBuilder.class))).thenReturn(dialogFuture);
-            fileChooserStaticMock.when(() -> FileChooser.openMultiDialog(any(FileChooserBuilder.class))).thenReturn(dialogFuture);
-            fileChooserStaticMock.when(() -> FileChooser.openSaveDialog(any(FileChooserBuilder.class))).thenReturn(dialogFuture);
+            fileChooserStaticMock.when(() -> FileChooser.openOpenDialog(any(FileChooserBuilder.class))).thenReturn(dialogFutureMock);
+            fileChooserStaticMock.when(() -> FileChooser.openMultiDialog(any(FileChooserBuilder.class))).thenReturn(dialogFutureMock);
+            fileChooserStaticMock.when(() -> FileChooser.openSaveDialog(any(FileChooserBuilder.class))).thenReturn(dialogFutureMock);
 
             for (int i = 0; i < titleArray.length; i++) {
 
@@ -202,7 +221,9 @@ public class FileInputPaneNGTest {
 
                 assertEquals(FileChooserBuilder.class, fcb.setSelectionApprover((final File[] selection) -> true).getClass());
 
+                // Should run without any exceptions
                 instance.handleButtonOnAction(paramaterValue, paramInstance, fileExtension);
+
             }
         }
 
@@ -225,21 +246,34 @@ public class FileInputPaneNGTest {
         events.add(new KeyEvent(null, null, null, "", "", KeyCode.ESCAPE, false, false, false, false));
         events.add(new KeyEvent(null, null, null, "", "", KeyCode.A, false, true, false, false));
 
-        final PluginParameter<FileParameterType.FileParameterValue> paramInstance = paramInstanceHelper(SAVE_TYPE, FileExtensionConstants.SVG);
-        final FileInputPane instance = new FileInputPane(paramInstance);
-
         final TextInputControl field = new TextArea();
 
         for (final KeyEvent e : events) {
-            instance.handleEventFilter(e, field);
+            FileInputPane.handleEventFilter(e, field);
             assertTrue(e.isConsumed());
         }
 
         // Test for else do nothing
         final KeyEvent doNothingEvent = new KeyEvent(null, null, null, "", "", KeyCode.B, false, false, false, false);
 
-        instance.handleEventFilter(doNothingEvent, field);
+        FileInputPane.handleEventFilter(doNothingEvent, field);
         assertFalse(doNothingEvent.isConsumed());
+    }
+
+    @Test
+    public void testHandleEventFilterDeleteSelection() {
+        System.out.println("testHandleEventFilterDeleteSelection");
+
+        // Test for delete with selection
+        final TextInputControl fieldMock = mock(TextArea.class);
+        final IndexRange selectionMock = mock(IndexRange.class);
+
+        when(fieldMock.getSelection()).thenReturn(selectionMock);
+        when(selectionMock.getLength()).thenReturn(1);
+
+        final KeyEvent deleteEvent = new KeyEvent(null, null, null, "", "", KeyCode.DELETE, false, false, false, false);
+        FileInputPane.handleEventFilter(deleteEvent, fieldMock);
+        assertTrue(deleteEvent.isConsumed());
 
     }
 
