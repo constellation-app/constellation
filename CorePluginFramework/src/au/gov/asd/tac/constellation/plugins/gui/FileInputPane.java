@@ -103,7 +103,7 @@ public class FileInputPane extends HBox {
         required = parameter.isRequired();
 
         final FileParameterValue paramaterValue = parameter.getParameterValue();
-        fileAddButton = new Button(paramaterValue.getKind().toString());
+        fileAddButton = new Button(paramaterValue.getKind() == null ? "" : paramaterValue.getKind().toString());
         fileAddButton.setOnAction(event -> handleButtonOnAction(paramaterValue, parameter, fileExtension));
 
         if (suggestedHeight > 1) {
@@ -291,13 +291,8 @@ public class FileInputPane extends HBox {
         FileChooserBuilder fileChooserBuilder = FileChooser.createFileChooserBuilder(title)
                 .setAcceptAllFileFilterUsed(extensionFilter == null || FileParameterType.isAcceptAllFileFilterUsed(parameter));
 
-        final boolean warnOverwrite = FileParameterType.isWarnOverwriteUsed(parameter);
         if (extensionFilter != null) {
             for (final String extension : extensionFilter.getExtensions()) {
-                if (warnOverwrite) {
-                    FileChooser.setWarnOverwrite(fileChooserBuilder, extension);
-                }
-
                 // Add a file filter for all registered exportable file types.
                 fileChooserBuilder = fileChooserBuilder.addFileFilter(new FileFilter() {
                     @Override
@@ -343,12 +338,12 @@ public class FileInputPane extends HBox {
         return fcb;
     }
 
-    /**
-     * Used only in testing
-     *
-     * @return fileAddButton
-     */
-    public Button getFileAddButton() {
-        return fileAddButton;
-    }
+//    /**
+//     * Used only in testing
+//     *
+//     * @return fileAddButton
+//     */
+//    public Button getFileAddButton() {
+//        return fileAddButton;
+//    }
 }

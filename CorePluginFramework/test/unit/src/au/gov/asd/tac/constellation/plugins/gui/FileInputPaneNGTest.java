@@ -56,6 +56,10 @@ public class FileInputPaneNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(FileInputPaneNGTest.class.getName());
 
+    private static final FileParameterKind OPEN_TYPE = FileParameterType.FileParameterKind.OPEN;
+    private static final FileParameterKind OPEN_MULTIPLE_TYPE = FileParameterType.FileParameterKind.OPEN_MULTIPLE;
+    private static final FileParameterKind SAVE_TYPE = FileParameterType.FileParameterKind.SAVE;
+
     public FileInputPaneNGTest() {
     }
 
@@ -87,19 +91,11 @@ public class FileInputPaneNGTest {
         }
     }
 
-    @BeforeMethod
-    public void setUpMethod() throws Exception {
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
-    }
-
     @Test
     public void testConstructor() {
         System.out.println("testConstructor");
 
-        final PluginParameter<FileParameterType.FileParameterValue> paramInstance = paramInstanceHelper(FileParameterType.FileParameterKind.SAVE, FileExtensionConstants.SVG);
+        final PluginParameter<FileParameterType.FileParameterValue> paramInstance = paramInstanceHelper(SAVE_TYPE, FileExtensionConstants.SVG);
         final FileInputPane instance = new FileInputPane(paramInstance);
 
         assertEquals(instance.getClass(), FileInputPane.class);
@@ -109,7 +105,7 @@ public class FileInputPaneNGTest {
     public void testConstructorTwoParams() {
         System.out.println("testConstructorTwoParams");
 
-        final PluginParameter<FileParameterType.FileParameterValue> paramInstance = paramInstanceHelper(FileParameterType.FileParameterKind.SAVE, FileExtensionConstants.SVG);
+        final PluginParameter<FileParameterType.FileParameterValue> paramInstance = paramInstanceHelper(SAVE_TYPE, FileExtensionConstants.SVG);
         final FileInputPane instance = new FileInputPane(paramInstance, FileInputPane.DEFAULT_WIDTH);
 
         assertEquals(instance.getClass(), FileInputPane.class);
@@ -119,27 +115,27 @@ public class FileInputPaneNGTest {
     public void testConstructorThreeParams() {
         System.out.println("testConstructorThreeParams");
 
-        final PluginParameter<FileParameterType.FileParameterValue> paramInstance = paramInstanceHelper(FileParameterType.FileParameterKind.SAVE, FileExtensionConstants.SVG);
+        final PluginParameter<FileParameterType.FileParameterValue> paramInstance = paramInstanceHelper(SAVE_TYPE, FileExtensionConstants.SVG);
         final FileInputPane instance = new FileInputPane(paramInstance, FileInputPane.DEFAULT_WIDTH, 1);
 
         assertEquals(instance.getClass(), FileInputPane.class);
     }
 
-    @Test
-    public void testGetFileChooser() {
-        System.out.println("testGetFileChooser");
-
-        final PluginParameter<FileParameterType.FileParameterValue> paramInstance = paramInstanceHelper(FileParameterType.FileParameterKind.SAVE, FileExtensionConstants.SVG);
-
-        final FileInputPane instance = new FileInputPane(paramInstance);
-
-        final Button button = instance.getFileAddButton();
-        System.out.println(button.getText());
-
-        System.out.println(button.getOnAction());
-        assertEquals(instance.getClass(), FileInputPane.class);
-
-    }
+//    @Test
+//    public void testGetFileChooser() {
+//        System.out.println("testGetFileChooser");
+//
+//        final PluginParameter<FileParameterType.FileParameterValue> paramInstance = paramInstanceHelper(SAVE_TYPE, FileExtensionConstants.SVG);
+//
+//        final FileInputPane instance = new FileInputPane(paramInstance);
+//
+//        final Button button = instance.getFileAddButton();
+//        System.out.println(button.getText());
+//
+//        System.out.println(button.getOnAction());
+//        assertEquals(instance.getClass(), FileInputPane.class);
+//
+//    }
 
     private static Optional<File> stubLambda(final FileChooserBuilder fileChooserBuilder, final FileChooserMode fileDialogMode) {
 
@@ -150,7 +146,7 @@ public class FileInputPaneNGTest {
     public void testHandleButtonOnAction() {
         System.out.println("testHandleButtonOnAction");
 
-        final FileParameterType.FileParameterKind[] kindArray = {FileParameterType.FileParameterKind.OPEN, FileParameterType.FileParameterKind.OPEN_MULTIPLE, FileParameterType.FileParameterKind.SAVE};
+        final FileParameterType.FileParameterKind[] kindArray = {OPEN_TYPE, OPEN_MULTIPLE_TYPE, SAVE_TYPE};
         final String[] titleArray = {"title open", "title open_multiple", "title save"};
         final String[] fileExtensionArray = {null, "", "svg"};
 
@@ -176,7 +172,42 @@ public class FileInputPaneNGTest {
                 final FileChooserBuilder fcb = FileChooser.createFileChooserBuilder(title, fileExtension);
 
                 assertEquals(FileChooserBuilder.class, fcb.setSelectionApprover((final File[] selection) -> true).getClass());
-                System.out.println(fcb.setSelectionApprover((final File[] selection) -> true).getClass());
+
+                instance.handleButtonOnAction(paramaterValue, paramInstance, fileExtension);
+            }
+        }
+    }
+    
+    @Test
+    public void testGetFileChooser() {
+        System.out.println("testGetFileChooser");
+
+        final FileParameterType.FileParameterKind[] kindArray = {OPEN_TYPE, OPEN_MULTIPLE_TYPE, SAVE_TYPE};
+        final String[] titleArray = {"title open", "title open_multiple", "title save"};
+        final String[] fileExtensionArray = {null, "", "svg"};
+
+        final CompletableFuture dialogFuture = CompletableFuture.completedFuture(stubLambda(null, null));
+
+        try (MockedStatic<FileChooser> fileChooserStaticMock = Mockito.mockStatic(FileChooser.class, Mockito.CALLS_REAL_METHODS)) {
+
+            // Setup static mock
+            fileChooserStaticMock.when(() -> FileChooser.openOpenDialog(any(FileChooserBuilder.class))).thenReturn(dialogFuture);
+            fileChooserStaticMock.when(() -> FileChooser.openMultiDialog(any(FileChooserBuilder.class))).thenReturn(dialogFuture);
+            fileChooserStaticMock.when(() -> FileChooser.openSaveDialog(any(FileChooserBuilder.class))).thenReturn(dialogFuture);
+
+            for (int i = 0; i < titleArray.length; i++) {
+
+                final FileParameterType.FileParameterKind kind = kindArray[i];
+                final String title = titleArray[i];
+                final String fileExtension = fileExtensionArray[i];
+
+                final PluginParameter<FileParameterType.FileParameterValue> paramInstance = paramInstanceHelper(kind, fileExtension);
+                final FileInputPane instance = new FileInputPane(paramInstance);
+                final FileParameterType.FileParameterValue paramaterValue = paramInstance.getParameterValue();
+
+                final FileChooserBuilder fcb = FileChooser.createFileChooserBuilder(title, fileExtension);
+
+                assertEquals(FileChooserBuilder.class, fcb.setSelectionApprover((final File[] selection) -> true).getClass());
 
                 instance.handleButtonOnAction(paramaterValue, paramInstance, fileExtension);
             }
@@ -201,7 +232,7 @@ public class FileInputPaneNGTest {
         events.add(new KeyEvent(null, null, null, "", "", KeyCode.ESCAPE, false, false, false, false));
         events.add(new KeyEvent(null, null, null, "", "", KeyCode.A, false, true, false, false));
 
-        final PluginParameter<FileParameterType.FileParameterValue> paramInstance = paramInstanceHelper(FileParameterType.FileParameterKind.SAVE, FileExtensionConstants.SVG);
+        final PluginParameter<FileParameterType.FileParameterValue> paramInstance = paramInstanceHelper(SAVE_TYPE, FileExtensionConstants.SVG);
         final FileInputPane instance = new FileInputPane(paramInstance);
 
         final TextInputControl field = new TextArea();
