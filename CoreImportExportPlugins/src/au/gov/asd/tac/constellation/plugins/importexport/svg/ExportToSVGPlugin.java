@@ -55,21 +55,21 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javafx.stage.FileChooser;
 import org.apache.commons.lang3.StringUtils;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Exports visual data viewed on an active graph to an Scalar Vector Graphic file.
- * SVG generation functionality of this plugin has been abstracted to the {@link SVGGraphBuilder} class.
- * This plugin functionality relies heavily on {@link VisualGraphAccess} methods to interpret the graph consistently.
- * 
+ * Exports visual data viewed on an active graph to an Scalar Vector Graphic file. SVG generation functionality of this
+ * plugin has been abstracted to the {@link SVGGraphBuilder} class. This plugin functionality relies heavily on
+ * {@link VisualGraphAccess} methods to interpret the graph consistently.
+ *
  * @author capricornunicorn123
  */
 @ServiceProvider(service = Plugin.class)
 @PluginInfo(pluginType = PluginType.EXPORT, tags = {PluginTags.EXPORT})
 @NbBundle.Messages("ExportToSVGPlugin=Export to SVG")
 public class ExportToSVGPlugin extends SimpleReadPlugin {
+
     public static final String FILE_NAME_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "file_name");
     public static final String GRAPH_TITLE_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "graph_title");
     public static final String IMAGE_MODE_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "image_mode");
@@ -82,9 +82,9 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
     public static final String SHOW_CONNECTION_LABELS_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_transaction_labels");
     public static final String SHOW_BLAZES_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_blazes");
     public static final String EXPORT_PERSPECTIVE_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "export_perspective");
-    
+
     private static final Logger LOGGER = Logger.getLogger(ExportToSVGPlugin.class.getName());
-    
+
     @Override
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
@@ -94,15 +94,16 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         fnamParam.setDescription("File location and name for export");
         FileParameterType.setKind(fnamParam, FileParameterType.FileParameterKind.SAVE);
         FileParameterType.setFileFilters(fnamParam, new FileChooser.ExtensionFilter("SVG file", FileExtensionConstants.SVG));
+        FileParameterType.setWarnOverwrite(fnamParam, true);
         fnamParam.setRequired(true);
         parameters.addParameter(fnamParam);
-        
+
         final PluginParameter<StringParameterValue> graphTitleParam = StringParameterType.build(GRAPH_TITLE_PARAMETER_ID);
         graphTitleParam.setName("Graph Title");
         graphTitleParam.setDescription("Title of the graph");
         graphTitleParam.setRequired(true);
         parameters.addParameter(graphTitleParam);
-        
+
         final PluginParameter<IntegerParameterValue> exportCores = IntegerParameterType.build(EXPORT_CORES_PARAMETER_ID);
         exportCores.setName("Export Processors");
         exportCores.setDescription("""
@@ -113,7 +114,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         IntegerParameterType.setMinimum(exportCores, 1);
         IntegerParameterType.setMaximum(exportCores, Runtime.getRuntime().availableProcessors());
         parameters.addParameter(exportCores);
-        
+
         final PluginParameter<SingleChoiceParameterValue> imageModeParam = SingleChoiceParameterType.build(IMAGE_MODE_PARAMETER_ID);
         imageModeParam.setName("Image Mode");
         imageModeParam.setDescription("""
@@ -124,42 +125,42 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         SingleChoiceParameterType.setOptions(imageModeParam, Stream.of(ExportMode.values()).map(ExportMode::toString).toList());
         SingleChoiceParameterType.setChoice(imageModeParam, ExportMode.LINKED.toString());
         parameters.addParameter(imageModeParam);
-        
+
         final PluginParameter<ColorParameterValue> backgroundColorParam = ColorParameterType.build(BACKGROUND_COLOR_PARAMETER_ID);
         backgroundColorParam.setName("Background Color");
         backgroundColorParam.setDescription("Set the background color");
         parameters.addParameter(backgroundColorParam);
-        
+
         final PluginParameter<BooleanParameterValue> selectedElementsParam = BooleanParameterType.build(SELECTED_ELEMENTS_PARAMETER_ID);
         selectedElementsParam.setName("Selected Elements");
         selectedElementsParam.setDescription("Export selected elements only");
         parameters.addParameter(selectedElementsParam);
-        
+
         final PluginParameter<BooleanParameterValue> showNodesParam = BooleanParameterType.build(SHOW_NODES_PARAMETER_ID);
         showNodesParam.setName("Show Nodes");
         showNodesParam.setDescription("Include nodes in export");
         parameters.addParameter(showNodesParam);
-        
+
         final PluginParameter<BooleanParameterValue> showConnectionsParam = BooleanParameterType.build(SHOW_CONNECTIONS_PARAMETER_ID);
         showConnectionsParam.setName("Show Connections");
         showConnectionsParam.setDescription("Include connections in export");
         parameters.addParameter(showConnectionsParam);
-        
+
         final PluginParameter<BooleanParameterValue> showNodeLabelsParam = BooleanParameterType.build(SHOW_NODE_LABELS_PARAMETER_ID);
         showNodeLabelsParam.setName("Show Node Labels");
         showNodeLabelsParam.setDescription("Include node labels in the export");
         parameters.addParameter(showNodeLabelsParam);
-        
+
         final PluginParameter<BooleanParameterValue> showConnectionLabelsParam = BooleanParameterType.build(SHOW_CONNECTION_LABELS_PARAMETER_ID);
         showConnectionLabelsParam.setName("Show Connection Labels");
         showConnectionLabelsParam.setDescription("Include connection labels in the export");
         parameters.addParameter(showConnectionLabelsParam);
-        
+
         final PluginParameter<BooleanParameterValue> showBlazesParam = BooleanParameterType.build(SHOW_BLAZES_PARAMETER_ID);
         showBlazesParam.setName("Show Blazes");
         showBlazesParam.setDescription("Include blazes in the export");
         parameters.addParameter(showBlazesParam);
-        
+
         final PluginParameter<SingleChoiceParameterValue> exportPerspectiveParam = SingleChoiceParameterType.build(EXPORT_PERSPECTIVE_PARAMETER_ID);
         exportPerspectiveParam.setName("Export Perspective");
         exportPerspectiveParam.setDescription("The perspective the exported graph will be viewed from");
@@ -169,13 +170,13 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         SingleChoiceParameterType.setOptions(exportPerspectiveParam, exportPerspectiveOptions);
         SingleChoiceParameterType.setChoice(exportPerspectiveParam, "Current Perspective");
         parameters.addParameter(exportPerspectiveParam);
-        
+
         return parameters;
     }
-    
+
     @Override
-    protected void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {        
-        
+    protected void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+
         // Get Parameter Values
         final String fnam = parameters.getStringValue(FILE_NAME_PARAMETER_ID);
         final String title = parameters.getStringValue(GRAPH_TITLE_PARAMETER_ID);
@@ -189,14 +190,14 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         final boolean showConnectionLabels = parameters.getBooleanValue(SHOW_CONNECTION_LABELS_PARAMETER_ID);
         final boolean showBlazes = parameters.getBooleanValue(SHOW_BLAZES_PARAMETER_ID);
         final String exportPerspective = parameters.getStringValue(EXPORT_PERSPECTIVE_PARAMETER_ID);
-        
+
         if (StringUtils.isBlank(fnam)) {
             throw new PluginException(PluginNotificationLevel.ERROR, "File location has not been specified.");
         }
-                
+
         // The output SVG File
-        final File exportedGraph = new File(fnam);  
-        
+        final File exportedGraph = new File(fnam);
+
         final StringBuilder assetDirectoryPath = new StringBuilder();
         assetDirectoryPath.append(exportedGraph.getParentFile().getAbsolutePath());
         assetDirectoryPath.append(File.separator);
@@ -205,26 +206,26 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         // The output reference image assets
         final File assetDirectory = new File(assetDirectoryPath.toString());
         assetDirectory.mkdir();
-        
+
         // A directory of image assets may have already been created for a graph of the same name.
         // This export will overwire these assets, so empty the directory.
-        for (final File file : assetDirectory.listFiles()){
+        for (final File file : assetDirectory.listFiles()) {
             try {
                 Files.delete(file.toPath());
             } catch (final IOException ex) {
                 LOGGER.log(Level.WARNING, String.format("Deletion of file %s was not successful", file.toPath()));
             }
         }
-            
+
         // If the user has not selected a linked export the asset directoy can now be deleted. 
-        if (!ExportMode.LINKED.toString().equals(imageMode)){
+        if (!ExportMode.LINKED.toString().equals(imageMode)) {
             try {
                 Files.delete(assetDirectory.toPath());
             } catch (final IOException ex) {
                 LOGGER.log(Level.WARNING, String.format("Deletion of directory %s was not successful", assetDirectory.toPath()));
             }
         }
-        
+
         try {
             // Build a SVG representation of the graph
             final SVGData svg = new SVGGraphBuilder()
@@ -238,21 +239,22 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
                     .withAssetDirectory(assetDirectory)
                     .withCores(cores)
                     .build();
-            
+
             exportToSVG(exportedGraph, svg, interaction);
             interaction.setProgress(1, 0, "Finished", true);
-        
-        // Catch exceptions for mising paramter values and issues writing to files
+
+            // Catch exceptions for mising paramter values and issues writing to files
         } catch (final IllegalArgumentException | IOException ex) {
             throw new PluginException(PluginNotificationLevel.ERROR, ex.getLocalizedMessage());
         }
-    }   
-    
+    }
+
     /**
-     * Exports a single SVGData object to a specified file. 
+     * Exports a single SVGData object to a specified file.
+     *
      * @param file
      * @param data
-     * @throws IOException 
+     * @throws IOException
      */
     private void exportToSVG(final File file, final SVGData data, final PluginInteraction interaction) throws IOException, InterruptedException {
         final boolean fileOverwritten = file.createNewFile();
@@ -260,31 +262,31 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
             final List<String> lines = data.toLines();
             final int totalLines = lines.size();
             interaction.setExecutionStage(0, totalLines, "Exporting Graph", "Writing data to file", true);
-            for (int i = 0; i < totalLines; i++){
+            for (int i = 0; i < totalLines; i++) {
                 writer.write(lines.get(i));
                 interaction.setProgress(i, totalLines, true);
             }
-            writer.flush();        
-            if (fileOverwritten){
+            writer.flush();
+            if (fileOverwritten) {
                 interaction.setProgress(0, -1, String.format("File %s has been overwritten", file.getName()), false);
             } else {
                 interaction.setProgress(0, -1, String.format("File %s has been created", file.getName()), false);
             }
         }
     }
-    
-    private enum ExportMode{
+
+    private enum ExportMode {
         LINKED("Linked"),
         EMBEDED("Embedded");
-        
+
         private final String label;
-        
-        private ExportMode(final String label){
+
+        private ExportMode(final String label) {
             this.label = label;
         }
-        
+
         @Override
-        public String toString(){
+        public String toString() {
             return this.label;
         }
     }

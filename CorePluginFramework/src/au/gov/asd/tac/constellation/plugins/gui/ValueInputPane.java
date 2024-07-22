@@ -29,7 +29,6 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.IndexRange;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -37,10 +36,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.control.Tooltip;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.text.Text;
 import org.apache.commons.lang3.StringUtils;
 import org.controlsfx.control.textfield.TextFields;
 
@@ -209,40 +206,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                 recentValuesCombo.setDisable(!parameter.isEnabled());
             }
             
-            field.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-                if (event.getCode() == KeyCode.DELETE) {
-                    final IndexRange selection = field.getSelection();
-                    if (selection.getLength() == 0) {
-                        field.deleteNextChar();
-                    } else {
-                        field.deleteText(selection);
-                    }
-                    event.consume();
-                } else if (event.isShortcutDown() && event.isShiftDown() && (event.getCode() == KeyCode.RIGHT)) {
-                    field.selectNextWord();
-                    event.consume();
-                } else if (event.isShortcutDown() && event.isShiftDown() && (event.getCode() == KeyCode.LEFT)) {
-                    field.selectPreviousWord();
-                    event.consume();
-                } else if (event.isShortcutDown() && (event.getCode() == KeyCode.RIGHT)) {
-                    field.nextWord();
-                    event.consume();
-                } else if (event.isShortcutDown() && (event.getCode() == KeyCode.LEFT)) {
-                    field.previousWord();
-                    event.consume();
-                } else if (event.isShiftDown() && (event.getCode() == KeyCode.RIGHT)) {
-                    field.selectForward();
-                    event.consume();
-                } else if (event.isShiftDown() && (event.getCode() == KeyCode.LEFT)) {
-                    field.selectBackward();
-                    event.consume();
-                } else if (event.isShortcutDown() && (event.getCode() == KeyCode.A)) {
-                    field.selectAll();
-                    event.consume();
-                } else if (event.getCode() == KeyCode.ESCAPE) {
-                    event.consume();
-                }
-            });
+            field.addEventFilter(KeyEvent.KEY_PRESSED, event -> FileInputPane.handleEventFilter(event, field));
 
             final Tooltip tooltip = new Tooltip("");
             tooltip.setStyle("-fx-text-fill: white;");

@@ -307,6 +307,6 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
      * @return the created file chooser.
      */
     public FileChooserBuilder getSaveFileChooser() {
-        return FileChooser.createFileChooserBuilder(TITLE, FileExtensionConstants.STAR, "Constellation Files (" + FileExtensionConstants.STAR + ")");
+        return FileChooser.createFileChooserBuilder(TITLE, FileExtensionConstants.STAR, "Constellation Files (" + FileExtensionConstants.STAR + ")", true);
     }
 }
