@@ -20,12 +20,10 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.F
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
 import static au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.getFileFilters;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
-import com.jogamp.newt.event.KeyEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javafx.scene.input.KeyCode;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import static org.testng.Assert.assertEquals;
