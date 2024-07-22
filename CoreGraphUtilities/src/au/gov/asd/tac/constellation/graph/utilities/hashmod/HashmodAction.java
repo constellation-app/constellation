@@ -18,9 +18,17 @@ package au.gov.asd.tac.constellation.graph.utilities.hashmod;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeRegistry;
+import au.gov.asd.tac.constellation.graph.attribute.DateAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.FloatObjectAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.IntegerObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
@@ -112,17 +120,47 @@ public final class HashmodAction implements ActionListener {
         int transAttrCount = 0;
         while ((nextAttr = hashmod.getCSVHeader(i)) != null) {
             final int nextAttribute = wg.getSchema().getFactory().ensureAttribute(wg, GraphElementType.VERTEX, nextAttr);
-            if (nextAttribute != Graph.NOT_FOUND) {
-                attributeValues[attrCount] = nextAttribute;
-                csvValues[attrCount] = i;
-                attrCount++;
-            }
+//            if (nextAttribute != Graph.NOT_FOUND) {
+//                attributeValues[attrCount] = nextAttribute;
+//                csvValues[attrCount] = i;
+//                attrCount++;
+//            }
 
             if ((createAttributes || createTransactions) && StringUtils.isNotBlank(nextAttr)) {
                 final String[] attributeName = nextAttr.split("\\.");
                 String newAttributeType = StringAttributeDescription.ATTRIBUTE_NAME;
 
-                if (attributeName.length >= 2 && AttributeRegistry.getDefault().getAttributes().get(attributeName[attributeName.length - 1]) != null) {
+                if (attributeName.length >= 2 && nextAttribute != Graph.NOT_FOUND) {
+//                   final Class<? extends AttributeDescription> ad = wg.getAttributeDataType(nextAttribute);
+                   newAttributeType = wg.getAttributeType(nextAttribute);
+//                   newAttributeType = attr_data_type.getDeclaredConstructor().newInstance().getName();
+//                    if (ad.equals(IntegerObjectAttributeDescription.class)) {
+//                            newAttributeType = IntegerObjectAttributeDescription.ATTRIBUTE_NAME;
+//                        } else if (ad.equals(FloatObjectAttributeDescription.class)) {
+//                            newAttributeType = FloatObjectAttributeDescription.ATTRIBUTE_NAME;
+//                        } else if (ad.equals(ZonedDateTimeAttributeDescription.class)) {
+//                            newAttributeType = ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME;
+//                        } else if (ad.getClass().equals(DateAttributeDescription.class)) {
+//                            newAttributeType = DateAttributeDescription.ATTRIBUTE_NAME;
+//                        } else if (ad.equals(ColorAttributeDescription.class)) {
+//                            newAttributeType = ColorAttributeDescription.ATTRIBUTE_NAME;
+//                        }
+
+//                    int attr_id = wg.getAttribute(GraphElementType.VERTEX, nextAttr);
+//                    if (attr_id > -1) {
+//                        final Class<? extends AttributeDescription> attr_data_type;
+//                        attr_data_type = wg.getAttributeDataType(attr_id);
+//                        if (attr_data_type != null) {
+//                            newAttributeType = attr_data_type.getDeclaredConstructor().newInstance().getName();
+//                            System.out.println("newAttributeType:" + newAttributeType);
+//                        }
+//                    }
+                }
+                
+//                if (attributeName.length >= 2 && AttributeRegistry.getDefault().getAttributes().get(attributeName[attributeName.length - 1]) != null) {
+//                  newAttributeType = attributeName[attributeName.length - 1];
+//                }
+                if (attributeName.length >= 2 && AttributeRegistry.getDefault().getAttributes().get(newAttributeType) == null) {
                     newAttributeType = attributeName[attributeName.length - 1];
                 }
 
@@ -135,7 +173,7 @@ public final class HashmodAction implements ActionListener {
                     }
                 }
 
-                if (createTransactions && StringUtils.isNotBlank(hashmod.getTransactionAttribute(nextAttr))) {
+                if (createTransactions && !StringUtils.isEmpty(hashmod.getTransactionAttribute(nextAttr))) {
                     final String transactionAttributeName = hashmod.getTransactionAttribute(nextAttr);
                     final int newTransactionAttribute = wg.addAttribute(GraphElementType.TRANSACTION, newAttributeType, transactionAttributeName, transactionAttributeName, "", null);
                     if (newTransactionAttribute != Graph.NOT_FOUND) {

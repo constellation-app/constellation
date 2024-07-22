@@ -6,4 +6,7 @@
             <tocitem text="Perspective Bookmarks (Experimental)" target="au.gov.asd.tac.constellation.graph.utilities.perspectives.PerspectiveBookmarkTopComponent"/>
         </tocitem>
     </tocitem>
+    <tocitem text="Tools" mergetype="javax.help.SortMerge">
+        <tocitem text="Hashmod (Experimental)" target="au.gov.asd.tac.constellation.graph.utilities.hashmod.HashmodPanel"/>
+    </tocitem>
 </toc>

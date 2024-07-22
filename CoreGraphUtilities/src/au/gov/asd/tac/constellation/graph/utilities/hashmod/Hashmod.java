@@ -178,7 +178,8 @@ public class Hashmod {
         if (headers != null && headers.length > col) {
             return headers[col];
         }
-        return StringUtils.EMPTY;
+        return null;
+//        return StringUtils.EMPTY;
     }
 
     public List<String[]> getCSVFileData() {

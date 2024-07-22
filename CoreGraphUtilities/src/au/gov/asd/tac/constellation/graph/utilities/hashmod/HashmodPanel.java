@@ -20,6 +20,8 @@ import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
@@ -33,6 +35,7 @@ import javax.swing.filechooser.FileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.awt.Mnemonics;
 import org.openide.filesystems.FileChooserBuilder;
+import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
 import org.openide.util.NbBundle.Messages;
 
@@ -172,6 +175,7 @@ public class HashmodPanel extends javax.swing.JPanel {
         createAttributesCheckbox = new JCheckBox();
         hashmodLabel7 = new JLabel();
         createTransactionsCheckbox = new JCheckBox();
+        helpButton = new JButton();
 
         Mnemonics.setLocalizedText(hashmodLabel, NbBundle.getMessage(HashmodPanel.class, "Hashmod.csv.label")); // NOI18N
 
@@ -233,9 +237,17 @@ public class HashmodPanel extends javax.swing.JPanel {
         Mnemonics.setLocalizedText(hashmodLabel7, NbBundle.getMessage(HashmodPanel.class, "HashmodPanel.hashmodLabel7.text")); // NOI18N
 
         Mnemonics.setLocalizedText(createTransactionsCheckbox, NbBundle.getMessage(HashmodPanel.class, "HashmodPanel.createTransactionsCheckbox.text")); // NOI18N
+        createTransactionsCheckbox.setEnabled(false);
         createTransactionsCheckbox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 createTransactionsCheckboxActionPerformed(evt);
+            }
+        });
+
+        Mnemonics.setLocalizedText(helpButton, NbBundle.getMessage(HashmodPanel.class, "HashmodPanel.helpButton.text")); // NOI18N
+        helpButton.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent evt) {
+                helpButtonMousePressed(evt);
             }
         });
 
@@ -279,6 +291,9 @@ public class HashmodPanel extends javax.swing.JPanel {
                     .addComponent(hashmodButton, GroupLayout.PREFERRED_SIZE, 42, GroupLayout.PREFERRED_SIZE)
                     .addComponent(hashmodButton1, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 52, GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
+            .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(helpButton))
         );
         layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
@@ -313,10 +328,16 @@ public class HashmodPanel extends javax.swing.JPanel {
                     .addComponent(hashmodLabel7))
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addComponent(hashmodLabel5)
-                    .addComponent(hashmodButton1)
-                    .addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 169, GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(hashmodLabel5)
+                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                            .addComponent(hashmodButton1)
+                            .addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 169, GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(helpButton)
+                        .addGap(33, 33, 33))))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -365,6 +386,11 @@ public class HashmodPanel extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_createTransactionsCheckboxActionPerformed
 
+    private void helpButtonMousePressed(MouseEvent evt) {//GEN-FIRST:event_helpButtonMousePressed
+        final HelpCtx help = new HelpCtx("au.gov.asd.tac.constellation.graph.utilities.hashmod.HashmodPanel");
+        help.display();
+    }//GEN-LAST:event_helpButtonMousePressed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private JCheckBox createAllCheckbox;
     private JCheckBox createAttributesCheckbox;
@@ -380,6 +406,7 @@ public class HashmodPanel extends javax.swing.JPanel {
     private JLabel hashmodLabel5;
     private JLabel hashmodLabel6;
     private JLabel hashmodLabel7;
+    private JButton helpButton;
     private JTextArea jCSVFileList;
     private JScrollPane jScrollPane1;
     private JTextField keyAttributeTextField;
