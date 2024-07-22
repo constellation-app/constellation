@@ -126,9 +126,9 @@ public final class HashmodAction implements ActionListener {
                 String newAttributeType = StringAttributeDescription.ATTRIBUTE_NAME;
 
                 if (attributeName.length >= 2 && nextAttribute != Graph.NOT_FOUND) {
-                   newAttributeType = wg.getAttributeType(nextAttribute);
+                    newAttributeType = wg.getAttributeType(nextAttribute);
                 }
-                
+
                 if (attributeName.length >= 2 && AttributeRegistry.getDefault().getAttributes().get(newAttributeType) == null) {
                     newAttributeType = attributeName[attributeName.length - 1];
                 }
@@ -258,7 +258,7 @@ public final class HashmodAction implements ActionListener {
                                 final int newTransactionId = wg.addTransaction(vxId, vx2Id, false);
 
                                 for (i = 0; i < transAttrCount; i++) {
-                                    final String theVal = wg.getStringValue(fromNodeValues [i], vxId);
+                                    final String theVal = wg.getStringValue(fromNodeValues[i], vxId);
                                     wg.setStringValue(transactionAttributeValues[i], newTransactionId, theVal);
                                 }
 
