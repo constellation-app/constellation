@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
+import au.gov.asd.tac.constellation.plugins.arrangements.SelectedInclusionGraph;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
@@ -44,17 +45,22 @@ public class ContractGraphPlugin extends SimpleEditPlugin {
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-        final int vertexXAttributeId = VisualConcept.VertexAttribute.X.get(graph);
-        final int vertexYAttributeId = VisualConcept.VertexAttribute.Y.get(graph);
-        final int vertexZAttributeId = VisualConcept.VertexAttribute.Z.get(graph);
-        final int vertexSelectedAttributeId = VisualConcept.VertexAttribute.SELECTED.get(graph);
+       
+        final SelectedInclusionGraph selectedGraph = new SelectedInclusionGraph(graph, SelectedInclusionGraph.Connections.NONE);
+        final GraphWriteMethods inclusiveGraph = selectedGraph.getInclusionGraph();
+        
+         final int vertexXAttributeId = VisualConcept.VertexAttribute.X.get(inclusiveGraph);
+        final int vertexYAttributeId = VisualConcept.VertexAttribute.Y.get(inclusiveGraph);
+        final int vertexZAttributeId = VisualConcept.VertexAttribute.Z.get(inclusiveGraph);
+        final int vertexSelectedAttributeId = VisualConcept.VertexAttribute.SELECTED.get(inclusiveGraph);
+        
+        final int vertexCount = inclusiveGraph.getVertexCount();
 
-        final int vertexCount = graph.getVertexCount();
         final BitSet selectedVertices = new BitSet(vertexCount);
         if (vertexSelectedAttributeId != GraphConstants.NOT_FOUND) {
             for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
-                final int vertexId = graph.getVertex(vertexPosition);
-                final boolean vxSelected = graph.getBooleanValue(vertexSelectedAttributeId, vertexId);
+                final int vertexId = inclusiveGraph.getVertex(vertexPosition);
+                final boolean vxSelected = inclusiveGraph.getBooleanValue(vertexSelectedAttributeId, vertexId);
                 if (vxSelected) {
                     selectedVertices.set(vertexPosition);
                 }
@@ -69,21 +75,23 @@ public class ContractGraphPlugin extends SimpleEditPlugin {
                 interaction.setProgress(currentStep, 10, "Working...", true);
             }
 
-            final int vertexId = graph.getVertex(vertexPosition);
+            final int vertexId = inclusiveGraph.getVertex(vertexPosition);
             if (selectedVertices.isEmpty() || selectedVertices.get(vertexPosition)) {
                 if (vertexXAttributeId != Graph.NOT_FOUND) {
-                    final float x = graph.getFloatValue(vertexXAttributeId, vertexId);
-                    graph.setFloatValue(vertexXAttributeId, vertexId, x * SCALE);
+                    final float x = inclusiveGraph.getFloatValue(vertexXAttributeId, vertexId);
+                    inclusiveGraph.setFloatValue(vertexXAttributeId, vertexId, x * SCALE);
                 }
                 if (vertexYAttributeId != Graph.NOT_FOUND) {
-                    final float y = graph.getFloatValue(vertexYAttributeId, vertexId);
-                    graph.setFloatValue(vertexYAttributeId, vertexId, y * SCALE);
+                    final float y = inclusiveGraph.getFloatValue(vertexYAttributeId, vertexId);
+                    inclusiveGraph.setFloatValue(vertexYAttributeId, vertexId, y * SCALE);
                 }
                 if (vertexZAttributeId != Graph.NOT_FOUND) {
-                    final float z = graph.getFloatValue(vertexZAttributeId, vertexId);
-                    graph.setFloatValue(vertexZAttributeId, vertexId, z * SCALE);
+                    final float z = inclusiveGraph.getFloatValue(vertexZAttributeId, vertexId);
+                    inclusiveGraph.setFloatValue(vertexZAttributeId, vertexId, z * SCALE);
                 }
             }
         }
+
+        selectedGraph.retrieveCoords();
     }
 }
