@@ -434,11 +434,13 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             // By definition, the duplicates will have transactions between them, including the original layer
             // (because we just deleted transactions that belong in different layers, leaving only the transactions
             // that belong in the original layer).
+            final int vertexPinnedAttributeId = VisualConcept.VertexAttribute.PINNED.get(wgcopy);
             final List<Integer> vertices = new ArrayList<>();
             for (int position = 0; position < wgcopy.getVertexCount(); position++) {
                 final int vertexId = wgcopy.getVertex(position);
+                final boolean vxPinned = wgcopy.getBooleanValue(vertexPinnedAttributeId, vertexId);
                 final int nTx = wgcopy.getVertexTransactionCount(vertexId);
-                if (nTx == 0) {
+                if (nTx == 0 || vxPinned) {
                     vertices.add(vertexId);
                 }
             }
