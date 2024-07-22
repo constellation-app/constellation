@@ -179,7 +179,6 @@ public class Hashmod {
             return headers[col];
         }
         return null;
-//        return StringUtils.EMPTY;
     }
 
     public List<String[]> getCSVFileData() {

@@ -120,46 +120,15 @@ public final class HashmodAction implements ActionListener {
         int transAttrCount = 0;
         while ((nextAttr = hashmod.getCSVHeader(i)) != null) {
             final int nextAttribute = wg.getSchema().getFactory().ensureAttribute(wg, GraphElementType.VERTEX, nextAttr);
-//            if (nextAttribute != Graph.NOT_FOUND) {
-//                attributeValues[attrCount] = nextAttribute;
-//                csvValues[attrCount] = i;
-//                attrCount++;
-//            }
 
             if ((createAttributes || createTransactions) && StringUtils.isNotBlank(nextAttr)) {
                 final String[] attributeName = nextAttr.split("\\.");
                 String newAttributeType = StringAttributeDescription.ATTRIBUTE_NAME;
 
                 if (attributeName.length >= 2 && nextAttribute != Graph.NOT_FOUND) {
-//                   final Class<? extends AttributeDescription> ad = wg.getAttributeDataType(nextAttribute);
                    newAttributeType = wg.getAttributeType(nextAttribute);
-//                   newAttributeType = attr_data_type.getDeclaredConstructor().newInstance().getName();
-//                    if (ad.equals(IntegerObjectAttributeDescription.class)) {
-//                            newAttributeType = IntegerObjectAttributeDescription.ATTRIBUTE_NAME;
-//                        } else if (ad.equals(FloatObjectAttributeDescription.class)) {
-//                            newAttributeType = FloatObjectAttributeDescription.ATTRIBUTE_NAME;
-//                        } else if (ad.equals(ZonedDateTimeAttributeDescription.class)) {
-//                            newAttributeType = ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME;
-//                        } else if (ad.getClass().equals(DateAttributeDescription.class)) {
-//                            newAttributeType = DateAttributeDescription.ATTRIBUTE_NAME;
-//                        } else if (ad.equals(ColorAttributeDescription.class)) {
-//                            newAttributeType = ColorAttributeDescription.ATTRIBUTE_NAME;
-//                        }
-
-//                    int attr_id = wg.getAttribute(GraphElementType.VERTEX, nextAttr);
-//                    if (attr_id > -1) {
-//                        final Class<? extends AttributeDescription> attr_data_type;
-//                        attr_data_type = wg.getAttributeDataType(attr_id);
-//                        if (attr_data_type != null) {
-//                            newAttributeType = attr_data_type.getDeclaredConstructor().newInstance().getName();
-//                            System.out.println("newAttributeType:" + newAttributeType);
-//                        }
-//                    }
                 }
                 
-//                if (attributeName.length >= 2 && AttributeRegistry.getDefault().getAttributes().get(attributeName[attributeName.length - 1]) != null) {
-//                  newAttributeType = attributeName[attributeName.length - 1];
-//                }
                 if (attributeName.length >= 2 && AttributeRegistry.getDefault().getAttributes().get(newAttributeType) == null) {
                     newAttributeType = attributeName[attributeName.length - 1];
                 }
