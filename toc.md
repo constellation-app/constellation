@@ -40,6 +40,7 @@
 </a> </div> </div> </div><div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#Tools" aria-expanded="false" aria-controls="Tools">Tools</button></h2></div>
 <div id="Tools" class="collapse" aria-labelledby="Tools" data-parent="#Tools"> <div class="card-body">    <a href="..\ext\docs\CoreVisualGraph\src\au\gov\asd\tac\constellation\graph\visual\compare-graph.md">Compare Graph</a><br/>
     <a href="..\ext\docs\CoreVisualGraph\src\au\gov\asd\tac\constellation\graph\visual\merge-nodes-tool.md">Merge Nodes</a><br/>
+    <a href="..\ext\docs\CoreGraphUtilities\src\au\gov\asd\tac\constellation\graph\utilities\add-hashmod.md">Hashmod (Experimental)</a><br/>
     <a href="..\ext\docs\CoreVisualSchema\src\au\gov\asd\tac\constellation\graph\schema\visual\complete-with-schema.md">Complete With Schema</a><br/>
 <div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#Cluster" aria-expanded="false" aria-controls="Cluster">Cluster</button></h2></div>
 <div id="Cluster" class="collapse" aria-labelledby="Cluster" data-parent="#Cluster"> <div class="card-body">      <a href="..\ext\docs\CoreAlgorithmPlugins\src\au\gov\asd\tac\constellation\plugins\algorithms\chinese-whispers.md">Chinese Whispers</a><br/>
