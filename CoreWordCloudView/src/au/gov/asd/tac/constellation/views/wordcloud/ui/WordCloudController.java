@@ -135,11 +135,8 @@ public class WordCloudController {
      */
     public void runPlugin(final PluginParameters params) {
         final Graph currentGraph = GraphManager.getDefault().getActiveGraph();
-        final ReadableGraph rg = currentGraph.getReadableGraph();
-        try {
+        try (final ReadableGraph rg = currentGraph.getReadableGraph()) {
             attrModCount = rg.getAttributeModificationCounter();
-        } finally {
-            rg.release();
         }
         pane.setInProgress();
         final Future<?> f = PluginExecution.withPlugin(new PhrasiphyContentPlugin()).withParameters(params).executeLater(currentGraph);
@@ -241,8 +238,7 @@ public class WordCloudController {
     public void updateActiveGraph(final Graph graph) {
         vertTextAttributes = new ArrayList<>(EMPTY_STRING_LIST);
         transTextAttributes = new ArrayList<>(EMPTY_STRING_LIST);
-        final ReadableGraph rg = graph.getReadableGraph();
-        try {
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
             // Retrieve the cloud attribute from the new graph if present
             final int cloudAttr = WordCloudConcept.MetaAttribute.WORD_CLOUD_ATTRIBUTE.get(rg);
             cloud = cloudAttr != Graph.NOT_FOUND ? (WordCloud) rg.getObjectValue(cloudAttr, 0) : null;
@@ -261,8 +257,6 @@ public class WordCloudController {
                 }
             }
             setAttributeSelectionEnabled(true);
-        } finally {
-            rg.release();
         }
     }
 
@@ -278,8 +272,7 @@ public class WordCloudController {
         boolean doParamUpdate = false;
         graph = GraphManager.getDefault().getActiveGraph();
         if (graph != null) {
-            final ReadableGraph rg = graph.getReadableGraph();
-            try {
+            try (final ReadableGraph rg = graph.getReadableGraph()) {
                 // Check for updates to the word cloud 
                 final int cloudAttr = WordCloudConcept.MetaAttribute.WORD_CLOUD_ATTRIBUTE.get(rg);
                 amc = rg.getAttributeModificationCounter();
@@ -316,8 +309,6 @@ public class WordCloudController {
                     doParamUpdate = true;
                     attrModCount = amc;
                 }
-            } finally {
-                rg.release();
             }
 
             if (cloud != null) {

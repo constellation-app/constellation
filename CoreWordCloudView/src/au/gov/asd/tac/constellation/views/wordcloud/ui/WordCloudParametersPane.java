@@ -26,23 +26,18 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
-import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
-import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.wordcloud.phraseanalysis.PhrasiphyContentParameters;
+import au.gov.asd.tac.constellation.views.wordcloud.utilities.WordCloudUtilities;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.TitledPane;
-import javafx.scene.control.Tooltip;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
-import org.openide.util.HelpCtx;
 
 /**
  *
@@ -56,7 +51,6 @@ public class WordCloudParametersPane extends TitledPane implements PluginParamet
     private static final List<String> EMPTY_STRING_LIST = Arrays.asList(EMPTY_STRING);
     private List<String> nodeAttributes = new ArrayList<>();
     private List<String> transAttributes = new ArrayList<>();
-    private static final Insets HELP_PADDING = new Insets(2, 0, 0, 0);
 
     public WordCloudParametersPane(final WordCloudPane master) {
         setText("Generate Word Cloud");
@@ -158,7 +152,7 @@ public class WordCloudParametersPane extends TitledPane implements PluginParamet
         final HBox buttonBox = new HBox();
         run = new Button("Generate");
         run.setOnMouseClicked(event -> master.runPlugin(params));
-        final Button helpButton = createHelpButton();
+        final Button helpButton = WordCloudUtilities.createHelpButton();
         buttonBox.getChildren().add(run);
         buttonBox.getChildren().add(helpButton);
 
@@ -221,18 +215,6 @@ public class WordCloudParametersPane extends TitledPane implements PluginParamet
 
     public PluginParameters getParams() {
         return params;
-    }
-     
-    public static Button createHelpButton() {
-        final Button helpDocumentationButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor())));
-        helpDocumentationButton.paddingProperty().set(HELP_PADDING);
-        helpDocumentationButton.setTooltip(new Tooltip("Display help for Word Cloud View"));
-        helpDocumentationButton.setOnAction(event -> new HelpCtx(WordCloudTopComponent.class.getName()).display());
-
-        // Get rid of the ugly button look so the icon stands alone.
-        helpDocumentationButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent; -fx-effect: null; ");
-
-        return helpDocumentationButton;
     }
     
     @Override
