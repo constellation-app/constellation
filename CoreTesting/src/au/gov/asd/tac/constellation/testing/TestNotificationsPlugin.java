@@ -43,4 +43,10 @@ public class TestNotificationsPlugin extends SimplePlugin {
         interaction.notify(PluginNotificationLevel.ERROR, "ERROR message");
         interaction.notify(PluginNotificationLevel.FATAL, "FATAL message");
     }
+    
+    @Override
+    public PluginParameters createParameters() {
+        final PluginParameters parameters = new PluginParameters();
+        return parameters;
+    }
 }
