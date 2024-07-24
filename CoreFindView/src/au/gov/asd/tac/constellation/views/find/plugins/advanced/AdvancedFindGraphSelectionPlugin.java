@@ -17,8 +17,11 @@ package au.gov.asd.tac.constellation.views.find.plugins.advanced;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
@@ -40,12 +43,14 @@ public class AdvancedFindGraphSelectionPlugin extends SimpleEditPlugin {
     private final String postSearchAction;
     private static final String REPLACE = "Replace Selection";
     private static final String ALL_GRAPHS = "All Open Graphs";
+    private final boolean zoomToSelection;
 
-    public AdvancedFindGraphSelectionPlugin(final AdvancedSearchParameters parameters, final boolean selectAll, final boolean getNext) {
+    public AdvancedFindGraphSelectionPlugin(final AdvancedSearchParameters parameters, final boolean selectAll, final boolean getNext, final boolean zoomToSelection) {
         this.selectAll = selectAll;
         this.searchInLocation = parameters.getSearchInLocation();
         this.elementType = parameters.getGraphElementType();
         this.postSearchAction = parameters.getPostSearchAction();
+        this.zoomToSelection = zoomToSelection;
     }
 
     @Override
@@ -73,8 +78,14 @@ public class AdvancedFindGraphSelectionPlugin extends SimpleEditPlugin {
 
         // Swap to view the graph where the element is selected
         if (searchInLocation.equals(ALL_GRAPHS) && !ActiveFindResultsList.getAdvancedResultsList().isEmpty()) {
-            FindViewUtilities.searchAllGraphs(graph);
+            FindViewUtilities.searchAllGraphs(graph, zoomToSelection);
+        } else if (zoomToSelection) {
+            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(GraphManager.getDefault().getActiveGraph());
+        } else {
+            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeLater(GraphManager.getDefault().getActiveGraph());
         }
+        
+        
     }
 
     @Override

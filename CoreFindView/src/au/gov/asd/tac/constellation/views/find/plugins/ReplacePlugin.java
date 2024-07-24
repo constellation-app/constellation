@@ -18,7 +18,10 @@ package au.gov.asd.tac.constellation.views.find.plugins;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
@@ -47,8 +50,9 @@ public class ReplacePlugin extends SimpleEditPlugin {
     private final boolean replaceNext;
     private final boolean currentSelection;
     private final boolean searchAllGraphs;
+    private final boolean zoomToSelection;
 
-    public ReplacePlugin(final BasicFindReplaceParameters parameters, final boolean replaceAll, final boolean replaceNext) {
+    public ReplacePlugin(final BasicFindReplaceParameters parameters, final boolean replaceAll, final boolean replaceNext, final boolean zoomToSelection) {
         this.elementType = parameters.getGraphElement();
         this.selectedAttributes = parameters.getAttributeList();
         this.findString = parameters.getFindString();
@@ -58,6 +62,7 @@ public class ReplacePlugin extends SimpleEditPlugin {
         this.replaceNext = replaceNext;
         this.searchAllGraphs = parameters.isSearchAllGraphs();
         this.currentSelection = parameters.isCurrentSelection();
+        this.zoomToSelection = zoomToSelection;
     }
 
     @Override
@@ -72,7 +77,11 @@ public class ReplacePlugin extends SimpleEditPlugin {
         final String searchString = regex ? findString : Pattern.quote(findString);
         final int caseSensitivity = ignorecase ? Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE : 0;
         final Pattern searchPattern = Pattern.compile(searchString, caseSensitivity);
-
+        
+        if (!currentSelection) {
+            FindViewUtilities.clearSelection(graph);
+        }
+        
         /**
          * Loop through all selected attributes, get the current element of the
          * selected type and its value, check the value isn't null, then compare
@@ -94,7 +103,7 @@ public class ReplacePlugin extends SimpleEditPlugin {
                     final String value = graph.getStringValue(a.getId(), currElement);
 
                     // get the selected value of that graph element
-                    boolean selected = graph.getBooleanValue(selectedAttribute, currElement);
+                    final boolean selected = graph.getBooleanValue(selectedAttribute, currElement);
 
                     // If the value isnt null
                     if (value != null) {
@@ -108,11 +117,13 @@ public class ReplacePlugin extends SimpleEditPlugin {
                                 // set the string of the element types attribute
                                 // to the new value
                                 graph.setStringValue(a.getId(), currElement, newValue);
+                                graph.setBooleanValue(selectedAttribute, currElement, true);
                                 // Swap to view the graph where the element is found
                                 if (searchAllGraphs) {
-                                    FindViewUtilities.searchAllGraphs(graph);
+                                    FindViewUtilities.searchAllGraphs(graph, zoomToSelection);
                                 }
                                 if (replaceNext) {
+                                    doZoomToSelection(zoomToSelection);
                                     return;
                                 }
                             } else {
@@ -123,9 +134,10 @@ public class ReplacePlugin extends SimpleEditPlugin {
                                     graph.setStringValue(a.getId(), currElement, newValue);
                                     // Swap to view the graph where the element is found
                                     if (searchAllGraphs) {
-                                        FindViewUtilities.searchAllGraphs(graph);
+                                        FindViewUtilities.searchAllGraphs(graph, zoomToSelection);
                                     }
                                     if (replaceNext) {
+                                        doZoomToSelection(zoomToSelection);
                                         return;
                                     }
                                 }
@@ -135,6 +147,15 @@ public class ReplacePlugin extends SimpleEditPlugin {
                 }
             }
         }  
+        doZoomToSelection(zoomToSelection);
+    }
+    
+    private void doZoomToSelection(final boolean zoomToSelection) {
+        if (zoomToSelection) {
+            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(GraphManager.getDefault().getActiveGraph());
+        } else {
+            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeLater(GraphManager.getDefault().getActiveGraph());
+        }
     }
 
     @Override

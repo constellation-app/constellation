@@ -111,6 +111,7 @@ public class BasicFindTab extends Tab {
     private final Button findPrevButton = new Button("Find Previous");
     private final Button findAllButton = new Button("Find All");
     private final Button deleteResultsButton = new Button("Delete Results From Graph(s)");
+    private final CheckBox zoomToSelection = new CheckBox("Zoom to Selection");
 
     protected static final int LABEL_WIDTH = 90;
     protected static final int DROP_DOWN_WIDTH = 120;
@@ -270,6 +271,7 @@ public class BasicFindTab extends Tab {
         postSearchChoiceBox.setMinWidth(DROP_DOWN_WIDTH);
         settingsGrid.add(postSearchLabel, 2, 2);
         settingsGrid.add(postSearchChoiceBox, 3, 2);
+        settingsGrid.add(zoomToSelection, 0, 5);
 
         // Set the preferences for the buttonsHbox and all relevant Buttons
         buttonsHBox.setAlignment(Pos.CENTER_LEFT);
@@ -524,7 +526,7 @@ public class BasicFindTab extends Tab {
         if (!getFindTextField().getText().isEmpty()) {
             saveSelected(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
             updateBasicFindParamters();
-            FindViewController.getDefault().retriveMatchingElements(true, false);
+            FindViewController.getDefault().retriveMatchingElements(true, false, getZoomToSelection().isSelected());
             getDeleteResultsButton().setDisable(false);
         }
     }
@@ -540,7 +542,7 @@ public class BasicFindTab extends Tab {
         if (!getFindTextField().getText().isEmpty()) {
             saveSelected(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
             updateBasicFindParamters();
-            FindViewController.getDefault().retriveMatchingElements(false, true);
+            FindViewController.getDefault().retriveMatchingElements(false, true, getZoomToSelection().isSelected());
         }
     }
 
@@ -555,7 +557,7 @@ public class BasicFindTab extends Tab {
         if (!getFindTextField().getText().isEmpty()) {
             saveSelected(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
             updateBasicFindParamters();
-            FindViewController.getDefault().retriveMatchingElements(false, false);
+            FindViewController.getDefault().retriveMatchingElements(false, false, getZoomToSelection().isSelected());
         }
     }
 
@@ -633,4 +635,10 @@ public class BasicFindTab extends Tab {
         return deleteResultsButton;
     }
     
+    /**
+     * Get Zoom to Selection checkbox
+     */
+    public CheckBox getZoomToSelection() {
+        return zoomToSelection;
+    }    
 }
