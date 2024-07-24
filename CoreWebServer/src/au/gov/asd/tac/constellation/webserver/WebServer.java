@@ -24,11 +24,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -48,7 +50,6 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
-import static jnr.constants.PlatformConstants.OS;
 import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.server.Server;
@@ -58,7 +59,6 @@ import org.openide.awt.NotificationDisplayer;
 import org.openide.awt.StatusDisplayer;
 import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
-import static processing.core.PApplet.exec;
 
 /**
  * A Web Server.
@@ -112,7 +112,6 @@ public class WebServer {
                         null
                 );
             }
-
             return ok;
         }
     }
@@ -124,15 +123,19 @@ public class WebServer {
     private static boolean running = false;
     private static int port = 0;
 
-    protected static final String CONSTELLATION_CLIENT = "constellation_client.py";
+    private static final String PACKAGE_NAME = "constellation_client";
+    protected static final String CONSTELLATION_CLIENT = PACKAGE_NAME + ".py";
+
     private static final String IPYTHON = ".ipython";
     private static final String SEP = File.separator;
-    private static final String SCRIPT_SOURCE = Generator.getBaseDirectory() + "ext" + SEP + "package" + SEP + "src" + SEP + "constellation_client" + SEP;
+    private static final String SCRIPT_SOURCE = Generator.getBaseDirectory() + "ext" + SEP + "package" + SEP + "src" + SEP + PACKAGE_NAME + SEP;
 
     private static final String PACKAGE_SOURCE = Generator.getBaseDirectory() + "ext" + SEP + "package" + SEP + "package_dist";
-    private static final String[] PACKAGE_INSTALL = {"pip", "install", "--upgrade", "constellation_client", "--no-index", "--find-links", "file:" + PACKAGE_SOURCE};
-    private static final String[] WINDOWS_COMMAND = {"cmd", "/C", "start", "/wait"};
-    private static final String[] UNIX_COMMAND = {"&"};
+    private static final String[] PACKAGE_INSTALL = {"pip", "install", "--upgrade", PACKAGE_NAME, "--no-index", "--find-links", "file:" + PACKAGE_SOURCE};
+    private static final String[] WINDOWS_COMMAND = {"cmd.exe", "/C"};
+
+    private static final String[] CHECK_INSTALL = {"pip", "freeze"};
+    private static final int INSTALL_SUCCESS = 0;
 
     public static boolean isRunning() {
         return running;
@@ -147,30 +150,22 @@ public class WebServer {
                 port = prefs.getInt(ApplicationPreferenceKeys.WEBSERVER_PORT, ApplicationPreferenceKeys.WEBSERVER_PORT_DEFAULT);
 
                 // Put the session secret and port number in a JSON file in the .CONSTELLATION directory.
-                // Make sure the file is owner read/write.
-                final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
-                final File restFile = new File(userDir, REST_FILE);
-                cleanupRest(restFile, userDir);
-
-                // Also put rest file in the ipython directory
-                final File restFileIPython = new File(getScriptDir(true), REST_FILE);
-                cleanupRest(restFileIPython, getScriptDir(true).toString());
+                // Get rest directory, if path to directory is empty (default), use the ipython directory
+                final String restPref = prefs.get(ApplicationPreferenceKeys.REST_DIR, ApplicationPreferenceKeys.REST_DIR_DEFAULT);
+                final String restDir = "".equals(restPref) ? getScriptDir(true).toString() : restPref;
+                final File restFile = new File(restDir, REST_FILE);
+                cleanupRest(restFile, restDir);
 
                 // On Posix, we can use stricter file permissions.
                 // On Windows, we just create the new file.
-                final String os = System.getProperty("os.name");
-                if (!os.startsWith("Windows")) {
+                if (!isWindows()) {
+                    // Make sure the file is owner read/write.
                     final Set<PosixFilePermission> perms = EnumSet.of(PosixFilePermission.OWNER_READ, PosixFilePermission.OWNER_WRITE);
                     Files.createFile(restFile.toPath(), PosixFilePermissions.asFileAttribute(perms));
-                    Files.createFile(restFileIPython.toPath(), PosixFilePermissions.asFileAttribute(perms));
                 }
 
                 // Now write the file contents.
                 try (final PrintWriter pw = new PrintWriter(restFile)) {
-                    // Couldn't be bothered starting up a JSON writer for two simple values.
-                    pw.printf("{\"%s\":\"%s\", \"port\":%d}%n", ConstellationHttpServlet.SECRET_HEADER, ConstellationHttpServlet.SECRET, port);
-                }
-                try (final PrintWriter pw = new PrintWriter(restFileIPython)) {
                     // Couldn't be bothered starting up a JSON writer for two simple values.
                     pw.printf("{\"%s\":\"%s\", \"port\":%d}%n", ConstellationHttpServlet.SECRET_HEADER, ConstellationHttpServlet.SECRET, port);
                 }
@@ -279,6 +274,15 @@ public class WebServer {
     }
 
     /**
+     * Download the Python REST API client to the user's Jupyter Notebook directory.
+     * <p>
+     * The download is done only if the package installation fails
+     */
+    public static void downloadPythonClientNotebookDir() {
+        downloadPythonClientToDir(new File(getNotebookDir()));
+    }
+
+    /**
      * Download the Python REST API client to a given directory.
      * <p>
      * The download is done only if the script doesn't exist, or the existing script needs updating.
@@ -308,23 +312,121 @@ public class WebServer {
         }
     }
 
-    public static void installPythonPackage() {
-        // Run pip install on package
-        final Process p;
+    /**
+     * Install the Python REST API client package using pip install
+     *
+     * @throws IOException
+     */
+    public static void installPythonPackage() throws IOException {
+        // Create the process buillder with required arguments
+        final ProcessBuilder pb;
+        int processResult = -1; // Fail by default
+
         if (isWindows()) {
-            p = exec(ArrayUtils.addAll(WINDOWS_COMMAND, PACKAGE_INSTALL));
+            pb = new ProcessBuilder(ArrayUtils.addAll(WINDOWS_COMMAND, PACKAGE_INSTALL)).redirectErrorStream(true);
         } else {
-            p = exec(ArrayUtils.addAll(PACKAGE_INSTALL, UNIX_COMMAND));
+            pb = new ProcessBuilder(PACKAGE_INSTALL).redirectErrorStream(true);
         }
 
-        try {
-            final int result = p.waitFor();
-            LOGGER.log(Level.INFO, "Pip python process result: {0}", result);
+        // Start install process
+        final Process p = startPythonProcess(pb, "installation");
+        if (p == null) {
+            return;
+        }
+
+        try (final BufferedReader inputBuffer = new BufferedReader(new InputStreamReader(p.getInputStream()));) {
+
+            // If inputStream available, log output
+            String line;
+
+            while ((line = inputBuffer.readLine()) != null) {
+                LOGGER.log(Level.INFO, "{0}", line);
+            }
+
+            processResult = p.waitFor();
+            LOGGER.log(Level.INFO, "Python package installation finished...");
+            LOGGER.log(Level.INFO, "Python install process result: {0}", processResult);
+
+            // If not successful
+            if (processResult != INSTALL_SUCCESS) {
+                LOGGER.log(Level.INFO, "Python package installation unsuccessful, copying script to notebook directory...");
+                downloadPythonClientNotebookDir();
+            }
+
         } catch (final InterruptedException ex) {
-            LOGGER.log(Level.WARNING, "EXCEPTION CAUGHT in the python process:", ex);
-            p.destroy();
+            LOGGER.log(Level.WARNING, "INTERRUPTED EXCEPTION CAUGHT in the python package installation:", ex);
             Thread.currentThread().interrupt();
         }
+
+        p.destroy();
+
+        // Verify install worked, unsuccessful process would have already been caught
+        if (processResult == INSTALL_SUCCESS) {
+            verifyPythonPackage();
+        }
+    }
+
+    /**
+     * Verify that the Python REST API client package was installed. Otherwise copy the script file to the notebook
+     * directory
+     *
+     */
+    public static void verifyPythonPackage() throws IOException {
+        // Create the process buillder with required arguments
+        final ProcessBuilder pb = new ProcessBuilder(CHECK_INSTALL).redirectErrorStream(true);
+
+        // Verify process
+        final Process p = startPythonProcess(pb, "verification");
+        if (p == null) {
+            return;
+        }
+
+        try (final BufferedReader inputBuffer = new BufferedReader(new InputStreamReader(p.getInputStream()));) {
+
+            // If inputStream available, log output
+            String allLines = "";
+            String currentLine;
+
+            while ((currentLine = inputBuffer.readLine()) != null) {
+                allLines = allLines.concat(currentLine);
+            }
+
+            final int result = p.waitFor();
+
+            LOGGER.log(Level.INFO, "Verification process result: {0}", result);
+
+            // If not successful
+            if (result != INSTALL_SUCCESS) {
+                LOGGER.log(Level.INFO, "Python package verification unsuccessful, copying script to notebook directory...");
+                downloadPythonClientNotebookDir();
+            } else if (allLines.contains(PACKAGE_NAME)) {  // Result must be success, so if output of listed packages include constellation_client
+                LOGGER.log(Level.INFO, "Python package was installed!");
+            } else {
+                LOGGER.log(Level.INFO, "Could not find python package, copying script to notebook directory...");
+                downloadPythonClientNotebookDir();
+            }
+
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.WARNING, "INTERRUPTED EXCEPTION CAUGHT in the python package verification:", ex);
+            Thread.currentThread().interrupt();
+        }
+
+        LOGGER.log(Level.INFO, "Verification of package finished...");
+        p.destroy();
+    }
+
+    public static Process startPythonProcess(final ProcessBuilder pb, final String warning) {
+        LOGGER.log(Level.INFO, "Python package {0} begun...", warning);
+        final Process p;
+        try {
+            p = pb.start();
+        } catch (final IOException ex) {
+            LOGGER.log(Level.WARNING, "IO EXCEPTION CAUGHT in process for python package {0}: {1}", new Object[]{warning, ex});
+            LOGGER.log(Level.INFO, "Copying python script to notebook directory instead...");
+            downloadPythonClientNotebookDir();
+            return null;
+        }
+        return p;
     }
 
     /**
@@ -375,6 +477,6 @@ public class WebServer {
     }
 
     public static boolean isWindows() {
-        return OS.contains("win");
+        return System.getProperty("os.name").startsWith("Windows");
     }
 }
