@@ -151,7 +151,7 @@ public class ManageTemplatesPlugin extends SimplePlugin {
 
         final Map<String, String> templates = NewSchemaGraphAction.getTemplateNames();
         deletedTemplates.forEach(template -> {
-            final File newFile = new File(NewSchemaGraphAction.getTemplateDirectory(), templates.get(template) + "/" + template);
+            final File newFile = new File(NewSchemaGraphAction.getTemplateDirectory(), templates.get(template) + NewSchemaGraphAction.FORWARD_SLASH + template);
             try {
                 Files.delete(Path.of(newFile.getPath()));
             } catch (final IOException ex) {
