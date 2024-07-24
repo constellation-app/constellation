@@ -139,14 +139,12 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
     @Override
     protected void componentShowing() {
         super.componentShowing();
-        createContent().setEnabled(true);
         layersViewController.readState();
         layersViewController.addAttributes();
         setPaneStatus();
     }
 
     protected void preparePane() {
-        createContent().setEnabled(true);
         createContent().setDefaultLayers();
         layersViewController.readState();
         layersViewController.addAttributes();

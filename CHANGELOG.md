@@ -1,5 +1,9 @@
 # Constellation Changes
 
+## Changes in July 2024
+-   Moved `NoGraphPane` from Layers View to the View Framework so that other views can use it.
+-   Updated `NoGraphPane` to take two parameters needed for the abstraction.
+
 ## Changes in May 2024
 -   Removed `FloatArray.clone()` and replaced with a constructor that takes a `FloatArray` object. 
 -   Removed `IntArray.clone()` in favour of constructor that takes a `IntArray` object. 
