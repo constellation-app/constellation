@@ -84,7 +84,7 @@ public class HelpServlet extends HttpServlet {
     @Override
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException {
         try {
-            final String requestPath = request.getRequestURI();
+            final String requestPath = request.getRequestURI().replace("%20", " ");
             final String referer = request.getHeader("referer");
 
             LOGGER.log(Level.INFO, "GET {0}", requestPath);
