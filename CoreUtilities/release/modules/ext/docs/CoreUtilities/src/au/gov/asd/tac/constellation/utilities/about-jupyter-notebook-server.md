@@ -3,19 +3,30 @@
 Selecting Tools -> Start Jupyter Notebook will start a Jupyter notebook
 server. This will in turn automatically open a new page in your default
 web browser. The HTTP REST server will be started automatically if it
-hasn't already been started.
+hasn't already been started. This is just a convenience provided by
+Constellation. The notebook server is started in the directory specified by the
+"Notebook directory" preference (in Application preferences).
 
 Using Jupyter Notebook with constellation requires various Python related packages and software.
 These are all included the Anaconda Python distribution, and thus is recommended for users to install.
 
+
+### IMPORTANT
+The Constellation Client API package that is installed when starting the 
+notebook server will look for the "rest secret" created by the rest server.
+It is stored in a file called `rest.json`.
+By default the package will check the ".IPython" folder in the 
+home directory, as well as the current notebook directory.
+If the "REST Directory" has been changed in Constellation's options, the user will have to point Constellation
+Client to the new path of `rest.json`. Information on how to do that can be found 
+on our github [here](https://github.com/constellation-app/constellation-training/blob/master/Analyst%20Training/Exercise%2010%20-%20Network%20Analysis%20With%20Python/notebooks_and_constellation.ipynb).
+Simply download the .ipynb file and open it in Jupyter notebook to view.
+
 ## Starting your own Jupyter notebook
 
 Starting your own Jupyter notebook server by entering the command
-"jupyter-notebook" at a command prompt in the correct directory has
-exactly the same result. This is just a convenience provided by
-Constellation.
-he notebook server is started in the directory specified by the
-"Notebook directory" preference (in Application preferences).
+`jupyter-notebook` at a command prompt in the correct directory has
+exactly the same result. 
 
 The command `pip install`, along with other arguements, is run when starting the server  
 and installs a custom Python package, constellation_client.
@@ -65,9 +76,10 @@ Example of error from Jupyter not being installed on windows:
 A tutorial for how to use Jupyter notebook with Constellation can be found on our github
 [here](https://github.com/constellation-app/constellation-training/blob/master/Analyst%20Training/Exercise%2010%20-%20Network%20Analysis%20With%20Python/notebooks_and_constellation.ipynb).
 
-Simply download the .ipynb file and open it in Jupyter notebook.
+Simply download the .ipynb file and open it in Jupyter notebook to view.
 
 <br />
+
 ## Setup
 
 ### Windows
@@ -82,6 +94,7 @@ Anaconda Python distribution and check the box "Add Anaconda3 to my PATH environ
 If you believe adding commands to PATH using this method will cause issues, simply search online for guides on manually adding commands to PATH.
 
 <br />
+
 ### Linux and Mac
 Similar to Windows, the Anaconda Python distribution can also be used to install 
 all the required software on Linux and Mac.
