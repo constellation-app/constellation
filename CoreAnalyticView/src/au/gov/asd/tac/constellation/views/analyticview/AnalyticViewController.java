@@ -41,7 +41,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
-import java.util.logging.Logger;
 import javafx.scene.control.ListView;
 
 /**
@@ -52,7 +51,6 @@ import javafx.scene.control.ListView;
 public class AnalyticViewController {
 
     protected static final String SELECT_ON_GRAPH_PLUGIN_NAME = "Analytic View: Update Selection on Graph";
-    private static final Logger LOGGER = Logger.getLogger(AnalyticViewController.class.getName());
 
     // Analytic view controller instance
     private static AnalyticViewController instance = null;

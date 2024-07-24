@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.analyticview;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestion;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestionDescription;
 import au.gov.asd.tac.constellation.views.analyticview.questions.BestConnectsNetworkQuestion;
@@ -58,7 +57,6 @@ public class AnalyticViewControllerNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(AnalyticViewControllerNGTest.class.getName());
     private final AnalyticViewTopComponent topComponent = mock(AnalyticViewTopComponent.class);
-    private final GraphManager graphManager = spy(GraphManager.class);
 
     public AnalyticViewControllerNGTest() {
     }

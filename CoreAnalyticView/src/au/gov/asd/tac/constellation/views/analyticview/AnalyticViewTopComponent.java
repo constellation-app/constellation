@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -66,8 +65,6 @@ import org.openide.windows.TopComponent;
     "HINT_AnalyticViewTopComponent=Analytic View"
 })
 public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticViewPane> {
-
-    private static final Logger LOGGER = Logger.getLogger(AnalyticViewTopComponent.class.getName());
     
     private final AnalyticViewPane analyticViewPane;
     private final AnalyticViewController analyticController;
