@@ -18,17 +18,10 @@ package au.gov.asd.tac.constellation.graph.utilities.hashmod;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeRegistry;
-import au.gov.asd.tac.constellation.graph.attribute.DateAttributeDescription;
-import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
-import au.gov.asd.tac.constellation.graph.attribute.FloatObjectAttributeDescription;
-import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
-import au.gov.asd.tac.constellation.graph.attribute.IntegerObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
-import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
@@ -42,6 +35,8 @@ import java.awt.event.ActionListener;
 import java.util.BitSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -67,6 +62,7 @@ import org.openide.util.NbBundle.Messages;
 public final class HashmodAction implements ActionListener {
 
     private final GraphNode context;
+    private static final Logger LOGGER = Logger.getLogger(HashmodAction.class.getName());
 
     public HashmodAction(final GraphNode context) {
         this.context = context;
@@ -121,7 +117,7 @@ public final class HashmodAction implements ActionListener {
         while ((nextAttr = hashmod.getCSVHeader(i)) != null) {
             final int nextAttribute = wg.getSchema().getFactory().ensureAttribute(wg, GraphElementType.VERTEX, nextAttr);
 
-            if ((createAttributes || createTransactions) && StringUtils.isNotBlank(nextAttr)) {
+            if ((createVertices || createAttributes || createTransactions) && StringUtils.isNotBlank(nextAttr)) {
                 final String[] attributeName = nextAttr.split("\\.");
                 String newAttributeType = StringAttributeDescription.ATTRIBUTE_NAME;
 
@@ -133,16 +129,23 @@ public final class HashmodAction implements ActionListener {
                     newAttributeType = attributeName[attributeName.length - 1];
                 }
 
-                if (createAttributes) {
-                    final int newAttribute = wg.addAttribute(GraphElementType.VERTEX, newAttributeType, nextAttr, nextAttr, "", null);
-                    if (newAttribute != Graph.NOT_FOUND) {
+                if (createVertices || createAttributes) {
+                    //check if it's an existing attribute
+                    int existingAttribute = wg.getAttribute(GraphElementType.VERTEX, nextAttr);
+
+                    // do not add new attribute if not createAttributes and
+                    // does not exist in graph
+                    if (!createAttributes && existingAttribute < 0) {
+                        LOGGER.log(Level.WARNING, "Attribute {0} not added", nextAttr);
+                    } else {
+                        final int newAttribute = wg.addAttribute(GraphElementType.VERTEX, newAttributeType, nextAttr, nextAttr, "", null);
                         attributeValues[attrCount] = newAttribute;
                         csvValues[attrCount] = i;
                         attrCount++;
                     }
                 }
 
-                if (createTransactions && !StringUtils.isEmpty(hashmod.getTransactionAttribute(nextAttr))) {
+                if (createTransactions && StringUtils.isNotEmpty(hashmod.getTransactionAttribute(nextAttr))) {
                     final String transactionAttributeName = hashmod.getTransactionAttribute(nextAttr);
                     final int newTransactionAttribute = wg.addAttribute(GraphElementType.TRANSACTION, newAttributeType, transactionAttributeName, transactionAttributeName, "", null);
                     if (newTransactionAttribute != Graph.NOT_FOUND) {
@@ -156,7 +159,7 @@ public final class HashmodAction implements ActionListener {
             i++;
         }
 
-        if (attrCount < 2) {
+        if (createAttributes && attrCount < 1) {
             interaction.notify(PluginNotificationLevel.ERROR, "Requires at least one key and one value attributes in the header of the CSV file.  Check upper/lower case and for typos");
             return;
         }
@@ -188,7 +191,10 @@ public final class HashmodAction implements ActionListener {
                 if (keys.containsKey(keyValue.toUpperCase())) {
                     numberSuccessful++;
                     for (i = 1; i < attrCount; i++) {
-                        wg.setStringValue(attributeValues[i], j, hashmod.getValueFromKeyAndIndex(keyValue, csvValues[i], keys.get(keyValue.toUpperCase())));
+                        // do not add attributes if value is default 0
+                        if (attributeValues[i] != 0) {
+                            wg.setStringValue(attributeValues[i], j, hashmod.getValueFromKeyAndIndex(keyValue, csvValues[i], keys.get(keyValue.toUpperCase())));
+                        }
                     }
 
                     if (createVertices) {
@@ -202,15 +208,59 @@ public final class HashmodAction implements ActionListener {
 
         if (createVertices) {
             numberSuccessful = 0;
+            float xVal;
+            float yVal;
+            float zVal;
+
+            // arrange new vertices
+            double widthGap = 2.0;
+            final int nodeCount = keys.size();
+            int nfCols = (int) Math.ceil(Math.sqrt(nodeCount));
+            if (nfCols % 2 == 1) {
+                nfCols++;
+            }
+
+            int nfRows = (int) Math.ceil(nodeCount / (double) nfCols);
+
+            final float[] colCentres = new float[nfCols];
+            final float[] rowCentres = new float[nfRows];
             for (final Entry<String, Integer> entry : keys.entrySet()) {
                 final int newVertexId = wg.addVertex();
 
                 for (i = 0; i < attrCount; i++) {
-                    wg.setStringValue(attributeValues[i], newVertexId, hashmod.getValueFromKeyAndIndex(entry.getKey(), csvValues[i], entry.getValue()));
+                    // do not add attributes if value is default 0
+                    if (attributeValues[i] != 0) {
+                        wg.setStringValue(attributeValues[i], newVertexId, hashmod.getValueFromKeyAndIndex(entry.getKey(), csvValues[i], entry.getValue()));
+                    }
                 }
-                numberSuccessful++;
-            }
 
+                colCentres[0] = (float) ((float) (0 * 2) / 2.0);
+                rowCentres[0] = (float) ((float) (0 * 2) / 2.0);
+
+                for (int j = 1; j < nfCols; j++) {
+                    colCentres[j] = (float) (colCentres[j - 1] + widthGap);
+                }
+
+                for (int j = 1; j < nfRows; j++) {
+                    rowCentres[j] = (float) (rowCentres[j - 1] + widthGap);
+                }
+                final int row = numberSuccessful / nfCols;
+                final int col = numberSuccessful - row * nfCols;
+                xVal = colCentres[col];
+                yVal = rowCentres[row];
+                zVal = 0;
+
+                final int incXAttr = VisualConcept.VertexAttribute.X.ensure(wg);
+                final int incYAttr = VisualConcept.VertexAttribute.Y.ensure(wg);
+                final int incZAttr = VisualConcept.VertexAttribute.Z.ensure(wg);
+
+                wg.setFloatValue(incXAttr, newVertexId, xVal);
+                wg.setFloatValue(incYAttr, newVertexId, yVal);
+                wg.setFloatValue(incZAttr, newVertexId, zVal);
+
+                numberSuccessful++;
+
+            }
             if (setPrimary) {
                 wg.setPrimaryKey(GraphElementType.VERTEX, attributeValues[0]);
             }
