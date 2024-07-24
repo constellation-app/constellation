@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins.zoom;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.interaction.animation.Animation;
+import au.gov.asd.tac.constellation.graph.interaction.animation.AnimationUtilities;
 import au.gov.asd.tac.constellation.graph.interaction.animation.PanAnimation;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
@@ -109,7 +109,7 @@ public final class RotateCameraPlugin extends SimpleEditPlugin {
             final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
             if (animate && activeGraph != null && activeGraph.getId().equals(graph.getId())) {
                 // Only do the camera animation if the edited graph is currently active
-                Animation.startAnimation(new PanAnimation("Rotate camera", oldCamera, camera, true));
+                AnimationUtilities.startAnimation(new PanAnimation("Rotate camera", oldCamera, camera, true), activeGraph.getId());
             } else {
                 // Don't do an animation; we don't want to be asynchronous.
                 // Just set the camera value back on the graph.

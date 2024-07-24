@@ -30,17 +30,23 @@ import org.openide.util.NbBundle.Messages;
  * 
  * @author capricornunicorn123
  */
-@ActionID(category = "Experimental", id = "au.gov.asd.tac.constellation.graph.interaction.animation.actions.AnimateStopAction")
-@ActionRegistration(displayName = "#CTL_AnimateStopAction", surviveFocusChange = true)
+@ActionID(category = "Experimental", id = "au.gov.asd.tac.constellation.graph.interaction.animation.actions.AnimatePauseAction")
+@ActionRegistration(displayName = "#CTL_AnimatePauseAction", surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Experimental/Animations", position = 100, separatorBefore = 99),
     @ActionReference(path = "Shortcuts", name = "S-Escape")
 })
-@Messages("CTL_AnimateStopAction=Stop Animating")
-public final class AnimateStopAction implements ActionListener {
+@Messages("CTL_AnimatePauseAction=Pause Animating")
+public final class AnimatePauseAction implements ActionListener {
+
+    private final GraphNode context;
+
+    public AnimatePauseAction(final GraphNode context) {
+        this.context = context;
+    }
 
     @Override
     public void actionPerformed(final ActionEvent event) {
-        AnimationUtilities.stopAllAnimations();
+        AnimationUtilities.pauseAllAnimations(context.getGraph().getId(), 2000);
     }
 }
