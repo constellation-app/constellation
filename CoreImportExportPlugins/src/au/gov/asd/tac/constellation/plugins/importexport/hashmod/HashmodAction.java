@@ -91,7 +91,7 @@ public final class HashmodAction implements ActionListener {
 
                 PluginExecution.withPlugin(
                         new AddHashmodPlugin(isChainedHashmods, createAttributes, createVertices,
-                                createTransactions, chainedHashmods, numChainedHashmods, hashmod1)).executeLater(graph);      
+                                createTransactions, chainedHashmods, numChainedHashmods, hashmod1)).executeLater(graph);
             }
         });
         DialogDisplayer.getDefault().notify(dialog);
@@ -285,8 +285,8 @@ public final class HashmodAction implements ActionListener {
             interaction.notify(PluginNotificationLevel.WARNING, "Successfully added in " + numberSuccessful + " new transactions");
         }
         PluginExecutor.startWith(ArrangementPluginRegistry.GRID_COMPOSITE)
-                        .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
-                        .executeNow(wg);
+                .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
+                .executeNow(wg);
     }
 
     /**
