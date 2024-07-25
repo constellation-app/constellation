@@ -38,6 +38,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static javafx.collections.FXCollections.observableArrayList;
 import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
@@ -276,7 +277,7 @@ public class QueryPhasePaneNGTest {
         System.out.println("expandPlugin");
 
         final QueryPhasePane instance = new QueryPhasePane(plugins, null, null);
-        for (final Node child : instance.getDataSourceList().getChildren()) {
+        for (final Node child : observableArrayList(instance.getDataSourceList().getChildren())) {
             final HeadingPane heading = (HeadingPane) child;
             //default value for HeadingPane expansion is true
             assertTrue(heading.isExpanded());
