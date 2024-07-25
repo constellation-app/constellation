@@ -40,7 +40,6 @@
 </a> </div> </div> </div><div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#Tools" aria-expanded="false" aria-controls="Tools">Tools</button></h2></div>
 <div id="Tools" class="collapse" aria-labelledby="Tools" data-parent="#Tools"> <div class="card-body">    <a href="..\ext\docs\CoreVisualGraph\src\au\gov\asd\tac\constellation\graph\visual\compare-graph.md">Compare Graph</a><br/>
     <a href="..\ext\docs\CoreVisualGraph\src\au\gov\asd\tac\constellation\graph\visual\merge-nodes-tool.md">Merge Nodes</a><br/>
-    <a href="..\ext\docs\CoreGraphUtilities\src\au\gov\asd\tac\constellation\graph\utilities\add-hashmod.md">Hashmod (Experimental)</a><br/>
     <a href="..\ext\docs\CoreVisualSchema\src\au\gov\asd\tac\constellation\graph\schema\visual\complete-with-schema.md">Complete With Schema</a><br/>
 <div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#Cluster" aria-expanded="false" aria-controls="Cluster">Cluster</button></h2></div>
 <div id="Cluster" class="collapse" aria-labelledby="Cluster" data-parent="#Cluster"> <div class="card-body">      <a href="..\ext\docs\CoreAlgorithmPlugins\src\au\gov\asd\tac\constellation\plugins\algorithms\chinese-whispers.md">Chinese Whispers</a><br/>
@@ -194,6 +193,7 @@
 <div id="ImportExport" class="collapse" aria-labelledby="ImportExport" data-parent="#ImportExport"> <div class="card-body"><div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#Import" aria-expanded="false" aria-controls="Import">Import </button></h2></div>
 <div id="Import" class="collapse" aria-labelledby="Import" data-parent="#Import"> <div class="card-body">      <a href="..\ext\docs\CoreImportExportPlugins\src\au\gov\asd\tac\constellation\plugins\importexport\import-from-file.md">Import From File</a><br/>
       <a href="..\ext\docs\CoreImportExportPlugins\src\au\gov\asd\tac\constellation\plugins\importexport\import-from-database.md">Import From Database</a><br/>
+      <a href="..\ext\docs\CoreImportExportPlugins\src\au\gov\asd\tac\constellation\plugins\importexport\add-hashmod.md">Add Hashmod (Experimental)</a><br/>
 </a> </div> </div> </div><div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#Export" aria-expanded="false" aria-controls="Export">Export</button></h2></div>
 <div id="Export" class="collapse" aria-labelledby="Export" data-parent="#Export"> <div class="card-body">      <a href="..\ext\docs\CoreImportExportPlugins\src\au\gov\asd\tac\constellation\plugins\importexport\export-from-constellation.md">Export From Constellation</a><br/>
       <a href="..\ext\docs\CoreImportExportPlugins\src\au\gov\asd\tac\constellation\plugins\importexport\export-to-png.md">Export to Image</a><br/>

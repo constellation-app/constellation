@@ -292,8 +292,9 @@ public class HashmodPanel extends javax.swing.JPanel {
                     .addComponent(hashmodButton1, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 52, GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
             .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(helpButton))
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(helpButton)
+                .addGap(14, 14, 14))
         );
         layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
@@ -330,14 +331,13 @@ public class HashmodPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(hashmodLabel5)
-                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                             .addComponent(hashmodButton1)
                             .addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 169, GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(helpButton)
-                        .addGap(33, 33, 33))))
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
+                        .addComponent(helpButton))))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -387,7 +387,7 @@ public class HashmodPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_createTransactionsCheckboxActionPerformed
 
     private void helpButtonMousePressed(MouseEvent evt) {//GEN-FIRST:event_helpButtonMousePressed
-        final HelpCtx help = new HelpCtx("au.gov.asd.tac.constellation.graph.utilities.hashmod.HashmodPanel");
+        final HelpCtx help = new HelpCtx("au.gov.asd.tac.constellation.plugins.importexport.hashmod.HashmodPanel");
         help.display();
     }//GEN-LAST:event_helpButtonMousePressed
 
