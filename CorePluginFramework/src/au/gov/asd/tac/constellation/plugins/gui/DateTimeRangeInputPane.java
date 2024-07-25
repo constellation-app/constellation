@@ -399,12 +399,16 @@ public final class DateTimeRangeInputPane extends Pane {
         // This gets called with values and throws exceptions depending on spinner values which must be handled
         // Check for nulls in case the values haven't been set yet.
         if (zi != null) {
-            final LocalDate ld0 = datePickers.get(0).getValue();
+            final DatePicker dp0 = datePickers.get(0);
+            final LocalDate ld0 = dp0.getConverter().fromString(dp0.getEditor().getText());
+
             if (ld0 != null) {
                 final LocalTime lt0 = LocalTime.of(getSpinnerValue(0), getSpinnerValue(1), getSpinnerValue(2));
                 final ZonedDateTime zdt0 = ZonedDateTime.of(ld0, lt0, zi);
 
-                final LocalDate ld1 = datePickers.get(1).getValue();
+                final DatePicker dp1 = datePickers.get(1);
+                final LocalDate ld1 = dp1.getConverter().fromString(dp1.getEditor().getText()) != null ? dp1.getConverter().fromString(dp1.getEditor().getText()) : datePickers.get(1).getValue();
+
                 if (ld1 != null) {
                     final LocalTime lt1 = LocalTime.of(getSpinnerValue(3), getSpinnerValue(4), getSpinnerValue(5));
                     final ZonedDateTime zdt1 = ZonedDateTime.of(ld1, lt1, zi);
@@ -536,10 +540,7 @@ public final class DateTimeRangeInputPane extends Pane {
 
         dp.getEditor().textProperty().addListener(changed);
 
-        // The DatePicker has the horrible problem that you can type in the text field, but the value won't change,
-        // so if you type a new date and click Go, the old date will be used, not the new date that you can see.
-        // The simplest way to avoid this is to disable the text field. :-(
-        dp.getEditor().setDisable(true);
+        dp.valueProperty().addListener((v, o, n) -> dp.setValue(n));
 
         datePickers.add(dp);
 
