@@ -400,14 +400,16 @@ public final class DateTimeRangeInputPane extends Pane {
         // Check for nulls in case the values haven't been set yet.
         if (zi != null) {
             final DatePicker dp0 = datePickers.get(0);
-            final LocalDate ld0 = dp0.getConverter().fromString(dp0.getEditor().getText());
-
+            final LocalDate dp0Localdate = dp0.getConverter().fromString(dp0.getEditor().getText());
+            final LocalDate ld0 = dp0Localdate != null ? dp0Localdate : dp0.getValue();         
+            
             if (ld0 != null) {
                 final LocalTime lt0 = LocalTime.of(getSpinnerValue(0), getSpinnerValue(1), getSpinnerValue(2));
                 final ZonedDateTime zdt0 = ZonedDateTime.of(ld0, lt0, zi);
 
                 final DatePicker dp1 = datePickers.get(1);
-                final LocalDate ld1 = dp1.getConverter().fromString(dp1.getEditor().getText()) != null ? dp1.getConverter().fromString(dp1.getEditor().getText()) : datePickers.get(1).getValue();
+                final LocalDate dp1Localdate = dp1.getConverter().fromString(dp1.getEditor().getText());
+                final LocalDate ld1 = dp1Localdate != null ? dp1Localdate : dp1.getValue();
 
                 if (ld1 != null) {
                     final LocalTime lt1 = LocalTime.of(getSpinnerValue(3), getSpinnerValue(4), getSpinnerValue(5));
