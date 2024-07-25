@@ -134,21 +134,21 @@
     <Component class="javax.swing.JLabel" name="hashmodLabel">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/hashmod/Bundle.properties" key="Hashmod.csv.label" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="au/gov/asd/tac/constellation/plugins/importexport/hashmod/Bundle.properties" key="Hashmod.csv.label" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="hashmodCSVFile">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/hashmod/Bundle.properties" key="Hashmod.csv.textfield" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="au/gov/asd/tac/constellation/plugins/importexport/hashmod/Bundle.properties" key="Hashmod.csv.textfield" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="hashmodButton">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/hashmod/Bundle.properties" key="Hashmod.csv.button" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="au/gov/asd/tac/constellation/plugins/importexport/hashmod/Bundle.properties" key="Hashmod.csv.button" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
         <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
           <Insets value="[2, 0, 2, 0]"/>
@@ -161,28 +161,28 @@
     <Component class="javax.swing.JLabel" name="hashmodLabel1">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/hashmod/Bundle.properties" key="HashmodPanel.hashmodLabel1.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="au/gov/asd/tac/constellation/plugins/importexport/hashmod/Bundle.properties" key="HashmodPanel.hashmodLabel1.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="hashmodLabel2">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/hashmod/Bundle.properties" key="HashmodPanel.hashmodLabel2.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="au/gov/asd/tac/constellation/plugins/importexport/hashmod/Bundle.properties" key="HashmodPanel.hashmodLabel2.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="hashmodLabel3">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/hashmod/Bundle.properties" key="HashmodPanel.hashmodLabel3.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="au/gov/asd/tac/constellation/plugins/importexport/hashmod/Bundle.properties" key="HashmodPanel.hashmodLabel3.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="keyAttributeTextField">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/hashmod/Bundle.properties" key="HashmodPanel.keyAttributeTextField.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="au/gov/asd/tac/constellation/plugins/importexport/hashmod/Bundle.properties" key="HashmodPanel.keyAttributeTextField.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
         <Property name="enabled" type="boolean" value="false"/>
         <Property name="name" type="java.lang.String" value="keyAttributeTextField" noResource="true"/>
@@ -191,7 +191,7 @@
     <Component class="javax.swing.JTextField" name="value1AttributeTextField">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/hashmod/Bundle.properties" key="HashmodPanel.value1AttributeTextField.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="au/gov/asd/tac/constellation/plugins/importexport/hashmod/Bundle.properties" key="HashmodPanel.value1AttributeTextField.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
         <Property name="enabled" type="boolean" value="false"/>
         <Property name="name" type="java.lang.String" value="value1AttributeTextField" noResource="true"/>
@@ -200,7 +200,7 @@
     <Component class="javax.swing.JTextField" name="value2AttributeTextField">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/hashmod/Bundle.properties" key="HashmodPanel.value2AttributeTextField.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="au/gov/asd/tac/constellation/plugins/importexport/hashmod/Bundle.properties" key="HashmodPanel.value2AttributeTextField.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
         <Property name="enabled" type="boolean" value="false"/>
         <Property name="name" type="java.lang.String" value="value2AttributeTextField" noResource="true"/>
@@ -209,21 +209,21 @@
     <Component class="javax.swing.JCheckBox" name="createAllCheckbox">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/hashmod/Bundle.properties" key="HashmodPanel.createAllCheckbox.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="au/gov/asd/tac/constellation/plugins/importexport/hashmod/Bundle.properties" key="HashmodPanel.createAllCheckbox.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="hashmodLabel4">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/hashmod/Bundle.properties" key="HashmodPanel.hashmodLabel4.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="au/gov/asd/tac/constellation/plugins/importexport/hashmod/Bundle.properties" key="HashmodPanel.hashmodLabel4.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="hashmodLabel5">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/hashmod/Bundle.properties" key="HashmodPanel.hashmodLabel5.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="au/gov/asd/tac/constellation/plugins/importexport/hashmod/Bundle.properties" key="HashmodPanel.hashmodLabel5.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>
@@ -245,7 +245,7 @@
     <Component class="javax.swing.JButton" name="hashmodButton1">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/hashmod/Bundle.properties" key="HashmodPanel.hashmodButton1.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="au/gov/asd/tac/constellation/plugins/importexport/hashmod/Bundle.properties" key="HashmodPanel.hashmodButton1.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
         <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
           <Insets value="[2, 0, 2, 0]"/>
@@ -258,14 +258,14 @@
     <Component class="javax.swing.JLabel" name="hashmodLabel6">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/hashmod/Bundle.properties" key="HashmodPanel.hashmodLabel6.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="au/gov/asd/tac/constellation/plugins/importexport/hashmod/Bundle.properties" key="HashmodPanel.hashmodLabel6.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>
     <Component class="javax.swing.JCheckBox" name="createAttributesCheckbox">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/hashmod/Bundle.properties" key="HashmodPanel.createAttributesCheckbox.text_1" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="au/gov/asd/tac/constellation/plugins/importexport/hashmod/Bundle.properties" key="HashmodPanel.createAttributesCheckbox.text_1" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
       <Events>
@@ -275,14 +275,14 @@
     <Component class="javax.swing.JLabel" name="hashmodLabel7">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/hashmod/Bundle.properties" key="HashmodPanel.hashmodLabel7.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="au/gov/asd/tac/constellation/plugins/importexport/hashmod/Bundle.properties" key="HashmodPanel.hashmodLabel7.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>
     <Component class="javax.swing.JCheckBox" name="createTransactionsCheckbox">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/hashmod/Bundle.properties" key="HashmodPanel.createTransactionsCheckbox.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="au/gov/asd/tac/constellation/plugins/importexport/hashmod/Bundle.properties" key="HashmodPanel.createTransactionsCheckbox.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
         <Property name="enabled" type="boolean" value="false"/>
       </Properties>
@@ -293,7 +293,7 @@
     <Component class="javax.swing.JButton" name="helpButton">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/hashmod/Bundle.properties" key="HashmodPanel.helpButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="au/gov/asd/tac/constellation/plugins/importexport/hashmod/Bundle.properties" key="HashmodPanel.helpButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
       <Events>

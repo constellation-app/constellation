@@ -1,5 +1,8 @@
 # Constellation Changes
 
+## Changes in July 2024
+-   Moved hashmod package from Core Graph Utilities to Core Import Export Plugins
+
 ## Changes in May 2024
 -   Removed `FloatArray.clone()` and replaced with a constructor that takes a `FloatArray` object. 
 -   Removed `IntArray.clone()` in favour of constructor that takes a `IntArray` object. 

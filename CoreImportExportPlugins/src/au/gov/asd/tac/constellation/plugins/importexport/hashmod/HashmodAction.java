@@ -13,20 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.graph.utilities.hashmod;
+package au.gov.asd.tac.constellation.plugins.importexport.hashmod;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeRegistry;
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
+import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.PluginType;
+import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
@@ -88,13 +91,13 @@ public final class HashmodAction implements ActionListener {
 
                 PluginExecution.withPlugin(
                         new AddHashmodPlugin(isChainedHashmods, createAttributes, createVertices,
-                                createTransactions, chainedHashmods, numChainedHashmods, hashmod1)).executeLater(graph);
+                                createTransactions, chainedHashmods, numChainedHashmods, hashmod1)).executeLater(graph);      
             }
         });
         DialogDisplayer.getDefault().notify(dialog);
     }
 
-    private static void run(final GraphWriteMethods wg, final PluginInteraction interaction, final Hashmod hashmod, final boolean createVertices, final boolean createTransactions, final boolean setPrimary, final boolean createAttributes) throws InterruptedException {
+    private static void run(final GraphWriteMethods wg, final PluginInteraction interaction, final Hashmod hashmod, final boolean createVertices, final boolean createTransactions, final boolean setPrimary, final boolean createAttributes) throws InterruptedException, PluginException {
 
         if (wg != null && hashmod != null) {
             if (hashmod.getNumberCSVDataColumns() < 2) {
@@ -208,22 +211,6 @@ public final class HashmodAction implements ActionListener {
 
         if (createVertices) {
             numberSuccessful = 0;
-            float xVal;
-            float yVal;
-            float zVal;
-
-            // arrange new vertices
-            double widthGap = 2.0;
-            final int nodeCount = keys.size();
-            int nfCols = (int) Math.ceil(Math.sqrt(nodeCount));
-            if (nfCols % 2 == 1) {
-                nfCols++;
-            }
-
-            int nfRows = (int) Math.ceil(nodeCount / (double) nfCols);
-
-            final float[] colCentres = new float[nfCols];
-            final float[] rowCentres = new float[nfRows];
             for (final Entry<String, Integer> entry : keys.entrySet()) {
                 final int newVertexId = wg.addVertex();
 
@@ -234,36 +221,12 @@ public final class HashmodAction implements ActionListener {
                     }
                 }
 
-                colCentres[0] = (float) ((float) (0 * 2) / 2.0);
-                rowCentres[0] = (float) ((float) (0 * 2) / 2.0);
-
-                for (int j = 1; j < nfCols; j++) {
-                    colCentres[j] = (float) (colCentres[j - 1] + widthGap);
-                }
-
-                for (int j = 1; j < nfRows; j++) {
-                    rowCentres[j] = (float) (rowCentres[j - 1] + widthGap);
-                }
-                final int row = numberSuccessful / nfCols;
-                final int col = numberSuccessful - row * nfCols;
-                xVal = colCentres[col];
-                yVal = rowCentres[row];
-                zVal = 0;
-
-                final int incXAttr = VisualConcept.VertexAttribute.X.ensure(wg);
-                final int incYAttr = VisualConcept.VertexAttribute.Y.ensure(wg);
-                final int incZAttr = VisualConcept.VertexAttribute.Z.ensure(wg);
-
-                wg.setFloatValue(incXAttr, newVertexId, xVal);
-                wg.setFloatValue(incYAttr, newVertexId, yVal);
-                wg.setFloatValue(incZAttr, newVertexId, zVal);
-
                 numberSuccessful++;
-
             }
             if (setPrimary) {
                 wg.setPrimaryKey(GraphElementType.VERTEX, attributeValues[0]);
             }
+
             interaction.notify(PluginNotificationLevel.WARNING, "Successfully added in " + numberSuccessful + " new nodes");
         }
 
@@ -321,6 +284,9 @@ public final class HashmodAction implements ActionListener {
 
             interaction.notify(PluginNotificationLevel.WARNING, "Successfully added in " + numberSuccessful + " new transactions");
         }
+        PluginExecutor.startWith(ArrangementPluginRegistry.GRID_COMPOSITE)
+                        .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
+                        .executeNow(wg);
     }
 
     /**
@@ -355,7 +321,7 @@ public final class HashmodAction implements ActionListener {
         }
 
         @Override
-        public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+        public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
             if (hashmod1 != null) {
                 HashmodAction.run(wg, interaction, hashmod1, createVertices, createTransactions, true, createAttributes);
             }
