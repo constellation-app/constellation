@@ -131,11 +131,11 @@ public final class HashmodAction implements ActionListener {
 
                 if (createVertices || createAttributes) {
                     //check if it's an existing attribute
-                    int existingAttribute = wg.getAttribute(GraphElementType.VERTEX, nextAttr);
+                    final int existingAttribute = wg.getAttribute(GraphElementType.VERTEX, nextAttr);
 
                     // do not add new attribute if not createAttributes and
                     // does not exist in graph
-                    if (!createAttributes && existingAttribute < 0) {
+                    if (!createAttributes && existingAttribute == Graph.NOT_FOUND) {
                         LOGGER.log(Level.WARNING, "Attribute {0} not added", nextAttr);
                     } else {
                         final int newAttribute = wg.addAttribute(GraphElementType.VERTEX, newAttributeType, nextAttr, nextAttr, "", null);
