@@ -235,7 +235,8 @@ public class QueryPhasePaneNGTest {
         System.out.println("setHeadingsExpandedHeadChild");
 
         final QueryPhasePane instance = new QueryPhasePane(plugins, null, null);
-        for (final Node child : instance.getDataSourceList().getChildren()) {
+        // Need to make a copy of list because expanding heading or something also calls getChildren
+        for (final Node child : observableArrayList(instance.getDataSourceList().getChildren())) {
             final HeadingPane heading = (HeadingPane) child;
             //default value for HeadingPane expansion is true
             assertTrue(heading.isExpanded());
