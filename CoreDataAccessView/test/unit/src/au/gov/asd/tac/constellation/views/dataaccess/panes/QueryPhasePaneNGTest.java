@@ -92,6 +92,8 @@ public class QueryPhasePaneNGTest {
             LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
         }catch (ArrayStoreException ex){
             LOGGER.log(Level.WARNING, "CAUGHT ARRAY OUT OF BOUNDS", ex);
+            System.out.println("CAUGHT ARRAY OUT OF BOUNDS: ");
+            System.out.println(ex);
         }
     }
 
