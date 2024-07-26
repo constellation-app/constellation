@@ -67,6 +67,7 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class QueryPhasePaneNGTest {
+
     private static final Logger LOGGER = Logger.getLogger(QueryPhasePaneNGTest.class.getName());
 
     private MenuItem item1;
@@ -91,7 +92,7 @@ public class QueryPhasePaneNGTest {
             LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
         }
     }
-    
+
     @BeforeMethod
     public void setUpMethod() throws Exception {
         item1 = new MenuItem("test1");
@@ -184,20 +185,19 @@ public class QueryPhasePaneNGTest {
     }
 
     /**
-     * Test of setHeadingsExpanded method, of class QueryPhasePane. Expand and
-     * Contract Headings Only
+     * Test of setHeadingsExpanded method, of class QueryPhasePane. Expand and Contract Headings Only
      */
     @Test
     public void testSetHeadingsExpandedHeadOnly() {
         System.out.println("setHeadingsExpandedHeadOnly");
 
         final QueryPhasePane instance = new QueryPhasePane(plugins, null, null);
-        for (final Node child : observableArrayList(instance.getDataSourceList().getChildren())) {
+        for (final Node child : instance.getDataSourceList().getChildren()) {
             final HeadingPane heading = (HeadingPane) child;
             //default value for HeadingPane expansion is true
             assertTrue(heading.isExpanded());
 
-            for (final DataSourceTitledPane dataSource : observableArrayList(heading.getDataSources())) {
+            for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
                 //default value for DataSourceTitledPane expansion is false
                 assertFalse(dataSource.isExpanded());
             }
@@ -205,30 +205,29 @@ public class QueryPhasePaneNGTest {
 
         instance.setHeadingsExpanded(false, false);
 
-        for (final Node child : observableArrayList(instance.getDataSourceList().getChildren())) {
+        for (final Node child : instance.getDataSourceList().getChildren()) {
             final HeadingPane heading = (HeadingPane) child;
             assertFalse(heading.isExpanded());
 
-            for (final DataSourceTitledPane dataSource : observableArrayList(heading.getDataSources())) {
+            for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
                 assertFalse(dataSource.isExpanded());
             }
         }
 
         instance.setHeadingsExpanded(true, false);
 
-        for (final Node child : observableArrayList(instance.getDataSourceList().getChildren())) {
+        for (final Node child : instance.getDataSourceList().getChildren()) {
             final HeadingPane heading = (HeadingPane) child;
             assertTrue(heading.isExpanded());
 
-            for (final DataSourceTitledPane dataSource : observableArrayList(heading.getDataSources())) {
+            for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
                 assertFalse(dataSource.isExpanded());
             }
         }
     }
 
     /**
-     * Test of setHeadingsExpanded method, of class QueryPhasePane. Expand and
-     * contract headings and children
+     * Test of setHeadingsExpanded method, of class QueryPhasePane. Expand and contract headings and children
      */
     @Test
     public void testSetHeadingsExpandedHeadChild() {
@@ -236,12 +235,12 @@ public class QueryPhasePaneNGTest {
 
         final QueryPhasePane instance = new QueryPhasePane(plugins, null, null);
         // Need to make a copy of list because expanding heading or something also calls getChildren
-        for (final Node child : observableArrayList(instance.getDataSourceList().getChildren())) {
+        for (final Node child : instance.getDataSourceList().getChildren()) {
             final HeadingPane heading = (HeadingPane) child;
             //default value for HeadingPane expansion is true
             assertTrue(heading.isExpanded());
 
-            for (final DataSourceTitledPane dataSource : observableArrayList(heading.getDataSources())) {
+            for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
                 //default value for DataSourceTitledPane expansion is false
                 assertFalse(dataSource.isExpanded());
             }
@@ -249,22 +248,22 @@ public class QueryPhasePaneNGTest {
 
         instance.setHeadingsExpanded(false, true);
 
-        for (final Node child : observableArrayList(instance.getDataSourceList().getChildren())) {
+        for (final Node child : instance.getDataSourceList().getChildren()) {
             final HeadingPane heading = (HeadingPane) child;
             assertFalse(heading.isExpanded());
 
-            for (final DataSourceTitledPane dataSource : observableArrayList(heading.getDataSources())) {
+            for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
                 assertFalse(dataSource.isExpanded());
             }
         }
 
         instance.setHeadingsExpanded(true, true);
 
-        for (final Node child : observableArrayList(instance.getDataSourceList().getChildren())) {
+        for (final Node child : instance.getDataSourceList().getChildren()) {
             final HeadingPane heading = (HeadingPane) child;
             assertTrue(heading.isExpanded());
 
-            for (final DataSourceTitledPane dataSource : observableArrayList(heading.getDataSources())) {
+            for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
                 assertTrue(dataSource.isExpanded());
             }
         }
@@ -278,12 +277,12 @@ public class QueryPhasePaneNGTest {
         System.out.println("expandPlugin");
 
         final QueryPhasePane instance = new QueryPhasePane(plugins, null, null);
-        for (final Node child : observableArrayList(instance.getDataSourceList().getChildren())) {
+        for (final Node child : instance.getDataSourceList().getChildren()) {
             final HeadingPane heading = (HeadingPane) child;
             //default value for HeadingPane expansion is true
             assertTrue(heading.isExpanded());
 
-            for (final DataSourceTitledPane dataSource : observableArrayList(heading.getDataSources())) {
+            for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
                 //default value for DataSourceTitledPane expansion is false
                 assertFalse(dataSource.isExpanded());
             }
@@ -296,10 +295,10 @@ public class QueryPhasePaneNGTest {
 
         instance.expandPlugin("Test Plugin");
 
-        for (final Node child : observableArrayList(instance.getDataSourceList().getChildren())) {
+        for (final Node child : instance.getDataSourceList().getChildren()) {
             final HeadingPane heading = (HeadingPane) child;
 
-            for (final DataSourceTitledPane dataSource : observableArrayList(heading.getDataSources())) {
+            for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
                 if ("Test Plugin".equals(dataSource.getPlugin().getName())) {
                     assertTrue(heading.isExpanded());
                     assertTrue(dataSource.isExpanded());
@@ -311,10 +310,10 @@ public class QueryPhasePaneNGTest {
 
         instance.expandPlugin("Another Test Plugin");
 
-        for (final Node child : observableArrayList(instance.getDataSourceList().getChildren())) {
+        for (final Node child : instance.getDataSourceList().getChildren()) {
             final HeadingPane heading = (HeadingPane) child;
 
-            for (final DataSourceTitledPane dataSource : observableArrayList(heading.getDataSources())) {
+            for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
                 if ("Another Test Plugin".equals(dataSource.getPlugin().getName())) {
                     assertTrue(heading.isExpanded());
                     assertTrue(dataSource.isExpanded());
@@ -326,8 +325,7 @@ public class QueryPhasePaneNGTest {
     }
 
     /**
-     * Test of showMatchingPlugins method, of class QueryPhasePane. Only one
-     * plugin match
+     * Test of showMatchingPlugins method, of class QueryPhasePane. Only one plugin match
      */
     @Test
     public void testShowMatchingPluginsOneMatch() {
@@ -337,7 +335,7 @@ public class QueryPhasePaneNGTest {
         plugins.put("anothertest", new Pair(3, Arrays.asList(new AnotherTestDataAccessPlugin())));
 
         final QueryPhasePane instance = new QueryPhasePane(plugins, null, null);
-        for (final Node child : observableArrayList(instance.getDataSourceList().getChildren())) {
+        for (final Node child : instance.getDataSourceList().getChildren()) {
             final HeadingPane heading = (HeadingPane) child;
             //default value for HeadingPane expansion is true so setting to false
             heading.setExpanded(false);
@@ -345,7 +343,7 @@ public class QueryPhasePaneNGTest {
 
         instance.showMatchingPlugins("Another Test Plugin");
 
-        for (final Node child : observableArrayList(instance.getDataSourceList().getChildren())) {
+        for (final Node child : instance.getDataSourceList().getChildren()) {
             final HeadingPane heading = (HeadingPane) child;
 
             assertEquals(heading.isExpanded(), "anothertest".equals(heading.getText()));
@@ -353,8 +351,7 @@ public class QueryPhasePaneNGTest {
     }
 
     /**
-     * Test of showMatchingPlugins method, of class QueryPhasePane. Multiple
-     * plugin matches
+     * Test of showMatchingPlugins method, of class QueryPhasePane. Multiple plugin matches
      */
     @Test
     public void testShowMatchingPluginsMultipleMatch() {
@@ -364,7 +361,7 @@ public class QueryPhasePaneNGTest {
         plugins.put("anothertest", new Pair(5, Arrays.asList(new AnotherTestDataAccessPlugin())));
 
         final QueryPhasePane instance = new QueryPhasePane(plugins, null, null);
-        for (final Node child : observableArrayList(instance.getDataSourceList().getChildren())) {
+        for (final Node child : instance.getDataSourceList().getChildren()) {
             final HeadingPane heading = (HeadingPane) child;
             //default value for HeadingPane expansion is true so setting to false
             heading.setExpanded(false);
@@ -372,31 +369,31 @@ public class QueryPhasePaneNGTest {
 
         instance.showMatchingPlugins("Test Plugin");
 
-        for (final Node child : observableArrayList(instance.getDataSourceList().getChildren())) {
+        for (final Node child : instance.getDataSourceList().getChildren()) {
             final HeadingPane heading = (HeadingPane) child;
 
             assertTrue(heading.isExpanded());
         }
     }
-    
+
     @Test
     public void testRunPlugins() {
         // Initialize the current graph in the state.
         DataAccessPaneState.setCurrentGraphId("GraphId");
-                
+
         final QueryPhasePane instance = spy(new QueryPhasePane(new HashMap<>(), null, null));
-        
+
         // Setup the graph manager
         final GraphManager graphManager = mock(GraphManager.class);
         final Graph graph = mock(Graph.class);
         when(graphManager.getActiveGraph()).thenReturn(graph);
-        
+
         // Setup the global parameters
         final GlobalParametersPane globalParametersPane = mock(GlobalParametersPane.class);
         final PluginParameters globalPluginParameters = mock(PluginParameters.class);
         final PluginParameter globalPluginParameter1 = mock(PluginParameter.class);
         final PluginParameter globalPluginParameter2 = mock(PluginParameter.class);
-        
+
         doReturn(globalParametersPane).when(instance).getGlobalParametersPane();
         when(globalParametersPane.getParams()).thenReturn(globalPluginParameters);
         when(globalPluginParameters.getParameters()).thenReturn(Map.of(
@@ -404,24 +401,24 @@ public class QueryPhasePaneNGTest {
                 "global.parameter1", globalPluginParameter2
         ));
         when(globalPluginParameter1.getObjectValue()).thenReturn("GLOBAL PARAMETER 1");
-        
+
         // Setup data access panes
         final DataSourceTitledPane dataSourceTitledPane1 = mock(DataSourceTitledPane.class);
         final DataSourceTitledPane dataSourceTitledPane2 = mock(DataSourceTitledPane.class);
-        
+
         doReturn(List.of(dataSourceTitledPane1, dataSourceTitledPane2)).when(instance)
                 .getDataAccessPanes();
-        
+
         // Pane 1 is disabled so will not be run
         when(dataSourceTitledPane1.isQueryEnabled()).thenReturn(false);
         when(dataSourceTitledPane2.isQueryEnabled()).thenReturn(true);
-        
+
         // Setup the plugin for pane 2
         final Plugin plugin = mock(Plugin.class);
         when(plugin.getName()).thenReturn("Plugin Name");
-        
+
         when(dataSourceTitledPane2.getPlugin()).thenReturn(plugin);
-        
+
         // Pane 2 has two parameters. One of them matches in name to one of
         // the global parameters which means its value will be overriden with
         // the global value.
@@ -434,52 +431,48 @@ public class QueryPhasePaneNGTest {
         ));
         when(pluginParameters.copy()).thenReturn(pluginParameters);
         when(dataSourceTitledPane2.getParameters()).thenReturn(pluginParameters);
-        
+
         try (
-                final MockedStatic<PluginRegistry> pluginRegistry =
-                        Mockito.mockStatic(PluginRegistry.class);
-                final MockedStatic<PluginExecution> pluginExecutionMockedStatic =
-                        Mockito.mockStatic(PluginExecution.class);
-                final MockedStatic<GraphManager> graphManagerMockedStatic =
-                        Mockito.mockStatic(GraphManager.class);
-                final MockedConstruction<PluginSynchronizer> pluginSynchMocks =
-                        Mockito.mockConstruction(PluginSynchronizer.class, (pluginSyncMock, cnxt) -> {
-                            assertEquals(cnxt.arguments(), List.of(1));
-                        });
-        ) {
+                final MockedStatic<PluginRegistry> pluginRegistry
+                = Mockito.mockStatic(PluginRegistry.class); final MockedStatic<PluginExecution> pluginExecutionMockedStatic
+                = Mockito.mockStatic(PluginExecution.class); final MockedStatic<GraphManager> graphManagerMockedStatic
+                = Mockito.mockStatic(GraphManager.class); final MockedConstruction<PluginSynchronizer> pluginSynchMocks
+                = Mockito.mockConstruction(PluginSynchronizer.class, (pluginSyncMock, cnxt) -> {
+                    assertEquals(cnxt.arguments(), List.of(1));
+                });) {
             // Not sure why this is being done but just retuning the same plugin
             // to save creating another mock.
             pluginRegistry.when(() -> PluginRegistry.get(plugin.getClass().getName()))
                     .thenReturn(plugin);
-            
+
             graphManagerMockedStatic.when(GraphManager::getDefault).thenReturn(graphManager);
-            
+
             // This is the future that will be returned when the plugin begins execution
             final Future future = CompletableFuture.completedFuture("Plugin Complete!");
-            
+
             // This is the future of a plugin that was run previously
             final Future existingFuture = CompletableFuture.completedFuture("Previous Plugin Complete!");
-            
+
             final PluginExecution pluginExecution = mock(PluginExecution.class);
             pluginExecutionMockedStatic.when(() -> PluginExecution.withPlugin(plugin))
                     .thenReturn(pluginExecution);
-            
+
             // We don't need to verify any of these again (with the exception of the plugin synchronizer)
             // because a null pointer will happen if any of the params don't match up.
             when(pluginExecution.withParameters(pluginParameters)).thenReturn(pluginExecution);
             when(pluginExecution.waitingFor(List.of(existingFuture))).thenReturn(pluginExecution);
             when(pluginExecution.synchronizingOn(any(PluginSynchronizer.class))).thenReturn(pluginExecution);
             when(pluginExecution.executeLater(graph)).thenReturn(future);
-            
+
             // Verify that the return contains the plugin future as defined above
             assertEquals(instance.runPlugins(List.of(existingFuture)), List.of(future));
-            
+
             // Verify the state's running plugin list has been updated
             assertEquals(DataAccessPaneState.getRunningPlugins(), Map.of(future, "Plugin Name"));
-            
+
             // Verify the local plugin parameter was updated with the global parameter value
             verify(pluginParameter1).setObjectValue("GLOBAL PARAMETER 1");
-            
+
             // Verify the created plugin synchronizer is passed to the plugin execution
             verify(pluginExecution).synchronizingOn(pluginSynchMocks.constructed().get(0));
         }
@@ -534,8 +527,8 @@ public class QueryPhasePaneNGTest {
     }
 
     /**
-     * This class is added purely so that a ScrollPane can be a parent (doesn't
-     * seem to be a public-facing way to do so otherwise)
+     * This class is added purely so that a ScrollPane can be a parent (doesn't seem to be a public-facing way to do so
+     * otherwise)
      */
     private class ExtendedScrollPane extends ScrollPane {
 
