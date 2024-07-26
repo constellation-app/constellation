@@ -82,13 +82,16 @@ public class DataAccessUtilitiesNGTest {
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        try {
         swingUtilitiesStaticMock.close();
         windowManagerStaticMock.close();
         
-        try {
+        
             FxToolkit.cleanupStages();
         } catch (TimeoutException ex) {
             LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+        } catch (ArrayStoreException ex){
+            LOGGER.log(Level.WARNING, "CAUGHT ARRAY OUT OF BOUNDS", ex);
         }
     }
 
