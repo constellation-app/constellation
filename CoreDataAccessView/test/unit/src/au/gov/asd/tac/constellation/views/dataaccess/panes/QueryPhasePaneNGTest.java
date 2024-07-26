@@ -197,7 +197,7 @@ public class QueryPhasePaneNGTest {
             //default value for HeadingPane expansion is true
             assertTrue(heading.isExpanded());
 
-            for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
+            for (final DataSourceTitledPane dataSource : observableArrayList(heading.getDataSources())) {
                 //default value for DataSourceTitledPane expansion is false
                 assertFalse(dataSource.isExpanded());
             }
@@ -209,7 +209,7 @@ public class QueryPhasePaneNGTest {
             final HeadingPane heading = (HeadingPane) child;
             assertFalse(heading.isExpanded());
 
-            for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
+            for (final DataSourceTitledPane dataSource : observableArrayList(heading.getDataSources())) {
                 assertFalse(dataSource.isExpanded());
             }
         }
@@ -220,7 +220,7 @@ public class QueryPhasePaneNGTest {
             final HeadingPane heading = (HeadingPane) child;
             assertTrue(heading.isExpanded());
 
-            for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
+            for (final DataSourceTitledPane dataSource : observableArrayList(heading.getDataSources())) {
                 assertFalse(dataSource.isExpanded());
             }
         }
@@ -241,7 +241,7 @@ public class QueryPhasePaneNGTest {
             //default value for HeadingPane expansion is true
             assertTrue(heading.isExpanded());
 
-            for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
+            for (final DataSourceTitledPane dataSource : observableArrayList(heading.getDataSources())) {
                 //default value for DataSourceTitledPane expansion is false
                 assertFalse(dataSource.isExpanded());
             }
@@ -253,7 +253,7 @@ public class QueryPhasePaneNGTest {
             final HeadingPane heading = (HeadingPane) child;
             assertFalse(heading.isExpanded());
 
-            for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
+            for (final DataSourceTitledPane dataSource : observableArrayList(heading.getDataSources())) {
                 assertFalse(dataSource.isExpanded());
             }
         }
@@ -264,7 +264,7 @@ public class QueryPhasePaneNGTest {
             final HeadingPane heading = (HeadingPane) child;
             assertTrue(heading.isExpanded());
 
-            for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
+            for (final DataSourceTitledPane dataSource : observableArrayList(heading.getDataSources())) {
                 assertTrue(dataSource.isExpanded());
             }
         }
@@ -283,7 +283,7 @@ public class QueryPhasePaneNGTest {
             //default value for HeadingPane expansion is true
             assertTrue(heading.isExpanded());
 
-            for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
+            for (final DataSourceTitledPane dataSource : observableArrayList(heading.getDataSources())) {
                 //default value for DataSourceTitledPane expansion is false
                 assertFalse(dataSource.isExpanded());
             }
@@ -299,7 +299,7 @@ public class QueryPhasePaneNGTest {
         for (final Node child : observableArrayList(instance.getDataSourceList().getChildren())) {
             final HeadingPane heading = (HeadingPane) child;
 
-            for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
+            for (final DataSourceTitledPane dataSource : observableArrayList(heading.getDataSources())) {
                 if ("Test Plugin".equals(dataSource.getPlugin().getName())) {
                     assertTrue(heading.isExpanded());
                     assertTrue(dataSource.isExpanded());
@@ -314,7 +314,7 @@ public class QueryPhasePaneNGTest {
         for (final Node child : observableArrayList(instance.getDataSourceList().getChildren())) {
             final HeadingPane heading = (HeadingPane) child;
 
-            for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
+            for (final DataSourceTitledPane dataSource : observableArrayList(heading.getDataSources())) {
                 if ("Another Test Plugin".equals(dataSource.getPlugin().getName())) {
                     assertTrue(heading.isExpanded());
                     assertTrue(dataSource.isExpanded());
