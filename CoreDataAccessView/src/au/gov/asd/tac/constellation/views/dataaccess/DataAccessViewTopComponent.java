@@ -68,7 +68,7 @@ import org.openide.windows.TopComponent;
 })
 public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAccessPane> {
 
-    private final ExecutorService executorService = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool();
+    private final ExecutorService executorService = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool("DAV-Thread", 1);
     private final DataAccessPane dataAccessPane;
 
     /**
