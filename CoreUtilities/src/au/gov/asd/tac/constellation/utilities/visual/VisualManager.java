@@ -66,10 +66,11 @@ import java.util.concurrent.Semaphore;
  */
 public final class VisualManager {
 
+    private static int threadIdIndex = 0;
     private final VisualAccess access;
     private final VisualProcessor processor;
     private final PriorityBlockingQueue<VisualOperation> operationQueue = new PriorityBlockingQueue<>();
-    private final ExecutorService executorService = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool();
+    private final ExecutorService executorService = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool(("GraphThread-" + (threadIdIndex++)), 1);
     private CompletableFuture<Void> processingFuture;
     private boolean isProcessing = false;
     private boolean rendererIdle = true;
