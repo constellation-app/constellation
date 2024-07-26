@@ -28,6 +28,7 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginRegistry;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import static au.gov.asd.tac.constellation.utilities.text.SeparatorConstants.FORWARD_SLASH;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.util.ArrayList;
@@ -68,7 +69,6 @@ public class NewSchemaGraphAction extends AbstractAction implements DynamicMenuC
     private static Map<String, String> templates;
     private static JMenu menu;
     private static final Map<String, Icon> ICON_CACHE = new HashMap<>();
-    public static final String FORWARD_SLASH = "/";
 
     public static File getTemplateDirectory() {
         return templateDirectory;

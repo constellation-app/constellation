@@ -36,4 +36,5 @@ public class SeparatorConstants {
     public static final String ASTERISK = "*";
     public static final String BLANKSPACE = " ";
     public static final String QUOTE = "\"";
+    public static final String FORWARD_SLASH = "/";
 }
