@@ -189,14 +189,6 @@ public class QueryPhasePane extends VBox {
      * @param expandchildren true if the child sections should also be expanded, false otherwise
      */
     public void setHeadingsExpanded(final boolean expand, final boolean expandchildren) {
-//        dataSourceList.getChildren().stream().forEach(child -> {
-//            final HeadingPane headingPage = (HeadingPane) child;
-//            headingPage.setExpanded(expand);
-//            if (expandchildren) {
-//                headingPage.getDataSources().forEach(titledPane -> titledPane.setExpanded(expand));
-//            }
-//        });
-
         for (final Node child : dataSourceList.getChildren()) {
             final HeadingPane headingPage = (HeadingPane) child;
             headingPage.setExpanded(expand);
