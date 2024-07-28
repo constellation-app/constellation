@@ -282,6 +282,8 @@ public class QueryPhasePaneNGTest {
 
         final QueryPhasePane instance = new QueryPhasePane(plugins, null, null);
         for (final Node child : instance.getDataSourceList().getChildren()) {
+            System.out.println("expandPlugin CHILD: ");
+            System.out.println(child);
             final HeadingPane heading = (HeadingPane) child;
             //default value for HeadingPane expansion is true
             assertTrue(heading.isExpanded());
