@@ -47,6 +47,7 @@ import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -116,7 +117,8 @@ public class AdvancedFindTab extends Tab {
     private final Button deleteResultsButton = new Button("Delete Results From Graph(s)");
     private final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor()));
     private final Button helpButton = new Button("", helpImage);
-
+    private final CheckBox zoomToSelection = new CheckBox("Zoom to Selection");
+    
     public AdvancedFindTab(final FindViewTabs parentComponent) {
         this.parentComponent = parentComponent;
         setText("Advanced Find");
@@ -215,7 +217,7 @@ public class AdvancedFindTab extends Tab {
     public void updateButtons() {
         //Clears all existing buttons, then adds this panes buttons
         buttonsHBox.getChildren().clear();
-        buttonsHBox.getChildren().addAll(helpButton, deleteResultsButton, findAllButton, findPrevButton, findNextButton);
+        buttonsHBox.getChildren().addAll(helpButton, deleteResultsButton, findAllButton, findPrevButton, findNextButton, zoomToSelection);
 
         deleteResultsButton.setDisable(true);
 
@@ -491,8 +493,9 @@ public class AdvancedFindTab extends Tab {
     public void findAllAction() {
         if (!getCriteriaValues(getCorrespondingCriteriaList(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()))).isEmpty()) {
             updateAdvancedSearchParameters(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
-            FindViewController.getDefault().retrieveAdvancedSearch(true, false);
+            FindViewController.getDefault().retrieveAdvancedSearch(true, false, getZoomToSelection().isSelected());
             getDeleteResultsButton().setDisable(false);
+            
         }
     }
 
@@ -504,7 +507,7 @@ public class AdvancedFindTab extends Tab {
     public void findNextAction() {
         if (!getCriteriaValues(getCorrespondingCriteriaList(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()))).isEmpty()) {
             updateAdvancedSearchParameters(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
-            FindViewController.getDefault().retrieveAdvancedSearch(false, true);
+            FindViewController.getDefault().retrieveAdvancedSearch(false, true, getZoomToSelection().isSelected());
         }
     }
 
@@ -517,7 +520,7 @@ public class AdvancedFindTab extends Tab {
     public void findPreviousAction() {
         if (!getCriteriaValues(getCorrespondingCriteriaList(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()))).isEmpty()) {
             updateAdvancedSearchParameters(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
-            FindViewController.getDefault().retrieveAdvancedSearch(false, false);
+            FindViewController.getDefault().retrieveAdvancedSearch(false, false, getZoomToSelection().isSelected());
         }
     }
 
@@ -626,5 +629,11 @@ public class AdvancedFindTab extends Tab {
     public Button getDeleteResultsButton() {
         return deleteResultsButton;
     }
-
+    
+    /**
+     * Get Zoom to Selection checkbox
+     */
+    public CheckBox getZoomToSelection() {
+        return zoomToSelection;
+    }
 }

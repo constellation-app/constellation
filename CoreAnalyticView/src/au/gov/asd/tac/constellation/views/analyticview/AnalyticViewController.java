@@ -33,7 +33,6 @@ import au.gov.asd.tac.constellation.views.analyticview.analytics.AnalyticInfo;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestion;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestionDescription;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
-import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticDeactivateStateChangesPlugin;
 import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticStateReaderPlugin;
 import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticStateWriterPlugin;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.GraphVisualisation;
@@ -41,10 +40,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.scene.control.ListView;
 
 /**
@@ -55,7 +51,6 @@ import javafx.scene.control.ListView;
 public class AnalyticViewController {
 
     protected static final String SELECT_ON_GRAPH_PLUGIN_NAME = "Analytic View: Update Selection on Graph";
-    private static final Logger LOGGER = Logger.getLogger(AnalyticViewController.class.getName());
 
     // Analytic view controller instance
     private static AnalyticViewController instance = null;
@@ -229,22 +224,6 @@ public class AnalyticViewController {
         }
     }
     
-    /**
-     * Deactivate any changes made to the graph by the color, hide and size buttons
-     * 
-     * @param graph 
-     */
-    public void deactivateResultUpdates(final Graph graph) {  
-        try {
-            PluginExecution.withPlugin(new AnalyticDeactivateStateChangesPlugin()).executeLater(graph).get();
-        } catch (final InterruptedException ex) {
-            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-            Thread.currentThread().interrupt();
-        } catch (final ExecutionException ex) {
-            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-        } 
-    }
-
     /**
      * Updates the AnalyticViewState by running a plugin to save the graph state
      *

@@ -16,17 +16,10 @@
 package au.gov.asd.tac.constellation.views.analyticview;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.graph.locking.DualGraph;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
-import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestion;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestionDescription;
 import au.gov.asd.tac.constellation.views.analyticview.questions.BestConnectsNetworkQuestion;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
-import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticViewConcept;
-import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticViewState;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticUtilities;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.GraphVisualisation;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.SizeVisualisation;
@@ -64,7 +57,6 @@ public class AnalyticViewControllerNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(AnalyticViewControllerNGTest.class.getName());
     private final AnalyticViewTopComponent topComponent = mock(AnalyticViewTopComponent.class);
-    private final GraphManager graphManager = spy(GraphManager.class);
 
     public AnalyticViewControllerNGTest() {
     }
@@ -332,44 +324,6 @@ public class AnalyticViewControllerNGTest {
             instance.addAnalyticQuestion(question, selectablePlugins);
             questions = instance.getActiveAnalyticQuestions();
             assertFalse(questions.isEmpty());
-        }
-    }
-
-    /**
-     * Test of deactivateResultUpdates method, of class AnalyticViewController.
-     */
-    @Test
-    public void testDeactivateResultUpdates() {
-        System.out.println("deactivateResultUpdates");
-        try (final MockedStatic<AnalyticViewController> controllerStatic = Mockito.mockStatic(AnalyticViewController.class)) {
-            final AnalyticViewController controller = spy(AnalyticViewController.class);
-            controllerStatic.when(AnalyticViewController::getDefault).thenReturn(controller);
-            
-            final SizeVisualisation sizeVisualisation = mock(SizeVisualisation.class);
-            final boolean activated = true;
-
-            try (final MockedStatic<GraphManager> graphManagerMockedStatic = Mockito.mockStatic(GraphManager.class)) {
-                graphManagerMockedStatic.when(GraphManager::getDefault).thenReturn(graphManager);
-                final Graph graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
-                when(graphManager.getActiveGraph()).thenReturn(graph);
-
-                controller.updateGraphVisualisations(sizeVisualisation, activated);
-                controller.writeState();
-                controller.deactivateResultUpdates(graph);
-                controller.readState();
-
-                final Map<GraphVisualisation, Boolean> newVisualisations = new HashMap<>();
-                newVisualisations.put(sizeVisualisation, false);
-                
-                final ReadableGraph rg = graph.getReadableGraph();
-                final int stateAttributeId = AnalyticViewConcept.MetaAttribute.ANALYTIC_VIEW_STATE.get(rg);
-                if (stateAttributeId != Graph.NOT_FOUND) {
-                    final AnalyticViewState currentState = rg.getObjectValue(stateAttributeId, 0);
-
-                    final Map<GraphVisualisation, Boolean> visualisations = currentState.getGraphVisualisations();
-                    assertEquals(visualisations, newVisualisations);
-                }
-            }
         }
     }
 

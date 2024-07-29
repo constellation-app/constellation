@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.views.layers.components;
+package au.gov.asd.tac.constellation.views;
 
-import au.gov.asd.tac.constellation.views.layers.utilities.LayersUtilities;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
 /**
- * Create a blank view when the layers view is open without a graph being open at the same time. 
- * Stops the user from being able to interact with layers view without a graph being open
+ * Create a blank view when a view is open without a graph being open at the same time. 
+ * Stops the user from being able to interact with a view without a graph being open
  *
  * @author aldebaran30701
  */
@@ -34,20 +33,18 @@ public class NoGraphPane extends VBox {
 
     private static final Insets PADDING = new Insets(0, 0, 0, 0);
     private static final int SPACING = 5;
-    private static final String NO_GRAPH_LABEL = "Open or create a graph to enable the Layers View.";
+    private static final String NO_GRAPH_LABEL = "Open or create a graph to enable the %s.";
 
-    public NoGraphPane() {
+    public NoGraphPane(final String viewName, final Button helpButton) {
         setSpacing(SPACING);
         setPadding(PADDING);
 
-        noGraphLabel = createNoGraphLabel();
-        helpButton = LayersUtilities.createHelpButton();
+        this.noGraphLabel = new Label(String.format(NO_GRAPH_LABEL, viewName));
+        this.helpButton = helpButton;
 
-        this.getChildren().add(noGraphLabel);
-        this.getChildren().add(helpButton);
-    }
-
-    protected Label createNoGraphLabel() {
-        return new Label(NO_GRAPH_LABEL);
+        this.getChildren().add(this.noGraphLabel);
+        if (this.helpButton != null) {
+            this.getChildren().add(this.helpButton);
+        }
     }
 }
