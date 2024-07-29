@@ -383,6 +383,7 @@ public class QueryPhasePaneNGTest {
 
     @Test
     public void testRunPlugins() {
+        System.out.println("testRunPlugins");
         // Initialize the current graph in the state.
         DataAccessPaneState.setCurrentGraphId("GraphId");
 
