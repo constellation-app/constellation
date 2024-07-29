@@ -90,7 +90,7 @@ public class DataAccessUtilitiesNGTest {
             FxToolkit.cleanupStages();
         } catch (TimeoutException ex) {
             LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
-        } catch (ArrayStoreException ex){
+        } catch (ArrayIndexOutOfBoundsException ex){
             LOGGER.log(Level.WARNING, "CAUGHT ARRAY OUT OF BOUNDS", ex);
             System.out.println("CAUGHT ARRAY OUT OF BOUNDS: ");
             System.out.println(ex);
