@@ -64,14 +64,8 @@ public final class TestNotificationsAction implements ActionListener {
     public void actionPerformed(final ActionEvent e) {
         // plugin notifications
         final Plugin plugin = new TestNotificationsPlugin();
-        final PluginParameters pp = plugin.createParameters();
-
-        final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(Bundle.CTL_TestNotificationsAction(), pp);
-        dialog.showAndWait();
-        if (PluginParametersDialog.OK.equals(dialog.getResult())) {
-            PluginExecution.withPlugin(plugin).withParameters(pp).executeLater(context.getGraph());
-        }
-
+        PluginExecution.withPlugin(plugin).executeLater(context.getGraph());
+        
         // NetBeans NotifyDisplayer options
         NotifyDisplayer.display(PLAIN_MESSAGE, NotifyDescriptor.PLAIN_MESSAGE);
         NotifyDisplayer.display(QUESTION_MESSAGE, NotifyDescriptor.QUESTION_MESSAGE);
