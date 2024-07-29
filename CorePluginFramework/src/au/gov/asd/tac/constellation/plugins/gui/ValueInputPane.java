@@ -235,7 +235,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                     field.setTooltip(null);
                     System.out.println("I");
                     LOGGER.log(Level.INFO, "I");
-                    field.setId("");
+                    field.setId("valid");
                     System.out.println("J");
                     LOGGER.log(Level.INFO, "J");
                 }
@@ -254,7 +254,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                         // being entered right-to-left.
                         final String param = parameter.getStringValue();
                         if (!field.getText().equals(param)) {
-                            field.setText(param != null ? param : "");
+                            field.setText(param != null ? param : "noParam");
                         }
                     }
                     case ENABLED -> {
