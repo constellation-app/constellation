@@ -38,6 +38,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -370,7 +371,7 @@ public class AdvancedFindTabNGTest {
         //Create a controller mock and do nothing on retriveMatchingElements()
         FindViewController mockController = mock(FindViewController.class);
         mockController.init(spyTopComponent);
-        doNothing().when(mockController).retrieveAdvancedSearch(Mockito.eq(true), Mockito.eq(false));
+        doNothing().when(mockController).retrieveAdvancedSearch(Mockito.eq(true), Mockito.eq(false), Mockito.eq(false));
         Button mockButton = mock(Button.class);
 
         GraphElementType graphElementType = GraphElementType.VERTEX;
@@ -394,12 +395,16 @@ public class AdvancedFindTabNGTest {
         final List<FindCriteriaValues> findCriteriaValues = new ArrayList<>();
         final StringCriteriaValues stringCriteriaValue = new StringCriteriaValues("string", "Identifer", "Is", "hello", false, false);
         findCriteriaValues.add(stringCriteriaValue);
+        final CheckBox zoomToSelectionCheckBox = new CheckBox("Zoom to Selection");
 
         //When each function is called return the temporarily created elements above
         when(advancedFindMock.getCorrespondingCriteriaList(graphElementType)).thenReturn(criteriaPaneList);
         when(advancedFindMock.getCriteriaValues(criteriaPaneList)).thenReturn(findCriteriaValues);
         when(advancedFindMock.getLookForChoiceBox()).thenReturn(lookForChoiceBox);
         when(advancedFindMock.getDeleteResultsButton()).thenReturn(mockButton);
+        when(advancedFindMock.getZoomToSelection()).thenReturn(zoomToSelectionCheckBox);
+        
+        zoomToSelectionCheckBox.setSelected(false);
 
         //Do real call on findAllAction
         doCallRealMethod().when(advancedFindMock).findAllAction();
@@ -416,7 +421,7 @@ public class AdvancedFindTabNGTest {
 
             advancedFindMock.findAllAction();
             verify(advancedFindMock, times(1)).updateAdvancedSearchParameters(graphElementType);
-            verify(mockController, times(1)).retrieveAdvancedSearch(true, false);
+            verify(mockController, times(1)).retrieveAdvancedSearch(true, false, false);
         }
     }
 
@@ -432,7 +437,7 @@ public class AdvancedFindTabNGTest {
         //Create a controller mock and do nothing on retriveMatchingElements()
         FindViewController mockController = mock(FindViewController.class);
         mockController.init(spyTopComponent);
-        doNothing().when(mockController).retrieveAdvancedSearch(Mockito.eq(false), Mockito.eq(true));
+        doNothing().when(mockController).retrieveAdvancedSearch(Mockito.eq(false), Mockito.eq(true), Mockito.eq(false));
 
         GraphElementType graphElementType = GraphElementType.VERTEX;
 
@@ -455,11 +460,15 @@ public class AdvancedFindTabNGTest {
         final List<FindCriteriaValues> findCriteriaValues = new ArrayList<>();
         final StringCriteriaValues stringCriteriaValue = new StringCriteriaValues("string", "Identifer", "Is", "hello", false, false);
         findCriteriaValues.add(stringCriteriaValue);
+        final CheckBox zoomToSelectionCheckBox = new CheckBox("Zoom to Selection");
 
         //When each function is called return the temporarily created elements above
         when(advancedFindMock.getCorrespondingCriteriaList(graphElementType)).thenReturn(criteriaPaneList);
         when(advancedFindMock.getCriteriaValues(criteriaPaneList)).thenReturn(findCriteriaValues);
         when(advancedFindMock.getLookForChoiceBox()).thenReturn(lookForChoiceBox);
+        when(advancedFindMock.getZoomToSelection()).thenReturn(zoomToSelectionCheckBox);
+        
+        zoomToSelectionCheckBox.setSelected(false);
 
         //Do real call on findAllAction
         doCallRealMethod().when(advancedFindMock).findNextAction();
@@ -476,7 +485,7 @@ public class AdvancedFindTabNGTest {
 
             advancedFindMock.findNextAction();
             verify(advancedFindMock, times(1)).updateAdvancedSearchParameters(graphElementType);
-            verify(mockController, times(1)).retrieveAdvancedSearch(false, true);
+            verify(mockController, times(1)).retrieveAdvancedSearch(false, true, false);
         }
     }
 
@@ -492,7 +501,7 @@ public class AdvancedFindTabNGTest {
         //Create a controller mock and do nothing on retriveMatchingElements()
         FindViewController mockController = mock(FindViewController.class);
         mockController.init(spyTopComponent);
-        doNothing().when(mockController).retrieveAdvancedSearch(Mockito.eq(false), Mockito.eq(false));
+        doNothing().when(mockController).retrieveAdvancedSearch(Mockito.eq(false), Mockito.eq(false), Mockito.eq(false));
 
         GraphElementType graphElementType = GraphElementType.VERTEX;
 
@@ -515,11 +524,15 @@ public class AdvancedFindTabNGTest {
         final List<FindCriteriaValues> findCriteriaValues = new ArrayList<>();
         final StringCriteriaValues stringCriteriaValue = new StringCriteriaValues("string", "Identifer", "Is", "hello", false, false);
         findCriteriaValues.add(stringCriteriaValue);
+        final CheckBox zoomToSelectionCheckBox = new CheckBox("Zoom to Selection");
 
         //When each function is called return the temporarily created elements above
         when(advancedFindMock.getCorrespondingCriteriaList(graphElementType)).thenReturn(criteriaPaneList);
         when(advancedFindMock.getCriteriaValues(criteriaPaneList)).thenReturn(findCriteriaValues);
         when(advancedFindMock.getLookForChoiceBox()).thenReturn(lookForChoiceBox);
+        when(advancedFindMock.getZoomToSelection()).thenReturn(zoomToSelectionCheckBox);
+
+        zoomToSelectionCheckBox.setSelected(false);
 
         //Do real call on findAllAction
         doCallRealMethod().when(advancedFindMock).findPreviousAction();
@@ -536,7 +549,7 @@ public class AdvancedFindTabNGTest {
 
             advancedFindMock.findPreviousAction();
             verify(advancedFindMock, times(1)).updateAdvancedSearchParameters(graphElementType);
-            verify(mockController, times(1)).retrieveAdvancedSearch(false, false);
+            verify(mockController, times(1)).retrieveAdvancedSearch(false, false, false);
         }
     }
 

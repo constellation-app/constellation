@@ -298,3 +298,8 @@
 .errorBoxBG{
     -fx-background: #333333;
 }
+
+.date-picker-popup .spinner .button .left-arrow,
+.date-picker-popup .spinner .button .right-arrow {
+    -fx-background-color: white;
+}

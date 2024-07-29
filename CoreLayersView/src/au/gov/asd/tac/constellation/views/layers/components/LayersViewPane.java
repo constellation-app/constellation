@@ -16,9 +16,11 @@
 package au.gov.asd.tac.constellation.views.layers.components;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.views.NoGraphPane;
 import au.gov.asd.tac.constellation.views.layers.LayersViewController;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQuery;
 import au.gov.asd.tac.constellation.views.layers.query.Query;
+import au.gov.asd.tac.constellation.views.layers.utilities.LayersUtilities;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -54,7 +56,6 @@ public class LayersViewPane extends BorderPane {
     private static final int SCROLLPANE_VIEW_HEIGHT = 900;
 
     public LayersViewPane(final LayersViewController controller) {
-
         // create controller
         this.controller = controller;
 
@@ -118,7 +119,7 @@ public class LayersViewPane extends BorderPane {
         this.setCenter(layersViewVBox);
 
         // add layers grid and options to pane
-        this.noGraphPane = new NoGraphPane();
+        this.noGraphPane = new NoGraphPane("Layers View", LayersUtilities.createHelpButton());
 
         // create layout bindings
         noGraphPane.prefWidthProperty().bind(this.widthProperty());

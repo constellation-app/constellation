@@ -17,8 +17,11 @@ package au.gov.asd.tac.constellation.views.find.plugins;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
@@ -38,12 +41,14 @@ public class BasicFindGraphSelectionPlugin extends SimpleEditPlugin {
     private final boolean removeFromCurrentSelection;
     private final boolean selectAll;
     private final boolean searchAllGraphs;
+    private final boolean zoomToSelection;
 
-    public BasicFindGraphSelectionPlugin(final BasicFindReplaceParameters parameters, final boolean selectAll) {
+    public BasicFindGraphSelectionPlugin(final BasicFindReplaceParameters parameters, final boolean selectAll, final boolean zoomToSelection) {
         this.elementType = parameters.getGraphElement();
         this.selectAll = selectAll;
         this.removeFromCurrentSelection = parameters.isRemoveFrom();
         this.searchAllGraphs = parameters.isSearchAllGraphs();
+        this.zoomToSelection = zoomToSelection;
     }
 
     @Override
@@ -62,10 +67,14 @@ public class BasicFindGraphSelectionPlugin extends SimpleEditPlugin {
             }
             graph.setObjectValue(stateId, 0, ActiveFindResultsList.getBasicResultsList());
         }
-         
+ 
         // Swap to view the graph where the element is selected
         if (searchAllGraphs && !ActiveFindResultsList.getBasicResultsList().isEmpty()) {
-            FindViewUtilities.searchAllGraphs(graph);
+            FindViewUtilities.searchAllGraphs(graph, zoomToSelection);
+        } else if (zoomToSelection) {
+            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(GraphManager.getDefault().getActiveGraph());
+        } else {
+            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeLater(GraphManager.getDefault().getActiveGraph());
         }
     }
 
