@@ -216,7 +216,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                     field.setId("invalid");
                 } else {
                     tooltip.setText("");
-                    field.setTooltip(null);
+                    field.setTooltip(tooltip);
                     field.setId("valid");
                 }
                 parameter.setStringValue(field.getText());
