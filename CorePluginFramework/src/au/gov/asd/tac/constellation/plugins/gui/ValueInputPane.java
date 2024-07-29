@@ -208,42 +208,18 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
             final Tooltip tooltip = new Tooltip("");
             tooltip.setStyle("-fx-text-fill: white;");
             field.textProperty().addListener((ov, t, t1) -> {
-                System.out.println("A");
-                LOGGER.log(Level.INFO, "A");
                 final String error = parameter.validateString(field.getText());
-                System.out.println("B");
-                LOGGER.log(Level.INFO, "B");
                 if ((required && StringUtils.isBlank(field.getText())) || error != null) {
-                    System.out.println("C");
-                    LOGGER.log(Level.INFO, "C");
                     // if error is blank, the situation must be that a required parameter is blank
                     tooltip.setText(StringUtils.isNotBlank(error) ? error : "Value is required!");
-                    System.out.println("D");
-                    LOGGER.log(Level.INFO, "D");
                     field.setTooltip(tooltip);
-                    System.out.println("E");
-                    LOGGER.log(Level.INFO, "E");
                     field.setId("invalid");
-                    System.out.println("F");
-                    LOGGER.log(Level.INFO, "F");
                 } else {
-                    System.out.println("G");
-                    LOGGER.log(Level.INFO, "G");
                     tooltip.setText("");
-                    System.out.println("H");
-                    LOGGER.log(Level.INFO, "H");
                     field.setTooltip(null);
-                    System.out.println("I");
-                    LOGGER.log(Level.INFO, "I");
                     field.setId("valid");
-                    System.out.println("J");
-                    LOGGER.log(Level.INFO, "J");
                 }
-                System.out.println("K");
-                LOGGER.log(Level.INFO, "K");
                 parameter.setStringValue(field.getText());
-                System.out.println("L");
-                LOGGER.log(Level.INFO, "L");
             });
 
             parameter.addListener((pluginParameter, change) -> Platform.runLater(() -> {
