@@ -65,6 +65,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class DataAccessUtilitiesNGTest {
+
     private static final Logger LOGGER = Logger.getLogger(DataAccessUtilitiesNGTest.class.getName());
 
     private static MockedStatic<SwingUtilities> swingUtilitiesStaticMock;
@@ -74,7 +75,7 @@ public class DataAccessUtilitiesNGTest {
     public static void setUpClass() throws Exception {
         swingUtilitiesStaticMock = Mockito.mockStatic(SwingUtilities.class);
         windowManagerStaticMock = Mockito.mockStatic(WindowManager.class);
-        
+
         if (!FxToolkit.isFXApplicationThreadRunning()) {
             FxToolkit.registerPrimaryStage();
         }
@@ -83,16 +84,19 @@ public class DataAccessUtilitiesNGTest {
     @AfterClass
     public static void tearDownClass() throws Exception {
         try {
-        swingUtilitiesStaticMock.close();
-        windowManagerStaticMock.close();
-        
-        
+            swingUtilitiesStaticMock.close();
+            windowManagerStaticMock.close();
+
             FxToolkit.cleanupStages();
         } catch (TimeoutException ex) {
             LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
-        } catch (ArrayIndexOutOfBoundsException ex){
+        } catch (ArrayIndexOutOfBoundsException ex) {
             LOGGER.log(Level.WARNING, "CAUGHT ARRAY OUT OF BOUNDS", ex);
             System.out.println("CAUGHT ARRAY OUT OF BOUNDS: ");
+            System.out.println(ex);
+        } catch (NullPointerException ex) {
+            LOGGER.log(Level.WARNING, "CAUGHT Null pointer", ex);
+            System.out.println("CAUGHT Null pointer: ");
             System.out.println(ex);
         }
     }
@@ -187,7 +191,7 @@ public class DataAccessUtilitiesNGTest {
 
         assertTrue(Thread.interrupted());
     }
-    
+
     @Test
     public void testsaveDataAccessState() throws Exception {
         System.out.println("testsaveDataAccessState");
@@ -232,7 +236,7 @@ public class DataAccessUtilitiesNGTest {
         assertEquals(expectedTab.getState().size(), 1);
         verify(wGraph).setObjectValue(0, 0, expectedTab);
     }
-    
+
     @Test
     public void loadDataAccessState() {
         // Create current data access view state and set some parameters
@@ -243,16 +247,16 @@ public class DataAccessUtilitiesNGTest {
         currentState.add("parameter1", "parameter1_new_value");
         currentState.newTab();
         currentState.add("parameter2", "parameter2_new_value");
-        
+
         // mock graph
         final Graph graph = mock(Graph.class);
         final ReadableGraph rGraph = mock(ReadableGraph.class);
         when(graph.getReadableGraph()).thenReturn(rGraph);
-        
+
         // mock data access state attribute in graph
         when(rGraph.getAttribute(GraphElementType.META, "dataaccess_state")).thenReturn(2);
         when(rGraph.getObjectValue(2, 0)).thenReturn(currentState);
-        
+
         // mock tab pane
         final DataAccessPane dataAccessPane = mock(DataAccessPane.class);
         final DataAccessTabPane dataAccessTabPane = mock(DataAccessTabPane.class);
@@ -262,139 +266,136 @@ public class DataAccessUtilitiesNGTest {
         when(dataAccessTabPane.getCurrentTab()).thenReturn(currentTab);
         when(dataAccessTabPane.getTabPane()).thenReturn(tabPane);
         when(tabPane.getTabs()).thenReturn(FXCollections.observableArrayList(currentTab, mock(Tab.class)));
-        
+
         try (
                 final MockedStatic<DataAccessTabPane> daTabPaneMockedStatic
-                        = Mockito.mockStatic(DataAccessTabPane.class);
-        ) {
+                = Mockito.mockStatic(DataAccessTabPane.class);) {
             final QueryPhasePane queryPhasePane = mock(QueryPhasePane.class);
-            
+
             daTabPaneMockedStatic.when(() -> DataAccessTabPane.getQueryPhasePane(currentTab))
                     .thenReturn(queryPhasePane);
-            
+
             final GlobalParametersPane globalParametersPane = mock(GlobalParametersPane.class);
             final PluginParameters globalPluginParameters = mock(PluginParameters.class);
-            
+
             final PluginParameter pluginParameter1 = mock(PluginParameter.class);
             final PluginParameter pluginParameter2 = mock(PluginParameter.class);
-            
+
             when(queryPhasePane.getGlobalParametersPane()).thenReturn(globalParametersPane);
             when(globalParametersPane.getParams()).thenReturn(globalPluginParameters);
             when(globalPluginParameters.getParameters()).thenReturn(Map.of(
                     "parameter1", pluginParameter1,
                     "parameter2", pluginParameter2
             ));
-            
+
             DataAccessUtilities.loadDataAccessState(dataAccessPane, graph);
-            
+
             verify(pluginParameter1).setStringValue("parameter1_new_value");
             verify(pluginParameter2, never()).setStringValue(anyString());
-            
+
             verify(rGraph).release();
         }
     }
-    
+
     @Test
     public void loadDataAccessState_attribute_not_found() {
         // mock graph
         final Graph graph = mock(Graph.class);
         final ReadableGraph rGraph = mock(ReadableGraph.class);
         when(graph.getReadableGraph()).thenReturn(rGraph);
-        
+
         // mock data access state attribute in graph
         when(rGraph.getAttribute(GraphElementType.META, "dataaccess_state")).thenReturn(Graph.NOT_FOUND);
-        
+
         final DataAccessPane dataAccessPane = mock(DataAccessPane.class);
         final DataAccessTabPane dataAccessTabPane = mock(DataAccessTabPane.class);
         final Tab currentTab = mock(Tab.class);
         when(dataAccessPane.getDataAccessTabPane()).thenReturn(dataAccessTabPane);
         when(dataAccessTabPane.getCurrentTab()).thenReturn(currentTab);
-        
+
         DataAccessUtilities.loadDataAccessState(dataAccessPane, graph);
-        
+
         verify(rGraph, never()).getObjectValue(anyInt(), anyInt());
-        
+
         verify(rGraph).release();
     }
-    
+
     @Test
     public void loadDataAccessState_graph_is_null() {
         DataAccessUtilities.loadDataAccessState(mock(DataAccessPane.class), null);
         // No exception....pass
     }
-    
+
     @Test
     public void loadDataAccessState_no_tabs() {
         // mock graph
         final Graph graph = mock(Graph.class);
-        
+
         // mock tab pane
         final DataAccessPane dataAccessPane = mock(DataAccessPane.class);
         final DataAccessTabPane dataAccessTabPane = mock(DataAccessTabPane.class);
         when(dataAccessPane.getDataAccessTabPane()).thenReturn(dataAccessTabPane);
         when(dataAccessTabPane.getCurrentTab()).thenReturn(null);
-        
+
         DataAccessUtilities.loadDataAccessState(dataAccessPane, graph);
-        
+
         verifyNoInteractions(graph);
     }
-    
+
     @Test
     public void loadDataAccessState_null_state() {
         // mock graph
         final Graph graph = mock(Graph.class);
         final ReadableGraph rGraph = mock(ReadableGraph.class);
         when(graph.getReadableGraph()).thenReturn(rGraph);
-        
+
         // mock data access state attribute in graph
         when(rGraph.getAttribute(GraphElementType.META, "dataaccess_state")).thenReturn(2);
         when(rGraph.getObjectValue(2, 0)).thenReturn(null);
-        
+
         // mock tab pane
         final DataAccessPane dataAccessPane = mock(DataAccessPane.class);
         final DataAccessTabPane dataAccessTabPane = mock(DataAccessTabPane.class);
         final Tab currentTab = mock(Tab.class);
         when(dataAccessPane.getDataAccessTabPane()).thenReturn(dataAccessTabPane);
         when(dataAccessTabPane.getCurrentTab()).thenReturn(currentTab);
-        
+
         try (
                 final MockedStatic<DataAccessTabPane> daTabPaneMockedStatic
-                        = Mockito.mockStatic(DataAccessTabPane.class);
-        ) {
+                = Mockito.mockStatic(DataAccessTabPane.class);) {
             DataAccessUtilities.loadDataAccessState(dataAccessPane, graph);
-            
+
             daTabPaneMockedStatic.verifyNoInteractions();
-            
+
             verify(rGraph).release();
         }
     }
-    
+
     @Test
     public void loadDataAccessState_empty_state() {
         // mock graph
         final Graph graph = mock(Graph.class);
         final ReadableGraph rGraph = mock(ReadableGraph.class);
         when(graph.getReadableGraph()).thenReturn(rGraph);
-        
+
         // mock data access state attribute in graph
         when(rGraph.getAttribute(GraphElementType.META, "dataaccess_state")).thenReturn(2);
         when(rGraph.getObjectValue(2, 0)).thenReturn(new DataAccessState());
-        
+
         // mock tab pane
         final DataAccessPane dataAccessPane = mock(DataAccessPane.class);
         final DataAccessTabPane dataAccessTabPane = mock(DataAccessTabPane.class);
         final Tab currentTab = mock(Tab.class);
         when(dataAccessPane.getDataAccessTabPane()).thenReturn(dataAccessTabPane);
         when(dataAccessTabPane.getCurrentTab()).thenReturn(currentTab);
-        
+
         try (
                 final MockedStatic<DataAccessTabPane> daTabPaneMockedStatic
-                        = Mockito.mockStatic(DataAccessTabPane.class);
-        ) {
+                = Mockito.mockStatic(DataAccessTabPane.class);) {
             DataAccessUtilities.loadDataAccessState(dataAccessPane, graph);
-            
+
             daTabPaneMockedStatic.verifyNoInteractions();
-            
+
             verify(rGraph).release();
         }
     }
