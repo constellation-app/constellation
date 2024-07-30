@@ -188,14 +188,19 @@ public class QueryPhasePane extends VBox {
      * @param expand true if the heading sections should be expanded, false otherwise
      * @param expandchildren true if the child sections should also be expanded, false otherwise
      */
-    public synchronized void setHeadingsExpanded(final boolean expand, final boolean expandchildren) {
-        for (final Node child : dataSourceList.getChildren()) {
-            final HeadingPane headingPage = (HeadingPane) child;
-            headingPage.setExpanded(expand);
-            if (expandchildren) {
+    public void setHeadingsExpanded(final boolean expand, final boolean expandchildren) {
+        synchronized (dataSourceList) {
+            for (final Node child : dataSourceList.getChildren()) {
+                final HeadingPane headingPage = (HeadingPane) child;
+                headingPage.setExpanded(expand);
+                if (expandchildren) {
+
 //                headingPage.getDataSources().forEach(titledPane -> titledPane.setExpanded(expand));
-                for (final DataSourceTitledPane titledPane : headingPage.getDataSources()) {
-                    titledPane.setExpanded(expand);
+                    // Using headingPage.getDataSources().forEach doesnt wait for loop to end, leading to concurrency.
+                    // Also, tests seem to sometimes advance before loop has finished 
+                    for (final DataSourceTitledPane titledPane : headingPage.getDataSources()) {
+                        titledPane.setExpanded(expand);
+                    }
                 }
             }
         }

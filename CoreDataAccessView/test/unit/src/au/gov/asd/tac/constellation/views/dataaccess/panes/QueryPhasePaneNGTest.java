@@ -235,37 +235,42 @@ public class QueryPhasePaneNGTest {
         System.out.println("setHeadingsExpandedHeadChild");
 
         final QueryPhasePane instance = new QueryPhasePane(plugins, null, null);
-        // Need to make a copy of list because expanding heading or something also calls getChildren
-        for (final Node child : observableArrayList(instance.getDataSourceList().getChildren())) {
-            final HeadingPane heading = (HeadingPane) child;
-            //default value for HeadingPane expansion is true
-            assertTrue(heading.isExpanded());
+        synchronized (instance.getDataSourceList()) {
+            // Need to make a copy of list because expanding heading or something also calls getChildren
+            for (final Node child : observableArrayList(instance.getDataSourceList().getChildren())) {
+                final HeadingPane heading = (HeadingPane) child;
+                //default value for HeadingPane expansion is true
+                assertTrue(heading.isExpanded());
 
-            for (final DataSourceTitledPane dataSource : new ArrayList<>(heading.getDataSources())) {
-                //default value for DataSourceTitledPane expansion is false
-                assertFalse(dataSource.isExpanded());
+                for (final DataSourceTitledPane dataSource : new ArrayList<>(heading.getDataSources())) {
+                    //default value for DataSourceTitledPane expansion is false
+                    assertFalse(dataSource.isExpanded());
+                }
             }
         }
 
         instance.setHeadingsExpanded(false, true);
+        synchronized (instance.getDataSourceList()) {
+            for (final Node child : observableArrayList(instance.getDataSourceList().getChildren())) {
+                final HeadingPane heading = (HeadingPane) child;
+                assertFalse(heading.isExpanded());
 
-        for (final Node child : observableArrayList(instance.getDataSourceList().getChildren())) {
-            final HeadingPane heading = (HeadingPane) child;
-            assertFalse(heading.isExpanded());
-
-            for (final DataSourceTitledPane dataSource : new ArrayList<>(heading.getDataSources())) {
-                assertFalse(dataSource.isExpanded());
+                for (final DataSourceTitledPane dataSource : new ArrayList<>(heading.getDataSources())) {
+                    assertFalse(dataSource.isExpanded());
+                }
             }
         }
 
         instance.setHeadingsExpanded(true, true);
 
-        for (final Node child : observableArrayList(instance.getDataSourceList().getChildren())) {
-            final HeadingPane heading = (HeadingPane) child;
-            assertTrue(heading.isExpanded());
+        synchronized (instance.getDataSourceList()) {
+            for (final Node child : observableArrayList(instance.getDataSourceList().getChildren())) {
+                final HeadingPane heading = (HeadingPane) child;
+                assertTrue(heading.isExpanded());
 
-            for (final DataSourceTitledPane dataSource : new ArrayList<>(heading.getDataSources())) {
-                assertTrue(dataSource.isExpanded());
+                for (final DataSourceTitledPane dataSource : new ArrayList<>(heading.getDataSources())) {
+                    assertTrue(dataSource.isExpanded());
+                }
             }
         }
     }
