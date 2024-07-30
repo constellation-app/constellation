@@ -93,15 +93,9 @@ public class DataAccessPaneNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        try {
-            dataAccessViewTopComponent = mock(DataAccessViewTopComponent.class);
+        dataAccessViewTopComponent = mock(DataAccessViewTopComponent.class);
 
-            dataAccessPane = spy(new DataAccessPane(dataAccessViewTopComponent));
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            LOGGER.log(Level.WARNING, "CAUGHT ARRAY OUT OF BOUNDS", ex);
-            System.out.println("CAUGHT ARRAY OUT OF BOUNDS: ");
-            System.out.println(ex);
-        }
+        dataAccessPane = spy(new DataAccessPane(dataAccessViewTopComponent));
     }
 
     @Test
