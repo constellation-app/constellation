@@ -193,7 +193,10 @@ public class QueryPhasePane extends VBox {
             final HeadingPane headingPage = (HeadingPane) child;
             headingPage.setExpanded(expand);
             if (expandchildren) {
-                headingPage.getDataSources().forEach(titledPane -> titledPane.setExpanded(expand));
+//                headingPage.getDataSources().forEach(titledPane -> titledPane.setExpanded(expand));
+                for (final DataSourceTitledPane titledPane : headingPage.getDataSources()) {
+                    titledPane.setExpanded(expand);
+                }
             }
         }
     }
