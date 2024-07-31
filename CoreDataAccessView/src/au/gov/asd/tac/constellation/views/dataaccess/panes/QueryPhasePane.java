@@ -43,6 +43,7 @@ import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
@@ -131,12 +132,14 @@ public class QueryPhasePane extends VBox {
 
         // Runlater is used, because when plugins are changed this won't be run in the correct type of thread
         Platform.runLater(() -> {
-            dataSourceList.getChildren().clear();
-            for (final Pair<Integer, HeadingPane> plugin : orderedPlugins) {
-                dataSourceList.getChildren().add(plugin.getValue());
+            synchronized (dataSourceList.getChildren()) {
+                dataSourceList.getChildren().clear();
+                for (final Pair<Integer, HeadingPane> plugin : orderedPlugins) {
+                    dataSourceList.getChildren().add(plugin.getValue());
+                }
+                getChildren().clear();
+                getChildren().addAll(globalParametersPane, dataSourceList);
             }
-            getChildren().clear();
-            getChildren().addAll(globalParametersPane, dataSourceList);
         });
     }
 
@@ -189,18 +192,14 @@ public class QueryPhasePane extends VBox {
      * @param expandchildren true if the child sections should also be expanded, false otherwise
      */
     public void setHeadingsExpanded(final boolean expand, final boolean expandchildren) {
-        synchronized (dataSourceList) {
+        // Using synchronized to prevent concurrency related issues
+        synchronized (dataSourceList.getChildren()) {
             for (final Node child : dataSourceList.getChildren()) {
                 final HeadingPane headingPage = (HeadingPane) child;
                 headingPage.setExpanded(expand);
-                if (expandchildren) {
 
-//                headingPage.getDataSources().forEach(titledPane -> titledPane.setExpanded(expand));
-                    // Using headingPage.getDataSources().forEach doesnt wait for loop to end, leading to concurrency.
-                    // Also, tests seem to sometimes advance before loop has finished 
-                    for (final DataSourceTitledPane titledPane : headingPage.getDataSources()) {
-                        titledPane.setExpanded(expand);
-                    }
+                if (expandchildren) {
+                    headingPage.getDataSources().forEach(titledPane -> titledPane.setExpanded(expand));
                 }
             }
         }
@@ -357,6 +356,17 @@ public class QueryPhasePane extends VBox {
 
     protected VBox getDataSourceList() {
         return dataSourceList;
+    }
+    
+    /**
+     * Get the children of the dataSourceList, esuring modifcations to the list have been complete before returning
+     *
+     * @return the children of the dataSourceList
+     */
+    protected ObservableList<Node> getDataSourceListChildren() {
+        synchronized (dataSourceList) {
+            return dataSourceList.getChildren();
+        }
     }
 
     protected Set<MenuItem> getGraphDependentMenuItems() {
