@@ -68,7 +68,6 @@ public class NewSchemaGraphAction extends AbstractAction implements DynamicMenuC
     private static Map<String, String> templates;
     private static JMenu menu;
     private static final Map<String, Icon> ICON_CACHE = new HashMap<>();
-    public static final String FORWARD_SLASH = "/";
 
     public static File getTemplateDirectory() {
         return templateDirectory;
@@ -167,7 +166,7 @@ public class NewSchemaGraphAction extends AbstractAction implements DynamicMenuC
     static void createTemplate(final String templateName) {
         final Plugin plugin = PluginRegistry.get(GraphNodePluginRegistry.LOAD_TEMPLATE);
         PluginParameters params = plugin.createParameters();
-        params.setObjectValue(LoadTemplatePlugin.TEMPLATE_FILE_PARAMETER_ID, new File(templateDirectory, templates.get(templateName) + FORWARD_SLASH + templateName));
+        params.setObjectValue(LoadTemplatePlugin.TEMPLATE_FILE_PARAMETER_ID, new File(templateDirectory, templates.get(templateName) + File.separator + templateName));
         params.setStringValue(LoadTemplatePlugin.TEMPLATE_NAME_PARAMETER_ID, templateName);
         PluginExecution.withPlugin(plugin).withParameters(params).executeLater(null);
     }
