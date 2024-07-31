@@ -357,7 +357,7 @@ public class QueryPhasePane extends VBox {
     protected VBox getDataSourceList() {
         return dataSourceList;
     }
-    
+
     /**
      * Get the children of the dataSourceList, esuring modifcations to the list have been complete before returning
      *

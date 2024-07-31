@@ -29,7 +29,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.api.DataAccessPaneState;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +38,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static javafx.collections.FXCollections.observableArrayList;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
@@ -191,7 +189,7 @@ public class QueryPhasePaneNGTest {
             final HeadingPane heading = (HeadingPane) child;
             assertEquals(heading.isExpanded(), headingShouldbeExpanded);
 
-            for (final DataSourceTitledPane dataSource : new ArrayList<>(heading.getDataSources())) {
+            for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
                 assertEquals(dataSource.isExpanded(), headingChildrenShouldbeExpanded);
             }
         }
@@ -256,7 +254,7 @@ public class QueryPhasePaneNGTest {
         for (final Node child : instance.getDataSourceListChildren()) {
             final HeadingPane heading = (HeadingPane) child;
 
-            for (final DataSourceTitledPane dataSource : new ArrayList<>(heading.getDataSources())) {
+            for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
                 if ("Test Plugin".equals(dataSource.getPlugin().getName())) {
                     assertTrue(heading.isExpanded());
                     assertTrue(dataSource.isExpanded());
@@ -271,7 +269,7 @@ public class QueryPhasePaneNGTest {
         for (final Node child : instance.getDataSourceListChildren()) {
             final HeadingPane heading = (HeadingPane) child;
 
-            for (final DataSourceTitledPane dataSource : new ArrayList<>(heading.getDataSources())) {
+            for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
                 if ("Another Test Plugin".equals(dataSource.getPlugin().getName())) {
                     assertTrue(heading.isExpanded());
                     assertTrue(dataSource.isExpanded());
