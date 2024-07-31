@@ -457,11 +457,8 @@ public class JsonIONGTest {
 
         jsonIoMockedStatic.when(() -> JsonIO
                 .saveJsonPreferences(any(Optional.class), any(Optional.class), any(), any(ObjectMapper.class)))
-                .thenCallRealMethod();
-        
-         jsonIoMockedStatic.when(() -> JsonIO
-                .saveJsonPreferences(any(Optional.class), any(Optional.class), any(Optional.class), any(), any(ObjectMapper.class)))
-                .thenCallRealMethod();
+                .thenCallRealMethod();        
+      
     }
 
     /**
