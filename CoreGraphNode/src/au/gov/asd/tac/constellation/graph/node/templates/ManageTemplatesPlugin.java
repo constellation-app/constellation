@@ -35,7 +35,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValu
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
-import static au.gov.asd.tac.constellation.utilities.text.SeparatorConstants.FORWARD_SLASH;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -152,7 +151,7 @@ public class ManageTemplatesPlugin extends SimplePlugin {
 
         final Map<String, String> templates = NewSchemaGraphAction.getTemplateNames();
         deletedTemplates.forEach(template -> {
-            final File newFile = new File(NewSchemaGraphAction.getTemplateDirectory(), templates.get(template) + FORWARD_SLASH + template);
+            final File newFile = new File(NewSchemaGraphAction.getTemplateDirectory(), templates.get(template) + NewSchemaGraphAction.FORWARD_SLASH + template);
             try {
                 Files.delete(Path.of(newFile.getPath()));
             } catch (final IOException ex) {

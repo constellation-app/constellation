@@ -35,7 +35,6 @@ import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
-import static au.gov.asd.tac.constellation.utilities.text.SeparatorConstants.FORWARD_SLASH;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -92,7 +91,7 @@ public class SaveTemplatePlugin extends SimplePlugin {
         final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
 
         final File templateDir = new File(userDir, TEMPLATE_DIR);
-        final File oldTemplate = new File(templateDir, NewSchemaGraphAction.getTemplateNames().get(templateName) + FORWARD_SLASH + templateName);
+        final File oldTemplate = new File(templateDir, NewSchemaGraphAction.getTemplateNames().get(templateName) + NewSchemaGraphAction.FORWARD_SLASH + templateName);
         if (oldTemplate.exists()) {
             try {
                 Files.delete(Path.of(oldTemplate.getPath()));
