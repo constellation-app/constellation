@@ -126,7 +126,7 @@ public final class DateTimeRangeInputPane extends Pane {
             if (!isAdjusting) {
                 try {
                     final ZonedDateTime[] zdt = getAbsoluteRange(getZoneId());
-                    if (zdt != null) {
+                    if (zdt.length > 0) {
                         isAdjusting = true;
                         parameter.setObjectValue(new DateTimeRange(zdt[0], zdt[1]));
                     }
@@ -401,8 +401,8 @@ public final class DateTimeRangeInputPane extends Pane {
         if (zi != null) {
             final DatePicker dp0 = datePickers.get(0);
             final LocalDate dp0Localdate = dp0.getConverter().fromString(dp0.getEditor().getText());
-            final LocalDate ld0 = dp0Localdate != null ? dp0Localdate : dp0.getValue();         
-            
+            final LocalDate ld0 = dp0Localdate != null ? dp0Localdate : dp0.getValue();
+
             if (ld0 != null) {
                 final LocalTime lt0 = LocalTime.of(getSpinnerValue(0), getSpinnerValue(1), getSpinnerValue(2));
                 final ZonedDateTime zdt0 = ZonedDateTime.of(ld0, lt0, zi);
@@ -529,7 +529,15 @@ public final class DateTimeRangeInputPane extends Pane {
 
             @Override
             public LocalDate fromString(final String s) {
-                return StringUtils.isNotBlank(s) ? LocalDate.parse(s, DATE_FORMATTER) : null;
+                if (StringUtils.isBlank(s)) {
+                    return null;
+                }
+                try {
+                    return LocalDate.parse(s, DATE_FORMATTER);
+                } catch (DateTimeException e) {
+                    LOGGER.log(Level.WARNING, "DateTimeException happened");
+                    return null;
+                }
             }
         });
         dpLabel.setLabelFor(dp);
@@ -542,7 +550,11 @@ public final class DateTimeRangeInputPane extends Pane {
 
         dp.getEditor().textProperty().addListener(changed);
 
-        dp.valueProperty().addListener((v, o, n) -> dp.setValue(n));
+        dp.valueProperty().addListener((v, o, n) -> {
+            if(n == null){
+                dp.setValue(o);
+            }
+        });
 
         datePickers.add(dp);
 
