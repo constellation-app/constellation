@@ -42,6 +42,7 @@ public class NotifyDisplayer {
     private static final Logger LOGGER = Logger.getLogger(NotifyDisplayer.class.getName());
     
     public static final String BLOCK_POPUP_FLAG = "!^ ";
+    private static final String DIALOG_DARK_THEME = "/au/gov/asd/tac/constellation/utilities/javafx/dialog-dark.css";
 
     /**
      * Utility display method to show a dialog to the user.
@@ -150,6 +151,10 @@ public class NotifyDisplayer {
             final Alert.AlertType alertType) {
         final Alert dialog = new Alert(alertType, "", ButtonType.OK);
         dialog.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
+        
+        if (JavafxStyleManager.isDarkTheme()) {
+            dialog.getDialogPane().getStylesheets().add(JavafxStyleManager.class.getResource(DIALOG_DARK_THEME).toExternalForm());
+        }
         dialog.setTitle(title);
         dialog.setHeaderText(header);
         dialog.setContentText(message);
@@ -177,6 +182,9 @@ public class NotifyDisplayer {
             final Alert.AlertType alertType) {
         final Alert dialog = new Alert(alertType, "", ButtonType.OK);
         dialog.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
+        if (JavafxStyleManager.isDarkTheme()) {
+            dialog.getDialogPane().getStylesheets().add(JavafxStyleManager.class.getResource(DIALOG_DARK_THEME).toExternalForm());
+        }
         dialog.setTitle(title);
         dialog.setHeaderText(header);
 
