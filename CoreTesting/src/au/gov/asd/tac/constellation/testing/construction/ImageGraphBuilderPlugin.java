@@ -183,10 +183,12 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
 
         int frame = 0;
         int w = 0;
+        int prevWidth = 0;
+            
         for (final BufferedImage image : images) {
-            int prevWidth = 0;
+            // add image to the right of the prev one
             if (w > 0) {
-                prevWidth = w;
+                prevWidth = w + prevWidth;
             }
             w = image.getWidth();
             final int h = image.getHeight();
@@ -208,6 +210,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
                     final float gray = 0;
 
                     final int vxId = vertexIds[frame][x + prevWidth][y] = graph.addVertex();
+                    // Add identification for each image
                     graph.setStringValue(vertexIdentifierAttributeId, vxId, String.format("image%d,%d,%d", frame, x + prevWidth, y));
 
                     final int yinv = h - y;
