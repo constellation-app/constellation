@@ -534,8 +534,7 @@ public final class DateTimeRangeInputPane extends Pane {
                 }
                 try {
                     return LocalDate.parse(s, DATE_FORMATTER);
-                } catch (DateTimeException e) {
-                    LOGGER.log(Level.WARNING, "DateTimeException happened");
+                } catch (final DateTimeException e) {
                     return null;
                 }
             }
@@ -551,7 +550,7 @@ public final class DateTimeRangeInputPane extends Pane {
         dp.getEditor().textProperty().addListener(changed);
 
         dp.valueProperty().addListener((v, o, n) -> {
-            if(n == null){
+            if (n == null) {
                 dp.setValue(o);
             }
         });
