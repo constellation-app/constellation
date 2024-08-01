@@ -507,9 +507,9 @@ public class Conversation {
                 final Thread thread = new Thread(CONVERSATION_VIEW_UPDATE_SENDER_THREAD_NAME) {
                     @Override
                     public void run() {
+                        senderMessages.clear();
                         if (!temporalMessages.isEmpty()) {
                             senderProvider.updateMessageSenders(graph, temporalMessages, conversationState.getSenderAttributes());
-                            senderMessages.clear();
 
                             for (final ConversationMessage message : temporalMessages) {
                                 if (message.getSenderContent() != null) {
