@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.graph.utilities.hashmod;
+package au.gov.asd.tac.constellation.plugins.importexport.hashmod;
 
 import java.io.File;
 import java.io.IOException;
@@ -178,7 +178,7 @@ public class Hashmod {
         if (headers != null && headers.length > col) {
             return headers[col];
         }
-        return StringUtils.EMPTY;
+        return null;
     }
 
     public List<String[]> getCSVFileData() {

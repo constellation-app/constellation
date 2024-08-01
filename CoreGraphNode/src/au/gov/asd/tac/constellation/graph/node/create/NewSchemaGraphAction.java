@@ -166,7 +166,7 @@ public class NewSchemaGraphAction extends AbstractAction implements DynamicMenuC
     static void createTemplate(final String templateName) {
         final Plugin plugin = PluginRegistry.get(GraphNodePluginRegistry.LOAD_TEMPLATE);
         PluginParameters params = plugin.createParameters();
-        params.setObjectValue(LoadTemplatePlugin.TEMPLATE_FILE_PARAMETER_ID, new File(templateDirectory, templates.get(templateName) + "/" + templateName));
+        params.setObjectValue(LoadTemplatePlugin.TEMPLATE_FILE_PARAMETER_ID, new File(templateDirectory, templates.get(templateName) + File.separator + templateName));
         params.setStringValue(LoadTemplatePlugin.TEMPLATE_NAME_PARAMETER_ID, templateName);
         PluginExecution.withPlugin(plugin).withParameters(params).executeLater(null);
     }

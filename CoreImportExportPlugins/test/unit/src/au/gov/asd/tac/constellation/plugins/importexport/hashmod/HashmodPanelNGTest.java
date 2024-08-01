@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.graph.utilities.hashmod;
+package au.gov.asd.tac.constellation.plugins.importexport.hashmod;
 
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.io.File;
