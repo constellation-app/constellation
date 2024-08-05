@@ -557,7 +557,7 @@ public final class DateTimeRangeInputPane extends Pane {
         final VBox picker = new VBox(dpBox, spinnerBox);
         picker.setStyle("-fx-padding:4; -fx-border-radius:4; -fx-border-color: grey;");
 
-        dp.getEditor().textProperty().addListener((ObservableValue<? extends String> v, String o, String n) -> {
+        dp.getEditor().textProperty().addListener((final ObservableValue<? extends String> v, final String o, final String n) -> {
             if (n != null) {
                 LOGGER.log(Level.INFO, " is n empty {0}", n.isEmpty());
             }
