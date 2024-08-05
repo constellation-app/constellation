@@ -42,15 +42,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.controlsfx.control.textfield.TextFields;
 
 /**
- * A text box allowing entry of single line text, multiple line text
- * corresponding to a {@link PluginParameter} of
+ * A text box allowing entry of single line text, multiple line text corresponding to a {@link PluginParameter} of
  * {@link au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType}.
  * <p>
- * Editing the value in the text box will set the string value for the
- * underlying {@link PluginParameter}.
+ * Editing the value in the text box will set the string value for the underlying {@link PluginParameter}.
  *
- * @see
- * au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType
+ * @see au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType
  *
  * @author ruby_crucis
  */
@@ -102,27 +99,27 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
             l.setPrefWidth(defaultWidth);
             getChildren().add(l);
             parameter.addListener((pluginParameter, change) -> Platform.runLater(() -> {
-                    switch (change) {
-                        case VALUE -> {
-                            // Don't change the value if it isn't necessary.
-                            // Setting the text changes the cursor position, which makes it look like text is
-                            // being entered right-to-left.
-                            final String param = parameter.getStringValue();
-                            if (!l.getText().equals(param)) {
-                                l.setText(param);
-                            }
-                        }
-                        case VISIBLE -> {
-                            l.setManaged(parameter.isVisible());
-                            l.setVisible(parameter.isVisible());
-                            this.setVisible(parameter.isVisible());
-                            this.setManaged(parameter.isVisible());
-                        }
-                        default -> {
-                            // do nothing
+                switch (change) {
+                    case VALUE -> {
+                        // Don't change the value if it isn't necessary.
+                        // Setting the text changes the cursor position, which makes it look like text is
+                        // being entered right-to-left.
+                        final String param = parameter.getStringValue();
+                        if (!l.getText().equals(param)) {
+                            l.setText(param);
                         }
                     }
-                }));
+                    case VISIBLE -> {
+                        l.setManaged(parameter.isVisible());
+                        l.setVisible(parameter.isVisible());
+                        this.setVisible(parameter.isVisible());
+                        this.setManaged(parameter.isVisible());
+                    }
+                    default -> {
+                        // do nothing
+                    }
+                }
+            }));
         } else {
             recentValuesCombo = new ComboBox<>();
             recentValuesCombo.setEditable(false);
@@ -171,7 +168,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                 ((TextArea) field).setPrefRowCount(suggestedHeight);
             } else {
                 field = new TextField();
-                Platform.runLater(() -> TextFields.bindAutoCompletion((TextField) field, recentValuesCombo.getItems()));
+                TextFields.bindAutoCompletion((TextField) field, recentValuesCombo.itemsProperty());
             }
 
             field.setPrefWidth(defaultWidth);
@@ -205,7 +202,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
             if (recentValuesCombo != null) {
                 recentValuesCombo.setDisable(!parameter.isEnabled());
             }
-            
+
             field.addEventFilter(KeyEvent.KEY_PRESSED, event -> FileInputPane.handleEventFilter(event, field));
 
             final Tooltip tooltip = new Tooltip("");
@@ -222,36 +219,36 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                     field.setTooltip(null);
                     field.setId("");
                 }
-
                 parameter.setStringValue(field.getText());
             });
 
             parameter.addListener((pluginParameter, change) -> Platform.runLater(() -> {
-                    switch (change) {
-                        case VALUE -> {
-                            // Don't change the value if it isn't necessary.
-                            // Setting the text changes the cursor position, which makes it look like text is
-                            // being entered right-to-left.
-                            final String param = parameter.getStringValue();
-                            if (!field.getText().equals(param)) {
-                                field.setText(param != null ? param : "");
-                            }
+                switch (change) {
+                    case VALUE -> {
+                        // Don't change the value if it isn't necessary.
+                        // Setting the text changes the cursor position, which makes it look like text is
+                        // being entered right-to-left.
+                        final String param = parameter.getStringValue();
+                        if (!field.getText().equals(param)) {
+                            field.setText(param != null ? param : "");
                         }
-                        case ENABLED -> {
-                            // If enabled, then ensure widget is both editable and enabled.
-                            field.setEditable(pluginParameter.isEnabled());
-                            field.setDisable(!pluginParameter.isEnabled());
-                            recentValuesCombo.setDisable(!pluginParameter.isEnabled());
-                        }
-                        case VISIBLE -> {
-                            field.setManaged(parameter.isVisible());
-                            field.setVisible(parameter.isVisible());
-                            this.setVisible(parameter.isVisible());
-                            this.setManaged(parameter.isVisible());
-                        }
-                        default -> LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
                     }
-                }));
+                    case ENABLED -> {
+                        // If enabled, then ensure widget is both editable and enabled.
+                        field.setEditable(pluginParameter.isEnabled());
+                        field.setDisable(!pluginParameter.isEnabled());
+                        recentValuesCombo.setDisable(!pluginParameter.isEnabled());
+                    }
+                    case VISIBLE -> {
+                        field.setManaged(parameter.isVisible());
+                        field.setVisible(parameter.isVisible());
+                        this.setVisible(parameter.isVisible());
+                        this.setManaged(parameter.isVisible());
+                    }
+                    default ->
+                        LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
+                }
+            }));
 
             final HBox fieldAndRecentValues = new HBox();
             fieldAndRecentValues.setSpacing(2);

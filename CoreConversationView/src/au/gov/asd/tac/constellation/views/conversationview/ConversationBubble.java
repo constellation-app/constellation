@@ -170,11 +170,11 @@ public class ConversationBubble extends VBox {
         };
         LinearGradient gradient = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);
 
-        bubbleGraphic.setStroke(color);
+        bubbleGraphic.setStroke(bottomColor);
         bubbleGraphic.setFill(gradient);
 
         tail.setFill(bottomColor);
-        tail.setStroke(color);
-        tailTop.setStroke(bottomColor); // Erase the border of the buble where the tail joins.
+        tail.setStroke(bottomColor);
+        tailTop.setStroke(bottomColor); // Erase the border of the bubble where the tail joins.
     }
 }

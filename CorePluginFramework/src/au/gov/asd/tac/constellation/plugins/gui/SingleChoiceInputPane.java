@@ -55,7 +55,11 @@ public class SingleChoiceInputPane extends HBox {
     public SingleChoiceInputPane(final PluginParameter<SingleChoiceParameterValue> parameter) {
         field = new SearchableComboBox<>();
         field.setPromptText(parameter.getDescription());
-        field.setItems(FXCollections.observableList(SingleChoiceParameterType.getOptionsData(parameter)));
+
+        final ObservableList<ParameterValue> optionsList = FXCollections.observableArrayList();
+        optionsList.setAll(SingleChoiceParameterType.getOptionsData(parameter));
+        field.setItems(optionsList);
+
         final ParameterValue initialValue = parameter.getParameterValue();
         if (initialValue.getObjectValue() != null) {
             field.getSelectionModel().select(initialValue);
