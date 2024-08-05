@@ -79,7 +79,7 @@ public class DefaultConversationDatetimeProvider implements ConversationDatetime
             return new SelectableLabel(
                     timestampString, 
                     false, 
-                    JavafxStyleManager.isDarkTheme() ? "-fx-text-fill: white;" : null,
+                    JavafxStyleManager.isDarkTheme() ? "-fx-text-fill: white; -fx-font-size: 0.85em; " : " -fx-font-size: 0.85em; ",
                     null, 
                     null
             );

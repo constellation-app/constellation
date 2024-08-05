@@ -43,7 +43,7 @@ public class ReplaceTab extends BasicFindTab {
     private final Button replaceAllButton = new Button("Replace All");
     private final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor()));
     private final Button helpButton = new Button("", helpImage);
-
+    
     public ReplaceTab(final FindViewTabs parentComponent) {
         super(parentComponent);
         this.setText("Replace");
@@ -85,7 +85,7 @@ public class ReplaceTab extends BasicFindTab {
         // ensure the parameters for the search are determined correctly 
         settingsGrid.getChildren().remove(postSearchChoiceBox);
         settingsGrid.getChildren().remove(postSearchLabel);
-
+        
         // remove exact match checkBox
         preferencesGrid.getChildren().remove(exactMatchCB);
     }
@@ -149,7 +149,7 @@ public class ReplaceTab extends BasicFindTab {
         if (!getFindTextField().getText().isEmpty() && !getReplaceTextField().getText().isEmpty()) {
             saveSelected(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
             updateBasicReplaceParamters();
-            FindViewController.getDefault().replaceMatchingElements(true, false);
+            FindViewController.getDefault().replaceMatchingElements(true, false, getZoomToSelection().isSelected());
         }
     }
 
@@ -164,7 +164,7 @@ public class ReplaceTab extends BasicFindTab {
         if (!getFindTextField().getText().isEmpty() && !getReplaceTextField().getText().isEmpty()) {
             saveSelected(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
             updateBasicReplaceParamters();
-            FindViewController.getDefault().replaceMatchingElements(false, true);
+            FindViewController.getDefault().replaceMatchingElements(false, true, getZoomToSelection().isSelected());
         }
     }
 
