@@ -23,8 +23,6 @@ import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
-import au.gov.asd.tac.constellation.preferences.DeveloperPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -32,7 +30,6 @@ import org.openide.awt.ActionReferences;
 import org.openide.awt.UndoRedo;
 import org.openide.nodes.Node;
 import org.openide.util.NbBundle.Messages;
-import org.openide.util.NbPreferences;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
 import org.openide.windows.CloneableTopComponent;
@@ -194,13 +191,16 @@ public final class SimpleGraphTopComponent extends CloneableTopComponent impleme
         transactionCountText.setEditable(false);
         transactionCountText.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         transactionCountText.setText(org.openide.util.NbBundle.getMessage(SimpleGraphTopComponent.class, "SimpleGraphTopComponent.transactionCountText.text")); // NOI18N
+        transactionCountText.setEnabled(false);
 
         vertexCountText.setEditable(false);
         vertexCountText.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         vertexCountText.setText(org.openide.util.NbBundle.getMessage(SimpleGraphTopComponent.class, "SimpleGraphTopComponent.vertexCountText.text")); // NOI18N
+        vertexCountText.setEnabled(false);
 
         graphText.setEditable(false);
         graphText.setText(org.openide.util.NbBundle.getMessage(SimpleGraphTopComponent.class, "SimpleGraphTopComponent.graphText.text")); // NOI18N
+        graphText.setEnabled(false);
 
         org.openide.awt.Mnemonics.setLocalizedText(modificationCountersLabel, org.openide.util.NbBundle.getMessage(SimpleGraphTopComponent.class, "SimpleGraphTopComponent.modificationCountersLabel.text")); // NOI18N
 
@@ -209,6 +209,7 @@ public final class SimpleGraphTopComponent extends CloneableTopComponent impleme
         globalModificationCounterText.setEditable(false);
         globalModificationCounterText.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         globalModificationCounterText.setText(org.openide.util.NbBundle.getMessage(SimpleGraphTopComponent.class, "SimpleGraphTopComponent.globalModificationCounterText.text")); // NOI18N
+        globalModificationCounterText.setEnabled(false);
 
         org.openide.awt.Mnemonics.setLocalizedText(attributeModificationCounterLabel, org.openide.util.NbBundle.getMessage(SimpleGraphTopComponent.class, "SimpleGraphTopComponent.attributeModificationCounterLabel.text")); // NOI18N
 
@@ -217,14 +218,17 @@ public final class SimpleGraphTopComponent extends CloneableTopComponent impleme
         attributeModificationCounterText.setEditable(false);
         attributeModificationCounterText.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         attributeModificationCounterText.setText(org.openide.util.NbBundle.getMessage(SimpleGraphTopComponent.class, "SimpleGraphTopComponent.attributeModificationCounterText.text")); // NOI18N
+        attributeModificationCounterText.setEnabled(false);
 
         structureModificationCounterText.setEditable(false);
         structureModificationCounterText.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         structureModificationCounterText.setText(org.openide.util.NbBundle.getMessage(SimpleGraphTopComponent.class, "SimpleGraphTopComponent.structureModificationCounterText.text")); // NOI18N
+        structureModificationCounterText.setEnabled(false);
 
         schemaText.setEditable(false);
         schemaText.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         schemaText.setText(org.openide.util.NbBundle.getMessage(SimpleGraphTopComponent.class, "SimpleGraphTopComponent.schemaText.text")); // NOI18N
+        schemaText.setEnabled(false);
 
         org.openide.awt.Mnemonics.setLocalizedText(schemaLabel, org.openide.util.NbBundle.getMessage(SimpleGraphTopComponent.class, "SimpleGraphTopComponent.schemaLabel.text")); // NOI18N
 
@@ -235,10 +239,12 @@ public final class SimpleGraphTopComponent extends CloneableTopComponent impleme
         edgeCountText.setEditable(false);
         edgeCountText.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         edgeCountText.setText(org.openide.util.NbBundle.getMessage(SimpleGraphTopComponent.class, "SimpleGraphTopComponent.edgeCountText.text")); // NOI18N
+        edgeCountText.setEnabled(false);
 
         linkCountText.setEditable(false);
         linkCountText.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         linkCountText.setText(org.openide.util.NbBundle.getMessage(SimpleGraphTopComponent.class, "SimpleGraphTopComponent.linkCountText.text")); // NOI18N
+        linkCountText.setEnabled(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

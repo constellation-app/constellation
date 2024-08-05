@@ -141,26 +141,32 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
     @Override
     public void graphChanged(final GraphChangeEvent event) {
         final Graph graph = currentGraph;
-        if (graph != null) {
-            final ReadableGraph readableGraph = graph.getReadableGraph();
-            try {
-                final int cameraAttribute = VisualConcept.GraphAttribute.CAMERA.get(readableGraph);
+        if (graph == null) {
+            return;
+        }
 
-                final long thisGlobalModificationCounter = readableGraph.getGlobalModificationCounter();
-                final long thisCameraModificationCounter = readableGraph.getValueModificationCounter(cameraAttribute);
-                final long thisAttributeModificationCounter = readableGraph.getAttributeModificationCounter();
-
-                if (thisGlobalModificationCounter != lastGlobalModificationCounter) {
-                    if (lastGlobalModificationCounter == -1 || lastCameraModificationCounter == thisCameraModificationCounter || lastAttributeModificationCounter != thisAttributeModificationCounter) {
-                        updateQualityControlState(graph);
-                    }
-                    lastGlobalModificationCounter = thisGlobalModificationCounter;
-                    lastCameraModificationCounter = thisCameraModificationCounter;
-                    lastAttributeModificationCounter = thisAttributeModificationCounter;
-                }
-            } finally {
-                readableGraph.release();
+        try (final ReadableGraph readableGraph = graph.getReadableGraph()) {
+            final int cameraAttribute = VisualConcept.GraphAttribute.CAMERA.get(readableGraph);
+            if (cameraAttribute == Graph.NOT_FOUND) {
+                return;
             }
+
+            final long thisGlobalModificationCounter = readableGraph.getGlobalModificationCounter();
+            final long thisCameraModificationCounter = readableGraph.getValueModificationCounter(cameraAttribute);
+            final long thisAttributeModificationCounter = readableGraph.getAttributeModificationCounter();
+
+            if (thisGlobalModificationCounter == lastGlobalModificationCounter) {
+                return;
+            }
+            
+            if (lastGlobalModificationCounter == -1 || lastCameraModificationCounter == thisCameraModificationCounter || lastAttributeModificationCounter != thisAttributeModificationCounter) {
+                updateQualityControlState(graph);
+            }
+
+            lastGlobalModificationCounter = thisGlobalModificationCounter;
+            lastCameraModificationCounter = thisCameraModificationCounter;
+            lastAttributeModificationCounter = thisAttributeModificationCounter;
+
         }
     }
 
