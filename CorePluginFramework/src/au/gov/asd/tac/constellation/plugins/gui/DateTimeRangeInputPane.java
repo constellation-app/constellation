@@ -86,7 +86,7 @@ public final class DateTimeRangeInputPane extends Pane {
 
     private static final double CONTROLPANE_SPACING = 2;
 
-    private final String FONT_COLOR = JavafxStyleManager.isDarkTheme() ? "-fx-text-fill: #FFFFFF;" : "-fx-text-fill: #111111;";
+    private static final String FONT_COLOR = JavafxStyleManager.isDarkTheme() ? "-fx-text-fill: #FFFFFF;" : "-fx-text-fill: #111111;";
 
     private final ToggleGroup dateRangeGroup = new ToggleGroup();
 
@@ -123,19 +123,29 @@ public final class DateTimeRangeInputPane extends Pane {
         // The change listener for the absolute range controls.
         // This called (directly or indirectly) when anything in the absolute range area is clicked or changed.
         final ChangeListener<String> changed = (final ObservableValue<? extends String> observable, final String oldValue, final String newValue) -> {
-            if (!isAdjusting) {
-                try {
-                    final ZonedDateTime[] zdt = getAbsoluteRange(getZoneId());
-                    if (zdt.length > 0) {
-                        isAdjusting = true;
-                        parameter.setObjectValue(new DateTimeRange(zdt[0], zdt[1]));
-                    }
-                } catch (DateTimeException e) {
-                    // chew up and throw away date time exception, this results in datetime reverting back into
-                    // allowable range, ie if you enter 33 for hours, this will be thrown out and revert to 23.
-                } finally {
-                    Platform.runLater(() -> isAdjusting = false);
+            if (isAdjusting) {
+                return;
+            }
+
+            // Validate string
+            final DatePicker dp0 = datePickers.get(0);
+            final LocalDate dp0Localdate = dp0.getConverter().fromString(dp0.getEditor().getText());
+            if (dp0Localdate == null) {
+                dp0.getEditor().setText(dp0.getEditor().getText());
+                return;
+            }
+
+            try {
+                final ZonedDateTime[] zdt = getAbsoluteRange(getZoneId());
+                if (zdt.length > 0) {
+                    isAdjusting = true;
+                    parameter.setObjectValue(new DateTimeRange(zdt[0], zdt[1]));
                 }
+            } catch (DateTimeException e) {
+                // chew up and throw away date time exception, this results in datetime reverting back into
+                // allowable range, ie if you enter 33 for hours, this will be thrown out and revert to 23.
+            } finally {
+                Platform.runLater(() -> isAdjusting = false);
             }
         };
 
@@ -315,7 +325,7 @@ public final class DateTimeRangeInputPane extends Pane {
                     setVisible(parameter.isVisible());
                 }
                 default ->
-                    LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
+                    LOGGER.log(Level.INFO, "ignoring parameter change type {0}.", change);
             }
         }));
     }
@@ -406,7 +416,6 @@ public final class DateTimeRangeInputPane extends Pane {
             if (ld0 != null) {
                 final LocalTime lt0 = LocalTime.of(getSpinnerValue(0), getSpinnerValue(1), getSpinnerValue(2));
                 final ZonedDateTime zdt0 = ZonedDateTime.of(ld0, lt0, zi);
-
                 final DatePicker dp1 = datePickers.get(1);
                 final LocalDate dp1Localdate = dp1.getConverter().fromString(dp1.getEditor().getText());
                 final LocalDate ld1 = dp1Localdate != null ? dp1Localdate : dp1.getValue();
@@ -539,6 +548,7 @@ public final class DateTimeRangeInputPane extends Pane {
                 }
             }
         });
+
         dpLabel.setLabelFor(dp);
         final HBox dpBox = new HBox(dpLabel, dp);
         final HBox spinnerBox = new HBox(CONTROLPANE_SPACING / 2);
@@ -547,14 +557,27 @@ public final class DateTimeRangeInputPane extends Pane {
         final VBox picker = new VBox(dpBox, spinnerBox);
         picker.setStyle("-fx-padding:4; -fx-border-radius:4; -fx-border-color: grey;");
 
-        dp.getEditor().textProperty().addListener(changed);
-
-        dp.valueProperty().addListener((v, o, n) -> {
-            if (n == null) {
-                dp.setValue(o);
+        dp.getEditor().textProperty().addListener((ObservableValue<? extends String> v, String o, String n) -> {
+            if (n != null) {
+                LOGGER.log(Level.INFO, " is n empty {0}", n.isEmpty());
             }
+
+            if (n != null && n.isEmpty()) {
+                dp.getEditor().setText(o);
+            }
+
+            changed.changed(v, o, n);
+
         });
 
+        dp.valueProperty().addListener((v, o, n) -> {
+            dp.getStyleClass().remove("invalid-input");
+            dp.valueProperty().setValue(n);
+
+            if (n == null) {
+                dp.getStyleClass().add("invalid-input");
+            }
+        });
         datePickers.add(dp);
 
         return picker;
