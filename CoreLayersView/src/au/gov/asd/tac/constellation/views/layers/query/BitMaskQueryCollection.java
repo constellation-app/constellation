@@ -164,6 +164,14 @@ public class BitMaskQueryCollection {
         return bitMask;
     }
 
+    public long updateQueryBitmap(final long bitMask) {
+        long resultingBitmap = bitMask;
+        for (final BitMaskQuery updateQuery : updateQueries) {
+            resultingBitmap = updateQuery.combineBitmap(resultingBitmap);
+            }
+        return resultingBitmap;        
+    }
+    
     /**
      * Update the overall bit mask attribute and the attribute for which queries are currently active
      * 
@@ -171,15 +179,20 @@ public class BitMaskQueryCollection {
      * @param bitMaskAttributeId
      * @param visibleAttributeId
      */
-    public void updateBitMasks(final GraphWriteMethods graph, final int bitMaskAttributeId, final int visibleAttributeId) {
+    public void updateBitMasks(final GraphWriteMethods graph, final int bitMaskAttributeId, final int visibleAttributeId, boolean unionMode) {
         if (this.update(graph)) {
             final int elementCount = elementType.getElementCount(graph);
             for (int position = 0; position < elementCount; position++) {
                 final int elementId = elementType.getElement(graph, position);
                 index.writeInt(elementId);
                 final long bitMask = graph.getLongValue(bitMaskAttributeId, elementId);
-                final long updatedBitMask = updateBitMask(bitMask);
-                graph.setFloatValue(visibleAttributeId, elementId, (updatedBitMask & activeQueriesBitMask) == 0 ? 0.0F : 1.0F);
+                final long queryCombinedBitMask = updateQueryBitmap(bitMask) & activeQueriesBitMask;
+                final long unionResult = bitMask & activeQueriesBitMask;
+                if (unionMode) {
+                    graph.setFloatValue(visibleAttributeId, elementId, (unionResult == 0 && queryCombinedBitMask == 0)? 0.0F : 1.0F); // union logic - accepts any match
+                } else {
+                    graph.setFloatValue(visibleAttributeId, elementId, (unionResult | queryCombinedBitMask) != activeQueriesBitMask ? 0.0F : 1.0F); // intersection logic - must match with all
+                }
             }
         }
     }
