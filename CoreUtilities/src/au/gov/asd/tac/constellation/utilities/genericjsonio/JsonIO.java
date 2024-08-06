@@ -77,6 +77,13 @@ public class JsonIO {
         throw new IllegalStateException("Invalid call to private default constructor");
     }
 
+     public static void saveJsonPreferences(final Optional<String> saveDir,
+            final Optional<String> filePrefix,
+            final Object rootNode,
+            final ObjectMapper mapper){
+         saveJsonPreferences(saveDir, filePrefix, rootNode, mapper, Optional.of(Boolean.FALSE));
+     }
+     
     /**
      * Save the supplied JSON data in a file, within an allocated subdirectory
      * of the users configuration directory. The filename can optionally be
@@ -124,7 +131,8 @@ public class JsonIO {
      * @param keyboardShortcut
      * provides or empty if no prefix to be provided
      *
-     */
+     */   
+     
     public static void saveJsonPreferences(final Optional<String> saveDir,
             final Optional<String> filePrefix,
             final Object rootNode,
@@ -274,7 +282,7 @@ public class JsonIO {
     public static void saveJsonPreferences(final Optional<String> saveDir,
             final Object rootNode,
             final ObjectMapper mapper) {
-        saveJsonPreferences(saveDir, Optional.empty(), rootNode, mapper, Optional.empty());
+        saveJsonPreferences(saveDir, Optional.empty(), rootNode, mapper);
     }
 
     /**
@@ -289,12 +297,12 @@ public class JsonIO {
      */
     public static void saveJsonPreferences(final Optional<String> saveDir,
             final Object rootNode) {
-        saveJsonPreferences(saveDir, Optional.empty(), rootNode, OBJECT_MAPPER, Optional.empty());
+        saveJsonPreferences(saveDir, Optional.empty(), rootNode, OBJECT_MAPPER);
     }
     
     public static void saveJsonPreferencesWithKeyboardShortcut(final Optional<String> saveDir,
             final Object rootNode) {
-        saveJsonPreferences(saveDir, Optional.empty(), rootNode, OBJECT_MAPPER, Optional.of(true));
+        saveJsonPreferences(saveDir, Optional.empty(), rootNode, OBJECT_MAPPER, Optional.of(Boolean.TRUE));
     }
 
     /**
@@ -312,7 +320,7 @@ public class JsonIO {
     public static void saveJsonPreferences(final Optional<String> saveDir,
             final Optional<String> filePrefix,
             final Object rootNode) {
-        saveJsonPreferences(saveDir, filePrefix, rootNode, OBJECT_MAPPER, Optional.empty());
+        saveJsonPreferences(saveDir, filePrefix, rootNode, OBJECT_MAPPER);
     }
 
     /**
