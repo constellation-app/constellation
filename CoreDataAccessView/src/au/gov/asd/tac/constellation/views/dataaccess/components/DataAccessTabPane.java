@@ -535,15 +535,6 @@ public class DataAccessTabPane implements PreferenceChangeListener {
         final DateTimeRange range = getQueryPhasePane(tab).getGlobalParametersPane().getParams()
                 .getDateTimeRangeValue(CoreGlobalParameters.DATETIME_RANGE_PARAMETER_ID);
 
-        if (range.getZonedStartEnd()[0] == null || range.getZonedStartEnd()[1] == null) {
-            return false;
-        }
-
-        if (range.getZonedStartEnd()[0].toLocalDateTime().toLocalDate() == LocalDate.MAX
-                || range.getZonedStartEnd()[1].toLocalDateTime().toLocalDate() == LocalDate.MIN) {
-            return false;
-        }
-
         return !range.getZonedStartEnd()[0].isAfter(range.getZonedStartEnd()[1]);
     }
 }
