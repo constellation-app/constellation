@@ -29,9 +29,7 @@ import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -56,14 +54,6 @@ public class DateTimeRangeInputPaneNGTest {
         } catch (final TimeoutException ex) {
             LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
         }
-    }
-
-    @BeforeMethod
-    public void setUpMethod() throws Exception {
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
     }
 
     /**
@@ -96,8 +86,8 @@ public class DateTimeRangeInputPaneNGTest {
         final ZonedDateTime zdt0 = zdt1.minus(period);
         instance.setPeriod(period, zi);
 
-        assertEquals(instance.datePickers.get(0).getValue(), zdt0.toLocalDate());
-        assertEquals(instance.datePickers.get(1).getValue(), zdt1.toLocalDate());
+        assertEquals(instance.getDatePickers().get(0).getValue(), zdt0.toLocalDate());
+        assertEquals(instance.getDatePickers().get(1).getValue(), zdt1.toLocalDate());
     }
 
     /**
@@ -113,16 +103,16 @@ public class DateTimeRangeInputPaneNGTest {
         // Create zoned date times one month apart
         final Period period = Period.ofMonths(1);
         final ZoneId zi = ZoneId.systemDefault();
-        
+
         final ZonedDateTime zdt1 = ZonedDateTime.now(zi);
         final ZonedDateTime zdt0 = zdt1.minus(period);
-        
+
         instance.setAbsolute(zdt0, zdt1);
-        
+
         // Assert individual date pcikers have correct value
-        assertEquals(instance.datePickers.get(0).getValue(), zdt0.toLocalDate());
-        assertEquals(instance.datePickers.get(1).getValue(), zdt1.toLocalDate());
-        
+        assertEquals(instance.getDatePickers().get(0).getValue(), zdt0.toLocalDate());
+        assertEquals(instance.getDatePickers().get(1).getValue(), zdt1.toLocalDate());
+
         // Assert results of getAbsoluteRange match too
         final ZonedDateTime[] result = instance.getAbsoluteRange(zi);
         // Converting to local date as some precision in the milliseconds is lost 
@@ -136,13 +126,13 @@ public class DateTimeRangeInputPaneNGTest {
     @Test
     public void testClearRangeButtons() {
         System.out.println("clearRangeButtons");
-        
+
         final PluginParameter parameter = new PluginParameter<>(new DateTimeRangeParameterValue(), new DateTimeRangeParameterType(), DateTimeRangeParameterType.ID);
         final DateTimeRangeInputPane instance = new DateTimeRangeInputPane(parameter);
 
         instance.clearRangeButtons();
         // Assert all toggles are false now
-        for(final Toggle button : instance.dateRangeGroup.getToggles()){
+        for (final Toggle button : instance.getDateRangeGroup().getToggles()) {
             assertFalse(button.isSelected());
         }
     }

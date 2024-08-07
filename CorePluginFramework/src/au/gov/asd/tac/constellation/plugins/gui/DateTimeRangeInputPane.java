@@ -88,7 +88,7 @@ public final class DateTimeRangeInputPane extends Pane {
 
     private static final String FONT_COLOR = JavafxStyleManager.isDarkTheme() ? "-fx-text-fill: #FFFFFF;" : "-fx-text-fill: #111111;";
 
-    protected final ToggleGroup dateRangeGroup = new ToggleGroup();
+    private final ToggleGroup dateRangeGroup = new ToggleGroup();
 
     private final HBox relPane;
     private final TitledPane absPane;
@@ -97,8 +97,8 @@ public final class DateTimeRangeInputPane extends Pane {
     // As the elements get created (in the correct order), they'll be added here.
     // This keeps them easily accessible.
     private final List<TimeRangeToggleButton> relativeButtons;
-    protected final List<javafx.scene.control.DatePicker> datePickers;
-    protected final List<Spinner<Integer>> timeSpinners;
+    private final List<javafx.scene.control.DatePicker> datePickers;
+    private final List<Spinner<Integer>> timeSpinners;
     private final ComboBox<String> timeZonesCombo;
 
     // True if the UI elements are being set behind the scenes.
@@ -629,6 +629,16 @@ public final class DateTimeRangeInputPane extends Pane {
         timeSpinners.add(spinner);
 
         return vbox;
+    }
+
+    // For testing
+    public List<DatePicker> getDatePickers() {
+        return datePickers;
+    }
+
+    // For testing
+    public ToggleGroup getDateRangeGroup() {
+        return dateRangeGroup;
     }
 
     /**
