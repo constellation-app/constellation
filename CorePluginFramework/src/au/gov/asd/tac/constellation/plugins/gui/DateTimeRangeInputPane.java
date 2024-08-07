@@ -127,18 +127,10 @@ public final class DateTimeRangeInputPane extends Pane {
                 return;
             }
 
-            // Validate string
-            final DatePicker dp0 = datePickers.get(0);
-            final LocalDate dp0Localdate = dp0.getConverter().fromString(dp0.getEditor().getText());
-            if (dp0Localdate == null) {
-                dp0.getEditor().setText(dp0.getEditor().getText());
-                return;
-            }
-
             try {
                 final ZonedDateTime[] zdt = getAbsoluteRange(getZoneId());
+                isAdjusting = true;
                 if (zdt.length > 0) {
-                    isAdjusting = true;
                     parameter.setObjectValue(new DateTimeRange(zdt[0], zdt[1]));
                 }
             } catch (DateTimeException e) {
@@ -406,8 +398,10 @@ public final class DateTimeRangeInputPane extends Pane {
      * @return A two-element array containing the start and end datetimes, or null if data entry is incomplete.
      */
     public ZonedDateTime[] getAbsoluteRange(final ZoneId zi) {
-        // This gets called with values and throws exceptions depending on spinner values which must be handled
-        // Check for nulls in case the values haven't been set yet.
+        // By default set range to be invalid (lower bound to MAX, upper bound to MIN)
+        ZonedDateTime zdt0 = ZonedDateTime.of(LocalDate.MAX, LocalTime.MAX, zi);
+        ZonedDateTime zdt1 = ZonedDateTime.of(LocalDate.MIN, LocalTime.MIN, zi);
+
         if (zi != null) {
             final DatePicker dp0 = datePickers.get(0);
             final LocalDate dp0Localdate = dp0.getConverter().fromString(dp0.getEditor().getText());
@@ -415,20 +409,21 @@ public final class DateTimeRangeInputPane extends Pane {
 
             if (ld0 != null) {
                 final LocalTime lt0 = LocalTime.of(getSpinnerValue(0), getSpinnerValue(1), getSpinnerValue(2));
-                final ZonedDateTime zdt0 = ZonedDateTime.of(ld0, lt0, zi);
-                final DatePicker dp1 = datePickers.get(1);
-                final LocalDate dp1Localdate = dp1.getConverter().fromString(dp1.getEditor().getText());
-                final LocalDate ld1 = dp1Localdate != null ? dp1Localdate : dp1.getValue();
+                zdt0 = ZonedDateTime.of(ld0, lt0, zi);
+            }
 
-                if (ld1 != null) {
-                    final LocalTime lt1 = LocalTime.of(getSpinnerValue(3), getSpinnerValue(4), getSpinnerValue(5));
-                    final ZonedDateTime zdt1 = ZonedDateTime.of(ld1, lt1, zi);
+            final DatePicker dp1 = datePickers.get(1);
+            final LocalDate dp1Localdate = dp1.getConverter().fromString(dp1.getEditor().getText());
+            final LocalDate ld1 = dp1Localdate != null ? dp1Localdate : dp1.getValue();
 
-                    return new ZonedDateTime[]{zdt0, zdt1};
-                }
+            if (ld1 != null) {
+                final LocalTime lt1 = LocalTime.of(getSpinnerValue(3), getSpinnerValue(4), getSpinnerValue(5));
+                zdt1 = ZonedDateTime.of(ld1, lt1, zi);
             }
         }
-        return new ZonedDateTime[]{};
+        
+        return new ZonedDateTime[]{zdt0, zdt1};
+
     }
 
     /**
@@ -570,7 +565,7 @@ public final class DateTimeRangeInputPane extends Pane {
             dp.getStyleClass().remove("invalid-input");
             dp.valueProperty().setValue(n);
 
-            if (n == null) {
+            if (n == null) { // || n == LocalDate.MIN
                 dp.getStyleClass().add("invalid-input");
             }
         });

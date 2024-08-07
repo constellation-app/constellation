@@ -28,6 +28,7 @@ import au.gov.asd.tac.constellation.views.dataaccess.panes.DataSourceTitledPane;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.QueryPhasePane;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.tasks.WaitForQueriesToCompleteTask;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -137,9 +138,9 @@ public class DataAccessTabPane implements PreferenceChangeListener {
         if (pluginsRetrieved != null && pluginsRetrieved.equals(plugins)) {
             return;
         }
-        
+
         setPlugins(pluginsRetrieved);
-        
+
         for (final Tab tab : tabPane.getTabs()) {
             getQueryPhasePane(tab).updatePlugins(this.plugins, getDataAccessPane());
         }
@@ -533,6 +534,15 @@ public class DataAccessTabPane implements PreferenceChangeListener {
     public static boolean validateTabTimeRange(final Tab tab) {
         final DateTimeRange range = getQueryPhasePane(tab).getGlobalParametersPane().getParams()
                 .getDateTimeRangeValue(CoreGlobalParameters.DATETIME_RANGE_PARAMETER_ID);
+
+        if (range.getZonedStartEnd()[0] == null || range.getZonedStartEnd()[1] == null) {
+            return false;
+        }
+
+        if (range.getZonedStartEnd()[0].toLocalDateTime().toLocalDate() == LocalDate.MAX
+                || range.getZonedStartEnd()[1].toLocalDateTime().toLocalDate() == LocalDate.MIN) {
+            return false;
+        }
 
         return !range.getZonedStartEnd()[0].isAfter(range.getZonedStartEnd()[1]);
     }
