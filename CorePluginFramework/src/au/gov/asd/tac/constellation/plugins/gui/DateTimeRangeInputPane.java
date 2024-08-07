@@ -565,7 +565,7 @@ public final class DateTimeRangeInputPane extends Pane {
             dp.getStyleClass().remove("invalid-input");
             dp.valueProperty().setValue(n);
 
-            if (n == null) { // || n == LocalDate.MIN
+            if (n == null) {
                 dp.getStyleClass().add("invalid-input");
             }
         });
