@@ -88,7 +88,7 @@ public final class DateTimeRangeInputPane extends Pane {
 
     private static final String FONT_COLOR = JavafxStyleManager.isDarkTheme() ? "-fx-text-fill: #FFFFFF;" : "-fx-text-fill: #111111;";
 
-    private final ToggleGroup dateRangeGroup = new ToggleGroup();
+    protected final ToggleGroup dateRangeGroup = new ToggleGroup();
 
     private final HBox relPane;
     private final TitledPane absPane;

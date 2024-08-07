@@ -24,8 +24,10 @@ import java.time.ZonedDateTime;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.control.Toggle;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -128,15 +130,20 @@ public class DateTimeRangeInputPaneNGTest {
         assertEquals(result[1].toLocalDate(), zdt1.toLocalDate());
     }
 
-//    /**
-//     * Test of clearRangeButtons method, of class DateTimeRangeInputPane.
-//     */
-//    @Test
-//    public void testClearRangeButtons() {
-//        System.out.println("clearRangeButtons");
-//        DateTimeRangeInputPane instance = null;
-//        instance.clearRangeButtons();
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
+    /**
+     * Test of clearRangeButtons method, of class DateTimeRangeInputPane.
+     */
+    @Test
+    public void testClearRangeButtons() {
+        System.out.println("clearRangeButtons");
+        
+        final PluginParameter parameter = new PluginParameter<>(new DateTimeRangeParameterValue(), new DateTimeRangeParameterType(), DateTimeRangeParameterType.ID);
+        final DateTimeRangeInputPane instance = new DateTimeRangeInputPane(parameter);
+
+        instance.clearRangeButtons();
+        // Assert all toggles are false now
+        for(final Toggle button : instance.dateRangeGroup.getToggles()){
+            assertFalse(button.isSelected());
+        }
+    }
 }
