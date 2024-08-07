@@ -97,8 +97,8 @@ public final class DateTimeRangeInputPane extends Pane {
     // As the elements get created (in the correct order), they'll be added here.
     // This keeps them easily accessible.
     private final List<TimeRangeToggleButton> relativeButtons;
-    private final List<javafx.scene.control.DatePicker> datePickers;
-    private final List<Spinner<Integer>> timeSpinners;
+    protected final List<javafx.scene.control.DatePicker> datePickers;
+    protected final List<Spinner<Integer>> timeSpinners;
     private final ComboBox<String> timeZonesCombo;
 
     // True if the UI elements are being set behind the scenes.
@@ -421,7 +421,7 @@ public final class DateTimeRangeInputPane extends Pane {
                 zdt1 = ZonedDateTime.of(ld1, lt1, zi);
             }
         }
-        
+
         return new ZonedDateTime[]{zdt0, zdt1};
 
     }
