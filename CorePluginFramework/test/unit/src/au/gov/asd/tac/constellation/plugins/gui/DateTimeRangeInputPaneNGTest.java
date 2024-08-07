@@ -21,7 +21,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRangeParame
 import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -76,6 +75,7 @@ public class DateTimeRangeInputPaneNGTest {
         final DateTimeRangeInputPane instance = new DateTimeRangeInputPane(parameter);
 
         final ZoneId zi = ZoneId.systemDefault();
+
         final int[] daysToTest = {1, 2, 3, 4, 7, 14}; // Matches options on pane's relativeButtons
         for (int day : daysToTest) {
             testSetPeriodHelper(0, day, zi, instance);
@@ -98,35 +98,36 @@ public class DateTimeRangeInputPaneNGTest {
         assertEquals(instance.datePickers.get(1).getValue(), zdt1.toLocalDate());
     }
 
-//    /**
-//     * Test of setAbsolute method, of class DateTimeRangeInputPane.
-//     */
-//    @Test
-//    public void testSetAbsolute() {
-//        System.out.println("setAbsolute");
-//        ZonedDateTime zdt0 = null;
-//        ZonedDateTime zdt1 = null;
-//        DateTimeRangeInputPane instance = null;
-//        instance.setAbsolute(zdt0, zdt1);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getAbsoluteRange method, of class DateTimeRangeInputPane.
-//     */
-//    @Test
-//    public void testGetAbsoluteRange() {
-//        System.out.println("getAbsoluteRange");
-//        ZoneId zi = null;
-//        DateTimeRangeInputPane instance = null;
-//        ZonedDateTime[] expResult = null;
-//        ZonedDateTime[] result = instance.getAbsoluteRange(zi);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
+    /**
+     * Test of setAbsolute method, of class DateTimeRangeInputPane.
+     */
+    @Test
+    public void testSetAbsolute() {
+        System.out.println("setAbsolute");
+
+        final PluginParameter parameter = new PluginParameter<>(new DateTimeRangeParameterValue(), new DateTimeRangeParameterType(), DateTimeRangeParameterType.ID);
+        final DateTimeRangeInputPane instance = new DateTimeRangeInputPane(parameter);
+
+        // Create zoned date times one month apart
+        final Period period = Period.ofMonths(1);
+        final ZoneId zi = ZoneId.systemDefault();
+        
+        final ZonedDateTime zdt1 = ZonedDateTime.now(zi);
+        final ZonedDateTime zdt0 = zdt1.minus(period);
+        
+        instance.setAbsolute(zdt0, zdt1);
+        
+        // Assert individual date pcikers have correct value
+        assertEquals(instance.datePickers.get(0).getValue(), zdt0.toLocalDate());
+        assertEquals(instance.datePickers.get(1).getValue(), zdt1.toLocalDate());
+        
+        // Assert results of getAbsoluteRange match too
+        final ZonedDateTime[] result = instance.getAbsoluteRange(zi);
+        // Converting to local date as some precision in the milliseconds is lost 
+        assertEquals(result[0].toLocalDate(), zdt0.toLocalDate());
+        assertEquals(result[1].toLocalDate(), zdt1.toLocalDate());
+    }
+
 //    /**
 //     * Test of clearRangeButtons method, of class DateTimeRangeInputPane.
 //     */
