@@ -317,7 +317,7 @@ public final class DateTimeRangeInputPane extends Pane {
                     setVisible(parameter.isVisible());
                 }
                 default ->
-                    LOGGER.log(Level.INFO, "ignoring parameter change type {0}.", change);
+                    LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
             }
         }));
     }
@@ -556,9 +556,8 @@ public final class DateTimeRangeInputPane extends Pane {
             if (n != null && n.isEmpty()) {
                 dp.getEditor().setText(o);
             }
-
+            
             changed.changed(v, o, n);
-
         });
 
         dp.valueProperty().addListener((v, o, n) -> {

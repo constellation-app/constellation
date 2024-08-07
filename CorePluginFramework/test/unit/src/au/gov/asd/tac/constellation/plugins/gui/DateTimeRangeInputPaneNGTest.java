@@ -18,16 +18,20 @@ package au.gov.asd.tac.constellation.plugins.gui;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRangeParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRangeParameterType.DateTimeRangeParameterValue;
+import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Toggle;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -39,6 +43,7 @@ import org.testng.annotations.Test;
 public class DateTimeRangeInputPaneNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(DateTimeRangeInputPaneNGTest.class.getName());
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -135,5 +140,42 @@ public class DateTimeRangeInputPaneNGTest {
         for (final Toggle button : instance.getDateRangeGroup().getToggles()) {
             assertFalse(button.isSelected());
         }
+    }
+
+    @Test
+    public void testDatePickerFuncitions() {
+        System.out.println("datePickerFuncitions");
+
+        final PluginParameter parameter = new PluginParameter<>(new DateTimeRangeParameterValue(), new DateTimeRangeParameterType(), DateTimeRangeParameterType.ID);
+        final DateTimeRangeInputPane instance = new DateTimeRangeInputPane(parameter);
+
+        final DatePicker datePicker = instance.getDatePickers().get(0);
+
+        final String validDate = "2000-01-01";
+        final String emptyString = "";
+        final String invalideDate = "invalid";
+
+        // Assert valid set value is actually set
+        final LocalDate expected = LocalDate.MAX;
+        datePicker.setValue(expected);
+        assertEquals(datePicker.getValue(), expected);
+
+        // Assert null value is set
+        datePicker.setValue(null);
+        assertNull(datePicker.getValue());
+
+        // Assert when valid text value is set, then empty, vlaue remains as original valid text
+        datePicker.getEditor().setText(validDate);
+        assertEquals(datePicker.getEditor().getText(), validDate);
+        datePicker.getEditor().setText("");
+        assertEquals(datePicker.getEditor().getText(), validDate);
+
+        // Assert valid date string is correclty converted to local date
+        final LocalDate expectedDate = LocalDate.parse(validDate, DATE_FORMATTER);
+        assertEquals(datePicker.getConverter().fromString(validDate), expectedDate);
+
+        // Assert null is returned from empty and invalid date string
+        assertNull(datePicker.getConverter().fromString(emptyString));
+        assertNull(datePicker.getConverter().fromString(invalideDate));
     }
 }
