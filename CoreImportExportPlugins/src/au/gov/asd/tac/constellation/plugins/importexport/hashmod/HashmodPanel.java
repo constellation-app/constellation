@@ -97,7 +97,7 @@ public class HashmodPanel extends javax.swing.JPanel {
         final String[] fileList = filesList.split(",");
         for (final String file : fileList) {
             if (numChainedHashmods < 10) {
-                chainedHashmods[numChainedHashmods] = new Hashmod(file);
+                chainedHashmods[numChainedHashmods] = new Hashmod(file.trim());
                 numChainedHashmods++;
                 isChainedHashmods = true;
             }

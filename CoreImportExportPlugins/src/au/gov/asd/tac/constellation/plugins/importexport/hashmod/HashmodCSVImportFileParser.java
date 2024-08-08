@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.hashmod;
 
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -23,6 +24,7 @@ import java.util.List;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.openide.NotifyDescriptor;
 
 /**
  * A HashmodCSVImportFileParser implements an ImportFileParser that can parse
@@ -49,6 +51,9 @@ public class HashmodCSVImportFileParser {
 
                 results.add(line);
             }
+        } catch (Exception ex) {
+            NotifyDisplayer.display(String.format("Error detected for file %s",
+                    input.getFile().getPath()), NotifyDescriptor.ERROR_MESSAGE);
         }
 
         return results;
