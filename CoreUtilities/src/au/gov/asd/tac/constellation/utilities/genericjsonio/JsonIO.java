@@ -76,14 +76,7 @@ public class JsonIO {
     private JsonIO() {
         throw new IllegalStateException("Invalid call to private default constructor");
     }
-
-     public static void saveJsonPreferences(final Optional<String> saveDir,
-            final Optional<String> filePrefix,
-            final Object rootNode,
-            final ObjectMapper mapper){
-         saveJsonPreferences(saveDir, filePrefix, rootNode, mapper, Optional.of(Boolean.FALSE));
-     }
-     
+   
     /**
      * Save the supplied JSON data in a file, within an allocated subdirectory
      * of the users configuration directory. The filename can optionally be
@@ -282,7 +275,7 @@ public class JsonIO {
     public static void saveJsonPreferences(final Optional<String> saveDir,
             final Object rootNode,
             final ObjectMapper mapper) {
-        saveJsonPreferences(saveDir, Optional.empty(), rootNode, mapper);
+        saveJsonPreferences(saveDir, Optional.empty(), rootNode, mapper, Optional.of(Boolean.FALSE));
     }
 
     /**
@@ -297,7 +290,7 @@ public class JsonIO {
      */
     public static void saveJsonPreferences(final Optional<String> saveDir,
             final Object rootNode) {
-        saveJsonPreferences(saveDir, Optional.empty(), rootNode, OBJECT_MAPPER);
+        saveJsonPreferences(saveDir, Optional.empty(), rootNode, OBJECT_MAPPER, Optional.of(Boolean.FALSE));
     }
     
     public static void saveJsonPreferencesWithKeyboardShortcut(final Optional<String> saveDir,
@@ -320,7 +313,7 @@ public class JsonIO {
     public static void saveJsonPreferences(final Optional<String> saveDir,
             final Optional<String> filePrefix,
             final Object rootNode) {
-        saveJsonPreferences(saveDir, filePrefix, rootNode, OBJECT_MAPPER);
+        saveJsonPreferences(saveDir, filePrefix, rootNode, OBJECT_MAPPER, Optional.of(Boolean.FALSE));
     }
 
     /**
