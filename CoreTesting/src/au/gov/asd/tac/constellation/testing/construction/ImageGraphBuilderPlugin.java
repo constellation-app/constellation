@@ -186,10 +186,11 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
         int prevWidth = 0;
             
         for (final BufferedImage image : images) {
-            // add image to the right of the prev one
-            if (w > 0) {
-                prevWidth = w + prevWidth;
-            }
+            // Currently, multiple images will be added on top of the prev one
+            // Uncomment the 3 lines below to add image to the right of prev one
+            //if (w > 0) {
+            //    prevWidth = w + prevWidth;
+            //}
             w = image.getWidth();
             final int h = image.getHeight();
 
