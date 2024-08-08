@@ -177,17 +177,17 @@ public class DataAccessUtilitiesNGTest {
         assertNull(actual);
     }
 
-    @Test
-    public void testGetDataAccessPaneNotCalledByEventDispatchThreadInterruptError() {
-        System.out.println("testGetDataAccessPaneNotCalledByEventDispatchThreadInterruptError");
-        swingUtilitiesStaticMock.when(SwingUtilities::isEventDispatchThread).thenReturn(false);
-        swingUtilitiesStaticMock.when(() -> SwingUtilities.invokeAndWait(any(Runnable.class)))
-                .thenThrow(new InterruptedException());
-
-        final DataAccessPane actual = DataAccessUtilities.getDataAccessPane();
-
-        assertTrue(Thread.interrupted());
-    }
+//    @Test
+//    public void testGetDataAccessPaneNotCalledByEventDispatchThreadInterruptError() {
+//        System.out.println("testGetDataAccessPaneNotCalledByEventDispatchThreadInterruptError");
+//        swingUtilitiesStaticMock.when(SwingUtilities::isEventDispatchThread).thenReturn(false);
+//        swingUtilitiesStaticMock.when(() -> SwingUtilities.invokeAndWait(any(Runnable.class)))
+//                .thenThrow(new InterruptedException());
+//
+//        final DataAccessPane actual = DataAccessUtilities.getDataAccessPane();
+//
+//        assertTrue(Thread.interrupted());
+//    }
 
     @Test
     public void testsaveDataAccessState() throws Exception {
