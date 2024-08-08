@@ -191,7 +191,7 @@ public final class HashmodAction implements ActionListener {
                 final int vxId = vxOrder[j];
 
                 keyValue = wg.getObjectValue(attributeValues[0], vxId);
-                if (keys.containsKey(keyValue.toUpperCase())) {
+                if (keyValue!= null && keys.containsKey(keyValue.toUpperCase())) {
                     numberSuccessful++;
                     for (i = 1; i < attrCount; i++) {
                         // do not add attributes if value is default 0
@@ -327,7 +327,7 @@ public final class HashmodAction implements ActionListener {
             }
             if (isChainedHashmods && numChainedHashmods >= 2) {
                 for (int i = 1; i < numChainedHashmods; i++) {
-                    HashmodAction.run(wg, interaction, chainedHashmods[i], false, false, false, createAttributes);
+                    HashmodAction.run(wg, interaction, chainedHashmods[i], createVertices, createTransactions, true, createAttributes);
                 }
             }
         }
