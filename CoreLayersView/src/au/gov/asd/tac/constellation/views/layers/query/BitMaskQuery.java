@@ -111,7 +111,7 @@ public class BitMaskQuery {
 
     public long combineBitmap(final long original) {
         if (result != null && result.readBoolean()) {
-            return original | (long) Math.pow(2.0, bitIndex); // Set the appropriate bit in the result
+            return original | (long) Math.pow(2.0, bitIndex - 1); // Set the appropriate bit in the result
         } else {
             return original; // No change for inactive query
         }        

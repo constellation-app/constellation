@@ -168,7 +168,7 @@ public class BitMaskQueryCollection {
         long resultingBitmap = bitMask;
         for (final BitMaskQuery updateQuery : updateQueries) {
             resultingBitmap = updateQuery.combineBitmap(resultingBitmap);
-            }
+        }
         return resultingBitmap;        
     }
     
