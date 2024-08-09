@@ -364,7 +364,7 @@ public class QueryPhasePane extends VBox {
      * @return the children of the dataSourceList
      */
     protected ObservableList<Node> getDataSourceListChildren() {
-        synchronized (dataSourceList) {
+        synchronized (dataSourceList.getChildren()) {
             return dataSourceList.getChildren();
         }
     }
