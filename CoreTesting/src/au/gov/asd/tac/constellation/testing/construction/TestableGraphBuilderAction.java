@@ -29,7 +29,7 @@ import java.awt.event.ActionListener;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
-import static org.geotools.referencing.factory.ReferencingFactory.LOGGER;
+import java.util.logging.Logger;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -47,6 +47,8 @@ import org.openide.util.NbBundle;
 })
 @NbBundle.Messages("CTL_TestableGraphBuilderAction=Testable Graph Builder")
 public final class TestableGraphBuilderAction implements ActionListener {
+
+    private static final Logger LOGGER = Logger.getLogger(TestableGraphBuilderAction.class.getName());
 
     @Override
     public void actionPerformed(final ActionEvent ev) {
