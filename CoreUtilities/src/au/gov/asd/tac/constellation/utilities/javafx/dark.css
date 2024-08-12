@@ -273,6 +273,10 @@
     -fx-border-color: #e0e0e0;
 }
 
+.invalid-input {
+    -fx-control-inner-background: #8a1d1d;
+}
+
 #error {
     -fx-text-fill: #DE2446;
 }

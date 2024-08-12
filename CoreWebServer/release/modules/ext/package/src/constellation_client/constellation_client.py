@@ -760,7 +760,9 @@ class Constellation:
             self.port = _DEFAULT_PORT
 
 
-def _get_rest(rest : str = None ) -> tuple[dict, str]:
+# Function that finds the rest secret file with the given path (path optional). Returns dictionary of rest secret's data and path the rest file
+# Return annotation not compatible with python 3.6: -> tuple[dict, str]
+def _get_rest(rest : str = None):
     """Get data from the file created by the CONSTELLATION HTTP REST server.
 
     :param rest: The file to read the REST secret from. The CONSTELLATION default filename is used if not specified.
