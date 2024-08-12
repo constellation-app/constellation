@@ -1,6 +1,10 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2024-08-12 Default Zoom In and Zoom Out Shortcuts Have Changed
+<p> Default keyboard shortcuts for zooming in and zooming out of the graph view have changed.</p>
+<p> They are now CTRL - and CTRL = respectively</p>
+
 == 2024-07-05 Added Zoom to Selection to Find View
 <p> Added a "Zoom to Selection" checkbox to the Find View. Having this selected will make the graph zoom in to the results found.</p>
 
