@@ -26,7 +26,6 @@ import static au.gov.asd.tac.constellation.plugins.parameters.types.FileParamete
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.io.File;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -294,18 +293,17 @@ public class FileInputPane extends HBox {
 
         if (extensionFilter != null) {
             // Add a file filter for all registered exportable file types.
-            List<String> extensions = extensionFilter.getExtensions();
-            
             fileChooserBuilder = fileChooserBuilder.addFileFilter(new FileFilter() {
                 @Override
                 public boolean accept(final File file) {
                     final String name = file.getName();
-                    String ext = "";
-                    int dotIndex = name.lastIndexOf('.');
-                    if (dotIndex > -1) {
-                        ext = name.substring(dotIndex).toLowerCase();
-                    }
-                    return (file.isFile() && extensions.contains(ext)) || file.isDirectory();
+                    final String ext = name.lastIndexOf('.') > -1
+                            ? name.substring(name.lastIndexOf('.')).toLowerCase()
+                            : "" ;
+                    final boolean isValidExtension = extensionFilter.getExtensions() != null 
+                            ? extensionFilter.getExtensions().contains(ext)
+                            : true;
+                    return (file.isFile() && isValidExtension) || file.isDirectory();
                 }
 
                 @Override

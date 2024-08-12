@@ -32,6 +32,7 @@ import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
@@ -81,6 +82,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
     private static final Logger LOGGER = Logger.getLogger(ImageGraphBuilderPlugin.class.getName());
 
     public static final String IMAGE_FILE_PARAMETER_ID = PluginParameter.buildId(ImageGraphBuilderPlugin.class, "image_file");
+    public static final String ADD_RIGHT_PARAMETER_ID = PluginParameter.buildId(ImageGraphBuilderPlugin.class, "add_right");
 
     @Override
     public PluginParameters createParameters() {
@@ -93,6 +95,11 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
                 "Image Files (*" + FileExtensionConstants.JPG + ";*" + FileExtensionConstants.GIF + ";*" + FileExtensionConstants.PNG + ")",
                 FileExtensionConstants.PNG, FileExtensionConstants.JPG, FileExtensionConstants.GIF));
         parameters.addParameter(imageFileParameter);
+        final PluginParameter<BooleanParameterType.BooleanParameterValue> addImagesRight = BooleanParameterType.build(ADD_RIGHT_PARAMETER_ID);
+        addImagesRight.setName("Add images to the right");
+        addImagesRight.setDescription("Add multiple images to the right");
+        addImagesRight.setBooleanValue(false);
+        parameters.addParameter(addImagesRight);
 
         return parameters;
     }
@@ -184,13 +191,14 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
         int frame = 0;
         int w = 0;
         int prevWidth = 0;
+        final boolean addRight = (boolean) parameters.getObjectValue(ADD_RIGHT_PARAMETER_ID);
             
         for (final BufferedImage image : images) {
             // Currently, multiple images will be added on top of the prev one
             // Uncomment the 3 lines below to add image to the right of prev one
-            //if (w > 0) {
-            //    prevWidth = w + prevWidth;
-            //}
+            if (w > 0 && addRight) {
+                prevWidth = w + prevWidth;
+            }
             w = image.getWidth();
             final int h = image.getHeight();
 

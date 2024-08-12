@@ -386,11 +386,11 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
             final String[] names = s.split(SeparatorConstants.SEMICOLON);
             if (names.length > 1) {
                 if ((this.kind.equals(FileParameterKind.OPEN_MULTIPLE) && files.size() != names.length)) {
-                return "Wrong number of files";
+                    return "Wrong number of files";
                 } else {
                     return null;
                 }
-            } else {              
+            } else {
                 return (validationFile.isDirectory() || (validationFile.getParentFile() != null && validationFile.getParentFile().exists())) ? null : "The specified file path does not contain valid directories";
             }
         }
