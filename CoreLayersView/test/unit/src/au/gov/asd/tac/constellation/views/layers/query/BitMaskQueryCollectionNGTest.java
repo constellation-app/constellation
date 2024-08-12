@@ -50,12 +50,11 @@ import org.testng.annotations.Test;
  */
 public class BitMaskQueryCollectionNGTest {
 
-    private int layerMaskV, layerMaskT, layerVisibilityV, layerVisibilityT, selectedV, selectedT, vertIdAttr, vertexLabelAttribute, txnLabelAttribute;
+    private int layerMaskV, layerMaskT, layerVisibilityV, layerVisibilityT, selectedV, selectedT, vertexLabelAttribute, txnLabelAttribute;
     private int vxId1, vxId2, vxId3, vxId4, txId1, txId2, txId3;
     private Graph graph;
     private final BitMaskQueryCollection vxBitMaskCollection = new BitMaskQueryCollection(GraphElementType.VERTEX);
     private final BitMaskQueryCollection txBitMaskCollection = new BitMaskQueryCollection(GraphElementType.TRANSACTION);
-    LayersViewController lvcinstance = LayersViewController.getDefault().init(null);
     
     public BitMaskQueryCollectionNGTest() {
     }
@@ -92,8 +91,6 @@ public class BitMaskQueryCollectionNGTest {
             // add attributes
             int vertexIdentifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.ensure(wg);
             vertexLabelAttribute = VisualConcept.VertexAttribute.LABEL.ensure(wg);
-            vertIdAttr = VisualConcept.VertexAttribute.IDENTIFIER.ensure(wg);
-
             txnLabelAttribute = VisualConcept.TransactionAttribute.LABEL.ensure(wg);
 
             // Create LayerMask attributes
@@ -135,7 +132,7 @@ public class BitMaskQueryCollectionNGTest {
             wg.setBooleanValue(selectedV, vxId3, false);
             wg.setBooleanValue(selectedV, vxId4, false);
             
-            // Adding 2 Transactions - not selected, layer 1, visible
+            // Adding 3 Transactions - not selected, layer 1, visible
             txId1 = wg.addTransaction(vxId1, vxId2, true);
             wg.setIntValue(layerMaskT, txId1, 1);
             wg.setFloatValue(layerVisibilityT, txId1, 1.0f);
@@ -156,8 +153,6 @@ public class BitMaskQueryCollectionNGTest {
             Exceptions.printStackTrace(ex);
             Thread.currentThread().interrupt();
         }
-
-        
     }
 
     /**
@@ -252,31 +247,30 @@ public class BitMaskQueryCollectionNGTest {
                 Query selQuery2 = new Query(GraphElementType.VERTEX, "Label contains \"1\"");
                 Query selQuery3 = new Query(GraphElementType.TRANSACTION, "Label contains '.'");
                 
-                createLayer(wg, selQuery1, null, "Point5");
-                createLayer(wg, null, null, null);
-                createLayer(wg, null, null, null);
-                createLayer(wg, selQuery2, selQuery3, "One");
+                createLayer(wg, selQuery1, null, 1, "Point5");
+                createLayer(wg, null, null, 2, null);
+                createLayer(wg, null, null, 3, null);
+                createLayer(wg, selQuery2, selQuery3, 4, "One");
                 
-                changeLayerVisibility(wg, 1, true); // base/default layer
-                changeLayerVisibility(wg, 2, true); // query: v id .5
+                changeLayerVisibility(wg, 1, true); // query: v id .5
+                changeLayerVisibility(wg, 2, true);
                 changeLayerVisibility(wg, 3, true);
-                changeLayerVisibility(wg, 4, true);
-                changeLayerVisibility(wg, 5, true); // query: V Label 1 , T label .
+                changeLayerVisibility(wg, 4, true); // query: V Label 1 , T label .
 
                 // test union and intersection modes based only on allocated layers to each vertex
                 wg.setIntValue(layerMaskV, vxId1, 1); // base layer only
-                wg.setIntValue(layerMaskV, vxId2, 3); // layer 2
-                wg.setIntValue(layerMaskV, vxId3, 5); // layer 3
-                wg.setIntValue(layerMaskV, vxId4, 11); // layers 2 and 4
-                wg.setIntValue(layerMaskT, txId1, 7); // layers 2 and 3
-                wg.setIntValue(layerMaskT, txId2, 9); // layer 4
-                wg.setIntValue(layerMaskT, txId3, 17); // layer 5
+                wg.setIntValue(layerMaskV, vxId2, 3); // layer 1
+                wg.setIntValue(layerMaskV, vxId3, 5); // layer 2
+                wg.setIntValue(layerMaskV, vxId4, 11); // layers 1 and 3
+                wg.setIntValue(layerMaskT, txId1, 7); // layers 1 and 2
+                wg.setIntValue(layerMaskT, txId2, 9); // layer 3
+                wg.setIntValue(layerMaskT, txId3, 17); // layer 4
                 
                 System.out.println("\n==== UNION ELEMENT TEST ====");
 
-                sessionEdit(true, 10); // layers 2,4 selected, union mode
+                sessionEdit(true, 10); // layers 1,3 selected, union mode
                 
-                // direct allocation matches for any element on either layer 2 or 4 will be visible.
+                // direct allocation matches for any element on either layer 1 or 3 will be visible.
                 // union of results for visible vertices: vtx2, vtx4 , and txn1 txn2
                 
                 assertEquals(0.0f, wg.getFloatValue(layerVisibilityV, vxId1));
@@ -289,9 +283,9 @@ public class BitMaskQueryCollectionNGTest {
                 
                 System.out.println("\n==== INTERSECTION ELEMENT TEST ====");
 
-                sessionEdit(false, 10); // layers 2,4 selected, intersection mode
+                sessionEdit(false, 10); // layers 1,3 selected, intersection mode
                 
-                // direct allocation matches for any element on both layers (2 and 4) will be visible.
+                // direct allocation matches for any element on both layers (1 and 3) will be visible.
                 // intersection of results for visible elements:  vtx4
                 
                 assertEquals(0.0f, wg.getFloatValue(layerVisibilityV, vxId1));
@@ -321,19 +315,18 @@ public class BitMaskQueryCollectionNGTest {
                 wg.setIntValue(layerMaskT, txId2, 1); // base layer only
                 wg.setIntValue(layerMaskT, txId3, 1); // base layer only
                 
-                changeLayerVisibility(wg, 1, true); // base/default layer
-                changeLayerVisibility(wg, 2, true); // query: v id .5
+                changeLayerVisibility(wg, 1, true); // query: v id .5
+                changeLayerVisibility(wg, 2, true);
                 changeLayerVisibility(wg, 3, true);
-                changeLayerVisibility(wg, 4, true);
-                changeLayerVisibility(wg, 5, true); // query: V Label 1 , T label .
+                changeLayerVisibility(wg, 4, true); // query: V Label 1 , T label .
 
                 System.out.println("\n==== UNION QUERY TEST ====");
                 
-                sessionEdit(true, 30); // layers 2,3,4,5 selected, union mode
+                sessionEdit(true, 30); // layers 1,2,3,4 selected, union mode
                 
-                // Only query matches for any layer will be visible.
-                // vertex 1 matches layer 5 query, vertices 2 and 4 match layer 2 query
-                // transactions txn2 and txn3 match layer 5 query 
+                // Only the query matches for any layer will be visible.
+                // vertex 1 matches layer 4 query, vertices 2 and 4 match layer 1 query
+                // transactions txn2 and txn3 match layer 4 query 
                 // union of results for visible vertices: vtx1, vtx2, vtx4 , and txn2, txn3
                 
                 assertEquals(1.0f, wg.getFloatValue(layerVisibilityV, vxId1));
@@ -344,14 +337,14 @@ public class BitMaskQueryCollectionNGTest {
                 assertEquals(1.0f, wg.getFloatValue(layerVisibilityT, txId2));
                 assertEquals(1.0f, wg.getFloatValue(layerVisibilityT, txId3));
                 
-                wg.setIntValue(layerMaskV, vxId1, 3); // assign ro layer 2
-                wg.setIntValue(layerMaskV, vxId3, 3); // assign ro layer 2
-                wg.setIntValue(layerMaskT, txId1, 3); // assign to layer 2
-                wg.setIntValue(layerMaskT, txId3, 3); // assign to layer 2
+                wg.setIntValue(layerMaskV, vxId1, 3); // assign ro layer 1
+                wg.setIntValue(layerMaskV, vxId3, 3); // assign ro layer 1
+                wg.setIntValue(layerMaskT, txId1, 3); // assign to layer 1
+                wg.setIntValue(layerMaskT, txId3, 3); // assign to layer 1
                 
                 System.out.println("\n==== INTERSECTION QUERY TEST ====");
 
-                sessionEdit(false, 18); // layers 2 and 5 selected, intersection mode
+                sessionEdit(false, 18); // layers 1 and 4 selected, intersection mode
                 
                 // vertex 1 and txn 3 should be visible ... they are both assigned to layer 2, and both match a layer 5 query
                 // vertx 4 should also be visible as it passes the query for layer 2, and also the query for layer 5
@@ -428,23 +421,21 @@ public class BitMaskQueryCollectionNGTest {
                 .executeLater(GraphManager.getDefault().getActiveGraph());
     }
     
-    private void createLayer(GraphWriteMethods gwm, Query predefQuery, Query newTxQuery, String desc) {
-        final int layerCount = Math.max(txBitMaskCollection.getHighestQueryIndex(), vxBitMaskCollection.getHighestQueryIndex());
-
-        if (layerCount <= BitMaskQueryCollection.MAX_QUERY_AMT) {
+    private void createLayer(GraphWriteMethods gwm, Query predefQuery, Query newTxQuery, int layerNumber, String desc) {
+        if (layerNumber <= BitMaskQueryCollection.MAX_QUERY_AMT) {
             final Query vxQuery = new Query(GraphElementType.VERTEX, "");
-            vxBitMaskCollection.add(predefQuery != null ? predefQuery : vxQuery, layerCount + 1, desc);
+            vxBitMaskCollection.add(predefQuery != null ? predefQuery : vxQuery, layerNumber, desc);
             if (predefQuery != null) {
                 IntValue iv = new IntValue();
-                iv.writeInt(layerCount + 1);
-                vxBitMaskCollection.getQuery(layerCount + 1).getQuery().compile(gwm, iv);
+                iv.writeInt(layerNumber);
+                vxBitMaskCollection.getQuery(layerNumber).getQuery().compile(gwm, iv);
             }
             final Query txQuery = new Query(GraphElementType.TRANSACTION, "");
-            txBitMaskCollection.add(newTxQuery != null ? newTxQuery : txQuery, layerCount + 1, null);
+            txBitMaskCollection.add(newTxQuery != null ? newTxQuery : txQuery, layerNumber, null);
             if (newTxQuery != null) {
                 IntValue iv = new IntValue();
-                iv.writeInt(layerCount + 1);
-                txBitMaskCollection.getQuery(layerCount + 1).getQuery().compile(gwm, iv);
+                iv.writeInt(layerNumber);
+                txBitMaskCollection.getQuery(layerNumber).getQuery().compile(gwm, iv);
             }
         }
     }

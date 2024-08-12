@@ -95,12 +95,12 @@ public class LayersViewPane extends BorderPane {
         layersHeading = new TitledPane();
         layersHeading.setText(" ");
         
-        final String modeList[] = {"UNION mode" , "INTERSECTION mode"};
+        final String[] modeList = {"UNION mode" , "INTERSECTION mode"};
         modeBox = new ComboBox(FXCollections.observableArrayList(modeList));
         modeBox.getSelectionModel().selectFirst();
-        modeBox.valueProperty().addListener((final ObservableValue observable, final Object oldValue, final Object newValue) -> {
-            LayersViewController.getDefault().updateQueries(GraphManager.getDefault().getActiveGraph());
-        });
+        modeBox.valueProperty().addListener((final ObservableValue observable, final Object oldValue, final Object newValue) -> 
+            LayersViewController.getDefault().updateQueries(GraphManager.getDefault().getActiveGraph())
+        );
         final BorderPane border = new BorderPane();
         final Label layersLabel = new Label("Layers ");
         layersLabel.setMinSize(60, 15);
