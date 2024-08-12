@@ -36,7 +36,8 @@ import org.openide.util.NbBundle;
 @ActionReferences({
     @ActionReference(path = "Menu/Display", position = 201, separatorBefore = 199),
     @ActionReference(path = "Toolbars/Display", position = 102),
-    @ActionReference(path = "Shortcuts", name = "D-EQUALS")
+    @ActionReference(path = "Shortcuts", name = "D-EQUALS"),
+    @ActionReference(path = "Shortcuts", name = "D-ADD")
 })
 @NbBundle.Messages("CTL_ZoomIn=Zoom In")
 public final class ZoomInAction implements ActionListener {
