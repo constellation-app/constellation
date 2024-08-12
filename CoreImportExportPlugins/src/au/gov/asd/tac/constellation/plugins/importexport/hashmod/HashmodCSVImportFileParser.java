@@ -51,7 +51,7 @@ public class HashmodCSVImportFileParser {
 
                 results.add(line);
             }
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             NotifyDisplayer.display(String.format("Error detected for file %s",
                     input.getFile().getPath()), NotifyDescriptor.ERROR_MESSAGE);
         }
