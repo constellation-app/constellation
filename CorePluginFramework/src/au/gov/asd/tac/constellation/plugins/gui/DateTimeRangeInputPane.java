@@ -133,7 +133,7 @@ public final class DateTimeRangeInputPane extends Pane {
                 if (zdt.length > 0) {
                     parameter.setObjectValue(new DateTimeRange(zdt[0], zdt[1]));
                 }
-            } catch (DateTimeException e) {
+            } catch (final DateTimeException e) {
                 // chew up and throw away date time exception, this results in datetime reverting back into
                 // allowable range, ie if you enter 33 for hours, this will be thrown out and revert to 23.
             } finally {
@@ -553,10 +553,10 @@ public final class DateTimeRangeInputPane extends Pane {
         picker.setStyle("-fx-padding:4; -fx-border-radius:4; -fx-border-color: grey;");
 
         dp.getEditor().textProperty().addListener((final ObservableValue<? extends String> v, final String o, final String n) -> {
-            if (n != null && n.isEmpty()) {
+            if (StringUtils.isEmpty(n)) {
                 dp.getEditor().setText(o);
             }
-            
+
             changed.changed(v, o, n);
         });
 
