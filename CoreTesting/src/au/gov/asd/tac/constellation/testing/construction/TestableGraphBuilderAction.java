@@ -15,14 +15,21 @@
  */
 package au.gov.asd.tac.constellation.testing.construction;
 
-import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
+import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.StoreGraph;
+import au.gov.asd.tac.constellation.graph.file.opener.GraphOpener;
+import au.gov.asd.tac.constellation.graph.locking.DualGraph;
+import au.gov.asd.tac.constellation.graph.schema.Schema;
+import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
+import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
+import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import au.gov.asd.tac.constellation.testing.CoreTestingPluginRegistry;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
-import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -41,16 +48,28 @@ import org.openide.util.NbBundle;
 @NbBundle.Messages("CTL_TestableGraphBuilderAction=Testable Graph Builder")
 public final class TestableGraphBuilderAction implements ActionListener {
 
-    private final GraphNode context;
-
-    public TestableGraphBuilderAction(final GraphNode context) {
-        this.context = context;
-    }
+    private static final Logger LOGGER = Logger.getLogger(TestableGraphBuilderAction.class.getName());
 
     @Override
     public void actionPerformed(final ActionEvent ev) {
-        PluginExecution.withPlugin(CoreTestingPluginRegistry.TESTABLE_GRAPH_BUILDER)
-                .interactively(false)
-                .executeLater(context.getGraph());
+        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
+        final StoreGraph sg = new StoreGraph(schema);
+        schema.newGraph(sg);
+        final Graph dualGraph = new DualGraph(sg, false);
+
+        final Future<?> f = PluginExecutor.startWith(CoreTestingPluginRegistry.TESTABLE_GRAPH_BUILDER)
+                .executeWriteLater(dualGraph);
+
+        try {
+            // ensure testable graph has finished before opening the graph
+            f.get();
+            final String graphName = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).getLabel().trim().toLowerCase();
+            GraphOpener.getDefault().openGraph(dualGraph, graphName);
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            LOGGER.log(Level.SEVERE, "Testable graph creation was interrupted", ex);
+        } catch (final ExecutionException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+        }
     }
 }
