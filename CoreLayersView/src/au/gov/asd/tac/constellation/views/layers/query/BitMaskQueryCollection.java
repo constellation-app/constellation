@@ -179,7 +179,7 @@ public class BitMaskQueryCollection {
      * @param bitMaskAttributeId
      * @param visibleAttributeId
      */
-    public void updateBitMasks(final GraphWriteMethods graph, final int bitMaskAttributeId, final int visibleAttributeId, boolean unionMode) {
+    public void updateBitMasks(final GraphWriteMethods graph, final int bitMaskAttributeId, final int visibleAttributeId, final boolean unionMode) {
         if (this.update(graph)) {
             final int elementCount = elementType.getElementCount(graph);
             for (int position = 0; position < elementCount; position++) {
