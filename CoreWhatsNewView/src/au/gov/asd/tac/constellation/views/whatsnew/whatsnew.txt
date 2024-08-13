@@ -1,6 +1,10 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2024-08-13 Layers View - Union and Intersection Modes have now been implemented.
+<p> You can now switch between Union and Intersection modes using the control at the top right of the Layers View. Union mode will show <b>all</b> elements matching with <b>any</b> Layer. Intersection mode will <b>only</b> show graph elements that match with <b>every</b> active layer.
+<p> Layers will now correctly display combined matches to queries as well as any manual allocations for the same layer.
+
 == 2024-07-05 Added Zoom to Selection to Find View
 <p> Added a "Zoom to Selection" checkbox to the Find View. Having this selected will make the graph zoom in to the results found.</p>
 

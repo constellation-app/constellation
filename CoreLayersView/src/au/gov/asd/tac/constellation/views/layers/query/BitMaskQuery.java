@@ -109,6 +109,14 @@ public class BitMaskQuery {
         }
     }
 
+    public long combineBitmap(final long original) {
+        if (result != null && result.readBoolean()) {
+            return original | (long) Math.pow(2.0, bitIndex); // Set the appropriate bit in the result
+        } else {
+            return original; // No change for inactive query
+        }        
+    }
+    
     protected void setIndex(final int i) {
         this.bitIndex = i;
         this.mask = 0xFFFFFFFFFFFFFFFFL ^ (1L << i + 1);
