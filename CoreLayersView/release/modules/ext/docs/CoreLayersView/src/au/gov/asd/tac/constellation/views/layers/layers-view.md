@@ -81,13 +81,13 @@ There are two main ways for a graph element to be allocated to a layer:
 
 ### Manual Allocation to a Layer
 
-Graph Elements can be manually added to a layer via the right click context menu (see above image) or by manually setteing the layer_mask
+Graph Elements can be manually added to a layer via the right click context menu (see above image) or by manually setting the layer_mask
 Attribute via the Attribute Editor.  
 Note: When any layers are active, any graph elements that are manually created/added to the graph will have their layer_mask automatically allocated to the set of active layers.
 
 ### Query Allocation to a Layer
 
-When a query is defined on a layer it provides dynamic means to include graph element on the layer as determined by
+When a query is defined on a layer it provides a dynamic means to include graph elements on that layer as determined by
 the specified Vertex and Transaction queries. Queries are
 dynamically recalculated upon changes to any attributes being queried.
 This is to ensure the accuracy of the shown layer. e.g. Layer 1 has a
