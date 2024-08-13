@@ -245,7 +245,7 @@ public class WelcomeViewPane extends BorderPane {
                     if (topComponents != null) {
                         fileOpen = false;
                         topComponents.forEach(component -> {
-                            if ((component instanceof VisualGraphTopComponent) && ((VisualGraphTopComponent) component).getGraphNode().getDisplayName().equals(fileName)) {
+                            if ((component instanceof VisualGraphTopComponent vgtc) && (vgtc.getGraphNode().getDisplayName().equals(fileName))) {
                                 fileOpen = true;
                             }
                         });
