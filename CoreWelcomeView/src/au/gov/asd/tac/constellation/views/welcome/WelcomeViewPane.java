@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.welcome;
 import au.gov.asd.tac.constellation.graph.file.open.OpenFile;
 import au.gov.asd.tac.constellation.graph.file.open.RecentFiles;
 import au.gov.asd.tac.constellation.graph.file.open.RecentFiles.HistoryItem;
+import au.gov.asd.tac.constellation.graph.interaction.gui.VisualGraphTopComponent;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.io.screenshot.RecentGraphScreenshotUtilities;
 import static au.gov.asd.tac.constellation.graph.interaction.plugins.io.screenshot.RecentGraphScreenshotUtilities.IMAGE_SIZE;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
@@ -26,6 +27,7 @@ import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.prefs.Preferences;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -54,6 +56,8 @@ import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
+import org.openide.windows.TopComponent;
+import org.openide.windows.WindowManager;
 
 /**
  * WelcomeViewPane contains the content for WelcomeTopComponent
@@ -75,6 +79,8 @@ public class WelcomeViewPane extends BorderPane {
     private static final Image PLACEHOLDER_IMAGE = new Image(WelcomeTopComponent.class.getResourceAsStream("resources/placeholder_icon.png"));
 
     private static final Button[] recentGraphButtons = new Button[10];
+    
+    private boolean fileOpen = false;
 
     public WelcomeViewPane() {
         pane = new BorderPane();
@@ -217,11 +223,12 @@ public class WelcomeViewPane extends BorderPane {
             //and make them the text of the buttons
             createRecentButtons(recentGraphButtons[i]);
             if (i < fileDetails.size()) {
-                recentGraphButtons[i].setText(fileDetails.get(i).getFileName());
+                final String fileName = fileDetails.get(i).getFileName();
+                recentGraphButtons[i].setText(fileName);
                 final Tooltip toolTip = new Tooltip(fileDetails.get(i).getPath());
                 recentGraphButtons[i].setTooltip(toolTip);
 
-                final Optional<File> screenshotFile = RecentGraphScreenshotUtilities.findScreenshot(fileDetails.get(i).getPath(), fileDetails.get(i).getFileName());
+                final Optional<File> screenshotFile = RecentGraphScreenshotUtilities.findScreenshot(fileDetails.get(i).getPath(), fileName);
                 if (screenshotFile.isPresent()) {
                     recentGraphButtons[i].setGraphic(buildGraphic(
                             new Image("file:///" + screenshotFile.get().getAbsolutePath())
@@ -230,12 +237,24 @@ public class WelcomeViewPane extends BorderPane {
                     recentGraphButtons[i].setGraphic(buildGraphic(PLACEHOLDER_IMAGE));
                 }
 
-                //Calls the method for the recent graphs to open
-                //on the button action
+                //Calls the method for the recent graphs to open on the button action
+                //If the graph is already open then it will swap to the open graph instead of opening it again
                 final String path = fileDetails.get(i).getPath();
                 recentGraphButtons[i].setOnAction(e -> {
-                    OpenFile.open(RecentFiles.convertPath2File(path), -1);
-                    saveCurrentDirectory(path);
+                    final Set<TopComponent> topComponents = WindowManager.getDefault().getRegistry().getOpened();
+                    if (topComponents != null) {
+                        fileOpen = false;
+                        topComponents.forEach(component -> {
+                            if ((component instanceof VisualGraphTopComponent) && ((VisualGraphTopComponent) component).getGraphNode().getDisplayName().equals(fileName)) {
+                                fileOpen = true;
+                            }
+                        });
+                    }
+                    if (!fileOpen) {
+                        OpenFile.open(RecentFiles.convertPath2File(path), -1);
+                        saveCurrentDirectory(path);
+                        fileOpen = false;
+                    }
                 });
             }
             flow.getChildren().add(recentGraphButtons[i]);
