@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph;
 
+import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedStatic;
@@ -1336,27 +1337,45 @@ public class StoreGraphNGTest {
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
 //    }
+    /**
+     * Test of addAttribute method, of class StoreGraph.
+     */
+    @Test
+    public void testAddAttribute() {
+        System.out.println("addAttribute");
+        int expResult = 0;
+        int result = 0;
+
+//        for (GraphElementType elementType : GraphElementType.values()) {
+//            System.out.println(elementType);
 //
-//    /**
-//     * Test of addAttribute method, of class StoreGraph.
-//     */
-//    @Test
-//    public void testAddAttribute() {
-//        System.out.println("addAttribute");
-//        GraphElementType elementType = null;
-//        String attributeType = "";
-//        String label = "";
-//        String description = "";
-//        Object defaultValue = null;
-//        String attributeMergerId = "";
-//        StoreGraph instance = new StoreGraph();
-//        int expResult = 0;
-//        int result = instance.addAttribute(elementType, attributeType, label, description, defaultValue, attributeMergerId);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
+//            String attributeType = "";
+//            String label = "";
+//            String description = "";
+//            Object defaultValue = null;
+//            String attributeMergerId = "";
+//            StoreGraph instance = new StoreGraph();
+//            int expResult = 0;
+//            int result = instance.addAttribute(elementType, attributeType, label, description, defaultValue, attributeMergerId);
+//            System.out.println(result);
+//            // assertEquals(result, expResult);
+//        }
+        StoreGraph instance = new StoreGraph();
+        
+        // Vertex
+        expResult = 0;
+        final String perspectiveString = "perspective_bookmarks";
+        result = instance.addAttribute(GraphElementType.META, perspectiveString, perspectiveString, perspectiveString, null, null);
+        System.out.println(result);
+        assertEquals(result, expResult);
+        
+        // Vertex
+        expResult = 0;
+        result = instance.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "y", null, null);
+        assertEquals(result, expResult);
+
+    }
+
 //    /**
 //     * Test of removeAttribute method, of class StoreGraph.
 //     */
