@@ -18,8 +18,8 @@ package au.gov.asd.tac.constellation.testing.construction;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.LayersConcept;
 import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
-import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
@@ -40,6 +40,9 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
+import au.gov.asd.tac.constellation.views.layers.shortcut.NewLayerPlugin;
+import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
+import au.gov.asd.tac.constellation.views.layers.state.LayersViewState;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -83,6 +86,8 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
 
     public static final String IMAGE_FILE_PARAMETER_ID = PluginParameter.buildId(ImageGraphBuilderPlugin.class, "image_file");
     public static final String ADD_RIGHT_PARAMETER_ID = PluginParameter.buildId(ImageGraphBuilderPlugin.class, "add_right");
+    public static final String ADD_LAYERS_PARAMETER_ID = PluginParameter.buildId(ImageGraphBuilderPlugin.class, "add_layers");
+    public static final String LAYER_START_PARAMETER_ID = PluginParameter.buildId(ImageGraphBuilderPlugin.class, "layer_start");
 
     @Override
     public PluginParameters createParameters() {
@@ -95,11 +100,18 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
                 "Image Files (*" + FileExtensionConstants.JPG + ";*" + FileExtensionConstants.GIF + ";*" + FileExtensionConstants.PNG + ")",
                 FileExtensionConstants.PNG, FileExtensionConstants.JPG, FileExtensionConstants.GIF));
         parameters.addParameter(imageFileParameter);
+
         final PluginParameter<BooleanParameterType.BooleanParameterValue> addImagesRight = BooleanParameterType.build(ADD_RIGHT_PARAMETER_ID);
         addImagesRight.setName("Add images to the right");
         addImagesRight.setDescription("Add multiple images to the right");
         addImagesRight.setBooleanValue(false);
         parameters.addParameter(addImagesRight);
+
+        final PluginParameter<BooleanParameterType.BooleanParameterValue> addImagesLayers = BooleanParameterType.build(ADD_LAYERS_PARAMETER_ID);
+        addImagesLayers.setName("Add images as layers");
+        addImagesLayers.setDescription("Add multiple images onto separate layers, starting after the current last layer in the graph");
+        addImagesLayers.setBooleanValue(false);
+        parameters.addParameter(addImagesLayers);
 
         return parameters;
     }
@@ -147,8 +159,6 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
         final int vertexVisibilityAttributeId;
         final boolean multipleFrames = images.size() > 1;
         if (multipleFrames) {
-            final int attrLayers = graph.addAttribute(GraphElementType.GRAPH, IntegerAttributeDescription.ATTRIBUTE_NAME, "layers", "layers", 0, null);
-            graph.setIntValue(attrLayers, 0, images.size());
             vertexVisibilityAttributeId = VisualConcept.VertexAttribute.VISIBILITY.get(graph);
         } else {
             vertexVisibilityAttributeId = Graph.NOT_FOUND;
@@ -188,24 +198,39 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
                 && diffWestAttributeId != Graph.NOT_FOUND;
         final boolean useTransAttributes = transactionWeightAttributeId != Graph.NOT_FOUND;
 
-        int frame = 0;
+        int layer = 1;
         int w = 0;
         int prevWidth = 0;
         final boolean addRight = (boolean) parameters.getObjectValue(ADD_RIGHT_PARAMETER_ID);
-            
+        final boolean addLayers = (boolean) parameters.getObjectValue(ADD_LAYERS_PARAMETER_ID);
+        final int stateAttributeId = LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.get(graph);
+        final LayersViewState currentState = graph.getObjectValue(stateAttributeId, 0);
+        if (currentState != null) {
+            // set start layer to existing graph layer count + 1
+            layer = currentState.getLayerCount() + 1;
+        }
+        
         for (final BufferedImage image : images) {
-            // Currently, multiple images will be added on top of the prev one
-            // Uncomment the 3 lines below to add image to the right of prev one
+
+            if (addLayers && layer > 1) {
+                // add new layer for each image if addLayer option selected
+                PluginExecution.withPlugin(new NewLayerPlugin()).executeNow(graph);
+            }
+
+            // If add right option selected, images will be appended to the
+            // right, otherwise, images will be added on top of the prev one
             if (w > 0 && addRight) {
                 prevWidth = w + prevWidth;
             }
             w = image.getWidth();
             final int h = image.getHeight();
-
-            final int[][][] vertexIds = new int[images.size()][prevWidth + w][h];
+            final int[][] vertexIds = new int[w][h];
 
             final float zlen = multipleFrames ? 0 : Math.min(w, h) / 4F;
-            final float vis = 1; 
+            final float vis = 1;
+
+            // get layer bitmask attribute          
+            final int vertexBitmaskAttributeId = LayersConcept.VertexAttribute.LAYER_MASK.ensure(graph);
 
             for (int x = 0; x < w; x++) {
                 for (int y = 0; y < h; y++) {
@@ -218,9 +243,9 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
                     // Generate Z using grayscale.
                     final float gray = 0;
 
-                    final int vxId = vertexIds[frame][x + prevWidth][y] = graph.addVertex();
+                    final int vxId = vertexIds[x][y] = graph.addVertex();
                     // Add identification for each image
-                    graph.setStringValue(vertexIdentifierAttributeId, vxId, String.format("image%d,%d,%d", frame, x + prevWidth, y));
+                    graph.setStringValue(vertexIdentifierAttributeId, vxId, String.format("image%d,%d,%d", layer, x + prevWidth, y));
 
                     final int yinv = h - y;
                     ConstructionUtilities.setxyz(graph, vxId, vertexXAttributeId, vertexYAttributeId, vertexZAttributeId, (x + prevWidth) * 2, yinv * 2, -gray * zlen / 255F);
@@ -231,6 +256,9 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
 
                     if (multipleFrames) {
                         graph.setFloatValue(vertexVisibilityAttributeId, vxId, vis);
+                    }
+                    if (addLayers) {
+                        graph.setLongValue(vertexBitmaskAttributeId, vxId, (long) (Math.pow(2, layer) + 1));
                     }
 
                     if (useVertexAttributes) {
@@ -256,23 +284,22 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
 
                     if (useTransAttributes) {
                         if (x > 0) {
-                            final int transactionId = graph.addTransaction(vxId, vertexIds[frame][x + prevWidth][y], false);
-                            final ConstellationColor otherColor = (ConstellationColor) graph.getObjectValue(vertexColorAttributeId, vertexIds[frame][x + prevWidth][y]);
+                            final int transactionId = graph.addTransaction(vxId, vertexIds[x][y], false);
+                            final ConstellationColor otherColor = (ConstellationColor) graph.getObjectValue(vertexColorAttributeId, vertexIds[x][y]);
                             graph.setFloatValue(transactionWeightAttributeId, transactionId, calculateWeight(color, otherColor));
                         }
 
                         if (y > 0) {
-                            final int transactionId = graph.addTransaction(vxId, vertexIds[frame][x + prevWidth][y - 1], false);
-                            final ConstellationColor otherColor = (ConstellationColor) graph.getObjectValue(vertexColorAttributeId, vertexIds[frame][x + prevWidth][y - 1]);
+                            final int transactionId = graph.addTransaction(vxId, vertexIds[x][y - 1], false);
+                            final ConstellationColor otherColor = (ConstellationColor) graph.getObjectValue(vertexColorAttributeId, vertexIds[x][y - 1]);
                             graph.setFloatValue(transactionWeightAttributeId, transactionId, calculateWeight(color, otherColor));
                         }
                     }
                 }
             }
 
-            frame++;
+            layer++;
         }
-
         PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
         interaction.setProgress(1, 0, "Completed successfully", true);
     }
