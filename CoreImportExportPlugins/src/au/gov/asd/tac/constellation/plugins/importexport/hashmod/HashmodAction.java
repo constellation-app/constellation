@@ -191,7 +191,7 @@ public final class HashmodAction implements ActionListener {
                 final int vxId = vxOrder[j];
 
                 keyValue = wg.getObjectValue(attributeValues[0], vxId);
-                if (keyValue!= null && keys.containsKey(keyValue.toUpperCase())) {
+                if (keyValue != null && keys.containsKey(keyValue.toUpperCase())) {
                     numberSuccessful++;
                     for (i = 1; i < attrCount; i++) {
                         // do not add attributes if value is default 0
