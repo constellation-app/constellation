@@ -120,8 +120,6 @@ public final class ColorWarpAnimation extends Animation {
         
         return ConstellationColor.fromFXColor(newCol);
     }
-        
-        
 
     @Override
     protected String getName() {

@@ -45,7 +45,6 @@ public abstract class Animation {
     public String graphID;
     private boolean finished = false;
     private Thread animationThread;
-    private long pause = 0;
     private static final Logger LOGGER = Logger.getLogger(Animation.class.getName());
     
     public void setGraphID(final String graphID){
@@ -168,18 +167,18 @@ public abstract class Animation {
      */
     private void editGraph(final Graph graph) throws InterruptedException {
         while (!finished) {
-                
-            // Animate a frame
-            if (lockGraphSafely(graph)) {
-                animate(wg);
-                wg.commit();
+            
+            if (!AnimationUtilities.isGraphAnimationsPaused(this.graphID)){    
+                // Animate a frame
+                if (lockGraphSafely(graph)) {
+                    animate(wg);
+                    wg.commit();
+                }
             }
             
             // Sleep until it is time for the next frame
             Thread.sleep(getIntervalInMillis());
-            
-            Thread.sleep(pause);
-            pause = 0;
+
         }
     }
     
@@ -229,8 +228,4 @@ public abstract class Animation {
     };
     
     public abstract void setFinalFrame(final GraphWriteMethods wg);
-
-    void pause(final long time) {
-        pause = time;
-    }
 }

@@ -50,7 +50,7 @@ public class AnimationUtilities {
     }
     
     /**
-     * Stops all running animations on the specified.
+     * Stops all running animations on the specified graph.
      * 
      * @param animationName
      * @param graphId
@@ -78,7 +78,7 @@ public class AnimationUtilities {
     /**
      * Start the specified animation on the specified graph.
      * If the specified animation is already running, nothing will occur.
-     * If animations have ben disabled, the animation may skip and 
+     * If animations have been disabled, the animation may skip and 
      * update the graph to the final frame of the animation.
      *
      * @param animation The animation to run
@@ -128,7 +128,7 @@ public class AnimationUtilities {
     }
     
     /**
-     * Interrupt all running animations on the specified graph animated graphs.
+     * Interrupt all running animations on the specified graph.
      * 
      * @param graphId
      */
@@ -148,7 +148,34 @@ public class AnimationUtilities {
         }
     }
 
-    public static void pauseAllAnimations(final String graphId, long time) {
-        getGraphAnimationManager(graphId).pauseAllAnimations(time);
+    /**
+     * Stops animations for a predefined period of time
+     * @param graphId
+     * @param pause
+     * @param time 
+     */
+    public static void pauseAllAnimations(final String graphId, final boolean pause) {
+        AnimationManager manager = getGraphAnimationManager(graphId);
+        if (manager != null){
+            manager.pauseAllAnimations(pause);
+        }
+    }
+    
+    public static boolean isGraphAnimationsPaused(final String graphId){
+        AnimationManager manager = getGraphAnimationManager(graphId);
+        if (manager != null){
+            return manager.isPaused();
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean isAnimating(final String graphId){
+        AnimationManager manager = getGraphAnimationManager(graphId);
+        if (manager != null){
+            return manager.isAnimating();
+        } else {
+            return false;
+        }
     }
 }

@@ -37,10 +37,19 @@ import org.openide.util.NbBundle.Messages;
     @ActionReference(path = "Shortcuts", name = "S-Escape")
 })
 @Messages("CTL_AnimateStopAction=Stop Animating")
-public final class AnimateStopAction implements ActionListener {
+public final class AnimateStopAction extends AnimationUtilityMenuBaseAction {
+
+    public AnimateStopAction() {
+        super(Bundle.CTL_AnimateStopAction());
+    }
 
     @Override
-    public void actionPerformed(final ActionEvent event) {
+    protected void updateValue() {
         AnimationUtilities.stopAllAnimations();
+    }
+
+    @Override
+    protected void displayValue() {
+        // DoNothing
     }
 }

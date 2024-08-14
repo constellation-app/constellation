@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.graph.interaction.animation.actions;
 
 import au.gov.asd.tac.constellation.graph.interaction.animation.AnimationUtilities;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
+import au.gov.asd.tac.constellation.graph.node.gui.MenuBaseAction;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import org.openide.awt.ActionID;
@@ -31,22 +32,31 @@ import org.openide.util.NbBundle.Messages;
  * @author capricornunicorn123
  */
 @ActionID(category = "Experimental", id = "au.gov.asd.tac.constellation.graph.interaction.animation.actions.AnimatePauseAction")
-@ActionRegistration(displayName = "#CTL_AnimatePauseAction", surviveFocusChange = true)
-@ActionReferences({
-    @ActionReference(path = "Menu/Experimental/Animations", position = 100, separatorBefore = 99),
-    @ActionReference(path = "Shortcuts", name = "S-Escape")
-})
+@ActionRegistration(displayName = "#CTL_AnimatePauseAction", lazy = false)
+@ActionReference(path = "Menu/Experimental/Animations", position = 100, separatorBefore = 99)
 @Messages("CTL_AnimatePauseAction=Pause Animating")
-public final class AnimatePauseAction implements ActionListener {
+public final class AnimatePauseAction extends AnimationUtilityMenuBaseAction {
 
-    private final GraphNode context;
-
-    public AnimatePauseAction(final GraphNode context) {
-        this.context = context;
+    public AnimatePauseAction() {
+        super(Bundle.CTL_AnimatePauseAction());
     }
 
     @Override
-    public void actionPerformed(final ActionEvent event) {
-        AnimationUtilities.pauseAllAnimations(context.getGraph().getId(), 2000);
+    protected void updateValue() {
+        AnimationUtilities.pauseAllAnimations(
+                this.getContext().getGraph().getId(), 
+                !AnimationUtilities.isGraphAnimationsPaused(this.getContext().getGraph().getId())
+        );
+    }
+
+    @Override
+    protected void displayValue() {
+       
+        if (AnimationUtilities.isGraphAnimationsPaused(this.getContext().getGraph().getId())){
+            menuButton.setText("Resume Animationg");
+        } else {
+            menuButton.setText("Pause Animating");
+        }
+        
     }
 }

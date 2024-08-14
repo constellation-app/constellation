@@ -29,6 +29,7 @@ public class AnimationManager {
 
     private final Map<String, Animation> animations = new HashMap<>();
     private final String graphId;
+    private boolean isPaused = false;
     
     public AnimationManager(final String graphId) {
         this.graphId = graphId;
@@ -42,18 +43,31 @@ public class AnimationManager {
     public final void stopAnimation(final String animationName) {
         final Animation removedAnimation = animations.remove(animationName);
         if (removedAnimation != null) {
-            removedAnimation.setFinished();
+            if (isPaused){
+                removedAnimation.interrupt();
+            } else {
+                removedAnimation.setFinished();
+            }
+        }
+        
+        if (animations.isEmpty()) {
+            this.isPaused = false;
         }
     }
     
     /**
-     * Stops animating all animations on an 
+     * Stops animating all animations on an graph.
      */
     public void stopAllAnimations() {
         animations.values().forEach(animation -> {
-            animation.setFinished();
+            if (isPaused){
+                animation.interrupt();
+            } else {
+                animation.setFinished();
+            }
         });
         animations.clear();
+        this.isPaused = false;
     }
 
     /**
@@ -63,6 +77,7 @@ public class AnimationManager {
      * @param animation The animation to run
      */
     public void runAnimation(final Animation animation) {
+        
         if (animations.get(animation.getName()) == null) {
             animation.run(graphId);
             animations.put(animation.getName(), animation);
@@ -79,6 +94,10 @@ public class AnimationManager {
         return animations.get(name) != null;
     }
     
+    public boolean isAnimating() {
+        return !this.animations.isEmpty();
+    }
+    
     /**
      * Interrupt this animation.
      */
@@ -86,6 +105,8 @@ public class AnimationManager {
         animations.values().forEach(animation -> {
             animation.interrupt();
         });
+        animations.clear();
+        this.isPaused = false;
     }
 
     /**
@@ -96,11 +117,16 @@ public class AnimationManager {
      */
     void notifyComplete(final Animation animation) {
         animations.remove(animation.getName());
+        if (animations.isEmpty()) {
+            this.isPaused = false;
+        }
     }
 
-    void pauseAllAnimations(long time) {
-        animations.values().forEach(animation -> {
-            animation.pause(time);
-        });
+    void pauseAllAnimations(final boolean pause) {
+        this.isPaused = pause;
+    }
+    
+    public boolean isPaused(){
+        return isPaused;
     }
 }

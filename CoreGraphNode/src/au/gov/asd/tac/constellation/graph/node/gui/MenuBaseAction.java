@@ -18,11 +18,8 @@ package au.gov.asd.tac.constellation.graph.node.gui;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.preferences.GraphOptionsPanelController;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JCheckBoxMenuItem;
@@ -130,6 +127,19 @@ public abstract class MenuBaseAction extends AbstractAction implements Presenter
         putValue(Action.NAME, label);
         putValue(Action.SHORT_DESCRIPTION, label);
         menuButton = new JCheckBoxMenuItem(this);
+        menuButton.setSelected(defaultValue);
+    }
+    
+    /**
+     * Create a new MenuItem widget
+     *
+     * @param label string
+     * @param defaultValue value
+     */
+    protected void initMenuItem(final String label, final boolean defaultValue) {
+        putValue(Action.NAME, label);
+        putValue(Action.SHORT_DESCRIPTION, label);
+        menuButton = new JMenuItem(this);
         menuButton.setSelected(defaultValue);
     }
     

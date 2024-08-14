@@ -29,7 +29,7 @@ import org.openide.util.NbPreferences;
  *
  * @author capricornunicorn123
  */
-public abstract class AnimationMenuBaseAction extends MenuBaseAction implements PreferenceChangeListener{
+public abstract class AnimationMenuBaseAction extends MenuBaseAction implements PreferenceChangeListener {
     
     public AnimationMenuBaseAction(final String actionLabel) {
         super();
