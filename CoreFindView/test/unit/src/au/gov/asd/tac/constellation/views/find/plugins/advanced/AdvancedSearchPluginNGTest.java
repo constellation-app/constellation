@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.find.plugins.advanced;
 
-import au.gov.asd.tac.constellation.views.find.plugins.advanced.AdvancedFindGraphSelectionPlugin;
-import au.gov.asd.tac.constellation.views.find.plugins.advanced.AdvancedSearchPlugin;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
@@ -532,7 +530,7 @@ public class AdvancedSearchPluginNGTest {
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, false, true);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
-        AdvancedFindGraphSelectionPlugin findGraphSelectionPlugin = new AdvancedFindGraphSelectionPlugin(parameters, false, true);
+        AdvancedFindGraphSelectionPlugin findGraphSelectionPlugin = new AdvancedFindGraphSelectionPlugin(parameters, false, true, false);
         ActiveFindResultsList.getAdvancedResultsList().incrementCurrentIndex();
         PluginExecution.withPlugin(findGraphSelectionPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
@@ -545,7 +543,7 @@ public class AdvancedSearchPluginNGTest {
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, false, true);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
-        findGraphSelectionPlugin = new AdvancedFindGraphSelectionPlugin(parameters, false, true);
+        findGraphSelectionPlugin = new AdvancedFindGraphSelectionPlugin(parameters, false, true, false);
         ActiveFindResultsList.getAdvancedResultsList().incrementCurrentIndex();
         PluginExecution.withPlugin(findGraphSelectionPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
@@ -558,7 +556,7 @@ public class AdvancedSearchPluginNGTest {
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, false, true);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
-        findGraphSelectionPlugin = new AdvancedFindGraphSelectionPlugin(parameters, false, true);
+        findGraphSelectionPlugin = new AdvancedFindGraphSelectionPlugin(parameters, false, true, false);
         ActiveFindResultsList.getAdvancedResultsList().incrementCurrentIndex();
         PluginExecution.withPlugin(findGraphSelectionPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
@@ -575,7 +573,7 @@ public class AdvancedSearchPluginNGTest {
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, false, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
-        findGraphSelectionPlugin = new AdvancedFindGraphSelectionPlugin(parameters, false, false);
+        findGraphSelectionPlugin = new AdvancedFindGraphSelectionPlugin(parameters, false, false, false);
         ActiveFindResultsList.getAdvancedResultsList().decrementCurrentIndex();
         PluginExecution.withPlugin(findGraphSelectionPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
@@ -588,7 +586,7 @@ public class AdvancedSearchPluginNGTest {
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, false, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
-        findGraphSelectionPlugin = new AdvancedFindGraphSelectionPlugin(parameters, false, false);
+        findGraphSelectionPlugin = new AdvancedFindGraphSelectionPlugin(parameters, false, false, false);
         ActiveFindResultsList.getAdvancedResultsList().decrementCurrentIndex();
         PluginExecution.withPlugin(findGraphSelectionPlugin).executeNow(graph);
         rg = graph.getReadableGraph();

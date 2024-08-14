@@ -80,6 +80,7 @@ public class LayerTitlePane extends TitledPane {
         };
         
         enabled.setSelected(query.isVisible());
+        enabled.setId("layer-checkbox");
         enabled.selectedProperty().addListener(enabledChanged);
         final String displayedLayerName = StringUtils.truncate(layerName, MAX_DISPLAYED_CHARS);
         label = new Label(StringUtils.isBlank(layerName) ? String.format("%d", layerId) : String.format("%-2.2s - %s",String.valueOf(layerId), displayedLayerName));   

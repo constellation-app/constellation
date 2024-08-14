@@ -49,7 +49,7 @@ public class SchemaViewPane extends BorderPane {
 
     public void populate() {
         Platform.runLater(() -> {
-            final Executor pool = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool();
+            final Executor pool = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool("Schema-Thread", 1);
             schemaViewProviders = Lookup.getDefault().lookupAll(SchemaViewNodeProvider.class);
             schemaViewProviders.stream().forEach(provider -> {
                 final Tab tab = new Tab(provider.getText());
@@ -57,12 +57,12 @@ public class SchemaViewPane extends BorderPane {
 
                 pool.execute(() -> provider.setContent(tab));
             });
-            schemaViewTabPane.getTabs().add(tabWIthHelpButton(schemaViewTabPane));
+            schemaViewTabPane.getTabs().add(tabWithHelpButton(schemaViewTabPane));
         });
     }
 
     // Tab that acts as a button and loads the help page
-    private Tab tabWIthHelpButton(final TabPane tabPane) {
+    private Tab tabWithHelpButton(final TabPane tabPane) {
         final Button helpButton = HelpIconProvider.populateHelpIcon(SchemaViewTopComponent.class.getName(), "Schema View");
         helpButton.setOnAction(event -> new HelpCtx(SchemaViewTopComponent.class.getName()).display());
 
