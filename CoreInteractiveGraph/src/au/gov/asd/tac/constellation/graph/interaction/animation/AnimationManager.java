@@ -63,7 +63,6 @@ public class AnimationManager {
      * @param animation The animation to run
      */
     public void runAnimation(final Animation animation) {
-        
         if (animations.get(animation.getName()) == null) {
             animation.run(graphId);
             animations.put(animation.getName(), animation);
