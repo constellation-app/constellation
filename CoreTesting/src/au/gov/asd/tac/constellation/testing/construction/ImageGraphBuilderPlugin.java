@@ -87,8 +87,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
     public static final String IMAGE_FILE_PARAMETER_ID = PluginParameter.buildId(ImageGraphBuilderPlugin.class, "image_file");
     public static final String ADD_RIGHT_PARAMETER_ID = PluginParameter.buildId(ImageGraphBuilderPlugin.class, "add_right");
     public static final String ADD_LAYERS_PARAMETER_ID = PluginParameter.buildId(ImageGraphBuilderPlugin.class, "add_layers");
-    public static final String LAYER_START_PARAMETER_ID = PluginParameter.buildId(ImageGraphBuilderPlugin.class, "layer_start");
-
+    
     @Override
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
@@ -156,13 +155,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
                 }
             }
         }
-        final int vertexVisibilityAttributeId;
         final boolean multipleFrames = images.size() > 1;
-        if (multipleFrames) {
-            vertexVisibilityAttributeId = VisualConcept.VertexAttribute.VISIBILITY.get(graph);
-        } else {
-            vertexVisibilityAttributeId = Graph.NOT_FOUND;
-        }
 
         final int vertexIdentifierAttributeId = VisualConcept.VertexAttribute.IDENTIFIER.get(graph);
         final int vertexColorAttributeId = VisualConcept.VertexAttribute.COLOR.get(graph);
@@ -227,7 +220,6 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
             final int[][] vertexIds = new int[w][h];
 
             final float zlen = multipleFrames ? 0 : Math.min(w, h) / 4F;
-            final float vis = 1;
 
             // get layer bitmask attribute          
             final int vertexBitmaskAttributeId = LayersConcept.VertexAttribute.LAYER_MASK.ensure(graph);
@@ -254,9 +246,6 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
                     final ConstellationColor color = ConstellationColor.getColorValue(r / 255F, g / 255F, b / 255F, a / 255F);
                     graph.setObjectValue(vertexColorAttributeId, vxId, color);
 
-                    if (multipleFrames) {
-                        graph.setFloatValue(vertexVisibilityAttributeId, vxId, vis);
-                    }
                     if (addLayers) {
                         graph.setLongValue(vertexBitmaskAttributeId, vxId, (long) (Math.pow(2, layer) + 1));
                     }
