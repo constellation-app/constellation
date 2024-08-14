@@ -203,7 +203,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
         int prevWidth = 0;
         final boolean addRight = (boolean) parameters.getObjectValue(ADD_RIGHT_PARAMETER_ID);
         final boolean addLayers = (boolean) parameters.getObjectValue(ADD_LAYERS_PARAMETER_ID);
-        final int stateAttributeId = LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.get(graph);
+        final int stateAttributeId = LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.ensure(graph);
         final LayersViewState currentState = graph.getObjectValue(stateAttributeId, 0);
         if (currentState != null) {
             // set start layer to existing graph layer count + 1
