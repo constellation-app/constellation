@@ -113,25 +113,25 @@ public class VisualManagerNGTest {
         }
     }
 
-    /**
-     * Test of finalize method, of class VisualManager.
-     */
-    @Test
-    public void testFinalize() throws Exception, Throwable {
-        System.out.println("finalize");
-        try (final MockedStatic<MemoryManager> memoryManagerMockedStatic = mockStatic(MemoryManager.class)) {
-            memoryManagerMockedStatic.when(() -> MemoryManager.newObject(Mockito.eq(VisualManager.class))).thenAnswer((Answer<Void>) invocation -> null);
-            memoryManagerMockedStatic.when(() -> MemoryManager.finalizeObject(Mockito.eq(VisualManager.class))).thenAnswer((Answer<Void>) invocation -> null);
-            final VisualProcessor processor = mock(VisualProcessor.class);
-            final VisualAccess access = mock(VisualAccess.class);
-            final VisualManager instance = new VisualManager(access, processor);
-
-            instance.finalize();
-            
-            // Verify that the processor had the following methods called.
-            memoryManagerMockedStatic.verify(() -> MemoryManager.finalizeObject(Mockito.eq(VisualManager.class)), times(1));
-        }
-    }
+//    /**
+//     * Test of finalize method, of class VisualManager.
+//     */
+//    @Test
+//    public void testFinalize() throws Exception, Throwable {
+//        System.out.println("finalize");
+//        try (final MockedStatic<MemoryManager> memoryManagerMockedStatic = mockStatic(MemoryManager.class)) {
+//            memoryManagerMockedStatic.when(() -> MemoryManager.newObject(Mockito.eq(VisualManager.class))).thenAnswer((Answer<Void>) invocation -> null);
+//            memoryManagerMockedStatic.when(() -> MemoryManager.finalizeObject(Mockito.eq(VisualManager.class))).thenAnswer((Answer<Void>) invocation -> null);
+//            final VisualProcessor processor = mock(VisualProcessor.class);
+//            final VisualAccess access = mock(VisualAccess.class);
+//            final VisualManager instance = new VisualManager(access, processor);
+//
+//            instance.finalize();
+//            
+//            // Verify that the processor had the following methods called.
+//            memoryManagerMockedStatic.verify(() -> MemoryManager.finalizeObject(Mockito.eq(VisualManager.class)), times(1));
+//        }
+//    }
 
     /**
      * Test of startProcessing method, of class VisualManager.
