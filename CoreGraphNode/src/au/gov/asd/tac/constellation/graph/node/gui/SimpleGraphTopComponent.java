@@ -74,7 +74,7 @@ public final class SimpleGraphTopComponent extends CloneableTopComponent impleme
 
     // For cleaning up object for garbage collection. Replaced finalize
     private static final Cleaner cleaner = Cleaner.create();
-    private final Cleanable cleanable;
+    private final Cleanable cleanable = cleaner.register(this, cleanupAction);
     private static final Runnable cleanupAction = () -> MemoryManager.finalizeObject(SimpleGraphTopComponent.class);
 
     public SimpleGraphTopComponent() {
@@ -97,7 +97,6 @@ public final class SimpleGraphTopComponent extends CloneableTopComponent impleme
 
         graph.addGraphChangeListener(this);
         MemoryManager.newObject(SimpleGraphTopComponent.class);
-        cleanable = cleaner.register(this, cleanupAction);
     }
 
     public SimpleGraphTopComponent(final GraphDataObject gdo, final Graph graph) {
