@@ -23,10 +23,6 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.times;
 import static org.testng.Assert.*;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -85,34 +81,7 @@ public class SimpleGraphTopComponentNGTest {
     public void testGetGraphNode() {
         System.out.println("getGraphNode");
         SimpleGraphTopComponent instance = new SimpleGraphTopComponent();
-        GraphNode expResult = null;
         GraphNode result = instance.getGraphNode();
         assertEquals(result.getClass(), GraphNode.class);
-
     }
-
-//    /**
-//     * Test of graphChanged method, of class SimpleGraphTopComponent.
-//     */
-//    @Test
-//    public void testGraphChanged() {
-//        System.out.println("graphChanged");
-//        GraphChangeEvent event = null;
-//        SimpleGraphTopComponent instance = new SimpleGraphTopComponent();
-//        instance.graphChanged(event);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of componentClosed method, of class SimpleGraphTopComponent.
-//     */
-//    @Test
-//    public void testComponentClosed() {
-//        System.out.println("componentClosed");
-//        SimpleGraphTopComponent instance = new SimpleGraphTopComponent();
-//        instance.componentClosed();
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
 }
