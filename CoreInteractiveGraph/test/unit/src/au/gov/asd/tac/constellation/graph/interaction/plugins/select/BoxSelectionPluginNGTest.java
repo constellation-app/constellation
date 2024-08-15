@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.plugins.select;
 
+import au.gov.asd.tac.constellation.graph.LayersConcept;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
@@ -46,7 +47,7 @@ public class BoxSelectionPluginNGTest {
     private int attrX, attrY;
     private int vxId1, vxId2, vxId3, vxId4;
     private int txId1, txId2;
-    private int vSelectedAttrId, tSelectedAttrId;
+    private int vSelectedAttrId, tSelectedAttrId, layerVisibilityV, layerVisibilityT;
     private StoreGraph graph;
 
     public BoxSelectionPluginNGTest() {
@@ -81,6 +82,8 @@ public class BoxSelectionPluginNGTest {
 
         vSelectedAttrId = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
         tSelectedAttrId = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
+        layerVisibilityV = LayersConcept.VertexAttribute.LAYER_VISIBILITY.ensure(graph);
+        layerVisibilityT = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.ensure(graph);
 
         VisualConcept.VertexAttribute.NODE_RADIUS.ensure(graph);
     }
