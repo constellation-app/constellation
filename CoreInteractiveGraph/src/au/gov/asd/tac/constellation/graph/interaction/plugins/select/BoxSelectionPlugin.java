@@ -132,7 +132,7 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
             if (requiresVertexVisibility) {
                 final float visibility = graph.getFloatValue(vxVisibilityAttr, vxId);
                 final float layerVisibility = graph.getFloatValue(vxLayerVisibilityAttr, vxId);
-                if (layerVisibility == 0.0f || visibility <= 1.0F && (visibility > visibilityHigh || visibility < visibilityLow)) {
+                if (layerVisibility == 0.0F || visibility <= 1.0F && (visibility > visibilityHigh || visibility < visibilityLow)) {
                     continue;
                 }
             }
@@ -294,7 +294,7 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
                             if (requiresTransactionVisibility) {
                                 final float visibility = graph.getFloatValue(txVisibilityAttr, txId);
                                 final float layerVisibility = graph.getFloatValue(txLayerVisibilityAttr, txId);
-                                if (layerVisibility == 0.0f || visibility <= 1.0F && (visibility > visibilityHigh || visibility < visibilityLow)) {
+                                if (layerVisibility == 0.0F || visibility <= 1.0F && (visibility > visibilityHigh || visibility < visibilityLow)) {
                                     continue;
                                 }
                             }
@@ -316,9 +316,9 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
                         final int txId = graph.getTransaction(position);
                         if (vxIncluded.get(graph.getTransactionSourceVertex(txId)) && vxIncluded.get(graph.getTransactionDestinationVertex(txId))) {
                             if (requiresTransactionVisibility) {
-                                float visibility = graph.getFloatValue(txVisibilityAttr, txId);
+                                final float visibility = graph.getFloatValue(txVisibilityAttr, txId);
                                 final float layerVisibility = graph.getFloatValue(txLayerVisibilityAttr, txId);
-                                if (layerVisibility == 0.0f || visibility <= 1.0F && (visibility > visibilityHigh || visibility < visibilityLow)) {
+                                if (layerVisibility == 0.0F || visibility <= 1.0F && (visibility > visibilityHigh || visibility < visibilityLow)) {
                                     continue;
                                 }
                             }
@@ -344,9 +344,9 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
                         final int txId = graph.getTransaction(position);
                         boolean included = vxIncluded.get(graph.getTransactionSourceVertex(txId)) && vxIncluded.get(graph.getTransactionDestinationVertex(txId));
                         if (requiresTransactionVisibility) {
-                            float visibility = graph.getFloatValue(txVisibilityAttr, txId);
+                            final float visibility = graph.getFloatValue(txVisibilityAttr, txId);
                             final float layerVisibility = graph.getFloatValue(txLayerVisibilityAttr, txId);
-                            if (layerVisibility == 0.0f || visibility <= 1.0F && (visibility > visibilityHigh || visibility < visibilityLow)) {
+                            if (layerVisibility == 0.0F || visibility <= 1.0F && (visibility > visibilityHigh || visibility < visibilityLow)) {
                                 included = false;
                             }
                         }
