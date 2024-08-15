@@ -1535,18 +1535,12 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             attributeDescription.setDefault(defaultValue);
 
             switch (elementType) {
-                case META, GRAPH ->
-                    attributeDescription.setCapacity(1);
-                case VERTEX ->
-                    attributeDescription.setCapacity(vStore.getCapacity());
-                case LINK ->
-                    attributeDescription.setCapacity(lStore.getCapacity());
-                case EDGE ->
-                    attributeDescription.setCapacity(eStore.getCapacity());
-                case TRANSACTION ->
-                    attributeDescription.setCapacity(tStore.getCapacity());
-                default ->
-                    throw new IllegalArgumentException("Unrecognised element type " + elementType);
+                case META, GRAPH -> attributeDescription.setCapacity(1);
+                case VERTEX -> attributeDescription.setCapacity(vStore.getCapacity());
+                case LINK -> attributeDescription.setCapacity(lStore.getCapacity());
+                case EDGE -> attributeDescription.setCapacity(eStore.getCapacity());
+                case TRANSACTION -> attributeDescription.setCapacity(tStore.getCapacity());
+                default -> throw new IllegalArgumentException("Unrecognised element type " + elementType);
             }
         } catch (final IllegalAccessException | IllegalArgumentException | InstantiationException
                 | NoSuchMethodException | SecurityException | InvocationTargetException ex) {
