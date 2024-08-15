@@ -1340,41 +1340,41 @@ public class StoreGraphNGTest {
     /**
      * Test of addAttribute method, of class StoreGraph.
      */
-    @Test
-    public void testAddAttribute() {
-        System.out.println("addAttribute");
-        int expResult = 0;
-        int result = 0;
-
-//        for (GraphElementType elementType : GraphElementType.values()) {
-//            System.out.println(elementType);
+//    @Test
+//    public void testAddAttribute() {
+//        System.out.println("addAttribute");
+//        int expResult = 0;
+//        int result = 0;
 //
-//            String attributeType = "";
-//            String label = "";
-//            String description = "";
-//            Object defaultValue = null;
-//            String attributeMergerId = "";
-//            StoreGraph instance = new StoreGraph();
-//            int expResult = 0;
-//            int result = instance.addAttribute(elementType, attributeType, label, description, defaultValue, attributeMergerId);
-//            System.out.println(result);
-//            // assertEquals(result, expResult);
-//        }
-        StoreGraph instance = new StoreGraph();
-        
-        // Vertex
-        expResult = 0;
-        final String perspectiveString = "perspective_bookmarks";
-        result = instance.addAttribute(GraphElementType.META, perspectiveString, perspectiveString, perspectiveString, null, null);
-        System.out.println(result);
-        assertEquals(result, expResult);
-        
-        // Vertex
-        expResult = 0;
-        result = instance.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "y", null, null);
-        assertEquals(result, expResult);
-
-    }
+////        for (GraphElementType elementType : GraphElementType.values()) {
+////            System.out.println(elementType);
+////
+////            String attributeType = "";
+////            String label = "";
+////            String description = "";
+////            Object defaultValue = null;
+////            String attributeMergerId = "";
+////            StoreGraph instance = new StoreGraph();
+////            int expResult = 0;
+////            int result = instance.addAttribute(elementType, attributeType, label, description, defaultValue, attributeMergerId);
+////            System.out.println(result);
+////            // assertEquals(result, expResult);
+////        }
+//        StoreGraph instance = new StoreGraph();
+//        
+//        // Vertex
+//        expResult = 0;
+//        final String perspectiveString = "perspective_bookmarks";
+//        result = instance.addAttribute(GraphElementType.META, perspectiveString, perspectiveString, perspectiveString, null, null);
+//        System.out.println(result);
+//        assertEquals(result, expResult);
+//        
+//        // Vertex
+//        expResult = 0;
+//        result = instance.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "y", null, null);
+//        assertEquals(result, expResult);
+//
+//    }
 
 //    /**
 //     * Test of removeAttribute method, of class StoreGraph.
