@@ -125,6 +125,11 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
         final List<File> imageFiles = (List<File>) parameters.getObjectValue(IMAGE_FILE_PARAMETER_ID);
         final List<BufferedImage> images = new ArrayList<>();
 
+        final boolean addRight = (boolean) parameters.getBooleanValue(ADD_RIGHT_PARAMETER_ID);
+        final boolean addLayers = (boolean) parameters.getBooleanValue(ADD_LAYERS_PARAMETER_ID);
+        final int vertexBitmaskAttributeId = addLayers ? LayersConcept.VertexAttribute.LAYER_MASK.ensure(graph) : Graph.NOT_FOUND;
+        final int stateAttributeId = addLayers ? LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.ensure(graph) : Graph.NOT_FOUND;
+        
         for (final File imageFile : imageFiles) {
             if (StringUtils.endsWithIgnoreCase(imageFile.getName(), FileExtensionConstants.GIF)) {
                 final ThreeTuple<List<BufferedImage>, List<Integer>, List<Integer>> loadedImageData;
@@ -196,13 +201,10 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
         int layer = 1;
         int w = 0;
         int prevWidth = 0;
-        final boolean addRight = (boolean) parameters.getBooleanValue(ADD_RIGHT_PARAMETER_ID);
-        final boolean addLayers = (boolean) parameters.getBooleanValue(ADD_LAYERS_PARAMETER_ID);
         
         for (final BufferedImage image : images) {
 
             if (addLayers) {
-                final int stateAttributeId = LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.ensure(graph);
                 final LayersViewState currentState = graph.getObjectValue(stateAttributeId, 0);
                 if (currentState != null) {
                     // set start layer to existing graph layer count + 1
@@ -248,8 +250,6 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
                     graph.setObjectValue(vertexColorAttributeId, vxId, color);
 
                     if (addLayers) {
-                        // get layer bitmask attribute          
-                        final int vertexBitmaskAttributeId = LayersConcept.VertexAttribute.LAYER_MASK.ensure(graph);
                         graph.setLongValue(vertexBitmaskAttributeId, vxId, (long) (Math.pow(2, layer) + 1));
                     }
 
