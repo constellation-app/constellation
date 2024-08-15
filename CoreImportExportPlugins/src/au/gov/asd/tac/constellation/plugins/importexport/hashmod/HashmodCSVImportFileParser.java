@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.plugins.importexport.hashmod;
 
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -35,13 +36,22 @@ import org.openide.NotifyDescriptor;
 public class HashmodCSVImportFileParser {
 
     protected CSVParser getCSVParser(final HashmodInputSource input) throws IOException {
-        return CSVFormat.RFC4180.parse(new InputStreamReader(input.getInputStream(), StandardCharsets.UTF_8.name()));
+        final InputStream inputStream = input.getInputStream();
+        if (inputStream == null) {
+            return null;
+        }
+        return CSVFormat.RFC4180.parse(new InputStreamReader(inputStream, StandardCharsets.UTF_8.name()));
     }
 
     public List<String[]> parse(final HashmodInputSource input) throws IOException {
         final ArrayList<String[]> results = new ArrayList<>();
 
         try (final CSVParser csvFileParser = getCSVParser(input)) {
+            if (csvFileParser == null) {
+                NotifyDisplayer.display(String.format("No such file: %s",
+                    input.getFile().getPath()), NotifyDescriptor.ERROR_MESSAGE);
+                return results;
+            } 
             for (final CSVRecord csvRecord : csvFileParser) {
                 final String[] line = new String[csvRecord.size()];
 
@@ -51,10 +61,6 @@ public class HashmodCSVImportFileParser {
 
                 results.add(line);
             }
-        } catch (final NullPointerException | IOException ex) {
-            NotifyDisplayer.display(String.format("Error detected for file %s: %s",
-                    input.getFile().getPath(), ex.getMessage()),
-                    NotifyDescriptor.ERROR_MESSAGE);
         }
 
         return results;
