@@ -33,7 +33,6 @@ public class DualGraphNGTest {
     public void testGarbageCollection() {
         System.out.println("testGarbageCollection");
         final int numInstances = 5000;
-        final String id = "id";
 
         try (MockedStatic<MemoryManager> mockMemoryManager = Mockito.mockStatic(MemoryManager.class, Mockito.CALLS_REAL_METHODS)) {
             for (int i = 0; i < numInstances; i++) {
