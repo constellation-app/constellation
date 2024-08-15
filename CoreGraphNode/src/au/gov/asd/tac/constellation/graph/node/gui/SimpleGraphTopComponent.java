@@ -126,9 +126,6 @@ public final class SimpleGraphTopComponent extends CloneableTopComponent impleme
         });
 
         graph.addGraphChangeListener(SimpleGraphTopComponent.this);
-
-        MemoryManager.newObject(SimpleGraphTopComponent.class);
-        cleanable = cleaner.register(this, cleanupAction);
     }
 
     /**
