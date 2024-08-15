@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
 import java.lang.ref.Cleaner;
+import java.lang.ref.Cleaner.Cleanable;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -73,6 +74,7 @@ public final class SimpleGraphTopComponent extends CloneableTopComponent impleme
 
     // For cleaning up object for garbage collection. Replaced finalize
     private static final Cleaner cleaner = Cleaner.create();
+    private final Cleanable cleanable;
     private static final Runnable cleanupAction = () -> MemoryManager.finalizeObject(SimpleGraphTopComponent.class);
 
     public SimpleGraphTopComponent() {
@@ -95,7 +97,7 @@ public final class SimpleGraphTopComponent extends CloneableTopComponent impleme
 
         graph.addGraphChangeListener(this);
         MemoryManager.newObject(SimpleGraphTopComponent.class);
-        cleaner.register(this, cleanupAction);
+        cleanable = cleaner.register(this, cleanupAction);
     }
 
     public SimpleGraphTopComponent(final GraphDataObject gdo, final Graph graph) {
@@ -124,6 +126,9 @@ public final class SimpleGraphTopComponent extends CloneableTopComponent impleme
         });
 
         graph.addGraphChangeListener(SimpleGraphTopComponent.this);
+
+        MemoryManager.newObject(SimpleGraphTopComponent.class);
+        cleanable = cleaner.register(this, cleanupAction);
     }
 
     /**
@@ -133,6 +138,10 @@ public final class SimpleGraphTopComponent extends CloneableTopComponent impleme
      */
     public GraphNode getGraphNode() {
         return graphNode;
+    }
+
+    public Cleanable getCleanable() {
+        return cleanable;
     }
 
     @Override

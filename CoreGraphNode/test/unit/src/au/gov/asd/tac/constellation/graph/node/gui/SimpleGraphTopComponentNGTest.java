@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.graph.node.gui;
 
-import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,21 +34,15 @@ public class SimpleGraphTopComponentNGTest {
     public void testGarbageCollection() {
         System.out.println("testGarbageCollection");
         final int numInstances = 100;
-        final String id = "id";
 
         try (MockedStatic<MemoryManager> mockMemoryManager = Mockito.mockStatic(MemoryManager.class, Mockito.CALLS_REAL_METHODS)) {
             for (int i = 0; i < numInstances; i++) {
                 // Create graph and immediately overwrite its reference
                 SimpleGraphTopComponent instance = new SimpleGraphTopComponent();
 
-                instance.componentClosed();
-                instance.close();
-                //assertEquals(instance.getId(), id);
+                instance.getCleanable().clean();
                 instance = null;
                 assertNull(instance);
-//                MemoryManager.finalizeObject(SimpleGraphTopComponent.class);
-//                MemoryManager.finalizeObject(GraphNode.class);
-//                MemoryManager.finalizeObject(DualGraph.class);
             }
 
             // Hint garbage collection
@@ -60,17 +53,7 @@ public class SimpleGraphTopComponentNGTest {
 
             // Verify there are no remaining instances, because for some reason finalizeObject() verification doesn't work
             final MemoryManager.ClassStats stats = MemoryManager.getObjectCounts().get(SimpleGraphTopComponent.class);
-            //assertEquals(stats.getCurrentCount(), 0);
-
-            final MemoryManager.ClassStats graphNodeStats = MemoryManager.getObjectCounts().get(GraphNode.class);
-            System.out.println("graphNodeStats.getCurrentCount()");
-            System.out.println(graphNodeStats.getCurrentCount());
-            //assertEquals(graphNodeStats.getCurrentCount(), 0);
-
-            final MemoryManager.ClassStats dualGraphStats = MemoryManager.getObjectCounts().get(DualGraph.class);
-            System.out.println("dualGraphStats.getCurrentCount()");
-            System.out.println(dualGraphStats.getCurrentCount());
-            //assertEquals(graphNodeStats.getCurrentCount(), 0);
+            assertEquals(stats.getCurrentCount(), 0);
         }
     }
 
