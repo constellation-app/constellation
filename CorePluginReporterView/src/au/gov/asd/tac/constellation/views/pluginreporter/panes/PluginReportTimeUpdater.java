@@ -65,7 +65,6 @@ public class PluginReportTimeUpdater {
         final Runnable updatePanesRunnable = new Runnable() {
             @Override
             public void run() {
-                System.out.println("UPDATING PANES");
                 Platform.runLater(UPDATE_PANES);
             }
         };
