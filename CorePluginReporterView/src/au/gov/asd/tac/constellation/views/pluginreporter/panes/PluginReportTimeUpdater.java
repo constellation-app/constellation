@@ -20,6 +20,9 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import javafx.application.Platform;
 
 /**
@@ -38,6 +41,10 @@ public class PluginReportTimeUpdater {
     private static boolean isUpdating = false;
     private static final List<PluginReportPane> REPORTS_TO_REMOVE_CACHE = new ArrayList<>();
 
+    private PluginReportTimeUpdater() {
+        throw new IllegalStateException("Utility class");
+    }
+
     private static final Runnable UPDATE_PANES = () -> {
         synchronized (ACTIVE_REPORTS) {
             isUpdating = true;
@@ -54,20 +61,18 @@ public class PluginReportTimeUpdater {
 
     private static class TimerThread extends Thread {
 
+        final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+        final Runnable updatePanesRunnable = new Runnable() {
+            public void run() {
+                Platform.runLater(UPDATE_PANES);
+            }
+        };
+
         @Override
         public void run() {
             setName(PLUGIN_REPORTER_THREAD_NAME);
-
-            while (true) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException ex) {
-                    Thread.currentThread().interrupt();
-                    return;
-                }
-
-                Platform.runLater(UPDATE_PANES);
-            }
+            // Run every 1 second with no initial delay
+            executor.scheduleAtFixedRate(updatePanesRunnable, 0, 1, TimeUnit.SECONDS);
         }
     }
 
