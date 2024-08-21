@@ -93,8 +93,8 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
         final PluginParameters parameters = new PluginParameters();
 
         final PluginParameter<FileParameterValue> imageFileParameter = FileParameterType.build(IMAGE_FILE_PARAMETER_ID);
-        imageFileParameter.setName("Image File");
-        imageFileParameter.setDescription("The image file from which to build a graph");
+        imageFileParameter.setName("Image File(s)");
+        imageFileParameter.setDescription("The image file(s) from which to build a graph");
         FileParameterType.setFileFilters(imageFileParameter, new ExtensionFilter(
                 "Image Files (*" + FileExtensionConstants.JPG + ";*" + FileExtensionConstants.GIF + ";*" + FileExtensionConstants.PNG + ")",
                 FileExtensionConstants.PNG, FileExtensionConstants.JPG, FileExtensionConstants.GIF));
