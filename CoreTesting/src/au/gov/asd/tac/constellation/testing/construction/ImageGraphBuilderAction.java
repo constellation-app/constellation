@@ -36,7 +36,7 @@ import org.openide.util.NbBundle.Messages;
 @ActionReferences({
     @ActionReference(path = "Menu/Experimental/Build Graph", position = 0)
 })
-@Messages("CTL_ImageGraphBuilderAction=From Image...")
+@Messages("CTL_ImageGraphBuilderAction=From Image(s)...")
 public final class ImageGraphBuilderAction implements ActionListener {
 
     private final GraphNode context;
