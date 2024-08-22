@@ -19,6 +19,8 @@ import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.gui.ScreenWindowsHelper;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javafx.application.Platform;
@@ -62,7 +64,9 @@ public final class TestNotificationsAction implements ActionListener {
         // plugin notifications
         final Plugin plugin = new TestNotificationsPlugin();
         PluginExecution.withPlugin(plugin).executeLater(context.getGraph());
-        
+
+        Point newPoint = ScreenWindowsHelper.getNewCentrePoint();
+
         // NetBeans NotifyDisplayer options
         NotifyDisplayer.display(PLAIN_MESSAGE, NotifyDescriptor.PLAIN_MESSAGE);
         NotifyDisplayer.display(QUESTION_MESSAGE, NotifyDescriptor.QUESTION_MESSAGE);
@@ -72,15 +76,15 @@ public final class TestNotificationsAction implements ActionListener {
 
         // Constellation Utility options
         Platform.runLater(() -> {
-            NotifyDisplayer.displayAlert(DISPLAY_ALERT, PLAIN, PLAIN_MESSAGE, Alert.AlertType.NONE);
-            NotifyDisplayer.displayAlert(DISPLAY_ALERT, INFORMATION, INFORMATION_MESSAGE, Alert.AlertType.INFORMATION);
-            NotifyDisplayer.displayAlert(DISPLAY_ALERT, WARNING, WARNING_MESSAGE, Alert.AlertType.WARNING);
-            NotifyDisplayer.displayAlert(DISPLAY_ALERT, ERROR, ERROR_MESSAGE, Alert.AlertType.ERROR);
+            NotifyDisplayer.displayAlert(DISPLAY_ALERT, PLAIN, PLAIN_MESSAGE, Alert.AlertType.NONE, newPoint);
+            NotifyDisplayer.displayAlert(DISPLAY_ALERT, INFORMATION, INFORMATION_MESSAGE, Alert.AlertType.INFORMATION, newPoint);
+            NotifyDisplayer.displayAlert(DISPLAY_ALERT, WARNING, WARNING_MESSAGE, Alert.AlertType.WARNING, newPoint);
+            NotifyDisplayer.displayAlert(DISPLAY_ALERT, ERROR, ERROR_MESSAGE, Alert.AlertType.ERROR, newPoint);
 
-            NotifyDisplayer.displayLargeAlert(DISPLAY_LARGE_ALERT, PLAIN, PLAIN_MESSAGE, Alert.AlertType.NONE);
-            NotifyDisplayer.displayLargeAlert(DISPLAY_LARGE_ALERT, INFORMATION, INFORMATION_MESSAGE, Alert.AlertType.INFORMATION);
-            NotifyDisplayer.displayLargeAlert(DISPLAY_LARGE_ALERT, WARNING, WARNING_MESSAGE, Alert.AlertType.WARNING);
-            NotifyDisplayer.displayLargeAlert(DISPLAY_LARGE_ALERT, ERROR, ERROR_MESSAGE, Alert.AlertType.ERROR);
+            NotifyDisplayer.displayLargeAlert(DISPLAY_LARGE_ALERT, PLAIN, PLAIN_MESSAGE, Alert.AlertType.NONE, newPoint);
+            NotifyDisplayer.displayLargeAlert(DISPLAY_LARGE_ALERT, INFORMATION, INFORMATION_MESSAGE, Alert.AlertType.INFORMATION, newPoint);
+            NotifyDisplayer.displayLargeAlert(DISPLAY_LARGE_ALERT, WARNING, WARNING_MESSAGE, Alert.AlertType.WARNING, newPoint);
+            NotifyDisplayer.displayLargeAlert(DISPLAY_LARGE_ALERT, ERROR, ERROR_MESSAGE, Alert.AlertType.ERROR, newPoint);
         });
     }
 }

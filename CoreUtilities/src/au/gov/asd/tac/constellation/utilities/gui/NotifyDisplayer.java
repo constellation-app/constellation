@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.utilities.gui;
 
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.awt.EventQueue;
+import java.awt.Point;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -149,9 +150,28 @@ public class NotifyDisplayer {
      */
     public static void displayAlert(final String title, final String header, final String message, 
             final Alert.AlertType alertType) {
+        NotifyDisplayer.displayAlert(title, header, message, alertType, null);
+        
+    }
+     /**
+     * Utility display method to show an Alert to the user.
+     * Alert.AlertType.ERROR will be used for errors Alert.AlertType.INFORMATION
+     * will be used for information Alert.AlertType.WARNING will be used for
+     * warnings This utility method differs from displayAlert as it uses a
+     * TextArea to display a large amount of text.
+     *
+     * @param title the title of the alert
+     * @param header the header message for the alert
+     * @param message the message to display within the alert
+     * @param alertType the alert icon to add to the alert
+     * @param point the point at which to set the dialog
+     */
+    public static void displayAlert(final String title, final String header, final String message,
+        final Alert.AlertType alertType, final Point point) {
+
         final Alert dialog = new Alert(alertType, "", ButtonType.OK);
         dialog.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
-        
+
         if (JavafxStyleManager.isDarkTheme()) {
             dialog.getDialogPane().getStylesheets().add(JavafxStyleManager.class.getResource(DIALOG_DARK_THEME).toExternalForm());
         }
@@ -161,6 +181,10 @@ public class NotifyDisplayer {
         dialog.setResizable(true);
 
         final Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
+        if (point != null) {
+            stage.setX(point.getX() - dialog.getDialogPane().getWidth()/2);
+            stage.setY(point.getY() - dialog.getDialogPane().getHeight()/2);
+        } 
         stage.setAlwaysOnTop(true);
 
         dialog.showAndWait();
@@ -180,6 +204,24 @@ public class NotifyDisplayer {
      */
     public static void displayLargeAlert(final String title, final String header, final String message,
             final Alert.AlertType alertType) {
+        NotifyDisplayer.displayLargeAlert(title, header, message, alertType, null);
+    }
+    
+    /**
+     * Utility display method to show an Alert to the user.
+     * Alert.AlertType.ERROR will be used for errors Alert.AlertType.INFORMATION
+     * will be used for information Alert.AlertType.WARNING will be used for
+     * warnings This utility method differs from displayAlert as it uses a
+     * TextArea to display a large amount of text.
+     *
+     * @param title the title of the alert
+     * @param header the header message for the alert
+     * @param message the message to display within the alert
+     * @param alertType the alert icon to add to the alert
+     * @param point the point at which to set the dialog
+     */
+    public static void displayLargeAlert(final String title, final String header, final String message,
+            final Alert.AlertType alertType, final Point point) {
         final Alert dialog = new Alert(alertType, "", ButtonType.OK);
         dialog.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         if (JavafxStyleManager.isDarkTheme()) {
@@ -197,6 +239,10 @@ public class NotifyDisplayer {
         dialog.setResizable(true);
 
         final Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
+        if (point != null) {
+            stage.setX(point.getX() - dialog.getDialogPane().getWidth()/2);
+            stage.setY(point.getY() - dialog.getDialogPane().getHeight()/2);
+        }
         stage.setAlwaysOnTop(true);
 
         dialog.showAndWait();
@@ -214,7 +260,7 @@ public class NotifyDisplayer {
      *
      * @return the user confirmation type
      */
-    public static Optional<ButtonType> displayConfirmationAlert(final String title,final String header, final String message) {
+    public static Optional<ButtonType> displayConfirmationAlert(final String title, final String header, final String message) {
         final Alert dialog = new Alert(Alert.AlertType.CONFIRMATION, "", ButtonType.NO, ButtonType.YES);
         dialog.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         dialog.setTitle(title);
@@ -226,5 +272,5 @@ public class NotifyDisplayer {
         stage.setAlwaysOnTop(true);
 
         return dialog.showAndWait();
-    }   
+    }
 }

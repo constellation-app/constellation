@@ -140,9 +140,100 @@ public class NotifyDisplayerNGTest {
             verify(mockAlert).showAndWait();
         }
     }
+    
+     @Test
+    public void displayAlertWithPoint() {
+        final String title = "TITLE";
+        final String header = "HEADER";
+        final String message = "MESSAGE";
+        final Alert.AlertType alertType = Alert.AlertType.WARNING;
+
+        final DialogPane dialogPane = mock(DialogPane.class);
+        final Scene scene = mock(Scene.class);
+        final Stage stage = mock(Stage.class);
+        final ObservableList list = mock(ObservableList.class);
+
+        try (final MockedConstruction<Alert> alertMockedConstruction = Mockito.mockConstruction(Alert.class,
+                (mock, cnxt) -> {
+                    assertEquals(cnxt.arguments().get(0), alertType);
+                    assertEquals(cnxt.arguments().get(1), "");
+                    assertEquals(cnxt.arguments().get(2), new ButtonType[]{ButtonType.OK});
+
+                    when(mock.getDialogPane()).thenReturn(dialogPane);
+                    when(dialogPane.getScene()).thenReturn(scene);
+                    when(scene.getWindow()).thenReturn(stage);
+                    when(dialogPane.getStylesheets()).thenReturn(list);
+                })) {            
+            NotifyDisplayer.displayAlert(title, header, message, alertType,
+                    ScreenWindowsHelper.getNewCentrePoint());
+
+            assertEquals(alertMockedConstruction.constructed().size(), 1);
+
+            final Alert mockAlert = alertMockedConstruction.constructed().get(0);
+
+            verify(mockAlert).setTitle(title);
+            verify(mockAlert).setHeaderText(header);
+            verify(mockAlert).setContentText(message);
+
+            verify(mockAlert).setResizable(true);
+
+            verify(stage).setAlwaysOnTop(true);
+
+            verify(mockAlert).showAndWait();
+        }
+    }
 
     @Test
-    public void displayLargeAlert() {
+    public void displayLargeAlertPoint() {
+        final String title = "TITLE";
+        final String header = "HEADER";
+        final String message = "MESSAGE";
+        final Alert.AlertType alertType = Alert.AlertType.WARNING;
+
+        final DialogPane dialogPane = mock(DialogPane.class);
+        final Scene scene = mock(Scene.class);
+        final Stage stage = mock(Stage.class);
+        final ObservableList list = mock(ObservableList.class);
+
+        try (final MockedConstruction<Alert> alertMockedConstruction = Mockito.mockConstruction(Alert.class,
+                (mock, cnxt) -> {
+                    assertEquals(cnxt.arguments().get(0), alertType);
+                    assertEquals(cnxt.arguments().get(1), "");
+                    assertEquals(cnxt.arguments().get(2), new ButtonType[]{ButtonType.OK});
+
+                    when(mock.getDialogPane()).thenReturn(dialogPane);
+                    when(dialogPane.getScene()).thenReturn(scene);
+                    when(scene.getWindow()).thenReturn(stage);
+                    when(dialogPane.getStylesheets()).thenReturn(list);
+                })) {
+            
+            NotifyDisplayer.displayLargeAlert(title, header, message, alertType,
+                    ScreenWindowsHelper.getNewCentrePoint());
+
+            assertEquals(alertMockedConstruction.constructed().size(), 1);
+
+            final Alert mockAlert = alertMockedConstruction.constructed().get(0);
+
+            verify(mockAlert).setTitle(title);
+            verify(mockAlert).setHeaderText(header);
+
+            final ArgumentCaptor<TextArea> captor = ArgumentCaptor.forClass(TextArea.class);
+            verify(dialogPane).setExpandableContent(captor.capture());
+
+            assertEquals(captor.getValue().getText(), message);
+            assertTrue(captor.getValue().isWrapText());
+            assertFalse(captor.getValue().isEditable());
+
+            verify(mockAlert).setResizable(true);
+
+            verify(stage).setAlwaysOnTop(true);
+
+            verify(mockAlert).showAndWait();
+        }
+    }
+
+    @Test
+    public void displayLargeAlertWithPoint() {
         final String title = "TITLE";
         final String header = "HEADER";
         final String message = "MESSAGE";

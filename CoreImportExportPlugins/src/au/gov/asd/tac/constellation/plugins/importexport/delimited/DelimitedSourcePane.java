@@ -21,8 +21,10 @@ import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.Import
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.InputSource;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.gui.ScreenWindowsHelper;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -209,14 +211,17 @@ public class DelimitedSourcePane extends SourcePane {
 
                     // If file names have been appended to sb, then some files could not be imported, so notify user.
                     if (!sb.toString().equals(alertText)) {
-                        NotifyDisplayer.displayAlert("Import from File", "Invalid file(s) found", sb.toString(), Alert.AlertType.WARNING);
+                        NotifyDisplayer.displayAlert("Import from File", "Invalid file(s) found", sb.toString(), Alert.AlertType.WARNING, ScreenWindowsHelper.getNewCentrePoint());
                     }
 
                     fileListView.setItems(files);
 
-                    if (!newFiles.isEmpty()) {
-                        fileListView.getSelectionModel().select(newFiles.get(0));
+                    if (!fileListView.getSelectionModel().isEmpty() && !files.isEmpty()) {
+                        fileListView.getSelectionModel().select(files.get(0));
                         fileListView.requestFocus();
+                    }
+                    if (files.isEmpty()){
+                        DelimitedSourcePane.this.importFileParserComboBox.setDisable(false);
                     }
 
                     final ObservableList<File> selectedFiles = fileListView.getSelectionModel().getSelectedItems();
