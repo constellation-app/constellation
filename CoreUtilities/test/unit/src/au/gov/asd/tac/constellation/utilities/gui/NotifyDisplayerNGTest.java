@@ -165,7 +165,7 @@ public class NotifyDisplayerNGTest {
                     when(dialogPane.getStylesheets()).thenReturn(list);
                 })) {            
             NotifyDisplayer.displayAlert(title, header, message, alertType,
-                    ScreenWindowsHelper.getNewCentrePoint());
+                    ScreenWindowsHelper.getMainWindowCentrePoint());
 
             assertEquals(alertMockedConstruction.constructed().size(), 1);
 
@@ -208,7 +208,7 @@ public class NotifyDisplayerNGTest {
                 })) {
             
             NotifyDisplayer.displayLargeAlert(title, header, message, alertType,
-                    ScreenWindowsHelper.getNewCentrePoint());
+                    ScreenWindowsHelper.getMainWindowCentrePoint());
 
             assertEquals(alertMockedConstruction.constructed().size(), 1);
 

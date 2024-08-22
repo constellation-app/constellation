@@ -25,10 +25,10 @@ import java.awt.Window;
 public class ScreenWindowsHelper {
     
      /**
-     * Get a new point in the centre of the Main Window.
-     * @return new centre Point or null if not able to.
+     * Get the point in the centre of the Main Window.
+     * @return new centre point of application, or null otherwise.
      */
-    public static Point getNewCentrePoint() {
+    public static Point getMainWindowCentrePoint() {
         Point newPoint = null;
         for (final Window window : Window.getWindows()) {
             final Window mainWin = window.getName().contains("MainWindow") ? window : null;

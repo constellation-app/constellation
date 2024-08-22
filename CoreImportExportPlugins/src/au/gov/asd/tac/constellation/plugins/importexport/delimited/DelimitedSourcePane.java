@@ -211,7 +211,7 @@ public class DelimitedSourcePane extends SourcePane {
 
                     // If file names have been appended to sb, then some files could not be imported, so notify user.
                     if (!sb.toString().equals(alertText)) {
-                        NotifyDisplayer.displayAlert("Import from File", "Invalid file(s) found", sb.toString(), Alert.AlertType.WARNING, ScreenWindowsHelper.getNewCentrePoint());
+                        NotifyDisplayer.displayAlert("Import from File", "Invalid file(s) found", sb.toString(), Alert.AlertType.WARNING, ScreenWindowsHelper.getMainWindowCentrePoint());
                     }
 
                     fileListView.setItems(files);

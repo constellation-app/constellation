@@ -65,7 +65,7 @@ public final class TestNotificationsAction implements ActionListener {
         final Plugin plugin = new TestNotificationsPlugin();
         PluginExecution.withPlugin(plugin).executeLater(context.getGraph());
 
-        Point newPoint = ScreenWindowsHelper.getNewCentrePoint();
+        Point newPoint = ScreenWindowsHelper.getMainWindowCentrePoint();
 
         // NetBeans NotifyDisplayer options
         NotifyDisplayer.display(PLAIN_MESSAGE, NotifyDescriptor.PLAIN_MESSAGE);
