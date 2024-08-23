@@ -195,7 +195,7 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
         });
     }
 
-    private VBox addFilter() {
+    private synchronized VBox addFilter() {
         filterText.setPromptText("Filter Node types");
         final ToggleGroup toggleGroup = new ToggleGroup();
         startsWithRb.setToggleGroup(toggleGroup);
@@ -218,7 +218,7 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
         return box;
     }
 
-    private void populateTree() {
+    private synchronized void populateTree() {
         final TreeItem<SchemaVertexType> root = createNode(null);
         treeView.setRoot(root);
     }

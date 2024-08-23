@@ -152,7 +152,7 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
         });
     }
 
-    private VBox addFilter() {
+    private synchronized VBox addFilter() {
         filterText.setPromptText("Filter transaction types");
         final ToggleGroup toggleGroup = new ToggleGroup();
         startsWithRb.setToggleGroup(toggleGroup);
@@ -175,7 +175,7 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
         return box;
     }
 
-    private void populateTree() {
+    private synchronized void populateTree() {
         final TreeItem<SchemaTransactionType> root = createNode(null);
         treeView.setRoot(root);
     }
