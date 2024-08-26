@@ -526,7 +526,7 @@ public class BasicFindTab extends Tab {
         if (!getFindTextField().getText().isEmpty()) {
             saveSelected(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
             updateBasicFindParamters();
-            FindViewController.getDefault().retriveMatchingElements(true, false, getZoomToSelection().isSelected());
+            FindViewController.getDefault().retriveMatchingElements(true, true, getZoomToSelection().isSelected());
             getDeleteResultsButton().setDisable(false);
         }
     }
