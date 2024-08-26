@@ -292,21 +292,25 @@ public class FileInputPane extends HBox {
                 .setAcceptAllFileFilterUsed(extensionFilter == null || FileParameterType.isAcceptAllFileFilterUsed(parameter));
 
         if (extensionFilter != null) {
-            for (final String extension : extensionFilter.getExtensions()) {
-                // Add a file filter for all registered exportable file types.
-                fileChooserBuilder = fileChooserBuilder.addFileFilter(new FileFilter() {
-                    @Override
-                    public boolean accept(final File file) {
-                        final String name = file.getName();
-                        return (file.isFile() && StringUtils.endsWithIgnoreCase(name, extension)) || file.isDirectory();
-                    }
+            // Add a file filter for all registered exportable file types.
+            fileChooserBuilder = fileChooserBuilder.addFileFilter(new FileFilter() {
+                @Override
+                public boolean accept(final File file) {
+                    final String name = file.getName();
+                    final String ext = name.lastIndexOf('.') > -1
+                            ? name.substring(name.lastIndexOf('.')).toLowerCase()
+                            : "" ;
+                    final boolean isValidExtension = extensionFilter.getExtensions() != null 
+                            ? extensionFilter.getExtensions().contains(ext)
+                            : true;
+                    return (file.isFile() && isValidExtension) || file.isDirectory();
+                }
 
-                    @Override
-                    public String getDescription() {
-                        return extensionFilter.getDescription();
-                    }
-                });
-            }
+                @Override
+                public String getDescription() {
+                    return extensionFilter.getDescription();
+                }
+            });
         }
         return fileChooserBuilder;
     }
