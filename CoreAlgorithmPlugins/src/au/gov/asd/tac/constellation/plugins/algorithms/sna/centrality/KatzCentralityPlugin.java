@@ -32,7 +32,8 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -125,14 +126,19 @@ public class KatzCentralityPlugin extends SimpleEditPlugin {
 
         // initialise katz values
         final int vertexCount = graph.getVertexCount();
-        final double[] tempKatz = new double[graph.getVertexCapacity()];
-        final double[] katz = new double[graph.getVertexCapacity()];
-        Arrays.fill(katz, 1.0 / vertexCount);
-
+        final List<Double> tempKatz = new ArrayList<>();
+        final List<Double> katz = new ArrayList<>();
+        for (int i = 0; i < vertexCount; i++) {
+            tempKatz.add(0.0);
+            katz.add(1.0 / vertexCount);
+        }
+        
         // calculate katz for each vertex
         for (int iteration = 0; iteration < iterations; iteration++) {
-            Arrays.fill(tempKatz, 0);
-
+            for (int i = 0; i < vertexCount; i++) {
+                tempKatz.set(i, 0.0);
+            }
+            
             double sumSquaredKatz = 0;
             double maxKatz = 0;
             double delta = 0;
@@ -143,26 +149,26 @@ public class KatzCentralityPlugin extends SimpleEditPlugin {
                 for (int vertexNeighbourPosition = 0; vertexNeighbourPosition < neighbourCount; vertexNeighbourPosition++) {
                     final int neighbourId = graph.getVertexNeighbour(vertexId, vertexNeighbourPosition);
                     final int neighbourPosition = graph.getVertexPosition(neighbourId);
-                    if (vertexId != neighbourId) {
-                        tempKatz[neighbourPosition] += katz[vertexPosition];
+                    if (vertexId != neighbourId) {                        
+                        tempKatz.set(neighbourPosition, tempKatz.get(neighbourPosition) + katz.get(vertexPosition));
                     }
                 }
             }
 
             for (int vertexPosition = 0; vertexPosition < graph.getVertexCount(); vertexPosition++) {
-                tempKatz[vertexPosition] = (alpha * tempKatz[vertexPosition]) + beta;
-                sumSquaredKatz += Math.pow(tempKatz[vertexPosition], 2);
-                maxKatz = Math.max(tempKatz[vertexPosition], maxKatz);
-                delta += Math.abs(katz[vertexPosition] - tempKatz[vertexPosition]);
+                tempKatz.set(vertexPosition, alpha * tempKatz.get(vertexPosition) + beta);
+                sumSquaredKatz += Math.pow(tempKatz.get(vertexPosition), 2);
+                maxKatz = Math.max(tempKatz.get(vertexPosition), maxKatz);
+                delta += Math.abs(katz.get(vertexPosition) - tempKatz.get(vertexPosition));
             }
 
             for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
                 if (normaliseByPossible) {
-                    katz[vertexPosition] = tempKatz[vertexPosition] / Math.sqrt(sumSquaredKatz);
+                    katz.set(vertexPosition, tempKatz.get(vertexPosition) / Math.sqrt(sumSquaredKatz));
                 } else if (normaliseByAvailable && maxKatz > 0) {
-                    katz[vertexPosition] = tempKatz[vertexPosition] / maxKatz;
+                    katz.set(vertexPosition, tempKatz.get(vertexPosition) / maxKatz);
                 } else {
-                    katz[vertexPosition] = tempKatz[vertexPosition];
+                    katz.set(vertexPosition, tempKatz.get(vertexPosition));
                 }
             }
 
@@ -175,7 +181,7 @@ public class KatzCentralityPlugin extends SimpleEditPlugin {
         final int katzAttribute = KATZ_ATTRIBUTE.ensure(graph);
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
             final int vertexId = graph.getVertex(vertexPosition);
-            graph.setFloatValue(katzAttribute, vertexId, (float) katz[vertexPosition]);
+            graph.setFloatValue(katzAttribute, vertexId, Float.parseFloat(katz.get(vertexPosition).toString()));
         }
     }
 }
