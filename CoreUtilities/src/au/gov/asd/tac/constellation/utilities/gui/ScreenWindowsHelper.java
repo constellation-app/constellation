@@ -29,15 +29,13 @@ public class ScreenWindowsHelper {
      * @return new centre point of application, or null otherwise.
      */
     public static Point getMainWindowCentrePoint() {
-        Point newPoint = null;
         for (final Window window : Window.getWindows()) {
             final Window mainWin = window.getName().contains("MainWindow") ? window : null;
             if (mainWin != null) {
-                newPoint = new Point((int) (mainWin.getX() + (mainWin.getSize().getWidth() / 2)),
+                return new Point((int) (mainWin.getX() + (mainWin.getSize().getWidth() / 2)),
                         (int) ((mainWin.getY() + mainWin.getSize().getHeight() / 2)));
-                break;
             }
         }
-        return newPoint;
+        return null;
     }
 }
