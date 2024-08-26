@@ -18,12 +18,10 @@ package au.gov.asd.tac.constellation.views.find;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.find.components.FindViewPane;
 import au.gov.asd.tac.constellation.views.find.components.advanced.AdvancedCriteriaBorderPane;
-import au.gov.asd.tac.constellation.views.find.plugins.ResetStatePlugin;
 import java.awt.Dimension;
 import java.awt.Window;
 import org.openide.awt.ActionID;
@@ -93,8 +91,7 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
          * default to avoid index out of bounds issues when trying to find a node or transaction that no longer exists.
          */
         addStructureChangeHandler(graph -> {
-            final ResetStatePlugin resetState = new ResetStatePlugin();
-            PluginExecution.withPlugin(resetState).executeLater(graph);
+            FindViewController.getDefault().clearResultsLists();
         });
 
         /**
@@ -181,6 +178,7 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
      */
     @Override
     protected void handleGraphClosed(final Graph graph) {
+        FindViewController.getDefault().clearResultsLists();
         super.handleGraphClosed(graph);
         disableFindView();
     }
