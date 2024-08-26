@@ -54,7 +54,7 @@ public final class CompareGraphAction implements ActionListener {
         } else {
             Platform.runLater(() -> NotifyDisplayer.displayAlert("Compare Graph", "Warning", 
                     "Two or more graphs need to be open before comparing.", Alert.AlertType.WARNING,
-                    ScreenWindowsHelper.getNewCentrePoint()));
+                    ScreenWindowsHelper.getMainWindowCentrePoint()));
         }
     }
 }

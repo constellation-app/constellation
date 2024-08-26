@@ -184,7 +184,7 @@ public class NotifyDisplayerNGTest {
     }
 
     @Test
-    public void displayLargeAlertPoint() {
+    public void displayLargeAlertWithPoint() {
         final String title = "TITLE";
         final String header = "HEADER";
         final String message = "MESSAGE";
@@ -233,7 +233,7 @@ public class NotifyDisplayerNGTest {
     }
 
     @Test
-    public void displayLargeAlertWithPoint() {
+    public void displayLargeAlert() {
         final String title = "TITLE";
         final String header = "HEADER";
         final String message = "MESSAGE";
