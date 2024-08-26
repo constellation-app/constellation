@@ -89,7 +89,7 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
     private final Map<SchemaVertexType, Image> foregroundIcons;
     private final RadioButton startsWithRb;
     private final TextField filterText;
-    private HBox schemaLabelAndHelp;
+    private final HBox schemaLabelAndHelp;
 
     public VertexTypeNodeProvider() {
         schemaLabel = new Label(SeparatorConstants.HYPHEN);
@@ -219,8 +219,10 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
     }
 
     private synchronized void populateTree() {
-        final TreeItem<SchemaVertexType> root = createNode(null);
-        treeView.setRoot(root);
+        Platform.runLater(() -> {
+            final TreeItem<SchemaVertexType> root = createNode(null);
+            treeView.setRoot(root);
+        });
     }
 
     private boolean isFilterMatchCurrentNodeOrAnyChildren(final SchemaVertexType treeItem) {
@@ -425,8 +427,7 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
     /**
      * Recursively create a tree of vertex types.
      * <p>
-     * getSuperType() points to the parent. If getSuperType() points to itself,
-     * the vertex type is a root.
+     * getSuperType() points to the parent. If getSuperType() points to itself, the vertex type is a root.
      *
      * @param vxtype
      * @return
@@ -454,8 +455,7 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
             }
 
             /**
-             * A vertextype is not a leaf if another vertextype refers to it as
-             * a supertype.
+             * A vertextype is not a leaf if another vertextype refers to it as a supertype.
              *
              * @return
              */

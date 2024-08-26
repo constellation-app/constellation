@@ -39,6 +39,8 @@ public class SchemaViewPane extends BorderPane {
     private Collection<? extends SchemaViewNodeProvider> schemaViewProviders;
     private final TabPane schemaViewTabPane;
 
+    //private final Object lock = new Object();
+
     public SchemaViewPane() {
         schemaViewProviders = null;
 
@@ -49,15 +51,21 @@ public class SchemaViewPane extends BorderPane {
 
     public void populate() {
         Platform.runLater(() -> {
+            //synchronized (lock) {
             final Executor pool = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool("Schema-Thread", 1);
             schemaViewProviders = Lookup.getDefault().lookupAll(SchemaViewNodeProvider.class);
             schemaViewProviders.stream().forEach(provider -> {
                 final Tab tab = new Tab(provider.getText());
                 schemaViewTabPane.getTabs().add(tab);
 
-                pool.execute(() -> provider.setContent(tab));
+                pool.execute(() -> {
+                    //synchronized (lock) {
+                    provider.setContent(tab);
+                    // }
+                });
             });
             schemaViewTabPane.getTabs().add(tabWithHelpButton(schemaViewTabPane));
+            // }
         });
     }
 
@@ -76,13 +84,16 @@ public class SchemaViewPane extends BorderPane {
     }
 
     public void clear() {
+        //public synchronized void clear() {
         Platform.runLater(() -> {
+            //synchronized (lock) {
             schemaViewTabPane.getTabs().clear();
 
             if (schemaViewProviders != null) {
                 schemaViewProviders.stream().forEach(provider -> provider.discardNode());
                 schemaViewProviders = null;
             }
+            // }
         });
     }
 }

@@ -176,8 +176,10 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
     }
 
     private synchronized void populateTree() {
-        final TreeItem<SchemaTransactionType> root = createNode(null);
-        treeView.setRoot(root);
+        Platform.runLater(() -> {
+            final TreeItem<SchemaTransactionType> root = createNode(null);
+            treeView.setRoot(root);
+        });
     }
 
     private boolean isFilterMatchCurrentNode(final SchemaTransactionType treeItem) {
@@ -312,8 +314,7 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
     /**
      * Recursively create a tree of vertex types.
      * <p>
-     * getSuperType() points to the parent. If getSuperType() points to itself,
-     * the vertex type is a root.
+     * getSuperType() points to the parent. If getSuperType() points to itself, the vertex type is a root.
      *
      * @param txtype
      * @return
@@ -341,8 +342,7 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
             }
 
             /**
-             * A vertextype is not a leaf if another vertextype refers to it as
-             * a supertype.
+             * A vertextype is not a leaf if another vertextype refers to it as a supertype.
              *
              * @return
              */
