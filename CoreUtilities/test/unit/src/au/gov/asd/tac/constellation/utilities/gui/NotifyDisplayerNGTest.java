@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.utilities.gui;
 
 import java.awt.EventQueue;
+import java.awt.Point;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
@@ -180,6 +181,22 @@ public class NotifyDisplayerNGTest {
             verify(stage).setAlwaysOnTop(true);
 
             verify(mockAlert).showAndWait();
+            
+            // test non-null point
+            final Point mockedPoint = mock(Point.class);
+            final double doubleValue = 100.0;
+            when(mockedPoint.getX()).thenReturn(doubleValue);
+            when(mockedPoint.getY()).thenReturn(doubleValue);
+            when(dialogPane.getWidth()).thenReturn(doubleValue);
+            when(dialogPane.getHeight()).thenReturn(doubleValue);
+            try (final MockedStatic<ScreenWindowsHelper> screenWindowsHelperStatic = Mockito.mockStatic(ScreenWindowsHelper.class)) {
+                screenWindowsHelperStatic.when(ScreenWindowsHelper::getMainWindowCentrePoint).thenReturn(mockedPoint);
+            
+                NotifyDisplayer.displayAlert(title, header, message, alertType,
+                    ScreenWindowsHelper.getMainWindowCentrePoint());
+                verify(stage).setX(doubleValue - doubleValue/2);
+                verify(stage).setY(doubleValue - doubleValue/2);
+            }
         }
     }
 

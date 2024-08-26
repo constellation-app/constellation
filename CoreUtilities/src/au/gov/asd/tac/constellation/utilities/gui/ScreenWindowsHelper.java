@@ -33,7 +33,7 @@ public class ScreenWindowsHelper {
             final Window mainWin = window.getName().contains("MainWindow") ? window : null;
             if (mainWin != null) {
                 return new Point((int) (mainWin.getX() + (mainWin.getSize().getWidth() / 2)),
-                        (int) ((mainWin.getY() + mainWin.getSize().getHeight() / 2)));
+                        (int) (mainWin.getY() + mainWin.getSize().getHeight() / 2));
             }
         }
         return null;
