@@ -90,9 +90,7 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
          * This is called whenever a node or transaction is added or deleted. It resets the searching index back to the
          * default to avoid index out of bounds issues when trying to find a node or transaction that no longer exists.
          */
-        addStructureChangeHandler(graph -> {
-            FindViewController.getDefault().clearResultsLists();
-        });
+        addStructureChangeHandler(graph -> FindViewController.getDefault().clearResultsLists());
 
         /**
          * This updates the attribute list UI element when a attribute is added or removed from the graph.
