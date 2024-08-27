@@ -55,9 +55,7 @@ public class SchemaViewPane extends BorderPane {
                 final Tab tab = new Tab(provider.getText());
                 schemaViewTabPane.getTabs().add(tab);
 
-                pool.execute(() -> {
-                    provider.setContent(tab);
-                });
+                pool.execute(() -> provider.setContent(tab));
             });
             schemaViewTabPane.getTabs().add(tabWithHelpButton(schemaViewTabPane));
         });
