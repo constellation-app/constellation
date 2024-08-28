@@ -421,7 +421,7 @@ public class AdvancedFindTabNGTest {
 
             advancedFindMock.findAllAction();
             verify(advancedFindMock, times(1)).updateAdvancedSearchParameters(graphElementType);
-            verify(mockController, times(1)).retrieveAdvancedSearch(true, false, false);
+            verify(mockController, times(1)).retrieveAdvancedSearch(true, true, false);
         }
     }
 
