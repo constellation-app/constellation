@@ -625,10 +625,14 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             toggleDrawDirectedAction.setEnabled(isDrawingMode);
 
             switch (connectionMode) {
-                case LINK -> drawLinksAction.putValue(Action.SELECTED_KEY, true);
-                case EDGE -> drawEdgesAction.putValue(Action.SELECTED_KEY, true);
-                case TRANSACTION -> drawTransactionsAction.putValue(Action.SELECTED_KEY, true);
-                default -> throw new IllegalStateException("Unknown ConnectionMode: " + connectionMode);
+                case LINK ->
+                    drawLinksAction.putValue(Action.SELECTED_KEY, true);
+                case EDGE ->
+                    drawEdgesAction.putValue(Action.SELECTED_KEY, true);
+                case TRANSACTION ->
+                    drawTransactionsAction.putValue(Action.SELECTED_KEY, true);
+                default ->
+                    throw new IllegalStateException("Unknown ConnectionMode: " + connectionMode);
             }
         } finally {
             rg.release();
@@ -1171,7 +1175,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
 
-            PluginExecution.withPlugin(new WriteGraphFile(copy, freshGdo)).executeLater(null);
+            PluginExecution.withPlugin(new WriteGraphFile(copy, freshGdo)).executeLater(graph);
 
             if (GraphNode.getGraphNode(graph) != null) {
                 GraphNode.getGraphNode(graph).makeBusy(false);
@@ -1230,7 +1234,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                     file,
                     ConstellationLoggerHelper.SUCCESS
             );
-            RecentGraphScreenshotUtilities.takeScreenshot(file.getAbsolutePath());
+            RecentGraphScreenshotUtilities.takeScreenshot(file.getAbsolutePath(), graphs.getGraph());
         }
     }
 }

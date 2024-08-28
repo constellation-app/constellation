@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.plugins.io.screenshot;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.file.open.RecentFiles;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
@@ -66,8 +67,7 @@ public class RecentGraphScreenshotUtilities {
     }
 
     /**
-     * Retrieve the screenshots user directory that is used to save a screenshot
-     * of the graph
+     * Retrieve the screenshots user directory that is used to save a screenshot of the graph
      *
      * @return The screenshot directory location
      */
@@ -129,17 +129,29 @@ public class RecentGraphScreenshotUtilities {
     }
 
     /**
-     * Take a screenshot of the graph and save it to the screenshots directory
-     * so that it can be used by the Welcome View.
+     * Take a screenshot of the current active graph and save it to the screenshots directory so that it can be used by
+     * the Welcome View.
      *
      * @param filepath The filepath of the graph
      */
     public static void takeScreenshot(final String filepath) {
+        takeScreenshot(filepath, GraphManager.getDefault().getActiveGraph());
+    }
+
+    /**
+     * Take a screenshot of the given graph and save it to the screenshots directory so that it can be used by the
+     * Welcome View.
+     *
+     * @param filepath The filepath of the graph
+     * @param graph The graph to take a screenshot of
+     */
+    public static void takeScreenshot(final String filepath, final Graph graph) {
         final String pathHash = hashFilePath(filepath);
         final String imageFile = getScreenshotsDir() + File.separator + pathHash + FileExtensionConstants.PNG;
 
         final Path source = Paths.get(imageFile);
-        final GraphNode graphNode = GraphNode.getGraphNode(GraphManager.getDefault().getActiveGraph());
+        final GraphNode graphNode = GraphNode.getGraphNode(graph);
+
         if (graphNode != null) {
             final VisualManager visualManager = graphNode.getVisualManager();
 
@@ -164,8 +176,7 @@ public class RecentGraphScreenshotUtilities {
     /**
      * Resize the {@code BufferedImage} and write it to disk
      * <p>
-     * Referenced from
-     * https://mkyong.com/java/how-to-resizeAndSave-an-image-in-java/
+     * Referenced from https://mkyong.com/java/how-to-resizeAndSave-an-image-in-java/
      * </p>
      *
      * @param originalImage
@@ -202,8 +213,7 @@ public class RecentGraphScreenshotUtilities {
     }
 
     /**
-     * Refresh stored screenshots of recent files to match the recent files
-     * stored in history.
+     * Refresh stored screenshots of recent files to match the recent files stored in history.
      */
     public static void refreshScreenshotsDir() {
 
