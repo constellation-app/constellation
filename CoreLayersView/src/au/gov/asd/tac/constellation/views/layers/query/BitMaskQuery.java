@@ -90,10 +90,13 @@ public class BitMaskQuery {
     }
 
     public boolean update(final GraphReadMethods graph, final IntReadable index) {
+        //System.out.println(">-->--> try to update on index " + index + "  on bitIndex " + bitIndex);
         if (StringUtils.isNotBlank(query.getQueryString()) && bitIndex != 0) {
             final Object compiledExpression = query.compile(graph, index);
+            //System.out.println(" compiledExpression = " + compiledExpression);
             if (compiledExpression != null) {
                 this.result = Access.getDefault().getRegistry(BooleanReadable.class).convert(compiledExpression);
+                //System.out.println(" result = " + result);
             }
         } else {
             this.result = null;
@@ -110,9 +113,12 @@ public class BitMaskQuery {
     }
 
     public long combineBitmap(final long original) {
+        //System.out.println("## combineBitmap: result=" + (result != null ? result.readBoolean() : "NuLL"));
         if (result != null && result.readBoolean()) {
+            //System.out.println("---->> RETURN OR'd result");
             return original | (long) Math.pow(2.0, bitIndex); // Set the appropriate bit in the result
         } else {
+            //System.out.println("...return original");
             return original; // No change for inactive query
         }        
     }

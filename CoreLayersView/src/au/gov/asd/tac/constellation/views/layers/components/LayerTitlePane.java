@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.value.utilities.ExpressionUtilities;
 import au.gov.asd.tac.constellation.views.layers.LayersViewController;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQuery;
+import au.gov.asd.tac.constellation.views.layers.utilities.LayersUtilities;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
@@ -132,12 +133,35 @@ public class LayerTitlePane extends TitledPane {
         vxQuery = new QueryInputPane(this, "Vertex Query: ", VERTEX_DESCRIPTION, query.getQueryElementType() == GraphElementType.VERTEX ? query.getQueryString() : StringUtils.EMPTY, true);
         txQuery = new QueryInputPane(this, "Transaction Query: ", TRANSACTION_DESCRIPTION, query.getQueryElementType() == GraphElementType.TRANSACTION ? query.getQueryString() : StringUtils.EMPTY, true);
         descinput = new QueryInputPane(this, "Query Description", QUERY_DESCRIPTION, query.getDescription(), false);
-        final VBox box = new VBox(10, descinput, vxQuery, txQuery);
+        final Button selectAllocations = new Button("Select");
+        selectAllocations.setTooltip(new Tooltip("Select Layer %d Elements".formatted(query.getIndex())));
+        selectAllocations.setOnAction(e -> {
+            LayersUtilities.selectLayerElements((int) Math.pow(2 , query.getIndex()), true);
+        });
+        final Button deselectAllocations = new Button("De-Select");
+        deselectAllocations.setTooltip(new Tooltip("De-Select Layer %d Elements".formatted(query.getIndex())));
+        deselectAllocations.setOnAction(e -> {
+            LayersUtilities.selectLayerElements((int) Math.pow(2 , query.getIndex()), false);
+        });
+        final Button allocateSelections = new Button("Allocate");
+        allocateSelections.setTooltip(new Tooltip("Allocate Selected Elements to Layer %d".formatted(query.getIndex())));
+        allocateSelections.setOnAction(e -> {
+            LayersUtilities.allocateElementsForLayer((int) Math.pow(2 , query.getIndex()), true);
+        });
+        final Button deallocateSelections = new Button("De-Allocate");
+        deallocateSelections.setTooltip(new Tooltip("De-Allocate Selected Elements from Layer %d".formatted(query.getIndex())));
+        deallocateSelections.setOnAction(e -> {
+            LayersUtilities.allocateElementsForLayer((int) Math.pow(2 , query.getIndex()), false);
+        });
+        final HBox buttons = new HBox(selectAllocations, deselectAllocations, allocateSelections, deallocateSelections);
+        //buttons.setPadding(new Insets(3));
+        buttons.setSpacing(5);
+        final VBox box = new VBox(10, buttons, descinput, vxQuery, txQuery);
         box.prefWidthProperty().bind(this.widthProperty());
 
         return box;
     }
-
+    
     /**
      * Set the vertex or transaction query to the given query
      *
