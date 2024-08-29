@@ -20,11 +20,9 @@ import au.gov.asd.tac.constellation.views.layers.utilities.LayersUtilities;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.text.TextAlignment;
 
 /**
  *
@@ -39,8 +37,9 @@ public class MenuBar extends HBox {
 
     private final Button addButton;
     private final Button deselectButton;
+    private final Button selectElements;
+    private final Button deselectElements;
     private final Button helpButton;
-    private final Label queryErrorLabel;
 
     private static final Insets MENU_PADDING = new Insets(0, 0, 0, 10);
 
@@ -56,16 +55,16 @@ public class MenuBar extends HBox {
         // create buttons
         addButton = createAddButton();
         deselectButton = createDeselectButton();
+        selectElements = createSelectElementsButton();
+        deselectElements = createDeselectElementsButton();
         helpButton = LayersUtilities.createHelpButton();
-
-        // create error label
-        queryErrorLabel = createErrorLabel();
 
         // add to HBox
         this.getChildren().add(addButton);
         this.getChildren().add(deselectButton);
+        this.getChildren().add(selectElements);
+        this.getChildren().add(deselectElements);
         this.getChildren().add(helpButton);
-        this.getChildren().add(queryErrorLabel);
     }
 
     /**
@@ -104,38 +103,22 @@ public class MenuBar extends HBox {
         return deselectAllButton;
     }
 
-    /**
-     * Create an error label for the menu bar
-     *
-     * @return
-     */
-    private Label createErrorLabel() {
-        final Label errorLabel = new Label(QUERY_WARNING_TEXT);
-        errorLabel.setPadding(new Insets(2, 0, 0, 0));
-        errorLabel.setTextAlignment(TextAlignment.CENTER);
-        errorLabel.setStyle("-fx-text-fill: rgba(241,74,74,0.85);");
-        errorLabel.setVisible(false);
-        HBox.setHgrow(errorLabel, Priority.ALWAYS);
-
-        return errorLabel;
+    private Button createSelectElementsButton() {
+        final Button selectElementsButton = new Button("Select Elements");
+        selectElementsButton.setTooltip(new Tooltip("Select all visible elements that match the current Layer settings"));
+        selectElementsButton.setOnAction(event -> {
+            LayersUtilities.selectVisibleElements(true);
+        });
+        return selectElementsButton;
     }
 
-    /**
-     * Determine if the error label is visible
-     *
-     * @param isVisible
-     */
-    public void displayQueryErrorLabel(final boolean isVisible) {
-        queryErrorLabel.setVisible(isVisible);
-    }
-
-    /**
-     * Check if the error label is currently visible
-       *
-     * @return whether error label is visible
-     */
-    public boolean getQueryErrorLabelVisibility() {
-        return queryErrorLabel.isVisible();
+    private Button createDeselectElementsButton() {
+        final Button deselectElementsButton = new Button("De-Select Elements");
+        deselectElementsButton.setTooltip(new Tooltip("De-Select all visible elements that match the current Layer settings"));
+        deselectElementsButton.setOnAction(event -> {
+            LayersUtilities.selectVisibleElements(false);
+        });
+        return deselectElementsButton;
     }
 
 }

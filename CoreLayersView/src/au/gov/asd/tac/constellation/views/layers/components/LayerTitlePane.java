@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.layers.components;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.value.utilities.ExpressionUtilities;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.layers.LayersViewController;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQuery;
 import au.gov.asd.tac.constellation.views.layers.utilities.LayersUtilities;
@@ -28,12 +29,15 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.Tooltip;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -54,6 +58,7 @@ public class LayerTitlePane extends TitledPane {
     public static final String INVALID_STYLE = "titled-pane-invalid";
     
     public static final int MAX_DISPLAYED_CHARS = 45;
+    static final boolean DARK_MODE = JavafxStyleManager.isDarkTheme();
     
     // Components
     private final CheckBox enabled;
@@ -133,31 +138,57 @@ public class LayerTitlePane extends TitledPane {
         vxQuery = new QueryInputPane(this, "Vertex Query: ", VERTEX_DESCRIPTION, query.getQueryElementType() == GraphElementType.VERTEX ? query.getQueryString() : StringUtils.EMPTY, true);
         txQuery = new QueryInputPane(this, "Transaction Query: ", TRANSACTION_DESCRIPTION, query.getQueryElementType() == GraphElementType.TRANSACTION ? query.getQueryString() : StringUtils.EMPTY, true);
         descinput = new QueryInputPane(this, "Query Description", QUERY_DESCRIPTION, query.getDescription(), false);
+        final CheckBox includeHidden = new CheckBox("Include Hidden");
+        includeHidden.setPadding(new Insets(4,0,0,0));
+        includeHidden.setSelected(true);
         final Button selectAllocations = new Button("Select");
         selectAllocations.setTooltip(new Tooltip("Select Layer %d Elements".formatted(query.getIndex())));
         selectAllocations.setOnAction(e -> {
-            LayersUtilities.selectLayerElements((int) Math.pow(2 , query.getIndex()), true);
+            LayersUtilities.selectLayerElements((int) Math.pow(2 , query.getIndex()), true, includeHidden.isSelected());
         });
         final Button deselectAllocations = new Button("De-Select");
         deselectAllocations.setTooltip(new Tooltip("De-Select Layer %d Elements".formatted(query.getIndex())));
         deselectAllocations.setOnAction(e -> {
-            LayersUtilities.selectLayerElements((int) Math.pow(2 , query.getIndex()), false);
+            LayersUtilities.selectLayerElements((int) Math.pow(2 , query.getIndex()), false, includeHidden.isSelected());
         });
         final Button allocateSelections = new Button("Allocate");
         allocateSelections.setTooltip(new Tooltip("Allocate Selected Elements to Layer %d".formatted(query.getIndex())));
         allocateSelections.setOnAction(e -> {
-            LayersUtilities.allocateElementsForLayer((int) Math.pow(2 , query.getIndex()), true);
+            LayersUtilities.allocateElementsForLayer((int) Math.pow(2 , query.getIndex()), true, includeHidden.isSelected());
         });
         final Button deallocateSelections = new Button("De-Allocate");
         deallocateSelections.setTooltip(new Tooltip("De-Allocate Selected Elements from Layer %d".formatted(query.getIndex())));
         deallocateSelections.setOnAction(e -> {
-            LayersUtilities.allocateElementsForLayer((int) Math.pow(2 , query.getIndex()), false);
+            LayersUtilities.allocateElementsForLayer((int) Math.pow(2 , query.getIndex()), false, includeHidden.isSelected());
         });
-        final HBox buttons = new HBox(selectAllocations, deselectAllocations, allocateSelections, deallocateSelections);
-        //buttons.setPadding(new Insets(3));
-        buttons.setSpacing(5);
-        final VBox box = new VBox(10, buttons, descinput, vxQuery, txQuery);
+                
+        String enablingBackgroundColorStyle = DARK_MODE ? " -fx-background-color: #245288; " : " -fx-background-color: #96BCEF; -fx-text-fill: black; "; // #51a5f8 #b0d0f0
+        String disablingBackgroundColorStyle = DARK_MODE ? " -fx-background-color: #742D2E; " : " -fx-background-color: #f0a8a2; -fx-text-fill: black; "; // ffbfbf ECABAB
+        Color buttonBackground = DARK_MODE ? new Color(0.20,0.20,0.20,1) : new Color(0.86,0.86,0.86,1);
+        allocateSelections.setStyle(enablingBackgroundColorStyle);
+        deallocateSelections.setStyle(disablingBackgroundColorStyle);
+        selectAllocations.setStyle(enablingBackgroundColorStyle);
+        deselectAllocations.setStyle(disablingBackgroundColorStyle);
+
+        final HBox buttonsLeft = new HBox(selectAllocations, deselectAllocations);
+        final HBox buttonsRight = new HBox(allocateSelections, deallocateSelections);
+        final HBox emptySpace = new HBox(new Label(" "));
+        emptySpace.setPadding(new Insets(0,20,0,20));
+        final BorderPane combinedButtons = new BorderPane();
+        combinedButtons.setLeft(buttonsLeft);
+        combinedButtons.setCenter(emptySpace);
+        combinedButtons.setRight(buttonsRight);
+        combinedButtons.setBackground(new Background(new BackgroundFill(buttonBackground, null, null)));
+        final BorderPane buttonPane = new BorderPane();
+        buttonPane.setLeft(combinedButtons);
+        buttonPane.setRight(includeHidden);
+        buttonPane.setBackground(new Background(new BackgroundFill(buttonBackground, null, null)));
+        buttonPane.setPadding(new Insets(3,5,3,5)); 
+        buttonsLeft.setSpacing(5);
+        buttonsRight.setSpacing(5);
+        final VBox box = new VBox(10, buttonPane, descinput, vxQuery, txQuery);
         box.prefWidthProperty().bind(this.widthProperty());
+        box.setPadding(new Insets(0,5,10,5));
 
         return box;
     }

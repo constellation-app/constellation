@@ -115,13 +115,11 @@ public class BitMaskQueryCollection {
      * @param activeQueriesBitMask
      */
     public void setActiveQueries(final long activeQueriesBitMask) {
-        //System.out.println("\n ========================\n setActiveQueries to " + activeQueriesBitMask + "\n===============\n Queries size = " + queries.length);
         this.activeQueriesBitMask = activeQueriesBitMask;
         activeQueries.clear();
         boolean anySelected = false;
         for (final BitMaskQuery query : queries) {
             if (query != null && query.isVisible()) {
-                //System.out.println("--- addignqurey: " + query.getQueryString());
                 activeQueries.add(query);
                 anySelected = true;
             }
@@ -129,7 +127,6 @@ public class BitMaskQueryCollection {
         if (!anySelected) {
             for (final BitMaskQuery query : queries) {
                 if (query != null && query.getIndex() == 0) {
-                    //System.out.println("--- 2 addignqurey: " + query.getQueryString());
                     activeQueries.add(query);
                 }
             }
@@ -175,32 +172,11 @@ public class BitMaskQueryCollection {
         updateQueries.clear();
         for (final BitMaskQuery activeQuery : activeQueries) {
             if (activeQuery != null && activeQuery.update(graph, index)) {
-                //System.out.println("Adding active query: " + activeQuery.getQueryString());
                 updateQueries.add(activeQuery);
             }
         }
         return !updateQueries.isEmpty();
     }
-
-//    /**
-//     * Determine whether the active queries on the graph require updating
-//     *
-//     * @param graph
-//     * @return whether any queries need to be updated
-//     */
-//    public boolean updateWithEnable(final GraphReadMethods graph) {
-//        updateQueries.clear();
-//        System.out.println("\n\n >>>####>>> Active queries: " + activeQueries.size());
-//        for (final BitMaskQuery activeQuery : activeQueries) {
-//            if (activeQuery != null && activeQuery.update(graph, index)) {
-//                System.out.println(" >>>####>>> Adding active query: " + activeQuery.getQueryString());
-//                activeQuery.setVisibility(true);
-//                updateQueries.add(activeQuery);
-//            }
-//        }
-//        System.out.println(" >>>####>>> updateQueries: " + updateQueries.size());
-//        return !updateQueries.isEmpty();
-//    }
     
     /**
      * Update the bit mask depending on the current queries
@@ -217,12 +193,9 @@ public class BitMaskQueryCollection {
 
     public long updateQueryBitmap(final long bitMask) {
         long resultingBitmap = bitMask;
-        //System.out.println("\n - - - - - - - - update using bitMask=" + bitMask + "  updatedQuerires=" + updateQueries.size());
         for (final BitMaskQuery updateQuery : updateQueries) {
-            //System.out.println(" update on query: " + updateQuery.getQueryString());
             resultingBitmap = updateQuery.combineBitmap(resultingBitmap);
         }
-        //System.out.println(" - - - - - - - - resultingBitmap=" + resultingBitmap);
         return resultingBitmap;        
     }
     

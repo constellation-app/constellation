@@ -161,7 +161,6 @@ public class LayersViewPane extends BorderPane {
             controller.getTxQueryCollection().clear();
             controller.getVxQueryCollection().setQueries(vxLayers);
             controller.getTxQueryCollection().setQueries(txLayers);
-            options.displayQueryErrorLabel(false);
             
             final VBox oldLayers = (VBox) attributeScrollPane.getContent();
             createLayers(oldLayers, vxLayers, txLayers);
@@ -187,7 +186,6 @@ public class LayersViewPane extends BorderPane {
         Platform.runLater(() -> {
             controller.getVxQueryCollection().setDefaultQueries();
             controller.getTxQueryCollection().setDefaultQueries();
-            options.displayQueryErrorLabel(false);
             
             final VBox oldLayers = new VBox();
             createLayers(oldLayers, controller.getVxQueryCollection().getQueries(), controller.getTxQueryCollection().getQueries());

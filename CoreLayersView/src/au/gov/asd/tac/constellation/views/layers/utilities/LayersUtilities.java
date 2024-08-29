@@ -123,8 +123,43 @@ public class LayersUtilities {
 
         return helpDocumentationButton;
     }
+
+    public static void selectVisibleElements(final boolean selectionSetting){
+        Thread elementSelecter = new Thread(() -> {
+            try {
+                final Graph graph = GraphManager.getDefault().getActiveGraph();
+                final WritableGraph wg = graph.getWritableGraph((selectionSetting ? "" : "De-") + "Select All Visible Layer Elements", true);
+                final int selectedVertexID = VisualConcept.VertexAttribute.SELECTED.get(wg);
+                final int selectedTransactionID = VisualConcept.TransactionAttribute.SELECTED.get(wg);
+                final int vxbitmaskVisibilityAttrId = LayersConcept.VertexAttribute.LAYER_VISIBILITY.get(wg);
+                final int txbitmaskVisibilityAttrId = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.get(wg);
+                
+                // Determine how many elements to scan
+                final int vertexCount = wg.getVertexCount();
+                final int transactionCount = wg.getTransactionCount();
+
+                // Select visible Vertices
+                for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
+                    if (wg.getFloatValue(vxbitmaskVisibilityAttrId, wg.getVertex(vertexPosition)) == 1.0) {
+                        wg.setBooleanValue(selectedVertexID, wg.getVertex(vertexPosition), selectionSetting);
+                    }
+                }
+                // Select visible Transactions
+                for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
+                    if (wg.getFloatValue(txbitmaskVisibilityAttrId, wg.getVertex(transactionPosition)) == 1.0) {
+                        wg.setBooleanValue(selectedTransactionID, wg.getTransaction(transactionPosition), selectionSetting);
+                    }
+                }
+                wg.commit();
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, "LayersUtilities.selectVisibleElements interrupted ...", ex);
+                Thread.currentThread().interrupt();
+            }
+        });
+        elementSelecter.start();
+    }
     
-    public static void selectLayerElements(final int layerBitMap, final boolean selectionSetting) {
+    public static void selectLayerElements(final int layerBitMap, final boolean selectionSetting, final boolean includeHidden) {
         Thread layerSelecter = new Thread(() -> {
             try {                
                 final Graph graph = GraphManager.getDefault().getActiveGraph();
@@ -133,6 +168,8 @@ public class LayersUtilities {
                 final int selectedTransactionID = VisualConcept.TransactionAttribute.SELECTED.get(wg);
                 final int vxLayerMaskAttr = LayersConcept.VertexAttribute.LAYER_MASK.get(wg);
                 final int txLayerMaskAttr = LayersConcept.TransactionAttribute.LAYER_MASK.get(wg);
+                final int vxbitmaskVisibilityAttrId = LayersConcept.VertexAttribute.LAYER_VISIBILITY.get(wg);
+                final int txbitmaskVisibilityAttrId = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.get(wg);
 
                 // Determine how many elements to scan
                 final int vertexCount = wg.getVertexCount();
@@ -170,17 +207,16 @@ public class LayersUtilities {
 
                 // Select matching Vertexs
                 for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
-                    //System.out.println("check vtxbitmap=" + wg.getIntValue(vxLayerMaskAttr, vertexPosition) + " layerbitmap=" + layerBitMap + " anded=" + (wg.getIntValue(vxLayerMaskAttr, vertexPosition) & layerBitMap));
-                    int actualBitmap = wg.getIntValue(vxLayerMaskAttr, vertexPosition);
-                    if ((actualBitmap & layerBitMap) == layerBitMap) {
-                        //System.out.println("SELECTING vpos " + vertexPosition);
+                    boolean allowUpdate = includeHidden || wg.getFloatValue(vxbitmaskVisibilityAttrId, wg.getVertex(vertexPosition)) == 1.0;
+                    if (allowUpdate && (wg.getIntValue(vxLayerMaskAttr, wg.getVertex(vertexPosition)) & layerBitMap) == layerBitMap) {
                         wg.setBooleanValue(selectedVertexID, wg.getVertex(vertexPosition), selectionSetting);
                     }
                 }
 
                 // Select matching Transactions
                 for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
-                    if ((wg.getIntValue(txLayerMaskAttr, transactionPosition) & layerBitMap) == layerBitMap) {
+                    boolean allowUpdate = includeHidden || wg.getFloatValue(txbitmaskVisibilityAttrId, wg.getVertex(transactionPosition)) == 1.0;
+                    if (allowUpdate && (wg.getIntValue(txLayerMaskAttr, wg.getTransaction(transactionPosition)) & layerBitMap) == layerBitMap) {
                         wg.setBooleanValue(selectedTransactionID, wg.getTransaction(transactionPosition), selectionSetting);
                     }
                 }
@@ -194,16 +230,16 @@ public class LayersUtilities {
                     currentState.getTxQueriesCollection().setActiveQueries(activeTQueriesMask);
                     currentState.getTxQueriesCollection().update(wg);
                 }
-
                 wg.commit();
             } catch (final InterruptedException ex) {
-                LOGGER.log(Level.SEVERE, "selectLayerElements interrupted ...", ex);            
+                LOGGER.log(Level.SEVERE, "LayersUtilities.selectLayerElements interrupted ...", ex);
+                Thread.currentThread().interrupt();
             }
         });
         layerSelecter.start();
     }
 
-    public static void allocateElementsForLayer(final int layerBitMap, final boolean allocationSetting) {
+    public static void allocateElementsForLayer(final int layerBitMap, final boolean allocationSetting, final boolean includeHidden) {
         Thread layerSelecter = new Thread(() -> {
             try {                
                 final Graph graph = GraphManager.getDefault().getActiveGraph();
@@ -212,6 +248,8 @@ public class LayersUtilities {
                 final int selectedTransactionID = VisualConcept.TransactionAttribute.SELECTED.get(wg);
                 final int vxLayerMaskAttr = LayersConcept.VertexAttribute.LAYER_MASK.get(wg);
                 final int txLayerMaskAttr = LayersConcept.TransactionAttribute.LAYER_MASK.get(wg);
+                final int vxbitmaskVisibilityAttrId = LayersConcept.VertexAttribute.LAYER_VISIBILITY.get(wg);
+                final int txbitmaskVisibilityAttrId = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.get(wg);
 
                 // Determine how many elements to scan
                 final int vertexCount = wg.getVertexCount();
@@ -220,11 +258,11 @@ public class LayersUtilities {
                 // Select matching Vertexs
                 for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
                     final int vertexId = wg.getVertex(vertexPosition);
-                    if (wg.getBooleanValue(selectedVertexID, vertexId)) {
+                    final boolean allowUpdate = includeHidden || wg.getFloatValue(vxbitmaskVisibilityAttrId, vertexId) == 1.0;
+                    if (allowUpdate && wg.getBooleanValue(selectedVertexID, vertexId)) {
                         int actualBitmap = wg.getIntValue(vxLayerMaskAttr, vertexPosition);
                         int updatedBitmap = allocationSetting ? actualBitmap | layerBitMap : ((actualBitmap & layerBitMap) == layerBitMap ? actualBitmap - layerBitMap : actualBitmap);
                         if (updatedBitmap != actualBitmap) {
-                            System.out.println(allocationSetting + " Allocating vpos " + vertexPosition);
                             wg.setIntValue(vxLayerMaskAttr, vertexId, updatedBitmap);
                         }
                     }
@@ -233,19 +271,19 @@ public class LayersUtilities {
                 // Select matching Transactions
                 for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
                     final int txnId = wg.getTransaction(transactionPosition);
-                    if (wg.getBooleanValue(selectedTransactionID, txnId)) {
+                    boolean allowUpdate = includeHidden || wg.getFloatValue(txbitmaskVisibilityAttrId, txnId) == 1.0;
+                    if (allowUpdate && wg.getBooleanValue(selectedTransactionID, txnId)) {
                         int actualBitmap = wg.getIntValue(txLayerMaskAttr, transactionPosition);
                         int updatedBitmap = allocationSetting ? actualBitmap | layerBitMap : ((actualBitmap & layerBitMap) == layerBitMap ? actualBitmap - layerBitMap : actualBitmap);
                         if (updatedBitmap != actualBitmap) {
-                            System.out.println(allocationSetting + " Allocating tpos " + transactionPosition);
                             wg.setIntValue(txLayerMaskAttr, txnId, updatedBitmap);
                         }
                     }
                 }
-
                 wg.commit();
             } catch (final InterruptedException ex) {
-                LOGGER.log(Level.SEVERE, "selectLayerElements interrupted ...", ex);            
+                LOGGER.log(Level.SEVERE, "LayersUtilities.allocateElementsForLayer interrupted ...", ex);
+                Thread.currentThread().interrupt();
             }
         });
         layerSelecter.start();
