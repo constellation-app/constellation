@@ -17,17 +17,20 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins.io.screenshot;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.file.open.RecentFiles;
+import au.gov.asd.tac.constellation.graph.interaction.gui.VisualGraphTopComponent;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import java.awt.AlphaComposite;
+import java.awt.EventQueue;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -41,6 +44,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,6 +52,8 @@ import java.util.prefs.Preferences;
 import javax.imageio.ImageIO;
 import javax.xml.bind.DatatypeConverter;
 import org.openide.util.NbPreferences;
+import org.openide.windows.TopComponent;
+import org.openide.windows.WindowManager;
 
 /**
  * Recent Graph Screenshot Utilities
@@ -145,24 +151,28 @@ public class RecentGraphScreenshotUtilities {
      * @param filepath The filepath of the graph
      * @param graph The graph to take a screenshot of
      */
-    public static void takeScreenshot(final String filepath, final Graph graph) {
+    public synchronized static void takeScreenshot(final String filepath, final Graph graph) {
         final String pathHash = hashFilePath(filepath);
         final String imageFile = getScreenshotsDir() + File.separator + pathHash + FileExtensionConstants.PNG;
-
         final Path source = Paths.get(imageFile);
         final GraphNode graphNode = GraphNode.getGraphNode(graph);
 
         if (graphNode != null) {
             final VisualManager visualManager = graphNode.getVisualManager();
-
             final BufferedImage[] originalImage = new BufferedImage[1];
             originalImage[0] = new BufferedImage(IMAGE_SIZE, IMAGE_SIZE, BufferedImage.TYPE_INT_ARGB);
 
             if (visualManager != null) {
                 final Semaphore waiter = new Semaphore(0);
-                visualManager.exportToBufferedImage(originalImage, waiter);
-                waiter.acquireUninterruptibly();
+                requestGraphActive(graph);
+
+                visualManager.exportToBufferedImage(originalImage, waiter); // Requires 0 permits, becomes 1 when done
+
+                // This seems to be here so the program has to wait for exporting to finish before moving on
+                waiter.acquireUninterruptibly(); // Wait for 0 permits to be 1
+                resestGraphActive();
             }
+
             try {
                 // resizeAndSave the buffered image in memory and write the image to disk
                 resizeAndSave(originalImage[0], source, IMAGE_SIZE, IMAGE_SIZE);
@@ -171,6 +181,51 @@ public class RecentGraphScreenshotUtilities {
                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         }
+    }
+
+    private static void requestGraphActive(final Graph graph) {
+        final Set<TopComponent> topComponents = WindowManager.getDefault().getRegistry().getOpened();
+
+        if (topComponents == null) {
+            return;
+        }
+
+        topComponents.forEach(component -> {
+            if ((component instanceof VisualGraphTopComponent) && ((VisualGraphTopComponent) component).getGraphNode().getGraph().getId().equals(graph.getId())) {
+                try {
+                    // Update each graph and revert any changes made by the analytic view visualisations
+                    EventQueue.invokeAndWait(((VisualGraphTopComponent) component)::requestActive);
+                } catch (final InterruptedException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                    Thread.currentThread().interrupt();
+                } catch (final InvocationTargetException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                }
+            }
+        });
+    }
+
+    private static void resestGraphActive() {
+        final Set<TopComponent> topComponents = WindowManager.getDefault().getRegistry().getOpened();
+        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+
+        if (topComponents == null) {
+            return;
+        }
+        // Make the originally active graph the active graph again.
+        topComponents.forEach(component -> {
+            if ((component instanceof VisualGraphTopComponent) && ((VisualGraphTopComponent) component).getGraphNode().getGraph().getId().equals(activeGraph.getId())) {
+                try {
+                    EventQueue.invokeAndWait(((VisualGraphTopComponent) component)::requestActive);
+                } catch (final InterruptedException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                    Thread.currentThread().interrupt();
+                } catch (final InvocationTargetException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                }
+            }
+        });
+
     }
 
     /**
