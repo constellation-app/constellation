@@ -151,7 +151,7 @@ public class RecentGraphScreenshotUtilities {
      * @param filepath The filepath of the graph
      * @param graph The graph to take a screenshot of
      */
-    public synchronized static void takeScreenshot(final String filepath, final Graph graph) {
+    public static synchronized void takeScreenshot(final String filepath, final Graph graph) {
         final String pathHash = hashFilePath(filepath);
         final String imageFile = getScreenshotsDir() + File.separator + pathHash + FileExtensionConstants.PNG;
         final Path source = Paths.get(imageFile);
@@ -183,10 +183,14 @@ public class RecentGraphScreenshotUtilities {
         }
     }
 
-    private static void requestGraphActive(final Graph graph) {
+    protected static void requestGraphActive(final Graph graph) {
         final Set<TopComponent> topComponents = WindowManager.getDefault().getRegistry().getOpened();
 
         if (topComponents == null) {
+            return;
+        }
+        
+        if (graph == null) {
             return;
         }
 
@@ -205,7 +209,7 @@ public class RecentGraphScreenshotUtilities {
         });
     }
 
-    private static void resestGraphActive() {
+    protected static void resestGraphActive() {
         final Set<TopComponent> topComponents = WindowManager.getDefault().getRegistry().getOpened();
         final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
 

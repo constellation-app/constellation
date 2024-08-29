@@ -15,14 +15,13 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.plugins.io.screenshot;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.file.open.RecentFiles;
 import au.gov.asd.tac.constellation.graph.file.open.RecentFiles.HistoryItem;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
@@ -88,8 +87,7 @@ public class RecentGraphScreenshotUtilitiesNGTest {
     }
 
     /**
-     * Test of getScreenshotsDir method, of class
-     * RecentGraphScreenshotUtilities.
+     * Test of getScreenshotsDir method, of class RecentGraphScreenshotUtilities.
      */
     @Test
     public void testGetScreenshotsDir() {
@@ -100,6 +98,7 @@ public class RecentGraphScreenshotUtilitiesNGTest {
      */
     @Test
     public void testTakeScreenshot() {
+
     }
 
     /**
@@ -112,9 +111,8 @@ public class RecentGraphScreenshotUtilitiesNGTest {
     }
 
     /**
-     * Test of refreshScreenshotDir method, of class
-     * RecentGraphScreenshotUtilities, where getScreenShotsDir returns null
-     * value.
+     * Test of refreshScreenshotDir method, of class RecentGraphScreenshotUtilities, where getScreenShotsDir returns
+     * null value.
      */
     @Test
     public void testRefreshScreenshotsDirNull() {
@@ -138,9 +136,8 @@ public class RecentGraphScreenshotUtilitiesNGTest {
     }
 
     /**
-     * Test of refreshScreenshotDir method, of class
-     * RecentGraphScreenshotUtilities, where getScreenShotsDir returns non null
-     * value.
+     * Test of refreshScreenshotDir method, of class RecentGraphScreenshotUtilities, where getScreenShotsDir returns non
+     * null value.
      */
     @Test
     public void testRefreshScreenshotsDirNotNull() {
@@ -177,9 +174,8 @@ public class RecentGraphScreenshotUtilitiesNGTest {
     }
 
     /**
-     * Test of refreshScreenshotHashed method, of class
-     * RecentGraphScreenshotUtilities, where a path should be hashed path should
-     * be found in the directory
+     * Test of refreshScreenshotHashed method, of class RecentGraphScreenshotUtilities, where a path should be hashed
+     * path should be found in the directory
      */
     @Test
     public void testRefreshScreenshotsHashed() {
@@ -211,9 +207,8 @@ public class RecentGraphScreenshotUtilitiesNGTest {
     }
 
     /**
-     * Test of refreshScreenshotHashed method, of class
-     * RecentGraphScreenshotUtilities, where a path should be hashed path should
-     * be found in the directory
+     * Test of refreshScreenshotHashed method, of class RecentGraphScreenshotUtilities, where a path should be hashed
+     * path should be found in the directory
      */
     @Test
     public void testRefreshScreenshotsLegacy() {
@@ -284,6 +279,22 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         final Optional<File> expected = Optional.empty();
 
         assertEquals(actual, expected);
+    }
+
+    @Test
+    public void testRequestGraphActive() {
+        System.out.println("testRequestGraphActive");
+        RecentGraphScreenshotUtilities.requestGraphActive(null);
+
+        final Graph mockGraph = mock(Graph.class);
+        when(mockGraph.getId()).thenReturn("");
+        RecentGraphScreenshotUtilities.requestGraphActive(mockGraph);
+    }
+
+    @Test
+    public void testResestGraphActive() {
+        System.out.println("testResestGraphActive");
+        RecentGraphScreenshotUtilities.resestGraphActive();
     }
 
     // Couldn't find a way to mock LOGGER.log() to assert whether it was ever invoked.
