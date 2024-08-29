@@ -292,6 +292,7 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         System.out.println("testRequestGraphActive");
 
         recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.requestGraphActive(any(Graph.class))).thenCallRealMethod();
+        recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.requestGraphActive(null)).thenCallRealMethod();
         final Graph mockGraph = mock(Graph.class);
         when(mockGraph.getId()).thenReturn("");
 
@@ -311,7 +312,13 @@ public class RecentGraphScreenshotUtilitiesNGTest {
             mockedWindowManager.when(WindowManager::getDefault).thenReturn(wm);
             // Assert mocks work
             assertEquals(WindowManager.getDefault(), wm);
-
+            
+            RecentGraphScreenshotUtilities.requestGraphActive(null);
+            RecentGraphScreenshotUtilities.requestGraphActive(mockGraph);
+            
+            // Test when top component is null
+            when(reg.getOpened()).thenReturn(null);
+            
             RecentGraphScreenshotUtilities.requestGraphActive(null);
             RecentGraphScreenshotUtilities.requestGraphActive(mockGraph);
         }
@@ -349,6 +356,11 @@ public class RecentGraphScreenshotUtilitiesNGTest {
             assertEquals(WindowManager.getDefault(), wm);
             assertEquals(GraphManager.getDefault(), gm);
 
+            RecentGraphScreenshotUtilities.resestGraphActive();
+            
+            // Test when top component is null
+            when(reg.getOpened()).thenReturn(null);
+            
             RecentGraphScreenshotUtilities.resestGraphActive();
         }
     }
