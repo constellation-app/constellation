@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins.io.screenshot;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.file.open.RecentFiles;
 import au.gov.asd.tac.constellation.graph.file.open.RecentFiles.HistoryItem;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,8 +26,10 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.Set;
 import java.util.logging.Logger;
 import javax.xml.bind.DatatypeConverter;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -34,6 +37,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import org.mockito.stubbing.Answer;
+import org.openide.windows.TopComponent;
+import org.openide.windows.TopComponent.Registry;
+import org.openide.windows.WindowManager;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -284,17 +290,67 @@ public class RecentGraphScreenshotUtilitiesNGTest {
     @Test
     public void testRequestGraphActive() {
         System.out.println("testRequestGraphActive");
-        RecentGraphScreenshotUtilities.requestGraphActive(null);
 
+        recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.requestGraphActive(any(Graph.class))).thenCallRealMethod();
         final Graph mockGraph = mock(Graph.class);
         when(mockGraph.getId()).thenReturn("");
-        RecentGraphScreenshotUtilities.requestGraphActive(mockGraph);
+
+        // Set up mocks
+        final WindowManager wm = mock(WindowManager.class);
+        final Registry reg = mock(Registry.class);
+        final Set<TopComponent> setTopC = mock(Set.class);
+
+        when(wm.getRegistry()).thenReturn(reg);
+        when(reg.getOpened()).thenReturn(setTopC);
+
+        // Assert mocks work
+        assertEquals(wm.getRegistry(), reg);
+        assertEquals(reg.getOpened(), setTopC);
+
+        try (MockedStatic<WindowManager> mockedWindowManager = Mockito.mockStatic(WindowManager.class)) {
+            mockedWindowManager.when(WindowManager::getDefault).thenReturn(wm);
+            // Assert mocks work
+            assertEquals(WindowManager.getDefault(), wm);
+
+            RecentGraphScreenshotUtilities.requestGraphActive(null);
+            RecentGraphScreenshotUtilities.requestGraphActive(mockGraph);
+        }
+
     }
 
     @Test
     public void testResestGraphActive() {
         System.out.println("testResestGraphActive");
-        RecentGraphScreenshotUtilities.resestGraphActive();
+        recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.resestGraphActive()).thenCallRealMethod();
+
+        final Graph mockGraph = mock(Graph.class);
+        when(mockGraph.getId()).thenReturn("");
+
+        // Set up mocks
+        final GraphManager gm = mock(GraphManager.class);
+        final WindowManager wm = mock(WindowManager.class);
+        final Registry reg = mock(Registry.class);
+        final Set<TopComponent> setTopC = mock(Set.class);
+
+        when(gm.getActiveGraph()).thenReturn(mockGraph);
+        when(wm.getRegistry()).thenReturn(reg);
+        when(reg.getOpened()).thenReturn(setTopC);
+
+        // Assert mocks work
+        assertEquals(gm.getActiveGraph(), mockGraph);
+        assertEquals(wm.getRegistry(), reg);
+        assertEquals(reg.getOpened(), setTopC);
+
+        try (MockedStatic<WindowManager> mockedWindowManager = Mockito.mockStatic(WindowManager.class); MockedStatic<GraphManager> mockedGraphManager = Mockito.mockStatic(GraphManager.class)) {
+            mockedWindowManager.when(WindowManager::getDefault).thenReturn(wm);
+            mockedGraphManager.when(GraphManager::getDefault).thenReturn(gm);
+
+            // Assert mocks work
+            assertEquals(WindowManager.getDefault(), wm);
+            assertEquals(GraphManager.getDefault(), gm);
+
+            RecentGraphScreenshotUtilities.resestGraphActive();
+        }
     }
 
     // Couldn't find a way to mock LOGGER.log() to assert whether it was ever invoked.

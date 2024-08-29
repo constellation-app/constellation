@@ -216,6 +216,7 @@ public class RecentGraphScreenshotUtilities {
         if (topComponents == null) {
             return;
         }
+        
         // Make the originally active graph the active graph again.
         topComponents.forEach(component -> {
             if ((component instanceof VisualGraphTopComponent) && ((VisualGraphTopComponent) component).getGraphNode().getGraph().getId().equals(activeGraph.getId())) {
