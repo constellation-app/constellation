@@ -152,35 +152,43 @@ public class RecentGraphScreenshotUtilities {
      * @param graph The graph to take a screenshot of
      */
     public static synchronized void takeScreenshot(final String filepath, final Graph graph) {
+        System.out.println("takeScreenshot");
         final String pathHash = hashFilePath(filepath);
         final String imageFile = getScreenshotsDir() + File.separator + pathHash + FileExtensionConstants.PNG;
         final Path source = Paths.get(imageFile);
         final GraphNode graphNode = GraphNode.getGraphNode(graph);
 
-        if (graphNode != null) {
-            final VisualManager visualManager = graphNode.getVisualManager();
-            final BufferedImage[] originalImage = new BufferedImage[1];
-            originalImage[0] = new BufferedImage(IMAGE_SIZE, IMAGE_SIZE, BufferedImage.TYPE_INT_ARGB);
-
-            if (visualManager != null) {
-                final Semaphore waiter = new Semaphore(0);
-                requestGraphActive(graph);
-
-                visualManager.exportToBufferedImage(originalImage, waiter); // Requires 0 permits, becomes 1 when done
-
-                // This seems to be here so the program has to wait for exporting to finish before moving on
-                waiter.acquireUninterruptibly(); // Wait for 0 permits to be 1
-                resestGraphActive();
-            }
-
-            try {
-                // resizeAndSave the buffered image in memory and write the image to disk
-                resizeAndSave(originalImage[0], source, IMAGE_SIZE, IMAGE_SIZE);
-                refreshScreenshotsDir();
-            } catch (final IOException ex) {
-                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-            }
+        if (graphNode == null) {
+            System.out.println("Graphnode null");
+            return;
         }
+
+        final VisualManager visualManager = graphNode.getVisualManager();
+        if (visualManager == null) {
+            System.out.println("Visual manager null");
+            return;
+        }
+
+        final BufferedImage[] originalImage = new BufferedImage[1];
+        originalImage[0] = new BufferedImage(IMAGE_SIZE, IMAGE_SIZE, BufferedImage.TYPE_INT_ARGB);
+
+        final Semaphore waiter = new Semaphore(0);
+        requestGraphActive(graph);
+
+        visualManager.exportToBufferedImage(originalImage, waiter); // Requires 0 permits, becomes 1 when done
+
+        // This seems to be here so the program has to wait for exporting to finish before moving on
+        waiter.acquireUninterruptibly(); // Wait for 0 permits to be 1
+        resestGraphActive();
+
+        try {
+            // resizeAndSave the buffered image in memory and write the image to disk
+            resizeAndSave(originalImage[0], source, IMAGE_SIZE, IMAGE_SIZE);
+            refreshScreenshotsDir();
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+        }
+
     }
 
     protected static void requestGraphActive(final Graph graph) {
@@ -189,7 +197,7 @@ public class RecentGraphScreenshotUtilities {
         if (topComponents == null) {
             return;
         }
-        
+
         if (graph == null) {
             return;
         }
@@ -216,7 +224,7 @@ public class RecentGraphScreenshotUtilities {
         if (topComponents == null) {
             return;
         }
-        
+
         // Make the originally active graph the active graph again.
         topComponents.forEach(component -> {
             if ((component instanceof VisualGraphTopComponent) && ((VisualGraphTopComponent) component).getGraphNode().getGraph().getId().equals(activeGraph.getId())) {

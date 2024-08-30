@@ -19,6 +19,8 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.file.open.RecentFiles;
 import au.gov.asd.tac.constellation.graph.file.open.RecentFiles.HistoryItem;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.graph.node.GraphNode;
+import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -27,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
-import java.util.logging.Logger;
 import javax.xml.bind.DatatypeConverter;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -56,7 +57,7 @@ public class RecentGraphScreenshotUtilitiesNGTest {
     private static MockedStatic<RecentGraphScreenshotUtilities> recentGraphScreenshotUtilitiesMock;
     private static MockedStatic<RecentFiles> recentFilesMock;
     private static MockedStatic<Files> filesMock;
-    private static MockedStatic<Logger> loggerMock;
+    //private static MockedStatic<Logger> loggerMock;
     private static MockedStatic<DatatypeConverter> dataTypeConverter;
 
     public RecentGraphScreenshotUtilitiesNGTest() {
@@ -67,7 +68,7 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         recentGraphScreenshotUtilitiesMock = Mockito.mockStatic(RecentGraphScreenshotUtilities.class);
         recentFilesMock = Mockito.mockStatic(RecentFiles.class);
         filesMock = Mockito.mockStatic(Files.class);
-        loggerMock = Mockito.mockStatic(Logger.class);
+        //loggerMock = Mockito.mockStatic(Logger.class);
         dataTypeConverter = Mockito.mockStatic(DatatypeConverter.class);
     }
 
@@ -76,7 +77,7 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         recentGraphScreenshotUtilitiesMock.close();
         recentFilesMock.close();
         filesMock.close();
-        loggerMock.close();
+        //loggerMock.close();
         dataTypeConverter.close();
     }
 
@@ -85,7 +86,7 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         recentGraphScreenshotUtilitiesMock.reset();
         recentFilesMock.reset();
         filesMock.reset();
-        loggerMock.reset();
+        //loggerMock.reset();
     }
 
     @AfterMethod
@@ -104,6 +105,48 @@ public class RecentGraphScreenshotUtilitiesNGTest {
      */
     @Test
     public void testTakeScreenshot() {
+        System.out.println("testTakeScreenshot");
+        recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.takeScreenshot(anyString())).thenCallRealMethod();
+        recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.takeScreenshot(anyString(), any())).thenCallRealMethod();
+
+        final String filePath = "";
+
+        // Mocks
+        final Graph mockGraph = mock(Graph.class);
+        when(mockGraph.getId()).thenReturn("");
+
+        final GraphNode mockGraphNode = mock(GraphNode.class);
+        final GraphManager gm = mock(GraphManager.class);
+        final VisualManager vm = mock(VisualManager.class);
+
+        when(gm.getActiveGraph()).thenReturn(mockGraph);
+        when(mockGraphNode.getVisualManager()).thenReturn(vm);
+
+        // Assert mocks work
+        assertEquals(gm.getActiveGraph(), mockGraph);
+        assertEquals(mockGraphNode.getVisualManager(), vm);
+
+
+        //GraphNode.getGraphNode
+        try (MockedStatic<GraphManager> mockedGraphManager = Mockito.mockStatic(GraphManager.class); MockedStatic<GraphNode> mockedGraphNode = Mockito.mockStatic(GraphNode.class)) {
+            mockedGraphManager.when(GraphManager::getDefault).thenReturn(gm);
+            // Assert mocks work
+            assertEquals(GraphManager.getDefault(), gm);
+
+            // Test graphnode is null
+            mockedGraphNode.when(() -> GraphNode.getGraphNode(any(Graph.class))).thenReturn(null);
+            assertEquals(GraphNode.getGraphNode(mockGraph), null);
+            
+            RecentGraphScreenshotUtilities.takeScreenshot(filePath);
+
+            // Test graphnode not null, but visual manager is
+            mockedGraphNode.when(() -> GraphNode.getGraphNode(any(Graph.class))).thenReturn(mockGraphNode);
+            when(mockGraphNode.getVisualManager()).thenReturn(null);
+            assertEquals(GraphNode.getGraphNode(mockGraph), mockGraphNode);
+            assertEquals(mockGraphNode.getVisualManager(), null);
+            
+            RecentGraphScreenshotUtilities.takeScreenshot(filePath);
+        }
 
     }
 
@@ -291,8 +334,8 @@ public class RecentGraphScreenshotUtilitiesNGTest {
     public void testRequestGraphActive() {
         System.out.println("testRequestGraphActive");
 
-        recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.requestGraphActive(any(Graph.class))).thenCallRealMethod();
-        recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.requestGraphActive(null)).thenCallRealMethod();
+        recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.requestGraphActive(any())).thenCallRealMethod();
+
         final Graph mockGraph = mock(Graph.class);
         when(mockGraph.getId()).thenReturn("");
 
@@ -312,13 +355,13 @@ public class RecentGraphScreenshotUtilitiesNGTest {
             mockedWindowManager.when(WindowManager::getDefault).thenReturn(wm);
             // Assert mocks work
             assertEquals(WindowManager.getDefault(), wm);
-            
+
             RecentGraphScreenshotUtilities.requestGraphActive(null);
             RecentGraphScreenshotUtilities.requestGraphActive(mockGraph);
-            
+
             // Test when top component is null
             when(reg.getOpened()).thenReturn(null);
-            
+
             RecentGraphScreenshotUtilities.requestGraphActive(null);
             RecentGraphScreenshotUtilities.requestGraphActive(mockGraph);
         }
@@ -357,10 +400,10 @@ public class RecentGraphScreenshotUtilitiesNGTest {
             assertEquals(GraphManager.getDefault(), gm);
 
             RecentGraphScreenshotUtilities.resestGraphActive();
-            
+
             // Test when top component is null
             when(reg.getOpened()).thenReturn(null);
-            
+
             RecentGraphScreenshotUtilities.resestGraphActive();
         }
     }
