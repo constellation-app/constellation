@@ -60,10 +60,7 @@ public class RecentGraphScreenshotUtilitiesNGTest {
     private static MockedStatic<RecentGraphScreenshotUtilities> recentGraphScreenshotUtilitiesMock;
     private static MockedStatic<RecentFiles> recentFilesMock;
     private static MockedStatic<Files> filesMock;
-    //private static MockedStatic<Logger> loggerMock;
     private static MockedStatic<DatatypeConverter> dataTypeConverter;
-
-    private static final Logger LOGGER = Logger.getLogger(RecentGraphScreenshotUtilitiesNGTest.class.getName());
 
     public RecentGraphScreenshotUtilitiesNGTest() {
     }
@@ -73,7 +70,6 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         recentGraphScreenshotUtilitiesMock = Mockito.mockStatic(RecentGraphScreenshotUtilities.class);
         recentFilesMock = Mockito.mockStatic(RecentFiles.class);
         filesMock = Mockito.mockStatic(Files.class);
-        //loggerMock = Mockito.mockStatic(Logger.class);
         dataTypeConverter = Mockito.mockStatic(DatatypeConverter.class);
     }
 
@@ -82,7 +78,6 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         recentGraphScreenshotUtilitiesMock.close();
         recentFilesMock.close();
         filesMock.close();
-        //loggerMock.close();
         dataTypeConverter.close();
     }
 
@@ -91,7 +86,6 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         recentGraphScreenshotUtilitiesMock.reset();
         recentFilesMock.reset();
         filesMock.reset();
-        //loggerMock.reset();
     }
 
     @AfterMethod
