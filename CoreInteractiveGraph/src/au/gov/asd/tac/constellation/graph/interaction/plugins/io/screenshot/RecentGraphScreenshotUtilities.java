@@ -152,20 +152,17 @@ public class RecentGraphScreenshotUtilities {
      * @param graph The graph to take a screenshot of
      */
     public static synchronized void takeScreenshot(final String filepath, final Graph graph) {
-        System.out.println("takeScreenshot");
         final String pathHash = hashFilePath(filepath);
         final String imageFile = getScreenshotsDir() + File.separator + pathHash + FileExtensionConstants.PNG;
         final Path source = Paths.get(imageFile);
         final GraphNode graphNode = GraphNode.getGraphNode(graph);
 
         if (graphNode == null) {
-            System.out.println("Graphnode null");
             return;
         }
 
         final VisualManager visualManager = graphNode.getVisualManager();
         if (visualManager == null) {
-            System.out.println("Visual manager null");
             return;
         }
 
