@@ -29,9 +29,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.Semaphore;
+import java.util.logging.Logger;
 import javax.xml.bind.DatatypeConverter;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
@@ -59,6 +62,8 @@ public class RecentGraphScreenshotUtilitiesNGTest {
     private static MockedStatic<Files> filesMock;
     //private static MockedStatic<Logger> loggerMock;
     private static MockedStatic<DatatypeConverter> dataTypeConverter;
+
+    private static final Logger LOGGER = Logger.getLogger(RecentGraphScreenshotUtilitiesNGTest.class.getName());
 
     public RecentGraphScreenshotUtilitiesNGTest() {
     }
@@ -113,12 +118,11 @@ public class RecentGraphScreenshotUtilitiesNGTest {
 
         // Mocks
         final Graph mockGraph = mock(Graph.class);
-        when(mockGraph.getId()).thenReturn("");
-
         final GraphNode mockGraphNode = mock(GraphNode.class);
         final GraphManager gm = mock(GraphManager.class);
         final VisualManager vm = mock(VisualManager.class);
 
+        when(mockGraph.getId()).thenReturn("");
         when(gm.getActiveGraph()).thenReturn(mockGraph);
         when(mockGraphNode.getVisualManager()).thenReturn(vm);
 
@@ -126,9 +130,8 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         assertEquals(gm.getActiveGraph(), mockGraph);
         assertEquals(mockGraphNode.getVisualManager(), vm);
 
-
         //GraphNode.getGraphNode
-        try (MockedStatic<GraphManager> mockedGraphManager = Mockito.mockStatic(GraphManager.class); MockedStatic<GraphNode> mockedGraphNode = Mockito.mockStatic(GraphNode.class)) {
+        try (MockedStatic<GraphManager> mockedGraphManager = Mockito.mockStatic(GraphManager.class); MockedStatic<GraphNode> mockedGraphNode = Mockito.mockStatic(GraphNode.class); MockedConstruction<Semaphore> mockSemaphoreConstructor = Mockito.mockConstruction(Semaphore.class)) {
             mockedGraphManager.when(GraphManager::getDefault).thenReturn(gm);
             // Assert mocks work
             assertEquals(GraphManager.getDefault(), gm);
@@ -136,15 +139,23 @@ public class RecentGraphScreenshotUtilitiesNGTest {
             // Test graphnode is null
             mockedGraphNode.when(() -> GraphNode.getGraphNode(any(Graph.class))).thenReturn(null);
             assertEquals(GraphNode.getGraphNode(mockGraph), null);
-            
+
             RecentGraphScreenshotUtilities.takeScreenshot(filePath);
 
-            // Test graphnode not null, but visual manager is
+            // Test graphnode not null, but visual manager is null
             mockedGraphNode.when(() -> GraphNode.getGraphNode(any(Graph.class))).thenReturn(mockGraphNode);
             when(mockGraphNode.getVisualManager()).thenReturn(null);
             assertEquals(GraphNode.getGraphNode(mockGraph), mockGraphNode);
             assertEquals(mockGraphNode.getVisualManager(), null);
-            
+
+            RecentGraphScreenshotUtilities.takeScreenshot(filePath);
+
+            // Test with graphnode and visual manager NOT null
+            mockedGraphNode.when(() -> GraphNode.getGraphNode(any(Graph.class))).thenReturn(mockGraphNode);
+            when(mockGraphNode.getVisualManager()).thenReturn(vm);
+            assertEquals(GraphNode.getGraphNode(mockGraph), mockGraphNode);
+            assertEquals(mockGraphNode.getVisualManager(), vm);
+
             RecentGraphScreenshotUtilities.takeScreenshot(filePath);
         }
 
