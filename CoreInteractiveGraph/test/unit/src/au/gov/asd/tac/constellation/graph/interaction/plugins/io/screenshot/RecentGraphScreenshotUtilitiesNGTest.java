@@ -32,6 +32,9 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.bind.DatatypeConverter;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -45,6 +48,7 @@ import org.mockito.stubbing.Answer;
 import org.openide.windows.TopComponent;
 import org.openide.windows.TopComponent.Registry;
 import org.openide.windows.WindowManager;
+import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -63,6 +67,8 @@ public class RecentGraphScreenshotUtilitiesNGTest {
     //private static MockedStatic<Files> filesMock;
     private static MockedStatic<DatatypeConverter> dataTypeConverter;
 
+    private static final Logger LOGGER = Logger.getLogger(RecentGraphScreenshotUtilitiesNGTest.class.getName());
+
     public RecentGraphScreenshotUtilitiesNGTest() {
     }
 
@@ -72,6 +78,15 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         recentFilesMock = Mockito.mockStatic(RecentFiles.class);
 //        filesMock = Mockito.mockStatic(Files.class);
         dataTypeConverter = Mockito.mockStatic(DatatypeConverter.class);
+
+        try {
+            if (!FxToolkit.isFXApplicationThreadRunning()) {
+                FxToolkit.registerPrimaryStage();
+            }
+        } catch (Exception e) {
+            System.out.println("\n**** SETUP ERROR: " + e);
+            throw e;
+        }
     }
 
     @AfterClass
@@ -80,6 +95,19 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         recentFilesMock.close();
         //filesMock.close();
         dataTypeConverter.close();
+
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+        } catch (Exception e) {
+            if (e.toString().contains("HeadlessException")) {
+                System.out.println("\n**** EXPECTED TEARDOWN ERROR: " + e.toString());
+            } else {
+                System.out.println("\n**** UN-EXPECTED TEARDOWN ERROR: " + e.toString());
+                throw e;
+            }
+        }
     }
 
     @BeforeMethod
@@ -347,7 +375,6 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         System.out.println("testRequestGraphActive");
 
         recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.requestGraphActive(any())).thenCallRealMethod();
-        final Set<TopComponent> setTopC = new HashSet<>();
 
         // Set up mocks
         final Graph mockGraph = mock(Graph.class);
@@ -356,14 +383,14 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         final WindowManager wm = mock(WindowManager.class);
         final Registry reg = mock(Registry.class);
         when(wm.getRegistry()).thenReturn(reg);
-        when(reg.getOpened()).thenReturn(setTopC);
 
-//        final Set<TopComponent> setTopC = mock(Set.class);
-        final VisualGraphTopComponent tc = new VisualGraphTopComponent();
         final GraphNode gn = mock(GraphNode.class);
-        //when(tc.getGraphNode()).thenReturn(gn);
         when(gn.getGraph()).thenReturn(mockGraph);
+
+        final Set<TopComponent> setTopC = new HashSet<>();
+        final VisualGraphTopComponent tc = new VisualGraphTopComponent();
         setTopC.add(tc);
+        when(reg.getOpened()).thenReturn(setTopC);
 
         // Assert mocks work
         assertEquals(wm.getRegistry(), reg);
