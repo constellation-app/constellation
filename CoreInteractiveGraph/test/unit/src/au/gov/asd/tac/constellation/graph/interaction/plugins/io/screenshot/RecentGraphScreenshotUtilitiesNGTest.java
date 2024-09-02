@@ -34,8 +34,6 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.DatatypeConverter;
 import static org.mockito.ArgumentMatchers.any;
@@ -50,7 +48,6 @@ import org.mockito.stubbing.Answer;
 import org.openide.windows.TopComponent;
 import org.openide.windows.TopComponent.Registry;
 import org.openide.windows.WindowManager;
-import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -482,19 +479,19 @@ public class RecentGraphScreenshotUtilitiesNGTest {
 
     }
 
-    private void testResetGraphActive() {
+    private void testResetGraphActive(final WindowManager mockWindowManager, final GraphManager mockGraphManager, final Registry mockRegistry) {
         try (MockedStatic<WindowManager> mockedWindowManager = Mockito.mockStatic(WindowManager.class); MockedStatic<GraphManager> mockedGraphManager = Mockito.mockStatic(GraphManager.class)) {
-            mockedWindowManager.when(WindowManager::getDefault).thenReturn(wm);
-            mockedGraphManager.when(GraphManager::getDefault).thenReturn(gm);
+            mockedWindowManager.when(WindowManager::getDefault).thenReturn(mockWindowManager);
+            mockedGraphManager.when(GraphManager::getDefault).thenReturn(mockGraphManager);
 
             // Assert mocks work
-            assertEquals(WindowManager.getDefault(), wm);
-            assertEquals(GraphManager.getDefault(), gm);
+            assertEquals(WindowManager.getDefault(), mockWindowManager);
+            assertEquals(GraphManager.getDefault(), mockGraphManager);
 
             RecentGraphScreenshotUtilities.resestGraphActive();
 
             // Test when top component is null
-            when(reg.getOpened()).thenReturn(null);
+            when(mockRegistry.getOpened()).thenReturn(null);
 
             RecentGraphScreenshotUtilities.resestGraphActive();
         }
