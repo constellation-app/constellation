@@ -373,6 +373,7 @@ public class RecentGraphScreenshotUtilitiesNGTest {
     @Test
     public void testRequestGraphActive() {
         System.out.println("testRequestGraphActive");
+        System.setProperty("java.awt.headless", "true");
 
         recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.requestGraphActive(any())).thenCallRealMethod();
 
@@ -411,11 +412,13 @@ public class RecentGraphScreenshotUtilitiesNGTest {
             RecentGraphScreenshotUtilities.requestGraphActive(null);
             RecentGraphScreenshotUtilities.requestGraphActive(mockGraph);
         }
+        System.clearProperty("java.awt.headless");
     }
 
     @Test
     public void testResestGraphActive() {
         System.out.println("testResestGraphActive");
+        System.setProperty("java.awt.headless", "true");
         recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.resestGraphActive()).thenCallRealMethod();
 
         final Graph mockGraph = mock(Graph.class);
@@ -451,6 +454,7 @@ public class RecentGraphScreenshotUtilitiesNGTest {
 
             RecentGraphScreenshotUtilities.resestGraphActive();
         }
+        System.clearProperty("java.awt.headless");
     }
 
     // Couldn't find a way to mock LOGGER.log() to assert whether it was ever invoked.
