@@ -45,8 +45,6 @@ public class MenuBar extends HBox {
 
     private static final double SPACING = 5D;
 
-    private static final String QUERY_WARNING_TEXT = "Invalid query structure";
-
     public MenuBar() {
         this.setAlignment(Pos.TOP_LEFT);
         this.setPadding(MENU_PADDING);
@@ -106,18 +104,14 @@ public class MenuBar extends HBox {
     private Button createSelectElementsButton() {
         final Button selectElementsButton = new Button("Select Elements");
         selectElementsButton.setTooltip(new Tooltip("Select all visible elements that match the current Layer settings"));
-        selectElementsButton.setOnAction(event -> {
-            LayersUtilities.selectVisibleElements(true);
-        });
+        selectElementsButton.setOnAction(event -> LayersUtilities.selectVisibleElements(true));
         return selectElementsButton;
     }
 
     private Button createDeselectElementsButton() {
         final Button deselectElementsButton = new Button("De-Select Elements");
         deselectElementsButton.setTooltip(new Tooltip("De-Select all visible elements that match the current Layer settings"));
-        deselectElementsButton.setOnAction(event -> {
-            LayersUtilities.selectVisibleElements(false);
-        });
+        deselectElementsButton.setOnAction(event -> LayersUtilities.selectVisibleElements(false));
         return deselectElementsButton;
     }
 

@@ -125,168 +125,176 @@ public class LayersUtilities {
     }
 
     public static void selectVisibleElements(final boolean selectionSetting){
-        Thread elementSelecter = new Thread(() -> {
-            try {
-                final Graph graph = GraphManager.getDefault().getActiveGraph();
-                final WritableGraph wg = graph.getWritableGraph((selectionSetting ? "" : "De-") + "Select All Visible Layer Elements", true);
-                final int selectedVertexID = VisualConcept.VertexAttribute.SELECTED.get(wg);
-                final int selectedTransactionID = VisualConcept.TransactionAttribute.SELECTED.get(wg);
-                final int vxbitmaskVisibilityAttrId = LayersConcept.VertexAttribute.LAYER_VISIBILITY.get(wg);
-                final int txbitmaskVisibilityAttrId = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.get(wg);
-                
-                // Determine how many elements to scan
-                final int vertexCount = wg.getVertexCount();
-                final int transactionCount = wg.getTransactionCount();
-
-                // Select visible Vertices
-                for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
-                    if (wg.getFloatValue(vxbitmaskVisibilityAttrId, wg.getVertex(vertexPosition)) == 1.0) {
-                        wg.setBooleanValue(selectedVertexID, wg.getVertex(vertexPosition), selectionSetting);
-                    }
-                }
-                // Select visible Transactions
-                for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
-                    if (wg.getFloatValue(txbitmaskVisibilityAttrId, wg.getVertex(transactionPosition)) == 1.0) {
-                        wg.setBooleanValue(selectedTransactionID, wg.getTransaction(transactionPosition), selectionSetting);
-                    }
-                }
-                wg.commit();
-            } catch (final InterruptedException ex) {
-                LOGGER.log(Level.SEVERE, "LayersUtilities.selectVisibleElements interrupted ...", ex);
-                Thread.currentThread().interrupt();
-            }
-        });
+        Thread elementSelecter = new Thread(() -> directSelectVisibleElements(selectionSetting));
         elementSelecter.start();
     }
     
     public static void selectLayerElements(final int layerBitMap, final boolean selectionSetting, final boolean includeHidden) {
-        Thread layerSelecter = new Thread(() -> {
-            try {                
-                final Graph graph = GraphManager.getDefault().getActiveGraph();
-                final WritableGraph wg = graph.getWritableGraph((selectionSetting ? "" : "De-") + "Select Elements with Layer Bitmap " + layerBitMap, true);
-                final int selectedVertexID = VisualConcept.VertexAttribute.SELECTED.get(wg);
-                final int selectedTransactionID = VisualConcept.TransactionAttribute.SELECTED.get(wg);
-                final int vxLayerMaskAttr = LayersConcept.VertexAttribute.LAYER_MASK.get(wg);
-                final int txLayerMaskAttr = LayersConcept.TransactionAttribute.LAYER_MASK.get(wg);
-                final int vxbitmaskVisibilityAttrId = LayersConcept.VertexAttribute.LAYER_VISIBILITY.get(wg);
-                final int txbitmaskVisibilityAttrId = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.get(wg);
-
-                // Determine how many elements to scan
-                final int vertexCount = wg.getVertexCount();
-                final int transactionCount = wg.getTransactionCount();
-                final int stateAttributeId = LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.ensure(wg);
-                LayersViewState currentState = wg.getObjectValue(stateAttributeId, 0);
-                
-                long activeVQueriesMask = 0;
-                List<Boolean> backupVVis = new ArrayList<>();
-                long activeTQueriesMask = 0;
-                List<Boolean> backupTVis = new ArrayList<>();
-                if (currentState != null) {
-                    backupVVis = currentState.getVxQueriesCollection().getVisibilityList();
-                    activeVQueriesMask = currentState.getVxQueriesCollection().getActiveQueriesBitmask();
-                    final int bitValue = (int) (Math.log(layerBitMap)/ Math.log(2));
-                    List<Boolean> tempVis = new ArrayList<>();
-                    for (int i = 0; i < backupVVis.size(); i++) {
-                        tempVis.add((i == bitValue));
-                    }
-                    currentState.getVxQueriesCollection().setVisibilities(tempVis);
-                    currentState.getVxQueriesCollection().setActiveQueries(layerBitMap);
-                    currentState.getVxQueriesCollection().selectMatchingElements(wg, true, selectionSetting);
-
-
-                    backupTVis = currentState.getTxQueriesCollection().getVisibilityList();
-                    activeTQueriesMask = currentState.getTxQueriesCollection().getActiveQueriesBitmask();
-                    tempVis.clear();
-                    for (int i = 0; i < backupVVis.size(); i++) {
-                        tempVis.add((i == bitValue));
-                    }
-                    currentState.getTxQueriesCollection().setVisibilities(tempVis);
-                    currentState.getTxQueriesCollection().setActiveQueries(layerBitMap);
-                    currentState.getTxQueriesCollection().selectMatchingElements(wg, false, selectionSetting);
-                }
-
-                // Select matching Vertexs
-                for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
-                    boolean allowUpdate = includeHidden || wg.getFloatValue(vxbitmaskVisibilityAttrId, wg.getVertex(vertexPosition)) == 1.0;
-                    if (allowUpdate && (wg.getIntValue(vxLayerMaskAttr, wg.getVertex(vertexPosition)) & layerBitMap) == layerBitMap) {
-                        wg.setBooleanValue(selectedVertexID, wg.getVertex(vertexPosition), selectionSetting);
-                    }
-                }
-
-                // Select matching Transactions
-                for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
-                    boolean allowUpdate = includeHidden || wg.getFloatValue(txbitmaskVisibilityAttrId, wg.getVertex(transactionPosition)) == 1.0;
-                    if (allowUpdate && (wg.getIntValue(txLayerMaskAttr, wg.getTransaction(transactionPosition)) & layerBitMap) == layerBitMap) {
-                        wg.setBooleanValue(selectedTransactionID, wg.getTransaction(transactionPosition), selectionSetting);
-                    }
-                }
-                
-                if (currentState != null) {
-                    currentState.getVxQueriesCollection().setVisibilities(backupVVis);                    
-                    currentState.getVxQueriesCollection().setActiveQueries(activeVQueriesMask);
-                    currentState.getVxQueriesCollection().update(wg);
-
-                    currentState.getTxQueriesCollection().setVisibilities(backupTVis);                    
-                    currentState.getTxQueriesCollection().setActiveQueries(activeTQueriesMask);
-                    currentState.getTxQueriesCollection().update(wg);
-                }
-                wg.commit();
-            } catch (final InterruptedException ex) {
-                LOGGER.log(Level.SEVERE, "LayersUtilities.selectLayerElements interrupted ...", ex);
-                Thread.currentThread().interrupt();
-            }
-        });
+        Thread layerSelecter = new Thread(() -> directSelectLayerElements(layerBitMap, selectionSetting, includeHidden));
         layerSelecter.start();
     }
 
     public static void allocateElementsForLayer(final int layerBitMap, final boolean allocationSetting, final boolean includeHidden) {
-        Thread layerSelecter = new Thread(() -> {
-            try {                
-                final Graph graph = GraphManager.getDefault().getActiveGraph();
-                final WritableGraph wg = graph.getWritableGraph((allocationSetting ? "" : "De-") + "Allocate Elements with Layer Bitmap " + layerBitMap, true);
-                final int selectedVertexID = VisualConcept.VertexAttribute.SELECTED.get(wg);
-                final int selectedTransactionID = VisualConcept.TransactionAttribute.SELECTED.get(wg);
-                final int vxLayerMaskAttr = LayersConcept.VertexAttribute.LAYER_MASK.get(wg);
-                final int txLayerMaskAttr = LayersConcept.TransactionAttribute.LAYER_MASK.get(wg);
-                final int vxbitmaskVisibilityAttrId = LayersConcept.VertexAttribute.LAYER_VISIBILITY.get(wg);
-                final int txbitmaskVisibilityAttrId = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.get(wg);
-
-                // Determine how many elements to scan
-                final int vertexCount = wg.getVertexCount();
-                final int transactionCount = wg.getTransactionCount();
-                
-                // Select matching Vertexs
-                for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
-                    final int vertexId = wg.getVertex(vertexPosition);
-                    final boolean allowUpdate = includeHidden || wg.getFloatValue(vxbitmaskVisibilityAttrId, vertexId) == 1.0;
-                    if (allowUpdate && wg.getBooleanValue(selectedVertexID, vertexId)) {
-                        int actualBitmap = wg.getIntValue(vxLayerMaskAttr, vertexPosition);
-                        int updatedBitmap = allocationSetting ? actualBitmap | layerBitMap : ((actualBitmap & layerBitMap) == layerBitMap ? actualBitmap - layerBitMap : actualBitmap);
-                        if (updatedBitmap != actualBitmap) {
-                            wg.setIntValue(vxLayerMaskAttr, vertexId, updatedBitmap);
-                        }
-                    }
-                }
-
-                // Select matching Transactions
-                for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
-                    final int txnId = wg.getTransaction(transactionPosition);
-                    boolean allowUpdate = includeHidden || wg.getFloatValue(txbitmaskVisibilityAttrId, txnId) == 1.0;
-                    if (allowUpdate && wg.getBooleanValue(selectedTransactionID, txnId)) {
-                        int actualBitmap = wg.getIntValue(txLayerMaskAttr, transactionPosition);
-                        int updatedBitmap = allocationSetting ? actualBitmap | layerBitMap : ((actualBitmap & layerBitMap) == layerBitMap ? actualBitmap - layerBitMap : actualBitmap);
-                        if (updatedBitmap != actualBitmap) {
-                            wg.setIntValue(txLayerMaskAttr, txnId, updatedBitmap);
-                        }
-                    }
-                }
-                wg.commit();
-            } catch (final InterruptedException ex) {
-                LOGGER.log(Level.SEVERE, "LayersUtilities.allocateElementsForLayer interrupted ...", ex);
-                Thread.currentThread().interrupt();
-            }
-        });
+        Thread layerSelecter = new Thread(() -> directAllocateElementsForLayer(layerBitMap, allocationSetting, includeHidden));
         layerSelecter.start();
     }
 
+    public static void directAllocateElementsForLayer(final int layerBitMap, final boolean allocationSetting, final boolean includeHidden) {
+        try {
+            final Graph graph = GraphManager.getDefault().getActiveGraph();
+            final WritableGraph wg = graph.getWritableGraph((allocationSetting ? "" : "De-") + "Allocate Elements with Layer Bitmap " + layerBitMap, true);
+            final int selectedVertexID = VisualConcept.VertexAttribute.SELECTED.get(wg);
+            final int selectedTransactionID = VisualConcept.TransactionAttribute.SELECTED.get(wg);
+            final int vxLayerMaskAttr = LayersConcept.VertexAttribute.LAYER_MASK.get(wg);
+            final int txLayerMaskAttr = LayersConcept.TransactionAttribute.LAYER_MASK.get(wg);
+            final int vxbitmaskVisibilityAttrId = LayersConcept.VertexAttribute.LAYER_VISIBILITY.get(wg);
+            final int txbitmaskVisibilityAttrId = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.get(wg);
+
+            // Determine how many elements to scan
+            final int vertexCount = wg.getVertexCount();
+            final int transactionCount = wg.getTransactionCount();
+
+            // Select matching Vertexs
+            for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
+                final int vertexId = wg.getVertex(vertexPosition);
+                final boolean allowUpdate = includeHidden || wg.getFloatValue(vxbitmaskVisibilityAttrId, vertexId) == 1.0;
+                if (allowUpdate && wg.getBooleanValue(selectedVertexID, vertexId)) {
+                    final int actualBitmap = wg.getIntValue(vxLayerMaskAttr, vertexPosition);
+                    final int removalBitmap = (actualBitmap & layerBitMap) == layerBitMap ? actualBitmap - layerBitMap : actualBitmap;
+                    final int updatedBitmap = allocationSetting ? actualBitmap | layerBitMap : removalBitmap;
+                    if (updatedBitmap != actualBitmap) {
+                        wg.setIntValue(vxLayerMaskAttr, vertexId, updatedBitmap);
+                    }
+                }
+            }
+
+            // Select matching Transactions
+            for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
+                final int txnId = wg.getTransaction(transactionPosition);
+                boolean allowUpdate = includeHidden || wg.getFloatValue(txbitmaskVisibilityAttrId, txnId) == 1.0;
+                if (allowUpdate && wg.getBooleanValue(selectedTransactionID, txnId)) {
+                    final int actualBitmap = wg.getIntValue(txLayerMaskAttr, transactionPosition);
+                    final int removalBitmap = (actualBitmap & layerBitMap) == layerBitMap ? actualBitmap - layerBitMap : actualBitmap;
+                    final int updatedBitmap = allocationSetting ? actualBitmap | layerBitMap : removalBitmap;
+                    if (updatedBitmap != actualBitmap) {
+                        wg.setIntValue(txLayerMaskAttr, txnId, updatedBitmap);
+                    }
+                }
+            }
+            wg.commit();
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, "LayersUtilities.allocateElementsForLayer interrupted ...", ex);
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    public static void directSelectVisibleElements(final boolean selectionSetting){
+        try {
+            final Graph graph = GraphManager.getDefault().getActiveGraph();
+            final WritableGraph wg = graph.getWritableGraph((selectionSetting ? "" : "De-") + "Select All Visible Layer Elements", true);
+            final int selectedVertexID = VisualConcept.VertexAttribute.SELECTED.get(wg);
+            final int selectedTransactionID = VisualConcept.TransactionAttribute.SELECTED.get(wg);
+            final int vxbitmaskVisibilityAttrId = LayersConcept.VertexAttribute.LAYER_VISIBILITY.get(wg);
+            final int txbitmaskVisibilityAttrId = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.get(wg);
+
+            // Determine how many elements to scan
+            final int vertexCount = wg.getVertexCount();
+            final int transactionCount = wg.getTransactionCount();
+
+            // Select visible Vertices
+            for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
+                if (wg.getFloatValue(vxbitmaskVisibilityAttrId, wg.getVertex(vertexPosition)) == 1.0) {
+                    wg.setBooleanValue(selectedVertexID, wg.getVertex(vertexPosition), selectionSetting);
+                }
+            }
+            // Select visible Transactions
+            for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
+                if (wg.getFloatValue(txbitmaskVisibilityAttrId, wg.getVertex(transactionPosition)) == 1.0) {
+                    wg.setBooleanValue(selectedTransactionID, wg.getTransaction(transactionPosition), selectionSetting);
+                }
+            }
+            wg.commit();
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, "LayersUtilities.selectVisibleElements interrupted ...", ex);
+            Thread.currentThread().interrupt();
+        }
+    }
+    
+    public static void directSelectLayerElements(final int layerBitMap, final boolean selectionSetting, final boolean includeHidden) {        
+        try {                
+            final Graph graph = GraphManager.getDefault().getActiveGraph();
+            final WritableGraph wg = graph.getWritableGraph((selectionSetting ? "" : "De-") + "Select Elements with Layer Bitmap " + layerBitMap, true);
+            final int selectedVertexID = VisualConcept.VertexAttribute.SELECTED.get(wg);
+            final int selectedTransactionID = VisualConcept.TransactionAttribute.SELECTED.get(wg);
+            final int vxLayerMaskAttr = LayersConcept.VertexAttribute.LAYER_MASK.get(wg);
+            final int txLayerMaskAttr = LayersConcept.TransactionAttribute.LAYER_MASK.get(wg);
+            final int vxbitmaskVisibilityAttrId = LayersConcept.VertexAttribute.LAYER_VISIBILITY.get(wg);
+            final int txbitmaskVisibilityAttrId = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.get(wg);
+
+            // Determine how many elements to scan
+            final int vertexCount = wg.getVertexCount();
+            final int transactionCount = wg.getTransactionCount();
+            final int stateAttributeId = LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.ensure(wg);
+            LayersViewState currentState = wg.getObjectValue(stateAttributeId, 0);
+
+            long activeVQueriesMask = 0;
+            List<Boolean> backupVVis = new ArrayList<>();
+            long activeTQueriesMask = 0;
+            List<Boolean> backupTVis = new ArrayList<>();
+            if (currentState != null) {
+                backupVVis = currentState.getVxQueriesCollection().getVisibilityList();
+                activeVQueriesMask = currentState.getVxQueriesCollection().getActiveQueriesBitmask();
+                final int bitValue = (int) (Math.log(layerBitMap)/ Math.log(2));
+                List<Boolean> tempVis = new ArrayList<>();
+                for (int i = 0; i < backupVVis.size(); i++) {
+                    tempVis.add((i == bitValue));
+                }
+                currentState.getVxQueriesCollection().setVisibilities(tempVis);
+                currentState.getVxQueriesCollection().setActiveQueries(layerBitMap);
+                currentState.getVxQueriesCollection().selectMatchingElements(wg, true, selectionSetting);
+
+
+                backupTVis = currentState.getTxQueriesCollection().getVisibilityList();
+                activeTQueriesMask = currentState.getTxQueriesCollection().getActiveQueriesBitmask();
+                tempVis.clear();
+                for (int i = 0; i < backupVVis.size(); i++) {
+                    tempVis.add((i == bitValue));
+                }
+                currentState.getTxQueriesCollection().setVisibilities(tempVis);
+                currentState.getTxQueriesCollection().setActiveQueries(layerBitMap);
+                currentState.getTxQueriesCollection().selectMatchingElements(wg, false, selectionSetting);
+            }
+
+            // Select matching Vertexs
+            for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
+                boolean allowUpdate = includeHidden || wg.getFloatValue(vxbitmaskVisibilityAttrId, wg.getVertex(vertexPosition)) == 1.0;
+                if (allowUpdate && (wg.getIntValue(vxLayerMaskAttr, wg.getVertex(vertexPosition)) & layerBitMap) == layerBitMap) {
+                    wg.setBooleanValue(selectedVertexID, wg.getVertex(vertexPosition), selectionSetting);
+                }
+            }
+
+            // Select matching Transactions
+            for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
+                boolean allowUpdate = includeHidden || wg.getFloatValue(txbitmaskVisibilityAttrId, wg.getVertex(transactionPosition)) == 1.0;
+                if (allowUpdate && (wg.getIntValue(txLayerMaskAttr, wg.getTransaction(transactionPosition)) & layerBitMap) == layerBitMap) {
+                    wg.setBooleanValue(selectedTransactionID, wg.getTransaction(transactionPosition), selectionSetting);
+                }
+            }
+
+            if (currentState != null) {
+                currentState.getVxQueriesCollection().setVisibilities(backupVVis);                    
+                currentState.getVxQueriesCollection().setActiveQueries(activeVQueriesMask);
+                currentState.getVxQueriesCollection().update(wg);
+
+                currentState.getTxQueriesCollection().setVisibilities(backupTVis);                    
+                currentState.getTxQueriesCollection().setActiveQueries(activeTQueriesMask);
+                currentState.getTxQueriesCollection().update(wg);
+            }
+            wg.commit();
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, "LayersUtilities.selectLayerElements interrupted ...", ex);
+            Thread.currentThread().interrupt();
+        }
+    }
+    
 }

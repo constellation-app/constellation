@@ -94,7 +94,11 @@ public class BitMaskQueryCollection {
     public List<Boolean> getVisibilityList() {
         List<Boolean> results = new ArrayList<>();
         for (final BitMaskQuery query : queries) {
-            results.add(query != null ? query.isVisible() : false);
+            if (query != null) {
+                results.add(query.isVisible());
+            } else {
+                results.add(false);
+            }
         }
         return results;
     }
