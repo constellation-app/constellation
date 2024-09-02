@@ -49,6 +49,7 @@ import org.openide.windows.TopComponent;
 import org.openide.windows.TopComponent.Registry;
 import org.openide.windows.WindowManager;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertThrows;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -372,6 +373,7 @@ public class RecentGraphScreenshotUtilitiesNGTest {
     @Test
     public void testRequestGraphActive() {
         System.out.println("testRequestGraphActive");
+        //System.setProperty("java.awt.headless", "true");
 
         recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.requestGraphActive(any())).thenCallRealMethod();
 
@@ -397,28 +399,37 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         assertEquals(reg.getOpened(), setTopC);
 
         // test correct functionality
-        testRequestGraphActiveHelper(mockGraph, wm, reg);
+        System.out.println("A");
+        testRequestGraphActiveHelper(mockGraph, wm, reg, setTopC);
 
         // test InterruptedException
         try (MockedStatic<EventQueue> mockedEventQueue = Mockito.mockStatic(EventQueue.class, Mockito.CALLS_REAL_METHODS)) {
             mockedEventQueue.when(() -> EventQueue.invokeAndWait(any())).thenThrow(new InterruptedException());
-
-            testRequestGraphActiveHelper(mockGraph, wm, reg);
+            assertThrows(() -> EventQueue.invokeAndWait(((VisualGraphTopComponent) tc)::requestActive));
+            System.out.println(" ");
+            System.out.println("B");
+            testRequestGraphActiveHelper(mockGraph, wm, reg, setTopC);
         }
 
         // test InvocationTargetException
         try (MockedStatic<EventQueue> mockedEventQueue = Mockito.mockStatic(EventQueue.class, Mockito.CALLS_REAL_METHODS)) {
             mockedEventQueue.when(() -> EventQueue.invokeAndWait(any())).thenThrow(new InvocationTargetException(new Throwable()));
-
-            testRequestGraphActiveHelper(mockGraph, wm, reg);
+            assertThrows(() -> EventQueue.invokeAndWait(((VisualGraphTopComponent) tc)::requestActive));
+            System.out.println(" ");
+            System.out.println("C");
+            testRequestGraphActiveHelper(mockGraph, wm, reg, setTopC);
         }
+        //System.clearProperty("java.awt.headless");
     }
 
-    private void testRequestGraphActiveHelper(final Graph mockGraph, final WindowManager mockWindowManager, final Registry mockRegistry) {
+    private void testRequestGraphActiveHelper(final Graph mockGraph, final WindowManager mockWindowManager, final Registry mockRegistry, final Set<TopComponent> topComponents) {
         try (MockedStatic<WindowManager> mockedWindowManager = Mockito.mockStatic(WindowManager.class)) {
             mockedWindowManager.when(WindowManager::getDefault).thenReturn(mockWindowManager);
             // Assert mocks work
             assertEquals(WindowManager.getDefault(), mockWindowManager);
+
+            // When top component is NOT null
+            when(mockRegistry.getOpened()).thenReturn(topComponents);
 
             // When top component is not null
             RecentGraphScreenshotUtilities.requestGraphActive(null);
@@ -435,6 +446,7 @@ public class RecentGraphScreenshotUtilitiesNGTest {
     @Test
     public void testResestGraphActive() {
         System.out.println("testResestGraphActive");
+        //System.setProperty("java.awt.headless", "true");
         recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.resestGraphActive()).thenCallRealMethod();
 
         final Graph mockGraph = mock(Graph.class);
@@ -460,26 +472,13 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         assertEquals(gm.getActiveGraph(), mockGraph);
         assertEquals(wm.getRegistry(), reg);
         assertEquals(reg.getOpened(), setTopC);
-
-        try (MockedStatic<WindowManager> mockedWindowManager = Mockito.mockStatic(WindowManager.class); MockedStatic<GraphManager> mockedGraphManager = Mockito.mockStatic(GraphManager.class)) {
-            mockedWindowManager.when(WindowManager::getDefault).thenReturn(wm);
-            mockedGraphManager.when(GraphManager::getDefault).thenReturn(gm);
-
-            // Assert mocks work
-            assertEquals(WindowManager.getDefault(), wm);
-            assertEquals(GraphManager.getDefault(), gm);
-
-            RecentGraphScreenshotUtilities.resestGraphActive();
-
-            // Test when top component is null
-            when(reg.getOpened()).thenReturn(null);
-
-            RecentGraphScreenshotUtilities.resestGraphActive();
-        }
-
+        
+        testResetGraphActive(wm, gm, reg, setTopC);
+                
+        //System.clearProperty("java.awt.headless");
     }
 
-    private void testResetGraphActive(final WindowManager mockWindowManager, final GraphManager mockGraphManager, final Registry mockRegistry) {
+    private void testResetGraphActive(final WindowManager mockWindowManager, final GraphManager mockGraphManager, final Registry mockRegistry, final Set<TopComponent> topComponents) {
         try (MockedStatic<WindowManager> mockedWindowManager = Mockito.mockStatic(WindowManager.class); MockedStatic<GraphManager> mockedGraphManager = Mockito.mockStatic(GraphManager.class)) {
             mockedWindowManager.when(WindowManager::getDefault).thenReturn(mockWindowManager);
             mockedGraphManager.when(GraphManager::getDefault).thenReturn(mockGraphManager);
@@ -487,6 +486,9 @@ public class RecentGraphScreenshotUtilitiesNGTest {
             // Assert mocks work
             assertEquals(WindowManager.getDefault(), mockWindowManager);
             assertEquals(GraphManager.getDefault(), mockGraphManager);
+            
+            // When top component is NOT null
+            when(mockRegistry.getOpened()).thenReturn(topComponents);
 
             RecentGraphScreenshotUtilities.resestGraphActive();
 
