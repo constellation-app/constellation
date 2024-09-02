@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.utilities.gui;
 
 import java.awt.EventQueue;
+import java.awt.Point;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
@@ -132,6 +133,113 @@ public class NotifyDisplayerNGTest {
             verify(mockAlert).setTitle(title);
             verify(mockAlert).setHeaderText(header);
             verify(mockAlert).setContentText(message);
+
+            verify(mockAlert).setResizable(true);
+
+            verify(stage).setAlwaysOnTop(true);
+
+            verify(mockAlert).showAndWait();
+        }
+    }
+    
+     @Test
+    public void displayAlertWithPoint() {
+        final String title = "TITLE";
+        final String header = "HEADER";
+        final String message = "MESSAGE";
+        final Alert.AlertType alertType = Alert.AlertType.WARNING;
+
+        final DialogPane dialogPane = mock(DialogPane.class);
+        final Scene scene = mock(Scene.class);
+        final Stage stage = mock(Stage.class);
+        final ObservableList list = mock(ObservableList.class);
+
+        try (final MockedConstruction<Alert> alertMockedConstruction = Mockito.mockConstruction(Alert.class,
+                (mock, cnxt) -> {
+                    assertEquals(cnxt.arguments().get(0), alertType);
+                    assertEquals(cnxt.arguments().get(1), "");
+                    assertEquals(cnxt.arguments().get(2), new ButtonType[]{ButtonType.OK});
+
+                    when(mock.getDialogPane()).thenReturn(dialogPane);
+                    when(dialogPane.getScene()).thenReturn(scene);
+                    when(scene.getWindow()).thenReturn(stage);
+                    when(dialogPane.getStylesheets()).thenReturn(list);
+                })) {            
+            NotifyDisplayer.displayAlert(title, header, message, alertType,
+                    ScreenWindowsHelper.getMainWindowCentrePoint());
+
+            assertEquals(alertMockedConstruction.constructed().size(), 1);
+
+            final Alert mockAlert = alertMockedConstruction.constructed().get(0);
+
+            verify(mockAlert).setTitle(title);
+            verify(mockAlert).setHeaderText(header);
+            verify(mockAlert).setContentText(message);
+
+            verify(mockAlert).setResizable(true);
+
+            verify(stage).setAlwaysOnTop(true);
+
+            verify(mockAlert).showAndWait();
+            
+            // test non-null point
+            final Point mockedPoint = mock(Point.class);
+            final double doubleValue = 100.0;
+            when(mockedPoint.getX()).thenReturn(doubleValue);
+            when(mockedPoint.getY()).thenReturn(doubleValue);
+            when(dialogPane.getWidth()).thenReturn(doubleValue);
+            when(dialogPane.getHeight()).thenReturn(doubleValue);
+            try (final MockedStatic<ScreenWindowsHelper> screenWindowsHelperStatic = Mockito.mockStatic(ScreenWindowsHelper.class)) {
+                screenWindowsHelperStatic.when(ScreenWindowsHelper::getMainWindowCentrePoint).thenReturn(mockedPoint);
+            
+                NotifyDisplayer.displayAlert(title, header, message, alertType,
+                    ScreenWindowsHelper.getMainWindowCentrePoint());
+                verify(stage).setX(doubleValue - doubleValue/2);
+                verify(stage).setY(doubleValue - doubleValue/2);
+            }
+        }
+    }
+
+    @Test
+    public void displayLargeAlertWithPoint() {
+        final String title = "TITLE";
+        final String header = "HEADER";
+        final String message = "MESSAGE";
+        final Alert.AlertType alertType = Alert.AlertType.WARNING;
+
+        final DialogPane dialogPane = mock(DialogPane.class);
+        final Scene scene = mock(Scene.class);
+        final Stage stage = mock(Stage.class);
+        final ObservableList list = mock(ObservableList.class);
+
+        try (final MockedConstruction<Alert> alertMockedConstruction = Mockito.mockConstruction(Alert.class,
+                (mock, cnxt) -> {
+                    assertEquals(cnxt.arguments().get(0), alertType);
+                    assertEquals(cnxt.arguments().get(1), "");
+                    assertEquals(cnxt.arguments().get(2), new ButtonType[]{ButtonType.OK});
+
+                    when(mock.getDialogPane()).thenReturn(dialogPane);
+                    when(dialogPane.getScene()).thenReturn(scene);
+                    when(scene.getWindow()).thenReturn(stage);
+                    when(dialogPane.getStylesheets()).thenReturn(list);
+                })) {
+            
+            NotifyDisplayer.displayLargeAlert(title, header, message, alertType,
+                    ScreenWindowsHelper.getMainWindowCentrePoint());
+
+            assertEquals(alertMockedConstruction.constructed().size(), 1);
+
+            final Alert mockAlert = alertMockedConstruction.constructed().get(0);
+
+            verify(mockAlert).setTitle(title);
+            verify(mockAlert).setHeaderText(header);
+
+            final ArgumentCaptor<TextArea> captor = ArgumentCaptor.forClass(TextArea.class);
+            verify(dialogPane).setExpandableContent(captor.capture());
+
+            assertEquals(captor.getValue().getText(), message);
+            assertTrue(captor.getValue().isWrapText());
+            assertFalse(captor.getValue().isEditable());
 
             verify(mockAlert).setResizable(true);
 

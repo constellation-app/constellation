@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.gui.ScreenWindowsHelper;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javafx.application.Platform;
@@ -52,7 +53,8 @@ public final class CompareGraphAction implements ActionListener {
                 .executeLater(context.getGraph());
         } else {
             Platform.runLater(() -> NotifyDisplayer.displayAlert("Compare Graph", "Warning", 
-                    "Two or more graphs need to be open before comparing.", Alert.AlertType.WARNING));
+                    "Two or more graphs need to be open before comparing.", Alert.AlertType.WARNING,
+                    ScreenWindowsHelper.getMainWindowCentrePoint()));
         }
     }
 }
