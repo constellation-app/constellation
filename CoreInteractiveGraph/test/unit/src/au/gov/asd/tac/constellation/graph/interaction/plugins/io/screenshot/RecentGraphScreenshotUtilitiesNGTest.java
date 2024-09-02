@@ -34,7 +34,6 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
-import java.util.logging.Logger;
 import javax.xml.bind.DatatypeConverter;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -43,6 +42,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.stubbing.Answer;
 import org.openide.windows.TopComponent;
@@ -64,10 +64,7 @@ public class RecentGraphScreenshotUtilitiesNGTest {
 
     private static MockedStatic<RecentGraphScreenshotUtilities> recentGraphScreenshotUtilitiesMock;
     private static MockedStatic<RecentFiles> recentFilesMock;
-    //private static MockedStatic<Files> filesMock;
     private static MockedStatic<DatatypeConverter> dataTypeConverter;
-
-    private static final Logger LOGGER = Logger.getLogger(RecentGraphScreenshotUtilitiesNGTest.class.getName());
 
     public RecentGraphScreenshotUtilitiesNGTest() {
     }
@@ -76,38 +73,14 @@ public class RecentGraphScreenshotUtilitiesNGTest {
     public static void setUpClass() throws Exception {
         recentGraphScreenshotUtilitiesMock = Mockito.mockStatic(RecentGraphScreenshotUtilities.class);
         recentFilesMock = Mockito.mockStatic(RecentFiles.class);
-//        filesMock = Mockito.mockStatic(Files.class);
         dataTypeConverter = Mockito.mockStatic(DatatypeConverter.class);
-
-//        try {
-//            if (!FxToolkit.isFXApplicationThreadRunning()) {
-//                FxToolkit.registerPrimaryStage();
-//            }
-//        } catch (Exception e) {
-//            System.out.println("\n**** SETUP ERROR: " + e);
-//            throw e;
-//        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
         recentGraphScreenshotUtilitiesMock.close();
         recentFilesMock.close();
-        //filesMock.close();
         dataTypeConverter.close();
-
-//        try {
-//            FxToolkit.cleanupStages();
-//        } catch (TimeoutException ex) {
-//            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
-//        } catch (Exception e) {
-//            if (e.toString().contains("HeadlessException")) {
-//                System.out.println("\n**** EXPECTED TEARDOWN ERROR: " + e.toString());
-//            } else {
-//                System.out.println("\n**** UN-EXPECTED TEARDOWN ERROR: " + e.toString());
-//                throw e;
-//            }
-//        }
     }
 
     @BeforeMethod
@@ -399,17 +372,21 @@ public class RecentGraphScreenshotUtilitiesNGTest {
 
         // test correct functionality
         testRequestGraphActiveHelper(mockGraph, wm, reg, setTopC);
+        // Verify functions were run
+        verify(tc, times(1)).getGraphNode();
+        verify(gn, times(1)).getGraph();
+        verify(mockGraph, times(2)).getId();
 
         try (MockedStatic<EventQueue> mockedEventQueue = Mockito.mockStatic(EventQueue.class, Mockito.CALLS_REAL_METHODS)) {
-            // test InterruptedException
-//            mockedEventQueue.when(() -> EventQueue.invokeAndWait(any())).thenThrow(new InterruptedException());
-//            assertThrows(() -> EventQueue.invokeAndWait(((VisualGraphTopComponent) tc)::requestActive));
-//            testRequestGraphActiveHelper(mockGraph, wm, reg, setTopC);
-
             // test InvocationTargetException
             mockedEventQueue.when(() -> EventQueue.invokeAndWait(any())).thenThrow(new InvocationTargetException(new Throwable()));
             assertThrows(() -> EventQueue.invokeAndWait(((VisualGraphTopComponent) tc)::requestActive));
             testRequestGraphActiveHelper(mockGraph, wm, reg, setTopC);
+
+            // Verify functions were run (includes previous test)
+            verify(tc, times(2)).getGraphNode();
+            verify(gn, times(2)).getGraph();
+            verify(mockGraph, times(4)).getId();
         }
     }
 
@@ -422,7 +399,6 @@ public class RecentGraphScreenshotUtilitiesNGTest {
             // When top component is NOT null
             when(mockRegistry.getOpened()).thenReturn(topComponents);
 
-            // When top component is not null
             RecentGraphScreenshotUtilities.requestGraphActive(null);
             RecentGraphScreenshotUtilities.requestGraphActive(mockGraph);
 
@@ -464,16 +440,20 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         assertEquals(reg.getOpened(), setTopC);
 
         testResetGraphActive(wm, gm, reg, setTopC);
+        // Verify functions were run
+        verify(tc, times(1)).getGraphNode();
+        verify(gn, times(1)).getGraph();
+        verify(mockGraph, times(2)).getId();
 
         try (MockedStatic<EventQueue> mockedEventQueue = Mockito.mockStatic(EventQueue.class, Mockito.CALLS_REAL_METHODS)) {
-            // test InterruptedException
-//            mockedEventQueue.when(() -> EventQueue.invokeAndWait(any())).thenThrow(new InterruptedException());
-//            assertThrows(() -> EventQueue.invokeAndWait(((VisualGraphTopComponent) tc)::requestActive));
-//            testResetGraphActive(wm, gm, reg, setTopC);
-
             mockedEventQueue.when(() -> EventQueue.invokeAndWait(any())).thenThrow(new InvocationTargetException(new Throwable()));
             assertThrows(() -> EventQueue.invokeAndWait(((VisualGraphTopComponent) tc)::requestActive));
             testResetGraphActive(wm, gm, reg, setTopC);
+
+            // Verify functions were run (includes previous test)
+            verify(tc, times(2)).getGraphNode();
+            verify(gn, times(2)).getGraph();
+            verify(mockGraph, times(4)).getId();
         }
     }
 
