@@ -81,14 +81,14 @@ public class RecentGraphScreenshotUtilitiesNGTest {
 //        filesMock = Mockito.mockStatic(Files.class);
         dataTypeConverter = Mockito.mockStatic(DatatypeConverter.class);
 
-        try {
-            if (!FxToolkit.isFXApplicationThreadRunning()) {
-                FxToolkit.registerPrimaryStage();
-            }
-        } catch (Exception e) {
-            System.out.println("\n**** SETUP ERROR: " + e);
-            throw e;
-        }
+//        try {
+//            if (!FxToolkit.isFXApplicationThreadRunning()) {
+//                FxToolkit.registerPrimaryStage();
+//            }
+//        } catch (Exception e) {
+//            System.out.println("\n**** SETUP ERROR: " + e);
+//            throw e;
+//        }
     }
 
     @AfterClass
@@ -98,18 +98,18 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         //filesMock.close();
         dataTypeConverter.close();
 
-        try {
-            FxToolkit.cleanupStages();
-        } catch (TimeoutException ex) {
-            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
-        } catch (Exception e) {
-            if (e.toString().contains("HeadlessException")) {
-                System.out.println("\n**** EXPECTED TEARDOWN ERROR: " + e.toString());
-            } else {
-                System.out.println("\n**** UN-EXPECTED TEARDOWN ERROR: " + e.toString());
-                throw e;
-            }
-        }
+//        try {
+//            FxToolkit.cleanupStages();
+//        } catch (TimeoutException ex) {
+//            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+//        } catch (Exception e) {
+//            if (e.toString().contains("HeadlessException")) {
+//                System.out.println("\n**** EXPECTED TEARDOWN ERROR: " + e.toString());
+//            } else {
+//                System.out.println("\n**** UN-EXPECTED TEARDOWN ERROR: " + e.toString());
+//                throw e;
+//            }
+//        }
     }
 
     @BeforeMethod
@@ -398,10 +398,10 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         // Assert mocks work
         assertEquals(wm.getRegistry(), reg);
         assertEquals(reg.getOpened(), setTopC);
-        
+
         // test correct functionality
         testRequestGraphActiveHelper(mockGraph, wm, reg);
-        
+
         // test InterruptedException
         try (MockedStatic<EventQueue> mockedEventQueue = Mockito.mockStatic(EventQueue.class, Mockito.CALLS_REAL_METHODS)) {
             mockedEventQueue.when(() -> EventQueue.invokeAndWait(any())).thenThrow(new InterruptedException());
@@ -449,7 +449,7 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         final Registry reg = mock(Registry.class);
         final Set<TopComponent> setTopC = new HashSet<>();
         final VisualGraphTopComponent tc = mock(VisualGraphTopComponent.class);
-        
+
         final GraphNode gn = mock(GraphNode.class);
         when(gn.getGraph()).thenReturn(mockGraph);
 
@@ -479,7 +479,25 @@ public class RecentGraphScreenshotUtilitiesNGTest {
 
             RecentGraphScreenshotUtilities.resestGraphActive();
         }
- 
+
+    }
+
+    private void testResetGraphActive() {
+        try (MockedStatic<WindowManager> mockedWindowManager = Mockito.mockStatic(WindowManager.class); MockedStatic<GraphManager> mockedGraphManager = Mockito.mockStatic(GraphManager.class)) {
+            mockedWindowManager.when(WindowManager::getDefault).thenReturn(wm);
+            mockedGraphManager.when(GraphManager::getDefault).thenReturn(gm);
+
+            // Assert mocks work
+            assertEquals(WindowManager.getDefault(), wm);
+            assertEquals(GraphManager.getDefault(), gm);
+
+            RecentGraphScreenshotUtilities.resestGraphActive();
+
+            // Test when top component is null
+            when(reg.getOpened()).thenReturn(null);
+
+            RecentGraphScreenshotUtilities.resestGraphActive();
+        }
     }
 
     // Couldn't find a way to mock LOGGER.log() to assert whether it was ever invoked.
