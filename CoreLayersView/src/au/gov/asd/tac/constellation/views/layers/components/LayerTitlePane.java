@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.layers.components;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.value.utilities.ExpressionUtilities;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.layers.LayersViewController;
@@ -143,33 +144,27 @@ public class LayerTitlePane extends TitledPane {
         includeHidden.setSelected(true);
         final Button selectAllocations = new Button("Select");
         selectAllocations.setTooltip(new Tooltip("Select Layer %d Elements".formatted(query.getIndex())));
-        selectAllocations.setOnAction(e -> {
-            LayersUtilities.selectLayerElements((int) Math.pow(2 , query.getIndex()), true, includeHidden.isSelected());
-        });
+        selectAllocations.setOnAction(e -> LayersUtilities.selectLayerElements((int) Math.pow(2 , query.getIndex()), true, includeHidden.isSelected()));
+        selectAllocations.setId("layer-function-enable");
         final Button deselectAllocations = new Button("De-Select");
         deselectAllocations.setTooltip(new Tooltip("De-Select Layer %d Elements".formatted(query.getIndex())));
-        deselectAllocations.setOnAction(e -> {
-            LayersUtilities.selectLayerElements((int) Math.pow(2 , query.getIndex()), false, includeHidden.isSelected());
-        });
+        deselectAllocations.setOnAction(e -> LayersUtilities.selectLayerElements((int) Math.pow(2 , query.getIndex()), false, includeHidden.isSelected()));
+        deselectAllocations.setId("layer-function-disable");
         final Button allocateSelections = new Button("Allocate");
         allocateSelections.setTooltip(new Tooltip("Allocate Selected Elements to Layer %d".formatted(query.getIndex())));
         allocateSelections.setOnAction(e -> {
             LayersUtilities.allocateElementsForLayer((int) Math.pow(2 , query.getIndex()), true, includeHidden.isSelected());
+            LayersViewController.getDefault().updateQueries(GraphManager.getDefault().getActiveGraph());
         });
+        allocateSelections.setId("layer-function-enable");
         final Button deallocateSelections = new Button("De-Allocate");
         deallocateSelections.setTooltip(new Tooltip("De-Allocate Selected Elements from Layer %d".formatted(query.getIndex())));
         deallocateSelections.setOnAction(e -> {
             LayersUtilities.allocateElementsForLayer((int) Math.pow(2 , query.getIndex()), false, includeHidden.isSelected());
+            LayersViewController.getDefault().updateQueries(GraphManager.getDefault().getActiveGraph());
         });
-                
-        String enablingBackgroundColorStyle = DARK_MODE ? " -fx-background-color: #245288; " : " -fx-background-color: #96BCEF; -fx-text-fill: black; "; // #51a5f8 #b0d0f0
-        String disablingBackgroundColorStyle = DARK_MODE ? " -fx-background-color: #742D2E; " : " -fx-background-color: #f0a8a2; -fx-text-fill: black; "; // ffbfbf ECABAB
-        Color buttonBackground = DARK_MODE ? new Color(0.20,0.20,0.20,1) : new Color(0.86,0.86,0.86,1);
-        allocateSelections.setStyle(enablingBackgroundColorStyle);
-        deallocateSelections.setStyle(disablingBackgroundColorStyle);
-        selectAllocations.setStyle(enablingBackgroundColorStyle);
-        deselectAllocations.setStyle(disablingBackgroundColorStyle);
-
+        deallocateSelections.setId("layer-function-disable");
+        final Color buttonBackground = DARK_MODE ? new Color(0.20,0.20,0.20,1) : new Color(0.86,0.86,0.86,1);
         final HBox buttonsLeft = new HBox(selectAllocations, deselectAllocations);
         final HBox buttonsRight = new HBox(allocateSelections, deallocateSelections);
         final HBox emptySpace = new HBox(new Label(" "));

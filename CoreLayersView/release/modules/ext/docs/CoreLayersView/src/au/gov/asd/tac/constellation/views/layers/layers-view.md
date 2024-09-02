@@ -103,6 +103,20 @@ Click
 [here](../ext/docs/CoreGraphFramework/src/au/gov/asd/tac/constellation/graph/expressions-framework.md)
 for more information on the structure of the expression framework
 
+
+## Layer Functions  
+  
+<img src="../ext/docs/CoreLayersView/src/au/gov/asd/tac/constellation/views/layers/resources/LayerFunctions.png" alt="Layer specific functions" />  
+  
+The __Select__ button will select only the graph elements that are allocated to the corresponding layer.  
+The __De-Select__ button will deselect only the graph elements that are allocated to the corresponding layer.  
+The __Allocate__ button will directly allocate all selected graph elements to the corresponding layer, while maintaining any allocations to other layers.  
+The __De-Allocate__ button will directly deallocate all selected graph elements to the corresponding layer, while maintaining any allocations to other layers.  
+  
+The __Include Hidden__ checkbox allows selections and allocations to occur on graph elements even if they are currently not being displayed.  
+When this is unchecked, only the currently displayed graph elements will be affected.  
+  
+
 ## Union and Intersection Modes  
   
 At the top right of the Layers View you can switch between <img src="../ext/docs/CoreLayersView/src/au/gov/asd/tac/constellation/views/layers/resources/UnionMode.png" alt="Layers View : Union Mode" /> and <img src="../ext/docs/CoreLayersView/src/au/gov/asd/tac/constellation/views/layers/resources/IntersectionMode.png" alt="Layers View : Intersection Mode" />  
