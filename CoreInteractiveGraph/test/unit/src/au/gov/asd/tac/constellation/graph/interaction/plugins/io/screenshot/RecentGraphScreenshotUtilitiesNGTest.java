@@ -87,7 +87,6 @@ public class RecentGraphScreenshotUtilitiesNGTest {
     public void setUpMethod() throws Exception {
         recentGraphScreenshotUtilitiesMock.reset();
         recentFilesMock.reset();
-        //filesMock.reset();
     }
 
     @AfterMethod
