@@ -22,8 +22,10 @@ import au.gov.asd.tac.constellation.graph.interaction.gui.VisualGraphTopComponen
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
+import java.awt.EventQueue;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -373,7 +375,6 @@ public class RecentGraphScreenshotUtilitiesNGTest {
     @Test
     public void testRequestGraphActive() {
         System.out.println("testRequestGraphActive");
-        System.setProperty("java.awt.headless", "true");
 
         recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.requestGraphActive(any())).thenCallRealMethod();
 
@@ -389,36 +390,54 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         when(gn.getGraph()).thenReturn(mockGraph);
 
         final Set<TopComponent> setTopC = new HashSet<>();
-        final VisualGraphTopComponent tc = new VisualGraphTopComponent();
+        final VisualGraphTopComponent tc = mock(VisualGraphTopComponent.class);
+        when(tc.getGraphNode()).thenReturn(gn);
         setTopC.add(tc);
         when(reg.getOpened()).thenReturn(setTopC);
 
         // Assert mocks work
         assertEquals(wm.getRegistry(), reg);
         assertEquals(reg.getOpened(), setTopC);
+        
+        // test correct functionality
+        testRequestGraphActiveHelper(mockGraph, wm, reg);
+        
+        // test InterruptedException
+        try (MockedStatic<EventQueue> mockedEventQueue = Mockito.mockStatic(EventQueue.class, Mockito.CALLS_REAL_METHODS)) {
+            mockedEventQueue.when(() -> EventQueue.invokeAndWait(any())).thenThrow(new InterruptedException());
 
+            testRequestGraphActiveHelper(mockGraph, wm, reg);
+        }
+
+        // test InvocationTargetException
+        try (MockedStatic<EventQueue> mockedEventQueue = Mockito.mockStatic(EventQueue.class, Mockito.CALLS_REAL_METHODS)) {
+            mockedEventQueue.when(() -> EventQueue.invokeAndWait(any())).thenThrow(new InvocationTargetException(new Throwable()));
+
+            testRequestGraphActiveHelper(mockGraph, wm, reg);
+        }
+    }
+
+    private void testRequestGraphActiveHelper(final Graph mockGraph, final WindowManager mockWindowManager, final Registry mockRegistry) {
         try (MockedStatic<WindowManager> mockedWindowManager = Mockito.mockStatic(WindowManager.class)) {
-            mockedWindowManager.when(WindowManager::getDefault).thenReturn(wm);
+            mockedWindowManager.when(WindowManager::getDefault).thenReturn(mockWindowManager);
             // Assert mocks work
-            assertEquals(WindowManager.getDefault(), wm);
+            assertEquals(WindowManager.getDefault(), mockWindowManager);
 
             // When top component is not null
             RecentGraphScreenshotUtilities.requestGraphActive(null);
             RecentGraphScreenshotUtilities.requestGraphActive(mockGraph);
 
             // When top component is null
-            when(reg.getOpened()).thenReturn(null);
+            when(mockRegistry.getOpened()).thenReturn(null);
 
             RecentGraphScreenshotUtilities.requestGraphActive(null);
             RecentGraphScreenshotUtilities.requestGraphActive(mockGraph);
         }
-        System.clearProperty("java.awt.headless");
     }
 
     @Test
     public void testResestGraphActive() {
         System.out.println("testResestGraphActive");
-        System.setProperty("java.awt.headless", "true");
         recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.resestGraphActive()).thenCallRealMethod();
 
         final Graph mockGraph = mock(Graph.class);
@@ -428,10 +447,16 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         final GraphManager gm = mock(GraphManager.class);
         final WindowManager wm = mock(WindowManager.class);
         final Registry reg = mock(Registry.class);
-        final Set<TopComponent> setTopC = mock(Set.class);
+        final Set<TopComponent> setTopC = new HashSet<>();
+        final VisualGraphTopComponent tc = mock(VisualGraphTopComponent.class);
+        
+        final GraphNode gn = mock(GraphNode.class);
+        when(gn.getGraph()).thenReturn(mockGraph);
 
         when(gm.getActiveGraph()).thenReturn(mockGraph);
         when(wm.getRegistry()).thenReturn(reg);
+        when(tc.getGraphNode()).thenReturn(gn);
+        setTopC.add(tc);
         when(reg.getOpened()).thenReturn(setTopC);
 
         // Assert mocks work
@@ -454,7 +479,7 @@ public class RecentGraphScreenshotUtilitiesNGTest {
 
             RecentGraphScreenshotUtilities.resestGraphActive();
         }
-        System.clearProperty("java.awt.headless");
+ 
     }
 
     // Couldn't find a way to mock LOGGER.log() to assert whether it was ever invoked.
