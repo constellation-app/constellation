@@ -16,14 +16,20 @@
 package au.gov.asd.tac.constellation.views.layers.components;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.views.NoGraphPane;
 import au.gov.asd.tac.constellation.views.layers.LayersViewController;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQuery;
 import au.gov.asd.tac.constellation.views.layers.query.Query;
+import au.gov.asd.tac.constellation.views.layers.utilities.LayersUtilities;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
@@ -45,6 +51,7 @@ public class LayersViewPane extends BorderPane {
     protected VBox layersViewVBox;
     protected final VBox noGraphPane;
     private final MenuBar options;
+    private final ComboBox modeBox;
     
     private final TitledPane layersHeading;
     private final ScrollPane attributeScrollPane;
@@ -54,7 +61,6 @@ public class LayersViewPane extends BorderPane {
     private static final int SCROLLPANE_VIEW_HEIGHT = 900;
 
     public LayersViewPane(final LayersViewController controller) {
-
         // create controller
         this.controller = controller;
 
@@ -87,7 +93,25 @@ public class LayersViewPane extends BorderPane {
         controller.getTxQueryCollection().setDefaultQueries();
         
         layersHeading = new TitledPane();
-        layersHeading.setText("Layers");
+        layersHeading.setText(" ");
+        
+        final String[] modeList = {"UNION mode" , "INTERSECTION mode"};
+        modeBox = new ComboBox(FXCollections.observableArrayList(modeList));
+        modeBox.getSelectionModel().selectFirst();
+        modeBox.valueProperty().addListener((final ObservableValue observable, final Object oldValue, final Object newValue) -> 
+            LayersViewController.getDefault().updateQueries(GraphManager.getDefault().getActiveGraph())
+        );
+        final BorderPane border = new BorderPane();
+        final Label layersLabel = new Label("Layers ");
+        layersLabel.setMinSize(60, 15);
+        layersLabel.setPadding(new Insets(2,1,0,1));
+        layersLabel.setStyle("-fx-font-size: 1.25em ");
+        border.setPadding(new Insets(3,5,2,5));
+        border.setLeft(layersLabel);
+        border.setRight(modeBox);
+        border.minWidthProperty().bind(layersHeading.widthProperty().subtract(10));
+        
+        layersHeading.setGraphic(border);
         layersHeading.setExpanded(true);
         layersHeading.setCollapsible(false);
         layersHeading.getStyleClass().add("titled-pane-heading");
@@ -118,7 +142,7 @@ public class LayersViewPane extends BorderPane {
         this.setCenter(layersViewVBox);
 
         // add layers grid and options to pane
-        this.noGraphPane = new NoGraphPane();
+        this.noGraphPane = new NoGraphPane("Layers View", LayersUtilities.createHelpButton());
 
         // create layout bindings
         noGraphPane.prefWidthProperty().bind(this.widthProperty());
@@ -283,5 +307,9 @@ public class LayersViewPane extends BorderPane {
             }
         }
         return highestIndex;
+    }
+    
+    public int getOptionsLayerMode() {
+        return modeBox.getSelectionModel().getSelectedIndex();
     }
 }

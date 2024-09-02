@@ -48,6 +48,7 @@ public class ImportExportPluginsHelpProvider extends HelpPageProvider {
         //Import Plugins
         map.put("au.gov.asd.tac.constellation.plugins.importexport.delimited.DelimitedImportPane", importExportModulePath + "import-from-file.md");        
         map.put("au.gov.asd.tac.constellation.plugins.importexport.jdbc.JDBCImportPane", importExportModulePath + "import-from-database.md");
+        map.put("au.gov.asd.tac.constellation.plugins.importexport.hashmod.HashmodPanel", importExportModulePath + "add-hashmod.md");
         
         //Export Plugins
         map.put("au.gov.asd.tac.constellation.plugins.importexport.export", importExportModulePath + "export-from-constellation.md");

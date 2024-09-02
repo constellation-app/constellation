@@ -1,0 +1,47 @@
+#label {
+    -fx-fill: #D3D3D3;
+}
+
+#primary {
+    -fx-background-radius: 5;
+    -fx-background-insets: 0,1,2,0;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 7, 0.0, 1, 1);
+    -fx-padding: 10 20 10 20;
+    -fx-background-color: linear-gradient(to bottom, #444444 0%, #333333 100%);
+    -fx-text-fill: #ffffff;
+    -fx-light-text-color: #e0e0e0;
+    -fx-mid-text-color: derive(-fx-light-text-color,-40%);
+}
+
+.vbox {
+    -fx-background-color: rgba(0,0,0,0);
+}
+
+#header {
+    -fx-fill: #ffffff;
+    -fx-text-fill: #ffffff;
+    -fx-font: bold 1.083333em "Arial";
+    -fx-padding: 0 0 10 0;
+}
+
+.date-cell.selected .button {
+    -fx-background-color: #1f6fba;
+}
+
+#hiddenSplitter {
+    -fx-background-color: transparent;
+}
+
+#hiddenSplitter *.split-pane-divider {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 5px;
+}
+
+.check-box > .box {
+    -fx-background-color: linear-gradient(to bottom, derive(#999999,100%), derive(#555555,0%) 5%, derive(#999999,-25%) 95%, derive(#999999,50%) 100%);
+}
+
+.dialog-pane > .button-bar > .container > .details-button {
+    -fx-text-fill: #e0e0e0;
+}

@@ -1,6 +1,13 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2024-08-13 Layers View - Union and Intersection Modes have now been implemented.
+<p> You can now switch between Union and Intersection modes using the control at the top right of the Layers View. Union mode will show <b>all</b> elements matching with <b>any</b> Layer. Intersection mode will <b>only</b> show graph elements that match with <b>every</b> active layer.
+<p> Layers will now correctly display combined matches to queries as well as any manual allocations for the same layer.
+
+== 2024-07-05 Added Zoom to Selection to Find View
+<p> Added a "Zoom to Selection" checkbox to the Find View. Having this selected will make the graph zoom in to the results found.</p>
+
 == 2024-06-25 Exporting to SVG
 <p>Graphs can now be exported to an SVG image format enabling graphs to be viewed in web browsers and other vector image viewers.</p>
 <p>A variety of parameters are available to customize the export including the number fo allocated processors, the format of the exported SVG file and the export perspective.</p>
@@ -13,7 +20,7 @@
 <p>A dropdown list has been added to the top of the view to select how many Conversation bubbles to display per page.</p>
 
 == 2024-03-08 More Ways to Zoom In and Out
-<p>Keyboard shortcuts have been added for zooming in and out of the graph view (CTRL-ALT-UP and CTRL-ALT-DOWN respectively).</p>
+<p>Keyboard shortcuts have been added for zooming in and out of the graph view (CTRL = and CTRL - respectively).</p>
 <p>Toolbar buttons have been added for zooming in and out of the graph view.</p>
 
 == 2024-02-26 Colorblind Mode in Options

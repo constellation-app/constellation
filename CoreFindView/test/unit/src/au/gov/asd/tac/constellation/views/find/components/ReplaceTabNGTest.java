@@ -32,6 +32,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import org.mockito.MockedStatic;
@@ -196,7 +197,7 @@ public class ReplaceTabNGTest {
         //Create a controller mock and do nothing on retriveMatchingElements()
         FindViewController mockController = mock(FindViewController.class);
         mockController.init(spyTopComponent);
-        doNothing().when(mockController).replaceMatchingElements(Mockito.eq(true), Mockito.eq(false));
+        doNothing().when(mockController).replaceMatchingElements(Mockito.eq(true), Mockito.eq(false), Mockito.eq(false));
 
         /**
          * Create a basicFindMock and adds a temporary choice box and textFild
@@ -208,11 +209,14 @@ public class ReplaceTabNGTest {
         lookForChoiceBox.getSelectionModel().select(0);
         final TextField findTextField = new TextField("test");
         final TextField repalceTextField = new TextField("replace");
+        final CheckBox zoomToSelectionCheckBox = new CheckBox("Zoom to Selection");
 
         //Mock the getters to return the newly made java fx element.
         when(replaceMock.getLookForChoiceBox()).thenReturn(lookForChoiceBox);
         when(replaceMock.getFindTextField()).thenReturn(findTextField);
         when(replaceMock.getReplaceTextField()).thenReturn(repalceTextField);
+        when(replaceMock.getZoomToSelection()).thenReturn(zoomToSelectionCheckBox);
+        zoomToSelectionCheckBox.setSelected(false);
 
         //Do nothing on saveSelected() and updateBasicFindParamters()
         doCallRealMethod().when(replaceMock).replaceAllAction();
@@ -232,7 +236,7 @@ public class ReplaceTabNGTest {
 
             verify(replaceMock, times(1)).saveSelected(Mockito.eq(GraphElementType.VERTEX));
             verify(replaceMock, times(1)).updateBasicReplaceParamters();
-            verify(mockController, times(1)).replaceMatchingElements(true, false);
+            verify(mockController, times(1)).replaceMatchingElements(true, false, false);
         }
 
     }
@@ -249,7 +253,7 @@ public class ReplaceTabNGTest {
         //Create a controller mock and do nothing on retriveMatchingElements()
         FindViewController mockController = mock(FindViewController.class);
         mockController.init(spyTopComponent);
-        doNothing().when(mockController).replaceMatchingElements(Mockito.eq(false), Mockito.eq(true));
+        doNothing().when(mockController).replaceMatchingElements(Mockito.eq(false), Mockito.eq(true), Mockito.eq(false));
 
         /**
          * Create a basicFindMock and adds a temporary choice box and textFild
@@ -261,11 +265,14 @@ public class ReplaceTabNGTest {
         lookForChoiceBox.getSelectionModel().select(0);
         final TextField findTextField = new TextField("test");
         final TextField repalceTextField = new TextField("replace");
+        final CheckBox zoomToSelectionCheckBox = new CheckBox("Zoom to Selection");
 
         //Mock the getters to return the newly made java fx element.
         when(replaceMock.getLookForChoiceBox()).thenReturn(lookForChoiceBox);
         when(replaceMock.getFindTextField()).thenReturn(findTextField);
         when(replaceMock.getReplaceTextField()).thenReturn(repalceTextField);
+        when(replaceMock.getZoomToSelection()).thenReturn(zoomToSelectionCheckBox);
+        zoomToSelectionCheckBox.setSelected(false);
 
         //Do nothing on saveSelected() and updateBasicFindParamters()
         doCallRealMethod().when(replaceMock).replaceNextAction();
@@ -285,7 +292,7 @@ public class ReplaceTabNGTest {
 
             verify(replaceMock, times(1)).saveSelected(Mockito.eq(GraphElementType.VERTEX));
             verify(replaceMock, times(1)).updateBasicReplaceParamters();
-            verify(mockController, times(1)).replaceMatchingElements(false, true);
+            verify(mockController, times(1)).replaceMatchingElements(false, true, false);
         }
     }
 

@@ -13,19 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.graph.utilities.hashmod;
+package au.gov.asd.tac.constellation.plugins.importexport.hashmod;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeRegistry;
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
+import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
+import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.PluginType;
+import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
@@ -34,6 +38,8 @@ import java.awt.event.ActionListener;
 import java.util.BitSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -59,6 +65,7 @@ import org.openide.util.NbBundle.Messages;
 public final class HashmodAction implements ActionListener {
 
     private final GraphNode context;
+    private static final Logger LOGGER = Logger.getLogger(HashmodAction.class.getName());
 
     public HashmodAction(final GraphNode context) {
         this.context = context;
@@ -90,7 +97,7 @@ public final class HashmodAction implements ActionListener {
         DialogDisplayer.getDefault().notify(dialog);
     }
 
-    private static void run(final GraphWriteMethods wg, final PluginInteraction interaction, final Hashmod hashmod, final boolean createVertices, final boolean createTransactions, final boolean setPrimary, final boolean createAttributes) throws InterruptedException {
+    private static void run(final GraphWriteMethods wg, final PluginInteraction interaction, final Hashmod hashmod, final boolean createVertices, final boolean createTransactions, final boolean setPrimary, final boolean createAttributes) throws InterruptedException, PluginException {
 
         if (wg != null && hashmod != null) {
             if (hashmod.getNumberCSVDataColumns() < 2) {
@@ -112,30 +119,36 @@ public final class HashmodAction implements ActionListener {
         int transAttrCount = 0;
         while ((nextAttr = hashmod.getCSVHeader(i)) != null) {
             final int nextAttribute = wg.getSchema().getFactory().ensureAttribute(wg, GraphElementType.VERTEX, nextAttr);
-            if (nextAttribute != Graph.NOT_FOUND) {
-                attributeValues[attrCount] = nextAttribute;
-                csvValues[attrCount] = i;
-                attrCount++;
-            }
 
-            if ((createAttributes || createTransactions) && StringUtils.isNotBlank(nextAttr)) {
+            if ((createVertices || createAttributes || createTransactions) && StringUtils.isNotBlank(nextAttr)) {
                 final String[] attributeName = nextAttr.split("\\.");
                 String newAttributeType = StringAttributeDescription.ATTRIBUTE_NAME;
 
-                if (attributeName.length >= 2 && AttributeRegistry.getDefault().getAttributes().get(attributeName[attributeName.length - 1]) != null) {
+                if (attributeName.length >= 2 && nextAttribute != Graph.NOT_FOUND) {
+                    newAttributeType = wg.getAttributeType(nextAttribute);
+                }
+
+                if (attributeName.length >= 2 && AttributeRegistry.getDefault().getAttributes().get(newAttributeType) == null) {
                     newAttributeType = attributeName[attributeName.length - 1];
                 }
 
-                if (createAttributes) {
-                    final int newAttribute = wg.addAttribute(GraphElementType.VERTEX, newAttributeType, nextAttr, nextAttr, "", null);
-                    if (newAttribute != Graph.NOT_FOUND) {
+                if (createVertices || createAttributes) {
+                    //check if it's an existing attribute
+                    final int existingAttribute = wg.getAttribute(GraphElementType.VERTEX, nextAttr);
+
+                    // do not add new attribute if not createAttributes and
+                    // does not exist in graph
+                    if (!createAttributes && existingAttribute == Graph.NOT_FOUND) {
+                        LOGGER.log(Level.WARNING, "Attribute {0} not added", nextAttr);
+                    } else {
+                        final int newAttribute = wg.addAttribute(GraphElementType.VERTEX, newAttributeType, nextAttr, nextAttr, "", null);
                         attributeValues[attrCount] = newAttribute;
                         csvValues[attrCount] = i;
                         attrCount++;
                     }
                 }
 
-                if (createTransactions && StringUtils.isNotBlank(hashmod.getTransactionAttribute(nextAttr))) {
+                if (createTransactions && StringUtils.isNotEmpty(hashmod.getTransactionAttribute(nextAttr))) {
                     final String transactionAttributeName = hashmod.getTransactionAttribute(nextAttr);
                     final int newTransactionAttribute = wg.addAttribute(GraphElementType.TRANSACTION, newAttributeType, transactionAttributeName, transactionAttributeName, "", null);
                     if (newTransactionAttribute != Graph.NOT_FOUND) {
@@ -149,7 +162,7 @@ public final class HashmodAction implements ActionListener {
             i++;
         }
 
-        if (attrCount < 2) {
+        if (createAttributes && attrCount < 1) {
             interaction.notify(PluginNotificationLevel.ERROR, "Requires at least one key and one value attributes in the header of the CSV file.  Check upper/lower case and for typos");
             return;
         }
@@ -178,10 +191,13 @@ public final class HashmodAction implements ActionListener {
                 final int vxId = vxOrder[j];
 
                 keyValue = wg.getObjectValue(attributeValues[0], vxId);
-                if (keys.containsKey(keyValue.toUpperCase())) {
+                if (keyValue != null && keys.containsKey(keyValue.toUpperCase())) {
                     numberSuccessful++;
                     for (i = 1; i < attrCount; i++) {
-                        wg.setStringValue(attributeValues[i], j, hashmod.getValueFromKeyAndIndex(keyValue, csvValues[i], keys.get(keyValue.toUpperCase())));
+                        // do not add attributes if value is default 0
+                        if (attributeValues[i] != 0) {
+                            wg.setStringValue(attributeValues[i], j, hashmod.getValueFromKeyAndIndex(keyValue, csvValues[i], keys.get(keyValue.toUpperCase())));
+                        }
                     }
 
                     if (createVertices) {
@@ -199,14 +215,18 @@ public final class HashmodAction implements ActionListener {
                 final int newVertexId = wg.addVertex();
 
                 for (i = 0; i < attrCount; i++) {
-                    wg.setStringValue(attributeValues[i], newVertexId, hashmod.getValueFromKeyAndIndex(entry.getKey(), csvValues[i], entry.getValue()));
+                    // do not add attributes if value is default 0
+                    if (attributeValues[i] != 0) {
+                        wg.setStringValue(attributeValues[i], newVertexId, hashmod.getValueFromKeyAndIndex(entry.getKey(), csvValues[i], entry.getValue()));
+                    }
                 }
+
                 numberSuccessful++;
             }
-
             if (setPrimary) {
                 wg.setPrimaryKey(GraphElementType.VERTEX, attributeValues[0]);
             }
+
             interaction.notify(PluginNotificationLevel.WARNING, "Successfully added in " + numberSuccessful + " new nodes");
         }
 
@@ -251,7 +271,7 @@ public final class HashmodAction implements ActionListener {
                                 final int newTransactionId = wg.addTransaction(vxId, vx2Id, false);
 
                                 for (i = 0; i < transAttrCount; i++) {
-                                    final String theVal = wg.getStringValue(fromNodeValues [i], vxId);
+                                    final String theVal = wg.getStringValue(fromNodeValues[i], vxId);
                                     wg.setStringValue(transactionAttributeValues[i], newTransactionId, theVal);
                                 }
 
@@ -264,6 +284,9 @@ public final class HashmodAction implements ActionListener {
 
             interaction.notify(PluginNotificationLevel.WARNING, "Successfully added in " + numberSuccessful + " new transactions");
         }
+        PluginExecutor.startWith(ArrangementPluginRegistry.GRID_COMPOSITE)
+                .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
+                .executeNow(wg);
     }
 
     /**
@@ -298,13 +321,13 @@ public final class HashmodAction implements ActionListener {
         }
 
         @Override
-        public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+        public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
             if (hashmod1 != null) {
                 HashmodAction.run(wg, interaction, hashmod1, createVertices, createTransactions, true, createAttributes);
             }
             if (isChainedHashmods && numChainedHashmods >= 2) {
                 for (int i = 1; i < numChainedHashmods; i++) {
-                    HashmodAction.run(wg, interaction, chainedHashmods[i], false, false, false, createAttributes);
+                    HashmodAction.run(wg, interaction, chainedHashmods[i], createVertices, createTransactions, true, createAttributes);
                 }
             }
         }

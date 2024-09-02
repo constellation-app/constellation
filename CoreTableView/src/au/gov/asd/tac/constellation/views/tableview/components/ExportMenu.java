@@ -299,7 +299,7 @@ public class ExportMenu {
          * @return the created file chooser
          */
         public FileChooserBuilder getExportFileChooser() {
-            return FileChooser.createFileChooserBuilder(fileChooserTitle, expectedFileExtension, fileChooserDescription)
+            return FileChooser.createFileChooserBuilder(fileChooserTitle, expectedFileExtension, fileChooserDescription, true)
                     .setAcceptAllFileFilterUsed(true);
         }
     }

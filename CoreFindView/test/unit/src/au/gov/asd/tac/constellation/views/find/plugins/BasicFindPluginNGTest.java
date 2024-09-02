@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.find.plugins;
 
-import au.gov.asd.tac.constellation.views.find.plugins.BasicFindPlugin;
-import au.gov.asd.tac.constellation.views.find.plugins.BasicFindGraphSelectionPlugin;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
@@ -139,7 +137,7 @@ public class BasicFindPluginNGTest {
          */
         basicFindPlugin = new BasicFindPlugin(parameters, false, true);
         PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
-        BasicFindGraphSelectionPlugin findGraphSelectionPlugin = new BasicFindGraphSelectionPlugin(parameters, false);
+        BasicFindGraphSelectionPlugin findGraphSelectionPlugin = new BasicFindGraphSelectionPlugin(parameters, false, false);
         ActiveFindResultsList.getBasicResultsList().incrementCurrentIndex();
         PluginExecution.withPlugin(findGraphSelectionPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
@@ -155,7 +153,7 @@ public class BasicFindPluginNGTest {
          * and deselect vxId1
          */
         PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
-        findGraphSelectionPlugin = new BasicFindGraphSelectionPlugin(parameters, false);
+        findGraphSelectionPlugin = new BasicFindGraphSelectionPlugin(parameters, false, false);
         ActiveFindResultsList.getBasicResultsList().incrementCurrentIndex();
         PluginExecution.withPlugin(findGraphSelectionPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
@@ -172,7 +170,7 @@ public class BasicFindPluginNGTest {
          */
         basicFindPlugin = new BasicFindPlugin(parameters, false, false);
         PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
-        findGraphSelectionPlugin = new BasicFindGraphSelectionPlugin(parameters, false);
+        findGraphSelectionPlugin = new BasicFindGraphSelectionPlugin(parameters, false, false);
         ActiveFindResultsList.getBasicResultsList().decrementCurrentIndex();
         PluginExecution.withPlugin(findGraphSelectionPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
