@@ -472,7 +472,7 @@ public class BasicFindTabNGTest {
 
             verify(basicFindMock, times(1)).saveSelected(Mockito.eq(GraphElementType.VERTEX));
             verify(basicFindMock, times(1)).updateBasicFindParamters();
-            verify(mockController, times(1)).retriveMatchingElements(true, false, false);
+            verify(mockController, times(1)).retriveMatchingElements(true, true, false);
         }
     }
 

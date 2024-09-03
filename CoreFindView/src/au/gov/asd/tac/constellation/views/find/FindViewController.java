@@ -274,16 +274,6 @@ public class FindViewController {
          */
         try {
             if (currentBasicFindParameters.isSearchAllGraphs()) {
-
-                /**
-                 * If there are a different number of graphs in this search than the previous one
-                 * then reset the list of results 
-                 */
-                final int numberOfUniqueGraphs = GraphManager.getDefault().getAllGraphs().values().size();
-                if (numberOfUniqueGraphs != ActiveFindResultsList.getUniqueGraphCount(ActiveFindResultsList.getBasicResultsList())) {
-                    ActiveFindResultsList.setBasicResultsList(null);
-                }
-
                 for (final Graph currentGraph : GraphManager.getDefault().getAllGraphs().values()) {
                     // check to see the graph is not null
                     if (currentGraph != null) {
@@ -322,6 +312,18 @@ public class FindViewController {
         } catch (final ExecutionException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
         } 
+    }
+
+    public void clearResultsLists() {
+        if (ActiveFindResultsList.getBasicResultsList() != null) {
+            ActiveFindResultsList.getBasicResultsList().clear();
+            ActiveFindResultsList.getBasicResultsList().setCurrentIndex(-1);
+        }
+
+        if (ActiveFindResultsList.getAdvancedResultsList() != null) {
+            ActiveFindResultsList.getAdvancedResultsList().clear();
+            ActiveFindResultsList.getAdvancedResultsList().setCurrentIndex(-1);
+        }
     }
 
     /**
@@ -366,16 +368,6 @@ public class FindViewController {
          */
         try {
             if (currentAdvancedSearchParameters.getSearchInLocation().equals(ALL_OPEN_GRAPHS)) {
-
-                /**
-                 * If there are a different number of graphs in this search than the previous one
-                 * then reset the list of results
-                 */
-                final int numberOfUniqueGraphs = GraphManager.getDefault().getAllGraphs().values().size();
-                if (numberOfUniqueGraphs != ActiveFindResultsList.getUniqueGraphCount(ActiveFindResultsList.getAdvancedResultsList())) {
-                    ActiveFindResultsList.setAdvancedResultsList(null);
-                }
-
                 for (final Graph graph : GraphManager.getDefault().getAllGraphs().values()) {
                     // check to see the graph is not null
                     if (graph != null && currentAdvancedSearchParameters.getSearchInLocation().equals(ALL_OPEN_GRAPHS)) {

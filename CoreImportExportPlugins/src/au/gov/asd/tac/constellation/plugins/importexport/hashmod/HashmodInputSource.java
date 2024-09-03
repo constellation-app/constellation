@@ -50,7 +50,7 @@ public class HashmodInputSource {
             return inputStream;
         }
 
-        if (file != null && file.exists()) {
+        if (file != null && file.exists() && !file.isDirectory()) {
             return new FileInputStream(file);
         }
 

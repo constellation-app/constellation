@@ -30,6 +30,7 @@ import javax.swing.filechooser.FileFilter;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.filesystems.FileChooserBuilder;
+import org.openide.windows.WindowManager;
 
 /**
  * Wrapper for opening file choosers built with the {@link FileChooserBuilder}. There are a couple of issues on macOS
@@ -183,7 +184,7 @@ public class FileChooser {
      *
      * @param selection the files selected by the user when trying to save
      * @param fileExtension the file extension associated with this FileChooserBuilder
-     * @return user response, indicating if user wants to overwrite exisitng file
+     * @return user response, indicating if user wants to overwrite existing file
      */
     private static boolean approver(final File[] selection, final String fileExtension) {
         // Show dialog box if file already exists when saving
@@ -192,7 +193,7 @@ public class FileChooser {
         final File file = new File(filepath);
 
         if (file.exists()) {
-            final int response = JOptionPane.showConfirmDialog(null,
+            final int response = JOptionPane.showConfirmDialog(WindowManager.getDefault().getMainWindow(),
                     "The file " + file.getName() + " already exists. Do you want to replace the existing file?",
                     "Overwrite file", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
             // Overwrite if user chose yes

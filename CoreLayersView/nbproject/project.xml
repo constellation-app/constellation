@@ -163,6 +163,7 @@
             </test-dependencies>
             <public-packages>
                 <package>au.gov.asd.tac.constellation.views.layers</package>
+                <package>au.gov.asd.tac.constellation.views.layers.shortcut</package>
                 <package>au.gov.asd.tac.constellation.views.layers.state</package>
                 <package>au.gov.asd.tac.constellation.views.layers.utilities</package>
             </public-packages>
