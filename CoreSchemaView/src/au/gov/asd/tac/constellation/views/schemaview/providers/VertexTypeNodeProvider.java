@@ -267,7 +267,7 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
     }
 
     @Override
-    public void setContent(final Tab tab) {
+    public synchronized void setContent(final Tab tab) {
         GraphManager.getDefault().addGraphManagerListener(this);
         final VBox filterBox = addFilter();
 
