@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "constellation_client"
-version = "0.1.1"
+version = "0.1.2"
 authors = [
   { name="Example Author", email="author@example.com" },
 ]

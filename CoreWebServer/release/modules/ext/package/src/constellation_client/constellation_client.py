@@ -744,7 +744,7 @@ class Constellation:
 
         return r
     
-            
+
     def update_rest(self, path : str):
         rest_data = _get_rest(path)
         self.data = rest_data[0]
@@ -770,20 +770,35 @@ def _get_rest(rest : str = None):
     
     data = {}
     
-    # If rest path given and it exists, read
-    if rest != None and os.path.exists(rest):
-        # Could be path direct to file
-        data = _get_rest_helper(rest)
-        if data != {}:
-            return(data, rest)
+    
+    if rest == None:
+        print('REST path not provided')
+    else:
+        # If rest path given and it exists, read
+        if rest != None and os.path.exists(rest):
+            # If given path is directory, look for rest in that directory
+            is_directory = rest.endswith('/') or rest.endswith('\\')
+            if is_directory:
+                rest = os.path.join(rest, 'rest.json')
+                data = _get_rest_helper(rest)
+                if data != {}:
+                    return(data, rest)
+            else:
+                # Could be path direct to file, or the user has given the path with no trailing slash
+                data = _get_rest_helper(rest)
+                if data != {}:
+                    return(data, rest)
+                else:
+                    # Try as if the path is a directory
+                    rest = os.path.join(rest, 'rest.json')
+                    data = _get_rest_helper(rest)
+                    if data != {}:
+                        return(data, rest)
         else:
-            # Or could be path to folder
-            rest = os.path.join(rest, 'rest.json')
-            data = _get_rest_helper(rest)
-            if data != {}:
-                return(data, rest)
+            print('REST path {} does not exist!'.format(rest))
     
     # Either rest path not given or couldn't read the file, so check various folders in home
+    print('Attempting to find REST in default locations instead...')
     HOME_LOCATIONS = ['.ipython', '.CONSTELLATION', '']
     for location in HOME_LOCATIONS:
         rest = os.path.join(os.path.expanduser('~'), location, 'rest.json')
@@ -799,6 +814,7 @@ def _get_rest(rest : str = None):
      
     # Return empty if still not found
     return ({}, '')
+
 
 def _get_rest_helper(rest : str) -> dict:
     print('Looking for REST file in {}'.format(rest))
@@ -816,6 +832,7 @@ def _get_rest_helper(rest : str) -> dict:
         print('REST file {} not found'.format(rest))
     
     return {}
+
 
 def _row_dict(row, names, prefix):
     """Extract the relevant names/values from a DataFrame row and convert them
