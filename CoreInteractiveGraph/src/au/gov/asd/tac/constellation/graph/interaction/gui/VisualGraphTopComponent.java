@@ -116,6 +116,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
@@ -464,6 +465,12 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     public void requestActive() {
         super.requestActive();
         visualManager.getVisualComponent().requestFocusInWindow();
+    }
+    
+    public void requestActiveWithLocking(final Semaphore semaphore) {
+        semaphore.acquireUninterruptibly();
+        requestActive();
+        semaphore.release();
     }
 
     /**
