@@ -90,3 +90,22 @@
     -fx-border-color: white;
 }
 
+
+#layer-function-enable {
+    -fx-text-fill: black;
+    -fx-background-color: #8fb8e8;
+}
+
+#layer-function-enable:hover {
+    -fx-text-fill: black;
+    -fx-background-color: #98c2f3;
+}
+
+#layer-function-disable {
+    -fx-text-fill: black;
+    -fx-background-color: #e7a09c;
+}
+#layer-function-disable:hover {
+    -fx-text-fill: black;
+    -fx-background-color: #f4aaa4;
+}
