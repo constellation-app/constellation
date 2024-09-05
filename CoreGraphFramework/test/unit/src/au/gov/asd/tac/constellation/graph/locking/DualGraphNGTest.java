@@ -20,7 +20,8 @@ import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.times;
-import static org.testng.Assert.*;
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertNull;
 import org.testng.annotations.Test;
 
 /**
