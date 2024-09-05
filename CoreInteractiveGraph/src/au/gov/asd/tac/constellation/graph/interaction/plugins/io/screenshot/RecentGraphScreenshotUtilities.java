@@ -204,9 +204,7 @@ public class RecentGraphScreenshotUtilities {
             if ((component instanceof VisualGraphTopComponent) && ((VisualGraphTopComponent) component).getGraphNode().getGraph().getId().equals(graph.getId())) {
                 try {
                     // Request graph to be active
-                    EventQueue.invokeAndWait(() -> {
-                        ((VisualGraphTopComponent) component).requestActiveWithLocking(semaphore);
-                    });
+                    EventQueue.invokeAndWait(() -> ((VisualGraphTopComponent) component).requestActiveWithLocking(semaphore));
                 } catch (final InterruptedException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                     Thread.currentThread().interrupt();
