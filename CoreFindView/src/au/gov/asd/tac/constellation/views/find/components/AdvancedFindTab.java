@@ -493,7 +493,7 @@ public class AdvancedFindTab extends Tab {
     public void findAllAction() {
         if (!getCriteriaValues(getCorrespondingCriteriaList(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()))).isEmpty()) {
             updateAdvancedSearchParameters(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
-            FindViewController.getDefault().retrieveAdvancedSearch(true, false, getZoomToSelection().isSelected());
+            FindViewController.getDefault().retrieveAdvancedSearch(true, true, getZoomToSelection().isSelected());
             getDeleteResultsButton().setDisable(false);
             
         }
