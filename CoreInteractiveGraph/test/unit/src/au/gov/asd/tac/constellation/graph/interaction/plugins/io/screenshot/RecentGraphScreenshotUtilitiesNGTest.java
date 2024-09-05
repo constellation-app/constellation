@@ -376,10 +376,16 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         verify(gn, times(1)).getGraph();
         verify(mockGraph, times(2)).getId();
 
+        final Semaphore semaphore = new Semaphore(1);
+
         try (MockedStatic<EventQueue> mockedEventQueue = Mockito.mockStatic(EventQueue.class, Mockito.CALLS_REAL_METHODS)) {
             // test InvocationTargetException
             mockedEventQueue.when(() -> EventQueue.invokeAndWait(any())).thenThrow(new InvocationTargetException(new Throwable()));
-            assertThrows(() -> EventQueue.invokeAndWait(((VisualGraphTopComponent) tc)::requestActive));
+
+            assertThrows(() -> EventQueue.invokeAndWait(() -> {
+                ((VisualGraphTopComponent) tc).requestActiveWithLocking(semaphore);
+            }));
+
             testRequestGraphActiveHelper(mockGraph, wm, reg, setTopC);
 
             // Verify functions were run (includes previous test)

@@ -171,7 +171,6 @@ public class RecentGraphScreenshotUtilities {
 
         final Semaphore waiter = new Semaphore(1);
 
-        //requestGraphActive(graph);
         requestGraphActive(graph, waiter);
         waiter.acquireUninterruptibly(); // Wait for 0 permits to be 1
 
