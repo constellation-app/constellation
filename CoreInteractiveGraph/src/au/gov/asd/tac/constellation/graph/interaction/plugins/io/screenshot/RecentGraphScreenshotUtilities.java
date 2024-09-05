@@ -170,24 +170,15 @@ public class RecentGraphScreenshotUtilities {
         originalImage[0] = new BufferedImage(IMAGE_SIZE, IMAGE_SIZE, BufferedImage.TYPE_INT_ARGB);
 
         final Semaphore waiter = new Semaphore(1);
-        System.out.println("a");
-        System.out.println(waiter.availablePermits());
-        
+
+        //requestGraphActive(graph);
         requestGraphActive(graph, waiter);
-        System.out.println("b");
-        System.out.println(waiter.availablePermits());
-        
         waiter.acquireUninterruptibly(); // Wait for 0 permits to be 1
-        System.out.println("c");
-        System.out.println(waiter.availablePermits());
-        
+
         visualManager.exportToBufferedImage(originalImage, waiter); // Requires 0 permits, becomes 1 when done
-        System.out.println("d");
-        System.out.println(waiter.availablePermits());
+        
         // This seems to be here so the program has to wait for exporting to finish before moving on
         waiter.acquireUninterruptibly(); // Wait for 0 permits to be 1
-        System.out.println("e");
-        System.out.println(waiter.availablePermits());
         resestGraphActive();
 
         try {
@@ -197,7 +188,6 @@ public class RecentGraphScreenshotUtilities {
         } catch (final IOException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
-
     }
 
     protected static void requestGraphActive(final Graph graph, final Semaphore semaphore) {
@@ -215,18 +205,9 @@ public class RecentGraphScreenshotUtilities {
             if ((component instanceof VisualGraphTopComponent) && ((VisualGraphTopComponent) component).getGraphNode().getGraph().getId().equals(graph.getId())) {
                 try {
                     // Request graph to be active
-                    //EventQueue.invokeAndWait(((VisualGraphTopComponent) component)::requestActiveWithLocking(semaphore));
-                    System.out.println("request a");
-                    System.out.println(semaphore.availablePermits());
                     EventQueue.invokeAndWait(() -> {
-                        System.out.println("request b");
-                        System.out.println(semaphore.availablePermits());
                         ((VisualGraphTopComponent) component).requestActiveWithLocking(semaphore);
-                        System.out.println("request c");
-                        System.out.println(semaphore.availablePermits());
                     });
-                    System.out.println("request d");
-                    System.out.println(semaphore.availablePermits());
                 } catch (final InterruptedException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                     Thread.currentThread().interrupt();
@@ -236,7 +217,7 @@ public class RecentGraphScreenshotUtilities {
             }
         });
     }
-    
+
     protected static void requestGraphActive(final Graph graph) {
         final Set<TopComponent> topComponents = WindowManager.getDefault().getRegistry().getOpened();
 
