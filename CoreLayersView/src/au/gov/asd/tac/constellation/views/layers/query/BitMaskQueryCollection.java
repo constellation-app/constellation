@@ -92,7 +92,7 @@ public class BitMaskQueryCollection {
     }
     
     public List<Boolean> getVisibilityList() {
-        List<Boolean> results = new ArrayList<>();
+        final List<Boolean> results = new ArrayList<>();
         for (final BitMaskQuery query : queries) {
             if (query != null) {
                 results.add(query.isVisible());
@@ -103,9 +103,9 @@ public class BitMaskQueryCollection {
         return results;
     }
     
-    public void setVisibilities(List<Boolean> revisedVis) {
+    public void setVisibilities(final List<Boolean> revisedVis) {
         int visPos = 0;
-        for (BitMaskQuery query : queries) {
+        for (final BitMaskQuery query : queries) {
             if (query != null) {
                 query.setVisibility(revisedVis.get(visPos));
             }

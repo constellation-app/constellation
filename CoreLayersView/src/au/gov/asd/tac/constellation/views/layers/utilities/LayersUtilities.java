@@ -125,17 +125,17 @@ public class LayersUtilities {
     }
 
     public static void selectVisibleElements(final boolean selectionSetting){
-        Thread elementSelecter = new Thread(() -> directSelectVisibleElements(selectionSetting));
+        final Thread elementSelecter = new Thread(() -> directSelectVisibleElements(selectionSetting));
         elementSelecter.start();
     }
     
     public static void selectLayerElements(final int layerBitMap, final boolean selectionSetting, final boolean includeHidden) {
-        Thread layerSelecter = new Thread(() -> directSelectLayerElements(layerBitMap, selectionSetting, includeHidden));
+        final Thread layerSelecter = new Thread(() -> directSelectLayerElements(layerBitMap, selectionSetting, includeHidden));
         layerSelecter.start();
     }
 
     public static void allocateElementsForLayer(final int layerBitMap, final boolean allocationSetting, final boolean includeHidden) {
-        Thread layerSelecter = new Thread(() -> directAllocateElementsForLayer(layerBitMap, allocationSetting, includeHidden));
+        final Thread layerSelecter = new Thread(() -> directAllocateElementsForLayer(layerBitMap, allocationSetting, includeHidden));
         layerSelecter.start();
     }
 

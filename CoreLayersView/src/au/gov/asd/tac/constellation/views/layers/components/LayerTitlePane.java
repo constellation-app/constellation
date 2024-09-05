@@ -139,17 +139,21 @@ public class LayerTitlePane extends TitledPane {
         vxQuery = new QueryInputPane(this, "Vertex Query: ", VERTEX_DESCRIPTION, query.getQueryElementType() == GraphElementType.VERTEX ? query.getQueryString() : StringUtils.EMPTY, true);
         txQuery = new QueryInputPane(this, "Transaction Query: ", TRANSACTION_DESCRIPTION, query.getQueryElementType() == GraphElementType.TRANSACTION ? query.getQueryString() : StringUtils.EMPTY, true);
         descinput = new QueryInputPane(this, "Query Description", QUERY_DESCRIPTION, query.getDescription(), false);
+
         final CheckBox includeHidden = new CheckBox("Include Hidden");
         includeHidden.setPadding(new Insets(4,0,0,0));
         includeHidden.setSelected(true);
+
         final Button selectAllocations = new Button("Select");
         selectAllocations.setTooltip(new Tooltip("Select Layer %d Elements".formatted(query.getIndex())));
         selectAllocations.setOnAction(e -> LayersUtilities.selectLayerElements((int) Math.pow(2 , query.getIndex()), true, includeHidden.isSelected()));
         selectAllocations.setId("layer-function-enable");
+
         final Button deselectAllocations = new Button("De-Select");
         deselectAllocations.setTooltip(new Tooltip("De-Select Layer %d Elements".formatted(query.getIndex())));
         deselectAllocations.setOnAction(e -> LayersUtilities.selectLayerElements((int) Math.pow(2 , query.getIndex()), false, includeHidden.isSelected()));
         deselectAllocations.setId("layer-function-disable");
+
         final Button allocateSelections = new Button("Allocate");
         allocateSelections.setTooltip(new Tooltip("Allocate Selected Elements to Layer %d".formatted(query.getIndex())));
         allocateSelections.setOnAction(e -> {
@@ -157,6 +161,7 @@ public class LayerTitlePane extends TitledPane {
             LayersViewController.getDefault().updateQueries(GraphManager.getDefault().getActiveGraph());
         });
         allocateSelections.setId("layer-function-enable");
+
         final Button deallocateSelections = new Button("De-Allocate");
         deallocateSelections.setTooltip(new Tooltip("De-Allocate Selected Elements from Layer %d".formatted(query.getIndex())));
         deallocateSelections.setOnAction(e -> {
@@ -164,16 +169,19 @@ public class LayerTitlePane extends TitledPane {
             LayersViewController.getDefault().updateQueries(GraphManager.getDefault().getActiveGraph());
         });
         deallocateSelections.setId("layer-function-disable");
+
         final Color buttonBackground = DARK_MODE ? new Color(0.20,0.20,0.20,1) : new Color(0.86,0.86,0.86,1);
         final HBox buttonsLeft = new HBox(selectAllocations, deselectAllocations);
         final HBox buttonsRight = new HBox(allocateSelections, deallocateSelections);
         final HBox emptySpace = new HBox(new Label(" "));
         emptySpace.setPadding(new Insets(0,20,0,20));
+
         final BorderPane combinedButtons = new BorderPane();
         combinedButtons.setLeft(buttonsLeft);
         combinedButtons.setCenter(emptySpace);
         combinedButtons.setRight(buttonsRight);
         combinedButtons.setBackground(new Background(new BackgroundFill(buttonBackground, null, null)));
+
         final BorderPane buttonPane = new BorderPane();
         buttonPane.setLeft(combinedButtons);
         buttonPane.setRight(includeHidden);
@@ -181,6 +189,7 @@ public class LayerTitlePane extends TitledPane {
         buttonPane.setPadding(new Insets(3,5,3,5)); 
         buttonsLeft.setSpacing(5);
         buttonsRight.setSpacing(5);
+        
         final VBox box = new VBox(10, buttonPane, descinput, vxQuery, txQuery);
         box.prefWidthProperty().bind(this.widthProperty());
         box.setPadding(new Insets(0,5,10,5));
