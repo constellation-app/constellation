@@ -346,7 +346,7 @@ public class RecentGraphScreenshotUtilitiesNGTest {
     public void testRequestGraphActive() {
         System.out.println("testRequestGraphActive");
 
-        recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.requestGraphActive(any())).thenCallRealMethod();
+        recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.requestGraphActive(any(), any())).thenCallRealMethod();
 
         // Set up mocks
         final Graph mockGraph = mock(Graph.class);
@@ -368,15 +368,16 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         // Assert mocks work
         assertEquals(wm.getRegistry(), reg);
         assertEquals(reg.getOpened(), setTopC);
+        
+        final Semaphore semaphore = new Semaphore(1);
 
         // test correct functionality
-        testRequestGraphActiveHelper(mockGraph, wm, reg, setTopC);
+        testRequestGraphActiveHelper(mockGraph, wm, reg, setTopC, semaphore);
         // Verify functions were run
         verify(tc, times(1)).getGraphNode();
         verify(gn, times(1)).getGraph();
         verify(mockGraph, times(2)).getId();
 
-        final Semaphore semaphore = new Semaphore(1);
 
         try (MockedStatic<EventQueue> mockedEventQueue = Mockito.mockStatic(EventQueue.class, Mockito.CALLS_REAL_METHODS)) {
             // test InvocationTargetException
@@ -386,7 +387,7 @@ public class RecentGraphScreenshotUtilitiesNGTest {
                 ((VisualGraphTopComponent) tc).requestActiveWithLocking(semaphore);
             }));
 
-            testRequestGraphActiveHelper(mockGraph, wm, reg, setTopC);
+            testRequestGraphActiveHelper(mockGraph, wm, reg, setTopC, semaphore);
 
             // Verify functions were run (includes previous test)
             verify(tc, times(2)).getGraphNode();
@@ -395,7 +396,7 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         }
     }
 
-    private void testRequestGraphActiveHelper(final Graph mockGraph, final WindowManager mockWindowManager, final Registry mockRegistry, final Set<TopComponent> topComponents) {
+    private void testRequestGraphActiveHelper(final Graph mockGraph, final WindowManager mockWindowManager, final Registry mockRegistry, final Set<TopComponent> topComponents, final Semaphore semaphore) {
         try (MockedStatic<WindowManager> mockedWindowManager = Mockito.mockStatic(WindowManager.class)) {
             mockedWindowManager.when(WindowManager::getDefault).thenReturn(mockWindowManager);
             // Assert mocks work
@@ -404,14 +405,14 @@ public class RecentGraphScreenshotUtilitiesNGTest {
             // When top component is NOT null
             when(mockRegistry.getOpened()).thenReturn(topComponents);
 
-            RecentGraphScreenshotUtilities.requestGraphActive(null);
-            RecentGraphScreenshotUtilities.requestGraphActive(mockGraph);
+            RecentGraphScreenshotUtilities.requestGraphActive(null, semaphore);
+            RecentGraphScreenshotUtilities.requestGraphActive(mockGraph, semaphore);
 
             // When top component is null
             when(mockRegistry.getOpened()).thenReturn(null);
 
-            RecentGraphScreenshotUtilities.requestGraphActive(null);
-            RecentGraphScreenshotUtilities.requestGraphActive(mockGraph);
+            RecentGraphScreenshotUtilities.requestGraphActive(null, semaphore);
+            RecentGraphScreenshotUtilities.requestGraphActive(mockGraph, semaphore);
         }
     }
 
