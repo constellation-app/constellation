@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.graph.interaction.gui;
 import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.io.SaveAsAction;
 import java.io.IOException;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,6 +26,7 @@ import javafx.application.Platform;
 import org.mockito.MockedConstruction;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
@@ -124,5 +126,14 @@ public class VisualGraphTopComponentNGTest {
                 LOGGER.log(Level.WARNING, "Caught exception in VisualGraphTopComponent test {0}", e);
             }
         });
+    }
+    
+    @Test
+    public void testRequestActiveWithLocking(){
+        final VisualGraphTopComponent instance = new VisualGraphTopComponent();
+        final Semaphore semaphore = mock(Semaphore.class);
+        instance.requestActiveWithLocking(semaphore);
+        verify(semaphore, times(1)).acquireUninterruptibly();
+        verify(semaphore, times(1)).release();
     }
 }
