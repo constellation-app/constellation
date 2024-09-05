@@ -175,7 +175,7 @@ public class RecentGraphScreenshotUtilities {
         waiter.acquireUninterruptibly(); // Wait for 0 permits to be 1
 
         visualManager.exportToBufferedImage(originalImage, waiter); // Requires 0 permits, becomes 1 when done
-        
+
         // This seems to be here so the program has to wait for exporting to finish before moving on
         waiter.acquireUninterruptibly(); // Wait for 0 permits to be 1
         resestGraphActive();
@@ -207,32 +207,6 @@ public class RecentGraphScreenshotUtilities {
                     EventQueue.invokeAndWait(() -> {
                         ((VisualGraphTopComponent) component).requestActiveWithLocking(semaphore);
                     });
-                } catch (final InterruptedException ex) {
-                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-                    Thread.currentThread().interrupt();
-                } catch (final InvocationTargetException ex) {
-                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-                }
-            }
-        });
-    }
-
-    protected static void requestGraphActive(final Graph graph) {
-        final Set<TopComponent> topComponents = WindowManager.getDefault().getRegistry().getOpened();
-
-        if (topComponents == null) {
-            return;
-        }
-
-        if (graph == null) {
-            return;
-        }
-
-        topComponents.forEach(component -> {
-            if ((component instanceof VisualGraphTopComponent) && ((VisualGraphTopComponent) component).getGraphNode().getGraph().getId().equals(graph.getId())) {
-                try {
-                    // Request graph to be active
-                    EventQueue.invokeAndWait(((VisualGraphTopComponent) component)::requestActive);
                 } catch (final InterruptedException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                     Thread.currentThread().interrupt();
