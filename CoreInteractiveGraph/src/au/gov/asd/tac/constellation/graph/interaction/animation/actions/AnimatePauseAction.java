@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.graph.interaction.animation.actions;
 
 import au.gov.asd.tac.constellation.graph.interaction.animation.AnimationUtilities;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
+import au.gov.asd.tac.constellation.graph.node.gui.MenuBaseAction;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import org.openide.awt.ActionID;
@@ -30,26 +31,32 @@ import org.openide.util.NbBundle.Messages;
  * 
  * @author capricornunicorn123
  */
-@ActionID(category = "Experimental", id = "au.gov.asd.tac.constellation.graph.interaction.animation.actions.AnimateStopAction")
-@ActionRegistration(displayName = "#CTL_AnimateStopAction", surviveFocusChange = true)
-@ActionReferences({
-    @ActionReference(path = "Menu/Experimental/Animations", position = 100, separatorBefore = 99),
-    @ActionReference(path = "Shortcuts", name = "S-Escape")
-})
-@Messages("CTL_AnimateStopAction=Stop Animating")
-public final class AnimateStopAction extends AnimationUtilityMenuBaseAction {
+@ActionID(category = "Experimental", id = "au.gov.asd.tac.constellation.graph.interaction.animation.actions.AnimatePauseAction")
+@ActionRegistration(displayName = "#CTL_AnimatePauseAction", lazy = false)
+@ActionReference(path = "Menu/Experimental/Animations", position = 100, separatorBefore = 99)
+@Messages("CTL_AnimatePauseAction=Pause Animating")
+public final class AnimatePauseAction extends AnimationUtilityMenuBaseAction {
 
-    public AnimateStopAction() {
-        super(Bundle.CTL_AnimateStopAction());
+    public AnimatePauseAction() {
+        super(Bundle.CTL_AnimatePauseAction());
     }
 
     @Override
     protected void updateValue() {
-        AnimationUtilities.stopAllAnimations();
+        AnimationUtilities.pauseAllAnimations(
+                this.getContext().getGraph().getId(), 
+                !AnimationUtilities.isGraphAnimationsPaused(this.getContext().getGraph().getId())
+        );
     }
 
     @Override
     protected void displayValue() {
-        // DoNothing
+       
+        if (AnimationUtilities.isGraphAnimationsPaused(this.getContext().getGraph().getId())){
+            menuButton.setText("Resume Animationg");
+        } else {
+            menuButton.setText("Pause Animating");
+        }
+        
     }
 }

@@ -1,5 +1,13 @@
 # Constellation Changes
 
+## Changes in August 2024
+-   Refactored MenuBaseAction to disable graph dependant menu items when primary graph is ambiguous.
+-   Refactored animation framework to update graph attributes and hold write locks for minimal durations to enable graph interction.
+-   Created Color Warp Animation
+-   Enhanced Fly through and Direction Indicators Aniation
+-   Created Graph Motion Attribute
+-   Created Animation setting to disable animations for low power machines.
+
 ## Changes in July 2024
 -   Moved hashmod package from Core Graph Utilities to Core Import Export Plugins as a more appropriate module.
 -   Moved `NoGraphPane` from Layers View to the View Framework so that other views can use it.

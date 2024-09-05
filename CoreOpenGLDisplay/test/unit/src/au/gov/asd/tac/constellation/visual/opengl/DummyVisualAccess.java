@@ -366,4 +366,9 @@ public class DummyVisualAccess implements VisualAccess {
     public boolean isConnectionDirected(int connection) {
         return connection != 2;
     }
+
+    @Override
+    public float getConnectionMotion() {
+        return -1;
+    }
 }
