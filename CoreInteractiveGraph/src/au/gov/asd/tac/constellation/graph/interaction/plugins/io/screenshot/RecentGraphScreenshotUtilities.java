@@ -204,8 +204,6 @@ public class RecentGraphScreenshotUtilities {
                 try {
                     // Request graph to be active
                     EventQueue.invokeAndWait(() -> {
-                        //((VisualGraphTopComponent) component).requestActiveWithLocking(semaphore);
-
                         semaphore.acquireUninterruptibly();
                         ((VisualGraphTopComponent) component).requestActive();
                         semaphore.release();

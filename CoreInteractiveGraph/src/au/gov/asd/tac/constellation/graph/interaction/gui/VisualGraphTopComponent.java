@@ -625,14 +625,10 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             toggleDrawDirectedAction.setEnabled(isDrawingMode);
 
             switch (connectionMode) {
-                case LINK ->
-                    drawLinksAction.putValue(Action.SELECTED_KEY, true);
-                case EDGE ->
-                    drawEdgesAction.putValue(Action.SELECTED_KEY, true);
-                case TRANSACTION ->
-                    drawTransactionsAction.putValue(Action.SELECTED_KEY, true);
-                default ->
-                    throw new IllegalStateException("Unknown ConnectionMode: " + connectionMode);
+                case LINK -> drawLinksAction.putValue(Action.SELECTED_KEY, true);
+                case EDGE -> drawEdgesAction.putValue(Action.SELECTED_KEY, true);
+                case TRANSACTION -> drawTransactionsAction.putValue(Action.SELECTED_KEY, true);
+                default -> throw new IllegalStateException("Unknown ConnectionMode: " + connectionMode);
             }
         } finally {
             rg.release();
