@@ -109,6 +109,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.ref.Cleaner;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -249,6 +250,10 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     private static final String SAVE = "Save";
     private static final String DISCARD = "Discard";
     private static final String CANCEL = "Cancel";
+    
+    // For cleaning up object for garbage collection. Replaced finalize
+    private static final Cleaner cleaner = Cleaner.create();
+    private static final Runnable cleanupAction = () -> MemoryManager.finalizeObject(VisualGraphTopComponent.class);
 
     /**
      * Initialise the TopComponent state.
@@ -430,6 +435,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         content = new InstanceContent();
         init();
         MemoryManager.newObject(VisualGraphTopComponent.class);
+        cleaner.register(this, cleanupAction);
     }
 
     /**
@@ -458,6 +464,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         content = new InstanceContent();
         init();
         MemoryManager.newObject(VisualGraphTopComponent.class);
+        cleaner.register(this, cleanupAction);
     }
 
     @Override
@@ -568,14 +575,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         }
     }
 
-    @Override
-    protected void finalize() throws Throwable {
-        try {
-            MemoryManager.finalizeObject(VisualGraphTopComponent.class);
-        } finally {
-            super.finalize();
-        }
-    }
 
     private void visualUpdate() {
 
