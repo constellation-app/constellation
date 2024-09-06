@@ -116,7 +116,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
@@ -466,12 +465,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         super.requestActive();
         visualManager.getVisualComponent().requestFocusInWindow();
     }
-    
-    public void requestActiveWithLocking(final Semaphore semaphore) {
-        semaphore.acquireUninterruptibly();
-        requestActive();
-        semaphore.release();
-    }
 
     /**
      * This is required to display the name of the DataObject in the "Save?" dialog box.
@@ -632,10 +625,14 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             toggleDrawDirectedAction.setEnabled(isDrawingMode);
 
             switch (connectionMode) {
-                case LINK -> drawLinksAction.putValue(Action.SELECTED_KEY, true);
-                case EDGE -> drawEdgesAction.putValue(Action.SELECTED_KEY, true);
-                case TRANSACTION -> drawTransactionsAction.putValue(Action.SELECTED_KEY, true);
-                default -> throw new IllegalStateException("Unknown ConnectionMode: " + connectionMode);
+                case LINK ->
+                    drawLinksAction.putValue(Action.SELECTED_KEY, true);
+                case EDGE ->
+                    drawEdgesAction.putValue(Action.SELECTED_KEY, true);
+                case TRANSACTION ->
+                    drawTransactionsAction.putValue(Action.SELECTED_KEY, true);
+                default ->
+                    throw new IllegalStateException("Unknown ConnectionMode: " + connectionMode);
             }
         } finally {
             rg.release();

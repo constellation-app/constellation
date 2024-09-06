@@ -178,7 +178,6 @@ public class RecentGraphScreenshotUtilities {
 
         // This seems to be here so the program has to wait for exporting to finish before moving on
         waiter.acquireUninterruptibly(); // Wait for 0 permits to be 1
-        resestGraphActive();
 
         try {
             // resizeAndSave the buffered image in memory and write the image to disk
@@ -204,7 +203,13 @@ public class RecentGraphScreenshotUtilities {
             if ((component instanceof VisualGraphTopComponent) && ((VisualGraphTopComponent) component).getGraphNode().getGraph().getId().equals(graph.getId())) {
                 try {
                     // Request graph to be active
-                    EventQueue.invokeAndWait(() -> ((VisualGraphTopComponent) component).requestActiveWithLocking(semaphore));
+                    EventQueue.invokeAndWait(() -> {
+                        //((VisualGraphTopComponent) component).requestActiveWithLocking(semaphore);
+
+                        semaphore.acquireUninterruptibly();
+                        ((VisualGraphTopComponent) component).requestActive();
+                        semaphore.release();
+                    });
                 } catch (final InterruptedException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                     Thread.currentThread().interrupt();
@@ -213,30 +218,6 @@ public class RecentGraphScreenshotUtilities {
                 }
             }
         });
-    }
-
-    protected static void resestGraphActive() {
-        final Set<TopComponent> topComponents = WindowManager.getDefault().getRegistry().getOpened();
-        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-
-        if (topComponents == null) {
-            return;
-        }
-
-        // Make the originally active graph the active graph again.
-        topComponents.forEach(component -> {
-            if ((component instanceof VisualGraphTopComponent) && ((VisualGraphTopComponent) component).getGraphNode().getGraph().getId().equals(activeGraph.getId())) {
-                try {
-                    EventQueue.invokeAndWait(((VisualGraphTopComponent) component)::requestActive);
-                } catch (final InterruptedException ex) {
-                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-                    Thread.currentThread().interrupt();
-                } catch (final InvocationTargetException ex) {
-                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-                }
-            }
-        });
-
     }
 
     /**
