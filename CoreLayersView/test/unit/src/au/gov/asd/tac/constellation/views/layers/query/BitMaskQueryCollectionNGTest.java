@@ -37,6 +37,8 @@ import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
 import org.openide.util.Exceptions;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -357,6 +359,34 @@ public class BitMaskQueryCollectionNGTest {
                 assertEquals(0.0f, wg.getFloatValue(layerVisibilityT, txId1));
                 assertEquals(0.0f, wg.getFloatValue(layerVisibilityT, txId2));
                 assertEquals(1.0f, wg.getFloatValue(layerVisibilityT, txId3));
+                
+                wg.setBooleanValue(selectedV, vxId1, true);
+                wg.setBooleanValue(selectedT, txId1, true);
+
+                LayersUtilities.directAllocateElementsForLayer(16, true, true);
+                assertEquals(wg.getIntValue(layerMaskV, vxId1) & 16, 16);
+
+                LayersUtilities.directSelectLayerElements(16, false, true);
+                assertFalse(wg.getBooleanValue(selectedV, vxId1));
+
+                LayersUtilities.directSelectLayerElements(16, true, true);
+                assertTrue(wg.getBooleanValue(selectedV, vxId1));
+                
+                LayersUtilities.directAllocateElementsForLayer(16, false, true);
+                assertEquals(wg.getIntValue(layerMaskV, vxId1) & 16, 0);
+                
+                LayersUtilities.directAllocateElementsForLayer(16, true, false);
+                assertEquals(wg.getIntValue(layerMaskT, txId1) & 16, 0);
+                
+                LayersUtilities.directSelectLayerElements(16, false, false);
+                assertTrue(wg.getBooleanValue(selectedT, txId1));
+                
+                wg.setBooleanValue(selectedT, txId1, false);
+                LayersUtilities.directSelectLayerElements(16, true, false);
+                assertFalse(wg.getBooleanValue(selectedT, txId1));
+                
+                LayersUtilities.directAllocateElementsForLayer(16, false, false);
+                assertEquals(wg.getIntValue(layerMaskT, txId1) & 16, 0);
                 
                 wg.commit();
 

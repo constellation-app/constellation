@@ -84,3 +84,18 @@
 #layer-checkbox {
     -fx-padding: 2 0 0 0;
 }
+
+#layer-function-enable {
+    -fx-background-color: #245288;
+}
+
+#layer-function-enable:hover {
+    -fx-background-color: #33659c;
+}
+
+#layer-function-disable {
+    -fx-background-color: #742d2e;
+}
+#layer-function-disable:hover {
+    -fx-background-color: #8a3b3c;
+}
