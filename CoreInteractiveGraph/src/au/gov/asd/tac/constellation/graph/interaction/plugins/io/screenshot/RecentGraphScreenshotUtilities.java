@@ -191,11 +191,7 @@ public class RecentGraphScreenshotUtilities {
     protected static void requestGraphActive(final Graph graph, final Semaphore semaphore) {
         final Set<TopComponent> topComponents = WindowManager.getDefault().getRegistry().getOpened();
 
-        if (topComponents == null) {
-            return;
-        }
-
-        if (graph == null) {
+        if (topComponents == null || graph == null) {
             return;
         }
 
