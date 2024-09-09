@@ -22,6 +22,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.input.MouseButton;
+import javafx.scene.text.Text;
 
 /**
  * A {@link TableCell} that updates the cells text and style classes on change.
@@ -69,7 +70,9 @@ public class TableCellFactory extends TableCell<ObservableList<String>, String> 
             // set text in cell and style if it is null
             this.getStyleClass().remove(NULL_VALUE_CLASS);
             if (item != null) {
-                this.setText(item);
+                Text text = new Text(item);
+                text.wrappingWidthProperty().bind(getTableColumn().widthProperty());                
+                this.setGraphic(text);               
             } else {
                 this.setText(NO_VALUE_TEXT);
                 this.getStyleClass().add(NULL_VALUE_CLASS);
