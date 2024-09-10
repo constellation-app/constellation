@@ -250,7 +250,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     private static final String SAVE = "Save";
     private static final String DISCARD = "Discard";
     private static final String CANCEL = "Cancel";
-    
+
     // For cleaning up object for garbage collection. Replaced finalize
     private static final Cleaner cleaner = Cleaner.create();
     private static final Runnable cleanupAction = () -> MemoryManager.finalizeObject(VisualGraphTopComponent.class);
@@ -575,7 +575,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         }
     }
 
-
     private void visualUpdate() {
 
         final ReadableGraph rg = graph.getReadableGraph();
@@ -624,10 +623,14 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             toggleDrawDirectedAction.setEnabled(isDrawingMode);
 
             switch (connectionMode) {
-                case LINK -> drawLinksAction.putValue(Action.SELECTED_KEY, true);
-                case EDGE -> drawEdgesAction.putValue(Action.SELECTED_KEY, true);
-                case TRANSACTION -> drawTransactionsAction.putValue(Action.SELECTED_KEY, true);
-                default -> throw new IllegalStateException("Unknown ConnectionMode: " + connectionMode);
+                case LINK ->
+                    drawLinksAction.putValue(Action.SELECTED_KEY, true);
+                case EDGE ->
+                    drawEdgesAction.putValue(Action.SELECTED_KEY, true);
+                case TRANSACTION ->
+                    drawTransactionsAction.putValue(Action.SELECTED_KEY, true);
+                default ->
+                    throw new IllegalStateException("Unknown ConnectionMode: " + connectionMode);
             }
         } finally {
             rg.release();
@@ -937,7 +940,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
          * @throws IOException When I/O errors happen.
          */
         @Override
-        protected void handleSave() throws IOException {
+        protected synchronized void handleSave() throws IOException {
             final GraphDataObject gdo = graphNode.getDataObject();
 
             if (gdo.isInMemory()) {
@@ -947,7 +950,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 // just saves the current graph. If we don't do this and we have multiple graphs, the same
                 // graph will get saved each time.
                 requestActive();
-
                 final SaveAsAction action = new SaveAsAction();
                 action.actionPerformed(null);
                 isSaved = action.isSaved();

@@ -140,7 +140,7 @@ public class RecentGraphScreenshotUtilities {
      *
      * @param filepath The filepath of the graph
      */
-    public static void takeScreenshot(final String filepath) {
+    public static synchronized void takeScreenshot(final String filepath) {
         takeScreenshot(filepath, GraphManager.getDefault().getActiveGraph());
     }
 
@@ -178,7 +178,6 @@ public class RecentGraphScreenshotUtilities {
 
         // This seems to be here so the program has to wait for exporting to finish before moving on
         waiter.acquireUninterruptibly(); // Wait for 0 permits to be 1
-
         try {
             // resizeAndSave the buffered image in memory and write the image to disk
             resizeAndSave(originalImage[0], source, IMAGE_SIZE, IMAGE_SIZE);
@@ -200,9 +199,9 @@ public class RecentGraphScreenshotUtilities {
                 try {
                     // Request graph to be active
                     EventQueue.invokeAndWait(() -> {
-                        semaphore.acquireUninterruptibly();
+                        semaphore.acquireUninterruptibly(); // Aquire permit
                         ((VisualGraphTopComponent) component).requestActive();
-                        semaphore.release();
+                        semaphore.release(); // Wait for 0 permtis to become 1
                     });
                 } catch (final InterruptedException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
