@@ -20,13 +20,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import javax.swing.JFileChooser;
+import javax.swing.SwingUtilities;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.testng.Assert.assertEquals;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.Test;
 
 /**
@@ -35,25 +34,6 @@ import org.testng.annotations.Test;
  * @author sol695510
  */
 public class SaveAsActionNGTest {
-
-    public SaveAsActionNGTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
-    @BeforeMethod
-    public void setUpMethod() throws Exception {
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
-    }
 
     /**
      * Test of getSaveFileChooser method, of class SaveAsAction.
@@ -97,4 +77,19 @@ public class SaveAsActionNGTest {
         Files.deleteIfExists(file1.toPath());
         Files.deleteIfExists(file3.toPath());
     }
+
+    /**
+     * Test of actionPerformed method, of class SaveAsAction.
+     */
+    @Test
+    public void testActionPerformed() {
+        System.out.println("actionPerformed");
+        SwingUtilities.invokeLater(() -> {
+            SaveAsAction instance = new SaveAsAction();
+            assertFalse(instance.isSaved());
+            instance.actionPerformed(null);
+            assertTrue(instance.isSaved());
+        });
+    }
+
 }
