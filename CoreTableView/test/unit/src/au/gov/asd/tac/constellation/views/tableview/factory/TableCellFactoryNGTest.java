@@ -30,6 +30,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Text;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.doReturn;
@@ -90,17 +91,20 @@ public class TableCellFactoryNGTest {
 
     @Test
     public void updateItemIsEmpty() {
-        tableCellFactory.updateItem("Hello World", true);
-
-        verify(tableCellFactory, times(0)).setText(anyString());
+        Text t = mock(Text.class);
+        t.setText("Hello World");
+        doReturn(t).when(tableCellFactory).getWrappingText("Hello World");
+        tableCellFactory.updateItem("Hello World", true);        
+        verify(tableCellFactory, times(0)).setGraphic(t);
     }
 
     @Test
     public void updateItemIsNotEmpty() {
-        verifyStyle("Test Value", "source.", "Test Value", List.of("element-source"));
-        verifyStyle("Test Value", "destination.", "Test Value", List.of("element-destination"));
-        verifyStyle("Test Value", "transaction.", "Test Value", List.of("element-transaction"));
-        verifyStyle(null, "transaction.", "<No Value>", List.of("null-value", "element-transaction"));
+        final String test_value = "Test Value";
+        verifyStyle(test_value, "source.", List.of("element-source"));
+        verifyStyle(test_value, "destination.", List.of("element-destination"));
+        verifyStyle(test_value, "transaction.", List.of("element-transaction"));
+        verifyStyle(null, "transaction.", List.of("null-value", "element-transaction"));
     }
 
     @Test
@@ -112,6 +116,9 @@ public class TableCellFactoryNGTest {
 
         when(table.getColumnIndex()).thenReturn(columnIndex);
 
+        Text t = mock(Text.class);
+        t.setText("Test Value");
+        doReturn(t).when(tableCellFactory).getWrappingText("Test Value");
         tableCellFactory.updateItem("Test Value", false);
 
         final TableView<ObservableList<String>> tableView = mock(TableView.class);
@@ -143,6 +150,9 @@ public class TableCellFactoryNGTest {
 
         when(table.getColumnIndex()).thenReturn(columnIndex);
 
+        Text t = mock(Text.class);
+        t.setText("Test Value");
+        doReturn(t).when(tableCellFactory).getWrappingText("Test Value");
         tableCellFactory.updateItem("Test Value", false);
 
         final MouseEvent mouseEvent = mock(MouseEvent.class);
@@ -170,13 +180,11 @@ public class TableCellFactoryNGTest {
      *
      * @param item the string passed in to be set in the table cell
      * @param columnPrefix the column prefix for this cells column
-     * @param expectedText the expected string that will be set to the cell
      * @param expectedStyles the expected styles that should be present in the
      * style class list
      */
     private void verifyStyle(final String item,
             final String columnPrefix,
-            final String expectedText,
             final List<String> expectedStyles) {
         clearInvocations(tableCellFactory, table);
 
@@ -190,10 +198,17 @@ public class TableCellFactoryNGTest {
         columnIndex.add(new Column("transaction.", null, mock(TableColumn.class)));
 
         when(table.getColumnIndex()).thenReturn(columnIndex);
+        Text t = mock(Text.class);
+        t.setText(item);
+        doReturn(t).when(tableCellFactory).getWrappingText(item);
 
         tableCellFactory.updateItem(item, false);
-
-        verify(tableCellFactory).setText(expectedText);
+        verify(tableCellFactory).updateItem(item, false);
+        if (item != null) {
+            verify(tableCellFactory).setGraphic(t);
+        } else {
+            verify(tableCellFactory).setText("<No Value>");
+        }
 
         verify(styleClass).remove("null-value");
         verify(styleClass).remove("element-source");

@@ -69,9 +69,8 @@ public class TableCellFactory extends TableCell<ObservableList<String>, String> 
         if (!empty) {
             // set text in cell and style if it is null
             this.getStyleClass().remove(NULL_VALUE_CLASS);
-            if (item != null) {
-                Text text = new Text(item);
-                text.wrappingWidthProperty().bind(getTableColumn().widthProperty());                
+            if (item != null) {           
+                Text text = getWrappingText(item);                
                 this.setGraphic(text);               
             } else {
                 this.setText(NO_VALUE_TEXT);
@@ -108,6 +107,17 @@ public class TableCellFactory extends TableCell<ObservableList<String>, String> 
                 }
             });
         }
+    }
+
+    /**
+     * Create a new Text object to wrap item in and set text wrapping.
+     * @param item string to set in Text object.
+     * @return Text object
+     */
+    protected Text getWrappingText(final String item) {
+        Text text = new Text(item);
+        text.wrappingWidthProperty().bind(cellColumn.widthProperty());
+        return text;
     }
 
     /**
