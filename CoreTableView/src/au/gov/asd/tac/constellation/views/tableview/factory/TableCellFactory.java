@@ -114,7 +114,7 @@ public class TableCellFactory extends TableCell<ObservableList<String>, String> 
      * @param item string to set in Text object.
      * @return Text object
      */
-    protected Text getWrappingText(final String item) {
+    protected final Text getWrappingText(final String item) {
         final Text text = new Text(item);
         text.wrappingWidthProperty().bind(cellColumn.widthProperty());
         return text;

@@ -23,6 +23,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ContextMenu;
@@ -104,6 +105,28 @@ public class TableCellFactoryNGTest {
         verifyStyle(test_value, "destination.", List.of("element-destination"));
         verifyStyle(test_value, "transaction.", List.of("element-transaction"));
         verifyStyle(null, "transaction.", List.of("null-value", "element-transaction"));
+    }
+    
+    @Test
+    public void getWrappingTextItemIsNotEmpty() {
+        final String test_value = "Test Value";
+        ReadOnlyDoubleProperty mockWidthProperty = mock(ReadOnlyDoubleProperty.class);
+        doReturn(mockWidthProperty).when(cellColumn).widthProperty();
+        
+        Text test_text = tableCellFactory.getWrappingText(test_value);
+        verify(tableCellFactory, times(1)).getWrappingText(test_value);
+        assertEquals(test_text.getText(), test_value);      
+    }
+    
+    @Test
+    public void getWrappingTextItemIsEmpty() {
+        final String test_value = null;
+        ReadOnlyDoubleProperty mockWidthProperty = mock(ReadOnlyDoubleProperty.class);
+        doReturn(mockWidthProperty).when(cellColumn).widthProperty();
+        
+        Text test_text = tableCellFactory.getWrappingText(test_value);
+        verify(tableCellFactory, times(1)).getWrappingText(test_value);
+        assertEquals(test_text.getText(), "");      
     }
 
     @Test
