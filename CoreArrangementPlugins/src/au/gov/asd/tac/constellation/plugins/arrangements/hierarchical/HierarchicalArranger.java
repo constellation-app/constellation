@@ -76,7 +76,7 @@ public class HierarchicalArranger implements Arranger {
         // We don't want pendants in the hierarchical graph, because if there
         // are too many of them they make the tree ridiculously wide.
         final Map<Integer, Set<Integer>> pendantSets = new HashMap<>();
-        findPendants(wg, roots, MIN_PENDANTS, pendantSets);
+        //findPendants(wg, roots, MIN_PENDANTS, pendantSets);
 
         // Collect the pendants into a Set for easy checking.
         final Set<Integer> pendants = new HashSet<>();
@@ -287,27 +287,50 @@ public class HierarchicalArranger implements Arranger {
      * @param vxLevels
      */
     private static void arrangeVertices(final GraphWriteMethods wg, final ArrayList<ArrayList<Integer>> vxLevels) {
-        final float xgap = 4;
-        final float ygap = 16;
+//        final float xgap = 4;
+//        final float ygap = 12;
 
         int maxLevelVertices = 0;
         for (ArrayList<Integer> vxLevel : vxLevels) {
             maxLevelVertices = Math.max(maxLevelVertices, vxLevel.size());
         }
+        final float xgap = 4;
+        final float ygap = 12 + (float) (5 * Math.log(maxLevelVertices));
 
         final int xId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
         final int yId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
         final int zId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
 
+        double xMinAdj = Math.max(Math.min(Math.log10(maxLevelVertices) - 1, 1.5), 0);
         for (int level = 0; level < vxLevels.size(); level++) {
             final ArrayList<Integer> vxLevel = vxLevels.get(level);
             final int levelVertices = vxLevel.size();
-            final float startxgap = (maxLevelVertices - levelVertices) * xgap / 2F;
+            double yStep = 0;
+            double yAdj = 0;
+            double xAdj = 0;
+            double yDir = 0;
+            if (levelVertices > 2) {
+                yAdj = Math.max(0, Math.min((ygap/3)*(Math.log10(levelVertices)-1), ygap/2)); // Math.pow(10.0, 1/levelVertices);
+                yStep = yAdj;
+                yDir = 2 * yAdj / levelVertices;
+                xAdj = Math.max(Math.min(Math.log10(levelVertices) - 1, 1.5), 0);
+            }
+            //final float startxgap = ((maxLevelVertices - levelVertices) * (xgap - (float) xAdj)) / 2F;
+            final float xMaxOffset = maxLevelVertices * (xgap - (float) xMinAdj) / 2F;
+            final float xLevelOffset = xMaxOffset - levelVertices * (xgap - (float) xAdj) / 2F;
+            System.out.println("\nstartxgap: " + xgap + "  new level vertices: " + levelVertices + "  xgap: " + xgap + "  xAdj: " + xAdj);
             for (int i = 0; i < vxLevel.size(); i++) {
                 final int vxId = vxLevel.get(i);
-                wg.setFloatValue(xId, vxId, startxgap + i * xgap);
-                wg.setFloatValue(yId, vxId, -level * ygap);
+                System.out.println("plot x pos: " + xLevelOffset + i * (xgap - (float) xAdj));
+                wg.setFloatValue(xId, vxId, xLevelOffset + i * (xgap - (float) xAdj));
+                wg.setFloatValue(yId, vxId, (float)(-level * ygap - (yStep > 0 ? -yStep : yStep )));
                 wg.setFloatValue(zId, vxId, 0);
+                yStep = yStep - yDir;
+                //if (yStep > 1) {
+                //    yDir = -1;
+                //} else if (yStep < -1) {
+                //    yDir = 1;
+                //}
             }
         }
     }
