@@ -484,7 +484,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
                             foundWords.add(content);
                         }
                     }
-                } else if (words.contains(content) && !wholeWordOnly) {
+                } else if (words.contains(content)) {
                     // If words contains the content but it doesn't need to match as a whole word 
                     foundWords.add(content);
                 } else {
