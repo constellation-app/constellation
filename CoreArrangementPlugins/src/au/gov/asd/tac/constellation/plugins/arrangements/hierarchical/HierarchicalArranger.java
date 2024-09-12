@@ -291,46 +291,81 @@ public class HierarchicalArranger implements Arranger {
 //        final float ygap = 12;
 
         int maxLevelVertices = 0;
+        int totalVertices = wg.getVertexCount();
         for (ArrayList<Integer> vxLevel : vxLevels) {
             maxLevelVertices = Math.max(maxLevelVertices, vxLevel.size());
+            //totalVertices += vxLevel.size();
         }
-        final float xgap = 4;
-        final float ygap = 12 + (float) (5 * Math.log(maxLevelVertices));
+        final int maxNodesPerRow = (int) Math.max(12, 12*Math.log(totalVertices));
+        if (maxLevelVertices > maxNodesPerRow) {
+            maxLevelVertices = maxNodesPerRow;
+        }
+        final float xgap = 12;
+        final float ygap = 12 + (float) (6 * Math.log(maxLevelVertices));
 
         final int xId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
         final int yId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
         final int zId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
 
-        double xMinAdj = Math.max(Math.min(Math.log10(maxLevelVertices) - 1, 1.5), 0);
+        double xMinAdj = Math.max(Math.min(Math.log(maxLevelVertices)*2, 9), 0);
+        
+        double displayLevel = -1.0;
+        int verticesRemaining = 0;
+        int verticesForRow = 0;
+        int vertexCounter = -1;
+        double xMinDefaultAdj = Math.max(Math.min(Math.log(maxNodesPerRow)*2, 9), 0);
+        double yStep = 0;
+        double yAdj = 0;
+        double xAdj = 0;
+        double yDir = 0;
         for (int level = 0; level < vxLevels.size(); level++) {
+            vertexCounter = -1;
+            displayLevel += 1.0;
             final ArrayList<Integer> vxLevel = vxLevels.get(level);
             final int levelVertices = vxLevel.size();
-            double yStep = 0;
-            double yAdj = 0;
-            double xAdj = 0;
-            double yDir = 0;
-            if (levelVertices > 2) {
-                yAdj = Math.max(0, Math.min((ygap/3)*(Math.log10(levelVertices)-1), ygap/2)); // Math.pow(10.0, 1/levelVertices);
-                yStep = yAdj;
-                yDir = 2 * yAdj / levelVertices;
-                xAdj = Math.max(Math.min(Math.log10(levelVertices) - 1, 1.5), 0);
-            }
-            //final float startxgap = ((maxLevelVertices - levelVertices) * (xgap - (float) xAdj)) / 2F;
-            final float xMaxOffset = maxLevelVertices * (xgap - (float) xMinAdj) / 2F;
-            final float xLevelOffset = xMaxOffset - levelVertices * (xgap - (float) xAdj) / 2F;
-            System.out.println("\nstartxgap: " + xgap + "  new level vertices: " + levelVertices + "  xgap: " + xgap + "  xAdj: " + xAdj);
-            for (int i = 0; i < vxLevel.size(); i++) {
-                final int vxId = vxLevel.get(i);
-                System.out.println("plot x pos: " + xLevelOffset + i * (xgap - (float) xAdj));
-                wg.setFloatValue(xId, vxId, xLevelOffset + i * (xgap - (float) xAdj));
-                wg.setFloatValue(yId, vxId, (float)(-level * ygap - (yStep > 0 ? -yStep : yStep )));
-                wg.setFloatValue(zId, vxId, 0);
-                yStep = yStep - yDir;
-                //if (yStep > 1) {
-                //    yDir = -1;
-                //} else if (yStep < -1) {
-                //    yDir = 1;
-                //}
+            verticesRemaining = levelVertices;
+
+            //System.out.println("\nstartxgap: " + xgap + "  new level verticesRemaining: " + verticesRemaining + "  total on level = " + levelVertices);
+            while (vertexCounter < levelVertices - 1) {
+                verticesForRow = verticesRemaining > maxNodesPerRow ? maxNodesPerRow : verticesRemaining;
+                yStep = 0;
+                yAdj = 0;
+                xAdj = 0;
+                yDir = 0;
+                if (verticesForRow > 4) {
+                    //yAdj = Math.max(0, Math.min((ygap/4)*(Math.log10(verticesForRow)-1), ygap/2)); // Math.pow(10.0, 1/levelVertices);
+                    //yStep = yAdj;
+                    //yDir = 2 * yAdj / verticesForRow;
+                    yStep = 0.5;
+                    xAdj = Math.max(Math.min(Math.log(verticesForRow)*2, 9), 0);
+                }
+                //final float startxgap = ((maxLevelVertices - levelVertices) * (xgap - (float) xAdj)) / 2F;
+                final float xMaxOffset = maxLevelVertices <= maxNodesPerRow ? maxLevelVertices * (xgap - (float) xMinAdj) / 2F : maxNodesPerRow * (xgap - (float) xMinDefaultAdj) / 2F;
+                final float xLevelOffset = verticesForRow <= maxNodesPerRow ? xMaxOffset - verticesForRow * (xgap - (float) xAdj) / 2F : maxNodesPerRow * (xgap - (float) xMinDefaultAdj) / 2F;
+                //System.out.println("\nxLevelOffset: " + xLevelOffset + "  xgap: " + xgap + "  xAdj: " + xAdj + "  new level verticesRemaining: " + verticesRemaining + "  vertexCtr: " + vertexCounter);
+
+                //int loopCount = verticesRemaining > maxNodesPerRow ? maxNodesPerRow : verticesRemaining;
+                for (int i = 0; i < verticesForRow; i++) {
+                    vertexCounter++;
+                    final int vxId = vxLevel.get(vertexCounter);
+                    //System.out.println("plot x pos: [" + (xLevelOffset + i * (xgap - (float) xAdj)) + "]");
+                    wg.setFloatValue(xId, vxId, xLevelOffset + i * (xgap - (float) xAdj));
+                    wg.setFloatValue(yId, vxId, (float)(-displayLevel * ygap - yStep)); // (yStep > 0 ? -yStep : yStep )
+                    wg.setFloatValue(zId, vxId, 0);
+                    yStep = -yStep; // - yDir;
+                    //if (yStep > 1) {
+                    //    yDir = -1;
+                    //} else if (yStep < -1) {
+                    //    yDir = 1;
+                    //}
+                }
+                
+                // split up every 100
+                if (verticesRemaining > maxNodesPerRow) {
+                    verticesRemaining -= maxNodesPerRow;
+                    displayLevel += 0.5;
+                }
+
             }
         }
     }
