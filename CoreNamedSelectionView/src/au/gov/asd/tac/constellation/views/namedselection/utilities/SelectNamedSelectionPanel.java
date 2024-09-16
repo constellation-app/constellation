@@ -31,24 +31,39 @@ public class SelectNamedSelectionPanel extends javax.swing.JPanel {
     public SelectNamedSelectionPanel(final List<NamedSelection> namedSelections, String labelText) {
         initComponents();
 
+//        this.buttonGroup1.add(jRadioButton1);
+//        this.buttonGroup1.add(jRadioButton2);
+//        this.jRadioButton1.setSelected(false);
+//        this.jRadioButton2.setSelected(true);
         this.label.setText(labelText);
-
         this.namedSelections = namedSelections;
 
         final DefaultListModel<String> listModel = new DefaultListModel<>();
-        for (final NamedSelection ns : namedSelections) {
-            final String descr = ns.getDescription();
-            final String s = StringUtils.isNotBlank(descr) ? String.format("%s: %s", ns.getName(), ns.getDescription()) : ns.getName();
-            listModel.addElement(s);
+        listModel.addElement(">> Use currently SELECTED elements instead of choosing a Named Selection <<");
+        if (namedSelections != null) {
+            for (final NamedSelection ns : namedSelections) {
+                final String descr = ns.getDescription();
+                final String s = StringUtils.isNotBlank(descr) ? String.format("%s: %s", ns.getName(), ns.getDescription()) : ns.getName();
+                listModel.addElement(s);
+            }
         }
 
         nsList.setModel(listModel);
+        nsList.setSelectedIndex(0);
     }
 
+    /**
+     * @return the ID of the chosen Named Selection, if one was chosen.
+     *         Otherwise, it will return: <b>-1</b> if the if the "Use Currently Selected" option is chosen
+     *         OR it will return <b>-2</b> if no option was selected.
+     */
     public long getNamedSelectionId() {
         final int ix = nsList.getSelectedIndex();
-
-        return ix != -1 ? namedSelections.get(ix).getID() : -1;
+//        System.out.println("radbut2 selected : " + jRadioButton2.isSelected() + "  ix = " + ix);
+//        if (jRadioButton2.isSelected()) {
+//            return -1;
+//        }
+        return ix > 0 ? namedSelections.get(ix).getID() : ix - 1;
     }
 
     /**
@@ -87,7 +102,7 @@ public class SelectNamedSelectionPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(label)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
