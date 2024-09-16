@@ -59,7 +59,6 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins.io;
  * made subject to such option by the copyright holder.
  */
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.interaction.plugins.io.screenshot.RecentGraphScreenshotUtilities;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
@@ -184,8 +183,6 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
             FileChooser.openImmediateSaveDialog(getSaveFileChooser()).thenAccept(optionalFile -> optionalFile.ifPresent(file -> {
                 try {
                     saveAs.saveAs(FileUtil.toFileObject(file.getParentFile()), file.getName());
-
-                    RecentGraphScreenshotUtilities.takeScreenshot(file.getName());
                 } catch (final IOException ioE) {
                     Exceptions.attachLocalizedMessage(ioE,
                             Bundle.MSG_SaveAsFailed(

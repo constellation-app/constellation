@@ -152,6 +152,7 @@ public class RecentGraphScreenshotUtilities {
      * @param graph The graph to take a screenshot of
      */
     public static synchronized void takeScreenshot(final String filepath, final Graph graph) {
+        System.out.println("takeScreenshot");
         final String pathHash = hashFilePath(filepath);
         final String imageFile = getScreenshotsDir() + File.separator + pathHash + FileExtensionConstants.PNG;
         final Path source = Paths.get(imageFile);
@@ -172,11 +173,12 @@ public class RecentGraphScreenshotUtilities {
         final Semaphore waiter = new Semaphore(1);
 
         requestGraphActive(graph, waiter);
-        waiter.acquireUninterruptibly(); // Wait for 0 permits to be 1
 
+        // Wait for requested graph to become active
+        waiter.acquireUninterruptibly(); // Wait for 0 permits to be 1
         visualManager.exportToBufferedImage(originalImage, waiter); // Requires 0 permits, becomes 1 when done
 
-        // This seems to be here so the program has to wait for exporting to finish before moving on
+        // Wait for exporting to finish before moving on
         waiter.acquireUninterruptibly(); // Wait for 0 permits to be 1
         try {
             // resizeAndSave the buffered image in memory and write the image to disk
@@ -185,6 +187,7 @@ public class RecentGraphScreenshotUtilities {
         } catch (final IOException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
+        System.out.println("screenshot done");
     }
 
     protected static void requestGraphActive(final Graph graph, final Semaphore semaphore) {
@@ -201,7 +204,7 @@ public class RecentGraphScreenshotUtilities {
                     EventQueue.invokeAndWait(() -> {
                         semaphore.acquireUninterruptibly(); // Aquire permit
                         ((VisualGraphTopComponent) component).requestActive();
-                        semaphore.release(); // Wait for 0 permtis to become 1
+                        semaphore.release();
                     });
                 } catch (final InterruptedException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());

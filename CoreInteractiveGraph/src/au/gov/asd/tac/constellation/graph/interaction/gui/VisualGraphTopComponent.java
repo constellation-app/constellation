@@ -90,9 +90,12 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.SecondaryLoop;
+import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -117,9 +120,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
+import javafx.application.Platform;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
@@ -623,10 +628,14 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             toggleDrawDirectedAction.setEnabled(isDrawingMode);
 
             switch (connectionMode) {
-                case LINK -> drawLinksAction.putValue(Action.SELECTED_KEY, true);
-                case EDGE -> drawEdgesAction.putValue(Action.SELECTED_KEY, true);
-                case TRANSACTION -> drawTransactionsAction.putValue(Action.SELECTED_KEY, true);
-                default -> throw new IllegalStateException("Unknown ConnectionMode: " + connectionMode);
+                case LINK ->
+                    drawLinksAction.putValue(Action.SELECTED_KEY, true);
+                case EDGE ->
+                    drawEdgesAction.putValue(Action.SELECTED_KEY, true);
+                case TRANSACTION ->
+                    drawTransactionsAction.putValue(Action.SELECTED_KEY, true);
+                default ->
+                    throw new IllegalStateException("Unknown ConnectionMode: " + connectionMode);
             }
         } finally {
             rg.release();
@@ -939,30 +948,53 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         protected synchronized void handleSave() throws IOException {
             final GraphDataObject gdo = graphNode.getDataObject();
 
-            if (gdo.isInMemory()) {
+            // If graph is valid and has already been saved to a file previously
+            if (gdo.isValid() && !gdo.isInMemory()) {
+                final String name = gdo.getName();
+                // Create a new file and write to it.
+                final String tmpnam = String.format("%s_tmp%08x", name, gdo.hashCode());
+                final GraphDataObject freshGdo = (GraphDataObject) gdo.createFromTemplate(gdo.getFolder(), tmpnam);
+
+                // Create a 'secondary loop', allows screenshots to be taken when closing consty
+                // Otherwise consty locks up as screenshots and some GUI occupy the same dispatch thread
+                final Toolkit tk = Toolkit.getDefaultToolkit();
+                final EventQueue eq = tk.getSystemEventQueue();
+                final SecondaryLoop loop = eq.createSecondaryLoop();
+
+                final Semaphore waiter = new Semaphore(0);
+
+                Platform.runLater(() -> {
+                    // Temporary file made so the absolute path has correct file seperators
+                    final File tempFile = new File(gdo.getPrimaryFile().getPath());
+                    RecentGraphScreenshotUtilities.takeScreenshot(tempFile.getAbsolutePath(), graph);
+                    // Exit the secondary loop
+                    waiter.release();
+                    loop.exit();
+                });
+
+                // Start loop and report errors if they happen
+                if (!loop.enter()) {
+                    LOGGER.log(Level.SEVERE, "Error with starting secondary loop in VisualGraphTopComponent");
+                }
+
+                // Wait for screenshot to finish
+                waiter.acquireUninterruptibly(); // Wait for 0 permits to be 1
+                final BackgroundWriter writer = new BackgroundWriter(name, freshGdo, true, waiter);
+                writer.execute();
+                // Wait for file writer to finish
+                waiter.acquireUninterruptibly(); // Wait for 0 permits to be 1
+                isSaved = true;
+            } else {
+                // Either hasn't been saved before OR user might be saving a file previously deleted (edge case)
+                // Either way, just open up the 'save as' menu
+
                 // We don't want to do a save if this is an in-memory DataObject.
                 // Instead, we'll do the "Save As..." action and let it naturally do the right thing.
                 // We have to make sure that this TopComponent is the the active one, because SaveAsAction
                 // just saves the current graph. If we don't do this and we have multiple graphs, the same
                 // graph will get saved each time.
                 requestActive();
-                final SaveAsAction action = new SaveAsAction();
-                action.actionPerformed(null);
-                isSaved = action.isSaved();
-                return;
-            }
 
-            if (gdo.isValid()) {
-                final String name = gdo.getName();
-                // Create a new file and write to it.
-                final String tmpnam = String.format("%s_tmp%08x", name, gdo.hashCode());
-                final GraphDataObject freshGdo = (GraphDataObject) gdo.createFromTemplate(gdo.getFolder(), tmpnam);
-                final BackgroundWriter writer = new BackgroundWriter(name, freshGdo, true);
-                writer.execute();
-                isSaved = true;
-            } else {
-                // File might have been saved over, so just open up the 'save as' menu
-                requestActive();
                 final SaveAsAction action = new SaveAsAction();
                 action.actionPerformed(null);
                 isSaved = action.isSaved();
@@ -1055,7 +1087,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
             final FileObject fo = FileUtil.createData(newFile);
             final GraphDataObject freshGdo = (GraphDataObject) DataObject.find(fo);
-            final BackgroundWriter writer = new BackgroundWriter(name, freshGdo, false);
+            final BackgroundWriter writer = new BackgroundWriter(name, freshGdo, false, null);
             writer.execute();
         }
     }
@@ -1070,6 +1102,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         private final boolean deleteOldGdo;
         private boolean cancelled;
         private GraphReadMethods copy;
+        final private Semaphore waiter;
 
         /**
          * Construct a new BackgroundWriter.
@@ -1078,11 +1111,12 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
          * @param freshGdo The current GraphDataObject will be replaced by this GDO in the Lookup if the write succeeds.
          * @param deleteOldGdo If true, delete the file represented by the old GDO.
          */
-        BackgroundWriter(final String name, final GraphDataObject freshGdo, final boolean deleteOldGdo) {
+        BackgroundWriter(final String name, final GraphDataObject freshGdo, final boolean deleteOldGdo, final Semaphore semaphore) {
             this.name = name;
             this.freshGdo = freshGdo;
             this.deleteOldGdo = deleteOldGdo;
             cancelled = false;
+            this.waiter = semaphore;
 
             GraphNode.getGraphNode(graph).makeBusy(true);
         }
@@ -1128,6 +1162,10 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 SaveNotification.saved(freshGdo.getPrimaryFile().getPath());
             } catch (final Exception ex) {
                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            }
+
+            if (waiter != null) {
+                waiter.release();
             }
 
             return null;
