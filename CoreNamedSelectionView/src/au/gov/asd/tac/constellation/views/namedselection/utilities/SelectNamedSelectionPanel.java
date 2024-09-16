@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.namedselection.utilities;
 import au.gov.asd.tac.constellation.views.namedselection.NamedSelection;
 import java.util.List;
 import javax.swing.DefaultListModel;
+import javax.swing.event.ChangeEvent;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -28,28 +29,29 @@ public class SelectNamedSelectionPanel extends javax.swing.JPanel {
 
     private final List<NamedSelection> namedSelections;
 
-    public SelectNamedSelectionPanel(final List<NamedSelection> namedSelections, String labelText) {
+    public SelectNamedSelectionPanel(final List<NamedSelection> namedSelections, String labelText, final boolean nsMode) {
         initComponents();
 
-//        this.buttonGroup1.add(jRadioButton1);
-//        this.buttonGroup1.add(jRadioButton2);
-//        this.jRadioButton1.setSelected(false);
-//        this.jRadioButton2.setSelected(true);
+        this.buttonGroup1.add(jRadioButton1);
+        this.buttonGroup1.add(jRadioButton2);
+        this.jRadioButton1.addChangeListener((ChangeEvent e) -> nsList.setEnabled(jRadioButton1.isSelected()));
+        this.jRadioButton1.setSelected(nsMode);
+        this.jRadioButton2.setSelected(!nsMode);
+        nsList.setEnabled(nsMode);
         this.label.setText(labelText);
         this.namedSelections = namedSelections;
 
         final DefaultListModel<String> listModel = new DefaultListModel<>();
-        listModel.addElement(">> Use currently SELECTED elements instead of choosing a Named Selection <<");
         if (namedSelections != null) {
             for (final NamedSelection ns : namedSelections) {
                 final String descr = ns.getDescription();
                 final String s = StringUtils.isNotBlank(descr) ? String.format("%s: %s", ns.getName(), ns.getDescription()) : ns.getName();
                 listModel.addElement(s);
             }
+            nsList.setModel(listModel);
+            nsList.setSelectedIndex(0);
         }
 
-        nsList.setModel(listModel);
-        nsList.setSelectedIndex(0);
     }
 
     /**
@@ -58,12 +60,11 @@ public class SelectNamedSelectionPanel extends javax.swing.JPanel {
      *         OR it will return <b>-2</b> if no option was selected.
      */
     public long getNamedSelectionId() {
+        if (jRadioButton2.isSelected()) {
+            return -1;
+        }
         final int ix = nsList.getSelectedIndex();
-//        System.out.println("radbut2 selected : " + jRadioButton2.isSelected() + "  ix = " + ix);
-//        if (jRadioButton2.isSelected()) {
-//            return -1;
-//        }
-        return ix > 0 ? namedSelections.get(ix).getID() : ix - 1;
+        return ix > -1 ? namedSelections.get(ix).getID() : -2;
     }
 
     /**
@@ -75,13 +76,20 @@ public class SelectNamedSelectionPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
         label = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         nsList = new javax.swing.JList<>();
+        jRadioButton1 = new javax.swing.JRadioButton();
+        jRadioButton2 = new javax.swing.JRadioButton();
 
         org.openide.awt.Mnemonics.setLocalizedText(label, org.openide.util.NbBundle.getMessage(SelectNamedSelectionPanel.class, "SelectNamedSelectionPanel.label.text")); // NOI18N
 
         jScrollPane1.setViewportView(nsList);
+
+        jRadioButton1.setLabel(org.openide.util.NbBundle.getMessage(SelectNamedSelectionPanel.class, "SelectNamedSelectionPanel.jRadioButton1.label")); // NOI18N
+
+        jRadioButton2.setLabel(org.openide.util.NbBundle.getMessage(SelectNamedSelectionPanel.class, "SelectNamedSelectionPanel.jRadioButton2.label")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -90,10 +98,12 @@ public class SelectNamedSelectionPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE)
+                    .addComponent(jRadioButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(label)
-                        .addGap(0, 245, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jRadioButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -101,12 +111,19 @@ public class SelectNamedSelectionPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(label)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addComponent(jRadioButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jRadioButton2)
+                .addGap(16, 16, 16))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JRadioButton jRadioButton1;
+    private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel label;
     private javax.swing.JList<String> nsList;

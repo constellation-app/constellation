@@ -87,7 +87,16 @@ public class ArrangeInBubbleTreeAction extends AbstractAction {
     }
     
     private void selectElementsAndRunArrangement(final ReadableGraph rg, final List<NamedSelection> namedSelections) {
-        final SelectNamedSelectionPanel ssp = new SelectNamedSelectionPanel(namedSelections, "Select a named selection to represent the TREE ROOTS.");
+        final Set<Integer> rootVxIds = new HashSet<>();
+        final int vxSelectedAttr = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
+        for (int position = 0; position < rg.getVertexCount(); position++) {
+            final int vxId = rg.getVertex(position);
+            if (rg.getBooleanValue(vxSelectedAttr, vxId)) {
+                rootVxIds.add(vxId);
+            }
+        }
+
+        final SelectNamedSelectionPanel ssp = new SelectNamedSelectionPanel(namedSelections, "Which elements will represent the TREE ROOTS.", rootVxIds.isEmpty());
         final DialogDescriptor dd = new DialogDescriptor(ssp, Bundle.CTL_ArrangeInBubbleTreeAction());
         dd.setHelpCtx(new HelpCtx(HELP_LOCATION));
         final Object result = DialogDisplayer.getDefault().notify(dd);
@@ -96,15 +105,7 @@ public class ArrangeInBubbleTreeAction extends AbstractAction {
             final long selectionId = ssp.getNamedSelectionId();
 
             if (selectionId == -1) {
-                // use current selections as root nodes
-                final int vxSelectedAttr = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
-                final Set<Integer> rootVxIds = new HashSet<>();
-                for (int position = 0; position < rg.getVertexCount(); position++) {
-                    final int vxId = rg.getVertex(position);
-                    if (rg.getBooleanValue(vxSelectedAttr, vxId)) {
-                        rootVxIds.add(vxId);
-                    }
-                }
+
                 PluginExecutor.startWith(VisualGraphPluginRegistry.DESELECT_ALL)
                         .followedBy(ArrangementPluginRegistry.BUBBLE_TREE)
                         .set(ArrangeInBubbleTreePlugin.ROOTS_PARAMETER_ID, rootVxIds)
@@ -116,7 +117,7 @@ public class ArrangeInBubbleTreeAction extends AbstractAction {
                 
                 final int namedSelectionId = rg.getAttribute(GraphElementType.VERTEX, "named_selection");
                 final long mask = 1L << selectionId;
-                final Set<Integer> rootVxIds = new HashSet<>();
+                rootVxIds.clear();
                 for (int position = 0; position < rg.getVertexCount(); position++) {
                     final int vxId = rg.getVertex(position);
 
