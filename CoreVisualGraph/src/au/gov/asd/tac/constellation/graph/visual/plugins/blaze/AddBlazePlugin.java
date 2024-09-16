@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.graph.visual.plugins.blaze;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import static au.gov.asd.tac.constellation.graph.schema.visual.utilities.BlazeUtilities.DEFAULT_BLAZE;
@@ -59,7 +58,6 @@ public class AddBlazePlugin extends SimpleEditPlugin {
         parameters.addParameter(vertexIdParam);
 
         final PluginParameter<ObjectParameterValue> vertexIdsParam = ObjectParameterType.build(VERTEX_IDS_PARAMETER_ID);
-        vertexIdsParam.setObjectValue(null);
         vertexIdsParam.setName("Vertex Ids");
         vertexIdsParam.setDescription("The list of vertex ids to set a blaze for in bulk");
         parameters.addParameter(vertexIdsParam);
@@ -80,7 +78,7 @@ public class AddBlazePlugin extends SimpleEditPlugin {
                     wg.setObjectValue(blazeAttr, ix, DEFAULT_BLAZE);
                 }
             } else {
-                int selectedAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
+                int selectedAttr = VisualConcept.VertexAttribute.SELECTED.get(wg);
                 if (selectedAttr != Graph.NOT_FOUND) {
                     int vertexCount = wg.getVertexCount();
                     for (int i = 0; i < vertexCount; i++) {

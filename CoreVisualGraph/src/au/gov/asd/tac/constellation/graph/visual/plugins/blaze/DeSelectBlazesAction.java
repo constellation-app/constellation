@@ -27,13 +27,13 @@ import org.openide.util.NbBundle;
  *
  * @author mimosa
  */
-@ActionID(category = "Selection", id = "au.gov.asd.tac.constellation.functionality.blaze.DeSelectBlazesAction")
-@ActionRegistration(displayName = "#CTL_DeSelectBlazesAction", iconBase = "au/gov/asd/tac/constellation/graph/visual/plugins/blaze/resources/blaze.png", surviveFocusChange = true)
-@NbBundle.Messages("CTL_DeSelectBlazesAction=Deselect Blazes")
+@ActionID(category = "Selection", id = "au.gov.asd.tac.constellation.functionality.blaze.DeselectBlazesAction")
+@ActionRegistration(displayName = "#CTL_DeselectBlazesAction", iconBase = "au/gov/asd/tac/constellation/graph/visual/plugins/blaze/resources/blaze.png", surviveFocusChange = true)
+@NbBundle.Messages("CTL_DeselectBlazesAction=Deselect Blazes")
 @ActionReference(path = "Menu/Selection", position = 460)
-public class DeSelectBlazesAction extends SimplePluginAction {
+public class DeselectBlazesAction extends SimplePluginAction {
 
-    public DeSelectBlazesAction(final GraphNode context) {
+    public DeselectBlazesAction(final GraphNode context) {
         super(context, VisualGraphPluginRegistry.DESELECT_BLAZES, true);
     }
 }

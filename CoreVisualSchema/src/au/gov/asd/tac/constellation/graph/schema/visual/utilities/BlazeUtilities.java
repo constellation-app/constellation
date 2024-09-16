@@ -83,8 +83,7 @@ public class BlazeUtilities {
      */
     public static Pair<BitSet, ConstellationColor> getSelection(final Graph graph, ConstellationColor blazeColor) {
         final BitSet vertices = new BitSet();
-        final ReadableGraph readableGraph = graph.getReadableGraph();
-        try {
+        try (final ReadableGraph readableGraph = graph.getReadableGraph()) {
             final int vertexBlazeAttributeId = VisualConcept.VertexAttribute.BLAZE.get(readableGraph);
             final int vertexSelectedAttributeId = VisualConcept.VertexAttribute.SELECTED.get(readableGraph);
             final int vertexCount = readableGraph.getVertexCount();
@@ -104,8 +103,6 @@ public class BlazeUtilities {
             if (blazeColor == null) {
                 blazeColor = BlazeUtilities.DEFAULT_BLAZE.getColor();
             }
-        } finally {
-            readableGraph.release();
         }
 
         return new Pair<>(vertices, blazeColor);
