@@ -264,8 +264,9 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
      * Initialise the TopComponent state.
      */
     private void init() {
-        displayPanel.add(visualManager.getVisualComponent(), BorderLayout.CENTER);
-
+        if (visualManager != null) {
+            displayPanel.add(visualManager.getVisualComponent(), BorderLayout.CENTER);
+        }
         DropTargetAdapter dta = new DropTargetAdapter() {
             @Override
             public void dragEnter(DropTargetDragEvent dtde) {
@@ -434,9 +435,19 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         this.graph = new DualGraph(null);
 
         graphVisualManagerFactory = Lookup.getDefault().lookup(GraphVisualManagerFactory.class);
-        visualManager = graphVisualManagerFactory.constructVisualManager(graph);
-        visualManager.startProcessing();
+        System.out.println("a");
+        final boolean isHeadless = Boolean.parseBoolean(System.getProperty("java.awt.headless", "false"));
+        if (!isHeadless) {
+            visualManager = graphVisualManagerFactory.constructVisualManager(graph);
+            System.out.println("b");
+            visualManager.startProcessing();
+        } else {
+            System.out.println("visual manager null");
+            visualManager = null;
+        }
+        System.out.println("c");
         graphNode = new GraphNode(graph, gdo, this, visualManager);
+        System.out.println("d");
         content = new InstanceContent();
         init();
         MemoryManager.newObject(VisualGraphTopComponent.class);
@@ -1102,7 +1113,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         private final boolean deleteOldGdo;
         private boolean cancelled;
         private GraphReadMethods copy;
-        final private Semaphore waiter;
+        private final Semaphore waiter;
 
         /**
          * Construct a new BackgroundWriter.
