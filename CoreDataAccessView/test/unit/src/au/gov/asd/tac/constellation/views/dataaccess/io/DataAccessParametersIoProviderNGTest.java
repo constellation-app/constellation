@@ -283,7 +283,7 @@ public class DataAccessParametersIoProviderNGTest {
             DataAccessParametersIoProvider.saveParameters(tabPane);
             
             if (isSaveExpected) {
-                jsonIOStaticMock.verify(() -> JsonIO.saveJsonPreferences(
+                jsonIOStaticMock.verify(() -> JsonIO.saveJsonPreferencesWithKeyboardShortcut(
                         eq(Optional.of("DataAccessView")),
                         eq(mockedPrefConstruction.constructed())
                 ));
