@@ -152,7 +152,6 @@ public class RecentGraphScreenshotUtilities {
      * @param graph The graph to take a screenshot of
      */
     public static synchronized void takeScreenshot(final String filepath, final Graph graph) {
-        System.out.println("takeScreenshot");
         final String pathHash = hashFilePath(filepath);
         final String imageFile = getScreenshotsDir() + File.separator + pathHash + FileExtensionConstants.PNG;
         final Path source = Paths.get(imageFile);
@@ -187,7 +186,6 @@ public class RecentGraphScreenshotUtilities {
         } catch (final IOException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
-        System.out.println("screenshot done");
     }
 
     protected static void requestGraphActive(final Graph graph, final Semaphore semaphore) {
