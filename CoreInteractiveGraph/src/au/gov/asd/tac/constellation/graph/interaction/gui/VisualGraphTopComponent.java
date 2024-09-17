@@ -438,28 +438,19 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         this.graph = new DualGraph(null);
 
         graphVisualManagerFactory = Lookup.getDefault().lookup(GraphVisualManagerFactory.class);
-        System.out.println("a");
 
         if (!IS_HEADLESS) {
             visualManager = graphVisualManagerFactory.constructVisualManager(graph);
-            System.out.println("b");
             visualManager.startProcessing();
         } else {
-            System.out.println("visual manager null");
             visualManager = null;
-            //visualManager = new VisualManager(null, null);
         }
-        System.out.println("c");
+
         graphNode = new GraphNode(graph, gdo, this, visualManager);
-        System.out.println("d");
         content = new InstanceContent();
-        System.out.println("e");
         init();
-        System.out.println("f");
         MemoryManager.newObject(VisualGraphTopComponent.class);
-        System.out.println("g");
         cleaner.register(this, cleanupAction);
-        System.out.println("h");
     }
 
     /**
