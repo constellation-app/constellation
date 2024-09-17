@@ -23,6 +23,8 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.MockedConstruction;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
@@ -87,22 +89,25 @@ public class VisualGraphTopComponentNGTest {
             // Mock variables
             final GraphDataObject mockGDO = mock(GraphDataObject.class);
             final FileObject mockFileObject = mock(FileObject.class);
+
             when(mockGDO.isInMemory()).thenReturn(false);
             when(mockGDO.isValid()).thenReturn(true);
             when(mockGDO.getPrimaryFile()).thenReturn(mockFileObject);
+            try {
+                when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
+            } catch (IOException e) {
+                LOGGER.log(Level.WARNING, "Caught exception in mockGDO", e);
+            }
+
             when(mockFileObject.getPath()).thenReturn("");
 
             // Mock contruct save as action, GraphNode
-            try (MockedConstruction<SaveAsAction> mockSaveAsAction = Mockito.mockConstruction(SaveAsAction.class);) {
-
+            try {
                 VisualGraphTopComponent instance = new VisualGraphTopComponent();
                 instance.getGraphNode().setDataObject(mockGDO);
                 instance.saveGraph();
 
                 assertEquals(instance.getGraphNode().getDataObject(), mockGDO);
-                assertEquals(mockSaveAsAction.constructed().size(), 1);
-                verify(mockSaveAsAction.constructed().get(0)).actionPerformed(null);
-                verify(mockSaveAsAction.constructed().get(0)).isSaved();
             } catch (IOException e) {
                 LOGGER.log(Level.WARNING, "Caught exception in VisualGraphTopComponent test", e);
             }
@@ -120,7 +125,16 @@ public class VisualGraphTopComponentNGTest {
         Platform.runLater(() -> {
             // Mock variables
             final GraphDataObject mockGDO = mock(GraphDataObject.class);
+            final FileObject mockFileObject = mock(FileObject.class);
+
             when(mockGDO.isValid()).thenReturn(false);
+            when(mockGDO.getPrimaryFile()).thenReturn(mockFileObject);
+            when(mockFileObject.getPath()).thenReturn("");
+            try {
+                when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
+            } catch (IOException e) {
+                LOGGER.log(Level.WARNING, "Caught exception in mockGDO", e);
+            }
 
             // Mock contruct save as action, GraphNode
             try (MockedConstruction<SaveAsAction> mockSaveAsAction = Mockito.mockConstruction(SaveAsAction.class);) {
@@ -150,8 +164,18 @@ public class VisualGraphTopComponentNGTest {
         Platform.runLater(() -> {
             // Mock variables
             final GraphDataObject mockGDO = mock(GraphDataObject.class);
+            final FileObject mockFileObject = mock(FileObject.class);
+
             when(mockGDO.isInMemory()).thenReturn(true);
             when(mockGDO.isValid()).thenReturn(true);
+            when(mockGDO.getPrimaryFile()).thenReturn(mockFileObject);
+            try {
+                when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
+            } catch (IOException e) {
+                LOGGER.log(Level.WARNING, "Caught exception in mockGDO", e);
+            }
+
+            when(mockFileObject.getPath()).thenReturn("");
 
             // Mock contruct save as action, GraphNode
             try (MockedConstruction<SaveAsAction> mockSaveAsAction = Mockito.mockConstruction(SaveAsAction.class);) {

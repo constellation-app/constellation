@@ -1159,18 +1159,19 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 //        - if backup was not found throw load error
                 final FileObject fileobj = freshGdo.getPrimaryFile();
                 final File srcFile = new File(fileobj.getPath());
-                final String srcfilePath = srcFile.getParent().concat(File.separator).concat(this.name).concat(".").concat(fileobj.getExt());
 
                 if (srcFile.exists() && !srcFile.isDirectory() && FileUtils.sizeOf(srcFile) > 0) {
+                    final String srcfilePath = srcFile.getParent().concat(File.separator).concat(this.name).concat(".").concat(fileobj.getExt());
                     // Create a backup copy of the file before overwriting it. If the backup copy fails, then code will never
                     // get to execute the save, so the actual file should remain intact. If the save fails, the backup file will
                     // already have been written.
                     FileUtils.copyFile(new File(srcfilePath), new File(srcfilePath.concat(FileExtensionConstants.BACKUP)));
                 }
-
-                try (OutputStream out = new BufferedOutputStream(freshGdo.getPrimaryFile().getOutputStream())) {
-                    // Write the graph.
-                    cancelled = new GraphJsonWriter().writeGraphToZip(copy, out, new HandleIoProgress("Writing..."));
+                if (freshGdo.getPrimaryFile().getOutputStream() != null) {
+                    try (OutputStream out = new BufferedOutputStream(freshGdo.getPrimaryFile().getOutputStream())) {
+                        // Write the graph.
+                        cancelled = new GraphJsonWriter().writeGraphToZip(copy, out, new HandleIoProgress("Writing..."));
+                    }
                 }
                 SaveNotification.saved(freshGdo.getPrimaryFile().getPath());
             } catch (final Exception ex) {
