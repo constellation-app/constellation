@@ -260,6 +260,8 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     private static final Cleaner cleaner = Cleaner.create();
     private static final Runnable cleanupAction = () -> MemoryManager.finalizeObject(VisualGraphTopComponent.class);
 
+    private static final boolean IS_HEADLESS = Boolean.parseBoolean(System.getProperty("java.awt.headless", "false"));
+
     /**
      * Initialise the TopComponent state.
      */
@@ -296,8 +298,9 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 }
             }
         };
-
-        displayPanel.setDropTarget(new DropTarget(displayPanel, DnDConstants.ACTION_COPY, dta, true));
+        if (!IS_HEADLESS) {
+            displayPanel.setDropTarget(new DropTarget(displayPanel, DnDConstants.ACTION_COPY, dta, true));
+        }
 
         content.add(getActionMap());
         savable = new MySavable();
@@ -436,22 +439,27 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
         graphVisualManagerFactory = Lookup.getDefault().lookup(GraphVisualManagerFactory.class);
         System.out.println("a");
-        final boolean isHeadless = Boolean.parseBoolean(System.getProperty("java.awt.headless", "false"));
-        if (!isHeadless) {
+
+        if (!IS_HEADLESS) {
             visualManager = graphVisualManagerFactory.constructVisualManager(graph);
             System.out.println("b");
             visualManager.startProcessing();
         } else {
             System.out.println("visual manager null");
             visualManager = null;
+            //visualManager = new VisualManager(null, null);
         }
         System.out.println("c");
         graphNode = new GraphNode(graph, gdo, this, visualManager);
         System.out.println("d");
         content = new InstanceContent();
+        System.out.println("e");
         init();
+        System.out.println("f");
         MemoryManager.newObject(VisualGraphTopComponent.class);
+        System.out.println("g");
         cleaner.register(this, cleanupAction);
+        System.out.println("h");
     }
 
     /**
@@ -486,7 +494,9 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     @Override
     public void requestActive() {
         super.requestActive();
-        visualManager.getVisualComponent().requestFocusInWindow();
+        if (visualManager != null) {
+            visualManager.getVisualComponent().requestFocusInWindow();
+        }
     }
 
     /**
