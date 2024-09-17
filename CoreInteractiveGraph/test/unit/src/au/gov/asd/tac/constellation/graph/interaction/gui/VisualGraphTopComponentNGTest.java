@@ -28,6 +28,7 @@ import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import org.openide.filesystems.FileObject;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
@@ -52,7 +53,7 @@ public class VisualGraphTopComponentNGTest {
             System.out.println("\n**** SETUP ERROR: " + e);
             throw e;
         }
-        
+
         System.setProperty("java.awt.headless", "true");
     }
 
@@ -70,7 +71,7 @@ public class VisualGraphTopComponentNGTest {
                 throw e;
             }
         }
-        
+
         System.clearProperty("java.awt.headless");
     }
 
@@ -81,11 +82,15 @@ public class VisualGraphTopComponentNGTest {
      */
     @Test
     public void testSaveGraphNotInMemory() throws Exception {
-        System.out.println("saveGraph not in memory");
+        System.out.println("saveGraph not in memory and valid");
         Platform.runLater(() -> {
             // Mock variables
             final GraphDataObject mockGDO = mock(GraphDataObject.class);
-            when(mockGDO.isInMemory()).thenReturn(true);
+            final FileObject mockFileObject = mock(FileObject.class);
+            when(mockGDO.isInMemory()).thenReturn(false);
+            when(mockGDO.isValid()).thenReturn(true);
+            when(mockGDO.getPrimaryFile()).thenReturn(mockFileObject);
+            when(mockFileObject.getPath()).thenReturn("");
 
             // Mock contruct save as action, GraphNode
             try (MockedConstruction<SaveAsAction> mockSaveAsAction = Mockito.mockConstruction(SaveAsAction.class);) {
@@ -134,38 +139,38 @@ public class VisualGraphTopComponentNGTest {
         });
     }
 
-//    /**
-//     * Test of saveGraph method, of class VisualGraphTopComponent.
-//     *
-//     * @throws Exception
-//     */
-//    @Test
-//    public void test() throws Exception {
-//        System.out.println("handleSave");
-//        Platform.runLater(() -> {
-//            //System.setProperty("java.awt.headless", "true");
-//
-//            // Mock variables
-//            final GraphDataObject mockGDO = mock(GraphDataObject.class);
-//            when(mockGDO.isValid()).thenReturn(false);
-//
-//            // Mock contruct save as action, GraphNode
-//            try (MockedConstruction<SaveAsAction> mockSaveAsAction = Mockito.mockConstruction(SaveAsAction.class);) {
-//
-//                VisualGraphTopComponent instance = new VisualGraphTopComponent();
-//
-//                instance.getGraphNode().setDataObject(mockGDO);
-//                instance.saveGraph();
-//
-//                assertEquals(instance.getGraphNode().getDataObject(), mockGDO);
-//                assertEquals(mockSaveAsAction.constructed().size(), 1);
-//                verify(mockSaveAsAction.constructed().get(0)).actionPerformed(null);
-//                verify(mockSaveAsAction.constructed().get(0)).isSaved();
-//            } catch (IOException | HeadlessException e) {
-//                LOGGER.log(Level.WARNING, "Caught exception in VisualGraphTopComponent test", e);
-//            }
-//
-//            
-//        });
-//    }
+    /**
+     * Test of saveGraph method, of class VisualGraphTopComponent.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testSaveGraphInMemory() throws Exception {
+        System.out.println("testSaveGraphInMemory");
+        Platform.runLater(() -> {
+            //System.setProperty("java.awt.headless", "true");
+
+            // Mock variables
+            final GraphDataObject mockGDO = mock(GraphDataObject.class);
+            when(mockGDO.isInMemory()).thenReturn(true);
+            when(mockGDO.isValid()).thenReturn(true);
+
+            // Mock contruct save as action, GraphNode
+            try (MockedConstruction<SaveAsAction> mockSaveAsAction = Mockito.mockConstruction(SaveAsAction.class);) {
+
+                VisualGraphTopComponent instance = new VisualGraphTopComponent();
+
+                instance.getGraphNode().setDataObject(mockGDO);
+                instance.saveGraph();
+
+                assertEquals(instance.getGraphNode().getDataObject(), mockGDO);
+                assertEquals(mockSaveAsAction.constructed().size(), 1);
+                verify(mockSaveAsAction.constructed().get(0)).actionPerformed(null);
+                verify(mockSaveAsAction.constructed().get(0)).isSaved();
+            } catch (IOException | HeadlessException e) {
+                LOGGER.log(Level.WARNING, "Caught exception in VisualGraphTopComponent test", e);
+            }
+
+        });
+    }
 }

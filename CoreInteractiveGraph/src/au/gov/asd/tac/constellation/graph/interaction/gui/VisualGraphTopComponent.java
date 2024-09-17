@@ -124,7 +124,6 @@ import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
-import javafx.application.Platform;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
@@ -966,7 +965,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 // Create a new file and write to it.
                 final String tmpnam = String.format("%s_tmp%08x", name, gdo.hashCode());
                 final GraphDataObject freshGdo = (GraphDataObject) gdo.createFromTemplate(gdo.getFolder(), tmpnam);
-
                 // Create a 'secondary loop', allows screenshots to be taken when closing consty
                 // Otherwise consty locks up as screenshots and some GUI occupy the same dispatch thread
                 final Toolkit tk = Toolkit.getDefaultToolkit();
@@ -975,18 +973,20 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
                 final Semaphore waiter = new Semaphore(0);
 
-                Platform.runLater(() -> {
+                new Thread(() -> {
                     // Temporary file made so the absolute path has correct file seperators
                     final File tempFile = new File(gdo.getPrimaryFile().getPath());
                     RecentGraphScreenshotUtilities.takeScreenshot(tempFile.getAbsolutePath(), graph);
                     // Exit the secondary loop
                     waiter.release();
                     loop.exit();
-                });
+                }).start();
 
                 // Start loop and report errors if they happen
-                if (!loop.enter()) {
-                    LOGGER.log(Level.SEVERE, "Error with starting secondary loop in VisualGraphTopComponent");
+                if (!IS_HEADLESS) {
+                    if (!loop.enter()) {
+                        LOGGER.log(Level.SEVERE, "Error with starting secondary loop in VisualGraphTopComponent");
+                    }
                 }
 
                 // Wait for screenshot to finish
