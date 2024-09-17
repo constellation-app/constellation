@@ -984,7 +984,8 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
                 // Start loop and report errors if they happen
                 if (!IS_HEADLESS) {
-                    if (!loop.enter()) {
+                    final boolean result = loop.enter();
+                    if (!result) {
                         LOGGER.log(Level.SEVERE, "Error with starting secondary loop in VisualGraphTopComponent");
                     }
                 }

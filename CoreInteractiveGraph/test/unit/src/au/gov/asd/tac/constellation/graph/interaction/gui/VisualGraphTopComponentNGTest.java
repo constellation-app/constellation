@@ -148,8 +148,6 @@ public class VisualGraphTopComponentNGTest {
     public void testSaveGraphInMemory() throws Exception {
         System.out.println("testSaveGraphInMemory");
         Platform.runLater(() -> {
-            //System.setProperty("java.awt.headless", "true");
-
             // Mock variables
             final GraphDataObject mockGDO = mock(GraphDataObject.class);
             when(mockGDO.isInMemory()).thenReturn(true);
