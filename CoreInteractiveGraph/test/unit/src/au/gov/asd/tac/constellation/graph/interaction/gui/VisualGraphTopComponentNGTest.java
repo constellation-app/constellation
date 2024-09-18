@@ -136,7 +136,7 @@ public class VisualGraphTopComponentNGTest {
 
             final int connectionMode = 1;
             final int graphNotFound = -1107;
-            when(mockReadableGraph.getObjectValue(connectionMode, 0)).thenReturn(ConnectionMode.EDGE);
+            when(mockReadableGraph.getObjectValue(connectionMode, 0)).thenReturn(null);
             when(mockReadableGraph.getAttribute(GraphElementType.GRAPH, "connection_mode")).thenReturn(connectionMode);
             when(mockReadableGraph.getAttribute(GraphElementType.GRAPH, "draw_flags")).thenReturn(graphNotFound);
 
@@ -222,7 +222,7 @@ public class VisualGraphTopComponentNGTest {
             }
 
             // Mock contruct save as action, GraphNode
-            try (MockedConstruction<SaveAsAction> mockSaveAsAction = Mockito.mockConstruction(SaveAsAction.class);) {
+            try (MockedConstruction<SaveAsAction> mockSaveAsAction = Mockito.mockConstruction(SaveAsAction.class)) {
 
                 VisualGraphTopComponent instance = new VisualGraphTopComponent(mockGDO, dgSpy);
                 instance.getGraphNode().setDataObject(mockGDO);
@@ -275,7 +275,7 @@ public class VisualGraphTopComponentNGTest {
             when(mockReadableGraph.getAttribute(GraphElementType.GRAPH, "draw_flags")).thenReturn(graphNotFound);
 
             // Mock contruct save as action, GraphNode
-            try (MockedConstruction<SaveAsAction> mockSaveAsAction = Mockito.mockConstruction(SaveAsAction.class);) {
+            try (MockedConstruction<SaveAsAction> mockSaveAsAction = Mockito.mockConstruction(SaveAsAction.class)) {
 
                 VisualGraphTopComponent instance = new VisualGraphTopComponent(mockGDO, dgSpy);
 

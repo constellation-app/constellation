@@ -642,16 +642,17 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             toggleDrawDirectedAction.putValue(Action.SMALL_ICON, isDrawingDirectedTransactions ? DIRECTED_ICON : UNDIRECTED_ICON);
             toggleDrawDirectedAction.putValue(Action.SHORT_DESCRIPTION, isDrawingDirectedTransactions ? DIRECTED_SHORT_DESCRIPTION : UNDIRECTED_SHORT_DESCRIPTION);
             toggleDrawDirectedAction.setEnabled(isDrawingMode);
-
-            switch (connectionMode) {
-                case LINK ->
-                    drawLinksAction.putValue(Action.SELECTED_KEY, true);
-                case EDGE ->
-                    drawEdgesAction.putValue(Action.SELECTED_KEY, true);
-                case TRANSACTION ->
-                    drawTransactionsAction.putValue(Action.SELECTED_KEY, true);
-                default ->
-                    throw new IllegalStateException("Unknown ConnectionMode: " + connectionMode);
+            if (connectionMode != null) {
+                switch (connectionMode) {
+                    case LINK ->
+                        drawLinksAction.putValue(Action.SELECTED_KEY, true);
+                    case EDGE ->
+                        drawEdgesAction.putValue(Action.SELECTED_KEY, true);
+                    case TRANSACTION ->
+                        drawTransactionsAction.putValue(Action.SELECTED_KEY, true);
+                    default ->
+                        throw new IllegalStateException("Unknown ConnectionMode: " + connectionMode);
+                }
             }
         } finally {
             rg.release();
@@ -991,6 +992,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 if (!IS_HEADLESS) {
                     final boolean result = loop.enter();
                     if (!result) {
+                        System.out.println("HUGE BRAIN");
                         LOGGER.log(Level.SEVERE, "Error with starting secondary loop in VisualGraphTopComponent");
                     }
                 }
