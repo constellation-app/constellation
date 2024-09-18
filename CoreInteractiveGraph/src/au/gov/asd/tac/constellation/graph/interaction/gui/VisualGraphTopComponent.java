@@ -992,7 +992,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 if (!IS_HEADLESS) {
                     final boolean result = loop.enter();
                     if (!result) {
-                        System.out.println("HUGE BRAIN");
                         LOGGER.log(Level.SEVERE, "Error with starting secondary loop in VisualGraphTopComponent");
                     }
                 }
