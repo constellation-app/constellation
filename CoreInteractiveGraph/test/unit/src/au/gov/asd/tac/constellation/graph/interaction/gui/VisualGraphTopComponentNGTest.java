@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.graph.interaction.gui;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import static au.gov.asd.tac.constellation.graph.GraphElementType.EDGE;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.io.SaveAsAction;
@@ -111,7 +110,7 @@ public class VisualGraphTopComponentNGTest {
             assertNotNull(instance);
         });
     }
-    
+
     @Test
     public void testConstructorWithParams() {
         System.out.println("testConstructorWithParams");
@@ -132,7 +131,7 @@ public class VisualGraphTopComponentNGTest {
             }
 
             when(mockFileObject.getPath()).thenReturn("");
-            
+
             when(dgSpy.getReadableGraph()).thenReturn(mockReadableGraph);
 
             final int connectionMode = 1;
