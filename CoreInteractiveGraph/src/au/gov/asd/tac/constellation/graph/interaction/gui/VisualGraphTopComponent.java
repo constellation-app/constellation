@@ -465,8 +465,13 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
         this.graph = graph;
         graphVisualManagerFactory = Lookup.getDefault().lookup(GraphVisualManagerFactory.class);
-        visualManager = graphVisualManagerFactory.constructVisualManager(graph);
-        visualManager.startProcessing();
+
+        if (!IS_HEADLESS) {
+            visualManager = graphVisualManagerFactory.constructVisualManager(graph);
+            visualManager.startProcessing();
+        } else {
+            visualManager = null;
+        }
 
         Schema schema = graph.getSchema();
         if (schema instanceof GraphNodeFactory graphNodeFactory) {

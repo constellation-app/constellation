@@ -15,8 +15,12 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.gui;
 
+import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.io.SaveAsAction;
+import au.gov.asd.tac.constellation.graph.locking.DualGraph;
+import static au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode.LINK;
 import java.awt.HeadlessException;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
@@ -28,6 +32,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.MockedConstruction;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.openide.filesystems.FileObject;
@@ -127,9 +132,23 @@ public class VisualGraphTopComponentNGTest {
             final GraphDataObject mockGDO = mock(GraphDataObject.class);
             final FileObject mockFileObject = mock(FileObject.class);
 
+            final DualGraph dg = new DualGraph(null);
+            final DualGraph dgSpy = spy(dg);
+
+            final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
+
             when(mockGDO.isValid()).thenReturn(false);
             when(mockGDO.getPrimaryFile()).thenReturn(mockFileObject);
+
             when(mockFileObject.getPath()).thenReturn("");
+
+            when(dgSpy.getReadableGraph()).thenReturn(mockReadableGraph);
+
+            final int connectionMode = 1;
+            final int graphNotFound = -1107;
+            when(mockReadableGraph.getObjectValue(connectionMode, 0)).thenReturn(LINK);
+            when(mockReadableGraph.getAttribute(GraphElementType.GRAPH, "connection_mode")).thenReturn(connectionMode);
+            when(mockReadableGraph.getAttribute(GraphElementType.GRAPH, "draw_flags")).thenReturn(graphNotFound);
             try {
                 when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
             } catch (IOException e) {
@@ -139,7 +158,7 @@ public class VisualGraphTopComponentNGTest {
             // Mock contruct save as action, GraphNode
             try (MockedConstruction<SaveAsAction> mockSaveAsAction = Mockito.mockConstruction(SaveAsAction.class);) {
 
-                VisualGraphTopComponent instance = new VisualGraphTopComponent();
+                VisualGraphTopComponent instance = new VisualGraphTopComponent(mockGDO, dgSpy);
                 instance.getGraphNode().setDataObject(mockGDO);
                 instance.saveGraph();
 
@@ -159,6 +178,7 @@ public class VisualGraphTopComponentNGTest {
      * @throws Exception
      */
     @Test
+
     public void testSaveGraphInMemory() throws Exception {
         System.out.println("testSaveGraphInMemory");
         Platform.runLater(() -> {
