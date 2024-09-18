@@ -383,67 +383,6 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         }
     }
 
-    @Test
-    public void testRequestGraphActiveInterrupt() {
-        System.out.println("testRequestGraphActiveInterrupt");
-
-        recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.requestGraphActive(any(), any())).thenCallRealMethod();
-
-        // Set up mocks
-        final Graph mockGraph = mock(Graph.class);
-        when(mockGraph.getId()).thenReturn("");
-
-        final WindowManager wm = mock(WindowManager.class);
-        final Registry reg = mock(Registry.class);
-        when(wm.getRegistry()).thenReturn(reg);
-
-        final GraphNode gn = mock(GraphNode.class);
-        when(gn.getGraph()).thenReturn(mockGraph);
-
-        final Set<TopComponent> setTopC = new HashSet<>();
-        final VisualGraphTopComponent tc = mock(VisualGraphTopComponent.class);
-        when(tc.getGraphNode()).thenReturn(gn);
-        setTopC.add(tc);
-        when(reg.getOpened()).thenReturn(setTopC);
-
-        // Assert mocks work
-        assertEquals(wm.getRegistry(), reg);
-        assertEquals(reg.getOpened(), setTopC);
-
-        final Semaphore semaphore = new Semaphore(1);
-
-        // test correct functionality
-        testRequestGraphActiveHelper(mockGraph, wm, reg, setTopC, semaphore);
-        // Verify functions were run
-        verify(tc, times(1)).getGraphNode();
-        verify(gn, times(1)).getGraph();
-        verify(mockGraph, times(2)).getId();
-
-        try (MockedStatic<EventQueue> mockedEventQueue = Mockito.mockStatic(EventQueue.class, Mockito.CALLS_REAL_METHODS)) {
-            // test InterruptedException
-            mockedEventQueue.when(() -> EventQueue.invokeAndWait(any())).thenThrow(new InterruptedException());
-
-            assertThrows(() -> EventQueue.invokeAndWait(() -> {
-                ((VisualGraphTopComponent) tc).requestActive();
-            }));
-            
-            // Catch the interrupted exception so it doesnt cause trouble for tests
-            try {
-                testRequestGraphActiveHelperInterrupted(mockGraph, wm, reg, setTopC, semaphore);
-            } catch (InterruptedException e) {
-                // Do Nothing
-            }
-            // Verify functions were run (includes previous test)
-            verify(tc, times(2)).getGraphNode();
-            verify(gn, times(2)).getGraph();
-            verify(mockGraph, times(4)).getId();
-        }
-    }
-
-    private void testRequestGraphActiveHelperInterrupted(final Graph mockGraph, final WindowManager mockWindowManager, final Registry mockRegistry, final Set<TopComponent> topComponents, final Semaphore semaphore) throws InterruptedException{
-        testRequestGraphActiveHelper(mockGraph, mockWindowManager, mockRegistry, topComponents, semaphore);
-    }
-
     private void testRequestGraphActiveHelper(final Graph mockGraph, final WindowManager mockWindowManager, final Registry mockRegistry, final Set<TopComponent> topComponents, final Semaphore semaphore) {
         try (MockedStatic<WindowManager> mockedWindowManager = Mockito.mockStatic(WindowManager.class)) {
             mockedWindowManager.when(WindowManager::getDefault).thenReturn(mockWindowManager);

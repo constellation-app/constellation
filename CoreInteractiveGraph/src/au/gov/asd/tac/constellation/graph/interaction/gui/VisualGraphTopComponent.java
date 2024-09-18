@@ -650,8 +650,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                     drawEdgesAction.putValue(Action.SELECTED_KEY, true);
                 case TRANSACTION ->
                     drawTransactionsAction.putValue(Action.SELECTED_KEY, true);
-                default ->
-                    throw new IllegalStateException("Unknown ConnectionMode: " + connectionMode);
             }
         } finally {
             rg.release();
