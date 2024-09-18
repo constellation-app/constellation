@@ -16,12 +16,12 @@
 package au.gov.asd.tac.constellation.graph.interaction.gui;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import static au.gov.asd.tac.constellation.graph.GraphElementType.META;
-import static au.gov.asd.tac.constellation.graph.GraphElementType.TRANSACTION;
+import static au.gov.asd.tac.constellation.graph.GraphElementType.EDGE;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.io.SaveAsAction;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
 import static au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode.LINK;
 import java.awt.HeadlessException;
 import java.io.IOException;
@@ -111,15 +111,10 @@ public class VisualGraphTopComponentNGTest {
             assertNotNull(instance);
         });
     }
-
-    /**
-     * Test of saveGraph method, of class VisualGraphTopComponent.
-     *
-     * @throws Exception
-     */
+    
     @Test
-    public void testSaveGraphNotInMemory() throws Exception {
-        System.out.println("saveGraph not in memory and valid");
+    public void testConstructorWithParams() {
+        System.out.println("testConstructorWithParams");
         Platform.runLater(() -> {
             // Mock variables
             final GraphDataObject mockGDO = mock(GraphDataObject.class);
@@ -137,12 +132,47 @@ public class VisualGraphTopComponentNGTest {
             }
 
             when(mockFileObject.getPath()).thenReturn("");
+            
+            when(dgSpy.getReadableGraph()).thenReturn(mockReadableGraph);
 
             final int connectionMode = 1;
             final int graphNotFound = -1107;
-            when(mockReadableGraph.getObjectValue(connectionMode, 0)).thenReturn(META);
+            when(mockReadableGraph.getObjectValue(connectionMode, 0)).thenReturn(ConnectionMode.EDGE);
             when(mockReadableGraph.getAttribute(GraphElementType.GRAPH, "connection_mode")).thenReturn(connectionMode);
             when(mockReadableGraph.getAttribute(GraphElementType.GRAPH, "draw_flags")).thenReturn(graphNotFound);
+
+            // Assert constructed correctely
+            final VisualGraphTopComponent instance = new VisualGraphTopComponent(mockGDO, dgSpy);
+            instance.getGraphNode().setDataObject(mockGDO);
+            assertEquals(instance.getGraphNode().getDataObject(), mockGDO);
+            assertNotNull(instance);
+        });
+    }
+
+    /**
+     * Test of saveGraph method, of class VisualGraphTopComponent.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testSaveGraphNotInMemory() throws Exception {
+        System.out.println("saveGraph not in memory and valid");
+        Platform.runLater(() -> {
+            // Mock variables
+            final GraphDataObject mockGDO = mock(GraphDataObject.class);
+            final FileObject mockFileObject = mock(FileObject.class);
+            final DualGraph dgSpy = spy(new DualGraph(null));
+
+            when(mockGDO.isInMemory()).thenReturn(false);
+            when(mockGDO.isValid()).thenReturn(true);
+            when(mockGDO.getPrimaryFile()).thenReturn(mockFileObject);
+            try {
+                when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
+            } catch (IOException e) {
+                LOGGER.log(Level.WARNING, "Caught exception in mockGDO", e);
+            }
+
+            when(mockFileObject.getPath()).thenReturn("");
 
             // Mock contruct save as action, GraphNode
             try {
@@ -237,10 +267,11 @@ public class VisualGraphTopComponentNGTest {
             }
 
             when(mockFileObject.getPath()).thenReturn("");
+            when(dgSpy.getReadableGraph()).thenReturn(mockReadableGraph);
 
             final int connectionMode = 1;
             final int graphNotFound = -1107;
-            when(mockReadableGraph.getObjectValue(connectionMode, 0)).thenReturn(TRANSACTION);
+            when(mockReadableGraph.getObjectValue(connectionMode, 0)).thenReturn(ConnectionMode.TRANSACTION);
             when(mockReadableGraph.getAttribute(GraphElementType.GRAPH, "connection_mode")).thenReturn(connectionMode);
             when(mockReadableGraph.getAttribute(GraphElementType.GRAPH, "draw_flags")).thenReturn(graphNotFound);
 
