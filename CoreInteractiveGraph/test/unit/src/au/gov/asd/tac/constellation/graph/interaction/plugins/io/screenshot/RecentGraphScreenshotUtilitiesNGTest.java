@@ -51,7 +51,6 @@ import org.openide.windows.WindowManager;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertThrows;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -87,17 +86,6 @@ public class RecentGraphScreenshotUtilitiesNGTest {
     public void setUpMethod() throws Exception {
         recentGraphScreenshotUtilitiesMock.reset();
         recentFilesMock.reset();
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
-    }
-
-    /**
-     * Test of getScreenshotsDir method, of class RecentGraphScreenshotUtilities.
-     */
-    @Test
-    public void testGetScreenshotsDir() {
     }
 
     /**
@@ -438,14 +426,13 @@ public class RecentGraphScreenshotUtilitiesNGTest {
             assertThrows(() -> EventQueue.invokeAndWait(() -> {
                 ((VisualGraphTopComponent) tc).requestActive();
             }));
-            new Thread(() -> {
-                testRequestGraphActiveHelper(mockGraph, wm, reg, setTopC, semaphore);
-            }).start();
+
+            testRequestGraphActiveHelper(mockGraph, wm, reg, setTopC, semaphore);
 
             // Verify functions were run (includes previous test)
-            verify(tc, times(1)).getGraphNode();
-            verify(gn, times(1)).getGraph();
-            verify(mockGraph, times(2)).getId();
+            verify(tc, times(2)).getGraphNode();
+            verify(gn, times(2)).getGraph();
+            verify(mockGraph, times(4)).getId();
         }
     }
 
