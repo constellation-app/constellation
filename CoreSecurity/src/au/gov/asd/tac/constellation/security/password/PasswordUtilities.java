@@ -39,6 +39,8 @@ public class PasswordUtilities {
     private static byte[] iv = null;
     private static byte[] key = null;
     
+    public static final int T_LEN = 128;
+    
     private PasswordUtilities() {
         throw new IllegalStateException("Utility class");
     }
