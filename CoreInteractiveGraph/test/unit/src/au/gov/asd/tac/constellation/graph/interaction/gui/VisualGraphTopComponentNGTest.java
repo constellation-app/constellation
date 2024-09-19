@@ -34,6 +34,7 @@ import org.mockito.MockedConstruction;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.openide.filesystems.FileObject;
@@ -108,6 +109,7 @@ public class VisualGraphTopComponentNGTest {
             instance.getGraphNode().setDataObject(mockGDO);
             assertEquals(instance.getGraphNode().getDataObject(), mockGDO);
             assertNotNull(instance);
+            assertNotNull(instance.getUndoRedo());
         });
     }
 
@@ -145,6 +147,7 @@ public class VisualGraphTopComponentNGTest {
             instance.getGraphNode().setDataObject(mockGDO);
             assertEquals(instance.getGraphNode().getDataObject(), mockGDO);
             assertNotNull(instance);
+            assertNotNull(instance.getUndoRedo());
         });
     }
 
@@ -180,6 +183,12 @@ public class VisualGraphTopComponentNGTest {
                 instance.saveGraph();
 
                 assertEquals(instance.getGraphNode().getDataObject(), mockGDO);
+                
+                verify(mockGDO).isValid();
+                verify(mockGDO).isInMemory();
+                verify(mockGDO, times(2)).getName();
+                verify(mockGDO, times(4)).getPrimaryFile();
+
             } catch (IOException e) {
                 LOGGER.log(Level.WARNING, "Caught exception in VisualGraphTopComponent test", e);
             }
@@ -232,6 +241,9 @@ public class VisualGraphTopComponentNGTest {
                 assertEquals(mockSaveAsAction.constructed().size(), 1);
                 verify(mockSaveAsAction.constructed().get(0)).actionPerformed(null);
                 verify(mockSaveAsAction.constructed().get(0)).isSaved();
+                
+                verify(mockGDO).isValid();
+                verify(mockGDO).getName();
             } catch (IOException e) {
                 LOGGER.log(Level.WARNING, "Caught exception in VisualGraphTopComponent test", e);
             }
@@ -286,6 +298,9 @@ public class VisualGraphTopComponentNGTest {
                 assertEquals(mockSaveAsAction.constructed().size(), 1);
                 verify(mockSaveAsAction.constructed().get(0)).actionPerformed(null);
                 verify(mockSaveAsAction.constructed().get(0)).isSaved();
+                
+                verify(mockGDO).isValid();
+                verify(mockGDO).getName();
             } catch (IOException | HeadlessException e) {
                 LOGGER.log(Level.WARNING, "Caught exception in VisualGraphTopComponent test", e);
             }

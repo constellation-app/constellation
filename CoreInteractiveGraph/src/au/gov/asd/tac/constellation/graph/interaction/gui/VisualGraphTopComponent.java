@@ -429,27 +429,9 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
      * Construct a new TopComponent with an empty graph.
      */
     public VisualGraphTopComponent() {
-        initComponents();
+        this(GraphObjectUtilities.createMemoryDataObject("graph", true), new DualGraph(null));
         setName(NbBundle.getMessage(VisualGraphTopComponent.class, "CTL_VisualGraphTopComponent"));
         setToolTipText(NbBundle.getMessage(VisualGraphTopComponent.class, "HINT_VisualGraphTopComponent"));
-
-        final GraphDataObject gdo = GraphObjectUtilities.createMemoryDataObject("graph", true);
-        this.graph = new DualGraph(null);
-
-        graphVisualManagerFactory = Lookup.getDefault().lookup(GraphVisualManagerFactory.class);
-
-        if (!IS_HEADLESS) {
-            visualManager = graphVisualManagerFactory.constructVisualManager(graph);
-            visualManager.startProcessing();
-        } else {
-            visualManager = null;
-        }
-
-        graphNode = new GraphNode(graph, gdo, this, visualManager);
-        content = new InstanceContent();
-        init();
-        MemoryManager.newObject(VisualGraphTopComponent.class);
-        cleaner.register(this, cleanupAction);
     }
 
     /**
