@@ -30,14 +30,14 @@ public class PasswordDeobfuscatorNGTest {
     @Test
     public void testDeobfuscate() {
         System.out.println("deobfuscate");
-        
+
         final String password = "This is a password 1234!@#$";
         // Run obfuscate
         final ObfuscatedPassword op = PasswordObfuscator.obfuscate(password);
         // Assert obfuscation exists, and isn't the same as password
         assertNotNull(op);
         assertFalse(password.equals(op.toString()));
-        
+
         // Run deobfuscate
         final String result = PasswordDeobfuscator.deobfuscate(op);
         // Assert original password and deobfuscated match
