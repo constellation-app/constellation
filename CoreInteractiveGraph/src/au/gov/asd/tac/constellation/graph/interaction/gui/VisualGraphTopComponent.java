@@ -1155,8 +1155,9 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                     // already have been written.
                     FileUtils.copyFile(new File(srcfilePath), new File(srcfilePath.concat(FileExtensionConstants.BACKUP)));
                 }
-                if (freshGdo.getPrimaryFile().getOutputStream() != null) {
-                    try (OutputStream out = new BufferedOutputStream(freshGdo.getPrimaryFile().getOutputStream())) {
+                final OutputStream outputStream = freshGdo.getPrimaryFile().getOutputStream();
+                if (outputStream != null) {
+                    try (OutputStream out = new BufferedOutputStream(outputStream)) {
                         // Write the graph.
                         cancelled = new GraphJsonWriter().writeGraphToZip(copy, out, new HandleIoProgress("Writing..."));
                     }
