@@ -49,7 +49,7 @@ public class PasswordUtilities {
         if (iv == null) {
             final PasswordSecret secret = Lookup.getDefault().lookup(PasswordSecret.class);
             if (secret == null) {
-                throw new RuntimeException("Could not find initialisation vectore to use.");
+                throw new RuntimeException("Could not find initialisation vector to use.");
             }
             iv = secret.getIV();
         }
