@@ -72,6 +72,10 @@ public class PasswordUtilities {
         final KeyGenerator keyGenerator = KeyGenerator.getInstance(PasswordUtilities.ALG);
         final SecretKey secretKey = keyGenerator.generateKey();
         return secretKey.getEncoded();
+    }
 
+    public static void reset() {
+        iv = null;
+        key = null;
     }
 }

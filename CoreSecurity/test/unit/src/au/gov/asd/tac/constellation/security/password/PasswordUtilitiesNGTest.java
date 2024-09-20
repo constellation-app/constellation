@@ -39,6 +39,21 @@ public class PasswordUtilitiesNGTest {
     @Test
     public void testGetIV() {
         System.out.println("getIV");
+        PasswordUtilities.reset();
+
+        final byte[] firstResult = PasswordUtilities.getIV();
+        assertNotNull(firstResult);
+        final byte[] secondResult = PasswordUtilities.getIV();
+        assertEquals(firstResult, secondResult);
+    }
+
+    /**
+     * Test of getIV method, of class PasswordUtilities.
+     */
+    @Test
+    public void testGetIVException() {
+        System.out.println("getIV Exception");
+        PasswordUtilities.reset();
 
         // Exception can only be tested first
         final Lookup mockLookup = mock(Lookup.class);
@@ -53,11 +68,6 @@ public class PasswordUtilitiesNGTest {
         } catch (NoSuchElementException e) {
             // Left blank
         }
-
-        final byte[] firstResult = PasswordUtilities.getIV();
-        assertNotNull(firstResult);
-        final byte[] secondResult = PasswordUtilities.getIV();
-        assertEquals(firstResult, secondResult);
     }
 
     /**
@@ -66,6 +76,21 @@ public class PasswordUtilitiesNGTest {
     @Test
     public void testGetKey() {
         System.out.println("getKey");
+        PasswordUtilities.reset();
+
+        final byte[] firstResult = PasswordUtilities.getKey();
+        assertNotNull(firstResult);
+        final byte[] secondResult = PasswordUtilities.getKey();
+        assertEquals(firstResult, secondResult);
+    }
+
+    /**
+     * Test of getKey method, of class PasswordUtilities.
+     */
+    @Test
+    public void testGetKeyException() {
+        System.out.println("getKey Exception");
+        PasswordUtilities.reset();
 
         // Exception can only be tested first
         final Lookup mockLookup = mock(Lookup.class);
@@ -80,11 +105,6 @@ public class PasswordUtilitiesNGTest {
         } catch (NoSuchElementException e) {
             // Left blank
         }
-
-        final byte[] firstResult = PasswordUtilities.getKey();
-        assertNotNull(firstResult);
-        final byte[] secondResult = PasswordUtilities.getKey();
-        assertEquals(firstResult, secondResult);
     }
 
     /**
