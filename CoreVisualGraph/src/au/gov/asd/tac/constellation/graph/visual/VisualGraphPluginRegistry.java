@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.graph.visual;
 
-import au.gov.asd.tac.constellation.graph.visual.plugins.blaze.AddBlazePlugin;
 import au.gov.asd.tac.constellation.graph.visual.plugins.blaze.AddCustomBlazePlugin;
 import au.gov.asd.tac.constellation.graph.visual.plugins.blaze.DeselectBlazesPlugin;
 import au.gov.asd.tac.constellation.graph.visual.plugins.blaze.RemoveBlazePlugin;
@@ -55,7 +54,6 @@ import au.gov.asd.tac.constellation.graph.visual.plugins.select.structure.Select
  */
 public class VisualGraphPluginRegistry {
 
-    public static final String ADD_BLAZE = AddBlazePlugin.class.getName();
     public static final String ADD_CUSTOM_BLAZE = AddCustomBlazePlugin.class.getName();
     public static final String CHANGE_SELECTION = ChangeSelectionPlugin.class.getName();
     public static final String DESELECT_ALL = DeselectAllPlugin.class.getName();

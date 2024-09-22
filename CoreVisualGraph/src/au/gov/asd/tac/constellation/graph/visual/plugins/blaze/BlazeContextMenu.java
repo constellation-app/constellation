@@ -38,7 +38,6 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
-import javafx.util.Pair;
 import javax.swing.ImageIcon;
 import org.netbeans.api.annotations.common.StaticResource;
 import org.openide.util.ImageUtilities;
@@ -76,15 +75,13 @@ public class BlazeContextMenu implements ContextMenuProvider {
 
     @Override
     public void selectItem(final String item, final Graph graph, final GraphElementType elementType, final int elementId, final Vector3f unprojected) {
-
         Blaze clickedBlaze = null;
         int clickedVertexId = Graph.NOT_FOUND;
         BitSet selectedVertices = null;
         Plugin plugin = null;
         PluginParameters parameters = null;
 
-        final ReadableGraph rg = graph.getReadableGraph();
-        try {
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
             final int blazeAttributeId = VisualConcept.VertexAttribute.BLAZE.get(rg);
             if (blazeAttributeId != Graph.NOT_FOUND) {
                 clickedBlaze = rg.getObjectValue(blazeAttributeId, elementId);
@@ -103,8 +100,6 @@ public class BlazeContextMenu implements ContextMenuProvider {
                     }
                 }
             }
-        } finally {
-            rg.release();
         }
 
         if (clickedBlaze == null) {
@@ -116,11 +111,11 @@ public class BlazeContextMenu implements ContextMenuProvider {
                 final ConstellationColor defaultColor = clickedBlaze == null
                         ? BlazeUtilities.DEFAULT_BLAZE.getColor()
                         : clickedBlaze.getColor();
-                final Pair<Boolean, ConstellationColor> colorResult = BlazeUtilities.colorDialog(defaultColor);
-                if (colorResult.getKey()) {
+                final ConstellationColor colorResult = BlazeUtilities.colorDialog(defaultColor);
+                if (colorResult != null) {
                     plugin = PluginRegistry.get(VisualGraphPluginRegistry.ADD_CUSTOM_BLAZE);
                     parameters = DefaultPluginParameters.getDefaultParameters(plugin);
-                    parameters.setObjectValue(BlazeUtilities.COLOR_PARAMETER_ID, colorResult.getValue());
+                    parameters.setObjectValue(BlazeUtilities.COLOR_PARAMETER_ID, colorResult);
                 }
             }
             case UNSET_BLAZE -> {

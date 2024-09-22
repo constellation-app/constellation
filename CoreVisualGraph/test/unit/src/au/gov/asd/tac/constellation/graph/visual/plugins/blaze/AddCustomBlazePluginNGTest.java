@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.schema.visual.utilities.BlazeUtilities;
 import static au.gov.asd.tac.constellation.graph.schema.visual.utilities.BlazeUtilities.COLOR_PARAMETER_ID;
 import static au.gov.asd.tac.constellation.graph.schema.visual.utilities.BlazeUtilities.VERTEX_IDS_PARAMETER_ID;
 import static au.gov.asd.tac.constellation.graph.schema.visual.utilities.BlazeUtilities.VERTEX_ID_PARAMETER_ID;
@@ -74,6 +75,29 @@ public class AddCustomBlazePluginNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+    }
+    
+    /**
+     * Test of edit method, of class AddCustomBlazePlugin. Blaze added to one node, default color
+     * @throws java.lang.InterruptedException
+     */
+    @Test
+    public void testEditOneBlazeDefaultColor() throws InterruptedException {
+        System.out.println("editOneBlazeDefaultColor");
+        
+        final AddCustomBlazePlugin instance = new AddCustomBlazePlugin();        
+        final PluginParameters parameters = instance.createParameters();
+        parameters.setIntegerValue(VERTEX_ID_PARAMETER_ID, vxId2);
+        
+        assertNull(graph.getObjectValue(blazeVertexAttribute, vxId1));
+        assertNull(graph.getObjectValue(blazeVertexAttribute, vxId2));
+        assertNull(graph.getObjectValue(blazeVertexAttribute, vxId3));
+        
+        instance.edit(graph, null, parameters);
+        
+        assertNull(graph.getObjectValue(blazeVertexAttribute, vxId1));
+        assertEquals(graph.getObjectValue(blazeVertexAttribute, vxId2), BlazeUtilities.DEFAULT_BLAZE);
+        assertNull(graph.getObjectValue(blazeVertexAttribute, vxId3));
     }
     
     /**

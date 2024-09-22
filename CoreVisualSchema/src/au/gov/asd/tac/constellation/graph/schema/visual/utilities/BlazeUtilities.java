@@ -116,33 +116,34 @@ public class BlazeUtilities {
      *
      * @param blazeColor The initial value of the color.
      *
-     * @return a pair containing 1) if the user pressed OK and 2) the selected
-     * blaze color.
+     * @return the selected blaze color, or null if the user did not press OK
      */
-    public static Pair<Boolean, ConstellationColor> colorDialog(final ConstellationColor blazeColor) {
+    public static ConstellationColor colorDialog(final ConstellationColor blazeColor) {
         final PluginParameters dlgParams = new PluginParameters();
         final PluginParameter<ColorParameterValue> colorParam = ColorParameterType.build(COLOR_PARAMETER_ID);
         colorParam.setName("Color");
         colorParam.setDescription("Set color for Custom Blazes");
+        if (blazeColor != null) {
+            colorParam.setColorValue(blazeColor);
+        }
         dlgParams.addParameter(colorParam);
 
         final PluginParameter<BooleanParameterValue> presetParam = BooleanParameterType.build(PRESET_PARAMETER_ID);
         presetParam.setName("Preset");
         presetParam.setDescription("Save as Preset");
-        presetParam.setBooleanValue(false);
         dlgParams.addParameter(presetParam);
 
         final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog("Add Custom Blazes", dlgParams);
         dialog.showAndWait();
         final boolean isOk = PluginParametersDialog.OK.equals(dialog.getResult());
-        ConstellationColor colorResult = blazeColor;
+        ConstellationColor colorResult = null;
         if (isOk) {
             colorResult = dlgParams.getColorValue(COLOR_PARAMETER_ID);
             if (dlgParams.getBooleanValue(PRESET_PARAMETER_ID)) {
                 savePreset(colorResult.getJavaColor());
             }
         }
-        return new Pair<>(isOk, colorResult);
+        return colorResult;
     }
 
     /**
@@ -228,7 +229,7 @@ public class BlazeUtilities {
         for (int i = colorsList.size(); i < MAXIMUM_CUSTOM_BLAZE_COLORS; i++) {
             colorsList.add(null);
         }
-        colorsList.set(position, getHTMLColor(newColor));
+        colorsList.set(position, ConstellationColor.fromJavaColor(newColor).getHtmlColor());
 
         final StringBuilder preferencesBuilder = new StringBuilder();
         for (int i = 0; i < MAXIMUM_CUSTOM_BLAZE_COLORS; i++) {
@@ -236,23 +237,6 @@ public class BlazeUtilities {
             preferencesBuilder.append(SeparatorConstants.SEMICOLON);
         }
         getGraphPreferences().put(GraphPreferenceKeys.BLAZE_PRESET_COLORS, preferencesBuilder.toString());
-    }
-
-    /**
-     * Get the HTML color from a java color
-     *
-     * @param color
-     * @return the string representing the color in hex
-     */
-    public static String getHTMLColor(final Color color) {
-        if (color == null) {
-            return null;
-        }
-
-        final int r = color.getRed();
-        final int g = color.getGreen();
-        final int b = color.getBlue();
-        return String.format("#%02x%02x%02x", r, g, b);
     }
 
     protected static Preferences getGraphPreferences() {

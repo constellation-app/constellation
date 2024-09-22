@@ -53,10 +53,12 @@ public final class AddBlazeAction extends AbstractAction {
     public void actionPerformed(final ActionEvent e) {
         final Pair<BitSet, ConstellationColor> selectionResult = BlazeUtilities.getSelection(context.getGraph(), null);
         final BitSet selectedVertices = selectionResult.getKey();
+        final ConstellationColor blazeColor = selectionResult.getValue();
 
         if (!selectedVertices.isEmpty()) {
-            PluginExecution.withPlugin(VisualGraphPluginRegistry.ADD_BLAZE)
+            PluginExecution.withPlugin(VisualGraphPluginRegistry.ADD_CUSTOM_BLAZE)
                     .withParameter(BlazeUtilities.VERTEX_IDS_PARAMETER_ID, selectedVertices)
+                    .withParameter(BlazeUtilities.COLOR_PARAMETER_ID, blazeColor)
                     .executeLater(context.getGraph());
         }
     }

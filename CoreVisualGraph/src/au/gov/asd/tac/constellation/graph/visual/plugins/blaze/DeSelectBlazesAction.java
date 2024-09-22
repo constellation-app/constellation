@@ -34,6 +34,6 @@ import org.openide.util.NbBundle;
 public class DeselectBlazesAction extends SimplePluginAction {
 
     public DeselectBlazesAction(final GraphNode context) {
-        super(context, VisualGraphPluginRegistry.DESELECT_BLAZES, true);
+        super(context, VisualGraphPluginRegistry.DESELECT_BLAZES);
     }
 }

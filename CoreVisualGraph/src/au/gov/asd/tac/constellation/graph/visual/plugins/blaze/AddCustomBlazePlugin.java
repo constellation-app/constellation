@@ -74,6 +74,7 @@ public class AddCustomBlazePlugin extends SimpleEditPlugin {
         final PluginParameter<ColorParameterValue> colorParam = ColorParameterType.build(COLOR_PARAMETER_ID);
         colorParam.setName("Color");
         colorParam.setDescription("The color value");
+        colorParam.setColorValue(BlazeUtilities.DEFAULT_BLAZE.getColor());
         parameters.addParameter(colorParam);
 
         return parameters;

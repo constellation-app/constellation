@@ -35,11 +35,9 @@ import javafx.util.Pair;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mockStatic;
-import org.testfx.api.FxRobot;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -55,8 +53,6 @@ public class BlazeUtilitiesNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(BlazeUtilitiesNGTest.class.getName());
 
-    private final FxRobot robot = new FxRobot();
-
     private Schema schema;
     private StoreGraph graph;
 
@@ -67,9 +63,6 @@ public class BlazeUtilitiesNGTest {
 
     private int vertexBlazeAttribute;
     private int vertexSelectedAttribute;
-
-    public BlazeUtilitiesNGTest() {
-    }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -271,19 +264,5 @@ public class BlazeUtilitiesNGTest {
             // Assert that default colors have not changed
             assertEquals(GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT, "#FF0000;#0000FF;#FFFF00;");
         }
-    }
-
-    /**
-     * Test of getHTMLColor method, of class BlazeUtilities.
-     */
-    @Test
-    public void testGetHTMLColor() {
-        System.out.println("getHTMLColor");
-
-        final String htmlColor1 = BlazeUtilities.getHTMLColor(null);
-        assertNull(htmlColor1);
-
-        final String htmlColor2 = BlazeUtilities.getHTMLColor(Color.CYAN);
-        assertEquals(htmlColor2, "#00ffff");
     }
 }
