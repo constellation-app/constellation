@@ -50,7 +50,7 @@ public class PasswordUtilitiesNGTest {
     /**
      * Test of getIV method, of class PasswordUtilities.
      */
-    @Test
+    @Test(expectedExceptions = NoSuchElementException.class)
     public void testGetIVException() {
         System.out.println("getIV Exception");
         PasswordUtilities.reset();
@@ -62,11 +62,8 @@ public class PasswordUtilitiesNGTest {
             // Setup static mock
             mockLookupStatic.when(Lookup::getDefault).thenReturn(mockLookup);
 
+            // Expect exception to be thrown
             PasswordUtilities.getIV();
-            // If exception was not thrown, fail
-            fail("NoSuchElementException should have been thrown");
-        } catch (NoSuchElementException e) {
-            // Left blank
         }
     }
 
@@ -87,7 +84,7 @@ public class PasswordUtilitiesNGTest {
     /**
      * Test of getKey method, of class PasswordUtilities.
      */
-    @Test
+    @Test(expectedExceptions = NoSuchElementException.class)
     public void testGetKeyException() {
         System.out.println("getKey Exception");
         PasswordUtilities.reset();
@@ -99,11 +96,8 @@ public class PasswordUtilitiesNGTest {
             // Setup static mock
             mockLookupStatic.when(Lookup::getDefault).thenReturn(mockLookup);
 
+            // Expect exception to be thrown
             PasswordUtilities.getKey();
-            // If exception was not thrown, fail
-            fail("NoSuchElementException should have been thrown");
-        } catch (NoSuchElementException e) {
-            // Left blank
         }
     }
 
