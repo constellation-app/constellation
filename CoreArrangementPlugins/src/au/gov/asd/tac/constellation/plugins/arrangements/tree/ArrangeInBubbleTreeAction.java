@@ -96,7 +96,7 @@ public class ArrangeInBubbleTreeAction extends AbstractAction {
             }
         }
 
-        final SelectNamedSelectionPanel ssp = new SelectNamedSelectionPanel(namedSelections, "Which elements will represent the TREE ROOTS.", rootVxIds.isEmpty());
+        final SelectNamedSelectionPanel ssp = new SelectNamedSelectionPanel(namedSelections, "Which elements will represent the TREE ROOTS ?", rootVxIds.isEmpty());
         final DialogDescriptor dd = new DialogDescriptor(ssp, Bundle.CTL_ArrangeInBubbleTreeAction());
         dd.setHelpCtx(new HelpCtx(HELP_LOCATION));
         final Object result = DialogDisplayer.getDefault().notify(dd);
@@ -104,7 +104,7 @@ public class ArrangeInBubbleTreeAction extends AbstractAction {
         if (result == DialogDescriptor.OK_OPTION) {
             final long selectionId = ssp.getNamedSelectionId();
 
-            if (selectionId == -1) {
+            if (selectionId == -2) {
 
                 PluginExecutor.startWith(VisualGraphPluginRegistry.DESELECT_ALL)
                         .followedBy(ArrangementPluginRegistry.BUBBLE_TREE)
@@ -113,7 +113,7 @@ public class ArrangeInBubbleTreeAction extends AbstractAction {
                         .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
                         .executeWriteLater(context.getGraph(), Bundle.CTL_ArrangeInBubbleTreeAction());
                 
-            } else if (selectionId != -2) {
+            } else if (selectionId != -1) {
                 
                 final int namedSelectionId = rg.getAttribute(GraphElementType.VERTEX, "named_selection");
                 final long mask = 1L << selectionId;

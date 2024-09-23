@@ -96,7 +96,7 @@ public class ArrangeInHierarchyAction extends AbstractAction {
             }
         }
 
-        final SelectNamedSelectionPanel ssp = new SelectNamedSelectionPanel(namedSelections, "Which element(s) will represent the TOP of the hierarchy.", rootVxIds.isEmpty());
+        final SelectNamedSelectionPanel ssp = new SelectNamedSelectionPanel(namedSelections, "Which element(s) will represent the TOP of the hierarchy ?", rootVxIds.isEmpty());
         final DialogDescriptor dd = new DialogDescriptor(ssp, Bundle.CTL_ArrangeInHierarchyAction());
         dd.setHelpCtx(new HelpCtx(HELP_LOCATION));
         final Object result = DialogDisplayer.getDefault().notify(dd);
@@ -104,7 +104,7 @@ public class ArrangeInHierarchyAction extends AbstractAction {
         if (result == DialogDescriptor.OK_OPTION) {
             final long selectionId = ssp.getNamedSelectionId();
 
-            if (selectionId == -1) {
+            if (selectionId == -2) {
 
                 PluginExecutor.startWith(VisualGraphPluginRegistry.DESELECT_ALL)
                         .followedBy(ArrangementPluginRegistry.HIERARCHICAL)
@@ -112,7 +112,7 @@ public class ArrangeInHierarchyAction extends AbstractAction {
                         .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
                         .executeWriteLater(context.getGraph(), Bundle.CTL_ArrangeInHierarchyAction());
 
-            } else if (selectionId != -2) {
+            } else if (selectionId != -1) {
                 
                 final int namedSelectionId = rg.getAttribute(GraphElementType.VERTEX, "named_selection");
                 final long mask = 1L << selectionId;

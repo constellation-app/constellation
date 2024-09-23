@@ -29,7 +29,15 @@ public class SelectNamedSelectionPanel extends javax.swing.JPanel {
 
     private final List<NamedSelection> namedSelections;
 
+    public SelectNamedSelectionPanel(final List<NamedSelection> namedSelections, String labelText) {
+        this(namedSelections, labelText, true); // Maintain original functionality
+        this.jRadioButton2.setEnabled(false); // Should not use selected elements when calling this constructor
+    }
+
     public SelectNamedSelectionPanel(final List<NamedSelection> namedSelections, String labelText, final boolean nsMode) {
+        // Need to directly call this constructor if the currently selected elements can optionally be used in place of a named selection
+        // Note: The calling plugin will need to process the selected elements itself 
+        
         initComponents();
 
         this.buttonGroup1.add(jRadioButton1);
@@ -61,10 +69,10 @@ public class SelectNamedSelectionPanel extends javax.swing.JPanel {
      */
     public long getNamedSelectionId() {
         if (jRadioButton2.isSelected()) {
-            return -1;
+            return -2;
         }
         final int ix = nsList.getSelectedIndex();
-        return ix > -1 ? namedSelections.get(ix).getID() : -2;
+        return ix > -1 ? namedSelections.get(ix).getID() : -1;
     }
 
     /**
@@ -83,6 +91,7 @@ public class SelectNamedSelectionPanel extends javax.swing.JPanel {
         jRadioButton1 = new javax.swing.JRadioButton();
         jRadioButton2 = new javax.swing.JRadioButton();
 
+        label.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(label, org.openide.util.NbBundle.getMessage(SelectNamedSelectionPanel.class, "SelectNamedSelectionPanel.label.text")); // NOI18N
 
         jScrollPane1.setViewportView(nsList);
@@ -98,7 +107,7 @@ public class SelectNamedSelectionPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 379, Short.MAX_VALUE)
                     .addComponent(jRadioButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(label)
@@ -111,7 +120,7 @@ public class SelectNamedSelectionPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(label)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
                 .addComponent(jRadioButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
