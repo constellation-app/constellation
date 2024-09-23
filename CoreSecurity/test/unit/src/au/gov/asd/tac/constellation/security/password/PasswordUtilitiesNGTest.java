@@ -24,7 +24,6 @@ import static org.mockito.Mockito.when;
 import org.openide.util.Lookup;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.fail;
 import org.testng.annotations.Test;
 
 /**
@@ -103,16 +102,14 @@ public class PasswordUtilitiesNGTest {
 
     /**
      * Test of generateKey method, of class PasswordUtilities.
+     * @throws java.security.NoSuchAlgorithmException
      */
     @Test
-    public void testGenerateKey() {
+    public void testGenerateKey() throws NoSuchAlgorithmException {
         System.out.println("generateKey");
-        try {
-            final byte[] result = PasswordUtilities.generateKey();
-            assertNotNull(result);
-        } catch (NoSuchAlgorithmException e) {
-            fail("NoSuchAlgorithmException exception");
-        }
+
+        final byte[] result = PasswordUtilities.generateKey();
+        assertNotNull(result);
 
     }
 }
