@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.tableview.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview.api.ActiveTableReference;
 import au.gov.asd.tac.constellation.views.tableview.api.Column;
+import au.gov.asd.tac.constellation.views.tableview.api.TableDefaultColumns;
 import au.gov.asd.tac.constellation.views.tableview.api.UpdateMethod;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,6 +48,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
+import org.openide.util.Lookup;
 
 /**
  * Creates the column visibility context menu. This menu contains items that
@@ -115,16 +117,26 @@ public class ColumnVisibilityContextMenu {
         });
 
         showDefaultColumnsMenu = createCustomMenu(DEFAULT_COLUMNS, e -> {
+            Lookup.getDefault().lookup(TableDefaultColumns.class);
+            List<GraphAttribute> defaultColumns = getTableViewTopComponent().getTablePane().getActiveTableReference().getUserTablePreferences().getDefaultColumns();
+
+            List<Integer> ids = defaultColumns.stream()
+                    .map(GraphAttribute::getId)
+                    .collect(Collectors.toList());
+
+            List<Tuple<String, Attribute>> filteredCols = extractColumnAttributes(table.getColumnIndex().stream()
+                    .filter(column -> ids.contains(column.getAttribute().getId()))
+                    .collect(Collectors.toList()));
+
             getActiveTableReference().updateVisibleColumns(
                     getTableViewTopComponent().getCurrentGraph(),
                     getTableViewTopComponent().getCurrentState(),
-                    extractColumnAttributes(table.getColumnIndex().stream()
-                            .filter(column -> Character.isUpperCase(column.getAttribute().getName().charAt(0)))
-                            .toList()),
+                    filteredCols,
                     UpdateMethod.REPLACE
             );
             e.consume();
         });
+        
 
         showPrimaryColumnsMenu = createCustomMenu(KEY_COLUMNS, e -> {
             if (getTableViewTopComponent().getCurrentGraph() != null) {
