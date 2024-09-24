@@ -15,18 +15,29 @@
  */
 package au.gov.asd.tac.constellation.views.tableview.utilities;
 
+import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import au.gov.asd.tac.constellation.views.tableview.api.Column;
+import au.gov.asd.tac.constellation.views.tableview.api.UserTablePreferences;
+import au.gov.asd.tac.constellation.views.tableview.components.Table;
 import au.gov.asd.tac.constellation.views.tableview.plugins.SelectionToGraphPlugin;
 import au.gov.asd.tac.constellation.views.tableview.state.TableViewState;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Pagination;
@@ -40,7 +51,8 @@ import javafx.scene.input.ClipboardContent;
  * @author cygnus_x-1
  */
 public class TableViewUtilities {
-    
+    private static final Logger LOGGER = Logger.getLogger(TableViewUtilities.class.getName());
+
     private TableViewUtilities() {
         throw new IllegalStateException("Utility class");
     }
@@ -158,6 +170,90 @@ public class TableViewUtilities {
                 }
             }
             return selectedIds;
+        }
+    }
+
+    /**
+     * Iterates through the columns and takes the first two parts of the
+     * {@link ThreeTuple} and places them in a new {@link Tuple}, returning the
+     * new {@link Tuple}s as a list.
+     *
+     * @param columns the {@link ThreeTuple}s to convert
+     * @return the generated list of {@link Tuple}s
+     */
+    public static List<Tuple<String, Attribute>> extractColumnAttributes(final List<Column> columns) {
+        return columns.stream().map(column -> Tuple.create(column.getAttributeNamePrefix(), column.getAttribute())).toList();
+    }
+
+    /**
+     * Takes the first two parts of the {@link ThreeTuple} and places them in a
+     * new {@link Tuple}, returning the new {@link Tuple} as a list.
+     *
+     * @param column the {@link ThreeTuple} to convert
+     * @return the generated list containing the new {@link Tuple}
+     */
+    public static List<Tuple<String, Attribute>> extractColumnAttributes(final Column column) {
+        return extractColumnAttributes(List.of(column));
+    }
+    
+    public final static List<Tuple<String, Attribute>> getColumnSettingColumnAttributes(final List<Column> columns,
+            final String columnSetting, final Set<GraphAttribute> keyAttributes) {
+        
+        if (null != columnSetting) switch (columnSetting) {
+            case UserTablePreferences.DEFAULT_COLUMNS -> {
+                List<Integer> ids = keyAttributes.stream()
+                        .map(GraphAttribute::getId)
+                        .collect(Collectors.toList());
+
+                List<Column> newKeyColumns = columns.stream()
+                        .filter(column -> ids.contains(column.getAttribute().getId()))
+                        .collect(Collectors.toList());
+                
+                return TableViewUtilities.extractColumnAttributes(newKeyColumns);
+            }
+            case UserTablePreferences.ALL_COLUMNS -> {
+                return TableViewUtilities.extractColumnAttributes(columns);
+            }
+            case UserTablePreferences.KEY_COLUMNS -> {
+                if (keyAttributes.isEmpty()) {
+                    LOGGER.log(Level.WARNING, "Attempting to set Key Columns but key attributes is empty.");
+                    Set<GraphAttribute> keySet = new HashSet<>();
+                    return TableViewUtilities.extractColumnAttributes(columns.stream()
+                            .filter(column -> keySet.stream()
+                                    .anyMatch(keyAttribute -> keySet.equals(column.getAttribute())))
+                            .toList());
+                } else {
+                    return TableViewUtilities.extractColumnAttributes(columns.stream()
+                            .filter(column -> keyAttributes.stream()
+                                    .anyMatch(keyAttribute -> keyAttributes.equals(column.getAttribute())))
+                            .toList());
+                }
+            }
+            default -> {
+            }
+        }
+        return null;
+    } 
+
+    /**
+     * Populate keyAttributes from graph if passed in keyAttributes is empty.
+     * @param keyAttributes Set of GraphAttribute
+     * @param table Table from which graph is obtained to extract key attributes
+     */
+    public static final void getKeyAttributesFromGraph(Set<GraphAttribute> keyAttributes, Table table) {
+        if (keyAttributes.isEmpty()) {
+
+            try (final ReadableGraph readableGraph = table.getTableViewTopComponent().getCurrentGraph().getReadableGraph()) {
+                final int[] vertexKeys = readableGraph.getPrimaryKey(GraphElementType.VERTEX);
+                for (final int vertexKey : vertexKeys) {
+                    keyAttributes.add(new GraphAttribute(readableGraph, vertexKey));
+                }
+                final int[] transactionKeys = readableGraph.getPrimaryKey(GraphElementType.TRANSACTION);
+                for (final int transactionKey : transactionKeys) {
+                    keyAttributes.add(new GraphAttribute(readableGraph, transactionKey));
+                }
+            }
+            table.getTableViewTopComponent().getTablePane().getActiveTableReference().getUserTablePreferences().setKeyColumns(keyAttributes);
         }
     }
 }

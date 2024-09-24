@@ -41,6 +41,7 @@ import javafx.collections.transformation.SortedList;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.openide.util.Lookup;
 
 /**
  * Contains the references to the tables current state and how it relates to the
@@ -94,7 +95,7 @@ public class ActiveTableReference {
     /**
      * Holds the current user preferences set for the table.
      */
-    private UserTablePreferences userTablePreferences;
+    private TablePreferences userTablePreferences;
 
     /**
      * This flag is shared by listeners that respond to sort change events on
@@ -123,8 +124,7 @@ public class ActiveTableReference {
 
         this.pagination = new Pagination();
 
-        this.userTablePreferences = new UserTablePreferences();
-        this.userTablePreferences.setMaxRowsPerPage(500);
+        this.userTablePreferences = Lookup.getDefault().lookup(TablePreferences.class);
     }
 
     /**
@@ -355,7 +355,7 @@ public class ActiveTableReference {
      *
      * @return the current user table preferences
      */
-    public UserTablePreferences getUserTablePreferences() {
+    public TablePreferences getUserTablePreferences() {
         return userTablePreferences;
     }
 

@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.tableview.components;
 
+import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
@@ -23,9 +24,13 @@ import au.gov.asd.tac.constellation.graph.attribute.interaction.AbstractAttribut
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
+import au.gov.asd.tac.constellation.views.tableview.TableViewTopComponent;
 import static au.gov.asd.tac.constellation.views.tableview.TableViewTopComponent.TABLE_LOCK;
 import au.gov.asd.tac.constellation.views.tableview.api.ActiveTableReference;
 import au.gov.asd.tac.constellation.views.tableview.api.Column;
+import au.gov.asd.tac.constellation.views.tableview.api.UpdateMethod;
+import au.gov.asd.tac.constellation.views.tableview.api.UserTablePreferences;
 import au.gov.asd.tac.constellation.views.tableview.factory.TableCellFactory;
 import au.gov.asd.tac.constellation.views.tableview.listeners.SelectedOnlySelectionListener;
 import au.gov.asd.tac.constellation.views.tableview.listeners.TableSelectionListener;
@@ -36,8 +41,10 @@ import au.gov.asd.tac.constellation.views.tableview.tasks.UpdateDataTask;
 import au.gov.asd.tac.constellation.views.tableview.utilities.ColumnIndexSort;
 import au.gov.asd.tac.constellation.views.tableview.utilities.TableViewUtilities;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -230,6 +237,12 @@ public class Table {
             }
         }
     }
+
+    public void getKeyAttributes(Set<GraphAttribute> keyAttributes) {
+        keyAttributes = getTableViewTopComponent().getTablePane().getActiveTableReference().getUserTablePreferences().getKeyColumns();
+        TableViewUtilities.getKeyAttributesFromGraph(keyAttributes, this);
+    }
+
 
     /**
      * Update the data in the table using the graph and state.
@@ -609,8 +622,56 @@ public class Table {
     protected void openColumnVisibilityMenu() {
         final ColumnVisibilityContextMenu columnVisibilityContextMenu = new ColumnVisibilityContextMenu(this);
         columnVisibilityContextMenu.init();
-
-        final MenuItem keyColumns = columnVisibilityContextMenu.getShowPrimaryColumnsMenu();
+        
+        MenuItem keyColumns = columnVisibilityContextMenu.getShowDefaultColumnsMenu();
+        
+        String columnSetting = getActiveTableReference().getUserTablePreferences().getColumnVisibility();
+        switch (columnSetting) {
+            case UserTablePreferences.ALL_COLUMNS -> keyColumns = columnVisibilityContextMenu.getShowAllColumnsMenu();
+            case UserTablePreferences.KEY_COLUMNS -> keyColumns = columnVisibilityContextMenu.getShowPrimaryColumnsMenu();
+            case UserTablePreferences.NO_COLUMNS -> keyColumns = columnVisibilityContextMenu.getHideAllColumnsMenu();
+        }
+        
         keyColumns.fire();
+    }
+    
+    public TableViewTopComponent getTableViewTopComponent() {
+        return this.getParentComponent().getParentComponent();
+    }
+    
+    /**
+     * Update table columns and visibility based on column visibility setting,
+     * current graph and state.
+     * @param currentGraph
+     * @param currentState 
+     */
+    public final void updateColumnsForColumnSetting(Graph currentGraph, TableViewState currentState) {
+
+        Set<GraphAttribute> columnsAttributesToShow = new HashSet<>();
+        
+        // obtain column visibility setting
+        String columnSetting = getActiveTableReference().getUserTablePreferences().getColumnVisibility();
+        
+        if (currentGraph != null && columnSetting.equals(UserTablePreferences.KEY_COLUMNS)) {
+            // get and set key attributes from graph
+            getKeyAttributes(columnsAttributesToShow);
+        } else if (columnSetting.equals(UserTablePreferences.DEFAULT_COLUMNS)
+                && currentGraph != null) {           
+            
+            List<GraphAttribute> defaultAttributes =
+                    getActiveTableReference().getUserTablePreferences().getDefaultColumns();
+            
+            columnsAttributesToShow = new HashSet<>(defaultAttributes);                            
+        }        
+        List<Tuple<String, Attribute>> attributes =
+                TableViewUtilities.getColumnSettingColumnAttributes(
+                        getColumnIndex(), columnSetting, columnsAttributesToShow);
+        
+        getActiveTableReference().updateVisibleColumns(
+                currentGraph,
+                currentState,
+                attributes,
+                UpdateMethod.REPLACE
+        );
     }
 }

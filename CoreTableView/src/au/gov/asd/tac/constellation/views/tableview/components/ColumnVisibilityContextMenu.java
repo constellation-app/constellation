@@ -16,20 +16,20 @@
 package au.gov.asd.tac.constellation.views.tableview.components;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
-import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.tableview.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview.api.ActiveTableReference;
 import au.gov.asd.tac.constellation.views.tableview.api.Column;
 import au.gov.asd.tac.constellation.views.tableview.api.UpdateMethod;
+import au.gov.asd.tac.constellation.views.tableview.api.UserTablePreferences;
+import au.gov.asd.tac.constellation.views.tableview.state.TableViewState;
+import au.gov.asd.tac.constellation.views.tableview.utilities.TableViewUtilities;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -61,11 +61,6 @@ public class ColumnVisibilityContextMenu {
     private static final String SPLIT_SOURCE = "Source";
     private static final String SPLIT_DESTINATION = "Destination";
     private static final String SPLIT_TRANSACTION = "Transaction";
-
-    private static final String ALL_COLUMNS = "Show All Columns";
-    private static final String DEFAULT_COLUMNS = "Show Default Columns";
-    private static final String KEY_COLUMNS = "Show Key Columns";
-    private static final String NO_COLUMNS = "Show No Columns";
 
     private static final String FILTER_CAPTION = "Filter:";
 
@@ -103,46 +98,44 @@ public class ColumnVisibilityContextMenu {
      */
     public void init() {
         contextMenu = new ContextMenu();
+        final Graph currentGraph = getTableViewTopComponent().getCurrentGraph();
+        final TableViewState currentState = getTableViewTopComponent().getCurrentState();
+        final Set<GraphAttribute> keyAttributes
+                = getTableViewTopComponent().getTablePane().getActiveTableReference().getUserTablePreferences().getKeyColumns();
 
-        showAllColumnsMenu = createCustomMenu(ALL_COLUMNS, e -> {
-            getActiveTableReference().updateVisibleColumns(
-                    getTableViewTopComponent().getCurrentGraph(),
-                    getTableViewTopComponent().getCurrentState(),
-                    extractColumnAttributes(table.getColumnIndex()),
+        TableViewUtilities.getKeyAttributesFromGraph(keyAttributes, getTableViewTopComponent().getTablePane().getTable());
+
+        showAllColumnsMenu = createCustomMenu(UserTablePreferences.ALL_COLUMNS, e -> {
+            getActiveTableReference().updateVisibleColumns(currentGraph, currentState,
+                    TableViewUtilities.extractColumnAttributes(table.getColumnIndex()),
                     UpdateMethod.REPLACE
             );
             e.consume();
         });
 
-        showDefaultColumnsMenu = createCustomMenu(DEFAULT_COLUMNS, e -> {
-            getActiveTableReference().updateVisibleColumns(
-                    getTableViewTopComponent().getCurrentGraph(),
-                    getTableViewTopComponent().getCurrentState(),
-                    extractColumnAttributes(table.getColumnIndex().stream()
-                            .filter(column -> Character.isUpperCase(column.getAttribute().getName().charAt(0)))
-                            .toList()),
+        showDefaultColumnsMenu = createCustomMenu(UserTablePreferences.DEFAULT_COLUMNS, e -> {
+            List<GraphAttribute> defaultColumns = table.getTableViewTopComponent().getTablePane().getActiveTableReference().getUserTablePreferences().getDefaultColumns();
+            
+            List<Integer> ids = defaultColumns.stream()
+                    .map(GraphAttribute::getId)
+                    .collect(Collectors.toList());
+            
+            List<Tuple<String, Attribute>> filteredCols = TableViewUtilities.extractColumnAttributes(table.getColumnIndex().stream()
+                    .filter(column -> ids.contains(column.getAttribute().getId()))
+                    .collect(Collectors.toList()));
+            
+            getActiveTableReference().updateVisibleColumns(currentGraph, currentState,
+                    filteredCols,
                     UpdateMethod.REPLACE
             );
             e.consume();
         });
 
-        showPrimaryColumnsMenu = createCustomMenu(KEY_COLUMNS, e -> {
+        showPrimaryColumnsMenu = createCustomMenu(UserTablePreferences.KEY_COLUMNS, e -> {
             if (getTableViewTopComponent().getCurrentGraph() != null) {
-                final Set<GraphAttribute> keyAttributes = new HashSet<>();
-                try (final ReadableGraph readableGraph = getTableViewTopComponent().getCurrentGraph().getReadableGraph()) {
-                    final int[] vertexKeys = readableGraph.getPrimaryKey(GraphElementType.VERTEX);
-                    for (final int vertexKey : vertexKeys) {
-                        keyAttributes.add(new GraphAttribute(readableGraph, vertexKey));
-                    }
-                    final int[] transactionKeys = readableGraph.getPrimaryKey(GraphElementType.TRANSACTION);
-                    for (final int transactionKey : transactionKeys) {
-                        keyAttributes.add(new GraphAttribute(readableGraph, transactionKey));
-                    }
-                }
-                getActiveTableReference().updateVisibleColumns(
-                        getTableViewTopComponent().getCurrentGraph(),
-                        getTableViewTopComponent().getCurrentState(),
-                        extractColumnAttributes(
+                
+                getActiveTableReference().updateVisibleColumns(currentGraph, currentState,
+                        TableViewUtilities.extractColumnAttributes(
                                 table.getColumnIndex().stream()
                                         .filter(column -> keyAttributes.stream()
                                                 .anyMatch(keyAttribute -> keyAttribute.equals(column.getAttribute())))
@@ -154,11 +147,10 @@ public class ColumnVisibilityContextMenu {
             }
         });
 
-        hideAllColumnsMenu = createCustomMenu(NO_COLUMNS, e -> {
+        hideAllColumnsMenu = createCustomMenu(UserTablePreferences.NO_COLUMNS, e -> {
             table.getColumnIndex().forEach(column -> column.getTableColumn().setVisible(false));
             getActiveTableReference().updateVisibleColumns(
-                    getTableViewTopComponent().getCurrentGraph(),
-                    getTableViewTopComponent().getCurrentState(),
+                    currentGraph, currentState,
                     Collections.emptyList(),
                     UpdateMethod.REPLACE
             );
@@ -308,7 +300,7 @@ public class ColumnVisibilityContextMenu {
             getActiveTableReference().updateVisibleColumns(
                     getTableViewTopComponent().getCurrentGraph(),
                     getTableViewTopComponent().getCurrentState(),
-                    extractColumnAttributes(column),
+                    TableViewUtilities.extractColumnAttributes(column),
                     ((CheckBox) e.getSource()).isSelected() ? UpdateMethod.ADD : UpdateMethod.REMOVE
             );
             e.consume();
@@ -370,30 +362,7 @@ public class ColumnVisibilityContextMenu {
         return table.getParentComponent().getParentComponent();
     }
 
-    /**
-     * Takes the first two parts of the {@link ThreeTuple} and places them in a
-     * new {@link Tuple}, returning the new {@link Tuple} as a list.
-     *
-     * @param column the {@link ThreeTuple} to convert
-     * @return the generated list containing the new {@link Tuple}
-     */
-    private List<Tuple<String, Attribute>> extractColumnAttributes(final Column column) {
-        return extractColumnAttributes(List.of(column));
-    }
 
-    /**
-     * Iterates through the columns and takes the first two parts of the
-     * {@link ThreeTuple} and places them in a new {@link Tuple}, returning the
-     * new {@link Tuple}s as a list.
-     *
-     * @param columns the {@link ThreeTuple}s to convert
-     * @return the generated list of {@link Tuple}s
-     */
-    private List<Tuple<String, Attribute>> extractColumnAttributes(final List<Column> columns) {
-        return columns.stream()
-                .map(column -> Tuple.create(column.getAttributeNamePrefix(), column.getAttribute()))
-                .toList();
-    }
 
     /**
      * Creates a dynamic menu that lists columns as check boxes. Which columns
