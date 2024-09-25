@@ -24,18 +24,11 @@ import java.util.List;
  * @author Andromeda-224
  */
 public interface TableDefaultColumns {
-    
-    /**
-     * Set the default table columns that will be used with default column
-     * visibility setting and new tables.
-     * @param graph current graph
-     */
-    public void setDefaultColumns(Graph graph);
-    
+       
     /**
      * Gets the default table columns.
      * @return List of default GraphAttribute table columns.
      */
-    public List<GraphAttribute> getDefaultColumns();
+    public List<GraphAttribute> getDefaultColumns(Graph graph);
     
 }

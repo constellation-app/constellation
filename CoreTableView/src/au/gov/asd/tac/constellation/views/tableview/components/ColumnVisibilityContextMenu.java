@@ -117,10 +117,9 @@ public class ColumnVisibilityContextMenu {
         });
 
         showDefaultColumnsMenu = createCustomMenu(DEFAULT_COLUMNS, e -> {
-            Lookup.getDefault().lookup(TableDefaultColumns.class);
-            List<GraphAttribute> defaultColumns = getTableViewTopComponent().getTablePane().getActiveTableReference().getUserTablePreferences().getDefaultColumns();
-
-            List<Integer> ids = defaultColumns.stream()
+            TableDefaultColumns tableDefaultColumnsProvider = Lookup.getDefault().lookup(TableDefaultColumns.class);
+            
+            List<Integer> ids = tableDefaultColumnsProvider.getDefaultColumns(getTableViewTopComponent().getCurrentGraph()).stream()
                     .map(GraphAttribute::getId)
                     .collect(Collectors.toList());
 

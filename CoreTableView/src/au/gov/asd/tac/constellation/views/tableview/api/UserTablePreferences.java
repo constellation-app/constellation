@@ -15,14 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.tableview.api;
 
-import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphAttribute;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.TransactionTypeAttributeDescription;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcept;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -41,7 +33,7 @@ import org.apache.commons.lang3.tuple.Pair;
  *
  * @author formalhaunt
  */
-public final class UserTablePreferences implements TableDefaultColumns{
+public final class UserTablePreferences {
 
     public static final int DEFAULT_MAX_ROWS_PER_PAGE = 500;
 
@@ -54,7 +46,6 @@ public final class UserTablePreferences implements TableDefaultColumns{
     @JsonProperty("SortByColumn")
     @JsonDeserialize(using = ColumnSortOrderDeserializer.class)
     private Pair<String, TableColumn.SortType> sortByColumn = ImmutablePair.of("", TableColumn.SortType.ASCENDING);
-    private List<GraphAttribute> defaultColumns = new ArrayList<>();
 
     public synchronized int getMaxRowsPerPage() {
         return maxRowsPerPage;
@@ -154,40 +145,5 @@ public final class UserTablePreferences implements TableDefaultColumns{
                 .append("columnOrder", getColumnOrder())
                 .append("sortByColumn", getSortByColumn())
                 .toString();
-    }
-
-    @Override
-    public void setDefaultColumns(Graph graph) {
-        final List<GraphAttribute> attributes = new ArrayList<>();
-        if (graph != null && graph.getSchema() != null) {
-            try (final ReadableGraph readableGraph = graph.getReadableGraph()) {
-                final int attributeCount = readableGraph.getAttributeCount(GraphElementType.TRANSACTION);
-                for (int i = 0; i < attributeCount; i++) {
-                    attributes.add(new GraphAttribute(readableGraph, readableGraph.getAttribute(GraphElementType.TRANSACTION, i)));
-                }
-            }
-            try (final ReadableGraph readableGraph = graph.getReadableGraph()) {
-                final int attributeCount = readableGraph.getAttributeCount(GraphElementType.VERTEX);
-                for (int i = 0; i < attributeCount; i++) {
-                    attributes.add(new GraphAttribute(readableGraph, readableGraph.getAttribute(GraphElementType.VERTEX, i)));
-                }
-            }
-        }
-
-        List<String> selectedNames = new ArrayList<>();
-        // set default columns to identifier, type, transaction_type, and
-        // transaction datetime
-        selectedNames.add(VisualConcept.VertexAttribute.IDENTIFIER.getName());
-        selectedNames.add(TransactionTypeAttributeDescription.ATTRIBUTE_NAME);
-        selectedNames.add(AnalyticConcept.TransactionAttribute.TYPE.getName());
-        selectedNames.add(TemporalConcept.VertexAttribute.DATETIME.getName());
-        defaultColumns = attributes.stream()
-                .filter(attribute -> selectedNames.contains(attribute.getName()))
-                .toList();        
-    }
-
-    @Override
-    public List<GraphAttribute> getDefaultColumns() {
-        return defaultColumns;
     }
 }

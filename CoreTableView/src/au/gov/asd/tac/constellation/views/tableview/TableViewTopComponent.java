@@ -318,9 +318,6 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
                 }
 
                 if (newState) {
-                    if (pane.getTable().getActiveTableReference().getUserTablePreferences().getDefaultColumns().isEmpty()) {
-                        pane.getTable().getActiveTableReference().getUserTablePreferences().setDefaultColumns(graph);
-                    }
                     PluginExecution.withPlugin(new UpdateStatePlugin(state)).executeLater(getCurrentGraph());
                 }
             } finally {
