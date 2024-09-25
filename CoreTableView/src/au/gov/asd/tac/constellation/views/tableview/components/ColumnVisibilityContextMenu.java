@@ -135,7 +135,6 @@ public class ColumnVisibilityContextMenu {
             );
             e.consume();
         });
-        
 
         showPrimaryColumnsMenu = createCustomMenu(KEY_COLUMNS, e -> {
             if (getTableViewTopComponent().getCurrentGraph() != null) {
