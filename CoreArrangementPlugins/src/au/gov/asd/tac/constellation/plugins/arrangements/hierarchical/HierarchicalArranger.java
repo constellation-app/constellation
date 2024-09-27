@@ -15,9 +15,12 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.hierarchical;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.ReadableGraph;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
@@ -192,10 +195,10 @@ public class HierarchicalArranger implements Arranger {
                 final int nId = rg.getVertexNeighbour(vxId, lposition);
                 if (vxParentLevel.contains(nId)) {
                     nParents++;
-                    weight += 150;
+                    weight += 100;
                 } else if (!vxLevelCopy.contains(nId)) {
                     nChildren++;
-                    weight += 100;
+                    weight += 200;
                 }
             }
 
@@ -234,7 +237,7 @@ public class HierarchicalArranger implements Arranger {
             toggle = !toggle;
         }
 
-        // this code makes the outer segments the busier ones
+        // this code makes the outer segments the busier ones, which seems to produce better arrangements in post-processing
         for (int i = 0; i < vxSize/2; i++) {
             vxLevel.add(vxLevel.get(0));
             vxLevel.remove(0);
@@ -268,15 +271,15 @@ public class HierarchicalArranger implements Arranger {
         double xMinAdj = Math.max(Math.min(Math.log(maxLevelVertices)*2, 9), 0);
         
         double displayLevel = -1.0;
-        int verticesRemaining = 0;
-        int verticesForRow = 0;
-        int vertexCounter = -1;
+        int verticesRemaining;
+        int verticesForRow;
+        int vertexCounter;
         int virtualRowLevel = -1;
         final double xMinDefaultAdj = Math.max(Math.min(Math.log(maxNodesPerRow)*2, 9), 0);
-        double yStep = 0;
-        double yAdj = 0;
-        double xAdj = 0;
-        double yDir = 0;
+        double yStep;
+        double yAdj;
+        double xAdj;
+        double yDir;
         final int totalLevels = vxLevels.size();
         int prevVertices = 0;
         for (int level = 0; level < totalLevels; level++) {
@@ -346,34 +349,96 @@ public class HierarchicalArranger implements Arranger {
         
         final int graphSize = totalVertices + wg.getTransactionCount();        
         final int passes;
+        // multiple passes are used to smooth out the arrangement and reduce overlapping lines.
         if (graphSize > 10000) {
+            // large interconnected graphs will have a very crowded arrangement and will take a long time to process, so
+            // we do not try to apply any smoothing over the initial arrangement.
             passes = 0;
         } else if (graphSize > 1000) {
-            passes = (int) (30D * Math.pow(((11000D - (double)graphSize) / 10000D), 2));
+            // this is the point where the graph arrangement starts to become crowded, and the time to smooth out the arrangement becomes noticeable
+            passes = (int) (30D * Math.pow(((11000D - (double)graphSize) / 10000D), 2)) + 1;
         } else {
-            passes = (int) Math.min(Math.max(totalLevels * (Math.log(totalVertices) - Math.log(totalLevels) + 1.75) / 2, 1), 5 * Math.log(totalVertices/2));
+            // smaller graphs can have more passes to produce an improved arrangement
+            passes = 30; 
         }
-                
-        for (int k = 0; k < 0.45*passes; k++) { // multi-pass adjustments to move parents above children
-            adjustArrangment(wg, vxLevels, false);
-        }
-        for (int k = 0; k < 0.45*passes + 0.55; k++) { // multi-pass adjustments to move children below parents
-            adjustArrangment(wg, vxLevels, true);
-        }
-        for (int k = 0; k < 0.55*passes + 0.55; k++) { // multi-pass adjustments to alternate between moving parents above children and then children below parents
-            adjustArrangment(wg, vxLevels, false);
-            adjustArrangment(wg, vxLevels, true);
+        
+        System.out.println("\n\n ========= " + graphSize + " ===========  PASSES : " + passes);
+        if (passes > 0) {            
+            boolean finalAdjustment = false;
+            long startTime = System.currentTimeMillis();
+            long cutoffTime = startTime + 15000;
+            long defaultProcessingTime = 3000; // gives small graphs enough time to produce a nicely laid out arrangement
+            long currentTime = System.currentTimeMillis();
+            long timeLimit; // limits the time spent on doing an individual smoothing task
+            int parentChangeAmount; // the number of parent nodes moved on the final iteration of the task
+            int childChangeAmount; // the number of child nodes moved on the final iteration of the task
+            int totalChanges;
+            int modVal = 1;
+            int modInc = 2;
+            int modAmount = -1;
+            for (int n = 0; (n < passes && modAmount > 0) || (currentTime < startTime + defaultProcessingTime && modAmount != 0) ; n++) {
+                parentChangeAmount = -1;
+                totalChanges = 0;
+                currentTime = System.currentTimeMillis();
+                if (finalAdjustment || (n % modVal == 0 && currentTime < cutoffTime - defaultProcessingTime)) {
+                    if (n > 0) {
+                        modVal += modInc++; // increasing increment to avoid potential repetition cycle
+                    }                    
+                    minimiseTransactionDistances(wg, vxLevels);
+                    System.out.println(finalAdjustment + " --- re-adjust --- on n step " + n);
+                }
+                currentTime = System.currentTimeMillis();
+                if (currentTime > cutoffTime) {
+                    break;
+                }                
+                timeLimit = currentTime + defaultProcessingTime/4;
+                for (int k = 0; (k < 1 + passes/2 && parentChangeAmount != 0) || (currentTime < timeLimit && parentChangeAmount != 0); k++) { // multi-pass adjustments to move children below parents
+                    parentChangeAmount = adjustArrangment(wg, vxLevels, false);
+                    totalChanges += parentChangeAmount;
+                    currentTime = System.currentTimeMillis();
+                    if (currentTime > timeLimit) {
+                        break;
+                    }
+                }
+                System.out.println((currentTime - startTime) + " parent Multipass - changes " + parentChangeAmount + "  => " + totalChanges);
+                if (currentTime > cutoffTime) {
+                    break;
+                }
+                modAmount = totalChanges;
+                totalChanges = 0;
+                childChangeAmount = -1;
+                currentTime = System.currentTimeMillis();
+                timeLimit = currentTime + defaultProcessingTime/4;
+                for (int k = 0; (k < 1 + passes/2 && childChangeAmount != 0) || (currentTime < timeLimit && childChangeAmount != 0); k++) { // multi-pass adjustments to move children below parents
+                    childChangeAmount = adjustArrangment(wg, vxLevels, true);
+                    totalChanges += childChangeAmount;
+                    currentTime = System.currentTimeMillis();
+                    if (currentTime > timeLimit) {
+                        break;
+                    }
+                }
+                System.out.println((currentTime - startTime) + " child Multipass -  changes " + childChangeAmount + "  => " + totalChanges);
+                if (finalAdjustment || currentTime > cutoffTime) {
+                    break;
+                }
+                modAmount += totalChanges;
+                if (n > 2 && (childChangeAmount == 0 || parentChangeAmount == 0)) {
+                   finalAdjustment = true; 
+                }
+            }
         }
 
     }
     
-    private static void adjustArrangment(final GraphWriteMethods wg, final ArrayList<ArrayList<Integer>> vxLevels, final boolean topDownScan){
+    private static int adjustArrangment(final GraphWriteMethods wg, final ArrayList<ArrayList<Integer>> vxLevels, final boolean topDownScan){
         // when topDownScan = true : the parent nodes are being shifted to positions that are closer to their children on the next level
         // when topDownScan = false : the child nodes are being shifted to positions that are closer to their parents on the previous level
         
-        final int rangeStart = topDownScan ? 0 : 1;
-        final int rangeEnd = vxLevels.size() - 1 + rangeStart;
-        for (int parentLevel = rangeStart; parentLevel < rangeEnd; parentLevel++) {
+        int swapsMade = 0;
+        final int rangeStart = topDownScan ? 0 : vxLevels.size() - 1;
+        final int rangeEnd = topDownScan ? vxLevels.size() - 2 : 1;
+        final int rangeIncrement = topDownScan ? 1 : -1;
+        for (int parentLevel = rangeStart; ((parentLevel <= rangeEnd && topDownScan) || (parentLevel >= rangeEnd && !topDownScan) ); parentLevel += rangeIncrement) {
             final int scanLevel = topDownScan ? parentLevel + 1 : parentLevel - 1;
             final ArrayList<Integer> vxLevel = vxLevels.get(scanLevel);
             final ArrayList<Integer> vxLevelCopy = new ArrayList<>(vxLevel); // avoid ConcurrentModificationException
@@ -422,7 +487,6 @@ public class HierarchicalArranger implements Arranger {
                     }
                     comparisonDistance = initialDistance + tempInitialDistance;
 
-                    // use vxTempId with the current parent
                     double leftTempDistance = 0;                    
                     for (final int leftDx : vxCurrentParentIds) {
                         leftTempDistance += calcDistance(wg, leftDx, vxTempId);
@@ -431,7 +495,6 @@ public class HierarchicalArranger implements Arranger {
                         leftTempDistance = leftTempDistance / pCount;
                     }
 
-                    // use vxTempId with the current parent
                     double rightTempDistance = 0;                    
                     for (final int rightDx : vxTempParentIds) {
                         rightTempDistance += calcDistance(wg, rightDx, vxId);
@@ -447,23 +510,96 @@ public class HierarchicalArranger implements Arranger {
                 }
 
                 if (swapTargetId > -1) {
+                    swapsMade++;
                     swapVertexPositions(wg, swapTargetId, vxId);
                 }
             }
         }
-        
+        return swapsMade;
     }
     
-//    private static String getLabel(final GraphWriteMethods wg, final int vxId) {
-//        final Graph graph = GraphManager.getDefault().getActiveGraph() ;
-//        final ReadableGraph rg = graph.getReadableGraph();
-//        final int labelId = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.IDENTIFIER.getName());
-//
-//        final String label = rg.getStringValue(labelId, vxId);
-//        rg.close();
-//        return label;
-//        
-//    }
+    private static int minimiseTransactionDistances(final GraphWriteMethods wg, final ArrayList<ArrayList<Integer>> vxLevels){
+        // check each node on a level and see if switching positions with another node reduces the total length 
+        // of transactions to all neightbours on different levels for both nodes being switched.
+        
+        int swapsMade = 0;
+        final int rangeStart = 0 ;
+        final int rangeEnd = vxLevels.size();
+        
+        for (int scanLevel = rangeStart; scanLevel < rangeEnd; scanLevel++) {
+            final ArrayList<Integer> vxLevel = vxLevels.get(scanLevel);
+            final ArrayList<Integer> vxLevelCopy = new ArrayList<>(vxLevel); // avoid ConcurrentModificationException
+            final ArrayList<Integer> vxLevelTempCopy = new ArrayList<>(vxLevel); // avoid ConcurrentModificationException
+            final ArrayList<Integer> tempNeighbours = new ArrayList<>();
+            final ArrayList<Integer> targetNeighbours = new ArrayList<>();
+            final ArrayList<Integer> lockedVertex = new ArrayList<>();
+
+            for (final int vxId : vxLevelCopy) {
+                // for each node on the current level, calculate the distance to its parents and children for each position in the current level.
+                // switch positions with the smallest location, then lock that position.
+                double initialDistance = 0;
+                tempNeighbours.clear();
+                for (int lposition = 0; lposition < wg.getVertexNeighbourCount(vxId); lposition++) {
+                    final int nId = wg.getVertexNeighbour(vxId, lposition);
+                    if (!vxLevel.contains(nId)) {
+                        tempNeighbours.add(nId);
+                        initialDistance += calcDistance(wg, vxId, nId);
+                    }
+                }
+
+                int swapTargetId = -1;
+                for (final int vxTempId : vxLevelTempCopy) {
+                    if (lockedVertex.contains(vxTempId)) {
+                        continue;
+                    }
+
+                    if (vxTempId == vxId) continue;
+                    double tempInitialDistance = 0;                    
+                    for (final int neighbourId : tempNeighbours) {
+                        tempInitialDistance += calcDistance(wg, vxTempId, neighbourId);
+                    }
+
+                    targetNeighbours.clear();
+                    double tnDistance = 0;
+                    for (int lposition = 0; lposition < wg.getVertexNeighbourCount(vxTempId); lposition++) {
+                        final int nId = wg.getVertexNeighbour(vxTempId, lposition);
+                        if (!vxLevel.contains(nId)) {
+                            targetNeighbours.add(nId);
+                            tnDistance += calcDistance(wg, vxTempId, nId);
+                        }
+                    }
+                    double tnSwapDistance = 0;
+                    for (final int neighbourId : targetNeighbours) {
+                        tnSwapDistance += calcDistance(wg, vxId, neighbourId);
+                    }
+
+                    if (tempInitialDistance < initialDistance && tnSwapDistance <= tnDistance) {
+                        swapTargetId = vxTempId;
+                    }
+                }
+
+                if (swapTargetId > -1) {
+                    swapsMade++;
+                    swapVertexPositions(wg, swapTargetId, vxId);
+                    lockedVertex.add(vxId);
+                }
+            }
+        }
+        
+        return swapsMade;
+    }
+    
+    
+    private static String getLabel(final GraphWriteMethods wg, final int vxId) {
+        final Graph graph = GraphManager.getDefault().getActiveGraph() ;
+        final ReadableGraph rg = graph.getReadableGraph();
+        final int labelId = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.IDENTIFIER.getName());
+
+        final String label = rg.getStringValue(labelId, vxId);
+        rg.close();
+        return label;
+        
+    }
     
     private static double calcDistance(final GraphWriteMethods wg, final int vxId1, final int vxId2) {
         final int xId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
