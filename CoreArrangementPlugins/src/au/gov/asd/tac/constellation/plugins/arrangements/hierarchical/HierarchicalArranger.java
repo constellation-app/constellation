@@ -15,12 +15,9 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.hierarchical;
 
-import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
@@ -362,7 +359,6 @@ public class HierarchicalArranger implements Arranger {
             passes = 30; 
         }
         
-        System.out.println("\n\n ========= " + graphSize + " ===========  PASSES : " + passes);
         if (passes > 0) {            
             boolean finalAdjustment = false;
             long startTime = System.currentTimeMillis();
@@ -385,7 +381,6 @@ public class HierarchicalArranger implements Arranger {
                         modVal += modInc++; // increasing increment to avoid potential repetition cycle
                     }                    
                     minimiseTransactionDistances(wg, vxLevels);
-                    System.out.println(finalAdjustment + " --- re-adjust --- on n step " + n);
                 }
                 currentTime = System.currentTimeMillis();
                 if (currentTime > cutoffTime) {
@@ -400,7 +395,6 @@ public class HierarchicalArranger implements Arranger {
                         break;
                     }
                 }
-                System.out.println((currentTime - startTime) + " parent Multipass - changes " + parentChangeAmount + "  => " + totalChanges);
                 if (currentTime > cutoffTime) {
                     break;
                 }
@@ -417,7 +411,6 @@ public class HierarchicalArranger implements Arranger {
                         break;
                     }
                 }
-                System.out.println((currentTime - startTime) + " child Multipass -  changes " + childChangeAmount + "  => " + totalChanges);
                 if (finalAdjustment || currentTime > cutoffTime) {
                     break;
                 }
@@ -457,7 +450,7 @@ public class HierarchicalArranger implements Arranger {
                     final int nId = wg.getVertexNeighbour(vxId, lposition);
                     if (vxParentLevel.contains(nId)) {
                         vxCurrentParentIds.add(nId);
-                        initialDistance += calcDistance(wg, vxId, nId);
+                        initialDistance += calculateDistance(wg, vxId, nId);
                     }
                 }
                 int pCount = vxCurrentParentIds.size();
@@ -478,7 +471,7 @@ public class HierarchicalArranger implements Arranger {
                         final int nId = wg.getVertexNeighbour(vxTempId, lposition);
                         if (vxParentLevel.contains(nId)) {
                             vxTempParentIds.add(nId);
-                            tempInitialDistance += calcDistance(wg, vxTempId, nId);
+                            tempInitialDistance += calculateDistance(wg, vxTempId, nId);
                         }
                     }
                     int tpCount = vxTempParentIds.size();
@@ -489,7 +482,7 @@ public class HierarchicalArranger implements Arranger {
 
                     double leftTempDistance = 0;                    
                     for (final int leftDx : vxCurrentParentIds) {
-                        leftTempDistance += calcDistance(wg, leftDx, vxTempId);
+                        leftTempDistance += calculateDistance(wg, leftDx, vxTempId);
                     }
                     if (pCount > 1) {
                         leftTempDistance = leftTempDistance / pCount;
@@ -497,7 +490,7 @@ public class HierarchicalArranger implements Arranger {
 
                     double rightTempDistance = 0;                    
                     for (final int rightDx : vxTempParentIds) {
-                        rightTempDistance += calcDistance(wg, rightDx, vxId);
+                        rightTempDistance += calculateDistance(wg, rightDx, vxId);
                     }
                     if (tpCount > 1) {
                         rightTempDistance = rightTempDistance / tpCount;
@@ -543,7 +536,7 @@ public class HierarchicalArranger implements Arranger {
                     final int nId = wg.getVertexNeighbour(vxId, lposition);
                     if (!vxLevel.contains(nId)) {
                         tempNeighbours.add(nId);
-                        initialDistance += calcDistance(wg, vxId, nId);
+                        initialDistance += calculateDistance(wg, vxId, nId);
                     }
                 }
 
@@ -556,7 +549,7 @@ public class HierarchicalArranger implements Arranger {
                     if (vxTempId == vxId) continue;
                     double tempInitialDistance = 0;                    
                     for (final int neighbourId : tempNeighbours) {
-                        tempInitialDistance += calcDistance(wg, vxTempId, neighbourId);
+                        tempInitialDistance += calculateDistance(wg, vxTempId, neighbourId);
                     }
 
                     targetNeighbours.clear();
@@ -565,12 +558,12 @@ public class HierarchicalArranger implements Arranger {
                         final int nId = wg.getVertexNeighbour(vxTempId, lposition);
                         if (!vxLevel.contains(nId)) {
                             targetNeighbours.add(nId);
-                            tnDistance += calcDistance(wg, vxTempId, nId);
+                            tnDistance += calculateDistance(wg, vxTempId, nId);
                         }
                     }
                     double tnSwapDistance = 0;
                     for (final int neighbourId : targetNeighbours) {
-                        tnSwapDistance += calcDistance(wg, vxId, neighbourId);
+                        tnSwapDistance += calculateDistance(wg, vxId, neighbourId);
                     }
 
                     if (tempInitialDistance < initialDistance && tnSwapDistance <= tnDistance) {
@@ -588,20 +581,8 @@ public class HierarchicalArranger implements Arranger {
         
         return swapsMade;
     }
-    
-    
-    private static String getLabel(final GraphWriteMethods wg, final int vxId) {
-        final Graph graph = GraphManager.getDefault().getActiveGraph() ;
-        final ReadableGraph rg = graph.getReadableGraph();
-        final int labelId = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.IDENTIFIER.getName());
-
-        final String label = rg.getStringValue(labelId, vxId);
-        rg.close();
-        return label;
         
-    }
-    
-    private static double calcDistance(final GraphWriteMethods wg, final int vxId1, final int vxId2) {
+    private static double calculateDistance(final GraphWriteMethods wg, final int vxId1, final int vxId2) {
         final int xId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
         final int yId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
         
