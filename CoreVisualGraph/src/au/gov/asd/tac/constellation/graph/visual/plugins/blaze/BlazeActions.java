@@ -144,7 +144,7 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
 
         if (newColor != null) {
             colorPanels.get(panelID - 1).setBackground(newColor);
-            BlazeUtilities.savePreset(newColor, panelID - 1);
+            BlazeUtilities.savePreset(ConstellationColor.fromJavaColor(newColor), panelID - 1);
         }
     }
 

@@ -191,25 +191,25 @@ public class BlazeUtilitiesNGTest {
             assertEquals(presetsBefore, "#FF0000;#0000FF;#FFFF00;");
 
             // add a color to end of default list of presets
-            BlazeUtilities.savePreset(Color.CYAN);
+            BlazeUtilities.savePreset(ConstellationColor.CYAN);
             final String presetsAfter1 = p.get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
             assertEquals(presetsAfter1, "#FF0000;#0000FF;#FFFF00;#00ffff;null;null;null;null;null;null;");
 
             // add a color to first null value in presets
-            BlazeUtilities.savePreset(Color.GREEN);
+            BlazeUtilities.savePreset(ConstellationColor.GREEN);
             final String presetsAfter2 = p.get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
             assertEquals(presetsAfter2, "#FF0000;#0000FF;#FFFF00;#00ffff;#00ff00;null;null;null;null;null;");
 
             // fill up list of presets
             for (int i = 0; i < 5; i++) {
-                BlazeUtilities.savePreset(Color.MAGENTA);
+                BlazeUtilities.savePreset(ConstellationColor.MAGENTA);
             }
             final String presetsAfter3 = p.get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
             assertEquals(presetsAfter3, "#FF0000;#0000FF;#FFFF00;#00ffff;#00ff00;#ff00ff;#ff00ff;#ff00ff;#ff00ff;#ff00ff;");
 
             // add a color to after the preset list has been filled
             // The same list should remain since the behaviour has been changed to not replace the last preset automatically when there are 10
-            BlazeUtilities.savePreset(Color.WHITE);
+            BlazeUtilities.savePreset(ConstellationColor.WHITE);
             final String presetsAfter4 = p.get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
             assertEquals(presetsAfter4, "#FF0000;#0000FF;#FFFF00;#00ffff;#00ff00;#ff00ff;#ff00ff;#ff00ff;#ff00ff;#ff00ff;");
         } finally {
@@ -241,16 +241,16 @@ public class BlazeUtilitiesNGTest {
             assertEquals(presetsBefore, "#FF0000;#0000FF;#FFFF00;");
 
             // add a color to an invalid part of the presets list
-            BlazeUtilities.savePreset(Color.CYAN, -1);
+            BlazeUtilities.savePreset(ConstellationColor.CYAN, -1);
             final String presetsAfter1 = p.get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
             assertEquals(presetsAfter1, "#FF0000;#0000FF;#FFFF00;");
 
-            BlazeUtilities.savePreset(Color.CYAN, 10);
+            BlazeUtilities.savePreset(ConstellationColor.CYAN, 10);
             final String presetsAfter2 = p.get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
             assertEquals(presetsAfter2, "#FF0000;#0000FF;#FFFF00;");
 
             // add a color to the middle of the presets list
-            BlazeUtilities.savePreset(Color.CYAN, 4);
+            BlazeUtilities.savePreset(ConstellationColor.CYAN, 4);
             final String presetsAfter3 = p.get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
             assertEquals(presetsAfter3, "#FF0000;#0000FF;#FFFF00;null;#00ffff;null;null;null;null;null;");
 

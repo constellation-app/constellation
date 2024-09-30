@@ -30,7 +30,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType.
 import au.gov.asd.tac.constellation.preferences.GraphPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
@@ -140,7 +139,7 @@ public class BlazeUtilities {
         if (isOk) {
             colorResult = dlgParams.getColorValue(COLOR_PARAMETER_ID);
             if (dlgParams.getBooleanValue(PRESET_PARAMETER_ID)) {
-                savePreset(colorResult.getJavaColor());
+                savePreset(colorResult);
             }
         }
         return colorResult;
@@ -151,7 +150,7 @@ public class BlazeUtilities {
      *
      * @param newColor the new selected color to add as a preset
      */
-    public static void savePreset(final Color newColor) {
+    public static void savePreset(final ConstellationColor newColor) {
         final String colorString = getGraphPreferences().get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
         final List<String> colorsList = Arrays.asList(colorString.split(SeparatorConstants.SEMICOLON));
         final int freePosition;
@@ -217,7 +216,7 @@ public class BlazeUtilities {
      * @param newColor the new selected color to add as a preset
      * @param position
      */
-    public static void savePreset(final Color newColor, final int position) {
+    public static void savePreset(final ConstellationColor newColor, final int position) {
         if (position >= 10 || position < 0) {
             return;
         }
@@ -229,7 +228,7 @@ public class BlazeUtilities {
         for (int i = colorsList.size(); i < MAXIMUM_CUSTOM_BLAZE_COLORS; i++) {
             colorsList.add(null);
         }
-        colorsList.set(position, ConstellationColor.fromJavaColor(newColor).getHtmlColor());
+        colorsList.set(position, newColor == null ? null : newColor.getHtmlColor());
 
         final StringBuilder preferencesBuilder = new StringBuilder();
         for (int i = 0; i < MAXIMUM_CUSTOM_BLAZE_COLORS; i++) {

@@ -1,10 +1,11 @@
 # Constellation Changes
 
 ## Changes in September 2024
--   Updated `BlazeUtilities.colorDialog` to return just a ConstellationColor.
 -   Removed `AddBlazePlugin` in favour of applying defaults to `AddCustomBlazePlugin` (which was already being used by `AddBlazeAction`).
 -   Removed `BlazeUtilities.getHTMLColor()` as this is already available through existing functionality `ConstellationColor.fromJavaColor().getHtmlColor()`.
 -   Renamed `DeSelectBlazesAction` and `DeSelectBlazesPlugin` to `DeselectBlazesAction` and `DeselectBlazesPlugin`.
+-   Updated `BlazeUtilities.colorDialog` to return just a ConstellationColor.
+-   Updated both `SavePreset` functions in `BlazeUtilities` to accept a `ConstellationColor` instead of a `java.awt.Color` based on use.
 
 ## Changes in July 2024
 -   Moved hashmod package from Core Graph Utilities to Core Import Export Plugins as a more appropriate module.

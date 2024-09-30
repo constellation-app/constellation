@@ -148,16 +148,17 @@ public class BlazeContextMenu implements ContextMenuProvider {
             final List<String> colorList = new ArrayList<>();
             for (final ConstellationColor color : BlazeActions.getPresetCustomColors()) {
                 if (color != null) {
-                    final Color javaColor = color.getJavaColor();
-                    String colorName = "#" + String.format("%02x", javaColor.getRed())
-                            + String.format("%02x", javaColor.getGreen())
-                            + String.format("%02x", javaColor.getBlue());
+                    final String colorName;
                     if (color.getName() != null) {
                         colorName = color.getName();
+                    } else {
+                        final Color javaColor = color.getJavaColor();
+                        colorName = "#" + String.format("%02x", javaColor.getRed())
+                                + String.format("%02x", javaColor.getGreen())
+                                + String.format("%02x", javaColor.getBlue());                     
                     }
                     colorList.add(colorName);
                 }
-
             }
 
             colorList.add(ADD_CUSTOM_BLAZE);
