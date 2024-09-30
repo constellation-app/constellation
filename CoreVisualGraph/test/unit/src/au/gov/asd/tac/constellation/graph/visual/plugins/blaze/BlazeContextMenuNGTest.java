@@ -16,12 +16,6 @@
 package au.gov.asd.tac.constellation.graph.visual.plugins.blaze;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.StoreGraph;
-import au.gov.asd.tac.constellation.graph.schema.Schema;
-import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
-import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Blaze;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.util.Arrays;
 import java.util.Collections;
@@ -41,14 +35,6 @@ import org.testng.annotations.Test;
  */
 public class BlazeContextMenuNGTest {
     
-    private StoreGraph graph;
-    private int vxId1;
-    private int vxId2;
-    private int vxId3;
-    
-    private int blazeVertexAttribute;
-    private int selectedVertexAttribute;
-    
     @BeforeClass
     public static void setUpClass() throws Exception {
     }
@@ -59,20 +45,6 @@ public class BlazeContextMenuNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema();
-        graph = new StoreGraph(schema);
-        
-        vxId1 = graph.addVertex();
-        vxId2 = graph.addVertex();
-        vxId3 = graph.addVertex();
-        
-        blazeVertexAttribute = VisualConcept.VertexAttribute.BLAZE.ensure(graph);
-        selectedVertexAttribute = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
-        
-        graph.setObjectValue(blazeVertexAttribute, vxId1, new Blaze(60, ConstellationColor.BANANA));
-        
-        graph.setBooleanValue(selectedVertexAttribute, vxId1, true);
-        graph.setBooleanValue(selectedVertexAttribute, vxId2, true);
     }
 
     @AfterMethod
