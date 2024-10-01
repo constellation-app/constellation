@@ -140,6 +140,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
     private PropertyChangeListener registryListener;
     private LookupListener lookupListener;
     private boolean isSaved = false;
+    private String savedFilePath = "";
 
     public SaveAsAction() {
         this(Utilities.actionsGlobalContext(), true);
@@ -174,6 +175,10 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
         return isSaved;
     }
 
+    public String getSavedFilePath() {
+        return savedFilePath;
+    }
+
     @Override
     public synchronized void actionPerformed(final ActionEvent e) {
         refreshListeners();
@@ -183,6 +188,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
             FileChooser.openImmediateSaveDialog(getSaveFileChooser()).thenAccept(optionalFile -> optionalFile.ifPresent(file -> {
                 try {
                     saveAs.saveAs(FileUtil.toFileObject(file.getParentFile()), file.getName());
+                    savedFilePath = file.getAbsolutePath();
                 } catch (final IOException ioE) {
                     Exceptions.attachLocalizedMessage(ioE,
                             Bundle.MSG_SaveAsFailed(
@@ -290,11 +296,6 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
             }
             refreshEnabled();
         }
-    }
-
-    //for unit testing
-    boolean _isEnabled() {
-        return super.isEnabled();
     }
 
     /**

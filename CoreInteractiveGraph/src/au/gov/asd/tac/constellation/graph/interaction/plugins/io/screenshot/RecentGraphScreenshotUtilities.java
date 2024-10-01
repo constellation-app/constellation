@@ -169,7 +169,7 @@ public class RecentGraphScreenshotUtilities {
         final BufferedImage[] originalImage = new BufferedImage[1];
         originalImage[0] = new BufferedImage(IMAGE_SIZE, IMAGE_SIZE, BufferedImage.TYPE_INT_ARGB);
 
-        final Semaphore waiter = new Semaphore(1);
+        final Semaphore waiter = new Semaphore(0);
 
         requestGraphActive(graph, waiter);
 
@@ -200,7 +200,6 @@ public class RecentGraphScreenshotUtilities {
                 try {
                     // Request graph to be active
                     EventQueue.invokeAndWait(() -> {
-                        semaphore.acquireUninterruptibly(); // Aquire permit
                         ((VisualGraphTopComponent) component).requestActive();
                         semaphore.release();
                     });
@@ -226,7 +225,7 @@ public class RecentGraphScreenshotUtilities {
      * @param width the new width of the resized image
      * @throws IOException
      */
-    public static void resizeAndSave(final BufferedImage originalImage, final Path target, final int height, final int width) throws IOException {
+    public static synchronized void resizeAndSave(final BufferedImage originalImage, final Path target, final int height, final int width) throws IOException {
         // create a new BufferedImage for drawing
         final BufferedImage newResizedImage
                 = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -256,7 +255,7 @@ public class RecentGraphScreenshotUtilities {
     /**
      * Refresh stored screenshots of recent files to match the recent files stored in history.
      */
-    public static void refreshScreenshotsDir() {
+    public static synchronized void refreshScreenshotsDir() {
 
         final List<String> filesInHistory = new ArrayList<>();
         final List<File> filesInDirectory = new ArrayList<>();

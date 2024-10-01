@@ -953,33 +953,15 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 // Create a new file and write to it.
                 final String tmpnam = String.format("%s_tmp%08x", name, gdo.hashCode());
                 final GraphDataObject freshGdo = (GraphDataObject) gdo.createFromTemplate(gdo.getFolder(), tmpnam);
-                // Create a 'secondary loop', allows screenshots to be taken when closing consty
-                // Otherwise consty locks up as screenshots and some GUI occupy the same dispatch thread
-                final Toolkit tk = Toolkit.getDefaultToolkit();
-                final EventQueue eq = tk.getSystemEventQueue();
-                final SecondaryLoop loop = eq.createSecondaryLoop();
 
                 final Semaphore waiter = new Semaphore(0);
 
-                new Thread(() -> {
-                    // Temporary file made so the absolute path has correct file seperators
-                    final File tempFile = new File(gdo.getPrimaryFile().getPath());
-                    RecentGraphScreenshotUtilities.takeScreenshot(tempFile.getAbsolutePath(), graph);
-                    // Exit the secondary loop
-                    waiter.release();
-                    loop.exit();
-                }).start();
-
-                // Start loop and report errors if they happen
-                if (!IS_HEADLESS) {
-                    final boolean result = loop.enter();
-                    if (!result) {
-                        LOGGER.log(Level.SEVERE, "Error with starting secondary loop in VisualGraphTopComponent");
-                    }
-                }
+                screenshotWithLoop(waiter, gdo.getPrimaryFile().getPath());
 
                 // Wait for screenshot to finish
                 waiter.acquireUninterruptibly(); // Wait for 0 permits to be 1
+
+                // Begin saving file, but dont bother taking another screenshot
                 final BackgroundWriter writer = new BackgroundWriter(name, freshGdo, true, waiter);
                 writer.execute();
                 // Wait for file writer to finish
@@ -995,10 +977,43 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 // just saves the current graph. If we don't do this and we have multiple graphs, the same
                 // graph will get saved each time.
                 requestActive();
-
                 final SaveAsAction action = new SaveAsAction();
                 action.actionPerformed(null);
                 isSaved = action.isSaved();
+
+                final Semaphore waiter = new Semaphore(0);
+                final String tempName = action.getSavedFilePath() + FileExtensionConstants.STAR; // done so name can be used in thread below
+
+                screenshotWithLoop(waiter, tempName);
+
+                // Wait for screenshot to finish
+                waiter.acquireUninterruptibly(); // Wait for 0 permits to be 1
+            }
+        }
+
+        private void screenshotWithLoop(final Semaphore waiter, final String name) {
+            // Create a 'secondary loop', allows screenshots to be taken when closing consty
+            // Otherwise consty locks up as screenshots and some GUI occupy the same dispatch thread
+            final Toolkit tk = Toolkit.getDefaultToolkit();
+            final EventQueue eq = tk.getSystemEventQueue();
+            final SecondaryLoop loop = eq.createSecondaryLoop();
+
+            new Thread(() -> {
+                // Temporary file made so the absolute path has correct file seperators
+                final File tempFile = new File(name);
+                System.out.println("Thread screenshot regular save: " + tempFile.getAbsolutePath());
+                RecentGraphScreenshotUtilities.takeScreenshot(tempFile.getAbsolutePath(), graph);
+                // Exit the secondary loop
+                waiter.release();
+                loop.exit();
+            }).start();
+
+            // Start loop and report errors if they happen
+            if (!IS_HEADLESS) {
+                final boolean result = loop.enter();
+                if (!result) {
+                    LOGGER.log(Level.SEVERE, "Error with starting secondary loop in VisualGraphTopComponent");
+                }
             }
         }
 
