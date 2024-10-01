@@ -91,5 +91,15 @@ public class SaveAsActionNGTest {
             assertTrue(instance.isSaved());
         });
     }
+    
+    
+    @Test
+    public void testGetSavedFilePath(){
+        System.out.println("getSavedFilePath");
+        SwingUtilities.invokeLater(() -> {
+            SaveAsAction instance = new SaveAsAction();
+            assertTrue(instance.getSavedFilePath().isEmpty());
+        });
+    }
 
 }
