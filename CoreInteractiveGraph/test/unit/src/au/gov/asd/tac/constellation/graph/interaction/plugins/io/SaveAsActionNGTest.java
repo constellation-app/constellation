@@ -91,10 +91,12 @@ public class SaveAsActionNGTest {
             assertTrue(instance.isSaved());
         });
     }
-    
-    
+
+    /**
+     * Test of getSavedFilePath method, of class SaveAsAction.
+     */
     @Test
-    public void testGetSavedFilePath(){
+    public void testGetSavedFilePath() {
         System.out.println("getSavedFilePath");
         SwingUtilities.invokeLater(() -> {
             SaveAsAction instance = new SaveAsAction();
