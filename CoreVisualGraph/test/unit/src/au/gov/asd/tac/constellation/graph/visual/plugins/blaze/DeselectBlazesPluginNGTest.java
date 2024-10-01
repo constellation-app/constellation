@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2024 Australian Signals Directorate
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,8 +34,8 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class SelectBlazesPluginNGTest {
-
+public class DeselectBlazesPluginNGTest {
+    
     private StoreGraph graph;
     private int vxId1;
     private int vxId2;
@@ -63,6 +63,9 @@ public class SelectBlazesPluginNGTest {
         selectedVertexAttribute = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
         
         graph.setObjectValue(blazeVertexAttribute, vxId1, BlazeUtilities.DEFAULT_BLAZE);
+        
+        graph.setBooleanValue(selectedVertexAttribute, vxId1, true);
+        graph.setBooleanValue(selectedVertexAttribute, vxId2, true);
     }
 
     @AfterMethod
@@ -70,7 +73,7 @@ public class SelectBlazesPluginNGTest {
     }
 
     /**
-     * Test of edit method, of class SelectBlazesPlugin.
+     * Test of edit method, of class DeselectBlazesPlugin.
      * @throws java.lang.InterruptedException
      * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
@@ -78,14 +81,14 @@ public class SelectBlazesPluginNGTest {
     public void testEdit() throws InterruptedException, PluginException {
         System.out.println("edit");
         
-        final SelectBlazesPlugin instance = new SelectBlazesPlugin();
+        final DeselectBlazesPlugin instance = new DeselectBlazesPlugin();
         
-        assertFalse(graph.getBooleanValue(selectedVertexAttribute, vxId1));
-        assertFalse(graph.getBooleanValue(selectedVertexAttribute, vxId2));
+        assertTrue(graph.getBooleanValue(selectedVertexAttribute, vxId1));
+        assertTrue(graph.getBooleanValue(selectedVertexAttribute, vxId2));
         
         instance.edit(graph, null, null);
         
-        assertTrue(graph.getBooleanValue(selectedVertexAttribute, vxId1));
-        assertFalse(graph.getBooleanValue(selectedVertexAttribute, vxId2));
+        assertFalse(graph.getBooleanValue(selectedVertexAttribute, vxId1));
+        assertTrue(graph.getBooleanValue(selectedVertexAttribute, vxId2));
     }
 }

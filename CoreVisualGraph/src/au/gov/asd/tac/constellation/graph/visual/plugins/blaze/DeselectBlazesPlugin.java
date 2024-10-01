@@ -38,9 +38,9 @@ import org.openide.util.lookup.ServiceProviders;
 @ServiceProviders({
     @ServiceProvider(service = Plugin.class)
 })
-@NbBundle.Messages("DeSelectBlazesPlugin=Deselect Blazes")
+@NbBundle.Messages("DeselectBlazesPlugin=Deselect Blazes")
 @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
-public class DeSelectBlazesPlugin extends SimpleEditPlugin {
+public class DeselectBlazesPlugin extends SimpleEditPlugin {
 
     @Override
     protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
