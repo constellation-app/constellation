@@ -1001,7 +1001,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             new Thread(() -> {
                 // Temporary file made so the absolute path has correct file seperators
                 final File tempFile = new File(name);
-                System.out.println("Thread screenshot regular save: " + tempFile.getAbsolutePath());
                 RecentGraphScreenshotUtilities.takeScreenshot(tempFile.getAbsolutePath(), graph);
                 // Exit the secondary loop
                 waiter.release();
