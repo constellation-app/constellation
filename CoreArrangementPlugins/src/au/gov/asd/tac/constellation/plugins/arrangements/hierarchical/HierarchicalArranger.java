@@ -19,6 +19,8 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
 import java.util.ArrayDeque;
@@ -51,6 +53,8 @@ public class HierarchicalArranger implements Arranger {
 
     private final Set<Integer> roots;
     private boolean maintainMean;
+    private static PluginInteraction interaction;
+    private static String lastMessage;
 
     public HierarchicalArranger(final Set<Integer> roots) {
         this.roots = new HashSet<>(roots);
@@ -132,6 +136,10 @@ public class HierarchicalArranger implements Arranger {
         if (maintainMean) {
             ArrangementUtilities.moveMean(wg, oldMean);
         }
+    }
+
+    public void setInteraction(final PluginInteraction interaction) {
+        this.interaction = interaction;
     }
 
     /**
@@ -249,6 +257,7 @@ public class HierarchicalArranger implements Arranger {
      */
     private static void arrangeVertices(final GraphWriteMethods wg, final ArrayList<ArrayList<Integer>> vxLevels) {
 
+        updateStatus(" starting vertex arrangement");
         int maxLevelVertices = 0;
         int totalVertices = wg.getVertexCount();
         for (ArrayList<Integer> vxLevel : vxLevels) {
@@ -359,10 +368,12 @@ public class HierarchicalArranger implements Arranger {
             passes = 30; 
         }
         
+        updateStatus(" smoothing passes: " + passes);
+        
         if (passes > 0) {            
             boolean finalAdjustment = false;
-            long startTime = System.currentTimeMillis();
-            long cutoffTime = startTime + 15000;
+            final long startTime = System.currentTimeMillis();
+            long cutoffTime = startTime + 15000; // will not start any more iterations if the cutoff time has been reached
             long defaultProcessingTime = 3000; // gives small graphs enough time to produce a nicely laid out arrangement
             long currentTime = System.currentTimeMillis();
             long timeLimit; // limits the time spent on doing an individual smoothing task
@@ -373,6 +384,8 @@ public class HierarchicalArranger implements Arranger {
             int modInc = 2;
             int modAmount = -1;
             for (int n = 0; (n < passes && modAmount > 0) || (currentTime < startTime + defaultProcessingTime && modAmount != 0) ; n++) {
+                updateStatus(" smoothing pass: " + (n+1));
+                
                 parentChangeAmount = -1;
                 totalChanges = 0;
                 currentTime = System.currentTimeMillis();
@@ -387,8 +400,8 @@ public class HierarchicalArranger implements Arranger {
                     break;
                 }                
                 timeLimit = currentTime + defaultProcessingTime/4;
-                for (int k = 0; (k < 1 + passes/2 && parentChangeAmount != 0) || (currentTime < timeLimit && parentChangeAmount != 0); k++) { // multi-pass adjustments to move children below parents
-                    parentChangeAmount = adjustArrangment(wg, vxLevels, false);
+                for (int k = 0; (k < 1 + passes/2 && parentChangeAmount != 0) || (currentTime < timeLimit && parentChangeAmount != 0); k++) { // multi-pass adjustments to move parents above children
+                    parentChangeAmount = adjustArrangement(wg, vxLevels, false);
                     totalChanges += parentChangeAmount;
                     currentTime = System.currentTimeMillis();
                     if (currentTime > timeLimit) {
@@ -404,7 +417,7 @@ public class HierarchicalArranger implements Arranger {
                 currentTime = System.currentTimeMillis();
                 timeLimit = currentTime + defaultProcessingTime/4;
                 for (int k = 0; (k < 1 + passes/2 && childChangeAmount != 0) || (currentTime < timeLimit && childChangeAmount != 0); k++) { // multi-pass adjustments to move children below parents
-                    childChangeAmount = adjustArrangment(wg, vxLevels, true);
+                    childChangeAmount = adjustArrangement(wg, vxLevels, true);
                     totalChanges += childChangeAmount;
                     currentTime = System.currentTimeMillis();
                     if (currentTime > timeLimit) {
@@ -423,7 +436,7 @@ public class HierarchicalArranger implements Arranger {
 
     }
     
-    private static int adjustArrangment(final GraphWriteMethods wg, final ArrayList<ArrayList<Integer>> vxLevels, final boolean topDownScan){
+    private static int adjustArrangement(final GraphWriteMethods wg, final ArrayList<ArrayList<Integer>> vxLevels, final boolean topDownScan){
         // when topDownScan = true : the parent nodes are being shifted to positions that are closer to their children on the next level
         // when topDownScan = false : the child nodes are being shifted to positions that are closer to their parents on the previous level
         
@@ -614,4 +627,15 @@ public class HierarchicalArranger implements Arranger {
         maintainMean = b;
     }
 
+    private static void updateStatus(final String message) {
+        lastMessage = message;
+        if (interaction != null) {
+            interaction.notify(PluginNotificationLevel.INFO, message);
+        }
+    }
+    
+    public String getLastMessage() {
+        return lastMessage;
+    }
+    
 }
