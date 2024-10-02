@@ -119,7 +119,7 @@ public class ColumnVisibilityContextMenu {
         showDefaultColumnsMenu = createCustomMenu(DEFAULT_COLUMNS, e -> {
             TableDefaultColumns tableDefaultColumnsProvider = Lookup.getDefault().lookup(TableDefaultColumns.class);
             
-            List<Integer> ids = tableDefaultColumnsProvider.getDefaultColumns(getTableViewTopComponent().getCurrentGraph()).stream()
+            List<Integer> ids = tableDefaultColumnsProvider.getDefaultAttributes(getTableViewTopComponent().getCurrentGraph()).stream()
                     .map(GraphAttribute::getId)
                     .collect(Collectors.toList());
 
@@ -149,15 +149,14 @@ public class ColumnVisibilityContextMenu {
                         keyAttributes.add(new GraphAttribute(readableGraph, transactionKey));
                     }
                 }
-                getActiveTableReference().updateVisibleColumns(
-                        getTableViewTopComponent().getCurrentGraph(),
-                        getTableViewTopComponent().getCurrentState(),
-                        extractColumnAttributes(
-                                table.getColumnIndex().stream()
-                                        .filter(column -> keyAttributes.stream()
-                                                .anyMatch(keyAttribute -> keyAttribute.equals(column.getAttribute())))
-                                        .toList()
-                        ),
+                final List<Tuple<String, Attribute>> extractColumnAttributes = extractColumnAttributes(
+                        table.getColumnIndex().stream()
+                                .filter(column -> keyAttributes.stream()
+                                        .anyMatch(keyAttribute -> keyAttribute.equals(column.getAttribute())))
+                                .toList()
+                );
+                getActiveTableReference().updateVisibleColumns(getTableViewTopComponent().getCurrentGraph(),
+                        getTableViewTopComponent().getCurrentState(), extractColumnAttributes,
                         UpdateMethod.REPLACE
                 );
                 e.consume();

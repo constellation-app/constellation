@@ -26,9 +26,9 @@ import java.util.List;
 public interface TableDefaultColumns {
        
     /**
-     * Gets the default table columns.
-     * @return List of default GraphAttribute table columns.
+     * Gets the default graph attributes.
+     * @return List of default graph attributes.
      */
-    public List<GraphAttribute> getDefaultColumns(Graph graph);
+    public List<GraphAttribute> getDefaultAttributes(Graph graph);
     
 }

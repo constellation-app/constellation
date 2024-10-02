@@ -35,7 +35,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class TableDefaultsColumnsProvider implements TableDefaultColumns {
 
     @Override
-    public List<GraphAttribute> getDefaultColumns(Graph graph) {
+    public List<GraphAttribute> getDefaultAttributes(Graph graph) {
         final List<GraphAttribute> attributes = new ArrayList<>();
         if (graph != null && graph.getSchema() != null) {
             try (final ReadableGraph readableGraph = graph.getReadableGraph()) {

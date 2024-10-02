@@ -280,13 +280,12 @@ public class ColumnVisibilityContextMenuNGTest {
         // DEFAULT COLUMNS
         /////////////////
         verifyCustomMenu(columnVisibilityContextMenu.getShowDefaultColumnsMenu(), "Show Default Columns", false);
-
-        // Only column 3 has a name starting with a lower case character, so it is excluded
-        verifyAllColumnsMenuClicked(columnVisibilityContextMenu.getShowDefaultColumnsMenu(), List.of(
-                Tuple.create(columnType1, attribute1),
+        
+        // See TestTableDefaultColumnsProvider, it has attribute2 and attribute5 set as default attributes
+        verifyProvidedColumnVisibilityActions(columnVisibilityContextMenu.getShowDefaultColumnsMenu(), List.of(
                 Tuple.create(columnType2, attribute2),
-                Tuple.create(columnType4, attribute4)
-        ));
+                Tuple.create(columnType5, attribute5)
+        ), null);
 
         /////////////////
         // KEY COLUMNS
