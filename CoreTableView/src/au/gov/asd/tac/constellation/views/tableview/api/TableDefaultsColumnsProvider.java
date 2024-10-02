@@ -19,48 +19,34 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.TransactionTypeAttributeDescription;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcept;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Andromeda-224
  */
-@ServiceProvider(service = TableDefaultColumns.class, position = 100)
+@ServiceProvider(service = TableDefaultColumns.class, position = Integer.MAX_VALUE)
 public class TableDefaultsColumnsProvider implements TableDefaultColumns {
 
     @Override
-    public List<GraphAttribute> getDefaultAttributes(Graph graph) {
-        final List<GraphAttribute> attributes = new ArrayList<>();
+    public List<GraphAttribute> getDefaultAttributes(final Graph graph) {
+        final Set<GraphAttribute> keyAttributes = new HashSet<>();
+        
         if (graph != null && graph.getSchema() != null) {
             try (final ReadableGraph readableGraph = graph.getReadableGraph()) {
-                final int attributeCount = readableGraph.getAttributeCount(GraphElementType.TRANSACTION);
-                for (int i = 0; i < attributeCount; i++) {
-                    attributes.add(new GraphAttribute(readableGraph, readableGraph.getAttribute(GraphElementType.TRANSACTION, i)));
+                final int[] vertexKeys = readableGraph.getPrimaryKey(GraphElementType.VERTEX);
+                for (final int vertexKey : vertexKeys) {
+                    keyAttributes.add(new GraphAttribute(readableGraph, vertexKey));
                 }
-            }
-            try (final ReadableGraph readableGraph = graph.getReadableGraph()) {
-                final int attributeCount = readableGraph.getAttributeCount(GraphElementType.VERTEX);
-                for (int i = 0; i < attributeCount; i++) {
-                    attributes.add(new GraphAttribute(readableGraph, readableGraph.getAttribute(GraphElementType.VERTEX, i)));
+                final int[] transactionKeys = readableGraph.getPrimaryKey(GraphElementType.TRANSACTION);
+                for (final int transactionKey : transactionKeys) {
+                    keyAttributes.add(new GraphAttribute(readableGraph, transactionKey));
                 }
             }
         }
-
-        List<String> selectedNames = new ArrayList<>();
-        // set default columns to identifier, type, transaction_type, and
-        // transaction datetime
-        selectedNames.add(VisualConcept.VertexAttribute.IDENTIFIER.getName());
-        selectedNames.add(TransactionTypeAttributeDescription.ATTRIBUTE_NAME);
-        selectedNames.add(AnalyticConcept.TransactionAttribute.TYPE.getName());
-        selectedNames.add(TemporalConcept.VertexAttribute.DATETIME.getName());
-        return attributes.stream()
-                .filter(attribute -> selectedNames.contains(attribute.getName()))
-                .toList();        
+        return keyAttributes.stream().toList();
     } 
 }

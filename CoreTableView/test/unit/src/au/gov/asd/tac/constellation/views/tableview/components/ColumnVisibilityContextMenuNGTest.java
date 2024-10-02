@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
+import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.views.tableview.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview.api.ActiveTableReference;
@@ -80,6 +81,7 @@ public class ColumnVisibilityContextMenuNGTest {
     private Graph graph;
     private ReadableGraph readableGraph;
     private TableViewState tableViewState;
+    private Schema schema;
 
     private String columnType1;
     private String columnType2;
@@ -125,10 +127,12 @@ public class ColumnVisibilityContextMenuNGTest {
         activeTableReference = mock(ActiveTableReference.class);
         graph = mock(Graph.class);
         readableGraph = mock(ReadableGraph.class);
+        schema = mock(Schema.class);      
 
         tableViewState = new TableViewState();
 
         when(graph.getReadableGraph()).thenReturn(readableGraph);
+        when(graph.getSchema()).thenReturn(schema);
 
         // These two will define which columns are shown when the "Key Columns" button is pressed
         when(readableGraph.getPrimaryKey(GraphElementType.VERTEX)).thenReturn(new int[]{2, 3});

@@ -117,20 +117,18 @@ public class ColumnVisibilityContextMenu {
         });
 
         showDefaultColumnsMenu = createCustomMenu(DEFAULT_COLUMNS, e -> {
-            TableDefaultColumns tableDefaultColumnsProvider = Lookup.getDefault().lookup(TableDefaultColumns.class);
+            final TableDefaultColumns tableDefaultColumnsProvider = Lookup.getDefault().lookup(TableDefaultColumns.class);
             
-            List<Integer> ids = tableDefaultColumnsProvider.getDefaultAttributes(getTableViewTopComponent().getCurrentGraph()).stream()
+            final List<Integer> ids = tableDefaultColumnsProvider.getDefaultAttributes(getTableViewTopComponent().getCurrentGraph()).stream()
                     .map(GraphAttribute::getId)
                     .collect(Collectors.toList());
-
-            List<Tuple<String, Attribute>> filteredCols = extractColumnAttributes(table.getColumnIndex().stream()
-                    .filter(column -> ids.contains(column.getAttribute().getId()))
-                    .collect(Collectors.toList()));
 
             getActiveTableReference().updateVisibleColumns(
                     getTableViewTopComponent().getCurrentGraph(),
                     getTableViewTopComponent().getCurrentState(),
-                    filteredCols,
+                    extractColumnAttributes(table.getColumnIndex().stream()
+                            .filter(column -> ids.contains(column.getAttribute().getId()))
+                            .collect(Collectors.toList())),
                     UpdateMethod.REPLACE
             );
             e.consume();

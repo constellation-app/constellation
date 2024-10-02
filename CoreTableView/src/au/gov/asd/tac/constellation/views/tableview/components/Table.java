@@ -610,7 +610,7 @@ public class Table {
         final ColumnVisibilityContextMenu columnVisibilityContextMenu = new ColumnVisibilityContextMenu(this);
         columnVisibilityContextMenu.init();
 
-        final MenuItem keyColumns = columnVisibilityContextMenu.getShowDefaultColumnsMenu();
-        keyColumns.fire();
+        final MenuItem defaultColumns = columnVisibilityContextMenu.getShowDefaultColumnsMenu();
+        defaultColumns.fire();
     }
 }

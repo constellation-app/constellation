@@ -29,6 +29,6 @@ public interface TableDefaultColumns {
      * Gets the default graph attributes.
      * @return List of default graph attributes.
      */
-    public List<GraphAttribute> getDefaultAttributes(Graph graph);
+    public List<GraphAttribute> getDefaultAttributes(final Graph graph);
     
 }

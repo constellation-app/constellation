@@ -38,18 +38,19 @@ public class TestTableDefaultColumnsProvider implements TableDefaultColumns {
     public List<GraphAttribute> getDefaultAttributes(Graph graph) {
         ArrayList<GraphAttribute> defaultList = new ArrayList<>();
         
-        Attribute attribute2 = new GraphAttribute(graph.getReadableGraph(), 2);
-        when(graph.getReadableGraph().getAttributeName(2)).thenReturn("Number of Visitors");
-        TableColumn<ObservableList<String>, String> column2 = mock(TableColumn.class);
-        when(column2.getText()).thenReturn("Text from Column 2");
-        defaultList.add((GraphAttribute)attribute2);
-        
-        Attribute attribute5 = new GraphAttribute(graph.getReadableGraph(), 5);
-        when(graph.getReadableGraph().getAttributeName(5)).thenReturn("personal notes");
-        TableColumn<ObservableList<String>, String> column5 = mock(TableColumn.class);
-        when(column5.getText()).thenReturn("Text from Column 5");
-        defaultList.add((GraphAttribute)attribute5);
-        
+        if (graph != null && graph.getSchema() != null) {
+            Attribute attribute2 = new GraphAttribute(graph.getReadableGraph(), 2);
+            when(graph.getReadableGraph().getAttributeName(2)).thenReturn("Number of Visitors");
+            TableColumn<ObservableList<String>, String> column2 = mock(TableColumn.class);
+            when(column2.getText()).thenReturn("Text from Column 2");
+            defaultList.add((GraphAttribute)attribute2);
+
+            Attribute attribute5 = new GraphAttribute(graph.getReadableGraph(), 5);
+            when(graph.getReadableGraph().getAttributeName(5)).thenReturn("personal notes");
+            TableColumn<ObservableList<String>, String> column5 = mock(TableColumn.class);
+            when(column5.getText()).thenReturn("Text from Column 5");
+            defaultList.add((GraphAttribute)attribute5);
+        }
         return defaultList;
     }
     
