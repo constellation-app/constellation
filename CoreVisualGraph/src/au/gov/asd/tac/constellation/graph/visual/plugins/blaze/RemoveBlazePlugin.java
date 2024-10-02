@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.graph.visual.plugins.blaze;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import static au.gov.asd.tac.constellation.graph.schema.visual.utilities.BlazeUtilities.VERTEX_IDS_PARAMETER_ID;
@@ -57,14 +56,13 @@ public class RemoveBlazePlugin extends SimpleEditPlugin {
 
         final PluginParameter<IntegerParameterValue> vertexIdParam = IntegerParameterType.build(VERTEX_ID_PARAMETER_ID);
         vertexIdParam.setName("Vertex Id");
-        vertexIdParam.setDescription("The vertex id of the node to set a blaze");
+        vertexIdParam.setDescription("The vertex id of the node to remove a blaze");
         vertexIdParam.setIntegerValue(Graph.NOT_FOUND);
         parameters.addParameter(vertexIdParam);
 
         final PluginParameter<ObjectParameterValue> vertexIdsParam = ObjectParameterType.build(VERTEX_IDS_PARAMETER_ID);
         vertexIdsParam.setName("Vertex IDs");
-        vertexIdsParam.setDescription("The list of vertex id's to set a blaze for in bulk");
-        vertexIdsParam.setObjectValue(null);
+        vertexIdsParam.setDescription("The list of vertex id's to remove a blaze for in bulk");
         parameters.addParameter(vertexIdsParam);
 
         return parameters;
@@ -85,7 +83,7 @@ public class RemoveBlazePlugin extends SimpleEditPlugin {
                         wg.setObjectValue(blazeAttr, ix, null);
                     }
                 } else {
-                    int selectedAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
+                    int selectedAttr = VisualConcept.VertexAttribute.SELECTED.get(wg);
                     if (selectedAttr != Graph.NOT_FOUND) {
                         final int vxCount = wg.getVertexCount();
                         for (int position = 0; position < vxCount; position++) {

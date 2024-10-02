@@ -144,7 +144,7 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
 
         if (newColor != null) {
             colorPanels.get(panelID - 1).setBackground(newColor);
-            BlazeUtilities.savePreset(newColor, panelID - 1);
+            BlazeUtilities.savePreset(ConstellationColor.fromJavaColor(newColor), panelID - 1);
         }
     }
 
@@ -417,9 +417,8 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
 
         switch (command) {
             case ADD_CUSTOM_BLAZE_ACTION -> {
-                final Pair<Boolean, ConstellationColor> colorResult = BlazeUtilities.colorDialog(selectionResult.getValue());
-                if (colorResult.getKey()) {
-                    final ConstellationColor color = colorResult.getValue();
+                final ConstellationColor color = BlazeUtilities.colorDialog(selectionResult.getValue());
+                if (color != null) {
                     plugin = PluginRegistry.get(VisualGraphPluginRegistry.ADD_CUSTOM_BLAZE);
                     parameters = DefaultPluginParameters.getDefaultParameters(plugin);
                     parameters.getParameters().get(BlazeUtilities.VERTEX_IDS_PARAMETER_ID).setObjectValue(selectionResult.getKey());
