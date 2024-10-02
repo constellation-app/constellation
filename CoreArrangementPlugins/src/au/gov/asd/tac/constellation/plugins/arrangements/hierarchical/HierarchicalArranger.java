@@ -138,8 +138,8 @@ public class HierarchicalArranger implements Arranger {
         }
     }
 
-    public void setInteraction(final PluginInteraction interaction) {
-        this.interaction = interaction;
+    public static void setInteraction(final PluginInteraction newInteraction) {
+        interaction = newInteraction;
     }
 
     /**
@@ -194,15 +194,11 @@ public class HierarchicalArranger implements Arranger {
         final ArrayList<Integer> vxParentLevel = vxLevels.get(level - 1);
         for (final int vxId : vxLevelCopy) {
             float weight = 0;
-            int nParents = 0;
-            int nChildren = 0;
             for (int lposition = 0; lposition < rg.getVertexNeighbourCount(vxId); lposition++) {
                 final int nId = rg.getVertexNeighbour(vxId, lposition);
                 if (vxParentLevel.contains(nId)) {
-                    nParents++;
                     weight += 100;
                 } else if (!vxLevelCopy.contains(nId)) {
-                    nChildren++;
                     weight += 200;
                 }
             }
@@ -216,7 +212,6 @@ public class HierarchicalArranger implements Arranger {
             sortLevelByWeight(vxLevel, weights);
             busyCentreOrder(vxLevel);
         }
-
         return reordered;
     }
 
@@ -280,10 +275,8 @@ public class HierarchicalArranger implements Arranger {
         int verticesRemaining;
         int verticesForRow;
         int vertexCounter;
-        int virtualRowLevel = -1;
         final double xMinDefaultAdj = Math.max(Math.min(Math.log(maxNodesPerRow)*2, 9), 0);
         double yStep;
-        double yAdj;
         double xAdj;
         double yDir;
         final int totalLevels = vxLevels.size();
@@ -291,37 +284,34 @@ public class HierarchicalArranger implements Arranger {
         for (int level = 0; level < totalLevels; level++) {
             vertexCounter = -1;
             displayLevel += 1.0;
-            virtualRowLevel++;
             final ArrayList<Integer> vxLevel = vxLevels.get(level);
             final int levelVertices = vxLevel.size();
-            displayLevel += Math.max(2 * Math.log(prevVertices + levelVertices) - 5 , 0);
+            displayLevel += Math.max(2 * Math.log((double) prevVertices + levelVertices) - 5 , 0);
             verticesRemaining = levelVertices;
 
             while (vertexCounter < levelVertices - 1) {
                 verticesForRow = verticesRemaining > maxNodesPerRow ? maxNodesPerRow : verticesRemaining;
                 yStep = 0;
-                yAdj = 0;
                 xAdj = 0;
                 yDir = 0;
                 if (verticesForRow > 4) {
-                    yAdj = Math.max(0, Math.min((ygap/2)*(Math.log10(verticesForRow)-1), ygap/2));
-                    yStep = yAdj;
-                    yDir = 2 * yAdj / verticesForRow;
+                    yStep = Math.max(0, Math.min((ygap/2)*(Math.log10(verticesForRow)-1), ygap/2));
+                    yDir = 2 * yStep / verticesForRow;
                     xAdj = Math.max(Math.min(Math.log(verticesForRow)*2, 9), 0);
                 }
  
                 final float xMaxOffset = maxLevelVertices <= maxNodesPerRow ? maxLevelVertices * (xgap - (float) xMinAdj) / 2F : maxNodesPerRow * (xgap - (float) xMinDefaultAdj) / 2F;
                 final float xLevelOffset = verticesForRow <= maxNodesPerRow ? xMaxOffset - verticesForRow * (xgap - (float) xAdj) / 2F : maxNodesPerRow * (xgap - (float) xMinDefaultAdj) / 2F;
 
-                float xSpacer[] = new float[verticesForRow];
-                Arrays.fill(xSpacer, (verticesForRow/2) * ((float) xAdj / 8));
-                for (int i = 0; i < verticesForRow/2; i++) {
+                float[] xSpacer = new float[verticesForRow];
+                Arrays.fill(xSpacer, (verticesForRow / 2F) * ((float) xAdj / 8));
+                for (int i = 0; i < verticesForRow / 2; i++) {
                     xSpacer[i] = ((float) xAdj / 8) * i;
                 }
-                for (int i = verticesForRow - 1; i > verticesForRow/2; i--) {
+                for (int i = verticesForRow - 1; i > verticesForRow / 2; i--) {
                     xSpacer[i] = ((float) xAdj / 8) * (verticesForRow - i);
                 }
-                float xSpacerInc[] = new float[verticesForRow];
+                float[] xSpacerInc = new float[verticesForRow];
                 float accumulation = 0.0F;
                 for (int i = 0; i < verticesForRow; i++) {
                     accumulation += xSpacer[i];
@@ -331,7 +321,7 @@ public class HierarchicalArranger implements Arranger {
                     vertexCounter++;
                     final int vxId = vxLevel.get(vertexCounter);
                     
-                    wg.setFloatValue(xId, vxId, xLevelOffset + i * (xgap - (float) xAdj) + xSpacerInc[i] - xSpacerInc[verticesForRow-1]/2);
+                    wg.setFloatValue(xId, vxId, xLevelOffset + i * (xgap - (float) xAdj) + xSpacerInc[i] - xSpacerInc[verticesForRow-1] / 2);
                     wg.setFloatValue(yId, vxId, (float)(-displayLevel * ygap - (yStep > 0 ? -yStep : yStep )));
                     wg.setFloatValue(zId, vxId, 0);
                     yStep = yStep - yDir;
@@ -341,9 +331,7 @@ public class HierarchicalArranger implements Arranger {
                 if (verticesRemaining > maxNodesPerRow) {
                     verticesRemaining -= maxNodesPerRow;
                     displayLevel += 0.5;
-                    virtualRowLevel++;
                 }
-
             }
             prevVertices = levelVertices;
         }
@@ -362,7 +350,7 @@ public class HierarchicalArranger implements Arranger {
             passes = 0;
         } else if (graphSize > 1000) {
             // this is the point where the graph arrangement starts to become crowded, and the time to smooth out the arrangement becomes noticeable
-            passes = (int) (30D * Math.pow(((11000D - (double)graphSize) / 10000D), 2)) + 1;
+            passes = (int) (30D * Math.pow(((11000D - graphSize) / 10000D), 2)) + 1;
         } else {
             // smaller graphs can have more passes to produce an improved arrangement
             passes = 30; 
@@ -399,7 +387,7 @@ public class HierarchicalArranger implements Arranger {
                 if (currentTime > cutoffTime) {
                     break;
                 }                
-                timeLimit = currentTime + defaultProcessingTime/4;
+                timeLimit = currentTime + defaultProcessingTime / 4;
                 for (int k = 0; (k < 1 + passes/2 && parentChangeAmount != 0) || (currentTime < timeLimit && parentChangeAmount != 0); k++) { // multi-pass adjustments to move parents above children
                     parentChangeAmount = adjustArrangement(wg, vxLevels, false);
                     totalChanges += parentChangeAmount;
@@ -415,7 +403,7 @@ public class HierarchicalArranger implements Arranger {
                 totalChanges = 0;
                 childChangeAmount = -1;
                 currentTime = System.currentTimeMillis();
-                timeLimit = currentTime + defaultProcessingTime/4;
+                timeLimit = currentTime + defaultProcessingTime / 4;
                 for (int k = 0; (k < 1 + passes/2 && childChangeAmount != 0) || (currentTime < timeLimit && childChangeAmount != 0); k++) { // multi-pass adjustments to move children below parents
                     childChangeAmount = adjustArrangement(wg, vxLevels, true);
                     totalChanges += childChangeAmount;
@@ -429,7 +417,7 @@ public class HierarchicalArranger implements Arranger {
                 }
                 modAmount += totalChanges;
                 if (n > 2 && (childChangeAmount == 0 || parentChangeAmount == 0)) {
-                   finalAdjustment = true; 
+                    finalAdjustment = true;
                 }
             }
         }

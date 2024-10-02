@@ -43,8 +43,8 @@ public class HierarchicalArrangerNGTest {
 
     private List<Integer> vtxList, txnList;
     private Graph graph;
-    private final boolean SAVE_GRAPH_FILES = false; // change this to true if you want to see the graph files in local testing
-                                                    // but remember to set it back to false when committing.
+    private static final boolean SAVE_GRAPH_FILES = false;  // change this to true if you want to see the graph files in local testing
+                                                            // but remember to set it back to false when committing.
     
     public HierarchicalArrangerNGTest() {
     }
@@ -90,7 +90,6 @@ public class HierarchicalArrangerNGTest {
             }
             for (final int vtxId : vtxList) {
                 wg.setStringValue(vertexIdentifierAttribute, vtxId, "Vtx-" + vtxId);
-                //wg.setBooleanValue(selectedV, vtxId, false);
             }
             
             int vtxIndex = 0;
@@ -146,7 +145,7 @@ public class HierarchicalArrangerNGTest {
      * Test of arrange method, of class HierarchicalArranger.
      */
     @Test
-    public void testArrange150() throws Exception {
+    public void testArrange150() {
         System.out.println("arrange");
         setupGraph(150);
         WritableGraph wg;
@@ -164,17 +163,18 @@ public class HierarchicalArrangerNGTest {
             assertTrue(lastMessage.contains("pass: 5"));
             
             saveGraphToFile("hierarchy150_test");
-        } catch (final InterruptedException ex) {
-            
+        } catch (final InterruptedException  | IOException ex) {
+            Exceptions.printStackTrace(ex);
+            Thread.currentThread().interrupt();            
         }
-            }
+    }
 
 
     /**
      * Test of arrange method, of class HierarchicalArranger.
      */
     @Test
-    public void testArrange1500() throws Exception {
+    public void testArrange1500() {
         System.out.println("arrange");
         setupGraph(1500);
         WritableGraph wg;
@@ -192,8 +192,9 @@ public class HierarchicalArrangerNGTest {
             assertTrue(lastMessage.contains("pass: 10"));
             
             saveGraphToFile("hierarchy1500_test");
-        } catch (final InterruptedException ex) {
-            
+        } catch (final InterruptedException  | IOException ex) {
+            Exceptions.printStackTrace(ex);
+            Thread.currentThread().interrupt();
         }        
     }
 
@@ -202,7 +203,7 @@ public class HierarchicalArrangerNGTest {
      * Test of arrange method, of class HierarchicalArranger.
      */
     @Test
-    public void testArrange15000() throws Exception {
+    public void testArrange15000() {
         System.out.println("arrange");
         setupGraph(15000);
         WritableGraph wg;
@@ -220,8 +221,9 @@ public class HierarchicalArrangerNGTest {
             assertTrue(lastMessage.contains("passes: 0"));
             
             saveGraphToFile("hierarchy15000_test");
-        } catch (final InterruptedException ex) {
-            
+        } catch (final InterruptedException | IOException ex) {
+            Exceptions.printStackTrace(ex);
+            Thread.currentThread().interrupt();
         }        
     }
 
