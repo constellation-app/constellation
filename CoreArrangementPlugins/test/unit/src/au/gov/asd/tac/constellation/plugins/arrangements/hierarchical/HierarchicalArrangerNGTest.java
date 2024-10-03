@@ -18,15 +18,33 @@ package au.gov.asd.tac.constellation.plugins.arrangements.hierarchical;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
+import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.utilities.io.SaveGraphUtilities;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginGraphs;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
+import au.gov.asd.tac.constellation.views.namedselection.utilities.SelectNamedSelectionPanel;
+import java.awt.Dialog;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import javax.swing.SwingUtilities;
+import org.mockito.MockedStatic;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.util.Exceptions;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
@@ -43,6 +61,7 @@ public class HierarchicalArrangerNGTest {
 
     private List<Integer> vtxList, txnList;
     private Graph graph;
+    private boolean delayedSave = false;
     private static final boolean SAVE_GRAPH_FILES = false;  // change this to true if you want to see the graph files in local testing
                                                             // but remember to set it back to false when committing.
     
@@ -63,6 +82,11 @@ public class HierarchicalArrangerNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        if (delayedSave) {
+            Thread.sleep(5000);
+            saveGraphToFile("hierarchy-arrangement");
+            delayedSave = false;
+        }
     }
 
         /**
@@ -142,11 +166,11 @@ public class HierarchicalArrangerNGTest {
     }
     
     /**
-     * Test of arrange method, of class HierarchicalArranger.
+     * Test of arrange method, of class HierarchicalArranger, with 150 nodes.
      */
     @Test
     public void testArrange150() {
-        System.out.println("arrange");
+        System.out.println("Test hierarchy arrangement 150");
         setupGraph(150);
         WritableGraph wg;
         try {
@@ -156,14 +180,15 @@ public class HierarchicalArrangerNGTest {
             rootVxIds.add(vtxList.get(1));
             rootVxIds.add(vtxList.get(2));
             rootVxIds.add(vtxList.get(3));
+            
             HierarchicalArranger instance = new HierarchicalArranger(rootVxIds);
             instance.arrange(wg);
-            String lastMessage = instance.getLastMessage();
-            System.out.println(lastMessage);
+            String lastMessage = instance.getLastMessage();            
             assertTrue(lastMessage.contains("pass: 5"));
-            
+
+            wg.commit();
             saveGraphToFile("hierarchy150_test");
-        } catch (final InterruptedException  | IOException ex) {
+        } catch (final InterruptedException ex) {
             Exceptions.printStackTrace(ex);
             Thread.currentThread().interrupt();            
         }
@@ -171,11 +196,11 @@ public class HierarchicalArrangerNGTest {
 
 
     /**
-     * Test of arrange method, of class HierarchicalArranger.
+     * Test of arrange method, of class HierarchicalArranger, with 1500 nodes.
      */
     @Test
     public void testArrange1500() {
-        System.out.println("arrange");
+        System.out.println("Test hierarchy arrangement 1500");
         setupGraph(1500);
         WritableGraph wg;
         try {
@@ -185,26 +210,27 @@ public class HierarchicalArrangerNGTest {
             rootVxIds.add(vtxList.get(1));
             rootVxIds.add(vtxList.get(2));
             rootVxIds.add(vtxList.get(3));
+
             HierarchicalArranger instance = new HierarchicalArranger(rootVxIds);
             instance.arrange(wg);
             String lastMessage = instance.getLastMessage();
-            System.out.println(lastMessage);
             assertTrue(lastMessage.contains("pass: 10"));
-            
+
+            wg.commit();
             saveGraphToFile("hierarchy1500_test");
-        } catch (final InterruptedException  | IOException ex) {
+        } catch (final InterruptedException ex) {
             Exceptions.printStackTrace(ex);
             Thread.currentThread().interrupt();
-        }        
+        }
     }
 
 
     /**
-     * Test of arrange method, of class HierarchicalArranger.
+     * Test of arrange method, of class HierarchicalArranger, with 15000 nodes.
      */
     @Test
     public void testArrange15000() {
-        System.out.println("arrange");
+        System.out.println("Test hierarchy arrangement 15000");
         setupGraph(15000);
         WritableGraph wg;
         try {
@@ -214,25 +240,81 @@ public class HierarchicalArrangerNGTest {
             rootVxIds.add(vtxList.get(1));
             rootVxIds.add(vtxList.get(2));
             rootVxIds.add(vtxList.get(3));
+            
             HierarchicalArranger instance = new HierarchicalArranger(rootVxIds);
             instance.arrange(wg);
             String lastMessage = instance.getLastMessage();
-            System.out.println(lastMessage);
             assertTrue(lastMessage.contains("passes: 0"));
-            
+
+            wg.commit();
             saveGraphToFile("hierarchy15000_test");
-        } catch (final InterruptedException | IOException ex) {
+        } catch (final InterruptedException ex) {
             Exceptions.printStackTrace(ex);
             Thread.currentThread().interrupt();
-        }        
-    }
-
-    private void saveGraphToFile(final String filename) throws InterruptedException, IOException {
-        if (SAVE_GRAPH_FILES) {
-            SaveGraphUtilities.saveGraphToTemporaryDirectory(graph, filename, true);
-            System.out.println("Saved graph to " + System.getProperty("java.io.tmpdir") + filename);
         }
     }
 
+    private void saveGraphToFile(final String filename) {
+        if (SAVE_GRAPH_FILES) {
+            try {
+                SaveGraphUtilities.saveGraphToTemporaryDirectory(graph, filename, true);
+                System.out.println("Saved graph to " + System.getProperty("java.io.tmpdir") + filename);
+            } catch (IOException | InterruptedException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+    }
+
+    /**
+     * Test of arrange method, of class HierarchicalArranger, with 250 nodes, running in background via the action call.
+     * This improves code coverage but does not allow checking of results due to the background task running after the test code has already completed.
+     */
+    @Test
+    public void testArrange150viaAction() {
+        System.out.println("Test hierarchy arrangement 250 via Action call");
+        setupGraph(250);
+        WritableGraph wg;
+        try {
+            wg = graph.getWritableGraph("", true);
+            int selectedVetexId = VisualConcept.VertexAttribute.SELECTED.ensure(wg);
+            wg.setBooleanValue(selectedVetexId, vtxList.get(0), true);
+            wg.setBooleanValue(selectedVetexId, vtxList.get(1), true);
+            wg.setBooleanValue(selectedVetexId, vtxList.get(2), true);
+            wg.setBooleanValue(selectedVetexId, vtxList.get(3), true);
+            
+            GraphNode contextMock = mock(GraphNode.class);
+            doReturn(graph).when(contextMock).getGraph();
+            
+            SelectNamedSelectionPanel ssp = mock(SelectNamedSelectionPanel.class);
+            doReturn(-2L).when(ssp).getNamedSelectionId();
+            
+            MockedStatic<DialogDisplayer> ddStatic = mockStatic(DialogDisplayer.class);
+            ddStatic.when(DialogDisplayer::getDefault).thenReturn(new MockedDialogDisplayer());
+            
+            ArrangeInHierarchyAction hierAction = new ArrangeInHierarchyAction(contextMock);
+            hierAction.actionPerformed(null);
+            
+            wg.commit();
+            if (SAVE_GRAPH_FILES) {
+                delayedSave = true;
+            }
+        } catch (final InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+            Thread.currentThread().interrupt();            
+        }
+    }
     
+    private class MockedDialogDisplayer extends DialogDisplayer {
+
+        @Override
+        public Object notify(NotifyDescriptor nd) {
+            return DialogDescriptor.OK_OPTION;
+        }
+
+        @Override
+        public Dialog createDialog(DialogDescriptor dd) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+        
+    }
 }

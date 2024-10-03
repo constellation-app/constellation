@@ -427,7 +427,7 @@ public class HierarchicalArranger implements Arranger {
     private static int adjustArrangement(final GraphWriteMethods wg, final ArrayList<ArrayList<Integer>> vxLevels, final boolean topDownScan){
         // when topDownScan = true : the parent nodes are being shifted to positions that are closer to their children on the next level
         // when topDownScan = false : the child nodes are being shifted to positions that are closer to their parents on the previous level
-        
+
         int swapsMade = 0;
         final int rangeStart = topDownScan ? 0 : vxLevels.size() - 1;
         final int rangeEnd = topDownScan ? vxLevels.size() - 2 : 1;

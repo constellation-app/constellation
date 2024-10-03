@@ -61,7 +61,7 @@ public class ArrangeInHierarchyPlugin extends SimpleEditPlugin {
 
             final GridChoiceParameters innerGcParams = GridChoiceParameters.getDefaultParameters();
             final HierarchicalArranger inner = new HierarchicalArranger(roots);
-            inner.setInteraction(interaction);
+            HierarchicalArranger.setInteraction(interaction);
             final GridChoiceParameters outerGcParams = GridChoiceParameters.getDefaultParameters();
             outerGcParams.setRowOffsets(false);
             final Arranger outer = new GridArranger(outerGcParams);
