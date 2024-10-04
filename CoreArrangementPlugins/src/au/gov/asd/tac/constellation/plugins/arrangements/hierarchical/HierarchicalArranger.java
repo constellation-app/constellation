@@ -356,9 +356,8 @@ public class HierarchicalArranger implements Arranger {
             passes = 30; 
         }
         
-        updateStatus(" smoothing passes: " + passes);
-        
-        if (passes > 0) {            
+        if (passes > 0) {
+            updateStatus(" commencing smoothing passes: " + passes);
             boolean finalAdjustment = false;
             final long startTime = System.currentTimeMillis();
             long cutoffTime = startTime + 15000; // will not start any more iterations if the cutoff time has been reached
@@ -371,8 +370,10 @@ public class HierarchicalArranger implements Arranger {
             int modVal = 1;
             int modInc = 2;
             int modAmount = -1;
+            int passNumber = 0;
             for (int n = 0; (n < passes && modAmount > 0) || (currentTime < startTime + defaultProcessingTime && modAmount != 0) ; n++) {
-                updateStatus(" smoothing pass: " + (n+1));
+                passNumber++;
+                updateStatus(" smoothing pass: " + passNumber);
                 
                 parentChangeAmount = -1;
                 totalChanges = 0;
@@ -420,6 +421,9 @@ public class HierarchicalArranger implements Arranger {
                     finalAdjustment = true;
                 }
             }
+            updateStatus(" finished smoothing on pass: " + passNumber);
+        } else {
+            updateStatus(" no smoothing passes");
         }
 
     }

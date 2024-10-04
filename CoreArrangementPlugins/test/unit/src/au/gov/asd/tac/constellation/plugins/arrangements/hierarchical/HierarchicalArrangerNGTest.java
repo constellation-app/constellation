@@ -23,12 +23,6 @@ import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.utilities.io.SaveGraphUtilities;
-import au.gov.asd.tac.constellation.plugins.PluginException;
-import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.plugins.PluginGraphs;
-import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.views.namedselection.utilities.SelectNamedSelectionPanel;
 import java.awt.Dialog;
 import java.io.IOException;
@@ -36,8 +30,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CountDownLatch;
-import javax.swing.SwingUtilities;
 import org.mockito.MockedStatic;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -64,26 +56,32 @@ public class HierarchicalArrangerNGTest {
     private boolean delayedSave = false;
     private static final boolean SAVE_GRAPH_FILES = false;  // change this to true if you want to see the graph files in local testing
                                                             // but remember to set it back to false when committing.
+                                                            // It should always be false in the repo.
     
     public HierarchicalArrangerNGTest() {
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Intentionally empty
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Intentionally empty
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Intentionally empty
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
         if (delayedSave) {
-            Thread.sleep(5000);
+            // This sleep should only be called when running locally if you want to view the arranged graph.
+            // The 5 second wait covers the 3 second allowance given for arranging a small complex graph.
+            Thread.sleep(5000); // NOSONAR
             saveGraphToFile("hierarchy-arrangement");
             delayedSave = false;
         }
@@ -244,7 +242,7 @@ public class HierarchicalArrangerNGTest {
             HierarchicalArranger instance = new HierarchicalArranger(rootVxIds);
             instance.arrange(wg);
             String lastMessage = instance.getLastMessage();
-            assertTrue(lastMessage.contains("passes: 0"));
+            assertTrue(lastMessage.contains("no smoothing passes"));
 
             wg.commit();
             saveGraphToFile("hierarchy15000_test");
