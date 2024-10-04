@@ -71,7 +71,7 @@ public class HierarchicalArranger implements Arranger {
 
         // Find out how far away each vertex is from each root.
         // Vertex vxId is at level levels[vxId].
-        Map<Integer, Integer> levels = new HashMap<>();
+        final Map<Integer, Integer> levels = new HashMap<>();
         for (int i = 0; i < vxCount; i++) {
             levels.put(wg.getVertex(i), Integer.MAX_VALUE);
         }
@@ -111,7 +111,7 @@ public class HierarchicalArranger implements Arranger {
         // This is the part where line crossing minimisation is done.
         // if you want to fancy up the algorithm, this is where to concentrate.
         
-        Map<Integer, Float> weights = new HashMap<>();
+        final Map<Integer, Float> weights = new HashMap<>();
         for (int i = 0; i < vxCount; i++) {
             weights.put(wg.getVertex(i), 100.0F);
         }
@@ -225,7 +225,7 @@ public class HierarchicalArranger implements Arranger {
 
     private static void busyCentreOrder(final ArrayList<Integer> vxLevel) {
         final ArrayList<Integer> vxLevelCopy = new ArrayList<>(vxLevel); // avoid ConcurrentModificationException
-        int vxSize = vxLevel.size();
+        final int vxSize = vxLevel.size();
         vxLevel.clear();
         boolean toggle = true;
         for (int i = vxSize - 1; i > -1; i--) {
@@ -269,7 +269,7 @@ public class HierarchicalArranger implements Arranger {
         final int yId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
         final int zId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
 
-        double xMinAdj = Math.max(Math.min(Math.log(maxLevelVertices)*2, 9), 0);
+        final double xMinAdj = Math.max(Math.min(Math.log(maxLevelVertices)*2, 9), 0);
         
         double displayLevel = -1.0;
         int verticesRemaining;
@@ -303,7 +303,7 @@ public class HierarchicalArranger implements Arranger {
                 final float xMaxOffset = maxLevelVertices <= maxNodesPerRow ? maxLevelVertices * (xgap - (float) xMinAdj) / 2F : maxNodesPerRow * (xgap - (float) xMinDefaultAdj) / 2F;
                 final float xLevelOffset = verticesForRow <= maxNodesPerRow ? xMaxOffset - verticesForRow * (xgap - (float) xAdj) / 2F : maxNodesPerRow * (xgap - (float) xMinDefaultAdj) / 2F;
 
-                float[] xSpacer = new float[verticesForRow];
+                final float[] xSpacer = new float[verticesForRow];
                 Arrays.fill(xSpacer, (verticesForRow / 2F) * ((float) xAdj / 8));
                 for (int i = 0; i < verticesForRow / 2; i++) {
                     xSpacer[i] = ((float) xAdj / 8) * i;
@@ -311,7 +311,7 @@ public class HierarchicalArranger implements Arranger {
                 for (int i = verticesForRow - 1; i > verticesForRow / 2; i--) {
                     xSpacer[i] = ((float) xAdj / 8) * (verticesForRow - i);
                 }
-                float[] xSpacerInc = new float[verticesForRow];
+                final float[] xSpacerInc = new float[verticesForRow];
                 float accumulation = 0.0F;
                 for (int i = 0; i < verticesForRow; i++) {
                     accumulation += xSpacer[i];
@@ -360,8 +360,8 @@ public class HierarchicalArranger implements Arranger {
             updateStatus(" commencing smoothing passes: " + passes);
             boolean finalAdjustment = false;
             final long startTime = System.currentTimeMillis();
-            long cutoffTime = startTime + 15000; // will not start any more iterations if the cutoff time has been reached
-            long defaultProcessingTime = 3000; // gives small graphs enough time to produce a nicely laid out arrangement
+            final long cutoffTime = startTime + 15000; // will not start any more iterations if the cutoff time has been reached
+            final long defaultProcessingTime = 3000; // gives small graphs enough time to produce a nicely laid out arrangement
             long currentTime = System.currentTimeMillis();
             long timeLimit; // limits the time spent on doing an individual smoothing task
             int parentChangeAmount; // the number of parent nodes moved on the final iteration of the task
@@ -591,8 +591,8 @@ public class HierarchicalArranger implements Arranger {
         final int xId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
         final int yId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
         
-        double x2Dist = Math.pow(wg.getFloatValue(xId, vxId1) - wg.getFloatValue(xId, vxId2), 2);
-        double y2Dist = Math.pow(wg.getFloatValue(yId, vxId1) - wg.getFloatValue(yId, vxId2), 2);
+        final double x2Dist = Math.pow(wg.getFloatValue(xId, vxId1) - wg.getFloatValue(xId, vxId2), 2);
+        final double y2Dist = Math.pow(wg.getFloatValue(yId, vxId1) - wg.getFloatValue(yId, vxId2), 2);
         
         return Math.sqrt(x2Dist + y2Dist);
     }
