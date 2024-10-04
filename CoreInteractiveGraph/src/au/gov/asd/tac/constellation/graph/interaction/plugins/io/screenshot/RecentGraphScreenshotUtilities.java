@@ -195,12 +195,16 @@ public class RecentGraphScreenshotUtilities {
             return;
         }
 
-        topComponents.forEach(component -> {
+        //topComponents.forEach(component -> {
+        for (final TopComponent component : topComponents) {
             if ((component instanceof VisualGraphTopComponent) && ((VisualGraphTopComponent) component).getGraphNode().getGraph().getId().equals(graph.getId())) {
+                final VisualGraphTopComponent requestedComponent = (VisualGraphTopComponent) component;
+
                 try {
                     // Request graph to be active
                     EventQueue.invokeAndWait(() -> {
                         ((VisualGraphTopComponent) component).requestActive();
+                        // Wait for requested graph to become active
                         semaphore.release();
                     });
                 } catch (final InterruptedException ex) {
@@ -209,8 +213,18 @@ public class RecentGraphScreenshotUtilities {
                 } catch (final InvocationTargetException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                 }
+
+                try {
+                    while (requestedComponent.visualManager.isRefreshProcessor()) {
+                        Thread.sleep(100);
+                    }
+                } catch (InterruptedException e) {
+                }
+
             }
-        });
+        }
+
+//});
     }
 
     /**

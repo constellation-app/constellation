@@ -180,7 +180,7 @@ public final class VisualManager {
         return isProcessing;
     }
 
-    protected final boolean isRefreshProcessor() {
+    public final boolean isRefreshProcessor() {
         return refreshProcessor;
     }
 
@@ -188,7 +188,7 @@ public final class VisualManager {
         return indigenousChanges;
     }
 
-    protected final boolean isRendererIdle() {
+    public final boolean isRendererIdle() {
         return rendererIdle;
     }
 
@@ -200,7 +200,7 @@ public final class VisualManager {
         return processor;
     }
 
-    protected CompletableFuture<Void> getProcessingFuture() {
+    public CompletableFuture<Void> getProcessingFuture() {
         return processingFuture;
     }
 

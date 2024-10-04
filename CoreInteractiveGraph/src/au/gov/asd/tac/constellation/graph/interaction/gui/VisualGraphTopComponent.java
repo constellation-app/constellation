@@ -220,7 +220,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     private static final String DISABLE_GRAPH_VISIBILITY_THRESHOLD_LABELS_SHORT_DESCRIPTION = "Disable Graph Visibility Threshold";
 
     private final GraphVisualManagerFactory graphVisualManagerFactory;
-    private final VisualManager visualManager;
+    public final VisualManager visualManager;
     private final InstanceContent content;
     private final Graph graph;
     private MySaveAs saveAs = null;
@@ -473,6 +473,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         super.requestActive();
         if (visualManager != null) {
             visualManager.getVisualComponent().requestFocusInWindow();
+            visualManager.refreshVisualProcessor();
         }
     }
 
