@@ -38,7 +38,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
@@ -186,10 +185,9 @@ public class QueryPhasePaneNGTest {
     }
 
     private void setHeadingsTester(final ObservableList<Node> dataSourceList, final boolean headingShouldbeExpanded, final boolean headingChildrenShouldbeExpanded) {
-        final ObservableList<Node> dataSourceCopy = FXCollections.observableArrayList();
-        FXCollections.copy(dataSourceCopy, dataSourceList); // use a copy of the list to avoid a concurrent modification exception
+        Object[] dataSourceCopy = dataSourceList.toArray();
         
-        for (final Node child : dataSourceCopy) {
+        for (final Object child : dataSourceCopy) {
             final HeadingPane heading = (HeadingPane) child;
             assertEquals(heading.isExpanded(), headingShouldbeExpanded);
 
