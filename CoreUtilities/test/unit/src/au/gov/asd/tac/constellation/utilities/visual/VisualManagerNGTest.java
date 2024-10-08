@@ -505,17 +505,52 @@ public class VisualManagerNGTest {
     @Test
     public void testProcessCountDown() {
         System.out.println("testProcessCountDown");
+        final VisualAccess access = mock(VisualAccess.class);
+        final VisualProcessor processor = mock(VisualProcessor.class);
+        final VisualManager instance = spy(new VisualManager(access, processor));
 
+        processCountDownHelper(instance, processor, new CountDownLatch(1));
+
+        verify(instance, times(3)).isProcessing();
+        verify(instance, Mockito.atLeastOnce()).getOperations();
+        verify(processor, times(1)).update(Mockito.any(Collection.class), Mockito.any(VisualAccess.class), Mockito.anyBoolean(), Mockito.anyBoolean());
+    }
+
+    @Test
+    public void testProcessCountDownZero() {
+        System.out.println("testProcessCountDownZero");
+        final VisualAccess access = mock(VisualAccess.class);
+        final VisualProcessor processor = mock(VisualProcessor.class);
+        final VisualManager instance = spy(new VisualManager(access, processor));
+
+        processCountDownHelper(instance, processor, new CountDownLatch(0));
+
+        verify(instance, times(3)).isProcessing();
+        verify(instance, Mockito.atLeastOnce()).getOperations();
+        verify(processor, times(1)).update(Mockito.any(Collection.class), Mockito.any(VisualAccess.class), Mockito.anyBoolean(), Mockito.anyBoolean());
+    }
+
+    @Test
+    public void testProcessCountDownNull() {
+        System.out.println("testProcessCountDownZero");
+        final VisualAccess access = mock(VisualAccess.class);
+        final VisualProcessor processor = mock(VisualProcessor.class);
+        final VisualManager instance = spy(new VisualManager(access, processor));
+
+        processCountDownHelper(instance, processor, null);
+
+        verify(instance, times(3)).isProcessing();
+        verify(instance, Mockito.atLeastOnce()).getOperations();
+        verify(processor, times(1)).update(Mockito.any(Collection.class), Mockito.any(VisualAccess.class), Mockito.anyBoolean(), Mockito.anyBoolean());
+    }
+
+    private void processCountDownHelper(final VisualManager instance, final VisualProcessor processor, final CountDownLatch latch) {
         try (final MockedStatic<MemoryManager> memoryManagerMockedStatic = mockStatic(MemoryManager.class)) {
             memoryManagerMockedStatic.when(() -> MemoryManager.newObject(Mockito.eq(VisualManager.class))).thenAnswer((Answer<Void>) invocation -> null);
             memoryManagerMockedStatic.when(() -> MemoryManager.finalizeObject(Mockito.eq(VisualManager.class))).thenAnswer((Answer<Void>) invocation -> null);
 
-            final VisualAccess access = mock(VisualAccess.class);
-
-            final VisualProcessor processor = mock(VisualProcessor.class);
             doNothing().when(processor).update(Mockito.any(Collection.class), Mockito.any(VisualAccess.class), Mockito.anyBoolean(), Mockito.anyBoolean());
 
-            final VisualManager instance = spy(new VisualManager(access, processor));
             final PriorityBlockingQueue<VisualOperation> queue = new PriorityBlockingQueue<>();
             final PriorityBlockingQueue<VisualOperation> queue2 = new PriorityBlockingQueue<>();
 
@@ -534,13 +569,9 @@ public class VisualManagerNGTest {
             when(instance.isProcessing()).thenReturn(true, true, false);
             when(instance.getProcessor()).thenReturn(processor);
 
-            instance.setRefreshLatch(new CountDownLatch(1));
+            instance.setRefreshLatch(latch);
 
             instance.process();
-
-            verify(instance, times(3)).isProcessing();
-            verify(instance, Mockito.atLeastOnce()).getOperations();
-            verify(processor, times(1)).update(Mockito.any(Collection.class), Mockito.any(VisualAccess.class), Mockito.anyBoolean(), Mockito.anyBoolean());
         }
     }
 }
