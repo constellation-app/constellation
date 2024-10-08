@@ -484,4 +484,20 @@ public class VisualManagerNGTest {
             assertTrue(queueAfter.contains(instance.signifyProcessorIdleOperation));
         }
     }
+    
+    @Test
+    public void testSetRefreshLatch(){
+        System.out.println("setRefreshLatch");
+        try (final MockedStatic<MemoryManager> memoryManagerMockedStatic = mockStatic(MemoryManager.class)) {
+            memoryManagerMockedStatic.when(() -> MemoryManager.newObject(Mockito.eq(VisualManager.class))).thenAnswer((Answer<Void>) invocation -> null);
+            memoryManagerMockedStatic.when(() -> MemoryManager.finalizeObject(Mockito.eq(VisualManager.class))).thenAnswer((Answer<Void>) invocation -> null);
+
+            final VisualAccess access = mock(VisualAccess.class);
+            final VisualProcessor processor = mock(VisualProcessor.class);
+
+            final VisualManager instance = new VisualManager(access, processor);
+
+            instance.setRefreshLatch(null);
+        }
+    }
 }

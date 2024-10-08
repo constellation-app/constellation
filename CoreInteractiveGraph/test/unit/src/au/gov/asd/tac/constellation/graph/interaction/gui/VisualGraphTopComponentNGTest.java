@@ -183,7 +183,7 @@ public class VisualGraphTopComponentNGTest {
                 instance.saveGraph();
 
                 assertEquals(instance.getGraphNode().getDataObject(), mockGDO);
-                
+
                 verify(mockGDO).isValid();
                 verify(mockGDO).isInMemory();
                 verify(mockGDO, times(2)).getName();
@@ -241,7 +241,7 @@ public class VisualGraphTopComponentNGTest {
                 assertEquals(mockSaveAsAction.constructed().size(), 1);
                 verify(mockSaveAsAction.constructed().get(0)).actionPerformed(null);
                 verify(mockSaveAsAction.constructed().get(0)).isSaved();
-                
+
                 verify(mockGDO).isValid();
                 verify(mockGDO).getName();
             } catch (IOException e) {
@@ -256,7 +256,6 @@ public class VisualGraphTopComponentNGTest {
      * @throws Exception
      */
     @Test
-
     public void testSaveGraphInMemory() throws Exception {
         System.out.println("testSaveGraphInMemory");
         Platform.runLater(() -> {
@@ -298,13 +297,40 @@ public class VisualGraphTopComponentNGTest {
                 assertEquals(mockSaveAsAction.constructed().size(), 1);
                 verify(mockSaveAsAction.constructed().get(0)).actionPerformed(null);
                 verify(mockSaveAsAction.constructed().get(0)).isSaved();
-                
+
                 verify(mockGDO).isValid();
                 verify(mockGDO).getName();
             } catch (IOException | HeadlessException e) {
                 LOGGER.log(Level.WARNING, "Caught exception in VisualGraphTopComponent test", e);
             }
 
+        });
+    }
+
+    @Test
+    public void testRequestActiveWithLatch() {
+        System.out.println("testRequestActiveWithLatch");
+        Platform.runLater(() -> {
+            // Mock variables
+            final GraphDataObject mockGDO = mock(GraphDataObject.class);
+            final FileObject mockFileObject = mock(FileObject.class);
+            final DualGraph dgSpy = spy(new DualGraph(null));
+
+            when(mockGDO.isInMemory()).thenReturn(false);
+            when(mockGDO.isValid()).thenReturn(true);
+            when(mockGDO.getPrimaryFile()).thenReturn(mockFileObject);
+            try {
+                when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
+            } catch (IOException e) {
+                LOGGER.log(Level.WARNING, "Caught exception in mockGDO", e);
+            }
+
+            when(mockFileObject.getPath()).thenReturn("");
+
+            // Mock contruct save as action, GraphNode
+            VisualGraphTopComponent instance = new VisualGraphTopComponent(mockGDO, dgSpy);
+
+            instance.requestActiveWithLatch(null);
         });
     }
 }

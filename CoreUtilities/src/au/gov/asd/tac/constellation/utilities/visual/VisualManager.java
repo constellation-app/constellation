@@ -138,8 +138,6 @@ public final class VisualManager {
                         indigenousChanges = true;
                     } else if (operation == refreshProcessorOperation) {
                         refreshProcessor = true;
-                        System.out.println("Sleeping...");
-                        Thread.sleep(2000);
                     } else {
                         operation.apply();
                     }
@@ -161,7 +159,7 @@ public final class VisualManager {
                 indigenousChanges = false;
                 refreshProcessor = false;
 
-                if (refreshLatch != null && refreshLatch.getCount​() > 0) {
+                if (refreshLatch != null && refreshLatch.getCount() > 0) {
                     refreshLatch.countDown();
                 }
                 changes.clear();
