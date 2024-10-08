@@ -33,6 +33,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
 import javax.xml.bind.DatatypeConverter;
 import static org.mockito.ArgumentMatchers.any;
@@ -40,6 +41,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -352,6 +354,15 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         when(tc.getGraphNode()).thenReturn(gn);
         setTopC.add(tc);
         when(reg.getOpened()).thenReturn(setTopC);
+        
+        // mock top component to count down on the given latch
+        doAnswer(invocation -> {
+            Object latch = invocation.getArgument(0);
+            if (latch instanceof CountDownLatch countDownLatch) {
+                countDownLatch.countDown();
+            }
+            return null;
+        }).when(tc).requestActiveWithLatch(any(CountDownLatch.class));
 
         // Assert mocks work
         assertEquals(wm.getRegistry(), reg);
