@@ -45,6 +45,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -195,36 +196,27 @@ public class RecentGraphScreenshotUtilities {
             return;
         }
 
-        //topComponents.forEach(component -> {
-        for (final TopComponent component : topComponents) {
-            if ((component instanceof VisualGraphTopComponent) && ((VisualGraphTopComponent) component).getGraphNode().getGraph().getId().equals(graph.getId())) {
-                final VisualGraphTopComponent requestedComponent = (VisualGraphTopComponent) component;
+        topComponents.forEach(component -> {
+            final CountDownLatch latch = new CountDownLatch(1);
 
+            if ((component instanceof VisualGraphTopComponent) && ((VisualGraphTopComponent) component).getGraphNode().getGraph().getId().equals(graph.getId())) {
                 try {
                     // Request graph to be active
                     EventQueue.invokeAndWait(() -> {
-                        ((VisualGraphTopComponent) component).requestActive();
+                        ((VisualGraphTopComponent) component).requestActiveWithLatch(latch);
                         // Wait for requested graph to become active
                         semaphore.release();
                     });
+
+                    latch.await();
                 } catch (final InterruptedException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                     Thread.currentThread().interrupt();
                 } catch (final InvocationTargetException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                 }
-
-                try {
-                    while (requestedComponent.visualManager.isRefreshProcessor()) {
-                        Thread.sleep(100);
-                    }
-                } catch (InterruptedException e) {
-                }
-
             }
-        }
-
-//});
+        });
     }
 
     /**

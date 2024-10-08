@@ -120,6 +120,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -220,7 +221,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     private static final String DISABLE_GRAPH_VISIBILITY_THRESHOLD_LABELS_SHORT_DESCRIPTION = "Disable Graph Visibility Threshold";
 
     private final GraphVisualManagerFactory graphVisualManagerFactory;
-    public final VisualManager visualManager;
+    private final VisualManager visualManager;
     private final InstanceContent content;
     private final Graph graph;
     private MySaveAs saveAs = null;
@@ -478,6 +479,18 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     }
 
     /**
+     * Request the graph be active with a countdown latch to notify caller when graph has finished refreshing
+     *
+     * @param latch the CountDownLatch that will count down when the visualManager has finished refreshing
+     */
+    public void requestActiveWithLatch(final CountDownLatch latch) {
+        requestActive();
+        if (visualManager != null) {
+            visualManager.setRefreshLatch(latch);
+        }
+    }
+
+    /**
      * This is required to display the name of the DataObject in the "Save?" dialog box.
      *
      * @return The display name of the DataObject.
@@ -497,6 +510,15 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
      */
     public GraphNode getGraphNode() {
         return graphNode;
+    }
+
+    /**
+     * Return the VisualManager belonging to this TopComponent.
+     *
+     * @return The VisualManager belonging to this TopComponent.
+     */
+    public VisualManager getVisualManager() {
+        return visualManager;
     }
 
     /**
