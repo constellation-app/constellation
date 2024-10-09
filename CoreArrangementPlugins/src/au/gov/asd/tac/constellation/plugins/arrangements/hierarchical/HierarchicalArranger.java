@@ -210,7 +210,7 @@ public class HierarchicalArranger implements Arranger {
 
             weights.put(vxId, weight);
             sortLevelByWeight(vxLevel, weights);
-            busyCentreOrder(vxLevel);
+            busyOutermostOrdering(vxLevel);
         }
         return reordered;
     }
@@ -223,24 +223,32 @@ public class HierarchicalArranger implements Arranger {
         });
     }
 
-    private static void busyCentreOrder(final ArrayList<Integer> vxLevel) {
-        final ArrayList<Integer> vxLevelCopy = new ArrayList<>(vxLevel); // avoid ConcurrentModificationException
-        final int vxSize = vxLevel.size();
-        vxLevel.clear();
+    /**
+     * Arrange the level of nodes such that the start and end of the list contain the most links
+     * and the central nodes in the list contain the least links.
+     * <p/>
+     * <i>This makes the outermost nodes of the hierarchy row have the most links going to other nodes on different levels of the hierarchy.</i>
+     * 
+     * @param weightSortedVxLevel the pre-sorted list of nodes where the start of the list has the least links, and the end of the list has the most links.
+     */
+    private static void busyOutermostOrdering(final ArrayList<Integer> weightSortedVxLevel) {
+        final ArrayList<Integer> vxLevelCopy = new ArrayList<>(weightSortedVxLevel); // avoid ConcurrentModificationException
+        final int vxSize = weightSortedVxLevel.size();
+        weightSortedVxLevel.clear();
         boolean toggle = true;
         for (int i = vxSize - 1; i > -1; i--) {
             if (toggle) {
-                vxLevel.add(vxLevelCopy.get(i));
+                weightSortedVxLevel.add(vxLevelCopy.get(i));
             } else {
-                vxLevel.add(0, vxLevelCopy.get(i));
+                weightSortedVxLevel.add(0, vxLevelCopy.get(i));
             }
             toggle = !toggle;
         }
 
         // this code makes the outer segments the busier ones, which seems to produce better arrangements in post-processing
         for (int i = 0; i < vxSize/2; i++) {
-            vxLevel.add(vxLevel.get(0));
-            vxLevel.remove(0);
+            weightSortedVxLevel.add(weightSortedVxLevel.get(0));
+            weightSortedVxLevel.remove(0);
         }
     }
 
@@ -336,7 +344,7 @@ public class HierarchicalArranger implements Arranger {
             prevVertices = levelVertices;
         }
         
-        // the initial placement of nodes on each level is somewhat random
+        // The initial placement of nodes on each level is somewhat random
         // we can use smoothing to move the children and parent nodes to be closer aligned in the arrangement
         // this becomes time consuming with large graphs.
         // will we stop doing any post-processing when we reach 10,000 graph elements
@@ -357,6 +365,22 @@ public class HierarchicalArranger implements Arranger {
         }
         
         if (passes > 0) {
+            applySmoothing(wg, vxLevels, passes);
+        } else {
+            updateStatus(" no smoothing passes");
+        }
+
+    }
+    
+    /**
+     * Iteratively step through each vertex level and switch the positioning of nodes 
+     * to reduce the total distance between child and parent nodes between levels
+     * 
+     * @param wg writable connection to current graph
+     * @param vxLevels a container list where each entry is a list of nodes at a separate level in the hierarchy.
+     * @param passes proposed number of smoothing passes to perform (the actual number will vary depending on time allowance and graph complexity)
+     */
+    private static void applySmoothing(final GraphWriteMethods wg, final ArrayList<ArrayList<Integer>> vxLevels, final int passes) {
             updateStatus(" commencing smoothing passes: " + passes);
             boolean finalAdjustment = false;
             final long startTime = System.currentTimeMillis();
@@ -422,16 +446,19 @@ public class HierarchicalArranger implements Arranger {
                 }
             }
             updateStatus(" finished smoothing on pass: " + passNumber);
-        } else {
-            updateStatus(" no smoothing passes");
-        }
-
     }
     
+    /**
+     * Where appropriate, switch positions of nodes at each hierarchy level such as to reduce the distance between child and parent nodes
+     * when topDownScan = true : the parent nodes are being shifted to positions that are closer to their children on the next level
+     * when topDownScan = false : the child nodes are being shifted to positions that are closer to their parents on the previous level
+     * 
+     * @param wg writable connection to current graph.
+     * @param vxLevels a container list where each entry is a list of nodes at a separate level in the hierarchy.
+     * @param topDownScan specifies the hierarchy direction to use in the arrangement.
+     * @return 
+     */
     private static int adjustArrangement(final GraphWriteMethods wg, final ArrayList<ArrayList<Integer>> vxLevels, final boolean topDownScan){
-        // when topDownScan = true : the parent nodes are being shifted to positions that are closer to their children on the next level
-        // when topDownScan = false : the child nodes are being shifted to positions that are closer to their parents on the previous level
-
         int swapsMade = 0;
         final int rangeStart = topDownScan ? 0 : vxLevels.size() - 1;
         final int rangeEnd = topDownScan ? vxLevels.size() - 2 : 1;
@@ -516,6 +543,14 @@ public class HierarchicalArranger implements Arranger {
         return swapsMade;
     }
     
+    /**
+     * Using the position of a node's parents (on the previous level) and also that node's children (on the following level),
+     * determine the best place on the current level to place the node to minimise the distances between connected nodes.
+     * 
+     * @param wg writable connection to current graph.
+     * @param vxLevels a container list where each entry is a list of nodes at a separate level in the hierarchy.
+     * @return the number of nodes that were moved
+     */
     private static int minimiseTransactionDistances(final GraphWriteMethods wg, final ArrayList<ArrayList<Integer>> vxLevels){
         // check each node on a level and see if switching positions with another node reduces the total length 
         // of transactions to all neightbours on different levels for both nodes being switched.
