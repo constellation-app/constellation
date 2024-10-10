@@ -20,7 +20,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import static org.mockito.Mockito.doReturn;
@@ -28,6 +31,7 @@ import static org.mockito.Mockito.mock;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 import org.testng.annotations.Test;
 
 /**
@@ -36,6 +40,8 @@ import org.testng.annotations.Test;
  * @author sol695510
  */
 public class SaveAsActionNGTest {
+
+    private static final Logger LOGGER = Logger.getLogger(SaveAsActionNGTest.class.getName());
 
     /**
      * Test of getSaveFileChooser method, of class SaveAsAction.
@@ -87,17 +93,21 @@ public class SaveAsActionNGTest {
     public void testActionPerformedNull() {
         System.out.println("actionPerformedNull");
         final ArrayList<SaveAsAction> instance = new ArrayList<>();
-        final Semaphore waiter = new Semaphore(0);
+        final CountDownLatch latch = new CountDownLatch(1);
 
         SwingUtilities.invokeLater(() -> {
             instance.add(new SaveAsAction());
             instance.get(0).actionPerformed(null);
-            waiter.release();
+            latch.countDown();
         });
-
-        waiter.acquireUninterruptibly();
-        // Assert isSaved is stillfalse, as null was fed into actionPerformed
-        assertFalse(instance.get(0).isSaved());
+        try {
+            latch.await(5000, TimeUnit.MILLISECONDS);
+            // Assert isSaved is stillfalse, as null was fed into actionPerformed
+            assertFalse(instance.get(0).isSaved());
+        } catch (InterruptedException e) {
+            LOGGER.log(Level.WARNING, "Caught interrupt exception in testActionPerformedNull", e);
+            fail();
+        }
     }
 
     /**
