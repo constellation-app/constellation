@@ -61,6 +61,12 @@ public class TextPluginInteraction implements PluginInteraction {
         LOGGER.log(Level.INFO, "currentStep={0} totalSteps={1} message={2}", new Object[]{currentStep, totalSteps, message});
     }
     
+     @Override
+    public void setProgress(final int currentStep, final int totalSteps, final String message, final boolean cancellable, PluginParameters parameters) throws InterruptedException {
+        currentMessage = message;
+        LOGGER.log(Level.INFO, "currentStep={0} totalSteps={1} message={2} parameters={3}", new Object[]{currentStep, totalSteps, message, parameters.getParameters().toString()});
+    }
+    
     @Override
     public void setProgress(final int currentStep, final int totalSteps, final boolean cancellable) throws InterruptedException {
         LOGGER.log(Level.INFO, "currentStep={0} totalSteps={1}", new Object[]{currentStep, totalSteps});
@@ -90,6 +96,11 @@ public class TextPluginInteraction implements PluginInteraction {
     @Override
     public boolean prompt(final String promptName, final PluginParameters parameters, final String disclaimer, final String helpID) {
         throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setProgress(int currentStep, int totalSteps, String message, boolean cancellable, PluginParameters parameters, int selected) throws InterruptedException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
 }
