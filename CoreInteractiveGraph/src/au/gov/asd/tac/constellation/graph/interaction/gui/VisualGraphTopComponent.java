@@ -84,6 +84,7 @@ import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import java.awt.BorderLayout;
@@ -1186,7 +1187,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 final File srcFile = new File(fileobj.getPath());
 
                 if (srcFile.exists() && !srcFile.isDirectory() && FileUtils.sizeOf(srcFile) > 0) {
-                    final String srcfilePath = srcFile.getParent().concat(File.separator).concat(this.name).concat(".").concat(fileobj.getExt());
+                    final String srcfilePath = srcFile.getParent().concat(File.separator).concat(this.name).concat(SeparatorConstants.PERIOD).concat(fileobj.getExt());
                     // Create a backup copy of the file before overwriting it. If the backup copy fails, then code will never
                     // get to execute the save, so the actual file should remain intact. If the save fails, the backup file will
                     // already have been written.
@@ -1194,10 +1195,12 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 }
                 final OutputStream outputStream = freshGdo.getPrimaryFile().getOutputStream();
                 if (outputStream != null) {
-                    try (OutputStream out = new BufferedOutputStream(outputStream)) {
-                        // Write the graph.
+                    try (final OutputStream out = new BufferedOutputStream(outputStream)) {
+                        // Write the graph.   
                         cancelled = new GraphJsonWriter().writeGraphToZip(copy, out, new HandleIoProgress("Writing..."));
                     }
+
+                    outputStream.close();
                 }
                 SaveNotification.saved(freshGdo.getPrimaryFile().getPath());
             } catch (final Exception ex) {

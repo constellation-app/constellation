@@ -199,11 +199,11 @@ public class RecentGraphScreenshotUtilities {
         topComponents.forEach(component -> {
             final CountDownLatch latch = new CountDownLatch(1);
 
-            if ((component instanceof VisualGraphTopComponent) && ((VisualGraphTopComponent) component).getGraphNode().getGraph().getId().equals(graph.getId())) {
+            if ((component instanceof VisualGraphTopComponent vgComponent) && vgComponent.getGraphNode().getGraph().getId().equals(graph.getId())) {
                 try {
                     // Request graph to be active
                     EventQueue.invokeAndWait(() -> {
-                        ((VisualGraphTopComponent) component).requestActiveWithLatch(latch);
+                        vgComponent.requestActiveWithLatch(latch);
                         // Wait for requested graph to become active
                         semaphore.release();
                     });

@@ -41,6 +41,7 @@ import org.openide.filesystems.FileObject;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.fail;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -88,29 +89,32 @@ public class VisualGraphTopComponentNGTest {
     @Test
     public void testConstructor() {
         System.out.println("testConstructor");
-        Platform.runLater(() -> {
-            // Mock variables
-            final GraphDataObject mockGDO = mock(GraphDataObject.class);
-            final FileObject mockFileObject = mock(FileObject.class);
+// Platform.runLater(() -> {
+        // Mock variables
+        final GraphDataObject mockGDO = mock(GraphDataObject.class);
+        final FileObject mockFileObject = mock(FileObject.class);
 
-            when(mockGDO.isInMemory()).thenReturn(false);
-            when(mockGDO.isValid()).thenReturn(true);
-            when(mockGDO.getPrimaryFile()).thenReturn(mockFileObject);
-            try {
-                when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
-            } catch (IOException e) {
-                LOGGER.log(Level.WARNING, "Caught exception in mockGDO", e);
-            }
+        when(mockGDO.isInMemory()).thenReturn(false);
+        when(mockGDO.isValid()).thenReturn(true);
+        when(mockGDO.getPrimaryFile()).thenReturn(mockFileObject);
 
-            when(mockFileObject.getPath()).thenReturn("");
+        try {
+            when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
+        } catch (IOException e) {
+            LOGGER.log(Level.WARNING, "Caught exception in mockGDO", e);
+            fail();
+        }
 
-            // Assert constructed correctely
-            VisualGraphTopComponent instance = new VisualGraphTopComponent();
-            instance.getGraphNode().setDataObject(mockGDO);
-            assertEquals(instance.getGraphNode().getDataObject(), mockGDO);
-            assertNotNull(instance);
-            assertNotNull(instance.getUndoRedo());
-        });
+        when(mockFileObject.getPath()).thenReturn("");
+
+        // Assert constructed correctely
+        final VisualGraphTopComponent instance = new VisualGraphTopComponent();
+        instance.getGraphNode().setDataObject(mockGDO);
+
+        assertEquals(instance.getGraphNode().getDataObject(), mockGDO);
+        assertNotNull(instance);
+        assertNotNull(instance.getUndoRedo());
+        //});
     }
 
     @Test
@@ -130,6 +134,7 @@ public class VisualGraphTopComponentNGTest {
                 when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
             } catch (IOException e) {
                 LOGGER.log(Level.WARNING, "Caught exception in mockGDO", e);
+                fail();
             }
 
             when(mockFileObject.getPath()).thenReturn("");
