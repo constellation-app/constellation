@@ -19,6 +19,8 @@ import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.concurrent.Semaphore;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import static org.mockito.Mockito.doReturn;
@@ -82,14 +84,20 @@ public class SaveAsActionNGTest {
      * Test of actionPerformed method, of class SaveAsAction.
      */
     @Test
-    public void testActionPerformed() {
-        System.out.println("actionPerformed");
+    public void testActionPerformedNull() {
+        System.out.println("actionPerformedNull");
+        final ArrayList<SaveAsAction> instance = new ArrayList<>();
+        final Semaphore waiter = new Semaphore(0);
+
         SwingUtilities.invokeLater(() -> {
-            SaveAsAction instance = new SaveAsAction();
-            assertFalse(instance.isSaved());
-            instance.actionPerformed(null);
-            assertTrue(instance.isSaved());
+            instance.add(new SaveAsAction());
+            instance.get(0).actionPerformed(null);
+            waiter.release();
         });
+
+        waiter.acquireUninterruptibly();
+        // Assert isSaved is stillfalse, as null was fed into actionPerformed
+        assertFalse(instance.get(0).isSaved());
     }
 
     /**

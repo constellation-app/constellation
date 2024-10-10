@@ -89,7 +89,7 @@ public class VisualGraphTopComponentNGTest {
     @Test
     public void testConstructor() {
         System.out.println("testConstructor");
-// Platform.runLater(() -> {
+
         // Mock variables
         final GraphDataObject mockGDO = mock(GraphDataObject.class);
         final FileObject mockFileObject = mock(FileObject.class);
@@ -114,46 +114,44 @@ public class VisualGraphTopComponentNGTest {
         assertEquals(instance.getGraphNode().getDataObject(), mockGDO);
         assertNotNull(instance);
         assertNotNull(instance.getUndoRedo());
-        //});
     }
 
     @Test
     public void testConstructorWithParams() {
         System.out.println("testConstructorWithParams");
-        Platform.runLater(() -> {
-            // Mock variables
-            final GraphDataObject mockGDO = mock(GraphDataObject.class);
-            final FileObject mockFileObject = mock(FileObject.class);
-            final DualGraph dgSpy = spy(new DualGraph(null));
-            final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
 
-            when(mockGDO.isInMemory()).thenReturn(false);
-            when(mockGDO.isValid()).thenReturn(true);
-            when(mockGDO.getPrimaryFile()).thenReturn(mockFileObject);
-            try {
-                when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
-            } catch (IOException e) {
-                LOGGER.log(Level.WARNING, "Caught exception in mockGDO", e);
-                fail();
-            }
+        // Mock variables
+        final GraphDataObject mockGDO = mock(GraphDataObject.class);
+        final FileObject mockFileObject = mock(FileObject.class);
+        final DualGraph dgSpy = spy(new DualGraph(null));
+        final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
 
-            when(mockFileObject.getPath()).thenReturn("");
+        when(mockGDO.isInMemory()).thenReturn(false);
+        when(mockGDO.isValid()).thenReturn(true);
+        when(mockGDO.getPrimaryFile()).thenReturn(mockFileObject);
+        try {
+            when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
+        } catch (IOException e) {
+            LOGGER.log(Level.WARNING, "Caught exception in mockGDO", e);
+            fail();
+        }
 
-            when(dgSpy.getReadableGraph()).thenReturn(mockReadableGraph);
+        when(mockFileObject.getPath()).thenReturn("");
 
-            final int connectionMode = 1;
-            final int graphNotFound = -1107;
-            when(mockReadableGraph.getObjectValue(connectionMode, 0)).thenReturn(null);
-            when(mockReadableGraph.getAttribute(GraphElementType.GRAPH, "connection_mode")).thenReturn(connectionMode);
-            when(mockReadableGraph.getAttribute(GraphElementType.GRAPH, "draw_flags")).thenReturn(graphNotFound);
+        when(dgSpy.getReadableGraph()).thenReturn(mockReadableGraph);
 
-            // Assert constructed correctely
-            final VisualGraphTopComponent instance = new VisualGraphTopComponent(mockGDO, dgSpy);
-            instance.getGraphNode().setDataObject(mockGDO);
-            assertEquals(instance.getGraphNode().getDataObject(), mockGDO);
-            assertNotNull(instance);
-            assertNotNull(instance.getUndoRedo());
-        });
+        final int connectionMode = 1;
+        final int graphNotFound = -1107;
+        when(mockReadableGraph.getObjectValue(connectionMode, 0)).thenReturn(null);
+        when(mockReadableGraph.getAttribute(GraphElementType.GRAPH, "connection_mode")).thenReturn(connectionMode);
+        when(mockReadableGraph.getAttribute(GraphElementType.GRAPH, "draw_flags")).thenReturn(graphNotFound);
+
+        // Assert constructed correctely
+        final VisualGraphTopComponent instance = new VisualGraphTopComponent(mockGDO, dgSpy);
+        instance.getGraphNode().setDataObject(mockGDO);
+        assertEquals(instance.getGraphNode().getDataObject(), mockGDO);
+        assertNotNull(instance);
+        assertNotNull(instance.getUndoRedo());
     }
 
     /**
