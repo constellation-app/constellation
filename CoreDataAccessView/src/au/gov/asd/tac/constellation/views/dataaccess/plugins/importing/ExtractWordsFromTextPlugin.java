@@ -298,12 +298,12 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
         final boolean outgoing = OUTGOING.equals(inOrOut);
         final Set<String> newNodes = new HashSet<>();
         
-        // Local process-tracking varables.
+        // Local process-tracking variables.
         int currentProcessStep = 0;
         final int totalProcessSteps = transactionCount; 
         int newTransactionCount = 0;
         int newNodeCount = 0;
-        interaction.setProgress(currentProcessStep, totalProcessSteps, "Extracting...", true);
+        interaction.setProgress(currentProcessStep, totalProcessSteps, "Extracting...", true, parameters);
         
         if (regexOnly) {
             /*
