@@ -17,6 +17,10 @@ package au.gov.asd.tac.constellation.utilities.genericjsonio;
 
 import au.gov.asd.tac.constellation.utilities.gui.DraggableCell;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import au.gov.asd.tac.constellation.utilities.keyboardshortcut.KeyboardShortcutSelectionResult;
+import au.gov.asd.tac.constellation.utilities.keyboardshortcut.RecordKeyboardShortcut;
+import au.gov.asd.tac.constellation.utilities.keyboardshortcut.TextInputDialogWithKeybordShortcut;
+import java.io.File;
 import java.util.List;
 import java.util.Optional;
 import javafx.collections.FXCollections;
@@ -27,6 +31,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextInputDialog;
+import javafx.stage.Stage;
 
 /**
  * Displays a generic dialog window that can allow the user to select a file
@@ -44,7 +49,7 @@ public class JsonIODialog {
 
     private static final String PREFERENCE_NAME_DIALOG_TITLE = "Preference Name";
     private static final String PREFERENCE_NAME_DIALOG_HEADER_TEXT = "Enter a name for the preference";
-
+    
     private JsonIODialog() {
     }
 
@@ -126,4 +131,23 @@ public class JsonIODialog {
 
         return td.showAndWait();
     }
+    
+    public static Optional<KeyboardShortcutSelectionResult> getPreferenceFileName(Optional<Boolean> keyboardShortcut, Optional<String> ks, File preferenceDirectory) {
+        final TextInputDialogWithKeybordShortcut td = new TextInputDialogWithKeybordShortcut(preferenceDirectory, ks);
+        td.setTitle(PREFERENCE_NAME_DIALOG_TITLE);
+        td.setHeaderText(PREFERENCE_NAME_DIALOG_HEADER_TEXT);
+        td.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
+        td.showAndWait();        
+        return Optional.ofNullable(td.getKeyboardShortcutSelectionResult());
+    }
+    
+    
+    /* public static Optional<String> getKeyboardShortcut(File preferenceDirectory) {
+         
+       final RecordKeyboardShortcut rk = new RecordKeyboardShortcut();
+       final Optional<String> ks = rk.start(preferenceDirectory);
+       
+       return ks;
+    }   */
+
 }
