@@ -19,14 +19,19 @@ import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.SwingUtilities;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.testng.Assert.assertEquals;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 import org.testng.annotations.Test;
 
 /**
@@ -36,24 +41,7 @@ import org.testng.annotations.Test;
  */
 public class SaveAsActionNGTest {
 
-    public SaveAsActionNGTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
-    @BeforeMethod
-    public void setUpMethod() throws Exception {
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
-    }
+    private static final Logger LOGGER = Logger.getLogger(SaveAsActionNGTest.class.getName());
 
     /**
      * Test of getSaveFileChooser method, of class SaveAsAction.
@@ -97,4 +85,41 @@ public class SaveAsActionNGTest {
         Files.deleteIfExists(file1.toPath());
         Files.deleteIfExists(file3.toPath());
     }
+
+    /**
+     * Test of actionPerformed method, of class SaveAsAction.
+     */
+    @Test
+    public void testActionPerformedNull() {
+        System.out.println("actionPerformedNull");
+        final ArrayList<SaveAsAction> instance = new ArrayList<>();
+        final CountDownLatch latch = new CountDownLatch(1);
+
+        SwingUtilities.invokeLater(() -> {
+            instance.add(new SaveAsAction());
+            instance.get(0).actionPerformed(null);
+            latch.countDown();
+        });
+        try {
+            latch.await(5000, TimeUnit.MILLISECONDS);
+            // Assert isSaved is stillfalse, as null was fed into actionPerformed
+            assertFalse(instance.get(0).isSaved());
+        } catch (InterruptedException e) {
+            LOGGER.log(Level.WARNING, "Caught interrupt exception in testActionPerformedNull", e);
+            fail();
+        }
+    }
+
+    /**
+     * Test of getSavedFilePath method, of class SaveAsAction.
+     */
+    @Test
+    public void testGetSavedFilePath() {
+        System.out.println("getSavedFilePath");
+        SwingUtilities.invokeLater(() -> {
+            SaveAsAction instance = new SaveAsAction();
+            assertTrue(instance.getSavedFilePath().isEmpty());
+        });
+    }
+
 }

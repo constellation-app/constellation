@@ -114,7 +114,7 @@ public class DateTimeRangeInputPaneNGTest {
 
         instance.setAbsolute(zdt0, zdt1);
 
-        // Assert individual date pcikers have correct value
+        // Assert individual date pickers have correct value
         assertEquals(instance.getDatePickers().get(0).getValue(), zdt0.toLocalDate());
         assertEquals(instance.getDatePickers().get(1).getValue(), zdt1.toLocalDate());
 

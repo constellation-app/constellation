@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.NavigableSet;
 import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.Semaphore;
@@ -69,6 +70,7 @@ public final class VisualManager {
     private boolean rendererIdle = true;
     private boolean indigenousChanges = false;
     private boolean refreshProcessor = false;
+    private CountDownLatch refreshLatch;
 
     protected final Runnable processTask = () -> process();
 
@@ -156,6 +158,10 @@ public final class VisualManager {
                 getProcessor().update(changes, getAccess(), isIndigenousChanges(), isRefreshProcessor());
                 indigenousChanges = false;
                 refreshProcessor = false;
+
+                if (refreshLatch != null && refreshLatch.getCount() > 0) {
+                    refreshLatch.countDown();
+                }
                 changes.clear();
             }
         }
@@ -318,6 +324,10 @@ public final class VisualManager {
      */
     public final void addMultiChangeOperation(final List<VisualChange> changes) {
         addOperation(constructMultiChangeOperation(changes));
+    }
+
+    public final void setRefreshLatch(final CountDownLatch latch) {
+        this.refreshLatch = latch;
     }
 
     protected final VisualOperation signifyProcessorIdleOperation = new VisualOperation() {
