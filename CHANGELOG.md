@@ -1,5 +1,9 @@
 # Constellation Changes
 
+## Changes in October 2024
+- Added the ability to set of Table View default columns by implementing `TableDefaultColumns` and using lookup.
+- Improved Table View to now default to primary key columns for Show Default Columns and new graphs.
+
 ## Changes in September 2024
 -   Removed `AddBlazePlugin` in favour of applying defaults to `AddCustomBlazePlugin` (which was already being used by `AddBlazeAction`).
 -   Removed `BlazeUtilities.getHTMLColor()` as this is already available through existing functionality `ConstellationColor.fromJavaColor().getHtmlColor()`.
