@@ -33,14 +33,14 @@ hops away from the root). Singleton nodes are arranged together in a
 grid, similarly for doublets (pairs of nodes only connected to each
 other).
 
-The roots are specified via Named Selections (refer
+The roots may be specified either via a Named Selection (refer
 [here](../ext/docs/CoreNamedSelectionView/src/au/gov/asd/tac/constellation/views/namedselection/named-selections-view.md)
-for creating a named selection). When you run the arrangement, choose
-the named selection which will form the roots (the arrangement can't be
-run if no named selection exists). Only one component is required to
-have its root(s) specified in the named selection in order to run the
-hierarchy arrangement. Any component without a specified root will have
-an arbitrary node chosen to be the root.
+for creating a named selection), or by pre-selecting nodes to use as the roots prior to running the arrangement.  
+Note: when using pre-selected nodes as the roots, the arrangement will always be run across on the entire graph.  
+Otherwise, when you have some pre-selected nodes and choose to use a Named Selection for the roots,  
+the arrangement will only be applied to the selected nodes, using the nodes defined in the Named Selection as the roots.  
+Only one component is required to have its root(s) specified in order to run the hierarchy arrangement.  
+Any component without a specified root will have an arbitrary node chosen to be the root.
 
 Example Hierarchy Arrangement:
 

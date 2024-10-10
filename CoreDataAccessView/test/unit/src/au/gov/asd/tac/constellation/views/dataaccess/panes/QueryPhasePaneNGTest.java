@@ -185,12 +185,15 @@ public class QueryPhasePaneNGTest {
     }
 
     private void setHeadingsTester(final ObservableList<Node> dataSourceList, final boolean headingShouldbeExpanded, final boolean headingChildrenShouldbeExpanded) {
-        for (final Node child : dataSourceList) {
+        Object[] dataSourceCopy = dataSourceList.toArray(); // avoid concurrent mod exception
+        
+        for (final Object child : dataSourceCopy) {
             final HeadingPane heading = (HeadingPane) child;
             assertEquals(heading.isExpanded(), headingShouldbeExpanded);
 
-            for (final DataSourceTitledPane dataSource : heading.getDataSources()) {
-                assertEquals(dataSource.isExpanded(), headingChildrenShouldbeExpanded);
+            Object[] headingSources = heading.getDataSources().toArray(); // avoid concurrent mod exception
+            for (final Object dataSource : headingSources) {
+                assertEquals(((DataSourceTitledPane) dataSource).isExpanded(), headingChildrenShouldbeExpanded);
             }
         }
     }
