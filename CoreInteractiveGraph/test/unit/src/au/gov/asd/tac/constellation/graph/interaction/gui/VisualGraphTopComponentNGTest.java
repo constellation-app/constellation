@@ -87,7 +87,7 @@ public class VisualGraphTopComponentNGTest {
     }
 
     @Test
-    public void testConstructor() {
+    public void testConstructor() throws IOException {
         System.out.println("testConstructor");
 
         // Mock variables
@@ -98,12 +98,7 @@ public class VisualGraphTopComponentNGTest {
         when(mockGDO.isValid()).thenReturn(true);
         when(mockGDO.getPrimaryFile()).thenReturn(mockFileObject);
 
-        try {
-            when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
-        } catch (IOException e) {
-            LOGGER.log(Level.WARNING, "Caught exception in mockGDO", e);
-            fail();
-        }
+        when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
 
         when(mockFileObject.getPath()).thenReturn("");
 
