@@ -19,15 +19,21 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ClusteringConcept;
+import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginRegistry;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.algorithms.AlgorithmPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusterUtilities;
+import au.gov.asd.tac.constellation.plugins.gui.PluginParametersDialog;
+import au.gov.asd.tac.constellation.plugins.gui.PluginParametersSwingDialog;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import org.openide.DialogDescriptor;
@@ -46,23 +52,45 @@ public final class InfoMapGeneralAction implements ActionListener {
 
     private final GraphNode context;
 
+    private static final Dimension SIZE = new Dimension(550, 750);
+
     public InfoMapGeneralAction(final GraphNode context) {
         this.context = context;
     }
 
     @Override
     public void actionPerformed(final ActionEvent ev) {
-        final InfoMapPanel imp = new InfoMapPanel();
-        final DialogDescriptor dd = new DialogDescriptor(imp, Bundle.CTL_InfoMapGeneralAction());
-        final Object result = DialogDisplayer.getDefault().notify(dd);
-        if (result == DialogDescriptor.OK_OPTION) {
-            final Graph graph = context.getGraph();
+//        // Old
+//        final InfoMapPanel imp = new InfoMapPanel();
+//        final DialogDescriptor dd = new DialogDescriptor(imp, Bundle.CTL_InfoMapGeneralAction());
+//        final Object result = DialogDisplayer.getDefault().notify(dd);
+//        if (result == DialogDescriptor.OK_OPTION) {
+//            final Graph graph = context.getGraph();
+//
+//            PluginExecutor.startWith(AlgorithmPluginRegistry.CLUSTER_INFO_MAP)
+//                    .set(InfoMapPlugin.CONFIG_PARAMETER_ID, imp.getConfig())
+//                    .followedBy(new InfoMapGeneralPlugin())
+//                    .executeWriteLater(graph);
+//        }
 
-            PluginExecutor.startWith(AlgorithmPluginRegistry.CLUSTER_INFO_MAP)
-                    .set(InfoMapPlugin.CONFIG_PARAMETER_ID, imp.getConfig())
-                    .followedBy(new InfoMapGeneralPlugin())
-                    .executeWriteLater(graph);
+        // New
+        final Plugin plugin = PluginRegistry.get(AlgorithmPluginRegistry.CLUSTER_INFO_MAP);
+        final PluginParameters params = plugin.createParameters();
+        final Graph graph = context.getGraph();
+        //plugin.updateParameters(graph, params);
+
+        final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(Bundle.CTL_InfoMapGeneralAction(), params);
+        dialog.setSize(SIZE);
+        dialog.showAndWait();
+        if (PluginParametersDialog.OK.equals(dialog.getResult())) {
+            //PluginExecution.withPlugin(plugin).withParameters(params).executeLater(graph);
+
+//            PluginExecutor.startWith(AlgorithmPluginRegistry.CLUSTER_INFO_MAP)
+//                    .set(InfoMapPlugin.CONFIG_PARAMETER_ID, imp.getConfig())
+//                    .followedBy(new InfoMapGeneralPlugin())
+//                    .executeWriteLater(graph);
         }
+
     }
 
     /**

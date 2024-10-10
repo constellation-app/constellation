@@ -176,6 +176,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
     @Override
     public PluginParameters createParameters() {
+        System.out.println("Creating parameters in LayerByTimePlugin...");
         final PluginParameters parameters = new PluginParameters();
 
         dtAttrParam = SingleChoiceParameterType.build(DATETIME_ATTRIBUTE_PARAMETER_ID);
@@ -310,7 +311,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
     @Override
     public void read(final GraphReadMethods rg, final PluginInteraction interaction, final PluginParameters parameters) throws PluginException, InterruptedException {
-
+        System.out.println("Reading LayerByTimePlugin...");
         // We have the dtAttr from the original wg: we should have been passed the label, but never mind.
         // We need to get the label from the original, so we can get the dtAttr for the copy.
         final String dtAttrOrig = parameters.getParameters().get(DATETIME_ATTRIBUTE_PARAMETER_ID).getStringValue();

@@ -27,10 +27,17 @@ import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Con
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.tree.TreeData;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType;
-import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType.ObjectParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openide.util.NbBundle;
@@ -49,6 +56,46 @@ public class InfoMapPlugin extends SimpleEditPlugin {
     private static final Logger LOGGER = Logger.getLogger(InfoMapPlugin.class.getName());
 
     public static final String CONFIG_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "config");
+
+    // Dynamics
+    public static final String DYNAMICS_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "dynamics");
+    private static final String DYNAMICS_PARAMETER_ID_NAME = "Dynamics";
+    //private static final String DYNAMICS_PARAMETER_ID_DESCRIPTION = "Unit of time by which to layer graph";
+    private static final String DYNAMICS_PARAMETER_UNDIRECTED = "Undirected";
+    private static final String DYNAMICS_PARAMETER_DIRECTED = "Directed";
+    private static final String DYNAMICS_PARAMETER_UNDIRECTED_FLOW = "Undirected flow, directed codelength";
+    private static final String DYNAMICS_PARAMETER_INCLOMING_FLOW = "Incoming flow, all codelength";
+    private static final String DYNAMICS_PARAMETER_DIRECTECT_WEIGHT = "Directed, weight as flow";
+    private static final String DYNAMICS_PARAMETER_ID_DEFAULT = DYNAMICS_PARAMETER_UNDIRECTED;
+
+    private static final List<String> DYNAMICS_PARAM_VALUES = Arrays.asList(
+            DYNAMICS_PARAMETER_UNDIRECTED,
+            DYNAMICS_PARAMETER_DIRECTED,
+            DYNAMICS_PARAMETER_UNDIRECTED_FLOW,
+            DYNAMICS_PARAMETER_INCLOMING_FLOW,
+            DYNAMICS_PARAMETER_DIRECTECT_WEIGHT);
+
+    // Optimisation Level
+    public static final String OPTIMISATION_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "optimisation_level");
+    private static final String OPTIMISATION_PARAMETER_ID_NAME = "optimisation Level";
+    //private static final String OPTIMISATION_PARAMETER_ID_DESCRIPTION = "Unit of time by which to layer graph";
+    private static final String OPTIMISATION_PARAMETER_ID_INTERVAL_DEFAULT = "Full coarse-tune";
+    private static final String OPTIMISATION_PARAMETER_ID_DEFAULT = OPTIMISATION_PARAMETER_ID_INTERVAL_DEFAULT;
+
+    private static final Map<String, Integer> OPTIMISATION_LEVELS = new HashMap<>();
+
+    static {
+        OPTIMISATION_LEVELS.put("Full coarse-tune", 0);
+        OPTIMISATION_LEVELS.put("Fast coarse-tune", 1);
+        OPTIMISATION_LEVELS.put("No tuning", 2);
+        OPTIMISATION_LEVELS.put("No aggregation or tuning", 3);
+    }
+
+    // Number of Trials
+    public static final String NUM_TRIALS_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "num_trials");
+    private static final String NUM_TRIALS_PARAMETER_ID_NAME = "Number of Trials";
+    //private static final String NUM_TRIALS_PARAMETER_ID_DESCRIPTION = "Number of Intervals to layer the graph into";
+    private static final int NUM_TRIALS_PARAMETER_ID_DEFAULT = 1;
 
     @Override
     protected void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
@@ -75,11 +122,44 @@ public class InfoMapPlugin extends SimpleEditPlugin {
     @Override
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
-        final PluginParameter<ObjectParameterValue> configParam = ObjectParameterType.build(CONFIG_PARAMETER_ID);
-        configParam.setName("Config");
-        configParam.setDescription("A Config object which defines the Info Map");
-        configParam.setObjectValue(new Config());
-        parameters.addParameter(configParam);
+        //OLD
+//        final PluginParameter<ObjectParameterValue> configParam = ObjectParameterType.build(CONFIG_PARAMETER_ID);
+//        configParam.setName("Config");
+//        configParam.setDescription("A Config object which defines the Info Map");
+//        configParam.setObjectValue(new Config());
+//        parameters.addParameter(configParam);
+
+        // New
+        // Connection type
+        // Dynamics
+        final PluginParameter<SingleChoiceParameterValue> dynamicsParam = SingleChoiceParameterType.build(DYNAMICS_PARAMETER_ID);
+        dynamicsParam.setName(DYNAMICS_PARAMETER_ID_NAME);
+        //layerByParam.setDescription(DYNAMICS_PARAMETER_ID_DESCRIPTION);
+        SingleChoiceParameterType.setOptions(dynamicsParam, DYNAMICS_PARAM_VALUES);
+        SingleChoiceParameterType.setChoice(dynamicsParam, DYNAMICS_PARAMETER_ID_DEFAULT);
+        parameters.addParameter(dynamicsParam);
+
+//        final PluginParameter<SingleChoiceParameterValue> dtAttrParam = SingleChoiceParameterType.build(DATETIME_ATTRIBUTE_PARAMETER_ID);
+//        dtAttrParam.setName(DATETIME_PARAMETER_ID_NAME);
+//        dtAttrParam.setDescription(DATETIME_ATTRIBUTE_PARAMETER_ID_DESCRIPTION);
+//        dtAttrParam.setRequired(true);
+//        parameters.addParameter(dtAttrParam);
+// 
+        //Optimisation Level
+        final PluginParameter<SingleChoiceParameterValue> unitParam = SingleChoiceParameterType.build(OPTIMISATION_PARAMETER_ID);
+        unitParam.setName(OPTIMISATION_PARAMETER_ID_NAME);
+        //unitParam.setDescription(OPTIMISATION_PARAMETER_ID_DESCRIPTION);
+        SingleChoiceParameterType.setOptions(unitParam, new ArrayList<>(OPTIMISATION_LEVELS.keySet()));
+        SingleChoiceParameterType.setChoice(unitParam, OPTIMISATION_PARAMETER_ID_DEFAULT);
+        parameters.addParameter(unitParam);
+
+        // Fast Hierarchical
+        // Number of trials
+        final PluginParameter<IntegerParameterValue> amountParam = IntegerParameterType.build(NUM_TRIALS_PARAMETER_ID);
+        amountParam.setName(NUM_TRIALS_PARAMETER_ID_NAME);
+        //amountParam.setDescription(NUM_TRIALS_PARAMETER_ID_DESCRIPTION);
+        amountParam.setIntegerValue(NUM_TRIALS_PARAMETER_ID_DEFAULT);
+        parameters.addParameter(amountParam);
 
         return parameters;
     }
