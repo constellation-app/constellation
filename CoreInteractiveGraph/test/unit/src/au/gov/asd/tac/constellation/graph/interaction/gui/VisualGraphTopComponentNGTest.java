@@ -22,7 +22,6 @@ import au.gov.asd.tac.constellation.graph.interaction.plugins.io.SaveAsAction;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
 import static au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode.LINK;
-import java.awt.HeadlessException;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
@@ -41,7 +40,6 @@ import org.openide.filesystems.FileObject;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.fail;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -112,7 +110,7 @@ public class VisualGraphTopComponentNGTest {
     }
 
     @Test
-    public void testConstructorWithParams() {
+    public void testConstructorWithParams() throws IOException {
         System.out.println("testConstructorWithParams");
 
         // Mock variables
@@ -124,12 +122,8 @@ public class VisualGraphTopComponentNGTest {
         when(mockGDO.isInMemory()).thenReturn(false);
         when(mockGDO.isValid()).thenReturn(true);
         when(mockGDO.getPrimaryFile()).thenReturn(mockFileObject);
-        try {
-            when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
-        } catch (IOException e) {
-            LOGGER.log(Level.WARNING, "Caught exception in mockGDO", e);
-            fail();
-        }
+
+        when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
 
         when(mockFileObject.getPath()).thenReturn("");
 
@@ -153,9 +147,10 @@ public class VisualGraphTopComponentNGTest {
      * Test of saveGraph method, of class VisualGraphTopComponent.
      *
      * @throws Exception
+     * @throws IOException
      */
     @Test
-    public void testSaveGraphNotInMemory() throws Exception {
+    public void testSaveGraphNotInMemory() throws Exception, IOException {
         System.out.println("saveGraph not in memory and valid");
         Platform.runLater(() -> {
             // Mock variables
@@ -166,30 +161,21 @@ public class VisualGraphTopComponentNGTest {
             when(mockGDO.isInMemory()).thenReturn(false);
             when(mockGDO.isValid()).thenReturn(true);
             when(mockGDO.getPrimaryFile()).thenReturn(mockFileObject);
-            try {
-                when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
-            } catch (IOException e) {
-                LOGGER.log(Level.WARNING, "Caught exception in mockGDO", e);
-            }
+            when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
 
             when(mockFileObject.getPath()).thenReturn("");
 
             // Mock contruct save as action, GraphNode
-            try {
-                VisualGraphTopComponent instance = new VisualGraphTopComponent(mockGDO, dgSpy);
-                instance.getGraphNode().setDataObject(mockGDO);
-                instance.saveGraph();
+            VisualGraphTopComponent instance = new VisualGraphTopComponent(mockGDO, dgSpy);
+            instance.getGraphNode().setDataObject(mockGDO);
+            instance.saveGraph();
 
-                assertEquals(instance.getGraphNode().getDataObject(), mockGDO);
+            assertEquals(instance.getGraphNode().getDataObject(), mockGDO);
 
-                verify(mockGDO).isValid();
-                verify(mockGDO).isInMemory();
-                verify(mockGDO, times(2)).getName();
-                verify(mockGDO, times(4)).getPrimaryFile();
-
-            } catch (IOException e) {
-                LOGGER.log(Level.WARNING, "Caught exception in VisualGraphTopComponent test", e);
-            }
+            verify(mockGDO).isValid();
+            verify(mockGDO).isInMemory();
+            verify(mockGDO, times(2)).getName();
+            verify(mockGDO, times(4)).getPrimaryFile();
         });
     }
 
@@ -197,9 +183,10 @@ public class VisualGraphTopComponentNGTest {
      * Test of saveGraph method, of class VisualGraphTopComponent.
      *
      * @throws Exception
+     * @throws IOException
      */
     @Test
-    public void testSaveGraphInvalid() throws Exception {
+    public void testSaveGraphInvalid() throws Exception, IOException {
         System.out.println("saveGraph invalid");
         Platform.runLater(() -> {
             // Mock variables
@@ -222,11 +209,8 @@ public class VisualGraphTopComponentNGTest {
             when(mockReadableGraph.getObjectValue(connectionMode, 0)).thenReturn(LINK);
             when(mockReadableGraph.getAttribute(GraphElementType.GRAPH, "connection_mode")).thenReturn(connectionMode);
             when(mockReadableGraph.getAttribute(GraphElementType.GRAPH, "draw_flags")).thenReturn(graphNotFound);
-            try {
-                when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
-            } catch (IOException e) {
-                LOGGER.log(Level.WARNING, "Caught exception in mockGDO", e);
-            }
+
+            when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
 
             // Mock contruct save as action, GraphNode
             try (MockedConstruction<SaveAsAction> mockSaveAsAction = Mockito.mockConstruction(SaveAsAction.class)) {
@@ -242,8 +226,6 @@ public class VisualGraphTopComponentNGTest {
 
                 verify(mockGDO).isValid();
                 verify(mockGDO).getName();
-            } catch (IOException e) {
-                LOGGER.log(Level.WARNING, "Caught exception in VisualGraphTopComponent test", e);
             }
         });
     }
@@ -254,7 +236,7 @@ public class VisualGraphTopComponentNGTest {
      * @throws Exception
      */
     @Test
-    public void testSaveGraphInMemory() throws Exception {
+    public void testSaveGraphInMemory() throws Exception, IOException {
         System.out.println("testSaveGraphInMemory");
         Platform.runLater(() -> {
             // Mock variables
@@ -268,11 +250,7 @@ public class VisualGraphTopComponentNGTest {
             when(mockGDO.isInMemory()).thenReturn(true);
             when(mockGDO.isValid()).thenReturn(true);
             when(mockGDO.getPrimaryFile()).thenReturn(mockFileObject);
-            try {
-                when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
-            } catch (IOException e) {
-                LOGGER.log(Level.WARNING, "Caught exception in mockGDO", e);
-            }
+            when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
 
             when(mockFileObject.getPath()).thenReturn("");
             when(dgSpy.getReadableGraph()).thenReturn(mockReadableGraph);
@@ -298,15 +276,12 @@ public class VisualGraphTopComponentNGTest {
 
                 verify(mockGDO).isValid();
                 verify(mockGDO).getName();
-            } catch (IOException | HeadlessException e) {
-                LOGGER.log(Level.WARNING, "Caught exception in VisualGraphTopComponent test", e);
             }
-
         });
     }
 
     @Test
-    public void testRequestActiveWithLatch() {
+    public void testRequestActiveWithLatch() throws IOException {
         System.out.println("testRequestActiveWithLatch");
         Platform.runLater(() -> {
             // Mock variables
@@ -317,11 +292,7 @@ public class VisualGraphTopComponentNGTest {
             when(mockGDO.isInMemory()).thenReturn(false);
             when(mockGDO.isValid()).thenReturn(true);
             when(mockGDO.getPrimaryFile()).thenReturn(mockFileObject);
-            try {
-                when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
-            } catch (IOException e) {
-                LOGGER.log(Level.WARNING, "Caught exception in mockGDO", e);
-            }
+            when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
 
             when(mockFileObject.getPath()).thenReturn("");
 
