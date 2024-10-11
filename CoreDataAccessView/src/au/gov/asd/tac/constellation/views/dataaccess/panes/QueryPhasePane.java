@@ -206,11 +206,16 @@ public class QueryPhasePane extends VBox {
         }
     }
 
+    /**
+     * Wait for class to fully initialise before allowing access to certain functions
+     */
     private void waitForAccess() {
         if (accessControl != null) {
             try {
                 // wait for the class to complete its initialisation "runLater" step
-                accessControl.await(10, TimeUnit.SECONDS);
+                if (!accessControl.await(10, TimeUnit.SECONDS)) {
+                    LOGGER.log(Level.WARNING, " >> Timing issue encountered: Class was not initialised in a timely manner.");
+                }
             } catch (final InterruptedException ex) {
                 LOGGER.log(Level.WARNING, ex.toString(), ex);
                 Thread.currentThread().interrupt();
