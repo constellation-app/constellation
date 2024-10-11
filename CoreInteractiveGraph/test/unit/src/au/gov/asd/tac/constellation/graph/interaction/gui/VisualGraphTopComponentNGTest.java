@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.application.Platform;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.MockedConstruction;
@@ -85,7 +84,7 @@ public class VisualGraphTopComponentNGTest {
     }
 
     @Test
-    public void testConstructor() throws IOException {
+    public void testConstructor() throws Exception {
         System.out.println("testConstructor");
 
         // Mock variables
@@ -110,7 +109,7 @@ public class VisualGraphTopComponentNGTest {
     }
 
     @Test
-    public void testConstructorWithParams() throws IOException {
+    public void testConstructorWithParams() throws Exception {
         System.out.println("testConstructorWithParams");
 
         // Mock variables
@@ -150,33 +149,32 @@ public class VisualGraphTopComponentNGTest {
      * @throws IOException
      */
     @Test
-    public void testSaveGraphNotInMemory() throws Exception, IOException {
+    public void testSaveGraphNotInMemory() throws Exception {
         System.out.println("saveGraph not in memory and valid");
-        Platform.runLater(() -> {
-            // Mock variables
-            final GraphDataObject mockGDO = mock(GraphDataObject.class);
-            final FileObject mockFileObject = mock(FileObject.class);
-            final DualGraph dgSpy = spy(new DualGraph(null));
 
-            when(mockGDO.isInMemory()).thenReturn(false);
-            when(mockGDO.isValid()).thenReturn(true);
-            when(mockGDO.getPrimaryFile()).thenReturn(mockFileObject);
-            when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
+        // Mock variables
+        final GraphDataObject mockGDO = mock(GraphDataObject.class);
+        final FileObject mockFileObject = mock(FileObject.class);
+        final DualGraph dgSpy = spy(new DualGraph(null));
 
-            when(mockFileObject.getPath()).thenReturn("");
+        when(mockGDO.isInMemory()).thenReturn(false);
+        when(mockGDO.isValid()).thenReturn(true);
+        when(mockGDO.getPrimaryFile()).thenReturn(mockFileObject);
+        when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
 
-            // Mock contruct save as action, GraphNode
-            VisualGraphTopComponent instance = new VisualGraphTopComponent(mockGDO, dgSpy);
-            instance.getGraphNode().setDataObject(mockGDO);
-            instance.saveGraph();
+        when(mockFileObject.getPath()).thenReturn("");
 
-            assertEquals(instance.getGraphNode().getDataObject(), mockGDO);
+        // Mock contruct save as action, GraphNode
+        VisualGraphTopComponent instance = new VisualGraphTopComponent(mockGDO, dgSpy);
+        instance.getGraphNode().setDataObject(mockGDO);
+        instance.saveGraph();
 
-            verify(mockGDO).isValid();
-            verify(mockGDO).isInMemory();
-            verify(mockGDO, times(2)).getName();
-            verify(mockGDO, times(4)).getPrimaryFile();
-        });
+        assertEquals(instance.getGraphNode().getDataObject(), mockGDO);
+
+        verify(mockGDO).isValid();
+        verify(mockGDO).isInMemory();
+        verify(mockGDO, times(2)).getName();
+        verify(mockGDO, times(4)).getPrimaryFile();
     }
 
     /**
@@ -186,48 +184,47 @@ public class VisualGraphTopComponentNGTest {
      * @throws IOException
      */
     @Test
-    public void testSaveGraphInvalid() throws Exception, IOException {
+    public void testSaveGraphInvalid() throws Exception {
         System.out.println("saveGraph invalid");
-        Platform.runLater(() -> {
-            // Mock variables
-            final GraphDataObject mockGDO = mock(GraphDataObject.class);
-            final FileObject mockFileObject = mock(FileObject.class);
 
-            final DualGraph dgSpy = spy(new DualGraph(null));
+        // Mock variables
+        final GraphDataObject mockGDO = mock(GraphDataObject.class);
+        final FileObject mockFileObject = mock(FileObject.class);
 
-            final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
+        final DualGraph dgSpy = spy(new DualGraph(null));
 
-            when(mockGDO.isValid()).thenReturn(false);
-            when(mockGDO.getPrimaryFile()).thenReturn(mockFileObject);
+        final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
 
-            when(mockFileObject.getPath()).thenReturn("");
+        when(mockGDO.isValid()).thenReturn(false);
+        when(mockGDO.getPrimaryFile()).thenReturn(mockFileObject);
 
-            when(dgSpy.getReadableGraph()).thenReturn(mockReadableGraph);
+        when(mockFileObject.getPath()).thenReturn("");
 
-            final int connectionMode = 1;
-            final int graphNotFound = -1107;
-            when(mockReadableGraph.getObjectValue(connectionMode, 0)).thenReturn(LINK);
-            when(mockReadableGraph.getAttribute(GraphElementType.GRAPH, "connection_mode")).thenReturn(connectionMode);
-            when(mockReadableGraph.getAttribute(GraphElementType.GRAPH, "draw_flags")).thenReturn(graphNotFound);
+        when(dgSpy.getReadableGraph()).thenReturn(mockReadableGraph);
 
-            when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
+        final int connectionMode = 1;
+        final int graphNotFound = -1107;
+        when(mockReadableGraph.getObjectValue(connectionMode, 0)).thenReturn(LINK);
+        when(mockReadableGraph.getAttribute(GraphElementType.GRAPH, "connection_mode")).thenReturn(connectionMode);
+        when(mockReadableGraph.getAttribute(GraphElementType.GRAPH, "draw_flags")).thenReturn(graphNotFound);
 
-            // Mock contruct save as action, GraphNode
-            try (MockedConstruction<SaveAsAction> mockSaveAsAction = Mockito.mockConstruction(SaveAsAction.class)) {
+        when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
 
-                VisualGraphTopComponent instance = new VisualGraphTopComponent(mockGDO, dgSpy);
-                instance.getGraphNode().setDataObject(mockGDO);
-                instance.saveGraph();
+        // Mock contruct save as action, GraphNode
+        try (MockedConstruction<SaveAsAction> mockSaveAsAction = Mockito.mockConstruction(SaveAsAction.class)) {
 
-                assertEquals(instance.getGraphNode().getDataObject(), mockGDO);
-                assertEquals(mockSaveAsAction.constructed().size(), 1);
-                verify(mockSaveAsAction.constructed().get(0)).actionPerformed(null);
-                verify(mockSaveAsAction.constructed().get(0)).isSaved();
+            VisualGraphTopComponent instance = new VisualGraphTopComponent(mockGDO, dgSpy);
+            instance.getGraphNode().setDataObject(mockGDO);
+            instance.saveGraph();
 
-                verify(mockGDO).isValid();
-                verify(mockGDO).getName();
-            }
-        });
+            assertEquals(instance.getGraphNode().getDataObject(), mockGDO);
+            assertEquals(mockSaveAsAction.constructed().size(), 1);
+            verify(mockSaveAsAction.constructed().get(0)).actionPerformed(null);
+            verify(mockSaveAsAction.constructed().get(0)).isSaved();
+
+            verify(mockGDO).isValid();
+            verify(mockGDO).getName();
+        }
     }
 
     /**
@@ -236,70 +233,68 @@ public class VisualGraphTopComponentNGTest {
      * @throws Exception
      */
     @Test
-    public void testSaveGraphInMemory() throws Exception, IOException {
+    public void testSaveGraphInMemory() throws Exception {
         System.out.println("testSaveGraphInMemory");
-        Platform.runLater(() -> {
-            // Mock variables
-            final GraphDataObject mockGDO = mock(GraphDataObject.class);
-            final FileObject mockFileObject = mock(FileObject.class);
 
-            final DualGraph dgSpy = spy(new DualGraph(null));
+        // Mock variables
+        final GraphDataObject mockGDO = mock(GraphDataObject.class);
+        final FileObject mockFileObject = mock(FileObject.class);
 
-            final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
+        final DualGraph dgSpy = spy(new DualGraph(null));
 
-            when(mockGDO.isInMemory()).thenReturn(true);
-            when(mockGDO.isValid()).thenReturn(true);
-            when(mockGDO.getPrimaryFile()).thenReturn(mockFileObject);
-            when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
+        final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
 
-            when(mockFileObject.getPath()).thenReturn("");
-            when(dgSpy.getReadableGraph()).thenReturn(mockReadableGraph);
+        when(mockGDO.isInMemory()).thenReturn(true);
+        when(mockGDO.isValid()).thenReturn(true);
+        when(mockGDO.getPrimaryFile()).thenReturn(mockFileObject);
+        when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
 
-            final int connectionMode = 1;
-            final int graphNotFound = -1107;
-            when(mockReadableGraph.getObjectValue(connectionMode, 0)).thenReturn(ConnectionMode.TRANSACTION);
-            when(mockReadableGraph.getAttribute(GraphElementType.GRAPH, "connection_mode")).thenReturn(connectionMode);
-            when(mockReadableGraph.getAttribute(GraphElementType.GRAPH, "draw_flags")).thenReturn(graphNotFound);
+        when(mockFileObject.getPath()).thenReturn("");
+        when(dgSpy.getReadableGraph()).thenReturn(mockReadableGraph);
 
-            // Mock contruct save as action, GraphNode
-            try (MockedConstruction<SaveAsAction> mockSaveAsAction = Mockito.mockConstruction(SaveAsAction.class)) {
+        final int connectionMode = 1;
+        final int graphNotFound = -1107;
+        when(mockReadableGraph.getObjectValue(connectionMode, 0)).thenReturn(ConnectionMode.TRANSACTION);
+        when(mockReadableGraph.getAttribute(GraphElementType.GRAPH, "connection_mode")).thenReturn(connectionMode);
+        when(mockReadableGraph.getAttribute(GraphElementType.GRAPH, "draw_flags")).thenReturn(graphNotFound);
 
-                VisualGraphTopComponent instance = new VisualGraphTopComponent(mockGDO, dgSpy);
+        // Mock contruct save as action, GraphNode
+        try (MockedConstruction<SaveAsAction> mockSaveAsAction = Mockito.mockConstruction(SaveAsAction.class)) {
 
-                instance.getGraphNode().setDataObject(mockGDO);
-                instance.saveGraph();
+            VisualGraphTopComponent instance = new VisualGraphTopComponent(mockGDO, dgSpy);
 
-                assertEquals(instance.getGraphNode().getDataObject(), mockGDO);
-                assertEquals(mockSaveAsAction.constructed().size(), 1);
-                verify(mockSaveAsAction.constructed().get(0)).actionPerformed(null);
-                verify(mockSaveAsAction.constructed().get(0)).isSaved();
+            instance.getGraphNode().setDataObject(mockGDO);
+            instance.saveGraph();
 
-                verify(mockGDO).isValid();
-                verify(mockGDO).getName();
-            }
-        });
+            assertEquals(instance.getGraphNode().getDataObject(), mockGDO);
+            assertEquals(mockSaveAsAction.constructed().size(), 1);
+            verify(mockSaveAsAction.constructed().get(0)).actionPerformed(null);
+            verify(mockSaveAsAction.constructed().get(0)).isSaved();
+
+            verify(mockGDO).isValid();
+            verify(mockGDO).getName();
+        }
     }
 
     @Test
-    public void testRequestActiveWithLatch() throws IOException {
+    public void testRequestActiveWithLatch() throws Exception {
         System.out.println("testRequestActiveWithLatch");
-        Platform.runLater(() -> {
-            // Mock variables
-            final GraphDataObject mockGDO = mock(GraphDataObject.class);
-            final FileObject mockFileObject = mock(FileObject.class);
-            final DualGraph dgSpy = spy(new DualGraph(null));
 
-            when(mockGDO.isInMemory()).thenReturn(false);
-            when(mockGDO.isValid()).thenReturn(true);
-            when(mockGDO.getPrimaryFile()).thenReturn(mockFileObject);
-            when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
+        // Mock variables
+        final GraphDataObject mockGDO = mock(GraphDataObject.class);
+        final FileObject mockFileObject = mock(FileObject.class);
+        final DualGraph dgSpy = spy(new DualGraph(null));
 
-            when(mockFileObject.getPath()).thenReturn("");
+        when(mockGDO.isInMemory()).thenReturn(false);
+        when(mockGDO.isValid()).thenReturn(true);
+        when(mockGDO.getPrimaryFile()).thenReturn(mockFileObject);
+        when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
 
-            // Mock contruct save as action, GraphNode
-            VisualGraphTopComponent instance = new VisualGraphTopComponent(mockGDO, dgSpy);
+        when(mockFileObject.getPath()).thenReturn("");
 
-            instance.requestActiveWithLatch(null);
-        });
+        // Mock contruct save as action, GraphNode
+        VisualGraphTopComponent instance = new VisualGraphTopComponent(mockGDO, dgSpy);
+
+        instance.requestActiveWithLatch(null);
     }
 }
