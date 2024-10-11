@@ -377,6 +377,7 @@ public class QueryPhasePane extends VBox {
      * @return the children of the dataSourceList
      */
     protected ObservableList<Node> getDataSourceListChildren() {
+        waitForAccess();
         return dataSourceList.getChildren();
     }
 
