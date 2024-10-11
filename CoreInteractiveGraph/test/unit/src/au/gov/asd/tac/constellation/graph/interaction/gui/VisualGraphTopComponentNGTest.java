@@ -22,7 +22,6 @@ import au.gov.asd.tac.constellation.graph.interaction.plugins.io.SaveAsAction;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
 import static au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode.LINK;
-import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -146,7 +145,6 @@ public class VisualGraphTopComponentNGTest {
      * Test of saveGraph method, of class VisualGraphTopComponent.
      *
      * @throws Exception
-     * @throws IOException
      */
     @Test
     public void testSaveGraphNotInMemory() throws Exception {
@@ -181,7 +179,6 @@ public class VisualGraphTopComponentNGTest {
      * Test of saveGraph method, of class VisualGraphTopComponent.
      *
      * @throws Exception
-     * @throws IOException
      */
     @Test
     public void testSaveGraphInvalid() throws Exception {
