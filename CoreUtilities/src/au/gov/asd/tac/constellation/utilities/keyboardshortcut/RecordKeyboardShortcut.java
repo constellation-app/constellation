@@ -77,17 +77,7 @@ public class RecordKeyboardShortcut extends Dialog<String>  {
             File exisitngTemplateWithKs = keyboardShortCutAlreadyAssigned(preferenceDirectory, keyboardShortcut);
             
             if(exisitngTemplateWithKs != null) {
-                alreadyAssigned = true;              
-             
-              /*  if (go) {
-                    String rename = exisitngTemplateWithKs.getName().replaceAll(keyboardShortcut, StringUtils.EMPTY);
-                    exisitngTemplateWithKs.renameTo( new File(
-                            preferenceDirectory,
-                            FilenameEncoder.encode(rename.trim())
-                    ));                    
-                } else {
-                    return start(preferenceDirectory);
-                } */
+                alreadyAssigned = true;
             }
             
            ksOptional = Optional.of(new KeyboardShortcutSelectionResult(keyboardShortcut, alreadyAssigned, exisitngTemplateWithKs));

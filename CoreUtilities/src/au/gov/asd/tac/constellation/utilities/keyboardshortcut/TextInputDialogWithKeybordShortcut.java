@@ -143,6 +143,9 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
                      keyboardShortcutLabel.setGraphic(warningImage);
                      keyboardShortcutLabel.setTooltip(warningToolTip);
                  } else {
+                     shorcutWarningLabel.setText(null);
+                     keyboardShortcutSelectionResult.setAlreadyAssigned(false);
+                     keyboardShortcutSelectionResult.setExisitngTemplateWithKs(null);
                      keyboardShortcutLabel.setGraphic(null);
                      keyboardShortcutLabel.setTooltip(null);
                  }
