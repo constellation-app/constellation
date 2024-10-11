@@ -24,6 +24,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
@@ -68,7 +69,10 @@ public class KeyPressLabelDialog extends Dialog<String> {
         dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
         dialogPane.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
-            if (!event.getCode().isModifierKey()) {                
+            if (!event.getCode().isModifierKey() 
+                    && !event.getCode().equals(KeyCode.ENTER)
+                    && !event.getCode().equals(KeyCode.ESCAPE)
+                    && !event.getCode().equals(KeyCode.SPACE)) {
                 label.setText(RecordKeyboardShortcut.createCombo(event).getDisplayText());
             }
         });
