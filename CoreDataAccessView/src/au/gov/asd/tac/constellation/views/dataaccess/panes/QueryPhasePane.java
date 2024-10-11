@@ -39,7 +39,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -76,6 +78,8 @@ public class QueryPhasePane extends VBox {
     private final Set<MenuItem> pluginDependentMenuItems = new HashSet<>();
 
     private final Map<String, HeadingPane> currentPlugins = new HashMap<>();
+    
+    private CountDownLatch accessControl = null;
 
     /**
      * Creates a new query phase pane.
@@ -91,6 +95,7 @@ public class QueryPhasePane extends VBox {
     }
 
     public final void updatePlugins(final Map<String, Pair<Integer, List<DataAccessPlugin>>> plugins, final PluginParametersPaneListener top) {
+        accessControl = new CountDownLatch(1);
         dataSources.clear();
 
         final List<Pair<Integer, HeadingPane>> orderedPlugins = new ArrayList<>();
@@ -132,14 +137,13 @@ public class QueryPhasePane extends VBox {
 
         // Runlater is used, because when plugins are changed this won't be run in the correct type of thread
         Platform.runLater(() -> {
-            synchronized (dataSourceList.getChildren()) {
-                dataSourceList.getChildren().clear();
-                for (final Pair<Integer, HeadingPane> plugin : orderedPlugins) {
-                    dataSourceList.getChildren().add(plugin.getValue());
-                }
-                getChildren().clear();
-                getChildren().addAll(globalParametersPane, dataSourceList);
+            dataSourceList.getChildren().clear();
+            for (final Pair<Integer, HeadingPane> plugin : orderedPlugins) {
+                dataSourceList.getChildren().add(plugin.getValue());
             }
+            getChildren().clear();
+            getChildren().addAll(globalParametersPane, dataSourceList);
+            accessControl.countDown();
         });
     }
 
@@ -192,19 +196,28 @@ public class QueryPhasePane extends VBox {
      * @param expandchildren true if the child sections should also be expanded, false otherwise
      */
     public void setHeadingsExpanded(final boolean expand, final boolean expandchildren) {
-        // Using synchronized to prevent concurrency related issues
-        synchronized (dataSourceList.getChildren()) {
-            for (final Node child : dataSourceList.getChildren()) {
-                final HeadingPane headingPage = (HeadingPane) child;
-                headingPage.setExpanded(expand);
-
-                if (expandchildren) {
-                    headingPage.getDataSources().forEach(titledPane -> titledPane.setExpanded(expand));
-                }
+        waitForAccess();        
+        for (final Node child : dataSourceList.getChildren()) {
+            final HeadingPane headingPage = (HeadingPane) child;
+            headingPage.setExpanded(expand);
+            if (expandchildren) {
+                headingPage.getDataSources().forEach(titledPane -> titledPane.setExpanded(expand));
             }
         }
     }
 
+    private void waitForAccess() {
+        if (accessControl != null) {
+            try {
+                // wait for the class to complete its initialisation "runLater" step
+                accessControl.await(10, TimeUnit.SECONDS);
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.WARNING, ex.toString(), ex);
+                Thread.currentThread().interrupt();
+            }
+        }        
+    }
+    
     /**
      * Expand the named plugin (and the section it's in) and scroll it to a visible position.
      * <p/>
@@ -364,9 +377,7 @@ public class QueryPhasePane extends VBox {
      * @return the children of the dataSourceList
      */
     protected ObservableList<Node> getDataSourceListChildren() {
-        synchronized (dataSourceList.getChildren()) {
-            return dataSourceList.getChildren();
-        }
+        return dataSourceList.getChildren();
     }
 
     protected Set<MenuItem> getGraphDependentMenuItems() {
