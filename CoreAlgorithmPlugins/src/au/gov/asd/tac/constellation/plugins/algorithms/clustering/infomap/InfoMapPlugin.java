@@ -56,6 +56,23 @@ public class InfoMapPlugin extends SimpleEditPlugin {
     private static final Logger LOGGER = Logger.getLogger(InfoMapPlugin.class.getName());
 
     public static final String CONFIG_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "config");
+    
+    // Connection Type
+    public static final String CONNECTION_TYPE_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "connection_type");
+    private static final String CONNECTION_TYPE_PARAMETER_ID_NAME = "Connection Type";
+    //private static final String CONNECTION_TYPE_PARAMETER_ID_DESCRIPTION = "Unit of time by which to layer graph";
+    private static final String CONNECTION_TYPE_PARAMETER_ID_INTERVAL_DEFAULT = "Links";
+    private static final String CONNECTION_TYPE_PARAMETER_ID_DEFAULT = CONNECTION_TYPE_PARAMETER_ID_INTERVAL_DEFAULT;
+    
+    private static final String CONNECTION_TYPE_LINKS = "Links";
+    private static final String CONNECTION_TYPE_EDGES = "Edges";
+    private static final String CONNECTION_TYPE_TRANSACTIONS = "Transactions";
+    
+    private static final List<String> CONNECTION_TYPE_PARAM_VALUES = Arrays.asList(
+            CONNECTION_TYPE_LINKS,
+            CONNECTION_TYPE_EDGES,
+            CONNECTION_TYPE_TRANSACTIONS
+    );
 
     // Dynamics
     public static final String DYNAMICS_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "dynamics");
@@ -73,11 +90,12 @@ public class InfoMapPlugin extends SimpleEditPlugin {
             DYNAMICS_PARAMETER_DIRECTED,
             DYNAMICS_PARAMETER_UNDIRECTED_FLOW,
             DYNAMICS_PARAMETER_INCLOMING_FLOW,
-            DYNAMICS_PARAMETER_DIRECTECT_WEIGHT);
+            DYNAMICS_PARAMETER_DIRECTECT_WEIGHT
+    );
 
     // Optimisation Level
     public static final String OPTIMISATION_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "optimisation_level");
-    private static final String OPTIMISATION_PARAMETER_ID_NAME = "optimisation Level";
+    private static final String OPTIMISATION_PARAMETER_ID_NAME = "Optimisation Level";
     //private static final String OPTIMISATION_PARAMETER_ID_DESCRIPTION = "Unit of time by which to layer graph";
     private static final String OPTIMISATION_PARAMETER_ID_INTERVAL_DEFAULT = "Full coarse-tune";
     private static final String OPTIMISATION_PARAMETER_ID_DEFAULT = OPTIMISATION_PARAMETER_ID_INTERVAL_DEFAULT;
@@ -89,6 +107,22 @@ public class InfoMapPlugin extends SimpleEditPlugin {
         OPTIMISATION_LEVELS.put("Fast coarse-tune", 1);
         OPTIMISATION_LEVELS.put("No tuning", 2);
         OPTIMISATION_LEVELS.put("No aggregation or tuning", 3);
+    }
+
+    // Fast Hierarchical
+    public static final String FAST_HIERARCHICAL_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "fast_hierarchical");
+    private static final String FAST_HIERARCHICAL_PARAMETER_ID_NAME = "Fast Hierarchical";
+    //private static final String FAST_HIERARCHICAL_PARAMETER_ID_DESCRIPTION = "Unit of time by which to layer graph";
+    private static final String FAST_HIERARCHICAL_PARAMETER_ID_INTERVAL_DEFAULT = "Normal";
+    private static final String FAST_HIERARCHICAL_PARAMETER_ID_DEFAULT = FAST_HIERARCHICAL_PARAMETER_ID_INTERVAL_DEFAULT;
+    
+    private static final Map<String, Integer> FAST_HIERARCHICAL_LEVELS = new HashMap<>();
+
+    static {
+        FAST_HIERARCHICAL_LEVELS.put("Normal", 0);
+        FAST_HIERARCHICAL_LEVELS.put("Top modules fast", 1);
+        FAST_HIERARCHICAL_LEVELS.put("All fast levels", 2);
+        FAST_HIERARCHICAL_LEVELS.put("Skip recursive", 3);
     }
 
     // Number of Trials
@@ -131,6 +165,13 @@ public class InfoMapPlugin extends SimpleEditPlugin {
 
         // New
         // Connection type
+        final PluginParameter<SingleChoiceParameterValue> connectionParam = SingleChoiceParameterType.build(CONNECTION_TYPE_PARAMETER_ID);
+        connectionParam.setName(CONNECTION_TYPE_PARAMETER_ID_NAME);
+        //layerByParam.setDescription(CONNECTION_TYPE_PARAMETER_ID_DESCRIPTION);
+        SingleChoiceParameterType.setOptions(connectionParam, CONNECTION_TYPE_PARAM_VALUES);
+        SingleChoiceParameterType.setChoice(connectionParam, CONNECTION_TYPE_PARAMETER_ID_DEFAULT);
+        parameters.addParameter(connectionParam);
+        
         // Dynamics
         final PluginParameter<SingleChoiceParameterValue> dynamicsParam = SingleChoiceParameterType.build(DYNAMICS_PARAMETER_ID);
         dynamicsParam.setName(DYNAMICS_PARAMETER_ID_NAME);
@@ -139,21 +180,22 @@ public class InfoMapPlugin extends SimpleEditPlugin {
         SingleChoiceParameterType.setChoice(dynamicsParam, DYNAMICS_PARAMETER_ID_DEFAULT);
         parameters.addParameter(dynamicsParam);
 
-//        final PluginParameter<SingleChoiceParameterValue> dtAttrParam = SingleChoiceParameterType.build(DATETIME_ATTRIBUTE_PARAMETER_ID);
-//        dtAttrParam.setName(DATETIME_PARAMETER_ID_NAME);
-//        dtAttrParam.setDescription(DATETIME_ATTRIBUTE_PARAMETER_ID_DESCRIPTION);
-//        dtAttrParam.setRequired(true);
-//        parameters.addParameter(dtAttrParam);
-// 
         //Optimisation Level
-        final PluginParameter<SingleChoiceParameterValue> unitParam = SingleChoiceParameterType.build(OPTIMISATION_PARAMETER_ID);
-        unitParam.setName(OPTIMISATION_PARAMETER_ID_NAME);
+        final PluginParameter<SingleChoiceParameterValue> optimisationParam = SingleChoiceParameterType.build(OPTIMISATION_PARAMETER_ID);
+        optimisationParam.setName(OPTIMISATION_PARAMETER_ID_NAME);
         //unitParam.setDescription(OPTIMISATION_PARAMETER_ID_DESCRIPTION);
-        SingleChoiceParameterType.setOptions(unitParam, new ArrayList<>(OPTIMISATION_LEVELS.keySet()));
-        SingleChoiceParameterType.setChoice(unitParam, OPTIMISATION_PARAMETER_ID_DEFAULT);
-        parameters.addParameter(unitParam);
+        SingleChoiceParameterType.setOptions(optimisationParam, new ArrayList<>(OPTIMISATION_LEVELS.keySet()));
+        SingleChoiceParameterType.setChoice(optimisationParam, OPTIMISATION_PARAMETER_ID_DEFAULT);
+        parameters.addParameter(optimisationParam);
 
         // Fast Hierarchical
+        final PluginParameter<SingleChoiceParameterValue> hierarchicalParam = SingleChoiceParameterType.build(FAST_HIERARCHICAL_PARAMETER_ID);
+        hierarchicalParam.setName(FAST_HIERARCHICAL_PARAMETER_ID_NAME);
+        //unitParam.setDescription(FAST_HIERARCHICAL_PARAMETER_ID_DESCRIPTION);
+        SingleChoiceParameterType.setOptions(hierarchicalParam, new ArrayList<>(FAST_HIERARCHICAL_LEVELS.keySet()));
+        SingleChoiceParameterType.setChoice(hierarchicalParam, FAST_HIERARCHICAL_PARAMETER_ID_DEFAULT);
+        parameters.addParameter(hierarchicalParam);
+        
         // Number of trials
         final PluginParameter<IntegerParameterValue> amountParam = IntegerParameterType.build(NUM_TRIALS_PARAMETER_ID);
         amountParam.setName(NUM_TRIALS_PARAMETER_ID_NAME);

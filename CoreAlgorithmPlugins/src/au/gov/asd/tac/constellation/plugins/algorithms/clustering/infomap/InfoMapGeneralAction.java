@@ -52,7 +52,7 @@ public final class InfoMapGeneralAction implements ActionListener {
 
     private final GraphNode context;
 
-    private static final Dimension SIZE = new Dimension(550, 750);
+    private static final Dimension SIZE = new Dimension(550, 550);
 
     public InfoMapGeneralAction(final GraphNode context) {
         this.context = context;
