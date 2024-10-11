@@ -76,7 +76,7 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
      * Creates a new TextInputDialog without a default value entered into the
      * dialog {@link TextField}.
      */
-    public TextInputDialogWithKeybordShortcut(File preferenceDirectory, Optional<String> ks) {
+    public TextInputDialogWithKeybordShortcut(final File preferenceDirectory, final Optional<String> ks) {
         this("", preferenceDirectory, ks);        
     }
 
@@ -86,7 +86,7 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
      *
      * @param defaultValue the default value entered into the dialog
      */
-    public TextInputDialogWithKeybordShortcut(@NamedArg("defaultValue") String defaultValue, File preferenceDirectory, Optional<String> ks) {        
+    public TextInputDialogWithKeybordShortcut(@NamedArg("defaultValue") final String defaultValue, final File preferenceDirectory, final Optional<String> ks) {        
         final DialogPane dialogPane = getDialogPane();
 
         // -- textfield
@@ -233,7 +233,7 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
         Platform.runLater(() -> textField.requestFocus());
     }
 
-    static Label createContentLabel(String text) {
+    private static Label createContentLabel(final String text) {
         Label label = new Label(text);
         label.setMaxWidth(Double.MAX_VALUE);
         label.setMaxHeight(Double.MAX_VALUE);
@@ -253,11 +253,11 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
         return label;
     }
 
-    public void setKSLabelText(String ks) {
+    public void setKSLabelText(final String ks) {
         this.keyboardShortcutLabel.setText(ks);
     }
     
-    public static  Optional<KeyboardShortcutSelectionResult> getKeyboardShortcut(File preferenceDirectory) {
+    public static  Optional<KeyboardShortcutSelectionResult> getKeyboardShortcut(final File preferenceDirectory) {
          
        final RecordKeyboardShortcut rk = new RecordKeyboardShortcut();
        final  Optional<KeyboardShortcutSelectionResult> ks = rk.start(preferenceDirectory);

@@ -132,7 +132,7 @@ public class JsonIODialog {
         return td.showAndWait();
     }
     
-    public static Optional<KeyboardShortcutSelectionResult> getPreferenceFileName(Optional<Boolean> keyboardShortcut, Optional<String> ks, File preferenceDirectory) {
+    public static Optional<KeyboardShortcutSelectionResult> getPreferenceFileName(final Optional<Boolean> keyboardShortcut, final Optional<String> ks, final File preferenceDirectory) {
         final TextInputDialogWithKeybordShortcut td = new TextInputDialogWithKeybordShortcut(preferenceDirectory, ks);
         td.setTitle(PREFERENCE_NAME_DIALOG_TITLE);
         td.setHeaderText(PREFERENCE_NAME_DIALOG_HEADER_TEXT);
@@ -140,14 +140,5 @@ public class JsonIODialog {
         td.showAndWait();        
         return Optional.ofNullable(td.getKeyboardShortcutSelectionResult());
     }
-    
-    
-    /* public static Optional<String> getKeyboardShortcut(File preferenceDirectory) {
-         
-       final RecordKeyboardShortcut rk = new RecordKeyboardShortcut();
-       final Optional<String> ks = rk.start(preferenceDirectory);
-       
-       return ks;
-    }   */
 
 }

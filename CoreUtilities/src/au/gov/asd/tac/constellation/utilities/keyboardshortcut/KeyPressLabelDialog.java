@@ -45,7 +45,7 @@ public class KeyPressLabelDialog extends Dialog<String> {
         this(StringUtils.EMPTY);        
     }
     
-    public KeyPressLabelDialog(@NamedArg("defaultValue") String defaultValue) {
+    public KeyPressLabelDialog(@NamedArg("defaultValue") final String defaultValue) {
         final DialogPane dialogPane = getDialogPane();
         
         // -- label
@@ -75,7 +75,7 @@ public class KeyPressLabelDialog extends Dialog<String> {
         updateGrid();
 
         setResultConverter((dialogButton) -> {
-            ButtonBar.ButtonData data = dialogButton == null ? null : dialogButton.getButtonData();
+            final ButtonBar.ButtonData data = dialogButton == null ? null : dialogButton.getButtonData();
             return data == ButtonBar.ButtonData.OK_DONE ? label.getText() : null;
         });
     }
@@ -117,7 +117,7 @@ public class KeyPressLabelDialog extends Dialog<String> {
     }
     
     
-    static Label createContentLabel(String text) {
+    private static Label createContentLabel(final String text) {
         Label label = new Label(text);
         label.setMaxWidth(Double.MAX_VALUE);
         label.setMaxHeight(Double.MAX_VALUE);
