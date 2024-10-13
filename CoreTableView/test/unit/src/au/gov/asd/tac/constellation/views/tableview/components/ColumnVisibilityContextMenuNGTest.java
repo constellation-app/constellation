@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
+import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.views.tableview.TableViewTopComponent;
 import au.gov.asd.tac.constellation.views.tableview.api.ActiveTableReference;
@@ -80,6 +81,7 @@ public class ColumnVisibilityContextMenuNGTest {
     private Graph graph;
     private ReadableGraph readableGraph;
     private TableViewState tableViewState;
+    private Schema schema;
 
     private String columnType1;
     private String columnType2;
@@ -125,10 +127,12 @@ public class ColumnVisibilityContextMenuNGTest {
         activeTableReference = mock(ActiveTableReference.class);
         graph = mock(Graph.class);
         readableGraph = mock(ReadableGraph.class);
+        schema = mock(Schema.class);      
 
         tableViewState = new TableViewState();
 
         when(graph.getReadableGraph()).thenReturn(readableGraph);
+        when(graph.getSchema()).thenReturn(schema);
 
         // These two will define which columns are shown when the "Key Columns" button is pressed
         when(readableGraph.getPrimaryKey(GraphElementType.VERTEX)).thenReturn(new int[]{2, 3});
@@ -280,13 +284,12 @@ public class ColumnVisibilityContextMenuNGTest {
         // DEFAULT COLUMNS
         /////////////////
         verifyCustomMenu(columnVisibilityContextMenu.getShowDefaultColumnsMenu(), "Show Default Columns", false);
-
-        // Only column 3 has a name starting with a lower case character, so it is excluded
-        verifyAllColumnsMenuClicked(columnVisibilityContextMenu.getShowDefaultColumnsMenu(), List.of(
-                Tuple.create(columnType1, attribute1),
+        
+        // See TestTableDefaultColumnsProvider, it has attribute2 and attribute5 set as default attributes
+        verifyProvidedColumnVisibilityActions(columnVisibilityContextMenu.getShowDefaultColumnsMenu(), List.of(
                 Tuple.create(columnType2, attribute2),
-                Tuple.create(columnType4, attribute4)
-        ));
+                Tuple.create(columnType5, attribute5)
+        ), null);
 
         /////////////////
         // KEY COLUMNS
