@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ClusteringConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
-import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
@@ -36,8 +35,6 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import org.openide.DialogDescriptor;
-import org.openide.DialogDisplayer;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
@@ -60,7 +57,7 @@ public final class InfoMapGeneralAction implements ActionListener {
 
     @Override
     public void actionPerformed(final ActionEvent ev) {
-//        // Old
+        // Old
 //        final InfoMapPanel imp = new InfoMapPanel();
 //        final DialogDescriptor dd = new DialogDescriptor(imp, Bundle.CTL_InfoMapGeneralAction());
 //        final Object result = DialogDisplayer.getDefault().notify(dd);
@@ -85,12 +82,11 @@ public final class InfoMapGeneralAction implements ActionListener {
         if (PluginParametersDialog.OK.equals(dialog.getResult())) {
             //PluginExecution.withPlugin(plugin).withParameters(params).executeLater(graph);
 
-//            PluginExecutor.startWith(AlgorithmPluginRegistry.CLUSTER_INFO_MAP)
-//                    .set(InfoMapPlugin.CONFIG_PARAMETER_ID, imp.getConfig())
-//                    .followedBy(new InfoMapGeneralPlugin())
-//                    .executeWriteLater(graph);
+            PluginExecutor.startWith(plugin)
+                    .set(params)
+                    .followedBy(new InfoMapGeneralPlugin())
+                    .executeWriteLater(graph);
         }
-
     }
 
     /**

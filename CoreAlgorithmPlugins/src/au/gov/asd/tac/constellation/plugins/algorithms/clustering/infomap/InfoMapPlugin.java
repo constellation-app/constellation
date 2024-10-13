@@ -56,18 +56,18 @@ public class InfoMapPlugin extends SimpleEditPlugin {
     private static final Logger LOGGER = Logger.getLogger(InfoMapPlugin.class.getName());
 
     public static final String CONFIG_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "config");
-    
+
     // Connection Type
     public static final String CONNECTION_TYPE_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "connection_type");
     private static final String CONNECTION_TYPE_PARAMETER_ID_NAME = "Connection Type";
     //private static final String CONNECTION_TYPE_PARAMETER_ID_DESCRIPTION = "Unit of time by which to layer graph";
     private static final String CONNECTION_TYPE_PARAMETER_ID_INTERVAL_DEFAULT = "Links";
     private static final String CONNECTION_TYPE_PARAMETER_ID_DEFAULT = CONNECTION_TYPE_PARAMETER_ID_INTERVAL_DEFAULT;
-    
+
     private static final String CONNECTION_TYPE_LINKS = "Links";
     private static final String CONNECTION_TYPE_EDGES = "Edges";
     private static final String CONNECTION_TYPE_TRANSACTIONS = "Transactions";
-    
+
     private static final List<String> CONNECTION_TYPE_PARAM_VALUES = Arrays.asList(
             CONNECTION_TYPE_LINKS,
             CONNECTION_TYPE_EDGES,
@@ -115,7 +115,7 @@ public class InfoMapPlugin extends SimpleEditPlugin {
     //private static final String FAST_HIERARCHICAL_PARAMETER_ID_DESCRIPTION = "Unit of time by which to layer graph";
     private static final String FAST_HIERARCHICAL_PARAMETER_ID_INTERVAL_DEFAULT = "Normal";
     private static final String FAST_HIERARCHICAL_PARAMETER_ID_DEFAULT = FAST_HIERARCHICAL_PARAMETER_ID_INTERVAL_DEFAULT;
-    
+
     private static final Map<String, Integer> FAST_HIERARCHICAL_LEVELS = new HashMap<>();
 
     static {
@@ -138,8 +138,13 @@ public class InfoMapPlugin extends SimpleEditPlugin {
             LOGGER.log(Level.WARNING, "{0} run on Empty Graph", Bundle.InfoMapPlugin());
             return;
         }
-        final Config config = (Config) parameters.getParameters().get(CONFIG_PARAMETER_ID).getObjectValue();
-        final InfoMapContext context = new InfoMapContext(config, wg);
+        // OLD
+        //final Config config = (Config) parameters.getParameters().get(CONFIG_PARAMETER_ID).getObjectValue();
+        // final InfoMapContext context = new InfoMapContext(config, wg);
+
+        // New
+        final InfoMapContext context = new InfoMapContext(createConfig(parameters), wg);
+
         context.getInfoMap().run();
 
         final int clusterAttrId = ClusteringConcept.VertexAttribute.INFOMAP_CLUSTER.ensure(wg);
@@ -156,7 +161,7 @@ public class InfoMapPlugin extends SimpleEditPlugin {
     @Override
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
-        //OLD
+//        //OLD
 //        final PluginParameter<ObjectParameterValue> configParam = ObjectParameterType.build(CONFIG_PARAMETER_ID);
 //        configParam.setName("Config");
 //        configParam.setDescription("A Config object which defines the Info Map");
@@ -171,7 +176,7 @@ public class InfoMapPlugin extends SimpleEditPlugin {
         SingleChoiceParameterType.setOptions(connectionParam, CONNECTION_TYPE_PARAM_VALUES);
         SingleChoiceParameterType.setChoice(connectionParam, CONNECTION_TYPE_PARAMETER_ID_DEFAULT);
         parameters.addParameter(connectionParam);
-        
+
         // Dynamics
         final PluginParameter<SingleChoiceParameterValue> dynamicsParam = SingleChoiceParameterType.build(DYNAMICS_PARAMETER_ID);
         dynamicsParam.setName(DYNAMICS_PARAMETER_ID_NAME);
@@ -195,7 +200,7 @@ public class InfoMapPlugin extends SimpleEditPlugin {
         SingleChoiceParameterType.setOptions(hierarchicalParam, new ArrayList<>(FAST_HIERARCHICAL_LEVELS.keySet()));
         SingleChoiceParameterType.setChoice(hierarchicalParam, FAST_HIERARCHICAL_PARAMETER_ID_DEFAULT);
         parameters.addParameter(hierarchicalParam);
-        
+
         // Number of trials
         final PluginParameter<IntegerParameterValue> amountParam = IntegerParameterType.build(NUM_TRIALS_PARAMETER_ID);
         amountParam.setName(NUM_TRIALS_PARAMETER_ID_NAME);
@@ -204,5 +209,38 @@ public class InfoMapPlugin extends SimpleEditPlugin {
         parameters.addParameter(amountParam);
 
         return parameters;
+    }
+
+    private Config createConfig(final PluginParameters parameters) {
+        final Config config = new Config();
+
+        // Connection type.
+        switch (parameters.getParameters().get(CONNECTION_TYPE_PARAMETER_ID).getStringValue()) {
+            case CONNECTION_TYPE_TRANSACTIONS ->
+                config.setConnectionType(Config.ConnectionType.TRANSACTIONS);
+            case CONNECTION_TYPE_EDGES ->
+                config.setConnectionType(Config.ConnectionType.EDGES);
+            case CONNECTION_TYPE_LINKS ->
+                config.setConnectionType(Config.ConnectionType.LINKS);
+        }
+
+        // Dynamic type
+        // Note: DYNAMICS_PARAMETER_UNDIRECTED is unused here becuase the config will set undirected if no other dynaimc is set true
+        switch (parameters.getParameters().get(DYNAMICS_PARAMETER_ID).getStringValue()) {
+            case DYNAMICS_PARAMETER_DIRECTED ->
+                config.setDirected(true);
+            case DYNAMICS_PARAMETER_UNDIRECTED_FLOW ->
+                config.setUndirdir(true);
+            case DYNAMICS_PARAMETER_INCLOMING_FLOW ->
+                config.setOutdirdir(true);
+            case DYNAMICS_PARAMETER_DIRECTECT_WEIGHT ->
+                config.setRawdir(true);
+        }
+
+        config.setOptimizationLevel(OPTIMISATION_LEVELS.get(parameters.getParameters().get(OPTIMISATION_PARAMETER_ID).getStringValue()));
+        config.setFastHierarchicalSolution(FAST_HIERARCHICAL_LEVELS.get(parameters.getParameters().get(FAST_HIERARCHICAL_PARAMETER_ID).getStringValue()));
+        config.setNumTrials(parameters.getParameters().get(NUM_TRIALS_PARAMETER_ID).getIntegerValue());
+
+        return config;
     }
 }
