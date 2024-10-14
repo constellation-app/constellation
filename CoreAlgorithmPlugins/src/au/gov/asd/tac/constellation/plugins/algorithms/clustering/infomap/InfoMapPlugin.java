@@ -60,7 +60,7 @@ public class InfoMapPlugin extends SimpleEditPlugin {
     // Connection Type
     public static final String CONNECTION_TYPE_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "connection_type");
     private static final String CONNECTION_TYPE_PARAMETER_ID_NAME = "Connection Type";
-    //private static final String CONNECTION_TYPE_PARAMETER_ID_DESCRIPTION = "Unit of time by which to layer graph";
+    private static final String CONNECTION_TYPE_PARAMETER_ID_DESCRIPTION = "Type of connection to seperate by";
     private static final String CONNECTION_TYPE_PARAMETER_ID_INTERVAL_DEFAULT = "Links";
     private static final String CONNECTION_TYPE_PARAMETER_ID_DEFAULT = CONNECTION_TYPE_PARAMETER_ID_INTERVAL_DEFAULT;
 
@@ -96,7 +96,7 @@ public class InfoMapPlugin extends SimpleEditPlugin {
     // Optimisation Level
     public static final String OPTIMISATION_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "optimisation_level");
     private static final String OPTIMISATION_PARAMETER_ID_NAME = "Optimisation Level";
-    //private static final String OPTIMISATION_PARAMETER_ID_DESCRIPTION = "Unit of time by which to layer graph";
+    private static final String OPTIMISATION_PARAMETER_ID_DESCRIPTION = "Optimization level with different accuracy to performance trade-offs";
     private static final String OPTIMISATION_PARAMETER_ID_INTERVAL_DEFAULT = "Full coarse-tune";
     private static final String OPTIMISATION_PARAMETER_ID_DEFAULT = OPTIMISATION_PARAMETER_ID_INTERVAL_DEFAULT;
 
@@ -138,11 +138,7 @@ public class InfoMapPlugin extends SimpleEditPlugin {
             LOGGER.log(Level.WARNING, "{0} run on Empty Graph", Bundle.InfoMapPlugin());
             return;
         }
-        // OLD
-        //final Config config = (Config) parameters.getParameters().get(CONFIG_PARAMETER_ID).getObjectValue();
-        // final InfoMapContext context = new InfoMapContext(config, wg);
 
-        // New
         final InfoMapContext context = new InfoMapContext(createConfig(parameters), wg);
 
         context.getInfoMap().run();
@@ -161,18 +157,11 @@ public class InfoMapPlugin extends SimpleEditPlugin {
     @Override
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
-//        //OLD
-//        final PluginParameter<ObjectParameterValue> configParam = ObjectParameterType.build(CONFIG_PARAMETER_ID);
-//        configParam.setName("Config");
-//        configParam.setDescription("A Config object which defines the Info Map");
-//        configParam.setObjectValue(new Config());
-//        parameters.addParameter(configParam);
 
-        // New
         // Connection type
         final PluginParameter<SingleChoiceParameterValue> connectionParam = SingleChoiceParameterType.build(CONNECTION_TYPE_PARAMETER_ID);
         connectionParam.setName(CONNECTION_TYPE_PARAMETER_ID_NAME);
-        //layerByParam.setDescription(CONNECTION_TYPE_PARAMETER_ID_DESCRIPTION);
+        connectionParam.setDescription(CONNECTION_TYPE_PARAMETER_ID_DESCRIPTION);
         SingleChoiceParameterType.setOptions(connectionParam, CONNECTION_TYPE_PARAM_VALUES);
         SingleChoiceParameterType.setChoice(connectionParam, CONNECTION_TYPE_PARAMETER_ID_DEFAULT);
         parameters.addParameter(connectionParam);
@@ -188,7 +177,7 @@ public class InfoMapPlugin extends SimpleEditPlugin {
         //Optimisation Level
         final PluginParameter<SingleChoiceParameterValue> optimisationParam = SingleChoiceParameterType.build(OPTIMISATION_PARAMETER_ID);
         optimisationParam.setName(OPTIMISATION_PARAMETER_ID_NAME);
-        //unitParam.setDescription(OPTIMISATION_PARAMETER_ID_DESCRIPTION);
+        optimisationParam.setDescription(OPTIMISATION_PARAMETER_ID_DESCRIPTION);
         SingleChoiceParameterType.setOptions(optimisationParam, new ArrayList<>(OPTIMISATION_LEVELS.keySet()));
         SingleChoiceParameterType.setChoice(optimisationParam, OPTIMISATION_PARAMETER_ID_DEFAULT);
         parameters.addParameter(optimisationParam);
