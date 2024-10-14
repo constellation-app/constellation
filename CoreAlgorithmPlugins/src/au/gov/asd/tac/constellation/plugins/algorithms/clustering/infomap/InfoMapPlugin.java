@@ -225,7 +225,7 @@ public class InfoMapPlugin extends SimpleEditPlugin {
         }
 
         // Dynamic type
-        // Note: DYNAMICS_PARAMETER_UNDIRECTED is unused here becuase the config will set undirected if no other dynaimc is set true
+        // Note: DYNAMICS_PARAMETER_UNDIRECTED is unused here because the config will set undirected if no other dynamic is set true
         switch (parameters.getParameters().get(DYNAMICS_PARAMETER_ID).getStringValue()) {
             case DYNAMICS_PARAMETER_DIRECTED ->
                 config.setDirected(true);
