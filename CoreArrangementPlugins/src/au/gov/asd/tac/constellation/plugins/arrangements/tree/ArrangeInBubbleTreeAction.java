@@ -88,7 +88,7 @@ public class ArrangeInBubbleTreeAction extends AbstractAction {
     
     private void selectElementsAndRunArrangement(final ReadableGraph rg, final List<NamedSelection> namedSelections) {
         final Set<Integer> rootVxIds = new HashSet<>();
-        final int vxSelectedAttr = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
+        final int vxSelectedAttr = VisualConcept.VertexAttribute.SELECTED.get(rg);
         for (int position = 0; position < rg.getVertexCount(); position++) {
             final int vxId = rg.getVertex(position);
             if (rg.getBooleanValue(vxSelectedAttr, vxId)) {

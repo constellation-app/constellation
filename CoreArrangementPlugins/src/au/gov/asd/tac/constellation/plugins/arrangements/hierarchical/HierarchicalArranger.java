@@ -262,8 +262,8 @@ public class HierarchicalArranger implements Arranger {
 
         updateStatus(" starting vertex arrangement");
         int maxLevelVertices = 0;
-        int totalVertices = wg.getVertexCount();
-        for (ArrayList<Integer> vxLevel : vxLevels) {
+        final int totalVertices = wg.getVertexCount();
+        for (final ArrayList<Integer> vxLevel : vxLevels) {
             maxLevelVertices = Math.max(maxLevelVertices, vxLevel.size());
         }
         final int maxNodesPerRow = (int) Math.max(12, 12*Math.log(totalVertices));
@@ -273,9 +273,9 @@ public class HierarchicalArranger implements Arranger {
         final float xgap = 10;
         final float ygap = 10 + (float) (5 * Math.log(maxLevelVertices));
 
-        final int xId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-        final int yId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
-        final int zId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
+        final int xId = VisualConcept.VertexAttribute.X.get(wg);
+        final int yId = VisualConcept.VertexAttribute.Y.get(wg);
+        final int zId = VisualConcept.VertexAttribute.Z.get(wg);
 
         final double xMinAdj = Math.max(Math.min(Math.log(maxLevelVertices)*2, 9), 0);
         
@@ -623,8 +623,8 @@ public class HierarchicalArranger implements Arranger {
     }
         
     private static double calculateDistance(final GraphWriteMethods wg, final int vxId1, final int vxId2) {
-        final int xId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-        final int yId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
+        final int xId = VisualConcept.VertexAttribute.X.get(wg);
+        final int yId = VisualConcept.VertexAttribute.Y.get(wg);
         
         final double x2Dist = Math.pow(wg.getFloatValue(xId, vxId1) - wg.getFloatValue(xId, vxId2), 2);
         final double y2Dist = Math.pow(wg.getFloatValue(yId, vxId1) - wg.getFloatValue(yId, vxId2), 2);
@@ -633,8 +633,8 @@ public class HierarchicalArranger implements Arranger {
     }
     
     private static void swapVertexPositions(final GraphWriteMethods wg, final int vxId1, final int vxId2){
-        final int xId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-        final int yId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
+        final int xId = VisualConcept.VertexAttribute.X.get(wg);
+        final int yId = VisualConcept.VertexAttribute.Y.get(wg);
 
         final float xVal1 = wg.getFloatValue(xId, vxId1);
         final float xVal2 = wg.getFloatValue(xId, vxId2);

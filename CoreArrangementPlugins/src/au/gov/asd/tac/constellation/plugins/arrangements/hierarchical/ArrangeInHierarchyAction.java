@@ -88,7 +88,7 @@ public class ArrangeInHierarchyAction extends AbstractAction {
 
     private Set<Integer> getSelectedIds(final ReadableGraph rg) {
         final Set<Integer> selectedIds = new HashSet<>();
-        final int vxSelectedAttr = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
+        final int vxSelectedAttr = VisualConcept.VertexAttribute.SELECTED.get(rg);
         for (int position = 0; position < rg.getVertexCount(); position++) {
             final int vxId = rg.getVertex(position);
             if (rg.getBooleanValue(vxSelectedAttr, vxId)) {
@@ -109,7 +109,6 @@ public class ArrangeInHierarchyAction extends AbstractAction {
             final long selectionId = ssp.getNamedSelectionId();
 
             if (selectionId == -2) {
-                
                 PluginExecutor.startWith(VisualGraphPluginRegistry.DESELECT_ALL)
                         .followedBy(ArrangementPluginRegistry.HIERARCHICAL)
                         .set(ArrangeInHierarchyPlugin.ROOTS_PARAMETER_ID, rootVxIds)
@@ -117,7 +116,6 @@ public class ArrangeInHierarchyAction extends AbstractAction {
                         .executeWriteLater(context.getGraph(), Bundle.CTL_ArrangeInHierarchyAction());
 
             } else if (selectionId != -1) {
-                
                 final int namedSelectionId = rg.getAttribute(GraphElementType.VERTEX, "named_selection");
                 final long mask = 1L << selectionId;
                 rootVxIds.clear();

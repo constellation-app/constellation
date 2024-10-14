@@ -91,174 +91,157 @@ public class HierarchicalArrangerNGTest {
         /**
      * Set up a graph with four vertices and three transactions
      */
-    private void setupGraph(final int nodeCount) {
+    private void setupGraph(final int nodeCount) throws InterruptedException {
         graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
         vtxList = new ArrayList<>();
         txnList = new ArrayList<>();
         
-        WritableGraph wg;
-        try {
-            wg = graph.getWritableGraph("", true);
+        WritableGraph wg = graph.getWritableGraph("", true);
         
-            // add attributes
-            int vertexIdentifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.ensure(wg);
-            VisualConcept.VertexAttribute.X.ensure(wg);
-            VisualConcept.VertexAttribute.Y.ensure(wg);
-            VisualConcept.VertexAttribute.Z.ensure(wg);
-            VisualConcept.VertexAttribute.NODE_RADIUS.ensure(wg);
-            
-            // add vertices
-            for (int j = 0; j < nodeCount; j++) {
-                vtxList.add(wg.addVertex());
-            }
-            for (final int vtxId : vtxList) {
-                wg.setStringValue(vertexIdentifierAttribute, vtxId, "Vtx-" + vtxId);
-            }
-            
-            int vtxIndex = 0;
-            // add transactions
-            List<Integer> parentLevel = new ArrayList<>();
-            List<Integer> childLevel = new ArrayList<>();
-            for (int i = 0; i < 4; i++) {
-                parentLevel.add(vtxList.get(vtxIndex++));
-            }
-            while (vtxIndex < vtxList.size()) {
-                for (Integer parentId : parentLevel) {
-                    childLevel.add(vtxList.get(vtxIndex++));
-                    if (vtxIndex >= vtxList.size()) {
-                        break;
-                    }
-                    childLevel.add(vtxList.get(vtxIndex++));
-                    if (vtxIndex >= vtxList.size()) {
-                        break;
-                    }
-                }
-                int childPos = 0;
-                for (Integer parentId : parentLevel) {
-                    // link parents to children
-                    txnList.add(wg.addTransaction(parentId, childLevel.get(childPos++), true));
-                    if (childPos >= childLevel.size()) {
-                        childPos = 0;
-                    }
-                    txnList.add(wg.addTransaction(parentId, childLevel.get(childPos++), true));
-                    childPos++;
-                    if (childPos >= childLevel.size()) {
-                        childPos = 0;
-                    }
-                }    
-                parentLevel = childLevel;                
-                childLevel = new ArrayList<>();
-                // remove some entries in the parentLevel ... not all the children will be parents ... you know, diversity and all
-                int parentCount = parentLevel.size();
-                for (int c = parentCount - 1; c > -1; c--) {
-                    if (c%3 == 0) {
-                        parentLevel.remove(c);
-                    }
-                }
-            }
-            
-            wg.commit();
-        } catch (final InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
-            Thread.currentThread().interrupt();
+        // add attributes
+        int vertexIdentifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.ensure(wg);
+        VisualConcept.VertexAttribute.X.ensure(wg);
+        VisualConcept.VertexAttribute.Y.ensure(wg);
+        VisualConcept.VertexAttribute.Z.ensure(wg);
+        VisualConcept.VertexAttribute.NODE_RADIUS.ensure(wg);
+
+        // add vertices
+        for (int j = 0; j < nodeCount; j++) {
+            vtxList.add(wg.addVertex());
         }
+        for (final int vtxId : vtxList) {
+            wg.setStringValue(vertexIdentifierAttribute, vtxId, "Vtx-" + vtxId);
+        }
+
+        int vtxIndex = 0;
+        // add transactions
+        List<Integer> parentLevel = new ArrayList<>();
+        List<Integer> childLevel = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            parentLevel.add(vtxList.get(vtxIndex++));
+        }
+        while (vtxIndex < vtxList.size()) {
+            for (Integer parentId : parentLevel) {
+                childLevel.add(vtxList.get(vtxIndex++));
+                if (vtxIndex >= vtxList.size()) {
+                    break;
+                }
+                childLevel.add(vtxList.get(vtxIndex++));
+                if (vtxIndex >= vtxList.size()) {
+                    break;
+                }
+            }
+            int childPos = 0;
+            for (Integer parentId : parentLevel) {
+                // link parents to children
+                txnList.add(wg.addTransaction(parentId, childLevel.get(childPos++), true));
+                if (childPos >= childLevel.size()) {
+                    childPos = 0;
+                }
+                txnList.add(wg.addTransaction(parentId, childLevel.get(childPos++), true));
+                childPos++;
+                if (childPos >= childLevel.size()) {
+                    childPos = 0;
+                }
+            }    
+            parentLevel = childLevel;                
+            childLevel = new ArrayList<>();
+            // remove some entries in the parentLevel ... not all the children will be parents ... you know, diversity and all
+            int parentCount = parentLevel.size();
+            for (int c = parentCount - 1; c > -1; c--) {
+                if (c%3 == 0) {
+                    parentLevel.remove(c);
+                }
+            }
+        }
+
+        wg.commit();
     }
     
     /**
      * Test of arrange method, of class HierarchicalArranger, with 150 nodes.
+     * @throws java.lang.InterruptedException
      */
     @Test
-    public void testArrange150() {
+    public void testArrange150() throws InterruptedException {
         System.out.println("Test hierarchy arrangement 150");
         setupGraph(150);
-        WritableGraph wg;
-        try {
-            wg = graph.getWritableGraph("", true);
-            final Set<Integer> rootVxIds = new HashSet<>();
-            rootVxIds.add(vtxList.get(0));
-            rootVxIds.add(vtxList.get(1));
-            rootVxIds.add(vtxList.get(2));
-            rootVxIds.add(vtxList.get(3));
-            
-            HierarchicalArranger instance = new HierarchicalArranger(rootVxIds);
-            instance.arrange(wg);
-            String lastMessage = instance.getLastMessage();            
-            assertTrue(lastMessage.contains("pass: 5"));
 
-            wg.commit();
-            saveGraphToFile("hierarchy150_test");
-        } catch (final InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
-            Thread.currentThread().interrupt();            
-        }
+        WritableGraph wg = graph.getWritableGraph("", true);
+        final Set<Integer> rootVxIds = new HashSet<>();
+        rootVxIds.add(vtxList.get(0));
+        rootVxIds.add(vtxList.get(1));
+        rootVxIds.add(vtxList.get(2));
+        rootVxIds.add(vtxList.get(3));
+
+        HierarchicalArranger instance = new HierarchicalArranger(rootVxIds);
+        instance.arrange(wg);
+        String lastMessage = instance.getLastMessage();            
+        assertTrue(lastMessage.contains("pass: 5"));
+
+        wg.commit();
+        saveGraphToFile("hierarchy150_test");
     }
 
 
     /**
      * Test of arrange method, of class HierarchicalArranger, with 1500 nodes.
+     * @throws java.lang.InterruptedException
      */
     @Test
-    public void testArrange1500() {
+    public void testArrange1500() throws InterruptedException {
         System.out.println("Test hierarchy arrangement 1500");
         setupGraph(1500);
-        WritableGraph wg;
-        try {
-            wg = graph.getWritableGraph("", true);
-            final Set<Integer> rootVxIds = new HashSet<>();
-            rootVxIds.add(vtxList.get(0));
-            rootVxIds.add(vtxList.get(1));
-            rootVxIds.add(vtxList.get(2));
-            rootVxIds.add(vtxList.get(3));
+        
+        WritableGraph wg = graph.getWritableGraph("", true);
+        final Set<Integer> rootVxIds = new HashSet<>();
+        rootVxIds.add(vtxList.get(0));
+        rootVxIds.add(vtxList.get(1));
+        rootVxIds.add(vtxList.get(2));
+        rootVxIds.add(vtxList.get(3));
 
-            HierarchicalArranger instance = new HierarchicalArranger(rootVxIds);
-            instance.arrange(wg);
-            String lastMessage = instance.getLastMessage();
-            assertTrue(lastMessage.contains("pass: 10"));
+        HierarchicalArranger instance = new HierarchicalArranger(rootVxIds);
+        instance.arrange(wg);
+        String lastMessage = instance.getLastMessage();
+        assertTrue(lastMessage.contains("pass: 10"));
 
-            wg.commit();
-            saveGraphToFile("hierarchy1500_test");
-        } catch (final InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
-            Thread.currentThread().interrupt();
-        }
+        wg.commit();
+        saveGraphToFile("hierarchy1500_test");
     }
 
 
     /**
      * Test of arrange method, of class HierarchicalArranger, with 15000 nodes.
+     * @throws java.lang.InterruptedException
      */
     @Test
-    public void testArrange15000() {
+    public void testArrange15000() throws InterruptedException {
         System.out.println("Test hierarchy arrangement 15000");
         setupGraph(15000);
-        WritableGraph wg;
-        try {
-            wg = graph.getWritableGraph("", true);
-            final Set<Integer> rootVxIds = new HashSet<>();
-            rootVxIds.add(vtxList.get(0));
-            rootVxIds.add(vtxList.get(1));
-            rootVxIds.add(vtxList.get(2));
-            rootVxIds.add(vtxList.get(3));
-            
-            HierarchicalArranger instance = new HierarchicalArranger(rootVxIds);
-            instance.arrange(wg);
-            String lastMessage = instance.getLastMessage();
-            assertTrue(lastMessage.contains("no smoothing passes"));
 
-            wg.commit();
-            saveGraphToFile("hierarchy15000_test");
-        } catch (final InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
-            Thread.currentThread().interrupt();
-        }
+        WritableGraph wg = graph.getWritableGraph("", true);
+        final Set<Integer> rootVxIds = new HashSet<>();
+        rootVxIds.add(vtxList.get(0));
+        rootVxIds.add(vtxList.get(1));
+        rootVxIds.add(vtxList.get(2));
+        rootVxIds.add(vtxList.get(3));
+
+        HierarchicalArranger instance = new HierarchicalArranger(rootVxIds);
+        instance.arrange(wg);
+        String lastMessage = instance.getLastMessage();
+        assertTrue(lastMessage.contains("no smoothing passes"));
+
+        wg.commit();
+        saveGraphToFile("hierarchy15000_test");
     }
 
-    private void saveGraphToFile(final String filename) {
+    private void saveGraphToFile(final String filename) throws InterruptedException {
         if (SAVE_GRAPH_FILES) {
             try {
                 SaveGraphUtilities.saveGraphToTemporaryDirectory(graph, filename, true);
                 System.out.println("Saved graph to " + System.getProperty("java.io.tmpdir") + filename);
-            } catch (IOException | InterruptedException ex) {
+            } catch (IOException ex) {
+                System.out.println(" >> error saving graph");
                 Exceptions.printStackTrace(ex);
             }
         }
@@ -267,40 +250,37 @@ public class HierarchicalArrangerNGTest {
     /**
      * Test of arrange method, of class HierarchicalArranger, with 250 nodes, running in background via the action call.
      * This improves code coverage but does not allow checking of results due to the background task running after the test code has already completed.
+     * @throws java.lang.InterruptedException
      */
     @Test
-    public void testArrange150viaAction() {
+    public void testArrange250viaAction() throws InterruptedException {
         System.out.println("Test hierarchy arrangement 250 via Action call");
         setupGraph(250);
-        WritableGraph wg;
-        try {
-            wg = graph.getWritableGraph("", true);
-            int selectedVetexId = VisualConcept.VertexAttribute.SELECTED.ensure(wg);
-            wg.setBooleanValue(selectedVetexId, vtxList.get(0), true);
-            wg.setBooleanValue(selectedVetexId, vtxList.get(1), true);
-            wg.setBooleanValue(selectedVetexId, vtxList.get(2), true);
-            wg.setBooleanValue(selectedVetexId, vtxList.get(3), true);
-            
-            GraphNode contextMock = mock(GraphNode.class);
-            doReturn(graph).when(contextMock).getGraph();
-            
-            SelectNamedSelectionPanel ssp = mock(SelectNamedSelectionPanel.class);
-            doReturn(-2L).when(ssp).getNamedSelectionId();
-            
-            MockedStatic<DialogDisplayer> ddStatic = mockStatic(DialogDisplayer.class);
-            ddStatic.when(DialogDisplayer::getDefault).thenReturn(new MockedDialogDisplayer());
-            
-            ArrangeInHierarchyAction hierAction = new ArrangeInHierarchyAction(contextMock);
-            hierAction.actionPerformed(null);
-            
-            wg.commit();
-            if (SAVE_GRAPH_FILES) {
-                delayedSave = true;
-            }
-        } catch (final InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
-            Thread.currentThread().interrupt();            
+
+        WritableGraph wg = graph.getWritableGraph("", true);
+        int selectedVetexId = VisualConcept.VertexAttribute.SELECTED.ensure(wg);
+        wg.setBooleanValue(selectedVetexId, vtxList.get(0), true);
+        wg.setBooleanValue(selectedVetexId, vtxList.get(1), true);
+        wg.setBooleanValue(selectedVetexId, vtxList.get(2), true);
+        wg.setBooleanValue(selectedVetexId, vtxList.get(3), true);
+
+        GraphNode contextMock = mock(GraphNode.class);
+        doReturn(graph).when(contextMock).getGraph();
+
+        SelectNamedSelectionPanel ssp = mock(SelectNamedSelectionPanel.class);
+        doReturn(-2L).when(ssp).getNamedSelectionId();
+
+        MockedStatic<DialogDisplayer> ddStatic = mockStatic(DialogDisplayer.class);
+        ddStatic.when(DialogDisplayer::getDefault).thenReturn(new MockedDialogDisplayer());
+
+        ArrangeInHierarchyAction hierAction = new ArrangeInHierarchyAction(contextMock);
+        hierAction.actionPerformed(null);
+
+        wg.commit();
+        if (SAVE_GRAPH_FILES) {
+            delayedSave = true;
         }
+        
     }
     
     private class MockedDialogDisplayer extends DialogDisplayer {
