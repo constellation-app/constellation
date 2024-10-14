@@ -57,7 +57,7 @@ public final class PermanentMergeTableModel extends DefaultTableModel {
      * otherwise
      */
     public boolean headerExists() {
-        return vertexAttributes != null && vertexAttributes.size() > 0;
+        return vertexAttributes != null && !vertexAttributes.isEmpty();
     }
 
     /**
@@ -74,11 +74,7 @@ public final class PermanentMergeTableModel extends DefaultTableModel {
      */
     @Override
     public String getColumnName(final int index) {
-        if (index == 0) {
-            return "";
-        } else {
-            return vertexAttributes.get(index).getName();
-        }
+        return index == 0 ? "" : vertexAttributes.get(index).getName();
     }
 
     @Override
@@ -88,6 +84,6 @@ public final class PermanentMergeTableModel extends DefaultTableModel {
 
     @Override
     public boolean isCellEditable(final int row, final int column) {
-        return (column == 0);
+        return column == 0;
     }
 }

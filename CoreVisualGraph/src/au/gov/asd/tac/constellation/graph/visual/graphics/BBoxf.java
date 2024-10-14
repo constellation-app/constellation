@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.graph.visual.graphics;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
@@ -123,9 +122,9 @@ public class BBoxf {
      * @return The bounding box of all vertices in the graph.
      */
     public static BBoxf getGraphBoundingBox(final GraphReadMethods rg) {
-        final int xId = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-        final int yId = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
-        final int zId = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
+        final int xId = VisualConcept.VertexAttribute.X.get(rg);
+        final int yId = VisualConcept.VertexAttribute.Y.get(rg);
+        final int zId = VisualConcept.VertexAttribute.Z.get(rg);
         final int vxCount = rg.getVertexCount();
         final BBoxf box = new BBoxf();
         for (int position = 0; position < vxCount; position++) {
@@ -152,13 +151,13 @@ public class BBoxf {
      * @return The bounding box of the relevant vertices.
      */
     public static BBoxf getGraphBoundingBoxMix(final GraphReadMethods rg, final boolean selectedOnly) {
-        int xId = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-        int yId = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
-        int zId = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
-        final int x2Id = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X2.getName());
-        final int y2Id = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y2.getName());
-        final int z2Id = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z2.getName());
-        final int selectedId = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
+        int xId = VisualConcept.VertexAttribute.X.get(rg);
+        int yId = VisualConcept.VertexAttribute.Y.get(rg);
+        int zId = VisualConcept.VertexAttribute.Z.get(rg);
+        final int x2Id = VisualConcept.VertexAttribute.X2.get(rg);
+        final int y2Id = VisualConcept.VertexAttribute.Y2.get(rg);
+        final int z2Id = VisualConcept.VertexAttribute.Z2.get(rg);
+        final int selectedId = VisualConcept.VertexAttribute.SELECTED.get(rg);
 
         final int visualStateId = VisualConcept.GraphAttribute.CAMERA.get(rg);
         final Camera visualState = rg.getObjectValue(visualStateId, 0);
@@ -174,8 +173,6 @@ public class BBoxf {
                 yId = y2Id;
                 zId = z2Id;
                 requiresMix = false;
-            } else {
-                // Do nothing
             }
         }
 

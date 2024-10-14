@@ -28,6 +28,7 @@ import au.gov.asd.tac.constellation.plugins.PluginRegistry;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.SwingUtilities;
 import org.openide.DialogDescriptor;
@@ -69,7 +70,7 @@ public final class PermanentMergeAction extends AbstractAction {
         new Thread(() -> {
             try {
                 execute(Graph.NOT_FOUND);
-            } catch (InterruptedException ex) {
+            } catch (final InterruptedException ex) {
                 Thread.currentThread().interrupt();
             }
         }).start();
@@ -90,16 +91,16 @@ public final class PermanentMergeAction extends AbstractAction {
 
         // make sure that selected node is part of selection set
         if (vxId != Graph.NOT_FOUND) {
-            WritableGraph wg = graph.getWritableGraph("merge add", false);
+            final WritableGraph wg = graph.getWritableGraph("merge add", false);
             try {
-                int attrId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
+                final int attrId = VisualConcept.VertexAttribute.SELECTED.get(wg);
                 wg.setBooleanValue(attrId, vxId, true);
             } finally {
                 wg.commit();
             }
         }
 
-        final ArrayList<Integer> selections = getSelectedVertexCount(graph);
+        final List<Integer> selections = getSelectedVertexCount(graph);
         if (selections.size() < 2) {
             final NotifyDescriptor nd = new NotifyDescriptor.Message(Bundle.ErrorInsufficientSelections(), NotifyDescriptor.ERROR_MESSAGE);
             nd.setTitle(Bundle.CTL_PermanentMergeAction());
@@ -118,16 +119,15 @@ public final class PermanentMergeAction extends AbstractAction {
     }
 
     /**
-     * This method will collect the set of node identifers into an array
+     * This method will collect the set of node identifiers into an array
      *
      * @param graph
      * @return array of selected node IDs
      */
-    private ArrayList<Integer> getSelectedVertexCount(final Graph graph) {
-        final ReadableGraph rg = graph.getReadableGraph();
-        try {
-            final ArrayList<Integer> list = new ArrayList<>();
-            final int vxSelectedAttr = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
+    private List<Integer> getSelectedVertexCount(final Graph graph) {
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
+            final List<Integer> list = new ArrayList<>();
+            final int vxSelectedAttr = VisualConcept.VertexAttribute.SELECTED.get(rg);
             if (vxSelectedAttr != Graph.NOT_FOUND) {
                 final int vxCount = rg.getVertexCount();
                 for (int position = 0; position < vxCount; position++) {
@@ -139,8 +139,6 @@ public final class PermanentMergeAction extends AbstractAction {
             }
             return list;
 
-        } finally {
-            rg.release();
         }
     }
 }
