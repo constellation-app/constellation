@@ -384,12 +384,13 @@ public class HierarchicalArranger implements Arranger {
         long currentTime = System.currentTimeMillis();
         long timeLimit; // limits the time spent on doing an individual smoothing task
         int parentChangeAmount; // the number of parent nodes moved on the final iteration of the task
-        int childChangeAmount; // the number of child nodes moved on the final iteration of the task
+        int childChangeAmount = -1; // the number of child nodes moved on the final iteration of the task
         int totalChanges;
         int modVal = 1;
         int modInc = 2;
         int modAmount = -1;
         int passNumber = 0;
+        boolean endProcessing = false;
         for (int n = 0; (n < passes && modAmount > 0) || (currentTime < startTime + defaultProcessingTime && modAmount != 0); n++) {
             passNumber++;
             updateStatus(" smoothing pass: " + passNumber);
@@ -405,34 +406,38 @@ public class HierarchicalArranger implements Arranger {
             }
             currentTime = System.currentTimeMillis();
             if (currentTime > cutoffTime) {
-                break;
+                endProcessing = true;
             }
-            timeLimit = currentTime + defaultProcessingTime / 4;
-            for (int k = 0; (k < 1 + passes / 2 && parentChangeAmount != 0) || (currentTime < timeLimit && parentChangeAmount != 0); k++) { // multi-pass adjustments to move parents above children
-                parentChangeAmount = adjustArrangement(wg, vxLevels, false);
-                totalChanges += parentChangeAmount;
-                currentTime = System.currentTimeMillis();
-                if (currentTime > timeLimit) {
-                    break;
+            if (!endProcessing) {
+                timeLimit = currentTime + defaultProcessingTime / 4;
+                for (int k = 0; (k < 1 + passes / 2 && parentChangeAmount != 0) || (currentTime < timeLimit && parentChangeAmount != 0); k++) { // multi-pass adjustments to move parents above children
+                    parentChangeAmount = adjustArrangement(wg, vxLevels, false);
+                    totalChanges += parentChangeAmount;
+                    currentTime = System.currentTimeMillis();
+                    if (currentTime > timeLimit) {
+                        break;
+                    }
                 }
             }
             if (currentTime > cutoffTime) {
-                break;
+                endProcessing = true;
             }
-            modAmount = totalChanges;
-            totalChanges = 0;
-            childChangeAmount = -1;
-            currentTime = System.currentTimeMillis();
-            timeLimit = currentTime + defaultProcessingTime / 4;
-            for (int k = 0; (k < 1 + passes / 2 && childChangeAmount != 0) || (currentTime < timeLimit && childChangeAmount != 0); k++) { // multi-pass adjustments to move children below parents
-                childChangeAmount = adjustArrangement(wg, vxLevels, true);
-                totalChanges += childChangeAmount;
+            if (!endProcessing) {
+                modAmount = totalChanges;
+                totalChanges = 0;
+                childChangeAmount = -1;
                 currentTime = System.currentTimeMillis();
-                if (currentTime > timeLimit) {
-                    break;
+                timeLimit = currentTime + defaultProcessingTime / 4;
+                for (int k = 0; (k < 1 + passes / 2 && childChangeAmount != 0) || (currentTime < timeLimit && childChangeAmount != 0); k++) { // multi-pass adjustments to move children below parents
+                    childChangeAmount = adjustArrangement(wg, vxLevels, true);
+                    totalChanges += childChangeAmount;
+                    currentTime = System.currentTimeMillis();
+                    if (currentTime > timeLimit) {
+                        break;
+                    }
                 }
             }
-            if (finalAdjustment || currentTime > cutoffTime) {
+            if (endProcessing || finalAdjustment || currentTime > cutoffTime) {
                 break;
             }
             modAmount += totalChanges;
@@ -488,10 +493,6 @@ public class HierarchicalArranger implements Arranger {
 
                 int swapTargetId = -1;
                 for (final int vxTempId : vxLevelTempCopy) {
-                    if (vxTempId == vxId) {
-                        continue;
-                    }
-
                     if (vxTempId == vxId) {
                         continue;
                     }
