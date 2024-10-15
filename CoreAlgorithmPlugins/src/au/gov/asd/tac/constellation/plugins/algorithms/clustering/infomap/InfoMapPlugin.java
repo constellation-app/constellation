@@ -55,8 +55,6 @@ public class InfoMapPlugin extends SimpleEditPlugin {
 
     private static final Logger LOGGER = Logger.getLogger(InfoMapPlugin.class.getName());
 
-    public static final String CONFIG_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "config");
-
     // Connection Type
     public static final String CONNECTION_TYPE_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "connection_type");
     private static final String CONNECTION_TYPE_PARAMETER_ID_NAME = "Connection Type";
@@ -167,7 +165,7 @@ public class InfoMapPlugin extends SimpleEditPlugin {
         SingleChoiceParameterType.setChoice(dynamicsParam, DYNAMICS_PARAMETER_ID_DEFAULT);
         parameters.addParameter(dynamicsParam);
 
-        //Optimisation Level
+        // Optimisation Level
         final PluginParameter<SingleChoiceParameterValue> optimisationParam = SingleChoiceParameterType.build(OPTIMISATION_PARAMETER_ID);
         optimisationParam.setName(OPTIMISATION_PARAMETER_ID_NAME);
         SingleChoiceParameterType.setOptions(optimisationParam, new ArrayList<>(OPTIMISATION_LEVELS.keySet()));
