@@ -57,31 +57,14 @@ public final class InfoMapGeneralAction implements ActionListener {
 
     @Override
     public void actionPerformed(final ActionEvent ev) {
-        // Old
-//        final InfoMapPanel imp = new InfoMapPanel();
-//        final DialogDescriptor dd = new DialogDescriptor(imp, Bundle.CTL_InfoMapGeneralAction());
-//        final Object result = DialogDisplayer.getDefault().notify(dd);
-//        if (result == DialogDescriptor.OK_OPTION) {
-//            final Graph graph = context.getGraph();
-//
-//            PluginExecutor.startWith(AlgorithmPluginRegistry.CLUSTER_INFO_MAP)
-//                    .set(InfoMapPlugin.CONFIG_PARAMETER_ID, imp.getConfig())
-//                    .followedBy(new InfoMapGeneralPlugin())
-//                    .executeWriteLater(graph);
-//        }
-
-        // New
         final Plugin plugin = PluginRegistry.get(AlgorithmPluginRegistry.CLUSTER_INFO_MAP);
         final PluginParameters params = plugin.createParameters();
         final Graph graph = context.getGraph();
-        //plugin.updateParameters(graph, params);
 
         final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(Bundle.CTL_InfoMapGeneralAction(), params);
         dialog.setSize(SIZE);
         dialog.showAndWait();
         if (PluginParametersDialog.OK.equals(dialog.getResult())) {
-            //PluginExecution.withPlugin(plugin).withParameters(params).executeLater(graph);
-
             PluginExecutor.startWith(plugin)
                     .set(params)
                     .followedBy(new InfoMapGeneralPlugin())
