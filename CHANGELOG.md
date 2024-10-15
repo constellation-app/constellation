@@ -1,6 +1,7 @@
 # Constellation Changes
 
 ## Changes in October 2024
+- Added ability to pass parameters and selected items on graph to PluginReporter to display via `DefaultPluginInteraction`.
 - Added the ability to set of Table View default columns by implementing `TableDefaultColumns` and using lookup.
 - Improved Table View to now default to primary key columns for Show Default Columns and new graphs.
 

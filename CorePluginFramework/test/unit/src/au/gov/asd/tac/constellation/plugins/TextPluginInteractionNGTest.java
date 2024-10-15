@@ -88,7 +88,7 @@ public class TextPluginInteractionNGTest {
     @Test
     public void testSetProgressAllParameters() throws Exception {
         final PluginInteraction interaction = Mockito.mock(TextPluginInteraction.class);
-        PluginParameters params = spy(PluginParameters.class);
+        final PluginParameters params = spy(PluginParameters.class);
         interaction.setProgress(CURRENT_STEP, TOTAL_STEP, TEST_MESSAGE, CANCELLABLE_TRUE, params, SELECTED_ITEMS);
         verify(interaction, times(1)).setProgress(CURRENT_STEP, TOTAL_STEP, TEST_MESSAGE, CANCELLABLE_TRUE, params, SELECTED_ITEMS);
     }
@@ -96,7 +96,7 @@ public class TextPluginInteractionNGTest {
     @Test
     public void testSetProgressPluginParameters() throws Exception {
         final PluginInteraction interaction = Mockito.mock(TextPluginInteraction.class);
-        PluginParameters params = spy(PluginParameters.class);
+        final PluginParameters params = spy(PluginParameters.class);
         interaction.setProgress(CURRENT_STEP, TOTAL_STEP, TEST_MESSAGE, CANCELLABLE_TRUE, params);
         verify(interaction, times(1)).setProgress(CURRENT_STEP, TOTAL_STEP, TEST_MESSAGE, CANCELLABLE_TRUE, params);       
     }
