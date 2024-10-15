@@ -27,10 +27,6 @@ import java.util.List;
 import java.util.Map;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -39,30 +35,9 @@ import org.testng.annotations.Test;
  */
 public class InfoMapPluginNGTest {
 
-    public InfoMapPluginNGTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
-    @BeforeMethod
-    public void setUpMethod() throws Exception {
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
-    }
-
     // Connection Type
     public static final String CONNECTION_TYPE_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "connection_type");
     private static final String CONNECTION_TYPE_PARAMETER_ID_NAME = "Connection Type";
-    private static final String CONNECTION_TYPE_PARAMETER_ID_INTERVAL_DEFAULT = "Links";
-    private static final String CONNECTION_TYPE_PARAMETER_ID_DEFAULT = CONNECTION_TYPE_PARAMETER_ID_INTERVAL_DEFAULT;
 
     private static final String CONNECTION_TYPE_LINKS = "Links";
     private static final String CONNECTION_TYPE_EDGES = "Edges";
@@ -126,18 +101,6 @@ public class InfoMapPluginNGTest {
     private static final String NUM_TRIALS_PARAMETER_ID_NAME = "Number of Trials";
     private static final int NUM_TRIALS_PARAMETER_ID_DEFAULT = 1;
 
-//    /**
-//     * Test of edit method, of class InfoMapPlugin.
-//     */
-//    @Test
-//    public void testEdit() throws Exception {
-//        System.out.println("edit");
-//        final GraphWriteMethods wg = null;
-//        final PluginInteraction interaction = null;
-//        final PluginParameters parameters = null;
-//        final InfoMapPlugin instance = new InfoMapPlugin();
-//        instance.edit(wg, interaction, parameters);
-//    }
     /**
      * Test of createParameters method, of class InfoMapPlugin.
      */
