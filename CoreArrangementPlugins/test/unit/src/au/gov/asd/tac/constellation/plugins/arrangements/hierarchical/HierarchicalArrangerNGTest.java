@@ -88,7 +88,7 @@ public class HierarchicalArrangerNGTest {
         }
     }
 
-        /**
+    /**
      * Set up a graph with four vertices and three transactions
      */
     private void setupGraph(final int nodeCount) throws InterruptedException {
@@ -96,10 +96,10 @@ public class HierarchicalArrangerNGTest {
         vtxList = new ArrayList<>();
         txnList = new ArrayList<>();
         
-        WritableGraph wg = graph.getWritableGraph("", true);
+        final WritableGraph wg = graph.getWritableGraph("", true);
         
         // add attributes
-        int vertexIdentifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.ensure(wg);
+        final int vertexIdentifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.ensure(wg);
         VisualConcept.VertexAttribute.X.ensure(wg);
         VisualConcept.VertexAttribute.Y.ensure(wg);
         VisualConcept.VertexAttribute.Z.ensure(wg);
@@ -121,7 +121,8 @@ public class HierarchicalArrangerNGTest {
             parentLevel.add(vtxList.get(vtxIndex++));
         }
         while (vtxIndex < vtxList.size()) {
-            for (Integer parentId : parentLevel) {
+            int levelIndex = 0;
+            while (levelIndex < parentLevel.size()) {
                 childLevel.add(vtxList.get(vtxIndex++));
                 if (vtxIndex >= vtxList.size()) {
                     break;
@@ -130,9 +131,10 @@ public class HierarchicalArrangerNGTest {
                 if (vtxIndex >= vtxList.size()) {
                     break;
                 }
+                levelIndex++;
             }
             int childPos = 0;
-            for (Integer parentId : parentLevel) {
+            for (final Integer parentId : parentLevel) {
                 // link parents to children
                 txnList.add(wg.addTransaction(parentId, childLevel.get(childPos++), true));
                 if (childPos >= childLevel.size()) {
@@ -147,7 +149,7 @@ public class HierarchicalArrangerNGTest {
             parentLevel = childLevel;                
             childLevel = new ArrayList<>();
             // remove some entries in the parentLevel ... not all the children will be parents ... you know, diversity and all
-            int parentCount = parentLevel.size();
+            final int parentCount = parentLevel.size();
             for (int c = parentCount - 1; c > -1; c--) {
                 if (c%3 == 0) {
                     parentLevel.remove(c);
@@ -167,16 +169,16 @@ public class HierarchicalArrangerNGTest {
         System.out.println("Test hierarchy arrangement 150");
         setupGraph(150);
 
-        WritableGraph wg = graph.getWritableGraph("", true);
+        final WritableGraph wg = graph.getWritableGraph("", true);
         final Set<Integer> rootVxIds = new HashSet<>();
         rootVxIds.add(vtxList.get(0));
         rootVxIds.add(vtxList.get(1));
         rootVxIds.add(vtxList.get(2));
         rootVxIds.add(vtxList.get(3));
 
-        HierarchicalArranger instance = new HierarchicalArranger(rootVxIds);
+        final HierarchicalArranger instance = new HierarchicalArranger(rootVxIds);
         instance.arrange(wg);
-        String lastMessage = instance.getLastMessage();            
+        final String lastMessage = instance.getLastMessage();            
         assertTrue(lastMessage.contains("pass: 5"));
 
         wg.commit();
@@ -193,16 +195,16 @@ public class HierarchicalArrangerNGTest {
         System.out.println("Test hierarchy arrangement 1500");
         setupGraph(1500);
         
-        WritableGraph wg = graph.getWritableGraph("", true);
+        final WritableGraph wg = graph.getWritableGraph("", true);
         final Set<Integer> rootVxIds = new HashSet<>();
         rootVxIds.add(vtxList.get(0));
         rootVxIds.add(vtxList.get(1));
         rootVxIds.add(vtxList.get(2));
         rootVxIds.add(vtxList.get(3));
 
-        HierarchicalArranger instance = new HierarchicalArranger(rootVxIds);
+        final HierarchicalArranger instance = new HierarchicalArranger(rootVxIds);
         instance.arrange(wg);
-        String lastMessage = instance.getLastMessage();
+        final String lastMessage = instance.getLastMessage();
         assertTrue(lastMessage.contains("pass: 10"));
 
         wg.commit();
@@ -219,16 +221,16 @@ public class HierarchicalArrangerNGTest {
         System.out.println("Test hierarchy arrangement 15000");
         setupGraph(15000);
 
-        WritableGraph wg = graph.getWritableGraph("", true);
+        final WritableGraph wg = graph.getWritableGraph("", true);
         final Set<Integer> rootVxIds = new HashSet<>();
         rootVxIds.add(vtxList.get(0));
         rootVxIds.add(vtxList.get(1));
         rootVxIds.add(vtxList.get(2));
         rootVxIds.add(vtxList.get(3));
 
-        HierarchicalArranger instance = new HierarchicalArranger(rootVxIds);
+        final HierarchicalArranger instance = new HierarchicalArranger(rootVxIds);
         instance.arrange(wg);
-        String lastMessage = instance.getLastMessage();
+        final String lastMessage = instance.getLastMessage();
         assertTrue(lastMessage.contains("no smoothing passes"));
 
         wg.commit();
@@ -257,23 +259,23 @@ public class HierarchicalArrangerNGTest {
         System.out.println("Test hierarchy arrangement 250 via Action call");
         setupGraph(250);
 
-        WritableGraph wg = graph.getWritableGraph("", true);
-        int selectedVetexId = VisualConcept.VertexAttribute.SELECTED.ensure(wg);
+        final WritableGraph wg = graph.getWritableGraph("", true);
+        final int selectedVetexId = VisualConcept.VertexAttribute.SELECTED.ensure(wg);
         wg.setBooleanValue(selectedVetexId, vtxList.get(0), true);
         wg.setBooleanValue(selectedVetexId, vtxList.get(1), true);
         wg.setBooleanValue(selectedVetexId, vtxList.get(2), true);
         wg.setBooleanValue(selectedVetexId, vtxList.get(3), true);
 
-        GraphNode contextMock = mock(GraphNode.class);
+        final GraphNode contextMock = mock(GraphNode.class);
         doReturn(graph).when(contextMock).getGraph();
 
-        SelectNamedSelectionPanel ssp = mock(SelectNamedSelectionPanel.class);
+        final SelectNamedSelectionPanel ssp = mock(SelectNamedSelectionPanel.class);
         doReturn(-2L).when(ssp).getNamedSelectionId();
 
-        MockedStatic<DialogDisplayer> ddStatic = mockStatic(DialogDisplayer.class);
+        final MockedStatic<DialogDisplayer> ddStatic = mockStatic(DialogDisplayer.class);
         ddStatic.when(DialogDisplayer::getDefault).thenReturn(new MockedDialogDisplayer());
 
-        ArrangeInHierarchyAction hierAction = new ArrangeInHierarchyAction(contextMock);
+        final ArrangeInHierarchyAction hierAction = new ArrangeInHierarchyAction(contextMock);
         hierAction.actionPerformed(null);
 
         wg.commit();
