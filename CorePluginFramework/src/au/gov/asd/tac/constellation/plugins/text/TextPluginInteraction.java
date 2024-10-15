@@ -64,7 +64,7 @@ public class TextPluginInteraction implements PluginInteraction {
         LOGGER.log(Level.INFO, "currentStep={0} totalSteps={1} message={2}", new Object[]{currentStep, totalSteps, message});
     }
     
-     @Override
+    @Override
     public void setProgress(final int currentStep, final int totalSteps, final String message, final boolean cancellable, PluginParameters parameters) throws InterruptedException {
         currentMessage = message;
         Map<String, PluginParameter<?>> params = new HashMap<>();

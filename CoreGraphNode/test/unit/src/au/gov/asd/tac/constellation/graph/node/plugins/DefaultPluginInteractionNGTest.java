@@ -23,14 +23,21 @@ import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginSynchronizer;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
+import org.mockito.Mockito;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.openide.windows.TopComponent;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotEquals;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -101,6 +108,14 @@ public class DefaultPluginInteractionNGTest {
         final String progressTitleWithGraphNode = interaction.createProgressTitle();
         assertEquals(progressTitleWithGraphNode, "test: Test");
     }
+    
+    @Test
+    public void testGetCurrentMessage() {
+        final PluginInteraction interaction = Mockito.mock(DefaultPluginInteraction.class);
+        String currentMessage = interaction.getCurrentMessage();
+        verify(interaction, times(1)).getCurrentMessage();
+        assertEquals(currentMessage, null);
+    }
 
     /**
      * Test of setProgress method, of class DefaultPluginInteraction.
@@ -134,6 +149,28 @@ public class DefaultPluginInteractionNGTest {
         interaction.setProgress(1, 0, message, false);
 
         assertEquals(interaction.getProgress(), null);
+        
+        // add test for params
+        PluginParameters params = spy(PluginParameters.class);
+        PluginParameter testParam = Mockito.mock(PluginParameter.class);
+        when(testParam.getName()).thenReturn("key_name");
+        when(testParam.getStringValue()).thenReturn("string_value");
+        params.addParameter(testParam);
+
+        interaction.setProgress(1, 1, message, false, params);
+        assertEquals(interaction.getTimer().isAlive(), true);
+        assertNotEquals(interaction.getProgress(), null);
+        assertTrue(interaction.getPluginReport().getReportLog().contains("key_name"));
+        assertTrue(interaction.getPluginReport().getReportLog().contains("string_value"));
+        
+        // add test for selected items parameter
+        interaction.setProgress(1, 1, message, false, params, 1001);
+        assertEquals(interaction.getTimer().isAlive(), true);
+        assertNotEquals(interaction.getProgress(), null);
+        assertTrue(interaction.getPluginReport().getReportLog().contains("key_name"));
+        assertTrue(interaction.getPluginReport().getReportLog().contains("string_value"));
+        assertTrue(interaction.getPluginReport().getLastMessage().contains("1001"));
+        
     }
 
     /**
