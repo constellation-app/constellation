@@ -60,7 +60,6 @@ public class InfoMapPlugin extends SimpleEditPlugin {
     // Connection Type
     public static final String CONNECTION_TYPE_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "connection_type");
     private static final String CONNECTION_TYPE_PARAMETER_ID_NAME = "Connection Type";
-    private static final String CONNECTION_TYPE_PARAMETER_ID_DESCRIPTION = "Type of connection to seperate by";
     private static final String CONNECTION_TYPE_PARAMETER_ID_INTERVAL_DEFAULT = "Links";
     private static final String CONNECTION_TYPE_PARAMETER_ID_DEFAULT = CONNECTION_TYPE_PARAMETER_ID_INTERVAL_DEFAULT;
 
@@ -77,7 +76,6 @@ public class InfoMapPlugin extends SimpleEditPlugin {
     // Dynamics
     public static final String DYNAMICS_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "dynamics");
     private static final String DYNAMICS_PARAMETER_ID_NAME = "Dynamics";
-    private static final String DYNAMICS_PARAMETER_ID_DESCRIPTION = "Which dynamic to use";
     private static final String DYNAMICS_PARAMETER_UNDIRECTED = "Undirected";
     private static final String DYNAMICS_PARAMETER_DIRECTED = "Directed";
     private static final String DYNAMICS_PARAMETER_UNDIRECTED_FLOW = "Undirected flow, directed codelength";
@@ -112,7 +110,6 @@ public class InfoMapPlugin extends SimpleEditPlugin {
     // Fast Hierarchical
     public static final String FAST_HIERARCHICAL_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "fast_hierarchical");
     private static final String FAST_HIERARCHICAL_PARAMETER_ID_NAME = "Fast Hierarchical";
-    private static final String FAST_HIERARCHICAL_PARAMETER_ID_DESCRIPTION = "Which hierarchical to use";
     private static final String FAST_HIERARCHICAL_PARAMETER_ID_INTERVAL_DEFAULT = "Normal";
     private static final String FAST_HIERARCHICAL_PARAMETER_ID_DEFAULT = FAST_HIERARCHICAL_PARAMETER_ID_INTERVAL_DEFAULT;
 
@@ -128,7 +125,6 @@ public class InfoMapPlugin extends SimpleEditPlugin {
     // Number of Trials
     public static final String NUM_TRIALS_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "num_trials");
     private static final String NUM_TRIALS_PARAMETER_ID_NAME = "Number of Trials";
-    private static final String NUM_TRIALS_PARAMETER_ID_DESCRIPTION = "Number of trials to use";
     private static final int NUM_TRIALS_PARAMETER_ID_DEFAULT = 1;
 
     @Override
@@ -161,7 +157,6 @@ public class InfoMapPlugin extends SimpleEditPlugin {
         // Connection type
         final PluginParameter<SingleChoiceParameterValue> connectionParam = SingleChoiceParameterType.build(CONNECTION_TYPE_PARAMETER_ID);
         connectionParam.setName(CONNECTION_TYPE_PARAMETER_ID_NAME);
-        connectionParam.setDescription(CONNECTION_TYPE_PARAMETER_ID_DESCRIPTION);
         SingleChoiceParameterType.setOptions(connectionParam, CONNECTION_TYPE_PARAM_VALUES);
         SingleChoiceParameterType.setChoice(connectionParam, CONNECTION_TYPE_PARAMETER_ID_DEFAULT);
         parameters.addParameter(connectionParam);
@@ -169,7 +164,6 @@ public class InfoMapPlugin extends SimpleEditPlugin {
         // Dynamics
         final PluginParameter<SingleChoiceParameterValue> dynamicsParam = SingleChoiceParameterType.build(DYNAMICS_PARAMETER_ID);
         dynamicsParam.setName(DYNAMICS_PARAMETER_ID_NAME);
-        dynamicsParam.setDescription(DYNAMICS_PARAMETER_ID_DESCRIPTION);
         SingleChoiceParameterType.setOptions(dynamicsParam, DYNAMICS_PARAM_VALUES);
         SingleChoiceParameterType.setChoice(dynamicsParam, DYNAMICS_PARAMETER_ID_DEFAULT);
         parameters.addParameter(dynamicsParam);
@@ -185,7 +179,6 @@ public class InfoMapPlugin extends SimpleEditPlugin {
         // Fast Hierarchical
         final PluginParameter<SingleChoiceParameterValue> hierarchicalParam = SingleChoiceParameterType.build(FAST_HIERARCHICAL_PARAMETER_ID);
         hierarchicalParam.setName(FAST_HIERARCHICAL_PARAMETER_ID_NAME);
-        hierarchicalParam.setDescription(FAST_HIERARCHICAL_PARAMETER_ID_DESCRIPTION);
         SingleChoiceParameterType.setOptions(hierarchicalParam, new ArrayList<>(FAST_HIERARCHICAL_LEVELS.keySet()));
         SingleChoiceParameterType.setChoice(hierarchicalParam, FAST_HIERARCHICAL_PARAMETER_ID_DEFAULT);
         parameters.addParameter(hierarchicalParam);
@@ -193,7 +186,6 @@ public class InfoMapPlugin extends SimpleEditPlugin {
         // Number of trials
         final PluginParameter<IntegerParameterValue> amountParam = IntegerParameterType.build(NUM_TRIALS_PARAMETER_ID);
         amountParam.setName(NUM_TRIALS_PARAMETER_ID_NAME);
-        amountParam.setDescription(NUM_TRIALS_PARAMETER_ID_DESCRIPTION);
         amountParam.setIntegerValue(NUM_TRIALS_PARAMETER_ID_DEFAULT);
         parameters.addParameter(amountParam);
 
