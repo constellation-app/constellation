@@ -94,7 +94,6 @@ public class InfoMapPlugin extends SimpleEditPlugin {
     // Optimisation Level
     public static final String OPTIMISATION_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "optimisation_level");
     private static final String OPTIMISATION_PARAMETER_ID_NAME = "Optimisation Level";
-    private static final String OPTIMISATION_PARAMETER_ID_DESCRIPTION = "Optimization level with different accuracy to performance trade-offs";
     private static final String OPTIMISATION_PARAMETER_ID_INTERVAL_DEFAULT = "Full coarse-tune";
     private static final String OPTIMISATION_PARAMETER_ID_DEFAULT = OPTIMISATION_PARAMETER_ID_INTERVAL_DEFAULT;
 
@@ -171,7 +170,6 @@ public class InfoMapPlugin extends SimpleEditPlugin {
         //Optimisation Level
         final PluginParameter<SingleChoiceParameterValue> optimisationParam = SingleChoiceParameterType.build(OPTIMISATION_PARAMETER_ID);
         optimisationParam.setName(OPTIMISATION_PARAMETER_ID_NAME);
-        optimisationParam.setDescription(OPTIMISATION_PARAMETER_ID_DESCRIPTION);
         SingleChoiceParameterType.setOptions(optimisationParam, new ArrayList<>(OPTIMISATION_LEVELS.keySet()));
         SingleChoiceParameterType.setChoice(optimisationParam, OPTIMISATION_PARAMETER_ID_DEFAULT);
         parameters.addParameter(optimisationParam);
