@@ -78,7 +78,7 @@ public class InfoMapPlugin extends SimpleEditPlugin {
     private static final String DYNAMICS_PARAMETER_DIRECTED = "Directed";
     private static final String DYNAMICS_PARAMETER_UNDIRECTED_FLOW = "Undirected flow, directed codelength";
     private static final String DYNAMICS_PARAMETER_INCLOMING_FLOW = "Incoming flow, all codelength";
-    private static final String DYNAMICS_PARAMETER_DIRECTECT_WEIGHT = "Directed, weight as flow";
+    private static final String DYNAMICS_PARAMETER_DIRECTED_WEIGHT = "Directed, weight as flow";
     private static final String DYNAMICS_PARAMETER_ID_DEFAULT = DYNAMICS_PARAMETER_UNDIRECTED;
 
     private static final List<String> DYNAMICS_PARAM_VALUES = Arrays.asList(
@@ -86,19 +86,18 @@ public class InfoMapPlugin extends SimpleEditPlugin {
             DYNAMICS_PARAMETER_DIRECTED,
             DYNAMICS_PARAMETER_UNDIRECTED_FLOW,
             DYNAMICS_PARAMETER_INCLOMING_FLOW,
-            DYNAMICS_PARAMETER_DIRECTECT_WEIGHT
+            DYNAMICS_PARAMETER_DIRECTED_WEIGHT
     );
 
     // Optimisation Level
     public static final String OPTIMISATION_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "optimisation_level");
     private static final String OPTIMISATION_PARAMETER_ID_NAME = "Optimisation Level";
-    private static final String OPTIMISATION_PARAMETER_ID_INTERVAL_DEFAULT = "Full coarse-tune";
-    private static final String OPTIMISATION_PARAMETER_ID_DEFAULT = OPTIMISATION_PARAMETER_ID_INTERVAL_DEFAULT;
+    private static final String OPTIMISATION_PARAMETER_ID_DEFAULT = "Full coarse-tune";
 
     private static final Map<String, Integer> OPTIMISATION_LEVELS = new HashMap<>();
 
     static {
-        OPTIMISATION_LEVELS.put("Full coarse-tune", 0);
+        OPTIMISATION_LEVELS.put(OPTIMISATION_PARAMETER_ID_DEFAULT, 0);
         OPTIMISATION_LEVELS.put("Fast coarse-tune", 1);
         OPTIMISATION_LEVELS.put("No tuning", 2);
         OPTIMISATION_LEVELS.put("No aggregation or tuning", 3);
@@ -107,13 +106,12 @@ public class InfoMapPlugin extends SimpleEditPlugin {
     // Fast Hierarchical
     public static final String FAST_HIERARCHICAL_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "fast_hierarchical");
     private static final String FAST_HIERARCHICAL_PARAMETER_ID_NAME = "Fast Hierarchical";
-    private static final String FAST_HIERARCHICAL_PARAMETER_ID_INTERVAL_DEFAULT = "Normal";
-    private static final String FAST_HIERARCHICAL_PARAMETER_ID_DEFAULT = FAST_HIERARCHICAL_PARAMETER_ID_INTERVAL_DEFAULT;
+    private static final String FAST_HIERARCHICAL_PARAMETER_ID_DEFAULT = "Normal";
 
     private static final Map<String, Integer> FAST_HIERARCHICAL_LEVELS = new HashMap<>();
 
     static {
-        FAST_HIERARCHICAL_LEVELS.put("Normal", 0);
+        FAST_HIERARCHICAL_LEVELS.put(FAST_HIERARCHICAL_PARAMETER_ID_DEFAULT, 0);
         FAST_HIERARCHICAL_LEVELS.put("Top modules fast", 1);
         FAST_HIERARCHICAL_LEVELS.put("All fast levels", 2);
         FAST_HIERARCHICAL_LEVELS.put("Skip recursive", 3);
@@ -188,7 +186,7 @@ public class InfoMapPlugin extends SimpleEditPlugin {
         return parameters;
     }
 
-    private Config createConfig(final PluginParameters parameters) {
+    protected Config createConfig(final PluginParameters parameters) {
         final Config config = new Config();
 
         // Connection type.
@@ -210,7 +208,7 @@ public class InfoMapPlugin extends SimpleEditPlugin {
                 config.setUndirdir(true);
             case DYNAMICS_PARAMETER_INCLOMING_FLOW ->
                 config.setOutdirdir(true);
-            case DYNAMICS_PARAMETER_DIRECTECT_WEIGHT ->
+            case DYNAMICS_PARAMETER_DIRECTED_WEIGHT ->
                 config.setRawdir(true);
         }
 
