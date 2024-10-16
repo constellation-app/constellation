@@ -15,25 +15,25 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.plugins.utility;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
+import au.gov.asd.tac.constellation.graph.locking.DualGraph;
+import au.gov.asd.tac.constellation.graph.node.plugins.DefaultPluginEnvironment;
+import au.gov.asd.tac.constellation.graph.node.plugins.DefaultPluginInteraction;
+import au.gov.asd.tac.constellation.graph.node.plugins.PluginManager;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.plugins.CompleteSchemaPlugin;
-import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.PluginSynchronizer;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
-import au.gov.asd.tac.constellation.plugins.text.TextPluginInteraction;
-import java.util.ArrayList;
-import java.util.List;
+import au.gov.asd.tac.constellation.plugins.reporting.GraphReport;
+import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -42,7 +42,29 @@ import org.testng.annotations.Test;
  * @author Andromeda-224
  */
 public class CompleteSchemaPluginNGTest {
+    private PluginManager manager;
+    private PluginReport report;
+
+    private DefaultPluginEnvironment environment;
+    private Plugin plugin;
+    private StoreGraph graph;
+    private PluginSynchronizer synchroniser;
+
+    private GraphReport graphReport;
     
+    @BeforeMethod
+    public void setUpMethod() throws Exception {
+        environment = new DefaultPluginEnvironment();
+        plugin = new CompleteSchemaPlugin();
+//        graph = new DualGraph(null);
+        graph = new StoreGraph(SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema());
+        
+        synchroniser = new PluginSynchronizer(1);
+        graphReport = new GraphReport(graph.getId());
+
+        manager = new PluginManager(environment, plugin, graph, false, synchroniser);
+        report = new PluginReport(graphReport, plugin);
+    }
  
      /**
      * Test of edit method, of class CompleteSchemaPlugin.
@@ -51,20 +73,42 @@ public class CompleteSchemaPluginNGTest {
      */
     @Test
     public void testEdit() throws Exception {
-        final StoreGraph graph = new StoreGraph(SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema());
         final int vertexLabelAttr = VisualConcept.VertexAttribute.LABEL.ensure(graph);
         final int vertexSelectedAttr = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
+        final int vertexTypeAttr = AnalyticConcept.VertexAttribute.TYPE.ensure(graph);       
 
-        final int vx0 = graph.addVertex();
-        graph.setStringValue(vertexLabelAttr, vx0, "foo");
-        graph.setBooleanValue(vertexSelectedAttr, vx0, false);
+        final int sourceVxId = graph.addVertex();
+        graph.setStringValue(vertexLabelAttr, sourceVxId, "foo");
+        graph.setBooleanValue(vertexSelectedAttr, sourceVxId, false);
+        
+         // buildId the graph
+        for (int i = 0; i < 5; i++) {
+            final int desintationVxId = graph.addVertex();
+            graph.setStringValue(vertexLabelAttr, desintationVxId, String.format("destination %s", i));
+            graph.setObjectValue(vertexTypeAttr, desintationVxId, AnalyticConcept.VertexType.COUNTRY);
+            for (int j = 0; j < 5; j++) {
+                graph.addTransaction(sourceVxId, desintationVxId, true);
+            }
+        }
 
-        final PluginInteraction interaction = new TextPluginInteraction();
+        final int vertexIdentifierAttribute = VisualConcept.VertexAttribute.LABEL.ensure(graph);
+        String label = graph.getStringValue(vertexIdentifierAttribute, sourceVxId);
+        assertEquals("foo", label);
+        
+        final PluginInteraction interaction = new DefaultPluginInteraction(manager, report);
         final CompleteSchemaPlugin instance = new CompleteSchemaPlugin();
         final PluginParameters parameters = instance.createParameters();
+        assertEquals(6, graph.getVertexCount());
+        assertEquals(25, graph.getTransactionCount());
+        
         instance.edit(graph, interaction, parameters);
         
-        assertTrue(interaction.getCurrentMessage().contains("Completed"));
-        assertEquals(1, graph.getVertexCount());
+        assertTrue(interaction.getCurrentMessage().contains("Completed 6 nodes & 25 transactions"));
+        assertEquals(6, graph.getVertexCount());
+        assertEquals(25, graph.getTransactionCount());
+        label = graph.getStringValue(vertexIdentifierAttribute, sourceVxId);
+        assertEquals("foo<Unknown>", label);
+        assertEquals(report.getPluginName(), "Complete Graph Plugin");
+        
     }    
 }
