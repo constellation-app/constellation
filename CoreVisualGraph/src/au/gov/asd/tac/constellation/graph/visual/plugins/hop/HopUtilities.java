@@ -83,8 +83,6 @@ final class HopUtilities {
                     if (!dstsel) {
                         vxToSelect.set(txDestId);
                     }
-                } else {
-                    // Do nothing
                 }
             } else {
                 final boolean txSourceIsSelected = graph.getBooleanValue(vxSelectedAttr, txSourceId);
@@ -93,10 +91,8 @@ final class HopUtilities {
                     if ((outgoing && txSourceIsSelected) || (incoming && txDestIsSelected)) {
                         txToSelect.set(txId);
                     }
-                } else {
-                    if (undirected && (txSourceIsSelected || txDestIsSelected)) {
-                        txToSelect.set(txId);
-                    }
+                } else if (undirected && (txSourceIsSelected || txDestIsSelected)) {
+                    txToSelect.set(txId);
                 }
             }
         }

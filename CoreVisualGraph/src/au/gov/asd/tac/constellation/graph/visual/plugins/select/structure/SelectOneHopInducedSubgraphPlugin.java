@@ -79,8 +79,6 @@ public class SelectOneHopInducedSubgraphPlugin extends SimpleEditPlugin {
                     }
                 } else if (selectedNodes.contains(destinationVertexId) && hasSelectedNeighbour(graph, sourceVertexId, destinationVertexId, vertexSelectedAttributeId)) {
                     selectLink = true;
-                } else {
-                    // Do nothing
                 }
             }
             if (selectLink) {

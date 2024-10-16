@@ -25,7 +25,7 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle;
 
 /**
- * This class creates the UI buttons that invokes the "Select Loops" Tool
+ * This class creates the UI buttons that invokes the "Select Sinks" Tool
  * perform loops service on graph
  *
  * @author aquila
