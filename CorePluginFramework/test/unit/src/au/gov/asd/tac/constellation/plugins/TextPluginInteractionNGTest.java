@@ -199,4 +199,12 @@ public class TextPluginInteractionNGTest {
         assertFalse(getCapturedLog().contains("parameters="));
         assertFalse(getCapturedLog().contains("selected=" + SELECTED_ITEMS)); 
     }        
+    
+    @Test
+    public void testNotify() throws IOException {
+        final PluginInteraction interaction = new TextPluginInteraction();
+        interaction.notify(PluginNotificationLevel.FATAL, TEST_MESSAGE);
+        assertTrue(getCapturedLog().contains("level=" + PluginNotificationLevel.FATAL));
+        assertTrue(getCapturedLog().contains("message=" + TEST_MESSAGE));
+    }
 }

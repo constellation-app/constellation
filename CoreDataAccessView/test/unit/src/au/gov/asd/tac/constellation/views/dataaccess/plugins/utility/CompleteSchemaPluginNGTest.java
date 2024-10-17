@@ -56,7 +56,6 @@ public class CompleteSchemaPluginNGTest {
     public void setUpMethod() throws Exception {
         environment = new DefaultPluginEnvironment();
         plugin = new CompleteSchemaPlugin();
-//        graph = new DualGraph(null);
         graph = new StoreGraph(SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema());
         
         synchroniser = new PluginSynchronizer(1);
