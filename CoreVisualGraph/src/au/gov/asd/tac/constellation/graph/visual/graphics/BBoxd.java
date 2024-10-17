@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.graph.visual.graphics;
 
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import java.util.Arrays;
@@ -107,9 +106,9 @@ public class BBoxd {
     }
 
     public static BBoxd getGraphBoundingBox(final GraphReadMethods rg) {
-        final int xId = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-        final int yId = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
-        final int zId = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
+        final int xId = VisualConcept.VertexAttribute.X.get(rg);
+        final int yId = VisualConcept.VertexAttribute.Y.get(rg);
+        final int zId = VisualConcept.VertexAttribute.Z.get(rg);
         final int vxCount = rg.getVertexCount();
         final BBoxd box = new BBoxd();
         for (int position = 0; position < vxCount; position++) {

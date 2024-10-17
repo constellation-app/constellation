@@ -97,9 +97,8 @@ public class ImageIconDropper implements GraphDropper {
                         image = ImageIO.read(file);
                     }
                 }
-            } else {
-                // Do nothing
             }
+            
             if (image != null) {
                 final BufferedImage resultImage = image;
                 return (graph, dropInfo) -> {

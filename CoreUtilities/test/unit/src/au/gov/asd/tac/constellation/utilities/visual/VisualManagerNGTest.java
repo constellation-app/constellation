@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.Semaphore;
@@ -48,7 +49,7 @@ import org.testng.annotations.Test;
  * @author aldebaran30701
  */
 public class VisualManagerNGTest {
-    
+
     public VisualManagerNGTest() {
     }
 
@@ -95,7 +96,7 @@ public class VisualManagerNGTest {
     @Test
     public void testDestroy() {
         System.out.println("destroy");
-        
+
         try (final MockedStatic<MemoryManager> memoryManagerMockedStatic = mockStatic(MemoryManager.class)) {
             memoryManagerMockedStatic.when(() -> MemoryManager.newObject(Mockito.eq(VisualManager.class))).thenAnswer((Answer<Void>) invocation -> null);
             final VisualProcessor processor = mock(VisualProcessor.class);
@@ -106,30 +107,10 @@ public class VisualManagerNGTest {
             final VisualManager instance = new VisualManager(access, processor);
 
             instance.destroy();
-            
+
             // Verify that the processor had the following methods called.
             verify(processor, times(1)).stopVisualising();
             verify(processor, times(1)).destroyCanvas();
-        }
-    }
-
-    /**
-     * Test of finalize method, of class VisualManager.
-     */
-    @Test
-    public void testFinalize() throws Exception, Throwable {
-        System.out.println("finalize");
-        try (final MockedStatic<MemoryManager> memoryManagerMockedStatic = mockStatic(MemoryManager.class)) {
-            memoryManagerMockedStatic.when(() -> MemoryManager.newObject(Mockito.eq(VisualManager.class))).thenAnswer((Answer<Void>) invocation -> null);
-            memoryManagerMockedStatic.when(() -> MemoryManager.finalizeObject(Mockito.eq(VisualManager.class))).thenAnswer((Answer<Void>) invocation -> null);
-            final VisualProcessor processor = mock(VisualProcessor.class);
-            final VisualAccess access = mock(VisualAccess.class);
-            final VisualManager instance = new VisualManager(access, processor);
-
-            instance.finalize();
-            
-            // Verify that the processor had the following methods called.
-            memoryManagerMockedStatic.verify(() -> MemoryManager.finalizeObject(Mockito.eq(VisualManager.class)), times(1));
         }
     }
 
@@ -154,7 +135,7 @@ public class VisualManagerNGTest {
                 instance.stopProcessing();
                 assertTrue(instance.isRendererIdle()); // defaults to true
                 assertFalse(instance.isProcessing());
-                
+
                 // call method in test
                 instance.startProcessing();
 
@@ -163,33 +144,33 @@ public class VisualManagerNGTest {
                 assertTrue(instance.isRendererIdle());
                 assertSame(instance.getProcessingFuture(), processingFuture);
                 completableFutureMockedStatic.verify(() -> CompletableFuture.runAsync(Mockito.any(Runnable.class), Mockito.any(ExecutorService.class)), times(1));
-            } 
+            }
         }
     }
-    
+
     /**
      * Test of testProcess method, of class VisualManager.
-     * 
+     *
      * TODO: This method currently runs in a loop as the tested method contains a while true.
      */
     @Test
     public void testProcess() {
         System.out.println("testProcess");
-        
+
         try (final MockedStatic<MemoryManager> memoryManagerMockedStatic = mockStatic(MemoryManager.class)) {
             memoryManagerMockedStatic.when(() -> MemoryManager.newObject(Mockito.eq(VisualManager.class))).thenAnswer((Answer<Void>) invocation -> null);
             memoryManagerMockedStatic.when(() -> MemoryManager.finalizeObject(Mockito.eq(VisualManager.class))).thenAnswer((Answer<Void>) invocation -> null);
 
             final VisualAccess access = mock(VisualAccess.class);
-            
+
             final VisualProcessor processor = mock(VisualProcessor.class);
             doNothing().when(processor).update(Mockito.any(Collection.class), Mockito.any(VisualAccess.class), Mockito.anyBoolean(), Mockito.anyBoolean());
-            
+
             final VisualManager instance = spy(new VisualManager(access, processor));
             final PriorityBlockingQueue<VisualOperation> queue = new PriorityBlockingQueue<>();
-            
+
             final VisualChange vc = mock(VisualChange.class);
-            
+
             final List<VisualChange> changes = new ArrayList<>();
             final VisualOperation op = mock(VisualOperation.class);
             changes.add(vc);
@@ -197,12 +178,12 @@ public class VisualManagerNGTest {
             doNothing().when(op).apply();
             queue.add(op);
             when(instance.getOperations()).thenReturn(queue);
-            when(instance.isRendererIdle()).thenReturn(true);    
-            when(instance.isProcessing()).thenReturn(true, false, false);    
+            when(instance.isRendererIdle()).thenReturn(true);
+            when(instance.isProcessing()).thenReturn(true, false, false);
             when(instance.getProcessor()).thenReturn(processor);
-            
+
             instance.process();
-            
+
             verify(op, times(1)).apply();
             verify(op, times(1)).getVisualChanges();
             verify(instance, times(3)).isProcessing();
@@ -210,26 +191,26 @@ public class VisualManagerNGTest {
             verify(processor, times(0)).update(Mockito.any(Collection.class), Mockito.any(VisualAccess.class), Mockito.anyBoolean(), Mockito.anyBoolean());
         }
     }
-    
+
     @Test
     public void testProcess2() {
         System.out.println("testProcess2");
-        
+
         try (final MockedStatic<MemoryManager> memoryManagerMockedStatic = mockStatic(MemoryManager.class)) {
             memoryManagerMockedStatic.when(() -> MemoryManager.newObject(Mockito.eq(VisualManager.class))).thenAnswer((Answer<Void>) invocation -> null);
             memoryManagerMockedStatic.when(() -> MemoryManager.finalizeObject(Mockito.eq(VisualManager.class))).thenAnswer((Answer<Void>) invocation -> null);
 
             final VisualAccess access = mock(VisualAccess.class);
-            
+
             final VisualProcessor processor = mock(VisualProcessor.class);
             doNothing().when(processor).update(Mockito.any(Collection.class), Mockito.any(VisualAccess.class), Mockito.anyBoolean(), Mockito.anyBoolean());
-            
+
             final VisualManager instance = spy(new VisualManager(access, processor));
             final PriorityBlockingQueue<VisualOperation> queue = new PriorityBlockingQueue<>();
             final PriorityBlockingQueue<VisualOperation> queue2 = new PriorityBlockingQueue<>();
-            
+
             final VisualChange vc = mock(VisualChange.class);
-            
+
             final List<VisualChange> changes2 = new ArrayList<>();
             final VisualOperation op = mock(VisualOperation.class);
             changes2.add(vc);
@@ -238,18 +219,17 @@ public class VisualManagerNGTest {
             queue.add(instance.indigenousChangesUpdateOperation);
             queue2.add(op);
             when(instance.getOperations()).thenReturn(queue, queue2);
-            when(instance.isRendererIdle()).thenReturn(true);    
-            when(instance.isProcessing()).thenReturn(true, false, false);    
+            when(instance.isRendererIdle()).thenReturn(true);
+            when(instance.isProcessing()).thenReturn(true, false, false);
             when(instance.getProcessor()).thenReturn(processor);
-            
+
             instance.process();
-            
+
             verify(instance, times(3)).isProcessing();
             verify(instance, Mockito.atLeastOnce()).getOperations();
             verify(processor, times(0)).update(Mockito.any(Collection.class), Mockito.any(VisualAccess.class), Mockito.anyBoolean(), Mockito.anyBoolean());
         }
     }
-    
 
     /**
      * Test of stopProcessing method, of class VisualManager.
@@ -257,18 +237,18 @@ public class VisualManagerNGTest {
     @Test
     public void testStopProcessing() {
         System.out.println("stopProcessing");
-        
+
         try (final MockedStatic<MemoryManager> memoryManagerMockedStatic = mockStatic(MemoryManager.class)) {
             memoryManagerMockedStatic.when(() -> MemoryManager.newObject(Mockito.eq(VisualManager.class))).thenAnswer((Answer<Void>) invocation -> null);
             memoryManagerMockedStatic.when(() -> MemoryManager.finalizeObject(Mockito.eq(VisualManager.class))).thenAnswer((Answer<Void>) invocation -> null);
-            
+
             final VisualProcessor processor = mock(VisualProcessor.class);
             final VisualAccess access = mock(VisualAccess.class);
             final VisualManager instance = spy(new VisualManager(access, processor));
             doNothing().when(instance).cancelProcessing(Mockito.eq(true));
-            
+
             instance.stopProcessing();
-            
+
             // Verify that the processor had the following methods called.
             verify(instance).cancelProcessing(Mockito.eq(true));
             assertFalse(instance.isProcessing());
@@ -290,11 +270,11 @@ public class VisualManagerNGTest {
             final PriorityBlockingQueue<VisualOperation> queueBefore = instance.getOperations();
             final int size = queueBefore.size();
             final boolean containsOP = queueBefore.contains(op);
-            
+
             instance.addOperation(op);
-            
+
             final PriorityBlockingQueue<VisualOperation> queueAfter = instance.getOperations();
-            
+
             assertEquals(queueAfter.size(), size + 1);
             assertFalse(containsOP);
             assertTrue(queueAfter.contains(op));
@@ -320,11 +300,11 @@ public class VisualManagerNGTest {
             final PriorityBlockingQueue<VisualOperation> queueBefore = instance.getOperations();
             final int size = queueBefore.size();
             final boolean containsOP = queueBefore.contains(op);
-            
+
             instance.exportToImage(imageFile);
-            
+
             final PriorityBlockingQueue<VisualOperation> queueAfter = instance.getOperations();
-            
+
             assertEquals(queueAfter.size(), size + 1);
             assertFalse(containsOP);
             assertTrue(queueAfter.contains(op));
@@ -345,20 +325,20 @@ public class VisualManagerNGTest {
             final VisualAccess access = mock(VisualAccess.class);
             final BufferedImage[] imageFile = new BufferedImage[555];
             final Semaphore waiter = mock(Semaphore.class);
-            
+
             final VisualOperation op = mock(VisualOperation.class);
             final VisualProcessor processor = mock(VisualProcessor.class);
             when(processor.exportToBufferedImage(Mockito.eq(imageFile), Mockito.eq(waiter))).thenReturn(op);
             final VisualManager instance = new VisualManager(access, processor);
-            
+
             final PriorityBlockingQueue<VisualOperation> queueBefore = instance.getOperations();
             final int size = queueBefore.size();
             final boolean containsOP = queueBefore.contains(op);
-            
+
             instance.exportToBufferedImage(imageFile, waiter);
-            
+
             final PriorityBlockingQueue<VisualOperation> queueAfter = instance.getOperations();
-            
+
             assertEquals(queueAfter.size(), size + 1);
             assertFalse(containsOP);
             assertTrue(queueAfter.contains(op));
@@ -382,11 +362,11 @@ public class VisualManagerNGTest {
             final PriorityBlockingQueue<VisualOperation> queueBefore = instance.getOperations();
             final int size = queueBefore.size();
             final boolean containsOP = queueBefore.contains(instance.refreshProcessorOperation);
-            
+
             instance.refreshVisualProcessor();
-            
+
             final PriorityBlockingQueue<VisualOperation> queueAfter = instance.getOperations();
-            
+
             assertEquals(queueAfter.size(), size + 1);
             assertFalse(containsOP);
             assertTrue(queueAfter.contains(instance.refreshProcessorOperation));
@@ -402,18 +382,18 @@ public class VisualManagerNGTest {
         try (final MockedStatic<MemoryManager> memoryManagerMockedStatic = mockStatic(MemoryManager.class)) {
             memoryManagerMockedStatic.when(() -> MemoryManager.newObject(Mockito.eq(VisualManager.class))).thenAnswer((Answer<Void>) invocation -> null);
             memoryManagerMockedStatic.when(() -> MemoryManager.finalizeObject(Mockito.eq(VisualManager.class))).thenAnswer((Answer<Void>) invocation -> null);
-            
+
             final VisualAccess access = mock(VisualAccess.class);
             final VisualProcessor processor = mock(VisualProcessor.class);
             final VisualManager instance = new VisualManager(access, processor);
             final PriorityBlockingQueue<VisualOperation> queueBefore = instance.getOperations();
             final int size = queueBefore.size();
             final boolean containsOP = queueBefore.contains(instance.indigenousChangesUpdateOperation);
-            
+
             instance.updateFromIndigenousChanges();
-            
+
             final PriorityBlockingQueue<VisualOperation> queueAfter = instance.getOperations();
-            
+
             assertEquals(queueAfter.size(), size + 1);
             assertFalse(containsOP);
             assertTrue(queueAfter.contains(instance.indigenousChangesUpdateOperation));
@@ -438,11 +418,11 @@ public class VisualManagerNGTest {
             final PriorityBlockingQueue<VisualOperation> queueBefore = instance.getOperations();
             final int size = queueBefore.size();
             final boolean containsOP = queueBefore.contains(op);
-            
+
             instance.addSingleChangeOperation(vc);
-            
+
             final PriorityBlockingQueue<VisualOperation> queueAfter = instance.getOperations();
-            
+
             assertEquals(queueAfter.size(), size + 1);
             assertFalse(containsOP);
         }
@@ -465,15 +445,15 @@ public class VisualManagerNGTest {
             final VisualManager instance = new VisualManager(access, processor);
             final VisualOperation op = instance.constructSingleChangeOperation(vc);
             changes.add(vc);
-            
+
             final PriorityBlockingQueue<VisualOperation> queueBefore = instance.getOperations();
             final int size = queueBefore.size();
             final boolean containsOP = queueBefore.contains(op);
-            
+
             instance.addMultiChangeOperation(changes);
-            
+
             final PriorityBlockingQueue<VisualOperation> queueAfter = instance.getOperations();
-            
+
             assertEquals(queueAfter.size(), size + 1);
             assertFalse(containsOP);
         }
@@ -495,14 +475,103 @@ public class VisualManagerNGTest {
             final PriorityBlockingQueue<VisualOperation> queueBefore = instance.getOperations();
             final int size = queueBefore.size();
             final boolean containsOP = queueBefore.contains(instance.signifyProcessorIdleOperation);
-            
+
             instance.signifyProcessorIdle();
-            
+
             final PriorityBlockingQueue<VisualOperation> queueAfter = instance.getOperations();
-            
+
             assertEquals(queueAfter.size(), size + 1);
             assertFalse(containsOP);
             assertTrue(queueAfter.contains(instance.signifyProcessorIdleOperation));
         }
-    } 
+    }
+
+    @Test
+    public void testSetRefreshLatch() {
+        System.out.println("setRefreshLatch");
+        try (final MockedStatic<MemoryManager> memoryManagerMockedStatic = mockStatic(MemoryManager.class)) {
+            memoryManagerMockedStatic.when(() -> MemoryManager.newObject(Mockito.eq(VisualManager.class))).thenAnswer((Answer<Void>) invocation -> null);
+            memoryManagerMockedStatic.when(() -> MemoryManager.finalizeObject(Mockito.eq(VisualManager.class))).thenAnswer((Answer<Void>) invocation -> null);
+
+            final VisualAccess access = mock(VisualAccess.class);
+            final VisualProcessor processor = mock(VisualProcessor.class);
+
+            final VisualManager instance = new VisualManager(access, processor);
+
+            instance.setRefreshLatch(null);
+        }
+    }
+
+    @Test
+    public void testProcessCountDown() {
+        System.out.println("testProcessCountDown");
+        final VisualAccess access = mock(VisualAccess.class);
+        final VisualProcessor processor = mock(VisualProcessor.class);
+        final VisualManager instance = spy(new VisualManager(access, processor));
+
+        processCountDownHelper(instance, processor, new CountDownLatch(1));
+
+        verify(instance, times(3)).isProcessing();
+        verify(instance, Mockito.atLeastOnce()).getOperations();
+        verify(processor, times(1)).update(Mockito.any(Collection.class), Mockito.any(VisualAccess.class), Mockito.anyBoolean(), Mockito.anyBoolean());
+    }
+
+    @Test
+    public void testProcessCountDownZero() {
+        System.out.println("testProcessCountDownZero");
+        final VisualAccess access = mock(VisualAccess.class);
+        final VisualProcessor processor = mock(VisualProcessor.class);
+        final VisualManager instance = spy(new VisualManager(access, processor));
+
+        processCountDownHelper(instance, processor, new CountDownLatch(0));
+
+        verify(instance, times(3)).isProcessing();
+        verify(instance, Mockito.atLeastOnce()).getOperations();
+        verify(processor, times(1)).update(Mockito.any(Collection.class), Mockito.any(VisualAccess.class), Mockito.anyBoolean(), Mockito.anyBoolean());
+    }
+
+    @Test
+    public void testProcessCountDownNull() {
+        System.out.println("testProcessCountDownZero");
+        final VisualAccess access = mock(VisualAccess.class);
+        final VisualProcessor processor = mock(VisualProcessor.class);
+        final VisualManager instance = spy(new VisualManager(access, processor));
+
+        processCountDownHelper(instance, processor, null);
+
+        verify(instance, times(3)).isProcessing();
+        verify(instance, Mockito.atLeastOnce()).getOperations();
+        verify(processor, times(1)).update(Mockito.any(Collection.class), Mockito.any(VisualAccess.class), Mockito.anyBoolean(), Mockito.anyBoolean());
+    }
+
+    private void processCountDownHelper(final VisualManager instance, final VisualProcessor processor, final CountDownLatch latch) {
+        try (final MockedStatic<MemoryManager> memoryManagerMockedStatic = mockStatic(MemoryManager.class)) {
+            memoryManagerMockedStatic.when(() -> MemoryManager.newObject(Mockito.eq(VisualManager.class))).thenAnswer((Answer<Void>) invocation -> null);
+            memoryManagerMockedStatic.when(() -> MemoryManager.finalizeObject(Mockito.eq(VisualManager.class))).thenAnswer((Answer<Void>) invocation -> null);
+
+            doNothing().when(processor).update(Mockito.any(Collection.class), Mockito.any(VisualAccess.class), Mockito.anyBoolean(), Mockito.anyBoolean());
+
+            final PriorityBlockingQueue<VisualOperation> queue = new PriorityBlockingQueue<>();
+            final PriorityBlockingQueue<VisualOperation> queue2 = new PriorityBlockingQueue<>();
+
+            final VisualChange vc = mock(VisualChange.class);
+
+            final List<VisualChange> changes2 = new ArrayList<>();
+            final VisualOperation op = mock(VisualOperation.class);
+            changes2.add(vc);
+            when(op.getVisualChanges()).thenReturn(changes2);
+            doNothing().when(op).apply();
+            queue.add(instance.signifyProcessorIdleOperation);
+            queue2.add(instance.refreshProcessorOperation);
+
+            when(instance.getOperations()).thenReturn(queue, queue2);
+            when(instance.isRendererIdle()).thenReturn(true);
+            when(instance.isProcessing()).thenReturn(true, true, false);
+            when(instance.getProcessor()).thenReturn(processor);
+
+            instance.setRefreshLatch(latch);
+
+            instance.process();
+        }
+    }
 }

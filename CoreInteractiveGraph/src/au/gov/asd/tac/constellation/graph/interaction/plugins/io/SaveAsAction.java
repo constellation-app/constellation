@@ -59,7 +59,6 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins.io;
  * made subject to such option by the copyright holder.
  */
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.interaction.plugins.io.screenshot.RecentGraphScreenshotUtilities;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
@@ -141,6 +140,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
     private PropertyChangeListener registryListener;
     private LookupListener lookupListener;
     private boolean isSaved = false;
+    private String savedFilePath = "";
 
     public SaveAsAction() {
         this(Utilities.actionsGlobalContext(), true);
@@ -175,8 +175,12 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
         return isSaved;
     }
 
+    public String getSavedFilePath() {
+        return savedFilePath;
+    }
+
     @Override
-    public void actionPerformed(final ActionEvent e) {
+    public synchronized void actionPerformed(final ActionEvent e) {
         refreshListeners();
         final Collection<? extends SaveAsCapable> inst = lkpInfo.allInstances();
         if (!inst.isEmpty()) {
@@ -184,9 +188,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
             FileChooser.openImmediateSaveDialog(getSaveFileChooser()).thenAccept(optionalFile -> optionalFile.ifPresent(file -> {
                 try {
                     saveAs.saveAs(FileUtil.toFileObject(file.getParentFile()), file.getName());
-
-                    // take a screenshot in a separate thread in parrallel
-                    new Thread(() -> RecentGraphScreenshotUtilities.takeScreenshot(file.getName()), "Take Graph Screenshot").start();
+                    savedFilePath = file.getAbsolutePath();
                 } catch (final IOException ioE) {
                     Exceptions.attachLocalizedMessage(ioE,
                             Bundle.MSG_SaveAsFailed(
@@ -294,11 +296,6 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
             }
             refreshEnabled();
         }
-    }
-
-    //for unit testing
-    boolean _isEnabled() {
-        return super.isEnabled();
     }
 
     /**
