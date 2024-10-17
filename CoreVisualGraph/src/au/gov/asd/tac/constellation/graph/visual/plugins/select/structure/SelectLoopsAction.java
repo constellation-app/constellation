@@ -37,11 +37,6 @@ import org.openide.util.NbBundle;
     @ActionReference(path = "Toolbars/Selection", position = 200)
 })
 @NbBundle.Messages("CTL_SelectLoopsAction=Select Loops")
-
-/**
- *
- * @author aquila
- */
 public class SelectLoopsAction extends SimplePluginAction {
 
     public SelectLoopsAction(final GraphNode context) {

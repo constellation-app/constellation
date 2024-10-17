@@ -67,8 +67,7 @@ public class BrowseContextMenu implements ContextMenuProvider {
 
     @Override
     public void selectItem(final String item, final Graph graph, final GraphElementType elementType, final int elementId, final Vector3f unprojected) {
-        final ReadableGraph rg = graph.getReadableGraph();
-        try {
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
             final int attribute = rg.getAttribute(elementType, item);
             if (attribute != Graph.NOT_FOUND) {
                 final URI uri = (URI) rg.getObjectValue(attribute, elementId);
@@ -83,8 +82,6 @@ public class BrowseContextMenu implements ContextMenuProvider {
             }
         } catch (final IOException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-        } finally {
-            rg.release();
         }
     }
 }

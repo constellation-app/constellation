@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.swing.JPanel;
 import javax.swing.JTable;
@@ -46,10 +47,10 @@ public final class PermanentMergePanel extends JPanel {
 
     private final Graph graph;
     private final int primaryNode;
-    private final ArrayList<Integer> nodeList;
-    private ArrayList<Attribute> nodeAttrbiutes;
+    private final List<Integer> nodeList;
+    private List<Attribute> nodeAttrbiutes;
     private PermanentMergeTableModel tableModel;
-    private HashMap<Integer, Integer> selectedAttributes;
+    private Map<Integer, Integer> selectedAttributes;
     private static final String SELECTED_COLUMN = "SELECTED_COLUMN_FLAG";
     private static final String NODE_ID_COLUMN = "ID_";
 
@@ -60,7 +61,7 @@ public final class PermanentMergePanel extends JPanel {
      * @param nodeSelections a list of vertices to be merged.
      * @param vxId the id of the vertex to be the surviving vertex.
      */
-    public PermanentMergePanel(final Graph graph, final ArrayList<Integer> nodeSelections, final int vxId) {
+    public PermanentMergePanel(final Graph graph, final List<Integer> nodeSelections, final int vxId) {
         initComponents();
         this.graph = graph;
         nodeList = nodeSelections;
@@ -106,7 +107,6 @@ public final class PermanentMergePanel extends JPanel {
      * method used to process the selected cell and update the set of selected
      * attributes
      *
-     * @return ArrayList
      */
     private void processCellSelection(final int row, final int column) {
         if (column == 1) {
@@ -117,8 +117,6 @@ public final class PermanentMergePanel extends JPanel {
         } else if (column >= 2) {
             selectedAttributes.put(column, row);
             setColumnHeader(row, column);
-        } else {
-            // Do nothing
         }
         nodeTable.updateUI();
     }
@@ -160,16 +158,13 @@ public final class PermanentMergePanel extends JPanel {
      *
      */
     private void getVertexAttributes() {
-        final ReadableGraph rg = graph.getReadableGraph();
-        try {
-            int attrCount = rg.getAttributeCount(GraphElementType.VERTEX);
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
+            final int attrCount = rg.getAttributeCount(GraphElementType.VERTEX);
             nodeAttrbiutes = new ArrayList<>();
 
             for (int i = 0; i < attrCount; i++) {
                 nodeAttrbiutes.add(new GraphAttribute(rg, rg.getAttribute(GraphElementType.VERTEX, i)));
             }
-        } finally {
-            rg.release();
         }
 
         Collections.sort(nodeAttrbiutes, new AttributeComparator());
@@ -182,8 +177,7 @@ public final class PermanentMergePanel extends JPanel {
      * that the panel is responsible for.
      */
     public void setupVertexData() {
-        final ReadableGraph rg = graph.getReadableGraph();
-        try {
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
             if (primaryNode != Graph.NOT_FOUND) {
                 tableModel.addRow(populateTableRow(rg, primaryNode));
             }
@@ -193,8 +187,6 @@ public final class PermanentMergePanel extends JPanel {
                     tableModel.addRow(populateTableRow(rg, nodeList.get(j)));
                 }
             }
-        } finally {
-            rg.release();
         }
         nodeTable.updateUI();
     }
@@ -210,7 +202,7 @@ public final class PermanentMergePanel extends JPanel {
         row[1] = Integer.toString(vxId);
 
         for (int i = 2; i < nodeAttrbiutes.size(); i++) {
-            Attribute attr = nodeAttrbiutes.get(i);
+            final Attribute attr = nodeAttrbiutes.get(i);
             if (!attr.getName().equalsIgnoreCase(SELECTED_COLUMN)) {
                 row[i] = graph.getStringValue(attr.getId(), vxId);
             }
@@ -261,10 +253,10 @@ public final class PermanentMergePanel extends JPanel {
     /**
      * method used by the parent class to return the set of selected attributes
      *
-     * @return ArrayList
+     * @return Map
      */
-    public HashMap<Integer, String> getAttributes() {
-        final HashMap<Integer, String> list = new HashMap<>();
+    public Map<Integer, String> getAttributes() {
+        final Map<Integer, String> list = new HashMap<>();
         for (int i = 2; i < tableModel.getColumnCount(); i++) {
             Object value = tableModel.getValueAt(selectedAttributes.get(i), i);
             if (value == null) {
@@ -278,10 +270,10 @@ public final class PermanentMergePanel extends JPanel {
     /**
      * method used by the parent class to return the set of selected vertices
      *
-     * @return ArrayList
+     * @return List
      */
-    public ArrayList<Integer> getSelectedVertices() {
-        final ArrayList<Integer> list = new ArrayList<>();
+    public List<Integer> getSelectedVertices() {
+        final List<Integer> list = new ArrayList<>();
         for (int i = 0; i < tableModel.getRowCount(); i++) {
             if (Boolean.TRUE.equals(tableModel.getValueAt(i, 0))) {
                 final Integer key = Integer.valueOf((String) (tableModel.getValueAt(i, 1)));
