@@ -54,7 +54,7 @@ import org.openide.util.NbBundle;
 @NbBundle.Messages("CTL_ArrangeInBubbleTreeAction=Bubble Tree 3D")
 public class ArrangeInBubbleTreeAction extends AbstractAction {
 
-    private static final String HELP_LOCATION = "au.gov.asd.tac.constellation.plugins.arrangements.trees.BubbleTreeAction";
+    private static final String HELP_LOCATION = "au.gov.asd.tac.constellation.plugins.arrangements.bubbleTree3d";
     private final GraphNode context;
 
     public ArrangeInBubbleTreeAction(final GraphNode context) {

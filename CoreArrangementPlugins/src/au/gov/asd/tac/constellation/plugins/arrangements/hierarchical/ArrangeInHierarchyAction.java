@@ -55,7 +55,7 @@ import org.openide.util.NbBundle;
 public class ArrangeInHierarchyAction extends AbstractAction {
 
     private final GraphNode context;
-    private static final String HELP_LOCATION = "au.gov.asd.tac.constellation.plugins.arrangements.hierarchical.HierarchicalAction";
+    private static final String HELP_LOCATION = "au.gov.asd.tac.constellation.plugins.arrangements.hierarchy";
 
     public ArrangeInHierarchyAction(final GraphNode context) {
         this.context = context;
