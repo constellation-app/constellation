@@ -18,9 +18,7 @@ package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Config;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -149,7 +147,7 @@ public class InfoMapPluginNGTest {
         final InfoMapPlugin instance = new InfoMapPlugin();
         for (final String connection : connectionTypes) {
             for (final String dynamic : dynamicTypes) {
-                final PluginParameters params = createParametersHelper(connection, dynamic);
+                final PluginParameters params = createParametersHelper(instance, connection, dynamic);
                 final Config config = instance.createConfig(params);
 
                 // Assert connection and dynamic was set in config
@@ -192,42 +190,25 @@ public class InfoMapPluginNGTest {
         };
     }
 
-    private PluginParameters createParametersHelper(final String connectionType, final String dynamicType) {
-        final PluginParameters parameters = new PluginParameters();
-
+    private PluginParameters createParametersHelper(final InfoMapPlugin infoMapInstance, final String connectionType, final String dynamicType) {
+        final PluginParameters parameters = infoMapInstance.createParameters();
+        final PluginParameters updatedParameters = new PluginParameters();
+        
         // Connection type
         final PluginParameter<SingleChoiceParameterType.SingleChoiceParameterValue> connectionParam = SingleChoiceParameterType.build(CONNECTION_TYPE_PARAMETER_ID);
         connectionParam.setName(CONNECTION_TYPE_PARAMETER_ID_NAME);
         SingleChoiceParameterType.setOptions(connectionParam, CONNECTION_TYPE_PARAM_VALUES);
         SingleChoiceParameterType.setChoice(connectionParam, connectionType);
-        parameters.addParameter(connectionParam);
+        updatedParameters.addParameter(connectionParam);
 
         // Dynamics
         final PluginParameter<SingleChoiceParameterType.SingleChoiceParameterValue> dynamicsParam = SingleChoiceParameterType.build(DYNAMICS_PARAMETER_ID);
         dynamicsParam.setName(DYNAMICS_PARAMETER_ID_NAME);
         SingleChoiceParameterType.setOptions(dynamicsParam, DYNAMICS_PARAM_VALUES);
         SingleChoiceParameterType.setChoice(dynamicsParam, dynamicType);
-        parameters.addParameter(dynamicsParam);
+        updatedParameters.addParameter(dynamicsParam);
 
-        // Optimisation Level
-        final PluginParameter<SingleChoiceParameterType.SingleChoiceParameterValue> optimisationParam = SingleChoiceParameterType.build(OPTIMISATION_PARAMETER_ID);
-        optimisationParam.setName(OPTIMISATION_PARAMETER_ID_NAME);
-        SingleChoiceParameterType.setOptions(optimisationParam, new ArrayList<>(OPTIMISATION_LEVELS.keySet()));
-        SingleChoiceParameterType.setChoice(optimisationParam, OPTIMISATION_PARAMETER_ID_DEFAULT);
-        parameters.addParameter(optimisationParam);
-
-        // Fast Hierarchical
-        final PluginParameter<SingleChoiceParameterType.SingleChoiceParameterValue> hierarchicalParam = SingleChoiceParameterType.build(FAST_HIERARCHICAL_PARAMETER_ID);
-        hierarchicalParam.setName(FAST_HIERARCHICAL_PARAMETER_ID_NAME);
-        SingleChoiceParameterType.setOptions(hierarchicalParam, new ArrayList<>(FAST_HIERARCHICAL_LEVELS.keySet()));
-        SingleChoiceParameterType.setChoice(hierarchicalParam, FAST_HIERARCHICAL_PARAMETER_ID_DEFAULT);
-        parameters.addParameter(hierarchicalParam);
-
-        // Number of trials
-        final PluginParameter<IntegerParameterType.IntegerParameterValue> amountParam = IntegerParameterType.build(NUM_TRIALS_PARAMETER_ID);
-        amountParam.setName(NUM_TRIALS_PARAMETER_ID_NAME);
-        amountParam.setIntegerValue(NUM_TRIALS_PARAMETER_ID_DEFAULT);
-        parameters.addParameter(amountParam);
+        parameters.updateParameterValues(updatedParameters);
 
         return parameters;
     }
