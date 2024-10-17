@@ -50,6 +50,8 @@ public final class InfoMapGeneralAction implements ActionListener {
     private final GraphNode context;
 
     private static final Dimension SIZE = new Dimension(550, 250);
+    
+    private static final String HELP_LOCATION = "au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.InfoMap";
 
     public InfoMapGeneralAction(final GraphNode context) {
         this.context = context;
@@ -61,7 +63,7 @@ public final class InfoMapGeneralAction implements ActionListener {
         final PluginParameters params = plugin.createParameters();
         final Graph graph = context.getGraph();
 
-        final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(Bundle.CTL_InfoMapGeneralAction(), params);
+        final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(Bundle.CTL_InfoMapGeneralAction(), params, HELP_LOCATION);
         dialog.setSize(SIZE);
         dialog.showAndWait();
         if (PluginParametersDialog.OK.equals(dialog.getResult())) {
