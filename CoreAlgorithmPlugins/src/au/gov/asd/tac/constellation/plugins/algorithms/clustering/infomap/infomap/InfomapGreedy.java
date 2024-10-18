@@ -528,7 +528,9 @@ public abstract class InfomapGreedy extends InfomapBase {
                     || (config.isIncludeSelfLinks()
                     && (current.getOutDegree() == 1 && current.getInDegree() == 1)
                     && current.getOutEdges().get(0).getTarget().equals(current))) {
-                LOGGER.log(Level.INFO, "SKIPPING isolated node {0}", current);
+                if (DEBUG) {
+                    LOGGER.log(Level.INFO, "SKIPPING isolated node {0}", current);
+                }
                 //TODO: if not skipping self-links, this yields different results from moveNodesToPredefinedModules!!
                 assert !config.isIncludeSelfLinks();
                 continue;
