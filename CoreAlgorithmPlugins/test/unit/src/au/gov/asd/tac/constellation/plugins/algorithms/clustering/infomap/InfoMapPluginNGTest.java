@@ -20,9 +20,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.Test;
@@ -63,41 +61,6 @@ public class InfoMapPluginNGTest {
             DYNAMICS_PARAMETER_INCLOMING_FLOW,
             DYNAMICS_PARAMETER_DIRECTED_WEIGHT
     );
-
-    // Optimisation Level
-    public static final String OPTIMISATION_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "optimisation_level");
-    private static final String OPTIMISATION_PARAMETER_ID_NAME = "Optimisation Level";
-    private static final String OPTIMISATION_PARAMETER_ID_INTERVAL_DEFAULT = "Full coarse-tune";
-    private static final String OPTIMISATION_PARAMETER_ID_DEFAULT = OPTIMISATION_PARAMETER_ID_INTERVAL_DEFAULT;
-
-    private static final Map<String, Integer> OPTIMISATION_LEVELS = new HashMap<>();
-
-    static {
-        OPTIMISATION_LEVELS.put("Full coarse-tune", 0);
-        OPTIMISATION_LEVELS.put("Fast coarse-tune", 1);
-        OPTIMISATION_LEVELS.put("No tuning", 2);
-        OPTIMISATION_LEVELS.put("No aggregation or tuning", 3);
-    }
-
-    // Fast Hierarchical
-    public static final String FAST_HIERARCHICAL_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "fast_hierarchical");
-    private static final String FAST_HIERARCHICAL_PARAMETER_ID_NAME = "Fast Hierarchical";
-    private static final String FAST_HIERARCHICAL_PARAMETER_ID_INTERVAL_DEFAULT = "Normal";
-    private static final String FAST_HIERARCHICAL_PARAMETER_ID_DEFAULT = FAST_HIERARCHICAL_PARAMETER_ID_INTERVAL_DEFAULT;
-
-    private static final Map<String, Integer> FAST_HIERARCHICAL_LEVELS = new HashMap<>();
-
-    static {
-        FAST_HIERARCHICAL_LEVELS.put("Normal", 0);
-        FAST_HIERARCHICAL_LEVELS.put("Top modules fast", 1);
-        FAST_HIERARCHICAL_LEVELS.put("All fast levels", 2);
-        FAST_HIERARCHICAL_LEVELS.put("Skip recursive", 3);
-    }
-
-    // Number of Trials
-    public static final String NUM_TRIALS_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "num_trials");
-    private static final String NUM_TRIALS_PARAMETER_ID_NAME = "Number of Trials";
-    private static final int NUM_TRIALS_PARAMETER_ID_DEFAULT = 1;
 
     /**
      * Test of createParameters method, of class InfoMapPlugin.
@@ -193,7 +156,7 @@ public class InfoMapPluginNGTest {
     private PluginParameters createParametersHelper(final InfoMapPlugin infoMapInstance, final String connectionType, final String dynamicType) {
         final PluginParameters parameters = infoMapInstance.createParameters();
         final PluginParameters updatedParameters = new PluginParameters();
-        
+
         // Connection type
         final PluginParameter<SingleChoiceParameterType.SingleChoiceParameterValue> connectionParam = SingleChoiceParameterType.build(CONNECTION_TYPE_PARAMETER_ID);
         connectionParam.setName(CONNECTION_TYPE_PARAMETER_ID_NAME);
