@@ -85,7 +85,7 @@ public class ArrangeInBubbleTreeAction extends AbstractAction {
             rg.release();
         }
     }
-    
+
     private void selectElementsAndRunArrangement(final ReadableGraph rg, final List<NamedSelection> namedSelections) {
         final Set<Integer> rootVxIds = new HashSet<>();
         final int vxSelectedAttr = VisualConcept.VertexAttribute.SELECTED.get(rg);
@@ -99,8 +99,8 @@ public class ArrangeInBubbleTreeAction extends AbstractAction {
         final SelectNamedSelectionPanel ssp = new SelectNamedSelectionPanel(namedSelections, "Which elements will represent the TREE ROOTS ?", rootVxIds.isEmpty());
         final DialogDescriptor dd = new DialogDescriptor(ssp, Bundle.CTL_ArrangeInBubbleTreeAction());
         dd.setHelpCtx(new HelpCtx(HELP_LOCATION));
-        final Object result = DialogDisplayer.getDefault().notify(dd);
 
+        final Object result = DialogDisplayer.getDefault().notify(dd);
         if (result == DialogDescriptor.OK_OPTION) {
             final long selectionId = ssp.getNamedSelectionId();
 
@@ -112,9 +112,9 @@ public class ArrangeInBubbleTreeAction extends AbstractAction {
                         .set(ArrangeInBubbleTreePlugin.IS_MINIMAL_PARAMETER_ID, true)
                         .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
                         .executeWriteLater(context.getGraph(), Bundle.CTL_ArrangeInBubbleTreeAction());
-                
+
             } else if (selectionId != -1) {
-                
+
                 final int namedSelectionId = rg.getAttribute(GraphElementType.VERTEX, "named_selection");
                 final long mask = 1L << selectionId;
                 rootVxIds.clear();
@@ -131,10 +131,10 @@ public class ArrangeInBubbleTreeAction extends AbstractAction {
                         .set(ArrangeInBubbleTreePlugin.IS_MINIMAL_PARAMETER_ID, true)
                         .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
                         .executeWriteLater(context.getGraph(), Bundle.CTL_ArrangeInBubbleTreeAction());
-                
+
             }
         }
 
     }
-    
+
 }
