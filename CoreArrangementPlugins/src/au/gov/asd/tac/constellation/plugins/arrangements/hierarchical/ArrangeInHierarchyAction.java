@@ -77,7 +77,7 @@ public class ArrangeInHierarchyAction extends AbstractAction {
                     selectElementsAndRunArrangement(rg, nsState.getNamedSelections());
                 }
             }
-
+            
             if (nsState == null) {
                 selectElementsAndRunArrangement(rg, null);
             }
@@ -97,14 +97,14 @@ public class ArrangeInHierarchyAction extends AbstractAction {
         }
         return selectedIds;
     }
-
+    
     private void selectElementsAndRunArrangement(final ReadableGraph rg, final List<NamedSelection> namedSelections) {
         final Set<Integer> rootVxIds = getSelectedIds(rg);
         final SelectNamedSelectionPanel ssp = new SelectNamedSelectionPanel(namedSelections, "Which element(s) will represent the TOP of the hierarchy ?", rootVxIds.isEmpty());
         final DialogDescriptor dd = new DialogDescriptor(ssp, Bundle.CTL_ArrangeInHierarchyAction());
         dd.setHelpCtx(new HelpCtx(HELP_LOCATION));
-
         final Object result = DialogDisplayer.getDefault().notify(dd);
+        
         if (result == DialogDescriptor.OK_OPTION) {
             final long selectionId = ssp.getNamedSelectionId();
 
@@ -131,9 +131,9 @@ public class ArrangeInHierarchyAction extends AbstractAction {
                         .set(ArrangeInHierarchyPlugin.ROOTS_PARAMETER_ID, rootVxIds)
                         .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
                         .executeWriteLater(context.getGraph(), Bundle.CTL_ArrangeInHierarchyAction());
-
+                
             }
         }
-
+        
     }
 }
