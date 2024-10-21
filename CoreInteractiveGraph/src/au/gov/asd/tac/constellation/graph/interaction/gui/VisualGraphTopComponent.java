@@ -434,8 +434,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
      * Construct a new TopComponent with an empty graph.
      */
     public VisualGraphTopComponent() {
-//        initComponents();
-        this(GraphObjectUtilities.createMemoryDataObject("graph", true), new DualGraph(null));
+        initComponents();
         setName(NbBundle.getMessage(VisualGraphTopComponent.class, "CTL_VisualGraphTopComponent"));
         setToolTipText(NbBundle.getMessage(VisualGraphTopComponent.class, "HINT_VisualGraphTopComponent"));
 
