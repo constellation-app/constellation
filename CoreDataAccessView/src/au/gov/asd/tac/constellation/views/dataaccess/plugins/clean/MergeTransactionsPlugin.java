@@ -227,7 +227,7 @@ public class MergeTransactionsPlugin extends SimpleQueryPlugin implements DataAc
         int totalProcessSteps = -1;
         
         if (selectedOnly) {
-            RecordStore allSelectedTx = GraphRecordStoreUtilities.getSelectedTransactions(graph);
+            final RecordStore allSelectedTx = GraphRecordStoreUtilities.getSelectedTransactions(graph);
             interaction.setProgress(currentProcessStep, totalProcessSteps, "Merging transactions...", true, parameters, allSelectedTx.size());
         } else {
             interaction.setProgress(currentProcessStep, totalProcessSteps, "Merging transactions...", true, parameters);

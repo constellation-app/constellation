@@ -65,12 +65,9 @@ public class TextPluginInteraction implements PluginInteraction {
     }
     
     @Override
-    public void setProgress(final int currentStep, final int totalSteps, final String message, final boolean cancellable, PluginParameters parameters) throws InterruptedException {
+    public void setProgress(final int currentStep, final int totalSteps, final String message, final boolean cancellable, final PluginParameters parameters) throws InterruptedException {
         currentMessage = message;
-        Map<String, PluginParameter<?>> params = new HashMap<>();
-        if (parameters != null) {
-            params = parameters.getParameters();
-        }
+        final Map<String, PluginParameter<?>> params = parameters != null ? parameters.getParameters() : new HashMap<>();
         LOGGER.log(Level.INFO, "currentStep={0} totalSteps={1} message={2} parameters={3}", new Object[]{currentStep, totalSteps, message, params.toString()});
     }
     
@@ -106,12 +103,9 @@ public class TextPluginInteraction implements PluginInteraction {
     }
 
     @Override
-    public void setProgress(int currentStep, int totalSteps, String message, boolean cancellable, PluginParameters parameters, int selected) throws InterruptedException {
+    public void setProgress(final int currentStep, final int totalSteps, final String message, final boolean cancellable, final PluginParameters parameters, final int selected) throws InterruptedException {
         currentMessage = message;
-        Map<String, PluginParameter<?>> params = new HashMap<>();
-        if (parameters != null) {
-            params = parameters.getParameters();
-        }
+        final Map<String, PluginParameter<?>> params = parameters != null ? parameters.getParameters() : new HashMap<>();
         LOGGER.log(Level.INFO, "currentStep={0} totalSteps={1} message={2} parameters={3} selected={4}", new Object[]{currentStep, totalSteps, message, params.toString(), selected});
     }
 

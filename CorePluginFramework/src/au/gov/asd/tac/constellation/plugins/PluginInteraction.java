@@ -61,7 +61,7 @@ public interface PluginInteraction {
      * @param selected total number of selected items on graph.
      * @throws InterruptedException if the plugin has been canceled.
      */
-    void setProgress(final int currentStep, final int totalSteps, final String message, final boolean cancellable, PluginParameters parameters, final int selected) throws InterruptedException;
+    void setProgress(final int currentStep, final int totalSteps, final String message, final boolean cancellable, final PluginParameters parameters, final int selected) throws InterruptedException;
       /**
      * Signals to the user the current progress of the plugin with a message that persists after the plugin has completed.
      *

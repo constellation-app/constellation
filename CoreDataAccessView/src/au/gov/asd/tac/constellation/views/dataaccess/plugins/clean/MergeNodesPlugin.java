@@ -213,7 +213,7 @@ public class MergeNodesPlugin extends SimpleQueryPlugin implements DataAccessPlu
         int currentProcessStep = 0;
         int totalProcessSteps = -1; 
         if (selectedOnly) {
-            GraphRecordStore allSelectedNodes = GraphRecordStoreUtilities.getSelectedVertices(graph);
+            final GraphRecordStore allSelectedNodes = GraphRecordStoreUtilities.getSelectedVertices(graph);
             interaction.setProgress(currentProcessStep, totalProcessSteps, "Merging nodes...", true, parameters, allSelectedNodes.size());
         } else {
             interaction.setProgress(currentProcessStep, totalProcessSteps, "Merging nodes...", true, parameters);
