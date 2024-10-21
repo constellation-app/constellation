@@ -57,7 +57,7 @@ public class CompleteSchemaPlugin extends SimpleEditPlugin {
             // Local process-tracking varables (Process is indeteminate until node and transaction quantity is needed.)
             int currentProgress = 0;
             int maxProgress = -1;
-            interaction.setProgress(currentProgress, maxProgress, "Completing schema...", true);
+            interaction.setProgress(currentProgress, maxProgress, "Completing schema...", true, parameters);
             
             final int vxColorblindAttr = VisualConcept.VertexAttribute.COLORBLIND_LAYER.ensure(graph);
             final int txColorblindAttr = VisualConcept.TransactionAttribute.COLORBLIND_LAYER.ensure(graph);

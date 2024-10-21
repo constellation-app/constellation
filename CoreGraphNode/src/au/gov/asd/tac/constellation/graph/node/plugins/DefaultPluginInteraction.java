@@ -19,12 +19,16 @@ import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersSwingDialog;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -127,14 +131,44 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
     public String getCurrentMessage() {
         return currentMessage;
     }
+    
+    @Override
+    public void setProgress(final int currentStep, final int totalSteps,
+            final String message, final boolean cancellable) throws InterruptedException {       
+        setProgress(currentStep, totalSteps, message, cancellable, null, -1);
+    }
 
     @Override
-    public void setProgress(final int currentStep, final int totalSteps, final String message, final boolean cancellable) throws InterruptedException {
+    public void setProgress(final int currentStep, final int totalSteps,
+            final String message, final boolean cancellable,
+            final PluginParameters params) throws InterruptedException {
+        setProgress(currentStep, totalSteps, message, cancellable, params, -1);
+    }
+    
+    @Override
+    public void setProgress(final int currentStep, final int totalSteps,
+            final String message, final boolean cancellable,
+            final PluginParameters params, final int selected) throws InterruptedException {
 
         if (pluginReport != null) {
-            pluginReport.addMessage(message);
-        }
+                        
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            Date date = new Date(pluginReport.getStartTime());
+            StringBuilder builder = new StringBuilder();
+            
+            pluginReport.addMessage("Time: " + format.format(date) + '\n' + message);
+            if (params != null) {
+                final Map<String, PluginParameter<?>> parameters = params.getParameters();
+                for (String key : parameters.keySet()) {
+                    builder.append(String.format("%s : %s \n", parameters.get(key).getName(), parameters.get(key).getStringValue()));
+                }
+                pluginReport.addMessage('\n' + builder.toString());
+            }
+            if (selected > -1) {
+                pluginReport.addMessage("Selected count: " + selected);
+            }
 
+        }
         currentMessage = message;
         
         this.setProgress(currentStep, totalSteps, cancellable);

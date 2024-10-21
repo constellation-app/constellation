@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 /**
  * A PluginReport is created each time a plugin is executed. It stores
@@ -179,7 +178,20 @@ public class PluginReport {
             return this.runningStateLog.isEmpty() ? "" : this.runningStateLog.get(this.runningStateLog.size()-1);
         }
     }
-
+    
+    /**
+     * Returns the all messages from this plugin.
+     *
+     * @return the completed messages from this plugin.
+     */
+    public String getAllMessages() {
+        if ((executionStage.equals(PluginExecutionStageConstants.COMPLETE) || executionStage.equals(PluginExecutionStageConstants.STOPPED)) && !this.messageLog.isEmpty()){
+            return String.join(System.lineSeparator(), this.messageLog);
+        } else {
+            return this.runningStateLog.isEmpty() ? "" : String.join(System.lineSeparator(), this.runningStateLog);
+        }
+    }
+    
     /**
      * Sets the current message from this plugin.
      *
