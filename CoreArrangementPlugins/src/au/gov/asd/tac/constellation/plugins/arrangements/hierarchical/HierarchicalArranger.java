@@ -202,9 +202,9 @@ public class HierarchicalArranger implements Arranger {
             }
 
             weights.put(vxId, weight);
-            sortLevelByWeight(vxLevel, weights);
-            busyOutermostOrdering(vxLevel);
         }
+        sortLevelByWeight(vxLevel, weights);
+        busyOutermostOrdering(vxLevel);
         return reordered;
     }
 
