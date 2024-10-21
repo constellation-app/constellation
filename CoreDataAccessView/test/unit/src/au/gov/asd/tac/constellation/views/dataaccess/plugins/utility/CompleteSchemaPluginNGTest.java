@@ -15,9 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.plugins.utility;
 
-import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
-import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.node.plugins.DefaultPluginEnvironment;
 import au.gov.asd.tac.constellation.graph.node.plugins.DefaultPluginInteraction;
 import au.gov.asd.tac.constellation.graph.node.plugins.PluginManager;
