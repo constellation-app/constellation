@@ -456,6 +456,9 @@ public class JsonIONGTest {
         jsonIoDialogMockedStatic.when(JsonIODialog::getPreferenceFileName)
                 .thenReturn(userResponse);       
                            
+        jsonIoDialogMockedStatic.when(() -> JsonIODialog
+                .getPreferenceFileName(Optional.of(Boolean.TRUE), DEFAULT_KS, new File("")))
+                .thenReturn(Optional.of(new KeyboardShortcutSelectionResult(DEFAULT_KS.get(), false, null)));  
         
         jsonIoMockedStatic.when(() -> JsonIO.getPrefereceFileDirectory(SUB_DIRECTORY))
                 .thenReturn(new File(System.getProperty("java.io.tmpdir")));
