@@ -57,7 +57,7 @@ public class RecordKeyboardShortcut extends Dialog<String>  {
      public static final String YES = "Yes";
      public static final String NO = "No";
      
-    public Optional<KeyboardShortcutSelectionResult> start(File preferenceDirectory) {       
+    public Optional<KeyboardShortcutSelectionResult> start(final File preferenceDirectory) {       
         
         final KeyPressLabelDialog td = new KeyPressLabelDialog();
         td.setTitle(KEYBOARD_SHORTCUT_DIALOG_TITLE);
@@ -66,7 +66,7 @@ public class RecordKeyboardShortcut extends Dialog<String>  {
 
         td.showAndWait();
         
-        String keyboardShortcut = (td.getLabel().getText().replace('+', ' ') +" ").trim();      
+        final String keyboardShortcut = (td.getLabel().getText().replace('+', ' ') +" ").trim();      
         
         Optional<KeyboardShortcutSelectionResult> ksOptional = Optional.empty();
         
@@ -87,15 +87,15 @@ public class RecordKeyboardShortcut extends Dialog<String>  {
         return ksOptional;
     }   
     
-    public File keyboardShortCutAlreadyAssigned(File preferenceDirectory, String keyboardShortcut) {
+    public File keyboardShortCutAlreadyAssigned(final File preferenceDirectory, final String keyboardShortcut) {
         
         File exisitngTemplateWithKs = null;
         
-        FilenameFilter filenameFilter = (d, s) -> {            
+        final FilenameFilter filenameFilter = (d, s) -> {            
              return s.startsWith(keyboardShortcut);
         };
         
-        String[] fileNames = preferenceDirectory.list(filenameFilter);
+        final String[] fileNames = preferenceDirectory.list(filenameFilter);
         
         if(!ArrayUtils.isEmpty(fileNames)) {
             exisitngTemplateWithKs = new File(

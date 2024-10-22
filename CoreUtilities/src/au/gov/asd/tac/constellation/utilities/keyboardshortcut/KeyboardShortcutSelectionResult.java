@@ -28,7 +28,7 @@ public class KeyboardShortcutSelectionResult {
     private File exisitngTemplateWithKs;
     private String fileName;
     
-    public KeyboardShortcutSelectionResult(String keyboardShortcut, boolean alreadyAssigned, File exisitngTemplateWithKs) {
+    public KeyboardShortcutSelectionResult(final String keyboardShortcut, final boolean alreadyAssigned, final File exisitngTemplateWithKs) {
         this.keyboardShortcut = keyboardShortcut;
         this.alreadyAssigned = alreadyAssigned;
         this.exisitngTemplateWithKs = exisitngTemplateWithKs;        
@@ -53,19 +53,19 @@ public class KeyboardShortcutSelectionResult {
         return fileName;
     }
 
-    public void setFileName(String fileName) {
+    public void setFileName(final String fileName) {
         this.fileName = fileName;
     }
 
-    public void setKeyboardShortcut(String keyboardShortcut) {
+    public void setKeyboardShortcut(final String keyboardShortcut) {
         this.keyboardShortcut = keyboardShortcut;
     }
 
-    public void setAlreadyAssigned(boolean alreadyAssigned) {
+    public void setAlreadyAssigned(final boolean alreadyAssigned) {
         this.alreadyAssigned = alreadyAssigned;
     }
 
-    public void setExisitngTemplateWithKs(File exisitngTemplateWithKs) {
+    public void setExisitngTemplateWithKs(final File exisitngTemplateWithKs) {
         this.exisitngTemplateWithKs = exisitngTemplateWithKs;
     }
     
