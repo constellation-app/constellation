@@ -184,7 +184,7 @@ public class VisualConcept extends SchemaConcept {
                 .setDefaultValue(50000)
                 .create()
                 .build();
-        public static final SchemaAttribute CONNECTION_MOTION = new SchemaAttribute.Builder(GraphElementType.GRAPH, FloatAttributeDescription.ATTRIBUTE_NAME, "motion")
+        public static final SchemaAttribute CONNECTION_MOTION = new SchemaAttribute.Builder(GraphElementType.META, FloatAttributeDescription.ATTRIBUTE_NAME, "motion")
                 .setDescription("the current motion of the direction indicatior annimation")
                 .setDefaultValue(-1.0F)
                 .create()

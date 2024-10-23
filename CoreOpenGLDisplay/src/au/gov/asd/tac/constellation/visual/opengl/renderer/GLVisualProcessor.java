@@ -195,8 +195,13 @@ public class GLVisualProcessor extends VisualProcessor {
 
     @Override
     public final void performVisualUpdate() {
-        updating = true;
-        canvas.display();
+        try {
+            updating = true;
+            canvas.display();
+        }  catch (final GLException ex) {
+            // don't perform update if canvas is unavailable
+            LOGGER.log(Level.WARNING, null, ex);
+        }
     }
 
     @Override

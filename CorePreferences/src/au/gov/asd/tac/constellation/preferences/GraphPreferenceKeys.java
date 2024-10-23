@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.preferences;
 
-import java.util.prefs.Preferences;
-
 /**
  * Keys used to access graph preferences.
  *

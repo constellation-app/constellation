@@ -46,7 +46,9 @@ public final class DirectionIndicatorAnimation extends Animation {
         
         // Don't animate unless there are transactions
         if (wg.getTransactionCount() > 0) {
-            wg.setFloatValue(motionAtt, 0, wg.getFloatValue(motionAtt, 0) + 0.5F);
+            final float current_value = wg.getFloatValue(motionAtt, 0);
+            float floatValue = current_value > Float.MAX_VALUE ? -1.0F : current_value + 0.5F;
+            wg.setFloatValue(motionAtt, 0, floatValue);
         }
     }
 
