@@ -19,8 +19,6 @@ import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Con
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
-import java.util.Arrays;
-import java.util.List;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.Test;
@@ -33,34 +31,17 @@ public class InfoMapPluginNGTest {
 
     // Connection Type
     public static final String CONNECTION_TYPE_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "connection_type");
-    private static final String CONNECTION_TYPE_PARAMETER_ID_NAME = "Connection Type";
-
     private static final String CONNECTION_TYPE_LINKS = "Links";
     private static final String CONNECTION_TYPE_EDGES = "Edges";
     private static final String CONNECTION_TYPE_TRANSACTIONS = "Transactions";
 
-    private static final List<String> CONNECTION_TYPE_PARAM_VALUES = Arrays.asList(
-            CONNECTION_TYPE_LINKS,
-            CONNECTION_TYPE_EDGES,
-            CONNECTION_TYPE_TRANSACTIONS
-    );
-
     // Dynamics
     public static final String DYNAMICS_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "dynamics");
-    private static final String DYNAMICS_PARAMETER_ID_NAME = "Dynamics";
     private static final String DYNAMICS_PARAMETER_UNDIRECTED = "Undirected";
     private static final String DYNAMICS_PARAMETER_DIRECTED = "Directed";
     private static final String DYNAMICS_PARAMETER_UNDIRECTED_FLOW = "Undirected flow, directed codelength";
     private static final String DYNAMICS_PARAMETER_INCLOMING_FLOW = "Incoming flow, all codelength";
     private static final String DYNAMICS_PARAMETER_DIRECTED_WEIGHT = "Directed, weight as flow";
-
-    private static final List<String> DYNAMICS_PARAM_VALUES = Arrays.asList(
-            DYNAMICS_PARAMETER_UNDIRECTED,
-            DYNAMICS_PARAMETER_DIRECTED,
-            DYNAMICS_PARAMETER_UNDIRECTED_FLOW,
-            DYNAMICS_PARAMETER_INCLOMING_FLOW,
-            DYNAMICS_PARAMETER_DIRECTED_WEIGHT
-    );
 
     /**
      * Test of createParameters method, of class InfoMapPlugin.
@@ -110,9 +91,13 @@ public class InfoMapPluginNGTest {
         final InfoMapPlugin instance = new InfoMapPlugin();
         for (final String connection : connectionTypes) {
             for (final String dynamic : dynamicTypes) {
-                final PluginParameters params = createParametersHelper(instance, connection, dynamic);
-                final Config config = instance.createConfig(params);
+                final PluginParameters params = instance.createParameters();
+                // Connection type
+                SingleChoiceParameterType.setChoice((PluginParameter) params.getParameters().get(CONNECTION_TYPE_PARAMETER_ID), connection);
+                // Dynamics
+                SingleChoiceParameterType.setChoice((PluginParameter) params.getParameters().get(DYNAMICS_PARAMETER_ID), dynamic);
 
+                final Config config = instance.createConfig(params);
                 // Assert connection and dynamic was set in config
                 configParameterHelper(connection, dynamic, config);
             }
@@ -151,28 +136,5 @@ public class InfoMapPluginNGTest {
             default ->
                 Config.ConnectionType.TRANSACTIONS;
         };
-    }
-
-    private PluginParameters createParametersHelper(final InfoMapPlugin infoMapInstance, final String connectionType, final String dynamicType) {
-        final PluginParameters parameters = infoMapInstance.createParameters();
-        final PluginParameters updatedParameters = new PluginParameters();
-
-        // Connection type
-        final PluginParameter<SingleChoiceParameterType.SingleChoiceParameterValue> connectionParam = SingleChoiceParameterType.build(CONNECTION_TYPE_PARAMETER_ID);
-        connectionParam.setName(CONNECTION_TYPE_PARAMETER_ID_NAME);
-        SingleChoiceParameterType.setOptions(connectionParam, CONNECTION_TYPE_PARAM_VALUES);
-        SingleChoiceParameterType.setChoice(connectionParam, connectionType);
-        updatedParameters.addParameter(connectionParam);
-
-        // Dynamics
-        final PluginParameter<SingleChoiceParameterType.SingleChoiceParameterValue> dynamicsParam = SingleChoiceParameterType.build(DYNAMICS_PARAMETER_ID);
-        dynamicsParam.setName(DYNAMICS_PARAMETER_ID_NAME);
-        SingleChoiceParameterType.setOptions(dynamicsParam, DYNAMICS_PARAM_VALUES);
-        SingleChoiceParameterType.setChoice(dynamicsParam, dynamicType);
-        updatedParameters.addParameter(dynamicsParam);
-
-        parameters.updateParameterValues(updatedParameters);
-
-        return parameters;
     }
 }
