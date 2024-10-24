@@ -97,6 +97,13 @@ public interface PluginInteraction {
      */
     void setProgress(final int currentStep, final int totalSteps, final String message, final boolean cancellable) throws InterruptedException;
     
+    /**
+     * To add a timestamp in the current progress message.
+     * @param addTimestamp flag to add timestamp or not.
+     * @throws java.lang.InterruptedException
+     */
+    void setProgress(final boolean addTimestamp) throws InterruptedException;
+    
        /**
      * Signals to the user the current execution stage of the plugin
      * providing a message that does not persist after the plugin has completed.

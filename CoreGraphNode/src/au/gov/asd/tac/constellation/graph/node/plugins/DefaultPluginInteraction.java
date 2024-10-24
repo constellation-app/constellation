@@ -133,6 +133,16 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
     }
     
     @Override
+    public void setProgress(final boolean addTimestamp) throws InterruptedException {
+
+        if (addTimestamp) {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            Date date = new Date(pluginReport.getStartTime());
+            pluginReport.addMessage("Time: " + format.format(date));
+        }
+    }
+    
+    @Override
     public void setProgress(final int currentStep, final int totalSteps,
             final String message, final boolean cancellable) throws InterruptedException {       
         setProgress(currentStep, totalSteps, message, cancellable, null, -1);
@@ -151,13 +161,10 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
             final PluginParameters params, final int selected) throws InterruptedException {
 
         if (pluginReport != null) {
-                        
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-            Date date = new Date(pluginReport.getStartTime());
-            StringBuilder builder = new StringBuilder();
-            
+            StringBuilder builder = new StringBuilder();            
+
             if (params != null) {
-                pluginReport.addMessage("Time: " + format.format(date));
+                setProgress(true);
                 final Map<String, PluginParameter<?>> parameters = params.getParameters();
                 for (String key : parameters.keySet()) {
                     builder.append(String.format("%s : %s \n", parameters.get(key).getName(), parameters.get(key).getStringValue()));

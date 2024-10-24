@@ -109,4 +109,9 @@ public class TextPluginInteraction implements PluginInteraction {
         LOGGER.log(Level.INFO, "currentStep={0} totalSteps={1} message={2} parameters={3} selected={4}", new Object[]{currentStep, totalSteps, message, params.toString(), selected});
     }
 
+    @Override
+    public void setProgress(boolean addTimestamp) throws InterruptedException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
 }
