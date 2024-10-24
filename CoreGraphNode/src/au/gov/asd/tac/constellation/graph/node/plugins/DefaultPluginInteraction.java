@@ -135,7 +135,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
     @Override
     public void setProgressTimestamp(final boolean addTimestamp) throws InterruptedException {
 
-        if (addTimestamp) {
+        if (pluginReport != null && addTimestamp) {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
             Date date = new Date(pluginReport.getStartTime());
             pluginReport.addMessage("Time: " + format.format(date));
