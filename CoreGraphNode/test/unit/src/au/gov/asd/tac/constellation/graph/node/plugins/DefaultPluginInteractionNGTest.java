@@ -127,25 +127,27 @@ public class DefaultPluginInteractionNGTest {
         System.out.println("setProgress");
 
         final String message = "this is a test";
-        final DefaultPluginInteraction interaction = new DefaultPluginInteraction(manager, report);
+        DefaultPluginInteraction interaction = new DefaultPluginInteraction(manager, report);
 
         assertEquals(interaction.getTimer(), null);
         assertEquals(interaction.getProgress(), null);
 
         interaction.setProgress(1, 2, message, false);
-
+        
         assertEquals(interaction.getTimer().isAlive(), true);
         assertNotEquals(interaction.getProgress(), null);
 
         assertEquals(interaction.getPluginReport().getCurrentStep(), 1);
         assertEquals(interaction.getPluginReport().getTotalSteps(), 2);
         assertEquals(interaction.getPluginReport().getLastMessage().contains(message), true);
-
+        
+        interaction = new DefaultPluginInteraction(manager, report);
         interaction.setProgress(1, 1, message, false);
 
         assertEquals(interaction.getTimer().isAlive(), true);
         assertNotEquals(interaction.getProgress(), null);
 
+        interaction = new DefaultPluginInteraction(manager, report);
         interaction.setProgress(1, 0, message, false);
 
         assertEquals(interaction.getProgress(), null);
@@ -157,6 +159,7 @@ public class DefaultPluginInteractionNGTest {
         when(testParam.getStringValue()).thenReturn("string_value");
         params.addParameter(testParam);
 
+        interaction = new DefaultPluginInteraction(manager, report);
         interaction.setProgress(1, 1, message, false, params);
         assertEquals(interaction.getTimer().isAlive(), true);
         assertNotEquals(interaction.getProgress(), null);
@@ -164,12 +167,14 @@ public class DefaultPluginInteractionNGTest {
         assertTrue(interaction.getPluginReport().getReportLog().contains("string_value"));
         
         // add test for selected items parameter
+        interaction = new DefaultPluginInteraction(manager, report);
         interaction.setProgress(1, 1, message, false, params, 1001);
         assertEquals(interaction.getTimer().isAlive(), true);
         assertNotEquals(interaction.getProgress(), null);
         assertTrue(interaction.getPluginReport().getReportLog().contains("key_name"));
         assertTrue(interaction.getPluginReport().getReportLog().contains("string_value"));
-        assertTrue(interaction.getPluginReport().getLastMessage().contains("1001"));
+        System.out.println(interaction.getPluginReport().getLastMessage());
+        assertTrue(interaction.getPluginReport().getReportLog().contains("1001"));
         
     }
 
