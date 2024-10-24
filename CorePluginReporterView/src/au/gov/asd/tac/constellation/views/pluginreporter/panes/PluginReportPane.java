@@ -206,7 +206,7 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
         try (final PrintWriter out = new PrintWriter(writer)) {
             out.append("Name: " + pluginReport.getPluginName() + SeparatorConstants.NEWLINE);
             out.append("Description: " + pluginReport.getPluginDescription() + SeparatorConstants.NEWLINE);
-            out.append("Last Message: " + pluginReport.getLastMessage() + SeparatorConstants.NEWLINE);
+            out.append("All Messages: " + SeparatorConstants.NEWLINE + pluginReport.getAllMessages() + SeparatorConstants.NEWLINE + SeparatorConstants.NEWLINE);
             out.append("Tags: " + Arrays.toString(pluginReport.getTags()) + SeparatorConstants.NEWLINE);
             out.append("Start: " + dateFormat.format(new Date(pluginReport.getStartTime())) + SeparatorConstants.NEWLINE);
             out.append("Stop: " + dateFormat.format(new Date(pluginReport.getStopTime())) + SeparatorConstants.NEWLINE);

@@ -69,6 +69,7 @@ public class SelectAllPlugin extends SimpleQueryPlugin implements DataAccessPlug
         // Local process-tracking varables (Process is indeteminate until quantity of merged nodes is known)
         int currentProcessStep = 0;
         int totalProcessSteps = -1; 
+        interaction.setProgressTimestamp(true);
         interaction.setProgress(currentProcessStep, totalProcessSteps, "Selecting all...", true);
         
         // Retrieve attribute IDs for graph element "Selected" attribute
