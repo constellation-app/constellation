@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.graph.interaction.animation.actions;
 
 import au.gov.asd.tac.constellation.graph.interaction.animation.AnimationUtilities;
-import au.gov.asd.tac.constellation.graph.interaction.animation.FlyingAnimation;
+import au.gov.asd.tac.constellation.graph.interaction.animation.ColorWarpAnimation;
 import java.awt.event.ActionListener;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -25,25 +25,25 @@ import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * An action for triggering a {@link FlyingAnimation}.
+ * An action for triggering a {@link ColorWarpAnimation}.
  * 
  * @author capricornunicorn123
  */
-@ActionID(category = "Experimental", id = "au.gov.asd.tac.constellation.graph.interaction.animation.actions.AnimateFlyingAction")
-@ActionRegistration(displayName = "#CTL_AnimateFlyingAction", lazy = false)
+@ActionID(category = "Experimental", id = "au.gov.asd.tac.constellation.graph.interaction.animation.actions.AnimateColorWarpAction")
+@ActionRegistration(displayName = "#CTL_AnimateColorWarpAction", lazy = false)
 @ActionReference(path = "Menu/Experimental/Animations", position = 0)
-@Messages("CTL_AnimateFlyingAction=Fly Through")
+@Messages("CTL_AnimateColorWarpAction=Color Warp")
 @ServiceProvider(service = AnimationMenuBaseAction.class)
-public final class AnimateFlyingAction extends AnimationMenuBaseAction implements ActionListener {
+public final class AnimateColorWarpAction extends AnimationMenuBaseAction implements ActionListener {
 
-    public AnimateFlyingAction() {
-        super(Bundle.CTL_AnimateFlyingAction());
+    public AnimateColorWarpAction() {
+        super(Bundle.CTL_AnimateColorWarpAction());
     }
     
     @Override
     protected void updateValue() {
         if (menuButton.isSelected()) {
-            AnimationUtilities.startAnimation(new FlyingAnimation(), this.getContext().getGraph().getId());
+            AnimationUtilities.startAnimation(new ColorWarpAnimation(), this.getContext().getGraph().getId());
         } else {
             stopAnimation(this.getContext().getGraph().getId());
         }
@@ -51,11 +51,12 @@ public final class AnimateFlyingAction extends AnimationMenuBaseAction implement
 
     @Override
     protected void displayValue() {
-        menuButton.setSelected(AnimationUtilities.isAnimating(FlyingAnimation.NAME, this.getContext().getGraph().getId()));
+        menuButton.setSelected(AnimationUtilities.isAnimating(ColorWarpAnimation.NAME, this.getContext().getGraph().getId()));
     }
     
     @Override
     public void stopAnimation(final String graphId) {
-        AnimationUtilities.stopAnimation(FlyingAnimation.NAME, graphId);
+        AnimationUtilities.stopAnimation(ColorWarpAnimation.NAME, graphId);
     }
+
 }

@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.utilities.svg.SVGObject;
 import au.gov.asd.tac.constellation.utilities.svg.SVGData;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.interaction.animation.Animation;
+import au.gov.asd.tac.constellation.graph.interaction.animation.AnimationUtilities;
 import au.gov.asd.tac.constellation.graph.interaction.animation.PanAnimation;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
@@ -254,7 +255,7 @@ public class SVGGraphBuilder {
             final BoundingBox box = new BoundingBox();
             BoundingBoxUtilities.recalculateFromGraph(box, readableGraph, selectedElementsOnly);
             CameraUtilities.refocus(camera, exportPerspective, box);
-            Animation.startAnimation(new PanAnimation(String.format("Reset to %s View", exportPerspective), oldCamera, camera, true));
+            AnimationUtilities.startAnimation(new PanAnimation(String.format("Reset to %s View", exportPerspective), oldCamera, camera, true), this.readableGraph.getId());
         }
         
         final Frame frame = new Frame(camera.lookAtEye, camera.lookAtCentre, camera.lookAtUp);

@@ -55,6 +55,7 @@ public final class VisualGraphDefaults {
     public static final int DEFAULT_MAX_TRANSACTION_TO_DRAW = 8;
     public static final boolean DEFAULT_GRAPH_VISIBILITY = true;
     public static final int DEFAULT_GRAPH_VISIBILITY_VERTEX_THRESHOLD = 15000;
+    public static final float DEFAULT_CONNECTION_MOTION = -1.0F;
 
     /*
      * Vertex defaults

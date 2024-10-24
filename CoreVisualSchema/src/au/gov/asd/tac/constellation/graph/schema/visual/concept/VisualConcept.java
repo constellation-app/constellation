@@ -184,6 +184,11 @@ public class VisualConcept extends SchemaConcept {
                 .setDefaultValue(50000)
                 .create()
                 .build();
+        public static final SchemaAttribute CONNECTION_MOTION = new SchemaAttribute.Builder(GraphElementType.META, FloatAttributeDescription.ATTRIBUTE_NAME, "motion")
+                .setDescription("the current motion of the direction indicatior annimation")
+                .setDefaultValue(-1.0F)
+                .create()
+                .build();
     }
 
     public static class VertexAttribute {
@@ -361,6 +366,7 @@ public class VisualConcept extends SchemaConcept {
         schemaAttributes.add(GraphAttribute.TRANSACTION_LABELS);
         schemaAttributes.add(GraphAttribute.VISIBLE_ABOVE_THRESHOLD);
         schemaAttributes.add(GraphAttribute.VISIBILITY_THRESHOLD);
+        schemaAttributes.add(GraphAttribute.CONNECTION_MOTION);
         schemaAttributes.add(VertexAttribute.BACKGROUND_ICON);
         schemaAttributes.add(VertexAttribute.BLAZE);
         schemaAttributes.add(VertexAttribute.COLOR);
