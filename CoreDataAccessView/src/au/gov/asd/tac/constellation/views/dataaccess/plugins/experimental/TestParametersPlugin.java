@@ -387,6 +387,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         // Local process-tracking variables (Process is indeteminate due to the nature of plugin reporting through the logger)
         final int currentProcessStep = 0;
         final int totalProcessSteps = -1;
+        interaction.setProgressTimestamp(true);
         interaction.setProgress(currentProcessStep, totalProcessSteps, "Testing parameters...", true, parameters);
 
         //Display parameter information

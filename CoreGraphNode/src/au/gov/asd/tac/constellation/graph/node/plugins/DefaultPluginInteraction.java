@@ -47,7 +47,7 @@ import org.openide.util.Cancellable;
  * This class allows for plugins to interact with constellations reporting mechanisms, the {@link NotifyDisplayer} and the {@link PluginReporter}.
  * Capabilities for terminating plugins are also available in the class due to the need from the relevant reporting mechanism.
  * 
- * <p>{@link PluginReporter} interactions can be facilitated using {@code setProgress()} and {@code setExecutionStage()}.</p> 
+ * <p>{@link PluginReporter} interactions can be facilitated using {@code setProgressTimestamp()}, {@code setProgress()} and {@code setExecutionStage()}.</p> 
  * 
  * <p>{@link NotifyDisplayer} interactions can be facilitated using {@code confirm()} and {@code notify()}.</p> 
  * <p>The following is a summary of the various visual presentations based on the supplied {@link PluginNotificationLevel}:</p>
@@ -133,7 +133,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
     }
     
     @Override
-    public void setProgress(final boolean addTimestamp) throws InterruptedException {
+    public void setProgressTimestamp(final boolean addTimestamp) throws InterruptedException {
 
         if (addTimestamp) {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
@@ -164,7 +164,6 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
             StringBuilder builder = new StringBuilder();            
 
             if (params != null) {
-                setProgress(true);
                 final Map<String, PluginParameter<?>> parameters = params.getParameters();
                 for (String key : parameters.keySet()) {
                     builder.append(String.format("%s : %s \n", parameters.get(key).getName(), parameters.get(key).getStringValue()));

@@ -258,7 +258,7 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
         final int totalProcessSteps = selectedNodes.size();
         int currentProcessStep = 0;
         final int initialSelectedNodesCount = selectedNodes.size(); 
-
+        interaction.setProgressTimestamp(true);
         interaction.setProgress(currentProcessStep, 
                 totalProcessSteps, 
                 String.format("Selecting top %s nodes...", 

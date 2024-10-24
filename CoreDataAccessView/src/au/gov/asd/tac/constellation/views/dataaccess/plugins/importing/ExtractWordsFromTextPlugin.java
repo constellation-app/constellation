@@ -303,6 +303,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
         final int totalProcessSteps = transactionCount; 
         int newTransactionCount = 0;
         int newNodeCount = 0;
+        interaction.setProgressTimestamp(true);
         interaction.setProgress(currentProcessStep, totalProcessSteps, "Extracting...", true, parameters);
         
         if (regexOnly) {

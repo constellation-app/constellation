@@ -102,7 +102,7 @@ public interface PluginInteraction {
      * @param addTimestamp flag to add timestamp or not.
      * @throws java.lang.InterruptedException
      */
-    void setProgress(final boolean addTimestamp) throws InterruptedException;
+    void setProgressTimestamp(final boolean addTimestamp) throws InterruptedException;
     
        /**
      * Signals to the user the current execution stage of the plugin

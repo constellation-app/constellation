@@ -73,6 +73,7 @@ public class RemoveUnusedAttributesPlugin extends SimpleEditPlugin implements Da
         int removedAttributeCount = 0;
         int currentProcessStep = 0;
         int totalProcessSteps = graph.getAttributeCount(GraphElementType.VERTEX) + graph.getAttributeCount(GraphElementType.TRANSACTION);
+        interaction.setProgressTimestamp(true);
         interaction.setProgress(currentProcessStep, totalProcessSteps, "Removing unused attributes...", true, parameters);      
 
         //Loop through graph element types

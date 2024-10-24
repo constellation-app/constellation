@@ -121,6 +121,7 @@ public class RemoveNodesPlugin extends SimpleQueryPlugin implements DataAccessPl
         // Local process-tracking varables (Process is indeteminate until quantity of nodes to be removed is known)
         int removedCount = 0;
         int totalProcessSteps = -1;
+        interaction.setProgressTimestamp(true);
         interaction.setProgress(removedCount, totalProcessSteps, "Removing nodes...", true, parameters);
         final List<Integer> verticesToRemove = new ArrayList<>();       
             

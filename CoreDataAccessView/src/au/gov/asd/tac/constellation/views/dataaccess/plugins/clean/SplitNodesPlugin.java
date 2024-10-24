@@ -186,7 +186,7 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
         int totalProcessSteps = -1; 
         
         final GraphRecordStore allSelectedNodes = GraphRecordStoreUtilities.getSelectedVertices(graph);            
-        
+        interaction.setProgressTimestamp(true);
         interaction.setProgress(
                 currentProcessStep, 
                 totalProcessSteps, 

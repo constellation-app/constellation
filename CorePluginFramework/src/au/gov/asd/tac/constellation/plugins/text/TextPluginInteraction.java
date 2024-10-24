@@ -110,7 +110,7 @@ public class TextPluginInteraction implements PluginInteraction {
     }
 
     @Override
-    public void setProgress(boolean addTimestamp) throws InterruptedException {
+    public void setProgressTimestamp(boolean addTimestamp) throws InterruptedException {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
