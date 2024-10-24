@@ -156,8 +156,8 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
             Date date = new Date(pluginReport.getStartTime());
             StringBuilder builder = new StringBuilder();
             
-            pluginReport.addMessage("Time: " + format.format(date) + '\n' + message);
             if (params != null) {
+                pluginReport.addMessage("Time: " + format.format(date));
                 final Map<String, PluginParameter<?>> parameters = params.getParameters();
                 for (String key : parameters.keySet()) {
                     builder.append(String.format("%s : %s \n", parameters.get(key).getName(), parameters.get(key).getStringValue()));
@@ -167,7 +167,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
             if (selected > -1) {
                 pluginReport.addMessage("Selected count: " + selected);
             }
-
+            pluginReport.addMessage(message);
         }
         currentMessage = message;
         
