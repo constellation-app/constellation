@@ -192,11 +192,6 @@ public abstract class VisualProcessor {
      * @param fullRefresh
      */
     final void update(final Collection<VisualChange> changes, final VisualAccess access, final boolean indigenousChanges, final boolean fullRefresh) {
-        Thread.UncaughtExceptionHandler h = (Thread th, Throwable ex) -> {
-            // if exception, try refreshing
-            rebuild();
-            
-        };
         final Thread updateThread = new Thread(() -> {
             access.beginUpdate();
             try {
@@ -215,7 +210,6 @@ public abstract class VisualProcessor {
             updateOccuring.release();
             performVisualUpdate();
         });
-        updateThread.setUncaughtExceptionHandler(h);
         updateThread.setName("Visual Processor");
         updateThread.start();
         updateOccuring.acquireUninterruptibly();

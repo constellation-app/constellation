@@ -59,7 +59,7 @@ public final class DirectionIndicatorAnimation extends Animation {
 
     @Override
     public long getIntervalInMillis() {
-        return 35;
+        return 60;
     }
     
     @Override

@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Cause the colors on the graph to warp through hue's.
+ * Cause the colors on the graph to warp through hues.
  * 
  * @author capricornunicorn123
  */
@@ -53,16 +53,12 @@ public final class ColorWarpAnimation extends Animation {
         } else{
             for (int vertexPosition = 0 ; vertexPosition < wg.getVertexCount(); vertexPosition++) {
                 final int vertexID = wg.getVertex(vertexPosition);
-                final ConstellationColor vertexColor = wg.getObjectValue(vertexColorAttr, vertexID);
-                
-                vertexOriginals.put(vertexID, vertexColor);
+                vertexOriginals.put(vertexID, wg.getObjectValue(vertexColorAttr, vertexID));
             }
             
             for (int transactionPosition = 0 ; transactionPosition < wg.getTransactionCount(); transactionPosition++) {
                 final int transactionID = wg.getTransaction(transactionPosition);
-                final ConstellationColor transactionColor = wg.getObjectValue(transactionColorAttr, transactionID);
-                
-               transactionOriginals.put(transactionID, transactionColor);
+               transactionOriginals.put(transactionID, wg.getObjectValue(transactionColorAttr, transactionID));
             }            
         }
     }
@@ -75,16 +71,12 @@ public final class ColorWarpAnimation extends Animation {
             
             for (int vertexPosition = 0 ; vertexPosition < wg.getVertexCount(); vertexPosition++) {
                 final int vertexID = wg.getVertex(vertexPosition);
-                final ConstellationColor vertexColor = wg.getObjectValue(vertexColorAttr, vertexID);
-                
-                wg.setObjectValue(vertexColorAttr, vertexID, this.getNextColor(vertexColor));
+                wg.setObjectValue(vertexColorAttr, vertexID, this.getNextColor(wg.getObjectValue(vertexColorAttr, vertexID)));
             }
             
             for (int transactionPosition = 0 ; transactionPosition < wg.getTransactionCount(); transactionPosition++) {
                 final int transactionID = wg.getTransaction(transactionPosition);
-                final ConstellationColor transactionColor = wg.getObjectValue(transactionColorAttr, transactionID);
-                
-                wg.setObjectValue(transactionColorAttr, transactionID, this.getNextColor(transactionColor));
+                wg.setObjectValue(transactionColorAttr, transactionID, this.getNextColor(wg.getObjectValue(transactionColorAttr, transactionID)));
             }
         }
     }
@@ -107,7 +99,7 @@ public final class ColorWarpAnimation extends Animation {
 
     @Override
     public long getIntervalInMillis() {
-        return 15;
+        return 60;
     }
 
     private ConstellationColor getNextColor(final ConstellationColor color) {
