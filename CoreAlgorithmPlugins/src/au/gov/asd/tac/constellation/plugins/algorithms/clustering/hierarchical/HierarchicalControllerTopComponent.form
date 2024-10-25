@@ -35,6 +35,8 @@
                               <Component id="reclusterButton" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="interactiveButton" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="infoLabel" min="-2" pref="75" max="-2" attributes="0"/>
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" attributes="0">
@@ -54,9 +56,7 @@
                                       <Component id="colorClustersCheckBox" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
-                              <EmptySpace pref="376" max="32767" attributes="0"/>
-                              <Component id="infoLabel" min="-2" pref="75" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="190" max="-2" attributes="0"/>
+                              <EmptySpace pref="641" max="32767" attributes="0"/>
                               <Component id="helpButton" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="shortestPathsButton" min="-2" max="-2" attributes="0"/>
@@ -81,6 +81,7 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="reclusterButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="interactiveButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="infoLabel" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
@@ -93,7 +94,6 @@
                           <Component id="dimmedRadioButton" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="excludeSingleVerticesCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="colorClustersCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="infoLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="showRadioButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
