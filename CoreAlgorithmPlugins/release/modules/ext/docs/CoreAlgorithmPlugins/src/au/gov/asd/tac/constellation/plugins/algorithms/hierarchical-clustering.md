@@ -70,7 +70,7 @@ grey when the Excluded Elements is set to dimmed.
 Rather than set the color directly, Hierarchical Clustering in Constellation
 creates a new color attribute "Cluster.Hierarchical.Color" and tells 
 Constellation to display the graph using the new attribute (via the 
-"node\_color\_reference" and "transaction\_color_reference" graph attributes). 
+"node\_color\_reference" and "transaction\_color\_reference" graph attributes). 
 To switch back to the default color attribute, edit the graph attributes via 
 the Attribute Editor and click on "Restore Default" followed by Ok.
 
