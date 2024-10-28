@@ -104,7 +104,21 @@ public class BBoxd {
     public double[] getMax() {
         return Arrays.copyOf(max, 3);
     }
+    
+    @Override
+    public String toString() {
+        return String.format("BB[%s,%s]", Arrays.toString(min), Arrays.toString(max));
+    }
 
+    /**
+     * Get the bounding box of this graph.
+     * <p>
+     * Only the x,y,z values are used.
+     *
+     * @param rg The graph to create a bounding box from.
+     *
+     * @return The bounding box of all vertices in the graph.
+     */
     public static BBoxd getGraphBoundingBox(final GraphReadMethods rg) {
         final int xId = VisualConcept.VertexAttribute.X.get(rg);
         final int yId = VisualConcept.VertexAttribute.Y.get(rg);

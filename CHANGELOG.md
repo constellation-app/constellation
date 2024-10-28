@@ -1,8 +1,11 @@
 # Constellation Changes
 
 ## Changes in October 2024
-- Added the ability to set of Table View default columns by implementing `TableDefaultColumns` and using lookup.
-- Improved Table View to now default to primary key columns for Show Default Columns and new graphs.
+-   Added the ability to set of Table View default columns by implementing `TableDefaultColumns` and using lookup.
+-   Removed several functions from `VisualGraphUtilities` passing attribute ids as parameters in favour of using existing complimentary functions using default attributes.
+-   Removed `BBoxf.getGraphBoundingBoxMix()` as it was unused.
+-   Renamed `getSelectedElements()` in `VisualGraphUtilities` to `getSelectedVertices` to better reflect what the function does.
+-   Updated Table View to now default to primary key columns for Show Default Columns and new graphs.
 
 ## Changes in September 2024
 -   Removed `AddBlazePlugin` in favour of applying defaults to `AddCustomBlazePlugin` (which was already being used by `AddBlazeAction`).

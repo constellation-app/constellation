@@ -1582,6 +1582,5 @@ public final class GraphVisualAccess implements VisualAccess {
 
         count = transactionWidth == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(transactionWidth);
         modCounts.put(VisualConcept.TransactionAttribute.WIDTH, count);
-
     }
 }
