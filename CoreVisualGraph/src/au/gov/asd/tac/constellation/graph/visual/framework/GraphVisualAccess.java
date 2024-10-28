@@ -702,7 +702,7 @@ public final class GraphVisualAccess implements VisualAccess {
         final int maxTransactions = graphMaxTransactions != Graph.NOT_FOUND ? readGraph.getIntValue(graphMaxTransactions, 0) : VisualGraphDefaults.DEFAULT_MAX_TRANSACTION_TO_DRAW;
 
         final int connectionUpperBound;
-        if (null == connectionMode) {
+        if (connectionMode == null) {
             connectionUpperBound = readGraph.getTransactionCount();
         } else {
             connectionUpperBound = switch (connectionMode) {
@@ -1179,7 +1179,6 @@ public final class GraphVisualAccess implements VisualAccess {
         if (transactionVisibility != Graph.NOT_FOUND) {
             switch (connectionElementTypes[connection]) {
                 case LINK:
-                    // TEST AGAIN
                     float linkLayerVisibility = -1;
                     float linkVisibility = -1;
                     if (transactionLayerVisibility != Graph.NOT_FOUND) {

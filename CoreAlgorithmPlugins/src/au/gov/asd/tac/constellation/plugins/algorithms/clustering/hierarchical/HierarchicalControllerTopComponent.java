@@ -417,13 +417,11 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
     }//GEN-LAST:event_upButtonActionPerformed
 
     private void hiddenRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hiddenRadioButtonActionPerformed
-        //state.setExcludedElementsDimmed(false);
         state.setExcludedElementsState(HierarchicalState.ExcludedState.HIDDEN);
         updateGraph();
     }//GEN-LAST:event_hiddenRadioButtonActionPerformed
 
     private void dimmedRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dimmedRadioButtonActionPerformed
-        //state.setExcludedElementsDimmed(true);
         state.setExcludedElementsState(HierarchicalState.ExcludedState.DIMMED);
         updateGraph();
     }//GEN-LAST:event_dimmedRadioButtonActionPerformed
@@ -457,7 +455,6 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
     }//GEN-LAST:event_helpButtonMousePressed
 
     private void showRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showRadioButtonActionPerformed
-        //state.setExcludedElementsDimmed(false);
         state.setExcludedElementsState(HierarchicalState.ExcludedState.SHOW);
         updateGraph();
     }//GEN-LAST:event_showRadioButtonActionPerformed
@@ -563,8 +560,6 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
             isAdjusting = true;
             infoLabel.setText(String.format(INFO_STRING, state.getCurrentNumOfClusters()));
             excludeSingleVerticesCheckBox.setSelected(state.isExcludeSingleVertices());
-//            dimmedRadioButton.setSelected(state.isExcludedElementsDimmed());
-//            hiddenRadioButton.setSelected(!state.isExcludedElementsDimmed());
 
             final ExcludedState exclusion = state.getExcludedElementsState();
             dimmedRadioButton.setSelected(exclusion == ExcludedState.DIMMED);
@@ -755,11 +750,6 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
 
         @Override
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-//            System.out.println("");
-//            System.out.println("");
-//            System.out.println("");
-//            System.out.println("");
-//            System.out.println("");
             state.setRedrawCount(state.getRedrawCount() + 1);
 
             final int vxOverlayColorAttr = ClusteringConcept.VertexAttribute.HIERARCHICAL_COLOR.ensure(graph);
@@ -782,10 +772,6 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                 if (state.isExcludeSingleVertices() && group.getSingleStep() > state.getCurrentStep()) {
                     graph.setIntValue(vertexClusterAttribute, vertex, -1);
                     if (state.isInteractive()) {
-
-//                        graph.setBooleanValue(vertexDimmedAttribute, vertex, true);
-//                        //graph.setFloatValue(vertexVisibilityAttribute, vertex, state.isExcludedElementsDimmed() ? 2.0F : -2.0F);
-//                        graph.setFloatValue(vertexVisibilityAttribute, vertex, state.getExcludedElementsState() == ExcludedState.HIDDEN ? -2.0F : 2.0F);
                         final boolean isDimmed = state.getExcludedElementsState() == ExcludedState.DIMMED;
                         final float visibiltyValue = state.getExcludedElementsState() == ExcludedState.HIDDEN ? -2.0F : 2.0F;
 
@@ -825,10 +811,8 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                 final boolean lowDimmed = graph.getBooleanValue(vertexDimmedAttribute, lowVertex);
 
                 if (state.isInteractive()) {
-                    //System.out.println("state.isInteractive() " + state.isInteractive());
                     // if transaction is between a cluster, do not dim or hide
                     if (highVertexColor == lowVertexColor && !highDimmed && !lowDimmed) {
-                        //System.out.println("THIS THINGO CALLEDLDLD");
                         final int transactionCount = graph.getLinkTransactionCount(link);
                         for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
                             final int transaction = graph.getLinkTransaction(link, transactionPosition);
@@ -837,7 +821,6 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                             graph.setFloatValue(transactionVisibilityAttribute, transaction, 2.0F);
                         }
                     } else { // dim or hide transaction depending on state selected.
-                        //System.out.println("dim or hide transaction depending on state selected.");
                         final int transactionCount = graph.getLinkTransactionCount(link);
                         final boolean isDimmed = state.getExcludedElementsState() != ExcludedState.SHOW;
                         final float visibiltyValue = state.getExcludedElementsState() == ExcludedState.HIDDEN ? -2.0F : 2.0F;
@@ -845,21 +828,11 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                         for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
                             final int transaction = graph.getLinkTransaction(link, transactionPosition);
 
-                            //System.out.println("transaction isDimmed: " + isDimmed + " transaction visibiltyValue: " + visibiltyValue);
                             graph.setBooleanValue(transactionDimmedAttribute, transaction, isDimmed);
                             graph.setFloatValue(transactionVisibilityAttribute, transaction, visibiltyValue);
-
-//                            if (state.isExcludedElementsDimmed()) {
-//                                graph.setBooleanValue(transactionDimmedAttribute, transaction, true);
-//                                graph.setFloatValue(transactionVisibilityAttribute, transaction, 2.0F);
-//                            } else {
-//                                graph.setBooleanValue(transactionDimmedAttribute, transaction, false);
-//                                graph.setFloatValue(transactionVisibilityAttribute, transaction, -2.0F);
-//                            }
                         }
                     }
                 } else { // when not interactive, don't dim or hide transactions
-                    //System.out.println("when not interactive, don't dim or hide transactions");
                     final int transactionCount = graph.getLinkTransactionCount(link);
                     for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
                         final int transaction = graph.getLinkTransaction(link, transactionPosition);
