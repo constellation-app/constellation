@@ -99,9 +99,8 @@ public class GraphVisualAccessNGTest {
     }
 
     /**
-     * Test of the following methods when the attributes are not found, of class
-     * GraphVisualAccess: getBackgroundColor, getHighlightColor, getBlazeSize,
-     * getBlazeOpacity, getConnectionOpacity
+     * Test of the following methods when the attributes are not found, of class GraphVisualAccess: getBackgroundColor,
+     * getHighlightColor, getBlazeSize, getBlazeOpacity, getConnectionOpacity
      *
      * @throws InterruptedException
      */
@@ -127,9 +126,8 @@ public class GraphVisualAccessNGTest {
     }
 
     /**
-     * Test of the following methods when attributes are added, of class
-     * GraphVisualAccess: getBackgroundColor, getHighlightColor, getBlazeSize,
-     * getBlazeOpacity, getConnectionOpacity
+     * Test of the following methods when attributes are added, of class GraphVisualAccess: getBackgroundColor,
+     * getHighlightColor, getBlazeSize, getBlazeOpacity, getConnectionOpacity
      *
      * @throws InterruptedException
      */
@@ -173,8 +171,7 @@ public class GraphVisualAccessNGTest {
     }
 
     /**
-     * Test of getDrawFlags method when attribute is not found, of class
-     * GraphVisualAccess.
+     * Test of getDrawFlags method when attribute is not found, of class GraphVisualAccess.
      *
      * @throws InterruptedException
      */
@@ -192,8 +189,7 @@ public class GraphVisualAccessNGTest {
     }
 
     /**
-     * Test of getDrawFlags method when attribute is added, of class
-     * GraphVisualAccess.
+     * Test of getDrawFlags method when attribute is added, of class GraphVisualAccess.
      *
      * @throws InterruptedException
      */
@@ -219,8 +215,7 @@ public class GraphVisualAccessNGTest {
     }
 
     /**
-     * Test of getCamera method when attribute is not found, of class
-     * GraphVisualAccess.
+     * Test of getCamera method when attribute is not found, of class GraphVisualAccess.
      *
      * @throws InterruptedException
      */
@@ -239,8 +234,7 @@ public class GraphVisualAccessNGTest {
     }
 
     /**
-     * Test of getCamera method when attribute is added, of class
-     * GraphVisualAccess.
+     * Test of getCamera method when attribute is added, of class GraphVisualAccess.
      *
      * @throws InterruptedException
      */
@@ -340,8 +334,7 @@ public class GraphVisualAccessNGTest {
     }
 
     /**
-     * Test of getConnectionDirected method when attribute is not found, of
-     * class GraphVisualAccess.
+     * Test of getConnectionDirected method when attribute is not found, of class GraphVisualAccess.
      *
      * @throws InterruptedException
      */
@@ -364,9 +357,35 @@ public class GraphVisualAccessNGTest {
         assertEquals(directed, true);
     }
 
+    @Test
+    public void testGetConnectionVisibility() {
+        System.out.println("getConnectionVisibility");
+        final float visibility = 1.5F;
+        final ConnectionMode[] connectionModeArray = {ConnectionMode.LINK, ConnectionMode.EDGE, ConnectionMode.TRANSACTION};
+
+        final int transactionVisibilityAttribute = VisualConcept.TransactionAttribute.VISIBILITY.ensure(sGraph);
+        final int transactionLayerVisibilityAttribute = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.ensure(sGraph);
+        final int connectionModeAttr = VisualConcept.GraphAttribute.CONNECTION_MODE.ensure(sGraph);
+
+        for (ConnectionMode mode : connectionModeArray) {
+            sGraph.setFloatValue(transactionVisibilityAttribute, 0, visibility);
+            sGraph.setFloatValue(transactionLayerVisibilityAttribute, 0, 1);
+            sGraph.setObjectValue(connectionModeAttr, 0, mode);
+
+            final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
+            final DualGraph localGraph = new DualGraph(schema, sGraph);
+
+            final GraphVisualAccess instance = new GraphVisualAccess(localGraph);
+            instance.updateModCounts(localGraph.getReadableGraph());
+            instance.beginUpdate();
+
+            assertEquals(instance.getConnectionVisibility(0), visibility);
+        }
+
+    }
+
     /**
-     * Test of getConnectionDirected method when attribute is added, of class
-     * GraphVisualAccess.
+     * Test of getConnectionDirected method when attribute is added, of class GraphVisualAccess.
      *
      * @throws InterruptedException
      */
@@ -395,10 +414,9 @@ public class GraphVisualAccessNGTest {
     }
 
     /**
-     * Test of the following methods when attributes are not found, of class
-     * GraphVisualAccess: getX, getY, getZ, getX2, getY2, getZ2,
-     * getBackgroundIcon, getForegroundIcon, getVertexSelected, getVertexDimmed,
-     * getRadius, getNWDecorator, getNEDecorator, getSEDecorator, getSWDecorator
+     * Test of the following methods when attributes are not found, of class GraphVisualAccess: getX, getY, getZ, getX2,
+     * getY2, getZ2, getBackgroundIcon, getForegroundIcon, getVertexSelected, getVertexDimmed, getRadius,
+     * getNWDecorator, getNEDecorator, getSEDecorator, getSWDecorator
      *
      * @throws InterruptedException
      */
@@ -448,10 +466,9 @@ public class GraphVisualAccessNGTest {
     }
 
     /**
-     * Test of the following methods when attributes are added, of class
-     * GraphVisualAccess: getX, getY, getZ, getX2, getY2, getZ2,
-     * getBackgroundIcon, getForegroundIcon, getVertexSelected, getVertexDimmed,
-     * getRadius, getNWDecorator, getNEDecorator, getSEDecorator, getSWDecorator
+     * Test of the following methods when attributes are added, of class GraphVisualAccess: getX, getY, getZ, getX2,
+     * getY2, getZ2, getBackgroundIcon, getForegroundIcon, getVertexSelected, getVertexDimmed, getRadius,
+     * getNWDecorator, getNEDecorator, getSEDecorator, getSWDecorator
      *
      * @throws InterruptedException
      */
@@ -542,8 +559,7 @@ public class GraphVisualAccessNGTest {
     }
 
     /**
-     * Test of getVertexColor method when attributes are not found, of class
-     * GraphVisualAccess.
+     * Test of getVertexColor method when attributes are not found, of class GraphVisualAccess.
      *
      * @throws InterruptedException
      */
@@ -563,8 +579,7 @@ public class GraphVisualAccessNGTest {
     }
 
     /**
-     * Test of getVertexColor method when attributes are added, of class
-     * GraphVisualAccess.
+     * Test of getVertexColor method when attributes are added, of class GraphVisualAccess.
      *
      * @throws InterruptedException
      */
@@ -596,8 +611,7 @@ public class GraphVisualAccessNGTest {
     }
 
     /**
-     * Test of getVertexVisibility method when attributes are not found, of
-     * class GraphVisualAccess.
+     * Test of getVertexVisibility method when attributes are not found, of class GraphVisualAccess.
      *
      * @throws InterruptedException
      */
@@ -617,8 +631,7 @@ public class GraphVisualAccessNGTest {
     }
 
     /**
-     * Test of getVertexVisibility method when attributes are added, of class
-     * GraphVisualAccess.
+     * Test of getVertexVisibility method when attributes are added, of class GraphVisualAccess.
      *
      * @throws InterruptedException
      */
