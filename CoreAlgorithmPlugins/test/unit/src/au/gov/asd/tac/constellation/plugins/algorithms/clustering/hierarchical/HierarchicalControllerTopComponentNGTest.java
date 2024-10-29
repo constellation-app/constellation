@@ -15,6 +15,10 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.clustering.hierarchical;
 
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.hierarchical.FastNewman.Group;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
 
@@ -32,6 +36,35 @@ public class HierarchicalControllerTopComponentNGTest {
         System.out.println("testConstructor");
         final HierarchicalControllerTopComponent instance = new HierarchicalControllerTopComponent();
         assertEquals(instance.getClass(), HierarchicalControllerTopComponent.class);
+    }
+
+    @Test
+    public void testUpdateEdit() throws InterruptedException {
+        System.out.println("testUpdateEdit");
+        final HierarchicalState mockState = mock(HierarchicalState.class);
+        //inal Group mockgroup = mock(Group.class);
+        final Group g = new Group();
+        final Group[] groups = {g};
+        final int link = 101;
+        final int lowVertex = 1001;
+
+        when(mockState.getGroups()).thenReturn(groups);
+        when(mockState.isInteractive()).thenReturn(true);
+        when(mockState.isExcludeSingleVertices()).thenReturn(true);
+        //when(mockgroup.getMergeStep()).thenReturn(1);
+
+        final GraphWriteMethods mockGraph = mock(GraphWriteMethods.class);
+        when(mockGraph.getVertexCount()).thenReturn(1);
+        when(mockGraph.getLinkCount()).thenReturn(1);
+        when(mockGraph.getLink(0)).thenReturn(link);
+        when(mockGraph.getLinkLowVertex(link)).thenReturn(lowVertex);
+        when(mockGraph.getBooleanValue(0, lowVertex)).thenReturn(true);
+        when(mockGraph.getLinkTransactionCount(link)).thenReturn(1);
+
+        final HierarchicalControllerTopComponent.Update instance = new HierarchicalControllerTopComponent.Update(mockState);
+        assertEquals(instance.getClass(), HierarchicalControllerTopComponent.Update.class);
+
+        instance.edit(mockGraph, null, null);
     }
 
 //    /**
