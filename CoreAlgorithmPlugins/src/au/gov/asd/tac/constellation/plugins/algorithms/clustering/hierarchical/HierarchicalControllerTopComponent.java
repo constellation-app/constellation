@@ -159,12 +159,9 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
     @Override
     public void resultChanged(final LookupEvent lev) {
         final Node[] nodes = TopComponent.getRegistry().getActivatedNodes();
-        System.out.println("resultChanged nodes: " + Arrays.toString(nodes));
         if (nodes != null && nodes.length == 1 && nodes[0] instanceof GraphNode) {
-            System.out.println("resultChanged A");
             final GraphNode gnode = ((GraphNode) nodes[0]);
             if (gnode != graphNode) {
-                System.out.println("resultChanged B");
                 setNode(gnode);
             }
         } else {
@@ -552,10 +549,8 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
     }
 
     private void setGroups(final boolean doUpdate) {
-        System.out.println("setGroups A");
         interactiveButton.setEnabled(interactivityPermitted);
         if (state != null && state.isInteractive()) {
-            System.out.println("setGroups B");
             final Component[] children = getComponents();
             for (final Component c : children) {
                 if (!c.equals(reclusterButton) || c.equals(interactiveButton) || c.equals(reclusterLabel)) {
@@ -567,7 +562,6 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
             infoLabel.setText(String.format(INFO_STRING, state.getCurrentNumOfClusters()));
             excludeSingleVerticesCheckBox.setSelected(state.isExcludeSingleVertices());
 
-            System.out.println("setGroups GOT TO NEW CODE");
             final ExcludedState exclusion = state.getExcludedElementsState();
             dimmedRadioButton.setSelected(exclusion == ExcludedState.DIMMED);
             hiddenRadioButton.setSelected(exclusion == ExcludedState.HIDDEN);
@@ -632,22 +626,15 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
      */
     @Override
     public void graphChanged(final GraphChangeEvent evt) {
-        System.out.println("graphChanged A");
         long smc;
         final long mc;
 
         try (final ReadableGraph rg = graph.getReadableGraph()) {
-            System.out.println("Inside TRY");
             // Retrieve the COI state attribute, attribute mod counter, and structural mod counter from the graph
             final int stateAttr = ClusteringConcept.MetaAttribute.HIERARCHICAL_CLUSTERING_STATE.get(rg);
             smc = rg.getStructureModificationCounter();
             mc = stateAttr != Graph.NOT_FOUND ? rg.getValueModificationCounter(stateAttr) : Graph.NOT_FOUND;
 
-            System.out.println("state " + state);
-            System.out.println("mc " + mc);
-            System.out.println("state.getModificationCounter() " + state.getModificationCounter());
-            System.out.println("state == null " + (state == null));
-            System.out.println("state.getModificationCounter() " + (state.getModificationCounter()));
             // If the COI state on the controller is null, or has a different modcount to the state on the graph, update this controller's state.
             if (state == null || mc != state.getModificationCounter()) {
                 state = stateAttr != Graph.NOT_FOUND ? (HierarchicalState) rg.getObjectValue(stateAttr, 0) : null;
@@ -679,22 +666,18 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
      * @param node The GraphNode containing the graph to be displayed.
      */
     private void setNode(final GraphNode node) {
-        System.out.println("setNode A");
         if (graphNode != null) {
             graph.removeGraphChangeListener(this);
         }
-        System.out.println("setNode B");
+
         if (node != null) {
-            System.out.println("setNode C");
             graphNode = node;
             graph = graphNode.getGraph();
 
             try (final ReadableGraph rg = graph.getReadableGraph()) {
                 final int stateAttr = ClusteringConcept.MetaAttribute.HIERARCHICAL_CLUSTERING_STATE.get(rg);
-                System.out.println("setNode C2");
-                System.out.println("setNode stateAttr != Graph.NOT_FOUND  " + (stateAttr != Graph.NOT_FOUND));
                 state = stateAttr != Graph.NOT_FOUND ? (HierarchicalState) rg.getObjectValue(stateAttr, 0) : null;
-                System.out.println("setNode state " + state);
+
                 if (rg.getSchema() != null && !(rg.getSchema().getFactory() instanceof VisualSchemaFactory)) {
                     interactiveButton.setSelected(false);
                     interactiveButton.setText(TOGGLE_ENABLED);
@@ -719,7 +702,6 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
             state = null;
         }
 
-        System.out.println("setNode D");
         setGroups(false);
     }
 
