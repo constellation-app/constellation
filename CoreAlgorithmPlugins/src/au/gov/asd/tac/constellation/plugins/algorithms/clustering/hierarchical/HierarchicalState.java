@@ -183,9 +183,11 @@ public final class HierarchicalState {
 
     public int getCurrentNumOfClusters() {
         int numClusters = 0;
-        for (final FastNewman.Group group : groups) {
-            if (group != null && group.getMergeStep() > currentStep) {
-                numClusters++;
+        if (groups != null) {
+            for (final FastNewman.Group group : groups) {
+                if (group != null && group.getMergeStep() > currentStep) {
+                    numClusters++;
+                }
             }
         }
         return numClusters;
