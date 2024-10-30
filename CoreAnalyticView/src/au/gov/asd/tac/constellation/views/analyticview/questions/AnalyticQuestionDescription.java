@@ -34,6 +34,8 @@ public interface AnalyticQuestionDescription<R extends AnalyticResult<?>> {
 
     public String getDescription();
 
+    public String getDocumentationUrl();
+    
     public List<Class<? extends AnalyticPlugin<R>>> getPluginClasses();
 
     public Class<? extends AnalyticAggregator<R>> getAggregatorType();

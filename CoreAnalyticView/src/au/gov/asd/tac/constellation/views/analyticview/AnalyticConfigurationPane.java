@@ -199,6 +199,7 @@ public class AnalyticConfigurationPane extends VBox {
                     SingleChoiceParameterType.setChoiceData(aggregator, (AnalyticAggregatorParameterValue) aggregatorParameterValue);
                 }
             });
+            populateDocumentationPane(newValue.getDocumentationUrl());
             populateParameterPane(globalAnalyticParameters);
             setPluginsFromSelectedQuestion();
         });
@@ -212,7 +213,7 @@ public class AnalyticConfigurationPane extends VBox {
             questionListPane.setExpanded(!categoryListPane.isExpanded());
             if (categoryListPane.isExpanded()) {
                 currentQuestion = null;
-                populateParameterPane(globalAnalyticParameters);
+                populateParameterPane(globalAnalyticParameters);            
                 setPluginsFromSelectedCategory();
                 AnalyticViewController.getDefault().setCategoriesVisible(true);
             }
@@ -222,6 +223,7 @@ public class AnalyticConfigurationPane extends VBox {
             categoryListPane.setExpanded(!questionListPane.isExpanded());
             if (questionListPane.isExpanded()) {
                 currentQuestion = questionList.getSelectionModel().getSelectedItem();
+                populateDocumentationPane(currentQuestion.getDocumentationUrl());
                 populateParameterPane(globalAnalyticParameters);
                 setPluginsFromSelectedQuestion();
                 AnalyticViewController.getDefault().setCategoriesVisible(false);
@@ -252,7 +254,7 @@ public class AnalyticConfigurationPane extends VBox {
         pluginList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (!selectionSuppressed) {
                 if (newValue != null) {
-                    populateDocumentationPane(newValue);
+                    populateDocumentationPane(newValue.getPlugin().getDocumentationUrl());
                     populateParameterPane(newValue.getAllParameters());
                 } else {
                     populateDocumentationPane(null);
@@ -422,13 +424,13 @@ public class AnalyticConfigurationPane extends VBox {
      * 
      * @param plugin
      */
-    private void populateDocumentationPane(final SelectableAnalyticPlugin plugin) {
+    private void populateDocumentationPane(final String documentationURL) {
         if (documentationView != null) {
-            if (plugin == null || plugin.getPlugin() == null || plugin.getPlugin().getDocumentationUrl() == null) {
+            if (documentationURL== null) {
                 documentationView.getEngine().loadContent("<html>No Documentation Available</html>", "text/html");
             } else {
                 try {
-                    final Path path = Paths.get(plugin.getPlugin().getDocumentationUrl());
+                    final Path path = Paths.get(documentationURL);
                     final InputStream pageInput = new FileInputStream(path.toString());
                     final String pageString =  new String(pageInput.readAllBytes(), StandardCharsets.UTF_8);
                     final Parser parser = Parser.builder().build();

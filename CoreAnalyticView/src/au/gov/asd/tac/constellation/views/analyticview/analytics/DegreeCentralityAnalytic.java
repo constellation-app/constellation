@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.plugins.algorithms.sna.SnaConcept;
 import au.gov.asd.tac.constellation.plugins.algorithms.sna.centrality.DegreeCentralityPlugin;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
+import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticUtilities;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -46,7 +47,7 @@ public class DegreeCentralityAnalytic extends ScoreAnalyticPlugin {
 
     @Override
     public String getDocumentationUrl() {
-        return getHelpPath() + "analytic-degree-centrality.md";
+        return AnalyticUtilities.getHelpPath() + "analytic-degree-centrality.md";
     }
 
     @Override

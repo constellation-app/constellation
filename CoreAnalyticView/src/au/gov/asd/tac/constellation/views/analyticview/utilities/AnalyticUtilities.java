@@ -15,11 +15,13 @@
  */
 package au.gov.asd.tac.constellation.views.analyticview.utilities;
 
+import au.gov.asd.tac.constellation.help.utilities.Generator;
 import au.gov.asd.tac.constellation.views.analyticview.aggregators.AnalyticAggregator;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestionDescription;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.translators.GraphVisualisationTranslator;
 import au.gov.asd.tac.constellation.views.analyticview.translators.InternalVisualisationTranslator;
+import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -131,5 +133,16 @@ public class AnalyticUtilities {
 
     public static GraphVisualisationTranslator<?, ?> lookupGraphVisualisationTranslator(final String graphVisualisationTranslatorName) {
         return GRAPH_VISUALISATION_TRANSLATORS.get(graphVisualisationTranslatorName);
+    }
+    
+    /**
+     * Helper method to get the path for the documentation pages 
+     * @return path
+     */
+    public static String getHelpPath() {
+        final String codebaseName = "constellation";
+        final String sep = File.separator;
+        return Generator.getBaseDirectory() + sep + "ext" + sep + "docs" + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep + "gov" + sep
+                + "asd" + sep + "tac" + sep + codebaseName + sep + "views" + sep + "analyticview" +  sep;
     }
 }
