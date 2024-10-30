@@ -22,10 +22,15 @@ import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ClusteringConcept;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.hierarchical.FastNewman.Group;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyFloat;
+import static org.mockito.ArgumentMatchers.anyInt;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.openide.nodes.Node;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.openide.windows.TopComponent;
 import static org.testng.Assert.assertEquals;
@@ -50,15 +55,14 @@ public class HierarchicalControllerTopComponentNGTest {
     @Test
     public void testUpdateEdit() throws InterruptedException {
         System.out.println("testUpdateEdit");
-        final HierarchicalState mockState = mock(HierarchicalState.class);
+        final HierarchicalState state = new HierarchicalState();
         final Group g = new Group();
         final Group[] groups = {g};
         final int link = 101;
         final int lowVertex = 1001;
 
-        when(mockState.getGroups()).thenReturn(groups);
-        when(mockState.isInteractive()).thenReturn(true);
-        when(mockState.isExcludeSingleVertices()).thenReturn(true);
+        state.setGroups(groups);
+        state.setExcludeSingleVertices(true);
 
         final GraphWriteMethods mockGraph = mock(GraphWriteMethods.class);
         when(mockGraph.getVertexCount()).thenReturn(1);
@@ -68,10 +72,14 @@ public class HierarchicalControllerTopComponentNGTest {
         when(mockGraph.getBooleanValue(0, lowVertex)).thenReturn(true);
         when(mockGraph.getLinkTransactionCount(link)).thenReturn(1);
 
-        final HierarchicalControllerTopComponent.Update instance = new HierarchicalControllerTopComponent.Update(mockState);
+        final HierarchicalControllerTopComponent.Update instance = new HierarchicalControllerTopComponent.Update(state);
         assertEquals(instance.getClass(), HierarchicalControllerTopComponent.Update.class);
 
+        assertEquals(state.getRedrawCount(), 0);
         instance.edit(mockGraph, null, null);
+        assertEquals(state.getRedrawCount(), 1);
+        verify(mockGraph, times(2)).setBooleanValue(anyInt(), anyInt(), anyBoolean());
+        verify(mockGraph, times(2)).setFloatValue(anyInt(), anyInt(), anyFloat());
     }
 
     @Test
@@ -100,7 +108,11 @@ public class HierarchicalControllerTopComponentNGTest {
             assertEquals(instance.getClass(), HierarchicalControllerTopComponent.class);
 
             instance.resultChanged(null);
-
+            mockTopComponent.verify(TopComponent::getRegistry, times(2));
+            verify(mockReg).getActivatedNodes();
+            verify(mockGraphNode).getGraph();
+            verify(mockGraph).getReadableGraph();
+            verify(mockReadableGraph).getObjectValue(stateAttr, 0);
         }
 
     }
