@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.graph.visual.contextmenu;
+package au.gov.asd.tac.constellation.functionality.browser;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.attribute.HyperlinkAttributeDescription;
+import au.gov.asd.tac.constellation.graph.visual.contextmenu.ContextMenuProvider;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.awt.Desktop;
 import java.io.IOException;
@@ -72,12 +73,9 @@ public class BrowseContextMenu implements ContextMenuProvider {
             if (attribute != Graph.NOT_FOUND) {
                 final URI uri = (URI) rg.getObjectValue(attribute, elementId);
                 if (uri != null) {
+                    // Open In Browser plugin could be used here but makes things more complicated than necessary in this instance
+                    // i.e. would need to convert the URI to a string before it then gets converted back to a URI
                     Desktop.getDesktop().browse(uri);
-                    // unable to use the plugin due to a circular dependency
-//                    PluginExecution.withPlugin(VisualGraphPluginRegistry.OPEN_IN_BROWSER)
-//                            .withParameter(OpenInBrowserPlugin.APPLICATION_PARAMETER_ID, "Browse To")
-//                            .withParameter(OpenInBrowserPlugin.URL_PARAMETER_ID, uri)
-//                            .executeLater(null);
                 }
             }
         } catch (final IOException ex) {

@@ -2,6 +2,7 @@
 
 ## Changes in October 2024
 -   Added the ability to set of Table View default columns by implementing `TableDefaultColumns` and using lookup.
+-   Moved `BrowseContextMenu` from `au.gov.asd.tac.constellation.graph.visual.contextmenu` to `au.gov.asd.tac.constellation.functionality.browser` to group it with other browser functionality.
 -   Removed several functions from `VisualGraphUtilities` passing attribute ids as parameters in favour of using existing complimentary functions using default attributes.
 -   Removed `BBoxf.getGraphBoundingBoxMix()` as it was unused.
 -   Renamed `getSelectedElements()` in `VisualGraphUtilities` to `getSelectedVertices` to better reflect what the function does.
