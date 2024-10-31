@@ -257,7 +257,11 @@ public class AnalyticConfigurationPane extends VBox {
                     populateDocumentationPane(newValue.getPlugin().getDocumentationUrl());
                     populateParameterPane(newValue.getAllParameters());
                 } else {
-                    populateDocumentationPane(null);
+                    if (currentQuestion != null) {
+                        populateDocumentationPane(currentQuestion.getDocumentationUrl());
+                    } else {
+                        populateDocumentationPane(null);
+                    }
                     populateParameterPane(globalAnalyticParameters);
                 }
             }
@@ -290,7 +294,9 @@ public class AnalyticConfigurationPane extends VBox {
             this.documentationView = new WebView();
             if (JavafxStyleManager.isDarkTheme()) {
                 documentationView.getEngine().setUserStyleSheetLocation(getClass().getResource("resources/analytic-view-dark.css").toExternalForm());
-            }        
+            } else {
+                documentationView.getEngine().setUserStyleSheetLocation(getClass().getResource("resources/analytic-view-light.css").toExternalForm());
+            }     
             populateDocumentationPane(null);
             cdl.countDown();
         });
@@ -426,7 +432,7 @@ public class AnalyticConfigurationPane extends VBox {
      */
     private void populateDocumentationPane(final String documentationURL) {
         if (documentationView != null) {
-            if (documentationURL== null) {
+            if (documentationURL == null) {
                 documentationView.getEngine().loadContent("<html>No Documentation Available</html>", "text/html");
             } else {
                 try {

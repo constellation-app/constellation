@@ -39,6 +39,7 @@ public class AnalyticUtilities {
     private static final Map<String, AnalyticAggregator<?>> ANALYTIC_AGGREGATORS = new HashMap<>();
     private static final Map<String, InternalVisualisationTranslator> INTERNAL_VISUALISATION_TRANSLATORS = new HashMap<>();
     private static final Map<String, GraphVisualisationTranslator> GRAPH_VISUALISATION_TRANSLATORS = new HashMap<>();
+    private static final String SEP = File.separator;
 
     static {
         Lookup.getDefault().lookupAll(AnalyticQuestionDescription.class).forEach(analyticQuestionDescription
@@ -141,8 +142,7 @@ public class AnalyticUtilities {
      */
     public static String getHelpPath() {
         final String codebaseName = "constellation";
-        final String sep = File.separator;
-        return Generator.getBaseDirectory() + sep + "ext" + sep + "docs" + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep + "gov" + sep
-                + "asd" + sep + "tac" + sep + codebaseName + sep + "views" + sep + "analyticview" +  sep;
+        return Generator.getBaseDirectory() + SEP + "ext" + SEP + "docs" + SEP + "CoreAnalyticView" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP
+                + "asd" + SEP + "tac" + SEP + codebaseName + SEP + "views" + SEP + "analyticview" +  SEP;
     }
 }
