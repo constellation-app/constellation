@@ -56,7 +56,7 @@ button will select the shortest path between the centers of all clusters
 ### Excluding Elements
 
 Elements that are not part of clustering, such as unnecessary nodes or transactions, can have their visibilty altered.
-They can be either showm, dimmed or hidden with the respective radio buttons located on the left of the Hierarchical Clustering panel.
+They can be either shown, dimmed or hidden with the respective radio buttons located on the left of the Hierarchical Clusters panel.
 Single nodes can also be excluded by selecting the checkbox labeled "Exclude Single Nodes".
 
 ## Constellation Display
