@@ -22,12 +22,14 @@ import au.gov.asd.tac.constellation.graph.interaction.plugins.io.SaveAsAction;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
 import static au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode.LINK;
+import java.io.File;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.MockedConstruction;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -35,6 +37,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
@@ -114,8 +117,11 @@ public class VisualGraphTopComponentNGTest {
         // Mock variables
         final GraphDataObject mockGDO = mock(GraphDataObject.class);
         final FileObject mockFileObject = mock(FileObject.class);
+        final File mockFile = mock(File.class);
         final DualGraph dgSpy = spy(new DualGraph(null));
         final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
+        final String path = "mocked path";
+        final Long lastModified = 123L;
 
         when(mockGDO.isInMemory()).thenReturn(false);
         when(mockGDO.isValid()).thenReturn(true);
@@ -125,6 +131,9 @@ public class VisualGraphTopComponentNGTest {
 
         when(mockFileObject.getPath()).thenReturn("");
 
+        when(mockFile.getPath()).thenReturn(path);
+        when(mockFile.lastModified()).thenReturn(lastModified);
+
         when(dgSpy.getReadableGraph()).thenReturn(mockReadableGraph);
 
         final int connectionMode = 1;
@@ -133,12 +142,18 @@ public class VisualGraphTopComponentNGTest {
         when(mockReadableGraph.getAttribute(GraphElementType.GRAPH, "connection_mode")).thenReturn(connectionMode);
         when(mockReadableGraph.getAttribute(GraphElementType.GRAPH, "draw_flags")).thenReturn(graphNotFound);
 
-        // Assert constructed correctely
-        final VisualGraphTopComponent instance = new VisualGraphTopComponent(mockGDO, dgSpy);
-        instance.getGraphNode().setDataObject(mockGDO);
-        assertEquals(instance.getGraphNode().getDataObject(), mockGDO);
-        assertNotNull(instance);
-        assertNotNull(instance.getUndoRedo());
+        try (MockedStatic<FileUtil> mockFileUtil = Mockito.mockStatic(FileUtil.class, Mockito.CALLS_REAL_METHODS)) {
+            // Set up FileUtil mock
+            mockFileUtil.when(() -> FileUtil.toFile(mockFileObject)).thenReturn(mockFile);
+            assertEquals(FileUtil.toFile(mockFileObject), mockFile);
+
+            // Assert constructed correctely
+            final VisualGraphTopComponent instance = new VisualGraphTopComponent(mockGDO, dgSpy);
+            instance.getGraphNode().setDataObject(mockGDO);
+            assertEquals(instance.getGraphNode().getDataObject(), mockGDO);
+            assertNotNull(instance);
+            assertNotNull(instance.getUndoRedo());
+        }
     }
 
     /**
@@ -153,7 +168,10 @@ public class VisualGraphTopComponentNGTest {
         // Mock variables
         final GraphDataObject mockGDO = mock(GraphDataObject.class);
         final FileObject mockFileObject = mock(FileObject.class);
+        final File mockFile = mock(File.class);
         final DualGraph dgSpy = spy(new DualGraph(null));
+        final String path = "mocked path";
+        final Long lastModified = 123L;
 
         when(mockGDO.isInMemory()).thenReturn(false);
         when(mockGDO.isValid()).thenReturn(true);
@@ -161,18 +179,26 @@ public class VisualGraphTopComponentNGTest {
         when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
 
         when(mockFileObject.getPath()).thenReturn("");
+        when(mockFile.getPath()).thenReturn(path);
+        when(mockFile.lastModified()).thenReturn(lastModified);
 
-        // Mock contruct save as action, GraphNode
-        VisualGraphTopComponent instance = new VisualGraphTopComponent(mockGDO, dgSpy);
-        instance.getGraphNode().setDataObject(mockGDO);
-        instance.saveGraph();
+        try (MockedStatic<FileUtil> mockFileUtil = Mockito.mockStatic(FileUtil.class, Mockito.CALLS_REAL_METHODS)) {
+            // Set up FileUtil mock
+            mockFileUtil.when(() -> FileUtil.toFile(mockFileObject)).thenReturn(mockFile);
+            assertEquals(FileUtil.toFile(mockFileObject), mockFile);
 
-        assertEquals(instance.getGraphNode().getDataObject(), mockGDO);
+            // Mock contruct save as action, GraphNode
+            VisualGraphTopComponent instance = new VisualGraphTopComponent(mockGDO, dgSpy);
+            instance.getGraphNode().setDataObject(mockGDO);
+            instance.saveGraph();
 
-        verify(mockGDO).isValid();
-        verify(mockGDO).isInMemory();
-        verify(mockGDO, times(2)).getName();
-        verify(mockGDO, times(4)).getPrimaryFile();
+            assertEquals(instance.getGraphNode().getDataObject(), mockGDO);
+
+            verify(mockGDO).isValid();
+            verify(mockGDO).isInMemory();
+            verify(mockGDO, times(2)).getName();
+            verify(mockGDO, times(4)).getPrimaryFile();
+        }
     }
 
     /**
@@ -192,10 +218,16 @@ public class VisualGraphTopComponentNGTest {
 
         final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
 
+        final File mockFile = mock(File.class);
+        final String path = "mocked path";
+        final Long lastModified = 123L;
+
         when(mockGDO.isValid()).thenReturn(false);
         when(mockGDO.getPrimaryFile()).thenReturn(mockFileObject);
 
         when(mockFileObject.getPath()).thenReturn("");
+        when(mockFile.getPath()).thenReturn(path);
+        when(mockFile.lastModified()).thenReturn(lastModified);
 
         when(dgSpy.getReadableGraph()).thenReturn(mockReadableGraph);
 
@@ -208,7 +240,11 @@ public class VisualGraphTopComponentNGTest {
         when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
 
         // Mock contruct save as action, GraphNode
-        try (MockedConstruction<SaveAsAction> mockSaveAsAction = Mockito.mockConstruction(SaveAsAction.class)) {
+        try (MockedConstruction<SaveAsAction> mockSaveAsAction = Mockito.mockConstruction(SaveAsAction.class); MockedStatic<FileUtil> mockFileUtil = Mockito.mockStatic(FileUtil.class, Mockito.CALLS_REAL_METHODS)) {
+
+            // Set up FileUtil mock
+            mockFileUtil.when(() -> FileUtil.toFile(mockFileObject)).thenReturn(mockFile);
+            assertEquals(FileUtil.toFile(mockFileObject), mockFile);
 
             VisualGraphTopComponent instance = new VisualGraphTopComponent(mockGDO, dgSpy);
             instance.getGraphNode().setDataObject(mockGDO);
@@ -241,12 +277,18 @@ public class VisualGraphTopComponentNGTest {
 
         final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
 
+        final File mockFile = mock(File.class);
+        final String path = "mocked path";
+        final Long lastModified = 123L;
+
         when(mockGDO.isInMemory()).thenReturn(true);
         when(mockGDO.isValid()).thenReturn(true);
         when(mockGDO.getPrimaryFile()).thenReturn(mockFileObject);
         when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
 
         when(mockFileObject.getPath()).thenReturn("");
+        when(mockFile.getPath()).thenReturn(path);
+        when(mockFile.lastModified()).thenReturn(lastModified);
         when(dgSpy.getReadableGraph()).thenReturn(mockReadableGraph);
 
         final int connectionMode = 1;
@@ -256,7 +298,11 @@ public class VisualGraphTopComponentNGTest {
         when(mockReadableGraph.getAttribute(GraphElementType.GRAPH, "draw_flags")).thenReturn(graphNotFound);
 
         // Mock contruct save as action, GraphNode
-        try (MockedConstruction<SaveAsAction> mockSaveAsAction = Mockito.mockConstruction(SaveAsAction.class)) {
+        try (MockedConstruction<SaveAsAction> mockSaveAsAction = Mockito.mockConstruction(SaveAsAction.class); MockedStatic<FileUtil> mockFileUtil = Mockito.mockStatic(FileUtil.class, Mockito.CALLS_REAL_METHODS)) {
+
+            // Set up FileUtil mock
+            mockFileUtil.when(() -> FileUtil.toFile(mockFileObject)).thenReturn(mockFile);
+            assertEquals(FileUtil.toFile(mockFileObject), mockFile);
 
             VisualGraphTopComponent instance = new VisualGraphTopComponent(mockGDO, dgSpy);
 
@@ -281,6 +327,9 @@ public class VisualGraphTopComponentNGTest {
         final GraphDataObject mockGDO = mock(GraphDataObject.class);
         final FileObject mockFileObject = mock(FileObject.class);
         final DualGraph dgSpy = spy(new DualGraph(null));
+        final File mockFile = mock(File.class);
+        final String path = "mocked path";
+        final Long lastModified = 123L;
 
         when(mockGDO.isInMemory()).thenReturn(false);
         when(mockGDO.isValid()).thenReturn(true);
@@ -288,10 +337,17 @@ public class VisualGraphTopComponentNGTest {
         when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
 
         when(mockFileObject.getPath()).thenReturn("");
+        when(mockFile.getPath()).thenReturn(path);
+        when(mockFile.lastModified()).thenReturn(lastModified);
 
-        // Mock contruct save as action, GraphNode
-        VisualGraphTopComponent instance = new VisualGraphTopComponent(mockGDO, dgSpy);
+        try (MockedStatic<FileUtil> mockFileUtil = Mockito.mockStatic(FileUtil.class, Mockito.CALLS_REAL_METHODS)) {
+            // Set up FileUtil mock
+            mockFileUtil.when(() -> FileUtil.toFile(mockFileObject)).thenReturn(mockFile);
+            assertEquals(FileUtil.toFile(mockFileObject), mockFile);
+            // Mock contruct save as action, GraphNode
+            VisualGraphTopComponent instance = new VisualGraphTopComponent(mockGDO, dgSpy);
 
-        instance.requestActiveWithLatch(null);
+            instance.requestActiveWithLatch(null);
+        }
     }
 }
