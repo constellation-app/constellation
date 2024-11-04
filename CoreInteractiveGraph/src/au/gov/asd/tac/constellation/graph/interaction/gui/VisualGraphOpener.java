@@ -81,7 +81,7 @@ public final class VisualGraphOpener extends GraphOpener {
 
     private static final String UNABLE_TO_REMOVE_SECONDARY_BACKUP_MESSAGE = "Unable to remove old secondary backup file: {0}";
 
-    final private static List<String> openingGraphs = new ArrayList<>();
+    private static final List<String> openingGraphs = new ArrayList<>();
 
     /**
      * Open a graph file into a VisualTopComponent.
@@ -181,6 +181,10 @@ public final class VisualGraphOpener extends GraphOpener {
     public void openGraph(final Graph graph, final String name, final boolean numbered) {
         final GraphDataObject gdo = GraphObjectUtilities.createMemoryDataObject(name, numbered);
         new GraphFileOpener(gdo, graph, null).execute();
+    }
+
+    public static List<String> getOpeningGraphs() {
+        return new ArrayList<>(openingGraphs);
     }
 
     /**
