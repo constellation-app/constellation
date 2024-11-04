@@ -36,6 +36,13 @@ public final class HierarchicalState {
     private boolean interactive = true;
     private boolean colored = true;
 
+    public enum ExcludedState {
+        SHOW,
+        HIDDEN,
+        DIMMED
+    }
+    private ExcludedState excludedElementsState = ExcludedState.SHOW;
+
     /**
      * Required for AbstractGraphIOProvider.
      */
@@ -87,6 +94,14 @@ public final class HierarchicalState {
 
     public void setExcludedElementsDimmed(final boolean excludedElementsDimmed) {
         this.excludedElementsDimmed = excludedElementsDimmed;
+    }
+
+    public ExcludedState getExcludedElementsState() {
+        return this.excludedElementsState;
+    }
+
+    public void setExcludedElementsState(final ExcludedState newState) {
+        this.excludedElementsState = newState;
     }
 
     public int[] getClusterNumbers() {
@@ -146,9 +161,8 @@ public final class HierarchicalState {
     }
 
     /**
-     * These groups cannot be cloned as the state uses this call to update the
-     * list of groups by index 
-     * 
+     * These groups cannot be cloned as the state uses this call to update the list of groups by index
+     *
      * @return groups
      */
     public FastNewman.Group[] getGroups() {
@@ -169,9 +183,11 @@ public final class HierarchicalState {
 
     public int getCurrentNumOfClusters() {
         int numClusters = 0;
-        for (final FastNewman.Group group : groups) {
-            if (group != null && group.getMergeStep() > currentStep) {
-                numClusters++;
+        if (groups != null) {
+            for (final FastNewman.Group group : groups) {
+                if (group != null && group.getMergeStep() > currentStep) {
+                    numClusters++;
+                }
             }
         }
         return numClusters;
