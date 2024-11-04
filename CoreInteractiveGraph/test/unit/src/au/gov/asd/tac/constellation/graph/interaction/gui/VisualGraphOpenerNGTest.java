@@ -24,6 +24,7 @@ import static org.mockito.Mockito.when;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -86,8 +87,10 @@ public class VisualGraphOpenerNGTest {
             final VisualGraphOpener instance = new VisualGraphOpener();
             instance.openGraph(mockGdo);
 
-            // By the time the grpah has finished opening, list should be empty
-            //assertTrue(instance.getOpeningGraphs().isEmpty());
+            // Assert that the path was added to the list, 
+            // The list shouldn't be empty as the mockGdo wouldn't allow the GraphFileOpener to finsh and remove it
+            assertFalse(VisualGraphOpener.getOpeningGraphs().isEmpty());
+            assertTrue(VisualGraphOpener.getOpeningGraphs().contains(path));
         }
     }
 }
