@@ -112,7 +112,7 @@ public class DefaultPluginInteractionNGTest {
     @Test
     public void testGetCurrentMessage() {
         final PluginInteraction interaction = Mockito.mock(DefaultPluginInteraction.class);
-        String currentMessage = interaction.getCurrentMessage();
+        final String currentMessage = interaction.getCurrentMessage();
         verify(interaction, times(1)).getCurrentMessage();
         assertEquals(currentMessage, null);
     }
@@ -153,8 +153,8 @@ public class DefaultPluginInteractionNGTest {
         assertEquals(interaction.getProgress(), null);
         
         // add test for params
-        PluginParameters params = spy(PluginParameters.class);
-        PluginParameter testParam = Mockito.mock(PluginParameter.class);
+        final PluginParameters params = spy(PluginParameters.class);
+        final PluginParameter testParam = Mockito.mock(PluginParameter.class);
         when(testParam.getName()).thenReturn("key_name");
         when(testParam.getStringValue()).thenReturn("string_value");
         params.addParameter(testParam);

@@ -136,8 +136,8 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
     public void setProgressTimestamp(final boolean addTimestamp) throws InterruptedException {
 
         if (pluginReport != null && addTimestamp) {
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-            Date date = new Date(pluginReport.getStartTime());
+            final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            final Date date = new Date(pluginReport.getStartTime());
             pluginReport.addMessage("Time: " + format.format(date));
         }
     }
@@ -161,11 +161,11 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
             final PluginParameters params, final int selected) throws InterruptedException {
 
         if (pluginReport != null) {
-            StringBuilder builder = new StringBuilder();            
+            final StringBuilder builder = new StringBuilder();            
 
             if (params != null) {
                 final Map<String, PluginParameter<?>> parameters = params.getParameters();
-                for (String key : parameters.keySet()) {
+                for (final String key : parameters.keySet()) {
                     builder.append(String.format("%s : %s \n", parameters.get(key).getName(), parameters.get(key).getStringValue()));
                 }
                 pluginReport.addMessage('\n' + builder.toString());
