@@ -247,6 +247,14 @@ public class DefaultPluginInteractionNGTest {
         assertEquals(timeNegativeEnd, "00:00:00");
     }
 
+    @Test
+    public void testIsInteractive() {
+        final DefaultPluginInteraction interaction =
+                new DefaultPluginInteraction(manager, null);
+        assertEquals(interaction.isInteractive(), false);
+        
+    }
+    
     private class TestPlugin extends SimplePlugin {
 
         public TestPlugin() {
