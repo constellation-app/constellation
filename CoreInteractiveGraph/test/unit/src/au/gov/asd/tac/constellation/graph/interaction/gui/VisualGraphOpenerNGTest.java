@@ -38,9 +38,6 @@ import org.testng.annotations.Test;
  */
 public class VisualGraphOpenerNGTest {
 
-    public VisualGraphOpenerNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
     }
