@@ -299,7 +299,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 }
             }
         };
-        if (!IS_HEADLESS) {
+        if (!IsHeadless()) {
             displayPanel.setDropTarget(new DropTarget(displayPanel, DnDConstants.ACTION_COPY, dta, true));
         }
 
@@ -450,7 +450,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         this.graph = graph;
         graphVisualManagerFactory = Lookup.getDefault().lookup(GraphVisualManagerFactory.class);
 
-        if (!IS_HEADLESS) {
+        if (!IsHeadless()) {
             visualManager = graphVisualManagerFactory.constructVisualManager(graph);
             visualManager.startProcessing();
         } else {
@@ -879,6 +879,10 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         }
     }
 
+    private boolean IsHeadless() {
+        return Boolean.parseBoolean(System.getProperty("java.awt.headless", "false"));
+    }
+
     /**
      * A custom Savable.
      */
@@ -1023,7 +1027,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             }).start();
 
             // Start loop and report errors if they happen
-            if (!IS_HEADLESS) {
+            if (!IsHeadless()) {
                 final boolean result = loop.enter();
                 if (!result) {
                     LOGGER.log(Level.SEVERE, "Error with starting secondary loop in VisualGraphTopComponent");
