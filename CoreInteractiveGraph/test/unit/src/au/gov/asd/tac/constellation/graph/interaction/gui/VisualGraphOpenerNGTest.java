@@ -38,7 +38,7 @@ public class VisualGraphOpenerNGTest {
      * Test of openGraph method, of class VisualGraphOpener.
      */
     @Test
-    public void testOpenGraph_GraphDataObject() {
+    public void testOpenGraph() {
         System.out.println("openGraph");
         System.setProperty("java.awt.headless", "true");
         
@@ -67,8 +67,14 @@ public class VisualGraphOpenerNGTest {
             instance.openGraph(mockGdo);
 
             // Assert that the path was added to the list, 
-            // The list shouldn't be empty as the mockGdo wouldn't allow the GraphFileOpener to finsh and remove it
+            // The list shouldn't be empty at the moment
             assertFalse(VisualGraphOpener.getOpeningGraphs().isEmpty());
+            assertTrue(VisualGraphOpener.getOpeningGraphs().contains(path));
+            
+            // Open again
+            instance.openGraph(mockGdo);
+            // Assert path still in list
+             assertFalse(VisualGraphOpener.getOpeningGraphs().isEmpty());
             assertTrue(VisualGraphOpener.getOpeningGraphs().contains(path));
         }
         

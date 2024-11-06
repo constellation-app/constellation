@@ -48,7 +48,6 @@ import org.testng.annotations.Test;
  *
  * @author Quasar985
  */
-// TODO: clean up this class, i dont think it needs static mocks of mockFileUtil
 public class VisualGraphTopComponentNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(VisualGraphTopComponentNGTest.class.getName());
