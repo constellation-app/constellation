@@ -41,7 +41,7 @@ public class VisualGraphOpenerNGTest {
     public void testOpenGraph() {
         System.out.println("openGraph");
         System.setProperty("java.awt.headless", "true");
-        
+
         // Set up mocks
         final GraphDataObject mockGdo = mock(GraphDataObject.class);
         final FileObject mockFileObject = mock(FileObject.class);
@@ -70,14 +70,14 @@ public class VisualGraphOpenerNGTest {
             // The list shouldn't be empty at the moment
             assertFalse(VisualGraphOpener.getOpeningGraphs().isEmpty());
             assertTrue(VisualGraphOpener.getOpeningGraphs().contains(path));
-            
+
             // Open again
             instance.openGraph(mockGdo);
             // Assert path still in list
-             assertFalse(VisualGraphOpener.getOpeningGraphs().isEmpty());
+            assertFalse(VisualGraphOpener.getOpeningGraphs().isEmpty());
             assertTrue(VisualGraphOpener.getOpeningGraphs().contains(path));
         }
-        
+
         System.clearProperty("java.awt.headless");
     }
 }
