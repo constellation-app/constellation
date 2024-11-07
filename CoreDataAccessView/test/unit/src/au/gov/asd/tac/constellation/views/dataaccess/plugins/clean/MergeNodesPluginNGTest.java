@@ -247,7 +247,9 @@ public class MergeNodesPluginNGTest {
             mergeNodesPlugin.edit(graph, interaction, parameters);
 
             verify(pluginExecution).executeNow(graph);
-            verify(interaction, atLeast(2)).setProgress(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean());
+            verify(interaction, atLeast(1)).setProgress(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean());
+            verify(interaction, atLeast(1)).setProgress(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyBoolean());
+            verify(interaction, atLeast(1)).setProgress(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.any(PluginParameters.class), Mockito.anyInt());
 
             // Due to accessibility issues the call to mergeVerticies and its follow
             // on logic cannot be verified without tying this test to the logic of

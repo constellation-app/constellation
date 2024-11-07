@@ -1,6 +1,7 @@
 # Constellation Changes
 
 ## Changes in October 2024
+-   Added ability to pass parameters and selected items on graph to PluginReporter to display via `DefaultPluginInteraction`.
 -   Added the ability to set of Table View default columns by implementing `TableDefaultColumns` and using lookup.
 -   Moved `BrowseContextMenu` from `au.gov.asd.tac.constellation.graph.visual.contextmenu` to `au.gov.asd.tac.constellation.functionality.browser` to group it with other browser functionality.
 -   Removed several functions from `VisualGraphUtilities` passing attribute ids as parameters in favour of using existing complimentary functions using default attributes.
