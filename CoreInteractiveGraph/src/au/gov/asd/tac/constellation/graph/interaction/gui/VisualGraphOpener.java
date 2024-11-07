@@ -356,9 +356,7 @@ public final class VisualGraphOpener extends GraphOpener {
             }
 
             // Graph has finished opening, so remove from list
-            if (gdo.getPrimaryFile() != null) {
-                openingGraphs.remove(gdo.getPrimaryFile().getPath());
-            }
+            openingGraphs.remove(gdo.getPrimaryFile().getPath());
         }
     }
 
