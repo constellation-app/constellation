@@ -205,10 +205,10 @@ public abstract class VisualProcessor {
                 }
                 processChangeSet(changes, access);
             } finally {
+                performVisualUpdate();
                 access.endUpdate();
             }
             updateOccuring.release();
-            performVisualUpdate();
         });
         updateThread.setName("Visual Processor");
         updateThread.start();
