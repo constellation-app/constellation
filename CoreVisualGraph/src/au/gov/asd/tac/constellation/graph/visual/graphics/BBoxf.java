@@ -15,10 +15,8 @@
  */
 package au.gov.asd.tac.constellation.graph.visual.graphics;
 
-import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import java.util.Arrays;
 
 /**
@@ -134,66 +132,6 @@ public class BBoxf {
             final float y = rg.getFloatValue(yId, vxId);
             final float z = rg.getFloatValue(zId, vxId);
             box.add(x, y, z);
-        }
-
-        return box;
-    }
-
-    /**
-     * Get the bounding box of this graph.
-     * <p>
-     * Takes mixing into account.
-     *
-     * @param rg The graph to create a bounding box from.
-     * @param selectedOnly True to only include selected vertices, false to
-     * include all vertices.
-     *
-     * @return The bounding box of the relevant vertices.
-     */
-    public static BBoxf getGraphBoundingBoxMix(final GraphReadMethods rg, final boolean selectedOnly) {
-        int xId = VisualConcept.VertexAttribute.X.get(rg);
-        int yId = VisualConcept.VertexAttribute.Y.get(rg);
-        int zId = VisualConcept.VertexAttribute.Z.get(rg);
-        final int x2Id = VisualConcept.VertexAttribute.X2.get(rg);
-        final int y2Id = VisualConcept.VertexAttribute.Y2.get(rg);
-        final int z2Id = VisualConcept.VertexAttribute.Z2.get(rg);
-        final int selectedId = VisualConcept.VertexAttribute.SELECTED.get(rg);
-
-        final int visualStateId = VisualConcept.GraphAttribute.CAMERA.get(rg);
-        final Camera visualState = rg.getObjectValue(visualStateId, 0);
-        final float mix = visualState.getMix();
-        final float inverseMix = 1.0F - mix;
-
-        boolean requiresMix = x2Id != Graph.NOT_FOUND && y2Id != Graph.NOT_FOUND && z2Id != Graph.NOT_FOUND;
-        if (requiresMix) {
-            if (mix == 0.0F) {
-                requiresMix = false;
-            } else if (mix == 1.0F) {
-                xId = x2Id;
-                yId = y2Id;
-                zId = z2Id;
-                requiresMix = false;
-            }
-        }
-
-        final int vxCount = rg.getVertexCount();
-        final BBoxf box = new BBoxf();
-        for (int position = 0; position < vxCount; position++) {
-            final int vxId = rg.getVertex(position);
-
-            final boolean selected = rg.getBooleanValue(selectedId, vxId);
-            if (!selectedOnly || selected) {
-                float x = rg.getFloatValue(xId, vxId);
-                float y = rg.getFloatValue(yId, vxId);
-                float z = rg.getFloatValue(zId, vxId);
-                if (requiresMix) {
-                    x = inverseMix * x + mix * rg.getFloatValue(x2Id, vxId);
-                    y = inverseMix * y + mix * rg.getFloatValue(y2Id, vxId);
-                    z = inverseMix * z + mix * rg.getFloatValue(z2Id, vxId);
-                }
-
-                box.add(x, y, z);
-            }
         }
 
         return box;

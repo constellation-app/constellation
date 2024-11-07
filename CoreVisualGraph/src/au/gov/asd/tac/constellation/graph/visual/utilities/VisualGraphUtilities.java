@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.graph.visual.utilities;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
@@ -65,23 +64,10 @@ public class VisualGraphUtilities {
         return camera != null ? camera : VisualGraphDefaults.DEFAULT_CAMERA;
     }
 
-    public static Camera getCamera(final GraphReadMethods graph, final int cameraAttribute) {
-        final Camera camera = cameraAttribute != Graph.NOT_FOUND ? graph.getObjectValue(cameraAttribute, 0) : VisualGraphDefaults.DEFAULT_CAMERA;
-        return camera != null ? camera : VisualGraphDefaults.DEFAULT_CAMERA;
-    }
-
     public static void setVertexCoordinates(final GraphWriteMethods graph, final Vector3f coordinates, final int vertexId) {
         final int xAttribute = VisualConcept.VertexAttribute.X.get(graph);
         final int yAttribute = VisualConcept.VertexAttribute.Y.get(graph);
         final int zAttribute = VisualConcept.VertexAttribute.Z.get(graph);
-        if (xAttribute != Graph.NOT_FOUND && yAttribute != Graph.NOT_FOUND && zAttribute != Graph.NOT_FOUND) {
-            graph.setFloatValue(xAttribute, vertexId, coordinates.getX());
-            graph.setFloatValue(yAttribute, vertexId, coordinates.getY());
-            graph.setFloatValue(zAttribute, vertexId, coordinates.getZ());
-        }
-    }
-
-    public static void setVertexCoordinates(final GraphWriteMethods graph, final Vector3f coordinates, final int vertexId, final int xAttribute, final int yAttribute, final int zAttribute) {
         if (xAttribute != Graph.NOT_FOUND && yAttribute != Graph.NOT_FOUND && zAttribute != Graph.NOT_FOUND) {
             graph.setFloatValue(xAttribute, vertexId, coordinates.getX());
             graph.setFloatValue(yAttribute, vertexId, coordinates.getY());
@@ -98,23 +84,11 @@ public class VisualGraphUtilities {
                 zAttribute != Graph.NOT_FOUND ? graph.getFloatValue(zAttribute, vertexId) : VisualGraphDefaults.getDefaultZ(vertexId));
     }
 
-    public static Vector3f getVertexCoordinates(final GraphReadMethods graph, final int vertexId, final int xAttribute, final int yAttribute, final int zAttribute) {
-        return new Vector3f(xAttribute != Graph.NOT_FOUND ? graph.getFloatValue(xAttribute, vertexId) : VisualGraphDefaults.getDefaultX(vertexId),
-                yAttribute != Graph.NOT_FOUND ? graph.getFloatValue(yAttribute, vertexId) : VisualGraphDefaults.getDefaultY(vertexId),
-                zAttribute != Graph.NOT_FOUND ? graph.getFloatValue(zAttribute, vertexId) : VisualGraphDefaults.getDefaultZ(vertexId));
-    }
-
     public static Vector3f getAlternateVertexCoordinates(final GraphReadMethods graph, final int vertexId) {
         final int x2Attribute = VisualConcept.VertexAttribute.X2.get(graph);
         final int y2Attribute = VisualConcept.VertexAttribute.Y2.get(graph);
         final int z2Attribute = VisualConcept.VertexAttribute.Z2.get(graph);
 
-        return new Vector3f(x2Attribute != Graph.NOT_FOUND ? graph.getFloatValue(x2Attribute, vertexId) : VisualGraphDefaults.DEFAULT_VERTEX_X2,
-                y2Attribute != Graph.NOT_FOUND ? graph.getFloatValue(y2Attribute, vertexId) : VisualGraphDefaults.DEFAULT_VERTEX_Y2,
-                z2Attribute != Graph.NOT_FOUND ? graph.getFloatValue(z2Attribute, vertexId) : VisualGraphDefaults.DEFAULT_VERTEX_Z2);
-    }
-
-    public static Vector3f getAlternateVertexCoordinates(final GraphReadMethods graph, final int vertexId, final int x2Attribute, final int y2Attribute, final int z2Attribute) {
         return new Vector3f(x2Attribute != Graph.NOT_FOUND ? graph.getFloatValue(x2Attribute, vertexId) : VisualGraphDefaults.DEFAULT_VERTEX_X2,
                 y2Attribute != Graph.NOT_FOUND ? graph.getFloatValue(y2Attribute, vertexId) : VisualGraphDefaults.DEFAULT_VERTEX_Y2,
                 z2Attribute != Graph.NOT_FOUND ? graph.getFloatValue(z2Attribute, vertexId) : VisualGraphDefaults.DEFAULT_VERTEX_Z2);
@@ -128,25 +102,14 @@ public class VisualGraphUtilities {
         return coordinates;
     }
 
-    public static Vector3f getMixedVertexCoordinates(final GraphReadMethods graph, final int vertexId, final int xAttribute, final int x2Attribute, final int yAttribute, final int y2Attribute, final int zAttribute, final int z2Attribute, final int cameraAttribute) {
-        final Vector3f coordinates = getVertexCoordinates(graph, vertexId, xAttribute, yAttribute, zAttribute);
-        final Vector3f altCoordinates = getAlternateVertexCoordinates(graph, vertexId, x2Attribute, y2Attribute, z2Attribute);
-        final float mixRatio = getCamera(graph, cameraAttribute).getMixRatio();
-        coordinates.convexCombineWith(altCoordinates, mixRatio);
-        return coordinates;
-    }
-
     public static ConnectionMode getConnectionMode(final GraphReadMethods graph) {
         final int connectionModeAttribute = VisualConcept.GraphAttribute.CONNECTION_MODE.get(graph);
         return connectionModeAttribute != Graph.NOT_FOUND ? graph.getObjectValue(connectionModeAttribute, 0) : VisualGraphDefaults.DEFAULT_CONNECTION_MODE;
     }
 
     public static ConnectionMode getConnectionMode(final Graph graph) {
-        final ReadableGraph rg = graph.getReadableGraph();
-        try {
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
             return getConnectionMode(rg);
-        } finally {
-            rg.release();
         }
     }
 
@@ -156,11 +119,8 @@ public class VisualGraphUtilities {
     }
 
     public static boolean isDisplayModeIn3D(final Graph graph) {
-        final ReadableGraph rg = graph.getReadableGraph();
-        try {
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
             return isDisplayModeIn3D(rg);
-        } finally {
-            rg.release();
         }
     }
 
@@ -170,11 +130,8 @@ public class VisualGraphUtilities {
     }
 
     public static int getDrawFlags(final Graph graph) {
-        final ReadableGraph rg = graph.getReadableGraph();
-        try {
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
             return getDrawFlags(rg);
-        } finally {
-            rg.release();
         }
     }
 
@@ -184,11 +141,8 @@ public class VisualGraphUtilities {
     }
 
     public static boolean isDrawingMode(final Graph graph) {
-        final ReadableGraph rg = graph.getReadableGraph();
-        try {
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
             return isDrawingMode(rg);
-        } finally {
-            rg.release();
         }
     }
 
@@ -198,11 +152,8 @@ public class VisualGraphUtilities {
     }
 
     public static boolean isDrawingDirectedTransactions(final Graph graph) {
-        final ReadableGraph rg = graph.getReadableGraph();
-        try {
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
             return isDrawingDirectedTransactions(rg);
-        } finally {
-            rg.release();
         }
     }
 
@@ -211,18 +162,17 @@ public class VisualGraphUtilities {
         final float mix = state.getMix();
 
         // Look up all the required attributes.
-        final int xAttr = rg.getAttribute(GraphElementType.VERTEX, "x");
-        final int yAttr = rg.getAttribute(GraphElementType.VERTEX, "y");
-        final int zAttr = rg.getAttribute(GraphElementType.VERTEX, "z");
-        final int x2Attr = rg.getAttribute(GraphElementType.VERTEX, "x2");
-        final int y2Attr = rg.getAttribute(GraphElementType.VERTEX, "y2");
-        final int z2Attr = rg.getAttribute(GraphElementType.VERTEX, "z2");
+        final int xAttr = VisualConcept.VertexAttribute.X.get(rg);
+        final int yAttr = VisualConcept.VertexAttribute.Y.get(rg);
+        final int zAttr = VisualConcept.VertexAttribute.Z.get(rg);
+        final int x2Attr = VisualConcept.VertexAttribute.X2.get(rg);
+        final int y2Attr = VisualConcept.VertexAttribute.Y2.get(rg);
+        final int z2Attr = VisualConcept.VertexAttribute.Z2.get(rg);
 
         // Do the vertex positions need mixing?
         final boolean requiresMix = x2Attr != Graph.NOT_FOUND && y2Attr != Graph.NOT_FOUND && z2Attr != Graph.NOT_FOUND;
         final Iterable<Vector3f> worldLocations;
         if (xAttr != Graph.NOT_FOUND && yAttr != Graph.NOT_FOUND && zAttr != Graph.NOT_FOUND) {
-
             worldLocations = () -> new Iterator<Vector3f>() {
 
                 int position = 0;
@@ -266,21 +216,26 @@ public class VisualGraphUtilities {
     }
 
     public static Stream<Vector3f> streamVertexSceneLocations(final GraphReadMethods rg, final Camera camera) {
-
         // Get a copy of the current rotation matrix.
         final Matrix44f modelViewMatrix = Graphics3DUtilities.getModelViewMatrix(camera);
         final Matrix33f rotationMatrix = new Matrix33f();
         modelViewMatrix.getRotationMatrix(rotationMatrix);
 
         // Convert from world to scene coordinates
-        Stream<Vector3f> worldLocations = streamVertexWorldLocations(rg, camera);
+        final Stream<Vector3f> worldLocations = streamVertexWorldLocations(rg, camera);
         return worldLocations.map(worldLocation -> {
             final float[] screenLocation = modelViewMatrix.multiply(worldLocation.getX(), worldLocation.getY(), worldLocation.getZ(), 1);
             return new Vector3f(screenLocation[0], screenLocation[1], screenLocation[2]);
         });
     }
 
-    public static List<Integer> getSelectedElements(final GraphReadMethods graph) {
+    /**
+     * This method will collect the set of selected node identifiers into a list
+     *
+     * @param graph the graph to read from
+     * @return List of selected node IDs
+     */
+    public static List<Integer> getSelectedVertices(final GraphReadMethods graph) {
         final List<Integer> selectedIds = new ArrayList<>();
         final int vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
         if (vertexSelectedAttribute != Graph.NOT_FOUND) {

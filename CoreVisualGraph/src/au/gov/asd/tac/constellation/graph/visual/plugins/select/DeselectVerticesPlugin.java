@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.graph.visual.plugins.select;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
@@ -41,7 +40,7 @@ public class DeselectVerticesPlugin extends SimpleEditPlugin {
 
     @Override
     protected void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-        final int vxSelectedAttrId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
+        final int vxSelectedAttrId = VisualConcept.VertexAttribute.SELECTED.get(wg);
         if (vxSelectedAttrId != Graph.NOT_FOUND) {
             final int vxCount = wg.getVertexCount();
             for (int position = 0; position < vxCount; position++) {

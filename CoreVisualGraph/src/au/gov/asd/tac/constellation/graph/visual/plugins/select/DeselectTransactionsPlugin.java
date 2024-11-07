@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.graph.visual.plugins.select;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
@@ -41,7 +40,7 @@ public class DeselectTransactionsPlugin extends SimpleEditPlugin {
 
     @Override
     protected void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-        final int txSelectedAttrId = wg.getAttribute(GraphElementType.TRANSACTION, VisualConcept.TransactionAttribute.SELECTED.getName());
+        final int txSelectedAttrId = VisualConcept.TransactionAttribute.SELECTED.get(wg);
         if (txSelectedAttrId != Graph.NOT_FOUND) {
             final int txCount = wg.getTransactionCount();
             for (int position = 0; position < txCount; position++) {

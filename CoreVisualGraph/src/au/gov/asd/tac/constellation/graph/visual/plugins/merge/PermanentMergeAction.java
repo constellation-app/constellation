@@ -16,18 +16,17 @@
 package au.gov.asd.tac.constellation.graph.visual.plugins.merge;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.VisualGraphPluginRegistry;
+import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginRegistry;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
 import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.SwingUtilities;
@@ -100,7 +99,10 @@ public final class PermanentMergeAction extends AbstractAction {
             }
         }
 
-        final List<Integer> selections = getSelectedVertexCount(graph);
+        final List<Integer> selections;
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
+            selections = VisualGraphUtilities.getSelectedVertices(rg);
+        }
         if (selections.size() < 2) {
             final NotifyDescriptor nd = new NotifyDescriptor.Message(Bundle.ErrorInsufficientSelections(), NotifyDescriptor.ERROR_MESSAGE);
             nd.setTitle(Bundle.CTL_PermanentMergeAction());
@@ -115,30 +117,6 @@ public final class PermanentMergeAction extends AbstractAction {
                 pmp.setParameterValues(params);
                 PluginExecution.withPlugin(plugin).withParameters(params).executeLater(graph);
             }
-        }
-    }
-
-    /**
-     * This method will collect the set of node identifiers into an array
-     *
-     * @param graph
-     * @return array of selected node IDs
-     */
-    private List<Integer> getSelectedVertexCount(final Graph graph) {
-        try (final ReadableGraph rg = graph.getReadableGraph()) {
-            final List<Integer> list = new ArrayList<>();
-            final int vxSelectedAttr = VisualConcept.VertexAttribute.SELECTED.get(rg);
-            if (vxSelectedAttr != Graph.NOT_FOUND) {
-                final int vxCount = rg.getVertexCount();
-                for (int position = 0; position < vxCount; position++) {
-                    final int vxId = rg.getVertex(position);
-                    if (rg.getBooleanValue(vxSelectedAttr, vxId)) {
-                        list.add(vxId);
-                    }
-                }
-            }
-            return list;
-
         }
     }
 }
