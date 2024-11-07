@@ -183,6 +183,11 @@ public final class VisualGraphOpener extends GraphOpener {
         new GraphFileOpener(gdo, graph, null).execute();
     }
 
+    /**
+     * Returns a copy of the list containing paths of graphs currently being opened
+     *
+     * @return ArrayList of paths
+     */
     public static List<String> getOpeningGraphs() {
         return new ArrayList<>(openingGraphs);
     }
