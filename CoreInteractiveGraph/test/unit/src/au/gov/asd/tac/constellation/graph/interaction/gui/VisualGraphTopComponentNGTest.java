@@ -119,7 +119,6 @@ public class VisualGraphTopComponentNGTest {
         final File mockFile = mock(File.class);
         final DualGraph dgSpy = spy(new DualGraph(null));
         final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
-        //final ReadableGraph readableGraphSpy = spy(new ReadableGraph());
         final String path = "mocked path";
         final Long lastModified = 123L;
 
