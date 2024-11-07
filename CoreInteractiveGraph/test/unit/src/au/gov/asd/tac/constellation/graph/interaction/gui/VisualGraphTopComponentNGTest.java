@@ -22,6 +22,8 @@ import au.gov.asd.tac.constellation.graph.interaction.plugins.io.SaveAsAction;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
 import static au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode.LINK;
+import au.gov.asd.tac.constellation.graph.visual.framework.VisualGraphDefaults;
+import java.io.File;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -114,8 +116,11 @@ public class VisualGraphTopComponentNGTest {
         // Mock variables
         final GraphDataObject mockGDO = mock(GraphDataObject.class);
         final FileObject mockFileObject = mock(FileObject.class);
+        final File mockFile = mock(File.class);
         final DualGraph dgSpy = spy(new DualGraph(null));
         final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
+        final String path = "mocked path";
+        final Long lastModified = 123L;
 
         when(mockGDO.isInMemory()).thenReturn(false);
         when(mockGDO.isValid()).thenReturn(true);
@@ -125,11 +130,20 @@ public class VisualGraphTopComponentNGTest {
 
         when(mockFileObject.getPath()).thenReturn("");
 
-        when(dgSpy.getReadableGraph()).thenReturn(mockReadableGraph);
+        when(mockFile.getPath()).thenReturn(path);
+        when(mockFile.lastModified()).thenReturn(lastModified);
 
         final int connectionMode = 1;
+        // Hard coded to match actual values
+        final int graphDecorators = 16;
+        final int graphTopLabels = 7;
+        System.out.println("graphDecorators: " + graphDecorators + " graphTopLabels: " + graphTopLabels);
         final int graphNotFound = -1107;
+
         when(mockReadableGraph.getObjectValue(connectionMode, 0)).thenReturn(null);
+        when(mockReadableGraph.getObjectValue(graphDecorators, 0)).thenReturn(VisualGraphDefaults.DEFAULT_DECORATORS);
+        when(mockReadableGraph.getObjectValue(graphTopLabels, 0)).thenReturn(VisualGraphDefaults.DEFAULT_TOP_LABELS);
+
         when(mockReadableGraph.getAttribute(GraphElementType.GRAPH, "connection_mode")).thenReturn(connectionMode);
         when(mockReadableGraph.getAttribute(GraphElementType.GRAPH, "draw_flags")).thenReturn(graphNotFound);
 
@@ -153,7 +167,10 @@ public class VisualGraphTopComponentNGTest {
         // Mock variables
         final GraphDataObject mockGDO = mock(GraphDataObject.class);
         final FileObject mockFileObject = mock(FileObject.class);
+        final File mockFile = mock(File.class);
         final DualGraph dgSpy = spy(new DualGraph(null));
+        final String path = "mocked path";
+        final Long lastModified = 123L;
 
         when(mockGDO.isInMemory()).thenReturn(false);
         when(mockGDO.isValid()).thenReturn(true);
@@ -161,6 +178,8 @@ public class VisualGraphTopComponentNGTest {
         when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
 
         when(mockFileObject.getPath()).thenReturn("");
+        when(mockFile.getPath()).thenReturn(path);
+        when(mockFile.lastModified()).thenReturn(lastModified);
 
         // Mock contruct save as action, GraphNode
         VisualGraphTopComponent instance = new VisualGraphTopComponent(mockGDO, dgSpy);
@@ -192,12 +211,16 @@ public class VisualGraphTopComponentNGTest {
 
         final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
 
+        final File mockFile = mock(File.class);
+        final String path = "mocked path";
+        final Long lastModified = 123L;
+
         when(mockGDO.isValid()).thenReturn(false);
         when(mockGDO.getPrimaryFile()).thenReturn(mockFileObject);
 
         when(mockFileObject.getPath()).thenReturn("");
-
-        when(dgSpy.getReadableGraph()).thenReturn(mockReadableGraph);
+        when(mockFile.getPath()).thenReturn(path);
+        when(mockFile.lastModified()).thenReturn(lastModified);
 
         final int connectionMode = 1;
         final int graphNotFound = -1107;
@@ -241,13 +264,18 @@ public class VisualGraphTopComponentNGTest {
 
         final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
 
+        final File mockFile = mock(File.class);
+        final String path = "mocked path";
+        final Long lastModified = 123L;
+
         when(mockGDO.isInMemory()).thenReturn(true);
         when(mockGDO.isValid()).thenReturn(true);
         when(mockGDO.getPrimaryFile()).thenReturn(mockFileObject);
         when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
 
         when(mockFileObject.getPath()).thenReturn("");
-        when(dgSpy.getReadableGraph()).thenReturn(mockReadableGraph);
+        when(mockFile.getPath()).thenReturn(path);
+        when(mockFile.lastModified()).thenReturn(lastModified);
 
         final int connectionMode = 1;
         final int graphNotFound = -1107;
@@ -281,6 +309,9 @@ public class VisualGraphTopComponentNGTest {
         final GraphDataObject mockGDO = mock(GraphDataObject.class);
         final FileObject mockFileObject = mock(FileObject.class);
         final DualGraph dgSpy = spy(new DualGraph(null));
+        final File mockFile = mock(File.class);
+        final String path = "mocked path";
+        final Long lastModified = 123L;
 
         when(mockGDO.isInMemory()).thenReturn(false);
         when(mockGDO.isValid()).thenReturn(true);
@@ -288,9 +319,11 @@ public class VisualGraphTopComponentNGTest {
         when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
 
         when(mockFileObject.getPath()).thenReturn("");
+        when(mockFile.getPath()).thenReturn(path);
+        when(mockFile.lastModified()).thenReturn(lastModified);
 
         // Mock contruct save as action, GraphNode
-        VisualGraphTopComponent instance = new VisualGraphTopComponent(mockGDO, dgSpy);
+        final VisualGraphTopComponent instance = new VisualGraphTopComponent(mockGDO, dgSpy);
 
         instance.requestActiveWithLatch(null);
     }
