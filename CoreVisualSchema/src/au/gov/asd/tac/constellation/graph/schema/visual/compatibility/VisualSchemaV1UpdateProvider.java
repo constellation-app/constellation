@@ -67,7 +67,7 @@ public class VisualSchemaV1UpdateProvider extends SchemaUpdateProvider {
     }
 
     @Override
-    protected void schemaUpdate(StoreGraph graph) {
+    protected void schemaUpdate(final StoreGraph graph) {
         final int bottomLabelsAttribute = VisualConcept.GraphAttribute.BOTTOM_LABELS.ensure(graph);
         final int decoratorsAttribute = VisualConcept.GraphAttribute.DECORATORS.ensure(graph);
         final int topLabelsAttribute = VisualConcept.GraphAttribute.TOP_LABELS.ensure(graph);

@@ -45,7 +45,6 @@ public class CompleteSchemaPlugin extends SimpleEditPlugin {
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
         if (graph.getSchema() != null) {
-
             // Retrieve graph details
             final int vertexCount = graph.getVertexCount();
             final int transactionCount = graph.getTransactionCount();
@@ -108,7 +107,10 @@ public class CompleteSchemaPlugin extends SimpleEditPlugin {
           
             
             if (!"None".equals(colorMode)) {
-                ColorblindUtilities.setColorRef(graph, graph.getAttributeName(vxColorblindAttr), graph.getAttributeName(txColorblindAttr));
+                final int vxColorRefAttribute = VisualConcept.GraphAttribute.NODE_COLOR_REFERENCE.ensure(graph);
+                final int txColorRefAttribute = VisualConcept.GraphAttribute.TRANSACTION_COLOR_REFERENCE.ensure(graph);
+                graph.setStringValue(vxColorRefAttribute, 0, graph.getAttributeName(vxColorblindAttr));
+                graph.setStringValue(txColorRefAttribute, 0, graph.getAttributeName(txColorblindAttr));
             } else {
                 graph.removeAttribute(vxColorblindAttr);
                 graph.removeAttribute(txColorblindAttr);
