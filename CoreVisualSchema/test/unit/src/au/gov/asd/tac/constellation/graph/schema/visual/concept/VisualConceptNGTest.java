@@ -95,13 +95,15 @@ public class VisualConceptNGTest {
         final List<SchemaAttribute> graphAttributes = getElementTypeSpecificAttributes(visualAttributes, GraphElementType.GRAPH);
         final List<SchemaAttribute> nodeAttributes = getElementTypeSpecificAttributes(visualAttributes, GraphElementType.VERTEX);
         final List<SchemaAttribute> transactionAttributes = getElementTypeSpecificAttributes(visualAttributes, GraphElementType.TRANSACTION);
-        
-        final int graphAttributeCount = getAttributeCount(VisualConcept.GraphAttribute.class);
+        final List<SchemaAttribute> metaAttributes = getElementTypeSpecificAttributes(visualAttributes, GraphElementType.META);
+
+        // Note: CONNECTION_MOTION is a GraphAttribute of GraphElementType META
+        final int graphAttributeCount = getAttributeCount(VisualConcept.GraphAttribute.class);        
         final int nodeAttributeCount = getAttributeCount(VisualConcept.VertexAttribute.class);
         final int transactionAttributeCount = getAttributeCount(VisualConcept.TransactionAttribute.class);
         
         // ensure that all created attributes have been added to the schema attributes collection
-        assertEquals(graphAttributes.size(), graphAttributeCount);
+        assertEquals(graphAttributes.size() + metaAttributes.size(), graphAttributeCount);
         assertEquals(nodeAttributes.size(), nodeAttributeCount);
         assertEquals(transactionAttributes.size(), transactionAttributeCount);
         // this check will catch out any new attribute classes added to the concept
