@@ -36,9 +36,28 @@ panel from Tools -> Cluster -> Hierarchical. To apply the changes from the clust
 to the graph click the Cluster button and then Toggle Interactive: Disabled. This
 will change the color of the graph elements to match the clusters. 
 
-The arrows on the right side allow for the number of clusters to be modified and the 
-<img src="../ext/docs/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/resources/shortestpaths.png" width="16" height="16" />
-button will indicate the Shortest Path between cluster centres. 
+<br />
+<div style="text-align: center">
+<img src="../ext/docs/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/resources/clusterPanel.png" width="1000" />
+</div>
+<br />
+
+### Adjusting Number of Clusters
+
+The arrows on the right side move the marker along the clustering display, 
+allowing for the number of clusters to be chosen. 
+The optimal clustering button will adjust the number of clusters such that clustering is optimal.
+
+### Shortest Path
+
+The <img src="../ext/docs/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/resources/shortestpaths.png" width="16" height="16" />
+button will select the shortest path between the centers of all clusters
+
+### Excluding Elements
+
+Elements that are not part of clustering, such as unnecessary nodes or transactions, can have their visibilty altered.
+They can be either shown, dimmed or hidden with the respective radio buttons located on the left of the Hierarchical Clusters panel.
+Single nodes can also be excluded by selecting the checkbox labeled "Exclude Single Nodes".
 
 ## Constellation Display
 
@@ -51,20 +70,20 @@ grey when the Excluded Elements is set to dimmed.
 Rather than set the color directly, Hierarchical Clustering in Constellation
 creates a new color attribute "Cluster.Hierarchical.Color" and tells 
 Constellation to display the graph using the new attribute (via the 
-"node\_color\_reference" and "transaction\_color_reference" graph attributes). 
+"node\_color\_reference" and "transaction\_color\_reference" graph attributes). 
 To switch back to the default color attribute, edit the graph attributes via 
 the Attribute Editor and click on "Restore Default" followed by Ok.
 
 Before Hierarchical Clustering is run:
 
 <div style="text-align: center">
-<img height=500 src="../ext/docs/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/resources/clusteringBefore.png" alt="Before Hierarchical Clustering" />
+<img width=1000 src="../ext/docs/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/resources/clusteringBefore.png" alt="Before Hierarchical Clustering" />
 </div>
 <br />
 
 After Hierarchical Clustering is run:
 
 <div style="text-align: center">
-<img height=550 src="../ext/docs/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/resources/hierarchicalAfter.png" alt="After Hierarchical Clustering" />
+<img width=1000 src="../ext/docs/CoreAlgorithmPlugins/src/au/gov/asd/tac/constellation/plugins/algorithms/resources/hierarchicalAfter.png" alt="After Hierarchical Clustering" />
 </div>
 

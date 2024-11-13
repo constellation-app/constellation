@@ -36,7 +36,6 @@ import au.gov.asd.tac.constellation.graph.interaction.visual.EventState.SceneAct
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.NewLineModel;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionBoxModel;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionFreeformModel;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.contextmenu.ContextMenuProvider;
 import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;
 import au.gov.asd.tac.constellation.plugins.Plugin;
@@ -970,7 +969,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
      * @return array of node IDs
      */
     public List<Integer> gatherSelectedNodes(final GraphReadMethods rg) {
-        List<Integer> selectedIds = VisualGraphUtilities.getSelectedElements(rg);
+        List<Integer> selectedIds = VisualGraphUtilities.getSelectedVertices(rg);
 
         final int hitId = eventState.getCurrentHitId();
         if (eventState.getCurrentHitType().equals(HitType.VERTEX) && !selectedIds.contains(hitId)) {
@@ -1000,18 +999,10 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
 
         final Vector3f delta = visualInteraction.convertTranslationToDrag(camera, position, from, to);
 
-        final int xAttribute = VisualConcept.VertexAttribute.X.get(wg);
-        final int yAttribute = VisualConcept.VertexAttribute.Y.get(wg);
-        final int zAttribute = VisualConcept.VertexAttribute.Z.get(wg);
-        final int x2Attribute = VisualConcept.VertexAttribute.X2.get(wg);
-        final int y2Attribute = VisualConcept.VertexAttribute.Y2.get(wg);
-        final int z2Attribute = VisualConcept.VertexAttribute.Z2.get(wg);
-        final int cameraAttribute = VisualConcept.GraphAttribute.CAMERA.get(wg);
-
         draggedNodes.forEach(vertexId -> {
-            final Vector3f currentPos = VisualGraphUtilities.getMixedVertexCoordinates(wg, vertexId, xAttribute, x2Attribute, yAttribute, y2Attribute, zAttribute, z2Attribute, cameraAttribute);
+            final Vector3f currentPos = VisualGraphUtilities.getMixedVertexCoordinates(wg, vertexId);
             currentPos.add(delta);
-            VisualGraphUtilities.setVertexCoordinates(wg, currentPos, vertexId, xAttribute, yAttribute, zAttribute);
+            VisualGraphUtilities.setVertexCoordinates(wg, currentPos, vertexId);
         });
 
         draggedNodes.replaceAll(id -> wg.getVertexPosition(id)); // Replade the Id's with positions, as required by scheduleXYZCHangeOperation.

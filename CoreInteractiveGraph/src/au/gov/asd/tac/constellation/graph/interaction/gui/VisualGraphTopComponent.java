@@ -264,8 +264,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     private static final Cleaner cleaner = Cleaner.create();
     private static final Runnable cleanupAction = () -> MemoryManager.finalizeObject(VisualGraphTopComponent.class);
 
-    private static final boolean IS_HEADLESS = Boolean.parseBoolean(System.getProperty("java.awt.headless", "false"));
-
     /**
      * Initialise the TopComponent state.
      */
@@ -302,7 +300,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 }
             }
         };
-        if (!IS_HEADLESS) {
+        if (!isHeadless()) {
             displayPanel.setDropTarget(new DropTarget(displayPanel, DnDConstants.ACTION_COPY, dta, true));
         }
 
@@ -465,7 +463,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         this.graph = graph;
         graphVisualManagerFactory = Lookup.getDefault().lookup(GraphVisualManagerFactory.class);
 
-        if (!IS_HEADLESS) {
+        if (!isHeadless()) {
             visualManager = graphVisualManagerFactory.constructVisualManager(graph);
             visualManager.startProcessing();
         } else {
@@ -901,6 +899,10 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         }
     }
 
+    private boolean isHeadless() {
+        return Boolean.parseBoolean(System.getProperty("java.awt.headless", "false"));
+    }
+
     /**
      * A custom Savable.
      */
@@ -1045,7 +1047,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             }).start();
 
             // Start loop and report errors if they happen
-            if (!IS_HEADLESS) {
+            if (!isHeadless()) {
                 final boolean result = loop.enter();
                 if (!result) {
                     LOGGER.log(Level.SEVERE, "Error with starting secondary loop in VisualGraphTopComponent");

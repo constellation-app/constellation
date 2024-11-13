@@ -384,9 +384,7 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
     }
 
     private void updateSliders(final Graph graph) {
-        final ReadableGraph rg = graph.getReadableGraph();
-        try {
-
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
             final int blazeSizeAttributeId = VisualConcept.GraphAttribute.BLAZE_SIZE.get(rg);
             final float blazeSize = blazeSizeAttributeId == Graph.NOT_FOUND
                     ? (prefs.getInt(GraphPreferenceKeys.BLAZE_SIZE, GraphPreferenceKeys.BLAZE_SIZE_DEFAULT)) / 100F
@@ -403,8 +401,6 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
             opacitySlider.removeChangeListener(sliderChangeListener);
             opacitySlider.setValue((int) (blazeOpacity * 100));
             opacitySlider.addChangeListener(sliderChangeListener);
-        } finally {
-            rg.release();
         }
     }
 

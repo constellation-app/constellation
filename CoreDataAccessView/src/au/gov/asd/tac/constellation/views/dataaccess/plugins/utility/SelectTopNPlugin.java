@@ -258,15 +258,15 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
         final int totalProcessSteps = selectedNodes.size();
         int currentProcessStep = 0;
         final int initialSelectedNodesCount = selectedNodes.size(); 
-
+        interaction.setProgressTimestamp(true);
         interaction.setProgress(currentProcessStep, 
                 totalProcessSteps, 
                 String.format("Selecting top %s nodes...", 
                         PluginReportUtilities.getNodeCountString(limit)
                 ), 
-                true);
+                true, parameters, selectedNodes.size());
         
-        // Caluclate the Top N for Selected Nodes 
+        // Calculate the Top N for Selected Nodes 
         for (final Integer vxId : selectedNodes) {
             
             final String label = graph.getStringValue(vertexLabelAttribute, vxId);
@@ -345,7 +345,7 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
         // Set process to complete
         interaction.setProgress(currentProcessStep, 
                 0, 
-                String.format("Selected %s, representing the Top %s for the originaly selected %s.", 
+                String.format("Selected %s, representing the Top %s for the originally selected %s.", 
                         PluginReportUtilities.getNodeCountString(selectedNodesCount), 
                         PluginReportUtilities.getNodeCountString(limit), 
                         PluginReportUtilities.getNodeCountString(initialSelectedNodesCount)

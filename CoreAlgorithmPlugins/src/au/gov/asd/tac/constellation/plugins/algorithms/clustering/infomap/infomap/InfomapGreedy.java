@@ -236,9 +236,8 @@ public abstract class InfomapGreedy extends InfomapBase {
     }
 
     /**
-     * Update the codelength to reflect the move of node current in
-     * oldModuleDelta to newModuleDelta (Specialized for undirected flow and
-     * when exitFlow == enterFlow
+     * Update the codelength to reflect the move of node current in oldModuleDelta to newModuleDelta (Specialized for
+     * undirected flow and when exitFlow == enterFlow
      *
      * @param current the current node.
      * @param oldModuleDelta the old module delta flow.
@@ -479,17 +478,13 @@ public abstract class InfomapGreedy extends InfomapBase {
     }
 
     /**
-     * Try to minimize the codelength by trying to move nodes into the same
-     * modules as neighbouring nodes.
+     * Try to minimize the codelength by trying to move nodes into the same modules as neighbouring nodes.
      *
-     * For each node: 1. Calculate the change in codelength for a move to each
-     * of its neighbouring modules or to an empty module 2. Move to the one that
-     * reduces the codelength the most, if any.
+     * For each node: 1. Calculate the change in codelength for a move to each of its neighbouring modules or to an
+     * empty module 2. Move to the one that reduces the codelength the most, if any.
      *
-     * The first step would require O(d^2), where d is the degree, if
-     * calculating the full change at each neighbour, but a special data
-     * structure is used to accumulate the marginal effect of each link on its
-     * target, giving O(d).
+     * The first step would require O(d^2), where d is the degree, if calculating the full change at each neighbour, but
+     * a special data structure is used to accumulate the marginal effect of each link on its target, giving O(d).
      *
      * @return The number of nodes moved.
      */
@@ -499,7 +494,9 @@ public abstract class InfomapGreedy extends InfomapBase {
         }
 
         final int numNodes = activeNetwork.size();
-        dumpActiveNetwork("in");
+        if (DEBUG) {
+            dumpActiveNetwork("in");
+        }
 
         // Get random enumeration of nodes.
         final int[] randomOrder = new int[numNodes];
@@ -531,7 +528,9 @@ public abstract class InfomapGreedy extends InfomapBase {
                     || (config.isIncludeSelfLinks()
                     && (current.getOutDegree() == 1 && current.getInDegree() == 1)
                     && current.getOutEdges().get(0).getTarget().equals(current))) {
-                LOGGER.log(Level.INFO, "SKIPPING isolated node {0}", current);
+                if (DEBUG) {
+                    LOGGER.log(Level.INFO, "SKIPPING isolated node {0}", current);
+                }
                 //TODO: if not skipping self-links, this yields different results from moveNodesToPredefinedModules!!
                 assert !config.isIncludeSelfLinks();
                 continue;
@@ -663,8 +662,9 @@ public abstract class InfomapGreedy extends InfomapBase {
 
             offset += numNodes;
         }
-
-        dumpActiveNetwork("");
+        if (DEBUG) {
+            dumpActiveNetwork("");
+        }
         return numMoved;
     }
 
