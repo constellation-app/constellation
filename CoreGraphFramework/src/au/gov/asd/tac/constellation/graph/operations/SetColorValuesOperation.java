@@ -21,7 +21,7 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 
 /**
  * The SetColorValuesOperation is used when the need arises to change a large
- * number of ConstellationColor attribute values on a attributes of
+ * number of ConstellationColor attribute values on an attribute of
  * nodes/transactions on the graph, such as for animation. By implementing the
  * color changes as a GraphOperation, significant space can be saved on the
  * undo/redo stack.
@@ -39,9 +39,9 @@ public class SetColorValuesOperation extends GraphOperation {
 
     /**
      * Set up value initialisation.
-     * @param graph
-     * @param elementType
-     * @param attribute 
+     * @param graph Graph to update
+     * @param elementType Element type to update
+     * @param attribute Attribute to update
 */
     public SetColorValuesOperation(final GraphWriteMethods graph, final GraphElementType elementType, final int attribute) {
         this.graph = graph;
@@ -51,8 +51,8 @@ public class SetColorValuesOperation extends GraphOperation {
 
     /**
      * Set the new value to update if it has changed.
-     * @param elementId
-     * @param newValue 
+     * @param elementId Id of element to update
+     * @param newValue  New color to set attribute to
      */
     public void setValue(final int elementId, final ConstellationColor newValue) {
         this.id = elementId;
