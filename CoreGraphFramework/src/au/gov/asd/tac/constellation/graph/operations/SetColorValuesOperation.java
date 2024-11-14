@@ -57,9 +57,11 @@ public class SetColorValuesOperation extends GraphOperation {
     public void setValue(final int elementId, final ConstellationColor newValue) {
         this.id = elementId;
         this.originalColor = graph.getObjectValue(attribute, id);
-        if (newValue.getRGBString() == null ? originalColor.getRGBString() != null : !newValue.getRGBString().equals(originalColor.getRGBString())) {
-            newColor = newValue;
-        }                        
+        if (newValue != null) {
+            if (newValue.getRGBString() == null ? originalColor.getRGBString() != null : !newValue.getRGBString().equals(originalColor.getRGBString())) {
+                newColor = newValue;
+            }
+        }
     }
 
     @Override

@@ -3,10 +3,11 @@
 ## Changes in November 2024
 -   Refactored MenuBaseAction to disable graph dependant menu items when primary graph is ambiguous.
 -   Refactored animation framework to update graph attributes and hold write locks for minimal durations to enable graph interction.
--   Created Color Warp Animation
--   Enhanced Fly through and Direction Indicators Aniation
--   Created Graph Motion Attribute
+-   Created Color Warp Animation.
+-   Enhanced Fly through and Direction Indicators Animation.
+-   Created Graph Connection Motion Attribute as a META graph element type.
 -   Created Animation setting to disable animations for low power machines.
+-   Created SetColorValuesOperation to save space on the undo/redo stack.
 
 ## Changes in October 2024
 -   Added ability to pass parameters and selected items on graph to PluginReporter to display via `DefaultPluginInteraction`.
