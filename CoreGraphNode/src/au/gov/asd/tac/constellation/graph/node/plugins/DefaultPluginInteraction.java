@@ -28,6 +28,7 @@ import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
@@ -136,7 +137,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
     public void setProgressTimestamp(final boolean addTimestamp) throws InterruptedException {
 
         if (pluginReport != null && addTimestamp) {
-            final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ",  Locale.getDefault());
             final Date date = new Date(pluginReport.getStartTime());
             pluginReport.addMessage("Time: " + format.format(date));
         }
