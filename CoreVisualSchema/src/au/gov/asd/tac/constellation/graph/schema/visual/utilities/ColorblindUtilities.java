@@ -96,8 +96,7 @@ public class ColorblindUtilities {
             }
         }
 
-        final ConstellationColor newColor = ConstellationColor.getColorValue(adjustedRed, adjustedGreen, adjustedBlue, vertexColor.getAlpha());
-        return newColor;
+        return ConstellationColor.getColorValue(adjustedRed, adjustedGreen, adjustedBlue, vertexColor.getAlpha());
     }
     
     protected static Preferences getApplicationPreferences() {
