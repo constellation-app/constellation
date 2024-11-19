@@ -17,6 +17,8 @@ package au.gov.asd.tac.constellation.graph.interaction.gui;
 
 import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
@@ -47,6 +49,7 @@ public class VisualGraphOpenerNGTest {
         final FileObject mockFileObject = mock(FileObject.class);
         final File mockFile = mock(File.class);
         final String path = "mocked path";
+        final Path mockPath = mock(Path.class);
         final Long lastModified = 123L;
 
         when(mockGdo.getPrimaryFile()).thenReturn(mockFileObject);
@@ -59,23 +62,28 @@ public class VisualGraphOpenerNGTest {
         assertEquals(mockFile.getPath(), path);
         assertEquals((Long) mockFile.lastModified(), lastModified);
 
-        try (MockedStatic<FileUtil> mockFileUtil = Mockito.mockStatic(FileUtil.class, Mockito.CALLS_REAL_METHODS)) {
+        try (MockedStatic<FileUtil> mockFileUtil = Mockito.mockStatic(FileUtil.class, Mockito.CALLS_REAL_METHODS); 
+                MockedStatic<Paths> mockPaths = Mockito.mockStatic(Paths.class, Mockito.CALLS_REAL_METHODS)) {
             // Set up FileUtil mock
             mockFileUtil.when(() -> FileUtil.toFile(mockFileObject)).thenReturn(mockFile);
             assertEquals(FileUtil.toFile(mockFileObject), mockFile);
+            // Set up Paths mock
+            mockPaths.when(() -> Paths.get(path)).thenReturn(mockPath);
+            assertEquals(Paths.get(path), mockPath);
+            
             final VisualGraphOpener instance = new VisualGraphOpener();
             instance.openGraph(mockGdo);
-
+ 
             // Assert that the path was added to the list, 
             // The list shouldn't be empty at the moment
             assertFalse(VisualGraphOpener.getOpeningGraphs().isEmpty());
-            assertTrue(VisualGraphOpener.getOpeningGraphs().contains(path));
+            assertTrue(VisualGraphOpener.getOpeningGraphs().contains(mockPath));
 
             // Open again
             instance.openGraph(mockGdo);
             // Assert path still in list
             assertFalse(VisualGraphOpener.getOpeningGraphs().isEmpty());
-            assertTrue(VisualGraphOpener.getOpeningGraphs().contains(path));
+            assertTrue(VisualGraphOpener.getOpeningGraphs().contains(mockPath));
         }
 
         System.clearProperty("java.awt.headless");
