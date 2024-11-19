@@ -1,5 +1,10 @@
 # Constellation Changes
 
+## Changes in November 2024
+-   Removed `ColorblindUtilities.colorNodes()` which was unused. This behaviour is replicated in `VisualSchemaFactory.VisualSchema` with `applyColorblindVertex()` and `applyColorblindTransaction()`.
+-   Removed `ColorblindUtilities.setColorRef()` which only had one use. This behaviour is now directly added to where the function was previously used.
+-   Renamed `ColorblindUtilities.calcColorBrightness()` to `ColorblindUtilities.calculateColorBrightness()` for readability.
+
 ## Changes in October 2024
 -   Added ability to pass parameters and selected items on graph to PluginReporter to display via `DefaultPluginInteraction`.
 -   Added the ability to set of Table View default columns by implementing `TableDefaultColumns` and using lookup.

@@ -58,7 +58,6 @@ public class VisualSchemaV7UpdateProvider extends SchemaUpdateProvider {
 
     @Override
     protected void schemaUpdate(final StoreGraph graph) {
-
         // Retrieve the attributes IDs of the previous attributes 
         final int oldGraphBottomlabelsAttributeId = graph.getAttribute(GraphElementType.GRAPH, NODE_BOTTOM_LABELS_COLOURS);
         final int oldGraphToplabelsAttributeId = graph.getAttribute(GraphElementType.GRAPH, NODE_TOP_LABEL_COLOURS);

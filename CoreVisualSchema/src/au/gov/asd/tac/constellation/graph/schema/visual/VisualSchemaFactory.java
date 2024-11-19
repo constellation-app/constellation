@@ -352,7 +352,7 @@ public class VisualSchemaFactory extends SchemaFactory {
                 final ConstellationColor vxColorblindAlpha = graph.getObjectValue(vxColorblindAttr, vertexId);
 
                 if (vertexColor != null && (vxColorblindAlpha == null || vxColorblindAlpha.getAlpha() == 0.99F)) {
-                    final ConstellationColor newColor = ColorblindUtilities.calcColorBrightness(vertexColor);
+                    final ConstellationColor newColor = ColorblindUtilities.calculateColorBrightness(vertexColor);
                     graph.setObjectValue(vxColorblindAttr, vertexId, newColor);
                 }
             }
@@ -370,7 +370,7 @@ public class VisualSchemaFactory extends SchemaFactory {
                 final ConstellationColor txColorblindAlpha = graph.getObjectValue(txColorblindAttr, transactionId);
 
                 if (transactionColor != null && (txColorblindAlpha == null || txColorblindAlpha.getAlpha() == 0.99F)) {
-                    final ConstellationColor newColor = ColorblindUtilities.calcColorBrightness(transactionColor);
+                    final ConstellationColor newColor = ColorblindUtilities.calculateColorBrightness(transactionColor);
                     graph.setObjectValue(txColorblindAttr, transactionId, newColor);
                 }
             }

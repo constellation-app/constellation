@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.graph.visual.utilities;
 
-import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
@@ -23,7 +22,6 @@ import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.camera.BoundingBox;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
-import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
@@ -39,17 +37,23 @@ import org.testng.annotations.Test;
 public class BoundingBoxUtilitiesNGTest {
     
     private StoreGraph graph;
+    
     private int vxId1;
     private int vxId2;
     private int vxId3;
+    private int vxId4;
     
-    private int selectedVertexAttribute;
+    private int tId1;
+    private int tId2;
+    
     private int xVertexAttribute;
     private int yVertexAttribute;
     private int zVertexAttribute;
     private int x2VertexAttribute;
     private int y2VertexAttribute;
     private int z2VertexAttribute;
+    private int selectedVertexAttribute;
+    private int selectedTransactionAttribute;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -67,18 +71,20 @@ public class BoundingBoxUtilitiesNGTest {
         vxId1 = graph.addVertex();
         vxId2 = graph.addVertex();
         vxId3 = graph.addVertex();
+        vxId4 = graph.addVertex();
         
-        selectedVertexAttribute = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
+        tId1 = graph.addTransaction(vxId1, vxId2, true);
+        tId2 = graph.addTransaction(vxId1, vxId4, true);
+        
         xVertexAttribute = VisualConcept.VertexAttribute.X.ensure(graph);
         yVertexAttribute = VisualConcept.VertexAttribute.Y.ensure(graph);
         zVertexAttribute = VisualConcept.VertexAttribute.Z.ensure(graph);
         x2VertexAttribute = VisualConcept.VertexAttribute.X2.ensure(graph);
         y2VertexAttribute = VisualConcept.VertexAttribute.Y2.ensure(graph);
         z2VertexAttribute = VisualConcept.VertexAttribute.Z2.ensure(graph);
-        
-        graph.setBooleanValue(selectedVertexAttribute, vxId1, true);
-        graph.setBooleanValue(selectedVertexAttribute, vxId3, true);
-        
+        selectedVertexAttribute = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
+        selectedTransactionAttribute = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
+               
         graph.setFloatValue(xVertexAttribute, vxId1, 1F);
         graph.setFloatValue(yVertexAttribute, vxId1, 2F);
         graph.setFloatValue(zVertexAttribute, vxId1, 3F);
@@ -99,6 +105,18 @@ public class BoundingBoxUtilitiesNGTest {
         graph.setFloatValue(x2VertexAttribute, vxId3, 0F);
         graph.setFloatValue(y2VertexAttribute, vxId3, 2F);
         graph.setFloatValue(z2VertexAttribute, vxId3, 5F);
+        
+        graph.setFloatValue(xVertexAttribute, vxId4, 2F);
+        graph.setFloatValue(yVertexAttribute, vxId4, 2F);
+        graph.setFloatValue(zVertexAttribute, vxId4, 2F);
+        graph.setFloatValue(x2VertexAttribute, vxId4, 2F);
+        graph.setFloatValue(y2VertexAttribute, vxId4, 2F);
+        graph.setFloatValue(z2VertexAttribute, vxId4, 2F);
+        
+        graph.setBooleanValue(selectedVertexAttribute, vxId1, true);
+        graph.setBooleanValue(selectedVertexAttribute, vxId3, true);
+        
+        graph.setBooleanValue(selectedTransactionAttribute, tId2, true);
     }
 
     @AfterMethod
@@ -121,7 +139,7 @@ public class BoundingBoxUtilitiesNGTest {
         
         assertTrue(box.getBoundingBoxMinimum().areSame(new Vector3f(0F, 1F, 0F)));
         assertTrue(box.getBoundingBoxMaximum().areSame(new Vector3f(2F, 2F, 4F)));
-        assertTrue(box.getMin2().areSame(new Vector3f(0F, 2F, 3F)));
+        assertTrue(box.getMin2().areSame(new Vector3f(0F, 2F, 2F)));
         assertTrue(box.getMax2().areSame(new Vector3f(5F, 5F, 6F)));
     }
     
@@ -139,9 +157,9 @@ public class BoundingBoxUtilitiesNGTest {
         
         BoundingBoxUtilities.recalculateFromGraph(box, graph, true);
         
-        assertTrue(box.getBoundingBoxMinimum().areSame(new Vector3f(0F, 2F, 3F)));
-        assertTrue(box.getBoundingBoxMaximum().areSame(new Vector3f(1F, 2F, 4F)));
-        assertTrue(box.getMin2().areSame(new Vector3f(0F, 2F, 5F)));
+        assertTrue(box.getBoundingBoxMinimum().areSame(new Vector3f(0F, 2F, 2F)));
+        assertTrue(box.getBoundingBoxMaximum().areSame(new Vector3f(2F, 2F, 4F)));
+        assertTrue(box.getMin2().areSame(new Vector3f(0F, 2F, 2F)));
         assertTrue(box.getMax2().areSame(new Vector3f(4F, 5F, 6F)));
     }
 
