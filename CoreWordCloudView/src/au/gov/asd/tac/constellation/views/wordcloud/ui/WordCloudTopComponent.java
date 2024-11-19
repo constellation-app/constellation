@@ -51,7 +51,7 @@ import org.openide.windows.TopComponent;
         id = "au.gov.asd.tac.constellation.views.wordcloud.ui.WordCloudTopComponent"
 )
 @ActionReferences({
-    @ActionReference(path = "Menu/Experimental/Views", position = 2000),
+    @ActionReference(path = "Menu/Views", position = 1700),
     @ActionReference(path = "Shortcuts", name = "CS-W")
 })
 @TopComponent.OpenActionRegistration(
