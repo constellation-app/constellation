@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.views.conversationview;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import java.util.logging.Logger;
+import javafx.application.Platform;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
@@ -38,14 +38,16 @@ import org.testng.annotations.Test;
 public class ConversationViewTopComponentNGTest {
     
     private ConversationViewTopComponent topComponent;
-    private static final Logger LOGGER = Logger.getLogger(ConversationViewTopComponentNGTest.class.getName());
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Initialise the FXToolkit ...
+        Platform.startup(() -> {});
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        Platform.exit();
     }
 
     @BeforeMethod
