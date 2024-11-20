@@ -58,7 +58,6 @@ public class VisualSchemaV6UpdateProvider extends SchemaUpdateProvider {
 
     @Override
     protected void schemaUpdate(final StoreGraph graph) {
-
         // retrieve the attribute Id of both the graph_labels_top/bottom
         final int oldGraphBottomlabelsAttributeId = graph.getAttribute(GraphElementType.GRAPH, GRAPH_BOTTOM_LABELS);
         final int oldGraphToplabelsAttributeId = graph.getAttribute(GraphElementType.GRAPH, GRAPH_TOP_LABELS);
@@ -79,5 +78,4 @@ public class VisualSchemaV6UpdateProvider extends SchemaUpdateProvider {
             graph.removeAttribute(oldGraphToplabelsAttributeId);
         }
     }
-
 }

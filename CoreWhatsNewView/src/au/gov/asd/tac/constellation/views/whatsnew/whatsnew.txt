@@ -1,6 +1,10 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2024-11-18 Word Cloud View no longer in Experimental
+<p>Word Cloud View has been moved out from Experimental.</p>
+<p>Word Cloud View can now be found in Views -&gt; Word Cloud View.</p>
+
 == 2024-08-13 Layers View - Union and Intersection Modes have now been implemented.
 <p> You can now switch between Union and Intersection modes using the control at the top right of the Layers View. Union mode will show <b>all</b> elements matching with <b>any</b> Layer. Intersection mode will <b>only</b> show graph elements that match with <b>every</b> active layer.
 <p> Layers will now correctly display combined matches to queries as well as any manual allocations for the same layer.

@@ -1,6 +1,9 @@
 # Constellation Changes
 
 ## Changes in November 2024
+-   Removed `ColorblindUtilities.colorNodes()` which was unused. This behaviour is replicated in `VisualSchemaFactory.VisualSchema` with `applyColorblindVertex()` and `applyColorblindTransaction()`.
+-   Removed `ColorblindUtilities.setColorRef()` which only had one use. This behaviour is now directly added to where the function was previously used.
+-   Renamed `ColorblindUtilities.calcColorBrightness()` to `ColorblindUtilities.calculateColorBrightness()` for readability.
 -   Refactored MenuBaseAction to disable graph dependant menu items when primary graph is ambiguous.
 -   Refactored animation framework to update graph attributes and hold write locks for minimal durations to enable graph interction.
 -   Created Color Warp Animation.
