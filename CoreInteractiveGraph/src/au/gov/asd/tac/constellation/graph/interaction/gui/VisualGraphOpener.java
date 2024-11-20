@@ -109,7 +109,7 @@ public final class VisualGraphOpener extends GraphOpener {
         final File f = FileUtil.toFile(gdo.getPrimaryFile());
 
         // If graph is currently being opened, but isn't open yet
-        if (openingGraphs.contains(Paths.get(f.getPath()))) {
+        if (openingGraphs.contains(Paths.get(f.getAbsolutePath()))) {
             return;
         }
 
@@ -160,7 +160,7 @@ public final class VisualGraphOpener extends GraphOpener {
         }
 
         // Add to list of graphs currently being opened
-        openingGraphs.add(Paths.get(f.getPath()));
+        openingGraphs.add(Paths.get(f.getAbsolutePath()));
 
         // The file isn't already open, so open it.
         new GraphFileOpener(gdo, null, null).execute();

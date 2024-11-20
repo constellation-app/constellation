@@ -36,6 +36,8 @@ import org.testng.annotations.Test;
  */
 public class VisualGraphOpenerNGTest {
 
+    private static final String FILE_NAME = "dummy.star";
+
     /**
      * Test of openGraph method, of class VisualGraphOpener.
      */
@@ -54,26 +56,25 @@ public class VisualGraphOpenerNGTest {
 
         when(mockGdo.getPrimaryFile()).thenReturn(mockFileObject);
         when(mockFileObject.getPath()).thenReturn(path);
-        when(mockFile.getPath()).thenReturn(path);
+        when(mockFile.getAbsolutePath()).thenReturn(path);
         when(mockFile.lastModified()).thenReturn(lastModified);
 
         // Check mocks work
         assertEquals(mockGdo.getPrimaryFile(), mockFileObject);
-        assertEquals(mockFile.getPath(), path);
+        assertEquals(mockFile.getAbsolutePath(), path);
         assertEquals((Long) mockFile.lastModified(), lastModified);
 
-        try (MockedStatic<FileUtil> mockFileUtil = Mockito.mockStatic(FileUtil.class, Mockito.CALLS_REAL_METHODS); 
-                MockedStatic<Paths> mockPaths = Mockito.mockStatic(Paths.class, Mockito.CALLS_REAL_METHODS)) {
+        try (MockedStatic<FileUtil> mockFileUtil = Mockito.mockStatic(FileUtil.class, Mockito.CALLS_REAL_METHODS); MockedStatic<Paths> mockPaths = Mockito.mockStatic(Paths.class, Mockito.CALLS_REAL_METHODS)) {
             // Set up FileUtil mock
             mockFileUtil.when(() -> FileUtil.toFile(mockFileObject)).thenReturn(mockFile);
             assertEquals(FileUtil.toFile(mockFileObject), mockFile);
             // Set up Paths mock
             mockPaths.when(() -> Paths.get(path)).thenReturn(mockPath);
             assertEquals(Paths.get(path), mockPath);
-            
+
             final VisualGraphOpener instance = new VisualGraphOpener();
             instance.openGraph(mockGdo);
- 
+
             // Assert that the path was added to the list, 
             // The list shouldn't be empty at the moment
             assertFalse(VisualGraphOpener.getOpeningGraphs().isEmpty());
@@ -84,6 +85,48 @@ public class VisualGraphOpenerNGTest {
             // Assert path still in list
             assertFalse(VisualGraphOpener.getOpeningGraphs().isEmpty());
             assertTrue(VisualGraphOpener.getOpeningGraphs().contains(mockPath));
+        }
+
+        System.clearProperty("java.awt.headless");
+    }
+
+    /**
+     * Test of openGraph method, of class VisualGraphOpener.
+     */
+    @Test
+    public void testOpenGraphDummyFile() {
+        System.out.println("openGraphDummyFile");
+        System.setProperty("java.awt.headless", "true");
+
+        // Set up mocks
+        final GraphDataObject mockGdo = mock(GraphDataObject.class);
+        final FileObject mockFileObject = mock(FileObject.class);
+
+        // Dummy file
+        final File dummyfile = new File(FILE_NAME);
+        final Path expectedPath = Paths.get(dummyfile.getAbsolutePath());
+
+        when(mockGdo.getPrimaryFile()).thenReturn(mockFileObject);
+        assertEquals(mockGdo.getPrimaryFile(), mockFileObject);
+
+        try (MockedStatic<FileUtil> mockFileUtil = Mockito.mockStatic(FileUtil.class, Mockito.CALLS_REAL_METHODS)) {
+            // Set up FileUtil mock
+            mockFileUtil.when(() -> FileUtil.toFile(mockFileObject)).thenReturn(dummyfile);
+            assertEquals(FileUtil.toFile(mockFileObject), dummyfile);
+
+            final VisualGraphOpener instance = new VisualGraphOpener();
+            instance.openGraph(mockGdo);
+
+            // Assert that the path was added to the list, 
+            // The list shouldn't be empty at the moment
+            assertFalse(VisualGraphOpener.getOpeningGraphs().isEmpty());
+            assertTrue(VisualGraphOpener.getOpeningGraphs().contains(expectedPath));
+
+            // Open again
+            instance.openGraph(mockGdo);
+            // Assert path still in list
+            assertFalse(VisualGraphOpener.getOpeningGraphs().isEmpty());
+            assertTrue(VisualGraphOpener.getOpeningGraphs().contains(expectedPath));
         }
 
         System.clearProperty("java.awt.headless");
