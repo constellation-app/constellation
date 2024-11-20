@@ -16,16 +16,16 @@
 package au.gov.asd.tac.constellation.views.conversationview;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+//import java.util.concurrent.TimeoutException;
+//import java.util.logging.Level;
+//import java.util.logging.Logger;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import org.testfx.api.FxToolkit;
+//import org.testfx.api.FxToolkit;
 import static org.testng.AssertJUnit.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -41,22 +41,22 @@ import org.testng.annotations.Test;
 public class ConversationViewTopComponentNGTest {
     
     private ConversationViewTopComponent topComponent;
-    private static final Logger LOGGER = Logger.getLogger(ConversationViewTopComponentNGTest.class.getName());
+//    private static final Logger LOGGER = Logger.getLogger(ConversationViewTopComponentNGTest.class.getName());
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        if (!FxToolkit.isFXApplicationThreadRunning()) {
-            FxToolkit.registerPrimaryStage();
-        }
+//        if (!FxToolkit.isFXApplicationThreadRunning()) {
+//            FxToolkit.registerPrimaryStage();
+//        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        try {
-            FxToolkit.cleanupStages();
-        } catch (final TimeoutException ex) {
-            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
-        }
+//        try {
+//            FxToolkit.cleanupStages();
+//        } catch (final TimeoutException ex) {
+//            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+//        }
     }
 
     @BeforeMethod
