@@ -41,12 +41,12 @@ public class VisualGraphOpenerNGTest {
     private static final String FILE_NAME = "dummy.star";
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
+    public static void setUpClass() {
         System.setProperty("java.awt.headless", "true");
     }
 
     @AfterClass
-    public static void tearDownClass() throws Exception {
+    public static void tearDownClass() {
         System.clearProperty("java.awt.headless");
     }
 
