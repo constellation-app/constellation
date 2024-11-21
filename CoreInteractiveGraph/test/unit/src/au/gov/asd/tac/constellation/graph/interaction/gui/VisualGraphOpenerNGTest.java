@@ -19,16 +19,12 @@ import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
@@ -43,37 +39,15 @@ import org.testng.annotations.Test;
 public class VisualGraphOpenerNGTest {
 
     private static final String FILE_NAME = "dummy.star";
-    private static final Logger LOGGER = Logger.getLogger(VisualGraphOpenerNGTest.class.getName());
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        try {
-            if (!FxToolkit.isFXApplicationThreadRunning()) {
-                FxToolkit.registerPrimaryStage();
-            }
-        } catch (TimeoutException e) {
-            System.out.println("\n**** SETUP ERROR: " + e);
-            throw e;
-        }
-
         System.setProperty("java.awt.headless", "true");
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
         System.clearProperty("java.awt.headless");
-        try {
-            FxToolkit.cleanupStages();
-        } catch (TimeoutException ex) {
-            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
-        } catch (Exception e) {
-            if (e.toString().contains("HeadlessException")) {
-                System.out.println("\n**** EXPECTED TEARDOWN ERROR: " + e.toString());
-            } else {
-                System.out.println("\n**** UN-EXPECTED TEARDOWN ERROR: " + e.toString());
-                throw e;
-            }
-        }
     }
 
     /**
