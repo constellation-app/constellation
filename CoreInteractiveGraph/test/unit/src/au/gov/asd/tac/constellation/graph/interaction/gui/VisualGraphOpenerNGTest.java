@@ -61,6 +61,7 @@ public class VisualGraphOpenerNGTest {
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        System.clearProperty("java.awt.headless");
         try {
             FxToolkit.cleanupStages();
         } catch (TimeoutException ex) {
@@ -73,8 +74,6 @@ public class VisualGraphOpenerNGTest {
                 throw e;
             }
         }
-
-        System.clearProperty("java.awt.headless");
     }
 
     /**
