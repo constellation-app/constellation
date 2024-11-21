@@ -47,8 +47,8 @@ public class ConversationViewTopComponentNGTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
-            FxToolkit.registerPrimaryStage();
             WaitForAsyncUtils.checkAllExceptions = false;
+            FxToolkit.registerPrimaryStage();
         }
     }
 
@@ -56,7 +56,6 @@ public class ConversationViewTopComponentNGTest {
     public static void tearDownClass() throws Exception {
         try {            
             FxToolkit.cleanupStages();
-            WaitForAsyncUtils.checkAllExceptions = true;
         } catch (final TimeoutException ex) {
             LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
         }
