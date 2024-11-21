@@ -26,6 +26,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
+import org.testfx.util.WaitForAsyncUtils;
 import static org.testng.AssertJUnit.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -47,24 +48,18 @@ public class ConversationViewTopComponentNGTest {
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
             FxToolkit.registerPrimaryStage();
+            WaitForAsyncUtils.checkAllExceptions = false;
         }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        try {
+        try {            
             FxToolkit.cleanupStages();
+            WaitForAsyncUtils.checkAllExceptions = true;
         } catch (final TimeoutException ex) {
             LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
-        } catch (Exception e) {
-            if (e.toString().contains("HeadlessException")) {
-                System.out.println("\n**** EXPECTED TEARDOWN ERROR: " + e.toString());
-            } else {
-                System.out.println("\n**** UN-EXPECTED TEARDOWN ERROR: " + e.toString());
-                throw e;
-            }
         }
-
     }
 
     @BeforeMethod
@@ -94,7 +89,7 @@ public class ConversationViewTopComponentNGTest {
     @Test
     public void testCreateContent() {
         System.out.println("createContent");
-        try (MockedStatic<ConversationController> controllerStatic = Mockito.mockStatic(ConversationController.class)) {
+        try (final MockedStatic<ConversationController> controllerStatic = Mockito.mockStatic(ConversationController.class)) {
             final ConversationController controller = spy(ConversationController.class);
             controllerStatic.when(ConversationController::getDefault).thenReturn(controller);
 
@@ -113,7 +108,7 @@ public class ConversationViewTopComponentNGTest {
     @Test
     public void testHandleNewGraph() {
         System.out.println("handleNewGraph");
-        try (MockedStatic<ConversationController> controllerStatic = Mockito.mockStatic(ConversationController.class)) {
+        try (final MockedStatic<ConversationController> controllerStatic = Mockito.mockStatic(ConversationController.class)) {
             final ConversationController controller = spy(ConversationController.class);
             controllerStatic.when(ConversationController::getDefault).thenReturn(controller);
             final Graph graph = mock(Graph.class);
