@@ -107,7 +107,6 @@ public final class VisualGraphOpener extends GraphOpener {
         }
 
         final File f = FileUtil.toFile(gdo.getPrimaryFile());
-        System.out.println("f.getAbsolutePath() " + f.getAbsolutePath());
 
         // If graph is currently being opened, but isn't open yet
         if (openingGraphs.contains(Paths.get(f.getAbsolutePath()))) {
@@ -161,7 +160,6 @@ public final class VisualGraphOpener extends GraphOpener {
         }
 
         // Add to list of graphs currently being opened
-        System.out.println("ADD f.getAbsolutePath() " + f.getAbsolutePath());
         openingGraphs.add(Paths.get(f.getAbsolutePath()));
 
         // The file isn't already open, so open it.
@@ -364,8 +362,9 @@ public final class VisualGraphOpener extends GraphOpener {
             }
 
             // Graph has finished opening, so remove from list
-            System.out.println("gdo.getPrimaryFile().getPath() " + gdo.getPrimaryFile().getPath());
-            openingGraphs.remove(Paths.get(gdo.getPrimaryFile().getPath()));
+            if (gdo.getPrimaryFile().getPath() != null) {
+                openingGraphs.remove(Paths.get(gdo.getPrimaryFile().getPath()));
+            }
         }
     }
 
