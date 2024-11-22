@@ -45,17 +45,13 @@ public class RecordKeyboardShortcut extends Dialog<String>  {
     private static final String KEYBOARD_SHORTCUT_DIALOG_TITLE = "Keyboard Shortcut";
     private static final String KEYBOARD_SHORTCUT_DIALOG_HEADER_TEXT = "Press keyboard shortcut for template";
     
-    private static final String KEYBOARD_SHORTCUT_EXISTS_ALERT_TITLE = "Keyboard shortcut already assigned to other template";
-    //private static final String KEYBOARD_SHORTCUT_EXISTS_ALERT_ERROR_MSG_FORMAT
-    //        = "'%s' already assigned. Do you want to assign it to this template?";
-    
-     public static final String KEYBOARD_SHORTCUT_EXISTS_ALERT_ERROR_MSG_FORMAT
+    public static final String KEYBOARD_SHORTCUT_EXISTS_ALERT_ERROR_MSG_FORMAT
             = "'%s' will be re-assigned to this template";
      
-     public static final String KEYBOARD_SHORTCUT = "KEYBOARD_SHORTCUT";
-     public static final String ALREADY_ASSIGNED = "ALREADY_ASSIGNED";
-     public static final String YES = "Yes";
-     public static final String NO = "No";
+    public static final String KEYBOARD_SHORTCUT = "KEYBOARD_SHORTCUT";
+    public static final String ALREADY_ASSIGNED = "ALREADY_ASSIGNED";
+    public static final String YES = "Yes";
+    public static final String NO = "No";
      
     public Optional<KeyboardShortcutSelectionResult> start(final File preferenceDirectory) {       
         
@@ -80,7 +76,7 @@ public class RecordKeyboardShortcut extends Dialog<String>  {
                 alreadyAssigned = true;
             }
             
-           ksOptional = Optional.of(new KeyboardShortcutSelectionResult(keyboardShortcut, alreadyAssigned, exisitngTemplateWithKs));
+            ksOptional = Optional.of(new KeyboardShortcutSelectionResult(keyboardShortcut, alreadyAssigned, exisitngTemplateWithKs));
         }
         
         
@@ -91,9 +87,7 @@ public class RecordKeyboardShortcut extends Dialog<String>  {
         
         File exisitngTemplateWithKs = null;
         
-        final FilenameFilter filenameFilter = (d, s) -> {            
-             return s.startsWith(keyboardShortcut);
-        };
+        final FilenameFilter filenameFilter = (d, s) -> s.startsWith(keyboardShortcut);        
         
         final String[] fileNames = preferenceDirectory.list(filenameFilter);
         
@@ -109,7 +103,7 @@ public class RecordKeyboardShortcut extends Dialog<String>  {
     }
     
     public static KeyCombination createCombo(final KeyEvent event) {
-        final List<Modifier> modifiers = new ArrayList();
+        final List<Modifier> modifiers = new ArrayList<Modifier>();
         if (event.isControlDown()) {
             modifiers.add(KeyCombination.CONTROL_DOWN);
         }
