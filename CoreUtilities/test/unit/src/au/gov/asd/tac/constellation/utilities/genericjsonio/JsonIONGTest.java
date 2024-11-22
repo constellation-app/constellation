@@ -205,6 +205,32 @@ public class JsonIONGTest {
         }
     }
 
+     @Test
+    public void saveJsonPreferences_with_keyboardshortcut() throws URISyntaxException, FileNotFoundException, IOException {
+
+        final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
+
+        try (MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class)) {
+            
+             jsonIoMockedStatic.when(() -> JsonIO
+                    .getPrefereceFileDirectory(any(Optional.class)))
+                    .thenReturn(outputFile);
+            
+            jsonIoMockedStatic.when(() -> JsonIO
+                    .saveJsonPreferencesWithKeyboardShortcut(any(Optional.class), any(Object.class)))
+                    .thenCallRealMethod();
+
+            final ObjectMapper mapper = new ObjectMapper();
+
+            JsonIO.saveJsonPreferencesWithKeyboardShortcut(SUB_DIRECTORY, fixture());
+
+            jsonIoMockedStatic.verify(() -> JsonIO
+                    .saveJsonPreferencesWithKeyboardShortcut(SUB_DIRECTORY, fixture()));
+        } finally {
+            Files.deleteIfExists(outputFile.toPath());
+        }
+    }
+    
     @Test
     public void saveJsonPreferences_without_prefix() throws URISyntaxException, FileNotFoundException, IOException {
 
