@@ -132,7 +132,7 @@ public class JsonIODialog {
         return td.showAndWait();
     }
     
-    public static Optional<KeyboardShortcutSelectionResult> getPreferenceFileName(final Optional<Boolean> keyboardShortcut, final Optional<String> ks, final File preferenceDirectory) {
+    public static Optional<KeyboardShortcutSelectionResult> getPreferenceFileName(final Optional<String> ks, final File preferenceDirectory) {
         final TextInputDialogWithKeybordShortcut td = new TextInputDialogWithKeybordShortcut(preferenceDirectory, ks);
         td.setTitle(PREFERENCE_NAME_DIALOG_TITLE);
         td.setHeaderText(PREFERENCE_NAME_DIALOG_HEADER_TEXT);
