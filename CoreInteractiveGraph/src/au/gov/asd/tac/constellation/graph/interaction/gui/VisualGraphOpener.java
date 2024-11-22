@@ -42,6 +42,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -81,7 +82,7 @@ public final class VisualGraphOpener extends GraphOpener {
 
     private static final String UNABLE_TO_REMOVE_SECONDARY_BACKUP_MESSAGE = "Unable to remove old secondary backup file: {0}";
 
-    private static final List<String> openingGraphs = new ArrayList<>();
+    private static final List<Path> openingGraphs = new ArrayList<>();
 
     /**
      * Open a graph file into a VisualTopComponent.
@@ -108,7 +109,7 @@ public final class VisualGraphOpener extends GraphOpener {
         final File f = FileUtil.toFile(gdo.getPrimaryFile());
 
         // If graph is currently being opened, but isn't open yet
-        if (openingGraphs.contains(f.getPath())) {
+        if (openingGraphs.contains(Paths.get(f.getAbsolutePath()))) {
             return;
         }
 
@@ -159,7 +160,7 @@ public final class VisualGraphOpener extends GraphOpener {
         }
 
         // Add to list of graphs currently being opened
-        openingGraphs.add(f.getPath());
+        openingGraphs.add(Paths.get(f.getAbsolutePath()));
 
         // The file isn't already open, so open it.
         new GraphFileOpener(gdo, null, null).execute();
@@ -188,7 +189,7 @@ public final class VisualGraphOpener extends GraphOpener {
      *
      * @return ArrayList of paths
      */
-    public static List<String> getOpeningGraphs() {
+    public static List<Path> getOpeningGraphs() {
         return new ArrayList<>(openingGraphs);
     }
 
@@ -361,7 +362,9 @@ public final class VisualGraphOpener extends GraphOpener {
             }
 
             // Graph has finished opening, so remove from list
-            openingGraphs.remove(gdo.getPrimaryFile().getPath());
+            if (gdo.getPrimaryFile().getPath() != null) {
+                openingGraphs.remove(Paths.get(gdo.getPrimaryFile().getPath()));
+            }
         }
     }
 
