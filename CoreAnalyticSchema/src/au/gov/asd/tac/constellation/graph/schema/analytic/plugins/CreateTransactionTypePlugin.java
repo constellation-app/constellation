@@ -25,7 +25,9 @@ import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType.ColorParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
@@ -71,7 +73,7 @@ public class CreateTransactionTypePlugin extends SimpleEditPlugin {
         descriptionParam.setRequired(true);
         params.addParameter(descriptionParam);
 
-        final PluginParameter<ColorParameterType.ColorParameterValue> colorParam = ColorParameterType.build(COLOR_PARAMETER_ID);
+        final PluginParameter<ColorParameterValue> colorParam = ColorParameterType.build(COLOR_PARAMETER_ID);
         colorParam.setName("Color");
         colorParam.setDescription("The color of the new transaction type");
         colorParam.setStringValue(ConstellationColor.RED.getName());
@@ -83,7 +85,7 @@ public class CreateTransactionTypePlugin extends SimpleEditPlugin {
         lineStyleParam.setStringValue(LineStyle.SOLID.toString());
         params.addParameter(lineStyleParam);
 
-        final PluginParameter<BooleanParameterType.BooleanParameterValue> directedParam = BooleanParameterType.build(DIRECTED_PARAMETER_ID);
+        final PluginParameter<BooleanParameterValue> directedParam = BooleanParameterType.build(DIRECTED_PARAMETER_ID);
         directedParam.setName("Directed");
         directedParam.setDescription("Is the transaction directed?");
         directedParam.setBooleanValue(true);
@@ -99,7 +101,7 @@ public class CreateTransactionTypePlugin extends SimpleEditPlugin {
         overriddenTypeParam.setDescription("The name of the overridden type of the new transaction type");
         params.addParameter(overriddenTypeParam);
 
-        final PluginParameter<BooleanParameterType.BooleanParameterValue> incompleteParam = BooleanParameterType.build(INCOMPLETE_PARAMETER_ID);
+        final PluginParameter<BooleanParameterValue> incompleteParam = BooleanParameterType.build(INCOMPLETE_PARAMETER_ID);
         incompleteParam.setName("Incomplete");
         incompleteParam.setDescription("Is the new transaction type incomplete?");
         params.addParameter(incompleteParam);

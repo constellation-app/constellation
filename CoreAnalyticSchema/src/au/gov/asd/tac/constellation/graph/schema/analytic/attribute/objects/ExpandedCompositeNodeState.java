@@ -101,7 +101,6 @@ public class ExpandedCompositeNodeState {
     }
 
     private void contractSingleVertex(final GraphWriteMethods wg, final int vxId, final RecordStore constituentNodeStore, final List<String> expandedIds, final List<String> affectedExpandedIds, final Map<Integer, String> idToCopiedId) {
-
         // Copy this vertex into the expansion record store inside the contracted composite state.
         final String[] copiedId = new String[1];
         GraphRecordStoreUtilities.copySpecifiedVertex(wg, constituentNodeStore, vxId, copiedId);

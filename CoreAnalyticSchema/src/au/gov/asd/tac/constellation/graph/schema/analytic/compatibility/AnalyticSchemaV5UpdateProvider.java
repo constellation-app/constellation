@@ -60,7 +60,6 @@ public class AnalyticSchemaV5UpdateProvider extends SchemaUpdateProvider {
 
     @Override
     protected void schemaUpdate(final StoreGraph graph) {
-
         // VERTEX ATTRIBUTES
 
         // Retrieve the attributes IDs of the previous vertex attributes

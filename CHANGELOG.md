@@ -1,6 +1,7 @@
 # Constellation Changes
 
 ## Changes in November 2024
+-   Removed `ImageConcept` which was unused.
 -   Removed `ColorblindUtilities.colorNodes()` which was unused. This behaviour is replicated in `VisualSchemaFactory.VisualSchema` with `applyColorblindVertex()` and `applyColorblindTransaction()`.
 -   Removed `ColorblindUtilities.setColorRef()` which only had one use. This behaviour is now directly added to where the function was previously used.
 -   Renamed `ColorblindUtilities.calcColorBrightness()` to `ColorblindUtilities.calculateColorBrightness()` for readability.

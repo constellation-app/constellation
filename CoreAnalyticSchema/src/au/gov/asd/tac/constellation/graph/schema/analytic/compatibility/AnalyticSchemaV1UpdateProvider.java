@@ -55,7 +55,6 @@ public class AnalyticSchemaV1UpdateProvider extends SchemaUpdateProvider {
 
     @Override
     protected void schemaUpdate(final StoreGraph graph) {
-
         final int timeZoneAttrId = graph.getAttribute(GraphElementType.GRAPH, TIME_ZONE_GRAPH_ATTRIBUTE_NAME);
         if (timeZoneAttrId != Graph.NOT_FOUND) {
             graph.removeAttribute(timeZoneAttrId);
