@@ -350,4 +350,60 @@ public class VisualGraphTopComponentNGTest {
 
         instance.requestActiveWithLatch(null);
     }
+    
+    /**
+     * Test of saveGraph method, of class VisualGraphTopComponent.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testHandleSaveFileExists() throws Exception {
+        System.out.println("handleSave file already exists");
+
+        // Mock variables
+        final GraphDataObject mockGDO = mock(GraphDataObject.class);
+        final FileObject mockFileObject = mock(FileObject.class);
+        final File mockFile = mock(File.class);
+        final DualGraph dgSpy = spy(new DualGraph(null));
+        final String path = "mocked path";
+        final Long lastModified = 123L;
+
+        final DataFolder mockFolder = mock(DataFolder.class);
+        final FileObject mockFolderFileObject = mock(FileObject.class);
+        final URI mockURI = mock(URI.class);
+        final Path mockFolderPath = mock(Path.class);
+        final String mockFolderPathString = "mockFolderPathString";
+
+        when(mockGDO.isInMemory()).thenReturn(false);
+        when(mockGDO.isValid()).thenReturn(true);
+        when(mockGDO.getPrimaryFile()).thenReturn(mockFileObject);
+        when(mockGDO.createFromTemplate(any(), anyString())).thenReturn(mockGDO);
+
+        when(mockFileObject.getPath()).thenReturn("");
+        when(mockFile.getPath()).thenReturn(path);
+        when(mockFile.lastModified()).thenReturn(lastModified);
+
+        when(mockFolder.getPrimaryFile()).thenReturn(mockFolderFileObject);
+        when(mockFolderFileObject.toURI()).thenReturn(mockURI);
+        when(mockGDO.getFolder()).thenReturn(mockFolder);
+        when(mockFolderPath.toString()).thenReturn(mockFolderPathString);
+
+        try (final MockedStatic<Paths> mockPaths = Mockito.mockStatic(Paths.class, Mockito.CALLS_REAL_METHODS); final MockedStatic<Files> mockFiles = Mockito.mockStatic(Files.class, Mockito.CALLS_REAL_METHODS)) {
+            // Set up paths mock
+            mockPaths.when(() -> Paths.get(mockURI)).thenReturn(mockFolderPath);
+            mockPaths.when(() -> Paths.get(anyString(), anyString())).thenReturn(mockFolderPath);
+            // Set up Files mock
+            mockFiles.when(() -> Files.exists(mockFolderPath)).thenReturn(true);
+
+            final VisualGraphTopComponent instance = new VisualGraphTopComponent(mockGDO, dgSpy);
+            instance.getGraphNode().setDataObject(mockGDO);
+            instance.saveGraph();
+
+            assertEquals(instance.getGraphNode().getDataObject(), mockGDO);
+
+            verify(mockGDO).isValid();
+            verify(mockGDO).isInMemory();
+            verify(mockGDO, times(2)).getName();
+        }
+    }
 }
