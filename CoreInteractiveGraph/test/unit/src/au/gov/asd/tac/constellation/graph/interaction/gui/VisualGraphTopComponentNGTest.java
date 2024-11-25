@@ -350,15 +350,15 @@ public class VisualGraphTopComponentNGTest {
 
         instance.requestActiveWithLatch(null);
     }
-    
+
     /**
-     * Test of saveGraph method, of class VisualGraphTopComponent.
+     * Test of saveGraph method when temp file already exists, of class VisualGraphTopComponent.
      *
      * @throws Exception
      */
     @Test
-    public void testHandleSaveFileExists() throws Exception {
-        System.out.println("handleSave file already exists");
+    public void testSaveGraphFileExists() throws Exception {
+        System.out.println("SaveGraph file already exists");
 
         // Mock variables
         final GraphDataObject mockGDO = mock(GraphDataObject.class);
