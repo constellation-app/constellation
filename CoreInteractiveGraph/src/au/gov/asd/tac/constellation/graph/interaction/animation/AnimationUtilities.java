@@ -46,7 +46,10 @@ public class AnimationUtilities {
      * @param graphId
      */
     public static final void stopAllAnimations(final String graphId) {
-        getGraphAnimationManager(graphId).stopAllAnimations();
+        final AnimationManager graphAnimationManager = getGraphAnimationManager(graphId);
+        if (graphAnimationManager != null) {
+            graphAnimationManager.stopAllAnimations();
+        }
     }
     
     /**
@@ -56,7 +59,10 @@ public class AnimationUtilities {
      * @param graphId
      */
     public static final void stopAnimation(final String animationName, final String graphId) {
-        getGraphAnimationManager(graphId).stopAnimation(animationName);
+        final AnimationManager graphAnimationManager = getGraphAnimationManager(graphId);
+        if (graphAnimationManager != null) {
+            graphAnimationManager.stopAnimation(animationName);
+        }
     }
 
     /**
@@ -65,7 +71,7 @@ public class AnimationUtilities {
      * @param graphId
      * @return 
      */
-    private static AnimationManager getGraphAnimationManager(final String graphId){
+    protected static AnimationManager getGraphAnimationManager(final String graphId){
         if (StringUtils.isNotBlank(graphId)){
             final GraphNode gn = GraphNode.getGraphNode(graphId);
             if (gn != null) {
@@ -142,7 +148,8 @@ public class AnimationUtilities {
      * @param animation 
      */
     public static void notifyComplete(final Animation animation) {
-        AnimationManager manager = AnimationUtilities.getGraphAnimationManager(animation.graphID);
+        final AnimationManager manager = 
+                AnimationUtilities.getGraphAnimationManager(animation.graphID);
         if (manager != null){
                 manager.notifyComplete(animation);
         }
@@ -151,18 +158,17 @@ public class AnimationUtilities {
     /**
      * Stops animations for a predefined period of time
      * @param graphId
-     * @param pause
-     * @param time 
+     * @param pause 
      */
     public static void pauseAllAnimations(final String graphId, final boolean pause) {
-        AnimationManager manager = getGraphAnimationManager(graphId);
+        final AnimationManager manager = getGraphAnimationManager(graphId);
         if (manager != null){
             manager.pauseAllAnimations(pause);
         }
     }
     
     public static boolean isGraphAnimationsPaused(final String graphId){
-        AnimationManager manager = getGraphAnimationManager(graphId);
+        final AnimationManager manager = getGraphAnimationManager(graphId);
         if (manager != null){
             return manager.isPaused();
         } else {
@@ -171,7 +177,7 @@ public class AnimationUtilities {
     }
 
     public static boolean isAnimating(final String graphId){
-        AnimationManager manager = getGraphAnimationManager(graphId);
+        final AnimationManager manager = getGraphAnimationManager(graphId);
         if (manager != null){
             return manager.isAnimating();
         } else {

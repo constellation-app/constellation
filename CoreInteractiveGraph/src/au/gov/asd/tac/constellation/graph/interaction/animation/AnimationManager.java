@@ -36,21 +36,33 @@ public class AnimationManager {
     }
 
     /**
+     * Keep track of animations as a set. If an animation is in the set,
+     * assume that it will be animating, unless paused. On stopping the
+     * specific animation, it will be removed from the set.
+     * @return the animations
+     */
+    public Map<String, Animation> getAnimations() {
+        return animations;
+    }
+
+    /**
      * Stop the requested animation running on this AnimationManagers Graph.
-     * 
+     * Specified animation will be removed from the animations set.
      * @param animationName
      */
     public final void stopAnimation(final String animationName) {
-        final Animation removedAnimation = animations.remove(animationName);
+        final Animation removedAnimation = getAnimations().get(animationName);
         if (removedAnimation != null) {
             if (isPaused){
                 removedAnimation.interrupt();
+                removedAnimation.stop();
             } else {
-                removedAnimation.setFinished();
+                removedAnimation.stop();
             }
+            getAnimations().remove(animationName);            
         }
         
-        if (animations.isEmpty()) {
+        if (getAnimations().isEmpty()) {
             this.isPaused = false;
         }
     }
@@ -59,14 +71,14 @@ public class AnimationManager {
      * Stops animating all animations on an graph.
      */
     public void stopAllAnimations() {
-        animations.values().forEach(animation -> {
+        getAnimations().values().forEach(animation -> {
             if (isPaused){
                 animation.interrupt();
             } else {
                 animation.setFinished();
             }
         });
-        animations.clear();
+        getAnimations().clear();
         this.isPaused = false;
     }
 
@@ -78,50 +90,58 @@ public class AnimationManager {
      */
     public void runAnimation(final Animation animation) {
         
-        if (animations.get(animation.getName()) == null) {
+        if (getAnimations().get(animation.getName()) == null) {
             animation.run(graphId);
-            animations.put(animation.getName(), animation);
+            getAnimations().put(animation.getName(), animation);
         }
     }
     
     /**
-     * Checks if an animation is animating.
+     * Checks if an animation with specified name is animating.
      * 
      * @param name
      * @return 
      */
     public boolean isAnimating(final String name) {
-        return animations.get(name) != null;
+        return getAnimations().get(name) != null;
     }
     
+    /**
+     * Are there any animations?
+     * @return 
+     */
     public boolean isAnimating() {
         return !this.animations.isEmpty();
     }
     
     /**
-     * Interrupt this animation.
+     * Interrupt all animations.
      */
     public void interruptAllAnimations() {
-        animations.values().forEach(animation -> {
+        getAnimations().values().forEach(animation -> {
             animation.interrupt();
         });
-        animations.clear();
+        getAnimations().clear();
         this.isPaused = false;
     }
 
     /**
-     * Notify the AnimationManger the animation has complete.
+     * Notify the AnimationManger the animation has completed.
      * The animation manager will de-register the animation.
      * 
      * @param animation 
      */
     void notifyComplete(final Animation animation) {
-        animations.remove(animation.getName());
-        if (animations.isEmpty()) {
+        getAnimations().remove(animation.getName());
+        if (getAnimations().isEmpty()) {
             this.isPaused = false;
         }
     }
 
+    /**
+     * Pause/Unpause all animations.
+     * @param pause True/False
+     */
     void pauseAllAnimations(final boolean pause) {
         this.isPaused = pause;
     }
