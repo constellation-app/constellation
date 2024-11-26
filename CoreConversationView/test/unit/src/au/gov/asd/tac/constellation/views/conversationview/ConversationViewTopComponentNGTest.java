@@ -26,7 +26,6 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
-import org.testfx.util.WaitForAsyncUtils;
 import static org.testng.AssertJUnit.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -47,7 +46,6 @@ public class ConversationViewTopComponentNGTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
-            WaitForAsyncUtils.checkAllExceptions = false;
             FxToolkit.registerPrimaryStage();
         }
     }

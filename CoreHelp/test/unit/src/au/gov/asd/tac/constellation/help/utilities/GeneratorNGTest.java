@@ -73,12 +73,14 @@ public class GeneratorNGTest {
         System.out.println("testing run");
 
         final String previousProperty = System.getProperty("constellation.environment");
+        final String previousHeadlessPorperty = System.getProperty("java.awt.headless");
 
         try {
             // Test on IDE Version
             System.setProperty("constellation.environment", "IDE(CORE)");
-
-            try (MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class, Mockito.CALLS_REAL_METHODS)) {
+            System.setProperty("java.awt.headless", "false");
+ 
+            try (final MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class, Mockito.CALLS_REAL_METHODS)) {
                 final List<File> tocXMLFiles = new ArrayList<>();
                 final String layersTOC = "../ext/docs/CoreLayersView/src/au/gov/asd/tac/constellation/views/layers/layers-view-toc.xml";
                 final String notesTOC  = "../ext/docs/CoreNotesView/src/au/gov/asd/tac/constellation/views/notes/notes-view-toc.xml";
@@ -90,10 +92,10 @@ public class GeneratorNGTest {
                 generatorStaticMock.when(() -> Generator.getBaseDirectory()).thenCallRealMethod();
                 generatorStaticMock.when(() -> Generator.getResource()).thenCallRealMethod();
 
-                try (MockedStatic<TOCGenerator> tocgeneratorStaticMock = Mockito.mockStatic(TOCGenerator.class)) {
+                try (final MockedStatic<TOCGenerator> tocgeneratorStaticMock = Mockito.mockStatic(TOCGenerator.class)) {
                     tocgeneratorStaticMock.when(() -> TOCGenerator.createTOCFile(Mockito.anyString())).thenReturn(true);
                     tocgeneratorStaticMock.when(() -> TOCGenerator.convertXMLMappings(Mockito.any(), Mockito.any())).thenAnswer((Answer<Void>) invocation -> null);
-                    Generator generator = new Generator();
+                    final Generator generator = new Generator();
                     System.out.println("prop : " + System.getProperty("constellation.environment"));
                     generator.run();
 
@@ -108,6 +110,9 @@ public class GeneratorNGTest {
             // set back to previous property
             if (previousProperty != null) {
                 System.setProperty("constellation.environment", previousProperty);
+            }
+            if (previousHeadlessPorperty != null) {
+                System.setProperty("java.awt.headless", previousHeadlessPorperty);
             }
         }
 
