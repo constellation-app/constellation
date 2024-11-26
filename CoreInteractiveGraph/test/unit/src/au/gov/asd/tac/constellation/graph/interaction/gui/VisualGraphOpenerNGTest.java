@@ -42,12 +42,10 @@ public class VisualGraphOpenerNGTest {
 
     @BeforeClass
     public static void setUpClass() {
-        System.setProperty("java.awt.headless", "true");
     }
 
     @AfterClass
     public static void tearDownClass() {
-        System.clearProperty("java.awt.headless");
     }
 
     /**

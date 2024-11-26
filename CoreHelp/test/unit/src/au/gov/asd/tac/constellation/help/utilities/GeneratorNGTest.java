@@ -78,6 +78,8 @@ public class GeneratorNGTest {
         try {
             // Test on IDE Version
             System.setProperty("constellation.environment", "IDE(CORE)");
+            
+            // This particular test needs to NOT be in headless mode
             System.setProperty("java.awt.headless", "false");
  
             try (final MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class, Mockito.CALLS_REAL_METHODS)) {
