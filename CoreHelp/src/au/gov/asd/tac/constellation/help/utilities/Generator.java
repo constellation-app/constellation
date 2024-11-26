@@ -50,6 +50,12 @@ public class Generator implements Runnable {
     public static final String TOC_FILE_NAME = "toc.md";
     public static final String ROOT_NODE_NAME = "Constellation Documentation";
 
+    /**
+     * This is the system property that is set to true in order to make the AWT
+     * thread run in headless mode for tests, etc.
+     */
+    private static final String AWT_HEADLESS_PROPERTY = "java.awt.headless";
+
     public Generator() {
         // Intentionally left blank
     }
@@ -59,6 +65,9 @@ public class Generator implements Runnable {
      */
     @Override
     public void run() {
+        if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(AWT_HEADLESS_PROPERTY))) {
+            return;
+        }
         baseDirectory = getBaseDirectory();
         tocDirectory = String.format("ext%1$s%2$s", File.separator, TOC_FILE_NAME);
         onlineTocDirectory = getOnlineHelpTOCDirectory(baseDirectory);

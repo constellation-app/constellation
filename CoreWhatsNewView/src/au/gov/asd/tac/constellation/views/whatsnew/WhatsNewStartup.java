@@ -32,8 +32,17 @@ import org.openide.windows.WindowManager;
 @OnShowing
 public class WhatsNewStartup implements Runnable {
 
+    /**
+     * This is the system property that is set to true in order to make the AWT
+     * thread run in headless mode for tests, etc.
+     */
+    private static final String AWT_HEADLESS_PROPERTY = "java.awt.headless";
+ 
     @Override
     public void run() {
+        if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(AWT_HEADLESS_PROPERTY))) {
+            return;
+        }
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         if (prefs.getBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP_DEFAULT)) {
             SwingUtilities.invokeLater(() -> {
