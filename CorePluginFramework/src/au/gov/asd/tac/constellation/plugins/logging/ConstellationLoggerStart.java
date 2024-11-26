@@ -35,7 +35,7 @@ public class ConstellationLoggerStart implements Runnable {
     @Override
     public void run() {
         if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(AWT_HEADLESS_PROPERTY))) {
-                return;
+            return;
         }
         ConstellationLogger.getDefault().applicationStarted();
     }

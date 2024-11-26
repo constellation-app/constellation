@@ -41,7 +41,7 @@ public class WelcomeStartup implements Runnable {
     @Override
     public void run() {
         if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(AWT_HEADLESS_PROPERTY))) {
-                return;
+            return;
         }
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         if (prefs.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, ApplicationPreferenceKeys.WELCOME_ON_STARTUP_DEFAULT)) {

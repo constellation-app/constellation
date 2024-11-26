@@ -41,7 +41,7 @@ public class WhatsNewStartup implements Runnable {
     @Override
     public void run() {
         if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(AWT_HEADLESS_PROPERTY))) {
-                return;
+            return;
         }
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         if (prefs.getBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP_DEFAULT)) {

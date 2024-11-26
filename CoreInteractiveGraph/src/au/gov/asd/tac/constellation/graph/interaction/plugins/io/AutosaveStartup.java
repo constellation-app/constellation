@@ -63,7 +63,7 @@ public final class AutosaveStartup implements Runnable {
     @Override
     public void run() {
         if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(AWT_HEADLESS_PROPERTY))) {
-                return;
+            return;
         }
         synchronized (String.class) {
             // Look for existing autosaved in-memory graphs.
