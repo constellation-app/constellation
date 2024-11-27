@@ -205,9 +205,7 @@ public class RecentGraphScreenshotUtilities {
             if ((component instanceof VisualGraphTopComponent vgComponent) && vgComponent.getGraphNode().getGraph().getId().equals(graph.getId())) {
                 try {
                     // Request graph to be active
-                    EventQueue.invokeAndWait(() -> {
-                        vgComponent.requestActiveWithLatch(latch);
-                    });
+                    EventQueue.invokeAndWait(() -> vgComponent.requestActiveWithLatch(latch));
 
                     latch.await(LATCH_WAIT_SECONDS, TimeUnit.SECONDS);
                     semaphore.release();
