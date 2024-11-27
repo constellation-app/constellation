@@ -1312,7 +1312,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                     file,
                     ConstellationLoggerHelper.SUCCESS
             );
-            RecentGraphScreenshotUtilities.takeScreenshot(file.getAbsolutePath(), graphs.getGraph());
         }
     }
 }
