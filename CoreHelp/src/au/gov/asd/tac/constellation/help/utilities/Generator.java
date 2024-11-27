@@ -50,6 +50,12 @@ public class Generator implements Runnable {
     public static final String TOC_FILE_NAME = "toc.md";
     public static final String ROOT_NODE_NAME = "Constellation Documentation";
 
+    /**
+     * This is the system property that is set to true in order to make the AWT
+     * thread run in headless mode for tests, etc.
+     */
+    private static final String AWT_HEADLESS_PROPERTY = "java.awt.headless";
+
     public Generator() {
         // Intentionally left blank
     }
@@ -59,26 +65,38 @@ public class Generator implements Runnable {
      */
     @Override
     public void run() {
+        if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(AWT_HEADLESS_PROPERTY))) {
+            return;
+        }
         baseDirectory = getBaseDirectory();
         tocDirectory = String.format("ext%1$s%2$s", File.separator, TOC_FILE_NAME);
-        onlineTocDirectory = getOnlineHelpTOCDirectory(baseDirectory);
+        
+        // To update the online help TOC file change the boolean to true
+        // Must also run adaptors when updating online help so those links aren't removed from the TOC
+        // Reset back to false after updating the TOC file 
+        final boolean updateOnlineHelp = false;
+ 
+        if (updateOnlineHelp) {
+            onlineTocDirectory = getOnlineHelpTOCDirectory(baseDirectory);
 
-        // First: create the TOCFile in the base directory for ONLINE help
-        // Create the online root node for application-wide table of contents
-        TOCGenerator.createTOCFile(onlineTocDirectory);        
-        final TreeNode<?> root = new TreeNode<>(new TOCItem(ROOT_NODE_NAME, ""));
-        final List<File> tocXMLFiles = getXMLFiles(baseDirectory);
-        try {
-            TOCGenerator.convertXMLMappings(tocXMLFiles, root);
-        } catch (final IOException ex) {
-            LOGGER.log(Level.WARNING, String.format("There was an error creating the documentation file %s "
-                    + "- Documentation may not be complete", baseDirectory), ex);
+            // First: create the TOCFile in the base directory for ONLINE help
+            // Create the online root node for application-wide table of contents
+            TOCGenerator.createTOCFile(onlineTocDirectory);
+            final TreeNode<?> root = new TreeNode<>(new TOCItem(ROOT_NODE_NAME, ""));
+            final List<File> tocXMLFiles = getXMLFiles(baseDirectory);
+            try {
+                TOCGenerator.convertXMLMappings(tocXMLFiles, root);
+            } catch (final IOException ex) {
+                LOGGER.log(Level.WARNING, String.format("There was an error creating the documentation file %s "
+                        + "- Documentation may not be complete", baseDirectory), ex);
+            }
         }
 
         // Second: Create TOCFile for OFFLINE help with the location of the resources file
         // Create the offline root node for application-wide table of contents
         TOCGenerator.createTOCFile(baseDirectory + tocDirectory);
         final TreeNode<?> rootOffline = new TreeNode<>(new TOCItem(ROOT_NODE_NAME, ""));
+        final List<File> tocXMLFiles = getXMLFiles(baseDirectory);
         try {
             TOCGenerator.convertXMLMappings(tocXMLFiles, rootOffline);
         } catch (final IOException ex) {
