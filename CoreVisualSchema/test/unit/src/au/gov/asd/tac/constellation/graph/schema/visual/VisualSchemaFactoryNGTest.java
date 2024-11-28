@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
@@ -290,7 +291,7 @@ public class VisualSchemaFactoryNGTest {
         final int vxId1 = graph.addVertex();
         final int vxId2 = graph.addVertex();
         
-        final int tId = graph.addTransaction(vxId1, vxId2, true);
+        int tId = graph.addTransaction(vxId1, vxId2, true);
         
         final int transactionIdentifierAttribute = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(graph);
         final int transactionLabelAttribute = VisualConcept.TransactionAttribute.LABEL.ensure(graph);
@@ -301,6 +302,15 @@ public class VisualSchemaFactoryNGTest {
         assertNull(graph.getStringValue(transactionLabelAttribute, tId));
         
         schema.completeTransaction(graph, tId);
+        
+        // note that normally the directed attribute would be set in the newTransaction function 
+        // so there wouldn't normally be a case of changing direction unless directed was directly edited (rather than simply being different to default)
+        // changing the direction of the transaction will result in a "copy" being created with the new direction
+        // so this transaction id shouldn't exist anymore, but there should still be the same number of transactions as before
+        assertFalse(graph.transactionExists(tId));
+        assertEquals(graph.getTransactionCount(), 1);
+        // since there is only one transaction, we can safely assume it is at position 0
+        tId = graph.getTransaction(0);
         
         // label should become the identifier
         assertEquals(graph.getStringValue(transactionIdentifierAttribute, tId), "my transaction");

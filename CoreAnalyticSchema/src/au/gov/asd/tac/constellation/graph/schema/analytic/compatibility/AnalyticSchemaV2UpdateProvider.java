@@ -40,6 +40,7 @@ import au.gov.asd.tac.constellation.graph.versioning.UpdateProvider;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -86,9 +87,9 @@ public class AnalyticSchemaV2UpdateProvider extends SchemaUpdateProvider {
                 
             final int newVertexRawAttribute = AnalyticConcept.VertexAttribute.RAW.ensure(graph);
             final int vertexIdentifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
-            for (int vertexPosition = 0; vertexPosition < graph.getVertexCount(); vertexPosition++) {
-                final int vertexId = graph.getVertex(vertexPosition);
-                final String rawValue = rawStringValues.get(vertexId);
+            for (final Entry<Integer, String> rawStringEntry : rawStringValues.entrySet()) {
+                final int vertexId = rawStringEntry.getKey();
+                final String rawValue = rawStringEntry.getValue();
                 graph.setObjectValue(newVertexRawAttribute, vertexId, new RawData(rawValue, null));
 
                 if (graph.getStringValue(vertexIdentifierAttribute, vertexId) == null) {
@@ -116,9 +117,9 @@ public class AnalyticSchemaV2UpdateProvider extends SchemaUpdateProvider {
             
             final int newVertexTypeAttributeId = AnalyticConcept.VertexAttribute.TYPE.ensure(graph);
             final int vertexRawAttributeId = AnalyticConcept.VertexAttribute.RAW.ensure(graph);
-            for (int vertexPosition = 0; vertexPosition < graph.getVertexCount(); vertexPosition++) {
-                final int vertexId = graph.getVertex(vertexPosition);
-                final String typeValue = typeStringValues.get(vertexId);
+            for (final Entry<Integer, String> typeStringEntry : typeStringValues.entrySet()) {
+                final int vertexId = typeStringEntry.getKey();
+                final String typeValue = typeStringEntry.getValue();
                 final SchemaVertexType type = SchemaVertexTypeUtilities.getType(typeValue);
                 graph.setObjectValue(newVertexTypeAttributeId, vertexId, type);
 
@@ -155,11 +156,9 @@ public class AnalyticSchemaV2UpdateProvider extends SchemaUpdateProvider {
             graph.removeAttribute(oldTransactionTypeAttributeId);
             
             final int newTransactionTypeAttributeId = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
-            for (int transactionPosition = 0; transactionPosition < graph.getTransactionCount(); transactionPosition++) {
-                final int transactionId = graph.getTransaction(transactionPosition);
-                final String typeValue = typeStringValues.get(transactionId);
-                final SchemaTransactionType type = SchemaTransactionTypeUtilities.getType(typeValue);
-                graph.setObjectValue(newTransactionTypeAttributeId, transactionId, type);
+            for (final Entry<Integer, String> typeStringEntry : typeStringValues.entrySet()) {
+                final SchemaTransactionType type = SchemaTransactionTypeUtilities.getType(typeStringEntry.getValue());
+                graph.setObjectValue(newTransactionTypeAttributeId, typeStringEntry.getKey(), type);
             }
 
             updateTransactionKeys = true;
