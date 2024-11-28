@@ -270,7 +270,7 @@ public class JsonIODialogNGTest {
 
         final Optional<KeyboardShortcutSelectionResult> result = WaitForAsyncUtils.waitFor(future);
 
-        assertEquals(input, result.get());
+        assertEquals(input, result.get().getFileName());
     }
     /**
      * Get a dialog that has been displayed to the user. This will iterate
