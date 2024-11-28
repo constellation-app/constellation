@@ -186,30 +186,7 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
             }            
         });
     }
-
-    /* ************************************************************************
-     *
-     * Public API
-     *
-     **************************************************************************/
-    /**
-     * Returns the {@link TextField} used within this dialog.
-     *
-     * @return the {@link TextField} used within this dialog
-     */
-    public final TextField getEditor() {
-        return textField;
-    }
-
-    /**
-     * Returns the default value that was specified in the constructor.
-     *
-     * @return the default value that was specified in the constructor
-     */
-    public final String getDefaultValue() {
-        return defaultValue;
-    }
-
+    
     /* ************************************************************************
      *
      * Private Implementation
@@ -250,10 +227,6 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
         label.setWrapText(true);        
         label.setPrefWidth(360);
         return label;
-    }
-
-    public void setKSLabelText(final String ks) {
-        this.keyboardShortcutLabel.setText(ks);
     }
     
     public static  Optional<KeyboardShortcutSelectionResult> getKeyboardShortcut(final File preferenceDirectory) {
