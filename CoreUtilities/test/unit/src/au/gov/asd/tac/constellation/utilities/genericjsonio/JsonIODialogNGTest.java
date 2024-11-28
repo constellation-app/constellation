@@ -261,7 +261,8 @@ public class JsonIODialogNGTest {
         );
 
         final Optional<KeyboardShortcutSelectionResult> result = WaitForAsyncUtils.waitFor(future);
-
+        assertEquals(result.get().getKeyboardShortcut(), ks.get());
+        assertTrue(result.get().getExisitngTemplateWithKs() == null);
         assertEquals(input, result.get().getFileName());
     }
 
