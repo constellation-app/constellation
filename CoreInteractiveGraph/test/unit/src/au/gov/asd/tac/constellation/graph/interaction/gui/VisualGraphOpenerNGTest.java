@@ -28,8 +28,6 @@ import org.openide.filesystems.FileUtil;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /**
@@ -39,16 +37,6 @@ import org.testng.annotations.Test;
 public class VisualGraphOpenerNGTest {
 
     private static final String FILE_NAME = "dummy.star";
-
-    @BeforeClass
-    public static void setUpClass() {
-        System.setProperty("java.awt.headless", "true");
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-        System.clearProperty("java.awt.headless");
-    }
 
     /**
      * Test of openGraph method, of class VisualGraphOpener.
