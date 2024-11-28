@@ -16,28 +16,17 @@
 package au.gov.asd.tac.constellation.utilities.keyboardshortcut;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.Optional;
-import javafx.scene.control.Dialog;
-import org.apache.commons.io.IOUtils;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import static org.mockito.Mockito.mockStatic;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.AfterClass;
 
 /**
  *
  * @author spica
  */
-public class RecordKeyboardShortcutNGTest {  
+public class RecordKeyboardShortcutNGTest {
 
     @Test
     public void test_keyboardShortCutAlreadyAssigned() throws Exception {
@@ -54,7 +43,7 @@ public class RecordKeyboardShortcutNGTest {
 
             File file = RecordKeyboardShortcut.keyboardShortCutAlreadyAssigned(outputFile, keyboardShortcut);
 
-              assertEquals(outputFile, file);
+            assertEquals(outputFile, file);
 
         } finally {
             Files.deleteIfExists(outputFile.toPath());
@@ -68,6 +57,6 @@ public class RecordKeyboardShortcutNGTest {
         recordKeyboardShortcutMockedStatic.when(() -> RecordKeyboardShortcut.keyboardShortCutAlreadyAssigned(outputFile, keyboardShortcut))
                 .thenReturn(outputFile);
 
-    }  
+    }
 
 }
