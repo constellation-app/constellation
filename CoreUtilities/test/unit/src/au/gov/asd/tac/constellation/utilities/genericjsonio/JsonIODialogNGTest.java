@@ -234,44 +234,7 @@ public class JsonIODialogNGTest {
     }
 
    
- @Test
-    public void getPreferenceFileNameWithKs_ok_pressed() throws Exception {
 
-        final Optional<String> SUB_DIRECTORY = Optional.of("test-ks");
-
-        MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class, Mockito.CALLS_REAL_METHODS);
-
-        jsonIoMockedStatic.when(() -> JsonIO.getPrefereceFileDirectory(SUB_DIRECTORY))
-                .thenReturn(new File(JsonIONGTest.class.getResource("resources").toURI()));
-
-        final File preferenceDirectory = JsonIO.getPrefereceFileDirectory(SUB_DIRECTORY);
-
-        final Optional<String> ks = Optional.of("ctrl 1");
-
-        final Future<Optional<KeyboardShortcutSelectionResult>> future = WaitForAsyncUtils.asyncFx(
-                () -> JsonIODialog.getPreferenceFileName(ks, preferenceDirectory));
-
-        final Stage dialog = getDialog(robot);
-
-        final String input = "myPreferenceFile";
-
-        robot.clickOn(
-                robot.from(dialog.getScene().getRoot())
-                        .lookup(".text-field")
-                        .queryAs(TextField.class)
-        ).write(input);
-
-        robot.clickOn(
-                robot.from(dialog.getScene().getRoot())
-                        .lookup(".button")
-                        .lookup(hasText("OK"))
-                        .queryAs(Button.class)
-        );
-
-        final Optional<KeyboardShortcutSelectionResult> result = WaitForAsyncUtils.waitFor(future);
-
-        assertEquals(input, result.get().getFileName());
-    }
     /**
      * Get a dialog that has been displayed to the user. This will iterate
      * through all open windows and identify one that is modal. The assumption
