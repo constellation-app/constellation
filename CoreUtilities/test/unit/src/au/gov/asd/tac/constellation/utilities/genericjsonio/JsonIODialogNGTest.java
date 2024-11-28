@@ -234,6 +234,66 @@ public class JsonIODialogNGTest {
     }
 
    
+     @Test
+    public void getPreferenceFileNameWithKs_ok_pressed() {
+        
+         Optional<String> ks = Optional.of("ctrl 1");         
+         final File preferenceDirectory = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
+         
+        final Future<Optional<KeyboardShortcutSelectionResult>> future = WaitForAsyncUtils.asyncFx(
+                () -> JsonIODialog.getPreferenceFileName(ks, preferenceDirectory));
+
+        final Stage dialog = getDialog(robot);
+
+        final String input = "myPreferenceFile";
+
+        robot.clickOn(
+                robot.from(dialog.getScene().getRoot())
+                        .lookup(".text-field")
+                        .queryAs(TextField.class)
+        ).write(input);
+
+        robot.clickOn(
+                robot.from(dialog.getScene().getRoot())
+                        .lookup(".button")
+                        .lookup(hasText("OK"))
+                        .queryAs(Button.class)
+        );
+
+        final Optional<KeyboardShortcutSelectionResult> result = WaitForAsyncUtils.waitFor(future);
+
+        assertEquals(input, result.get().getFileName());
+    }
+
+    @Test
+    public void getPreferenceFileNameWithKs_cancel_pressed() {        
+        
+         Optional<String> ks = Optional.of("ctrl 1");         
+         final File preferenceDirectory = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
+         
+        final Future<Optional<KeyboardShortcutSelectionResult>> future = WaitForAsyncUtils.asyncFx(
+                () -> JsonIODialog.getPreferenceFileName(ks, preferenceDirectory));
+
+        final Stage dialog = getDialog(robot);
+
+        robot.clickOn(
+                robot.from(dialog.getScene().getRoot())
+                        .lookup(".text-field")
+                        .queryAs(TextField.class)
+        ).write("myPreferenceFile");
+
+        robot.clickOn(
+                robot.from(dialog.getScene().getRoot())
+                        .lookup(".button")
+                        .lookup(hasText("Cancel"))
+                        .queryAs(Button.class)
+        );
+
+        final Optional<KeyboardShortcutSelectionResult> result = WaitForAsyncUtils.waitFor(future);
+
+        assertTrue(result.isPresent());
+    }
+
 
     /**
      * Get a dialog that has been displayed to the user. This will iterate
