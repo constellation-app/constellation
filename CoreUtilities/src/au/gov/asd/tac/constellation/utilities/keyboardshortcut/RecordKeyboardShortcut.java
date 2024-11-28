@@ -18,17 +18,11 @@ package au.gov.asd.tac.constellation.utilities.keyboardshortcut;
 
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
-import com.google.common.collect.HashBiMap;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyCombination.Modifier;
@@ -40,7 +34,7 @@ import org.apache.commons.lang3.StringUtils;
  *
  * @author spica
  */
-public class RecordKeyboardShortcut extends Dialog<String>  {
+public class RecordKeyboardShortcut  {
     
     private static final String KEYBOARD_SHORTCUT_DIALOG_TITLE = "Keyboard Shortcut";
     private static final String KEYBOARD_SHORTCUT_DIALOG_HEADER_TEXT = "Press keyboard shortcut for template";
@@ -83,7 +77,7 @@ public class RecordKeyboardShortcut extends Dialog<String>  {
         return ksOptional;
     }   
     
-    public File keyboardShortCutAlreadyAssigned(final File preferenceDirectory, final String keyboardShortcut) {
+    public static File keyboardShortCutAlreadyAssigned(final File preferenceDirectory, final String keyboardShortcut) {
         
         File exisitngTemplateWithKs = null;
         
