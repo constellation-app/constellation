@@ -15,6 +15,10 @@
  */
 package au.gov.asd.tac.constellation.utilities.genericjsonio;
 
+import static au.gov.asd.tac.constellation.utilities.genericjsonio.JsonIO.getPrefereceFileDirectory;
+import au.gov.asd.tac.constellation.utilities.keyboardshortcut.KeyboardShortcutSelectionResult;
+import java.io.File;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -47,6 +51,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class JsonIODialogNGTest {
+
     private static final Logger LOGGER = Logger.getLogger(JsonIODialogNGTest.class.getName());
 
     private final FxRobot robot = new FxRobot();
@@ -228,6 +233,45 @@ public class JsonIODialogNGTest {
         assertFalse(result.isPresent());
     }
 
+   
+ @Test
+    public void getPreferenceFileNameWithKs_ok_pressed() throws Exception {
+
+        final Optional<String> SUB_DIRECTORY = Optional.of("test-ks");
+
+        MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class, Mockito.CALLS_REAL_METHODS);
+
+        jsonIoMockedStatic.when(() -> JsonIO.getPrefereceFileDirectory(SUB_DIRECTORY))
+                .thenReturn(new File(JsonIONGTest.class.getResource("resources").toURI()));
+
+        final File preferenceDirectory = JsonIO.getPrefereceFileDirectory(SUB_DIRECTORY);
+
+        final Optional<String> ks = Optional.of("ctrl 1");
+
+        final Future<Optional<KeyboardShortcutSelectionResult>> future = WaitForAsyncUtils.asyncFx(
+                () -> JsonIODialog.getPreferenceFileName(ks, preferenceDirectory));
+
+        final Stage dialog = getDialog(robot);
+
+        final String input = "myPreferenceFile";
+
+        robot.clickOn(
+                robot.from(dialog.getScene().getRoot())
+                        .lookup(".text-field")
+                        .queryAs(TextField.class)
+        ).write(input);
+
+        robot.clickOn(
+                robot.from(dialog.getScene().getRoot())
+                        .lookup(".button")
+                        .lookup(hasText("OK"))
+                        .queryAs(Button.class)
+        );
+
+        final Optional<KeyboardShortcutSelectionResult> result = WaitForAsyncUtils.waitFor(future);
+
+        assertEquals(input, result.get());
+    }
     /**
      * Get a dialog that has been displayed to the user. This will iterate
      * through all open windows and identify one that is modal. The assumption

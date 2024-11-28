@@ -227,10 +227,6 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
         
         grid.add(shorcutWarningLabel, 0, 2, 3, 1);
         
-        Point mouseLocation = MouseInfo.getPointerInfo().getLocation();
-        setX(mouseLocation.getX() + 500 );
-        setY(mouseLocation.getY() + 500 );
-        
         getDialogPane().setContent(grid);
 
         Platform.runLater(() -> textField.requestFocus());
