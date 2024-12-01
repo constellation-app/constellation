@@ -1096,7 +1096,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
             final File newFile = new File(folder.getPath(), name + ext);
 
-            // One last check if file were saving over doesn't have it's grpah open UNLESS were saving over the file with the same graph
+            // One last check if file were saving over doesn't have it's graph open UNLESS were saving over the file with the same graph
             final Path currentFilePath = Paths.get(graphNode.getDataObject().getPrimaryFile().getPath());
 
             // Check if overwriting open graph
