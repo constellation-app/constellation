@@ -115,6 +115,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.ref.Cleaner;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -978,6 +979,14 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 final String name = gdo.getName();
                 // Create a new file and write to it.
                 final String tmpnam = String.format("%s_tmp%08x", name, gdo.hashCode());
+
+                //Dont create temp file if one already exists (createFromTemplate will throw an exception if one of the same name exists)
+                final Path folderPath = Paths.get(gdo.getFolder().getPrimaryFile().toURI());
+                final Path filepath = Paths.get(folderPath.toString(), tmpnam + GraphDataObject.FILE_EXTENSION);
+                if (Files.exists(filepath)) {
+                    return;
+                }
+
                 final GraphDataObject freshGdo = (GraphDataObject) gdo.createFromTemplate(gdo.getFolder(), tmpnam);
 
                 final Semaphore waiter = new Semaphore(0);
@@ -1159,7 +1168,9 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             cancelled = false;
             this.waiter = semaphore;
 
-            GraphNode.getGraphNode(graph).makeBusy(true);
+            if (GraphNode.getGraphNode(graph) != null) {
+                GraphNode.getGraphNode(graph).makeBusy(true);
+            }
         }
 
         @Override

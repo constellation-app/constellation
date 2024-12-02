@@ -56,13 +56,6 @@ public class PluginParametersDialogNGTest {
             FxToolkit.cleanupStages();
         } catch (TimeoutException ex) {
             LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
-        } catch (Exception e) {
-            if (e.toString().contains("HeadlessException")) {
-                System.out.println("\n**** EXPECTED TEARDOWN ERROR: " + e.toString());
-            } else {
-                System.out.println("\n**** UN-EXPECTED TEARDOWN ERROR: " + e.toString());
-                throw e;
-            }
         }
     }
 
