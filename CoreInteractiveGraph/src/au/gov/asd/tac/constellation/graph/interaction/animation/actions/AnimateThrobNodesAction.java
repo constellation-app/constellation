@@ -55,7 +55,7 @@ public final class AnimateThrobNodesAction extends AnimationMenuBaseAction imple
     }
     
     @Override
-    public void stopAnimation(final String graphId) {
+    protected void stopAnimation(final String graphId) {
         AnimationUtilities.stopAnimation(ThrobbingNodeAnimation.NAME, graphId);
     }
 }

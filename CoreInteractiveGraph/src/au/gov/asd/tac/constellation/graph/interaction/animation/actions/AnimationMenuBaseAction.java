@@ -55,5 +55,5 @@ public abstract class AnimationMenuBaseAction extends MenuBaseAction implements 
         }
     }    
     
-    public abstract void stopAnimation(final String context);
+    protected abstract void stopAnimation(final String context);
 }

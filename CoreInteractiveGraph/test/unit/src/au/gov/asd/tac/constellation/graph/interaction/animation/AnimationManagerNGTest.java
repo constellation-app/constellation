@@ -19,9 +19,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.spy;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -37,14 +35,6 @@ public class AnimationManagerNGTest {
     private Animation directionIndicatorAnimation;
     
     public AnimationManagerNGTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
     }
 
     @BeforeMethod
@@ -80,7 +70,7 @@ public class AnimationManagerNGTest {
       
     
     @Test
-    public void testAnimationUtilities_isAnimatingName() {
+    public void testAnimationManager_isAnimatingName() {
         assertFalse(animationManager.isAnimating(colorWarpAnimation.getName()));
         
         animationManager.runAnimation(colorWarpAnimation);

@@ -132,7 +132,7 @@ public abstract class Animation {
     public void run(final String graphId) {
         final GraphNode gn = GraphNode.getGraphNode(graphId);
         
-        if (GraphNode.getGraphNode(graphId) != null) {
+        if (gn != null) {
             this.graphID = graphId;
             final Graph graph = gn.getGraph();
             // Create the Thread for this animaton
@@ -193,6 +193,9 @@ public abstract class Animation {
             wg = graph.getWritableGraph(getName(), isSignificant());
             return true;
         } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            LOGGER.log(Level.WARNING, String.format(
+                    "Unable to lock graph %s safely", graph.getId()));
             return false;
         }
     }

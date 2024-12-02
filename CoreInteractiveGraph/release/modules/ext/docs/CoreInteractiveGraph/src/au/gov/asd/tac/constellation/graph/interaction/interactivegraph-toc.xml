@@ -7,8 +7,8 @@
             <tocitem text="Cut, Copy, Paste" target="au.gov.asd.tac.constellation.graph.interaction.cutcopypaste"/>
             <tocitem text="Composite Nodes" target="au.gov.asd.tac.constellation.graph.interaction.compositedSelectedNodes"/>
         </tocitem>
-        <tocitem text="Animation" mergetype="javax.help.SortMerge">
-            <tocitem text="General animation" target="au.gov.asd.tac.constellation.graph.interaction.generalanimation"/>
+        <tocitem text="Visualisation" mergetype="javax.help.SortMerge">
+            <tocitem text="Animation" target="au.gov.asd.tac.constellation.graph.interaction.generalanimation"/>
         </tocitem>                  
     </tocitem>    
 </toc>

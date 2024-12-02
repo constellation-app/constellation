@@ -55,7 +55,7 @@ public final class AnimateDirectionIndicatorAction extends AnimationMenuBaseActi
     }
     
     @Override
-    public void stopAnimation(final String graphId) {
+    protected void stopAnimation(final String graphId) {
         AnimationUtilities.stopAnimation(DirectionIndicatorAnimation.NAME, graphId);
     }
 }

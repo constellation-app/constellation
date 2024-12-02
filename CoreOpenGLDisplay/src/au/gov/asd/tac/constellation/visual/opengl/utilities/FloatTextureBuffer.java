@@ -59,7 +59,7 @@ public class FloatTextureBuffer extends TextureBuffer<FloatBuffer> {
         try{
             ByteBuffer bytebuffer = gl.glMapBuffer(GL2ES3.GL_TEXTURE_BUFFER, GL2ES3.GL_READ_WRITE); 
             return bytebuffer.order(ByteOrder.nativeOrder()).asFloatBuffer();
-        } catch (GLException ex){
+        } catch (final GLException ex){
             LOGGER.log(Level.WARNING, String.format("A GLException occured: %s", ex.getLocalizedMessage()));
         }
         return buffer;

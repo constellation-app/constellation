@@ -47,16 +47,17 @@ public final class AnimatePauseAction extends AnimationUtilityMenuBaseAction {
                 this.getContext().getGraph().getId(), 
                 !AnimationUtilities.isGraphAnimationsPaused(this.getContext().getGraph().getId())
         );
+        // trigger displayValue because meta attribute changes won't trigger it
+        this.displayValue();
     }
 
     @Override
     protected void displayValue() {
-       
-        if (AnimationUtilities.isGraphAnimationsPaused(this.getContext().getGraph().getId())){
-            menuButton.setText("Resume Animationg");
+        final boolean graphAnimationsPaused = AnimationUtilities.isGraphAnimationsPaused(this.getContext().getGraph().getId());
+        if (graphAnimationsPaused){
+            menuButton.setText("Resume Animating");
         } else {
             menuButton.setText("Pause Animating");
-        }
-        
+        }       
     }
 }

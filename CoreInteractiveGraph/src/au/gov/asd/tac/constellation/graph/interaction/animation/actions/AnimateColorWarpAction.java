@@ -55,7 +55,7 @@ public final class AnimateColorWarpAction extends AnimationMenuBaseAction implem
     }
     
     @Override
-    public void stopAnimation(final String graphId) {
+    protected void stopAnimation(final String graphId) {
         AnimationUtilities.stopAnimation(ColorWarpAnimation.NAME, graphId);
     }
 

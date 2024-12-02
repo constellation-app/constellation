@@ -200,7 +200,7 @@ public class GLVisualProcessor extends VisualProcessor {
             canvas.display();
         }  catch (final GLException ex) {
             // don't perform update if canvas is unavailable
-            LOGGER.log(Level.WARNING, null, ex);
+            LOGGER.log(Level.WARNING, ex.getLocalizedMessage(), ex);
         }
     }
 

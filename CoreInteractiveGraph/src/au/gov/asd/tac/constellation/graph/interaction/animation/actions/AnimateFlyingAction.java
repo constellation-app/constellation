@@ -55,7 +55,7 @@ public final class AnimateFlyingAction extends AnimationMenuBaseAction implement
     }
     
     @Override
-    public void stopAnimation(final String graphId) {
+    protected void stopAnimation(final String graphId) {
         AnimationUtilities.stopAnimation(FlyingAnimation.NAME, graphId);
     }
 }

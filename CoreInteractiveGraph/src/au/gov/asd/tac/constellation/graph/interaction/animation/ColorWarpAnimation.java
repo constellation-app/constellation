@@ -29,6 +29,13 @@ import java.util.Map;
  * @author capricornunicorn123
  */
 public final class ColorWarpAnimation extends Animation {
+
+    /**
+     * @return the vertexOriginals
+     */
+    public Map<Integer, ConstellationColor> getVertexOriginals() {
+        return vertexOriginals;
+    }
     
     public static final String NAME = "Color Warp Animation";
     
@@ -46,8 +53,8 @@ public final class ColorWarpAnimation extends Animation {
 
     @Override
     public void initialise(final GraphWriteMethods wg) {
-        vertexColorAttr = VisualConcept.VertexAttribute.COLOR.get(wg);
-        transactionColorAttr = VisualConcept.TransactionAttribute.COLOR.get(wg);
+        vertexColorAttr = VisualConcept.VertexAttribute.COLOR.ensure(wg);
+        transactionColorAttr = VisualConcept.TransactionAttribute.COLOR.ensure(wg);
          
         // dont initilise the animation if there is less than 2 nodes
         if (wg.getVertexCount() <= 1) {
@@ -55,7 +62,7 @@ public final class ColorWarpAnimation extends Animation {
         } else{
             for (int vertexPosition = 0 ; vertexPosition < wg.getVertexCount(); vertexPosition++) {
                 final int vertexID = wg.getVertex(vertexPosition);
-                vertexOriginals.put(vertexID, wg.getObjectValue(vertexColorAttr, vertexID));
+                getVertexOriginals().put(vertexID, wg.getObjectValue(vertexColorAttr, vertexID));
             }
             
             for (int transactionPosition = 0 ; transactionPosition < wg.getTransactionCount(); transactionPosition++) {
@@ -68,12 +75,11 @@ public final class ColorWarpAnimation extends Animation {
     @Override
     public void animate(final GraphWriteMethods wg) {
         
-        final SetColorValuesOperation colorVerticesOperation = new SetColorValuesOperation(wg, GraphElementType.VERTEX, vertexColorAttr);
-        final SetColorValuesOperation colorTransactionsOperation = new SetColorValuesOperation(wg, GraphElementType.TRANSACTION, transactionColorAttr);
-
         // Do not animate unless there is more than 1 node
         if (wg.getVertexCount() > 0) {
-            
+            final SetColorValuesOperation colorVerticesOperation = new SetColorValuesOperation(wg, GraphElementType.VERTEX, vertexColorAttr);
+            final SetColorValuesOperation colorTransactionsOperation = new SetColorValuesOperation(wg, GraphElementType.TRANSACTION, transactionColorAttr);
+
             for (int vertexPosition = 0 ; vertexPosition < wg.getVertexCount(); vertexPosition++) {
                 final int vertexID = wg.getVertex(vertexPosition);
                 colorVerticesOperation.setValue(vertexID, this.getNextColor(wg.getObjectValue(vertexColorAttr, vertexID)));
@@ -94,7 +100,7 @@ public final class ColorWarpAnimation extends Animation {
         // Reset Verticies back to their original color
         for (int vertexPosition = 0 ; vertexPosition < wg.getVertexCount(); vertexPosition++) {
             final int vertexID = wg.getVertex(vertexPosition);
-            wg.setObjectValue(vertexColorAttr, vertexID, vertexOriginals.get(vertexID));
+            wg.setObjectValue(vertexColorAttr, vertexID, getVertexOriginals().get(vertexID));
         }
          
         // Reset Transactions back to their original color

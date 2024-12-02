@@ -457,7 +457,7 @@ public final class GraphVisualAccess implements VisualAccess {
                 }
                 
                 count = graphConnectionMotion == Graph.NOT_FOUND ? -1 : accessGraph.getValueModificationCounter(graphConnectionMotion);
-                if (!Objects.equals(count, modCounts.put(VisualConcept.GraphAttribute.CONNECTION_MOTION, count))) {
+                if (!Objects.equals(count, modCounts.put(VisualConcept.MetaAttribute.CONNECTION_MOTION, count))) {
                     changes.add(new VisualChangeBuilder(VisualProperty.CONNECTIONS_MOTION).forItems(1).build());
                 }
                 
@@ -586,7 +586,7 @@ public final class GraphVisualAccess implements VisualAccess {
         graphBottomLabels = VisualConcept.GraphAttribute.BOTTOM_LABELS.get(rg);
         graphConnectionLabels = VisualConcept.GraphAttribute.TRANSACTION_LABELS.get(rg);
         graphConnectionOpacity = VisualConcept.GraphAttribute.CONNECTION_OPACITY.get(rg);
-        graphConnectionMotion = VisualConcept.GraphAttribute.CONNECTION_MOTION.get(rg);
+        graphConnectionMotion = VisualConcept.MetaAttribute.CONNECTION_MOTION.get(rg);
         graphConnectionMode = VisualConcept.GraphAttribute.CONNECTION_MODE.get(rg);
         graphDrawFlags = VisualConcept.GraphAttribute.DRAW_FLAGS.get(rg);
         graphCamera = VisualConcept.GraphAttribute.CAMERA.get(rg);
@@ -1525,7 +1525,7 @@ public final class GraphVisualAccess implements VisualAccess {
         modCounts.put(VisualConcept.GraphAttribute.CONNECTION_OPACITY, count);
         
         count = graphConnectionMotion == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(graphConnectionMotion);
-        modCounts.put(VisualConcept.GraphAttribute.CONNECTION_MOTION, count);
+        modCounts.put(VisualConcept.MetaAttribute.CONNECTION_MOTION, count);
 
         count = graphDrawFlags == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(graphDrawFlags);
         modCounts.put(VisualConcept.GraphAttribute.DRAW_FLAGS, count);
