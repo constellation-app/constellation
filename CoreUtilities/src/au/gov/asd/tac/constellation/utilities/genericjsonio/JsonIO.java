@@ -191,20 +191,20 @@ public class JsonIO {
     }
 
     private static Optional<String> getDefaultKeyboardShortcut(File preferenceDirectory) {
-        
-        for(int index = 1; index <= 5; index++) {
-            
-            var fi = index;
-            FilenameFilter filenameFilter = (d, s) -> {
-             return s.startsWith("Ctrl "+ fi);
+
+        for (int index = 1; index <= 5; index++) {
+
+            final var fi = index;
+            final FilenameFilter filenameFilter = (d, s) -> {
+                return s.startsWith("[Ctrl " + fi + "]");
             };
-            
-            if(ArrayUtils.isEmpty(preferenceDirectory.list(filenameFilter))) {
-                return Optional.of("Ctrl "+index);
+
+            if (ArrayUtils.isEmpty(preferenceDirectory.list(filenameFilter))) {
+                return Optional.of("Ctrl " + index);
             }
-        } 
-         
-         return Optional.empty();
+        }
+
+        return Optional.empty();
     }
     /**
      * Save the supplied JSON data in a file, within an allocated subdirectory
@@ -259,21 +259,21 @@ public class JsonIO {
         
         
         // Ask the user to provide a file name        
-        Optional<String> userInputWithKs = Optional.empty();        
-        
-         Optional<KeyboardShortcutSelectionResult> ksResult = JsonIODialog.getPreferenceFileName(ks, preferenceDirectory);
-           if(ksResult.isPresent()) {
-               if(Objects.isNull(ksResult.get().getFileName())) {
-                   return;
-               }
-               
-               userInputWithKs = Optional.ofNullable(ksResult.get().getFileName());
-               ks = Optional.of(ksResult.get().getKeyboardShortcut());
-               
-           } else {
-               return;
-           }
-                
+        Optional<String> userInputWithKs = Optional.empty();
+
+        Optional<KeyboardShortcutSelectionResult> ksResult = JsonIODialog.getPreferenceFileName(ks, preferenceDirectory);
+        if (ksResult.isPresent()) {
+            if (Objects.isNull(ksResult.get().getFileName())) {
+                return;
+            }
+
+            userInputWithKs = Optional.ofNullable(ksResult.get().getFileName());
+            ks = Optional.of("[" + ksResult.get().getKeyboardShortcut() + "]");
+
+        } else {
+            return;
+        }
+
         final Optional<String> userInput = userInputWithKs;
 
         // Cancel was pressed. So stop the save.

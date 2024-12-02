@@ -27,8 +27,10 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyCombination.Modifier;
 import javafx.scene.input.KeyEvent;
+import javax.swing.JFrame;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.openide.windows.WindowManager;
 
 /**
  *
@@ -53,7 +55,11 @@ public class RecordKeyboardShortcut  {
         td.setTitle(KEYBOARD_SHORTCUT_DIALOG_TITLE);
         td.setHeaderText(KEYBOARD_SHORTCUT_DIALOG_HEADER_TEXT);
         td.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
-
+        final JFrame mainframe = (JFrame) WindowManager.getDefault().getMainWindow();
+        final double xOffset = mainframe.getSize().getWidth()/2;
+        final double yOffset = mainframe.getSize().getHeight()/2;        
+        td.setX(mainframe.getX() + xOffset);
+        td.setY(mainframe.getY() + yOffset);
         td.showAndWait();
         
         final String keyboardShortcut = (td.getLabel().getText().replace('+', ' ') +" ").trim();      
@@ -81,15 +87,15 @@ public class RecordKeyboardShortcut  {
         
         File exisitngTemplateWithKs = null;
         
-        final FilenameFilter filenameFilter = (d, s) -> s.startsWith(keyboardShortcut);        
-        
+        final FilenameFilter filenameFilter = (d, s) -> s.startsWith("[" + keyboardShortcut + "]");
+
         final String[] fileNames = preferenceDirectory.list(filenameFilter);
-        
-        if(!ArrayUtils.isEmpty(fileNames)) {
+
+        if (!ArrayUtils.isEmpty(fileNames)) {
             exisitngTemplateWithKs = new File(
-                            preferenceDirectory,
-                            FilenameEncoder.encode(fileNames[0])
-                    );
+                    preferenceDirectory,
+                    FilenameEncoder.encode(fileNames[0])
+            );
         }
         
         return exisitngTemplateWithKs;

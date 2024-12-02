@@ -89,7 +89,7 @@ public class DataAccessParametersIoProvider {
     public static void loadParameters(final DataAccessPane dataAccessPane, final String keyboardShortcut) {
             final List<DataAccessUserPreferences> loadedParameters = JsonIO
                 .loadJsonPreferencesWithFilePrefix(
-                        Optional.of(DATA_ACCESS_DIR), Optional.of(keyboardShortcut),
+                        Optional.of(DATA_ACCESS_DIR), Optional.of("[" + keyboardShortcut + "]"),
                         new TypeReference<List<DataAccessUserPreferences>>() {}
                 );
             

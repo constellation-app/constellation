@@ -30,7 +30,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextInputDialog;
-import javafx.stage.Stage;
+import javax.swing.JFrame;
+import org.openide.windows.WindowManager;
 
 /**
  * Displays a generic dialog window that can allow the user to select a file
@@ -136,6 +137,11 @@ public class JsonIODialog {
         td.setTitle(PREFERENCE_NAME_DIALOG_TITLE);
         td.setHeaderText(PREFERENCE_NAME_DIALOG_HEADER_TEXT);
         td.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
+        final JFrame mainframe = (JFrame) WindowManager.getDefault().getMainWindow();
+        final double xOffset = mainframe.getSize().getWidth()/2;
+        final double yOffset = mainframe.getSize().getHeight()/2;        
+        td.setX(mainframe.getX() + xOffset);
+        td.setY(mainframe.getY() + yOffset);
         td.showAndWait();        
         return Optional.ofNullable(td.getKeyboardShortcutSelectionResult());
     }
