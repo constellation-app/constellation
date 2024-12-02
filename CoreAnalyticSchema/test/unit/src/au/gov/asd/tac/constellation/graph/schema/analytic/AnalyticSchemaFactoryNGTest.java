@@ -423,7 +423,7 @@ public class AnalyticSchemaFactoryNGTest {
         final int vxId1 = graph.addVertex();
         final int vxId2 = graph.addVertex();
         
-        int tId = graph.addTransaction(vxId1, vxId2, false);
+        final int tId = graph.addTransaction(vxId1, vxId2, false);
         
         final int transactionIdentifierAttribute = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(graph);
         final int transactionLabelAttribute = VisualConcept.TransactionAttribute.LABEL.ensure(graph);

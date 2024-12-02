@@ -95,6 +95,8 @@ public class AnalyticSchemaV2UpdateProviderNGTest {
         final AnalyticSchemaV2UpdateProvider instance = new AnalyticSchemaV2UpdateProvider();
         instance.schemaUpdate(graph);
         
+        // these are re-grabbed as the previous attribute was technically deleted and so this is just assuring we get the right id
+        // without these lines the test still passes as the new ids happen to match the old ones, but without this it feels like we just got lucky with that
         rawVertexAttribute = graph.getAttribute(GraphElementType.VERTEX, "Raw");
         typeVertexAttribute = graph.getAttribute(GraphElementType.VERTEX, "Type");
         typeTransactionAttribute = graph.getAttribute(GraphElementType.TRANSACTION, "Type");
