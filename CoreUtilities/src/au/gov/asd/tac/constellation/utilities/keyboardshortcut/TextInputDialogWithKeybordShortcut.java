@@ -33,8 +33,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
-import java.awt.MouseInfo;
-import java.awt.Point;
 import javafx.geometry.Insets;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Tooltip;
@@ -88,6 +86,7 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
         // -- textfield
         this.textField = new TextField(defaultValue);
         this.textField.setMaxWidth(Double.MAX_VALUE);
+        this.textField.setMinWidth(250);
         GridPane.setHgrow(textField, Priority.ALWAYS);
         GridPane.setFillWidth(textField, true);
 
@@ -103,7 +102,7 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
         final ImageView warningImage = new ImageView(UserInterfaceIconProvider.WARNING.buildImage(20, new java.awt.Color(255, 128, 0)));
         final Tooltip warningToolTip = new Tooltip("This shortcut is currently assigned to another template");
         if (!StringUtils.isBlank(keyboardShortcutLabel.getText())) {
-            keyboardShortcutLabel.setStyle(" -fx-font-size: 15px; -fx-border-style: solid; -fx-border-width: 1; -fx-border-color: #909090;");
+            keyboardShortcutLabel.setStyle(" -fx-text-alignment: center; -fx-font-size: 13px; -fx-border-style: solid; -fx-border-width: 1; -fx-border-color: #909090;");
         }
         keyboardShortcutLabel.setPadding(new Insets(2, 10, 2, 10));
         keyboardShortcutLabel.setGraphic(null);
@@ -131,12 +130,12 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
             Optional<KeyboardShortcutSelectionResult> keyboardShortcut = getKeyboardShortcut(preferenceDirectory);
             if (keyboardShortcut.isPresent()) {
                 KeyboardShortcutSelectionResult ksResult = keyboardShortcut.get();
-                keyboardShortcutLabel.setStyle(" -fx-font-size: 14px; -fx-border-style: solid; -fx-border-width: 1; -fx-border-color: #909090;");
+                keyboardShortcutLabel.setStyle(" -fx-text-alignment: center; -fx-font-size: 13px; -fx-border-style: solid; -fx-border-width: 1; -fx-border-color: #909090;");
                 keyboardShortcutLabel.setText(ksResult.getKeyboardShortcut());
                 keyboardShortcutSelectionResult.setKeyboardShortcut(ksResult.getKeyboardShortcut());
 
                 if (ksResult.isAlreadyAssigned() && ksResult.getExisitngTemplateWithKs() != null) {
-                    shorcutWarningLabel.setStyle(" -fx-font-size: 12px; -fx-text-fill: " + ConstellationColor.DARK_ORANGE.getHtmlColor() + ";");
+                    shorcutWarningLabel.setStyle(" -fx-text-alignment: center; -fx-font-size: 11.5px; -fx-text-fill: " + ConstellationColor.DARK_ORANGE.getHtmlColor() + ";");
                     shorcutWarningLabel.setText(String.format(RecordKeyboardShortcut.KEYBOARD_SHORTCUT_EXISTS_ALERT_ERROR_MSG_FORMAT, ksResult.getKeyboardShortcut()));
                     keyboardShortcutSelectionResult.setAlreadyAssigned(true);
                     keyboardShortcutSelectionResult.setExisitngTemplateWithKs(ksResult.getExisitngTemplateWithKs());
@@ -155,7 +154,7 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
         this.defaultValue = defaultValue;
 
         this.grid = new GridPane();
-        this.grid.setHgap(50);
+        this.grid.setHgap(20);
         this.grid.setVgap(10);
         this.grid.setMaxWidth(Double.MAX_VALUE);
         this.grid.setAlignment(Pos.CENTER_LEFT);
@@ -217,17 +216,13 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
     private void updateGrid() {
         grid.getChildren().clear();
 
-        grid.add(textField, 0, 0, 3, 1);
+        grid.add(textField, 0, 0, 7, 1);
 
-        grid.add(keyboardShortcutButton, 0, 1);
-        grid.add(keyboardShortcutLabel, 1, 1);
-        grid.add(shorcutWarningIconLabel, 2, 1, 1, 1);
+        grid.add(keyboardShortcutButton, 0, 1, 2, 1);
+        grid.add(keyboardShortcutLabel, 2, 1, 4, 1);
+        grid.add(shorcutWarningIconLabel, 6, 1, 1, 1);
 
-        grid.add(shorcutWarningLabel, 0, 2, 3, 1);
-
-        Point mouseLocation = MouseInfo.getPointerInfo().getLocation();
-        setX(mouseLocation.getX() + 500);
-        setY(mouseLocation.getY() + 500);
+        grid.add(shorcutWarningLabel, 0, 2, 7, 1);
 
         getDialogPane().setContent(grid);
 

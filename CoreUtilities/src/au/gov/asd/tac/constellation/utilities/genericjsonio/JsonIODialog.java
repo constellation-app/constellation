@@ -19,9 +19,13 @@ import au.gov.asd.tac.constellation.utilities.gui.DraggableCell;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.keyboardshortcut.KeyboardShortcutSelectionResult;
 import au.gov.asd.tac.constellation.utilities.keyboardshortcut.TextInputDialogWithKeybordShortcut;
+import java.awt.EventQueue;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -42,6 +46,8 @@ import org.openide.windows.WindowManager;
  */
 public class JsonIODialog {
 
+    private static final Logger LOGGER = Logger.getLogger(JsonIODialog.class.getName());
+    
     private static final String REMOVE_BUTTON_TEXT = "Remove";
 
     private static final String PREFERENCE_SELECTION_DIALOG_TITLE = "Preferences";
@@ -49,6 +55,8 @@ public class JsonIODialog {
 
     private static final String PREFERENCE_NAME_DIALOG_TITLE = "Preference Name";
     private static final String PREFERENCE_NAME_DIALOG_HEADER_TEXT = "Enter a name for the preference";
+    
+    private static JFrame mainframe = null;
     
     private JsonIODialog() {
     }
@@ -108,6 +116,11 @@ public class JsonIODialog {
             event.consume();
         });
 
+        getMainframe();
+        final double xOffset = mainframe.getSize().getWidth()/2 - 100;
+        final double yOffset = mainframe.getSize().getHeight()/2 - 250;
+        dialog.setX(mainframe.getX() + xOffset);
+        dialog.setY(mainframe.getY() + yOffset);
         final Optional<ButtonType> option = dialog.showAndWait();
         if (option.isPresent() && option.get() == ButtonType.OK) {
             return Optional.ofNullable(nameList.getSelectionModel().getSelectedItem());
@@ -137,13 +150,27 @@ public class JsonIODialog {
         td.setTitle(PREFERENCE_NAME_DIALOG_TITLE);
         td.setHeaderText(PREFERENCE_NAME_DIALOG_HEADER_TEXT);
         td.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
-        final JFrame mainframe = (JFrame) WindowManager.getDefault().getMainWindow();
-        final double xOffset = mainframe.getSize().getWidth()/2;
-        final double yOffset = mainframe.getSize().getHeight()/2;        
+        getMainframe();
+        final double xOffset = mainframe.getSize().getWidth()/2 - 60;
+        final double yOffset = mainframe.getSize().getHeight()/2 - 60;
         td.setX(mainframe.getX() + xOffset);
         td.setY(mainframe.getY() + yOffset);
-        td.showAndWait();        
+        td.showAndWait(); 
         return Optional.ofNullable(td.getKeyboardShortcutSelectionResult());
     }
 
+
+    /**
+     * Get a reference to the main application window so that popup dialogs can be centred against it
+     */
+    private static void getMainframe() {
+        try {
+            EventQueue.invokeAndWait(() -> {
+                mainframe = (JFrame) WindowManager.getDefault().getMainWindow();                
+            });
+        } catch (InterruptedException | InvocationTargetException ex) {
+            LOGGER.log(Level.SEVERE, "Error Displaying Dialog", ex);
+        }        
+    }
+    
 }

@@ -18,11 +18,15 @@ package au.gov.asd.tac.constellation.utilities.keyboardshortcut;
 
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import java.awt.EventQueue;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyCombination.Modifier;
@@ -37,6 +41,8 @@ import org.openide.windows.WindowManager;
  * @author spica
  */
 public class RecordKeyboardShortcut  {
+
+    private static final Logger LOGGER = Logger.getLogger(RecordKeyboardShortcut.class.getName());
     
     private static final String KEYBOARD_SHORTCUT_DIALOG_TITLE = "Keyboard Shortcut";
     private static final String KEYBOARD_SHORTCUT_DIALOG_HEADER_TEXT = "Press keyboard shortcut for template";
@@ -48,6 +54,8 @@ public class RecordKeyboardShortcut  {
     public static final String ALREADY_ASSIGNED = "ALREADY_ASSIGNED";
     public static final String YES = "Yes";
     public static final String NO = "No";
+    
+    private JFrame mainframe = null;
      
     public Optional<KeyboardShortcutSelectionResult> start(final File preferenceDirectory) {       
         
@@ -55,9 +63,9 @@ public class RecordKeyboardShortcut  {
         td.setTitle(KEYBOARD_SHORTCUT_DIALOG_TITLE);
         td.setHeaderText(KEYBOARD_SHORTCUT_DIALOG_HEADER_TEXT);
         td.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
-        final JFrame mainframe = (JFrame) WindowManager.getDefault().getMainWindow();
-        final double xOffset = mainframe.getSize().getWidth()/2;
-        final double yOffset = mainframe.getSize().getHeight()/2;        
+        getMainframe();
+        final double xOffset = mainframe.getSize().getWidth()/2 - 40;
+        final double yOffset = mainframe.getSize().getHeight()/2 - 40;
         td.setX(mainframe.getX() + xOffset);
         td.setY(mainframe.getY() + yOffset);
         td.showAndWait();
@@ -119,5 +127,17 @@ public class RecordKeyboardShortcut  {
         return new KeyCodeCombination(event.getCode(), modifiers.toArray(Modifier[]::new));
     }
 
+    /**
+     * Get a reference to the main application window so that popup dialogs can be centred against it
+     */
+    private void getMainframe() {
+        try {
+            EventQueue.invokeAndWait(() -> {
+                mainframe = (JFrame) WindowManager.getDefault().getMainWindow();                
+            });
+        } catch (InterruptedException | InvocationTargetException ex) {
+            LOGGER.log(Level.SEVERE, "Error Displaying Dialog", ex);
+        }        
+    }
     
 }
