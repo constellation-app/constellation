@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.graph.schema.visual;
 
 import au.gov.asd.tac.constellation.graph.DuplicateKeyException;
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
@@ -259,6 +260,7 @@ public class VisualSchemaFactory extends SchemaFactory {
             final int transactionDimAttribute = VisualConcept.TransactionAttribute.DIMMED.ensure(graph);
             final int transactionColorAttribute = VisualConcept.TransactionAttribute.COLOR.ensure(graph);
             final int transactionStyleAttribute = VisualConcept.TransactionAttribute.LINE_STYLE.ensure(graph);
+            final int transactionDirectedAttribute = VisualConcept.TransactionAttribute.DIRECTED.ensure(graph);
 
             int uniqueId = transactionId;
             boolean validKeys = false;
@@ -274,10 +276,13 @@ public class VisualSchemaFactory extends SchemaFactory {
                     uniqueId++;
                 }
             }
+            
+            final boolean transactionDirected = graph.getTransactionDirection(transactionId) != Graph.UNDIRECTED;
 
             graph.setFloatValue(transactionWidthAttribute, transactionId, 1F);
             graph.setFloatValue(transactionVisibilityAttribute, transactionId, 1F);
             graph.setBooleanValue(transactionDimAttribute, transactionId, false);
+            graph.setBooleanValue(transactionDirectedAttribute, transactionId, transactionDirected);
 
             final Object colorDefaultValue = graph.getAttributeDefaultValue(transactionColorAttribute);
             if (colorDefaultValue == null) {
@@ -293,17 +298,37 @@ public class VisualSchemaFactory extends SchemaFactory {
 
         @Override
         public void completeTransaction(final GraphWriteMethods graph, final int transactionId) {
-            super.completeVertex(graph, transactionId);
+            super.completeTransaction(graph, transactionId);
 
             final int transactionIdentifierAttribute = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(graph);
             final int transactionLabelAttribute = VisualConcept.TransactionAttribute.LABEL.ensure(graph);
+            final int transactionDirectedAttribute = VisualConcept.TransactionAttribute.DIRECTED.ensure(graph);
 
             final String identifier = graph.getStringValue(transactionIdentifierAttribute, transactionId);
             final String label = graph.getStringValue(transactionLabelAttribute, transactionId);
             if (identifier != null && label == null) {
                 graph.setStringValue(transactionLabelAttribute, transactionId, identifier);
             }
-            applyColorblindTransaction(graph, transactionId);
+            
+            final boolean directed = graph.getBooleanValue(transactionDirectedAttribute, transactionId);
+            final boolean transactionIsDirected = graph.getTransactionDirection(transactionId) != Graph.FLAT;
+            if (directed != transactionIsDirected) {
+                // this next bit is done to ensure that transactions merge to the appropriate edge/link group when updated
+                // (by changing the hidden direction of the transaction)
+                final int sourceVertexId = graph.getTransactionSourceVertex(transactionId);
+                final int destinationVertexId = graph.getTransactionDestinationVertex(transactionId);
+                final int newTransactionId = graph.addTransaction(sourceVertexId, destinationVertexId, directed);
+
+                for (int i = 0; i < graph.getAttributeCount(GraphElementType.TRANSACTION); i++) {
+                    final int attributeId = graph.getAttribute(GraphElementType.TRANSACTION, i);
+                    graph.setObjectValue(attributeId, newTransactionId, graph.getObjectValue(attributeId, transactionId));
+                }
+
+                graph.removeTransaction(transactionId);
+                applyColorblindTransaction(graph, newTransactionId);
+            } else {
+                applyColorblindTransaction(graph, transactionId);
+            }
         }
 
         private ConstellationColor randomColor() {

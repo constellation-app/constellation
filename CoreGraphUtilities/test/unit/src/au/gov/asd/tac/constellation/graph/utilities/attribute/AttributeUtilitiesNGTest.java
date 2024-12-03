@@ -100,12 +100,14 @@ public class AttributeUtilitiesNGTest {
         final StoreGraph graph = new StoreGraph(SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema());
 
         final Set<String> typesUsedByGraph = AttributeUtilities.getDateTimeAttributes(new DualGraph(graph, false), GraphElementType.TRANSACTION);
-        assertEquals(typesUsedByGraph.size(), 5);
+        assertEquals(typesUsedByGraph.size(), 7);
         assertTrue(typesUsedByGraph.contains(TemporalConcept.TransactionAttribute.FIRST_SEEN.getName()));
         assertTrue(typesUsedByGraph.contains(TemporalConcept.TransactionAttribute.LAST_SEEN.getName()));
         assertTrue(typesUsedByGraph.contains(TemporalConcept.TransactionAttribute.DATETIME.getName()));
         assertTrue(typesUsedByGraph.contains(TemporalConcept.TransactionAttribute.CREATED.getName()));
         assertTrue(typesUsedByGraph.contains(TemporalConcept.TransactionAttribute.MODIFIED.getName()));
+        assertTrue(typesUsedByGraph.contains(TemporalConcept.TransactionAttribute.START_TIME.getName()));
+        assertTrue(typesUsedByGraph.contains(TemporalConcept.TransactionAttribute.END_TIME.getName()));
     }
 
     @Test
