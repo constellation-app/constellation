@@ -107,11 +107,11 @@ public class TemporalConcept extends SchemaConcept {
         public static final SchemaAttribute DAY_BITMAP = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, "DayBitMap")
                 .setDescription("A bitmap of days this transaction represents")
                 .build();
-        public static final SchemaAttribute START_TIME = new SchemaAttribute.Builder(GraphElementType.VERTEX, ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME, "StartTime")
+        public static final SchemaAttribute START_TIME = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME, "StartTime")
                 .setDescription("The time at which this transaction becomes active or valid")
                 .setFormat(TemporalConstants.DATE_TIME_FULL_FORMAT)
                 .build();
-        public static final SchemaAttribute END_TIME = new SchemaAttribute.Builder(GraphElementType.VERTEX, ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME, "EndTime")
+        public static final SchemaAttribute END_TIME = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME, "EndTime")
                 .setDescription("The time at which this transaction ceases to be active or valid")
                 .setFormat(TemporalConstants.DATE_TIME_FULL_FORMAT)
                 .build();

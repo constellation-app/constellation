@@ -27,7 +27,7 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * This update ensures that the directed transaction attribute is added to the
- * graph.
+ * graph. 
  *
  * @author antares
  */
