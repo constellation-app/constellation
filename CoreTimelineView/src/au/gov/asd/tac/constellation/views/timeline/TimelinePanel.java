@@ -364,7 +364,6 @@ public class TimelinePanel extends Region {
     // <editor-fold defaultstate="collapsed" desc="Extents">
     protected void setTimelineExtent(final GraphReadMethods graph, final double lowerTimeExtent, final double upperTimeExtent,
             final boolean showSelectedOnly, final ZoneId zoneId) {
-        System.out.println("setTimelineExtent");
         final double millisPerPixel = (upperTimeExtent - lowerTimeExtent) / timeline.getWidth();
         final double pixelsPerTransaction = MIN_CLUSTER_WIDTH * millisPerPixel;
 
