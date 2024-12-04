@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.utilities.gui.DraggableCell;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.keyboardshortcut.KeyboardShortcutSelectionResult;
 import au.gov.asd.tac.constellation.utilities.keyboardshortcut.TextInputDialogWithKeybordShortcut;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -56,10 +57,8 @@ public class JsonIODialog {
     private static final String PREFERENCE_NAME_DIALOG_TITLE = "Preference Name";
     private static final String PREFERENCE_NAME_DIALOG_HEADER_TEXT = "Enter a name for the preference";
     
-    private static double mainframeX = 0;
-    private static double mainframeY = 0;
-    private static double mainframeWidth = 1024;
-    private static double mainframeHeight = 768;
+    private static final Dimension mainframePosition = new Dimension(0, 0);
+    private static final Dimension mainframeSize = new Dimension(1024, 768);
     
     /**
      * This is the system property that is set to true in order to make the AWT
@@ -126,10 +125,10 @@ public class JsonIODialog {
         });
 
         getMainframePosition();
-        final double xOffset = mainframeWidth / 2 - 100;
-        final double yOffset = mainframeHeight / 2 - 250;
-        dialog.setX(mainframeX + xOffset);
-        dialog.setY(mainframeY + yOffset);
+        final double xOffset = mainframeSize.getWidth() / 2 - 100;
+        final double yOffset = mainframeSize.getHeight() / 2 - 250;
+        dialog.setX(mainframePosition.getWidth() + xOffset);
+        dialog.setY(mainframePosition.getHeight() + yOffset);
         final Optional<ButtonType> option = dialog.showAndWait();
         if (option.isPresent() && option.get() == ButtonType.OK) {
             return Optional.ofNullable(nameList.getSelectionModel().getSelectedItem());
@@ -160,10 +159,10 @@ public class JsonIODialog {
         td.setHeaderText(PREFERENCE_NAME_DIALOG_HEADER_TEXT);
         td.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         getMainframePosition();
-        final double xOffset = mainframeWidth / 2 - 60;
-        final double yOffset = mainframeHeight / 2 - 60;
-        td.setX(mainframeX + xOffset);
-        td.setY(mainframeY + yOffset);
+        final double xOffset = mainframeSize.getWidth() / 2 - 60;
+        final double yOffset = mainframeSize.getHeight() / 2 - 60;
+        td.setX(mainframePosition.getWidth() + xOffset);
+        td.setY(mainframePosition.getHeight() + yOffset);
         td.showAndWait(); 
         return Optional.ofNullable(td.getKeyboardShortcutSelectionResult());
     }
@@ -178,15 +177,16 @@ public class JsonIODialog {
         }
         try {
             EventQueue.invokeAndWait(() -> {
-                final JFrame mainframe = (JFrame) WindowManager.getDefault().getMainWindow();   
-                mainframeX = mainframe.getX();
-                mainframeY = mainframe.getY();
-                mainframeWidth = mainframe.getSize().getWidth();
-                mainframeHeight = mainframe.getSize().getHeight();
+                final JFrame mainframe = (JFrame) WindowManager.getDefault().getMainWindow();
+                mainframePosition.setSize(mainframe.getX(), mainframe.getY());
+                mainframeSize.setSize(mainframe.getSize().getWidth(), mainframe.getSize().getHeight());
             });
-        } catch (InterruptedException | InvocationTargetException ex) {
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.WARNING, "Thread displaying dialog was interrupted.", ex);
+            Thread.currentThread().interrupt();
+        } catch (final InvocationTargetException ex) {
             LOGGER.log(Level.SEVERE, "Error Displaying Dialog", ex);
-        }        
+        }
     }
     
 }

@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.utilities.keyboardshortcut;
 
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.io.File;
 import java.io.FilenameFilter;
@@ -55,10 +56,8 @@ public class RecordKeyboardShortcut  {
     public static final String YES = "Yes";
     public static final String NO = "No";
     
-    private static double mainframeX = 0;
-    private static double mainframeY = 0;
-    private static double mainframeWidth = 1024;
-    private static double mainframeHeight = 768;
+    private final Dimension mainframePosition = new Dimension(0, 0);
+    private final Dimension mainframeSize = new Dimension(1024, 768);
 
     /**
      * This is the system property that is set to true in order to make the AWT
@@ -73,10 +72,10 @@ public class RecordKeyboardShortcut  {
         td.setHeaderText(KEYBOARD_SHORTCUT_DIALOG_HEADER_TEXT);
         td.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         getMainframePosition();
-        final double xOffset = mainframeWidth / 2 - 40;
-        final double yOffset = mainframeHeight / 2 - 40;
-        td.setX(mainframeX + xOffset);
-        td.setY(mainframeY + yOffset);
+        final double xOffset = mainframeSize.getWidth() / 2 - 40;
+        final double yOffset = mainframeSize.getHeight() / 2 - 40;
+        td.setX(mainframePosition.getWidth() + xOffset);
+        td.setY(mainframePosition.getHeight() + yOffset);
         td.showAndWait();
         
         final String keyboardShortcut = (td.getLabel().getText().replace('+', ' ') +" ").trim();      
@@ -146,14 +145,15 @@ public class RecordKeyboardShortcut  {
         try {
             EventQueue.invokeAndWait(() -> {
                 final JFrame mainframe = (JFrame) WindowManager.getDefault().getMainWindow();
-                mainframeX = mainframe.getX();
-                mainframeY = mainframe.getY();
-                mainframeWidth = mainframe.getSize().getWidth();
-                mainframeHeight = mainframe.getSize().getHeight();                
+                mainframePosition.setSize(mainframe.getX(), mainframe.getY());
+                mainframeSize.setSize(mainframe.getSize().getWidth(), mainframe.getSize().getHeight());
             });
-        } catch (InterruptedException | InvocationTargetException ex) {
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.WARNING, "Thread displaying dialog was interrupted.", ex);
+            Thread.currentThread().interrupt();
+        } catch (final InvocationTargetException ex) {
             LOGGER.log(Level.SEVERE, "Error Displaying Dialog", ex);
-        }        
+        }
     }
     
 }
