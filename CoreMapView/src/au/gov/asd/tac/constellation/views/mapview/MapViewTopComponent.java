@@ -374,6 +374,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         if (markerState.getColorScheme().getTransactionAttribute() != null) {
             addAttributeValueChangeHandler(markerState.getColorScheme().getTransactionAttribute(), updateMarkers);
         }
+
     }
 
     private void zoomLocationBasedOnGeoType(final String geoType, final String location) throws AssertionError {
@@ -598,7 +599,6 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
 
         private final GraphElementType graphElementType;
         private final Set<Integer> elementIds;
-
         public SelectOnGraphPlugin(final GraphElementType graphElementType, final Set<Integer> elementIds) {
             this.graphElementType = graphElementType;
             this.elementIds = elementIds;

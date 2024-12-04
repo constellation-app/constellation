@@ -53,6 +53,7 @@ public class EntityPathsLayer extends AbstractPathsLayer {
             final SchemaVertexType vertexType = graph.getObjectValue(vertexTypeAttributeId, element.getId());
             if (vertexType != null && vertexType.isSubTypeOf(AnalyticConcept.VertexType.LOCATION)) {
                 final int neighbourCount = graph.getVertexNeighbourCount(element.getId());
+
                 for (int neighbourPosition = 0; neighbourPosition < neighbourCount; neighbourPosition++) {
                     final int neighbourId = graph.getVertexNeighbour(element.getId(), neighbourPosition);
                     final SchemaVertexType neighbourType = graph.getObjectValue(vertexTypeAttributeId, neighbourId);

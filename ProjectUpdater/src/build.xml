@@ -75,6 +75,12 @@
             <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.5.0/nativewindow-2.5.0-natives-windows-amd64.jar"/>
         </get>-->
 
+<!--
+        <echo level="info" message="installing FX SVG Image renderer..."/>
+        <copy file="../../Downloads/mapviewjars/fxsvgImage.jar" todir="${suite.dir}/CoreDependencies/release/modules/ext"/>
+        <echo level="info" message="DONE installing FX SVG Image renderer."/>
+-->
+
         <echo level="info" message="installing gluegen..." if:set="third.party.depdendencies"/>
         <get if:set="third.party.depdendencies"
              dest="${suite.dir}/CoreDependencies/release/modules/ext" 
