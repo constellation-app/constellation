@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.utilities.genericjsonio;
 
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.keyboardshortcut.KeyboardShortcutSelectionResult;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -62,6 +63,8 @@ public class JsonIONGTest {
     private static final Optional<String> SUB_DIRECTORY = Optional.of("test");
     private static final Optional<String> FILE_PREFIX = Optional.of("my-");
 
+    private static final Optional<String> DEFAULT_KS = Optional.of("ctrl+1");
+    
     @Test
     public void loadJsonPreferences_get_pojo_without_prefix() throws URISyntaxException, FileNotFoundException, IOException {
 
@@ -202,6 +205,32 @@ public class JsonIONGTest {
         }
     }
 
+     @Test
+    public void saveJsonPreferences_with_keyboardshortcut() throws URISyntaxException, FileNotFoundException, IOException {
+
+        final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
+
+        try (MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class)) {
+            
+             jsonIoMockedStatic.when(() -> JsonIO
+                    .getPrefereceFileDirectory(any(Optional.class)))
+                    .thenReturn(outputFile);
+            
+            jsonIoMockedStatic.when(() -> JsonIO
+                    .saveJsonPreferencesWithKeyboardShortcut(any(Optional.class), any(Object.class)))
+                    .thenCallRealMethod();
+
+            final ObjectMapper mapper = new ObjectMapper();
+
+            JsonIO.saveJsonPreferencesWithKeyboardShortcut(SUB_DIRECTORY, fixture());
+
+            jsonIoMockedStatic.verify(() -> JsonIO
+                    .saveJsonPreferencesWithKeyboardShortcut(SUB_DIRECTORY, fixture()));
+        } finally {
+            Files.deleteIfExists(outputFile.toPath());
+        }
+    }
+    
     @Test
     public void saveJsonPreferences_without_prefix() throws URISyntaxException, FileNotFoundException, IOException {
 
@@ -449,9 +478,14 @@ public class JsonIONGTest {
     private void setupStaticMocksForSavePreference(final MockedStatic<JsonIO> jsonIoMockedStatic,
             final MockedStatic<JsonIODialog> jsonIoDialogMockedStatic,
             final Optional<String> userResponse) {
+        
         jsonIoDialogMockedStatic.when(JsonIODialog::getPreferenceFileName)
-                .thenReturn(userResponse);
-
+                .thenReturn(userResponse);       
+                           
+        jsonIoDialogMockedStatic.when(() -> JsonIODialog
+                .getPreferenceFileName(DEFAULT_KS, new File("")))
+                .thenReturn(Optional.of(new KeyboardShortcutSelectionResult(DEFAULT_KS.get(), false, null)));  
+        
         jsonIoMockedStatic.when(() -> JsonIO.getPrefereceFileDirectory(SUB_DIRECTORY))
                 .thenReturn(new File(System.getProperty("java.io.tmpdir")));
 
