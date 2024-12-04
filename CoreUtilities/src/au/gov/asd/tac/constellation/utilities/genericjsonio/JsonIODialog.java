@@ -57,6 +57,11 @@ public class JsonIODialog {
     private static final String PREFERENCE_NAME_DIALOG_HEADER_TEXT = "Enter a name for the preference";
     
     private static JFrame mainframe = null;
+    /**
+     * This is the system property that is set to true in order to make the AWT
+     * thread run in headless mode for tests, etc.
+     */
+    private static final String AWT_HEADLESS_PROPERTY = "java.awt.headless";
     
     private JsonIODialog() {
     }
@@ -164,6 +169,11 @@ public class JsonIODialog {
      * Get a reference to the main application window so that popup dialogs can be centred against it
      */
     private static void getMainframe() {
+        if (mainframe == null && Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(AWT_HEADLESS_PROPERTY))) {
+            mainframe = new JFrame();
+            mainframe.setSize(1024, 768);
+            mainframe.setLocation(0, 0);
+        }
         try {
             EventQueue.invokeAndWait(() -> {
                 mainframe = (JFrame) WindowManager.getDefault().getMainWindow();                

@@ -78,6 +78,8 @@ public class JsonIODialogNGTest {
                 () -> JsonIODialog.getSelection(names, Optional.of(""), Optional.of("")));
 
         final Stage dialog = getDialog(robot);
+        dialog.setX(0);
+        dialog.setY(0);
         WaitForAsyncUtils.asyncFx(() -> dialog.requestFocus()).get();
 
         robot.clickOn(robot.from(dialog.getScene().getRoot())
@@ -104,6 +106,9 @@ public class JsonIODialogNGTest {
                 () -> JsonIODialog.getSelection(names, Optional.of(""), Optional.of("")));
 
         final Stage dialog = getDialog(robot);
+        dialog.setX(0);
+        dialog.setY(0);
+
         WaitForAsyncUtils.asyncFx(() -> dialog.requestFocus()).get();
 
         robot.clickOn(robot.from(dialog.getScene().getRoot())
@@ -144,6 +149,8 @@ public class JsonIODialogNGTest {
         });
 
         final Stage dialog = getDialog(robot);
+        dialog.setX(0);
+        dialog.setY(0);
 
         // IMPORTANT. Request focus. Until this is done the JavaFX scene in the
         // dialog does not appear to initialize and the following robot lookup
@@ -185,6 +192,8 @@ public class JsonIODialogNGTest {
                 () -> JsonIODialog.getPreferenceFileName());
 
         final Stage dialog = getDialog(robot);
+        dialog.setX(0);
+        dialog.setY(0);
 
         final String input = "myPreferenceFile";
 
@@ -212,6 +221,8 @@ public class JsonIODialogNGTest {
                 () -> JsonIODialog.getPreferenceFileName());
 
         final Stage dialog = getDialog(robot);
+        dialog.setX(0);
+        dialog.setY(0);
 
         robot.clickOn(
                 robot.from(dialog.getScene().getRoot())
@@ -242,6 +253,8 @@ public class JsonIODialogNGTest {
                 () -> JsonIODialog.getPreferenceFileName(ks, preferenceDirectory));
 
         final Stage dialog = getDialog(robot);
+        dialog.setX(0);
+        dialog.setY(0);
 
         final String input = "myPreferenceFile";
 
@@ -274,6 +287,8 @@ public class JsonIODialogNGTest {
                 () -> JsonIODialog.getPreferenceFileName(ks, preferenceDirectory));
 
         final Stage dialog = getDialog(robot);
+        dialog.setX(0);
+        dialog.setY(0);
 
         robot.clickOn(
                 robot.from(dialog.getScene().getRoot())

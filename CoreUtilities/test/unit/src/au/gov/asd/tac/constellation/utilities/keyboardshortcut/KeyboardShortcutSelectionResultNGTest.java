@@ -77,6 +77,8 @@ public class KeyboardShortcutSelectionResultNGTest {
                 () -> JsonIODialog.getPreferenceFileName(ks, preferenceDirectory));
 
         final Stage dialog = getDialog(robot);
+        dialog.setX(0);
+        dialog.setY(0);
 
         final String input = "myPreferenceFile";
 
