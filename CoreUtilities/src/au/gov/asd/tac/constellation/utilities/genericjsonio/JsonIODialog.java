@@ -15,17 +15,14 @@
  */
 package au.gov.asd.tac.constellation.utilities.genericjsonio;
 
+import au.gov.asd.tac.constellation.utilities.SystemUtilities;
 import au.gov.asd.tac.constellation.utilities.gui.DraggableCell;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.keyboardshortcut.KeyboardShortcutSelectionResult;
 import au.gov.asd.tac.constellation.utilities.keyboardshortcut.TextInputDialogWithKeybordShortcut;
-import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -35,8 +32,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextInputDialog;
-import javax.swing.JFrame;
-import org.openide.windows.WindowManager;
 
 /**
  * Displays a generic dialog window that can allow the user to select a file
@@ -57,14 +52,6 @@ public class JsonIODialog {
     private static final String PREFERENCE_NAME_DIALOG_TITLE = "Preference Name";
     private static final String PREFERENCE_NAME_DIALOG_HEADER_TEXT = "Enter a name for the preference";
     
-    private static final Dimension mainframePosition = new Dimension(0, 0);
-    private static final Dimension mainframeSize = new Dimension(1024, 768);
-    
-    /**
-     * This is the system property that is set to true in order to make the AWT
-     * thread run in headless mode for tests, etc.
-     */
-    private static final String AWT_HEADLESS_PROPERTY = "java.awt.headless";
     
     private JsonIODialog() {
     }
@@ -124,11 +111,10 @@ public class JsonIODialog {
             event.consume();
         });
 
-        getMainframePosition();
-        final double xOffset = mainframeSize.getWidth() / 2 - 100;
-        final double yOffset = mainframeSize.getHeight() / 2 - 250;
-        dialog.setX(mainframePosition.getWidth() + xOffset);
-        dialog.setY(mainframePosition.getHeight() + yOffset);
+        final double xOffset = SystemUtilities.getMainframeWidth() / 2 - 100;
+        final double yOffset = SystemUtilities.getMainframeHeight() / 2 - 250;
+        dialog.setX(SystemUtilities.getMainframeXPos() + xOffset);
+        dialog.setY(SystemUtilities.getMainframeYPos() + yOffset);
         final Optional<ButtonType> option = dialog.showAndWait();
         if (option.isPresent() && option.get() == ButtonType.OK) {
             return Optional.ofNullable(nameList.getSelectionModel().getSelectedItem());
@@ -158,35 +144,12 @@ public class JsonIODialog {
         td.setTitle(PREFERENCE_NAME_DIALOG_TITLE);
         td.setHeaderText(PREFERENCE_NAME_DIALOG_HEADER_TEXT);
         td.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
-        getMainframePosition();
-        final double xOffset = mainframeSize.getWidth() / 2 - 60;
-        final double yOffset = mainframeSize.getHeight() / 2 - 60;
-        td.setX(mainframePosition.getWidth() + xOffset);
-        td.setY(mainframePosition.getHeight() + yOffset);
+        final double xOffset = SystemUtilities.getMainframeWidth() / 2 - 60;
+        final double yOffset = SystemUtilities.getMainframeHeight() / 2 - 60;
+        td.setX(SystemUtilities.getMainframeXPos() + xOffset);
+        td.setY(SystemUtilities.getMainframeYPos() + yOffset);
         td.showAndWait(); 
         return Optional.ofNullable(td.getKeyboardShortcutSelectionResult());
     }
 
-
-    /**
-     * Get a reference to the main application window so that popup dialogs can be centred against it
-     */
-    private static void getMainframePosition() {
-        if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(AWT_HEADLESS_PROPERTY))) {
-            return;
-        }
-        try {
-            EventQueue.invokeAndWait(() -> {
-                final JFrame mainframe = (JFrame) WindowManager.getDefault().getMainWindow();
-                mainframePosition.setSize(mainframe.getX(), mainframe.getY());
-                mainframeSize.setSize(mainframe.getSize().getWidth(), mainframe.getSize().getHeight());
-            });
-        } catch (final InterruptedException ex) {
-            LOGGER.log(Level.WARNING, "Thread displaying dialog was interrupted.", ex);
-            Thread.currentThread().interrupt();
-        } catch (final InvocationTargetException ex) {
-            LOGGER.log(Level.SEVERE, "Error Displaying Dialog", ex);
-        }
-    }
-    
 }

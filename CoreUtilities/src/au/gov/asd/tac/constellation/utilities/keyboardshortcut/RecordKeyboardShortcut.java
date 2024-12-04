@@ -16,26 +16,20 @@
 
 package au.gov.asd.tac.constellation.utilities.keyboardshortcut;
 
+import au.gov.asd.tac.constellation.utilities.SystemUtilities;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
-import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.io.File;
 import java.io.FilenameFilter;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyCombination.Modifier;
 import javafx.scene.input.KeyEvent;
-import javax.swing.JFrame;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.openide.windows.WindowManager;
 
 /**
  *
@@ -43,8 +37,6 @@ import org.openide.windows.WindowManager;
  */
 public class RecordKeyboardShortcut  {
 
-    private static final Logger LOGGER = Logger.getLogger(RecordKeyboardShortcut.class.getName());
-    
     private static final String KEYBOARD_SHORTCUT_DIALOG_TITLE = "Keyboard Shortcut";
     private static final String KEYBOARD_SHORTCUT_DIALOG_HEADER_TEXT = "Press keyboard shortcut for template";
     
@@ -56,9 +48,6 @@ public class RecordKeyboardShortcut  {
     public static final String YES = "Yes";
     public static final String NO = "No";
     
-    private final Dimension mainframePosition = new Dimension(0, 0);
-    private final Dimension mainframeSize = new Dimension(1024, 768);
-
     /**
      * This is the system property that is set to true in order to make the AWT
      * thread run in headless mode for tests, etc.
@@ -71,11 +60,10 @@ public class RecordKeyboardShortcut  {
         td.setTitle(KEYBOARD_SHORTCUT_DIALOG_TITLE);
         td.setHeaderText(KEYBOARD_SHORTCUT_DIALOG_HEADER_TEXT);
         td.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
-        getMainframePosition();
-        final double xOffset = mainframeSize.getWidth() / 2 - 40;
-        final double yOffset = mainframeSize.getHeight() / 2 - 40;
-        td.setX(mainframePosition.getWidth() + xOffset);
-        td.setY(mainframePosition.getHeight() + yOffset);
+        final double xOffset = SystemUtilities.getMainframeWidth() / 2 - 40;
+        final double yOffset = SystemUtilities.getMainframeHeight() / 2 - 40;
+        td.setX(SystemUtilities.getMainframeXPos() + xOffset);
+        td.setY(SystemUtilities.getMainframeYPos() + yOffset);
         td.showAndWait();
         
         final String keyboardShortcut = (td.getLabel().getText().replace('+', ' ') +" ").trim();      
@@ -119,7 +107,7 @@ public class RecordKeyboardShortcut  {
     }
     
     public static KeyCombination createCombo(final KeyEvent event) {
-        final List<Modifier> modifiers = new ArrayList<Modifier>();
+        final List<Modifier> modifiers = new ArrayList<>();
         if (event.isControlDown()) {
             modifiers.add(KeyCombination.CONTROL_DOWN);
         }
@@ -133,27 +121,6 @@ public class RecordKeyboardShortcut  {
             modifiers.add(KeyCombination.SHIFT_DOWN);
         }
         return new KeyCodeCombination(event.getCode(), modifiers.toArray(Modifier[]::new));
-    }
-
-    /**
-     * Get a reference to the main application window so that popup dialogs can be centred against it
-     */
-    private void getMainframePosition() {
-        if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(AWT_HEADLESS_PROPERTY))) {
-            return;
-        }
-        try {
-            EventQueue.invokeAndWait(() -> {
-                final JFrame mainframe = (JFrame) WindowManager.getDefault().getMainWindow();
-                mainframePosition.setSize(mainframe.getX(), mainframe.getY());
-                mainframeSize.setSize(mainframe.getSize().getWidth(), mainframe.getSize().getHeight());
-            });
-        } catch (final InterruptedException ex) {
-            LOGGER.log(Level.WARNING, "Thread displaying dialog was interrupted.", ex);
-            Thread.currentThread().interrupt();
-        } catch (final InvocationTargetException ex) {
-            LOGGER.log(Level.SEVERE, "Error Displaying Dialog", ex);
-        }
     }
     
 }
