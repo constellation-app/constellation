@@ -43,7 +43,7 @@ public abstract class MenuBaseAction extends AbstractAction implements Presenter
 
     protected final Lookup.Result<GraphNode> graphNodeSet;
     protected final Lookup lookup;
-    protected JMenuItem menuButton;
+    public JMenuItem menuButton;
     private GraphNode currentGraphNode;
 
     /**
@@ -62,7 +62,7 @@ public abstract class MenuBaseAction extends AbstractAction implements Presenter
      *
      * @return graphNode
      */
-    protected GraphNode getContext() {
+    public GraphNode getContext() {
         return lookup.lookup(GraphNode.class);
     }
 

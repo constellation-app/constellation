@@ -205,8 +205,8 @@ public abstract class VisualProcessor {
                 }
                 processChangeSet(changes, access);
             } finally {
-                performVisualUpdate();
                 access.endUpdate();
+                performVisualUpdate();
             }
             updateOccuring.release();
         });

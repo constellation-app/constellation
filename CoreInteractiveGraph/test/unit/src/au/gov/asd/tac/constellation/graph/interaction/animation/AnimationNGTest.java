@@ -33,6 +33,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import org.mockito.stubbing.Answer;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -45,8 +46,8 @@ import org.testng.annotations.Test;
 public class AnimationNGTest {
 
     private String graphId;
-    private Animation colorWarpAnimation;
-    private Animation directionIndicatorAnimation;
+    private ColorWarpAnimation colorWarpAnimation;
+    private DirectionIndicatorAnimation directionIndicatorAnimation;
     private FlyingAnimation flyingAnimation;
     private PanAnimation panAnimation;
     private ThrobbingNodeAnimation throbbingNodeAnimation;
@@ -88,9 +89,6 @@ public class AnimationNGTest {
                 -> AnimationUtilities.stopAnimation(Mockito.any(), Mockito.any()))
                 .then((Answer<Void>) invocation -> null);
         
-        doNothing().when(colorWarpAnimation).stop();
-        doNothing().when(directionIndicatorAnimation).stop();
-        
     }
 
     @AfterMethod
@@ -102,7 +100,7 @@ public class AnimationNGTest {
 
     @Test
     public void testAnimation_getIntervalInMilis() {
-        assertEquals(colorWarpAnimation.getIntervalInMillis(), 15);
+        assertEquals(colorWarpAnimation.getIntervalInMillis(), 40);
         assertEquals(directionIndicatorAnimation.getIntervalInMillis(), 60);
         assertEquals(panAnimation.getIntervalInMillis(), 40);
         assertEquals(flyingAnimation.getIntervalInMillis(), 35);
@@ -144,23 +142,18 @@ public class AnimationNGTest {
         int vxId1 = wg.addVertex();
         int txId0 = wg.addTransaction(vxId0, vxId1, false);
                 
-               
-        colorWarpAnimation.initialise(wg);
-        assertTrue(wg.getVertexCount() == 2);
-        assertTrue(wg.getTransactionCount() == 1);
-        // verify it's not gone into stop()
-        verify(colorWarpAnimation, times(0)).stop();
-
-        int attributeId = VisualConcept.VertexAttribute.COLOR.get(wg);
+        int attributeId = VisualConcept.VertexAttribute.COLOR.ensure(wg);
+        int attributeTxId = VisualConcept.TransactionAttribute.COLOR.ensure(wg);
         Object result0 = wg.getObjectValue(attributeId, vxId0);
         Object result1 = wg.getObjectValue(attributeId, vxId1);
-        Object result2 = wg.getObjectValue(attributeId, txId0);
+        Object result2 = wg.getObjectValue(attributeTxId, txId0);
+
         // originally they will be set to null
         assertTrue(result0 == null);
         assertTrue(result1 == null);
         assertTrue(result2 == null);
-        
-        // set to a different colour
+
+        // set to initial colors
         wg.setObjectValue(attributeId, vxId0, ConstellationColor.AMETHYST);
         result0 = wg.getObjectValue(attributeId, vxId0);
         assertTrue(result0 == ConstellationColor.AMETHYST);
@@ -169,19 +162,43 @@ public class AnimationNGTest {
         result1 = wg.getObjectValue(attributeId, vxId1);
         assertTrue(result1 == ConstellationColor.BANANA);
         
-        wg.setObjectValue(attributeId, txId0, ConstellationColor.CHERRY);                
-        result2 = wg.getObjectValue(attributeId, txId0);
+        wg.setObjectValue(attributeTxId, txId0, ConstellationColor.CHERRY);                
+        result2 = wg.getObjectValue(attributeTxId, txId0);
         assertTrue(result2 == ConstellationColor.CHERRY);
         
-        colorWarpAnimation.reset(wg);
+        assertTrue(wg.getVertexCount() == 2);
+        assertTrue(wg.getTransactionCount() == 1);
+
+        colorWarpAnimation.initialise(wg);
+        assertTrue(wg.getVertexCount() == 2);
+        assertTrue(wg.getTransactionCount() == 1);
+        // verify it's not gone into stop()
+        verify(colorWarpAnimation, times(0)).stop();
+
+        // Set to different colors
+        wg.setObjectValue(attributeId, vxId0, ConstellationColor.AZURE);
         result0 = wg.getObjectValue(attributeId, vxId0);
-        assertTrue(result0 == null);
+        assertTrue(result0 == ConstellationColor.AZURE);
+        
+        wg.setObjectValue(attributeId, vxId1, ConstellationColor.BLUEBERRY);
+        result1 = wg.getObjectValue(attributeId, vxId1);
+        assertTrue(result1 == ConstellationColor.BLUEBERRY);
+        
+        wg.setObjectValue(attributeTxId, txId0, ConstellationColor.CARROT);                
+        result2 = wg.getObjectValue(attributeTxId, txId0);
+        assertTrue(result2 == ConstellationColor.CARROT);
+        
+        colorWarpAnimation.reset(wg);
+        
+        // verify that it was returned to original colors
+        result0 = wg.getObjectValue(attributeId, vxId0);
+        assertTrue(result0 == ConstellationColor.AMETHYST);
         
         result1 = wg.getObjectValue(attributeId, vxId1);
-        assertTrue(result1 == null);
+        assertTrue(result1 == ConstellationColor.BANANA);
         
-        result2 = wg.getObjectValue(attributeId, txId0);
-        assertTrue(result2 == null);     
+        result2 = wg.getObjectValue(attributeTxId, txId0);
+        assertTrue(result2 == ConstellationColor.CHERRY);     
     }
     
     @Test
@@ -221,5 +238,34 @@ public class AnimationNGTest {
         throbbingNodeAnimation.reset(graphWriteMethods);
         verify(graphWriteMethods, times(1)).setObjectValue(Mockito.anyInt(),
                 Mockito.anyInt(), Mockito.any());        
-    }   
+    }
+    
+    @Test
+    public void testGraphId() {
+        colorWarpAnimation.setGraphID("TestGraph");
+        assertTrue(colorWarpAnimation.graphID.equals("TestGraph"));
+        
+        directionIndicatorAnimation.setGraphID("TestGraph");
+        assertTrue(directionIndicatorAnimation.graphID.equals("TestGraph"));
+        
+        flyingAnimation.setGraphID("TestGraph");
+        assertTrue(flyingAnimation.graphID.equals("TestGraph"));
+        
+        throbbingNodeAnimation.setGraphID("TestGraph");
+        assertTrue(throbbingNodeAnimation.graphID.equals("TestGraph"));
+        
+        panAnimation.setGraphID("TestGraph");
+        assertTrue(panAnimation.graphID.equals("TestGraph"));
+        
+    }
+    
+    @Test
+    public void testIsSignificant() {
+        assertFalse(colorWarpAnimation.isSignificant());        
+        assertFalse(directionIndicatorAnimation.isSignificant());
+        assertFalse(flyingAnimation.isSignificant());
+        assertFalse(throbbingNodeAnimation.isSignificant());
+        assertFalse(panAnimation.isSignificant());
+    }
+    
 }

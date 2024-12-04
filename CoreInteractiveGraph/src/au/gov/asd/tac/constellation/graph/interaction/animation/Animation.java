@@ -65,7 +65,7 @@ public abstract class Animation {
     /**
      * Run one frame of the animation.
      * This method should modify the graph as necessary writing any changes 
-     * to the provided grapj.
+     * to the provided graph.
      *
      * @param wg A write lock on the graph the animation is running on.
      * @return

@@ -31,15 +31,22 @@ import java.util.Map;
 public final class ColorWarpAnimation extends Animation {
 
     /**
+     * @return the transactionOriginals
+     */
+    protected Map<Integer, ConstellationColor> getTransactionOriginals() {
+        return transactionOriginals;
+    }
+
+    /**
      * @return the vertexOriginals
      */
-    public Map<Integer, ConstellationColor> getVertexOriginals() {
+    protected Map<Integer, ConstellationColor> getVertexOriginals() {
         return vertexOriginals;
     }
     
     public static final String NAME = "Color Warp Animation";
     
-    // Attribut references
+    // Attribute references
     private int vertexColorAttr;
     private int transactionColorAttr;
 
@@ -55,7 +62,8 @@ public final class ColorWarpAnimation extends Animation {
     public void initialise(final GraphWriteMethods wg) {
         vertexColorAttr = VisualConcept.VertexAttribute.COLOR.ensure(wg);
         transactionColorAttr = VisualConcept.TransactionAttribute.COLOR.ensure(wg);
-         
+        
+        System.out.println("Vertex count: " + wg.getVertexCount());
         // dont initilise the animation if there is less than 2 nodes
         if (wg.getVertexCount() <= 1) {
             stop();
@@ -67,7 +75,7 @@ public final class ColorWarpAnimation extends Animation {
             
             for (int transactionPosition = 0 ; transactionPosition < wg.getTransactionCount(); transactionPosition++) {
                 final int transactionID = wg.getTransaction(transactionPosition);
-               transactionOriginals.put(transactionID, wg.getObjectValue(transactionColorAttr, transactionID));
+                getTransactionOriginals().put(transactionID, wg.getObjectValue(transactionColorAttr, transactionID));
             }            
         }
     }
@@ -77,16 +85,16 @@ public final class ColorWarpAnimation extends Animation {
         
         // Do not animate unless there is more than 1 node
         if (wg.getVertexCount() > 0) {
-            final SetColorValuesOperation colorVerticesOperation = new SetColorValuesOperation(wg, GraphElementType.VERTEX, vertexColorAttr);
-            final SetColorValuesOperation colorTransactionsOperation = new SetColorValuesOperation(wg, GraphElementType.TRANSACTION, transactionColorAttr);
-
+                    
             for (int vertexPosition = 0 ; vertexPosition < wg.getVertexCount(); vertexPosition++) {
+                SetColorValuesOperation colorVerticesOperation = new SetColorValuesOperation(wg, GraphElementType.VERTEX, vertexColorAttr);
                 final int vertexID = wg.getVertex(vertexPosition);
                 colorVerticesOperation.setValue(vertexID, this.getNextColor(wg.getObjectValue(vertexColorAttr, vertexID)));
-                wg.executeGraphOperation(colorVerticesOperation);        
+                wg.executeGraphOperation(colorVerticesOperation);
             }
             
             for (int transactionPosition = 0 ; transactionPosition < wg.getTransactionCount(); transactionPosition++) {
+                SetColorValuesOperation colorTransactionsOperation = new SetColorValuesOperation(wg, GraphElementType.TRANSACTION, transactionColorAttr);
                 final int transactionID = wg.getTransaction(transactionPosition);
                 colorTransactionsOperation.setValue(transactionID, this.getNextColor(wg.getObjectValue(transactionColorAttr, transactionID)));
                 wg.executeGraphOperation(colorTransactionsOperation);
@@ -96,23 +104,29 @@ public final class ColorWarpAnimation extends Animation {
 
     @Override
     public void reset(final GraphWriteMethods wg) {
-        
         // Reset Verticies back to their original color
         for (int vertexPosition = 0 ; vertexPosition < wg.getVertexCount(); vertexPosition++) {
+            SetColorValuesOperation colorVerticesOperation = new SetColorValuesOperation(wg, GraphElementType.VERTEX, vertexColorAttr);
             final int vertexID = wg.getVertex(vertexPosition);
-            wg.setObjectValue(vertexColorAttr, vertexID, getVertexOriginals().get(vertexID));
+            colorVerticesOperation.setValue(vertexID, getVertexOriginals().get(vertexID));
+            wg.executeGraphOperation(colorVerticesOperation); 
         }
          
         // Reset Transactions back to their original color
         for (int transactionPosition = 0 ; transactionPosition < wg.getTransactionCount(); transactionPosition++) {
+            SetColorValuesOperation colorTransactionsOperation = new SetColorValuesOperation(wg, GraphElementType.TRANSACTION, transactionColorAttr);
             final int transactionID = wg.getTransaction(transactionPosition);
-            wg.setObjectValue(transactionColorAttr, transactionID, transactionOriginals.get(transactionID));
+            System.out.println("Originals = " + getTransactionOriginals().values());
+            colorTransactionsOperation.setValue(transactionID, getTransactionOriginals().get(transactionID));
+            wg.executeGraphOperation(colorTransactionsOperation); 
         }
+        vertexOriginals.clear();
+        transactionOriginals.clear();
     }
 
     @Override
     public long getIntervalInMillis() {
-        return 15;
+        return 40;
     }
 
     private ConstellationColor getNextColor(final ConstellationColor color) {
