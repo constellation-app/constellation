@@ -220,50 +220,57 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
         if (graphNode.getGraph() == null) {
             return;
         }
+        try (final ReadableGraph graph = graphNode.getGraph().getReadableGraph()) {
+            final int txCount = graph.getTransactionCount();
+            final int txTimAttrId = graph.getAttribute(GraphElementType.TRANSACTION, this.currentDatetimeAttribute);
+            final int txSelAttrId = graph.getAttribute(GraphElementType.TRANSACTION,
+                    VisualConcept.TransactionAttribute.SELECTED.getName());
 
-        final ReadableGraph graph = graphNode.getGraph().getReadableGraph();
-        final int txCount = graph.getTransactionCount();
-        final int txTimAttrId = graph.getAttribute(GraphElementType.TRANSACTION, this.currentDatetimeAttribute);
-        final int txSelAttrId = graph.getAttribute(GraphElementType.TRANSACTION,
-                VisualConcept.TransactionAttribute.SELECTED.getName());
+            long lowerTimeExtent = Long.MAX_VALUE;
+            long upperTimeExtent = Long.MIN_VALUE;
+            long minTime = Long.MAX_VALUE;
+            long maxTime = Long.MIN_VALUE;
 
-        long lowerTimeExtent = Long.MAX_VALUE;
-        long upperTimeExtent = Long.MIN_VALUE;
-        long minTime = Long.MAX_VALUE;
-        long maxTime = Long.MIN_VALUE;
+            for (int txID = 0; txID < txCount; txID++) {
+                // We can use getStringValue to see if dateTime exists. 0 is returned from getLong if dateTime is null, but it could also be a legitimated dateTime
+                if (graph.getStringValue(txTimAttrId, txID) == null) {
+                    continue;
+                }
 
-        for (int txID = 0; txID < txCount; txID++) {
-            if (graph.getBooleanValue(txSelAttrId, txID)) {
-                lowerTimeExtent = Math.min(graph.getLongValue(txTimAttrId, txID), lowerTimeExtent);
-                upperTimeExtent = Math.max(graph.getLongValue(txTimAttrId, txID), upperTimeExtent);
+                final long currentTimeValue = graph.getLongValue(txTimAttrId, txID);
+                if (graph.getBooleanValue(txSelAttrId, txID)) {
+                    lowerTimeExtent = Math.min(currentTimeValue, lowerTimeExtent);
+                    upperTimeExtent = Math.max(currentTimeValue, upperTimeExtent);
+                }
+                minTime = Math.min(currentTimeValue, minTime);
+                maxTime = Math.max(currentTimeValue, maxTime);
             }
-            minTime = Math.min(graph.getLongValue(txTimAttrId, txID), minTime);
-            maxTime = Math.max(graph.getLongValue(txTimAttrId, txID), maxTime);
-        }
 
-        if (lowerTimeExtent == Long.MAX_VALUE) {
-            lowerTimeExtent = minTime;
-        }
-        if (upperTimeExtent == Long.MIN_VALUE) {
-            upperTimeExtent = maxTime;
-        }
+            if (lowerTimeExtent == Long.MAX_VALUE) {
+                lowerTimeExtent = minTime;
+            }
+            if (upperTimeExtent == Long.MIN_VALUE) {
+                upperTimeExtent = maxTime;
+            }
 
-        // Edge case that fixes issues when range of these two values is 0
-        if (lowerTimeExtent == upperTimeExtent) {
-            lowerTimeExtent--;
-            upperTimeExtent++;
-        }
+            // If no times were found, dont update the timeline view
+            if (lowerTimeExtent == Long.MAX_VALUE && upperTimeExtent == Long.MIN_VALUE) {
+                return;
+            }
 
-        state.setLowerTimeExtent(lowerTimeExtent);
-        state.setUpperTimeExtent(upperTimeExtent);
+            // Edge case that fixes issues when range of these two values is 0
+            if (lowerTimeExtent == upperTimeExtent) {
+                lowerTimeExtent--;
+                upperTimeExtent++;
+            }
 
-        try {
+            state.setLowerTimeExtent(lowerTimeExtent);
+            state.setUpperTimeExtent(upperTimeExtent);
+
             timelinePanel.setTimelineExtent(graph, state.getLowerTimeExtent(),
                     state.getUpperTimeExtent(), state.isShowingSelectedOnly(), state.getTimeZone());
-        } finally {
-            graph.release();
         }
-
+        
         timelinePanel.updateExclusionState(graphNode.getGraph(),
                 (long) state.getLowerTimeExtent(), (long) state.getUpperTimeExtent(), state.getExclusionState());
         overviewPanel.setExtentPOV(state.getLowerTimeExtent(), state.getUpperTimeExtent());
