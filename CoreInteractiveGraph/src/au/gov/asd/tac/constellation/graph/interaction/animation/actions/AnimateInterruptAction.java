@@ -38,12 +38,6 @@ import org.openide.util.NbBundle.Messages;
 @Messages("CTL_AnimateInterruptAction=Interrupt Animating")
 public final class AnimateInterruptAction implements ActionListener {
 
-    private final GraphNode context;
-
-    public AnimateInterruptAction(final GraphNode context) {
-        this.context = context;
-    }
-
     @Override
     public void actionPerformed(final ActionEvent event) {
         AnimationUtilities.interruptAllAnimations();

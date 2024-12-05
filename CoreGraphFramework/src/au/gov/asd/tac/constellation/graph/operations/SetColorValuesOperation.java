@@ -33,8 +33,8 @@ public class SetColorValuesOperation extends GraphOperation {
     private final int attribute;
     private final int capacity;
     private int id;
-    private ConstellationColor originalColor;
-    private ConstellationColor newColor;
+    protected ConstellationColor originalColor;
+    protected ConstellationColor newColor;
     private final GraphWriteMethods graph;
 
     /**
@@ -74,6 +74,7 @@ public class SetColorValuesOperation extends GraphOperation {
     @Override
     public void undo(final GraphWriteMethods graph) {
         graph.setObjectValue(attribute, id, originalColor);
+        newColor = null;
     }
 
     @Override

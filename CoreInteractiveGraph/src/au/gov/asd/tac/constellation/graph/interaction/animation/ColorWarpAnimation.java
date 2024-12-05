@@ -116,7 +116,6 @@ public final class ColorWarpAnimation extends Animation {
         for (int transactionPosition = 0 ; transactionPosition < wg.getTransactionCount(); transactionPosition++) {
             SetColorValuesOperation colorTransactionsOperation = new SetColorValuesOperation(wg, GraphElementType.TRANSACTION, transactionColorAttr);
             final int transactionID = wg.getTransaction(transactionPosition);
-            System.out.println("Originals = " + getTransactionOriginals().values());
             colorTransactionsOperation.setValue(transactionID, getTransactionOriginals().get(transactionID));
             wg.executeGraphOperation(colorTransactionsOperation); 
         }
