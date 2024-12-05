@@ -94,12 +94,11 @@ public class SaveAsActionNGTest {
 
         SwingUtilities.invokeLater(() -> {
             instance.add(new SaveAsAction());
-            System.out.println("!! instance =" + instance.toString());
             try {
                 instance.get(0).actionPerformed(null);
                 latch.countDown();
             } catch (Exception ex) {
-                System.out.println("!! ex =" + ex.toString());
+                throw ex;
             }
         });
 

@@ -71,7 +71,7 @@ public class AnimationUtilities {
      * @param graphId
      * @return 
      */
-    protected static AnimationManager getGraphAnimationManager(final String graphId){
+    protected static AnimationManager getGraphAnimationManager(final String graphId) {
         if (StringUtils.isNotBlank(graphId)){
             final GraphNode gn = GraphNode.getGraphNode(graphId);
             if (gn != null) {
@@ -92,10 +92,10 @@ public class AnimationUtilities {
      */
     public static final void startAnimation(final Animation animation, final String graphId) {
         // Run the animation
-        if (animationsEnabled()){
+        if (animationsEnabled()) {
             final AnimationManager am = getGraphAnimationManager(graphId);
-            if (am != null){
-                    am.runAnimation(animation);
+            if (am != null) {
+                am.runAnimation(animation);
             } else {
                 animation.skip(graphId);
             }
@@ -148,10 +148,10 @@ public class AnimationUtilities {
      * @param animation 
      */
     public static void notifyComplete(final Animation animation) {
-        final AnimationManager manager = 
-                AnimationUtilities.getGraphAnimationManager(animation.graphID);
-        if (manager != null){
-                manager.notifyComplete(animation);
+        final AnimationManager manager
+                = AnimationUtilities.getGraphAnimationManager(animation.graphID);
+        if (manager != null) {
+            manager.notifyComplete(animation);
         }
     }
 
@@ -162,7 +162,7 @@ public class AnimationUtilities {
      */
     public static void pauseAllAnimations(final String graphId, final boolean pause) {
         final AnimationManager manager = getGraphAnimationManager(graphId);
-        if (manager != null){
+        if (manager != null) {
             manager.pauseAllAnimations(pause);
         }
     }
@@ -178,10 +178,6 @@ public class AnimationUtilities {
 
     public static boolean isAnimating(final String graphId){
         final AnimationManager manager = getGraphAnimationManager(graphId);
-        if (manager != null){
-            return manager.isAnimating();
-        } else {
-            return false;
-        }
+        return manager != null && manager.isAnimating();
     }
 }

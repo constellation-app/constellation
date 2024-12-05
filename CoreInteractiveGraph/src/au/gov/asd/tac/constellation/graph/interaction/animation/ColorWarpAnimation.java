@@ -54,10 +54,6 @@ public final class ColorWarpAnimation extends Animation {
     private final Map<Integer, ConstellationColor> vertexOriginals = new HashMap<>();
     private final Map<Integer, ConstellationColor> transactionOriginals = new HashMap<>();
 
-    public ColorWarpAnimation() {
-
-    }
-
     @Override
     public void initialise(final GraphWriteMethods wg) {
         vertexColorAttr = VisualConcept.VertexAttribute.COLOR.ensure(wg);
@@ -81,11 +77,9 @@ public final class ColorWarpAnimation extends Animation {
     }
 
     @Override
-    public void animate(final GraphWriteMethods wg) {
-        
+    public void animate(final GraphWriteMethods wg) {        
         // Do not animate unless there is more than 1 node
-        if (wg.getVertexCount() > 0) {
-                    
+        if (wg.getVertexCount() > 0) {                    
             for (int vertexPosition = 0 ; vertexPosition < wg.getVertexCount(); vertexPosition++) {
                 SetColorValuesOperation colorVerticesOperation = new SetColorValuesOperation(wg, GraphElementType.VERTEX, vertexColorAttr);
                 final int vertexID = wg.getVertex(vertexPosition);
@@ -130,11 +124,11 @@ public final class ColorWarpAnimation extends Animation {
 
     private ConstellationColor getNextColor(final ConstellationColor color) {
    
-        javafx.scene.paint.Color col = color.getJavaFXColor();
-        double hue = col.getHue() <= 360 ? col.getHue() + 5 : 0;
-        double sat = col.getSaturation();
-        double bright = col.getBrightness();
-        javafx.scene.paint.Color newCol = javafx.scene.paint.Color.hsb(hue, sat, bright);
+        final javafx.scene.paint.Color col = color.getJavaFXColor();
+        final double hue = col.getHue() <= 360 ? col.getHue() + 5 : 0;
+        final double sat = col.getSaturation();
+        final double bright = col.getBrightness();
+        final javafx.scene.paint.Color newCol = javafx.scene.paint.Color.hsb(hue, sat, bright);
         
         return ConstellationColor.fromFXColor(newCol);
     }

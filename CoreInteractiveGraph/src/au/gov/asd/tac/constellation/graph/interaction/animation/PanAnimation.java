@@ -98,8 +98,7 @@ public final class PanAnimation extends Animation {
     }
     
     @Override
-    public void setFinalFrame(final GraphWriteMethods wg){
-        
+    public void setFinalFrame(final GraphWriteMethods wg){        
         camera = new Camera(camera);
         camera.lookAtEye.set(to.lookAtEye);
         camera.lookAtCentre.set(to.lookAtCentre);
