@@ -47,6 +47,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
@@ -68,6 +69,8 @@ public class RecentGraphScreenshotUtilities {
 
     // width and height of tile image
     public static final int IMAGE_SIZE = 145;
+
+    private static final int LATCH_WAIT_SECONDS = 5;
 
     private RecentGraphScreenshotUtilities() {
         throw new IllegalArgumentException("Utility class");
@@ -202,13 +205,10 @@ public class RecentGraphScreenshotUtilities {
             if ((component instanceof VisualGraphTopComponent vgComponent) && vgComponent.getGraphNode().getGraph().getId().equals(graph.getId())) {
                 try {
                     // Request graph to be active
-                    EventQueue.invokeAndWait(() -> {
-                        vgComponent.requestActiveWithLatch(latch);
-                        // Wait for requested graph to become active
-                        semaphore.release();
-                    });
+                    EventQueue.invokeAndWait(() -> vgComponent.requestActiveWithLatch(latch));
 
-                    latch.await();
+                    latch.await(LATCH_WAIT_SECONDS, TimeUnit.SECONDS);
+                    semaphore.release();
                 } catch (final InterruptedException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                     Thread.currentThread().interrupt();

@@ -882,6 +882,31 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         return Boolean.parseBoolean(System.getProperty("java.awt.headless", "false"));
     }
 
+    private void screenshotWithLoop(final Semaphore waiter, final String name) {
+        // Create a 'secondary loop', allows screenshots to be taken when closing consty
+        // Otherwise consty locks up as screenshots and some GUI occupy the same dispatch thread
+        final Toolkit tk = Toolkit.getDefaultToolkit();
+        final EventQueue eq = tk.getSystemEventQueue();
+        final SecondaryLoop loop = eq.createSecondaryLoop();
+
+        new Thread(() -> {
+            // Temporary file made so the absolute path has correct file seperators
+            final File tempFile = new File(name);
+            RecentGraphScreenshotUtilities.takeScreenshot(tempFile.getAbsolutePath(), graph);
+            // Exit the secondary loop
+            waiter.release();
+            loop.exit();
+        }).start();
+
+        // Start loop and report errors if they happen
+        if (!isHeadless()) {
+            final boolean result = loop.enter();
+            if (!result) {
+                LOGGER.log(Level.SEVERE, "Error with starting secondary loop in VisualGraphTopComponent");
+            }
+        }
+    }
+
     /**
      * A custom Savable.
      */
@@ -1006,39 +1031,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 final SaveAsAction action = new SaveAsAction();
                 action.actionPerformed(null);
                 isSaved = action.isSaved();
-
-                final Semaphore waiter = new Semaphore(0);
-                final String tempName = action.getSavedFilePath() + FileExtensionConstants.STAR; // done so name can be used in thread below
-
-                screenshotWithLoop(waiter, tempName);
-
-                // Wait for screenshot to finish
-                waiter.acquireUninterruptibly(); // Wait for 0 permits to be 1
-            }
-        }
-
-        private void screenshotWithLoop(final Semaphore waiter, final String name) {
-            // Create a 'secondary loop', allows screenshots to be taken when closing consty
-            // Otherwise consty locks up as screenshots and some GUI occupy the same dispatch thread
-            final Toolkit tk = Toolkit.getDefaultToolkit();
-            final EventQueue eq = tk.getSystemEventQueue();
-            final SecondaryLoop loop = eq.createSecondaryLoop();
-
-            new Thread(() -> {
-                // Temporary file made so the absolute path has correct file seperators
-                final File tempFile = new File(name);
-                RecentGraphScreenshotUtilities.takeScreenshot(tempFile.getAbsolutePath(), graph);
-                // Exit the secondary loop
-                waiter.release();
-                loop.exit();
-            }).start();
-
-            // Start loop and report errors if they happen
-            if (!isHeadless()) {
-                final boolean result = loop.enter();
-                if (!result) {
-                    LOGGER.log(Level.SEVERE, "Error with starting secondary loop in VisualGraphTopComponent");
-                }
             }
         }
 
@@ -1104,7 +1096,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
             final File newFile = new File(folder.getPath(), name + ext);
 
-            // One last check if file were saving over doesn't have it's grpah open UNLESS were saving over the file with the same graph
+            // One last check if file were saving over doesn't have it's graph open UNLESS were saving over the file with the same graph
             final Path currentFilePath = Paths.get(graphNode.getDataObject().getPrimaryFile().getPath());
 
             // Check if overwriting open graph
@@ -1128,8 +1120,17 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
             final FileObject fo = FileUtil.createData(newFile);
             final GraphDataObject freshGdo = (GraphDataObject) DataObject.find(fo);
-            final BackgroundWriter writer = new BackgroundWriter(name, freshGdo, false, null);
+            final Semaphore waiter = new Semaphore(0);
+
+            final BackgroundWriter writer = new BackgroundWriter(name, freshGdo, false, waiter);
             writer.execute();
+
+            // Wait for writing
+            waiter.acquireUninterruptibly(); // Wait for 0 permits to be 1
+            screenshotWithLoop(waiter, freshGdo.getPrimaryFile().getPath());
+
+            // Wait for screenshot to finish
+            waiter.acquireUninterruptibly(); // Wait for 0 permits to be 1
         }
     }
 
@@ -1312,7 +1313,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                     file,
                     ConstellationLoggerHelper.SUCCESS
             );
-            RecentGraphScreenshotUtilities.takeScreenshot(file.getAbsolutePath(), graphs.getGraph());
         }
     }
 }
