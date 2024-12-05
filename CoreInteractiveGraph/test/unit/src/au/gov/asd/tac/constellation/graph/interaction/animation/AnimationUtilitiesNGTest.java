@@ -63,7 +63,6 @@ public class AnimationUtilitiesNGTest {
     public AnimationUtilitiesNGTest() {
     }
 
-
     @BeforeMethod
     public void setUpMethod() throws Exception {
         final Schema ss = SchemaFactoryUtilities.getSchemaFactory(

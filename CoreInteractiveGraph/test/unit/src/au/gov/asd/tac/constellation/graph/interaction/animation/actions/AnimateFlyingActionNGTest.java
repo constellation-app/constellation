@@ -59,11 +59,7 @@ public class AnimateFlyingActionNGTest {
         animationUtilitiesMocked.when(() 
                 -> AnimationUtilities.isAnimating(Mockito.any(), Mockito.any()))
                 .thenReturn(true);
-        
-        animationUtilitiesMocked.when(()
-                -> AnimationUtilities.animationsEnabled())
-                .thenReturn(true);
-        
+
         graphNodeMock = mock(GraphNode.class);
         mockGraph = mock(Graph.class);
         doReturn(mockGraph).when(graphNodeMock).getGraph();

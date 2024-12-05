@@ -48,20 +48,6 @@ public class AnimatePauseActionNGTest {
     public void setUpMethod() throws Exception {
 
         animationUtilitiesMocked = mockStatic(AnimationUtilities.class);
-        animationUtilitiesMocked.when(() 
-                -> AnimationUtilities.startAnimation(Mockito.any(), Mockito.any()))
-                .then((Answer<Void>) invocation -> null);
-        animationUtilitiesMocked.when(() 
-                -> AnimationUtilities.stopAnimation(Mockito.any(), Mockito.any()))
-                .then((Answer<Void>) invocation -> null);
-        
-        animationUtilitiesMocked.when(() 
-                -> AnimationUtilities.isAnimating(Mockito.any(), Mockito.any()))
-                .thenReturn(true);
-        
-        animationUtilitiesMocked.when(()
-                -> AnimationUtilities.animationsEnabled())
-                .thenReturn(true);
                 
         graphNodeMock = mock(GraphNode.class);
         mockGraph = mock(Graph.class);

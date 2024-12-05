@@ -49,6 +49,7 @@ public class AnimateInterruptActionNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        animationUtilitiesMocked.close();
     }
 
     /**
