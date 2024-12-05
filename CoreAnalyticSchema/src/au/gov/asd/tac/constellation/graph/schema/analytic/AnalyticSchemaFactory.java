@@ -366,8 +366,10 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
                 }
 
                 graph.removeTransaction(transactionId);
+                applyColorblindTransaction(graph, newTransactionId);
+            } else {
+                applyColorblindTransaction(graph, transactionId);
             }
-            applyColorblindTransaction(graph, transactionId);            
         }
 
         @Override

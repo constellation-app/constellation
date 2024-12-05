@@ -36,9 +36,6 @@ import org.testng.annotations.Test;
  */
 public class AnalyticSchemaV6UpdateProviderNGTest {
     
-    public AnalyticSchemaV6UpdateProviderNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
     }

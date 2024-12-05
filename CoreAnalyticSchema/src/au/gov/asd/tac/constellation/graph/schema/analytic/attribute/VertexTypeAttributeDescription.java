@@ -54,11 +54,7 @@ public class VertexTypeAttributeDescription extends AbstractObjectAttributeDescr
 
     @Override
     protected SchemaVertexType convertFromString(final String string) {
-        if (StringUtils.isBlank(string)) {
-            return getDefault();
-        } else {
-            return SchemaVertexTypeUtilities.getTypeOrBuildNew(string);
-        }
+        return StringUtils.isBlank(string) ? getDefault() : SchemaVertexTypeUtilities.getTypeOrBuildNew(string);
     }
 
     @Override

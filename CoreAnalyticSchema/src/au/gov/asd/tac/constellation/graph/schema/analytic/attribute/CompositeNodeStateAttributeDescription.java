@@ -52,11 +52,7 @@ public class CompositeNodeStateAttributeDescription extends AbstractObjectAttrib
 
     @Override
     protected CompositeNodeState convertFromString(final String string) {
-        if (StringUtils.isBlank(string)) {
-            return getDefault();
-        } else {
-            return CompositeNodeState.createFromString(string);
-        }
+        return StringUtils.isBlank(string) ? getDefault() : CompositeNodeState.createFromString(string);
     }
 
     @Override
