@@ -15,18 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.timeline;
 
-import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import org.openide.nodes.Node;
-import org.openide.windows.TopComponent;
-import org.openide.windows.TopComponent.Registry;
 import static org.testng.AssertJUnit.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -57,6 +45,11 @@ public class TimelineTopComponentNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+    }
+
+    @Test
+    public void dummyTest() {
+        assertEquals(true, true);
     }
 
 //    /**
@@ -200,7 +193,6 @@ public class TimelineTopComponentNGTest {
 //            instance.setExtents();
 //        }
 //    }
-
 //    /**
 //     * Test of getTimelineLowerTimeExtent method, of class TimelineTopComponent.
 //     */
