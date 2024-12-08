@@ -20,6 +20,9 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
@@ -27,11 +30,10 @@ import static org.mockito.Mockito.when;
 import org.openide.nodes.Node;
 import org.openide.windows.TopComponent;
 import org.openide.windows.TopComponent.Registry;
+import org.testfx.api.FxToolkit;
 import static org.testng.AssertJUnit.assertEquals;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -40,25 +42,23 @@ import org.testng.annotations.Test;
  */
 public class TimelineTopComponentNGTest {
 
-    public TimelineTopComponentNGTest() {
-    }
+    private static final Logger LOGGER = Logger.getLogger(TimelineTopComponentNGTest.class.getName());
 
     @BeforeClass
-    public static void setUpClass() throws Exception {
+    public void setUpClass() throws Exception {
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
-    public static void tearDownClass() throws Exception {
+    public void tearDownClass() throws Exception {
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+        }
     }
-
-    @BeforeMethod
-    public void setUpMethod() throws Exception {
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
-    }
-
 
 //    /**
 //     * Test of setExtents method, of class TimelineTopComponent.
@@ -80,7 +80,7 @@ public class TimelineTopComponentNGTest {
     public void testSetExtentsNoTransactions() {
         System.out.println("setExtents no transactions");
         final Registry mockRegistry = mock(Registry.class);
-        final Graph mockGraph = mock(Graph.class);
+        final Graph mockGraph = mock(Graph.class); // may be an issue
         final GraphNode mockGraphNode = mock(GraphNode.class);
         final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
 
@@ -97,17 +97,16 @@ public class TimelineTopComponentNGTest {
         when(mockReadableGraph.getAttribute(GraphElementType.TRANSACTION, currentDatetimeAttribute)).thenReturn(txTimAttrId);
         when(mockReadableGraph.getAttribute(GraphElementType.TRANSACTION, VisualConcept.TransactionAttribute.SELECTED.getName())).thenReturn(txSelAttrId);
 
-        //try (MockedStatic<TopComponent> mockTopComponent = Mockito.mockStatic(TopComponent.class, Mockito.CALLS_REAL_METHODS)) {
-           // mockTopComponent.when(TopComponent::getRegistry).thenReturn(mockRegistry);
-           // assertEquals(mockRegistry, TopComponent.getRegistry());
-
+        try (MockedStatic<TopComponent> mockTopComponent = Mockito.mockStatic(TopComponent.class, Mockito.CALLS_REAL_METHODS)) {
+            mockTopComponent.when(TopComponent::getRegistry).thenReturn(mockRegistry);
+            assertEquals(mockRegistry, TopComponent.getRegistry());
             // Create and setup instance
             final TimelineTopComponent instance = new TimelineTopComponent();
             instance.resultChanged(null);
             instance.setCurrentDatetimeAttr(currentDatetimeAttribute);
 
-            //instance.setExtents();
-        //}
+            instance.setExtents();
+        }
     }
 
 //    /**
