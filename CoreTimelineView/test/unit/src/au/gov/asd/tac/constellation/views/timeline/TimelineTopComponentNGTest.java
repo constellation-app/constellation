@@ -45,6 +45,7 @@ import org.testng.annotations.Test;
 public class TimelineTopComponentNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(TimelineTopComponentNGTest.class.getName());
+    final String previousHeadlessPorperty = System.getProperty("java.awt.headless");
 
     @BeforeClass
     public void setUpClass() throws Exception {
@@ -55,6 +56,9 @@ public class TimelineTopComponentNGTest {
 
     @AfterClass
     public void tearDownClass() throws Exception {
+        if (previousHeadlessPorperty != null) {
+            System.setProperty("java.awt.headless", previousHeadlessPorperty);
+        }
         try {
             FxToolkit.cleanupStages();
         } catch (TimeoutException ex) {
