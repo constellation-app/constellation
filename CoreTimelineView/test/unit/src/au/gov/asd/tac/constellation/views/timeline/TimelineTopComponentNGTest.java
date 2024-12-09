@@ -82,7 +82,7 @@ public class TimelineTopComponentNGTest {
     public void testSetExtentsNoTransactions() {
         System.out.println("setExtents no transactions");
         final Registry mockRegistry = mock(Registry.class);
-        final Graph mockGraph = mock(Graph.class); // may be an issue
+        final Graph mockGraph = mock(Graph.class);
         final GraphNode mockGraphNode = mock(GraphNode.class);
         final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
 
@@ -99,16 +99,12 @@ public class TimelineTopComponentNGTest {
         when(mockReadableGraph.getAttribute(GraphElementType.TRANSACTION, currentDatetimeAttribute)).thenReturn(txTimAttrId);
         when(mockReadableGraph.getAttribute(GraphElementType.TRANSACTION, VisualConcept.TransactionAttribute.SELECTED.getName())).thenReturn(txSelAttrId);
 
-//        try (MockedStatic<TopComponent> mockTopComponent = Mockito.mockStatic(TopComponent.class, Mockito.CALLS_REAL_METHODS)) {
-//            mockTopComponent.when(TopComponent::getRegistry).thenReturn(mockRegistry);
-//            assertEquals(mockRegistry, TopComponent.getRegistry());
         // Create and setup instance
         final TimelineTopComponent instance = new TimelineTopComponent();
         instance.setNode(mockGraphNode);
         instance.setCurrentDatetimeAttr(currentDatetimeAttribute);
 
         instance.setExtents();
-        // }
     }
 
     /**
@@ -139,16 +135,12 @@ public class TimelineTopComponentNGTest {
         when(mockReadableGraph.getAttribute(GraphElementType.TRANSACTION, VisualConcept.TransactionAttribute.SELECTED.getName())).thenReturn(txSelAttrId);
         when(mockReadableGraph.getStringValue(txTimAttrId, 0)).thenReturn(dateTimeString);
 
-//        try (MockedStatic<TopComponent> mockTopComponent = Mockito.mockStatic(TopComponent.class, Mockito.CALLS_REAL_METHODS)) {
-//            mockTopComponent.when(TopComponent::getRegistry).thenReturn(mockRegistry);
-//            assertEquals(mockRegistry, TopComponent.getRegistry());
         // Create and setup instance
         final TimelineTopComponent instance = new TimelineTopComponent();
         instance.setNode(mockGraphNode);
         instance.setCurrentDatetimeAttr(currentDatetimeAttribute);
 
         instance.setExtents();
-        //}
     }
 
     /**
@@ -165,7 +157,6 @@ public class TimelineTopComponentNGTest {
         final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
         final TimelineState mockState = mock(TimelineState.class);
 
-        final Node[] activatedNodes = {mockGraphNode};
         final int txCount = 1;
         final String currentDatetimeAttribute = null;
         final int txTimAttrId = 101;
@@ -175,7 +166,6 @@ public class TimelineTopComponentNGTest {
         final String dateTimeString = "not null";
         final long dateTimeLong = 0;
 
-        //when(mockRegistry.getActivatedNodes()).thenReturn(activatedNodes);
         when(mockGraphNode.getGraph()).thenReturn(mockGraph);
         when(mockGraph.getReadableGraph()).thenReturn(mockReadableGraph);
 
@@ -188,8 +178,6 @@ public class TimelineTopComponentNGTest {
         when(mockReadableGraph.getObjectValue(attrID, 0)).thenReturn(mockState);
         when(mockReadableGraph.getBooleanValue(txSelAttrId, 0)).thenReturn(true);
 
-        when(mockState.getTimeZone()).thenReturn(ZoneId.systemDefault());
-
         assertEquals(mockReadableGraph.getStringValue(txTimAttrId, 0), dateTimeString);
 
         // Create and setup instance
@@ -198,9 +186,9 @@ public class TimelineTopComponentNGTest {
         instance.setNode(mockGraphNode);
         instance.setTimelinePanel(mockTimelinePanel);
         instance.setOverviewPanel(mockOverviewPanel);
+        //instance.setState(mockState);
 
         instance.setExtents();
-
     }
 //    /**
 //     * Test of getTimelineLowerTimeExtent method, of class TimelineTopComponent.

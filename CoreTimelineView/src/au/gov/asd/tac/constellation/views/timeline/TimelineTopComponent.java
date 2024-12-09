@@ -297,6 +297,13 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
         return overviewPanel;
     }
 
+//    protected void setState(final TimelineState newTimelineState) {
+//        state = newTimelineState;
+//    }
+//
+//    protected TimelineState getState() {
+//        return state;
+//    }
     // </editor-fold>
     /**
      * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The
@@ -635,7 +642,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
     }
 
     private void persistStateToGraph() {
-        if (graphNode != null) {
+        if (graphNode != null && state != null) {
             // Ensure there is a graph to persist state to
             PluginExecution.withPlugin(new TimelineStatePlugin(state)).executeLater(graphNode.getGraph());
         }
