@@ -266,13 +266,10 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
 
             state.setLowerTimeExtent(lowerTimeExtent);
             state.setUpperTimeExtent(upperTimeExtent);
-
-            timelinePanel.setTimelineExtent(graph, state.getLowerTimeExtent(),
-                    state.getUpperTimeExtent(), state.isShowingSelectedOnly(), state.getTimeZone());
+            timelinePanel.setTimelineExtent(graph, state.getLowerTimeExtent(), state.getUpperTimeExtent(), state.isShowingSelectedOnly(), state.getTimeZone());
         }
-        
-        timelinePanel.updateExclusionState(graphNode.getGraph(),
-                (long) state.getLowerTimeExtent(), (long) state.getUpperTimeExtent(), state.getExclusionState());
+
+        timelinePanel.updateExclusionState(graphNode.getGraph(), (long) state.getLowerTimeExtent(), (long) state.getUpperTimeExtent(), state.getExclusionState());
         overviewPanel.setExtentPOV(state.getLowerTimeExtent(), state.getUpperTimeExtent());
     }
 

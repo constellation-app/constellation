@@ -20,9 +20,11 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import java.time.ZoneId;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
@@ -31,7 +33,7 @@ import org.openide.nodes.Node;
 import org.openide.windows.TopComponent;
 import org.openide.windows.TopComponent.Registry;
 import org.testfx.api.FxToolkit;
-import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -44,6 +46,9 @@ public class TimelineTopComponentNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(TimelineTopComponentNGTest.class.getName());
 
+    private final MockedConstruction<TimelinePanel> mockTimelinePanel = Mockito.mockConstruction(TimelinePanel.class);
+    private final TimelineTopComponent instance = new TimelineTopComponent();
+
     @BeforeClass
     public void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -53,6 +58,7 @@ public class TimelineTopComponentNGTest {
 
     @AfterClass
     public void tearDownClass() throws Exception {
+        mockTimelinePanel.close();
         try {
             FxToolkit.cleanupStages();
         } catch (TimeoutException ex) {
@@ -101,7 +107,7 @@ public class TimelineTopComponentNGTest {
             mockTopComponent.when(TopComponent::getRegistry).thenReturn(mockRegistry);
             assertEquals(mockRegistry, TopComponent.getRegistry());
             // Create and setup instance
-            final TimelineTopComponent instance = new TimelineTopComponent();
+
             instance.resultChanged(null);
             instance.setCurrentDatetimeAttr(currentDatetimeAttribute);
 
@@ -142,7 +148,7 @@ public class TimelineTopComponentNGTest {
             assertEquals(mockRegistry, TopComponent.getRegistry());
 
             // Create and setup instance
-            final TimelineTopComponent instance = new TimelineTopComponent();
+            // final TimelineTopComponent instance = new TimelineTopComponent();
             instance.resultChanged(null);
             instance.setCurrentDatetimeAttr(currentDatetimeAttribute);
 
@@ -164,7 +170,7 @@ public class TimelineTopComponentNGTest {
 
         final Node[] activatedNodes = {mockGraphNode};
         final int txCount = 1;
-        final String currentDatetimeAttribute = "mockedCurrentDatetimeAttribute";
+        final String currentDatetimeAttribute = null;
         final int txTimAttrId = 101;
         final int txSelAttrId = 202;
         final int attrID = 303;
@@ -183,8 +189,10 @@ public class TimelineTopComponentNGTest {
         when(mockReadableGraph.getLongValue(txTimAttrId, 0)).thenReturn(dateTimeLong);
         when(mockReadableGraph.getAttribute(GraphElementType.META, TimelineConcept.MetaAttribute.TIMELINE_STATE.getName())).thenReturn(attrID);
         when(mockReadableGraph.getObjectValue(attrID, 0)).thenReturn(mockState);
+        when(mockReadableGraph.getBooleanValue(txSelAttrId, 0)).thenReturn(true);
+                
+        when(mockState.getTimeZone()).thenReturn(ZoneId.systemDefault());
 
-        System.out.println(mockReadableGraph.getStringValue(txTimAttrId, 0));
         assertEquals(mockReadableGraph.getStringValue(txTimAttrId, 0), dateTimeString);
 
         try (MockedStatic<TopComponent> mockTopComponent = Mockito.mockStatic(TopComponent.class, Mockito.CALLS_REAL_METHODS)) {
@@ -192,9 +200,8 @@ public class TimelineTopComponentNGTest {
             assertEquals(mockRegistry, TopComponent.getRegistry());
 
             // Create and setup instance
-            final TimelineTopComponent instance = new TimelineTopComponent();
             instance.resultChanged(null);
-            instance.setCurrentDatetimeAttr(currentDatetimeAttribute);
+            //instance.setCurrentDatetimeAttr(currentDatetimeAttribute);
 
             instance.setExtents();
         }
