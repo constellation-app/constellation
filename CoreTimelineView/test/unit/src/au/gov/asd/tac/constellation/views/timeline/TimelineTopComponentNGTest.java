@@ -20,17 +20,15 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import java.time.ZoneId;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.embed.swing.JFXPanel;
 import org.mockito.MockedConstruction;
-import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import org.openide.nodes.Node;
-import org.openide.windows.TopComponent;
 import org.openide.windows.TopComponent.Registry;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
@@ -49,6 +47,7 @@ public class TimelineTopComponentNGTest {
 
     @BeforeClass
     public void setUpClass() throws Exception {
+        System.setProperty("java.awt.headless", "false");
         if (!FxToolkit.isFXApplicationThreadRunning()) {
             FxToolkit.registerPrimaryStage();
         }
@@ -103,12 +102,14 @@ public class TimelineTopComponentNGTest {
         when(mockReadableGraph.getAttribute(GraphElementType.TRANSACTION, currentDatetimeAttribute)).thenReturn(txTimAttrId);
         when(mockReadableGraph.getAttribute(GraphElementType.TRANSACTION, VisualConcept.TransactionAttribute.SELECTED.getName())).thenReturn(txSelAttrId);
 
+        //try (final MockedConstruction<JFXPanel> mockJFXPanel = Mockito.mockConstruction(JFXPanel.class)) {
         // Create and setup instance
         final TimelineTopComponent instance = new TimelineTopComponent();
         instance.setNode(mockGraphNode);
         instance.setCurrentDatetimeAttr(currentDatetimeAttribute);
 
         instance.setExtents();
+        // }
     }
 
     /**
@@ -139,12 +140,14 @@ public class TimelineTopComponentNGTest {
         when(mockReadableGraph.getAttribute(GraphElementType.TRANSACTION, VisualConcept.TransactionAttribute.SELECTED.getName())).thenReturn(txSelAttrId);
         when(mockReadableGraph.getStringValue(txTimAttrId, 0)).thenReturn(dateTimeString);
 
+        //try (final MockedConstruction<JFXPanel> mockJFXPanel = Mockito.mockConstruction(JFXPanel.class)) {
         // Create and setup instance
         final TimelineTopComponent instance = new TimelineTopComponent();
         instance.setNode(mockGraphNode);
         instance.setCurrentDatetimeAttr(currentDatetimeAttribute);
 
         instance.setExtents();
+        // }
     }
 
     /**
@@ -184,6 +187,7 @@ public class TimelineTopComponentNGTest {
 
         assertEquals(mockReadableGraph.getStringValue(txTimAttrId, 0), dateTimeString);
 
+        // try (final MockedConstruction<JFXPanel> mockJFXPanel = Mockito.mockConstruction(JFXPanel.class)) {
         // Create and setup instance
         final TimelineTopComponent instance = new TimelineTopComponent();
 
@@ -193,6 +197,7 @@ public class TimelineTopComponentNGTest {
         //instance.setState(mockState);
 
         instance.setExtents();
+        // }
     }
 //    /**
 //     * Test of getTimelineLowerTimeExtent method, of class TimelineTopComponent.
