@@ -40,11 +40,9 @@ import org.testng.annotations.Test;
 public class TimelineTopComponentNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(TimelineTopComponentNGTest.class.getName());
-    //final String previousHeadlessPorperty = System.getProperty("java.awt.headless");
 
     @BeforeClass
     public void setUpClass() throws Exception {
-        //System.setProperty("java.awt.headless", "false");
         if (!FxToolkit.isFXApplicationThreadRunning()) {
             FxToolkit.registerPrimaryStage();
         }
@@ -52,9 +50,6 @@ public class TimelineTopComponentNGTest {
 
     @AfterClass
     public void tearDownClass() throws Exception {
-//        if (previousHeadlessPorperty != null) {
-//            System.setProperty("java.awt.headless", previousHeadlessPorperty);
-//        }
         try {
             FxToolkit.cleanupStages();
         } catch (TimeoutException ex) {
@@ -189,6 +184,22 @@ public class TimelineTopComponentNGTest {
         //instance.setState(mockState);
 
         instance.setExtents();
+    }
+
+    @Test
+    public void testGetTimelinePanel() {
+        final TimelineTopComponent instance = new TimelineTopComponent();
+        final TimelinePanel timelinePanel = mock(TimelinePanel.class);
+        instance.setTimelinePanel(timelinePanel);
+        assertEquals(instance.getTimelinePanel(), timelinePanel);
+    }
+
+    @Test
+    public void testGetOverviewPanel() {
+        final TimelineTopComponent instance = new TimelineTopComponent();
+        final OverviewPanel overviewPanel = mock(OverviewPanel.class);
+        instance.setOverviewPanel(overviewPanel);
+        assertEquals(instance.getOverviewPanel(), overviewPanel);
     }
 //    /**
 //     * Test of getTimelineLowerTimeExtent method, of class TimelineTopComponent.

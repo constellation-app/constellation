@@ -303,13 +303,6 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
         return overviewPanel;
     }
 
-//    protected void setState(final TimelineState newTimelineState) {
-//        state = newTimelineState;
-//    }
-//
-//    protected TimelineState getState() {
-//        return state;
-//    }
     // </editor-fold>
     /**
      * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The
