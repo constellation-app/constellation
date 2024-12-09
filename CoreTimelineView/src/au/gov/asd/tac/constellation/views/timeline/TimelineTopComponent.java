@@ -180,8 +180,14 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
             splitPane.setDividerPositions(splitPanePosition);
 
             // Set the split pane as the javafx scene:
-            container.setScene(scene);
+            if (!isHeadless()) {
+                container.setScene(scene);
+            }
         });
+    }
+
+    private boolean isHeadless() {
+        return Boolean.parseBoolean(System.getProperty("java.awt.headless", "false"));
     }
 
     // <editor-fold defaultstate="collapsed" desc="Timeline and Histogram Extents">
