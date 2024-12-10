@@ -29,9 +29,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -77,7 +75,9 @@ public class TimelineChartNGTest {
         final TimelineChart instance = new TimelineChart(parent, xAxis, yAxis);
         instance.performZoom(mockScrollEvent, mouseX);
 
+        verify(mockScrollEvent, times(1)).getEventType();
         verify(mockScrollEvent, times(0)).getDeltaY();
+        verify(parent, times(0)).getCoordinator();
     }
 
     /**
@@ -85,11 +85,12 @@ public class TimelineChartNGTest {
      */
     @Test
     public void testPerformZoomPositiveDelta() {
-        System.out.println("performZoom with postive delta");
+        System.out.println("performZoom with positive delta");
 
         final ScrollEvent mockScrollEvent = mock(ScrollEvent.class);
+        final double scrollDelta = 1D;
         when(mockScrollEvent.getEventType()).thenReturn(ScrollEvent.SCROLL);
-        when(mockScrollEvent.getDeltaY()).thenReturn(1D);
+        when(mockScrollEvent.getDeltaY()).thenReturn(scrollDelta);
 
         final TimelinePanel parent = mock(TimelinePanel.class);
         final TimelineTopComponent coordinator = mock(TimelineTopComponent.class);
@@ -106,7 +107,38 @@ public class TimelineChartNGTest {
         instance.setExtents(lower, upper);
         instance.performZoom(mockScrollEvent, mouseX);
 
+        verify(mockScrollEvent, times(1)).getEventType();
         verify(mockScrollEvent, times(1)).getDeltaY();
+        verify(parent, times(1)).getCoordinator();
+    }
+
+    @Test
+    public void testPerformZoomNegativeDelta() {
+        System.out.println("performZoom with negative delta");
+
+        final ScrollEvent mockScrollEvent = mock(ScrollEvent.class);
+        final double scrollDelta = -1D;
+        when(mockScrollEvent.getEventType()).thenReturn(ScrollEvent.SCROLL);
+        when(mockScrollEvent.getDeltaY()).thenReturn(scrollDelta);
+
+        final TimelinePanel parent = mock(TimelinePanel.class);
+        final TimelineTopComponent coordinator = mock(TimelineTopComponent.class);
+        when(parent.getCoordinator()).thenReturn(coordinator);
+
+        final Axis<Number> xAxis = new NumberAxis();
+        final NumberAxis yAxis = new NumberAxis();
+
+        final double mouseX = 0.0;
+        final double lower = 0D;
+        final double upper = 10D;
+
+        final TimelineChart instance = new TimelineChart(parent, xAxis, yAxis);
+        instance.setExtents(lower, upper);
+        instance.performZoom(mockScrollEvent, mouseX);
+
+        verify(mockScrollEvent, times(1)).getEventType();
+        verify(mockScrollEvent, times(1)).getDeltaY();
+        verify(parent, times(1)).getCoordinator();
     }
 
 }
