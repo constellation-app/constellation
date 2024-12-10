@@ -94,12 +94,8 @@ public class SaveAsActionNGTest {
 
         SwingUtilities.invokeLater(() -> {
             instance.add(new SaveAsAction());
-            try {
-                instance.get(0).actionPerformed(null);
-                latch.countDown();
-            } catch (Exception ex) {
-                throw ex;
-            }
+            instance.get(0).actionPerformed(null);
+            latch.countDown();
         });
 
         latch.await(5000, TimeUnit.MILLISECONDS);

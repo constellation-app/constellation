@@ -57,10 +57,10 @@ public class FloatTextureBuffer extends TextureBuffer<FloatBuffer> {
         // multiple animations are runnng on large graphs and a graph view resize is triggered by opening or closing another view.
         // The error does not cause disruption to the behavious or Constellation but does result in in an error message bing thrown
         try{
-            ByteBuffer bytebuffer = gl.glMapBuffer(GL2ES3.GL_TEXTURE_BUFFER, GL2ES3.GL_READ_WRITE); 
+            final ByteBuffer bytebuffer = gl.glMapBuffer(GL2ES3.GL_TEXTURE_BUFFER, GL2ES3.GL_READ_WRITE); 
             return bytebuffer.order(ByteOrder.nativeOrder()).asFloatBuffer();
         } catch (final GLException ex){
-            LOGGER.log(Level.WARNING, String.format("A GLException occured: %s", ex.getLocalizedMessage()));
+            LOGGER.log(Level.SEVERE, String.format("A GLException occured: %s", ex.getLocalizedMessage()));
         }
         return buffer;
     }

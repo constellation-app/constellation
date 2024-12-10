@@ -59,20 +59,19 @@ public final class ColorWarpAnimation extends Animation {
         vertexColorAttr = VisualConcept.VertexAttribute.COLOR.ensure(wg);
         transactionColorAttr = VisualConcept.TransactionAttribute.COLOR.ensure(wg);
         
-        System.out.println("Vertex count: " + wg.getVertexCount());
         // dont initilise the animation if there is less than 2 nodes
         if (wg.getVertexCount() <= 1) {
             stop();
-        } else{
-            for (int vertexPosition = 0 ; vertexPosition < wg.getVertexCount(); vertexPosition++) {
+        } else {
+            for (int vertexPosition = 0; vertexPosition < wg.getVertexCount(); vertexPosition++) {
                 final int vertexID = wg.getVertex(vertexPosition);
                 getVertexOriginals().put(vertexID, wg.getObjectValue(vertexColorAttr, vertexID));
             }
-            
-            for (int transactionPosition = 0 ; transactionPosition < wg.getTransactionCount(); transactionPosition++) {
+
+            for (int transactionPosition = 0; transactionPosition < wg.getTransactionCount(); transactionPosition++) {
                 final int transactionID = wg.getTransaction(transactionPosition);
                 getTransactionOriginals().put(transactionID, wg.getObjectValue(transactionColorAttr, transactionID));
-            }            
+            }
         }
     }
 

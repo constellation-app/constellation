@@ -169,11 +169,7 @@ public class AnimationUtilities {
     
     public static boolean isGraphAnimationsPaused(final String graphId){
         final AnimationManager manager = getGraphAnimationManager(graphId);
-        if (manager != null){
-            return manager.isPaused();
-        } else {
-            return false;
-        }
+        return manager != null && manager.isPaused();
     }
 
     public static boolean isAnimating(final String graphId){
