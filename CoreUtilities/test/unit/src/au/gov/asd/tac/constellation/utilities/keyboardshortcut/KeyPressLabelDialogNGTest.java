@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.utilities.keyboardshortcut;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.stage.Modality;
@@ -60,6 +61,18 @@ public class KeyPressLabelDialogNGTest {
     
     @Test
     public void testKeyPressLabelDialog() throws Exception {
+        
+       
+        
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                 KeyPressLabelDialog kl = new KeyPressLabelDialog("test");
+                 assertEquals(kl.getDefaultValue(), "test");
+                 assertEquals(kl.getLabel().getText(), "test");
+            }
+        });
+
         KeyPressLabelDialog keyPressLabelDialog = mock(KeyPressLabelDialog.class);
         when(keyPressLabelDialog.getDefaultValue()).thenReturn(StringUtils.EMPTY);
         when(keyPressLabelDialog.getLabel()).thenReturn(createContentLabel(StringUtils.EMPTY));
