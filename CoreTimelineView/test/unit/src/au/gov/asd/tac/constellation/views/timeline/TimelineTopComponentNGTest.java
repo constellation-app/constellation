@@ -148,13 +148,11 @@ public class TimelineTopComponentNGTest {
     @Test
     public void testSetExtentsTransactionValidDate() {
         System.out.println("setExtents Transaction with valid date");
-        //final Registry mockRegistry = mock(Registry.class);
         final TimelinePanel mockTimelinePanel = mock(TimelinePanel.class);
         final OverviewPanel mockOverviewPanel = mock(OverviewPanel.class);
         final Graph mockGraph = mock(Graph.class);
         final GraphNode mockGraphNode = mock(GraphNode.class);
         final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
-        //final TimelineState mockState = mock(TimelineState.class);
         final TimelineState mockState = spy(new TimelineState());
 
         final int txCount = 1;
@@ -188,7 +186,6 @@ public class TimelineTopComponentNGTest {
         instance.setOverviewPanel(mockOverviewPanel);
 
         instance.setExtents();
-        //System.out.println("mockState.getLowerTimeExtent() " + mockState.getLowerTimeExtent() + " mockState.getUpperTimeExtent() " + mockState.getUpperTimeExtent());
         verify(mockState, times(1)).setLowerTimeExtent(-1.0);
         verify(mockState, times(1)).setUpperTimeExtent(1.0);
         verify(mockState, times(3)).getLowerTimeExtent();
