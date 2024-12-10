@@ -85,7 +85,7 @@ public class TimelinePanel extends Region {
     private static final char ARROW_CHAR = 0x2192;
 
     private static final int MIN_CLUSTER_WIDTH = 14; // Min width of 14 pixels which matches the min label width.
-    public final TimelineTopComponent coordinator;
+    private final TimelineTopComponent coordinator;
     private final AnchorPane innerPane = new AnchorPane();
     private final ToolBar toolbar;
     private final Label lowerTime;
@@ -136,6 +136,10 @@ public class TimelinePanel extends Region {
         upperTime.setId("extentLabel");
         // Create and layout the panels that will hold the components for the timeline:
         doLayout();
+    }
+
+    public TimelineTopComponent getCoordinator() {
+        return coordinator;
     }
 
     // <editor-fold defaultstate="collapsed" desc="Layout Layers">

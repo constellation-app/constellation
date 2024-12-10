@@ -140,7 +140,7 @@ public class TimelineChart extends XYChart<Number, Number> {
                         lowerTimeExtent += (delta * amount);
                         upperTimeExtent += (delta * amount);
 
-                        parent.coordinator.setExtents(lowerTimeExtent, upperTimeExtent);
+                        parent.getCoordinator().setExtents(lowerTimeExtent, upperTimeExtent);
 
                         // Update variables based on current mouse pointer position:
                         mouseOrigin = mouseX;
@@ -297,14 +297,14 @@ public class TimelineChart extends XYChart<Number, Number> {
                 upperTimeExtent = (mousePosInRange + ((upperTimeExtent - mousePosInRange) * 0.9));
 
                 // update the scope window:
-                parent.coordinator.setExtents(lowerTimeExtent, upperTimeExtent);
+                parent.getCoordinator().setExtents(lowerTimeExtent, upperTimeExtent);
             }
         } else if (quantum <= YEAR * 10D) { // We are zooming out:
             lowerTimeExtent = (mousePosInRange - ((mousePosInRange - lowerTimeExtent) * 1.1)); // Zoom out by 10%
             upperTimeExtent = (mousePosInRange + ((upperTimeExtent - mousePosInRange) * 1.1));
 
             // update the scope window:
-            parent.coordinator.setExtents(lowerTimeExtent, upperTimeExtent);
+            parent.getCoordinator().setExtents(lowerTimeExtent, upperTimeExtent);
         }
     }
 
