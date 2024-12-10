@@ -17,75 +17,86 @@ package au.gov.asd.tac.constellation.graph.interaction.animation;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
-import au.gov.asd.tac.constellation.utilities.visual.VisualChangeBuilder;
-import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
- *
+ * Case the node radius to throb larger and smaller than the actual node radius. 
+ * This Animation is infinite so will not animate when animations are disabled.
+ * 
  * @author twilight_sparkle
+ * @author capricornunicorn123
  */
 public class ThrobbingNodeAnimation extends Animation {
-
+    
+    public static String NAME = "Throbbing Node Animation";
+    private static final float LOWER_LIMIT = 0.5F;
+    private static final float UPPER_LIMIT = 1.5F;
+    
     private int nodeRadiusAttribute;
-    private static final float LOWER_LIMIT = 1;
-    private static final float UPPER_LIMIT = 4;
-    private float currentDirection = 0.1F;
+    private float currentDirection = 0.05F;
     private float currentRadius = 1F;
-    private final long throbbingNodeAnimationId = VisualChangeBuilder.generateNewId();
-
+    
     final Map<Integer, Float> originalNodeRadii = new HashMap<>();
 
     @Override
-    public void initialise(GraphWriteMethods wg) {
+    public void initialise(final GraphWriteMethods wg) {
+        nodeRadiusAttribute = VisualConcept.VertexAttribute.NODE_RADIUS.ensure(wg);
         // dont initialise if there is 0 nodes present
         if (wg.getVertexCount() == 0) {
-            stopAnimation();
+            stop();
         } else {
-            nodeRadiusAttribute = VisualConcept.VertexAttribute.NODE_RADIUS.get(wg);
             for (int pos = 0; pos < wg.getVertexCount(); pos++) {
-                final int vxId = wg.getVertex(pos);
-                originalNodeRadii.put(vxId, wg.getFloatValue(nodeRadiusAttribute, vxId));
+                registerNode(wg.getVertex(pos), wg);
             }
         }
     }
 
     @Override
-    public List<VisualChange> animate(GraphWriteMethods wg) {
+    public void animate(final GraphWriteMethods wg) {
         // if there is at least 1 node on the graph
         if (wg.getVertexCount() > 0) {
 
             if (currentRadius > UPPER_LIMIT || currentRadius < LOWER_LIMIT) {
                 currentDirection = -currentDirection;
             }
+            
             currentRadius += currentDirection;
             for (int pos = 0; pos < wg.getVertexCount(); pos++) {
                 final int vxId = wg.getVertex(pos);
-                wg.setFloatValue(nodeRadiusAttribute, vxId, currentRadius);
+                
+                // If a node is added during animation its original radius needs to be captured. 
+                if (originalNodeRadii.get(vxId) == null){
+                    registerNode(vxId, wg);
+                }
+                
+                wg.setFloatValue(nodeRadiusAttribute, vxId, currentRadius * originalNodeRadii.get(vxId));
             }
-            return Arrays.asList(new VisualChangeBuilder(VisualProperty.VERTEX_RADIUS).forItems(wg.getVertexCount()).withId(throbbingNodeAnimationId).build());
         }
-        // return an empty list if 0 nodes
-        return Arrays.asList();
     }
 
     @Override
-    public void reset(GraphWriteMethods wg) {
+    public void reset(final GraphWriteMethods wg) {
         originalNodeRadii.forEach((vxId, radius) -> wg.setObjectValue(nodeRadiusAttribute, vxId, radius));
     }
 
     @Override
     public long getIntervalInMillis() {
-        return 10;
+        return 35;
     }
 
     @Override
     protected String getName() {
-        return "Throbbing Node Animation";
+        return NAME;
+    }
+    
+    @Override
+    public void setFinalFrame(final GraphWriteMethods wg){
+        //Do Nothing
+    }
+
+    private void registerNode(final int vxId, final GraphWriteMethods wg) {
+        originalNodeRadii.put(vxId, wg.getFloatValue(nodeRadiusAttribute, vxId));
     }
 
 }
