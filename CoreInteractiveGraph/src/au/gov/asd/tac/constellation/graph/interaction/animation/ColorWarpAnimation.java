@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.util.HashMap;
 import java.util.Map;
+import javafx.scene.paint.Color;
 
 /**
  * Cause the colors on the graph to warp through hues.
@@ -80,14 +81,14 @@ public final class ColorWarpAnimation extends Animation {
         // Do not animate unless there is more than 1 node
         if (wg.getVertexCount() > 0) {                    
             for (int vertexPosition = 0 ; vertexPosition < wg.getVertexCount(); vertexPosition++) {
-                SetColorValuesOperation colorVerticesOperation = new SetColorValuesOperation(wg, GraphElementType.VERTEX, vertexColorAttr);
+                final SetColorValuesOperation colorVerticesOperation = new SetColorValuesOperation(wg, GraphElementType.VERTEX, vertexColorAttr);
                 final int vertexID = wg.getVertex(vertexPosition);
                 colorVerticesOperation.setValue(vertexID, this.getNextColor(wg.getObjectValue(vertexColorAttr, vertexID)));
                 wg.executeGraphOperation(colorVerticesOperation);
             }
             
             for (int transactionPosition = 0 ; transactionPosition < wg.getTransactionCount(); transactionPosition++) {
-                SetColorValuesOperation colorTransactionsOperation = new SetColorValuesOperation(wg, GraphElementType.TRANSACTION, transactionColorAttr);
+                final SetColorValuesOperation colorTransactionsOperation = new SetColorValuesOperation(wg, GraphElementType.TRANSACTION, transactionColorAttr);
                 final int transactionID = wg.getTransaction(transactionPosition);
                 colorTransactionsOperation.setValue(transactionID, this.getNextColor(wg.getObjectValue(transactionColorAttr, transactionID)));
                 wg.executeGraphOperation(colorTransactionsOperation);
@@ -99,7 +100,7 @@ public final class ColorWarpAnimation extends Animation {
     public void reset(final GraphWriteMethods wg) {
         // Reset Verticies back to their original color
         for (int vertexPosition = 0 ; vertexPosition < wg.getVertexCount(); vertexPosition++) {
-            SetColorValuesOperation colorVerticesOperation = new SetColorValuesOperation(wg, GraphElementType.VERTEX, vertexColorAttr);
+            final SetColorValuesOperation colorVerticesOperation = new SetColorValuesOperation(wg, GraphElementType.VERTEX, vertexColorAttr);
             final int vertexID = wg.getVertex(vertexPosition);
             colorVerticesOperation.setValue(vertexID, getVertexOriginals().get(vertexID));
             wg.executeGraphOperation(colorVerticesOperation); 
@@ -107,7 +108,7 @@ public final class ColorWarpAnimation extends Animation {
          
         // Reset Transactions back to their original color
         for (int transactionPosition = 0 ; transactionPosition < wg.getTransactionCount(); transactionPosition++) {
-            SetColorValuesOperation colorTransactionsOperation = new SetColorValuesOperation(wg, GraphElementType.TRANSACTION, transactionColorAttr);
+            final SetColorValuesOperation colorTransactionsOperation = new SetColorValuesOperation(wg, GraphElementType.TRANSACTION, transactionColorAttr);
             final int transactionID = wg.getTransaction(transactionPosition);
             colorTransactionsOperation.setValue(transactionID, getTransactionOriginals().get(transactionID));
             wg.executeGraphOperation(colorTransactionsOperation); 
@@ -123,11 +124,11 @@ public final class ColorWarpAnimation extends Animation {
 
     private ConstellationColor getNextColor(final ConstellationColor color) {
    
-        final javafx.scene.paint.Color col = color.getJavaFXColor();
+        final Color col = color.getJavaFXColor();
         final double hue = col.getHue() <= 360 ? col.getHue() + 5 : 0;
         final double sat = col.getSaturation();
         final double bright = col.getBrightness();
-        final javafx.scene.paint.Color newCol = javafx.scene.paint.Color.hsb(hue, sat, bright);
+        final Color newCol = Color.hsb(hue, sat, bright);
         
         return ConstellationColor.fromFXColor(newCol);
     }

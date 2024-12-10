@@ -49,10 +49,6 @@ public final class AnimatePauseAction extends AnimationUtilityMenuBaseAction {
     @Override
     protected void displayValue() {
         final boolean graphAnimationsPaused = AnimationUtilities.isGraphAnimationsPaused(this.getContext().getGraph().getId());
-        if (graphAnimationsPaused){
-            menuButton.setText("Resume Animating");
-        } else {
-            menuButton.setText("Pause Animating");
-        }       
+        menuButton.setText(graphAnimationsPaused ? "Resume Animating" : "Pause Animating");
     }
 }

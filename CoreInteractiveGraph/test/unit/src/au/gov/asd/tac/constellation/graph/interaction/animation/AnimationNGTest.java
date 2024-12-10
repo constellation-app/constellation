@@ -93,9 +93,10 @@ public class AnimationNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        wg.rollBack();
         wg = null;
         constyColor.close();
-        animationUtilitiesMocked.close();        
+        animationUtilitiesMocked.close();
     }
 
     @Test
