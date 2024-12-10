@@ -24,6 +24,9 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.openide.nodes.Node;
 import org.openide.windows.TopComponent.Registry;
@@ -57,19 +60,6 @@ public class TimelineTopComponentNGTest {
         }
     }
 
-//    /**
-//     * Test of setExtents method, of class TimelineTopComponent.
-//     */
-//    @Test
-//    public void testSetExtents_double_double() {
-//        System.out.println("setExtents");
-//        double lowerTimeExtent = 0.0;
-//        double upperTimeExtent = 0.0;
-//        TimelineTopComponent instance = new TimelineTopComponent();
-//        instance.setExtents(lowerTimeExtent, upperTimeExtent);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
     /**
      * Test of setExtents method, of class TimelineTopComponent.
      */
@@ -80,12 +70,14 @@ public class TimelineTopComponentNGTest {
         final Graph mockGraph = mock(Graph.class);
         final GraphNode mockGraphNode = mock(GraphNode.class);
         final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
+        final TimelineState mockState = spy(new TimelineState());
 
         final Node[] activatedNodes = {mockGraphNode};
         final int txCount = 0;
         final String currentDatetimeAttribute = "mockedCurrentDatetimeAttribute";
         final int txTimAttrId = 101;
         final int txSelAttrId = 202;
+        final int attrID = 303;
 
         when(mockRegistry.getActivatedNodes()).thenReturn(activatedNodes);
         when(mockGraphNode.getGraph()).thenReturn(mockGraph);
@@ -93,6 +85,7 @@ public class TimelineTopComponentNGTest {
         when(mockReadableGraph.getTransactionCount()).thenReturn(txCount);
         when(mockReadableGraph.getAttribute(GraphElementType.TRANSACTION, currentDatetimeAttribute)).thenReturn(txTimAttrId);
         when(mockReadableGraph.getAttribute(GraphElementType.TRANSACTION, VisualConcept.TransactionAttribute.SELECTED.getName())).thenReturn(txSelAttrId);
+        when(mockReadableGraph.getObjectValue(attrID, 0)).thenReturn(mockState);
 
         // Create and setup instance
         final TimelineTopComponent instance = new TimelineTopComponent();
@@ -100,6 +93,10 @@ public class TimelineTopComponentNGTest {
         instance.setCurrentDatetimeAttr(currentDatetimeAttribute);
 
         instance.setExtents();
+        verify(mockState, times(0)).setLowerTimeExtent(-1.0);
+        verify(mockState, times(0)).setUpperTimeExtent(1.0);
+        verify(mockState, times(0)).getLowerTimeExtent();
+        verify(mockState, times(0)).getUpperTimeExtent();
     }
 
     /**
@@ -112,12 +109,14 @@ public class TimelineTopComponentNGTest {
         final Graph mockGraph = mock(Graph.class);
         final GraphNode mockGraphNode = mock(GraphNode.class);
         final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
+        final TimelineState mockState = spy(new TimelineState());
 
         final Node[] activatedNodes = {mockGraphNode};
         final int txCount = 1;
         final String currentDatetimeAttribute = "mockedCurrentDatetimeAttribute";
         final int txTimAttrId = 101;
         final int txSelAttrId = 202;
+        final int attrID = 303;
 
         final String dateTimeString = null;
 
@@ -129,6 +128,7 @@ public class TimelineTopComponentNGTest {
         when(mockReadableGraph.getAttribute(GraphElementType.TRANSACTION, currentDatetimeAttribute)).thenReturn(txTimAttrId);
         when(mockReadableGraph.getAttribute(GraphElementType.TRANSACTION, VisualConcept.TransactionAttribute.SELECTED.getName())).thenReturn(txSelAttrId);
         when(mockReadableGraph.getStringValue(txTimAttrId, 0)).thenReturn(dateTimeString);
+        when(mockReadableGraph.getObjectValue(attrID, 0)).thenReturn(mockState);
 
         // Create and setup instance
         final TimelineTopComponent instance = new TimelineTopComponent();
@@ -136,6 +136,10 @@ public class TimelineTopComponentNGTest {
         instance.setCurrentDatetimeAttr(currentDatetimeAttribute);
 
         instance.setExtents();
+        verify(mockState, times(0)).setLowerTimeExtent(-1.0);
+        verify(mockState, times(0)).setUpperTimeExtent(1.0);
+        verify(mockState, times(0)).getLowerTimeExtent();
+        verify(mockState, times(0)).getUpperTimeExtent();
     }
 
     /**
@@ -150,7 +154,8 @@ public class TimelineTopComponentNGTest {
         final Graph mockGraph = mock(Graph.class);
         final GraphNode mockGraphNode = mock(GraphNode.class);
         final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
-        final TimelineState mockState = mock(TimelineState.class);
+        //final TimelineState mockState = mock(TimelineState.class);
+        final TimelineState mockState = spy(new TimelineState());
 
         final int txCount = 1;
         final String currentDatetimeAttribute = null;
@@ -181,9 +186,13 @@ public class TimelineTopComponentNGTest {
         instance.setNode(mockGraphNode);
         instance.setTimelinePanel(mockTimelinePanel);
         instance.setOverviewPanel(mockOverviewPanel);
-        //instance.setState(mockState);
 
         instance.setExtents();
+        //System.out.println("mockState.getLowerTimeExtent() " + mockState.getLowerTimeExtent() + " mockState.getUpperTimeExtent() " + mockState.getUpperTimeExtent());
+        verify(mockState, times(1)).setLowerTimeExtent(-1.0);
+        verify(mockState, times(1)).setUpperTimeExtent(1.0);
+        verify(mockState, times(3)).getLowerTimeExtent();
+        verify(mockState, times(3)).getUpperTimeExtent();
     }
 
     @Test
@@ -201,226 +210,5 @@ public class TimelineTopComponentNGTest {
         instance.setOverviewPanel(overviewPanel);
         assertEquals(instance.getOverviewPanel(), overviewPanel);
     }
-//    /**
-//     * Test of getTimelineLowerTimeExtent method, of class TimelineTopComponent.
-//     */
-//    @Test
-//    public void testGetTimelineLowerTimeExtent() {
-//        System.out.println("getTimelineLowerTimeExtent");
-//        TimelineTopComponent instance = new TimelineTopComponent();
-//        double expResult = 0.0;
-//        double result = instance.getTimelineLowerTimeExtent();
-//        assertEquals(result, expResult, 0.0);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getTimelineUpperTimeExtent method, of class TimelineTopComponent.
-//     */
-//    @Test
-//    public void testGetTimelineUpperTimeExtent() {
-//        System.out.println("getTimelineUpperTimeExtent");
-//        TimelineTopComponent instance = new TimelineTopComponent();
-//        double expResult = 0.0;
-//        double result = instance.getTimelineUpperTimeExtent();
-//        assertEquals(result, expResult, 0.0);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of componentOpened method, of class TimelineTopComponent.
-//     */
-//    @Test
-//    public void testComponentOpened() {
-//        System.out.println("componentOpened");
-//        TimelineTopComponent instance = new TimelineTopComponent();
-//        instance.componentOpened();
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of zoomFromOverview method, of class TimelineTopComponent.
-//     */
-//    @Test
-//    public void testZoomFromOverview() {
-//        System.out.println("zoomFromOverview");
-//        ScrollEvent se = null;
-//        TimelineTopComponent instance = new TimelineTopComponent();
-//        instance.zoomFromOverview(se);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of componentClosed method, of class TimelineTopComponent.
-//     */
-//    @Test
-//    public void testComponentClosed() {
-//        System.out.println("componentClosed");
-//        TimelineTopComponent instance = new TimelineTopComponent();
-//        instance.componentClosed();
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of writeProperties method, of class TimelineTopComponent.
-//     */
-//    @Test
-//    public void testWriteProperties() {
-//        System.out.println("writeProperties");
-//        Properties p = null;
-//        TimelineTopComponent instance = new TimelineTopComponent();
-//        instance.writeProperties(p);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of readProperties method, of class TimelineTopComponent.
-//     */
-//    @Test
-//    public void testReadProperties() {
-//        System.out.println("readProperties");
-//        Properties p = null;
-//        TimelineTopComponent instance = new TimelineTopComponent();
-//        instance.readProperties(p);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of setCurrentDatetimeAttr method, of class TimelineTopComponent.
-//     */
-//    @Test
-//    public void testSetCurrentDatetimeAttr() {
-//        System.out.println("setCurrentDatetimeAttr");
-//        String currentDatetimeAttr = "";
-//        TimelineTopComponent instance = new TimelineTopComponent();
-//        instance.setCurrentDatetimeAttr(currentDatetimeAttr);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of updateTimeZone method, of class TimelineTopComponent.
-//     */
-//    @Test
-//    public void testUpdateTimeZone() {
-//        System.out.println("updateTimeZone");
-//        ZoneId timeZone = null;
-//        TimelineTopComponent instance = new TimelineTopComponent();
-//        instance.updateTimeZone(timeZone);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of setExclusionState method, of class TimelineTopComponent.
-//     */
-//    @Test
-//    public void testSetExclusionState() {
-//        System.out.println("setExclusionState");
-//        int exclusionState = 0;
-//        TimelineTopComponent instance = new TimelineTopComponent();
-//        instance.setExclusionState(exclusionState);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of setIsShowingSelectedOnly method, of class TimelineTopComponent.
-//     */
-//    @Test
-//    public void testSetIsShowingSelectedOnly() {
-//        System.out.println("setIsShowingSelectedOnly");
-//        boolean isShowingSelectedOnly = false;
-//        TimelineTopComponent instance = new TimelineTopComponent();
-//        instance.setIsShowingSelectedOnly(isShowingSelectedOnly);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of setIsShowingNodeLabels method, of class TimelineTopComponent.
-//     */
-//    @Test
-//    public void testSetIsShowingNodeLabels() {
-//        System.out.println("setIsShowingNodeLabels");
-//        boolean isShowingNodeLabels = false;
-//        TimelineTopComponent instance = new TimelineTopComponent();
-//        instance.setIsShowingNodeLabels(isShowingNodeLabels);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of setNodeLabelsAttr method, of class TimelineTopComponent.
-//     */
-//    @Test
-//    public void testSetNodeLabelsAttr() {
-//        System.out.println("setNodeLabelsAttr");
-//        String nodeLabelsAttr = "";
-//        TimelineTopComponent instance = new TimelineTopComponent();
-//        instance.setNodeLabelsAttr(nodeLabelsAttr);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getNodeLabelsAttr method, of class TimelineTopComponent.
-//     */
-//    @Test
-//    public void testGetNodeLabelsAttr() {
-//        System.out.println("getNodeLabelsAttr");
-//        TimelineTopComponent instance = new TimelineTopComponent();
-//        String expResult = "";
-//        String result = instance.getNodeLabelsAttr();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getUndoRedo method, of class TimelineTopComponent.
-//     */
-//    @Test
-//    public void testGetUndoRedo() {
-//        System.out.println("getUndoRedo");
-//        TimelineTopComponent instance = new TimelineTopComponent();
-//        UndoRedo expResult = null;
-//        UndoRedo result = instance.getUndoRedo();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of resultChanged method, of class TimelineTopComponent.
-//     */
-//    @Test
-//    public void testResultChanged() {
-//        System.out.println("resultChanged");
-//        LookupEvent ev = null;
-//        TimelineTopComponent instance = new TimelineTopComponent();
-//        instance.resultChanged(ev);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of graphChanged method, of class TimelineTopComponent.
-//     */
-//    @Test
-//    public void testGraphChanged() {
-//        System.out.println("graphChanged");
-//        GraphChangeEvent evt = null;
-//        TimelineTopComponent instance = new TimelineTopComponent();
-//        instance.graphChanged(evt);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
+
 }
