@@ -100,7 +100,7 @@ import org.openide.windows.TopComponent;
 public final class TimelineTopComponent extends TopComponent implements LookupListener, GraphChangeListener, UndoRedo.Provider {
 
     private static final Logger LOGGER = Logger.getLogger(TimelineTopComponent.class.getName());
-    
+
     private static final double DEFAULT_DIVIDER_LOCATION = 0.8;
     private static final String UPDATE_TIMELINE_THREAD_NAME = "Update Timeline from Graph";
     public static final List<String> SUPPORTED_DATETIME_ATTRIBUTE_TYPES = Arrays.asList(
@@ -180,8 +180,14 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
             splitPane.setDividerPositions(splitPanePosition);
 
             // Set the split pane as the javafx scene:
-            container.setScene(scene);
+            if (!isHeadless()) {
+                container.setScene(scene);
+            }
         });
+    }
+
+    private boolean isHeadless() {
+        return Boolean.parseBoolean(System.getProperty("java.awt.headless", "false"));
     }
 
     // <editor-fold defaultstate="collapsed" desc="Timeline and Histogram Extents">
@@ -217,9 +223,10 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
      */
     public void setExtents() {
 
-        if (graphNode.getGraph() != null) {
-
-            final ReadableGraph graph = graphNode.getGraph().getReadableGraph();
+        if (graphNode.getGraph() == null) {
+            return;
+        }
+        try (final ReadableGraph graph = graphNode.getGraph().getReadableGraph()) {
             final int txCount = graph.getTransactionCount();
             final int txTimAttrId = graph.getAttribute(GraphElementType.TRANSACTION, this.currentDatetimeAttribute);
             final int txSelAttrId = graph.getAttribute(GraphElementType.TRANSACTION,
@@ -231,36 +238,45 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
             long maxTime = Long.MIN_VALUE;
 
             for (int txID = 0; txID < txCount; txID++) {
-                if (graph.getBooleanValue(txSelAttrId, txID)) {
-                    lowerTimeExtent = Math.min(graph.getLongValue(txTimAttrId, txID), lowerTimeExtent);
-                    upperTimeExtent = Math.max(graph.getLongValue(txTimAttrId, txID), upperTimeExtent);
+                // We can use getStringValue to see if dateTime exists. 0 is returned from getLong if dateTime is null, but it could also be a legitimated dateTime
+                if (graph.getStringValue(txTimAttrId, txID) == null) {
+                    continue;
                 }
-                minTime = Math.min(graph.getLongValue(txTimAttrId, txID), minTime);
-                maxTime = Math.max(graph.getLongValue(txTimAttrId, txID), maxTime);
+
+                final long currentTimeValue = graph.getLongValue(txTimAttrId, txID);
+                if (graph.getBooleanValue(txSelAttrId, txID)) {
+                    lowerTimeExtent = Math.min(currentTimeValue, lowerTimeExtent);
+                    upperTimeExtent = Math.max(currentTimeValue, upperTimeExtent);
+                }
+                minTime = Math.min(currentTimeValue, minTime);
+                maxTime = Math.max(currentTimeValue, maxTime);
             }
 
-            if (lowerTimeExtent != Long.MAX_VALUE) {
-                state.setLowerTimeExtent(lowerTimeExtent);
-            } else {
-                state.setLowerTimeExtent(minTime);
+            if (lowerTimeExtent == Long.MAX_VALUE) {
+                lowerTimeExtent = minTime;
             }
-            if (upperTimeExtent != Long.MIN_VALUE) {
-                state.setUpperTimeExtent(upperTimeExtent);
-            } else {
-                state.setUpperTimeExtent(maxTime);
+            if (upperTimeExtent == Long.MIN_VALUE) {
+                upperTimeExtent = maxTime;
             }
 
-            try {
-                timelinePanel.setTimelineExtent(graph, state.getLowerTimeExtent(),
-                        state.getUpperTimeExtent(), state.isShowingSelectedOnly(), state.getTimeZone());
-            } finally {
-                graph.release();
+            // If no times were found, dont update the timeline view
+            if (lowerTimeExtent == Long.MAX_VALUE && upperTimeExtent == Long.MIN_VALUE) {
+                return;
             }
 
-            timelinePanel.updateExclusionState(graphNode.getGraph(),
-                    (long) state.getLowerTimeExtent(), (long) state.getUpperTimeExtent(), state.getExclusionState());
-            overviewPanel.setExtentPOV(state.getLowerTimeExtent(), state.getUpperTimeExtent());
+            // Edge case that fixes issues when range of these two values is 0
+            if (lowerTimeExtent == upperTimeExtent) {
+                lowerTimeExtent--;
+                upperTimeExtent++;
+            }
+
+            state.setLowerTimeExtent(lowerTimeExtent);
+            state.setUpperTimeExtent(upperTimeExtent);
+            timelinePanel.setTimelineExtent(graph, state.getLowerTimeExtent(), state.getUpperTimeExtent(), state.isShowingSelectedOnly(), state.getTimeZone());
         }
+
+        timelinePanel.updateExclusionState(graphNode.getGraph(), (long) state.getLowerTimeExtent(), (long) state.getUpperTimeExtent(), state.getExclusionState());
+        overviewPanel.setExtentPOV(state.getLowerTimeExtent(), state.getUpperTimeExtent());
     }
 
     protected double getTimelineLowerTimeExtent() {
@@ -270,12 +286,27 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
     protected double getTimelineUpperTimeExtent() {
         return timelinePanel.getTimelineUpperTimeExtent();
     }
-    // </editor-fold>
 
+    protected void setTimelinePanel(final TimelinePanel newtimelinePanel) {
+        timelinePanel = newtimelinePanel;
+    }
+
+    protected TimelinePanel getTimelinePanel() {
+        return timelinePanel;
+    }
+
+    protected void setOverviewPanel(final OverviewPanel newOverviewPanel) {
+        overviewPanel = newOverviewPanel;
+    }
+
+    protected OverviewPanel getOverviewPanel() {
+        return overviewPanel;
+    }
+
+    // </editor-fold>
     /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
+     * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The
+     * content of this method is always regenerated by the Form Editor.
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -324,7 +355,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
     }
     // </editor-fold>
 
-    private void setNode(final GraphNode node) {
+    protected void setNode(final GraphNode node) {
         // Navigating away from the current graph:
         if (graphNode != null) {
             final Graph graph = graphNode.getGraph();
@@ -382,8 +413,8 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
             populateFromGraph(graph, true);
 
             graph.addGraphChangeListener(this);
-        
-        // Moving to nothing:
+
+            // Moving to nothing:
         } else {
             persistStateToGraph();
 
@@ -559,7 +590,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
         if (state != null) {
             state.setExclusionState(exclusionState);
             // Enable dimming if just enabled:
-            timelinePanel.initExclusionState(graphNode.getGraph(), (long) state.getLowerTimeExtent(), 
+            timelinePanel.initExclusionState(graphNode.getGraph(), (long) state.getLowerTimeExtent(),
                     (long) state.getUpperTimeExtent(), exclusionState);
         }
     }
@@ -610,7 +641,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
     }
 
     private void persistStateToGraph() {
-        if (graphNode != null) {
+        if (graphNode != null && state != null) {
             // Ensure there is a graph to persist state to
             PluginExecution.withPlugin(new TimelineStatePlugin(state)).executeLater(graphNode.getGraph());
         }
@@ -730,15 +761,15 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                         timelinePanel.setNodeLabelAttributes(GraphManager.getDefault().getVertexAttributeNames());
                         populateFromGraphNode(true);
                     });
-                
-                // Detect value change on the temporal attribute
+
+                    // Detect value change on the temporal attribute
                 } else if (currentTemporalAttributeModificationCount != oldTemporalAttributeModificationCount) {
                     populateFromGraphNode(true);
-                // Detect graph structural changes (such as adding and removal of nodes etc):
+                    // Detect graph structural changes (such as adding and removal of nodes etc):
                 } else if (currentStructureModificationCount != oldStructureModificationCount) {
                     // Re-populate charts:
                     populateFromGraphNode(true);
-                // Detect changes of selection to transactions or vertices:
+                    // Detect changes of selection to transactions or vertices:
                 } else if (currentTransSelectedModificationCount != oldTransSelectedModificationCount
                         || currentVertSelectedModificationCount != oldVertSelectedModificationCount) {
                     // Do only a partial update, ie the timeline and selection area for histogram:
