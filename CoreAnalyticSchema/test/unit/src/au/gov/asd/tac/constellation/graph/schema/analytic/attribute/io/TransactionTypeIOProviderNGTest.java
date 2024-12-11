@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2024 Australian Signals Directorate
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -41,14 +41,17 @@ import org.testng.annotations.Test;
  *
  * @author antares
  */
-public class VertexTypeIOProviderNGTest {
+public class TransactionTypeIOProviderNGTest {
     
     private StoreGraph graph;
     
     private int vxId1;
     private int vxId2;
     
-    private int typeVertexAttribute;
+    private int tId1;
+    private int tId2;
+    
+    private int typeTransactionAttribute;
     
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -66,15 +69,18 @@ public class VertexTypeIOProviderNGTest {
         vxId1 = graph.addVertex();
         vxId2 = graph.addVertex();
         
-        typeVertexAttribute = AnalyticConcept.VertexAttribute.TYPE.ensure(graph);
+        tId1 = graph.addTransaction(vxId1, vxId2, true);
+        tId2 = graph.addTransaction(vxId2, vxId1, true);
+        
+        typeTransactionAttribute = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
     }
-    
-    /**
-     * Test of readObject method, of class VertexTypeIOProvider.
+
+        /**
+     * Test of readObject method, of class TransactionTypeIOProvider.
      * @throws java.io.IOException
      */
     @Test
@@ -86,93 +92,61 @@ public class VertexTypeIOProviderNGTest {
         final ObjectNode mainNode = mapper.createObjectNode();
         
         final ObjectNode typeObject = mainNode.putObject("typeObject");
-        typeObject.put("Name", "MD5 Hash");
-        typeObject.put("Description", "A node representing an MD5 hash");
-        typeObject.put("Foreground Icon", "Security.MD5");
-        typeObject.put("Background Icon", "Background.Flat Square");
-        typeObject.put("Detection Regex", "[0-9a-fA-F]{32}");
-        typeObject.put("Validation Regex", "^[0-9a-f]{32}$");
+        typeObject.put("Name", "Correlation");
+        typeObject.put("Description", "A transaction representing a two entities which are part of the same larger entity, eg. a person is correlated to their online identifier");
+        typeObject.put("Style", "SOLID");
+        typeObject.put("Directed", false);
         typeObject.put("Incomplete", false);
         final ObjectNode typeColor = typeObject.putObject("Color");
-        typeColor.put("name", "Cyan");
+        typeColor.put("name", "Azure");
         typeObject.putObject("Properties");
         
-        final ObjectNode typeSuperType = typeObject.putObject("Super Type");
-        typeSuperType.put("Name", "Hash");
-        typeSuperType.put("Description", "A node representing a hash");
-        typeSuperType.put("Foreground Icon", "Character.Hash");
-        typeSuperType.put("Background Icon", "Background.Flat Square");
-        typeSuperType.put("Incomplete", false);
-        final ObjectNode superTypeColor = typeSuperType.putObject("Color");
-        superTypeColor.put("name", "Cyan");
-        typeSuperType.putObject("Properties");
+        mainNode.put("typeString", "Correlation");
         
-        mainNode.put("typeString", "MD5 Hash");
+        assertNull(graph.getObjectValue(typeTransactionAttribute, tId1));
+        assertNull(graph.getObjectValue(typeTransactionAttribute, tId2));
         
-        assertNull(graph.getObjectValue(typeVertexAttribute, vxId1));
-        assertNull(graph.getObjectValue(typeVertexAttribute, vxId2));
+        final TransactionTypeIOProvider instance = new TransactionTypeIOProvider();
+        instance.readObject(typeTransactionAttribute, tId1, mainNode.get("typeObject"), graph, null, null, null, cache);
+        instance.readObject(typeTransactionAttribute, tId2, mainNode.get("typeString"), graph, null, null, null, cache);
         
-        final VertexTypeIOProvider instance = new VertexTypeIOProvider();
-        instance.readObject(typeVertexAttribute, vxId1, mainNode.get("typeObject"), graph, null, null, null, cache);
-        instance.readObject(typeVertexAttribute, vxId2, mainNode.get("typeString"), graph, null, null, null, cache);
-        
-        assertEquals(graph.getObjectValue(typeVertexAttribute, vxId1), AnalyticConcept.VertexType.MD5);
-        assertEquals(graph.getObjectValue(typeVertexAttribute, vxId2), AnalyticConcept.VertexType.MD5);
+        assertEquals(graph.getObjectValue(typeTransactionAttribute, tId1), AnalyticConcept.TransactionType.CORRELATION);
+        assertEquals(graph.getObjectValue(typeTransactionAttribute, tId2), AnalyticConcept.TransactionType.CORRELATION);
     }
     
     /**
-     * Test of writeObject method, of class VertexTypeIOProvider.
+     * Test of writeObject method, of class TransactionTypeIOProvider.
      * @throws java.io.IOException
      */
     @Test
     public void testWriteObject() throws IOException {
         System.out.println("writeObject");
         
-        final GraphAttribute typeAttribute = new GraphAttribute(graph, typeVertexAttribute);
+        final GraphAttribute typeAttribute = new GraphAttribute(graph, typeTransactionAttribute);
         
-        graph.setObjectValue(typeVertexAttribute, vxId1, AnalyticConcept.VertexType.MD5);
+        graph.setObjectValue(typeTransactionAttribute, tId1, AnalyticConcept.TransactionType.CORRELATION);
         
-        final VertexTypeIOProvider instance = new VertexTypeIOProvider();
+        final TransactionTypeIOProvider instance = new TransactionTypeIOProvider();
         
         try (final ByteArrayOutputStream actual = new ByteArrayOutputStream();
                 final ByteArrayOutputStream expected = new ByteArrayOutputStream()) {
             JsonGenerator jsonGenerator = new JsonFactory().createGenerator(actual, JsonEncoding.UTF8);
             jsonGenerator.writeStartObject();
-            instance.writeObject(typeAttribute, vxId1, jsonGenerator, graph, null, true);
+            instance.writeObject(typeAttribute, tId1, jsonGenerator, graph, null, true);
             jsonGenerator.close();
             
             jsonGenerator = new JsonFactory().createGenerator(expected, JsonEncoding.UTF8);
             jsonGenerator.writeStartObject();
             jsonGenerator.writeObjectFieldStart("Type");
-            jsonGenerator.writeStringField("Name", "MD5 Hash");
-            jsonGenerator.writeStringField("Description", "A node representing an MD5 hash");
+            jsonGenerator.writeStringField("Name", "Correlation");
+            jsonGenerator.writeStringField("Description", "A transaction representing a two entities which are part of the same larger entity, eg. a person is correlated to their online identifier");
             
             jsonGenerator.writeObjectFieldStart("Color");
-            jsonGenerator.writeStringField("name", "Cyan");
+            jsonGenerator.writeStringField("name", "Azure");
             jsonGenerator.writeEndObject();
             
-            jsonGenerator.writeStringField("Foreground Icon", "Security.MD5");          
-            jsonGenerator.writeStringField("Background Icon", "Background.Flat Square");
-            jsonGenerator.writeStringField("Detection Regex", "[0-9a-fA-F]{32}");
-            jsonGenerator.writeStringField("Validation Regex", "^[0-9a-f]{32}$");
-            
-            jsonGenerator.writeObjectFieldStart("Super Type");
-            jsonGenerator.writeStringField("Name", "Hash");
-            jsonGenerator.writeStringField("Description", "A node representing a hash");
-            
-            jsonGenerator.writeObjectFieldStart("Color");
-            jsonGenerator.writeStringField("name", "Cyan");
-            jsonGenerator.writeEndObject();
-            
-            jsonGenerator.writeStringField("Foreground Icon", "Character.Hash");          
-            jsonGenerator.writeStringField("Background Icon", "Background.Flat Square");
-            
-            jsonGenerator.writeObjectFieldStart("Properties");
-            jsonGenerator.writeEndObject();
-            
-            jsonGenerator.writeBooleanField("Incomplete", false);
-            
-            jsonGenerator.writeEndObject();
+            jsonGenerator.writeStringField("Style", "SOLID");          
+            jsonGenerator.writeBooleanField("Directed", false);
             
             jsonGenerator.writeObjectFieldStart("Properties");
             jsonGenerator.writeEndObject();
@@ -187,22 +161,22 @@ public class VertexTypeIOProviderNGTest {
     }
     
     /**
-     * Test of writeObject method, of class VertexTypeIOProvider. Value set to default null, verbose true.
+     * Test of writeObject method, of class TransactionTypeIOProvider. Value set to default null, verbose true.
      * @throws java.io.IOException
      */
     @Test
     public void testWriteObjectNullValue() throws IOException {
         System.out.println("writeObjectNullValue");
         
-        final GraphAttribute typeAttribute = new GraphAttribute(graph, typeVertexAttribute);
+        final GraphAttribute typeAttribute = new GraphAttribute(graph, typeTransactionAttribute);
         
-        final VertexTypeIOProvider instance = new VertexTypeIOProvider();
+        final TransactionTypeIOProvider instance = new TransactionTypeIOProvider();
         
         try (final ByteArrayOutputStream actual = new ByteArrayOutputStream();
                 final ByteArrayOutputStream expected = new ByteArrayOutputStream()) {
             JsonGenerator jsonGenerator = new JsonFactory().createGenerator(actual, JsonEncoding.UTF8);
             jsonGenerator.writeStartObject();
-            instance.writeObject(typeAttribute, vxId1, jsonGenerator, graph, null, true);
+            instance.writeObject(typeAttribute, tId1, jsonGenerator, graph, null, true);
             jsonGenerator.close();
             
             jsonGenerator = new JsonFactory().createGenerator(expected, JsonEncoding.UTF8);
@@ -216,22 +190,22 @@ public class VertexTypeIOProviderNGTest {
     }
     
     /**
-     * Test of writeObject method, of class VertexTypeIOProvider. Value set to default null, verbose false.
+     * Test of writeObject method, of class TransactionTypeIOProvider. Value set to default null, verbose false.
      * @throws java.io.IOException
      */
     @Test
     public void testWriteObjectNullValueNoVerbose() throws IOException {
         System.out.println("writeObjectNullValue");
         
-        final GraphAttribute typeAttribute = new GraphAttribute(graph, typeVertexAttribute);
+        final GraphAttribute typeAttribute = new GraphAttribute(graph, typeTransactionAttribute);
         
-        final VertexTypeIOProvider instance = new VertexTypeIOProvider();
+        final TransactionTypeIOProvider instance = new TransactionTypeIOProvider();
         
         try (final ByteArrayOutputStream actual = new ByteArrayOutputStream();
                 final ByteArrayOutputStream expected = new ByteArrayOutputStream()) {
             JsonGenerator jsonGenerator = new JsonFactory().createGenerator(actual, JsonEncoding.UTF8);
             jsonGenerator.writeStartObject();
-            instance.writeObject(typeAttribute, vxId1, jsonGenerator, graph, null, false);
+            instance.writeObject(typeAttribute, tId1, jsonGenerator, graph, null, false);
             jsonGenerator.close();
             
             jsonGenerator = new JsonFactory().createGenerator(expected, JsonEncoding.UTF8);
