@@ -55,7 +55,7 @@ public class FloatTextureBuffer extends TextureBuffer<FloatBuffer> {
         
         // The .glMapBuffer(GL2ES3.GL_TEXTURE_BUFFER, GL2ES3.GL_READ_WRITE); method is throwing a GL exception when 
         // multiple animations are runnng on large graphs and a graph view resize is triggered by opening or closing another view.
-        // The error does not cause disruption to the behavious or Constellation but does result in in an error message bing thrown
+        // The error does not cause disruption to the behaviours or Constellation but does result in in an error message being thrown
         try{
             final ByteBuffer bytebuffer = gl.glMapBuffer(GL2ES3.GL_TEXTURE_BUFFER, GL2ES3.GL_READ_WRITE); 
             return bytebuffer.order(ByteOrder.nativeOrder()).asFloatBuffer();

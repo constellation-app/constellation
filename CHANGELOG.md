@@ -1,5 +1,13 @@
 # Constellation Changes
 
+## Changes in December 2024
+-   Refactored animation framework to update graph attributes and hold write locks for minimal durations to enable graph interction.
+-   Created Color Warp Animation.
+-   Enhanced Fly through and Direction Indicators Animation.
+-   Created Graph Connection Motion Attribute as a META graph element type.
+-   Created Animation setting to disable animations for low power machines.
+-   Created SetColorValuesOperation to save space on the undo/redo stack.
+
 ## Changes in November 2024
 -   Removed `CreateVertexTypePlugin` and `CreateTransactionTypePlugin` which were unused.
 -   Removed `AnalyticSchemaPluginRegistry` as there were no more plugins after above ones were removed.
@@ -8,12 +16,6 @@
 -   Removed `ColorblindUtilities.setColorRef()` which only had one use. This behaviour is now directly added to where the function was previously used.
 -   Renamed `ColorblindUtilities.calcColorBrightness()` to `ColorblindUtilities.calculateColorBrightness()` for readability.
 -   Refactored MenuBaseAction to disable graph dependant menu items when primary graph is ambiguous.
--   Refactored animation framework to update graph attributes and hold write locks for minimal durations to enable graph interction.
--   Created Color Warp Animation.
--   Enhanced Fly through and Direction Indicators Animation.
--   Created Graph Connection Motion Attribute as a META graph element type.
--   Created Animation setting to disable animations for low power machines.
--   Created SetColorValuesOperation to save space on the undo/redo stack.
 
 ## Changes in October 2024
 -   Added ability to pass parameters and selected items on graph to PluginReporter to display via `DefaultPluginInteraction`.

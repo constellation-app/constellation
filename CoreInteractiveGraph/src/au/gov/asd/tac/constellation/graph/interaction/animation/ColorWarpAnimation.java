@@ -79,7 +79,7 @@ public final class ColorWarpAnimation extends Animation {
     @Override
     public void animate(final GraphWriteMethods wg) {        
         // Do not animate unless there is more than 1 node
-        if (wg.getVertexCount() > 0) {                    
+        if (wg.getVertexCount() > 0 && wg.getTransactionCount() > 0) {                    
             for (int vertexPosition = 0 ; vertexPosition < wg.getVertexCount(); vertexPosition++) {
                 final SetColorValuesOperation colorVerticesOperation = new SetColorValuesOperation(wg, GraphElementType.VERTEX, vertexColorAttr);
                 final int vertexID = wg.getVertex(vertexPosition);
@@ -126,11 +126,11 @@ public final class ColorWarpAnimation extends Animation {
    
         final Color col = color.getJavaFXColor();
         final double hue = col.getHue() <= 360 ? col.getHue() + 5 : 0;
-        final double sat = col.getSaturation();
-        final double bright = col.getBrightness();
-        final Color newCol = Color.hsb(hue, sat, bright);
+//        final double sat = col.getSaturation();
+//        final double bright = col.getBrightness();
+//        final Color newCol = Color.hsb(hue, sat, bright);
         
-        return ConstellationColor.fromFXColor(newCol);
+        return ConstellationColor.fromFXColor(Color.hsb(hue, col.getSaturation(), col.getBrightness()));
     }
 
     @Override

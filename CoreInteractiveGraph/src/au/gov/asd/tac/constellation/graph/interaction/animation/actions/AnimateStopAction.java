@@ -42,7 +42,10 @@ public final class AnimateStopAction extends AnimationUtilityMenuBaseAction {
 
     @Override
     protected void updateValue() {
-        AnimationUtilities.stopAllAnimations();
+        if (this.getContext() != null && this.getContext().getGraph() != null
+                && AnimationUtilities.isAnimating(this.getContext().getGraph().getId())) {
+            AnimationUtilities.stopAllAnimations(this.getContext().getGraph().getId());
+        }
     }
 
     @Override
