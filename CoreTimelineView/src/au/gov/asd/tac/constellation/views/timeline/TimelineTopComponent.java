@@ -507,8 +507,10 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                             if (state != null && state.getNodeLabelsAttr() != null) {
                                 timelinePanel.setNodeLabelAttribute(state.getNodeLabelsAttr());
                                 timelinePanel.setIsShowingNodeLabelAttributes(state.isShowingNodeLabels());
+                                timelinePanel.populateFromGraph(rg, currentDatetimeAttribute, state.getNodeLabelsAttr(), selectedOnly, state.getTimeZone());
+                            } else {
+                                timelinePanel.populateFromGraph(rg, currentDatetimeAttribute, null, selectedOnly, state == null ? TimeZoneUtilities.UTC : state.getTimeZone());
                             }
-                            timelinePanel.populateFromGraph(rg, currentDatetimeAttribute, state.getNodeLabelsAttr(), selectedOnly, state.getTimeZone());
                             overviewPanel.populateHistogram(rg, currentDatetimeAttribute, getTimelineLowerTimeExtent(), getTimelineUpperTimeExtent(), isFullRefresh, selectedOnly);
 
                             // Restore the dimming state if we have it:
