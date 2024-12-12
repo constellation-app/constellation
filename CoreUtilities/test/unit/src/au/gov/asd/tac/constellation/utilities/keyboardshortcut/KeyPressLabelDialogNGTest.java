@@ -71,7 +71,7 @@ public class KeyPressLabelDialogNGTest {
                  
                  
                  KeyPressLabelDialog k2 = new KeyPressLabelDialog();
-                 assertEquals(kl.getDefaultValue(), StringUtils.EMPTY);
+                 assertEquals(kl.getDefaultValue(), "test");
                  assertEquals(kl.getLabel().getText(), StringUtils.EMPTY);
             }
         });
