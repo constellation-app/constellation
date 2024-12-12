@@ -15,20 +15,20 @@
  */
 package au.gov.asd.tac.constellation.plugins.gui;
 
+import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterListener;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
-import au.gov.asd.tac.constellation.utilities.gui.MultiChoiceInputField;
+import au.gov.asd.tac.constellation.utilities.gui.field.MultiChoiceInput;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.scene.layout.HBox;
+import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputListener;
 
 /**
  * A drop-down combo box allowing multiple selections, which is the GUI element
@@ -42,88 +42,66 @@ import javafx.scene.layout.HBox;
  * au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType
  *
  * @author twinkle2_little
+ * @author capricornunicorn123
  */
-public class MultiChoiceInputPane extends HBox {
+public final class MultiChoiceInputPane extends 
+        ParameterInputPane<MultiChoiceParameterValue, List<ParameterValue>> {
 
     private static final Logger LOGGER = Logger.getLogger(MultiChoiceInputPane.class.getName());
-    
-    public static final int DEFAULT_WIDTH = 300;
 
-    private final ObservableList<ParameterValue> options = FXCollections.observableArrayList();
-    private final MultiChoiceInputField<ParameterValue> field;
-    private boolean isAdjusting = false;
     
     public MultiChoiceInputPane(final PluginParameter<MultiChoiceParameterValue> parameter) {
-        options.addAll(MultiChoiceParameterType.getOptionsData(parameter));
-        field = new MultiChoiceInputField<>(options);
-        field.setPromptText(parameter.getDescription());
-        if (parameter.getParameterValue().getGuiInit() != null) {
-            parameter.getParameterValue().getGuiInit().init(field);
-        }
-        field.setDisable(!parameter.isEnabled());
-        field.setManaged(parameter.isVisible());
-        field.setVisible(parameter.isVisible());
-        this.setManaged(parameter.isVisible());
-        this.setVisible(parameter.isVisible());
+        super(new MultiChoiceInput<ParameterValue>(), parameter);
+        final MultiChoiceParameterValue pv = parameter.getParameterValue();
+        ((MultiChoiceInput) input).setOptions(pv.getOptionsData());
+        setFieldValue(pv.getChoicesData());
 
-        // Set properties before adding listener to ensure unwanted onChanged events do not fire.
-        Platform.runLater(() -> {
-            @SuppressWarnings("unchecked") // Below cast will always work because getChoicesData returns List<? extends ParameterValue>.
-            final List<ParameterValue> checkedItems = (List<ParameterValue>) MultiChoiceParameterType.getChoicesData(parameter);
-            checkedItems.stream().forEach(checked -> {
-                final BooleanProperty bp = field.getItemBooleanProperty(checked);
-                if (bp != null) {
-                    bp.setValue(true);
+    }
+
+    @Override
+    public ConstellationInputListener getFieldChangeListener(PluginParameter<MultiChoiceParameterValue> parameter) {
+        return (ConstellationInputListener<List<ParameterValue>>) (List<ParameterValue> newValue) -> {
+            if (newValue != null) {
+                MultiChoiceParameterType.setChoicesData(parameter, newValue);
+            }
+        };
+    }
+
+    @Override
+    public PluginParameterListener getPluginParameterListener() {
+        return (PluginParameter<?> parameter, ParameterChange change) -> Platform.runLater(() -> {
+            @SuppressWarnings("unchecked") //mcPluginParameter is a MultiChoiceParameter
+            final PluginParameter<MultiChoiceParameterValue> mcPluginParameter = (PluginParameter<MultiChoiceParameterValue>) parameter;
+            switch (change) {
+                
+                case VALUE -> {
+                    // Don't change the value if it isn't necessary.
+                    List<ParameterValue> selection = getFieldValue();
+                    if (!selection.equals(MultiChoiceParameterType.getChoicesData(mcPluginParameter))){
+                        setFieldValue(selection);
+                    }
                 }
-            });
-
-            field.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change<? extends ParameterValue> c) -> {
-                if (!isAdjusting) {
-                    MultiChoiceParameterType.setChoicesData(parameter, field.getCheckModel().getCheckedItems());
-                }
-            });
-        });
-
-        parameter.addListener((pluginParameter, change) -> Platform.runLater(() -> {
-                @SuppressWarnings("unchecked") //mcPluginParameter is a MultiChoiceParameter
-                final PluginParameter<MultiChoiceParameterValue> mcPluginParameter = (PluginParameter<MultiChoiceParameterValue>) pluginParameter;
-                switch (change) {
-                    case VALUE -> {
-                        isAdjusting = true;
-                        field.getCheckModel().clearChecks(); //The order matters here- this should be called before clearing the options.
-                        options.clear();
-                        options.addAll(MultiChoiceParameterType.getOptionsData(mcPluginParameter));
-                        @SuppressWarnings("unchecked") //checkedItems will be list of parameter values
-                        final List<ParameterValue> checkedItems = (List<ParameterValue>) MultiChoiceParameterType.getChoicesData(mcPluginParameter);
-
-                        field.getCheckModel().getCheckedItems();
-                        checkedItems.forEach(checked -> 
-                            field.getCheckModel().check(checked));
+                
+                case PROPERTY -> {
+                    
+                    // Update the Pane if the Optons have changed
+                    List<ParameterValue> paramOptions = MultiChoiceParameterType.getOptionsData(mcPluginParameter);
+                    if (!((MultiChoiceInput) input).getOptions().equals(paramOptions)){
+                        ((MultiChoiceInput) input).setOptions(paramOptions);
                         
-                        // give a visual indicator if a required parameter is empty
-                        field.setId(mcPluginParameter.isRequired() && field.getCheckModel().isEmpty() ? "invalid selection" : "");
-                        field.setStyle("invalid selection".equals(field.getId()) ? "-fx-color: #8A1D1D" : "");
-
-                        isAdjusting = false;
+                        // Only keep the value if it's in the new choices.
+                        if (paramOptions.contains(MultiChoiceParameterType.getChoicesData(mcPluginParameter))) {
+                            setFieldValue(MultiChoiceParameterType.getChoicesData(mcPluginParameter));
+                        } else {
+                            setFieldValue(null);
+                        }
                     }
-                    case ENABLED -> field.setDisable(!pluginParameter.isEnabled());
-                    case VISIBLE -> {
-                        field.setManaged(parameter.isVisible());
-                        field.setVisible(parameter.isVisible());
-                        this.setVisible(parameter.isVisible());
-                        this.setManaged(parameter.isVisible());
-                    }
-                    default -> LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
                 }
-            }));
-
-        //field width causes buttons to sit in pane space when available but retract to the same size as buttons if needed.
-        field.setPrefWidth(DEFAULT_WIDTH);
-        field.setMinWidth(50);
-        
-        final HBox fieldAndButtons = new HBox();
-        fieldAndButtons.setSpacing(2);
-        fieldAndButtons.getChildren().addAll(field, field.getBulkSelectionOptionsMenuButton());
-        getChildren().add(fieldAndButtons);
+                
+                case ENABLED -> updateFieldEnablement();
+                case VISIBLE -> updateFieldVisability();
+                default -> LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
+            }
+        });
     }
 }
