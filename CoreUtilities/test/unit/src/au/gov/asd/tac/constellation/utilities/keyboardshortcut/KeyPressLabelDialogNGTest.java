@@ -62,14 +62,17 @@ public class KeyPressLabelDialogNGTest {
     @Test
     public void testKeyPressLabelDialog() throws Exception {
         
-       
-        
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
                  KeyPressLabelDialog kl = new KeyPressLabelDialog("test");
                  assertEquals(kl.getDefaultValue(), "test");
                  assertEquals(kl.getLabel().getText(), "test");
+                 
+                 
+                 KeyPressLabelDialog k2 = new KeyPressLabelDialog();
+                 assertEquals(kl.getDefaultValue(), StringUtils.EMPTY);
+                 assertEquals(kl.getLabel().getText(), StringUtils.EMPTY);
             }
         });
 

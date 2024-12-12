@@ -102,7 +102,7 @@ public class KeyPressLabelDialog extends Dialog<String> {
         return defaultValue;
     }
 
-    public final Label getLabel() {
+    public final Label getLabel() {      
         return label;
     }
 

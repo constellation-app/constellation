@@ -48,15 +48,19 @@ public class RecordKeyboardShortcut  {
     public static final String YES = "Yes";
     public static final String NO = "No";
     
-    /**
-     * This is the system property that is set to true in order to make the AWT
-     * thread run in headless mode for tests, etc.
-     */
-    private static final String AWT_HEADLESS_PROPERTY = "java.awt.headless";
+    final KeyPressLabelDialog td;
 
-    public Optional<KeyboardShortcutSelectionResult> start(final File preferenceDirectory) {       
+    public RecordKeyboardShortcut() {
+        this.td = new KeyPressLabelDialog();
+    }
+    
+    //For unit test
+    public RecordKeyboardShortcut(KeyPressLabelDialog td) {
+        this.td = td;
+    }
+    
+    public Optional<KeyboardShortcutSelectionResult> start(final File preferenceDirectory) {        
         
-        final KeyPressLabelDialog td = new KeyPressLabelDialog();
         td.setTitle(KEYBOARD_SHORTCUT_DIALOG_TITLE);
         td.setHeaderText(KEYBOARD_SHORTCUT_DIALOG_HEADER_TEXT);
         td.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
