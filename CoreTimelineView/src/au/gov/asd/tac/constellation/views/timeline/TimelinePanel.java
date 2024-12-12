@@ -219,7 +219,8 @@ public class TimelinePanel extends Region {
     }
 
     public void updateTimeline(final GraphReadMethods graph, final boolean selectedOnly, final ZoneId zoneId) {
-        final XYChart.Series<Number, Number> series = new XYChart.Series<>();
+        final ObservableList<XYChart.Data<Number, Number>> listOfNodeItems = FXCollections.observableArrayList();
+
         // Graph attribute ids:
         final String colorAttrDesc = new ColorAttributeDescription().getName();
         final int colorTransAttr = graph.getAttribute(GraphElementType.TRANSACTION, colorAttrDesc);
@@ -230,7 +231,9 @@ public class TimelinePanel extends Region {
         long lowestObservedY = Long.MAX_VALUE;
         long highestObservedY = Long.MIN_VALUE;
 
-        final ObservableList<XYChart.Data<Number, Number>> listOfNodeItems = FXCollections.observableArrayList();
+        // Helps with out of memory issues
+        clearTimeLineData();
+        timeline.setData(null);
 
         for (final TreeElement element : clusteringManager.getElementsToDraw()) {
             XYChart.Data<Number, Number> nodeItem = element.getNodeItem();
@@ -341,13 +344,20 @@ public class TimelinePanel extends Region {
             lowestObservedY = Math.min(element.getLowerDisplayPos(), lowestObservedY);
             highestObservedY = Math.max(element.getUpperDisplayPos(), highestObservedY);
         }
-        series.setData(listOfNodeItems);
 
+        final XYChart.Series<Number, Number> series = new XYChart.Series<>();
+        series.setData(listOfNodeItems);
         timeline.populate(series, lowestObservedY, highestObservedY, selectedOnly, zoneId);
     }
 
     private static String labelMaker(final String a, final char cxn, final String b) {
         return a != null && b != null ? String.format("%s %s %s", a, cxn, b) : null;
+    }
+
+    public void clearTimeLineData() {
+        if (timeline.getData() != null) {
+            timeline.getData().clear();
+        }
     }
 
     /**
@@ -356,10 +366,7 @@ public class TimelinePanel extends Region {
      * @see TimelineChart
      */
     public void clearTimeline() {
-        if (timeline.getData() != null) {
-            timeline.getData().clear();
-        }
-
+        clearTimeLineData();
         clusteringManager.clearTree();
         GraphManager.getDefault().setElementSelected(false);
     }

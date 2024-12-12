@@ -201,19 +201,18 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
         state.setLowerTimeExtent(lowerTimeExtent);
         state.setUpperTimeExtent(upperTimeExtent);
 
-        if (graphNode.getGraph() != null) {
-            final ReadableGraph graph = graphNode.getGraph().getReadableGraph();
-            try {
-                timelinePanel.setTimelineExtent(graph, state.getLowerTimeExtent(),
-                        state.getUpperTimeExtent(), state.isShowingSelectedOnly(), state.getTimeZone());
-            } finally {
-                graph.release();
-            }
-
-            timelinePanel.updateExclusionState(graphNode.getGraph(),
-                    (long) state.getLowerTimeExtent(), (long) state.getUpperTimeExtent(), state.getExclusionState());
-            overviewPanel.setExtentPOV(state.getLowerTimeExtent(), state.getUpperTimeExtent());
+        if (graphNode.getGraph() == null) {
+            return;
         }
+
+        try (final ReadableGraph graph = graphNode.getGraph().getReadableGraph()) {
+            timelinePanel.setTimelineExtent(graph, state.getLowerTimeExtent(),
+                    state.getUpperTimeExtent(), state.isShowingSelectedOnly(), state.getTimeZone());
+        }
+
+        timelinePanel.updateExclusionState(graphNode.getGraph(),
+                (long) state.getLowerTimeExtent(), (long) state.getUpperTimeExtent(), state.getExclusionState());
+        overviewPanel.setExtentPOV(state.getLowerTimeExtent(), state.getUpperTimeExtent());
     }
 
     // <editor-fold defaultstate="collapsed" desc="Timeline and Histogram Extents">
@@ -330,6 +329,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
     @Override
     public void componentClosed() {
         result.removeLookupListener(this);
+        timelinePanel.clearTimeLineData();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Properties">
@@ -450,8 +450,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                     return;
                 }
                 datetimeAttributes = new ArrayList<>();
-                final ReadableGraph rg = graph.getReadableGraph();
-                try {
+                try (final ReadableGraph rg = graph.getReadableGraph()) {
                     final int attributeCount = rg.getAttributeCount(GraphElementType.TRANSACTION);
                     for (int i = 0; i < attributeCount; i++) {
                         final int attrID = rg.getAttribute(GraphElementType.TRANSACTION, i);
@@ -486,53 +485,43 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                         currentTemporalAttributeModificationCount = rg.getValueModificationCounter(rg.getAttribute(GraphElementType.TRANSACTION, currentDatetimeAttribute));
                         // We've calculated everything, so start populating the graph:
                         Platform.runLater(() -> {
-                            final ReadableGraph rg1 = graph.getReadableGraph();
-                            try {
-                                // Now that the heights are known, set the position of the splitPane divider:
-                                splitPane.setDividerPositions(splitPanePosition);
-                                // Clear anything already on the charts:
-                                timelinePanel.clearTimeline();
-                                overviewPanel.clearHistogram(!isFullRefresh);
-                                // Ensure that everything is visible:
-                                timelinePanel.setDisable(false);
-                                //if visibility is set to false at the constructor, the javafx thread gets stuck in an endless loop under
-                                //certain conditions (with timeline open, create graph, close graph) so we set opacity to 0 in the constructor so that it is 'invisible'
-                                splitPane.setVisible(true);
-                                splitPane.setDisable(false);
-                                // Add the datetime attributes:
-                                timelinePanel.setDateTimeAttributes(datetimeAttributes, currentDatetimeAttribute);
-                                timelinePanel.setTimeZone(state == null ? TimeZoneUtilities.UTC : state.getTimeZone());
-                                // Add the label attributes:
-                                timelinePanel.setNodeLabelAttributes(GraphManager.getDefault().getVertexAttributeNames());
-                                final boolean selectedOnly = state != null && state.isShowingSelectedOnly();
-                                timelinePanel.setIsShowingSelectedOnly(selectedOnly);
-                                if (state != null && state.getNodeLabelsAttr() != null) {
-                                    timelinePanel.setNodeLabelAttribute(state.getNodeLabelsAttr());
-                                    timelinePanel.setIsShowingNodeLabelAttributes(state.isShowingNodeLabels());
-                                    timelinePanel.populateFromGraph(rg1, currentDatetimeAttribute, state.getNodeLabelsAttr(), selectedOnly, state.getTimeZone());
-                                } else {
-                                    timelinePanel.populateFromGraph(rg1, currentDatetimeAttribute, null, selectedOnly, state == null ? TimeZoneUtilities.UTC : state.getTimeZone());
-                                }
-                                overviewPanel.populateHistogram(rg1, currentDatetimeAttribute, getTimelineLowerTimeExtent(), getTimelineUpperTimeExtent(), isFullRefresh, selectedOnly);
-                            } finally {
-                                rg1.release();
+                            // try (final ReadableGraph rg1 = graph.getReadableGraph()) {
+                            // Now that the heights are known, set the position of the splitPane divider:
+                            splitPane.setDividerPositions(splitPanePosition);
+                            // Clear anything already on the charts:
+                            timelinePanel.clearTimeline();
+                            overviewPanel.clearHistogram(!isFullRefresh);
+                            // Ensure that everything is visible:
+                            timelinePanel.setDisable(false);
+                            //if visibility is set to false at the constructor, the javafx thread gets stuck in an endless loop under
+                            //certain conditions (with timeline open, create graph, close graph) so we set opacity to 0 in the constructor so that it is 'invisible'
+                            splitPane.setVisible(true);
+                            splitPane.setDisable(false);
+                            // Add the datetime attributes:
+                            timelinePanel.setDateTimeAttributes(datetimeAttributes, currentDatetimeAttribute);
+                            timelinePanel.setTimeZone(state == null ? TimeZoneUtilities.UTC : state.getTimeZone());
+                            // Add the label attributes:
+                            timelinePanel.setNodeLabelAttributes(GraphManager.getDefault().getVertexAttributeNames());
+                            final boolean selectedOnly = state != null && state.isShowingSelectedOnly();
+                            timelinePanel.setIsShowingSelectedOnly(selectedOnly);
+                            if (state != null && state.getNodeLabelsAttr() != null) {
+                                timelinePanel.setNodeLabelAttribute(state.getNodeLabelsAttr());
+                                timelinePanel.setIsShowingNodeLabelAttributes(state.isShowingNodeLabels());
                             }
+                            timelinePanel.populateFromGraph(rg, currentDatetimeAttribute, state.getNodeLabelsAttr(), selectedOnly, state.getTimeZone());
+                            overviewPanel.populateHistogram(rg, currentDatetimeAttribute, getTimelineLowerTimeExtent(), getTimelineUpperTimeExtent(), isFullRefresh, selectedOnly);
+
                             // Restore the dimming state if we have it:
-                            if (state != null) {
-                                if (state.getLowerTimeExtent() == 0) {
-                                    setExtents(getTimelineLowerTimeExtent(), getTimelineUpperTimeExtent());
-                                }
-                                timelinePanel.setExclusionState(state.getExclusionState());
-                            } else {
+                            if (state == null) {
                                 // There is no state, so lets create a new one:
                                 state = new TimelineState(getTimelineLowerTimeExtent(), getTimelineUpperTimeExtent(),
                                         0, false, currentDatetimeAttribute, false, null, TimeZoneUtilities.UTC);
                             }
+
                             setExtents(state.getLowerTimeExtent(), state.getUpperTimeExtent());
+                            timelinePanel.setExclusionState(state.getExclusionState());
                         });
                     }
-                } finally {
-                    rg.release();
                 }
             }
         };
