@@ -72,6 +72,7 @@ public final class GraphVisualAccess implements VisualAccess {
     private int graphBottomLabels = Graph.NOT_FOUND;
     private int graphConnectionLabels = Graph.NOT_FOUND;
     private int graphConnectionOpacity = Graph.NOT_FOUND;
+    private int graphConnectionMotion = Graph.NOT_FOUND;
     private int graphConnectionMode = Graph.NOT_FOUND;
     private int graphDrawFlags = Graph.NOT_FOUND;
     private int graphCamera = Graph.NOT_FOUND;
@@ -454,6 +455,12 @@ public final class GraphVisualAccess implements VisualAccess {
                 if (!Objects.equals(count, modCounts.put(VisualConcept.GraphAttribute.CONNECTION_OPACITY, count))) {
                     changes.add(new VisualChangeBuilder(VisualProperty.CONNECTIONS_OPACITY).forItems(1).build());
                 }
+                
+                count = graphConnectionMotion == Graph.NOT_FOUND ? -1 : accessGraph.getValueModificationCounter(graphConnectionMotion);
+                if (!Objects.equals(count, modCounts.put(VisualConcept.MetaAttribute.CONNECTION_MOTION, count))) {
+                    changes.add(new VisualChangeBuilder(VisualProperty.CONNECTIONS_MOTION).forItems(1).build());
+                }
+                
                 count = graphDrawFlags == Graph.NOT_FOUND ? -1 : accessGraph.getValueModificationCounter(graphDrawFlags);
                 if (!Objects.equals(count, modCounts.put(VisualConcept.GraphAttribute.DRAW_FLAGS, count))) {
                     changes.add(new VisualChangeBuilder(VisualProperty.DRAW_FLAGS).forItems(1).build());
@@ -579,6 +586,7 @@ public final class GraphVisualAccess implements VisualAccess {
         graphBottomLabels = VisualConcept.GraphAttribute.BOTTOM_LABELS.get(rg);
         graphConnectionLabels = VisualConcept.GraphAttribute.TRANSACTION_LABELS.get(rg);
         graphConnectionOpacity = VisualConcept.GraphAttribute.CONNECTION_OPACITY.get(rg);
+        graphConnectionMotion = VisualConcept.MetaAttribute.CONNECTION_MOTION.get(rg);
         graphConnectionMode = VisualConcept.GraphAttribute.CONNECTION_MODE.get(rg);
         graphDrawFlags = VisualConcept.GraphAttribute.DRAW_FLAGS.get(rg);
         graphCamera = VisualConcept.GraphAttribute.CAMERA.get(rg);
@@ -804,6 +812,10 @@ public final class GraphVisualAccess implements VisualAccess {
         return graphConnectionOpacity != Graph.NOT_FOUND ? accessGraph.getObjectValue(graphConnectionOpacity, 0) : VisualGraphDefaults.DEFAULT_CONNECTION_OPACITY;
     }
 
+    @Override
+    public float getConnectionMotion() {
+        return graphConnectionMotion != Graph.NOT_FOUND ? accessGraph.getObjectValue(graphConnectionMotion, 0) : VisualGraphDefaults.DEFAULT_CONNECTION_MOTION;
+    }
     @Override
     public int getTopLabelCount() {
         return topLabelAttrs.length;
@@ -1511,6 +1523,9 @@ public final class GraphVisualAccess implements VisualAccess {
 
         count = graphConnectionOpacity == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(graphConnectionOpacity);
         modCounts.put(VisualConcept.GraphAttribute.CONNECTION_OPACITY, count);
+        
+        count = graphConnectionMotion == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(graphConnectionMotion);
+        modCounts.put(VisualConcept.MetaAttribute.CONNECTION_MOTION, count);
 
         count = graphDrawFlags == Graph.NOT_FOUND ? -1 : readGraph.getValueModificationCounter(graphDrawFlags);
         modCounts.put(VisualConcept.GraphAttribute.DRAW_FLAGS, count);

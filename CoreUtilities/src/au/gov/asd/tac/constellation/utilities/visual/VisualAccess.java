@@ -516,6 +516,13 @@ public interface VisualAccess {
     public float getConnectionWidth(final int connection);
 
     /**
+     * Get the motion of the connections
+     *
+     * @return
+     */
+    public float getConnectionMotion();
+
+    /**
      * The options for the 'directedness' of connections.
      */
     public enum ConnectionDirection {

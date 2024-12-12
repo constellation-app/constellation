@@ -16,18 +16,23 @@
 package au.gov.asd.tac.constellation.graph.interaction.gui;
 
 import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
+import au.gov.asd.tac.constellation.graph.file.save.AutosaveUtilities;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Properties;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -37,7 +42,19 @@ import org.testng.annotations.Test;
 public class VisualGraphOpenerNGTest {
 
     private static final String FILE_NAME = "dummy.star";
+    private MockedStatic<AutosaveUtilities> autosaveUtilitiesMock;
 
+    @BeforeMethod
+    public void setUpMethod() throws Exception {
+        autosaveUtilitiesMock = 
+                mockStatic(AutosaveUtilities.class, Mockito.CALLS_REAL_METHODS);
+    }
+    
+    @AfterMethod
+    public void tearDownMethod() throws Exception {
+        autosaveUtilitiesMock.close();
+    }
+    
     /**
      * Test of openGraph method, of class VisualGraphOpener.
      */
@@ -57,6 +74,12 @@ public class VisualGraphOpenerNGTest {
         when(mockFileObject.getPath()).thenReturn(path);
         when(mockFile.getAbsolutePath()).thenReturn(path);
         when(mockFile.lastModified()).thenReturn(lastModified);
+        
+        final Properties propertiesMock = mock(Properties.class);
+        
+        autosaveUtilitiesMock.when(() 
+                -> AutosaveUtilities.getAutosave(mockFile))
+                .thenReturn(propertiesMock);
 
         // Check mocks work
         assertEquals(mockGdo.getPrimaryFile(), mockFileObject);
