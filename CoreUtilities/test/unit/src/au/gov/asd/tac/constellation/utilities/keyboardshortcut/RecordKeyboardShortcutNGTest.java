@@ -78,28 +78,68 @@ public class RecordKeyboardShortcutNGTest {
     public void test_recordKeyboardShortcut() throws Exception {
 
         File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
-        outputFile.createNewFile();
+        
+        try {
+            
+            outputFile.createNewFile();
 
-        KeyPressLabelDialog keyPressLabelDialog = mock(KeyPressLabelDialog.class);
-        when(keyPressLabelDialog.getDefaultValue()).thenReturn(StringUtils.EMPTY);
-        when(keyPressLabelDialog.getLabel()).thenReturn(createContentLabel("ctrl+1"));        
-        when(keyPressLabelDialog.getResult()).thenReturn("ctrl 1");
+            KeyPressLabelDialog keyPressLabelDialog = mock(KeyPressLabelDialog.class);
+            when(keyPressLabelDialog.getDefaultValue()).thenReturn(StringUtils.EMPTY);
+            when(keyPressLabelDialog.getLabel()).thenReturn(createContentLabel("ctrl+1"));
+            when(keyPressLabelDialog.getResult()).thenReturn("ctrl 1");
 
-        DialogPane dialogPane = mock(DialogPane.class);
-        when(dialogPane.getStylesheets()).thenReturn(mock(ObservableList.class));
-        when(keyPressLabelDialog.getDialogPane()).thenReturn(dialogPane);
+            DialogPane dialogPane = mock(DialogPane.class);
+            when(dialogPane.getStylesheets()).thenReturn(mock(ObservableList.class));
+            when(keyPressLabelDialog.getDialogPane()).thenReturn(dialogPane);
 
-        keyPressLabelDialog.setResultConverter(dialogButton -> {
-            String result = "ctrl 1";
-            return result;
-        });
+            keyPressLabelDialog.setResultConverter(dialogButton -> {
+                String result = "ctrl 1";
+                return result;
+            });
 
-        RecordKeyboardShortcut rk = new RecordKeyboardShortcut(keyPressLabelDialog);
-        Optional<KeyboardShortcutSelectionResult> ksResult = rk.start(outputFile);
-        assertTrue(ksResult.isPresent());
+            RecordKeyboardShortcut rk = new RecordKeyboardShortcut(keyPressLabelDialog);
+            Optional<KeyboardShortcutSelectionResult> ksResult = rk.start(outputFile);
+            assertTrue(ksResult.isPresent());
+
+        } finally {
+            Files.deleteIfExists(outputFile.toPath());
+        }
 
     }
 
+     @Test
+    public void test_recordKeyboardShortcut_alreadyassigned() throws Exception {
+
+        File outputFile = new File(System.getProperty("java.io.tmpdir") + "/ctrl 1 my-preferences.json");        
+        
+        
+        try {            
+            outputFile.createNewFile();
+
+            KeyPressLabelDialog keyPressLabelDialog = mock(KeyPressLabelDialog.class);
+            when(keyPressLabelDialog.getDefaultValue()).thenReturn(StringUtils.EMPTY);
+            when(keyPressLabelDialog.getLabel()).thenReturn(createContentLabel("ctrl+1"));
+            when(keyPressLabelDialog.getResult()).thenReturn("ctrl 1 ");
+
+            DialogPane dialogPane = mock(DialogPane.class);
+            when(dialogPane.getStylesheets()).thenReturn(mock(ObservableList.class));
+            when(keyPressLabelDialog.getDialogPane()).thenReturn(dialogPane);
+
+            keyPressLabelDialog.setResultConverter(dialogButton -> {
+                String result = "ctrl 1";
+                return result;
+            });
+
+            RecordKeyboardShortcut rk = new RecordKeyboardShortcut(keyPressLabelDialog);
+            Optional<KeyboardShortcutSelectionResult> ksResult = rk.start(outputFile);
+            assertTrue(ksResult.isPresent());
+
+        } finally {
+            Files.deleteIfExists(outputFile.toPath());
+        }
+
+    }
+    
     private static Label createContentLabel(final String text) {
         Label label = new Label(text);
         label.setMaxWidth(Double.MAX_VALUE);
@@ -110,7 +150,7 @@ public class RecordKeyboardShortcutNGTest {
         return label;
     }
 
-    @Test
+  /*  @Test
     public void test_keyboardShortCutAlreadyAssigned() throws Exception {
 
         final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
@@ -139,7 +179,7 @@ public class RecordKeyboardShortcutNGTest {
         recordKeyboardShortcutMockedStatic.when(() -> RecordKeyboardShortcut.keyboardShortCutAlreadyAssigned(outputFile, keyboardShortcut))
                 .thenReturn(outputFile);
 
-    }
+    }*/
 
     /**
      * Get a dialog that has been displayed to the user. This will iterate

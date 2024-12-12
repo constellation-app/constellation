@@ -91,7 +91,7 @@ public class RecordKeyboardShortcut  {
         return ksOptional;
     }   
     
-    public static File keyboardShortCutAlreadyAssigned(final File preferenceDirectory, final String keyboardShortcut) {
+    private static File keyboardShortCutAlreadyAssigned(final File preferenceDirectory, final String keyboardShortcut) {
         
         File exisitngTemplateWithKs = null;
         
