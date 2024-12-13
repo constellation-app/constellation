@@ -16,33 +16,23 @@
 package au.gov.asd.tac.constellation.utilities.keyboardshortcut;
 
 import java.io.File;
-import java.io.IOException;
+import java.io.FilenameFilter;
 import java.nio.file.Files;
-import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
-import org.mockito.ArgumentMatchers;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import org.openide.util.Exceptions;
 import org.testfx.api.FxRobot;
 import org.testfx.api.FxToolkit;
 import org.testfx.util.WaitForAsyncUtils;
-import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -100,6 +90,12 @@ public class RecordKeyboardShortcutNGTest {
             RecordKeyboardShortcut rk = new RecordKeyboardShortcut(keyPressLabelDialog);
             Optional<KeyboardShortcutSelectionResult> ksResult = rk.start(outputFile);
             assertTrue(ksResult.isPresent());
+            
+            try {
+                RecordKeyboardShortcut rk1 = new RecordKeyboardShortcut();
+            } catch(Exception e) {
+                
+            }
 
         } finally {
             Files.deleteIfExists(outputFile.toPath());
@@ -110,32 +106,32 @@ public class RecordKeyboardShortcutNGTest {
      @Test
     public void test_recordKeyboardShortcut_alreadyassigned() throws Exception {
 
-        File outputFile = new File(System.getProperty("java.io.tmpdir") + "/ctrl 1 my-preferences.json");        
+        File preferenceFileDirectory = new File(System.getProperty("java.io.tmpdir"));        
+        final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/[ctrl 1] my-preferences.json");        
         
-        
-        try {            
-            outputFile.createNewFile();
+        try {                       
+            outputFile.createNewFile();            
 
             KeyPressLabelDialog keyPressLabelDialog = mock(KeyPressLabelDialog.class);
             when(keyPressLabelDialog.getDefaultValue()).thenReturn(StringUtils.EMPTY);
             when(keyPressLabelDialog.getLabel()).thenReturn(createContentLabel("ctrl+1"));
-            when(keyPressLabelDialog.getResult()).thenReturn("ctrl 1 ");
+            when(keyPressLabelDialog.getResult()).thenReturn("ctrl+1");
 
             DialogPane dialogPane = mock(DialogPane.class);
             when(dialogPane.getStylesheets()).thenReturn(mock(ObservableList.class));
             when(keyPressLabelDialog.getDialogPane()).thenReturn(dialogPane);
 
             keyPressLabelDialog.setResultConverter(dialogButton -> {
-                String result = "ctrl 1";
+                String result = "ctrl+1";
                 return result;
             });
 
             RecordKeyboardShortcut rk = new RecordKeyboardShortcut(keyPressLabelDialog);
-            Optional<KeyboardShortcutSelectionResult> ksResult = rk.start(outputFile);
+            Optional<KeyboardShortcutSelectionResult> ksResult = rk.start(preferenceFileDirectory);
             assertTrue(ksResult.isPresent());
 
         } finally {
-            Files.deleteIfExists(outputFile.toPath());
+            Files.deleteIfExists(outputFile.toPath());            
         }
 
     }

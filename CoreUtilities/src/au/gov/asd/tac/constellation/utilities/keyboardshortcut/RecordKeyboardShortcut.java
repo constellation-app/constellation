@@ -95,8 +95,8 @@ public class RecordKeyboardShortcut  {
         
         File exisitngTemplateWithKs = null;
         
-        final FilenameFilter filenameFilter = (d, s) -> s.startsWith("[" + keyboardShortcut + "]");
-
+        final FilenameFilter filenameFilter = (d, s) -> s.startsWith("[" + keyboardShortcut + "]");        
+        
         final String[] fileNames = preferenceDirectory.list(filenameFilter);
 
         if (!ArrayUtils.isEmpty(fileNames)) {
