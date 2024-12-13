@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.utilities.keyboardshortcut;
 
 import au.gov.asd.tac.constellation.utilities.genericjsonio.JsonIODialog;
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Optional;
 import java.util.concurrent.Future;
@@ -28,7 +27,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import org.testfx.api.FxRobot;

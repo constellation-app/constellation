@@ -92,13 +92,7 @@ public class RecordKeyboardShortcutNGTest {
 
             RecordKeyboardShortcut rk = new RecordKeyboardShortcut(keyPressLabelDialog);
             Optional<KeyboardShortcutSelectionResult> ksResult = rk.start(outputFile);
-            assertTrue(ksResult.isPresent());
-
-            try {
-                RecordKeyboardShortcut rk1 = new RecordKeyboardShortcut();
-            } catch (Exception e) {
-
-            }
+            assertTrue(ksResult.isPresent());            
 
         } finally {
             Files.deleteIfExists(outputFile.toPath());

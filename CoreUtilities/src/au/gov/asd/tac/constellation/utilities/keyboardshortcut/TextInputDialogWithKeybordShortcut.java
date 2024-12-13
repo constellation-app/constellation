@@ -127,7 +127,8 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
         keyboardShortcutButton = new Button("Shortcut");
 
         keyboardShortcutButton.setOnAction(e -> {
-            Optional<KeyboardShortcutSelectionResult> keyboardShortcut = getKeyboardShortcut(preferenceDirectory);
+            final RecordKeyboardShortcut rk = new RecordKeyboardShortcut();
+            Optional<KeyboardShortcutSelectionResult> keyboardShortcut = getKeyboardShortcut(preferenceDirectory, rk);
             if (keyboardShortcut.isPresent()) {
                 KeyboardShortcutSelectionResult ksResult = keyboardShortcut.get();
                 keyboardShortcutLabel.setStyle(" -fx-text-alignment: center; -fx-font-size: 13px; -fx-border-style: solid; -fx-border-width: 1; -fx-border-color: #909090;");
@@ -253,11 +254,8 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
         this.keyboardShortcutLabel.setText(ks);
     }
 
-    public static Optional<KeyboardShortcutSelectionResult> getKeyboardShortcut(final File preferenceDirectory) {
-
-        final RecordKeyboardShortcut rk = new RecordKeyboardShortcut();
+    public static Optional<KeyboardShortcutSelectionResult> getKeyboardShortcut(final File preferenceDirectory,  final RecordKeyboardShortcut rk) {
         final Optional<KeyboardShortcutSelectionResult> ks = rk.start(preferenceDirectory);
-
         return ks;
     }
 
