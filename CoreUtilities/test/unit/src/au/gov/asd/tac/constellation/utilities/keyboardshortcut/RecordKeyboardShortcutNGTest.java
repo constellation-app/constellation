@@ -25,6 +25,9 @@ import java.util.logging.Logger;
 import javafx.collections.ObservableList;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
@@ -68,9 +71,9 @@ public class RecordKeyboardShortcutNGTest {
     public void test_recordKeyboardShortcut() throws Exception {
 
         File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
-        
+
         try {
-            
+
             outputFile.createNewFile();
 
             KeyPressLabelDialog keyPressLabelDialog = mock(KeyPressLabelDialog.class);
@@ -90,11 +93,11 @@ public class RecordKeyboardShortcutNGTest {
             RecordKeyboardShortcut rk = new RecordKeyboardShortcut(keyPressLabelDialog);
             Optional<KeyboardShortcutSelectionResult> ksResult = rk.start(outputFile);
             assertTrue(ksResult.isPresent());
-            
+
             try {
                 RecordKeyboardShortcut rk1 = new RecordKeyboardShortcut();
-            } catch(Exception e) {
-                
+            } catch (Exception e) {
+
             }
 
         } finally {
@@ -103,14 +106,14 @@ public class RecordKeyboardShortcutNGTest {
 
     }
 
-     @Test
+    @Test
     public void test_recordKeyboardShortcut_alreadyassigned() throws Exception {
 
-        File preferenceFileDirectory = new File(System.getProperty("java.io.tmpdir"));        
-        final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/[ctrl 1] my-preferences.json");        
-        
-        try {                       
-            outputFile.createNewFile();            
+        File preferenceFileDirectory = new File(System.getProperty("java.io.tmpdir"));
+        final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/[ctrl 1] my-preferences.json");
+
+        try {
+            outputFile.createNewFile();
 
             KeyPressLabelDialog keyPressLabelDialog = mock(KeyPressLabelDialog.class);
             when(keyPressLabelDialog.getDefaultValue()).thenReturn(StringUtils.EMPTY);
@@ -131,11 +134,36 @@ public class RecordKeyboardShortcutNGTest {
             assertTrue(ksResult.isPresent());
 
         } finally {
-            Files.deleteIfExists(outputFile.toPath());            
+            Files.deleteIfExists(outputFile.toPath());
         }
 
     }
-    
+
+    @Test
+    public void testCreateCombo() throws Exception {
+
+        KeyEvent keyEvent = new KeyEvent(KeyEvent.KEY_PRESSED, "Ctrl", "A", KeyCode.A, false, true, false, false);
+        KeyCombination keyCombination = RecordKeyboardShortcut.createCombo(keyEvent);
+        assertTrue(keyCombination != null);
+        assertTrue(keyCombination.getDisplayText().equals("Ctrl+A"));
+
+        KeyEvent keyEvent1 = new KeyEvent(KeyEvent.KEY_PRESSED, "Shift", "A", KeyCode.A, true, false, false, false);
+        KeyCombination keyCombination1 = RecordKeyboardShortcut.createCombo(keyEvent1);
+        assertTrue(keyCombination1 != null);
+        assertTrue(keyCombination1.getDisplayText().equals("Shift+A"));
+
+        KeyEvent keyEvent2 = new KeyEvent(KeyEvent.KEY_PRESSED, "Alt", "A", KeyCode.A, false, false, true, false);
+        KeyCombination keyCombination2 = RecordKeyboardShortcut.createCombo(keyEvent2);
+        assertTrue(keyCombination2 != null);
+        assertTrue(keyCombination2.getDisplayText().equals("Alt+A"));
+
+        KeyEvent keyEvent3 = new KeyEvent(KeyEvent.KEY_PRESSED, "Meta", "A", KeyCode.A, false, false, false, true);
+        KeyCombination keyCombination3 = RecordKeyboardShortcut.createCombo(keyEvent3);
+        assertTrue(keyCombination3 != null);
+        assertTrue(keyCombination3.getDisplayText().equals("Meta+A"));
+
+    }
+
     private static Label createContentLabel(final String text) {
         Label label = new Label(text);
         label.setMaxWidth(Double.MAX_VALUE);
@@ -146,7 +174,7 @@ public class RecordKeyboardShortcutNGTest {
         return label;
     }
 
-  /*  @Test
+    /*  @Test
     public void test_keyboardShortCutAlreadyAssigned() throws Exception {
 
         final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
@@ -176,7 +204,6 @@ public class RecordKeyboardShortcutNGTest {
                 .thenReturn(outputFile);
 
     }*/
-
     /**
      * Get a dialog that has been displayed to the user. This will iterate
      * through all open windows and identify one that is modal. The assumption
