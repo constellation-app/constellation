@@ -329,7 +329,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
     @Override
     public void componentClosed() {
         result.removeLookupListener(this);
-        timelinePanel.clearTimeLineData();
+        timelinePanel.clearTimeLineData(); // Cleans up memory very well, but now has race conditions
     }
 
     // <editor-fold defaultstate="collapsed" desc="Properties">
