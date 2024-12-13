@@ -190,7 +190,7 @@ public class JsonIO {
         }
     }
 
-    private static Optional<String> getDefaultKeyboardShortcut(File preferenceDirectory) {
+    public static Optional<String> getDefaultKeyboardShortcut(File preferenceDirectory) {
 
         for (int index = 1; index <= 5; index++) {
 
@@ -259,7 +259,7 @@ public class JsonIO {
         
         
         // Ask the user to provide a file name        
-        Optional<String> userInputWithKs = Optional.empty();
+        Optional<String> userInputWithKs;
 
         Optional<KeyboardShortcutSelectionResult> ksResult = JsonIODialog.getPreferenceFileName(ks, preferenceDirectory);
         if (ksResult.isPresent()) {
