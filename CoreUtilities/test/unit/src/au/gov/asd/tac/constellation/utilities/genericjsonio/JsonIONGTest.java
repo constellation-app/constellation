@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.genericjsonio;
 
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.keyboardshortcut.KeyboardShortcutSelectionResult;
@@ -35,6 +36,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
+import java.util.prefs.Preferences;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import org.apache.commons.io.IOUtils;
@@ -47,9 +49,11 @@ import static org.mockito.ArgumentMatchers.same;
 import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.openide.NotifyDescriptor;
+import org.openide.util.NbPreferences;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
@@ -229,6 +233,34 @@ public class JsonIONGTest {
     }
 
     @Test
+    public void test_saveJsonPreferencesWithKeyboardShortcut_1() throws URISyntaxException, IOException {
+
+        final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+        final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
+
+        final File preferenceDirectory = new File(userDir, SUB_DIRECTORY.orElse(""));
+        final File outputFile = new File(preferenceDirectory.getAbsolutePath() + "/[Ctrl 1] my-preferences.json");
+
+        try (MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class)) {
+
+            Optional<KeyboardShortcutSelectionResult> ksResult = Optional.of(new KeyboardShortcutSelectionResult("Ctrl 1", false, null));
+            ksResult.get().setFileName("my-preferences");
+
+            jsonIoDialogMockedStatic.when(() -> JsonIODialog
+                    .getPreferenceFileName(any(Optional.class), any()))
+                    .thenReturn(ksResult);
+
+            final ObjectMapper mapper = new ObjectMapper();
+
+            JsonIO.saveJsonPreferencesWithKeyboardShortcut(SUB_DIRECTORY, fixture());
+
+        } finally {
+
+            Files.deleteIfExists(outputFile.toPath());
+        }
+    }
+
+    @Test
     public void test_getDefaultKeyboardShortcut() throws URISyntaxException, FileNotFoundException, IOException {
         final File prefDir = new File(System.getProperty("java.io.tmpdir"));
         final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
@@ -264,11 +296,10 @@ public class JsonIONGTest {
             Optional<String> ks4 = JsonIO.getDefaultKeyboardShortcut(prefDir);
             assertTrue(ks4.isPresent());
             assertEquals("Ctrl 5", ks4.get());
-            
+
             outputFile5.createNewFile();
             Optional<String> ks5 = JsonIO.getDefaultKeyboardShortcut(prefDir);
             assertFalse(ks5.isPresent());
-            
 
         } finally {
             Files.deleteIfExists(outputFile.toPath());
@@ -277,7 +308,7 @@ public class JsonIONGTest {
             Files.deleteIfExists(outputFile3.toPath());
             Files.deleteIfExists(outputFile4.toPath());
             Files.deleteIfExists(outputFile5.toPath());
-            
+
         }
 
     }
