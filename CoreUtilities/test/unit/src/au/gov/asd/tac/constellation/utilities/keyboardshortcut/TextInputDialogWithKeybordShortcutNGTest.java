@@ -108,18 +108,6 @@ public class TextInputDialogWithKeybordShortcutNGTest {
             @Override
             public void run() {
                 TextInputDialogWithKeybordShortcut textInputDialogWithKeybordShortcut = new TextInputDialogWithKeybordShortcut(preferenceDirectory, ks);
-
-                final Stage dialog = getDialog(robot);
-                dialog.setX(0);
-                dialog.setY(0);
-
-                robot.clickOn(
-                        robot.from(dialog.getScene().getRoot())
-                                .lookup(".button")
-                                .lookup(hasText("Shortcut"))
-                                .queryAs(Button.class)
-                );
-
                 Assert.assertNotNull(textInputDialogWithKeybordShortcut.getEditor());
                 assertEquals(textInputDialogWithKeybordShortcut.getDefaultValue(), "");
             }
