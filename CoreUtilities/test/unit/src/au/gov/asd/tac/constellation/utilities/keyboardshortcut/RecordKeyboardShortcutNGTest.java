@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.utilities.keyboardshortcut;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.nio.file.Files;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;

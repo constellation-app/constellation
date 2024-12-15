@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
@@ -82,14 +83,15 @@ public class KeyPressLabelDialogNGTest {
          when(keyPressLabelDialog.getResult()).thenReturn("ctrl 1");
         
         DialogPane dialogPane = mock(DialogPane.class);        
-        when(keyPressLabelDialog.getDialogPane()).thenReturn(dialogPane);        
+        when(keyPressLabelDialog.getDialogPane()).thenReturn(dialogPane);
         
         keyPressLabelDialog.setResultConverter(dialogButton -> {            
             String result = "ctrl 1";
             return result;
         });
         assertEquals(keyPressLabelDialog.getDefaultValue(), StringUtils.EMPTY);
-        assertEquals(keyPressLabelDialog.getResult(), "ctrl 1");
+        assertEquals(keyPressLabelDialog.getResult(), "ctrl 1");       
+        
     }
     
     private static Label createContentLabel(final String text) {
