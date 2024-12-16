@@ -83,7 +83,7 @@ public class ExpandedCompositeNodeStateNGTest {
         final int xVertexAttribute = VisualConcept.VertexAttribute.X.ensure(graph);
         final int yVertexAttribute = VisualConcept.VertexAttribute.Y.ensure(graph);
         final int zVertexAttribute = VisualConcept.VertexAttribute.Z.ensure(graph);
-        final int identifierTransactionAttribute = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(graph);
+        VisualConcept.TransactionAttribute.IDENTIFIER.ensure(graph);
         
         final ExpandedCompositeNodeState instance = new ExpandedCompositeNodeState(recordStore, "copy.Identifier<Vertex #0 + 1 more...>Type<Unknown>", true, 2);
         final CompositeNodeState state1 = new CompositeNodeState(vxId1, instance);

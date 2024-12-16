@@ -107,7 +107,7 @@ public class ContractedCompositeNodeStateNGTest {
         final int xVertexAttribute = VisualConcept.VertexAttribute.X.ensure(graph);
         final int yVertexAttribute = VisualConcept.VertexAttribute.Y.ensure(graph);
         final int zVertexAttribute = VisualConcept.VertexAttribute.Z.ensure(graph);
-        final int identifierTransactionAttribute = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(graph);
+        VisualConcept.TransactionAttribute.IDENTIFIER.ensure(graph);
         
         final ContractedCompositeNodeState instance = new ContractedCompositeNodeState(recordStore, expandedIds, expandedIds, mean);
         final CompositeNodeState state = new CompositeNodeState(vxId, instance);
