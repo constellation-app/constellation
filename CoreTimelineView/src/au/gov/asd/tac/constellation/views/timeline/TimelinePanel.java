@@ -233,7 +233,6 @@ public class TimelinePanel extends Region {
 
         // Helps with out of memory issues
         clearTimelineData();
-        timeline.setData(null);
 
         for (final TreeElement element : clusteringManager.getElementsToDraw()) {
             XYChart.Data<Number, Number> nodeItem = element.getNodeItem();

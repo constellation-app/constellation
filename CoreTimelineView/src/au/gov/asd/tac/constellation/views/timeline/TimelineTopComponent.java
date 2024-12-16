@@ -225,6 +225,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
         if (graphNode.getGraph() == null) {
             return;
         }
+
         try (final ReadableGraph graph = graphNode.getGraph().getReadableGraph()) {
             final int txCount = graph.getTransactionCount();
             final int txTimAttrId = graph.getAttribute(GraphElementType.TRANSACTION, this.currentDatetimeAttribute);
@@ -392,8 +393,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
             retrieveStateFromGraph();
 
             // Update the graph change counters:
-            final ReadableGraph rg = graph.getReadableGraph();
-            try {
+            try (final ReadableGraph rg = graph.getReadableGraph()) {
                 currentGlobalModificationCount = rg.getGlobalModificationCounter();
                 currentAttributeModificationCount = rg.getAttributeModificationCounter();
                 currentStructureModificationCount = rg.getStructureModificationCounter();
@@ -406,8 +406,6 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                 if (vertSelectedAttr != Graph.NOT_FOUND) {
                     currentVertSelectedModificationCount = rg.getValueModificationCounter(vertSelectedAttr);
                 }
-            } finally {
-                rg.release();
             }
 
             populateFromGraph(graph, true);

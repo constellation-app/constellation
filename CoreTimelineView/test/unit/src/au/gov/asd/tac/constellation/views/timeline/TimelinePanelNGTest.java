@@ -20,11 +20,14 @@ import java.time.ZoneId;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import org.testfx.api.FxToolkit;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -84,37 +87,6 @@ public class TimelinePanelNGTest {
         verify(coordinator, times(1)).setExclusionState(0);
     }
 
-//    /**
-//     * Test of clearTimelineData method, of class TimelinePanel.
-//     */
-//    @Test
-//    public void testClearTimelineData() {
-//        System.out.println("clearTimelineData");
-//        final StringProperty mockStringProperty = mock(StringProperty.class);
-//        final ObservableList<XYChart.Series<Number, Number>> mockList = mock(ObservableList.class);
-//
-////        try (MockedConstruction<BorderPane> mockBorderPane = Mockito.mockConstruction(BorderPane.class); MockedConstruction<TimelineChart> mockTimelineChart = Mockito.mockConstruction(TimelineChart.class,
-////                (mock, context) -> {
-////                    when(mock.lowerTimeExtentProperty()).thenReturn(mockStringProperty);
-////                    when(mock.upperTimeExtentProperty()).thenReturn(mockStringProperty);
-////                    when(mock.getData()).thenReturn(mockList);
-////                })) {
-//        final TimelineTopComponent coordinator = mock(TimelineTopComponent.class);
-//        final TimelinePanel instance = new TimelinePanel(coordinator);
-//        final TimelinePanel instanceSpy = spy(instance);
-//
-//        //doNothing().when(instanceSpy).doLayout();// too late alreadybeen called idiot!
-//        instanceSpy.clearTimelineData();
-//
-////            assertEquals(1, mockTimelineChart.constructed().size());
-////
-////            final TimelineChart constructedChart = mockTimelineChart.constructed().get(0);
-////            verify(constructedChart, times(1)).lowerTimeExtentProperty();
-////            verify(constructedChart, times(1)).upperTimeExtentProperty();
-////            verify(constructedChart, times(2)).getData();
-////            verify(constructedChart, times(1)).setData(null);
-//        //}
-//    }
     /**
      * Test of updateTimeline method, of class TimelinePanel.
      */
@@ -123,13 +95,17 @@ public class TimelinePanelNGTest {
         System.out.println("updateTimeline");
         final TimelineTopComponent coordinator = mock(TimelineTopComponent.class);
         final TimelinePanel instance = new TimelinePanel(coordinator);
+        final TimelinePanel instanceSpy = spy(instance);
 
         final GraphReadMethods mockGraph = mock(GraphReadMethods.class);
         final ZoneId mockZoneId = ZoneId.systemDefault();
 
-        assertEquals(coordinator, instance.getCoordinator());
+        assertEquals(coordinator, instanceSpy.getCoordinator());
 
-        instance.updateTimeline(mockGraph, false, mockZoneId);
-        instance.clearTimelineData();
+        instanceSpy.updateTimeline(mockGraph, false, mockZoneId);
+        verify(mockGraph, times(4)).getAttribute(any(), anyString());
+        verify(instanceSpy, times(1)).clearTimelineData();
+
+        instanceSpy.clearTimelineData();
     }
 }
