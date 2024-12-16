@@ -329,7 +329,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
     @Override
     public void componentClosed() {
         result.removeLookupListener(this);
-        timelinePanel.clearTimeLineData(); // Cleans up memory very well, but now has race conditions
+        timelinePanel.clearTimeline();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Properties">
@@ -485,7 +485,6 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                         currentTemporalAttributeModificationCount = rg.getValueModificationCounter(rg.getAttribute(GraphElementType.TRANSACTION, currentDatetimeAttribute));
                         // We've calculated everything, so start populating the graph:
                         Platform.runLater(() -> {
-                            // try (final ReadableGraph rg1 = graph.getReadableGraph()) {
                             // Now that the heights are known, set the position of the splitPane divider:
                             splitPane.setDividerPositions(splitPanePosition);
                             // Clear anything already on the charts:

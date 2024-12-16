@@ -214,6 +214,17 @@ public class ClusteringManager {
         return Collections.unmodifiableSet(elementsToDraw);
     }
 
+    public void cleanupVariables() {
+        clearTree();
+        elementsToDraw = null;
+        elementsToUndim = null;
+        oldElementsToUndim = null;
+        undimmedVerticesOnGraph.clear();
+        elementsToUnhide = null;
+        oldElementsToUnhide = null;
+        unhiddenVerticesOnGraph.clear();
+    }
+
     public void clearTree() {
         tree = null;
         leaves.clear();
@@ -233,7 +244,7 @@ public class ClusteringManager {
         final int exclusionState;
         final ExclusionStateNotifier exclusionStateNotifier;
 
-        public InitDimOrHidePlugin(final long lowerTimeExtent, final long upperTimeExtent, 
+        public InitDimOrHidePlugin(final long lowerTimeExtent, final long upperTimeExtent,
                 final int exclusionState, final ExclusionStateNotifier exclusionStateNotifier) {
             this.lowerTimeExtent = lowerTimeExtent;
             this.upperTimeExtent = upperTimeExtent;
@@ -279,7 +290,7 @@ public class ClusteringManager {
                             stack.add(te);
                             while (!stack.isEmpty()) {
                                 final TreeElement element = stack.remove(stack.size() - 1);
-                                
+
                                 if (element instanceof TreeLeaf leaf) {
                                     transactionsToUndim.add(leaf.getId());
 

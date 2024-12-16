@@ -354,10 +354,11 @@ public class TimelinePanel extends Region {
         return a != null && b != null ? String.format("%s %s %s", a, cxn, b) : null;
     }
 
-    public void clearTimeLineData() {
+    public void clearTimelineData() {
         if (timeline.getData() != null) {
             timeline.getData().clear();
         }
+        timeline.setData(null);
     }
 
     /**
@@ -366,8 +367,8 @@ public class TimelinePanel extends Region {
      * @see TimelineChart
      */
     public void clearTimeline() {
-        clearTimeLineData();
-        clusteringManager.clearTree();
+        clearTimelineData();
+        clusteringManager.cleanupVariables();
         GraphManager.getDefault().setElementSelected(false);
     }
     // </editor-fold>
