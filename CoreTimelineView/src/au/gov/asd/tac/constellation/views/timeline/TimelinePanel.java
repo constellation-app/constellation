@@ -146,7 +146,7 @@ public class TimelinePanel extends Region {
     /**
      * Creates organises the TimelinePanel's layers.
      */
-    private void doLayout() {
+    protected void doLayout() {
         // Layer that contains the timelinechart component:
         final BorderPane timelinePane = new BorderPane();
 
@@ -509,8 +509,7 @@ public class TimelinePanel extends Region {
 
         final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.WHITE.getJavaColor())));
         helpButton.setTooltip(new Tooltip("Display help for Timeline"));
-        helpButton.setOnAction(event
-                -> new HelpCtx(TimelineTopComponent.class.getName()).display());
+        helpButton.setOnAction(event -> new HelpCtx(TimelineTopComponent.class.getName()).display());
 
         final Label spacer1 = new Label("   ");
         final Label spacer2 = new Label("   ");
