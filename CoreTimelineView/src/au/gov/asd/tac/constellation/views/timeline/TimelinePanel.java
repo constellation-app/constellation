@@ -232,7 +232,7 @@ public class TimelinePanel extends Region {
         long highestObservedY = Long.MIN_VALUE;
 
         // Helps with out of memory issues
-        clearTimeLineData();
+        clearTimelineData();
         timeline.setData(null);
 
         for (final TreeElement element : clusteringManager.getElementsToDraw()) {
