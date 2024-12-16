@@ -145,7 +145,7 @@ public class ContractedCompositeNodeState {
             wg.setObjectValue(compositeStateAttr, id, new CompositeNodeState(id, expansionState));
         });
 
-        // Correct the x,y,z coordinates of the nodes in the consitutentNodeStore in case the composite node has been moved.
+        // Correct the x,y,z coordinates of the nodes in the constitutentNodeStore in case the composite node has been moved.
         final float x = wg.getFloatValue(xAttr, vxId);
         final float y = wg.getFloatValue(yAttr, vxId);
         final float z = wg.getFloatValue(zAttr, vxId);

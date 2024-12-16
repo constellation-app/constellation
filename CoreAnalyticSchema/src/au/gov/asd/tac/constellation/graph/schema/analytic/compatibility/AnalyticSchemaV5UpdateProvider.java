@@ -22,7 +22,6 @@ import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ClusteringConcept;
-import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.versioning.SchemaUpdateProvider;
 import au.gov.asd.tac.constellation.graph.versioning.UpdateProvider;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
