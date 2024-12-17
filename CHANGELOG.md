@@ -7,6 +7,8 @@
 -   Created Graph Connection Motion Attribute as a META graph element type.
 -   Created Animation setting to disable animations for low power machines.
 -   Created SetColorValuesOperation to save space on the undo/redo stack.
+-   Modified access of `VertexTypeIOProvider.writeTypeObject()` from public to private, reflecting current use and mirroring related classes and functions.
+-   Removed `CompositeStatus.getCompositeStatus()` which was unused.
 
 ## Changes in November 2024
 -   Removed `CreateVertexTypePlugin` and `CreateTransactionTypePlugin` which were unused.
