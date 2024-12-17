@@ -30,21 +30,7 @@ import javafx.scene.paint.Color;
  * @author capricornunicorn123
  */
 public final class ColorWarpAnimation extends Animation {
-
-    /**
-     * @return the transactionOriginals
-     */
-    protected Map<Integer, ConstellationColor> getTransactionOriginals() {
-        return transactionOriginals;
-    }
-
-    /**
-     * @return the vertexOriginals
-     */
-    protected Map<Integer, ConstellationColor> getVertexOriginals() {
-        return vertexOriginals;
-    }
-    
+     
     public static final String NAME = "Color Warp Animation";
     
     // Attribute references
@@ -60,7 +46,10 @@ public final class ColorWarpAnimation extends Animation {
         vertexColorAttr = VisualConcept.VertexAttribute.COLOR.ensure(wg);
         transactionColorAttr = VisualConcept.TransactionAttribute.COLOR.ensure(wg);
         
-        // dont initilise the animation if there is less than 2 nodes
+        vertexOriginals.clear();
+        transactionOriginals.clear();
+        
+        // don't initialise the animation if there is less than 2 nodes
         if (wg.getVertexCount() <= 1) {
             stop();
         } else {
@@ -77,9 +66,9 @@ public final class ColorWarpAnimation extends Animation {
     }
 
     @Override
-    public void animate(final GraphWriteMethods wg) {        
+    public void animate(final GraphWriteMethods wg) {
         // Do not animate unless there is more than 1 node
-        if (wg.getVertexCount() > 0 && wg.getTransactionCount() > 0) {                    
+        if (wg.getVertexCount() > 0 || wg.getTransactionCount() > 0) {                    
             for (int vertexPosition = 0 ; vertexPosition < wg.getVertexCount(); vertexPosition++) {
                 final SetColorValuesOperation colorVerticesOperation = new SetColorValuesOperation(wg, GraphElementType.VERTEX, vertexColorAttr);
                 final int vertexID = wg.getVertex(vertexPosition);
@@ -119,16 +108,13 @@ public final class ColorWarpAnimation extends Animation {
 
     @Override
     public long getIntervalInMillis() {
-        return 40;
+        return 80;
     }
 
     private ConstellationColor getNextColor(final ConstellationColor color) {
    
         final Color col = color.getJavaFXColor();
         final double hue = col.getHue() <= 360 ? col.getHue() + 5 : 0;
-//        final double sat = col.getSaturation();
-//        final double bright = col.getBrightness();
-//        final Color newCol = Color.hsb(hue, sat, bright);
         
         return ConstellationColor.fromFXColor(Color.hsb(hue, col.getSaturation(), col.getBrightness()));
     }
@@ -141,5 +127,19 @@ public final class ColorWarpAnimation extends Animation {
     @Override
     public void setFinalFrame(final GraphWriteMethods wg){
         //Do Nothing
+    }
+    
+     /**
+     * @return the transactionOriginals
+     */
+    protected Map<Integer, ConstellationColor> getTransactionOriginals() {
+        return transactionOriginals;
+    }
+
+    /**
+     * @return the vertexOriginals
+     */
+    protected Map<Integer, ConstellationColor> getVertexOriginals() {
+        return vertexOriginals;
     }
 }

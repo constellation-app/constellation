@@ -101,7 +101,7 @@ public class AnimationNGTest {
 
     @Test
     public void testAnimation_getIntervalInMilis() {
-        assertEquals(colorWarpAnimation.getIntervalInMillis(), 40);
+        assertEquals(colorWarpAnimation.getIntervalInMillis(), 80);
         assertEquals(directionIndicatorAnimation.getIntervalInMillis(), 60);
         assertEquals(panAnimation.getIntervalInMillis(), 40);
         assertEquals(flyingAnimation.getIntervalInMillis(), 35);
