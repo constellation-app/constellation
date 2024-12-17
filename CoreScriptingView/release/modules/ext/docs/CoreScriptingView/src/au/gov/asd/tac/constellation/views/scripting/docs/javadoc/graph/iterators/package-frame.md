@@ -1,4 +1,4 @@
-# [au.gov.asd.tac.constellation.views.scripting.graph.iterators](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/iterators/package-summary.md)
+# [au.gov.asd.tac.constellation.views.scripting.graph.iterators](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/iterators/package-summary.md)
 
 <div class="indexContainer">
 

@@ -30,6 +30,7 @@ import javax.swing.filechooser.FileFilter;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.filesystems.FileChooserBuilder;
+import org.openide.windows.WindowManager;
 
 /**
  * Wrapper for opening file choosers built with the {@link FileChooserBuilder}. There are a couple of issues on macOS
@@ -183,7 +184,7 @@ public class FileChooser {
      *
      * @param selection the files selected by the user when trying to save
      * @param fileExtension the file extension associated with this FileChooserBuilder
-     * @return user response, indicating if user wants to overwrite exisitng file
+     * @return user response, indicating if user wants to overwrite existing file
      */
     private static boolean approver(final File[] selection, final String fileExtension) {
         // Show dialog box if file already exists when saving
@@ -192,7 +193,7 @@ public class FileChooser {
         final File file = new File(filepath);
 
         if (file.exists()) {
-            final int response = JOptionPane.showConfirmDialog(null,
+            final int response = JOptionPane.showConfirmDialog(WindowManager.getDefault().getMainWindow(),
                     "The file " + file.getName() + " already exists. Do you want to replace the existing file?",
                     "Overwrite file", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
             // Overwrite if user chose yes
@@ -203,30 +204,17 @@ public class FileChooser {
     }
 
     /**
-     * Creates a FileChooserBuilder with no file filter
-     *
-     * @param title the title of the FileChooserBuilder
-     * @param fileExtension the file extension associated with this FileChooserBuilder.
-     * @return the constructed FileChooserBuilder
-     */
-    public static FileChooserBuilder createFileChooserBuilderNoFilter(final String title, final String fileExtension) {
-        return new FileChooserBuilder(title)
-                .setTitle(title)
-                .setFilesOnly(true)
-                .setSelectionApprover((final File[] selection) -> approver(selection, fileExtension));
-    }
-
-    /**
      * Creates a FileChooserBuilder with a file filter, File filter accepts if either: file is a normal file and either:
      * filename ends with given file extension, or file is a directory
      *
      * @param title the title of the FileChooserBuilder
      * @param fileExtension the file extension associated with this FileChooserBuilder.
-     * @param description the description of the file filter
+     * @param filterDescription the description of the file filter
+     * @param warnOverwrite true if user will be warned of overwriting a file
      * @return the constructed FileChooserBuilder
      */
-    public static FileChooserBuilder createFileChooserBuilder(final String title, final String fileExtension, final String description) {
-        return createFileChooserBuilderNoFilter(title, fileExtension)
+    public static FileChooserBuilder createFileChooserBuilder(final String title, final String fileExtension, final String filterDescription, final boolean warnOverwrite) {
+        final FileChooserBuilder builder = createFileChooserBuilder(title)
                 .setAcceptAllFileFilterUsed(false)
                 .setFileFilter(new FileFilter() {
                     @Override
@@ -237,8 +225,55 @@ public class FileChooser {
 
                     @Override
                     public String getDescription() {
-                        return description;
+                        return filterDescription;
                     }
                 });
+
+        if (warnOverwrite) {
+            setWarnOverwrite(builder, fileExtension);
+        }
+        return builder;
+    }
+
+    /**
+     * Creates a FileChooserBuilder with a file filter, File filter accepts if either: file is a normal file and either:
+     * filename ends with given file extension, or file is a directory
+     *
+     * @param title the title of the FileChooserBuilder
+     * @param fileExtension the file extension associated with this FileChooserBuilder.
+     * @param filterDescription the description of the file filter
+     * @return the constructed FileChooserBuilder
+     */
+    public static FileChooserBuilder createFileChooserBuilder(final String title, final String fileExtension, final String filterDescription) {
+        return createFileChooserBuilder(title, fileExtension, filterDescription, false);
+    }
+
+    /**
+     * Creates a FileChooserBuilder with a file filter, File filter accepts if either: file is a normal file and either:
+     * filename ends with given file extension, or file is a directory
+     *
+     * @param title the title of the FileChooserBuilder
+     * @param fileExtension the file extension associated with this FileChooserBuilder.
+     * @param filterDescription the description of the file filter
+     * @return the constructed FileChooserBuilder
+     */
+    public static FileChooserBuilder createFileChooserBuilder(final String title, final String fileExtension) {
+        return createFileChooserBuilder(title, fileExtension, fileExtension, false);
+    }
+
+    /**
+     * Creates a FileChooserBuilder with no file filter
+     *
+     * @param title the title of the FileChooserBuilder
+     * @return the constructed FileChooserBuilder
+     */
+    public static FileChooserBuilder createFileChooserBuilder(final String title) {
+        return new FileChooserBuilder(title)
+                .setTitle(title)
+                .setFilesOnly(true);
+    }
+
+    public static void setWarnOverwrite(final FileChooserBuilder fileChooserBuilder, final String fileExtension) {
+        fileChooserBuilder.setSelectionApprover((final File[] selection) -> approver(selection, fileExtension));
     }
 }

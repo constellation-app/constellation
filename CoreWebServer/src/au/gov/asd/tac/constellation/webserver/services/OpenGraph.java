@@ -107,7 +107,7 @@ public class OpenGraph extends RestService {
             final Graph g = new GraphJsonReader().readGraphZip(fnam, new HandleIoProgress(String.format("Loading graph %s...", fnam)));
             GraphOpener.getDefault().openGraph(g, name, false);
 
-            final String newId = RestServiceUtilities.waitForGraphChange(existingId).get(10, TimeUnit.SECONDS);
+            final String newId = RestServiceUtilities.waitForGraphChange(existingId).get();
             final Graph graph = GraphNode.getGraphNode(newId).getGraph();
 
             final ObjectMapper mapper = new ObjectMapper();
@@ -121,7 +121,7 @@ public class OpenGraph extends RestService {
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
             LOGGER.log(Level.SEVERE, "This thread has been interrupted", ex);
-        } catch (final ExecutionException | TimeoutException ex) {
+        } catch (final ExecutionException ex) {
             throw new RestServiceException(ex);
         }
     }

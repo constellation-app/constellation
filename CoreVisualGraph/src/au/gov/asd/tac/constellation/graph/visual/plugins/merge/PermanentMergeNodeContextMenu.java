@@ -41,11 +41,7 @@ public class PermanentMergeNodeContextMenu implements ContextMenuProvider {
 
     @Override
     public List<String> getItems(final GraphReadMethods graph, final GraphElementType elementType, final int entity) {
-        if (elementType == GraphElementType.VERTEX) {
-            return Arrays.asList("Merge Nodes");
-        } else {
-            return Collections.emptyList();
-        }
+        return elementType == GraphElementType.VERTEX ? Arrays.asList("Merge Nodes") : Collections.emptyList();
     }
 
     @Override
@@ -55,7 +51,7 @@ public class PermanentMergeNodeContextMenu implements ContextMenuProvider {
         new Thread(() -> {
             try {
                 action.execute(element);
-            } catch (InterruptedException ex) {
+            } catch (final InterruptedException ex) {
                 Thread.currentThread().interrupt();
             }
         }).start();

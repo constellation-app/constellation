@@ -943,10 +943,9 @@ public class AttributeEditorPanel extends BorderPane {
 
     private double calcLongestTitle(final List<AttributeData> attributeData) {
         double maxWidth = 0;
-        double currWidth = 0;
         if (attributeData != null) {
             for (final AttributeData data : attributeData) {
-                currWidth = getTextWidth(data.getAttributeName());
+                final double currWidth = getTextWidth(data.getAttributeName());
                 if (maxWidth < currWidth) {
                     maxWidth = currWidth;
                 }

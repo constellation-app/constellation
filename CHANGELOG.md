@@ -1,5 +1,35 @@
 # Constellation Changes
 
+## Changes in November 2024
+-   Removed `CreateVertexTypePlugin` and `CreateTransactionTypePlugin` which were unused.
+-   Removed `AnalyticSchemaPluginRegistry` as there were no more plugins after above ones were removed.
+-   Removed `ImageConcept` which was unused.
+-   Removed `ColorblindUtilities.colorNodes()` which was unused. This behaviour is replicated in `VisualSchemaFactory.VisualSchema` with `applyColorblindVertex()` and `applyColorblindTransaction()`.
+-   Removed `ColorblindUtilities.setColorRef()` which only had one use. This behaviour is now directly added to where the function was previously used.
+-   Renamed `ColorblindUtilities.calcColorBrightness()` to `ColorblindUtilities.calculateColorBrightness()` for readability.
+
+## Changes in October 2024
+-   Added ability to pass parameters and selected items on graph to PluginReporter to display via `DefaultPluginInteraction`.
+-   Added the ability to set of Table View default columns by implementing `TableDefaultColumns` and using lookup.
+-   Moved `BrowseContextMenu` from `au.gov.asd.tac.constellation.graph.visual.contextmenu` to `au.gov.asd.tac.constellation.functionality.browser` to group it with other browser functionality.
+-   Removed several functions from `VisualGraphUtilities` passing attribute ids as parameters in favour of using existing complimentary functions using default attributes.
+-   Removed `BBoxd` as it was unused.
+-   Removed `BBoxf.getGraphBoundingBoxMix()` as it was unused.
+-   Renamed `getSelectedElements()` in `VisualGraphUtilities` to `getSelectedVertices` to better reflect what the function does.
+-   Updated Table View to now default to primary key columns for Show Default Columns and new graphs.
+
+## Changes in September 2024
+-   Removed `AddBlazePlugin` in favour of applying defaults to `AddCustomBlazePlugin` (which was already being used by `AddBlazeAction`).
+-   Removed `BlazeUtilities.getHTMLColor()` as this is already available through existing functionality `ConstellationColor.fromJavaColor().getHtmlColor()`.
+-   Renamed `DeSelectBlazesAction` and `DeSelectBlazesPlugin` to `DeselectBlazesAction` and `DeselectBlazesPlugin`.
+-   Updated `BlazeUtilities.colorDialog` to return just a ConstellationColor.
+-   Updated both `SavePreset` functions in `BlazeUtilities` to accept a `ConstellationColor` instead of a `java.awt.Color` based on use.
+
+## Changes in July 2024
+-   Moved hashmod package from Core Graph Utilities to Core Import Export Plugins as a more appropriate module.
+-   Moved `NoGraphPane` from Layers View to the View Framework so that other views can use it.
+-   Updated `NoGraphPane` to take two parameters needed for the abstraction.
+
 ## Changes in May 2024
 -   Removed `FloatArray.clone()` and replaced with a constructor that takes a `FloatArray` object. 
 -   Removed `IntArray.clone()` in favour of constructor that takes a `IntArray` object. 

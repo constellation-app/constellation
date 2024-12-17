@@ -66,11 +66,19 @@ public class ExportGlyphTexturesActionNGTest {
         fileChooserStaticMock = mockStatic(FileChooser.class);
         
         fileChooserStaticMock.when(()
-                -> FileChooser.createFileChooserBuilderNoFilter(any(String.class), any(String.class)))
+                -> FileChooser.createFileChooserBuilder(any(String.class)))
+                .thenCallRealMethod();
+        
+        fileChooserStaticMock.when(()
+                -> FileChooser.createFileChooserBuilder(any(String.class), any(String.class)))
                 .thenCallRealMethod();
         
         fileChooserStaticMock.when(()
                 -> FileChooser.createFileChooserBuilder(any(String.class), any(String.class), any(String.class)))
+                .thenCallRealMethod();
+        
+        fileChooserStaticMock.when(()
+                -> FileChooser.createFileChooserBuilder(any(String.class), any(String.class), any(String.class), any(Boolean.class)))
                 .thenCallRealMethod();
         
         sharedDrawableStaticMock = mockStatic(SharedDrawable.class);

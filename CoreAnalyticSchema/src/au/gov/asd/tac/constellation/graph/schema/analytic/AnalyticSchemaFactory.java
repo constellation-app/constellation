@@ -226,7 +226,7 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
             }
 
             if (type != null && (type != SchemaVertexTypeUtilities.getDefaultType() || graph.isDefaultValue(vertexForegroundIconAttribute, vertexId))) {
-                if (type.getForegroundIcon() != null) {
+                if (!SchemaVertexTypeUtilities.getDefaultType().getForegroundIcon().equals(type.getForegroundIcon())) {
                     if (!Objects.equals(type.getForegroundIcon(), graph.getObjectValue(vertexForegroundIconAttribute, vertexId))) {
                         graph.setObjectValue(vertexForegroundIconAttribute, vertexId, type.getForegroundIcon().getExtendedName());
                     } 
@@ -366,8 +366,10 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
                 }
 
                 graph.removeTransaction(transactionId);
+                applyColorblindTransaction(graph, newTransactionId);
+            } else {
+                applyColorblindTransaction(graph, transactionId);
             }
-            applyColorblindTransaction(graph, transactionId);            
         }
 
         @Override

@@ -28,6 +28,7 @@ import au.gov.asd.tac.constellation.views.dataaccess.panes.DataSourceTitledPane;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.QueryPhasePane;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.tasks.WaitForQueriesToCompleteTask;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +40,6 @@ import java.util.concurrent.Future;
 import java.util.function.Function;
 import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
-import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
@@ -138,9 +138,9 @@ public class DataAccessTabPane implements PreferenceChangeListener {
         if (pluginsRetrieved != null && pluginsRetrieved.equals(plugins)) {
             return;
         }
-        
+
         setPlugins(pluginsRetrieved);
-        
+
         for (final Tab tab : tabPane.getTabs()) {
             getQueryPhasePane(tab).updatePlugins(this.plugins, getDataAccessPane());
         }

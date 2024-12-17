@@ -38,6 +38,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import org.mockito.MockedStatic;
@@ -432,7 +433,7 @@ public class BasicFindTabNGTest {
         //Create a controller mock and do nothing on retriveMatchingElements()
         FindViewController mockController = mock(FindViewController.class);
         mockController.init(spyTopComponent);
-        doNothing().when(mockController).retriveMatchingElements(Mockito.eq(true), Mockito.eq(false));
+        doNothing().when(mockController).retriveMatchingElements(Mockito.eq(true), Mockito.eq(false), Mockito.eq(false));
         Button mockButton = mock(Button.class);
 
         /**
@@ -444,10 +445,13 @@ public class BasicFindTabNGTest {
         lookForChoiceBox.getItems().add("Node");
         lookForChoiceBox.getSelectionModel().select(0);
         final TextField findTextField = new TextField("test");
+        final CheckBox zoomToSelectionCheckBox = new CheckBox("Zoom to Selection");
 
         //Mock the getters to return the newly made java fx element.
         when(basicFindMock.getLookForChoiceBox()).thenReturn(lookForChoiceBox);
         when(basicFindMock.getFindTextField()).thenReturn(findTextField);
+        when(basicFindMock.getZoomToSelection()).thenReturn(zoomToSelectionCheckBox);
+        zoomToSelectionCheckBox.setSelected(false);
 
         //Do nothing on saveSelected() and updateBasicFindParamters()
         doCallRealMethod().when(basicFindMock).findAllAction();
@@ -468,7 +472,7 @@ public class BasicFindTabNGTest {
 
             verify(basicFindMock, times(1)).saveSelected(Mockito.eq(GraphElementType.VERTEX));
             verify(basicFindMock, times(1)).updateBasicFindParamters();
-            verify(mockController, times(1)).retriveMatchingElements(true, false);
+            verify(mockController, times(1)).retriveMatchingElements(true, true, false);
         }
     }
 
@@ -484,7 +488,7 @@ public class BasicFindTabNGTest {
 
         FindViewController mockController = mock(FindViewController.class);
         mockController.init(spyTopComponent);
-        doNothing().when(mockController).retriveMatchingElements(Mockito.eq(false), Mockito.eq(true));
+        doNothing().when(mockController).retriveMatchingElements(Mockito.eq(false), Mockito.eq(true), Mockito.eq(false));
 
         BasicFindTab basicFindMock = mock(BasicFindTab.class);
 
@@ -492,9 +496,12 @@ public class BasicFindTabNGTest {
         lookForChoiceBox.getItems().add("Node");
         lookForChoiceBox.getSelectionModel().select(0);
         final TextField findTextField = new TextField("test");
+        final CheckBox zoomToSelectionCheckBox = new CheckBox("Zoom to Selection");
 
         when(basicFindMock.getLookForChoiceBox()).thenReturn(lookForChoiceBox);
         when(basicFindMock.getFindTextField()).thenReturn(findTextField);
+        when(basicFindMock.getZoomToSelection()).thenReturn(zoomToSelectionCheckBox);
+        zoomToSelectionCheckBox.setSelected(false);
 
         doCallRealMethod().when(basicFindMock).findNextAction();
         doNothing().when(basicFindMock).saveSelected(Mockito.any());
@@ -507,7 +514,7 @@ public class BasicFindTabNGTest {
 
             verify(basicFindMock, times(1)).saveSelected(Mockito.eq(GraphElementType.VERTEX));
             verify(basicFindMock, times(1)).updateBasicFindParamters();
-            verify(mockController, times(1)).retriveMatchingElements(false, true);
+            verify(mockController, times(1)).retriveMatchingElements(false, true, false);
         }
     }
 
@@ -523,7 +530,7 @@ public class BasicFindTabNGTest {
 
         FindViewController mockController = mock(FindViewController.class);
         mockController.init(spyTopComponent);
-        doNothing().when(mockController).retriveMatchingElements(Mockito.eq(false), Mockito.eq(false));
+        doNothing().when(mockController).retriveMatchingElements(Mockito.eq(false), Mockito.eq(false), Mockito.eq(false));
 
         BasicFindTab basicFindMock = mock(BasicFindTab.class);
 
@@ -534,10 +541,13 @@ public class BasicFindTabNGTest {
 
         when(basicFindMock.getLookForChoiceBox()).thenReturn(lookForChoiceBox);
         when(basicFindMock.getFindTextField()).thenReturn(findTextField);
+        final CheckBox zoomToSelectionCheckBox = new CheckBox("Zoom to Selection");
 
         doCallRealMethod().when(basicFindMock).findPrevAction();
         doNothing().when(basicFindMock).saveSelected(Mockito.any());
         doNothing().when(basicFindMock).updateBasicFindParamters();
+        when(basicFindMock.getZoomToSelection()).thenReturn(zoomToSelectionCheckBox);
+        zoomToSelectionCheckBox.setSelected(false);
 
         try (MockedStatic<FindViewController> mockedStatic = Mockito.mockStatic(FindViewController.class)) {
             mockedStatic.when(() -> FindViewController.getDefault()).thenReturn(mockController);
@@ -546,7 +556,7 @@ public class BasicFindTabNGTest {
 
             verify(basicFindMock, times(1)).saveSelected(Mockito.eq(GraphElementType.VERTEX));
             verify(basicFindMock, times(1)).updateBasicFindParamters();
-            verify(mockController, times(1)).retriveMatchingElements(false, false);
+            verify(mockController, times(1)).retriveMatchingElements(false, false, false);
         }
     }
 

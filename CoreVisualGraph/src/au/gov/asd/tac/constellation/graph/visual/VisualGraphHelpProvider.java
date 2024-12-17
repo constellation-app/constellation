@@ -63,9 +63,7 @@ public class VisualGraphHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        final String visualPath;
-        visualPath = "ext" + SEP + "docs" + SEP + "CoreVisualGraph" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP + "asd" + SEP + "tac" + SEP
+        return "ext" + SEP + "docs" + SEP + "CoreVisualGraph" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP + "asd" + SEP + "tac" + SEP
                 + CODEBASE_NAME + SEP + "graph" + SEP + "visual" + SEP + "visualgraph-toc.xml";
-        return visualPath;
     }
 }

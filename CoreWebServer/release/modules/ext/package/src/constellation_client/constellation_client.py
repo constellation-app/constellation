@@ -13,6 +13,7 @@ import subprocess
 import sys
 import tempfile
 import time
+import io
 
 # A version number of the form yyyymmdd.
 #
@@ -20,7 +21,7 @@ import time
 # For example, if a new function is added, clients that require that function
 # to be present can check the version.
 #
-__version__ = 20231115
+__version__ = 20240711
 
 # The HTTP header to be used to convey the server secret (if HTTP is used).
 #
@@ -56,7 +57,7 @@ class FileResponse:
         with open(response_fnam) as f:
             self.response = json.load(f)
 
-        # We've loaded teh data, so remove the file.
+        # We've loaded the data, so remove the file.
         #
         os.remove(response_fnam)
 
@@ -150,7 +151,7 @@ class Constellation:
             'file [= directory]',
             'sftp = [user@]host[:dir]'.
         """
-
+        
         if transport is None:
             env = os.getenv(ENV_VAR)
             if env:
@@ -158,8 +159,11 @@ class Constellation:
 
         if transport is None or transport=='http':
             self.rest_request = self.http_request
+            
+            rest_data = _get_rest()
+            self.data = rest_data[0]
+            self.data_path = rest_data[1]
 
-            self.data = _get_rest()
             self.headers = {}
             if _SECRET in self.data:
                 self.headers[_SECRET] = self.data[_SECRET]
@@ -537,7 +541,7 @@ class Constellation:
         content = r.content
         if isinstance(content, bytes):
             content = content.decode('utf8')
-        df = pd.read_json(content, orient='split', dtype=False, convert_dates=False)
+        df = pd.read_json(io.StringIO(content), orient='split', dtype=False, convert_dates=False)
         df, self.types = self._fix_types(df)
 
         return df
@@ -739,36 +743,79 @@ class Constellation:
         r = self.rest_request(verb=verb, endpoint=f'/v2/service', path=name, params=args, json_=json, data=data, headers=headers)
 
         return r
+    
+            
+    def update_rest(self, path : str):
+        rest_data = _get_rest(path)
+        self.data = rest_data[0]
+        self.data_path = rest_data[1]
+        
+        self.headers = {}
+        if _SECRET in self.data:
+            self.headers[_SECRET] = self.data[_SECRET]
 
-def _get_rest(rest=None):
+        if _PORT in self.data:
+            self.port = self.data[_PORT]
+        else:
+            self.port = _DEFAULT_PORT
+
+
+# Function that finds the rest secret file with the given path (path optional). Returns dictionary of rest secret's data and path the rest file
+# Return annotation not compatible with python 3.6: -> tuple[dict, str]
+def _get_rest(rest : str = None):
     """Get data from the file created by the CONSTELLATION HTTP REST server.
 
     :param rest: The file to read the REST secret from. The CONSTELLATION default filename is used if not specified.
     """
+    
+    data = {}
+    
+    # If rest path given and it exists, read
+    if rest != None and os.path.exists(rest):
+        # Could be path direct to file
+        data = _get_rest_helper(rest)
+        if data != {}:
+            return(data, rest)
+        else:
+            # Or could be path to folder
+            rest = os.path.join(rest, 'rest.json')
+            data = _get_rest_helper(rest)
+            if data != {}:
+                return(data, rest)
+    
+    # Either rest path not given or couldn't read the file, so check various folders in home
+    HOME_LOCATIONS = ['.ipython', '.CONSTELLATION', '']
+    for location in HOME_LOCATIONS:
+        rest = os.path.join(os.path.expanduser('~'), location, 'rest.json')
+        data = _get_rest_helper(rest)
+        if data != {}:
+            return(data, rest)
+            
+    # Either not found in home, or could'nt read, so finally check current folder
+    rest = os.path.join(os.getcwd(), 'rest.json')
+    data = _get_rest_helper(rest)
+    if data != {}:
+        return(data, rest)
+     
+    # Return empty if still not found
+    return ({}, '')
 
-    if not rest:
-        rest = os.path.join(os.path.expanduser('~'), '.ipython', 'rest.json')
-
-    try:
-        with open(rest) as f:
-            print('Found REST file {}'.format(rest))
-            data = json.load(f)
-    except FileNotFoundError:
-        print('REST file {} not found'.format(rest), file=sys.stderr)
-        rest = os.path.join(os.path.expanduser('~'), 'rest.json')
-        print('Checking {} instead...'.format(rest), file=sys.stderr)
+def _get_rest_helper(rest : str) -> dict:
+    print('Looking for REST file in {}'.format(rest))
+    if os.path.exists(rest):
         try:
             with open(rest) as f:
                 print('Found REST file {}'.format(rest))
                 data = json.load(f)
-        except FileNotFoundError:
-            print('REST file {} not found'.format(rest), file=sys.stderr)
-            data = {}
-    except json.decoder.JSONDecodeError as e:
-        print('Error decoding REST JSON: {}'.format(e), file=sys.stderr)
-        data = {}
+                return data
+        except json.decoder.JSONDecodeError as e:
+            print('Error decoding REST JSON: {}'.format(e))
+        except PermissionError as e:
+            print('Error opening REST JSON: {}'.format(e))
+    else:
+        print('REST file {} not found'.format(rest))
     
-    return data
+    return {}
 
 def _row_dict(row, names, prefix):
     """Extract the relevant names/values from a DataFrame row and convert them

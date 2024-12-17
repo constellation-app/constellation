@@ -49,7 +49,7 @@ public class DefaultConversationMessageProvider implements ConversationMessagePr
             totalMessageCount = 0;
             final GraphIndexResult selectedVertices = GraphIndexUtilities.filterElements(graph, vertexSelectedAttribute, true);
             final int vertex = selectedVertices.getNextElement();
-            if (vertex != Graph.NOT_FOUND && vertex != currentVertex) {
+            if (vertex != Graph.NOT_FOUND) {
                 currentVertex = vertex;
                 final int secondVertex = selectedVertices.getNextElement();
                 if (secondVertex == Graph.NOT_FOUND) {

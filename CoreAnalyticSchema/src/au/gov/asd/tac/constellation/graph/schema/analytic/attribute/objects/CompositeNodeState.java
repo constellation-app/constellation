@@ -216,7 +216,6 @@ public class CompositeNodeState {
      * JSON.
      */
     public static CompositeNodeState createFromString(final String s) {
-
         if (StringUtils.isBlank(s)) {
             return null;
         }

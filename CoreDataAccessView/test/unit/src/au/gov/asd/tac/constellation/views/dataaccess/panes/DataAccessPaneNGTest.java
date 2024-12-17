@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.utilities.keyboardshortcut.RecordKeyboardShortcut;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessViewTopComponent;
 import au.gov.asd.tac.constellation.views.dataaccess.api.DataAccessPaneState;
 import au.gov.asd.tac.constellation.views.dataaccess.components.ButtonToolbar;
@@ -56,7 +55,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import org.testfx.api.FxRobot;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
@@ -79,7 +77,6 @@ public class DataAccessPaneNGTest {
     private DataAccessViewTopComponent dataAccessViewTopComponent;
 
     private DataAccessPane dataAccessPane;
-    private final FxRobot robot = new FxRobot();
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -141,9 +138,8 @@ public class DataAccessPaneNGTest {
     }
 
     /**
-     * I suspect this doesn't work because the action handler is initialized
-     * during the constructor and the spy is not applied until after the
-     * construction is complete.
+     * I suspect this doesn't work because the action handler is initialized during the constructor and the spy is not
+     * applied until after the construction is complete.
      */
     @Test(enabled = false)
     public void contextMenuEvent() {
@@ -419,11 +415,12 @@ public class DataAccessPaneNGTest {
         verify(buttonToolbar).changeExecuteButtonState(ButtonToolbar.ExecuteButtonState.CALCULATING, true);
     }
 
+
     @Test
     public void testCreateCombo() throws Exception {
         final DataAccessPane dataAccessPane = mock(DataAccessPane.class);
         when(dataAccessPane.createCombo(any())).thenCallRealMethod();
-                 
+
         KeyEvent keyEvent = new KeyEvent(KeyEvent.KEY_PRESSED, "Ctrl", "A", KeyCode.A, false, true, false, false);
         KeyCombination keyCombination = dataAccessPane.createCombo(keyEvent);
         assertTrue(keyCombination != null);
@@ -447,15 +444,12 @@ public class DataAccessPaneNGTest {
     }
 
     /**
-     * Verifies the updateExecuteButtonEnablement method. If queryIsRunning and
-     * canExecuteTabPane are false then the button is disabled other wise it is
-     * enabled.
+     * Verifies the updateExecuteButtonEnablement method. If queryIsRunning and canExecuteTabPane are false then the
+     * button is disabled other wise it is enabled.
      *
-     * @param queryIsRunning true if there are queries running for the current
-     * graph
+     * @param queryIsRunning true if there are queries running for the current graph
      * @param canExecuteTabPane the can execute parameter passed into the method
-     * @param expected true if the execute button should be disabled, false
-     * otherwise
+     * @param expected true if the execute button should be disabled, false otherwise
      */
     private void verifyUpdateExecuteButtonEnablement(final boolean queryIsRunning,
             final boolean canExecuteTabPane,
@@ -467,14 +461,12 @@ public class DataAccessPaneNGTest {
     }
 
     /**
-     * Verifies the graph ID is set and the correct execute button setting is
-     * made.
+     * Verifies the graph ID is set and the correct execute button setting is made.
      *
      * @param graphId the graph ID
      * @param tabPaneValid
      * @param queriesRunning true if the queries are running, false otherwise
-     * @param verification a function with verifications to make after the code
-     * is run
+     * @param verification a function with verifications to make after the code is run
      */
     private void verifyUpdateWithGraphId(final String graphId,
             final boolean disableExecuteButton,

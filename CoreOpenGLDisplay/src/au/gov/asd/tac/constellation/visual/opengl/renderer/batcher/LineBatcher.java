@@ -206,7 +206,7 @@ public class LineBatcher implements SceneBatcher {
             final int highVertex = access.getConnectionHighVertex(pos);
             final int flags = (access.isConnectionDimmed(pos) ? 2 : 0) | (access.isConnectionSelected(pos) ? 1 : 0);
             final int lineStyle = access.getConnectionLineStyle(pos).ordinal();
-            final ConnectionDirection connectionDirection = access.getConnectionDirection(pos);
+            final ConnectionDirection connectionDirection = determineConnectionDirection(pos, access);
 
             dataBuffer.put(representativeTransactionId);
             dataBuffer.put(lowVertex * LINE_INFO_BITS_AVOID + ((connectionDirection == ConnectionDirection.LOW_TO_HIGH || connectionDirection == ConnectionDirection.BIDIRECTED) ? LINE_INFO_ARROW : 0));
@@ -229,16 +229,7 @@ public class LineBatcher implements SceneBatcher {
             final int highVertex = access.getConnectionHighVertex(pos);
             final int flags = (access.isConnectionDimmed(pos) ? 2 : 0) | (access.isConnectionSelected(pos) ? 1 : 0);
             final int lineStyle = access.getConnectionLineStyle(pos).ordinal();
-            final ConnectionDirection connectionDirection;
-            if (access.isConnectionDirected(pos)) {
-                if (access.getConnectionDirection(pos) != ConnectionDirection.UNDIRECTED) { // covers the case where the transaction was initially undirected
-                    connectionDirection = access.getConnectionDirection(pos);
-                } else {
-                    connectionDirection = ConnectionDirection.LOW_TO_HIGH;
-                }
-            } else {
-                connectionDirection = ConnectionDirection.UNDIRECTED; // undirected transactions shouldn't have an arrow
-            }
+            final ConnectionDirection connectionDirection = determineConnectionDirection(pos, access);
 
             dataBuffer.put(representativeTransactionId);
             dataBuffer.put(lowVertex * LINE_INFO_BITS_AVOID + ((connectionDirection == ConnectionDirection.LOW_TO_HIGH || connectionDirection == ConnectionDirection.BIDIRECTED) ? LINE_INFO_ARROW : 0));
@@ -250,6 +241,18 @@ public class LineBatcher implements SceneBatcher {
             return connectionPosToBufferPos.get(pos);
         }
         return -1;
+    }
+
+    private ConnectionDirection determineConnectionDirection(final int pos, final VisualAccess access) {
+        if (access.isConnectionDirected(pos)) {
+            if (access.getConnectionDirection(pos) != ConnectionDirection.UNDIRECTED) { // covers the case where the transaction was initially undirected
+                return access.getConnectionDirection(pos);
+            } else {
+                return ConnectionDirection.LOW_TO_HIGH;
+            }
+        } else {
+            return ConnectionDirection.UNDIRECTED; // undirected transactions shouldn't have an arrow
+        }
     }
 
     private int bufferColorInfo(final int pos, final FloatBuffer colorBuffer, final VisualAccess access) {
@@ -270,14 +273,14 @@ public class LineBatcher implements SceneBatcher {
 
     public GLRenderableUpdateTask updateInfo(final VisualAccess access, final VisualChange change) {
         return SceneBatcher.updateIntBufferTask(change, access, this::updateConnectionInfo, gl -> batch.connectIntBuffer(gl, connectionInfoTarget),
-                 gl -> batch.disconnectBuffer(gl, connectionInfoTarget),
-                 new boolean[]{true, true, true, false, true, true, true, true});
+                gl -> batch.disconnectBuffer(gl, connectionInfoTarget),
+                new boolean[]{true, true, true, false, true, true, true, true});
     }
 
     public GLRenderableUpdateTask updateColors(final VisualAccess access, final VisualChange change) {
         return SceneBatcher.updateFloatBufferTask(change, access, this::bufferColorInfo, gl -> batch.connectFloatBuffer(gl, colorTarget),
-                 gl -> batch.disconnectBuffer(gl, colorTarget),
-                 COLOR_BUFFER_WIDTH * 2);
+                gl -> batch.disconnectBuffer(gl, colorTarget),
+                COLOR_BUFFER_WIDTH * 2);
     }
 
     public GLRenderableUpdateTask updateOpacity(final VisualAccess access) {

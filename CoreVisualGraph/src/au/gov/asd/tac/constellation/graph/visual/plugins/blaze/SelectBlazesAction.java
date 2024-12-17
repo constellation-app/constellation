@@ -35,7 +35,7 @@ import org.openide.util.NbBundle;
 public class SelectBlazesAction extends SimplePluginAction {
 
     public SelectBlazesAction(final GraphNode context) {
-        super(context, VisualGraphPluginRegistry.SELECT_BLAZES, true);
+        super(context, VisualGraphPluginRegistry.SELECT_BLAZES);
     }
 
 }

@@ -117,6 +117,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
         outputParameter.setRequired(true);
         FileParameterType.setKind(outputParameter, FileParameterType.FileParameterKind.SAVE);
         FileParameterType.setFileFilters(outputParameter, getExportType());
+        FileParameterType.setWarnOverwrite(outputParameter, true);
         parameters.addParameter(outputParameter);
 
         if (includeSpatialReference()) {

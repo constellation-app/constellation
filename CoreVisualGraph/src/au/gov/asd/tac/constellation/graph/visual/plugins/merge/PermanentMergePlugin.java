@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.HelpCtx;
@@ -96,7 +97,6 @@ public class PermanentMergePlugin extends SimpleEditPlugin implements HelpCtx.Pr
         final PluginParameter<BooleanParameterValue> keepSimpleParam = BooleanParameterType.build(KEEP_SIMPLE_PARAMETER_ID);
         keepSimpleParam.setName("Keep Simple");
         keepSimpleParam.setDescription("If True, only include directed transactions. The default is False.");
-        keepSimpleParam.setBooleanValue(false);
         parameters.addParameter(keepSimpleParam);
 
         return parameters;
@@ -123,8 +123,6 @@ public class PermanentMergePlugin extends SimpleEditPlugin implements HelpCtx.Pr
                 selectedNode = this.createVertex(graph, attributes);
             } else if (selections.contains(selectedNode)) {
                 selections.remove((Integer) selectedNode);
-            } else {
-                // Do nothing
             }
 
             this.processTransactions(graph, selections, selectedNode, createLoops, keepSimple);
@@ -160,12 +158,12 @@ public class PermanentMergePlugin extends SimpleEditPlugin implements HelpCtx.Pr
      * @param newVxId id of the new vertex
      */
     private void processTransactions(final GraphWriteMethods wg, final List<Integer> selections, final int newVxId, final boolean createLoops, final boolean keepSimple) {
-        final ArrayList<Integer> transactionAttributes = new ArrayList<>();
+        final List<Integer> transactionAttributes = new ArrayList<>();
         for (int i = 0; i < wg.getAttributeCount(GraphElementType.TRANSACTION); i++) {
             transactionAttributes.add(wg.getAttribute(GraphElementType.TRANSACTION, i));
         }
 
-        final HashSet<Integer> usedNodes = new HashSet<>();
+        final Set<Integer> usedNodes = new HashSet<>();
         for (final Integer selectedVxId : selections) {
             if (!wg.vertexExists(selectedVxId)) {
                 continue;

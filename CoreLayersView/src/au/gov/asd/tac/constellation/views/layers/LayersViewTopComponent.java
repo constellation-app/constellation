@@ -139,14 +139,12 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
     @Override
     protected void componentShowing() {
         super.componentShowing();
-        createContent().setEnabled(true);
         layersViewController.readState();
         layersViewController.addAttributes();
         setPaneStatus();
     }
 
     protected void preparePane() {
-        createContent().setEnabled(true);
         createContent().setDefaultLayers();
         layersViewController.readState();
         layersViewController.addAttributes();
@@ -160,6 +158,10 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
         createContent().setEnabled(GraphManager.getDefault().getActiveGraph() != null);
     }
 
+    public LayersViewPane getLayersViewPane() {
+        return layersViewPane;
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

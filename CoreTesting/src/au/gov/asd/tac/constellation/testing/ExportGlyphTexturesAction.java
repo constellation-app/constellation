@@ -51,6 +51,6 @@ public final class ExportGlyphTexturesAction implements ActionListener {
      * @return the created file chooser.
      */
     public FileChooserBuilder getExportGlyphTexturesFileChooser() {
-        return FileChooser.createFileChooserBuilder(TITLE, FileExtensionConstants.PNG, "Image Files (" + FileExtensionConstants.PNG + ")");
+        return FileChooser.createFileChooserBuilder(TITLE, FileExtensionConstants.PNG, "Image Files (" + FileExtensionConstants.PNG + ")", true);
     }
 }

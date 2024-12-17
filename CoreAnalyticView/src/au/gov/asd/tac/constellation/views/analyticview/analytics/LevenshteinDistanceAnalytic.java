@@ -30,6 +30,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
+import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticUtilities;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -56,7 +57,7 @@ public class LevenshteinDistanceAnalytic extends ScoreAnalyticPlugin {
 
     @Override
     public String getDocumentationUrl() {
-        return getHelpPath() + "analytic-levenshtein-distance.md";
+        return AnalyticUtilities.getHelpPath() + "analytic-levenshtein-distance.md";
     }
 
     @Override

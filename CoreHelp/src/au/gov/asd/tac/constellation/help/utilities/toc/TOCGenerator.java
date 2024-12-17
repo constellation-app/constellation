@@ -66,7 +66,7 @@ public class TOCGenerator {
                 LOGGER.log(Level.FINE, "Previous Table of Contents file was replaced at: {0}", filePath);
             }
         } catch (final IOException ex) {
-            LOGGER.log(Level.SEVERE, "Path to Table of Contents file was invalid.", ex);
+            LOGGER.log(Level.SEVERE, "Path to Table of Contents file was invalid: %s".formatted(filePath), ex);
         }
 
         // initialise file with path
@@ -77,7 +77,7 @@ public class TOCGenerator {
             LOGGER.log(Level.FINE, "Table of Contents file was created at: {0}", filePath);
 
         } catch (final IOException ex) {
-            LOGGER.log(Level.SEVERE, "Unable to create table of contents file", ex);
+            LOGGER.log(Level.SEVERE, "Unable to create table of contents file. FilePath: %s".formatted(filePath), ex);
             success = false;
         }
         return success;

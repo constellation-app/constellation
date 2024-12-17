@@ -138,7 +138,7 @@ public class NewGraph extends RestService {
         String newId = "";
 
         try {
-            newId = RestServiceUtilities.waitForGraphChange(existingId).get(10, TimeUnit.SECONDS);
+            newId = RestServiceUtilities.waitForGraphChange(existingId).get();
             if (!newId.isBlank()) {
                 final ObjectMapper mapper = new ObjectMapper();
                 final ObjectNode root = mapper.createObjectNode();
@@ -150,7 +150,7 @@ public class NewGraph extends RestService {
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
             LOGGER.log(Level.SEVERE, "Thread interrupted", ex);
-        } catch (final ExecutionException | TimeoutException ex) {
+        } catch (final ExecutionException ex) {
             throw new RestServiceException(ex);
         }
 
