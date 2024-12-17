@@ -385,7 +385,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         return !queryIsRunning && !canExecuteTabPane;
     }
     
-    private KeyCombination createCombo(final KeyEvent event) {
+    public KeyCombination createCombo(final KeyEvent event) {
         List<KeyCombination.Modifier> modifiers = new ArrayList();
         if (event.isControlDown()) {
             modifiers.add(KeyCombination.CONTROL_DOWN);
