@@ -6,13 +6,15 @@
     <property name="ivy.jar.dir" value="${user.home}/.ivy2"/>
     <property name="ivy.cache.dir" value="${ivy.jar.dir}/cache"/>
     <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy-${ivy.install.version}.jar"/>
-    <property name="ivy.settings.file" value="${projectupdater.dir}/src/ivysettings.xml"/>
-
+    <property name="ivy.settings.file" value="${projectupdater.dir}/src/ivysettings.xml"/>    
+  
     <target name="update-dependencies" if="update.dependencies" depends="skip-update-dependencies,build-project-updater,clean-dependencies,-load-ivy-tasks">
         <!--Run ivy-->
         <ivy:resolve file="./src/ivy.xml" />
-        <ivy:retrieve pattern="release/modules/ext/[artifact]-[revision].[ext]" sync="true"/>
-
+        <ivy:retrieve pattern="release/modules/ext/[artifact]-[revision].[ext]" sync="true" conf="defaultconf"/>
+        
+        <ivy:retrieve pattern="release/modules/ext/languagetoolconf/[artifact]-[revision].[ext]" conf="languagetoolconf"/>
+   
         <!--- START OF DELETABLE SECTION WHEN THIS IS IN MAVEN -->
         <echo level="info" message="installing unfolding-maps..." if:set="third.party.depdendencies"/>
         <get if:set="third.party.depdendencies"
@@ -154,7 +156,7 @@
              dest="${ivy.jar.file}" 
              usetimestamp="true"/>
     </target>
-    
+     
     <target name="-load-ivy-tasks" depends="-download-ivy">
         <path id="ivy.lib.path">
             <pathelement location="${ivy.jar.file}"/>
