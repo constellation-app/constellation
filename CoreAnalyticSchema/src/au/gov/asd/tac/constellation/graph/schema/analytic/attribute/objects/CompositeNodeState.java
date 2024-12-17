@@ -264,6 +264,5 @@ public class CompositeNodeState {
         } catch (final IOException ex) {
             throw new IllegalArgumentException("Error converting this string to a composite node state");
         }
-
     }
 }
