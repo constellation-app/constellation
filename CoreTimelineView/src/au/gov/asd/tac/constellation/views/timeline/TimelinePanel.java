@@ -354,10 +354,12 @@ public class TimelinePanel extends Region {
     }
 
     public void clearTimelineData() {
+        //   Platform.runLater(() -> {
         if (timeline.getData() != null) {
             timeline.getData().clear();
         }
         timeline.setData(null);
+        //  });
     }
 
     /**

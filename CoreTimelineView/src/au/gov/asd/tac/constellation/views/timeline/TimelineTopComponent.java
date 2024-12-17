@@ -201,7 +201,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
         state.setLowerTimeExtent(lowerTimeExtent);
         state.setUpperTimeExtent(upperTimeExtent);
 
-        if (graphNode.getGraph() == null) {
+        if (graphNode == null || graphNode.getGraph() == null) {
             return;
         }
 
@@ -222,7 +222,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
      */
     public void setExtents() {
 
-        if (graphNode.getGraph() == null) {
+        if (graphNode == null || graphNode.getGraph() == null) {
             return;
         }
 

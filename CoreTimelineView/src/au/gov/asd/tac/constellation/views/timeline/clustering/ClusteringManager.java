@@ -46,7 +46,7 @@ import java.util.Set;
  */
 public class ClusteringManager {
 
-    final List<TreeLeaf> leaves = new ArrayList<>();
+    private final List<TreeLeaf> leaves = new ArrayList<>();
     private TreeElement tree;
     private Set<TreeElement> elementsToDraw = new HashSet<>();
     private Set<TreeElement> elementsToUndim = new HashSet<>();
