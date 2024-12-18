@@ -256,6 +256,14 @@ public class JsonIONGTest {
             JsonIO.saveJsonPreferencesWithKeyboardShortcut(SUB_DIRECTORY, fixture());
 
             assertFalse(outputFile.exists());
+            
+             jsonIoDialogMockedStatic.when(() -> JsonIODialog
+                    .getPreferenceFileName(any(Optional.class), any()))
+                    .thenReturn(Optional.empty());
+
+            JsonIO.saveJsonPreferencesWithKeyboardShortcut(SUB_DIRECTORY, fixture());
+
+            assertFalse(outputFile.exists());
 
             ksResult.get().setFileName("my-preferences");
 
@@ -308,6 +316,14 @@ public class JsonIONGTest {
                     .thenCallRealMethod();
 
             JsonIO.saveJsonPreferencesWithKeyboardShortcut(SUB_DIRECTORY, fixture());
+            
+            assertTrue(outputFile.exists());            
+            
+            when(mockAlert.showAndWait()).thenReturn(Optional.of(ButtonType.OK));
+            
+            JsonIO.saveJsonPreferencesWithKeyboardShortcut(SUB_DIRECTORY, fixture());
+            
+            assertTrue(outputFile.exists());            
 
         } finally {
 
