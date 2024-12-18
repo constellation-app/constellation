@@ -166,6 +166,28 @@ public class JsonIONGTest {
             assertEquals(loadedPreferences, null);
         }
     }
+    
+     @Test
+    public void loadJsonPreferences_pref_ioexception() throws URISyntaxException {
+
+        try (
+                MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class, Mockito.CALLS_REAL_METHODS); MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);) {
+
+            // The returned preference directory is not a directory so the UI is
+            // opened with an empty list and the user hits cancel.
+            jsonIoDialogMockedStatic.when(() -> JsonIODialog.getSelection(Collections.emptyList(), SUB_DIRECTORY, FILE_PREFIX))
+                    .thenReturn(Optional.empty());
+
+            jsonIoMockedStatic.when(() -> JsonIO.getPrefereceFileDirectory(SUB_DIRECTORY))
+                    .thenReturn(new File(System.getProperty("java.io.tmpdir") + "/samplefile"));
+
+            final JsonNode jsonNode = JsonIO
+                    .loadJsonPreferences(SUB_DIRECTORY, FILE_PREFIX);
+
+            assertEquals(jsonNode, null);
+        }
+    }
+
 
     @Test
     public void loadJsonPreferences_get_tree() throws URISyntaxException {
