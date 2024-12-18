@@ -410,6 +410,7 @@ public abstract class ConstellationInput<T> extends StackPane implements
         //Boolean Changes are changs to the focused property of the ConstellationTextArea
         if (newValue instanceof Boolean newFocused){
             this.ensureInFocus(newFocused);
+            notifyListeners(null);
         }
     }
 

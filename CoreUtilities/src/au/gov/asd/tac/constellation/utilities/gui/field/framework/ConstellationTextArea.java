@@ -94,7 +94,7 @@ import javafx.scene.shape.Rectangle;
                     field.setPadding(insets); 
                     
                     //The up down arrows allow for navigation to the begining and start of a line
-                    //This is being remappedt o ALT + left and ALT + right for consistency between textArea and textField
+                    //This is being remapped to ALT + left and ALT + right for consistency between textArea and textField
                     field.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
                         if ((event.getCode() == KeyCode.UP || event.getCode() == KeyCode.UP) && !event.isAltDown()) {
                            event.consume(); 
@@ -112,7 +112,7 @@ import javafx.scene.shape.Rectangle;
             // Set up the optional secondary InputControl
             switch (type) {
                 case SECRET -> {
-                    // SecondaryInputs are only used in Secret Inputs and have bound properties wiht the primary input
+                    // SecondaryInputs are only used in Secret Inputs and have bound properties with the primary input
                     secondaryInput = new PasswordField();
                     secondaryInput.textProperty().bindBidirectional(primaryInput.textProperty());
                     secondaryInput.textFormatterProperty().bindBidirectional(primaryInput.textFormatterProperty());

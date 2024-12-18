@@ -32,6 +32,7 @@ import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationI
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.InfoWindowSupport;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport;
 import javafx.collections.ObservableList;
+import javafx.scene.control.SeparatorMenuItem;
 
 /**
  * A {@link ChoiceInput} for managing multiple choice selection. 
@@ -252,6 +253,11 @@ public final class MultiChoiceInput<C extends Object>
                 clear.setOnMouseClicked(event -> field.clearChoices()); 
                 this.registerCustomMenuItem(clear);
                 final Object[] optionsList = getOptions().toArray();
+                if (optionsList.length > 0) {
+                    // add separator
+                    this.getItems().add(new SeparatorMenuItem());
+                }
+                
                 final List<C> choices = field.getChoices();
                 for (int i = 0 ; i < optionsList.length ; i ++){
                     final C choice = (C) optionsList[i];
@@ -287,7 +293,7 @@ public final class MultiChoiceInput<C extends Object>
                 }
             };
             
-            //Register the Context Menu as a listener whilst it is open incase choices are modified externaly.
+            //Register the Context Menu as a listener whilst it is open in case choices are modified externally.
             this.setOnShowing(value -> {
                 field.addListener(cl);
             });
@@ -305,32 +311,32 @@ public final class MultiChoiceInput<C extends Object>
     public List<MenuItem> getAutoCompleteSuggestions() {
         final List<C> choices = this.getChoices();
         //do not show suggestions in the following cases
-        //if there are two unknown choices that the user has enteres, i.e more than 1 null value.
+        //if there are two unknown choices that the user has entered, i.e more than 1 null value.
         //if there is 1 or more valid choices in the event that this is a single choice input.
-        if (choices.stream().filter(value -> value == null).count() != 1 || this.getText().isBlank()){
-            return null;
-        } else {
-            //Remove blank entrys from here
-            final String[] candidateArray = this.getText().split(SeparatorConstants.COMMA);
-            final String invalidEntry = candidateArray[choices.indexOf(null)].stripLeading().stripTrailing();
-
-            final List<MenuItem> suggestions = new ArrayList<>();
-            
-            this.getOptions()
-                    .stream()
-                    .map(value -> value)
-                    .filter(value -> !choices.contains(value))
-                    .filter(value -> value.toString().toUpperCase().contains(invalidEntry.toUpperCase()))
-                    .forEach(value -> {
-                        final MenuItem item = new MenuItem(value.toString());
-                        item.setOnAction(event -> {
-                                choices.add(choices.indexOf(null), value);
-                                this.setChoices(choices);
-                        });
-                        suggestions.add(item);
+//        if (choices.stream().filter(value -> value == null).count() != 1 || this.getText().isBlank()){
+//            return null;
+//        } 
+        //Remove blank entries from here
+        final String[] candidateArray = this.getText().split(SeparatorConstants.COMMA);
+        final int indexOfNull = choices.indexOf(null) == -1 ? 0 : choices.indexOf(null);
+        final String invalidEntry = indexOfNull > -1 ? candidateArray[indexOfNull].stripLeading().stripTrailing() : "";
+        
+        final List<MenuItem> suggestions = new ArrayList<>();
+        
+        this.getOptions()
+                .stream()
+                .map(value -> value)
+                .filter(value -> !choices.contains(value))
+                .filter(value -> value.toString().toUpperCase().startsWith(invalidEntry.toUpperCase()))
+                .forEach(value -> {
+                    final MenuItem item = new MenuItem(value.toString());
+                    item.setOnAction(event -> {
+                            choices.add(indexOfNull, value);
+                            this.setChoices(choices);
                     });
-            return suggestions;
-            }
+                    suggestions.add(item);
+                });
+        return suggestions;
     }
     // </editor-fold> 
 }
