@@ -44,7 +44,7 @@ public abstract class Animation {
     private WritableGraph wg;
     public String graphID;
     private boolean finished = false;
-    private Thread animationThread;
+    protected Thread animationThread;
     private static final Logger LOGGER = Logger.getLogger(Animation.class.getName());
     
     public void setGraphID(final String graphID){
@@ -153,7 +153,6 @@ public abstract class Animation {
                     AnimationUtilities.notifyComplete(this);
                 }    
             });
-            
             animationThread.start();
         }
     }

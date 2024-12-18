@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.graph.interaction.animation;
 
 import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
+import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
@@ -38,6 +39,7 @@ import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import java.lang.Thread;
 
 /**
  *
@@ -56,6 +58,9 @@ public class AnimationNGTest {
     private MockedStatic<ConstellationColor> constyColor;
     private MockedStatic<AnimationUtilities> animationUtilitiesMocked;
     private ConstellationColor mockedColor;
+    private Thread animationThread;
+    private GraphNode graphNodeMock;
+    private MockedStatic<GraphNode> graphNodeStaticMock;
     
     
     public AnimationNGTest() {
@@ -89,6 +94,17 @@ public class AnimationNGTest {
                 -> AnimationUtilities.stopAnimation(Mockito.any(), Mockito.any()))
                 .then((Answer<Void>) invocation -> null);
         
+        animationThread = mock(Thread.class);
+        doNothing().when(animationThread).start();
+        doNothing().when(animationThread).interrupt();               
+        
+        graphNodeStaticMock = mockStatic(GraphNode.class);
+        graphNodeMock = mock(GraphNode.class);
+        graphNodeStaticMock.when(() 
+                -> GraphNode.getGraphNode(graph.getId()))
+                .thenReturn(graphNodeMock);
+        doReturn(graph).when(graphNodeMock).getGraph();
+        
     }
 
     @AfterMethod
@@ -99,6 +115,60 @@ public class AnimationNGTest {
         animationUtilitiesMocked.close();
     }
 
+    @Test
+    public void testAnimation_skip() {
+        
+        colorWarpAnimation.skip(graph.getId());        
+        verify(colorWarpAnimation, times(1)).skip(graph.getId());
+        verify(colorWarpAnimation, times(1)).initialise(wg);
+        
+        directionIndicatorAnimation.skip(graph.getId());
+        verify(directionIndicatorAnimation, times(1)).skip(graph.getId());
+        verify(directionIndicatorAnimation, times(1)).initialise(wg);
+        
+        flyingAnimation.skip(graph.getId());
+        verify(flyingAnimation, times(1)).skip(graph.getId());
+        verify(flyingAnimation, times(1)).initialise(wg);
+        
+        throbbingNodeAnimation.skip(graph.getId());
+        verify(throbbingNodeAnimation, times(1)).skip(graph.getId());
+        verify(throbbingNodeAnimation, times(1)).initialise(wg);
+        
+        panAnimation = mock(PanAnimation.class);        
+        panAnimation.skip(graph.getId());
+        verify(panAnimation, times(1)).skip(graph.getId());                
+    }
+    
+    
+    @Test
+    public void testAnimation_interrupt() {
+        colorWarpAnimation.animationThread = animationThread;        
+        colorWarpAnimation.run(graph.getId());
+        colorWarpAnimation.interrupt();
+        verify(colorWarpAnimation, times(1)).interrupt();
+        
+        directionIndicatorAnimation.animationThread = animationThread;
+        directionIndicatorAnimation.run(graph.getId());
+        directionIndicatorAnimation.interrupt();
+        verify(directionIndicatorAnimation, times(1)).interrupt();
+        
+        flyingAnimation.animationThread = animationThread;
+        flyingAnimation.run(graph.getId());
+        flyingAnimation.interrupt();
+        verify(flyingAnimation, times(1)).interrupt();
+        
+        throbbingNodeAnimation.animationThread = animationThread;
+        throbbingNodeAnimation.run(graph.getId());
+        throbbingNodeAnimation.interrupt();
+        verify(throbbingNodeAnimation, times(1)).interrupt();
+        
+        panAnimation = mock(PanAnimation.class);
+        panAnimation.animationThread = animationThread;
+        panAnimation.run(graph.getId());
+        panAnimation.interrupt();
+        verify(panAnimation, times(1)).interrupt();                
+    }
+    
     @Test
     public void testAnimation_getIntervalInMilis() {
         assertEquals(colorWarpAnimation.getIntervalInMillis(), 80);

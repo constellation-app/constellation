@@ -146,7 +146,6 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
 
     private final SelectionFreeformModel freeformModel = new SelectionFreeformModel();
 
-    private final boolean announceNextFlush = false;
     private boolean handleEvents;
 
     private static final Logger LOGGER = Logger.getLogger(DefaultInteractionEventHandler.class.getName());
@@ -212,7 +211,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                 if (interactionGraph == null) {
                     manager.addOperation(visualAnnotator.flagBusy(true));
                 } else {
-                    interactionGraph = interactionGraph.flush(announceNextFlush);
+                    interactionGraph = interactionGraph.flush(false);
                 }
 
                 long waitTime = 0;
@@ -231,7 +230,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                             nextWaitTime = Math.max(0, beforeProcessing + handler.processEvent(interactionGraph) - System.currentTimeMillis());
                         } else {
                             // info log for race condition when running animations
-                            GraphNode gn = GraphNode.getGraphNode(graph.getId());
+                            final GraphNode gn = GraphNode.getGraphNode(graph.getId());
                             final AnimationManager animationManager = ((VisualGraphTopComponent) gn.getTopComponent()).getAnimationManager();
                             
                             if (!animationManager.isAnimating()) {

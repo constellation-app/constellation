@@ -78,6 +78,8 @@ public class AnimateStopActionNGTest {
         
         instance.updateValue();
         animationUtilitiesMocked.verify(() 
-                -> AnimationUtilities.stopAllAnimations(testMock), times(1));      
+                -> AnimationUtilities.stopAllAnimations(testMock), times(1));
+        
+        gnMock.destroy();        
     }
 }

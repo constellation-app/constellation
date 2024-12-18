@@ -1,7 +1,7 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
-== 2024-12-12 Animation updates
+== 2024-12-18 Animation updates
 <p>Direction Indicators animation moved to Animations -> Experimental.</p>
 <p>New Color Warp animation added to Animations -> Experimental.</p>
 <p>Pause/Resume/Stop animation options added.</p>
