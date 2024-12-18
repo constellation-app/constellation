@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.find.components.advanced;
 
-import au.gov.asd.tac.constellation.views.find.components.advanced.AdvancedCriteriaBorderPane;
-import au.gov.asd.tac.constellation.views.find.components.advanced.StringCriteriaPanel;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
@@ -143,7 +141,6 @@ public class StringCriteriaPanelNGTest {
 
         assertEquals(stringCriteriaPanel.getSearchFieldText(), "test");
 
-        // TODO review the generated test code and remove the default call to fail.
     }
 
     /**

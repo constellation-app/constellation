@@ -99,7 +99,6 @@ public class FindViewControllerNGTest {
         FindViewController expResult = FindViewController.getDefault();
 
         assertEquals(result, expResult);
-        // TODO review the generated test code and remove the default call to fail.
     }
 
     /**
@@ -114,7 +113,6 @@ public class FindViewControllerNGTest {
         FindViewController instance = FindViewController.getDefault();
         FindViewController result = instance.init(findViewTopComponent);
         assertEquals(result, instance);
-        // TODO review the generated test code and remove the default call to fail.
     }
 
     /**
@@ -161,7 +159,6 @@ public class FindViewControllerNGTest {
             result = instance.populateAttributes(type, attributes, Long.MIN_VALUE);
             assertEquals(result.size(), 0);
         }
-        // TODO review the generated test code and remove the default call to fail.
     }
 
     /**
@@ -184,7 +181,6 @@ public class FindViewControllerNGTest {
         BasicFindReplaceParameters parameters2 = new BasicFindReplaceParameters("notEqual", "", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, true, false, false, false, false, true, false);
         assertNotEquals(result, parameters2);
 
-        // TODO review the generated test code and remove the default call to fail.
     }
 
     /**
