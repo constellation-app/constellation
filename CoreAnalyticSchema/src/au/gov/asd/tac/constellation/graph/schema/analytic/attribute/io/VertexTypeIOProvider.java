@@ -133,7 +133,7 @@ public class VertexTypeIOProvider extends AbstractGraphIOProvider {
         return schemaVertexType.equals(singletonType) ? singletonType : schemaVertexType;
     }
 
-    private static void writeTypeObject(final SchemaVertexType type, final JsonGenerator jsonGenerator) throws IOException {
+    public static final void writeTypeObject(final SchemaVertexType type, final JsonGenerator jsonGenerator) throws IOException {
         jsonGenerator.writeStringField(NAME_FIELD, type.getName());
         if (type.getDescription() != null) {
             jsonGenerator.writeStringField(DESCRIPTION_FIELD, type.getDescription());
