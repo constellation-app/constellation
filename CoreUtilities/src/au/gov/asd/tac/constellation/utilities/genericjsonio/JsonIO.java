@@ -501,7 +501,7 @@ public class JsonIO {
             );
         } else {
             // Nothing to select from - return an empty array
-            names = new String[0];
+            names = ArrayUtils.EMPTY_STRING_ARRAY;
         }
 
         // Remove the prefix and suffix from the names and pass to the selection dialog        
