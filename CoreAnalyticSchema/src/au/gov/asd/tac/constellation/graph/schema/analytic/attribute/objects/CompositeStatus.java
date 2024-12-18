@@ -38,19 +38,21 @@ public enum CompositeStatus {
     LEADER_OF_A_COMPOSITE(2, "Composite constituent"),
     PART_OF_A_COMPOSITE(3, "Composite constituent"),;
 
-    private final int id;
-    private final String compositeName;
+    public final int id;
+    public final String compositeName;
 
     CompositeStatus(final int id, final String name) {
         this.id = id;
         this.compositeName = name;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public String getCompositeName() {
-        return compositeName;
+    public static final CompositeStatus getCompositeStatus(final int statusId) {
+        return switch (statusId) {
+            case 0 -> NOT_A_COMPOSITE;
+            case 1 -> IS_A_COMPOSITE;
+            case 2 -> LEADER_OF_A_COMPOSITE;
+            case 3 -> PART_OF_A_COMPOSITE;
+            default -> null;
+        };
     }
 }

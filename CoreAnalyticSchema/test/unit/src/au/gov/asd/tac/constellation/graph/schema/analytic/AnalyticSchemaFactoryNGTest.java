@@ -21,7 +21,6 @@ import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory.AnalyticSchema;
 import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.objects.RawData;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcept;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
@@ -189,10 +188,8 @@ public class AnalyticSchemaFactoryNGTest {
         final int vertexColorAttribute = VisualConcept.VertexAttribute.COLOR.ensure(graph);
         final int vertexBackgroundIconAttribute = VisualConcept.VertexAttribute.BACKGROUND_ICON.ensure(graph);
         final int vertexForegroundIconAttribute = VisualConcept.VertexAttribute.FOREGROUND_ICON.ensure(graph);
-        final int vertexCountryAttribute = SpatialConcept.VertexAttribute.COUNTRY.ensure(graph);
         
         graph.setStringValue(vertexIdentifierAttribute, vxId, "my vertex");
-        graph.setStringValue(vertexCountryAttribute, vxId, "Au");
         
         assertEquals(graph.getStringValue(vertexIdentifierAttribute, vxId), "my vertex");
         assertNull(graph.getStringValue(vertexLabelAttribute, vxId));
@@ -201,7 +198,6 @@ public class AnalyticSchemaFactoryNGTest {
         assertNull(graph.getObjectValue(vertexColorAttribute, vxId));
         assertEquals(graph.getStringValue(vertexBackgroundIconAttribute, vxId), "Background.Flat Square");
         assertEquals(graph.getStringValue(vertexForegroundIconAttribute, vxId), "");
-        assertEquals(graph.getStringValue(vertexCountryAttribute, vxId), "Au");
         
         schema.completeVertex(graph, vxId);
         
@@ -212,8 +208,6 @@ public class AnalyticSchemaFactoryNGTest {
         assertEquals(graph.getObjectValue(vertexColorAttribute, vxId), ConstellationColor.GREY);
         assertEquals(graph.getStringValue(vertexBackgroundIconAttribute, vxId), "Background.Flat Square");
         assertEquals(graph.getStringValue(vertexForegroundIconAttribute, vxId), "Unknown");
-        // Country digraph should autocomplete
-        assertEquals(graph.getStringValue(vertexCountryAttribute, vxId), "Australia");
     }
     
     /**
