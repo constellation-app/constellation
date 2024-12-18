@@ -218,8 +218,7 @@ public class AdvancedFindTabNGTest {
         assertEquals(advancedTab.getCorrespondingCriteriaList(type).size(), 1);
         advancedTab.addCriteriaPane(type);
         assertEquals(advancedTab.getCorrespondingCriteriaList(type).size(), 2);
-
-        // TODO review the generated test code and remove the default call to fail.
+        
     }
 
     /**

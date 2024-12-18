@@ -37,6 +37,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
@@ -57,6 +59,9 @@ enum Operator {
  * @author sirius
  */
 public class StoreGraph extends LockingTarget implements GraphWriteMethods, Serializable {
+
+    private static final Logger LOGGER = Logger.getLogger(StoreGraph.class.getName());
+    
 
     private static final int HIGH_BIT = 0x80000000;
     private static final int LOW_BITS = 0x7FFFFFFF;
@@ -479,7 +484,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                             return;
                         }
                     } catch (final Exception ex) {
-                        // TODO: throw exception or log error?
+                        LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                     }
                 }
 
