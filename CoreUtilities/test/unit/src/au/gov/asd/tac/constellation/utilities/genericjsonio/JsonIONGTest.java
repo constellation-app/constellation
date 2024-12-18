@@ -17,8 +17,10 @@ package au.gov.asd.tac.constellation.utilities.genericjsonio;
 
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
+import static au.gov.asd.tac.constellation.utilities.genericjsonio.JsonIO.getPrefereceFileDirectory;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.keyboardshortcut.KeyboardShortcutSelectionResult;
+import au.gov.asd.tac.constellation.utilities.keyboardshortcut.TextInputDialogWithKeybordShortcut;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,6 +39,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.prefs.Preferences;
+import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import org.apache.commons.io.IOUtils;
@@ -54,6 +57,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.openide.NotifyDescriptor;
 import org.openide.util.NbPreferences;
+import org.testng.Assert;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
@@ -252,7 +256,52 @@ public class JsonIONGTest {
 
             final ObjectMapper mapper = new ObjectMapper();
 
-            JsonIO.saveJsonPreferencesWithKeyboardShortcut(SUB_DIRECTORY, fixture());
+            JsonIO.saveJsonPreferencesWithKeyboardShortcut(SUB_DIRECTORY, fixture());           
+            
+
+        } finally {
+
+            Files.deleteIfExists(outputFile.toPath());
+        }
+    }
+    
+     @Test
+    public void test_saveJsonPreferencesWithKeyboardShortcut_prefFileAlreadyExists() throws URISyntaxException, IOException {
+
+        final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+        final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
+
+        final File preferenceDirectory = new File(userDir, SUB_DIRECTORY.orElse(""));
+        final File outputFile = new File(preferenceDirectory.getAbsolutePath() + "/[Ctrl 1] my-preferences.json");
+
+        try (MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);
+             MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class)) {
+
+            outputFile.createNewFile();
+            
+            Optional<KeyboardShortcutSelectionResult> ksResult = Optional.of(new KeyboardShortcutSelectionResult("Ctrl 1", false, null));
+            ksResult.get().setFileName("my-preferences");
+            
+            Alert mockAlert = Mockito.mock(Alert.class);
+
+            jsonIoDialogMockedStatic.when(() -> JsonIODialog
+                    .getPreferenceFileName(any(Optional.class), any()))
+                    .thenReturn(ksResult);
+            
+             jsonIoMockedStatic.when(() -> JsonIO
+                    .getPrefereceFileDirectory(any()))
+                    .thenReturn(preferenceDirectory);
+             
+             jsonIoMockedStatic.when(() -> JsonIO
+                    .getAlert(any()))
+                    .thenReturn(mockAlert);
+             
+            jsonIoMockedStatic.when(() -> JsonIO
+                    .saveJsonPreferencesWithKeyboardShortcut(any(Optional.class), any()))
+                    .thenCallRealMethod();
+            
+            JsonIO.saveJsonPreferencesWithKeyboardShortcut(SUB_DIRECTORY, fixture());           
+            
 
         } finally {
 

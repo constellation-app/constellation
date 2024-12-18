@@ -41,6 +41,7 @@ import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -301,7 +302,7 @@ public class JsonIO {
 
         // If the file exist, ask the user if they want to overwrite
         if (preferenceFile.exists()) {
-            final Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            final Alert alert = getAlert(Alert.AlertType.CONFIRMATION);
             alert.setHeaderText(PREFERENCE_FILE_EXISTS_ALERT_TITLE);
             alert.setContentText(String.format(
                     PREFERENCE_FILE_EXISTS_ALERT_ERROR_MSG_FORMAT,
@@ -336,6 +337,9 @@ public class JsonIO {
         
     }
 
+    public static Alert getAlert(AlertType alertType) {
+        return new Alert(alertType);
+    }
     /**
      * Save the supplied JSON data in a file, within an allocated subdirectory
      * of the users configuration directory.
