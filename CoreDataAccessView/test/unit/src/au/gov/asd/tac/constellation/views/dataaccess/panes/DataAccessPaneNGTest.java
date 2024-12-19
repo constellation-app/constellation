@@ -19,12 +19,15 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.genericjsonio.JsonIO;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessViewTopComponent;
 import au.gov.asd.tac.constellation.views.dataaccess.api.DataAccessPaneState;
 import au.gov.asd.tac.constellation.views.dataaccess.components.ButtonToolbar;
 import au.gov.asd.tac.constellation.views.dataaccess.components.DataAccessTabPane;
 import au.gov.asd.tac.constellation.views.dataaccess.components.OptionsMenuBar;
+import java.io.File;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.logging.Level;
@@ -138,8 +141,9 @@ public class DataAccessPaneNGTest {
     }
 
     /**
-     * I suspect this doesn't work because the action handler is initialized during the constructor and the spy is not
-     * applied until after the construction is complete.
+     * I suspect this doesn't work because the action handler is initialized
+     * during the constructor and the spy is not applied until after the
+     * construction is complete.
      */
     @Test(enabled = false)
     public void contextMenuEvent() {
@@ -415,6 +419,17 @@ public class DataAccessPaneNGTest {
         verify(buttonToolbar).changeExecuteButtonState(ButtonToolbar.ExecuteButtonState.CALCULATING, true);
     }
 
+    @Test (dependsOnMethods = "qualityControlRuleChanged_cant_run", expectedExceptions = {ExecutionException.class, IllegalStateException.class})
+    public void testException() throws Exception {
+        
+            MockedStatic<DataAccessPaneState> dataAccessPaneStateMockedStatic = Mockito.mockStatic(DataAccessPaneState.class);
+        dataAccessPaneStateMockedStatic.when(() -> DataAccessPaneState.getPlugins())
+                .thenThrow(new ExecutionException("test") {
+                });
+        
+       DataAccessPane dataAccessPane1 = spy(new DataAccessPane( mock(DataAccessViewTopComponent.class)));
+  
+    }
 
     @Test
     public void testCreateCombo() throws Exception {
@@ -444,12 +459,15 @@ public class DataAccessPaneNGTest {
     }
 
     /**
-     * Verifies the updateExecuteButtonEnablement method. If queryIsRunning and canExecuteTabPane are false then the
-     * button is disabled other wise it is enabled.
+     * Verifies the updateExecuteButtonEnablement method. If queryIsRunning and
+     * canExecuteTabPane are false then the button is disabled other wise it is
+     * enabled.
      *
-     * @param queryIsRunning true if there are queries running for the current graph
+     * @param queryIsRunning true if there are queries running for the current
+     * graph
      * @param canExecuteTabPane the can execute parameter passed into the method
-     * @param expected true if the execute button should be disabled, false otherwise
+     * @param expected true if the execute button should be disabled, false
+     * otherwise
      */
     private void verifyUpdateExecuteButtonEnablement(final boolean queryIsRunning,
             final boolean canExecuteTabPane,
@@ -461,12 +479,14 @@ public class DataAccessPaneNGTest {
     }
 
     /**
-     * Verifies the graph ID is set and the correct execute button setting is made.
+     * Verifies the graph ID is set and the correct execute button setting is
+     * made.
      *
      * @param graphId the graph ID
      * @param tabPaneValid
      * @param queriesRunning true if the queries are running, false otherwise
-     * @param verification a function with verifications to make after the code is run
+     * @param verification a function with verifications to make after the code
+     * is run
      */
     private void verifyUpdateWithGraphId(final String graphId,
             final boolean disableExecuteButton,
