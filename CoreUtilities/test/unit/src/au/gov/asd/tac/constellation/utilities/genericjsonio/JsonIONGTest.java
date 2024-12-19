@@ -583,6 +583,21 @@ public class JsonIONGTest {
     }
 
     @Test
+    public void saveJsonPreferences_withks_user_cancels() throws URISyntaxException, FileNotFoundException, IOException {
+        final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
+
+        try (
+                MockedStatic<JsonIO> jsonIoMockedStatic = Mockito.mockStatic(JsonIO.class); MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);) {
+            setupStaticMocksForSavePreference(jsonIoMockedStatic, jsonIoDialogMockedStatic, Optional.empty());
+
+            JsonIO.saveJsonPreferencesWithKeyboardShortcut(SUB_DIRECTORY, new Object());
+
+            assertFalse(outputFile.exists());
+        } finally {
+            Files.deleteIfExists(outputFile.toPath());
+        }
+    }
+    @Test
     public void deleteJsonPreferences() throws URISyntaxException, FileNotFoundException, IOException {
         final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
 
