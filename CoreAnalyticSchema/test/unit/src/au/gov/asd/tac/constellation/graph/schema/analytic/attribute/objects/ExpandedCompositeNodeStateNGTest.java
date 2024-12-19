@@ -39,14 +39,16 @@ import org.testng.annotations.Test;
  */
 public class ExpandedCompositeNodeStateNGTest {
     
-    RecordStore recordStore;
+    private RecordStore recordStore;
     
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -62,6 +64,7 @@ public class ExpandedCompositeNodeStateNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**

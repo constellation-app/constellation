@@ -55,6 +55,7 @@ public class HierarchicalControllerTopComponentNGTest {
     @Test
     public void testUpdateEdit() throws InterruptedException {
         System.out.println("testUpdateEdit");
+        
         final HierarchicalState state = new HierarchicalState();
         final Group g = new Group();
         final Group[] groups = {g};
@@ -85,6 +86,7 @@ public class HierarchicalControllerTopComponentNGTest {
     @Test
     public void testGraphChanged() throws InterruptedException {
         System.out.println("testGraphChanged");
+        
         final TopComponent.Registry mockReg = mock(TopComponent.Registry.class);
         final GraphNode mockGraphNode = mock(GraphNode.class);
         final Node[] nodes = {mockGraphNode};
@@ -116,5 +118,4 @@ public class HierarchicalControllerTopComponentNGTest {
         }
 
     }
-
 }

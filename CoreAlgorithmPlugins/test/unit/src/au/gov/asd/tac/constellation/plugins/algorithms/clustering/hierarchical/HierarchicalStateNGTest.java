@@ -30,6 +30,7 @@ public class HierarchicalStateNGTest {
     @Test
     public void testConstructor() {
         System.out.println("getCurrentStep");
+        
         final int steps = 101;
         final int currentStep = 202;
         final FastNewman.Group[] groups = {};
@@ -50,6 +51,7 @@ public class HierarchicalStateNGTest {
     @Test
     public void testGetCurrentStep() {
         System.out.println("getCurrentStep");
+        
         final HierarchicalState instance = new HierarchicalState();
         final int currentStep = 404;
 
@@ -63,6 +65,7 @@ public class HierarchicalStateNGTest {
     @Test
     public void testGetOptimumStep() {
         System.out.println("getOptimumStep");
+        
         final HierarchicalState instance = new HierarchicalState();
         final int optimumStep = 505;
 
@@ -76,6 +79,7 @@ public class HierarchicalStateNGTest {
     @Test
     public void testIsExcludeSingleVertices() {
         System.out.println("isExcludeSingleVertices");
+        
         final HierarchicalState instance = new HierarchicalState();
         final boolean excludeSingleVertices = true;
 
@@ -89,6 +93,7 @@ public class HierarchicalStateNGTest {
     @Test
     public void testIsExcludedElementsDimmed() {
         System.out.println("isExcludedElementsDimmed");
+        
         final HierarchicalState instance = new HierarchicalState();
         final boolean excludeElementsDimmed = true;
 
@@ -102,6 +107,7 @@ public class HierarchicalStateNGTest {
     @Test
     public void testGetExcludedElementsState() {
         System.out.println("getExcludedElementsState");
+        
         final HierarchicalState instance = new HierarchicalState();
         final HierarchicalState.ExcludedState excludedElementsState = HierarchicalState.ExcludedState.SHOW;
 
@@ -115,6 +121,7 @@ public class HierarchicalStateNGTest {
     @Test
     public void testGetClusterNumbers() {
         System.out.println("getClusterNumbers");
+        
         final HierarchicalState instance = new HierarchicalState();
         final int[] expResult = {606};
 
@@ -128,6 +135,7 @@ public class HierarchicalStateNGTest {
     @Test
     public void testGetClusterSeenBefore() {
         System.out.println("getClusterSeenBefore");
+        
         final HierarchicalState instance = new HierarchicalState();
         final int[] expResult = {707};
 
@@ -141,6 +149,7 @@ public class HierarchicalStateNGTest {
     @Test
     public void testGetRedrawCount() {
         System.out.println("getRedrawCount");
+        
         final HierarchicalState instance = new HierarchicalState();
         final int expResult = 808;
 
@@ -154,6 +163,7 @@ public class HierarchicalStateNGTest {
     @Test
     public void testGetModificationCounter() {
         System.out.println("getModificationCounter");
+        
         final HierarchicalState instance = new HierarchicalState();
         final long expResult = 909L;
 
@@ -167,6 +177,7 @@ public class HierarchicalStateNGTest {
     @Test
     public void testGetStrucModificationCount() {
         System.out.println("getStrucModificationCount");
+        
         final HierarchicalState instance = new HierarchicalState();
         final long expResult = 10010L;
 
@@ -180,6 +191,7 @@ public class HierarchicalStateNGTest {
     @Test
     public void testIsInteractive() {
         System.out.println("isInteractive");
+        
         final HierarchicalState instance = new HierarchicalState();
         final boolean expResult = true;
 
@@ -193,6 +205,7 @@ public class HierarchicalStateNGTest {
     @Test
     public void testGetSteps() {
         System.out.println("getSteps");
+        
         final HierarchicalState instance = new HierarchicalState();
         final int expResult = 11011;
 
@@ -206,6 +219,7 @@ public class HierarchicalStateNGTest {
     @Test
     public void testGetGroups() {
         System.out.println("getGroups");
+        
         final HierarchicalState instance = new HierarchicalState();
         final FastNewman.Group[] expResult = {};
 
@@ -219,6 +233,7 @@ public class HierarchicalStateNGTest {
     @Test
     public void testIsColored() {
         System.out.println("isColored");
+        
         final HierarchicalState instance = new HierarchicalState();
         final boolean expResult = false;
 
@@ -232,6 +247,7 @@ public class HierarchicalStateNGTest {
     @Test
     public void testGetCurrentNumOfClusters() {
         System.out.println("getCurrentNumOfClusters");
+        
         final HierarchicalState instance = new HierarchicalState();
         final FastNewman.Group[] groupArray = {new FastNewman.Group()};
         final int expResult = groupArray.length;
@@ -246,6 +262,7 @@ public class HierarchicalStateNGTest {
     @Test
     public void testToString() {
         System.out.println("toString");
+        
         final HierarchicalState instance = new HierarchicalState();
         final int steps = 6;
         final int currentStep = 3;

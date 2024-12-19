@@ -41,16 +41,18 @@ import org.testng.annotations.Test;
  */
 public class ContractedCompositeNodeStateNGTest {
     
-    RecordStore recordStore;
-    List<String> expandedIds;
-    float[] mean;
+    private RecordStore recordStore;
+    private List<String> expandedIds;
+    private float[] mean;
     
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -76,6 +78,7 @@ public class ContractedCompositeNodeStateNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**

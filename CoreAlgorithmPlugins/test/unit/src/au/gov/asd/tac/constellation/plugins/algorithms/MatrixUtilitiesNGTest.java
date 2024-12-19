@@ -34,16 +34,22 @@ import org.testng.annotations.Test;
  */
 public class MatrixUtilitiesNGTest {
 
-    private int vxId0, vxId1, vxId2, vxId3, vxId4;
-    private int txId0, txId1, txId2, txId3, txId4;
+    private int vxId0;
+    private int vxId1;
+    private int vxId2;
+    private int vxId3;
+    private int vxId4;
+    
     private StoreGraph graph;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -60,11 +66,11 @@ public class MatrixUtilitiesNGTest {
         vxId4 = graph.addVertex();
 
         // add transactions
-        txId0 = graph.addTransaction(vxId0, vxId1, false);
-        txId1 = graph.addTransaction(vxId1, vxId2, false);
-        txId2 = graph.addTransaction(vxId1, vxId3, false);
-        txId3 = graph.addTransaction(vxId2, vxId3, false);
-        txId4 = graph.addTransaction(vxId3, vxId4, false);
+        graph.addTransaction(vxId0, vxId1, false);
+        graph.addTransaction(vxId1, vxId2, false);
+        graph.addTransaction(vxId1, vxId3, false);
+        graph.addTransaction(vxId2, vxId3, false);
+        graph.addTransaction(vxId3, vxId4, false);
     }
 
     @AfterMethod
@@ -73,10 +79,12 @@ public class MatrixUtilitiesNGTest {
     }
 
     /**
-     * Test of getIdentityMatrix method, of class MatrixUtilities.
+     * Test of identity method, of class MatrixUtilities.
      */
     @Test
-    public void testGetIdentityMatrix() {
+    public void testIdentity() {
+        System.out.println("identity");
+        
         final SimpleMatrix result = MatrixUtilities.identity(graph);
         final SimpleMatrix expResult = SimpleMatrix.identity(5);
         assertTrue(isEqual(result, expResult, 1E-3));
@@ -87,10 +95,12 @@ public class MatrixUtilitiesNGTest {
      */
     @Test
     public void testAdjacencyEmptyGraph() {
+        System.out.println("adjacencyEmptyGraph");
+        
         final SimpleMatrix expResult = new SimpleMatrix(0, 0);
         final SimpleMatrix result = MatrixUtilities.adjacency(new StoreGraph(), false);
-        assertEquals(result.numRows(), expResult.numRows());
-        assertEquals(result.numCols(), expResult.numCols());
+        assertEquals(result.getNumRows(), expResult.getNumRows());
+        assertEquals(result.getNumCols(), expResult.getNumCols());
         assertEquals(result.getNumElements(), 0);
     }
     
@@ -99,6 +109,8 @@ public class MatrixUtilitiesNGTest {
      */
     @Test
     public void testAdjacency() {
+        System.out.println("adjacency");
+        
         final boolean weighted = false;
         final double[][] expData = new double[5][5];
         expData[0][1] = 1.0;
@@ -117,10 +129,12 @@ public class MatrixUtilitiesNGTest {
     }
 
     /**
-     * Test of getIncidenceMatrix method, of class MatrixUtilities.
+     * Test of incidence method, of class MatrixUtilities.
      */
     @Test
-    public void testGetIncidenceMatrix() {
+    public void testIncidence() {
+        System.out.println("incidence");
+        
         final boolean weighted = false;
         final double[][] expData = new double[5][5];
         expData[0][0] = 1.0;
@@ -139,10 +153,12 @@ public class MatrixUtilitiesNGTest {
     }
 
     /**
-     * Test of getDegreeMatrix method, of class MatrixUtilities.
+     * Test of degree method, of class MatrixUtilities.
      */
     @Test
-    public void testGetDegreeMatrix() {
+    public void testDegree() {
+        System.out.println("degree");
+        
         final double[][] expData = new double[5][5];
         expData[0][0] = 1.0;
         expData[1][1] = 3.0;
@@ -155,10 +171,12 @@ public class MatrixUtilitiesNGTest {
     }
 
     /**
-     * Test of getLaplacianMatrix method, of class MatrixUtilities.
+     * Test of laplacian method, of class MatrixUtilities.
      */
     @Test
-    public void testGetLaplacianMatrix() {
+    public void testLaplacian() {
+        System.out.println("laplacian");
+        
         final double[][] expData = new double[5][5];
         expData[0][0] = 1.0;
         expData[0][1] = -1.0;
@@ -185,10 +203,12 @@ public class MatrixUtilitiesNGTest {
      */
     @Test
     public void testInverseLaplacianEmptyGraph() {
+        System.out.println("inverseLaplacianEmptyGraph");
+        
         final SimpleMatrix expResult = new SimpleMatrix(0, 0);
         final SimpleMatrix result = MatrixUtilities.inverseLaplacian(new StoreGraph());
-        assertEquals(result.numRows(), expResult.numRows());
-        assertEquals(result.numCols(), expResult.numCols());
+        assertEquals(result.getNumRows(), expResult.getNumRows());
+        assertEquals(result.getNumCols(), expResult.getNumCols());
         assertEquals(result.getNumElements(), 0);
     }
     
@@ -197,6 +217,8 @@ public class MatrixUtilitiesNGTest {
      */
     @Test
     public void testInverseLaplacian() {
+        System.out.println("inverseLaplacian");
+        
         final double[][] expData = new double[5][5];
         expData[0][0] = 0.867;
         expData[0][1] = 0.067;
