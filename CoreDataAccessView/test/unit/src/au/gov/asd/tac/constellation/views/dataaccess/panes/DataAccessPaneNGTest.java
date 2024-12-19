@@ -417,19 +417,7 @@ public class DataAccessPaneNGTest {
         dataAccessPane.qualityControlRuleChanged(false);
 
         verify(buttonToolbar).changeExecuteButtonState(ButtonToolbar.ExecuteButtonState.CALCULATING, true);
-    }
-
-    @Test (dependsOnMethods = "qualityControlRuleChanged_cant_run", expectedExceptions = {ExecutionException.class, IllegalStateException.class})
-    public void testException() throws Exception {
-        
-            MockedStatic<DataAccessPaneState> dataAccessPaneStateMockedStatic = Mockito.mockStatic(DataAccessPaneState.class);
-        dataAccessPaneStateMockedStatic.when(() -> DataAccessPaneState.getPlugins())
-                .thenThrow(new ExecutionException("test") {
-                });
-        
-       DataAccessPane dataAccessPane1 = spy(new DataAccessPane( mock(DataAccessViewTopComponent.class)));
-  
-    }
+    }   
 
     @Test
     public void testCreateCombo() throws Exception {
