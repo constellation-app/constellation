@@ -66,28 +66,33 @@ import org.testng.annotations.Test;
  */
 public class BasicFindTabNGTest {
 
-    private Map<String, Graph> graphMap = new HashMap<>();
+    private Map<String, Graph> graphMap;
+    
     private Graph graph;
     private Graph graph2;
-    private GraphAttribute labelAttributeV, identifierAttributeV, labelAttributeT, identifierAttributeT;
+    
+    private GraphAttribute labelAttributeV;
+    private GraphAttribute identifierAttributeV;
+    private GraphAttribute labelAttributeT;
+    private GraphAttribute identifierAttributeT;
 
-    private int selectedV, selectedT;
-    private int labelV, identifierV, xV, labelT, identiferT, widthT;
-    private int vxId1, vxId2, vxId3, vxId4, vxId5UpperCase, vxId6, vxId7, vxId8, txId1, txId2, txId3, txId4;
+    private int selectedV;
+    private int labelV;
+    private int identifierV;
+    private int xV;
+    
+    private int vxId1;
 
-    FindViewTopComponent findViewTopComponent;
-    FindViewTopComponent spyTopComponent;
-
-//    FindViewController findViewController;
-    BasicFindTab basicFindTab;
-    ReplaceTab replaceTab;
-    FindViewPane findViewPane;
-    FindViewTabs findViewTabs;
+    private FindViewTopComponent findViewTopComponent;
+    private FindViewTopComponent spyTopComponent;
+    
+    private BasicFindTab basicFindTab;
+    private ReplaceTab replaceTab;
+    private FindViewPane findViewPane;
+    private FindViewTabs findViewTabs;
+    
     private static final Logger LOGGER = Logger.getLogger(BasicFindTabNGTest.class.getName());
-
-    public BasicFindTabNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -125,6 +130,7 @@ public class BasicFindTabNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -578,6 +584,7 @@ public class BasicFindTabNGTest {
         graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
         graph2 = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
 
+        graphMap = new HashMap<>();
         graphMap.put(graph.getId(), graph);
         graphMap.put(graph2.getId(), graph2);
         try {
@@ -590,10 +597,9 @@ public class BasicFindTabNGTest {
             identifierV = VisualConcept.VertexAttribute.IDENTIFIER.ensure(wg);
             xV = VisualConcept.VertexAttribute.X.ensure(wg);
 
-            selectedT = VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
-            labelT = VisualConcept.TransactionAttribute.LABEL.ensure(wg);
-            identiferT = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(wg);
-            widthT = VisualConcept.TransactionAttribute.WIDTH.ensure(wg);
+            VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
+            VisualConcept.TransactionAttribute.LABEL.ensure(wg);
+            VisualConcept.TransactionAttribute.IDENTIFIER.ensure(wg);
 
             vxId1 = wg.addVertex();
             wg.setBooleanValue(selectedV, vxId1, false);

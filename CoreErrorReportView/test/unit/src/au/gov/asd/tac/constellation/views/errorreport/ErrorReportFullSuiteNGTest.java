@@ -48,7 +48,7 @@ public class ErrorReportFullSuiteNGTest {
             if (!FxToolkit.isFXApplicationThreadRunning()) {
                 FxToolkit.registerPrimaryStage();
             }
-        } catch (Exception e) {
+        } catch (TimeoutException e) {
             System.out.println("\n**** SETUP ERROR: " + e);
             throw e;
         }
@@ -123,11 +123,9 @@ public class ErrorReportFullSuiteNGTest {
         System.out.println("\n>>>> Check screen update requested");
         assertTrue(ErrorReportSessionData.isScreenUpdateRequested());
 
-        List<String> activeLevels = erdm.getActivePopupErrorLevels();
-
         System.out.println("\n\n>>>> Waiting for SEVERE dialogs");
         // default popup mode 2 only allows 1 popup
-        storedList = waitForDialogToBeDisplayed(new ArrayList<Level>(List.of(Level.SEVERE)), 1);
+        storedList = waitForDialogToBeDisplayed(new ArrayList<>(List.of(Level.SEVERE)), 1);
         System.out.println("\n\n>>>> Done Waiting");
 
         dismissPopups(storedList);
@@ -137,7 +135,7 @@ public class ErrorReportFullSuiteNGTest {
         System.out.println("\n>>>> Check new list size");
         assertEquals(storedList.size(), 1);
 
-        activeLevels = erdm.getActivePopupErrorLevels();
+        List<String> activeLevels = erdm.getActivePopupErrorLevels();
 
         System.out.println("\n>>>> Check active levels: " + activeLevels);
         System.out.println("\n>>>> resumption date: " + erdm.getGracePeriodResumptionDate()

@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.find.plugins;
 
-import au.gov.asd.tac.constellation.views.find.plugins.GraphAttributePlugin;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
@@ -31,7 +30,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 import static org.mockito.Mockito.mock;
 import org.openide.util.Exceptions;
 import static org.testng.Assert.assertEquals;
@@ -48,40 +46,59 @@ import org.testng.annotations.Test;
 public class GraphAttributePluginNGTest {
 
     private Map<String, Graph> graphMap = new HashMap<>();
+    
     private Graph graph;
     private Graph graph2;
-    private int selectedV, selectedT;
-    private int labelV, identifierV, xV, labelT, identiferT, widthT;
-    private int vxId1, vxId2, vxId3, vxId4, txId1, txId2, txId3, txId4;
-    private List<Attribute> attributeList = new ArrayList<>();
-    private long amc = Long.MIN_VALUE;
-    private static final Logger LOGGER = Logger.getLogger(GraphAttributePluginNGTest.class.getName());
-
-    public GraphAttributePluginNGTest() {
-    }
-
+    
+    private int selectedV;
+    private int labelV;
+    private int identifierV;
+    private int xV;
+    private int selectedT;
+    private int labelT;
+    private int identiferT;
+    private int widthT;
+    
+    private int vxId1;
+    private int vxId2;
+    private int vxId3;
+    private int vxId4;
+    
+    private int txId1;
+    private int txId2;
+    private int txId3;
+    private int txId4;
+    
+    private List<Attribute> attributeList;
+    
+    private final long amc = Long.MIN_VALUE;
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
-
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
 
     }
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        attributeList = new ArrayList<>();
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
      * Test of read method, of class GraphAttributePlugin.
+     * @throws java.lang.InterruptedException
      */
     @Test
-    public void testRead() throws Exception {
+    public void testRead() throws InterruptedException {
         System.out.println("read");
 
         setupGraph();
@@ -90,44 +107,47 @@ public class GraphAttributePluginNGTest {
         PluginParameters pluginParameters = mock(PluginParameters.class);
 
         WritableGraph wg = graph.getWritableGraph("", true);
-        GraphElementType type = GraphElementType.VERTEX;
+        try {
+            GraphElementType type = GraphElementType.VERTEX;
 
-        GraphAttributePlugin graphAttributePlugin = new GraphAttributePlugin(type, attributeList, amc);
+            GraphAttributePlugin graphAttributePlugin = new GraphAttributePlugin(type, attributeList, amc);
 
-        int selectedInt = wg.getAttribute(type, 0);
-        Attribute selectedAttribute = new GraphAttribute(wg, selectedInt);
-        int labelInt = wg.getAttribute(type, 1);
-        Attribute labelAttribute = new GraphAttribute(wg, labelInt);
-        int identifierInt = wg.getAttribute(type, 2);
-        Attribute identifierAttribute = new GraphAttribute(wg, identifierInt);
-        int xInt = wg.getAttribute(type, 3);
-        Attribute xAttribute = new GraphAttribute(wg, xInt);
+            int selectedInt = wg.getAttribute(type, 0);
+            Attribute selectedAttribute = new GraphAttribute(wg, selectedInt);
+            int labelInt = wg.getAttribute(type, 1);
+            Attribute labelAttribute = new GraphAttribute(wg, labelInt);
+            int identifierInt = wg.getAttribute(type, 2);
+            Attribute identifierAttribute = new GraphAttribute(wg, identifierInt);
+            int xInt = wg.getAttribute(type, 3);
+            Attribute xAttribute = new GraphAttribute(wg, xInt);
 
-        List<Attribute> expectedList = new ArrayList<>();
-        expectedList.add(selectedAttribute);
-        expectedList.add(labelAttribute);
-        expectedList.add(identifierAttribute);
-        expectedList.add(xAttribute);
+            List<Attribute> expectedList = new ArrayList<>();
+            expectedList.add(selectedAttribute);
+            expectedList.add(labelAttribute);
+            expectedList.add(identifierAttribute);
+            expectedList.add(xAttribute);
 
-        /**
-         * The attributeList should contain all the avalible attributes of the
-         * given type that exist on the graph. It should contain the selected,
-         * label, identifier and x attributes as they are the vertex attributes
-         * the graph has been set with.
-         */
-        graphAttributePlugin.read(wg, interaction, pluginParameters);
-        assertEquals(attributeList, expectedList);
-        wg.commit();
+            /**
+             * The attributeList should contain all the avalible attributes of the
+             * given type that exist on the graph. It should contain the selected,
+             * label, identifier and x attributes as they are the vertex attributes
+             * the graph has been set with.
+             */
+            graphAttributePlugin.read(wg, interaction, pluginParameters);
+            assertEquals(attributeList, expectedList);
+        } finally {
+            wg.commit();
+        }
     }
 
     private void setupGraph() {
         graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
         graph2 = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
 
+        graphMap = new HashMap<>();
         graphMap.put(graph.getId(), graph);
         graphMap.put(graph2.getId(), graph2);
         try {
-
             WritableGraph wg = graph.getWritableGraph("", true);
 
             // Create Selected Attributes
@@ -190,11 +210,9 @@ public class GraphAttributePluginNGTest {
             wg.setIntValue(widthT, txId4, 1);
 
             wg.commit();
-
         } catch (final InterruptedException ex) {
             Exceptions.printStackTrace(ex);
             Thread.currentThread().interrupt();
         }
     }
-
 }
