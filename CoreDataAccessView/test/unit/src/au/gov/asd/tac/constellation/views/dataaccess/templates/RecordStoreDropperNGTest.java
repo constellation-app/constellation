@@ -103,5 +103,4 @@ public class RecordStoreDropperNGTest {
 
         return new ByteArrayInputStream(("RecordStore=" + RecordStoreAsJson).getBytes());
     }
-
 }

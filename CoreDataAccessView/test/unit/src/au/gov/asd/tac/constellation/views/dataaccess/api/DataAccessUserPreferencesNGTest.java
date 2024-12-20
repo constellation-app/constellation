@@ -43,6 +43,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class DataAccessUserPreferencesNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(DataAccessUserPreferencesNGTest.class.getName());
 
     @BeforeClass

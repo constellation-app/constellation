@@ -82,6 +82,7 @@ public class LookupPluginsTaskNGTest {
     @Test
     public void get() {
         System.out.println("get");
+        
         // Setup other static mocks
         defaultLookup = mock(Lookup.class);
         lookupMockedStatic = Mockito.mockStatic(Lookup.class);
@@ -162,6 +163,7 @@ public class LookupPluginsTaskNGTest {
     @Test
     public void getCategoriesNotBlank() {
         System.out.println("getCategoriesNotBlank");
+        
         // Mocks
         final String visibleString = "[Import,Utility,Developer]";
         final String hiddenString = "[Clean]";

@@ -64,10 +64,7 @@ public class DataSourceTitledPaneNGTest {
     private final ExecutorService executorService = mock(ExecutorService.class);
 
     private DataSourceTitledPane dataSourceTitledPane;
-
-    public DataSourceTitledPaneNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         // This prevents the runnable at the bottom of create params to run!!

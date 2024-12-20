@@ -48,6 +48,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class DataAccessViewTopComponentNGTest {
+    
     private static MockedStatic<ProxyUtilities> proxyUtilsMockedStatic;
     
     private List<DataAccessPane> constructedDataAccessPanes;

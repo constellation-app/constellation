@@ -150,9 +150,7 @@ public class QueryListDialogNGTest {
                 .lookup(hasText("Cancel"))
                 .queryAs(Button.class));
         
-        final Optional<String> result = WaitForAsyncUtils.waitFor(future);
-        
-        
+        WaitForAsyncUtils.waitFor(future);       
     }
     
     /**
