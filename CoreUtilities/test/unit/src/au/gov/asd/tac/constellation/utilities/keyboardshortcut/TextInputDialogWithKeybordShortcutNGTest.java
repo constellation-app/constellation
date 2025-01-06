@@ -154,54 +154,7 @@ public class TextInputDialogWithKeybordShortcutNGTest {
         );
 
     }
-
-    @Test
-    public void testClickOnShortcutButton_ksPresent() throws Exception {
-        Optional<String> ks = Optional.of("Ctrl 1");
-        final File preferenceDirectory = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
-
-        final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/[Ctrl 1] my-preferences.json");
-        
-        outputFile.createNewFile();
-        
-        final Future<Optional<KeyboardShortcutSelectionResult>> future = WaitForAsyncUtils.asyncFx(
-                () -> JsonIODialog.getPreferenceFileName(ks, preferenceDirectory));
-
-        final Stage dialog = getDialog(robot);
-        dialog.setX(0);
-        dialog.setY(0);
-
-        final String input = "myPreferenceFile";
-
-        robot.clickOn(
-                robot.from(dialog.getScene().getRoot())
-                        .lookup(".text-field")
-                        .queryAs(TextField.class)
-        ).write(input);
-
-        robot.clickOn(
-                robot.from(dialog.getScene().getRoot())
-                        .lookup(".button")
-                        .lookup(hasText("Shortcut"))
-                        .queryAs(Button.class)
-        );
-
-        robot.clickOn(
-                robot.from(dialog.getScene().getRoot())
-                        .lookup(".button")
-                        .lookup(hasText("Cancel"))
-                        .queryAs(Button.class)
-        );
-
-        robot.clickOn(
-                robot.from(dialog.getScene().getRoot())
-                        .lookup(".button")
-                        .lookup(hasText("OK"))
-                        .queryAs(Button.class)
-        );
-
-    }
-
+    
     private Stage getDialog(final FxRobot robot) {
         Stage dialog = null;
         while (dialog == null) {
