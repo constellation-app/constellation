@@ -56,7 +56,7 @@ public class RecordStoreUtilitiesNGTest {
     }
 
     @Test
-    public void testToCsvWithOneResult() throws FileNotFoundException, IOException {
+    public void testToCsvWithOneResult() throws IOException {
         final File file = new File("test3.csv");
         final RecordStore recordStore = new GraphRecordStore();
         recordStore.add();
@@ -71,7 +71,7 @@ public class RecordStoreUtilitiesNGTest {
     }
 
     @Test
-    public void testToCsvWithManyResult() throws FileNotFoundException, IOException {
+    public void testToCsvWithManyResult() throws IOException {
         final File file = new File("test4.csv");
         final RecordStore recordStore = new GraphRecordStore();
         recordStore.add();
