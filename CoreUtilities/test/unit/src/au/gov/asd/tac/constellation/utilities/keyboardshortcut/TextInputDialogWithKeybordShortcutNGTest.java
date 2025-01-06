@@ -116,7 +116,10 @@ public class TextInputDialogWithKeybordShortcutNGTest {
     public void testClickOnShortcutButton() throws Exception {
         Optional<String> ks = Optional.of("ctrl 1");
         final File preferenceDirectory = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
+        final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/[Ctrl 1] my-preferences.json");
 
+        outputFile.createNewFile();
+        
         final Future<Optional<KeyboardShortcutSelectionResult>> future = WaitForAsyncUtils.asyncFx(
                 () -> JsonIODialog.getPreferenceFileName(ks, preferenceDirectory));
 
