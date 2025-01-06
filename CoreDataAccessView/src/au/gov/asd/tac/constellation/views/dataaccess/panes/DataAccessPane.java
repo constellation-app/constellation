@@ -87,6 +87,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         );
 
         // Plugins are now needed, so wait until the load is complete
+        /* NOSONAR_BEGIN (S5419) */
         final Map<String, Pair<Integer, List<DataAccessPlugin>>> plugins;
         try {
             plugins = DataAccessPaneState.getPlugins();
@@ -99,6 +100,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
             throw new IllegalStateException("Failed to load data access plugins. "
                     + "Data Access View cannot be created.");
         }
+        /* NOSONAR_END (S5419) */
 
         this.dataAccessTabPane = new DataAccessTabPane(this, plugins);
         this.dataAccessTabPane.newTab();
