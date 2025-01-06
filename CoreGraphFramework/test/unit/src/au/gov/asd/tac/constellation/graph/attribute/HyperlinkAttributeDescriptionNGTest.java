@@ -35,16 +35,15 @@ import org.testng.annotations.Test;
 public class HyperlinkAttributeDescriptionNGTest {
 
     HyperlinkAttributeDescription instance;
-
-    public HyperlinkAttributeDescriptionNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod

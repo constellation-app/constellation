@@ -26,7 +26,8 @@ import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.graph.mergers.ConcatenatedSetGraphAttributeMerger;
 import au.gov.asd.tac.constellation.graph.schema.BareSchemaFactory;
-import org.openide.util.Exceptions;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import org.testng.annotations.Test;
 
 /**
@@ -70,11 +71,11 @@ public class PrimaryKeyUnitNGTest {
         g.setStringValue(keyAttribute, v1, "DuplicateValue");
         g.setStringValue(keyAttribute, v2, "DuplicateValue");
 
-        assert g.getVertexCount() == 2;
+        assertEquals(g.getVertexCount(), 2);
 
         g.validateKey(GraphElementType.VERTEX, true);
 
-        assert g.getVertexCount() == 1;
+        assertEquals(g.getVertexCount(), 1);
     }
 
     /**
@@ -105,201 +106,191 @@ public class PrimaryKeyUnitNGTest {
         g.setStringValue(noMergerAttribute, survivingVertex, "survivingValue");
         g.setStringValue(noMergerAttribute, mergedVertex, "mergedValue");
 
-        assert g.getVertexCount() == 2;
+        assertEquals(g.getVertexCount(), 2);
 
         g.validateKey(GraphElementType.VERTEX, true);
 
-        assert g.getVertexCount() == 1;
+        assertEquals(g.getVertexCount(), 1);
 
-        assert g.getStringValue(defaultMergerAttribute, survivingVertex).equals("mergedValue");
-        assert g.getStringValue(customMergerAttribute, survivingVertex).equals("mergedValue,survivingValue");
-        assert g.getStringValue(noMergerAttribute, survivingVertex).equals("mergedValue");
+        assertEquals(g.getStringValue(defaultMergerAttribute, survivingVertex), "mergedValue");
+        assertEquals(g.getStringValue(customMergerAttribute, survivingVertex), "mergedValue,survivingValue");
+        assertEquals(g.getStringValue(noMergerAttribute, survivingVertex), "mergedValue");
     }
 
     @Test
-    public void primaryKeyUpdateTest() {
-        try {
-            Graph graph = new DualGraph(null);
-            int a1 = 0, a2 = 0, v1 = 0, v2 = 0;
+    public void primaryKeyUpdateTest() throws InterruptedException {
+        Graph graph = new DualGraph(null);
+        int a1 = 0;
+        int a2 = 0;
+        int v1 = 0;
+        int v2 = 0;
 
-            WritableGraph wg = graph.getWritableGraph("Primary Key Test", true);
+        WritableGraph wg = graph.getWritableGraph("Primary Key Test", true);
+        try {
+            a1 = wg.addAttribute(GraphElementType.VERTEX, BooleanAttributeDescription.ATTRIBUTE_NAME, "a", null, null, null);
+            a2 = wg.addAttribute(GraphElementType.VERTEX, BooleanAttributeDescription.ATTRIBUTE_NAME, "b", null, null, null);
+
+            wg.setPrimaryKey(GraphElementType.VERTEX, a1, a2);
+
+            v1 = wg.addVertex();
+        } finally {
+            wg.commit();
+        }
+
+        try {
+            wg = graph.getWritableGraph("Primary Key Test", true);
             try {
 
-                a1 = wg.addAttribute(GraphElementType.VERTEX, BooleanAttributeDescription.ATTRIBUTE_NAME, "a", null, null, null);
-                a2 = wg.addAttribute(GraphElementType.VERTEX, BooleanAttributeDescription.ATTRIBUTE_NAME, "b", null, null, null);
+                wg.setBooleanValue(a1, v1, true);
 
-                wg.setPrimaryKey(GraphElementType.VERTEX, a1, a2);
-
-                v1 = wg.addVertex();
-
+                v2 = wg.addVertex();
+                wg.setBooleanValue(a1, v2, true);
             } finally {
                 wg.commit();
             }
+        } catch (DuplicateKeyException e) {
+            // continue
+        }
 
-            try {
-                wg = graph.getWritableGraph("Primary Key Test", true);
-                try {
-
-                    wg.setBooleanValue(a1, v1, true);
-
-                    v2 = wg.addVertex();
-                    wg.setBooleanValue(a1, v2, true);
-                    //            wg.setBooleanValue(a2, v2, true);
-
-                } finally {
-                    wg.commit();
-                }
-            } catch (Exception e) {
-
-            }
-
-            ReadableGraph rg = graph.getReadableGraph();
-            try {
-                assert rg.getBooleanValue(a1, v1) == false;
-            } finally {
-                rg.release();
-            }
-
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
+            assertFalse(rg.getBooleanValue(a1, v1));
         }
     }
 
     @Test
-    public void rollbackTest() {
+    public void rollbackTest() throws InterruptedException {
+        Graph graph = new DualGraph(null);
+
+        int vName;
+        int tName;
+
+        int source;
+        int destination;
+
+        int transaction1;
+        int transaction2;
+        int transaction3;
+
+        WritableGraph wg = graph.getWritableGraph("Set Up Graph", true);
         try {
-            Graph graph = new DualGraph(null);
+            vName = wg.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "name", "name", null, null);
+            tName = wg.addAttribute(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, "name", "name", null, null);
 
-            int vName, tName;
-            int source, destination;
-            int transaction1, transaction2, transaction3;
+            wg.setPrimaryKey(GraphElementType.VERTEX, vName);
+            wg.setPrimaryKey(GraphElementType.TRANSACTION, tName);
 
-            WritableGraph wg = graph.getWritableGraph("Set Up Graph", true);
-            try {
-                vName = wg.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "name", "name", null, null);
-                tName = wg.addAttribute(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, "name", "name", null, null);
+            source = wg.addVertex();
+            wg.setStringValue(vName, source, "Source");
 
-                wg.setPrimaryKey(GraphElementType.VERTEX, vName);
-                wg.setPrimaryKey(GraphElementType.TRANSACTION, tName);
+            destination = wg.addVertex();
+            wg.setStringValue(vName, destination, "Destination");
 
-                source = wg.addVertex();
-                wg.setStringValue(vName, source, "Source");
+            transaction1 = wg.addTransaction(source, destination, true);
+            wg.setStringValue(tName, transaction1, "transaction");
 
-                destination = wg.addVertex();
-                wg.setStringValue(vName, destination, "Destination");
+        } finally {
+            wg.commit();
+        }
 
-                transaction1 = wg.addTransaction(source, destination, true);
-                wg.setStringValue(tName, transaction1, "transaction");
-
-            } finally {
-                wg.commit();
-            }
-
-            try {
-                wg = graph.getWritableGraph("Add Duplicate Transactions", true);
-                try {
-                    transaction2 = wg.addTransaction(source, destination, true);
-                    wg.setStringValue(transaction2, tName, "transaction");
-
-                    transaction3 = wg.addTransaction(source, destination, true);
-                    wg.setStringValue(transaction3, tName, "transaction");
-
-                } finally {
-                    wg.commit();
-                }
-            } catch (DuplicateKeyException ex) {
-            }
-
-            wg = graph.getWritableGraph("Add Unique Transaction", true);
+        try {
+            wg = graph.getWritableGraph("Add Duplicate Transactions", true);
             try {
                 transaction2 = wg.addTransaction(source, destination, true);
-                wg.setStringValue(transaction2, tName, "transaction2");
+                wg.setStringValue(transaction2, tName, "transaction");
+
+                transaction3 = wg.addTransaction(source, destination, true);
+                wg.setStringValue(transaction3, tName, "transaction");
 
             } finally {
                 wg.commit();
             }
+        } catch (DuplicateKeyException ex) {
+            // continue
+        }
 
-            ReadableGraph rg = graph.getReadableGraph();
-            try {
-                assert rg.getTransactionCount() == 2;
-            } finally {
-                rg.release();
-            }
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+        wg = graph.getWritableGraph("Add Unique Transaction", true);
+        try {
+            transaction2 = wg.addTransaction(source, destination, true);
+            wg.setStringValue(transaction2, tName, "transaction2");
+
+        } finally {
+            wg.commit();
+        }
+
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
+            assert rg.getTransactionCount() == 2;
         }
     }
 
     @Test
-    public void nestedRollbackTest() {
+    public void nestedRollbackTest() throws InterruptedException {
+        Graph graph = new DualGraph(null);
+
+        int vName;
+        int tName;
+
+        int source;
+        int destination;
+
+        int transaction1;
+        int transaction2;
+        int transaction3;
+
+        WritableGraph wg = graph.getWritableGraph("Set Up Graph", true);
         try {
-            Graph graph = new DualGraph(null);
+            vName = wg.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "name", "name", null, null);
+            tName = wg.addAttribute(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, "name", "name", null, null);
 
-            int vName, tName;
-            int source, destination;
-            int transaction1, transaction2, transaction3;
+            wg.setPrimaryKey(GraphElementType.VERTEX, vName);
+            wg.setPrimaryKey(GraphElementType.TRANSACTION, tName);
 
-            WritableGraph wg = graph.getWritableGraph("Set Up Graph", true);
-            try {
-                vName = wg.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "name", "name", null, null);
-                tName = wg.addAttribute(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, "name", "name", null, null);
+            source = wg.addVertex();
+            wg.setStringValue(vName, source, "Source");
 
-                wg.setPrimaryKey(GraphElementType.VERTEX, vName);
-                wg.setPrimaryKey(GraphElementType.TRANSACTION, tName);
+            destination = wg.addVertex();
+            wg.setStringValue(vName, destination, "Destination");
 
-                source = wg.addVertex();
-                wg.setStringValue(vName, source, "Source");
+            transaction1 = wg.addTransaction(source, destination, true);
+            wg.setStringValue(tName, transaction1, "transaction");
 
-                destination = wg.addVertex();
-                wg.setStringValue(vName, destination, "Destination");
+        } finally {
+            wg.commit();
+        }
 
-                transaction1 = wg.addTransaction(source, destination, true);
-                wg.setStringValue(tName, transaction1, "transaction");
-
-            } finally {
-                wg.commit();
-            }
-
-            try {
-                wg = graph.getWritableGraph("Add Duplicate Transactions", true);
-                try {
-                    transaction2 = wg.addTransaction(source, destination, true);
-                    wg.setStringValue(tName, transaction2, "transaction");
-
-                    transaction3 = wg.addTransaction(source, destination, true);
-                    wg.setStringValue(tName, transaction3, "transaction");
-
-                    WritableGraph wg2 = graph.getWritableGraph("Not doing anything wrong", true);
-                    try {
-
-                    } finally {
-                        wg2.commit();
-                    }
-
-                } finally {
-                    wg.commit();
-                }
-            } catch (DuplicateKeyException ex) {
-                ex.printStackTrace();
-            }
-
-            wg = graph.getWritableGraph("Add Unique Transaction", true);
+        try {
+            wg = graph.getWritableGraph("Add Duplicate Transactions", true);
             try {
                 transaction2 = wg.addTransaction(source, destination, true);
-                wg.setStringValue(tName, transaction2, "transaction2");
+                wg.setStringValue(tName, transaction2, "transaction");
+
+                transaction3 = wg.addTransaction(source, destination, true);
+                wg.setStringValue(tName, transaction3, "transaction");
+
+                WritableGraph wg2 = graph.getWritableGraph("Not doing anything wrong", true);
+                try {
+
+                } finally {
+                    wg2.commit();
+                }
 
             } finally {
                 wg.commit();
             }
+        } catch (DuplicateKeyException ex) {
+            // continue
+        }
 
-            ReadableGraph rg = graph.getReadableGraph();
-            try {
-                assert rg.getTransactionCount() == 2;
-            } finally {
-                rg.release();
-            }
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+        wg = graph.getWritableGraph("Add Unique Transaction", true);
+        try {
+            transaction2 = wg.addTransaction(source, destination, true);
+            wg.setStringValue(tName, transaction2, "transaction2");
+
+        } finally {
+            wg.commit();
+        }
+
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
+            assert rg.getTransactionCount() == 2;
         }
     }
 }

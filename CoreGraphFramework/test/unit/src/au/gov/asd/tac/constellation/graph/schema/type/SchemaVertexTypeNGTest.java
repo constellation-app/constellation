@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.CharacterIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -33,24 +34,25 @@ import org.testng.annotations.Test;
  * @author arcturus
  */
 public class SchemaVertexTypeNGTest {
-
-    public SchemaVertexTypeNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     @Test
@@ -93,7 +95,7 @@ public class SchemaVertexTypeNGTest {
                 .setIncomplete(true)
                 .build();
 
-        final HashMap<Object, Object> properties = new HashMap<>();
+        final Map<Object, Object> properties = new HashMap<>();
         properties.put("my key", "my value");
 
         Assert.assertEquals(type.name, "name");
@@ -159,5 +161,4 @@ public class SchemaVertexTypeNGTest {
         Assert.assertEquals(child.overridenType, null);
         Assert.assertEquals(child.getOverridenType(), null);
     }
-
 }
