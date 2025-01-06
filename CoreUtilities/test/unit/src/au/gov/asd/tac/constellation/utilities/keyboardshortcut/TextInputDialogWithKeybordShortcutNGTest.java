@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.utilities.keyboardshortcut;
 
 import au.gov.asd.tac.constellation.utilities.genericjsonio.JsonIODialog;
 import java.io.File;
-import java.nio.file.Files;
 import java.util.Optional;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
@@ -79,6 +78,7 @@ public class TextInputDialogWithKeybordShortcutNGTest {
 
             TextInputDialogWithKeybordShortcut textInputDialogWithKeybordShortcut = mock(TextInputDialogWithKeybordShortcut.class);
             when(textInputDialogWithKeybordShortcut.getDefaultValue()).thenReturn(StringUtils.EMPTY);
+            // when(textInputDialogWithKeybordShortcut.getEditor()).thenReturn(createTextField(StringUtils.EMPTY));            
 
             DialogPane dialogPane = mock(DialogPane.class);
             when(textInputDialogWithKeybordShortcut.getDialogPane()).thenReturn(dialogPane);
@@ -112,15 +112,12 @@ public class TextInputDialogWithKeybordShortcutNGTest {
         });
 
     }
-
+    
     @Test
     public void testClickOnShortcutButton() throws Exception {
-        Optional<String> ks = Optional.of("Ctrl 1");
+        Optional<String> ks = Optional.of("ctrl 1");
         final File preferenceDirectory = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
-        final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/[Ctrl 1] my-preferences.json");
 
-        outputFile.createNewFile();
-        
         final Future<Optional<KeyboardShortcutSelectionResult>> future = WaitForAsyncUtils.asyncFx(
                 () -> JsonIODialog.getPreferenceFileName(ks, preferenceDirectory));
 
@@ -143,24 +140,23 @@ public class TextInputDialogWithKeybordShortcutNGTest {
                         .queryAs(Button.class)
         );
 
-        robot.clickOn(
+          robot.clickOn(
                 robot.from(dialog.getScene().getRoot())
                         .lookup(".button")
                         .lookup(hasText("Cancel"))
                         .queryAs(Button.class)
         );
-
-        robot.clickOn(
+          
+          robot.clickOn(
                 robot.from(dialog.getScene().getRoot())
                         .lookup(".button")
                         .lookup(hasText("OK"))
                         .queryAs(Button.class)
         );
-        
-        Files.deleteIfExists(outputFile.toPath());
-
-    }
+          
     
+    }
+
     private Stage getDialog(final FxRobot robot) {
         Stage dialog = null;
         while (dialog == null) {
