@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.utilities.keyboardshortcut;
 
 import au.gov.asd.tac.constellation.utilities.genericjsonio.JsonIODialog;
 import java.io.File;
-import java.nio.file.Files;
 import java.util.Optional;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
@@ -38,8 +37,6 @@ import static org.testfx.util.NodeQueryUtils.hasText;
 import org.testfx.util.WaitForAsyncUtils;
 import org.testng.Assert;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -81,7 +78,6 @@ public class TextInputDialogWithKeybordShortcutNGTest {
 
             TextInputDialogWithKeybordShortcut textInputDialogWithKeybordShortcut = mock(TextInputDialogWithKeybordShortcut.class);
             when(textInputDialogWithKeybordShortcut.getDefaultValue()).thenReturn(StringUtils.EMPTY);
-            // when(textInputDialogWithKeybordShortcut.getEditor()).thenReturn(createTextField(StringUtils.EMPTY));            
 
             DialogPane dialogPane = mock(DialogPane.class);
             when(textInputDialogWithKeybordShortcut.getDialogPane()).thenReturn(dialogPane);
@@ -115,7 +111,7 @@ public class TextInputDialogWithKeybordShortcutNGTest {
         });
 
     }
-    
+
     @Test
     public void testClickOnShortcutButton() throws Exception {
         Optional<String> ks = Optional.of("ctrl 1");
@@ -143,21 +139,67 @@ public class TextInputDialogWithKeybordShortcutNGTest {
                         .queryAs(Button.class)
         );
 
-          robot.clickOn(
+        robot.clickOn(
                 robot.from(dialog.getScene().getRoot())
                         .lookup(".button")
                         .lookup(hasText("Cancel"))
                         .queryAs(Button.class)
         );
-          
-          robot.clickOn(
+
+        robot.clickOn(
                 robot.from(dialog.getScene().getRoot())
                         .lookup(".button")
                         .lookup(hasText("OK"))
                         .queryAs(Button.class)
         );
-          
-    
+
+    }
+
+    @Test
+    public void testClickOnShortcutButton_ksPresent() throws Exception {
+        Optional<String> ks = Optional.of("Ctrl 1");
+        final File preferenceDirectory = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
+
+        final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/[Ctrl 1] my-preferences.json");
+        
+        outputFile.createNewFile();
+        
+        final Future<Optional<KeyboardShortcutSelectionResult>> future = WaitForAsyncUtils.asyncFx(
+                () -> JsonIODialog.getPreferenceFileName(ks, preferenceDirectory));
+
+        final Stage dialog = getDialog(robot);
+        dialog.setX(0);
+        dialog.setY(0);
+
+        final String input = "myPreferenceFile";
+
+        robot.clickOn(
+                robot.from(dialog.getScene().getRoot())
+                        .lookup(".text-field")
+                        .queryAs(TextField.class)
+        ).write(input);
+
+        robot.clickOn(
+                robot.from(dialog.getScene().getRoot())
+                        .lookup(".button")
+                        .lookup(hasText("Shortcut"))
+                        .queryAs(Button.class)
+        );
+
+        robot.clickOn(
+                robot.from(dialog.getScene().getRoot())
+                        .lookup(".button")
+                        .lookup(hasText("Cancel"))
+                        .queryAs(Button.class)
+        );
+
+        robot.clickOn(
+                robot.from(dialog.getScene().getRoot())
+                        .lookup(".button")
+                        .lookup(hasText("OK"))
+                        .queryAs(Button.class)
+        );
+
     }
 
     private Stage getDialog(final FxRobot robot) {

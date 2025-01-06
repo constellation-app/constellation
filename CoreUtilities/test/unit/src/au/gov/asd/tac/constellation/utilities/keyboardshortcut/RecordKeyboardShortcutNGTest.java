@@ -27,14 +27,11 @@ import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import org.testfx.api.FxRobot;
 import org.testfx.api.FxToolkit;
-import org.testfx.util.WaitForAsyncUtils;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -166,63 +163,5 @@ public class RecordKeyboardShortcutNGTest {
         label.setPrefWidth(360);
         return label;
     }
-
-    /*  @Test
-    public void test_keyboardShortCutAlreadyAssigned() throws Exception {
-
-        final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
-
-        try {
-            outputFile.createNewFile();
-
-            String keyboardShortcut = "ctrl 1";
-            MockedStatic<RecordKeyboardShortcut> recordKeyboardShortcutDialogMockedStatic = Mockito.mockStatic(RecordKeyboardShortcut.class);
-
-            setupStaticMocksForKeyboardShortCutAlreadyAssigned(recordKeyboardShortcutDialogMockedStatic, outputFile, keyboardShortcut);
-
-            File file = RecordKeyboardShortcut.keyboardShortCutAlreadyAssigned(outputFile, keyboardShortcut);
-
-            assertEquals(outputFile, file);
-
-        } finally {
-            Files.deleteIfExists(outputFile.toPath());
-        }
-
-    }
-
-    private void setupStaticMocksForKeyboardShortCutAlreadyAssigned(final MockedStatic<RecordKeyboardShortcut> recordKeyboardShortcutMockedStatic,
-            File outputFile, final String keyboardShortcut) {
-
-        recordKeyboardShortcutMockedStatic.when(() -> RecordKeyboardShortcut.keyboardShortCutAlreadyAssigned(outputFile, keyboardShortcut))
-                .thenReturn(outputFile);
-
-    }*/
-    /**
-     * Get a dialog that has been displayed to the user. This will iterate
-     * through all open windows and identify one that is modal. The assumption
-     * is that there will only ever be one dialog open.
-     * <p/>
-     * If a dialog is not found then it will wait for the JavaFX thread queue to
-     * empty and try again.
-     *
-     * @param robot the FX robot for these tests
-     * @return the found dialog
-     */
-    private Stage getDialog(final FxRobot robot) {
-        Stage dialog = null;
-        while (dialog == null) {
-            dialog = robot.robotContext().getWindowFinder().listWindows().stream()
-                    .filter(window -> window instanceof javafx.stage.Stage)
-                    .map(window -> (javafx.stage.Stage) window)
-                    .filter(stage -> stage.getModality() == Modality.APPLICATION_MODAL)
-                    .findFirst()
-                    .orElse(null);
-
-            if (dialog == null) {
-                WaitForAsyncUtils.waitForFxEvents();
-            }
-        }
-        return dialog;
-    }
-
+  
 }
