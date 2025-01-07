@@ -217,10 +217,11 @@ public class ConstellationHelpDisplayerNGTest {
             tempFile = File.createTempFile("testfile", ".xml");
             final String path = tempFile.getPath();
 
-            final FileInputStream expectedfis = new FileInputStream(path);
-            final InputStream actualfis = ConstellationHelpDisplayer.getInputStream(tempFile.getPath());
-
-            assertTrue(IOUtils.contentEquals(expectedfis, actualfis));
+            try (final FileInputStream expectedfis = new FileInputStream(path)) {
+                final InputStream actualfis = ConstellationHelpDisplayer.getInputStream(tempFile.getPath());
+                
+                assertTrue(IOUtils.contentEquals(expectedfis, actualfis));
+            }
         } finally {
             // Cleanup
             if (tempFile != null && tempFile.exists()) {
