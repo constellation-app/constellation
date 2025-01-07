@@ -66,5 +66,4 @@ public class TableDataComparatorNGTest {
         result = tdc.compare("ABD", "123");
         assertTrue(result > 0);
     }
-
 }
