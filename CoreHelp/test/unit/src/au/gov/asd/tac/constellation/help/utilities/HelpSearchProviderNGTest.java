@@ -38,24 +38,25 @@ public class HelpSearchProviderNGTest {
 
     SearchResponse response;
     SearchRequest request;
-
-    public HelpSearchProviderNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -108,5 +109,4 @@ public class HelpSearchProviderNGTest {
 
         verify(response, times(1)).addResult(Mockito.any(), Mockito.eq(HelpSearchProvider.QuickSearchUtils.CIRCLED_H + "  help options"));
     }
-
 }

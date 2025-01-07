@@ -53,16 +53,15 @@ public class CSVImportFileParserNGTest {
     private static CSVParser CSVParserMock;
     private static Iterator<CSVRecord> iteratorMock;
     private static CSVRecord CSVRecordMock;
-
-    public CSVImportFileParserNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
