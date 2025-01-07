@@ -31,24 +31,25 @@ import org.testng.annotations.Test;
  * @author Atlas139mkm
  */
 public class PasswordParameterTypeNGTest {
-
-    public PasswordParameterTypeNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -56,7 +57,6 @@ public class PasswordParameterTypeNGTest {
      */
     @Test
     public void testBuild_String() {
-
         System.out.println("build");
         String id = "password parameter";
 
@@ -74,7 +74,6 @@ public class PasswordParameterTypeNGTest {
      */
     @Test
     public void testBuild_String_PasswordParameterValue() {
-
         System.out.println("build_string_parametertype");
         String id = "stringParameter";
 
