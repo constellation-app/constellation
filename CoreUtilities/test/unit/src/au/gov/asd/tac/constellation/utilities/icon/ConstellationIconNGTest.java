@@ -45,10 +45,7 @@ public class ConstellationIconNGTest {
     private static ConstellationIcon testIcon;
     private final static List<String> aliases = new ArrayList<>();
     private final static List<String> categories = new ArrayList<>();
-
-    public ConstellationIconNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         aliases.add("newAlias");
@@ -68,14 +65,17 @@ public class ConstellationIconNGTest {
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**

@@ -75,9 +75,7 @@ public class MathfNGTest {
      */
     @Test
     public void testDistanceSquared() {
-        assertEquals(Mathf.distanceSquared(
-                new Vector3f(F1, F2, F3), new Vector3f(F4, F5, F6)), 
-                78.2946F);
+        assertEquals(Mathf.distanceSquared(new Vector3f(F1, F2, F3), new Vector3f(F4, F5, F6)), 78.2946F);
     }
     
     /**
@@ -85,9 +83,7 @@ public class MathfNGTest {
      */
     @Test
     public void testDistance() {
-        assertEquals(Mathf.distance(
-                new Vector3f(F1, F2, F3), new Vector3f(F4, F5, F6)), 
-                8.848424F);
+        assertEquals(Mathf.distance(new Vector3f(F1, F2, F3), new Vector3f(F4, F5, F6)), 8.848424F);
     }
     
     /**
@@ -123,7 +119,6 @@ public class MathfNGTest {
     
     @Test
     public void testPlaneIntersectionPoint() {
-        
         // Initialise a plane that sits verticaly y and horisintaly x at z = 1
         final Vector4f plane = new Vector4f();
         final Vector3f planePoint1 = new Vector3f(0,0,1);
@@ -246,8 +241,7 @@ public class MathfNGTest {
     @Test
     public void testMakePlanarShadowMatrix() {
         final float[] proj = new float[16];
-        Mathf.makePlanarShadowMatrix(proj, 
-                new float[] {F10, F3, F9, F4}, new float[] {F8, F5, F7});
+        Mathf.makePlanarShadowMatrix(proj, new float[] {F10, F3, F9, F4}, new float[] {F8, F5, F7});
         assertEquals(proj, new float[] {
             -43.1027F, 79.7679F, 19.310099F, 0F,
             37.756798F, -90.83509F, 8.7095995F, 0F,

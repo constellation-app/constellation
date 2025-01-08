@@ -136,15 +136,15 @@ public class ImmutableObjectCacheNGTest {
         final String dummy2 = "dummy2";
         final String dummy3 = "dummy3";
         final String dummy4 = "dummy4";
-        final String dummy4_equiv = new String(dummy4);
+        final String dummy4Equiv = new String(dummy4);
         final String dummy5 = "dummy5";
-        final String dummy5_equiv = new String(dummy5);
+        final String dummy5Equiv = new String(dummy5);
         assertSame(c.deduplicate(dummy2), dummy2);
         assertSame(c.deduplicate(dummy3), dummy3);
         assertSame(c.deduplicate(dummy4), dummy4);
         assertSame(c.deduplicate(dummy5), dummy5);
-        assertSame(c.deduplicate(dummy4_equiv), dummy4);
-        assertSame(c.deduplicate(dummy5_equiv), dummy5);
+        assertSame(c.deduplicate(dummy4Equiv), dummy4);
+        assertSame(c.deduplicate(dummy5Equiv), dummy5);
         
         // add a bunch more objects to the cache then verify toString() outputs 
         // the correct diagnostic information
@@ -178,34 +178,55 @@ public class ImmutableObjectCacheNGTest {
     
     // dummy class for testing
     private class ObjectA {
-        public ObjectA(int i) { this.i = i; }
+        
+        public ObjectA(int i) { 
+            this.i = i; 
+        }
+        
         private final int i;
-        public int getI() { return i; }
+        
+        public int getI() { 
+            return i; 
+        }
+        
         @Override
-        public int hashCode() { return 97 * 7 + this.i; }
+        public int hashCode() { 
+            return 97 * 7 + this.i; 
+        }
+        
         @Override
         public boolean equals(final Object obj) {
             if (this == obj) {
                 return true;
             }
-            if (obj == null) {
+            if (obj == null || getClass() != obj.getClass()) {
                 return false;
             }
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
+            
             final ObjectA other = (ObjectA) obj;
+            
             return this.getI() == other.getI();
         }  
     }
     
     // dummy class for testing
     protected class ObjectB {
-        public ObjectB(int i) { this.i = i; }
+        
+        public ObjectB(int i) { 
+            this.i = i; 
+        }
+        
         protected final int i;
-        public int getI() { return i; }
+        
+        public int getI() { 
+            return i; 
+        }
+        
         @Override
-        public int hashCode() { return 97 * 13 + this.i; }
+        public int hashCode() { 
+            return 97 * 13 + this.i; 
+        }
+        
         @Override
         public boolean equals(final Object obj) {
             if (this == obj) {
@@ -227,6 +248,9 @@ public class ImmutableObjectCacheNGTest {
     // dummy class for testing
     // extends another class but is equivalent in every way
     private class ObjectBB extends ObjectB {
-        public ObjectBB(int i) { super(i); }
+        
+        public ObjectBB(int i) { 
+            super(i); 
+        }
     }
 }

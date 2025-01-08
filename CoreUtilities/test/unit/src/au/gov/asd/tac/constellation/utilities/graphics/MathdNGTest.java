@@ -129,8 +129,7 @@ public class MathdNGTest {
     public void testCrossProduct() {
         final Vector3d result = new Vector3d();
         Mathd.crossProduct(result, new Vector3d(D1, D2, D3), new Vector3d(D4, D5, D6));
-        assertEquals(result.a, new double[] {
-            -4.2956999999999965D, 17.682299999999998D, -11.288700000000002D});
+        assertEquals(result.a, new double[] {-4.2956999999999965D, 17.682299999999998D, -11.288700000000002D});
     }
     
     /**
@@ -138,9 +137,7 @@ public class MathdNGTest {
      */
     @Test
     public void testDotProduct() {
-        assertEquals(
-                Mathd.dotProduct(new Vector3d(D1, D2, D3), new Vector3d(D4, D5, D6)), 
-                78.3783D);
+        assertEquals(Mathd.dotProduct(new Vector3d(D1, D2, D3), new Vector3d(D4, D5, D6)), 78.3783D);
     }
     
     /**
@@ -159,9 +156,7 @@ public class MathdNGTest {
      */
     @Test
     public void testDistanceSquared() {
-        assertEquals(Mathd.distanceSquared(
-                new Vector3d(D1, D2, D3), new Vector3d(D4, D5, D6)), 
-                78.2946D);
+        assertEquals(Mathd.distanceSquared(new Vector3d(D1, D2, D3), new Vector3d(D4, D5, D6)), 78.2946D);
     }
     
     /**
@@ -169,9 +164,7 @@ public class MathdNGTest {
      */
     @Test
     public void testDistance() {
-        assertEquals(Mathd.getDistance(
-                new Vector3d(D1, D2, D3), new Vector3d(D4, D5, D6)), 
-                8.848423588413928D);
+        assertEquals(Mathd.getDistance(new Vector3d(D1, D2, D3), new Vector3d(D4, D5, D6)), 8.848423588413928D);
     }
     
     /**
@@ -208,8 +201,7 @@ public class MathdNGTest {
     public void testTransformVector3() {
         final Vector3d result = new Vector3d();
         Mathd.transformVector(result, new Vector3d(D1, D2, D3), copyMatrix(M1));
-        assertEquals(result.a, new double[] {
-            25.43D, 25.529999999999998D, 25.629999999999995D});
+        assertEquals(result.a, new double[] {25.43D, 25.529999999999998D, 25.629999999999995D});
     }
     
     /**
@@ -375,8 +367,7 @@ public class MathdNGTest {
     public void testGetDistanceToPlane() {
         final Vector4d plane = new Vector4d();
         plane.set(D4, D5, D6, D7);
-        assertEquals(Mathd.getDistanceToPlane(new Vector3d(D3, D2, D1), plane), 
-                69.1994D);
+        assertEquals(Mathd.getDistanceToPlane(new Vector3d(D3, D2, D1), plane), 69.1994D);
     }
     
     /**
@@ -387,9 +378,7 @@ public class MathdNGTest {
         final Vector4d planeEq = new Vector4d();
         Mathd.getPlaneEquation(planeEq, new Vector3d(D3, D2, D1), 
                 new Vector3d(D4, D5, D6), new Vector3d(D12, D10, D11));
-        assertEquals(planeEq.getA(), new double[] {
-            -0.1356231359237909D, -0.8578200895113308D, 0.4957328504678396D, 
-            2.762292581068417D});
+        assertEquals(planeEq.getA(), new double[] {-0.1356231359237909D, -0.8578200895113308D, 0.4957328504678396D, 2.762292581068417D});
     }
     
     /**
@@ -398,14 +387,10 @@ public class MathdNGTest {
     @Test
     public void testRaySphereTest() {
         // calculated distance to intersection is positive
-        assertEquals(Mathd.raySphereTest(new Vector3d(D1, D2, D3), 
-                new Vector3d(D4, D5, D6), new Vector3d(D7, D8, D9), 200D), 
-                -197.4008032677102D);
+        assertEquals(Mathd.raySphereTest(new Vector3d(D1, D2, D3), new Vector3d(D4, D5, D6), new Vector3d(D7, D8, D9), 200D), -197.4008032677102D);
 
         // calculated distance to intersection is negative
-        assertEquals(Mathd.raySphereTest(new Vector3d(-1000D, -1000D, -1000D), 
-                new Vector3d(D4, D5, D6), new Vector3d(D7, D8, D9), 200D), 
-                -43484.95313337911D);
+        assertEquals(Mathd.raySphereTest(new Vector3d(-1000D, -1000D, -1000D), new Vector3d(D4, D5, D6), new Vector3d(D7, D8, D9), 200D), -43484.95313337911D);
     }
     
     /**

@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.utilities.icon;
 import au.gov.asd.tac.constellation.utilities.https.HttpsConnection;
 import au.gov.asd.tac.constellation.utilities.https.HttpsUtilities;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
@@ -51,16 +50,15 @@ public class UriIconDataNGTest {
     private static URL urlMock;
     private static FileNotFoundException fileNotFoundExceptionMock;
     private static InputStream inputStreamMock;
-
-    public UriIconDataNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -96,7 +94,7 @@ public class UriIconDataNGTest {
 
         uriStaticMock.when(() -> URI.create(Mockito.any(String.class))).thenCallRealMethod();
 
-        final UriIconData instance = new UriIconData("someURIString");
+        new UriIconData("someURIString");
     }
 
     /**
@@ -114,7 +112,7 @@ public class UriIconDataNGTest {
         // If the URI is not absolute and does not have a scheme component.
         when(uriMock.isAbsolute()).thenReturn(false);
 
-        final UriIconData instance = new UriIconData("someURIString");
+        new UriIconData("someURIString");
     }
 
     /**
@@ -130,7 +128,7 @@ public class UriIconDataNGTest {
         // If the URI is not absolute and does not have a scheme component.
         when(uriMock.isAbsolute()).thenReturn(false);
 
-        final UriIconData instance = new UriIconData(uriMock);
+        new UriIconData(uriMock);
     }
 
     /**
