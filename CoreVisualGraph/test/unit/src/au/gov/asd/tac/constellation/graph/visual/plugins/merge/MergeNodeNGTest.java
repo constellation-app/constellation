@@ -24,6 +24,8 @@ import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.assertTrue;
@@ -48,26 +50,21 @@ public class MergeNodeNGTest {
     private int vxId6;
     private int vxId7;
     
-    private int txId1;
-    private int txId2;
-    private int txId3;
-    private int txId4;
-    private int txId5;
-    
     private int xVertexAttribute;
     private int yVertexAttribute;
     private int zVertexAttribute;
     private int selectedVertexAttribute;
-    private int selectedTransactionAttribute;
     
     private Graph graph;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
@@ -84,7 +81,6 @@ public class MergeNodeNGTest {
             yVertexAttribute = VisualConcept.VertexAttribute.Y.ensure(wg);
             zVertexAttribute = VisualConcept.VertexAttribute.Z.ensure(wg);
             selectedVertexAttribute = VisualConcept.VertexAttribute.SELECTED.ensure(wg);
-            selectedTransactionAttribute = VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
 
             vxId1 = wg.addVertex();
             wg.setFloatValue(xVertexAttribute, vxId1, 1.0f);
@@ -121,11 +117,11 @@ public class MergeNodeNGTest {
             wg.setFloatValue(yVertexAttribute, vxId7, 100.0f);
             wg.setBooleanValue(selectedVertexAttribute, vxId7, false);
 
-            txId1 = wg.addTransaction(vxId1, vxId2, false);
-            txId2 = wg.addTransaction(vxId1, vxId3, false);
-            txId3 = wg.addTransaction(vxId2, vxId4, true);
-            txId4 = wg.addTransaction(vxId4, vxId2, true);
-            txId5 = wg.addTransaction(vxId5, vxId6, false);
+            wg.addTransaction(vxId1, vxId2, false);
+            wg.addTransaction(vxId1, vxId3, false);
+            wg.addTransaction(vxId2, vxId4, true);
+            wg.addTransaction(vxId4, vxId2, true);
+            wg.addTransaction(vxId5, vxId6, false);
         } finally {
             wg.commit();
         }
@@ -182,7 +178,7 @@ public class MergeNodeNGTest {
 //            assertEquals("Transaction count", 5, wg.getTransactionCount());
 //            assertEquals("Node count", 7, wg.getVertexCount());
 //
-//            ArrayList<Integer> list = new ArrayList<>();
+//            List<Integer> list = new ArrayList<>();
 //            list.add(vxId7);
 //
 //            PluginExecution.withPlugin(CorePluginRegistry.PERMANENT_NODE_MERGE)
@@ -203,11 +199,11 @@ public class MergeNodeNGTest {
             assertEquals("Transaction count", 5, wg.getTransactionCount());
             assertEquals("Node count", 7, wg.getVertexCount());
 
-            ArrayList<Integer> list = new ArrayList<>();
+            List<Integer> list = new ArrayList<>();
             list.add(vxId5);
             list.add(vxId6);
 
-            HashMap<Integer, String> values = new HashMap<>();
+            Map<Integer, String> values = new HashMap<>();
             values.put(xVertexAttribute, "123.0");
             values.put(yVertexAttribute, "456.0");
             values.put(zVertexAttribute, "789.0");
@@ -250,13 +246,13 @@ public class MergeNodeNGTest {
             assertEquals("Transaction count", 5, wg.getTransactionCount());
             assertEquals("Node count", 7, wg.getVertexCount());
 
-            ArrayList<Integer> list = new ArrayList<>();
+            List<Integer> list = new ArrayList<>();
             list.add(vxId1);
             list.add(vxId2);
             list.add(vxId3);
             list.add(vxId4);
 
-            HashMap<Integer, String> values = new HashMap<>();
+            Map<Integer, String> values = new HashMap<>();
             values.put(xVertexAttribute, "123.0");
             values.put(yVertexAttribute, "456.0");
             values.put(zVertexAttribute, "789.0");

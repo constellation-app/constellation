@@ -39,6 +39,7 @@ import org.testng.annotations.Test;
  * @author Andromeda-224
  */
 public class CompleteSchemaPluginNGTest {
+    
     private PluginManager manager;
     private PluginReport report;
 
@@ -65,10 +66,10 @@ public class CompleteSchemaPluginNGTest {
      /**
      * Test of edit method, of class CompleteSchemaPlugin.
      *
-     * @throws java.lang.Exception
+     * @throws java.lang.InterruptedException
      */
     @Test
-    public void testEdit() throws Exception {
+    public void testEdit() throws InterruptedException {
         final int vertexIdentiferAttr = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
         final int vertexSelectedAttr = VisualConcept.VertexAttribute.SELECTED.ensure(graph);      
 

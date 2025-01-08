@@ -28,24 +28,25 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class LineStyleAttributeDescriptionNGTest {
-
-    public LineStyleAttributeDescriptionNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -72,7 +73,7 @@ public class LineStyleAttributeDescriptionNGTest {
     /**
      * Test of setInt method, of class LineStyleAttributeDescription. Trying to set before capacity has been allocated to do so
      */
-    @Test(expectedExceptions = {ArrayIndexOutOfBoundsException.class})
+    @Test(expectedExceptions = ArrayIndexOutOfBoundsException.class)
     public void testSetIntBadSet1() {
         System.out.println("setIntBadSet1");
 
@@ -85,7 +86,7 @@ public class LineStyleAttributeDescriptionNGTest {
     /**
      * Test of setInt method, of class LineStyleAttributeDescription. Trying to set to non-existent LineStyle
      */
-    @Test(expectedExceptions = {ArrayIndexOutOfBoundsException.class})
+    @Test(expectedExceptions = ArrayIndexOutOfBoundsException.class)
     public void testSetIntBadSet2() {
         System.out.println("setIntBadSet2");
 
@@ -110,5 +111,4 @@ public class LineStyleAttributeDescriptionNGTest {
         instance.setInt(0, 2);
         assertEquals(instance.getObject(0), LineStyle.DASHED);
     }
-
 }

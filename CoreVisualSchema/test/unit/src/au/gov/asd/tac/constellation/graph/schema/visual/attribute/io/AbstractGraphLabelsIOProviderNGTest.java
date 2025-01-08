@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.mockito.ArgumentCaptor;
@@ -56,7 +57,6 @@ public final class AbstractGraphLabelsIOProviderNGTest {
     GraphWriteMethods mockGraphWriteMethods;
     JsonNode mockJsonNode;
     JsonGenerator mockJsonGenerator;
-    ColorIOProvider mockColorIOProvider;
 
     // Create argument captors
     ArgumentCaptor<Integer> captorAtributeId;
@@ -75,10 +75,12 @@ public final class AbstractGraphLabelsIOProviderNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -88,6 +90,7 @@ public final class AbstractGraphLabelsIOProviderNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
     
     /**
@@ -98,7 +101,6 @@ public final class AbstractGraphLabelsIOProviderNGTest {
         mockGraphWriteMethods = mock(GraphWriteMethods.class);
         mockJsonNode = mock(JsonNode.class);
         mockJsonGenerator = mock(JsonGenerator.class);
-        mockColorIOProvider = mock(ColorIOProvider.class);
         captorAtributeId = ArgumentCaptor.forClass(Integer.class);
         captorElementId = ArgumentCaptor.forClass(Integer.class);
         captorAttrVal = ArgumentCaptor.forClass(GraphLabels.class);
@@ -106,9 +108,10 @@ public final class AbstractGraphLabelsIOProviderNGTest {
 
     /**
      * Test of readObject method, of class AbstractGraphLabelsIOProvider.
+     * @throws java.io.IOException
      */
     @Test
-    public void testReadObject() throws Exception {
+    public void testReadObject() throws IOException {
         System.out.println("AbstractGraphLabelsIOProviderNGTest.testReadObject");
         
         // Test case where isNull returns true and isArray is false,
@@ -163,9 +166,10 @@ public final class AbstractGraphLabelsIOProviderNGTest {
 
     /**
      * Test of writeObject method, of class AbstractGraphLabelsIOProvider.
+     * @throws java.io.IOException
      */
     @Test
-    public void testWriteObject() throws Exception {
+    public void testWriteObject() throws IOException {
         System.out.println("AbstractGraphLabelsIOProviderNGTest.testWriteObject");
         
         // Test case where not verbose and default graph value
