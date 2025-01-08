@@ -1,5 +1,8 @@
 # Constellation Changes
 
+## Changes in January 2025
+-   Removed classes `VideoCreator` and `VideoFrame` from Core Utilities as they are unused. 
+
 ## Changes in December 2024
 -   Modified access of `VertexTypeIOProvider.writeTypeObject()` from public to private, reflecting current use and mirroring related classes and functions.
 -   Removed `CompositeStatus.getCompositeStatus()` which was unused.
