@@ -37,7 +37,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -47,8 +48,16 @@ import org.testng.annotations.Test;
  */
 public class MergeNodesBySuffixNGTest {
 
-    private int vertexIdentifierAttribute, vertexSelectedAttribute;
-    private int vxId1, vxId2, vxId3, vxId4, vxId5, vxId6;
+    private int vertexIdentifierAttribute;
+    private int vertexSelectedAttribute;
+    
+    private int vxId1;
+    private int vxId2;
+    private int vxId3;
+    private int vxId4;
+    private int vxId5;
+    private int vxId6;
+    
     private StoreGraph graph;
 
     @BeforeMethod
@@ -131,8 +140,9 @@ public class MergeNodesBySuffixNGTest {
      * identifier Attribute
      */
     @Test
-    public void testGetNodesToMerge_NoIdentifierAttribute() throws Exception {
+    public void testGetNodesToMerge_NoIdentifierAttribute() {
         System.out.println("testGetNodesToMerge_NoIdentifierAttribute");
+        
         Comparator<String> leadVertexChooser = null;
         int threshold = 0;
         boolean selectedOnly = false;
@@ -141,14 +151,14 @@ public class MergeNodesBySuffixNGTest {
 
         // create a new analytic graph
         final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
-        StoreGraph graph = new StoreGraph(schema);
+        StoreGraph graph2 = new StoreGraph(schema);
 
         // add vertices
-        int vxId1 = graph.addVertex();
-        int vxId2 = graph.addVertex();
-        int vxId3 = graph.addVertex();
+        graph2.addVertex();
+        graph2.addVertex();
+        graph2.addVertex();
 
-        Map<Integer, Set<Integer>> result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
+        Map<Integer, Set<Integer>> result = instance.getNodesToMerge(graph2, leadVertexChooser, threshold, selectedOnly);
         assertEquals(result, expResult);
     }
 

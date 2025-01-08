@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.views.find.FindViewController;
 import au.gov.asd.tac.constellation.views.find.FindViewTopComponent;
@@ -34,7 +35,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
@@ -54,63 +54,90 @@ import org.testng.annotations.Test;
 public class ReplacePluginNGTest {
 
     private Map<String, Graph> graphMap = new HashMap<>();
+    
     private Graph graph;
     private Graph graph2;
-    private int selectedV, selectedT;
-    private int labelV, identifierV, xV, labelT, identiferT, widthT;
-    private int vxId1, vxId2, vxId3, vxId4, vxId5UpperCase, vxId6, vxId7, vxId8, txId1, txId2, txId3, txId4;
-    private List<Attribute> attributeList = new ArrayList<>();
-    private BasicFindReplaceParameters parameters = new BasicFindReplaceParameters("label name", "replaced", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, true, false, false, false, false, true, false);
-    private BasicFindReplaceParameters parametersReplaceNext = new BasicFindReplaceParameters("replaced", "next", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, true, false, false, false, false, true, false);
-    private BasicFindReplaceParameters parametersReplaceRegEx = new BasicFindReplaceParameters("ne*", "test", GraphElementType.GRAPH.VERTEX, attributeList, false, true, false, false, true, false, false, false, false, true, false);
-    private BasicFindReplaceParameters parametersReplaceIgnoreCase = new BasicFindReplaceParameters("lowercase", "test", GraphElementType.GRAPH.VERTEX, attributeList, true, false, true, false, true, false, false, false, false, true, false);
-    private BasicFindReplaceParameters parametersReplaceInSelected = new BasicFindReplaceParameters("test", "replaced", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, true, false, false, true, false, true, false);
-
-    private BasicFindReplaceParameters parametersClearSelections = new BasicFindReplaceParameters("clear", "", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, true, false, false, false, false, true, false);
-    private static final Logger LOGGER = Logger.getLogger(ReplacePluginNGTest.class.getName());
-
-    public ReplacePluginNGTest() {
-    }
-
+    
+    private int selectedV;
+    private int labelV;
+    private int identifierV;
+    private int xV;
+    private int selectedT;
+    private int labelT;
+    private int identiferT;
+    private int widthT;
+    
+    private int vxId1;
+    private int vxId2;
+    private int vxId3;
+    private int vxId4;
+    private int vxId5UpperCase;
+    private int vxId6;
+    private int vxId7;
+    private int vxId8;
+    
+    private int txId1;
+    private int txId2;
+    private int txId3;
+    private int txId4;
+    
+    private List<Attribute> attributeList;
+    private BasicFindReplaceParameters parameters;
+    private BasicFindReplaceParameters parametersReplaceNext;
+    private BasicFindReplaceParameters parametersReplaceRegEx;
+    private BasicFindReplaceParameters parametersReplaceIgnoreCase;
+    private BasicFindReplaceParameters parametersReplaceInSelected;
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
-
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        attributeList = new ArrayList<>();
+
+        parameters = new BasicFindReplaceParameters("label name", "replaced", GraphElementType.VERTEX, attributeList, true, false, false, false, true, false, false, false, false, true, false);
+        parametersReplaceNext = new BasicFindReplaceParameters("replaced", "next", GraphElementType.VERTEX, attributeList, true, false, false, false, true, false, false, false, false, true, false);
+        parametersReplaceRegEx = new BasicFindReplaceParameters("ne*", "test", GraphElementType.VERTEX, attributeList, false, true, false, false, true, false, false, false, false, true, false);
+        parametersReplaceIgnoreCase = new BasicFindReplaceParameters("lowercase", "test", GraphElementType.VERTEX, attributeList, true, false, true, false, true, false, false, false, false, true, false);
+        parametersReplaceInSelected = new BasicFindReplaceParameters("test", "replaced", GraphElementType.VERTEX, attributeList, true, false, false, false, true, false, false, true, false, true, false);
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
      * Test of edit method, of class ReplacePlugin.
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testEdit() throws Exception {
+    public void testEdit() throws InterruptedException, PluginException {
         System.out.println("edit");
+        
         setupGraph();
         attributeList.addAll(getAttributes());
 
         ReplacePlugin replacePlugin = new ReplacePlugin(parameters, true, false, false);
         PluginExecution.withPlugin(replacePlugin).executeNow(graph);
-        ReadableGraph rg = graph.getReadableGraph();
-        /**
-         * Testing replace all elements with the label name "label name" with
-         * "replaced", Should replace vxId1,2,3,4
-         */
-        assertEquals(rg.getStringValue(labelV, vxId1), "replaced");
-        assertEquals(rg.getStringValue(labelV, vxId2), "replaced");
-        assertEquals(rg.getStringValue(labelV, vxId3), "replaced");
-        assertEquals(rg.getStringValue(labelV, vxId4), "replaced");
-        rg.close();
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
+            /**
+             * Testing replace all elements with the label name "label name" with
+             * "replaced", Should replace vxId1,2,3,4
+             */
+            assertEquals(rg.getStringValue(labelV, vxId1), "replaced");
+            assertEquals(rg.getStringValue(labelV, vxId2), "replaced");
+            assertEquals(rg.getStringValue(labelV, vxId3), "replaced");
+            assertEquals(rg.getStringValue(labelV, vxId4), "replaced");
+        }
 
         /**
          * Testing replacing next for the word "replaced" and replacing it with
@@ -118,27 +145,23 @@ public class ReplacePluginNGTest {
          */
         replacePlugin = new ReplacePlugin(parametersReplaceNext, false, true, false);
         PluginExecution.withPlugin(replacePlugin).executeNow(graph);
-        rg = graph.getReadableGraph();
-
-        assertEquals(rg.getStringValue(labelV, vxId1), "next");
-        assertEquals(rg.getStringValue(labelV, vxId2), "replaced");
-        assertEquals(rg.getStringValue(labelV, vxId3), "replaced");
-        assertEquals(rg.getStringValue(labelV, vxId4), "replaced");
-
-        rg.close();
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
+            assertEquals(rg.getStringValue(labelV, vxId1), "next");
+            assertEquals(rg.getStringValue(labelV, vxId2), "replaced");
+            assertEquals(rg.getStringValue(labelV, vxId3), "replaced");
+            assertEquals(rg.getStringValue(labelV, vxId4), "replaced");
+        }
 
         /**
          * Testing the same as above. vxId2 label should now be "next"
          */
         PluginExecution.withPlugin(replacePlugin).executeNow(graph);
-        rg = graph.getReadableGraph();
-
-        assertEquals(rg.getStringValue(labelV, vxId1), "next");
-        assertEquals(rg.getStringValue(labelV, vxId2), "next");
-        assertEquals(rg.getStringValue(labelV, vxId3), "replaced");
-        assertEquals(rg.getStringValue(labelV, vxId4), "replaced");
-
-        rg.close();
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
+            assertEquals(rg.getStringValue(labelV, vxId1), "next");
+            assertEquals(rg.getStringValue(labelV, vxId2), "next");
+            assertEquals(rg.getStringValue(labelV, vxId3), "replaced");
+            assertEquals(rg.getStringValue(labelV, vxId4), "replaced");
+        }
 
         /**
          * Replace anything with "ne*" in regEx format with "test" vxId1 and 2
@@ -146,56 +169,58 @@ public class ReplacePluginNGTest {
          */
         replacePlugin = new ReplacePlugin(parametersReplaceRegEx, true, false, false);
         PluginExecution.withPlugin(replacePlugin).executeNow(graph);
-        rg = graph.getReadableGraph();
-
-        assertEquals(rg.getStringValue(labelV, vxId1), "testxt");
-        assertEquals(rg.getStringValue(labelV, vxId2), "testxt");
-        assertEquals(rg.getStringValue(labelV, vxId3), "replaced");
-        assertEquals(rg.getStringValue(labelV, vxId4), "replaced");
-        rg.close();
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
+            assertEquals(rg.getStringValue(labelV, vxId1), "testxt");
+            assertEquals(rg.getStringValue(labelV, vxId2), "testxt");
+            assertEquals(rg.getStringValue(labelV, vxId3), "replaced");
+            assertEquals(rg.getStringValue(labelV, vxId4), "replaced");
+        }
 
         /**
          * Replacing the word "lowercase" ignoring the if lower or upper case to
          * the word "test". vxId1 and 2 should be changed to "test"
          */
         WritableGraph wg = graph.getWritableGraph("", true);
-        wg.setStringValue(labelV, vxId1, "lowercase");
-        wg.setStringValue(labelV, vxId2, "LOWERCASE");
-        wg.setStringValue(labelV, vxId3, "test");
-        wg.setStringValue(labelV, vxId4, "test");
-        wg.commit();
+        try {
+            wg.setStringValue(labelV, vxId1, "lowercase");
+            wg.setStringValue(labelV, vxId2, "LOWERCASE");
+            wg.setStringValue(labelV, vxId3, "test");
+            wg.setStringValue(labelV, vxId4, "test");
+        } finally {
+            wg.commit();
+        }
 
         replacePlugin = new ReplacePlugin(parametersReplaceIgnoreCase, true, false, false);
         PluginExecution.withPlugin(replacePlugin).executeNow(graph);
-        rg = graph.getReadableGraph();
-
-        assertEquals(rg.getStringValue(labelV, vxId1), "test");
-        assertEquals(rg.getStringValue(labelV, vxId2), "test");
-        assertEquals(rg.getStringValue(labelV, vxId3), "test");
-        assertEquals(rg.getStringValue(labelV, vxId4), "test");
-        rg.close();
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
+            assertEquals(rg.getStringValue(labelV, vxId1), "test");
+            assertEquals(rg.getStringValue(labelV, vxId2), "test");
+            assertEquals(rg.getStringValue(labelV, vxId3), "test");
+            assertEquals(rg.getStringValue(labelV, vxId4), "test");
+        }
 
         /**
          * Testing replacing the word "test" with the word "replaced" only in
          * elements that are selected. 
          */
         wg = graph.getWritableGraph("", true);
+        try {
         wg.setBooleanValue(selectedV, vxId1, true);
         wg.setBooleanValue(selectedV, vxId2, true);
         wg.setBooleanValue(selectedV, vxId3, false);
         wg.setBooleanValue(selectedV, vxId4, false);
-        wg.commit();
+        } finally {
+            wg.commit();
+        }
 
         replacePlugin = new ReplacePlugin(parametersReplaceInSelected, true, false, false);
         PluginExecution.withPlugin(replacePlugin).executeNow(graph);
-        rg = graph.getReadableGraph();
-
-        assertEquals(rg.getStringValue(labelV, vxId1), "replaced");
-        assertEquals(rg.getStringValue(labelV, vxId2), "replaced");
-        assertEquals(rg.getStringValue(labelV, vxId3), "replaced");
-        assertEquals(rg.getStringValue(labelV, vxId4), "replaced");
-        rg.close();
-
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
+            assertEquals(rg.getStringValue(labelV, vxId1), "replaced");
+            assertEquals(rg.getStringValue(labelV, vxId2), "replaced");
+            assertEquals(rg.getStringValue(labelV, vxId3), "replaced");
+            assertEquals(rg.getStringValue(labelV, vxId4), "replaced");
+        }
     }
 
     /**
@@ -215,10 +240,10 @@ public class ReplacePluginNGTest {
         graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
         graph2 = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
 
+        graphMap = new HashMap<>();
         graphMap.put(graph.getId(), graph);
         graphMap.put(graph2.getId(), graph2);
         try {
-
             WritableGraph wg = graph.getWritableGraph("", true);
 
             // Create Selected Attributes
@@ -305,7 +330,6 @@ public class ReplacePluginNGTest {
             wg.setIntValue(widthT, txId4, 1);
 
             wg.commit();
-
         } catch (final InterruptedException ex) {
             Exceptions.printStackTrace(ex);
             Thread.currentThread().interrupt();
@@ -317,14 +341,13 @@ public class ReplacePluginNGTest {
      *
      * @return the list of Attribute objects
      */
-    private ArrayList<Attribute> getAttributes() {
-
+    private List<Attribute> getAttributes() {
         final FindViewTopComponent findViewTopComponent = mock(FindViewTopComponent.class);
         FindViewController instance = FindViewController.getDefault().init(findViewTopComponent);
         final GraphManager gm = Mockito.mock(GraphManager.class);
         when(gm.getAllGraphs()).thenReturn(graphMap);
 
-        ArrayList<Attribute> attributes = new ArrayList<>();
+        List<Attribute> attributes = new ArrayList<>();
 
         try (MockedStatic<GraphManager> mockedStatic = Mockito.mockStatic(GraphManager.class)) {
             mockedStatic.when(() -> GraphManager.getDefault()).thenReturn(gm);
@@ -332,19 +355,17 @@ public class ReplacePluginNGTest {
             GraphElementType type = GraphElementType.VERTEX;
             List<String> result = instance.populateAttributes(type, attributes, Long.MIN_VALUE);
 
-            ReadableGraph rg = graph.getReadableGraph();
-
-            for (int i = 0; i < result.size(); i++) {
-                int attributeInt = rg.getAttribute(type, result.get(i));
-                GraphAttribute ga = new GraphAttribute(rg, attributeInt);
-                if (ga.getAttributeType().equals("string")) {
-                    attributes.add(new GraphAttribute(rg, attributeInt));
+            try (final ReadableGraph rg = graph.getReadableGraph()) {
+                for (int i = 0; i < result.size(); i++) {
+                    int attributeInt = rg.getAttribute(type, result.get(i));
+                    GraphAttribute ga = new GraphAttribute(rg, attributeInt);
+                    if (ga.getAttributeType().equals("string")) {
+                        attributes.add(new GraphAttribute(rg, attributeInt));
+                    }
                 }
             }
-            rg.close();
         }
         return attributes;
 
     }
-
 }

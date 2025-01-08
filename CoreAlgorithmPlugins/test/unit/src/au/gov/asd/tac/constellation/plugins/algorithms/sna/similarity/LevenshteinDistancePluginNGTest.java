@@ -37,16 +37,15 @@ import org.testng.annotations.Test;
 public class LevenshteinDistancePluginNGTest {
 
     private StoreGraph graph;
-
-    public LevenshteinDistancePluginNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -56,6 +55,7 @@ public class LevenshteinDistancePluginNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -180,5 +180,4 @@ public class LevenshteinDistancePluginNGTest {
         assertEquals(graph.getStringValue(transactionTypeAttributeId, graph.getTransaction(0)), AnalyticConcept.TransactionType.SIMILARITY.getName());
         assertEquals(graph.getIntValue(transactionLDAttributeId, graph.getTransaction(0)), 1);
     }
-
 }

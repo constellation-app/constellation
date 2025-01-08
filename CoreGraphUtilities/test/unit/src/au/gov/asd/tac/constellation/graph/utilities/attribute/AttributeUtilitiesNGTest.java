@@ -41,24 +41,25 @@ import org.testng.annotations.Test;
  * @author arcturus
  */
 public class AttributeUtilitiesNGTest {
-
-    public AttributeUtilitiesNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -112,7 +113,10 @@ public class AttributeUtilitiesNGTest {
 
     @Test
     public void testGetTypesUsedByGraph() {
-        final int vx0, vx1, vx2, vx3;
+        final int vx0;
+        final int vx1;
+        final int vx2;
+        final int vx3;
         final StoreGraph graph = new StoreGraph(SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema());
         final int typeId = AnalyticConcept.VertexAttribute.TYPE.ensure(graph);
 

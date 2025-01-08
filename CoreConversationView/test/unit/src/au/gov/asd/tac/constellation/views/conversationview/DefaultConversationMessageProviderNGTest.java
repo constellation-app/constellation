@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.views.conversationview;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
@@ -25,6 +25,8 @@ import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ContentConcept
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.Exceptions;
 import static org.testng.AssertJUnit.assertEquals;
 import org.testng.annotations.AfterClass;
@@ -39,52 +41,30 @@ import org.testng.annotations.Test;
  * @author Delphinus8821
  */
 public class DefaultConversationMessageProviderNGTest {
+
+    private static final Logger LOGGER = Logger.getLogger(DefaultConversationMessageProviderNGTest.class.getName());
     
     private Graph graph;
-    private int vxId1, vxId2, tnId1, tnId2, tnId3;
+    
+    private int vxId1;
+    private int vxId2;
+    
+    private int tnId1;
+    private int tnId2;
+    private int tnId3;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
-    }
-
-    /**
-     * Test of getMessages method, of class DefaultConversationMessageProvider.
-     */
-    @Test
-    public void testGetMessages() {
-        System.out.println("getMessages");
-        setupGraph();
-        final GraphReadMethods rg = graph.getReadableGraph();
-        final List<ConversationMessage> messages = new ArrayList();
-        final ConversationMessage message1 = new ConversationMessage(tnId1, vxId1, ConversationSide.LEFT);
-        final ConversationMessage message2 = new ConversationMessage(tnId3, vxId1, ConversationSide.LEFT);
-        messages.add(message1);
-        messages.add(message2);
-        final DefaultConversationMessageProvider instance = new DefaultConversationMessageProvider();
-        final List<ConversationMessage> resultMessages = new ArrayList();
-        instance.getMessages(rg, resultMessages);
-        assertEquals(messages.size(), resultMessages.size());
-        
-        // test getTotalMessageCount
-        final int expResult = 2;
-        final int result = instance.getTotalMessageCount();
-        assertEquals(result, expResult);
-    }
-    
-    
-    private void setupGraph() {
         graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema());
         try {
             final WritableGraph wg = graph.getWritableGraph("", true);
@@ -107,8 +87,39 @@ public class DefaultConversationMessageProviderNGTest {
             wg.commit();
             
         } catch (final InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             Thread.currentThread().interrupt();
         }
+    }
+
+    @AfterMethod
+    public void tearDownMethod() throws Exception {
+        // Not currently required
+    }
+
+    /**
+     * Test of getMessages method, of class DefaultConversationMessageProvider.
+     */
+    @Test
+    public void testGetMessages() {
+        System.out.println("getMessages");
+        
+        final DefaultConversationMessageProvider instance = new DefaultConversationMessageProvider();
+        
+        try (final ReadableGraph rg = graph.getReadableGraph()) {    
+            final List<ConversationMessage> messages = new ArrayList();
+            final ConversationMessage message1 = new ConversationMessage(tnId1, vxId1, ConversationSide.LEFT);
+            final ConversationMessage message2 = new ConversationMessage(tnId3, vxId1, ConversationSide.LEFT);
+            messages.add(message1);
+            messages.add(message2);
+            final List<ConversationMessage> resultMessages = new ArrayList();
+            instance.getMessages(rg, resultMessages);
+            assertEquals(messages.size(), resultMessages.size());      
+        }
+        
+        // test getTotalMessageCount
+        final int expResult = 2;
+        final int result = instance.getTotalMessageCount();
+        assertEquals(result, expResult);
     }
 }

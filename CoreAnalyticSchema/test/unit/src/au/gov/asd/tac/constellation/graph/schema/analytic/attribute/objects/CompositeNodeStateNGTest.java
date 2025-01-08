@@ -37,19 +37,21 @@ import org.testng.annotations.Test;
  */
 public class CompositeNodeStateNGTest {
     
-    CompositeNodeState nullInstance;
-    CompositeNodeState contractedInstance;
-    CompositeNodeState expandedInstance;
+    private CompositeNodeState nullInstance;
+    private CompositeNodeState contractedInstance;
+    private CompositeNodeState expandedInstance;
     
-    String contractedString;
-    String expandedString;
+    private String contractedString;
+    private String expandedString;
     
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -94,6 +96,7 @@ public class CompositeNodeStateNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**

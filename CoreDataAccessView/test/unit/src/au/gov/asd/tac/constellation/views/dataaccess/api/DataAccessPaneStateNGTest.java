@@ -289,5 +289,4 @@ public class DataAccessPaneStateNGTest {
             assertTrue(comparator.compare(plugin1, plugin2) > 0);
         }
     }
-
 }

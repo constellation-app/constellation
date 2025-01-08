@@ -41,16 +41,15 @@ public class OpenFileActionNGTest {
 
     private static MockedStatic<PluginExecution> pluginExecutionStaticMock;
     private static PluginExecution pluginExecutionMock;
-
-    public OpenFileActionNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod

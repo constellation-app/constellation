@@ -95,7 +95,7 @@ import org.testng.annotations.Test;
 public class DataAccessTabPaneNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(DataAccessTabPaneNGTest.class.getName());
-    private static final String newStepCaption = "New Caption - Step 1";
+    private static final String NEW_STEP_CAPTION = "New Caption - Step 1";
 
     private DataAccessViewTopComponent topComponent;
     private DataAccessPane dataAccessPane;
@@ -952,7 +952,7 @@ public class DataAccessTabPaneNGTest {
                     .thenReturn(tabHasEnabledPlugins);
             when(executeButton.isDisabled()).thenReturn(isExecuteButtonDisabled);
 
-            dataAccessTabPane.newTab(queryPhasePane, newStepCaption);
+            dataAccessTabPane.newTab(queryPhasePane, NEW_STEP_CAPTION);
 
             // Verify the tab and context menus were created
             assertEquals(mockedTab.constructed().size(), 1);

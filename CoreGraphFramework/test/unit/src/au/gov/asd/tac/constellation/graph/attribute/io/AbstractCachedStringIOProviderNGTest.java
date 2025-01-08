@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
+import java.io.IOException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import org.mockito.Mockito;
@@ -54,19 +55,16 @@ public class AbstractCachedStringIOProviderNGTest {
     final int attributeId = 23;
     final int elementId = 41;
     final String attribValue = "TestAttrib";
-    final String decoratorStr = "TestDecorator";
     final GraphAttribute attr = new GraphAttribute(attributeId, GraphElementType.GRAPH, "attrType", "attrName", "attrDesc", null, null);
- 
     
-    public AbstractCachedStringIOProviderNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -76,6 +74,7 @@ public class AbstractCachedStringIOProviderNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
     
     /**
@@ -91,9 +90,10 @@ public class AbstractCachedStringIOProviderNGTest {
 
     /**
      * Test of readObject method, of class AbstractCachedStringIOProvider.
+     * @throws java.io.IOException
      */
     @Test
-    public void testReadObject() throws Exception {
+    public void testReadObject() throws IOException {
         System.out.println("AbstractCachedStringIOProviderNGTest.testReadObject");
 
         // Call method under test with JsonNode set to returen isNull = true
@@ -112,14 +112,14 @@ public class AbstractCachedStringIOProviderNGTest {
         instance.readObject(attributeId, elementId, mockJsonNode, mockGraphWriteMethods, null, null, null, mockCache);
         Mockito.verify(mockJsonNode, times(1)).textValue();
         Mockito.verify(mockCache, times(1)).deduplicate(attribValue);
-
     }
 
     /**
      * Test of writeObject method, of class AbstractCachedStringIOProvider.
+     * @throws java.io.IOException
      */
     @Test
-    public void testWriteObject() throws Exception {
+    public void testWriteObject() throws IOException {
         System.out.println("AbstractCachedStringIOProviderNGTest.testWriteObject");
         
         // Test not verbose and graph.IsDefaultValue is true skips all processing

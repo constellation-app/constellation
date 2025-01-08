@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.find.components;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
@@ -65,28 +64,28 @@ import org.testng.annotations.Test;
  */
 public class AdvancedFindTabNGTest {
 
-    private Map<String, Graph> graphMap = new HashMap<>();
+    private Map<String, Graph> graphMap;
     private Graph graph;
     private Graph graph2;
-    private GraphAttribute labelAttributeV, identifierAttributeV, xAtrributeV, labelAttributeT, identifierAttributeT;
 
-    private int selectedV, selectedT;
-    private int labelV, identifierV, xV, labelT, identiferT, widthT;
-    private int vxId1, vxId2, vxId3, vxId4, vxId5UpperCase, vxId6, vxId7, vxId8, txId1, txId2, txId3, txId4;
+    private int selectedV;
+    private int labelV;
+    private int identifierV;
+    private int xV;
+    
+    private int vxId1;
 
-    FindViewTopComponent findViewTopComponent;
-    FindViewTopComponent spyTopComponent;
+    private FindViewTopComponent findViewTopComponent;
+    private FindViewTopComponent spyTopComponent;
 
-    BasicFindTab basicFindTab;
-    ReplaceTab replaceTab;
-    AdvancedFindTab advancedTab;
-    FindViewPane findViewPane;
-    FindViewTabs findViewTabs;
+    private BasicFindTab basicFindTab;
+    private ReplaceTab replaceTab;
+    private AdvancedFindTab advancedTab;
+    private FindViewPane findViewPane;
+    private FindViewTabs findViewTabs;
+    
     private static final Logger LOGGER = Logger.getLogger(BasicFindTabNGTest.class.getName());
-
-    public AdvancedFindTabNGTest() throws Exception {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -126,6 +125,7 @@ public class AdvancedFindTabNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -557,10 +557,10 @@ public class AdvancedFindTabNGTest {
         graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
         graph2 = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
 
+        graphMap = new HashMap<>();
         graphMap.put(graph.getId(), graph);
         graphMap.put(graph2.getId(), graph2);
         try {
-
             WritableGraph wg = graph.getWritableGraph("", true);
 
             // Create Selected Attributes
@@ -569,11 +569,6 @@ public class AdvancedFindTabNGTest {
             identifierV = VisualConcept.VertexAttribute.IDENTIFIER.ensure(wg);
             xV = VisualConcept.VertexAttribute.X.ensure(wg);
 
-            selectedT = VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
-            labelT = VisualConcept.TransactionAttribute.LABEL.ensure(wg);
-            identiferT = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(wg);
-            widthT = VisualConcept.TransactionAttribute.WIDTH.ensure(wg);
-
             vxId1 = wg.addVertex();
             wg.setBooleanValue(selectedV, vxId1, false);
             wg.setStringValue(labelV, vxId1, "label name");
@@ -581,11 +576,9 @@ public class AdvancedFindTabNGTest {
             wg.setIntValue(xV, vxId1, 1);
 
             wg.commit();
-
         } catch (final InterruptedException ex) {
             Exceptions.printStackTrace(ex);
             Thread.currentThread().interrupt();
         }
     }
-
 }
