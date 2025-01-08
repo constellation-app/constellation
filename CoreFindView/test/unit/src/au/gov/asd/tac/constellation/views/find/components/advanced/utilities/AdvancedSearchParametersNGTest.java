@@ -58,7 +58,7 @@ public class AdvancedSearchParametersNGTest {
     }
 
     @BeforeMethod
-    public void setUpMethod() throws Exception {
+    public void setUpMethod() {
         criteriaValuesListOne = new ArrayList<>();
         criteriaValuesListTwo = new ArrayList<>();
     }

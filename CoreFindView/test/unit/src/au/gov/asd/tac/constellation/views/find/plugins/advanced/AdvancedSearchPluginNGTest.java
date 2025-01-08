@@ -104,7 +104,7 @@ public class AdvancedSearchPluginNGTest {
     }
 
     @BeforeMethod
-    public void setUpMethod() throws Exception {
+    public void setUpMethod() {
         testTime = ZonedDateTime.of(2022, 02, 02, 22, 22, 22, 222222222, ZoneId.systemDefault());
         plus1YearTestTime = ZonedDateTime.of(2022, 02, 02, 22, 22, 22, 222222222, ZoneId.systemDefault()).plusYears(1);
         plus2YearTestTime = ZonedDateTime.of(2022, 02, 02, 22, 22, 22, 222222222, ZoneId.systemDefault()).plusYears(2);

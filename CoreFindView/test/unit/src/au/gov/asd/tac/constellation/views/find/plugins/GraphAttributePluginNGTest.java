@@ -84,7 +84,7 @@ public class GraphAttributePluginNGTest {
 
     }
     @BeforeMethod
-    public void setUpMethod() throws Exception {
+    public void setUpMethod() {
         attributeList = new ArrayList<>();
     }
 
