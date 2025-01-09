@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess;
 
-import au.gov.asd.tac.constellation.views.dataaccess.GlobalParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ActionParameterType;
@@ -48,10 +47,7 @@ import org.testng.annotations.Test;
 public class GlobalParametersNGTest {
 
     private static MockedStatic<Lookup> lookupStaticMock;
-
-    public GlobalParametersNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         lookupStaticMock = Mockito.mockStatic(Lookup.class);
@@ -150,5 +146,4 @@ public class GlobalParametersNGTest {
         GlobalParameters.readDataToMap(
                 GlobalParametersNGTest.class, "./resources/doesNotExist", Collections.EMPTY_MAP);
     }
-
 }

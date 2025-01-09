@@ -39,16 +39,15 @@ import org.testng.annotations.Test;
 public class BooleanAttributeDescriptionNGTest {
 
     BooleanAttributeDescription instance;
-
-    public BooleanAttributeDescriptionNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -59,6 +58,7 @@ public class BooleanAttributeDescriptionNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -304,7 +304,7 @@ public class BooleanAttributeDescriptionNGTest {
         instance.setDouble(id, 0.0);
         assertEquals(instance.getDouble(id), 0.0);
         instance.setDouble(id, 1.0);
-        assertEquals(instance.getDouble(id), 1.0);;
+        assertEquals(instance.getDouble(id), 1.0);
     }
 
     /**
@@ -357,7 +357,7 @@ public class BooleanAttributeDescriptionNGTest {
         instance.setChar(id, (char) 0);
         assertEquals(instance.getChar(id), (char) 0);
         instance.setChar(id, (char) 1);
-        assertEquals(instance.getChar(id), (char) 1);;
+        assertEquals(instance.getChar(id), (char) 1);
     }
 
     /**

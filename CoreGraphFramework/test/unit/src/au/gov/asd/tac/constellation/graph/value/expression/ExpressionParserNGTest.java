@@ -31,10 +31,7 @@ import org.testng.annotations.Test;
  * @author aldebaran30701
  */
 public class ExpressionParserNGTest {
-
-    public ExpressionParserNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         ExpressionParser.hideErrorPrompts(true);
@@ -42,14 +39,17 @@ public class ExpressionParserNGTest {
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**

@@ -33,16 +33,15 @@ import org.testng.annotations.Test;
 public class DoubleObjectAttributeDescriptionNGTest {
 
     DoubleObjectAttributeDescription instance;
-
-    public DoubleObjectAttributeDescriptionNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -53,6 +52,7 @@ public class DoubleObjectAttributeDescriptionNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**

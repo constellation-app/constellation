@@ -47,9 +47,6 @@ public class SizeVisualisationNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(SizeVisualisationNGTest.class.getName());
     
-    public SizeVisualisationNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -68,10 +65,12 @@ public class SizeVisualisationNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -80,6 +79,7 @@ public class SizeVisualisationNGTest {
     @Test
     public void testDeactivate() {
         System.out.println("deactivate");
+        
         try (final MockedStatic<AnalyticViewController> controllerStatic = Mockito.mockStatic(AnalyticViewController.class)) {
             final AnalyticViewController controller = spy(AnalyticViewController.class);
             controllerStatic.when(AnalyticViewController::getDefault).thenReturn(controller);
@@ -100,6 +100,7 @@ public class SizeVisualisationNGTest {
     @Test
     public void testGetName() {
         System.out.println("getName");
+        
         final AbstractSizeTranslator translator = new ScoreToSizeTranslator();
         final SizeVisualisation instance = new SizeVisualisation(translator);
         final String expResult = "Size Elements";
@@ -113,6 +114,7 @@ public class SizeVisualisationNGTest {
     @Test
     public void testGetTranslator() {
         System.out.println("getTranslator");
+        
         final AbstractSizeTranslator translator = new ScoreToSizeTranslator();
         final SizeVisualisation instance = new SizeVisualisation(translator);
         final AnalyticTranslator result = instance.getTranslator();
@@ -125,6 +127,7 @@ public class SizeVisualisationNGTest {
     @Test
     public void testGetAffectedAttributes() {
         System.out.println("getAffectedAttributes");
+        
         final AbstractSizeTranslator translator = new ScoreToSizeTranslator();
         final SizeVisualisation instance = new SizeVisualisation(translator);
         final List expResult = Arrays.asList(VisualConcept.VertexAttribute.NODE_RADIUS, VisualConcept.TransactionAttribute.WIDTH);
@@ -138,6 +141,7 @@ public class SizeVisualisationNGTest {
     @Test
     public void testIsActive() {
         System.out.println("isActive");
+        
         final AbstractSizeTranslator translator = new ScoreToSizeTranslator();
         final SizeVisualisation instance = new SizeVisualisation(translator);
         final boolean expResult = false;
@@ -151,6 +155,7 @@ public class SizeVisualisationNGTest {
     @Test
     public void testSetSelected() {
         System.out.println("setSelected");
+        
         final boolean selected = false;
         final AbstractSizeTranslator translator = new ScoreToSizeTranslator();
         final SizeVisualisation instance = new SizeVisualisation(translator);

@@ -15,10 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.find.components;
 
-import au.gov.asd.tac.constellation.views.find.components.BasicFindTab;
-import au.gov.asd.tac.constellation.views.find.components.ReplaceTab;
-import au.gov.asd.tac.constellation.views.find.components.FindViewTabs;
-import au.gov.asd.tac.constellation.views.find.components.FindViewPane;
 import au.gov.asd.tac.constellation.views.find.FindViewTopComponent;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
@@ -40,23 +36,20 @@ import org.testng.annotations.Test;
  */
 public class FindViewPaneNGTest {
 
-    FindViewTopComponent findViewTopComponent;
-    FindViewTopComponent spyTopComponent;
+    private FindViewTopComponent findViewTopComponent;
+    private FindViewTopComponent spyTopComponent;
 
-//    FindViewController findViewController;
-    BasicFindTab basicFindTab;
-    BasicFindTab spyBasicFindTab;
-    ReplaceTab replaceTab;
-    ReplaceTab spyReplaceTab;
-    FindViewPane findViewPane;
-    FindViewPane spyFindViewPane;
-    FindViewTabs findViewTabs;
-    FindViewTabs spyFindViewTabs;
+    private BasicFindTab basicFindTab;
+    private BasicFindTab spyBasicFindTab;
+    private ReplaceTab replaceTab;
+    private ReplaceTab spyReplaceTab;
+    private FindViewPane findViewPane;
+    private FindViewPane spyFindViewPane;
+    private FindViewTabs findViewTabs;
+    private FindViewTabs spyFindViewTabs;
+    
     private static final Logger LOGGER = Logger.getLogger(FindViewPaneNGTest.class.getName());
-
-    public FindViewPaneNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -99,6 +92,7 @@ public class FindViewPaneNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**

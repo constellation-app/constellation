@@ -31,14 +31,16 @@ import org.testng.annotations.Test;
  */
 public class TabularRecordStoreNGTest {
 
-    TabularRecordStore instance = null;
+    TabularRecordStore instance;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -55,6 +57,7 @@ public class TabularRecordStoreNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -80,10 +83,10 @@ public class TabularRecordStoreNGTest {
         values[0][0] = "value1";
         values[0][1] = "value2";
 
-        final TabularRecordStore instance = new TabularRecordStore();
-        instance.createColumn(key, values);
+        final TabularRecordStore newInstance = new TabularRecordStore();
+        newInstance.createColumn(key, values);
 
-        final Object[][] column = instance.getColumn(key);
+        final Object[][] column = newInstance.getColumn(key);
         assertEquals(column[0][0], "value1");
         assertEquals(column[0][1], "value2");
     }
@@ -123,12 +126,12 @@ public class TabularRecordStoreNGTest {
      */
     @Test
     public void testAdd() {
-        final TabularRecordStore instance = new TabularRecordStore();
+        final TabularRecordStore newInstance = new TabularRecordStore();
         int expResult = 0;
-        int result = instance.add();
+        int result = newInstance.add();
         assertEquals(result, expResult);
         expResult = 1;
-        result = instance.add();
+        result = newInstance.add();
         assertEquals(result, expResult);
     }
 
@@ -137,13 +140,13 @@ public class TabularRecordStoreNGTest {
      */
     @Test
     public void testAddRecordStore() {
-        final TabularRecordStore instance = new TabularRecordStore();
-        assertEquals(instance.size(), 0);
+        final TabularRecordStore newInstance = new TabularRecordStore();
+        assertEquals(newInstance.size(), 0);
 
         final RecordStore recordStore = new TabularRecordStore();
         recordStore.add();
-        instance.add(recordStore);
-        assertEquals(instance.size(), 1);
+        newInstance.add(recordStore);
+        assertEquals(newInstance.size(), 1);
     }
 
     @Test
@@ -154,9 +157,9 @@ public class TabularRecordStoreNGTest {
         recordStore.add();
         recordStore.set("key", "value");
 
-        final TabularRecordStore instance = new TabularRecordStore();
-        instance.add(recordStore);
-        assertEquals(instance.size(), 2);
+        final TabularRecordStore newInstance = new TabularRecordStore();
+        newInstance.add(recordStore);
+        assertEquals(newInstance.size(), 2);
     }
 
     /**
@@ -164,16 +167,16 @@ public class TabularRecordStoreNGTest {
      */
     @Test
     public void testIndex() {
-        final TabularRecordStore instance = new TabularRecordStore();
-        int result = instance.index();
+        final TabularRecordStore newInstance = new TabularRecordStore();
+        int result = newInstance.index();
         assertEquals(result, -1);
 
-        instance.add();
-        result = instance.index();
+        newInstance.add();
+        result = newInstance.index();
         assertEquals(result, 0);
 
-        instance.add();
-        result = instance.index();
+        newInstance.add();
+        result = newInstance.index();
         assertEquals(result, 1);
     }
 
@@ -189,19 +192,19 @@ public class TabularRecordStoreNGTest {
 
     @Test
     public void testNextWithSomeRecords() {
-        final TabularRecordStore instance = new TabularRecordStore();
-        instance.add();
-        instance.add();
+        final TabularRecordStore newInstance = new TabularRecordStore();
+        newInstance.add();
+        newInstance.add();
 
-        boolean result = instance.next();
+        boolean result = newInstance.next();
         assertEquals(result, false);
 
-        instance.reset();
-        result = instance.next();
+        newInstance.reset();
+        result = newInstance.next();
         assertEquals(result, true);
-        result = instance.next();
+        result = newInstance.next();
         assertEquals(result, true);
-        result = instance.next();
+        result = newInstance.next();
         assertEquals(result, false);
     }
 
@@ -210,12 +213,12 @@ public class TabularRecordStoreNGTest {
      */
     @Test
     public void testReset() {
-        final TabularRecordStore instance = new TabularRecordStore();
-        instance.add();
+        final TabularRecordStore newInstance = new TabularRecordStore();
+        newInstance.add();
 
-        assertEquals(instance.index(), 0);
-        instance.reset();
-        assertEquals(instance.index(), -1);
+        assertEquals(newInstance.index(), 0);
+        newInstance.reset();
+        assertEquals(newInstance.index(), -1);
     }
 
     /**
@@ -223,12 +226,12 @@ public class TabularRecordStoreNGTest {
      */
     @Test
     public void testClose() {
-        final TabularRecordStore instance = new TabularRecordStore();
+        final TabularRecordStore newInstance = new TabularRecordStore();
 
-        instance.add();
-        assertEquals(instance.size(), 1);
-        instance.close();
-        assertEquals(instance.size(), 1); // fyi the implementation does not empty the size
+        newInstance.add();
+        assertEquals(newInstance.size(), 1);
+        newInstance.close();
+        assertEquals(newInstance.size(), 1); // fyi the implementation does not empty the size
     }
 
     /**
@@ -272,13 +275,13 @@ public class TabularRecordStoreNGTest {
     public void testGetUsingValidKey() {
         final String key = "key1";
 
-        final TabularRecordStore instance = new TabularRecordStore();
-        instance.add();
-        instance.set("key1", "value1");
-        instance.set("key2", "value2");
+        final TabularRecordStore newInstance = new TabularRecordStore();
+        newInstance.add();
+        newInstance.set("key1", "value1");
+        newInstance.set("key2", "value2");
 
         final String expResult = "value1";
-        final String result = instance.get(key);
+        final String result = newInstance.get(key);
         assertEquals(result, expResult);
     }
 
@@ -286,13 +289,13 @@ public class TabularRecordStoreNGTest {
     public void testGetUsingInvalidKey() {
         final String key = "foo";
 
-        final TabularRecordStore instance = new TabularRecordStore();
-        instance.add();
-        instance.set("key1", "value1");
-        instance.set("key2", "value2");
+        final TabularRecordStore newInstance = new TabularRecordStore();
+        newInstance.add();
+        newInstance.set("key1", "value1");
+        newInstance.set("key2", "value2");
 
         final String expResult = null;
-        final String result = instance.get(key);
+        final String result = newInstance.get(key);
         assertEquals(result, expResult);
     }
 
@@ -316,11 +319,11 @@ public class TabularRecordStoreNGTest {
         final String key = "key1";
         final String value = "value1";
 
-        final TabularRecordStore instance = new TabularRecordStore();
-        instance.add();
-        instance.set(key, value);
+        final TabularRecordStore newInstance = new TabularRecordStore();
+        newInstance.add();
+        newInstance.set(key, value);
 
-        assertEquals(instance.get(key), value);
+        assertEquals(newInstance.get(key), value);
     }
 
     /**
@@ -343,16 +346,16 @@ public class TabularRecordStoreNGTest {
      */
     @Test
     public void testValuesFromFirstIndex() {
-        final TabularRecordStore instance = new TabularRecordStore();
-        instance.add();
-        instance.set("key1", "value1");
-        instance.set("key2", "value2");
+        final TabularRecordStore newInstance = new TabularRecordStore();
+        newInstance.add();
+        newInstance.set("key1", "value1");
+        newInstance.set("key2", "value2");
 
         final List<String> expResult = new ArrayList<>();
         expResult.add("value1");
         expResult.add("value2");
 
-        final List<String> result = instance.values();
+        final List<String> result = newInstance.values();
         assertEquals(result, expResult);
     }
 

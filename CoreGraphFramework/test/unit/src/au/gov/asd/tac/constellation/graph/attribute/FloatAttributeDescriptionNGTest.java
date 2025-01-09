@@ -39,16 +39,15 @@ import org.testng.annotations.Test;
 public class FloatAttributeDescriptionNGTest {
 
     FloatAttributeDescription instance;
-
-    public FloatAttributeDescriptionNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -59,6 +58,7 @@ public class FloatAttributeDescriptionNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**

@@ -82,10 +82,7 @@ public class AnalyticExportResultsMenuNGTest {
     private AnalyticViewTopComponent topComponent;
     private final Graph graph = mock(Graph.class);
     private final GraphManager graphManager = spy(GraphManager.class);
-
-    public AnalyticExportResultsMenuNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -112,6 +109,7 @@ public class AnalyticExportResultsMenuNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     @Test

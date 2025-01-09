@@ -46,30 +46,32 @@ import org.testng.annotations.Test;
  */
 public class CompositeUtilitiesNGTest {
     
-    StoreGraph graph;
+    private StoreGraph graph;
     
-    int vxId1;
-    int vxId2;
-    int vxId3;
-    int vxId4;
+    private int vxId1;
+    private int vxId2;
+    private int vxId3;
+    private int vxId4;
     
-    int tId1;
-    int tId2;
+    private int tId1;
+    private int tId2;
     
-    int identifierVertexAttribute;
-    int compositeStateVertexAttribute;
-    int identifierTransactionAttribute;
+    private int identifierVertexAttribute;
+    private int compositeStateVertexAttribute;
+    private int identifierTransactionAttribute;
     
-    CompositeNodeState contractedState;
-    CompositeNodeState expandedState1;
-    CompositeNodeState expandedState2;
+    private CompositeNodeState contractedState;
+    private CompositeNodeState expandedState1;
+    private CompositeNodeState expandedState2;
     
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -141,6 +143,7 @@ public class CompositeUtilitiesNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**

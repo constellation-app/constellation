@@ -43,7 +43,6 @@ import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -53,6 +52,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class TabContextMenuNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(TabContextMenuNGTest.class.getName());
     
     private DataAccessTabPane dataAccessTabPane;
@@ -88,7 +88,6 @@ public class TabContextMenuNGTest {
     
     @Test
     public void init() {
-
         tabContextMenu.init();
 
         
