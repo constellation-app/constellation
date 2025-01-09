@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.hashmod;
 
-import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -45,26 +44,23 @@ import org.testng.annotations.Test;
 public class HashmodCSVImportFileParserNGTest {
 
     private static HashmodInputSource hashmodInputSourceMock;
-    private static PluginParameters pluginParametersMock;
     private static CSVParser CSVParserMock;
     private static Iterator<CSVRecord> iteratorMock;
     private static CSVRecord CSVRecordMock;
-
-    public HashmodCSVImportFileParserNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
         hashmodInputSourceMock = mock(HashmodInputSource.class);
-        pluginParametersMock = mock(PluginParameters.class);
         CSVParserMock = mock(CSVParser.class);
         iteratorMock = mock(Iterator.class);
         CSVRecordMock = mock(CSVRecord.class);
@@ -72,6 +68,7 @@ public class HashmodCSVImportFileParserNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**

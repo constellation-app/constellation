@@ -40,9 +40,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.MockedStatic;
@@ -63,6 +65,7 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class QualityControlViewPaneNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(QualityControlViewPaneNGTest.class.getName());
 
     private int vertexIdentifierAttribute;
@@ -137,6 +140,7 @@ public class QualityControlViewPaneNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -152,9 +156,13 @@ public class QualityControlViewPaneNGTest {
 
         instance.refreshQualityControlView(null);
 
-        //not ideal but needed in order to allow the code running in JFX thread to complete
-        Thread.sleep(100);
-
+        final CountDownLatch latch = new CountDownLatch(1);
+        Platform.runLater(() -> {
+            // this is inserted here means this will happens after the previous function call has finished processing in the JFX
+            latch.countDown();
+        });
+        
+        latch.await();
         final int noOfItems = instance.getQualityTable().getItems().size();
         assertEquals(noOfItems, 0);
     }
@@ -173,9 +181,13 @@ public class QualityControlViewPaneNGTest {
 
         instance.refreshQualityControlView(state);
 
-        //not ideal but needed in order to allow the code running in JFX thread to complete
-        Thread.sleep(100);
-
+        final CountDownLatch latch = new CountDownLatch(1);
+        Platform.runLater(() -> {
+            // this is inserted here means this will happens after the previous function call has finished processing in the JFX
+            latch.countDown();
+        });
+        
+        latch.await();
         final int noOfItems = instance.getQualityTable().getItems().size();
         assertEquals(noOfItems, 0);
     }
@@ -194,9 +206,13 @@ public class QualityControlViewPaneNGTest {
 
         instance.refreshQualityControlView(state);
 
-        //not ideal but needed in order to allow the code running in JFX thread to complete
-        Thread.sleep(100);
-
+        final CountDownLatch latch = new CountDownLatch(1);
+        Platform.runLater(() -> {
+            // this is inserted here means this will happens after the previous function call has finished processing in the JFX
+            latch.countDown();
+        });
+        
+        latch.await();
         final int noOfItems = instance.getQualityTable().getItems().size();
         assertEquals(noOfItems, 2);
     }

@@ -41,15 +41,14 @@ public class MultiTaskInteractionNGTest {
     private PluginInteraction interactionMock;
     private ExecutorService threadPool;
     
-    public MultiTaskInteractionNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -71,7 +70,6 @@ public class MultiTaskInteractionNGTest {
      */
     @Test
     public void testTaskRegistration() throws InterruptedException {
-        
         final MultiTaskInteraction mti = new MultiTaskInteraction(interactionMock);
         
         assertEquals(mti.getTaskCount(), 0);
@@ -101,7 +99,7 @@ public class MultiTaskInteractionNGTest {
     }
     
     
-    private class TestTask implements SharedInteractionRunnable{
+    private class TestTask implements SharedInteractionRunnable {
         private int currentStep = 0;
         private final int totalSteps = 10;
 

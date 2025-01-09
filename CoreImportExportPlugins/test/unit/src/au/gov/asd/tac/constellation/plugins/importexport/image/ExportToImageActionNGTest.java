@@ -56,16 +56,15 @@ public class ExportToImageActionNGTest {
     private static PluginExecution withParameterMock;
     private static GraphNode contextMock;
     private static Graph graphMock;
-
-    public ExportToImageActionNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod

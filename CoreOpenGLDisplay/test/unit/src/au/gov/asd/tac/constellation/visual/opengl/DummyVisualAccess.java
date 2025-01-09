@@ -38,6 +38,7 @@ public class DummyVisualAccess implements VisualAccess {
 
     @Override
     public void updateInternally() {
+        // Do nothing
     }
 
     @Override
@@ -47,10 +48,12 @@ public class DummyVisualAccess implements VisualAccess {
 
     @Override
     public void beginUpdate() {
+        // Do nothing
     }
 
     @Override
     public void endUpdate() {
+        // Do nothing
     }
 
     public void zoomOut() {

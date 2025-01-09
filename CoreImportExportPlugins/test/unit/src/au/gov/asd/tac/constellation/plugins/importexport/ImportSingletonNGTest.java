@@ -28,24 +28,25 @@ import org.testng.annotations.Test;
  * @author altair1673
  */
 public class ImportSingletonNGTest {
-
-    public ImportSingletonNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -56,13 +57,9 @@ public class ImportSingletonNGTest {
         System.out.println("triggerClearDataFlag");
 
         ImportSingleton.getDefault().triggerClearDataFlag();
-
-        assertEquals(-2, ImportSingleton.getDefault().getClearDataFlag().get());
+        assertEquals(ImportSingleton.getDefault().getClearDataFlag().get(), -2);
 
         ImportSingleton.getDefault().triggerClearDataFlag();
-
-        assertEquals(2, ImportSingleton.getDefault().getClearDataFlag().get());
-
+        assertEquals(ImportSingleton.getDefault().getClearDataFlag().get(), 2);
     }
-
 }

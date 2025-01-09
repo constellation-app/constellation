@@ -24,7 +24,6 @@ import au.gov.asd.tac.constellation.views.layers.shortcut.NewLayerPlugin;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewState;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 import org.testng.annotations.Test;
 
 /**
@@ -32,32 +31,19 @@ import org.testng.annotations.Test;
  * @author formalhaut69
  */
 public class NewLayerPluginNGTest {
-
-    private int layerMaskV, layerMaskT, layerVisibilityV, layerVisibilityT;
+    
     private StoreGraph graph;
 
-    public void setupGraph() {
+    private void setupGraph() {
         graph = new StoreGraph();
 
         // Create LayerMask attributes
-        layerMaskV = LayersConcept.VertexAttribute.LAYER_MASK.ensure(graph);
-        if (layerMaskV == Graph.NOT_FOUND) {
-            fail();
-        }
-        layerMaskT = LayersConcept.TransactionAttribute.LAYER_MASK.ensure(graph);
-        if (layerMaskT == Graph.NOT_FOUND) {
-            fail();
-        }
+        LayersConcept.VertexAttribute.LAYER_MASK.ensure(graph);
+        LayersConcept.TransactionAttribute.LAYER_MASK.ensure(graph);
 
         // Create LayerVisilibity Attributes
-        layerVisibilityV = LayersConcept.VertexAttribute.LAYER_VISIBILITY.ensure(graph);
-        if (layerVisibilityV == Graph.NOT_FOUND) {
-            fail();
-        }
-        layerVisibilityT = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.ensure(graph);
-        if (layerVisibilityT == Graph.NOT_FOUND) {
-            fail();
-        }
+        LayersConcept.VertexAttribute.LAYER_VISIBILITY.ensure(graph);
+        LayersConcept.TransactionAttribute.LAYER_VISIBILITY.ensure(graph);
     }
 
     @Test
@@ -67,12 +53,9 @@ public class NewLayerPluginNGTest {
         PluginExecution.withPlugin(new NewLayerPlugin()).executeNow(graph);
 
         final int layersViewStateAttributeId = LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.get(graph);
-
         assertTrue(layersViewStateAttributeId != Graph.NOT_FOUND);
 
         final LayersViewState currentState = graph.getObjectValue(layersViewStateAttributeId, 0);
-
         assertTrue(currentState.getLayerCount() == 2);
-
     }
 }

@@ -204,9 +204,7 @@ public class PluginReportNGTest {
         }
         
         @Override
-        protected void execute(final PluginGraphs graphs,
-                final PluginInteraction interaction,
-                final PluginParameters parameters) {
+        protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) {
             //Do nothing
         }
     }
