@@ -55,10 +55,8 @@ public class ColumnNGTest {
 
     @Test
     public void equality() {
-        final TableColumn<ObservableList<String>, String> black
-                = new TableColumn<>("BLACK");
-        final TableColumn<ObservableList<String>, String> red
-                = new TableColumn<>("RED");
+        final TableColumn<ObservableList<String>, String> black = new TableColumn<>("BLACK");
+        final TableColumn<ObservableList<String>, String> red = new TableColumn<>("RED");
 
         EqualsVerifier.forClass(Column.class)
                 .suppress(Warning.NONFINAL_FIELDS)

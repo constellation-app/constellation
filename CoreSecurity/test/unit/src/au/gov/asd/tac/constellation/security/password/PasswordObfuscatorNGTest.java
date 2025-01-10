@@ -39,5 +39,4 @@ public class PasswordObfuscatorNGTest {
         assertNotNull(op);
         assertFalse(password.equals(op.toString()));
     }
-
 }

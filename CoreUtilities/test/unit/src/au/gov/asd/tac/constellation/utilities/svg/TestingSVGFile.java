@@ -35,6 +35,5 @@ public enum TestingSVGFile implements SVGFile{
     @Override
     public String getFileName() {
         return resource;
-    }
-    
+    }    
 }

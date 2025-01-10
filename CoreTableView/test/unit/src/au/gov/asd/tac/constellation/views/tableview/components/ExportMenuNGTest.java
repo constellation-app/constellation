@@ -77,6 +77,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class ExportMenuNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(ExportMenuNGTest.class.getName());
 
     private static final String GRAPH_ID = "graphId";
@@ -87,10 +88,7 @@ public class ExportMenuNGTest {
     private ActiveTableReference activeTableReference;
 
     private ExportMenu exportMenu;
-
-    public ExportMenuNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -123,6 +121,7 @@ public class ExportMenuNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     @Test
@@ -144,17 +143,9 @@ public class ExportMenuNGTest {
         assertNotNull(exportMenu.getExportExcelMenu());
         assertNotNull(exportMenu.getExportExcelSelectionMenu());
 
-        assertEquals(
-                FXCollections.observableList(
-                        List.of(
-                                exportMenu.getExportCsvMenu(),
-                                exportMenu.getExportCsvSelectionMenu(),
-                                exportMenu.getExportExcelMenu(),
-                                exportMenu.getExportExcelSelectionMenu()
-                        )
-                ),
-                exportMenu.getExportButton().getItems()
-        );
+        assertEquals(FXCollections.observableList(List.of(exportMenu.getExportCsvMenu(), exportMenu.getExportCsvSelectionMenu(), 
+                exportMenu.getExportExcelMenu(), exportMenu.getExportExcelSelectionMenu())),
+                exportMenu.getExportButton().getItems());
 
         final Graph graph = mock(Graph.class);
         when(tableViewTopComponent.getCurrentGraph()).thenReturn(graph);
@@ -198,8 +189,7 @@ public class ExportMenuNGTest {
         // the current graph is null
         when(tableViewTopComponent.getCurrentGraph()).thenReturn(null);
 
-        try (MockedStatic<TableViewUtilities> tableViewUtilsMockedStatic
-                = Mockito.mockStatic(TableViewUtilities.class)) {
+        try (MockedStatic<TableViewUtilities> tableViewUtilsMockedStatic = Mockito.mockStatic(TableViewUtilities.class)) {
             final ActionEvent actionEvent = mock(ActionEvent.class);
             exportMenu.getExportCsvMenu().getOnAction().handle(actionEvent);
             tableViewUtilsMockedStatic.verifyNoInteractions();
@@ -250,10 +240,8 @@ public class ExportMenuNGTest {
      * @param userCancelsRequest true if the user is meant to cancel the export when
      *     picking a file in the file chooser
      */
-    private void verifyExportCSVAction(final EventHandler<ActionEvent> eventHandler,
-                                       final boolean userCancelsRequest,
-                                       final boolean expectedExportOnlySelectedRows) throws InterruptedException, PluginException, ExecutionException {
-
+    private void verifyExportCSVAction(final EventHandler<ActionEvent> eventHandler, final boolean userCancelsRequest, 
+            final boolean expectedExportOnlySelectedRows) throws InterruptedException, PluginException, ExecutionException {
         final ExportMenuItemActionHandler exportActionHandler = (ExportMenuItemActionHandler) eventHandler;
 
         final ExportMenuItemActionHandler spiedExportActionHandler = spy(exportActionHandler);
@@ -264,14 +252,9 @@ public class ExportMenuNGTest {
 
         doReturn(exportFileChooser).when(spiedExportActionHandler).getExportFileChooser();
 
-        try (
-                final MockedStatic<PluginExecution> pluginExecutionMockedStatic =
-                        Mockito.mockStatic(PluginExecution.class);
-                final MockedStatic<FileChooser> fileChooserMockedStatic = 
-                        Mockito.mockStatic(FileChooser.class);
-                final MockedStatic<Platform> platformMockedStatic =
-                        Mockito.mockStatic(Platform.class);
-        ) {            
+        try (final MockedStatic<PluginExecution> pluginExecutionMockedStatic = Mockito.mockStatic(PluginExecution.class);
+                final MockedStatic<FileChooser> fileChooserMockedStatic = Mockito.mockStatic(FileChooser.class);
+                final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {            
             // This is added so that the mocked static that we would otherwise be 
             // trying to run in the fx thread is actually invoked properly
             platformMockedStatic.when(() -> Platform.runLater(any(Runnable.class)))
@@ -294,8 +277,7 @@ public class ExportMenuNGTest {
             final PluginExecution pluginExecution = mock(PluginExecution.class);
             pluginExecutionMockedStatic.when(() -> PluginExecution.withPlugin(any(Plugin.class)))
                     .thenAnswer(mockitoInvocation -> {
-                        final ExportToCsvFilePlugin plugin
-                                = (ExportToCsvFilePlugin) mockitoInvocation.getArgument(0);
+                        final ExportToCsvFilePlugin plugin = (ExportToCsvFilePlugin) mockitoInvocation.getArgument(0);
 
                         if (exportFile != null) {
                             assertEquals(exportFile.getAbsolutePath(), plugin.getFile().getAbsolutePath());                           
@@ -336,10 +318,8 @@ public class ExportMenuNGTest {
      * @param userCancelsRequest true if the user is meant to cancel the export when
      *     picking a file in the file chooser
      */
-    private void verifyExportExcelAction(final EventHandler<ActionEvent> eventHandler,
-                                         final boolean userCancelsRequest,
-                                         final boolean expectedExportOnlySelectedRows) throws InterruptedException, PluginException, ExecutionException {
-
+    private void verifyExportExcelAction(final EventHandler<ActionEvent> eventHandler, final boolean userCancelsRequest, 
+            final boolean expectedExportOnlySelectedRows) throws InterruptedException, PluginException, ExecutionException {
         final ExportMenuItemActionHandler exportActionHandler = (ExportMenuItemActionHandler) eventHandler;
 
         final ExportMenuItemActionHandler spiedExportActionHandler = spy(exportActionHandler);
@@ -350,14 +330,9 @@ public class ExportMenuNGTest {
 
         doReturn(exportFileChooser).when(spiedExportActionHandler).getExportFileChooser();
 
-        try (
-                final MockedStatic<PluginExecution> pluginExecutionMockedStatic =
-                        Mockito.mockStatic(PluginExecution.class);
-                final MockedStatic<FileChooser> fileChooserMockedStatic = 
-                        Mockito.mockStatic(FileChooser.class);
-                final MockedStatic<Platform> platformMockedStatic =
-                        Mockito.mockStatic(Platform.class);
-        ) {
+        try (final MockedStatic<PluginExecution> pluginExecutionMockedStatic = Mockito.mockStatic(PluginExecution.class); 
+                final MockedStatic<FileChooser> fileChooserMockedStatic = Mockito.mockStatic(FileChooser.class);
+                final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
             // This is added so that the mocked static that we would otherwise be 
             // trying to run in the fx thread is actually invoked properly
             platformMockedStatic.when(() -> Platform.runLater(any(Runnable.class)))
@@ -386,8 +361,7 @@ public class ExportMenuNGTest {
             final PluginExecution pluginExecution = mock(PluginExecution.class);
             pluginExecutionMockedStatic.when(() -> PluginExecution.withPlugin(any(Plugin.class)))
                     .thenAnswer(mockitoInvocation -> {
-                        final ExportToExcelFilePlugin plugin
-                                = (ExportToExcelFilePlugin) mockitoInvocation.getArgument(0);
+                        final ExportToExcelFilePlugin plugin = (ExportToExcelFilePlugin) mockitoInvocation.getArgument(0);
 
                         if (exportFile != null) {
                             assertEquals(exportFile.getAbsolutePath(), plugin.getFile().getAbsolutePath());                           
@@ -439,11 +413,8 @@ public class ExportMenuNGTest {
         }
 
         // Compare images size
-        if (firstImage.getWidth() != secondImage.getWidth()) {
-            return false;
-        }
-
-        if (firstImage.getHeight() != secondImage.getHeight()) {
+        if (firstImage.getWidth() != secondImage.getWidth()
+                || firstImage.getHeight() != secondImage.getHeight()) {
             return false;
         }
 

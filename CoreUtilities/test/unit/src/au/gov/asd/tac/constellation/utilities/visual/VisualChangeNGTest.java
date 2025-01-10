@@ -16,7 +16,10 @@
 package au.gov.asd.tac.constellation.utilities.visual;
 
 import static org.mockito.Mockito.mock;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -29,23 +32,24 @@ import org.testng.annotations.Test;
  */
 public class VisualChangeNGTest {
     
-    public VisualChangeNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
     
     /**
@@ -90,7 +94,7 @@ public class VisualChangeNGTest {
         
         final VisualProperty property = mock(VisualProperty.class);
         final int[] changeList = new int[25];
-        for(int i=0;i<changeList.length;i++){
+        for (int i = 0 ; i< changeList.length; i++){
             changeList[i] = i;
         }
         final int numChangedItems = 5;
@@ -123,14 +127,14 @@ public class VisualChangeNGTest {
         System.out.println("getElement");
         final VisualProperty property = mock(VisualProperty.class);
         final int[] changeList = new int[25];
-        for(int i=0;i<changeList.length;i++){
+        for(int i = 0 ; i <changeList.length; i++){
             changeList[i] = i;
         }
         final int numChangedItems = 5;
         final int id = 0;
         
         final VisualChange vc = new VisualChange(property, changeList, numChangedItems, id);
-        for(int i=0;i<changeList.length;i++){
+        for(int i = 0; i < changeList.length; i++){
             assertEquals(vc.getElement(i), changeList[i]);
         }
         
@@ -148,12 +152,12 @@ public class VisualChangeNGTest {
         assertEquals(vcNull.getElement(100), 100);
         
         final int[] changeList2 = new int[25];
-        for(int i=0;i<changeList2.length;i++){
+        for(int i = 0; i < changeList2.length; i++){
             changeList2[i] = i + 2;
         }
         
         final VisualChange vcAdjusted = new VisualChange(property, changeList2, numChangedItems, id);
-        for(int i=0;i<changeList2.length;i++){
+        for(int i = 0; i < changeList2.length; i++){
             assertEquals(vcAdjusted.getElement(i), changeList2[i]);
         }
         
@@ -172,7 +176,7 @@ public class VisualChangeNGTest {
         
         final VisualProperty property = mock(VisualProperty.class);
         final int[] changeList = new int[25];
-        for(int i=0;i<changeList.length;i++){
+        for(int i = 0; i < changeList.length; i++){
             changeList[i] = i;
         }
         final int numChangedItems = 5;
@@ -182,7 +186,7 @@ public class VisualChangeNGTest {
         // Same values as vc, just a different object
         final VisualProperty property2 = mock(VisualProperty.class);
         final int[] changeList2 = new int[25];
-        for(int i=0;i<changeList2.length;i++){
+        for(int i = 0; i < changeList2.length; i++){
             changeList2[i] = i;
         }
         final int numChangedItems2 = 5;
@@ -192,7 +196,7 @@ public class VisualChangeNGTest {
         // ID value is different to vc and vc2
         final VisualProperty property3 = mock(VisualProperty.class);
         final int[] changeList3 = new int[25];
-        for(int i=0;i<changeList3.length;i++){
+        for(int i = 0; i < changeList3.length; i++){
             changeList3[i] = i;
         }
         final int numChangedItems3 = 5;
@@ -221,7 +225,7 @@ public class VisualChangeNGTest {
         
         final VisualProperty property = mock(VisualProperty.class);
         final int[] changeList = new int[25];
-        for(int i=0;i<changeList.length;i++){
+        for(int i = 0; i < changeList.length; i++){
             changeList[i] = i;
         }
         final int numChangedItems = 5;
@@ -231,7 +235,7 @@ public class VisualChangeNGTest {
         // Same values as vc, just a different object
         final VisualProperty property2 = mock(VisualProperty.class);
         final int[] changeList2 = new int[25];
-        for(int i=0;i<changeList2.length;i++){
+        for(int i = 0; i < changeList2.length; i++){
             changeList2[i] = i;
         }
         final int numChangedItems2 = 5;
@@ -241,7 +245,7 @@ public class VisualChangeNGTest {
         // ID value is different to vc and vc2
         final VisualProperty property3 = mock(VisualProperty.class);
         final int[] changeList3 = new int[25];
-        for(int i=0;i<changeList3.length;i++){
+        for(int i = 0; i < changeList3.length; i++){
             changeList3[i] = i;
         }
         final int numChangedItems3 = 5;

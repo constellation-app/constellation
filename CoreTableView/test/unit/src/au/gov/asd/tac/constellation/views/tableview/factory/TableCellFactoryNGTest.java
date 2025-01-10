@@ -54,6 +54,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class TableCellFactoryNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(TableCellFactoryNGTest.class.getName());
 
     private Table table;
@@ -87,6 +88,7 @@ public class TableCellFactoryNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     @Test
@@ -205,16 +207,13 @@ public class TableCellFactoryNGTest {
      * @param expectedStyles the expected styles that should be present in the
      * style class list
      */
-    private void verifyStyle(final String item,
-            final String columnPrefix,
-            final List<String> expectedStyles) {
+    private void verifyStyle(final String item, final String columnPrefix, final List<String> expectedStyles) {
         clearInvocations(tableCellFactory, table);
 
         final ObservableList<String> styleClass = spy(FXCollections.observableArrayList());
         doReturn(styleClass).when(tableCellFactory).getStyleClass();
 
-        final CopyOnWriteArrayList<Column> columnIndex
-                = new CopyOnWriteArrayList<>();
+        final CopyOnWriteArrayList<Column> columnIndex = new CopyOnWriteArrayList<>();
         columnIndex.add(new Column("source.", null, mock(TableColumn.class)));
         columnIndex.add(new Column(columnPrefix, null, cellColumn));
         columnIndex.add(new Column("transaction.", null, mock(TableColumn.class)));

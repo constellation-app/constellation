@@ -36,7 +36,7 @@ public class TestTableDefaultColumnsProvider implements TableDefaultColumns {
 
     @Override
     public List<GraphAttribute> getDefaultAttributes(Graph graph) {
-        ArrayList<GraphAttribute> defaultList = new ArrayList<>();
+        List<GraphAttribute> defaultList = new ArrayList<>();
         
         if (graph != null && graph.getSchema() != null) {
             Attribute attribute2 = new GraphAttribute(graph.getReadableGraph(), 2);
@@ -53,5 +53,4 @@ public class TestTableDefaultColumnsProvider implements TableDefaultColumns {
         }
         return defaultList;
     }
-    
 }

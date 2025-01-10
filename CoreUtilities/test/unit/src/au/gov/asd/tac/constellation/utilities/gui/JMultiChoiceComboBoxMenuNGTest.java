@@ -69,11 +69,8 @@ public class JMultiChoiceComboBoxMenuNGTest {
 
     private static final String COOKIE_ICON_PATH = "au/gov/asd/tac/constellation/utilities/modules/ext/icons/cookie.png";
     private static final String DROP_DOWN_ARROW_ICON_PATH = "au/gov/asd/tac/constellation/utilities/modules/ext/icons/drop_down_arrow.png";
-    private static final File iconFile = new File(DROP_DOWN_ARROW_ICON_PATH);
-
-    public JMultiChoiceComboBoxMenuNGTest() {
-    }
-
+    private static final File ICON_FILE = new File(DROP_DOWN_ARROW_ICON_PATH);
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         installedFileLocatorMocked = mock(InstalledFileLocator.class);
@@ -91,7 +88,7 @@ public class JMultiChoiceComboBoxMenuNGTest {
                 .thenReturn(installedFileLocatorMocked);
         installedFileLocatorMockedStatic.when(() -> InstalledFileLocator.getDefault()
                 .locate("modules/ext/icons/drop_down_arrow.png", "au.gov.asd.tac.constellation.utilities", false))
-                .thenReturn(iconFile);
+                .thenReturn(ICON_FILE);
 
         items.clear();
         items.add("Item 1");
@@ -290,13 +287,14 @@ public class JMultiChoiceComboBoxMenuNGTest {
 
     /**
      * Test of setIcon method, of class JMultiChoiceComboBoxMenu.
+     * @throws java.net.MalformedURLException
      */
     @Test
     public void testSetIcon() throws MalformedURLException {
         System.out.println("setIcon");
         final JMultiChoiceComboBoxMenu instance = new JMultiChoiceComboBoxMenu("Text", items);
 
-        final Icon newIcon1 = new ImageIcon(Utilities.toURI(iconFile).toURL());
+        final Icon newIcon1 = new ImageIcon(Utilities.toURI(ICON_FILE).toURL());
         final Icon newIcon2 = new ImageIcon(DROP_DOWN_ARROW_ICON_PATH);
         instance.setIcon(newIcon1);
         Icon result = instance.getIcon();
@@ -329,7 +327,7 @@ public class JMultiChoiceComboBoxMenuNGTest {
         instance.setSelectedItem(item);
         final Set<String> resultSet = instance.getSelectedItems();
         assertEquals(resultSet.size(), 1);
-        assertEquals(resultSet.stream().findFirst().get().toString(), item);
+        assertEquals(resultSet.stream().findFirst().get(), item);
     }
 
     /**
@@ -343,7 +341,7 @@ public class JMultiChoiceComboBoxMenuNGTest {
         assertEquals(instance.getSelectedItems().size(), 0);
         instance.setSelectedItem(item);
         final Set<String> resultSet = instance.getSelectedItems();
-        assertEquals(resultSet.stream().findFirst().get().toString(), item);
+        assertEquals(resultSet.stream().findFirst().get(), item);
     }
 
     /**
@@ -374,7 +372,7 @@ public class JMultiChoiceComboBoxMenuNGTest {
         instance.addSelectedItem(item);
         final Set<String> resultSet = instance.getSelectedItems();
         assertEquals(resultSet.size(), 1);
-        assertEquals(resultSet.stream().findFirst().get().toString(), item);
+        assertEquals(resultSet.stream().findFirst().get(), item);
     }
 
     /**
@@ -459,7 +457,7 @@ public class JMultiChoiceComboBoxMenuNGTest {
 
         instance.clearSelection();
         final Set<String> resultSet = instance.getSelectedItems();
-        assertEquals(resultSet.size(), 0);
+        assertTrue(resultSet.isEmpty());
     }
 
     /**
@@ -506,5 +504,4 @@ public class JMultiChoiceComboBoxMenuNGTest {
         final String result = instance.getToolTipText();
         assertEquals(result, text);
     }
-
 }

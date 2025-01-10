@@ -52,8 +52,6 @@ public class BidirectionalTextUtilitiesNGTest {
     @Test
     public void testRtl() {
         String expected = "لكن لا بد أن أوضح لك أن كل" + "\n" + "لكن لا بد أن أوضح لك أ";
-        assertEquals(
-                BidirectionalTextUtilities.doBidi(RTL_TEXT1 + "\n" + RTL_TEXT2), 
-                expected);
+        assertEquals(BidirectionalTextUtilities.doBidi(RTL_TEXT1 + "\n" + RTL_TEXT2), expected);
     }
 }
