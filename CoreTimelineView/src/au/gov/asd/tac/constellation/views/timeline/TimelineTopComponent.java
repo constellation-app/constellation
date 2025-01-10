@@ -482,6 +482,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                     if (currentDatetimeAttribute != null) {
                         currentTemporalAttributeModificationCount = rg.getValueModificationCounter(rg.getAttribute(GraphElementType.TRANSACTION, currentDatetimeAttribute));
                         // We've calculated everything, so start populating the graph:
+
                         Platform.runLater(() -> {
                             // Now that the heights are known, set the position of the splitPane divider:
                             splitPane.setDividerPositions(splitPanePosition);
@@ -686,43 +687,45 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
      */
     @Override
     public void graphChanged(final GraphChangeEvent evt) {
-        if (graphNode != null) {
-            final ReadableGraph rg = graphNode.getGraph().getReadableGraph();
-            try {
-                final long oldGlobalModificationCount = currentGlobalModificationCount;
-                currentGlobalModificationCount = rg.getGlobalModificationCounter();
+        if (graphNode == null) {
+            return;
+        }
 
-                // Continue only if there has been a change:
-                if (currentGlobalModificationCount == oldGlobalModificationCount) {
-                    return;
-                }
+        try (final ReadableGraph rg = graphNode.getGraph().getReadableGraph()) {
+            final long oldGlobalModificationCount = currentGlobalModificationCount;
+            currentGlobalModificationCount = rg.getGlobalModificationCounter();
 
-                final long oldAttributeModificationCount = currentAttributeModificationCount;
-                currentAttributeModificationCount = rg.getAttributeModificationCounter();
+            // Continue only if there has been a change:
+            if (currentGlobalModificationCount == oldGlobalModificationCount) {
+                return;
+            }
 
-                final long oldStructureModificationCount = currentStructureModificationCount;
-                currentStructureModificationCount = rg.getStructureModificationCounter();
+            final long oldAttributeModificationCount = currentAttributeModificationCount;
+            currentAttributeModificationCount = rg.getAttributeModificationCounter();
 
-                // Selected and dimming attributes:
-                final long oldTransSelectedModificationCount = currentTransSelectedModificationCount;
-                final long oldVertSelectedModificationCount = currentVertSelectedModificationCount;
-                final long oldTemporalAttributeModificationCount = currentTemporalAttributeModificationCount;
-                final int transSelectedAttr = rg.getAttribute(GraphElementType.TRANSACTION,
-                        VisualConcept.TransactionAttribute.SELECTED.getName());
-                final int vertSelectedAttr = rg.getAttribute(GraphElementType.VERTEX,
-                        VisualConcept.VertexAttribute.SELECTED.getName());
-                if (transSelectedAttr != Graph.NOT_FOUND) {
-                    currentTransSelectedModificationCount = rg.getValueModificationCounter(transSelectedAttr);
-                }
-                if (vertSelectedAttr != Graph.NOT_FOUND) {
-                    currentVertSelectedModificationCount = rg.getValueModificationCounter(vertSelectedAttr);
-                }
-                final int temporalAttrId = rg.getAttribute(GraphElementType.TRANSACTION, this.currentDatetimeAttribute);
-                if (temporalAttrId != Graph.NOT_FOUND) {
-                    currentTemporalAttributeModificationCount = rg.getValueModificationCounter(temporalAttrId);
-                }
+            final long oldStructureModificationCount = currentStructureModificationCount;
+            currentStructureModificationCount = rg.getStructureModificationCounter();
 
-                /*final int transDimAttr = rg.getAttribute(GraphElementType.TRANSACTION,
+            // Selected and dimming attributes:
+            final long oldTransSelectedModificationCount = currentTransSelectedModificationCount;
+            final long oldVertSelectedModificationCount = currentVertSelectedModificationCount;
+            final long oldTemporalAttributeModificationCount = currentTemporalAttributeModificationCount;
+            final int transSelectedAttr = rg.getAttribute(GraphElementType.TRANSACTION,
+                    VisualConcept.TransactionAttribute.SELECTED.getName());
+            final int vertSelectedAttr = rg.getAttribute(GraphElementType.VERTEX,
+                    VisualConcept.VertexAttribute.SELECTED.getName());
+            if (transSelectedAttr != Graph.NOT_FOUND) {
+                currentTransSelectedModificationCount = rg.getValueModificationCounter(transSelectedAttr);
+            }
+            if (vertSelectedAttr != Graph.NOT_FOUND) {
+                currentVertSelectedModificationCount = rg.getValueModificationCounter(vertSelectedAttr);
+            }
+            final int temporalAttrId = rg.getAttribute(GraphElementType.TRANSACTION, this.currentDatetimeAttribute);
+            if (temporalAttrId != Graph.NOT_FOUND) {
+                currentTemporalAttributeModificationCount = rg.getValueModificationCounter(temporalAttrId);
+            }
+
+            /*final int transDimAttr = rg.getAttribute(GraphElementType.TRANSACTION,
                         VisualConcept.TransactionAttribute.DIMMED.getName());
                 final int vertDimAttr = rg.getAttribute(GraphElementType.VERTEX,
                         VisualConcept.VertexAttribute.DIMMED.getName());
@@ -742,30 +745,30 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                 if (vertHideAttr != Graph.NOT_FOUND) {
                     currentVertHideModificationCount = rg.getValueModificationCounter(vertHideAttr);
                 }*/
-                // Detect graph changes to attributes:
-                if (currentAttributeModificationCount != oldAttributeModificationCount) {
-                    Platform.runLater(() -> {
-                        // Re-populate charts:
-                        timelinePanel.setNodeLabelAttributes(GraphManager.getDefault().getVertexAttributeNames());
-                        populateFromGraphNode(true);
-                    });
-
-                    // Detect value change on the temporal attribute
-                } else if (currentTemporalAttributeModificationCount != oldTemporalAttributeModificationCount) {
-                    populateFromGraphNode(true);
-                    // Detect graph structural changes (such as adding and removal of nodes etc):
-                } else if (currentStructureModificationCount != oldStructureModificationCount) {
+            // Detect graph changes to attributes:
+            if (currentAttributeModificationCount != oldAttributeModificationCount) {
+                Platform.runLater(() -> {
                     // Re-populate charts:
+                    timelinePanel.setNodeLabelAttributes(GraphManager.getDefault().getVertexAttributeNames());
                     populateFromGraphNode(true);
-                    // Detect changes of selection to transactions or vertices:
-                } else if (currentTransSelectedModificationCount != oldTransSelectedModificationCount
-                        || currentVertSelectedModificationCount != oldVertSelectedModificationCount) {
-                    // Do only a partial update, ie the timeline and selection area for histogram:
-                    populateFromGraphNode(false);
-                } else {
-                    // Do nothing
-                } // Detect changes of dim to transactions and vertices:
-                /*else if (!timelinePanel.isDimOrHideExpected(currentVertDimModificationCount, currentTransDimModificationCount)) {
+                });
+
+                // Detect value change on the temporal attribute
+            } else if (currentTemporalAttributeModificationCount != oldTemporalAttributeModificationCount) {
+                populateFromGraphNode(true);
+                // Detect graph structural changes (such as adding and removal of nodes etc):
+            } else if (currentStructureModificationCount != oldStructureModificationCount) {
+                // Re-populate charts:
+                populateFromGraphNode(true);
+                // Detect changes of selection to transactions or vertices:
+            } else if (currentTransSelectedModificationCount != oldTransSelectedModificationCount
+                    || currentVertSelectedModificationCount != oldVertSelectedModificationCount) {
+                // Do only a partial update, ie the timeline and selection area for histogram:
+                populateFromGraphNode(false);
+            } else {
+                // Do nothing
+            } // Detect changes of dim to transactions and vertices:
+            /*else if (!timelinePanel.isDimOrHideExpected(currentVertDimModificationCount, currentTransDimModificationCount)) {
                     Platform.runLater(() -> {
                         timelinePanel.setExclusionState(0);
                     });
@@ -775,9 +778,6 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                         timelinePanel.setExclusionState(0);
                     });
                 }*/
-            } finally {
-                rg.release();
-            }
         }
     }
     // </editor-fold>

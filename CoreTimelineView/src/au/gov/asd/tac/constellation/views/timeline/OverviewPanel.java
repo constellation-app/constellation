@@ -39,8 +39,7 @@ import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
 
 /**
- * The OverviewPanel is a JavaFX component used to visualise the full extent of
- * temporal data on the given graph.
+ * The OverviewPanel is a JavaFX component used to visualise the full extent of temporal data on the given graph.
  * <p>
  * The overview chart is composed of three major visual elements:
  * <ol>
@@ -105,8 +104,7 @@ public class OverviewPanel extends Pane {
     /**
      * Sets the coordinating <code>TimelineTopComponent</code> for this panel.
      *
-     * @param parent The <code>TimelineTopComponent</code> that is to be used to
-     * coordinate the timeline and histogram.
+     * @param parent The <code>TimelineTopComponent</code> that is to be used to coordinate the timeline and histogram.
      *
      * @see TimelineTopComponent
      */
@@ -116,13 +114,11 @@ public class OverviewPanel extends Pane {
 
     // <editor-fold defaultstate="collapsed" desc="POV Extent">
     /**
-     * Given a time extent, updates the POV dimensions to represent the extent
-     * of time observed on the histogram component.
+     * Given a time extent, updates the POV dimensions to represent the extent of time observed on the histogram
+     * component.
      *
-     * @param lowerBound The lower time bound that needs to be represented on
-     * the POV component.
-     * @param upperBound The upper time extent that needs to be represented on
-     * the POV component.
+     * @param lowerBound The lower time bound that needs to be represented on the POV component.
+     * @param upperBound The upper time extent that needs to be represented on the POV component.
      */
     public void setExtentPOV(double lowerBound, double upperBound) {
         if (lowerBound < lowestTimeExtent) {
@@ -159,12 +155,10 @@ public class OverviewPanel extends Pane {
 
     // <editor-fold defaultstate="collapsed" desc="Populate Data">
     /**
-     * Reads the temporal data from the given graph and creates a histogram view
-     * of the data.
+     * Reads the temporal data from the given graph and creates a histogram view of the data.
      *
      * @param graph The graph to get the temporal data from.
-     * @param datetimeAttribute The label of the attribute to retrieve temporal
-     * data from.
+     * @param datetimeAttribute The label of the attribute to retrieve temporal data from.
      * @param lowestTimeExtent The lowestTimeExtent observed temporal value.
      * @param highestTimeExtent The highestTimeExtent observed temporal value.
      * @param zoneId the time zone id.
@@ -300,9 +294,8 @@ public class OverviewPanel extends Pane {
     /**
      * Helper method that creates and styles a POV object.
      *
-     * The POV object is a styled rectangle that is used to indicate the
-     * currently observed time range (aka time extent) on the timeline. It can
-     * also be used to quickly interact with the time extent.
+     * The POV object is a styled rectangle that is used to indicate the currently observed time range (aka time extent)
+     * on the timeline. It can also be used to quickly interact with the time extent.
      *
      * @return A formatted POV object.
      */
@@ -346,9 +339,11 @@ public class OverviewPanel extends Pane {
      * Helper method that clears all data off the histogram component.
      */
     public void clearHistogram() {
+        System.out.println("clearHistogram CALLED");
         if (histogram.getData() != null) {
             histogram.getData().clear();
         }
+        histogram.setData(null);
     }
 
     /**
@@ -367,14 +362,15 @@ public class OverviewPanel extends Pane {
                 }
             } else {
                 histogram.getData().clear();
+                histogram.setData(null);
             }
         }
     }
 
     // <editor-fold defaultstate="collapsed" desc="POV Listeners">
     /**
-     * Private class that implements mouse controls for the POV component in
-     * order to capture events like clicks and drags and drops.
+     * Private class that implements mouse controls for the POV component in order to capture events like clicks and
+     * drags and drops.
      */
     private class POVMouseEventHandler implements EventHandler<MouseEvent> {
 
@@ -409,11 +405,9 @@ public class OverviewPanel extends Pane {
         }
 
         /**
-         * Helper method that is used to determine if resizing operations need
-         * to be handled.
+         * Helper method that is used to determine if resizing operations need to be handled.
          *
-         * This method changes the cursor to inform the user that resizing can
-         * occur.
+         * This method changes the cursor to inform the user that resizing can occur.
          *
          * @param t The triggered mouse event.
          *
@@ -471,11 +465,10 @@ public class OverviewPanel extends Pane {
         }
 
         /**
-         * Method that performs calculations for resize operations on the POV
-         * object, and updates the coordinator with new time extents.
+         * Method that performs calculations for resize operations on the POV object, and updates the coordinator with
+         * new time extents.
          *
-         * Note: These updates are what causes the timeline's time extent to be
-         * changed to match the POV's extent.
+         * Note: These updates are what causes the timeline's time extent to be changed to match the POV's extent.
          *
          * @param t The triggered mouse event.
          *
@@ -526,11 +519,10 @@ public class OverviewPanel extends Pane {
         }
 
         /**
-         * Method that performs calculations for drag operations on the POV
-         * object, and updates the coordinator with new time extents.
+         * Method that performs calculations for drag operations on the POV object, and updates the coordinator with new
+         * time extents.
          *
-         * Note: These updates are what causes the timeline's time extent to be
-         * changed to match the POV's extent.
+         * Note: These updates are what causes the timeline's time extent to be changed to match the POV's extent.
          *
          * @param t The triggered mouse event.
          *

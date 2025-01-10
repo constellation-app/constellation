@@ -92,7 +92,7 @@ public class TimelinePanel extends Region {
     private final Label upperTime;
     private String nodeLabelAttr = null;
     private final ClusteringManager clusteringManager = new ClusteringManager();
-    private final TimelineChart timeline;
+    private TimelineChart timeline;
     private ComboBox<String> cmbDatetimeAttributes;
     private ComboBox<String> cmbAttributeNames;
     private ComboBox<String> cmbExcludedNodes;
@@ -354,10 +354,9 @@ public class TimelinePanel extends Region {
     }
 
     public void clearTimelineData() {
-        if (timeline.getData() != null) {
-            timeline.getData().clear();
-        }
-        timeline.setData(null);
+        // SEEMS TO FIX IT, but causes other issue like the timeline view not showing anything for structured graph
+        System.out.println("CALLLINGGGGG");
+        timeline = new TimelineChart(this, new NumberAxis(), new NumberAxis());
     }
 
     /**
@@ -381,7 +380,6 @@ public class TimelinePanel extends Region {
         clusteringManager.filterTree(pixelsPerTransaction, (long) lowerTimeExtent, (long) upperTimeExtent);
 
         updateTimeline(graph, showSelectedOnly, zoneId);
-
         timeline.setExtents(lowerTimeExtent, upperTimeExtent);
     }
 
