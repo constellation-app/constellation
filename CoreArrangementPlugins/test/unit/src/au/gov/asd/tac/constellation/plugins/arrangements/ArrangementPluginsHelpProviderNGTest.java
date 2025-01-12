@@ -63,7 +63,7 @@ public class ArrangementPluginsHelpProviderNGTest {
 
         ArrangementPluginsHelpProvider instance = new ArrangementPluginsHelpProvider();
 
-        Map result = instance.getHelpMap();
+        Map<String, String> result = instance.getHelpMap();
         assertTrue(expResult.equals(result));
 
     }

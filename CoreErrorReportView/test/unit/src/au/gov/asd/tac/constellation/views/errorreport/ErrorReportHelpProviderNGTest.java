@@ -45,7 +45,7 @@ public class ErrorReportHelpProviderNGTest {
 
         ErrorReportHelpProvider instance = new ErrorReportHelpProvider();
 
-        Map result = instance.getHelpMap();
+        Map<String, String> result = instance.getHelpMap();
         assertTrue(expResult.equals(result));
     }
 
