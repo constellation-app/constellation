@@ -113,6 +113,7 @@ public class AnimationNGTest {
         wg = null;
         constyColor.close();
         animationUtilitiesMocked.close();
+        graphNodeStaticMock.close();
     }
 
     @Test
