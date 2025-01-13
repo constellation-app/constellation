@@ -207,8 +207,6 @@
                 <package>au.gov.asd.tac.constellation.functionality.dialog</package>
                 <package>au.gov.asd.tac.constellation.functionality.email</package>
                 <package>au.gov.asd.tac.constellation.functionality.startup</package>
-                <package>au.gov.asd.tac.constellation.functionality.tutorial</package>
-                <package>au.gov.asd.tac.constellation.functionality.whatsnew</package>
             </public-packages>
         </data>
     </configuration>

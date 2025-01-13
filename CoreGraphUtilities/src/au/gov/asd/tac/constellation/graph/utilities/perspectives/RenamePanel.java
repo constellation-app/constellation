@@ -15,11 +15,13 @@
  */
 package au.gov.asd.tac.constellation.graph.utilities.perspectives;
 
+import javax.swing.JPanel;
+
 /**
  *
  * @author algol
  */
-public class RenamePanel extends javax.swing.JPanel {
+public class RenamePanel extends JPanel {
 
     /**
      * Creates new form RenamePanel

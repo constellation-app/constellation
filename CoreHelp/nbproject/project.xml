@@ -85,7 +85,6 @@
                 <package>au.gov.asd.tac.constellation.help</package>
                 <package>au.gov.asd.tac.constellation.help.preferences</package>
                 <package>au.gov.asd.tac.constellation.help.utilities</package>
-                <package>au.gov.asd.tac.constellation.help.webserver.api</package>
             </public-packages>
         </data>
     </configuration>

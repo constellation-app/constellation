@@ -101,14 +101,11 @@ public class AttributeUtilities {
      * @param graph The graph
      * @return Set of types used by a graph
      */
-    public static Set<String> getTypesUsedByGraph(Graph graph) {
+    public static Set<String> getTypesUsedByGraph(final Graph graph) {
         final List<String> types;
-        final ReadableGraph rg = graph.getReadableGraph();
-        try {
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
             final GraphRecordStore recordstore = GraphRecordStoreUtilities.getVertices(rg, false, false, false);
             types = recordstore.getAll(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE);
-        } finally {
-            rg.release();
         }
 
         return types != null ? new TreeSet<>(types) : new TreeSet<>();

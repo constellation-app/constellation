@@ -118,12 +118,10 @@
                 <package>au.gov.asd.tac.constellation.plugins.logging</package>
                 <package>au.gov.asd.tac.constellation.plugins.parameters</package>
                 <package>au.gov.asd.tac.constellation.plugins.parameters.types</package>
-                <package>au.gov.asd.tac.constellation.plugins.popup</package>
                 <package>au.gov.asd.tac.constellation.plugins.reporting</package>
                 <package>au.gov.asd.tac.constellation.plugins.templates</package>
                 <package>au.gov.asd.tac.constellation.plugins.text</package>
                 <package>au.gov.asd.tac.constellation.plugins.update</package>
-                <package>au.gov.asd.tac.constellation.pluginparameters</package>
             </public-packages>
         </data>
         <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">

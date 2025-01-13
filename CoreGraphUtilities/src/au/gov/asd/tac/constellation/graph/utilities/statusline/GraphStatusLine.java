@@ -112,15 +112,14 @@ public final class GraphStatusLine implements StatusLineElementProvider, LookupL
     @Override
     public void graphChanged(final GraphChangeEvent evt) {
         if (graph != null) {
-            ReadableGraph rg = graph.getReadableGraph();
-            try {
+            try (final ReadableGraph rg = graph.getReadableGraph()) {
                 final int ndAttr = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
                 final int txAttr = rg.getAttribute(GraphElementType.TRANSACTION, VisualConcept.TransactionAttribute.SELECTED.getName());
 
                 // count number of selected nodes
                 int vCount = 0;
                 if (ndAttr != Graph.NOT_FOUND) {
-                    GraphIndexType vertexSelectedIndexType = rg.getAttributeIndexType(ndAttr);
+                    final GraphIndexType vertexSelectedIndexType = rg.getAttributeIndexType(ndAttr);
                     if (vertexSelectedIndexType == GraphIndexType.NONE) {
                         for (int i = 0; i < rg.getVertexCount(); i++) {
                             boolean sel = rg.getBooleanValue(ndAttr, rg.getVertex(i));
@@ -187,10 +186,7 @@ public final class GraphStatusLine implements StatusLineElementProvider, LookupL
                     LX_BUTTON.setText(String.valueOf(rg.getLinkCount()));
                 }
 
-            } finally {
-                rg.release();
             }
-
         } else {
             VX_BUTTON.setText("");
             LX_BUTTON.setText("");
