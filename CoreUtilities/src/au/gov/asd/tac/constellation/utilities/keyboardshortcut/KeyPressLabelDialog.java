@@ -68,7 +68,7 @@ public class KeyPressLabelDialog extends Dialog<String> {
         dialogPane.getStyleClass().add("text-input-dialog");
         dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-        dialogPane.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+        dialogPane.addEventHandler(KeyEvent.KEY_PRESSED, event -> { // NOSONAR
             if (!event.getCode().isModifierKey() 
                     && !event.getCode().equals(KeyCode.ENTER)
                     && !event.getCode().equals(KeyCode.ESCAPE)
@@ -78,7 +78,7 @@ public class KeyPressLabelDialog extends Dialog<String> {
         });
         updateGrid();
 
-        setResultConverter(dialogButton -> {
+        setResultConverter(dialogButton -> { // NOSONAR
             final ButtonBar.ButtonData data = dialogButton == null ? null : dialogButton.getButtonData();
             String result = data == ButtonBar.ButtonData.OK_DONE ? label.getText() : StringUtils.EMPTY;            
             label.setText(result);
