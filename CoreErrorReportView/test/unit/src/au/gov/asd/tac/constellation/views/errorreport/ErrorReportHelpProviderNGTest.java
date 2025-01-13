@@ -37,15 +37,16 @@ public class ErrorReportHelpProviderNGTest {
     @Test
     public void testGetHelpMap() {
         System.out.println("getHelpMap");
+        
         final Map<String, String> expResult = new HashMap<>();
         final String dataModulePath = ".." + SEP + "ext" + SEP + "docs" + SEP + "CoreErrorReportView" + SEP + "src"
                 + SEP + "au" + SEP + "gov" + SEP + "asd" + SEP + "tac" + SEP + CODEBASE_NAME + SEP + "views" + SEP + "errorreport" + SEP;
 
         expResult.put("au.gov.asd.tac.constellation.views.errorreport", dataModulePath + "error-report.md");
 
-        ErrorReportHelpProvider instance = new ErrorReportHelpProvider();
+        final ErrorReportHelpProvider instance = new ErrorReportHelpProvider();
 
-        Map<String, String> result = instance.getHelpMap();
+        final Map<String, String> result = instance.getHelpMap();
         assertTrue(expResult.equals(result));
     }
 
@@ -55,7 +56,8 @@ public class ErrorReportHelpProviderNGTest {
     @Test
     public void testGetHelpTOC() {
         System.out.println("getHelpTOC");
-        ErrorReportHelpProvider instance = new ErrorReportHelpProvider();
+        
+        final ErrorReportHelpProvider instance = new ErrorReportHelpProvider();
         final String expResult = "ext" + SEP + "docs" + SEP + "CoreErrorReportView" + SEP + "src" + SEP + "au" + SEP
                 + "gov" + SEP + "asd" + SEP + "tac" + SEP + CODEBASE_NAME + SEP + "views" + SEP + "errorreport" + SEP
                 + "errorreport-toc.xml";
