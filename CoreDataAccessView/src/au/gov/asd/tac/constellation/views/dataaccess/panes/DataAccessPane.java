@@ -84,23 +84,23 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         searchPluginTextField.textProperty().addListener((observable, oldValue, newValue) ->
             getDataAccessTabPane().getQueryPhasePaneOfCurrentTab()
                     .showMatchingPlugins(newValue)
-        );
+        ); // NOSONAR
 
         // Plugins are now needed, so wait until the load is complete
-        /* NOSONAR_BEGIN (S5419) */
+        
         final Map<String, Pair<Integer, List<DataAccessPlugin>>> plugins;
         try {
             plugins = DataAccessPaneState.getPlugins();
         } catch (ExecutionException ex) {
             throw new IllegalStateException("Failed to load data access plugins. "
-                    + "Data Access View cannot be created.");
+                    + "Data Access View cannot be created."); // NOSONAR
         } catch (InterruptedException ex) {
-            Thread.currentThread().interrupt();
+            Thread.currentThread().interrupt(); // NOSONAR
 
             throw new IllegalStateException("Failed to load data access plugins. "
-                    + "Data Access View cannot be created.");
+                    + "Data Access View cannot be created."); // NOSONAR
         }
-        /* NOSONAR_END (S5419) */
+        
 
         this.dataAccessTabPane = new DataAccessTabPane(this, plugins);
         this.dataAccessTabPane.newTab();
