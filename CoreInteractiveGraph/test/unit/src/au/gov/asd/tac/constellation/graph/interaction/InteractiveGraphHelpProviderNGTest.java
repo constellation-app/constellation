@@ -60,7 +60,7 @@ public class InteractiveGraphHelpProviderNGTest {
         final InteractiveGraphHelpProvider instance = new InteractiveGraphHelpProvider();
         final Map<String, String> helpMap = instance.getHelpMap();
 
-        assertEquals(helpMap.size(), 3);
+        assertEquals(helpMap.size(), 4);
         //not going to go through and assert the existence of each specific item in the map 
         //but will assert they're all correctly located within the interaction package
         final String packageStart = "au.gov.asd.tac.constellation.graph.interaction.";
