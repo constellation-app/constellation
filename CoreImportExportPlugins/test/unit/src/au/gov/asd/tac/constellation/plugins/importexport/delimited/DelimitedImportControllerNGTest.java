@@ -42,6 +42,7 @@ import org.testng.annotations.Test;
  * @author Auriga2
  */
 public class DelimitedImportControllerNGTest {
+    
     private static MockedStatic<NotifyDisplayer> notifyDisplayerMockedStatic;
     private DelimitedImportController delimitedImportController;
 
@@ -49,12 +50,7 @@ public class DelimitedImportControllerNGTest {
     private DelimitedSourcePane delimitedSourcePaneMocked;
 
     private final List<File> filesToValidate = new ArrayList<>();
-
-
-
-    public DelimitedImportControllerNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         notifyDisplayerMockedStatic = Mockito.mockStatic(NotifyDisplayer.class);

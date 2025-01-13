@@ -54,10 +54,8 @@ public class DownloadImageUtilitiesNGTest {
     public void testGetImage() throws IOException {
         final String url = "dummy";
         
-        try (
-                final MockedStatic<HttpsConnection> connMockedStatic = mockStatic(HttpsConnection.class);
-                final MockedStatic<HttpsUtilities> utilsMockedStatic = mockStatic(HttpsUtilities.class);) 
-        {
+        try (final MockedStatic<HttpsConnection> connMockedStatic = mockStatic(HttpsConnection.class);
+                final MockedStatic<HttpsUtilities> utilsMockedStatic = mockStatic(HttpsUtilities.class)) {
             // set up mocks
             final HttpsURLConnection urlConn = mock(HttpsURLConnection.class);
             when(urlConn.getResponseCode()).thenReturn(HttpsURLConnection.HTTP_OK);

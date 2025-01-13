@@ -33,16 +33,15 @@ import org.testng.annotations.Test;
 public class ShortObjectAttributeDescriptionNGTest {
 
     ShortObjectAttributeDescription instance;
-
-    public ShortObjectAttributeDescriptionNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -53,6 +52,7 @@ public class ShortObjectAttributeDescriptionNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**

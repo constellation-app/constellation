@@ -55,6 +55,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class TableViewUtilitiesNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(TableViewUtilitiesNGTest.class.getName());
 
     @BeforeClass

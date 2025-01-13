@@ -52,7 +52,7 @@ public class GraphicsCardUtilitiesNGTest {
             .append("   final line   ").toString();
 
     @AfterMethod
-    private void tearDownMethod() {
+    public void tearDownMethod() throws Exception {
         GraphicsCardUtilities.clear();
         new File(DXDIAG_ABSOLUTE_PATH).delete();
     }
@@ -182,13 +182,7 @@ public class GraphicsCardUtilitiesNGTest {
             assertNull(GraphicsCardUtilities.getError());
         }
     }
-
-    /**
-     * A dxdiag file already exists but cannot be removed.
-     */
-    //@Test
-    //public void testReadOnlyFileExists() {}
-    //FIXME: refactor needed to inject file creation into the class
+    
     /**
      * When an IOException is thrown and caught the getter exposes the error.
      *
@@ -305,5 +299,4 @@ public class GraphicsCardUtilitiesNGTest {
             assertNotNull(GraphicsCardUtilities.getError());
         }
     }
-
 }

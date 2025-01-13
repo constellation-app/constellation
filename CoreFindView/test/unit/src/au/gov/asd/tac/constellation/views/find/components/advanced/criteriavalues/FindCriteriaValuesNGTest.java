@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.find.components.advanced.criteriavalues;
 
-import au.gov.asd.tac.constellation.views.find.components.advanced.criteriavalues.FindCriteriaValues;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -33,25 +32,26 @@ public class FindCriteriaValuesNGTest {
     private final String attributeString = "Attribute";
     private final String filterString = "Filter";
 
-    private FindCriteriaValues findCriteriaValue = new FindCriteriaValues(typeString, attributeString, filterString);
-
-    public FindCriteriaValuesNGTest() {
-    }
-
+    private FindCriteriaValues findCriteriaValue;
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        findCriteriaValue = new FindCriteriaValues(typeString, attributeString, filterString);
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -60,6 +60,7 @@ public class FindCriteriaValuesNGTest {
     @Test
     public void testGetAttributeType() {
         System.out.println("getAttributeType");
+        
         assertEquals(typeString, findCriteriaValue.getAttributeType());
     }
 
@@ -69,6 +70,7 @@ public class FindCriteriaValuesNGTest {
     @Test
     public void testGetAttribute() {
         System.out.println("getAttribute");
+        
         assertEquals(attributeString, findCriteriaValue.getAttribute());
     }
 
@@ -78,8 +80,8 @@ public class FindCriteriaValuesNGTest {
     @Test
     public void testGetFilter() {
         System.out.println("getFilter");
+        
         assertEquals(filterString, findCriteriaValue.getFilter());
 
     }
-
 }

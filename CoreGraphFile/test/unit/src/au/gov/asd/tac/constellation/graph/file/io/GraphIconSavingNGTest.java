@@ -33,7 +33,6 @@ import java.util.zip.ZipFile;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.openide.util.ImageUtilities;
-import static org.testng.Assert.fail;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 import org.testng.annotations.AfterMethod;
@@ -47,10 +46,29 @@ import org.testng.annotations.Test;
  */
 public class GraphIconSavingNGTest {
 
-    private int attrX, attrY, attrZ;
-    private int vxId1, vxId2, vxId3, vxId4, vxId5, vxId6, vxId7;
-    private int txId1, txId2, txId3, txId4, txId5;
-    private int vNameAttr, tNameAttr, vSelAttr, tSelAttr, vIconAttr;
+    private int attrX;
+    private int attrY;
+    
+    private int vxId1;
+    private int vxId2;
+    private int vxId3;
+    private int vxId4;
+    private int vxId5;
+    private int vxId6;
+    private int vxId7;
+    
+    private int txId1;
+    private int txId2;
+    private int txId3;
+    private int txId4;
+    private int txId5;
+    
+    private int vNameAttr;
+    private int tNameAttr;
+    private int vSelAttr;
+    private int tSelAttr;
+    private int vIconAttr;
+    
     private Graph graph;
 
     final static String TEST_ICON_NAME = "Category1.TestIcon1";
@@ -60,45 +78,16 @@ public class GraphIconSavingNGTest {
         graph = new DualGraph(null);
         WritableGraph wg = graph.getWritableGraph("add", true);
         try {
+            // can't add attributes via concepts due to cyclic dependency
             attrX = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", 0.0, null);
-            if (attrX == Graph.NOT_FOUND) {
-                fail();
-            }
-
             attrY = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y", "y", 0.0, null);
-            if (attrY == Graph.NOT_FOUND) {
-                fail();
-            }
-
-            attrZ = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z", "z", 0.0, null);
-            if (attrZ == Graph.NOT_FOUND) {
-                fail();
-            }
 
             vNameAttr = wg.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "name", "descr", "", null);
-            if (vNameAttr == Graph.NOT_FOUND) {
-                fail();
-            }
-
             tNameAttr = wg.addAttribute(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, "name", "descr", "", null);
-            if (tNameAttr == Graph.NOT_FOUND) {
-                fail();
-            }
-
             vSelAttr = wg.addAttribute(GraphElementType.VERTEX, BooleanAttributeDescription.ATTRIBUTE_NAME, "selected", "selected", false, null);
-            if (vSelAttr == Graph.NOT_FOUND) {
-                fail();
-            }
-
             tSelAttr = wg.addAttribute(GraphElementType.TRANSACTION, BooleanAttributeDescription.ATTRIBUTE_NAME, "selected", "selected", false, null);
-            if (tSelAttr == Graph.NOT_FOUND) {
-                fail();
-            }
-
             vIconAttr = wg.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "icon", "icon", "Unknown", null);
-            if (vIconAttr == Graph.NOT_FOUND) {
-                fail();
-            }
+            
             // Note that vIconAttr is not being set to a correct representation of the icon attribute
             // It should be using IconAttributeDescription.ATTRIBUTE_NAME, but that is a Visual Schema class which is not accessible from this module
             // The AttributeRegistry, when testing from this module, only contains the base type attributes.
@@ -110,31 +99,37 @@ public class GraphIconSavingNGTest {
             wg.setFloatValue(attrY, vxId1, 1.1f);
             wg.setBooleanValue(vSelAttr, vxId1, false);
             wg.setStringValue(vNameAttr, vxId1, "name1");
+            
             vxId2 = wg.addVertex();
             wg.setFloatValue(attrX, vxId2, 2.0f);
             wg.setFloatValue(attrY, vxId2, 2.2f);
             wg.setBooleanValue(vSelAttr, vxId2, true);
             wg.setStringValue(vNameAttr, vxId2, "name2");
+            
             vxId3 = wg.addVertex();
             wg.setFloatValue(attrX, vxId3, 3.0f);
             wg.setFloatValue(attrY, vxId3, 3.3f);
             wg.setBooleanValue(vSelAttr, vxId3, false);
             wg.setStringValue(vNameAttr, vxId3, "name3");
+            
             vxId4 = wg.addVertex();
             wg.setFloatValue(attrX, vxId4, 4.0f);
             wg.setFloatValue(attrY, vxId4, 4.4f);
             wg.setBooleanValue(vSelAttr, vxId4, true);
             wg.setStringValue(vNameAttr, vxId4, "name4");
+            
             vxId5 = wg.addVertex();
             wg.setFloatValue(attrX, vxId5, 5.0f);
             wg.setFloatValue(attrY, vxId5, 5.5f);
             wg.setBooleanValue(vSelAttr, vxId5, false);
             wg.setStringValue(vNameAttr, vxId5, "name5");
+            
             vxId6 = wg.addVertex();
             wg.setFloatValue(attrX, vxId6, 6.0f);
             wg.setFloatValue(attrY, vxId6, 6.60f);
             wg.setBooleanValue(vSelAttr, vxId6, true);
             wg.setStringValue(vNameAttr, vxId6, "name6");
+            
             vxId7 = wg.addVertex();
             wg.setFloatValue(attrX, vxId7, 7.0f);
             wg.setFloatValue(attrY, vxId7, 7.7f);
@@ -145,15 +140,19 @@ public class GraphIconSavingNGTest {
             txId1 = wg.addTransaction(vxId1, vxId2, false);
             wg.setBooleanValue(tSelAttr, txId1, false);
             wg.setStringValue(tNameAttr, txId1, "name101");
+            
             txId2 = wg.addTransaction(vxId1, vxId3, false);
             wg.setBooleanValue(tSelAttr, txId2, true);
             wg.setStringValue(tNameAttr, txId2, "name102");
+            
             txId3 = wg.addTransaction(vxId2, vxId4, true);
             wg.setBooleanValue(tSelAttr, txId3, false);
             wg.setStringValue(tNameAttr, txId3, "name103");
+            
             txId4 = wg.addTransaction(vxId4, vxId2, true);
             wg.setBooleanValue(tSelAttr, txId4, true);
             wg.setStringValue(tNameAttr, txId4, "name104");
+            
             txId5 = wg.addTransaction(vxId5, vxId6, false);
             wg.setBooleanValue(tSelAttr, txId5, false);
             wg.setStringValue(tNameAttr, txId5, "name105");
@@ -213,12 +212,9 @@ public class GraphIconSavingNGTest {
             }
             System.out.println(" __ Write a sample graph with icons to a star file __");
             
-            final ReadableGraph rg = graph.getReadableGraph();
-            try {
+            try (final ReadableGraph rg = graph.getReadableGraph()) {
                 GraphJsonWriter writer = new GraphJsonWriter();
                 writer.writeGraphToZip(rg, graphFile.getPath(), new TextIoProgress(false));
-            } finally {
-                rg.release();
             }
             System.out.print("\nTEST: Confirm the star file has been created: ");
             assertTrue("graph(star) file created", graphFile.exists());
@@ -257,15 +253,12 @@ public class GraphIconSavingNGTest {
 
             final Graph newGraph = new GraphJsonReader().readGraphZip(graphFile, new TextIoProgress(false));
             
-            ReadableGraph rgr = newGraph.getReadableGraph();
-            try {
+            try (final ReadableGraph rgr = newGraph.getReadableGraph()) {
                 System.out.print("TEST: Confirm we have read back the correct graph: ");
                 assertEquals("num nodes", 7, rgr.getVertexCount());
                 assertEquals("num transactions", 5, rgr.getTransactionCount());
                 assertTrue("node: 'name1' has correct icon", nodeIconFound(rgr, "name1", TEST_ICON_NAME));
                 System.out.println(" *PASSED*\n");
-            } finally {
-                rgr.release();
             }
 
             System.out.print("TEST: Confirm correct number of icon files, and correct icon entries in cache: ");            
@@ -309,7 +302,6 @@ public class GraphIconSavingNGTest {
                 f.delete();
             }
         }
-    }
-    
+    }   
 }
 

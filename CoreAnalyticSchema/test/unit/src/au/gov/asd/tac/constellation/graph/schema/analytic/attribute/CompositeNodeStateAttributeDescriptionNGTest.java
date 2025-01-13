@@ -39,14 +39,16 @@ public class CompositeNodeStateAttributeDescriptionNGTest {
     
     private final String compositeNodeString = "{\"nodeId\":1,\"expandedState\":null,\"contractedState\":{\"constituentNodeStore\":\"[{\\\"source.Identifier\\\":\\\"Vertex #0\\\",\\\"source.[id]\\\":\\\"copy.Identifier<Vertex #0>Type<Unknown>\\\"},{\\\"source.Identifier\\\":\\\"Vertex #1\\\",\\\"source.[id]\\\":\\\"copy.Identifier<Vertex #1>Type<Unknown>\\\"}]\",\"expandedIds\":[\"copy.Identifier<Vertex #0>Type<Unknown>\",\"copy.Identifier<Vertex #1>Type<Unknown>\"],\"affectedExpandedIds\":[\"copy.Identifier<Vertex #0>Type<Unknown>\",\"copy.Identifier<Vertex #1>Type<Unknown>\"],\"mean\":[0.0,1.0,0.5]}}";
     
-    CompositeNodeState state;
+    private CompositeNodeState state;
     
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -67,6 +69,7 @@ public class CompositeNodeStateAttributeDescriptionNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**

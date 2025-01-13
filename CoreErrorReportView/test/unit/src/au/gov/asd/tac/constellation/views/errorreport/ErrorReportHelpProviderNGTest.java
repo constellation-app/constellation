@@ -62,5 +62,4 @@ public class ErrorReportHelpProviderNGTest {
 
         assertEquals(instance.getHelpTOC(), expResult);
     }
-
 }
