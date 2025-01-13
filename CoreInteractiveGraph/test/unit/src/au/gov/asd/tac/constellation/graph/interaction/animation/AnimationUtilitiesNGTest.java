@@ -56,7 +56,7 @@ public class AnimationUtilitiesNGTest {
     private Animation colorWarpAnimation;
     private Animation directionIndicatorAnimation;
     private final Map<String, Graph> graphs = new HashMap<>();
-    private MockedStatic<AnimationUtilities> animationUtilitiesMock;
+    private MockedStatic<AnimationUtilities> animationUtilitiesMocked;
     private MockedStatic<GraphNode> graphNodeStaticMock;
     private MockedStatic<GraphManager> graphManagerStaticMock;
     
@@ -89,7 +89,7 @@ public class AnimationUtilitiesNGTest {
         doReturn(true).when(animationManager).isAnimating();
         doReturn(true).when(animationManager).isAnimating(Mockito.anyString());
         
-        animationUtilitiesMock = 
+        animationUtilitiesMocked = 
                 mockStatic(AnimationUtilities.class, Mockito.CALLS_REAL_METHODS);
         
         graphNodeStaticMock.when(() 
@@ -107,7 +107,7 @@ public class AnimationUtilitiesNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
-        animationUtilitiesMock.close();
+        animationUtilitiesMocked.close();
         graphManagerStaticMock.close();
         graphNodeStaticMock.close();
         animationManager = null;
@@ -122,7 +122,7 @@ public class AnimationUtilitiesNGTest {
     @Test
     public void testAnimationUtilities_startAnimation() {
 
-        animationUtilitiesMock.when(()
+        animationUtilitiesMocked.when(()
                 -> AnimationUtilities.animationsEnabled())
                 .thenReturn(false);
 
@@ -130,11 +130,11 @@ public class AnimationUtilitiesNGTest {
         // expect skip
         verify(colorWarpAnimation, times(1)).skip(graphId);
         
-        animationUtilitiesMock.when(()
+        animationUtilitiesMocked.when(()
                 -> AnimationUtilities.getGraphAnimationManager(graphId))
                 .thenReturn(animationManager);
 
-        animationUtilitiesMock.when(()
+        animationUtilitiesMocked.when(()
                 -> AnimationUtilities.animationsEnabled())
                 .thenReturn(true);
 
@@ -144,7 +144,7 @@ public class AnimationUtilitiesNGTest {
         // expect runAnimation
         verify(animationManager, times(1)).runAnimation(colorWarpAnimation);
         
-        animationUtilitiesMock.when(()
+        animationUtilitiesMocked.when(()
                 -> AnimationUtilities.getGraphAnimationManager(graphId))
                 .thenReturn(null);
         AnimationUtilities.startAnimation(colorWarpAnimation, graphId);
@@ -155,7 +155,7 @@ public class AnimationUtilitiesNGTest {
     @Test
     public void testAnimationUtilities_isAnimating() {
         
-        animationUtilitiesMock.when(()
+        animationUtilitiesMocked.when(()
                 -> AnimationUtilities.getGraphAnimationManager(graphId))
                 .thenReturn(animationManager);
 
@@ -168,7 +168,7 @@ public class AnimationUtilitiesNGTest {
         isAnimating = AnimationUtilities.isAnimating(graphId);
         assertTrue(isAnimating);
         
-        animationUtilitiesMock.when(()
+        animationUtilitiesMocked.when(()
                 -> AnimationUtilities.getGraphAnimationManager(graphId))
                 .thenReturn(null);
         
@@ -179,7 +179,7 @@ public class AnimationUtilitiesNGTest {
     @Test
     public void testAnimationUtilities_interruptAllAnimations(){
         
-        animationUtilitiesMock.when(()
+        animationUtilitiesMocked.when(()
                 -> AnimationUtilities.getGraphAnimationManager(graphId))
                 .thenReturn(animationManager);
         
@@ -191,7 +191,7 @@ public class AnimationUtilitiesNGTest {
     
     @Test
     public void testAnimationUtilities_interruptAllAnimationsWithName(){
-        animationUtilitiesMock.when(()
+        animationUtilitiesMocked.when(()
                 -> AnimationUtilities.getGraphAnimationManager(graphId))
                 .thenReturn(animationManager);
         
@@ -204,14 +204,14 @@ public class AnimationUtilitiesNGTest {
     @Test
     public void testAnimationUtilities_pauseAllAnimations(){
        
-         animationUtilitiesMock.when(()
+         animationUtilitiesMocked.when(()
                 -> AnimationUtilities.getGraphAnimationManager(graphId))
                 .thenReturn(null);
          
         AnimationUtilities.pauseAllAnimations(graphId, true);
         verify(animationManager, times(0)).pauseAllAnimations(true);
         
-         animationUtilitiesMock.when(()
+         animationUtilitiesMocked.when(()
                 -> AnimationUtilities.getGraphAnimationManager(graphId))
                 .thenReturn(animationManager);
         
@@ -222,7 +222,7 @@ public class AnimationUtilitiesNGTest {
     
     @Test
     public void testAnimationUtilities_isGraphAnimationsPaused(){
-        animationUtilitiesMock.when(()
+        animationUtilitiesMocked.when(()
                 -> AnimationUtilities.getGraphAnimationManager(graphId))
                 .thenReturn(animationManager);
         
@@ -231,7 +231,7 @@ public class AnimationUtilitiesNGTest {
         assertTrue(AnimationUtilities.isGraphAnimationsPaused(graphId));
         verify(animationManager, times(1)).isPaused();
         
-        animationUtilitiesMock.when(()
+        animationUtilitiesMocked.when(()
                 -> AnimationUtilities.getGraphAnimationManager(graphId))
                 .thenReturn(null);
         
@@ -241,14 +241,14 @@ public class AnimationUtilitiesNGTest {
     
     @Test
     public void testAnimationUtilities_notifyComplete(){
-        animationUtilitiesMock.when(()
+        animationUtilitiesMocked.when(()
                 -> AnimationUtilities.getGraphAnimationManager(colorWarpAnimation.graphID))
                 .thenReturn(null);
         
         // it shouldn't be triggered when manager is null
         verify(animationManager, times(0)).notifyComplete(colorWarpAnimation);
         
-        animationUtilitiesMock.when(()
+        animationUtilitiesMocked.when(()
                 -> AnimationUtilities.getGraphAnimationManager(colorWarpAnimation.graphID))
                 .thenReturn(animationManager);
         
@@ -258,7 +258,7 @@ public class AnimationUtilitiesNGTest {
     
     @Test
     public void testAnimationUtilities_stopAllAnimations(){       
-        animationUtilitiesMock.when(()
+        animationUtilitiesMocked.when(()
                 -> AnimationUtilities.getGraphAnimationManager(graphName))
                 .thenReturn(animationManager);
         
@@ -272,7 +272,7 @@ public class AnimationUtilitiesNGTest {
     
     @Test
     public void testAnimationUtilities_stopAnimation(){       
-        animationUtilitiesMock.when(()
+        animationUtilitiesMocked.when(()
                 -> AnimationUtilities.getGraphAnimationManager(graphName))
                 .thenReturn(animationManager);
         
