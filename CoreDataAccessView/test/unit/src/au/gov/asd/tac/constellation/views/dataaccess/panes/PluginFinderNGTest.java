@@ -52,6 +52,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class PluginFinderNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(PluginFinderNGTest.class.getName());
 
     private final QueryPhasePane queryPhasePane = mock(QueryPhasePane.class);

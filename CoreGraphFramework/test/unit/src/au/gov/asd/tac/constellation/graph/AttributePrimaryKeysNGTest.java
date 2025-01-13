@@ -40,16 +40,15 @@ public class AttributePrimaryKeysNGTest {
     private int attr5;
     private int attr6;
     private GraphWriteMethods graph;
-
-    public AttributePrimaryKeysNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -394,9 +393,9 @@ public class AttributePrimaryKeysNGTest {
         graph.setStringValue(attr4, vxId3, "30");
         graph.setStringValue(attr5, vxId3, "100");
 
-        int txId1 = graph.addTransaction(vxId1, vxId2, true);
-        int txId2 = graph.addTransaction(vxId2, vxId1, true);
-        int txId3 = graph.addTransaction(vxId1, vxId2, false);
+        graph.addTransaction(vxId1, vxId2, true);
+        graph.addTransaction(vxId2, vxId1, true);
+        graph.addTransaction(vxId1, vxId2, false);
         int txId4 = graph.addTransaction(vxId2, vxId3, true);
         int txId5 = graph.addTransaction(vxId2, vxId3, true);
 
@@ -431,9 +430,9 @@ public class AttributePrimaryKeysNGTest {
         graph.setStringValue(attr4, vxId3, "30");
         graph.setStringValue(attr5, vxId3, "100");
 
-        int txId1 = graph.addTransaction(vxId1, vxId2, true);
-        int txId2 = graph.addTransaction(vxId2, vxId1, true);
-        int txId3 = graph.addTransaction(vxId1, vxId2, false);
+        graph.addTransaction(vxId1, vxId2, true);
+        graph.addTransaction(vxId2, vxId1, true);
+        graph.addTransaction(vxId1, vxId2, false);
         int txId4 = graph.addTransaction(vxId2, vxId3, true);
         int txId5 = graph.addTransaction(vxId2, vxId3, true);
 
@@ -468,9 +467,9 @@ public class AttributePrimaryKeysNGTest {
         graph.setStringValue(attr4, vxId3, "30");
         graph.setStringValue(attr5, vxId3, "100");
 
-        int txId1 = graph.addTransaction(vxId1, vxId2, true);
-        int txId2 = graph.addTransaction(vxId2, vxId1, true);
-        int txId3 = graph.addTransaction(vxId1, vxId2, true);
+        graph.addTransaction(vxId1, vxId2, true);
+        graph.addTransaction(vxId2, vxId1, true);
+        graph.addTransaction(vxId1, vxId2, true);
         int txId4 = graph.addTransaction(vxId2, vxId3, false);
         int txId5 = graph.addTransaction(vxId2, vxId3, false);
 
@@ -505,9 +504,9 @@ public class AttributePrimaryKeysNGTest {
         graph.setStringValue(attr4, vxId3, "30");
         graph.setStringValue(attr5, vxId3, "100");
 
-        int txId1 = graph.addTransaction(vxId1, vxId2, true);
-        int txId2 = graph.addTransaction(vxId2, vxId1, false);
-        int txId3 = graph.addTransaction(vxId1, vxId2, false);
+        graph.addTransaction(vxId1, vxId2, true);
+        graph.addTransaction(vxId2, vxId1, false);
+        graph.addTransaction(vxId1, vxId2, false);
         int txId4 = graph.addTransaction(vxId2, vxId3, true);
         int txId5 = graph.addTransaction(vxId2, vxId3, true);
 

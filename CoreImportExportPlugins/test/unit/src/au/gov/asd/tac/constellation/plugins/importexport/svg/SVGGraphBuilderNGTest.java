@@ -31,7 +31,6 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import java.awt.Component;
 import java.io.File;
 import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.Executors;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -53,6 +52,7 @@ import org.testng.annotations.Test;
  * @author capricornunicorn123
  */
 public class SVGGraphBuilderNGTest {
+    
     private MockedStatic<GraphManager> graphManagerStaticMock;
     private MockedStatic<GraphNode> graphNodeStaticMock;
     private static MockedStatic<ConstellationGlobalThreadPool> threadPoolStaticMock; 
@@ -69,16 +69,15 @@ public class SVGGraphBuilderNGTest {
     private final DrawFlags drawNoLabelsFlag = new DrawFlags(true, true, false, false, true);
     private final DrawFlags drawNoVisualElementsFlag = new DrawFlags(false, false, false, false, false);
     private final String graphName = "Test Graph 1";
-    public SVGGraphBuilderNGTest() {
-        
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -229,6 +228,7 @@ public class SVGGraphBuilderNGTest {
     
     /**
      * Test of build method, of class SVGGraphBuilder.
+     * @throws java.lang.InterruptedException
      */
     @Test
     public void testBuildPatternOutput_allVisualElements() throws IllegalArgumentException, InterruptedException {
@@ -250,6 +250,7 @@ public class SVGGraphBuilderNGTest {
     
     /**
      * Test of build method, of class SVGGraphBuilder.
+     * @throws java.lang.InterruptedException
      */
     @Test
     public void testBuildPatternOutput_linkedExport() throws IllegalArgumentException, InterruptedException {
@@ -271,6 +272,7 @@ public class SVGGraphBuilderNGTest {
     
     /**
      * Test of build method, of class SVGGraphBuilder.
+     * @throws java.lang.InterruptedException
      */
     @Test
     public void testBuildPatternOutput_SelectedElementsOnly() throws IllegalArgumentException, InterruptedException {
@@ -288,7 +290,6 @@ public class SVGGraphBuilderNGTest {
         final SVGObject result = new SVGObject(instance.build());
 
         for (int id : TestableGraphBuilder.getNodeIds()) {
-
             if (Arrays.stream(TestableGraphBuilder.getSelectedNodeIds()).anyMatch(i -> i == id)){
                 assertNotNull(result.getChild(String.format("node-%s", id)));
             } else {
@@ -299,6 +300,7 @@ public class SVGGraphBuilderNGTest {
     
     /**
      * Test of build method, of class SVGGraphBuilder.
+     * @throws java.lang.InterruptedException
      */
     @Test
     public void testBuildPatternOutput_noVisualElements() throws IllegalArgumentException, InterruptedException {
@@ -320,6 +322,7 @@ public class SVGGraphBuilderNGTest {
     
         /**
      * Test of build method, of class SVGGraphBuilder.
+     * @throws java.lang.InterruptedException
      */
     @Test
     public void testBuildPatternOutput_noLabels() throws IllegalArgumentException, InterruptedException {

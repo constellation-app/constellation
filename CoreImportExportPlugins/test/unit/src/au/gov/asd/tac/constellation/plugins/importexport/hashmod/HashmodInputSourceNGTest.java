@@ -37,16 +37,15 @@ import org.testng.annotations.Test;
 public class HashmodInputSourceNGTest {
 
     private static InputStream inputStreamMock;
-
-    public HashmodInputSourceNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -56,6 +55,7 @@ public class HashmodInputSourceNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**

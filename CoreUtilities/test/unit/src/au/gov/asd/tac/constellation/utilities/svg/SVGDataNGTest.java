@@ -41,25 +41,25 @@ public class SVGDataNGTest {
 
     final SVGTypeConstants typeRect = SVGTypeConstants.RECT;
     final SVGTypeConstants typeSVG = SVGTypeConstants.SVG;
-        
-    public SVGDataNGTest() {    
-
-    }
     
     @BeforeClass
     public static void setUpClass() {
+        // Not currently required
     }
     
     @AfterClass
     public static void tearDownClass() {
+        // Not currently required
     }
     
     @BeforeMethod
-    public void setUp() {
+    public void setUpMethod() {
+        // Not currently required
     }        
     
     @AfterMethod
-    public void tearDown() {
+    public void tearDownMethod() {
+        // Not currently required
     }
 
     /**
@@ -78,10 +78,10 @@ public class SVGDataNGTest {
     /**
      * Test of getType(), of class SVGData.
      */
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void testSetType() throws IllegalArgumentException {
         System.out.println("setType");
-        SVGData badObject = new SVGData(null, null, null);
+        new SVGData(null, null, null);
     }
 
     /**
@@ -150,9 +150,6 @@ public class SVGDataNGTest {
         assertTrue(svgObjectBlank1.getAllChildren().isEmpty());
         assertNull(svgObjectBlank2.getParent());
         assertTrue(svgObjectBlank2.getAllChildren().isEmpty());
-        
-//        // Test removing a non existant child.
-//        assertNull(svgObjectBlank1.removeChild(id2));
         
         // Set Parent Child Relationship - svgObjectBlank1(svgObjectBlank2, svgObjectBlank3)
         svgObjectBlank2.setParent(svgObjectBlank1);
@@ -254,12 +251,13 @@ public class SVGDataNGTest {
         final String height = "256";  
         final String content = "Some Conent";
         final String viewBox = "0 0 256 256";      
-        final String expectedString = String.format(""
-                + "\n<%s %s=\"%s\" %s=\"%s\" %s=\"%s\" %s=\"%s\" %s=\"%s\" %s=\"%s\">\n"
-                + "\t<%s %s=\"%s\" />\n"
-                + "\t<%s %s=\"%s\">%s\n"
-                + "\t</%s>\n"
-                + "</%s>",
+        final String expectedString = String.format("""
+                                                    
+                                                    <%s %s="%s" %s="%s" %s="%s" %s="%s" %s="%s" %s="%s">
+                                                    \t<%s %s="%s" />
+                                                    \t<%s %s="%s">%s
+                                                    \t</%s>
+                                                    </%s>""",
                 typeSVG.getTypeString(),
                 SVGAttributeConstants.ID.getName(), parentID,
                 SVGAttributeConstants.X.getName(), x,
@@ -292,8 +290,7 @@ public class SVGDataNGTest {
         
         svgObjectBlank2.setAttribute(SVGAttributeConstants.WIDTH, width);
         
-        assertEquals(CommonTests.getString(svgObjectBlank1), expectedString);
-
+        assertEquals(SVGTestUtilities.getString(svgObjectBlank1), expectedString);
     }
 
     /**
@@ -303,6 +300,6 @@ public class SVGDataNGTest {
     public void testLoadFromTemplate() {
         SVGData loadedData = SVGData.loadFromTemplate(TestingSVGFile.TESTING_TEMPLATE_COMPLIANT);
         assertNotNull(loadedData);
-        CommonTests.testLoadedData(loadedData);
+        SVGTestUtilities.testLoadedData(loadedData);
     }    
 }

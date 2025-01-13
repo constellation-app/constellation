@@ -195,9 +195,7 @@ public class Vector3dNGTest {
     @Test
     public void testSubtract() {
         // subtract one vector from another and return a new vector
-        final Vector3d v = Vector3d.subtract(
-                new Vector3d(D7, D8, D9),
-                new Vector3d(D4, D5, D6));
+        final Vector3d v = Vector3d.subtract(new Vector3d(D7, D8, D9), new Vector3d(D4, D5, D6));
         assertEquals(v.a, new double[]{-463D, 39D, -614D});
     }
 
@@ -206,9 +204,7 @@ public class Vector3dNGTest {
      */
     @Test
     public void testDotProduct() {
-        final double d = Vector3d.dotProduct(
-                new Vector3d(D1, D2, D3),
-                new Vector3d(D4, D5, D6));
+        final double d = Vector3d.dotProduct(new Vector3d(D1, D2, D3), new Vector3d(D4, D5, D6));
         assertEquals(d, 783783D);
     }
 
@@ -228,9 +224,6 @@ public class Vector3dNGTest {
      */
     @Test
     public void testToString() {
-        assertEquals(
-                new Vector3d(D1, D2, D3).toString(),
-                "3d[123.000000,321.000000,456.000000]");
+        assertEquals(new Vector3d(D1, D2, D3).toString(), "3d[123.000000,321.000000,456.000000]");
     }
-
 }

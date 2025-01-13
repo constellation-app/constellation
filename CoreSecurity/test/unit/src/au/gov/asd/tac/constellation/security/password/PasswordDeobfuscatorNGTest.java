@@ -45,5 +45,4 @@ public class PasswordDeobfuscatorNGTest {
         // Assert original password and deobfuscated match
         assertEquals(result, password);
     }
-
 }

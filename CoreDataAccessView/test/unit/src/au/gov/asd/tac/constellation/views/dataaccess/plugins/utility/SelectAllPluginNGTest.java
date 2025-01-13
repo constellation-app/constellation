@@ -55,8 +55,13 @@ public class SelectAllPluginNGTest {
     private static MockedStatic<NotificationDisplayer> notificationDisplayerMockedStatic;
     
     private Graph graph;
-    private int selectedV, selectedT;
-    private int vxId1, vxId2, txId1, txId2;
+    
+    private int selectedV;
+    
+    private int vxId1;
+    private int vxId2;
+    private int txId1;
+    private int txId2;
 
     @BeforeClass
     public static void beforeClass() {
@@ -79,10 +84,13 @@ public class SelectAllPluginNGTest {
     /**
      * Test of edit method, of class SelectAllPlugin. No attributes added so
      * should throw a pluginexception
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test(expectedExceptions = PluginException.class)
-    public void testEdit() throws Exception {
+    public void testEdit() throws InterruptedException, PluginException {
         System.out.println("select all edit with nothing on graph");
+        
         // Open a new graph
         graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
 
@@ -93,10 +101,13 @@ public class SelectAllPluginNGTest {
     /**
      * Test of edit method, of class SelectAllPlugin. select all edit with only
      * attributes on graph
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testEdit0() throws Exception {
+    public void testEdit0() throws InterruptedException, PluginException {
         System.out.println("select all edit with nothing on graph but attributes");
+        
         // Open a new graph
         graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
         int vxCount = 0;
@@ -105,7 +116,7 @@ public class SelectAllPluginNGTest {
         try {
             // Create Selected Attributes
             selectedV = VisualConcept.VertexAttribute.SELECTED.ensure(wg);
-            selectedT = VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
+            VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
         } finally {
             wg.commit();
         }
@@ -114,22 +125,22 @@ public class SelectAllPluginNGTest {
         PluginExecution.withPlugin(new SelectAllPlugin()).executeNow(graph);
 
         // Verify no extra elements are added
-        final ReadableGraph rg = graph.getReadableGraph();
-        try {
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
             assertEquals(rg.getVertexCount(), vxCount);
             assertEquals(rg.getTransactionCount(), txCount);
-        } finally {
-            rg.close();
         }
     }
 
     /**
      * Test of edit method, of class SelectAllPlugin. select all edit with only
      * vx on graph
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testEdit1() throws Exception {
+    public void testEdit1() throws InterruptedException, PluginException {
         System.out.println("select all edit with only vx on graph");
+        
         // Open a new graph
         graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
         int vxCount = 0;
@@ -137,7 +148,7 @@ public class SelectAllPluginNGTest {
         try {
             // Create Selected Attributes
             selectedV = VisualConcept.VertexAttribute.SELECTED.ensure(wg);
-            selectedT = VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
+            VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
 
             // Add vertices
             vxId1 = wg.addVertex();
@@ -156,13 +167,10 @@ public class SelectAllPluginNGTest {
         PluginExecution.withPlugin(new SelectAllPlugin()).executeNow(graph);
 
         // Verify both selected and same amount of vx are present
-        final ReadableGraph rg = graph.getReadableGraph();
-        try {
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
             assertTrue(rg.getBooleanValue(selectedV, vxId1));
             assertTrue(rg.getBooleanValue(selectedV, vxId2));
             assertEquals(rg.getVertexCount(), vxCount);
-        } finally {
-            rg.close();
         }
 
         // rerun plugin to ensure values are not only toggled, but are set explicitly as selected
@@ -170,23 +178,23 @@ public class SelectAllPluginNGTest {
         PluginExecution.withPlugin(new SelectAllPlugin()).executeNow(graph);
 
         // Verify both selected and same amount of vx are present
-        final ReadableGraph rg2 = graph.getReadableGraph();
-        try {
+        try (final ReadableGraph rg2 = graph.getReadableGraph()) {
             assertTrue(rg2.getBooleanValue(selectedV, vxId1));
             assertTrue(rg2.getBooleanValue(selectedV, vxId2));
             assertEquals(rg2.getVertexCount(), vxCount);
-        } finally {
-            rg2.close();
         }
     }
 
     /**
      * Test of edit method, of class SelectAllPlugin. select all edit with both
      * vx and tx on graph
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testEdit2() throws Exception {
+    public void testEdit2() throws InterruptedException, PluginException {
         System.out.println("select all edit with vx and tx on graph");
+        
         // Open a new graph
         graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
         int vxCount = 0;
@@ -195,7 +203,7 @@ public class SelectAllPluginNGTest {
         try {
             // Create Selected Attributes
             selectedV = VisualConcept.VertexAttribute.SELECTED.ensure(wg);
-            selectedT = VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
+            VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
 
             // Add vertices
             vxId1 = wg.addVertex();
@@ -221,16 +229,13 @@ public class SelectAllPluginNGTest {
         PluginExecution.withPlugin(new SelectAllPlugin()).executeNow(graph);
 
         // Verify both selected and same amount of vx and tx are present
-        final ReadableGraph rg = graph.getReadableGraph();
-        try {
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
             assertTrue(rg.getBooleanValue(selectedV, vxId1));
             assertTrue(rg.getBooleanValue(selectedV, vxId2));
             assertTrue(rg.getBooleanValue(selectedV, txId1));
             assertTrue(rg.getBooleanValue(selectedV, txId2));
             assertEquals(rg.getVertexCount(), vxCount);
             assertEquals(rg.getTransactionCount(), txCount);
-        } finally {
-            rg.close();
         }
 
         // rerun plugin to ensure values are not only toggled, but are set explicitly as selected
@@ -238,25 +243,24 @@ public class SelectAllPluginNGTest {
         PluginExecution.withPlugin(new SelectAllPlugin()).executeNow(graph);
 
         // Verify both selected and same amount of vx and tx are present
-        final ReadableGraph rg2 = graph.getReadableGraph();
-        try {
+        try (final ReadableGraph rg2 = graph.getReadableGraph()) {
             assertTrue(rg2.getBooleanValue(selectedV, vxId1));
             assertTrue(rg2.getBooleanValue(selectedV, vxId2));
-            assertTrue(rg.getBooleanValue(selectedV, txId1));
-            assertTrue(rg.getBooleanValue(selectedV, txId2));
+            assertTrue(rg2.getBooleanValue(selectedV, txId1));
+            assertTrue(rg2.getBooleanValue(selectedV, txId2));
             assertEquals(rg2.getVertexCount(), vxCount);
-            assertEquals(rg.getTransactionCount(), txCount);
-        } finally {
-            rg2.close();
+            assertEquals(rg2.getTransactionCount(), txCount);
         }
     }
 
     /**
      * Test of edit method, of class SelectAllPlugin. select all edit with a
      * graph that has no selected element or graph elements via its schema.
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test(expectedExceptions = PluginException.class)
-    public void testEdit3() throws Exception {
+    public void testEdit3() throws InterruptedException, PluginException {
         System.out.println("select all edit with no selected attribute or elements on graph");
         // Open a new graph
         graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(BareSchemaFactory.NAME).createSchema());
@@ -270,10 +274,13 @@ public class SelectAllPluginNGTest {
      * graph that has no selected element via its schema, but contains elements.
      *
      * Should throw a pluginexception
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test(expectedExceptions = PluginException.class)
-    public void testEdit4() throws Exception {
+    public void testEdit4() throws InterruptedException, PluginException {
         System.out.println("select all edit with no selected attribute on graph, but with elements");
+        
         // Open a new graph
         graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(BareSchemaFactory.NAME).createSchema());
 

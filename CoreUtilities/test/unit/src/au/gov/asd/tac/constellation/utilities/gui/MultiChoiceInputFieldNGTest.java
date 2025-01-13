@@ -49,9 +49,6 @@ public class MultiChoiceInputFieldNGTest {
     private String OPTION4;
     private String OPTION5;
     
-    public MultiChoiceInputFieldNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -76,7 +73,7 @@ public class MultiChoiceInputFieldNGTest {
         OPTION4 = "Option 4";
         OPTION5 = "Option 5"; 
         
-        data = new ArrayList<String>();
+        data = new ArrayList<>();
         data.add(OPTION1);
         data.add(OPTION2);
         data.add(OPTION3);
@@ -89,6 +86,7 @@ public class MultiChoiceInputFieldNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -145,7 +143,7 @@ public class MultiChoiceInputFieldNGTest {
         
         //Assert that the menu button only has two initial Options, Select all         
         ObservableList<MenuItem> menuItems = menuButton.getItems();
-        ArrayList<String> menuItemsNames = new ArrayList<String>();
+        List<String> menuItemsNames = new ArrayList<>();
         menuItems.stream().forEach(item -> menuItemsNames.add(item.getText()));
         Assert.assertTrue(menuItems.size() == 2);
         Assert.assertTrue(menuItemsNames.contains("Select All"));
@@ -180,6 +178,5 @@ public class MultiChoiceInputFieldNGTest {
         final String prompt = "Test Prompt";
         field.setPromptText(prompt);
         Assert.assertEquals(field.promptTextProperty().getValue(), prompt);
-    }
-    
+    }   
 }

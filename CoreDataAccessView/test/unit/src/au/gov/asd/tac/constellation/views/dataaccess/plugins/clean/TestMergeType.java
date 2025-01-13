@@ -64,5 +64,4 @@ public class TestMergeType implements MergeNodeType {
 
         throw new RuntimeException("This is a special test class and you failed to call it correctly.");
     }
-
 }

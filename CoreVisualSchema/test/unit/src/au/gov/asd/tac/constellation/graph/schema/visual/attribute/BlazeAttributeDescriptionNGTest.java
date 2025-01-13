@@ -30,24 +30,25 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class BlazeAttributeDescriptionNGTest {
-
-    public BlazeAttributeDescriptionNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -84,5 +85,4 @@ public class BlazeAttributeDescriptionNGTest {
         final BlazeAttributeDescription instance = new BlazeAttributeDescription();
         assertEquals(instance.getVersion(), 1);
     }
-
 }

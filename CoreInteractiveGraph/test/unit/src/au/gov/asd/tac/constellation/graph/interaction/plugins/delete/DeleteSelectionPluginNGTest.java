@@ -19,7 +19,7 @@ import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -33,21 +33,36 @@ import org.testng.annotations.Test;
  */
 public class DeleteSelectionPluginNGTest {
 
-    private int attrX, attrY;
-    private int vxId1, vxId2, vxId3, vxId4, vxId5, vxId6, vxId7;
-    private int txId1, txId2, txId3, txId4, txId5;
-    private int vAttrId, tAttrId;
+    private int attrX;
+    private int attrY;
+    
+    private int vxId1;
+    private int vxId2;
+    private int vxId3;
+    private int vxId4;
+    private int vxId5;
+    private int vxId6;
+    private int vxId7;
+    
+    private int txId1;
+    private int txId2;
+    private int txId3;
+    private int txId4;
+    private int txId5;
+    
+    private int vAttrId;
+    private int tAttrId;
+    
     private StoreGraph graph;
-
-    public DeleteSelectionPluginNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -63,26 +78,32 @@ public class DeleteSelectionPluginNGTest {
         graph.setFloatValue(attrX, vxId1, 1.0f);
         graph.setFloatValue(attrY, vxId1, 1.0f);
         graph.setBooleanValue(vAttrId, vxId1, false);
+        
         vxId2 = graph.addVertex();
         graph.setFloatValue(attrX, vxId2, 5.0f);
         graph.setFloatValue(attrY, vxId2, 1.0f);
         graph.setBooleanValue(vAttrId, vxId2, false);
+        
         vxId3 = graph.addVertex();
         graph.setFloatValue(attrX, vxId3, 1.0f);
         graph.setFloatValue(attrY, vxId3, 5.0f);
         graph.setBooleanValue(vAttrId, vxId3, false);
+        
         vxId4 = graph.addVertex();
         graph.setFloatValue(attrX, vxId4, 5.0f);
         graph.setFloatValue(attrY, vxId4, 5.0f);
         graph.setBooleanValue(vAttrId, vxId4, false);
+        
         vxId5 = graph.addVertex();
         graph.setFloatValue(attrX, vxId5, 10.0f);
         graph.setFloatValue(attrY, vxId5, 10.0f);
         graph.setBooleanValue(vAttrId, vxId5, false);
+        
         vxId6 = graph.addVertex();
         graph.setFloatValue(attrX, vxId6, 15.0f);
         graph.setFloatValue(attrY, vxId6, 15.0f);
         graph.setBooleanValue(vAttrId, vxId6, false);
+        
         vxId7 = graph.addVertex();
         graph.setFloatValue(attrX, vxId7, 100.0f);
         graph.setFloatValue(attrY, vxId7, 100.0f);
@@ -97,6 +118,7 @@ public class DeleteSelectionPluginNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -104,10 +126,9 @@ public class DeleteSelectionPluginNGTest {
      *
      * @throws InterruptedException
      * @throws PluginException
-     * @throws Exception
      */
     @Test
-    public void testNothingSelected() throws InterruptedException, PluginException, Exception {
+    public void testNothingSelected() throws InterruptedException, PluginException {
         DeleteSelectionPlugin instance = new DeleteSelectionPlugin();
         PluginExecution.withPlugin(instance).executeNow(graph);
         assertEquals(graph.getVertexCount(), 7);
@@ -120,10 +141,9 @@ public class DeleteSelectionPluginNGTest {
      *
      * @throws InterruptedException
      * @throws PluginException
-     * @throws Exception
      */
     @Test
-    public void testSomeVxSelected() throws InterruptedException, PluginException, Exception {
+    public void testSomeVxSelected() throws InterruptedException, PluginException {
         graph.setBooleanValue(vAttrId, vxId2, true);
         graph.setBooleanValue(vAttrId, vxId4, true);
         graph.setBooleanValue(vAttrId, vxId6, true);
@@ -141,10 +161,9 @@ public class DeleteSelectionPluginNGTest {
      *
      * @throws InterruptedException
      * @throws PluginException
-     * @throws Exception
      */
     @Test
-    public void testSomeTxSelected() throws InterruptedException, PluginException, Exception {
+    public void testSomeTxSelected() throws InterruptedException, PluginException {
         graph.setBooleanValue(tAttrId, txId1, true);
         graph.setBooleanValue(tAttrId, txId2, true);
 
@@ -161,10 +180,9 @@ public class DeleteSelectionPluginNGTest {
      *
      * @throws InterruptedException
      * @throws PluginException
-     * @throws Exception
      */
     @Test
-    public void testAllSelected() throws InterruptedException, PluginException, Exception {
+    public void testAllSelected() throws InterruptedException, PluginException {
         graph.setBooleanValue(vAttrId, vxId1, true);
         graph.setBooleanValue(vAttrId, vxId2, true);
         graph.setBooleanValue(vAttrId, vxId3, true);
@@ -185,5 +203,4 @@ public class DeleteSelectionPluginNGTest {
         assertEquals(graph.getVertexCount(), 0);
         assertEquals(graph.getTransactionCount(), 0);
     }
-
 }

@@ -33,16 +33,15 @@ import org.testng.annotations.Test;
  * @author algol
  */
 public class AttributeDefinitionNGTest {
-
-    public AttributeDefinitionNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -131,7 +130,6 @@ public class AttributeDefinitionNGTest {
         final GraphWriteMethods graph = new StoreGraph();
         graph.addAttribute(elementType, attributeType, name, null, null, null);
         graph.addAttribute(elementType, IntegerAttributeDescription.ATTRIBUTE_NAME, name, null, null, null);
-        fail("Shouldn't be able to add attribute twice");
     }
 
     /**
@@ -169,7 +167,6 @@ public class AttributeDefinitionNGTest {
         final String attributeType = "arraylist";
         final GraphWriteMethods graph = new StoreGraph();
         graph.addAttribute(elementType, attributeType, name, null, null, null);
-        fail("Shouldn't be able to create an unknown type " + attributeType);
     }
 
     /**
@@ -179,7 +176,6 @@ public class AttributeDefinitionNGTest {
     public void getAttributeTypeIndexOutOfBounds() {
         final GraphWriteMethods graph = new StoreGraph();
         graph.getAttribute(GraphElementType.VERTEX, 99);
-        fail("Shouldn't be able to get an out-of-bounds attribute");
     }
 
     @Test
@@ -227,10 +223,8 @@ public class AttributeDefinitionNGTest {
         final String attributeType = "string";
         final GraphWriteMethods graph = new StoreGraph();
         final int id1 = graph.addAttribute(elementType, attributeType, name + "1", null, null, null);
-        final int id2 = graph.addAttribute(elementType, attributeType, name + "2", null, null, null);
         graph.removeAttribute(id1);
         graph.removeAttribute(id1);
-        fail("Shouldn't be able to remove attribute twice");
     }
 
     /**

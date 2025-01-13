@@ -83,5 +83,4 @@ public class ArrangementPluginsHelpProviderNGTest {
         assertEquals(instance.getHelpTOC(), expResult);
 
     }
-
 }

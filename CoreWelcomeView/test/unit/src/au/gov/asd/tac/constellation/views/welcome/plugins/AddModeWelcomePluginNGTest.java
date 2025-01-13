@@ -75,5 +75,4 @@ public class AddModeWelcomePluginNGTest {
         final Button result = instance.getButton();
         assertEquals(result.getGraphic().getClass(), expResult.getClass());
     }
-
 }

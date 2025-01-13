@@ -46,31 +46,36 @@ public class UncollideArrangementNGTest {
         graphWithTwoTwins.setFloatValue(attrX, twoTwinsSubject, 0.0f);
         graphWithTwoTwins.setFloatValue(attrY, twoTwinsSubject, 0.0f);
         graphWithTwoTwins.setFloatValue(attrR, twoTwinsSubject, 1.0f);
+        
         // Same Location
         int twoTwinsSameLocation = graphWithTwoTwins.addVertex();
         graphWithTwoTwins.setFloatValue(attrX, twoTwinsSameLocation, 0.0f);
         graphWithTwoTwins.setFloatValue(attrY, twoTwinsSameLocation, 0.0f);
         graphWithTwoTwins.setFloatValue(attrR, twoTwinsSameLocation, 1.0f);
+        
         // First twin
         int twin1 = graphWithTwoTwins.addVertex();
         graphWithTwoTwins.setFloatValue(attrX, twin1, 0.1f);
         graphWithTwoTwins.setFloatValue(attrY, twin1, 0.1f);
         graphWithTwoTwins.setFloatValue(attrR, twin1, 1.0f);
+        
         // Second twin
         int twin2 = graphWithTwoTwins.addVertex();
         graphWithTwoTwins.setFloatValue(attrX, twin2, -0.1f);
         graphWithTwoTwins.setFloatValue(attrY, twin2, -0.1f);
         graphWithTwoTwins.setFloatValue(attrR, twin2, 1.0f);
+        
         // Non-twin collider
         int collider = graphWithTwoTwins.addVertex();
         graphWithTwoTwins.setFloatValue(attrX, collider, 1.0f);
         graphWithTwoTwins.setFloatValue(attrY, collider, 1.0f);
         graphWithTwoTwins.setFloatValue(attrR, collider, 1.0f);
+        
         // Non-Collider
         int noncollider = graphWithTwoTwins.addVertex();
-        graphWithTwoTwins.setFloatValue(attrX, collider, 1.0f);
-        graphWithTwoTwins.setFloatValue(attrY, collider, 1.0f);
-        graphWithTwoTwins.setFloatValue(attrR, collider, 1.0f);
+        graphWithTwoTwins.setFloatValue(attrX, noncollider, 1.0f);
+        graphWithTwoTwins.setFloatValue(attrY, noncollider, 1.0f);
+        graphWithTwoTwins.setFloatValue(attrR, noncollider, 1.0f);
 
         QuadTree qt = new QuadTree(graphWithTwoTwins);
         assertEquals(qt.hasCollision(), true); //Assert that before the uncollide arrangement is run the graph has a collision.
@@ -102,24 +107,28 @@ public class UncollideArrangementNGTest {
         graphWithTwoTwins.setFloatValue(attrY, twoTwinsSubject, 0.0f);
         graphWithTwoTwins.setFloatValue(attrZ, twoTwinsSubject, 0.0f);
         graphWithTwoTwins.setFloatValue(attrR, twoTwinsSubject, 1.0f);
+        
         // Same Location
         int twoTwinsSameLocation = graphWithTwoTwins.addVertex();
         graphWithTwoTwins.setFloatValue(attrX, twoTwinsSameLocation, 0.0f);
         graphWithTwoTwins.setFloatValue(attrY, twoTwinsSameLocation, 0.0f);
         graphWithTwoTwins.setFloatValue(attrZ, twoTwinsSameLocation, 0.0f);
         graphWithTwoTwins.setFloatValue(attrR, twoTwinsSameLocation, 1.0f);
+        
         // First twin
         int twin1 = graphWithTwoTwins.addVertex();
         graphWithTwoTwins.setFloatValue(attrX, twin1, 0.1f);
         graphWithTwoTwins.setFloatValue(attrY, twin1, 0.1f);
         graphWithTwoTwins.setFloatValue(attrZ, twin1, 0.1f);
         graphWithTwoTwins.setFloatValue(attrR, twin1, 1.0f);
+        
         // Second twin
         int twin2 = graphWithTwoTwins.addVertex();
         graphWithTwoTwins.setFloatValue(attrX, twin2, -0.1f);
         graphWithTwoTwins.setFloatValue(attrY, twin2, -0.1f);
         graphWithTwoTwins.setFloatValue(attrZ, twin2, -0.1f);
         graphWithTwoTwins.setFloatValue(attrR, twin2, 1.0f);
+        
         // Non-twin collider
         int collider = graphWithTwoTwins.addVertex();
         graphWithTwoTwins.setFloatValue(attrX, collider, 1.0f);
@@ -134,5 +143,4 @@ public class UncollideArrangementNGTest {
         ot = new OctTree(graphWithTwoTwins);
         assertEquals(ot.hasCollision(), false); //Assert that after the uncollide arrangement has run there is no longer a collision.
     }
-
 }

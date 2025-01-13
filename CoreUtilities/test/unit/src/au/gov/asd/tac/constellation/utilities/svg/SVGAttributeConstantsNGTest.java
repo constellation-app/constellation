@@ -33,23 +33,24 @@ import org.testng.annotations.Test;
  */
 public class SVGAttributeConstantsNGTest {
     
-    public SVGAttributeConstantsNGTest() {
-    }
-    
     @BeforeClass
     public static void setUpClass() {
+        // Not currently required
     }
     
     @AfterClass
     public static void tearDownClass() {
+        // Not currently required
     }
     
     @BeforeMethod
-    public void setUp() {
+    public void setUpMethod() {
+        // Not currently required
     }
     
     @AfterMethod
-    public void tearDown() {
+    public void tearDownMethod() {
+        // Not currently required
     }
 
     /**
@@ -110,8 +111,5 @@ public class SVGAttributeConstantsNGTest {
         attributes.keySet().forEach(key -> {
             assertNull(attributes.get(key));
         });
-       
-
-    }
-    
+    } 
 }

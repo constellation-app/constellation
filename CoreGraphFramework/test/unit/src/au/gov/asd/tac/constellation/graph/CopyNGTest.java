@@ -28,16 +28,15 @@ import org.testng.annotations.Test;
  * @author algol
  */
 public class CopyNGTest {
-
-    public CopyNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -105,5 +104,4 @@ public class CopyNGTest {
 
         assertNotSame(graph.getStringValue(nameAttribute, vx0), writableCopy.getStringValue(nameAttribute, vx0));
     }
-
 }

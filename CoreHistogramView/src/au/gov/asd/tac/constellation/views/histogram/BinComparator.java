@@ -37,7 +37,7 @@ public enum BinComparator implements Comparator<Bin> {
                     return 0;
                 }
             }
-            return -1;
+            return o2.compareTo(o1);
         }
 
         @Override
@@ -57,7 +57,7 @@ public enum BinComparator implements Comparator<Bin> {
                     return 0;
                 }
             }
-            return -1;
+            return o1.compareTo(o2);
         }
 
         @Override
@@ -240,12 +240,12 @@ public enum BinComparator implements Comparator<Bin> {
         return usesSelection;
     }
 
-    public boolean isNumeric(final String strNum) {
+    protected boolean isNumeric(final String strNum) {
         if (strNum == null) {
             return false;
         }
         try {
-            Float.parseFloat(strNum);
+            Float.valueOf(strNum);
         } catch (final NumberFormatException nfe) {
             return false;
         }

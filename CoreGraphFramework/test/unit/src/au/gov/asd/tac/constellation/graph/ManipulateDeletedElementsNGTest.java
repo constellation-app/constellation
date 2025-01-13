@@ -27,33 +27,30 @@ import org.testng.annotations.Test;
 public class ManipulateDeletedElementsNGTest {
 
     @Test
-    public void setIndexedAttributeValueOfDeletedVertexTest() {
+    public void setIndexedAttributeValueOfDeletedVertexTest() throws InterruptedException {
         final DualGraph g = new DualGraph(new StoreGraph(), false);
+        
+        int attr;
+        int v1;
 
-        int attr, v1;
-
+        // Add an indexed boolean attribute, then add a vertex, then delete that vertex.
+        final WritableGraph wg = g.getWritableGraph("add attribute, add/remove vertex", true);
         try {
-            // Add an indexed boolean attribute, then add a vertex, then delete that vertex.
-            final WritableGraph wg = g.getWritableGraph("add attribute, add/remove vertex", true);
-            try {
-                attr = wg.addAttribute(GraphElementType.VERTEX, BooleanAttributeDescription.ATTRIBUTE_NAME, "attr", null, false, null);
-                wg.setAttributeIndexType(attr, GraphIndexType.UNORDERED);
+            attr = wg.addAttribute(GraphElementType.VERTEX, BooleanAttributeDescription.ATTRIBUTE_NAME, "attr", null, false, null);
+            wg.setAttributeIndexType(attr, GraphIndexType.UNORDERED);
 
-                v1 = wg.addVertex();
-                wg.removeVertex(v1);
-            } finally {
-                wg.commit();
-            }
+            v1 = wg.addVertex();
+            wg.removeVertex(v1);
+        } finally {
+            wg.commit();
+        }
 
-            // Set the attribute value of the deleted vertex.
-            final WritableGraph wg2 = g.getWritableGraph("set deleted value", true);
-            try {
-                wg2.setBooleanValue(attr, v1, true);
-            } finally {
-                wg2.commit();
-            }
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
+        // Set the attribute value of the deleted vertex.
+        final WritableGraph wg2 = g.getWritableGraph("set deleted value", true);
+        try {
+            wg2.setBooleanValue(attr, v1, true);
+        } finally {
+            wg2.commit();
         }
     }
 }

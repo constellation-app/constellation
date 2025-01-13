@@ -1,5 +1,8 @@
 # Constellation Changes
 
+## Changes in January 2025
+-   Removed classes `VideoCreator` and `VideoFrame` from Core Utilities as they are unused. 
+
 ## Changes in December 2024
 -   Refactored animation framework to update graph attributes and hold write locks for minimal durations to enable graph interction.
 -   Created Color Warp Animation.

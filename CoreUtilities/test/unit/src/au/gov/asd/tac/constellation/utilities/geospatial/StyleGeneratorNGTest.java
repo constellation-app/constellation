@@ -68,7 +68,7 @@ public class StyleGeneratorNGTest {
     private static Handler[] existingLogHandlers;
     
     // removes all handlers from a logger
-    private void removeHandlers(final Logger logger, final Handler[] handlers) {
+    private static void removeHandlers(final Logger logger, final Handler[] handlers) {
         for (final Handler h : handlers) {
             logger.removeHandler(h);
         }
@@ -79,7 +79,7 @@ public class StyleGeneratorNGTest {
      * receive logging events, and removes the class console logger.
      */
     @BeforeClass
-    public void attachLogCapturer() {
+    public static void setUpClass() {
         // remove the existing handlers, but store them so they can be restored
         existingLogHandlers = LOGGER.getParent().getHandlers();
         removeHandlers(LOGGER.getParent(), existingLogHandlers);
@@ -96,7 +96,7 @@ public class StyleGeneratorNGTest {
      * the console logger.
      */
     @AfterClass
-    public void removeLogCapturer() {
+    public static void tearDownClass() {
         removeHandlers(LOGGER.getParent(), LOGGER.getParent().getHandlers());
         for (final Handler h : existingLogHandlers) {
             LOGGER.getParent().addHandler(h);
@@ -119,26 +119,26 @@ public class StyleGeneratorNGTest {
        assignable to any of the four aforementioned types. Test this by using
        dummy subclasses of each type. */
     public class TestPolygon extends Polygon {
-        public TestPolygon(final LinearRing shell, final LinearRing[] holes, 
-                final GeometryFactory factory) {
+        
+        public TestPolygon(final LinearRing shell, final LinearRing[] holes, final GeometryFactory factory) {
             super(shell, holes, factory);
         }
     }
     public class TestMultiPolygon extends MultiPolygon {
-        public TestMultiPolygon(final Polygon[] polygons, 
-                final GeometryFactory factory) {
+        
+        public TestMultiPolygon(final Polygon[] polygons, final GeometryFactory factory) {
             super(polygons, factory);
         }
     }
     public class TestLineString extends LineString {
-        public TestLineString(final CoordinateSequence points, 
-                final GeometryFactory factory) {
+        
+        public TestLineString(final CoordinateSequence points, final GeometryFactory factory) {
             super(points, factory);
         }
     }
     public class TestPoint extends Point {
-        public TestPoint(final CoordinateSequence coordinates, 
-                final GeometryFactory factory) {
+        
+        public TestPoint(final CoordinateSequence coordinates, final GeometryFactory factory) {
             super(coordinates, factory);
         }
     }
@@ -193,8 +193,7 @@ public class StyleGeneratorNGTest {
         assertEquals(s.getDescription().getTitle().toString(), "Polygon Style");
         
         // check the components of the style
-        final PolygonSymbolizer ps = (PolygonSymbolizer) 
-                s.featureTypeStyles().get(0).rules().get(0).symbolizers().get(0);
+        final PolygonSymbolizer ps = (PolygonSymbolizer) s.featureTypeStyles().get(0).rules().get(0).symbolizers().get(0);
         
         assertNull(ps.getGeometryPropertyName());
         
@@ -219,8 +218,7 @@ public class StyleGeneratorNGTest {
      */
     @Test
     public void testPolygonStyle() {
-        assertPolygonStyle(
-                StyleGenerator.createStyle(getSfcMock(TestPolygon.class)));
+        assertPolygonStyle(StyleGenerator.createStyle(getSfcMock(TestPolygon.class)));
     }
     
     /**
@@ -228,8 +226,7 @@ public class StyleGeneratorNGTest {
      */
     @Test
     public void testMultiPolygonStyle() {
-        assertPolygonStyle(
-                StyleGenerator.createStyle(getSfcMock(TestMultiPolygon.class)));
+        assertPolygonStyle(StyleGenerator.createStyle(getSfcMock(TestMultiPolygon.class)));
     }
     
     /**
@@ -281,8 +278,7 @@ public class StyleGeneratorNGTest {
         assertEquals(s.getDescription().getTitle().toString(), "Line Style");
         
         // check the components of the style
-        final PolygonSymbolizer ps = (PolygonSymbolizer) 
-                s.featureTypeStyles().get(0).rules().get(0).symbolizers().get(0);
+        final PolygonSymbolizer ps = (PolygonSymbolizer) s.featureTypeStyles().get(0).rules().get(0).symbolizers().get(0);
         
         assertNull(ps.getGeometryPropertyName());
         
@@ -314,8 +310,7 @@ public class StyleGeneratorNGTest {
         assertEquals(s.getDescription().getTitle().toString(), "Point Style");
         
         // check the components of the style
-        final PointSymbolizer ps = (PointSymbolizer) 
-                s.featureTypeStyles().get(0).rules().get(0).symbolizers().get(0);
+        final PointSymbolizer ps = (PointSymbolizer) s.featureTypeStyles().get(0).rules().get(0).symbolizers().get(0);
         
         assertNull(ps.getGeometryPropertyName());
         
@@ -325,9 +320,7 @@ public class StyleGeneratorNGTest {
         
         assertEquals(graphic.graphicalSymbols().size(), 1);
         final Mark mark = (Mark) graphic.graphicalSymbols().get(0);
-        assertEquals(
-                mark.getFill().getColor().evaluate(null, Color.class), 
-                Color.CYAN);
+        assertEquals(mark.getFill().getColor().evaluate(null, Color.class), Color.CYAN);
         final Stroke markStroke = mark.getStroke();
         final Color strokeColor = markStroke.getColor().evaluate(null, Color.class);
         assertEquals(strokeColor, Color.BLUE);
@@ -340,8 +333,6 @@ public class StyleGeneratorNGTest {
      */
     @Test
     public void testFormatColor() {
-        assertEquals(
-                StyleGenerator.formatColor(Color.MAGENTA),
-                "bfff00ff");
+        assertEquals(StyleGenerator.formatColor(Color.MAGENTA), "bfff00ff");
     }
 }
