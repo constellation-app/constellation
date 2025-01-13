@@ -4,6 +4,12 @@
 -   Removed classes `VideoCreator` and `VideoFrame` from Core Utilities as they are unused. 
 
 ## Changes in December 2024
+-   Refactored animation framework to update graph attributes and hold write locks for minimal durations to enable graph interction.
+-   Created Color Warp Animation.
+-   Enhanced Fly through and Direction Indicators Animation.
+-   Created Graph Connection Motion Attribute as a META graph element type.
+-   Created Animation setting to disable animations for low power machines.
+-   Created SetColorValuesOperation to save space on the undo/redo stack.
 -   Modified access of `VertexTypeIOProvider.writeTypeObject()` from public to private, reflecting current use and mirroring related classes and functions.
 -   Removed `CompositeStatus.getCompositeStatus()` which was unused.
 
@@ -14,6 +20,7 @@
 -   Removed `ColorblindUtilities.colorNodes()` which was unused. This behaviour is replicated in `VisualSchemaFactory.VisualSchema` with `applyColorblindVertex()` and `applyColorblindTransaction()`.
 -   Removed `ColorblindUtilities.setColorRef()` which only had one use. This behaviour is now directly added to where the function was previously used.
 -   Renamed `ColorblindUtilities.calcColorBrightness()` to `ColorblindUtilities.calculateColorBrightness()` for readability.
+-   Refactored MenuBaseAction to disable graph dependant menu items when primary graph is ambiguous.
 
 ## Changes in October 2024
 -   Added ability to pass parameters and selected items on graph to PluginReporter to display via `DefaultPluginInteraction`.

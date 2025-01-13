@@ -40,6 +40,7 @@ public enum VisualProperty {
     BLAZE_SIZE(PropertyType.FLOAT, ElementType.GRAPH),
     BLAZE_OPACITY(PropertyType.FLOAT, ElementType.GRAPH),
     CONNECTIONS_OPACITY(PropertyType.FLOAT, ElementType.GRAPH),
+    CONNECTIONS_MOTION(PropertyType.FLOAT, ElementType.GRAPH),
     VISIBLE_ABOVE_THRESHOLD(PropertyType.BOOLEAN, ElementType.GRAPH),
     VISIBILITY_THRESHOLD(PropertyType.INT, ElementType.GRAPH),
     TOP_LABEL_SIZE(PropertyType.FLOAT, ElementType.TOP_LABELS),
