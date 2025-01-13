@@ -101,6 +101,8 @@ public class TimelinePanel extends Region {
     private ComboBox<ZoneId> timeZoneComboBox;
     private long expectedvxMod = Long.MIN_VALUE;
     private long expectedtxMod = Long.MIN_VALUE;
+    
+    final BorderPane timelinePane = new BorderPane();
 
     /*
      If there is no color set for a node or transaction then set it to clouds.
@@ -148,7 +150,7 @@ public class TimelinePanel extends Region {
      */
     protected void doLayout() {
         // Layer that contains the timelinechart component:
-        final BorderPane timelinePane = new BorderPane();
+//        final BorderPane timelinePane = new BorderPane();
 
         timelinePane.setCenter(timeline);
         // The layer that contains the time extent labels:
@@ -354,9 +356,31 @@ public class TimelinePanel extends Region {
     }
 
     public void clearTimelineData() {
-        // SEEMS TO FIX IT, but causes other issue like the timeline view not showing anything for structured graph
-        System.out.println("CALLLINGGGGG");
+        System.out.println("clearTimelineData");
+        
+        // Reset timeline by copying values to new instance
+        //System.out.println("Is thing bound? " + lowerTime.textProperty().isBound());
+        lowerTime.textProperty().unbind();
+        //System.out.println("Is thing bound now (shouldnt be)? " + lowerTime.textProperty().isBound());
+        upperTime.textProperty().unbind();
+       
+        // Get old extents
+        final double lower = getTimelineLowerTimeExtent();
+        final double upper = getTimelineUpperTimeExtent();
+        System.out.println("Lower: " + lower + " Upper: " + upper);
+        
         timeline = new TimelineChart(this, new NumberAxis(), new NumberAxis());
+        
+        // Rebind text
+        lowerTime.textProperty().bind(timeline.lowerTimeExtentProperty());
+        upperTime.textProperty().bind(timeline.upperTimeExtentProperty());
+        
+        timelinePane.setCenter(timeline);
+        
+        timeline.setExtents(lower, upper);
+        
+        
+        //timeline.clear();
     }
 
     /**

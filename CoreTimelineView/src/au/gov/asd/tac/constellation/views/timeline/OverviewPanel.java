@@ -339,11 +339,9 @@ public class OverviewPanel extends Pane {
      * Helper method that clears all data off the histogram component.
      */
     public void clearHistogram() {
-        System.out.println("clearHistogram CALLED");
         if (histogram.getData() != null) {
             histogram.getData().clear();
         }
-        histogram.setData(null);
     }
 
     /**
