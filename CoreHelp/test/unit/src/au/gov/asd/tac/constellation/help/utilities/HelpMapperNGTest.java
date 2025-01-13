@@ -33,24 +33,25 @@ import org.testng.annotations.Test;
  * @author Delphinus8821
  */
 public class HelpMapperNGTest {
-
-    public HelpMapperNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -71,12 +72,12 @@ public class HelpMapperNGTest {
      * Test of getMappings method, of class HelpMapper.
      */
     public void testGetMappings() {
-        Map expResult = new HashMap();
+        Map<String, String> expResult = new HashMap<>();
         Lookup.getDefault().lookupAll(HelpPageProvider.class).forEach(provider -> {
             expResult.putAll(provider.getHelpMap());
         });
 
-        Map result = HelpMapper.getMappings();
+        Map<String, String> result = HelpMapper.getMappings();
         assertEquals(result, expResult);
     }
 }

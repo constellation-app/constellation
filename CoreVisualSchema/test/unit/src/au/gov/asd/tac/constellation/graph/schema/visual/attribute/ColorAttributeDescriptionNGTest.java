@@ -29,24 +29,25 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class ColorAttributeDescriptionNGTest {
-
-    public ColorAttributeDescriptionNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -68,7 +69,7 @@ public class ColorAttributeDescriptionNGTest {
     /**
      * Test of convertFromObject method, of class ColorAttributeDescription. Invalid color passed through
      */
-    @Test(expectedExceptions = {IllegalArgumentException.class})
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void testConvertFromObjectNotAColor() {
         System.out.println("convertFromObjectNotAColor");
 
@@ -115,7 +116,7 @@ public class ColorAttributeDescriptionNGTest {
     /**
      * Test of setInt method, of class ColorAttributeDescription. Trying to set before capacity has been allocated to do so
      */
-    @Test(expectedExceptions = {ArrayIndexOutOfBoundsException.class})
+    @Test(expectedExceptions = ArrayIndexOutOfBoundsException.class)
     public void testSetIntBadSet() {
         System.out.println("setIntBadSet");
 

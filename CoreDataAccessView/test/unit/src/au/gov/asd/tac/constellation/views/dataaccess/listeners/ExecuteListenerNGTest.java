@@ -81,6 +81,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class ExecuteListenerNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(ExecuteListenerNGTest.class.getName());
     
     private static final String GRAPH_ID = "graphId";
@@ -113,9 +114,6 @@ public class ExecuteListenerNGTest {
     
     private ExecuteListener executeListener;
     
-    public ExecuteListenerNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
         graphManagerMockedStatic = Mockito.mockStatic(GraphManager.class);

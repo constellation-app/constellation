@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -67,7 +68,7 @@ public class JDropDownMenuNGTest {
 
     private static final String COOKIE_ICON_PATH = "au/gov/asd/tac/constellation/utilities/modules/ext/icons/cookie.png";
     private static final String DROP_DOWN_ARROW_ICON_PATH = "au/gov/asd/tac/constellation/utilities/modules/ext/icons/drop_down_arrow.png";
-    private static final File iconFile = new File(DROP_DOWN_ARROW_ICON_PATH);
+    private static final File ICON_FILE = new File(DROP_DOWN_ARROW_ICON_PATH);
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -86,7 +87,7 @@ public class JDropDownMenuNGTest {
                 .thenReturn(installedFileLocatorMocked);
         installedFileLocatorMockedStatic.when(() -> InstalledFileLocator.getDefault()
                 .locate("modules/ext/icons/drop_down_arrow.png", "au.gov.asd.tac.constellation.utilities", false))
-                .thenReturn(iconFile);
+                .thenReturn(ICON_FILE);
         items.clear();
         items.add("Item 1");
         items.add("Item 2");
@@ -248,6 +249,7 @@ public class JDropDownMenuNGTest {
 
     /**
      * Test of setIcon method, of class JDropDownMenu.
+     * @throws java.net.MalformedURLException
      */
     @Test
     public void testSetIcon() throws MalformedURLException {
@@ -255,7 +257,7 @@ public class JDropDownMenuNGTest {
 
         final JDropDownMenu instance = new JDropDownMenu("Text", items);
 
-        final Icon newIcon1 = new ImageIcon(Utilities.toURI(iconFile).toURL());
+        final Icon newIcon1 = new ImageIcon(Utilities.toURI(ICON_FILE).toURL());
         final Icon newIcon2 = new ImageIcon(DROP_DOWN_ARROW_ICON_PATH);
         instance.setIcon(newIcon1);
         Icon result = instance.getIcon();
@@ -309,7 +311,7 @@ public class JDropDownMenuNGTest {
      * Test of actionPerformed method, of class JDropDownMenu.
      */
     @Test
-    public void testActionPerformed() throws Exception {
+    public void testActionPerformed() {
         System.out.println("actionPerformed");
 
         final JDropDownMenu instance = new JDropDownMenu("Text", items);
@@ -320,7 +322,7 @@ public class JDropDownMenuNGTest {
     }
 
     @Test
-    public void testPerformActionsOnListeners() throws Exception {
+    public void testPerformActionsOnListeners() throws InterruptedException, ExecutionException {
         System.out.println("performActionsOnListeners");
 
         final ActionEvent mockEvent = mock(ActionEvent.class);

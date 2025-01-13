@@ -23,10 +23,9 @@ import static org.testng.Assert.assertTrue;
  * 
  * @author capricornunicorn123
  */
-public class CommonTests {
+public class SVGTestUtilities {
     
-    public static void testLoadedData(SVGData graph){
-        
+    public static void testLoadedData(SVGData graph){   
         SVGData background = graph.getChild("background");
         SVGData content = graph.getChild("content");
         SVGData header = graph.getChild("header");

@@ -46,6 +46,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class SelectedOnlySelectionListenerNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(SelectedOnlySelectionListenerNGTest.class.getName());
 
     private SelectedOnlySelectionListener selectedOnlySelectionListener;
@@ -96,6 +97,7 @@ public class SelectedOnlySelectionListenerNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     @Test

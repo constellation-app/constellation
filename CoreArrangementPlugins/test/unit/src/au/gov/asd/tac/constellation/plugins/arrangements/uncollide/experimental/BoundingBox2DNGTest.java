@@ -15,10 +15,9 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.uncollide.experimental;
 
-import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -35,27 +34,23 @@ public class BoundingBox2DNGTest {
         baseGraph = new StoreGraph();
 
         int attrX = VisualConcept.VertexAttribute.X.ensure(baseGraph);
-        if (attrX == Graph.NOT_FOUND) {
-            fail();
-        }
-
         int attrY = VisualConcept.VertexAttribute.Y.ensure(baseGraph);
-        if (attrY == Graph.NOT_FOUND) {
-            fail();
-        }
 
         // Top left
         int vxId1 = baseGraph.addVertex();
         baseGraph.setFloatValue(attrX, vxId1, -1.0f);
         baseGraph.setFloatValue(attrY, vxId1, 1.0f);
+        
         // Top right
         int vxId2 = baseGraph.addVertex();
         baseGraph.setFloatValue(attrX, vxId2, 1.0f);
         baseGraph.setFloatValue(attrY, vxId2, 1.0f);
+        
         // Bottom right
         int vxId3 = baseGraph.addVertex();
         baseGraph.setFloatValue(attrX, vxId3, 1.0f);
         baseGraph.setFloatValue(attrY, vxId3, -1.0f);
+        
         // Bottom left
         int vxId4 = baseGraph.addVertex();
         baseGraph.setFloatValue(attrX, vxId4, -1.0f);
@@ -63,7 +58,7 @@ public class BoundingBox2DNGTest {
     }
 
     /**
-     * Test the constructor works when given a graph with verticies
+     * Test the constructor works when given a graph with vertices
      */
     @Test
     public void testConstructor() {
@@ -86,7 +81,7 @@ public class BoundingBox2DNGTest {
         VisualConcept.VertexAttribute.X.ensure(emptyGraph);
         VisualConcept.VertexAttribute.Y.ensure(emptyGraph);
 
-        new BoundingBox2D(emptyGraph); // This should fail as the graph has no verticies.
+        new BoundingBox2D(emptyGraph); // This should fail as the graph has no vertices.
     }
 
     /**
@@ -152,5 +147,4 @@ public class BoundingBox2DNGTest {
         assertEquals(actualResult.midY, -0.5f);
         assertEquals(actualResult.maxY, 0.0f);
     }
-
 }

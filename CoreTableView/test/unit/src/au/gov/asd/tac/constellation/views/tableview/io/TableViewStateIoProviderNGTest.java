@@ -61,9 +61,7 @@ public class TableViewStateIoProviderNGTest {
     @Test
     public void readObject() throws IOException {
         final ObjectMapper objectMapper = new ObjectMapper();
-        final JsonNode jsonNode = objectMapper.readTree(
-                new FileInputStream(getClass().getResource("resources/tableViewStateRead.json").getPath())
-        );
+        final JsonNode jsonNode = objectMapper.readTree(new FileInputStream(getClass().getResource("resources/tableViewStateRead.json").getPath()));
 
         final GraphWriteMethods graph = mock(GraphWriteMethods.class);
 
@@ -86,15 +84,13 @@ public class TableViewStateIoProviderNGTest {
 
         assertEquals(actual.getTransactionColumnAttributes().size(), 1);
 
-        final Tuple<String, Attribute> transactionColumnAttr = actual
-                .getTransactionColumnAttributes().get(0);
+        final Tuple<String, Attribute> transactionColumnAttr = actual.getTransactionColumnAttributes().get(0);
         assertEquals(transactionColumnAttr.getFirst(), "transactionPrefix");
         assertEquals(transactionColumnAttr.getSecond(), new GraphAttribute(graph, 1));
 
         assertEquals(actual.getVertexColumnAttributes().size(), 1);
 
-        final Tuple<String, Attribute> vertexColumnAttr = actual
-                .getVertexColumnAttributes().get(0);
+        final Tuple<String, Attribute> vertexColumnAttr = actual.getVertexColumnAttributes().get(0);
         assertEquals(vertexColumnAttr.getFirst(), "vertexPrefix");
         assertEquals(vertexColumnAttr.getSecond(), new GraphAttribute(graph, 2));
     }
@@ -138,12 +134,8 @@ public class TableViewStateIoProviderNGTest {
 
         state.setSelectedOnly(true);
         state.setElementType(GraphElementType.VERTEX);
-        state.setTransactionColumnAttributes(List.of(
-                Tuple.create("transactionPrefix", transactionGraphAttr)
-        ));
-        state.setVertexColumnAttributes(List.of(
-                Tuple.create("vertexPrefix", vertexGraphAttr)
-        ));
+        state.setTransactionColumnAttributes(List.of(Tuple.create("transactionPrefix", transactionGraphAttr)));
+        state.setVertexColumnAttributes(List.of(Tuple.create("vertexPrefix", vertexGraphAttr)));
 
         final Attribute attribute = mock(Attribute.class);
         when(attribute.getId()).thenReturn(ATTRIBUTE_ID);
@@ -169,9 +161,7 @@ public class TableViewStateIoProviderNGTest {
         jsonGenerator.flush();
 
         final ObjectMapper objectMapper = new ObjectMapper();
-        final JsonNode expected = objectMapper.readTree(
-                new FileInputStream(getClass().getResource("resources/tableViewStateWrite.json").getPath())
-        );
+        final JsonNode expected = objectMapper.readTree(new FileInputStream(getClass().getResource("resources/tableViewStateWrite.json").getPath()));
 
         final JsonNode actual = objectMapper.readTree(new String(output.toByteArray(), StandardCharsets.UTF_8));
 
@@ -204,9 +194,7 @@ public class TableViewStateIoProviderNGTest {
         jsonGenerator.flush();
 
         final ObjectMapper objectMapper = new ObjectMapper();
-        final JsonNode expected = objectMapper.readTree(
-                "{\"ATTR NAME\": null}"
-        );
+        final JsonNode expected = objectMapper.readTree("{\"ATTR NAME\": null}");
 
         final JsonNode actual = objectMapper.readTree(new String(output.toByteArray(), StandardCharsets.UTF_8));
 

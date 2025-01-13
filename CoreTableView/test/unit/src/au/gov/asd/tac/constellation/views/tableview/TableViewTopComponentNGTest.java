@@ -62,6 +62,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class TableViewTopComponentNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(TableViewTopComponentNGTest.class.getName());
 
     @BeforeClass
@@ -107,9 +108,7 @@ public class TableViewTopComponentNGTest {
         when(readableGraph.getAttribute(GraphElementType.META, "table_view_state")).thenReturn(42);
         when(readableGraph.getObjectValue(42, 0)).thenReturn(state);
 
-        try (final MockedStatic<PluginExecution> pluginExecutionMockedStatic
-                = Mockito.mockStatic(PluginExecution.class)) {
-
+        try (final MockedStatic<PluginExecution> pluginExecutionMockedStatic = Mockito.mockStatic(PluginExecution.class)) {
             tableViewTopComponent.updateState(graph);
 
             pluginExecutionMockedStatic.verifyNoInteractions();
@@ -142,17 +141,13 @@ public class TableViewTopComponentNGTest {
         when(readableGraph.getObjectValue(42, 0)).thenReturn(null);
         when(tableViewTopComponent.getCurrentGraph()).thenReturn(currentGraph);
 
-        try (final MockedStatic<PluginExecution> pluginExecutionMockedStatic
-                = Mockito.mockStatic(PluginExecution.class)) {
-
+        try (final MockedStatic<PluginExecution> pluginExecutionMockedStatic = Mockito.mockStatic(PluginExecution.class)) {
             final PluginExecution pluginExecution = mock(PluginExecution.class);
 
             pluginExecutionMockedStatic.when(() -> PluginExecution.withPlugin(any(UpdateStatePlugin.class)))
                     .thenAnswer(mockitoInvocation -> {
                         final UpdateStatePlugin plugin = (UpdateStatePlugin) mockitoInvocation.getArgument(0);
-
                         assertEquals(new TableViewState(), plugin.getTableViewState());
-
                         return pluginExecution;
                     });
 
@@ -190,17 +185,13 @@ public class TableViewTopComponentNGTest {
 
         when(tablePane.getTable()).thenReturn(table);
 
-        try (final MockedStatic<PluginExecution> pluginExecutionMockedStatic
-                = Mockito.mockStatic(PluginExecution.class)) {
-
+        try (final MockedStatic<PluginExecution> pluginExecutionMockedStatic = Mockito.mockStatic(PluginExecution.class)) {
             final PluginExecution pluginExecution = mock(PluginExecution.class);
-            when(pluginExecution.executeLater(any(Graph.class)))
-                    .thenReturn(CompletableFuture.completedFuture(null));
+            when(pluginExecution.executeLater(any(Graph.class))).thenReturn(CompletableFuture.completedFuture(null));
 
             pluginExecutionMockedStatic.when(() -> PluginExecution.withPlugin(any(UpdateStatePlugin.class)))
                     .thenAnswer(mockitoInvocation -> {
                         final UpdateStatePlugin plugin = (UpdateStatePlugin) mockitoInvocation.getArgument(0);
-
                         assertEquals(expectedNewState, plugin.getTableViewState());
 
                         // Change the mock now that the "Update Plugin" has run
@@ -234,8 +225,7 @@ public class TableViewTopComponentNGTest {
         doCallRealMethod().when(tableViewTopComponent).componentShowing();
         doNothing().when(tableViewTopComponent).handleNewGraph(any(Graph.class));
 
-        try (final MockedStatic<GraphManager> graphManagerMockedStatic
-                = Mockito.mockStatic(GraphManager.class)) {
+        try (final MockedStatic<GraphManager> graphManagerMockedStatic = Mockito.mockStatic(GraphManager.class)) {
             final GraphManager graphManager = mock(GraphManager.class);
             final Graph activeGraph = mock(Graph.class);
 
@@ -284,56 +274,23 @@ public class TableViewTopComponentNGTest {
         final Attribute attribute3 = mock(Attribute.class);
 
         final TableViewState oldState = new TableViewState();
-        oldState.setColumnAttributes(List.of(
-                Tuple.create(".source", attribute1),
-                Tuple.create(".destination", attribute2)
-        ));
+        oldState.setColumnAttributes(List.of(Tuple.create(".source", attribute1), Tuple.create(".destination", attribute2)));
 
         final TableViewState newState = new TableViewState();
-        newState.setColumnAttributes(List.of(
-                Tuple.create(".destination", attribute2),
-                Tuple.create(".transaction", attribute3)
-        ));
+        newState.setColumnAttributes(List.of(Tuple.create(".destination", attribute2), Tuple.create(".transaction", attribute3)));
 
         // Removed column attributes
-        assertEquals(Set.of(
-                Tuple.create(".source", attribute1)
-        ),
-                tableViewTopComponent.getRemovedAttributes(oldState, newState)
-        );
+        assertEquals(Set.of(Tuple.create(".source", attribute1)), tableViewTopComponent.getRemovedAttributes(oldState, newState));
+        
+        assertEquals(Set.of(), tableViewTopComponent.getRemovedAttributes(null, newState));
 
-        assertEquals(
-                Set.of(),
-                tableViewTopComponent.getRemovedAttributes(null, newState)
-        );
-
-        assertEquals(
-                Set.of(
-                        Tuple.create(".source", attribute1),
-                        Tuple.create(".destination", attribute2)
-                ),
-                tableViewTopComponent.getRemovedAttributes(oldState, null)
-        );
+        assertEquals(Set.of(Tuple.create(".source", attribute1), Tuple.create(".destination", attribute2)), tableViewTopComponent.getRemovedAttributes(oldState, null));
 
         // Added column attributes
-        assertEquals(Set.of(
-                Tuple.create(".transaction", attribute3)
-        ),
-                tableViewTopComponent.getAddedAttributes(oldState, newState)
-        );
+        assertEquals(Set.of(Tuple.create(".transaction", attribute3)), tableViewTopComponent.getAddedAttributes(oldState, newState));
 
-        assertEquals(
-                Set.of(
-                        Tuple.create(".destination", attribute2),
-                        Tuple.create(".transaction", attribute3)
-                ),
-                tableViewTopComponent.getAddedAttributes(null, newState)
-        );
+        assertEquals(Set.of(Tuple.create(".destination", attribute2), Tuple.create(".transaction", attribute3)), tableViewTopComponent.getAddedAttributes(null, newState));
 
-        assertEquals(
-                Set.of(),
-                tableViewTopComponent.getAddedAttributes(oldState, null)
-        );
-
+        assertEquals(Set.of(), tableViewTopComponent.getAddedAttributes(oldState, null));
     }
 }

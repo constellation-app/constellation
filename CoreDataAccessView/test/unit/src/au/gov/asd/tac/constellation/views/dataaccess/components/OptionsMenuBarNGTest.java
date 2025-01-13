@@ -332,11 +332,8 @@ public class OptionsMenuBarNGTest {
         }
 
         // Compare images size
-        if (firstImage.getWidth() != secondImage.getWidth()) {
-            return false;
-        }
-
-        if (firstImage.getHeight() != secondImage.getHeight()) {
+        if (firstImage.getWidth() != secondImage.getWidth()
+                || firstImage.getHeight() != secondImage.getHeight()) {
             return false;
         }
 

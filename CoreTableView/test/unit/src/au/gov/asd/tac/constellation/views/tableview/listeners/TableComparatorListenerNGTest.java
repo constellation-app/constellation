@@ -44,6 +44,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class TableComparatorListenerNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(TableComparatorListenerNGTest.class.getName());
 
     private TableComparatorListener tableComparatorListener;
@@ -78,6 +79,7 @@ public class TableComparatorListenerNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     @Test
@@ -117,5 +119,4 @@ public class TableComparatorListenerNGTest {
 
         verify(activeTableReference).updatePagination(maxRowsPerPage, tablePane);
     }
-
 }

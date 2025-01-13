@@ -42,16 +42,15 @@ public class TableDefaultsColumnsProviderTestNGTest {
     private Graph graph;
     private ReadableGraph readableGraph;
     private Schema schema;
-
-    public TableDefaultsColumnsProviderTestNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -68,6 +67,7 @@ public class TableDefaultsColumnsProviderTestNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -75,7 +75,6 @@ public class TableDefaultsColumnsProviderTestNGTest {
      */
     @Test
     public void testEmptyGraph() {
-
         final TableDefaultColumns tableDefaultColumnsProvider = Lookup.getDefault().lookup(TableDefaultColumns.class);
 
         List<GraphAttribute> ids = tableDefaultColumnsProvider.getDefaultAttributes(null).stream().toList();
@@ -88,7 +87,6 @@ public class TableDefaultsColumnsProviderTestNGTest {
      */
     @Test
     public void testEmptyGraphSchema() {
-
         final TableDefaultsColumnsProvider tableDefaultColumnsProvider = 
                 Lookup.getDefault().lookup(TableDefaultsColumnsProvider.class);
 
@@ -104,12 +102,9 @@ public class TableDefaultsColumnsProviderTestNGTest {
      */
     @Test
     public void testGraphAttributeCounts() {
-
-        final TableDefaultsColumnsProvider tableDefaultColumnsProvider = 
-                Lookup.getDefault().lookup(TableDefaultsColumnsProvider.class);
+        final TableDefaultsColumnsProvider tableDefaultColumnsProvider = Lookup.getDefault().lookup(TableDefaultsColumnsProvider.class);
         when(graph.getSchema()).thenReturn(schema);
-        List<GraphAttribute> ids = 
-                tableDefaultColumnsProvider.getDefaultAttributes(graph).stream().toList();
+        List<GraphAttribute> ids = tableDefaultColumnsProvider.getDefaultAttributes(graph).stream().toList();
 
         assertTrue(ids.size() == 2);
     }

@@ -51,10 +51,12 @@ public class SelectUndimmedPluginNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -83,10 +85,12 @@ public class SelectUndimmedPluginNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
      * Test of edit method, of class SelectUndimmedPlugin.
+     * @throws java.lang.InterruptedException
      */
     @Test
     public void testEdit() throws InterruptedException {

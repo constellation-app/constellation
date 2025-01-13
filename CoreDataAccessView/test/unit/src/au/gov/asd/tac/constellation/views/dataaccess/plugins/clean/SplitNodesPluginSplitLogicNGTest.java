@@ -34,9 +34,20 @@ import org.testng.annotations.Test;
  */
 public class SplitNodesPluginSplitLogicNGTest {
 
-    private int vertexIdentifierAttribute, vertexTypeAttribute, vertexLatitudeAttribute, vertexLongitudeAttribute, vertexSelectedAttribute,
-            vertexAttributeX, vertexAttributeY, vertexAttributeZ;
-    private int vxId1, vxId2, vxId3, vxId4;
+    private int vertexIdentifierAttribute;
+    private int vertexTypeAttribute;
+    private int vertexLatitudeAttribute;
+    private int vertexLongitudeAttribute;
+    private int vertexSelectedAttribute;
+    private int vertexAttributeX;
+    private int vertexAttributeY;
+    private int vertexAttributeZ;
+    
+    private int vxId1;
+    private int vxId2;
+    private int vxId3;
+    private int vxId4;
+    
     private StoreGraph graph;
 
     @BeforeMethod

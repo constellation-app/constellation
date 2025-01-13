@@ -47,5 +47,4 @@ public class DataAccessPluginCoreTypeNGTest {
         assertEquals(pluginTypeList.get(7).getType(), "Experimental");
         assertEquals(pluginTypeList.get(8).getType(), "Developer");
     }
-
 }

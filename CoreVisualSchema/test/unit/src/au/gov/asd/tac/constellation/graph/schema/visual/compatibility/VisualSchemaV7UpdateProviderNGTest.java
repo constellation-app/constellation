@@ -40,18 +40,22 @@ public class VisualSchemaV7UpdateProviderNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -103,6 +107,5 @@ public class VisualSchemaV7UpdateProviderNGTest {
         assertEquals(graph.getStringValue(newGraphBottomlabelsAttributeId, 0), "Label1;Blue;1.0|Label2;Red;2.0|Label3;Yellow;3.0");
         assertEquals(graph.getStringValue(newGraphToplabelsAttributeId, 0), "Label4;Black;4.0|Label5;Green;5.0");
         assertEquals(graph.getStringValue(newGraphTransactionlabelsAttributeId, 0), "Label6;White;6.0");
-    }
-    
+    }   
 }

@@ -49,16 +49,15 @@ public class OpenFilePluginNGTest {
 
     private static MockedStatic<FileChooser> fileChooserStaticMock;
     private static MockedStatic<OpenFile> openFileStaticMock;
-
-    public OpenFilePluginNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod

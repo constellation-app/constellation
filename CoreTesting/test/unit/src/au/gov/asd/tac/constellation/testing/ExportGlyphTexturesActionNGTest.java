@@ -49,36 +49,31 @@ public class ExportGlyphTexturesActionNGTest {
 
     private static MockedStatic<FileChooser> fileChooserStaticMock;
     private static MockedStatic<SharedDrawable> sharedDrawableStaticMock;
-
-    public ExportGlyphTexturesActionNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
         fileChooserStaticMock = mockStatic(FileChooser.class);
         
-        fileChooserStaticMock.when(()
-                -> FileChooser.createFileChooserBuilder(any(String.class)))
+        fileChooserStaticMock.when(() -> FileChooser.createFileChooserBuilder(any(String.class)))
                 .thenCallRealMethod();
         
-        fileChooserStaticMock.when(()
-                -> FileChooser.createFileChooserBuilder(any(String.class), any(String.class)))
+        fileChooserStaticMock.when(() -> FileChooser.createFileChooserBuilder(any(String.class), any(String.class)))
                 .thenCallRealMethod();
         
-        fileChooserStaticMock.when(()
-                -> FileChooser.createFileChooserBuilder(any(String.class), any(String.class), any(String.class)))
+        fileChooserStaticMock.when(() -> FileChooser.createFileChooserBuilder(any(String.class), any(String.class), any(String.class)))
                 .thenCallRealMethod();
         
-        fileChooserStaticMock.when(()
-                -> FileChooser.createFileChooserBuilder(any(String.class), any(String.class), any(String.class), any(Boolean.class)))
+        fileChooserStaticMock.when(() -> FileChooser.createFileChooserBuilder(any(String.class), any(String.class), any(String.class), any(Boolean.class)))
                 .thenCallRealMethod();
         
         sharedDrawableStaticMock = mockStatic(SharedDrawable.class);
@@ -93,10 +88,9 @@ public class ExportGlyphTexturesActionNGTest {
     /**
      * Test of actionPerformed method, of class ExportGlyphTexturesAction.
      *
-     * @throws java.lang.Exception
      */
     @Test
-    public void testActionPerformed() throws Exception {
+    public void testActionPerformed() {
         System.out.println("testActionPerformed");
 
         final ExportGlyphTexturesAction instance = new ExportGlyphTexturesAction();

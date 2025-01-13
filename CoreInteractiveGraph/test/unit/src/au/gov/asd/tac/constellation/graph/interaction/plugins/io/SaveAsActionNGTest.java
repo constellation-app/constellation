@@ -28,7 +28,6 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
 import org.testng.annotations.Test;
 
 /**
@@ -102,17 +101,4 @@ public class SaveAsActionNGTest {
         // Assert isSaved is still false, as null was fed into actionPerformed
         assertFalse(instance.get(0).isSaved());
     }
-
-    /**
-     * Test of getSavedFilePath method, of class SaveAsAction.
-     */
-    @Test
-    public void testGetSavedFilePath() {
-        System.out.println("getSavedFilePath");
-        SwingUtilities.invokeLater(() -> {
-            SaveAsAction instance = new SaveAsAction();
-            assertTrue(instance.getSavedFilePath().isEmpty());
-        });
-    }
-
 }

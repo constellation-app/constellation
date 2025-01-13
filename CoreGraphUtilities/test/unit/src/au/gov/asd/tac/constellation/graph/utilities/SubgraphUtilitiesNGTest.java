@@ -33,24 +33,25 @@ import org.testng.annotations.Test;
  * @author arcturus
  */
 public class SubgraphUtilitiesNGTest {
-
-    public SubgraphUtilitiesNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -58,95 +59,95 @@ public class SubgraphUtilitiesNGTest {
      */
     @Test
     public void testCopyGraphWithTransaction() {
-        final String VX_ATTRIBUTE = "Name";
-        final String VX_VALUE = "Foo";
-        final String TX_ATTRIBUTE = "Name";
-        final String TX_VALUE = "Bar";
+        final String vxAttribute = "Name";
+        final String vxValue = "Foo";
+        final String txAttribute = "Name";
+        final String txValue = "Bar";
 
         final StoreGraph graph = new StoreGraph();
         final int vx0 = graph.addVertex();
         final int vx1 = graph.addVertex();
         final int tx0 = graph.addTransaction(vx0, vx1, true);
-        final int vxAttr = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, VX_ATTRIBUTE, "", "", null);
-        final int txAttr = graph.addAttribute(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, TX_ATTRIBUTE, "", "", null);
+        final int vxAttr = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, vxAttribute, "", "", null);
+        final int txAttr = graph.addAttribute(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, txAttribute, "", "", null);
         graph.setPrimaryKey(GraphElementType.VERTEX, vxAttr);
         graph.setPrimaryKey(GraphElementType.TRANSACTION, txAttr);
-        graph.setStringValue(vxAttr, vx0, VX_VALUE);
-        graph.setStringValue(txAttr, tx0, TX_VALUE);
+        graph.setStringValue(vxAttr, vx0, vxValue);
+        graph.setStringValue(txAttr, tx0, txValue);
 
         assertEquals(graph.getVertexCount(), 2);
         assertEquals(graph.getTransactionCount(), 1);
-        assertTrue(graph.getAttribute(GraphElementType.VERTEX, VX_ATTRIBUTE) != Graph.NOT_FOUND);
-        assertTrue(graph.getAttribute(GraphElementType.TRANSACTION, TX_ATTRIBUTE) != Graph.NOT_FOUND);
-        assertEquals(graph.getStringValue(vxAttr, vx0), VX_VALUE);
-        assertEquals(graph.getStringValue(txAttr, tx0), TX_VALUE);
+        assertTrue(graph.getAttribute(GraphElementType.VERTEX, vxAttribute) != Graph.NOT_FOUND);
+        assertTrue(graph.getAttribute(GraphElementType.TRANSACTION, txAttribute) != Graph.NOT_FOUND);
+        assertEquals(graph.getStringValue(vxAttr, vx0), vxValue);
+        assertEquals(graph.getStringValue(txAttr, tx0), txValue);
 
         final StoreGraph copy = SubgraphUtilities.copyGraph(graph);
-        final int vxAttrCopy = copy.getAttribute(GraphElementType.VERTEX, VX_ATTRIBUTE);
-        final int txAttrCopy = copy.getAttribute(GraphElementType.TRANSACTION, TX_ATTRIBUTE);
+        final int vxAttrCopy = copy.getAttribute(GraphElementType.VERTEX, vxAttribute);
+        final int txAttrCopy = copy.getAttribute(GraphElementType.TRANSACTION, txAttribute);
 
         assertEquals(copy.getVertexCount(), 2);
         assertEquals(copy.getTransactionCount(), 1);
-        assertTrue(copy.getAttribute(GraphElementType.VERTEX, VX_ATTRIBUTE) != Graph.NOT_FOUND);
-        assertTrue(copy.getAttribute(GraphElementType.TRANSACTION, TX_ATTRIBUTE) != Graph.NOT_FOUND);
-        assertEquals(copy.getStringValue(vxAttrCopy, vx0), VX_VALUE);
-        assertEquals(copy.getStringValue(txAttrCopy, tx0), TX_VALUE);
+        assertTrue(copy.getAttribute(GraphElementType.VERTEX, vxAttribute) != Graph.NOT_FOUND);
+        assertTrue(copy.getAttribute(GraphElementType.TRANSACTION, txAttribute) != Graph.NOT_FOUND);
+        assertEquals(copy.getStringValue(vxAttrCopy, vx0), vxValue);
+        assertEquals(copy.getStringValue(txAttrCopy, tx0), txValue);
     }
 
     @Test
     public void testCopyGraphWithoutTransaction() {
-        final String VX_ATTRIBUTE = "Name";
-        final String VX_VALUE = "Foo";
+        final String vxAttribute = "Name";
+        final String vxValue = "Foo";
 
         final StoreGraph graph = new StoreGraph();
         final int vx0 = graph.addVertex();
-        final int vxAttr = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, VX_ATTRIBUTE, "", "", null);
+        final int vxAttr = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, vxAttribute, "", "", null);
         graph.setPrimaryKey(GraphElementType.VERTEX, vxAttr);
 
-        graph.setStringValue(vxAttr, vx0, VX_VALUE);
+        graph.setStringValue(vxAttr, vx0, vxValue);
 
         assertEquals(graph.getVertexCount(), 1);
         assertEquals(graph.getTransactionCount(), 0);
-        assertTrue(graph.getAttribute(GraphElementType.VERTEX, VX_ATTRIBUTE) != Graph.NOT_FOUND);
-        assertEquals(graph.getStringValue(vxAttr, vx0), VX_VALUE);
+        assertTrue(graph.getAttribute(GraphElementType.VERTEX, vxAttribute) != Graph.NOT_FOUND);
+        assertEquals(graph.getStringValue(vxAttr, vx0), vxValue);
 
         final StoreGraph copy = SubgraphUtilities.copyGraph(graph);
-        final int vxAttrCopy = copy.getAttribute(GraphElementType.VERTEX, VX_ATTRIBUTE);
+        final int vxAttrCopy = copy.getAttribute(GraphElementType.VERTEX, vxAttribute);
 
         assertEquals(copy.getVertexCount(), 1);
         assertEquals(copy.getTransactionCount(), 0);
-        assertTrue(copy.getAttribute(GraphElementType.VERTEX, VX_ATTRIBUTE) != Graph.NOT_FOUND);
-        assertEquals(copy.getStringValue(vxAttrCopy, vx0), VX_VALUE);
+        assertTrue(copy.getAttribute(GraphElementType.VERTEX, vxAttribute) != Graph.NOT_FOUND);
+        assertEquals(copy.getStringValue(vxAttrCopy, vx0), vxValue);
     }
 
     @Test
     public void testCopyGraphWithoutTransactionButWithTransactionAttribute() {
-        final String VX_ATTRIBUTE = "Name";
-        final String VX_VALUE = "Foo";
-        final String TX_ATTRIBUTE = "Name";
+        final String vxAttribute = "Name";
+        final String vxValue = "Foo";
+        final String txAttribute = "Name";
 
         final StoreGraph graph = new StoreGraph();
         final int vx0 = graph.addVertex();
-        final int vxAttr = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, VX_ATTRIBUTE, "", "", null);
-        final int txAttr = graph.addAttribute(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, TX_ATTRIBUTE, "", "", null);
+        final int vxAttr = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, vxAttribute, "", "", null);
+        final int txAttr = graph.addAttribute(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, txAttribute, "", "", null);
         graph.setPrimaryKey(GraphElementType.VERTEX, vxAttr);
         graph.setPrimaryKey(GraphElementType.TRANSACTION, txAttr);
 
-        graph.setStringValue(vxAttr, vx0, VX_VALUE);
+        graph.setStringValue(vxAttr, vx0, vxValue);
 
         assertEquals(graph.getVertexCount(), 1);
         assertEquals(graph.getTransactionCount(), 0);
-        assertTrue(graph.getAttribute(GraphElementType.VERTEX, VX_ATTRIBUTE) != Graph.NOT_FOUND);
-        assertTrue(graph.getAttribute(GraphElementType.TRANSACTION, TX_ATTRIBUTE) != Graph.NOT_FOUND);
-        assertEquals(graph.getStringValue(vxAttr, vx0), VX_VALUE);
+        assertTrue(graph.getAttribute(GraphElementType.VERTEX, vxAttribute) != Graph.NOT_FOUND);
+        assertTrue(graph.getAttribute(GraphElementType.TRANSACTION, txAttribute) != Graph.NOT_FOUND);
+        assertEquals(graph.getStringValue(vxAttr, vx0), vxValue);
 
         final StoreGraph copy = SubgraphUtilities.copyGraph(graph);
-        final int vxAttrCopy = copy.getAttribute(GraphElementType.VERTEX, VX_ATTRIBUTE);
+        final int vxAttrCopy = copy.getAttribute(GraphElementType.VERTEX, vxAttribute);
 
         assertEquals(copy.getVertexCount(), 1);
         assertEquals(copy.getTransactionCount(), 0);
-        assertTrue(copy.getAttribute(GraphElementType.VERTEX, VX_ATTRIBUTE) != Graph.NOT_FOUND);
-        assertTrue(copy.getAttribute(GraphElementType.TRANSACTION, TX_ATTRIBUTE) != Graph.NOT_FOUND);
-        assertEquals(copy.getStringValue(vxAttrCopy, vx0), VX_VALUE);
+        assertTrue(copy.getAttribute(GraphElementType.VERTEX, vxAttribute) != Graph.NOT_FOUND);
+        assertTrue(copy.getAttribute(GraphElementType.TRANSACTION, txAttribute) != Graph.NOT_FOUND);
+        assertEquals(copy.getStringValue(vxAttrCopy, vx0), vxValue);
     }
 }

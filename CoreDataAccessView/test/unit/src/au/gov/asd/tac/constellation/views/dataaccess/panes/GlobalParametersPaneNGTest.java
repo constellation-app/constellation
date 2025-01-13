@@ -46,6 +46,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class GlobalParametersPaneNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(GlobalParametersPaneNGTest.class.getName());
 
     private static MockedStatic<PluginParametersPane> pluginParametersPaneMockedStatic;
@@ -53,10 +54,7 @@ public class GlobalParametersPaneNGTest {
 
     private GlobalParametersPane globalParametersPane;
     private PluginParameters parameters;
-
-    public GlobalParametersPaneNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {

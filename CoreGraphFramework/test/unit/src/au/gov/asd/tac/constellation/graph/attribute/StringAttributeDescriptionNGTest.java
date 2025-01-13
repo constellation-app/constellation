@@ -38,16 +38,15 @@ import org.testng.annotations.Test;
 public class StringAttributeDescriptionNGTest {
 
     StringAttributeDescription instance;
-
-    public StringAttributeDescriptionNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -58,6 +57,7 @@ public class StringAttributeDescriptionNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -123,7 +123,6 @@ public class StringAttributeDescriptionNGTest {
     public void testSetDefaultCantConvert() {
         System.out.println("setDefaultCantConvert");
         
-        int id = 0;
         instance.setDefault(LocalDate.of(1999, 12, 31));
     }
 

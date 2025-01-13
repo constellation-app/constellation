@@ -52,44 +52,59 @@ import org.testng.annotations.Test;
  */
 public class BitMaskQueryCollectionNGTest {
 
-    private int layerMaskV, layerMaskT, layerVisibilityV, layerVisibilityT, selectedV, selectedT, vertexLabelAttribute, txnLabelAttribute;
-    private int vxId1, vxId2, vxId3, vxId4, txId1, txId2, txId3;
+    private int layerMaskV;
+    private int layerMaskT;
+    private int layerVisibilityV;
+    private int layerVisibilityT;
+    private int selectedV;
+    private int selectedT;
+    private int vertexLabelAttribute;
+    private int txnLabelAttribute;
+    
+    private int vxId1;
+    private int vxId2;
+    private int vxId3;
+    private int vxId4;
+    
+    private int txId1;
+    private int txId2;
+    private int txId3;
+    
     private Graph graph;
     private final BitMaskQueryCollection vxBitMaskCollection = new BitMaskQueryCollection(GraphElementType.VERTEX);
     private final BitMaskQueryCollection txBitMaskCollection = new BitMaskQueryCollection(GraphElementType.TRANSACTION);
     
-    public BitMaskQueryCollectionNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
         /**
      * Set up a graph with four vertices and three transactions
      */
-    private void setupGraph() {
+    private void setupGraph() throws InterruptedException {
         graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
         
         vxBitMaskCollection.setQueries(BitMaskQueryCollection.getDefaultVxQueries());
         txBitMaskCollection.setQueries(BitMaskQueryCollection.getDefaultTxQueries());
 
-        WritableGraph wg;
-        try {
-            wg = graph.getWritableGraph("", true);
-        
+        WritableGraph wg = graph.getWritableGraph("", true);
+        try {    
             // add attributes
             int vertexIdentifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.ensure(wg);
             vertexLabelAttribute = VisualConcept.VertexAttribute.LABEL.ensure(wg);
@@ -148,12 +163,9 @@ public class BitMaskQueryCollectionNGTest {
             txId3 = wg.addTransaction(vxId3, vxId4, true);
             wg.setIntValue(layerMaskT, txId3, 1);
             wg.setFloatValue(layerVisibilityT, txId3, 1.0f);
-            wg.setBooleanValue(selectedT, txId3, false);
-
+            wg.setBooleanValue(selectedT, txId3, false);           
+        } finally {
             wg.commit();
-        } catch (final InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
-            Thread.currentThread().interrupt();
         }
     }
 
@@ -231,9 +243,10 @@ public class BitMaskQueryCollectionNGTest {
 
     /**
      * Test of updateBitMask method, of class BitMaskQueryCollection.
+     * @throws java.lang.InterruptedException
      */
     @Test
-    public void testCombineBitmap() {
+    public void testCombineBitmap() throws InterruptedException {
         setupGraph();
         final GraphManager gm = Mockito.mock(GraphManager.class);
         when(gm.getActiveGraph()).thenReturn(graph);
@@ -241,10 +254,8 @@ public class BitMaskQueryCollectionNGTest {
         try (MockedStatic<GraphManager> mockedStatic = Mockito.mockStatic(GraphManager.class)) {
             mockedStatic.when(() -> GraphManager.getDefault()).thenReturn(gm);
 
-            WritableGraph wg;
-            try {
-                wg = graph.getWritableGraph("", true);
-                
+            WritableGraph wg = graph.getWritableGraph("", true);
+            try {               
                 Query selQuery1 = new Query(GraphElementType.VERTEX, "Label contains '.5'");
                 Query selQuery2 = new Query(GraphElementType.VERTEX, "Label contains \"1\"");
                 Query selQuery3 = new Query(GraphElementType.TRANSACTION, "Label contains '.'");
@@ -387,19 +398,15 @@ public class BitMaskQueryCollectionNGTest {
                 
                 LayersUtilities.directAllocateElementsForLayer(16, false, false);
                 assertEquals(wg.getIntValue(layerMaskT, txId1) & 16, 0);
-                
+            } finally {
                 wg.commit();
-
-            } catch (final InterruptedException ex) {
-                Exceptions.printStackTrace(ex);
-                Thread.currentThread().interrupt();
             }
         }
     }
     
-    private void sessionEdit(boolean mode, long graphMask) {
-        try {
-            WritableGraph wg = graph.getWritableGraph(" sess ed ", mode);
+    private void sessionEdit(boolean mode, long graphMask) throws InterruptedException {
+        WritableGraph wg = graph.getWritableGraph(" sess ed ", mode);
+        try {           
             final int graphCurrentBitMaskAttrId = LayersViewConcept.GraphAttribute.LAYER_MASK_SELECTED.ensure(wg);
             wg.setLongValue(graphCurrentBitMaskAttrId, 0, graphMask);
             final long currentBitmask = wg.getLongValue(graphCurrentBitMaskAttrId, 0);
@@ -420,13 +427,12 @@ public class BitMaskQueryCollectionNGTest {
                 currentState.extractLayerAttributes(wg);
                 LayersViewController.getDefault().updateListenedAttributes();
             }
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+        } finally {
+            wg.commit();
         }
-        
     }
 
-    public void changeLayerVisibility(GraphWriteMethods gwm, final int index, final boolean isVisible) {
+    private void changeLayerVisibility(GraphWriteMethods gwm, final int index, final boolean isVisible) throws InterruptedException {
         final BitMaskQuery vxQuery = vxBitMaskCollection.getQuery(index);
         final BitMaskQuery txQuery = txBitMaskCollection.getQuery(index);
         
@@ -470,9 +476,9 @@ public class BitMaskQueryCollectionNGTest {
         }
     }
     
-    private void writeState() {
-        try {
-            WritableGraph wg = graph.getWritableGraph(" sess ed ", false);
+    private void writeState() throws InterruptedException {
+        WritableGraph wg = graph.getWritableGraph(" sess ed ", false);
+        try {            
             final int stateAttributeId = LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.ensure(wg);
             LayersViewState currentState = wg.getObjectValue(stateAttributeId, 0);
             if (currentState == null) {
@@ -490,9 +496,8 @@ public class BitMaskQueryCollectionNGTest {
             }
 
             wg.setObjectValue(stateAttributeId, 0, currentState);
+        } finally {
             wg.commit();
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
         }
     }
     
@@ -567,5 +572,4 @@ public class BitMaskQueryCollectionNGTest {
         instance.removeQueryAndSort(bitIndex);
         assertEquals(instance.getQuery(bitIndex), null);
     }
-
 }
