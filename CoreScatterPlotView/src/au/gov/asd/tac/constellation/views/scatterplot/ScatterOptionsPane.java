@@ -232,7 +232,7 @@ public class ScatterOptionsPane extends BorderPane {
 
         final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor()));
         helpButton = new Button("", helpImage);
-        helpButton.setOnAction(event -> new HelpCtx(this.getClass().getPackage().getName()).display());
+        helpButton.setOnAction(event -> new HelpCtx("au.gov.asd.tac.constellation.views.scatterplot.ScatterPlotTopComponent").display());
         helpButton.setStyle("-fx-border-color: transparent; -fx-background-color: transparent; -fx-effect: null; ");
 
         this.optionsToolBar = new ToolBar();

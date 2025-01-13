@@ -618,7 +618,7 @@ public class HistogramControls extends JPanel {
     }//GEN-LAST:event_linkToggleStateChanged
 
     private void helpButtonMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_helpButtonMousePressed
-        final HelpCtx help = new HelpCtx("au.gov.asd.tac.constellation.views.histogram");
+        final HelpCtx help = new HelpCtx("au.gov.asd.tac.constellation.views.histogram.HistogramTopComponent");
         help.display();
     }//GEN-LAST:event_helpButtonMousePressed
 
