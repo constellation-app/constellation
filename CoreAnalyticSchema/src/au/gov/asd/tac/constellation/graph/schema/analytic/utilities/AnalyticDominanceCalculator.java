@@ -26,7 +26,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author cygnus_x-1
  */
-@ServiceProvider(service = VertexDominanceCalculator.class, position = Integer.MAX_VALUE)
+@ServiceProvider(service = VertexDominanceCalculator.class, position = Integer.MAX_VALUE - 1)
 public class AnalyticDominanceCalculator extends VertexDominanceCalculator<SchemaVertexType> {
 
     @Override
