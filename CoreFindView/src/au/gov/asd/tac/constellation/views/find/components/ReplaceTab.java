@@ -53,7 +53,7 @@ public class ReplaceTab extends BasicFindTab {
         replaceAllButton.setOnAction(action -> replaceAllAction());
         replaceNextButton.setOnAction(action -> replaceNextAction());
         helpButton.setStyle("-fx-border-color: transparent; -fx-background-color: transparent; -fx-effect: null; ");
-        helpButton.setOnAction(event -> new HelpCtx("au.gov.asd.tac.constellation.views.find").display());
+        helpButton.setOnAction(event -> new HelpCtx("au.gov.asd.tac.constellation.views.find.FindViewTopComponent").display());
 
     }
 

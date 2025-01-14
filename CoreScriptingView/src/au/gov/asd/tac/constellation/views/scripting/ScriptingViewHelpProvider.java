@@ -46,7 +46,7 @@ public class ScriptingViewHelpProvider extends HelpPageProvider {
                 + "asd" + SEP + "tac" + SEP + CODEBASE_NAME + SEP + "views" + SEP + "scripting" + SEP;
 
         map.put("au.gov.asd.tac.constellation.views.scripting.javadocs", scriptingModulePath + "docs" + SEP + "javadoc" + SEP + "help-doc.md");
-        map.put("au.gov.asd.tac.constellation.views.scripting", scriptingModulePath + "scripting-view.md");
+        map.put("au.gov.asd.tac.constellation.views.scripting.ScriptingViewTopComponent", scriptingModulePath + "scripting-view.md");
         return map;
     }
 
