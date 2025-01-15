@@ -79,16 +79,16 @@ public class ChoiceInputNGTest {
     
     @Test(expectedExceptions = InvalidOperationException.class)
     public void testChoiceInputField_nullOptions() {  
-        ChoiceInputField choiceInputFieldMock = spy(createEmptyChoiceInputField());
+        final ChoiceInputField choiceInputFieldMock = spy(createEmptyChoiceInputField());
         assertEquals(choiceInputFieldMock.getOptions().size(), 0);
         choiceInputFieldMock.setOptions(null);        
     }
     
     @Test
     public void testChoiceInputField_constructorWithOptions() {  
-        ObservableList<String> observableList = FXCollections.observableArrayList();
+        final ObservableList<String> observableList = FXCollections.observableArrayList();
         observableList.addAll(fruitList);
-        ChoiceInputField choiceInputFieldMock = spy(createChoiceInputField(observableList));
+        final ChoiceInputField choiceInputFieldMock = spy(createChoiceInputField(observableList));
         
         final List fruitOptions = choiceInputFieldMock.getOptions();
         assertEquals(fruitOptions.size(), fruitList.size());
@@ -99,9 +99,9 @@ public class ChoiceInputNGTest {
     
     @Test
     public void testChoiceInputField_clearChoices() {  
-        ObservableList<String> observableList = FXCollections.observableArrayList();
+        final ObservableList<String> observableList = FXCollections.observableArrayList();
         observableList.addAll(fruitList);
-        ChoiceInputField choiceInputFieldMock = spy(createChoiceInputField(observableList));
+        final ChoiceInputField choiceInputFieldMock = spy(createChoiceInputField(observableList));
         
         // test setText and getText
         choiceInputFieldMock.setText(fruitList.getFirst());
@@ -114,17 +114,17 @@ public class ChoiceInputNGTest {
     
     @Test
     public void testChoiceInputField_icons() {  
-        ChoiceInputField choiceInputFieldMock = spy(createEmptyChoiceInputField());
+        final ChoiceInputField choiceInputFieldMock = spy(createEmptyChoiceInputField());
         
-        List<ImageView> iconsList = new ArrayList<>();
-        ImageView mockIcon = mock(ImageView.class);
+        final List<ImageView> iconsList = new ArrayList<>();
+        final ImageView mockIcon = mock(ImageView.class);
         iconsList.add(mockIcon);
         choiceInputFieldMock.setIcons(iconsList);
         assertEquals(choiceInputFieldMock.getIcons().size(), iconsList.size());
         assertEquals(choiceInputFieldMock.getIcons().getFirst(), mockIcon);
     }
     
-    public ChoiceInputField createEmptyChoiceInputField() {
+    public final ChoiceInputField createEmptyChoiceInputField() {
       return new ChoiceInputFieldImpl();
     }
     
