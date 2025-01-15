@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field;
 
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputListener;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputConstants;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button.ButtonType;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
@@ -72,9 +74,9 @@ public final class MultiChoiceInput<C extends Object>
             //This meethod requres use of an Arraylist. Casting is not possible.
             final ArrayList<C> localList = new ArrayList<>();       
             localList.addAll(requestedChoices);
-            // Only retain the choices from the selection that in te available options
+            // Only retain the choices from the selection in the available options
             localList.retainAll(getOptions());
-            //Single Modiication
+            //Single Modification
             this.setText(listToString(localList));
         }
     }
@@ -190,6 +192,10 @@ public final class MultiChoiceInput<C extends Object>
     // </editor-fold> 
 
     // <editor-fold defaultstate="collapsed" desc="ContextMenuContributor Implementation"> 
+    /**
+     * Get context menu items
+     * @return list of menu items when context menu invoked
+     */
     @Override
     public List<MenuItem> getLocalMenuItems() {
         final List<MenuItem> items = new ArrayList();
@@ -274,8 +280,8 @@ public final class MultiChoiceInput<C extends Object>
                     boxes.add(item);
                             
 
-                    if (!icons.isEmpty()){
-                        item.setGraphic(icons.get(i));
+                    if (!getIcons().isEmpty()){
+                        item.setGraphic(getIcons().get(i));
                     }
 
                     final CustomMenuItem menuItem = this.registerCustomMenuItem(item);   

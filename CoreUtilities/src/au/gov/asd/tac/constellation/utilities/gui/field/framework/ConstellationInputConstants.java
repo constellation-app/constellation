@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.utilities.gui.field;
+package au.gov.asd.tac.constellation.utilities.gui.field.framework;
 
 /**
  * A suite of constants used by {@link ConstellationInputField} objects and related sub classes.

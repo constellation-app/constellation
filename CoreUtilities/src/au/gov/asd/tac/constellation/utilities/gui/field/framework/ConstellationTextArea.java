@@ -16,10 +16,8 @@
 package au.gov.asd.tac.constellation.utilities.gui.field.framework;
 
 import au.gov.asd.tac.constellation.utilities.gui.context.ContextMenuContributor;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInput;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants;
-import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.TextType.MULTILINE;
-import static au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.TextType.SECRET;
+import static au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputConstants.TextType.MULTILINE;
+import static au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputConstants.TextType.SECRET;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.util.Arrays;
 import java.util.List;

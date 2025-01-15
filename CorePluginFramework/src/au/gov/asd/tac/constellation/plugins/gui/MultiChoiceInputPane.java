@@ -28,7 +28,7 @@ import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputListener;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputListener;
 
 /**
  * A drop-down combo box allowing multiple selections, which is the GUI element

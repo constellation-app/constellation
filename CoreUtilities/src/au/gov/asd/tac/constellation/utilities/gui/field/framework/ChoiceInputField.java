@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field.framework;
 
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInput;
 import au.gov.asd.tac.constellation.utilities.gui.field.MultiChoiceInput;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +35,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidOperationException;
  */
 public abstract class ChoiceInputField<C extends Object, O extends Object> 
         extends ConstellationInput<C> {
-    
+
     private final List<O> options = new ArrayList<>();
     protected final List<ImageView> icons = new ArrayList<>();
   
@@ -44,11 +43,16 @@ public abstract class ChoiceInputField<C extends Object, O extends Object>
     }
     
     public ChoiceInputField(final ObservableList<O> options){
-        options.addAll(options);
-        options.addListener((ListChangeListener.Change<? extends O> change) -> {
-            this.options.clear();
-            this.options.addAll(change.getList());
-        });
+        if (options == null) {
+            throw new InvalidOperationException(
+                    "Attempting to Set Options with null options");
+        }
+        this.options.addAll(options);
+        // Not sure if this is even needed
+//        options.addListener((ListChangeListener.Change<? extends O> change) -> {
+//            this.options.clear();
+//            this.options.addAll(change.getList());
+//        });
     }
     
     // <editor-fold defaultstate="collapsed" desc="Local Private Methods">   
@@ -57,13 +61,15 @@ public abstract class ChoiceInputField<C extends Object, O extends Object>
      * Any previously defined options will be overwritten with this new list.
      * @param options 
      */
-    public final void setOptions(final List<O> options){
+    public final void setOptions(final List<O> options) {
         if (this.options != null){
             this.options.clear();
-            this.options.addAll(options);
-        } else {
-            throw new InvalidOperationException(
-                    "Attempting to Set Options when this ChoiceInputField is using an observableList of options");
+            if (options != null) {
+                this.options.addAll(options);
+            } else {
+                throw new InvalidOperationException(
+                    "Attempting to Set Options with null options");
+            }
         }
     }
     
@@ -80,8 +86,15 @@ public abstract class ChoiceInputField<C extends Object, O extends Object>
      * @param icons
      */
     public final void setIcons(final List<ImageView> icons) {
-        this.icons.clear();
-        this.icons.addAll(icons);
+        this.getIcons().clear();
+        this.getIcons().addAll(icons);
+    }
+    
+    /**
+     * @return the icons
+     */
+    public List<ImageView> getIcons() {
+        return icons;
     }
     
     /**

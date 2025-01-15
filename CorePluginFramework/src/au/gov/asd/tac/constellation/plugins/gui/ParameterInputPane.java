@@ -19,10 +19,10 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterListener;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInput;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInput;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputListener;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputListener;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.InputValidator;
 
 /**

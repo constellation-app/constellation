@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field.framework;
 
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInput;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;

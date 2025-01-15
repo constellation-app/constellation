@@ -15,18 +15,16 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.field.framework;
 
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInput;
 import java.io.Serializable;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputListener;
 
 /**
  * An Interface for {@link ConstellationInput} extensions.
- * Provides required functionality to build an info window for insertion to an input extenesion.
+ * Provides required functionality to build an info window for insertion to an input extension.
  * 
  * @author capricornunicorn123
  */

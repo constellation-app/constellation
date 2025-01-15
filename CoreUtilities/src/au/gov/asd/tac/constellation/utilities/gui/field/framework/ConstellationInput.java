@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.utilities.gui.field;
+package au.gov.asd.tac.constellation.utilities.gui.field.framework;
 
 import au.gov.asd.tac.constellation.utilities.gui.context.ContextMenuContributor;
-import au.gov.asd.tac.constellation.utilities.gui.field.ConstellationInputConstants.TextType;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.Button;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationTextArea;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputConstants.TextType;
 import au.gov.asd.tac.constellation.utilities.gui.recentvalue.RecentValueUtility;
 import au.gov.asd.tac.constellation.utilities.gui.recentvalue.RecentValuesChangeEvent;
 import au.gov.asd.tac.constellation.utilities.gui.recentvalue.RecentValuesListener;
@@ -40,17 +38,10 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.AutoCompleteSupport;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputDropDown;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.InfoWindowSupport;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.InfoWindowSupport.InfoWindow;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.InputValidator;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.LeftButtonSupport;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.LeftButtonSupport.LeftButton;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport.RightButton;
 import com.fasterxml.jackson.core.io.NumberInput;
-import au.gov.asd.tac.constellation.utilities.gui.field.framework.ShortcutSupport;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import javafx.application.Platform;
 import javafx.scene.control.TextInputControl;
