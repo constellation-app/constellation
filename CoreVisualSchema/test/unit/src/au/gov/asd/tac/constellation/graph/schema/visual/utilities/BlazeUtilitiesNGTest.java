@@ -24,7 +24,6 @@ import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.preferences.GraphPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import java.awt.Color;
 import java.util.BitSet;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
@@ -103,6 +102,7 @@ public class BlazeUtilitiesNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**

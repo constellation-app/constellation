@@ -36,27 +36,45 @@ import org.testng.annotations.Test;
  */
 public class ShuffleElementBitmaskPluginNGTest {
 
-    private int layerMaskV, layerMaskT, layerVisibilityV, layerVisibilityT, selectedV, selectedT;
-    private int vxId1, vxId2, vxId3, vxId4, vxId5, vxId6, vxId7, txId1, txId2, txId3;
+    private int layerMaskV;
+    private int layerMaskT;
+    private int layerVisibilityV;
+    private int layerVisibilityT;
+    private int selectedV;
+    private int selectedT;
+    
+    private int vxId1;
+    private int vxId2;
+    private int vxId3;
+    private int vxId4;
+    private int vxId5;
+    private int vxId6;
+    private int vxId7;
+    
+    private int txId1;
+    private int txId2;
+    private int txId3;
+    
     private StoreGraph graph;
-
-    public ShuffleElementBitmaskPluginNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     public void setupGraph() {
@@ -160,6 +178,8 @@ public class ShuffleElementBitmaskPluginNGTest {
 
     /**
      * Test of edit method, of class ShuffleElementBitmaskPlugin.
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
     public void testEdit() throws InterruptedException, PluginException {
@@ -209,6 +229,8 @@ public class ShuffleElementBitmaskPluginNGTest {
 
     /**
      * Test of edit method, of class ShuffleElementBitmaskPlugin.
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
     public void testEditToggledLayer() throws InterruptedException, PluginException {
@@ -270,6 +292,8 @@ public class ShuffleElementBitmaskPluginNGTest {
 
     /**
      * Test of edit method, of class ShuffleElementBitmaskPlugin.
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
     public void testEditToggledLayerSelectedVx() throws InterruptedException, PluginException {

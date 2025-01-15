@@ -16,9 +16,11 @@
 package au.gov.asd.tac.constellation.views.qualitycontrol.event;
 
 import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlEvent;
-import au.gov.asd.tac.constellation.views.qualitycontrol.rules.*;
-import org.testng.Assert;
+import au.gov.asd.tac.constellation.views.qualitycontrol.rules.IdentifierInconsistentWithTypeRule;
+import au.gov.asd.tac.constellation.views.qualitycontrol.rules.MissingTypeRule;
+import au.gov.asd.tac.constellation.views.qualitycontrol.rules.UnknownTypeRule;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -38,24 +40,25 @@ public class QualityControlEventNGTest {
     private final static QualityControlEvent.QualityCategory MAJOR = QualityControlEvent.QualityCategory.MAJOR;
     private final static QualityControlEvent.QualityCategory SEVERE = QualityControlEvent.QualityCategory.SEVERE;
     private final static QualityControlEvent.QualityCategory CRITICAL = QualityControlEvent.QualityCategory.CRITICAL;
-
-    public QualityControlEventNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -131,7 +134,6 @@ public class QualityControlEventNGTest {
      */
     @Test
     public void testGetRuleByString() {
-
         // Test missing type rule
         MissingTypeRule missingRule = new MissingTypeRule();
         String ruleName = missingRule.getName();
@@ -148,9 +150,9 @@ public class QualityControlEventNGTest {
         assertEquals(QualityControlEvent.getRuleByString(ruleName).getClass(), inconsistentRule.getClass());
 
         // Test empty string
-        Assert.assertNull(QualityControlEvent.getRuleByString(""));
+        assertNull(QualityControlEvent.getRuleByString(""));
 
         // Test blank string
-        Assert.assertNull(QualityControlEvent.getRuleByString(" "));
+        assertNull(QualityControlEvent.getRuleByString(" "));
     }
 }

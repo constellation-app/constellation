@@ -71,6 +71,7 @@ public class TextPluginInteractionNGTest {
     /**
      * Attaches customLogHandler to the logger, which will also
      * receive logging events, and removes the class console logger.
+     * @throws java.lang.Exception
      */
     @BeforeMethod
     public void setUpMethod() throws Exception {
@@ -152,7 +153,6 @@ public class TextPluginInteractionNGTest {
     
     @Test
     public void testSetProgressAllParameters() throws Exception {
-        
         final PluginInteraction interaction = new TextPluginInteraction();
         final PluginParameters params = spy(PluginParameters.class);
         interaction.setProgress(CURRENT_STEP, TOTAL_STEP, TEST_MESSAGE, CANCELLABLE_TRUE, params, SELECTED_ITEMS);
@@ -161,8 +161,7 @@ public class TextPluginInteractionNGTest {
         assertTrue(getCapturedLog().contains("totalSteps=" + TOTAL_STEP));
         assertTrue(getCapturedLog().contains("message=" + TEST_MESSAGE));
         assertTrue(getCapturedLog().contains("parameters="));
-        assertTrue(getCapturedLog().contains("selected=" + SELECTED_ITEMS));
-        
+        assertTrue(getCapturedLog().contains("selected=" + SELECTED_ITEMS));       
     }
 
     @Test

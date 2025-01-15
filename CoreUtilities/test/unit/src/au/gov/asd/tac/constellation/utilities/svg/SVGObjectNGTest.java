@@ -38,24 +38,24 @@ public class SVGObjectNGTest {
 
     final SVGTypeConstants typeSVG = SVGTypeConstants.SVG;
     
-    public SVGObjectNGTest() { 
-    }
-    
     @BeforeClass
     public static void setUpClass() {
+        // Not currently required
     }
     
     @AfterClass
     public static void tearDownClass() {
+        // Not currently required
     }
     
     @BeforeMethod
-    public void setUp() {
-
+    public void setUpMethod() {
+        // Not currently required
     }
     
     @AfterMethod
-    public void tearDown() {
+    public void tearDownMethod() {
+        // Not currently required
     }
 
     /**
@@ -152,7 +152,7 @@ public class SVGObjectNGTest {
     /**
      * Test of setParent() method, of class SVGObject.
      */
-    @Test(expectedExceptions=IllegalStateException.class)
+    @Test(expectedExceptions = IllegalStateException.class)
     public void testSetParentError() throws IllegalStateException {
         System.out.println("setParentError");
         final SVGObject svgObjectBlank1 = new SVGObject(new SVGData(typeSVG, null, null));
@@ -195,7 +195,6 @@ public class SVGObjectNGTest {
         System.out.println("getSetID");
 
         final SVGObject svgObjectBlank1 = new SVGObject(new SVGData(typeSVG, null, null));
-
         
         String idString = "blank1";
         Integer idInteger = 123;
@@ -255,8 +254,7 @@ public class SVGObjectNGTest {
         Assert.assertEquals(svgObjectBlank1.getWidth(), alternateWidth);
         Assert.assertEquals(svgObjectBlank1.getXPosition(), 0F);
         Assert.assertEquals(svgObjectBlank1.getYPosition(), 0F);
-        Assert.assertEquals(svgObjectBlank1.toSVGData().getAttributeValue(SVGAttributeConstants.VIEW_BOX.getName()), String.format("%s, %s, %s, %s", 512F, 512F, 512F, 512F)); 
-        
+        Assert.assertEquals(svgObjectBlank1.toSVGData().getAttributeValue(SVGAttributeConstants.VIEW_BOX.getName()), String.format("%s, %s, %s, %s", 512F, 512F, 512F, 512F));     
     }
 
     /**
@@ -276,8 +274,7 @@ public class SVGObjectNGTest {
         svgObjectBlank1.setPosition(xF, yF);
         Assert.assertEquals(xF, svgObjectBlank1.getXPosition());  
         Assert.assertEquals(yF, svgObjectBlank1.getYPosition());
-        
-        
+               
         final double xD = 256D;
         final double yD = 128D;
         svgObjectBlank1 = new SVGObject(new SVGData(typeSVG, null, null));
@@ -377,23 +374,14 @@ public class SVGObjectNGTest {
     public void testLoadFromTemplate() {
         SVGObject object = SVGObject.loadFromTemplate(TestingSVGFile.TESTING_TEMPLATE_COMPLIANT);       
         SVGObject background = object.getChild("background");
-        assertEquals(CommonTests.getString(background.toSVGData()), "\n<rect id=\"background\" width=\"100%\" height=\"100%\" fill=\"#1b1e24\" stroke-width=\"0\" />");
-    }
-
-    /**
-     * Test of loadFromInputStream(), of class SVGObject.
-     */
-    @Test
-    public void testLoadFromInputStream() {
-        //TODO
+        assertEquals(SVGTestUtilities.getString(background.toSVGData()), "\n<rect id=\"background\" width=\"100%\" height=\"100%\" fill=\"#1b1e24\" stroke-width=\"0\" />");
     }
 
     /**
      * Test of saturateSVG(), setFillColor(), setStrokeColor(), applyGrayScaleFilter(), of class SVGObject.
      */
     @Test
-    public void testColor() {
-        
+    public void testColor() {        
         final SVGObject parent = new SVGObject(new SVGData(typeSVG, null, null));
         final SVGObject child = new SVGObject(new SVGData(typeSVG, null, null));
         child.setParent(parent);
@@ -436,6 +424,5 @@ public class SVGObjectNGTest {
         Vector4f point2 = new Vector4f(256F, 128F, 0F, 0F);
         parent.setPoints(point1, point2);
         assertEquals(parent.toSVGData().getAttributeValue(SVGAttributeConstants.POINTS.getName()), "32.0 64.0, 256.0 128.0");
-    }
-   
+    }  
 }

@@ -64,5 +64,4 @@ public class WelcomeTopComponentNGTest {
 
         assertEquals(instance.createStyle(), expResult);
     }
-
 }

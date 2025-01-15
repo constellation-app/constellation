@@ -74,5 +74,4 @@ public class GettingStartedWelcomePluginNGTest {
         final Button result = instance.getButton();
         assertEquals(result.getGraphic().getClass(), expResult.getClass());
     }
-
 }

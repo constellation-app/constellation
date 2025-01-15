@@ -44,7 +44,6 @@ public class BoundingBoxUtilitiesNGTest {
     private int vxId4;
     
     private int tId1;
-    private int tId2;
     
     private int xVertexAttribute;
     private int yVertexAttribute;
@@ -57,10 +56,12 @@ public class BoundingBoxUtilitiesNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -73,8 +74,8 @@ public class BoundingBoxUtilitiesNGTest {
         vxId3 = graph.addVertex();
         vxId4 = graph.addVertex();
         
-        tId1 = graph.addTransaction(vxId1, vxId2, true);
-        tId2 = graph.addTransaction(vxId1, vxId4, true);
+        tId1 = graph.addTransaction(vxId1, vxId4, true);
+        graph.addTransaction(vxId1, vxId2, true);
         
         xVertexAttribute = VisualConcept.VertexAttribute.X.ensure(graph);
         yVertexAttribute = VisualConcept.VertexAttribute.Y.ensure(graph);
@@ -116,11 +117,12 @@ public class BoundingBoxUtilitiesNGTest {
         graph.setBooleanValue(selectedVertexAttribute, vxId1, true);
         graph.setBooleanValue(selectedVertexAttribute, vxId3, true);
         
-        graph.setBooleanValue(selectedTransactionAttribute, tId2, true);
+        graph.setBooleanValue(selectedTransactionAttribute, tId1, true);
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**

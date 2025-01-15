@@ -39,25 +39,26 @@ import org.testng.annotations.Test;
 public class MultiPartNGTest {
 
     MultiPart multiPart;
-
-    public MultiPartNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
         multiPart = new MultiPart();
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**

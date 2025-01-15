@@ -41,6 +41,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class SelectionToGraphPluginNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(SelectionToGraphPluginNGTest.class.getName());
 
     @BeforeClass
@@ -77,8 +78,7 @@ public class SelectionToGraphPluginNGTest {
         when(table.getSelectionModel()).thenReturn(selectionModel);
         when(selectionModel.getSelectedItems()).thenReturn(FXCollections.observableList(List.of(row1)));
 
-        final SelectionToGraphPlugin selectionToGraph
-                = new SelectionToGraphPlugin(table, index, GraphElementType.VERTEX);
+        final SelectionToGraphPlugin selectionToGraph = new SelectionToGraphPlugin(table, index, GraphElementType.VERTEX);
 
         selectionToGraph.edit(graph, null, null);
 

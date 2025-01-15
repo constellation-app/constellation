@@ -36,7 +36,7 @@ public class BoundingBoxNGTest {
     private static final Vector3f MAX2 = new Vector3f(8.1F, 8.2F, 8.3F);
 
     /**
-     * Can explicitly set the verticies in a BoundingBox.
+     * Can explicitly set the vertices in a BoundingBox.
      */
     @Test
     public void testSet() {
@@ -142,28 +142,24 @@ public class BoundingBoxNGTest {
         // Change all elements in the max vector
         bb.addVertex(BIGGER_FLOAT1, BIGGER_FLOAT2, BIGGER_FLOAT3);
         assertEquals(bb.getMin().toString(), MIN.toString());
-        assertEquals(bb.getMax().toString(),
-                String.format("3f[%f,%f,%f]", BIGGER_FLOAT1, BIGGER_FLOAT2, BIGGER_FLOAT3));
+        assertEquals(bb.getMax().toString(), String.format("3f[%f,%f,%f]", BIGGER_FLOAT1, BIGGER_FLOAT2, BIGGER_FLOAT3));
 
         // Change all elements in the min vector
         bb.set(new Vector3f(MIN), new Vector3f(MAX), new Vector3f(MIN2), new Vector3f(MAX2));
         bb.addVertex(SMALLER_FLOAT1, SMALLER_FLOAT2, SMALLER_FLOAT3);
-        assertEquals(bb.getMin().toString(),
-                String.format("3f[%f,%f,%f]", SMALLER_FLOAT1, SMALLER_FLOAT2, SMALLER_FLOAT3));
+        assertEquals(bb.getMin().toString(), String.format("3f[%f,%f,%f]", SMALLER_FLOAT1, SMALLER_FLOAT2, SMALLER_FLOAT3));
         assertEquals(bb.getMax().toString(), MAX.toString());
 
         // Change some elements in the max vector
         bb.set(new Vector3f(MIN), new Vector3f(MAX), new Vector3f(MIN2), new Vector3f(MAX2));
         bb.addVertex(BIGISH_FLOAT, BIGISH_FLOAT, BIGISH_FLOAT);
         assertEquals(bb.getMin().toString(), MIN.toString());
-        assertEquals(bb.getMax().toString(),
-                String.format("3f[%f,%f,%f]", BIGISH_FLOAT, BIGISH_FLOAT, MAX.getZ()));
+        assertEquals(bb.getMax().toString(), String.format("3f[%f,%f,%f]", BIGISH_FLOAT, BIGISH_FLOAT, MAX.getZ()));
 
         // Change some elements in the min vector
         bb.set(new Vector3f(MIN), new Vector3f(MAX), new Vector3f(MIN2), new Vector3f(MAX2));
         bb.addVertex(SMALLISH_FLOAT, SMALLISH_FLOAT, SMALLISH_FLOAT);
-        assertEquals(bb.getMin().toString(),
-                String.format("3f[%f,%f,%f]", MIN.getX(), MIN.getY(), SMALLISH_FLOAT));
+        assertEquals(bb.getMin().toString(), String.format("3f[%f,%f,%f]", MIN.getX(), MIN.getY(), SMALLISH_FLOAT));
         assertEquals(bb.getMax().toString(), MAX.toString());
     }
 
@@ -181,33 +177,29 @@ public class BoundingBoxNGTest {
         // Change all elements in the max2 vector
         bb.addVertex2(BIGGER_FLOAT1, BIGGER_FLOAT2, BIGGER_FLOAT3);
         assertEquals(bb.getMin2().toString(), MIN2.toString());
-        assertEquals(bb.getMax2().toString(),
-                String.format("3f[%f,%f,%f]", BIGGER_FLOAT1, BIGGER_FLOAT2, BIGGER_FLOAT3));
+        assertEquals(bb.getMax2().toString(), String.format("3f[%f,%f,%f]", BIGGER_FLOAT1, BIGGER_FLOAT2, BIGGER_FLOAT3));
 
         // Change all elements in the min vector
         bb.set(new Vector3f(MIN), new Vector3f(MAX), new Vector3f(MIN2), new Vector3f(MAX2));
         bb.addVertex2(SMALLER_FLOAT1, SMALLER_FLOAT2, SMALLER_FLOAT3);
-        assertEquals(bb.getMin2().toString(),
-                String.format("3f[%f,%f,%f]", SMALLER_FLOAT1, SMALLER_FLOAT2, SMALLER_FLOAT3));
+        assertEquals(bb.getMin2().toString(), String.format("3f[%f,%f,%f]", SMALLER_FLOAT1, SMALLER_FLOAT2, SMALLER_FLOAT3));
         assertEquals(bb.getMax2().toString(), MAX2.toString());
 
         // Change some elements in the max vector
         bb.set(new Vector3f(MIN), new Vector3f(MAX), new Vector3f(MIN2), new Vector3f(MAX2));
         bb.addVertex2(BIGISH_FLOAT2, BIGISH_FLOAT2, BIGISH_FLOAT2);
         assertEquals(bb.getMin2().toString(), MIN2.toString());
-        assertEquals(bb.getMax2().toString(),
-                String.format("3f[%f,%f,%f]", BIGISH_FLOAT2, BIGISH_FLOAT2, MAX2.getZ()));
+        assertEquals(bb.getMax2().toString(), String.format("3f[%f,%f,%f]", BIGISH_FLOAT2, BIGISH_FLOAT2, MAX2.getZ()));
 
         // Change some elements in the min vector
         bb.set(new Vector3f(MIN), new Vector3f(MAX), new Vector3f(MIN2), new Vector3f(MAX2));
         bb.addVertex2(SMALLISH_FLOAT2, SMALLISH_FLOAT2, SMALLISH_FLOAT2);
-        assertEquals(bb.getMin2().toString(),
-                String.format("3f[%f,%f,%f]", MIN2.getX(), MIN2.getY(), SMALLISH_FLOAT2));
+        assertEquals(bb.getMin2().toString(), String.format("3f[%f,%f,%f]", MIN2.getX(), MIN2.getY(), SMALLISH_FLOAT2));
         assertEquals(bb.getMax2().toString(), MAX2.toString());
     }
 
     /**
-     * Can zero the primary verticies in a BoundingBox.
+     * Can zero the primary vertices in a BoundingBox.
      */
     @Test
     public void testZero() {
@@ -384,8 +376,7 @@ public class BoundingBoxNGTest {
         assertEquals(bb.getCameraDistance(1F, 2F), 396.94675F);
 
         // calculated distance is too small
-        bb.set(new Vector3f(MIN_TINY), new Vector3f(MAX_TINY),
-                new Vector3f(MIN2_TINY), new Vector3f(MAX2_TINY));
+        bb.set(new Vector3f(MIN_TINY), new Vector3f(MAX_TINY), new Vector3f(MIN2_TINY), new Vector3f(MAX2_TINY));
         assertEquals(bb.getCameraDistance(1F, 2F), MINIMUM_CAMERA_DISTANCE);
     }
     @Test

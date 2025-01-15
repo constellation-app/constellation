@@ -37,23 +37,24 @@ import org.testng.annotations.Test;
  */
 public class HttpsUtilitiesNGTest {
     
-    public HttpsUtilitiesNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -167,8 +168,12 @@ public class HttpsUtilitiesNGTest {
      * Test of readErrorStreamAndThrowException method, of class HttpsUtilities. Null system
      * @throws java.lang.Exception
      */
-    @Test(expectedExceptions = IOException.class, expectedExceptionsMessageRegExp = "An error occurred with the null service: 101 Test response message"
-            + "\n\nIf problems persist, contact support via Help -> Support\n\nTechnical Error: This is a test")
+    @Test(expectedExceptions = IOException.class, expectedExceptionsMessageRegExp = """
+                                                                                    An error occurred with the null service: 101 Test response message
+                                                                                    
+                                                                                    If problems persist, contact support via Help -> Support
+                                                                                    
+                                                                                    Technical Error: This is a test""")
     public void testReadErrorStreamAndThrowExceptionNullSystem() throws Exception {
         System.out.println("readErrorStreamAndThrowExceptionNullSystem");
         
@@ -185,8 +190,12 @@ public class HttpsUtilitiesNGTest {
      * Test of readErrorStreamAndThrowException method, of class HttpsUtilities.
      * @throws java.lang.Exception
      */
-    @Test(expectedExceptions = IOException.class, expectedExceptionsMessageRegExp = "An error occurred with the My system service: 101 Test response message"
-            + "\n\nIf problems persist, contact support via Help -> Support\n\nTechnical Error: This is a test")
+    @Test(expectedExceptions = IOException.class, expectedExceptionsMessageRegExp = """
+                                                                                    An error occurred with the My system service: 101 Test response message
+                                                                                    
+                                                                                    If problems persist, contact support via Help -> Support
+                                                                                    
+                                                                                    Technical Error: This is a test""")
     public void testReadErrorStreamAndThrowException() throws Exception {
         System.out.println("readErrorStreamAndThrowException");
         

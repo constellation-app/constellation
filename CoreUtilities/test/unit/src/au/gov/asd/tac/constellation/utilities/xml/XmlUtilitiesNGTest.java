@@ -20,6 +20,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -51,24 +53,25 @@ public class XmlUtilitiesNGTest {
 
     private static final String OUTPUT_FILE = "testOutputFile.xml";
     private static final String XML_HDR = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>";
-
-    public XmlUtilitiesNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -92,10 +95,13 @@ public class XmlUtilitiesNGTest {
     /**
      * Test of write method, of class XmlUtilities.
      *
-     * @throws java.lang.Exception
+     * @throws javax.xml.parsers.ParserConfigurationException
+     * @throws java.io.IOException
+     * @throws org.xml.sax.SAXException
+     * @throws javax.xml.transform.TransformerException
      */
     @Test
-    public void testWrite_Document() throws Exception {
+    public void testWrite_Document() throws ParserConfigurationException, IOException, SAXException, TransformerException {
         System.out.println("testWrite_Document");
         XmlUtilities instance = new XmlUtilities();
 
@@ -116,10 +122,13 @@ public class XmlUtilitiesNGTest {
     /**
      * Test of write method, of class XmlUtilities.
      *
-     * @throws java.lang.Exception
+     * @throws javax.xml.parsers.ParserConfigurationException
+     * @throws java.io.IOException
+     * @throws org.xml.sax.SAXException
+     * @throws javax.xml.transform.TransformerException
      */
     @Test
-    public void testWrite_Document_File() throws Exception {
+    public void testWrite_Document_File() throws ParserConfigurationException, IOException, SAXException, TransformerException {
         System.out.println("testWrite_Document_File");
         XmlUtilities instance = new XmlUtilities();
 
@@ -139,10 +148,13 @@ public class XmlUtilitiesNGTest {
     /**
      * Test of writeToString method, of class XmlUtilities.
      *
-     * @throws java.lang.Exception
+     * @throws javax.xml.parsers.ParserConfigurationException
+     * @throws java.io.IOException
+     * @throws org.xml.sax.SAXException
+     * @throws javax.xml.transform.TransformerException
      */
     @Test
-    public void testWriteToString_Document() throws Exception {
+    public void testWriteToString_Document() throws ParserConfigurationException, IOException, SAXException, TransformerException {
         System.out.println("testWriteToString_Document");
         XmlUtilities instance = new XmlUtilities();
 
@@ -160,10 +172,10 @@ public class XmlUtilitiesNGTest {
     /**
      * Test of writeToString method, of class XmlUtilities.
      *
-     * @throws java.lang.Exception
+     * @throws java.io.IOException
      */
     @Test
-    public void testWriteToString_InputStream_int() throws Exception {
+    public void testWriteToString_InputStream_int() throws IOException {
         System.out.println("testWriteToString_InputStream_int");
         XmlUtilities instance = new XmlUtilities();
 
@@ -178,10 +190,11 @@ public class XmlUtilitiesNGTest {
     /**
      * Test of read method, of class XmlUtilities.
      *
-     * @throws java.lang.Exception
+     * @throws java.io.FileNotFoundException
+     * @throws javax.xml.transform.TransformerException
      */
     @Test
-    public void testRead_File() throws Exception {
+    public void testRead_File() throws FileNotFoundException, TransformerException {
         System.out.println("testRead_File");
         XmlUtilities instance = new XmlUtilities();
 
@@ -212,18 +225,21 @@ public class XmlUtilitiesNGTest {
     /**
      * Test of read method, of class XmlUtilities.
      *
-     * @throws java.lang.Exception
+     * @throws java.io.UnsupportedEncodingException
+     * @throws javax.xml.transform.TransformerException
      */
     @Test
-    public void testRead_String() throws Exception {
+    public void testRead_String() throws UnsupportedEncodingException, TransformerException {
         System.out.println("testRead_String");
         XmlUtilities instance = new XmlUtilities();
 
-        String data = "<parent>\n"
-                + "<child1>child1_value</child1>\n"
-                + "<child2>child2_value</child2>\n"
-                + "<child3>child3_value</child3>\n"
-                + "</parent>\n";
+        String data = """
+                      <parent>
+                      <child1>child1_value</child1>
+                      <child2>child2_value</child2>
+                      <child3>child3_value</child3>
+                      </parent>
+                      """;
 
         Document document = instance.read(data);
 
@@ -251,10 +267,11 @@ public class XmlUtilitiesNGTest {
     /**
      * Test of read method, of class XmlUtilities.
      *
-     * @throws java.lang.Exception
+     * @throws java.io.FileNotFoundException
+     * @throws javax.xml.transform.TransformerException
      */
     @Test
-    public void testRead_InputStream_boolean() throws Exception {
+    public void testRead_InputStream_boolean() throws FileNotFoundException, TransformerException {
         System.out.println("testRead_InputStream_boolean");
         XmlUtilities instance = new XmlUtilities();
 
@@ -285,10 +302,12 @@ public class XmlUtilitiesNGTest {
     /**
      * Test of getNode method, of class XmlUtilities.
      *
-     * @throws java.lang.Exception
+     * @throws javax.xml.parsers.ParserConfigurationException
+     * @throws java.io.IOException
+     * @throws org.xml.sax.SAXException
      */
     @Test
-    public void testGetNode() throws Exception {
+    public void testGetNode() throws ParserConfigurationException, IOException, SAXException {
         System.out.println("testGetNode");
         XmlUtilities instance = new XmlUtilities();
 
@@ -321,10 +340,12 @@ public class XmlUtilitiesNGTest {
     /**
      * Test of getNodeNS method, of class XmlUtilities.
      *
-     * @throws java.lang.Exception
+     * @throws javax.xml.parsers.ParserConfigurationException
+     * @throws java.io.IOException
+     * @throws org.xml.sax.SAXException
      */
     @Test
-    public void testGetNodeNS() throws Exception {
+    public void testGetNodeNS() throws ParserConfigurationException, IOException, SAXException {
         System.out.println("testGetNodeNS");
         XmlUtilities instance = new XmlUtilities();
 
@@ -361,10 +382,12 @@ public class XmlUtilitiesNGTest {
     /**
      * Test of getNodes method, of class XmlUtilities.
      *
-     * @throws java.lang.Exception
+     * @throws javax.xml.parsers.ParserConfigurationException
+     * @throws java.io.IOException
+     * @throws org.xml.sax.SAXException
      */
     @Test
-    public void testGetNodes() throws Exception {
+    public void testGetNodes() throws ParserConfigurationException, IOException, SAXException {
         System.out.println("testGetNodes");
         XmlUtilities instance = new XmlUtilities();
 
@@ -403,10 +426,12 @@ public class XmlUtilitiesNGTest {
     /**
      * Test of getNodesNS method, of class XmlUtilities.
      *
-     * @throws java.lang.Exception
+     * @throws javax.xml.parsers.ParserConfigurationException
+     * @throws java.io.IOException
+     * @throws org.xml.sax.SAXException
      */
     @Test
-    public void testGetNodesNS() throws Exception {
+    public void testGetNodesNS() throws ParserConfigurationException, IOException, SAXException {
         System.out.println("testGetNodesNS");
         XmlUtilities instance = new XmlUtilities();
 
@@ -450,10 +475,12 @@ public class XmlUtilitiesNGTest {
     /**
      * Test of getNodeValue method, of class XmlUtilities.
      *
-     * @throws java.lang.Exception
+     * @throws javax.xml.parsers.ParserConfigurationException
+     * @throws java.io.IOException
+     * @throws org.xml.sax.SAXException
      */
     @Test
-    public void testGetNodeValue_Node() throws Exception {
+    public void testGetNodeValue_Node() throws ParserConfigurationException, IOException, SAXException {
         System.out.println("testGetNodeValue_Node");
         XmlUtilities instance = new XmlUtilities();
 
@@ -474,10 +501,12 @@ public class XmlUtilitiesNGTest {
     /**
      * Test of getNodeValue method, of class XmlUtilities.
      *
-     * @throws java.lang.Exception
+     * @throws javax.xml.parsers.ParserConfigurationException
+     * @throws java.io.IOException
+     * @throws org.xml.sax.SAXException
      */
     @Test
-    public void testGetNodeValue_String_NodeList() throws Exception {
+    public void testGetNodeValue_String_NodeList() throws ParserConfigurationException, IOException, SAXException {
         System.out.println("testGetNodeValue_String_NodeList");
         XmlUtilities instance = new XmlUtilities();
 
@@ -506,10 +535,12 @@ public class XmlUtilitiesNGTest {
     /**
      * Test of getNodeValueNS method, of class XmlUtilities.
      *
-     * @throws java.lang.Exception
+     * @throws javax.xml.parsers.ParserConfigurationException
+     * @throws java.io.IOException
+     * @throws org.xml.sax.SAXException
      */
     @Test
-    public void testGetNodeValueNS() throws Exception {
+    public void testGetNodeValueNS() throws ParserConfigurationException, IOException, SAXException {
         System.out.println("testGetNodeValueNS");
         XmlUtilities instance = new XmlUtilities();
 
@@ -546,10 +577,12 @@ public class XmlUtilitiesNGTest {
     /**
      * Test of getNodeAttr method, of class XmlUtilities.
      *
-     * @throws java.lang.Exception
+     * @throws javax.xml.parsers.ParserConfigurationException
+     * @throws java.io.IOException
+     * @throws org.xml.sax.SAXException
      */
     @Test
-    public void testGetNodeAttr_String_Node() throws Exception {
+    public void testGetNodeAttr_String_Node() throws ParserConfigurationException, IOException, SAXException {
         System.out.println("testGetNodeAttr_String_Node");
         XmlUtilities instance = new XmlUtilities();
 
@@ -573,10 +606,12 @@ public class XmlUtilitiesNGTest {
     /**
      * Test of getNodeAttr method, of class XmlUtilities.
      *
-     * @throws java.lang.Exception
+     * @throws javax.xml.parsers.ParserConfigurationException
+     * @throws java.io.IOException
+     * @throws org.xml.sax.SAXException
      */
     @Test
-    public void testGetNodeAttr_3args() throws Exception {
+    public void testGetNodeAttr_3args() throws ParserConfigurationException, IOException, SAXException {
         System.out.println("testGetNodeAttr_3args");
         XmlUtilities instance = new XmlUtilities();
 
@@ -605,10 +640,12 @@ public class XmlUtilitiesNGTest {
     /**
      * Test of getNodeAttrNS method, of class XmlUtilities.
      *
-     * @throws java.lang.Exception
+     * @throws javax.xml.parsers.ParserConfigurationException
+     * @throws java.io.IOException
+     * @throws org.xml.sax.SAXException
      */
     @Test
-    public void testGetNodeAttrNS() throws Exception {
+    public void testGetNodeAttrNS() throws ParserConfigurationException, IOException, SAXException {
         System.out.println("testGetNodeAttrNS");
         XmlUtilities instance = new XmlUtilities();
 
@@ -637,10 +674,13 @@ public class XmlUtilitiesNGTest {
     /**
      * Test of map method, of class XmlUtilities which takes in a URL.
      *
-     * @throws java.lang.Exception
+     * @throws java.net.MalformedURLException
+     * @throws java.io.FileNotFoundException
+     * @throws java.io.UnsupportedEncodingException
+     * @throws javax.xml.transform.TransformerException
      */
     @Test
-    public void testMap_String() throws Exception {
+    public void testMap_String() throws MalformedURLException, FileNotFoundException, UnsupportedEncodingException, TransformerException {
         System.out.println("testMap_String");
         XmlUtilities instance = new XmlUtilities();
 
@@ -667,41 +707,50 @@ public class XmlUtilitiesNGTest {
     /**
      * Test of map method, of class XmlUtilities, showing file not found exception thrown if file cant be found.
      *
-     * @throws java.lang.Exception
+     * @throws java.net.MalformedURLException
+     * @throws java.io.FileNotFoundException
+     * @throws java.io.UnsupportedEncodingException
+     * @throws javax.xml.transform.TransformerException
      */
     @Test(expectedExceptions = FileNotFoundException.class)
-    public void testMap_String_FilenotFound() throws Exception {
+    public void testMap_String_FilenotFound() throws MalformedURLException, FileNotFoundException, UnsupportedEncodingException, TransformerException {
         System.out.println("testMap_String_FilenotFound");
         XmlUtilities instance = new XmlUtilities();
 
         String testFile = XmlUtilitiesNGTest.class.getResource("resources/").getPath() + "missing.xml";
         URL url = new File(testFile).toURI().toURL();
-        List<Map<String, String>> result = instance.map(url.toString());
+        instance.map(url.toString());
     }
 
     /**
      * Test of map method, of class XmlUtilities, showing file not found exception thrown if file cant be found.
      *
-     * @throws java.lang.Exception
+     * @throws java.net.MalformedURLException
+     * @throws java.io.FileNotFoundException
+     * @throws java.io.UnsupportedEncodingException
+     * @throws javax.xml.transform.TransformerException
      */
     @Test(expectedExceptions = TransformerException.class)
-    public void testMap_String_TransformerException() throws Exception {
+    public void testMap_String_TransformerException() throws MalformedURLException, FileNotFoundException, UnsupportedEncodingException, TransformerException {
         System.out.println("testMap_String_TransformerException");
         XmlUtilities instance = new XmlUtilities();
 
         // Execute test
         String testFile = XmlUtilitiesNGTest.class.getResource("resources/testMap_String_TransformerException.xml").getPath();
         URL url = new File(testFile).toURI().toURL();
-        List<Map<String, String>> result = instance.map(url.toString());
+        instance.map(url.toString());
     }
 
     /**
      * Test of map method, of class XmlUtilities.
      *
-     * @throws java.lang.Exception
+     * @throws java.net.MalformedURLException
+     * @throws java.io.FileNotFoundException
+     * @throws java.io.UnsupportedEncodingException
+     * @throws javax.xml.transform.TransformerException
      */
     @Test
-    public void testMap_String_String() throws Exception {
+    public void testMap_String_String() throws MalformedURLException, FileNotFoundException, UnsupportedEncodingException, TransformerException {
         System.out.println("testMap_String_String");
         XmlUtilities instance = new XmlUtilities();
 
@@ -723,40 +772,49 @@ public class XmlUtilitiesNGTest {
     /**
      * Test of map method, of class XmlUtilities, showing file not found exception thrown if file cant be found.
      *
-     * @throws java.lang.Exception
+     * @throws java.net.MalformedURLException
+     * @throws java.io.FileNotFoundException
+     * @throws java.io.UnsupportedEncodingException
+     * @throws javax.xml.transform.TransformerException
      */
     @Test(expectedExceptions = FileNotFoundException.class)
-    public void testMap_String_String_FilenotFound() throws Exception {
+    public void testMap_String_String_FilenotFound() throws MalformedURLException, FileNotFoundException, UnsupportedEncodingException, TransformerException {
         System.out.println("testMap_String_String_FilenotFound");
         XmlUtilities instance = new XmlUtilities();
 
         String testFile = XmlUtilitiesNGTest.class.getResource("resources/").getPath() + "missing.xml";
         URL url = new File("Missing" + testFile).toURI().toURL();
-        List<Map<String, String>> result = instance.map(url.toString(), "child");
+        instance.map(url.toString(), "child");
     }
 
     /**
      * Test of map method, of class XmlUtilities, showing file not found exception thrown if file cant be found.
      *
-     * @throws java.lang.Exception
+     * @throws java.net.MalformedURLException
+     * @throws java.io.FileNotFoundException
+     * @throws java.io.UnsupportedEncodingException
+     * @throws javax.xml.transform.TransformerException
      */
     @Test(expectedExceptions = TransformerException.class)
-    public void testMap_String_String_TransformerException() throws Exception {
+    public void testMap_String_String_TransformerException() throws MalformedURLException, FileNotFoundException, UnsupportedEncodingException, TransformerException {
         System.out.println("testMap_String_String_TransformerException");
         XmlUtilities instance = new XmlUtilities();
 
         String testFile = XmlUtilitiesNGTest.class.getResource("resources/testMap_String_String_TransformerException.xml").getPath();
         URL url = new File(testFile).toURI().toURL();
-        List<Map<String, String>> result = instance.map(url.toString(), "child");
+        instance.map(url.toString(), "child");
     }
 
     /**
      * Test of table method, of class XmlUtilities.
      *
-     * @throws java.lang.Exception
+     * @throws java.net.MalformedURLException
+     * @throws java.io.FileNotFoundException
+     * @throws java.io.UnsupportedEncodingException
+     * @throws javax.xml.transform.TransformerException
      */
     @Test
-    public void testTable_String_Boolean() throws Exception {
+    public void testTable_String_Boolean() throws MalformedURLException, FileNotFoundException, UnsupportedEncodingException, TransformerException {
         System.out.println("testTable_String_Boolean");
         XmlUtilities instance = new XmlUtilities();
 
@@ -795,31 +853,37 @@ public class XmlUtilitiesNGTest {
     /**
      * Test of table method, of class XmlUtilities, showing file not found exception thrown if file cant be found.
      *
-     * @throws java.lang.Exception
+     * @throws java.net.MalformedURLException
+     * @throws java.io.FileNotFoundException
+     * @throws java.io.UnsupportedEncodingException
+     * @throws javax.xml.transform.TransformerException
      */
     @Test(expectedExceptions = FileNotFoundException.class)
-    public void testTable_String_Boolean_FilenotFound() throws Exception {
+    public void testTable_String_Boolean_FilenotFound() throws MalformedURLException, FileNotFoundException, UnsupportedEncodingException, TransformerException {
         System.out.println("testTable_String_Boolean_FilenotFound");
         XmlUtilities instance = new XmlUtilities();
 
         String testFile = XmlUtilitiesNGTest.class.getResource("resources/").getPath() + "missing.xml";
         URL url = new File(testFile).toURI().toURL();
-        String[][] result = instance.table(url.toString(), false);
+        instance.table(url.toString(), false);
     }
 
     /**
      * Test of table method, of class XmlUtilities, showing file not found exception thrown if file cant be found.
      *
-     * @throws java.lang.Exception
+     * @throws java.net.MalformedURLException
+     * @throws java.io.FileNotFoundException
+     * @throws java.io.UnsupportedEncodingException
+     * @throws javax.xml.transform.TransformerException
      */
     @Test(expectedExceptions = TransformerException.class)
-    public void testTable_String_Boolean_TransformerException() throws Exception {
+    public void testTable_String_Boolean_TransformerException() throws MalformedURLException, FileNotFoundException, UnsupportedEncodingException, TransformerException {
         System.out.println("testTable_String_Boolean_TransformerException");
         XmlUtilities instance = new XmlUtilities();
 
         String testFile = XmlUtilitiesNGTest.class.getResource("resources/testTable_String_Boolean_TransformerException.xml").getPath();
         URL url = new File(testFile).toURI().toURL();
-        String[][] result = instance.table(url.toString(), false);
+        instance.table(url.toString(), false);
     }
 
     private String removeWhitespacing(final String input) {
@@ -833,5 +897,4 @@ public class XmlUtilitiesNGTest {
         final DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
         return docBuilder.parse(new File(testFile));
     }
-
 }

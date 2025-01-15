@@ -54,7 +54,6 @@ public class HopFullNGTest {
     
     private int xVertexAttribute;
     private int yVertexAttribute;
-    private int zVertexAttribute;
     private int selectedVertexAttribute;
     private int selectedTransactionAttribute;
     
@@ -62,10 +61,12 @@ public class HopFullNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
@@ -80,7 +81,6 @@ public class HopFullNGTest {
         
         xVertexAttribute = VisualConcept.VertexAttribute.X.ensure(graph);
         yVertexAttribute = VisualConcept.VertexAttribute.Y.ensure(graph);
-        zVertexAttribute = VisualConcept.VertexAttribute.Z.ensure(graph);
         selectedVertexAttribute = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
         selectedTransactionAttribute = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
 

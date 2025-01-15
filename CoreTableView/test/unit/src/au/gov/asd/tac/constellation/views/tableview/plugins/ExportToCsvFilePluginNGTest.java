@@ -43,6 +43,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class ExportToCsvFilePluginNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(ExportToCsvFilePluginNGTest.class.getName());
 
     @BeforeClass
@@ -72,20 +73,15 @@ public class ExportToCsvFilePluginNGTest {
             tmpFile = File.createTempFile("constellationTest", ".csv");
             final String csv = "COLUMN_1,COLUMN_2\nrow1Column1,row1Column2\nrow2Column1,row2Column2\n";
 
-            tableViewUtilsMockedStatic.when(() -> TableViewUtilities.getTableData(table, pagination, true, true))
-                    .thenReturn(csv);
+            tableViewUtilsMockedStatic.when(() -> TableViewUtilities.getTableData(table, pagination, true, true)).thenReturn(csv);
 
-            final ExportToCsvFilePlugin plugin
-                    = new ExportToCsvFilePlugin(tmpFile, table,
-                            pagination, true);
+            final ExportToCsvFilePlugin plugin = new ExportToCsvFilePlugin(tmpFile, table, pagination, true);
             plugin.execute(null, pluginInteraction, null);
 
-            final String outputtedFile = new String(IOUtils.toByteArray(
-                    new FileInputStream(tmpFile)), StandardCharsets.UTF_8);
+            final String outputtedFile = new String(IOUtils.toByteArray(new FileInputStream(tmpFile)), StandardCharsets.UTF_8);
 
             assertEquals(csv, outputtedFile);
             assertEquals(plugin.getName(), "Table View: Export to Delimited File");
-
         } finally {
             if (tmpFile != null) {
                 tmpFile.delete();

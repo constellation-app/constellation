@@ -22,7 +22,7 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.nio.ByteBuffer;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -39,16 +39,15 @@ public class GlyphRectangleBufferNGTest {
     private static final BufferedImage img1 = new BufferedImage(40, 5, DEFAULT_BUFFER_TYPE);
     private static final BufferedImage img2 = new BufferedImage(65, 5, DEFAULT_BUFFER_TYPE);
     private static final BufferedImage img3 = new BufferedImage(50, 95, DEFAULT_BUFFER_TYPE);
-
-    public GlyphRectangleBufferNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -58,6 +57,7 @@ public class GlyphRectangleBufferNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
 
     }
 
@@ -129,7 +129,6 @@ public class GlyphRectangleBufferNGTest {
      */
     @Test
     public void testAddRectNewImage() {
-
         int result = addFirstImage();
 
         assertEquals(result, 0);
@@ -157,7 +156,6 @@ public class GlyphRectangleBufferNGTest {
         expectedCoordinates[6] = (float) 0.1; // width
         expectedCoordinates[7] = (float) 0.1; // height
         assertEquals(instance.getRectangleCoordinates(), expectedCoordinates);
-
     }
 
     /**
@@ -166,7 +164,6 @@ public class GlyphRectangleBufferNGTest {
      */
     @Test
     public void testAddRectSameImage() {
-
         // Instantiated and add the same image twice
         addFirstImage();
         int result = addFirstImage(); // Wont exceed height or width of buffer
@@ -198,7 +195,6 @@ public class GlyphRectangleBufferNGTest {
      */
     @Test
     public void testAddRectExceedWidth() {
-
         int result = exceedWidth();
         // Assert that all accessible values are correct
         assertEquals(result, 1);
@@ -231,7 +227,6 @@ public class GlyphRectangleBufferNGTest {
      */
     @Test
     public void testAddRectExceedHeight() {
-
         int result = exceedHeight();
         // Assert that all accessible values are correct
         assertEquals(result, 2);
@@ -350,5 +345,4 @@ public class GlyphRectangleBufferNGTest {
         g2d.setColor(Color.WHITE);
         return bi;
     }
-
 }
