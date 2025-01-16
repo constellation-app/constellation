@@ -99,7 +99,7 @@ public final class MultiChoiceInputPane extends
                 }
                 
                 case ENABLED -> updateFieldEnablement();
-                case VISIBLE -> updateFieldVisability();
+                case VISIBLE -> updateFieldVisibility();
                 default -> LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
             }
         });

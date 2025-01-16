@@ -57,7 +57,7 @@ public abstract class ParameterInputPane<T extends ParameterValue, V extends Obj
         
         //Ensure the input pane is correctly vsible and enabled
         updateFieldEnablement();
-        updateFieldVisability();
+        updateFieldVisibility();
 
         //Update the prompt text of the input
         this.input.setPromptText(parameter.getDescription());
@@ -99,7 +99,7 @@ public abstract class ParameterInputPane<T extends ParameterValue, V extends Obj
         input.setPrefRowCount(lineCount);
     }
     
-    public final void updateFieldVisability(){
+    public final void updateFieldVisibility(){
             input.setManaged(parameter.isVisible());
             this.setManaged(parameter.isVisible());
             
@@ -153,11 +153,11 @@ public abstract class ParameterInputPane<T extends ParameterValue, V extends Obj
                     //Could be options, colors, filetypes etc
                 }
                 case ENABLED -> updateFieldEnablement();
-                case VISIBLE -> updateFieldVisability();
+                case VISIBLE -> updateFieldVisibility();
                 default -> LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
             }
         });
-     * </pre>
+ </pre>
      * </p>
      * @return A PluginParameterListener that can be registered to a PluginParameter
      */

@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.utilities.gui.field.framework;
 import au.gov.asd.tac.constellation.utilities.gui.field.MultiChoiceInput;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.image.ImageView;
 import org.apache.poi.openxml4j.exceptions.InvalidOperationException;
@@ -48,7 +47,7 @@ public abstract class ChoiceInputField<C extends Object, O extends Object>
                     "Attempting to Set Options with null options");
         }
         this.options.addAll(options);
-        // Not sure if this is even needed
+        // This is not needed for plugin parameters, may be required later
 //        options.addListener((ListChangeListener.Change<? extends O> change) -> {
 //            this.options.clear();
 //            this.options.addAll(change.getList());
