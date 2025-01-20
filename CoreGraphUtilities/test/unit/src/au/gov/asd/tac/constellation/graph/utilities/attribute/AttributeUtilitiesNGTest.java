@@ -17,18 +17,15 @@ package au.gov.asd.tac.constellation.graph.utilities.attribute;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
-import au.gov.asd.tac.constellation.graph.locking.DualGraph;
+import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.utilities.AttributeUtilities;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -42,6 +39,8 @@ import org.testng.annotations.Test;
  */
 public class AttributeUtilitiesNGTest {
     
+    private StoreGraph graph;
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         // Not currently required
@@ -54,7 +53,8 @@ public class AttributeUtilitiesNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        // Not currently required
+        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
+        graph = new StoreGraph(schema);
     }
 
     @AfterMethod
@@ -63,79 +63,58 @@ public class AttributeUtilitiesNGTest {
     }
 
     /**
-     * Test of getRegisteredAttributeIdsFromGraph method, of class
-     * AttributeUtilities.
+     * Test of getRegisteredAttributeIdsFromGraph method, of class AttributeUtilities. No nodes on graph
      */
     @Test
     public void testGetRegisteredAttributeIdsFromGraphWithZeroNodes() {
-        final StoreGraph graph = new StoreGraph(SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema());
-        final GraphElementType graphElementType = GraphElementType.VERTEX;
-        final Map<String, Integer> expResult = new HashMap<>();
-        final Map<String, Integer> result = AttributeUtilities.getRegisteredAttributeIdsFromGraph(graph, graphElementType);
-        assertEquals(result, expResult);
+        System.out.println("getRegisteredAttributeIdsFromGraphWithZeroNodes");
+        
+        final Map<String, Integer> result = AttributeUtilities.getRegisteredAttributeIdsFromGraph(graph, GraphElementType.VERTEX);
+        assertEquals(result, new HashMap<>());
     }
 
+    /**
+     * Test of getRegisteredAttributeIdsFromGraph method, of class AttributeUtilities. Only one node on graph
+     */
     @Test
     public void testGetRegisteredAttributeIdsFromGraphWithOneNode() {
-        final StoreGraph graph = new StoreGraph(SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema());
+        System.out.println("getRegisteredAttributeIdsFromGraphWithOneNode");
+        
         final int vx0 = graph.addVertex();
         graph.getSchema().completeVertex(graph, vx0);
-
-        final GraphElementType graphElementType = GraphElementType.VERTEX;
+        
         final Map<String, Integer> expResult = new HashMap<>();
-        expResult.put(VisualConcept.VertexAttribute.LABEL.getName(), graph.getAttribute(graphElementType, VisualConcept.VertexAttribute.LABEL.getName()));
-        expResult.put(VisualConcept.VertexAttribute.IDENTIFIER.getName(), graph.getAttribute(graphElementType, VisualConcept.VertexAttribute.IDENTIFIER.getName()));
-        expResult.put(AnalyticConcept.VertexAttribute.RAW.getName(), graph.getAttribute(graphElementType, AnalyticConcept.VertexAttribute.RAW.getName()));
-        expResult.put(AnalyticConcept.VertexAttribute.TYPE.getName(), graph.getAttribute(graphElementType, AnalyticConcept.VertexAttribute.TYPE.getName()));
-        expResult.put(VisualConcept.VertexAttribute.COLOR.getName(), graph.getAttribute(graphElementType, VisualConcept.VertexAttribute.COLOR.getName()));
-        expResult.put(VisualConcept.VertexAttribute.FOREGROUND_ICON.getName(), graph.getAttribute(graphElementType, VisualConcept.VertexAttribute.FOREGROUND_ICON.getName()));
-        expResult.put(VisualConcept.VertexAttribute.BACKGROUND_ICON.getName(), graph.getAttribute(graphElementType, VisualConcept.VertexAttribute.BACKGROUND_ICON.getName()));
-        expResult.put(VisualConcept.VertexAttribute.COLORBLIND_LAYER.getName(), graph.getAttribute(graphElementType, VisualConcept.VertexAttribute.COLORBLIND_LAYER.getName()));
+        expResult.put(VisualConcept.VertexAttribute.LABEL.getName(), VisualConcept.VertexAttribute.LABEL.get(graph));
+        expResult.put(VisualConcept.VertexAttribute.IDENTIFIER.getName(), VisualConcept.VertexAttribute.IDENTIFIER.get(graph));
+        expResult.put(AnalyticConcept.VertexAttribute.RAW.getName(), AnalyticConcept.VertexAttribute.RAW.get(graph));
+        expResult.put(AnalyticConcept.VertexAttribute.TYPE.getName(), AnalyticConcept.VertexAttribute.TYPE.get(graph));
+        expResult.put(VisualConcept.VertexAttribute.COLOR.getName(), VisualConcept.VertexAttribute.COLOR.get(graph));
+        expResult.put(VisualConcept.VertexAttribute.FOREGROUND_ICON.getName(), VisualConcept.VertexAttribute.FOREGROUND_ICON.get(graph));
+        expResult.put(VisualConcept.VertexAttribute.BACKGROUND_ICON.getName(), VisualConcept.VertexAttribute.BACKGROUND_ICON.get(graph));
+        expResult.put(VisualConcept.VertexAttribute.COLORBLIND_LAYER.getName(), VisualConcept.VertexAttribute.COLORBLIND_LAYER.get(graph));
 
-        final Map<String, Integer> result = AttributeUtilities.getRegisteredAttributeIdsFromGraph(graph, graphElementType);
+        final Map<String, Integer> result = AttributeUtilities.getRegisteredAttributeIdsFromGraph(graph, GraphElementType.VERTEX);
         assertEquals(result, expResult);
     }
-
+    
+    /**
+     * Test of getVertexAttributes method, of class AttributeUtilities.
+     */
     @Test
-    public void testGetDateTimeAttributes() {
-        final StoreGraph graph = new StoreGraph(SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema());
-
-        final Set<String> typesUsedByGraph = AttributeUtilities.getDateTimeAttributes(new DualGraph(graph, false), GraphElementType.TRANSACTION);
-        assertEquals(typesUsedByGraph.size(), 7);
-        assertTrue(typesUsedByGraph.contains(TemporalConcept.TransactionAttribute.FIRST_SEEN.getName()));
-        assertTrue(typesUsedByGraph.contains(TemporalConcept.TransactionAttribute.LAST_SEEN.getName()));
-        assertTrue(typesUsedByGraph.contains(TemporalConcept.TransactionAttribute.DATETIME.getName()));
-        assertTrue(typesUsedByGraph.contains(TemporalConcept.TransactionAttribute.CREATED.getName()));
-        assertTrue(typesUsedByGraph.contains(TemporalConcept.TransactionAttribute.MODIFIED.getName()));
-        assertTrue(typesUsedByGraph.contains(TemporalConcept.TransactionAttribute.START_TIME.getName()));
-        assertTrue(typesUsedByGraph.contains(TemporalConcept.TransactionAttribute.END_TIME.getName()));
-    }
-
-    @Test
-    public void testGetTypesUsedByGraph() {
-        final int vx0;
-        final int vx1;
-        final int vx2;
-        final int vx3;
-        final StoreGraph graph = new StoreGraph(SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema());
-        final int typeId = AnalyticConcept.VertexAttribute.TYPE.ensure(graph);
-
-        vx0 = graph.addVertex();
-        graph.setObjectValue(typeId, vx0, AnalyticConcept.VertexType.ORGANISATION);
-
-        vx1 = graph.addVertex();
-        graph.setObjectValue(typeId, vx1, AnalyticConcept.VertexType.ORGANISATION);
-
-        vx2 = graph.addVertex();
-        graph.setObjectValue(typeId, vx2, AnalyticConcept.VertexType.DOCUMENT);
-
-        vx3 = graph.addVertex();
-        graph.setStringValue(typeId, vx3, "Foo");
-
-        final Set<String> typesUsedByGraph = AttributeUtilities.getTypesUsedByGraph(new DualGraph(graph, false));
-        assertEquals(typesUsedByGraph.size(), 3);
-        assertTrue(typesUsedByGraph.contains(AnalyticConcept.VertexType.ORGANISATION.toString()));
-        assertTrue(typesUsedByGraph.contains(AnalyticConcept.VertexType.DOCUMENT.toString()));
-        assertTrue(typesUsedByGraph.contains("Foo"));
+    public void testGetVertexAttributes() {
+        System.out.println("getVertexAttributes");
+        
+        final int identiferVertexAttribute = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
+        final int typeVertexAttribute = AnalyticConcept.VertexAttribute.TYPE.ensure(graph);
+        final int sourceVertexAttribute = AnalyticConcept.VertexAttribute.SOURCE.ensure(graph);
+        VisualConcept.TransactionAttribute.IDENTIFIER.ensure(graph);
+        
+        final Map<String, Integer> expResult = new HashMap<>();
+        expResult.put(VisualConcept.VertexAttribute.IDENTIFIER.getName(), identiferVertexAttribute);
+        expResult.put(AnalyticConcept.VertexAttribute.TYPE.getName(), typeVertexAttribute);
+        expResult.put(AnalyticConcept.VertexAttribute.SOURCE.getName(), sourceVertexAttribute);
+        
+        final Map<String, Integer> result = AttributeUtilities.getVertexAttributes(graph);
+        assertEquals(result, expResult);
     }
 }

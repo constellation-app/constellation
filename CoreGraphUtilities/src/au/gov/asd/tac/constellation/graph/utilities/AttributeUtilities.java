@@ -15,24 +15,14 @@
  */
 package au.gov.asd.tac.constellation.graph.utilities;
 
-import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
-import au.gov.asd.tac.constellation.graph.processing.GraphRecordStore;
-import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 /**
  * Schema Attribute Utilities
@@ -72,47 +62,7 @@ public class AttributeUtilities {
     }
 
     /**
-     * Return the date time attributes for a {@link GraphElementType} used by a
-     * graph
-     *
-     * @param graph The graph
-     * @param graphElementType The element type
-     * @return Set of date time attributes used on a given graph
-     */
-    public static Set<String> getDateTimeAttributes(final Graph graph, final GraphElementType graphElementType) {
-        final Set<String> datetimeAttributes = new TreeSet<>();
-
-        if (graph != null && graph.getSchema() != null) {
-            final SchemaFactory factory = graph.getSchema().getFactory();
-            final Map<String, SchemaAttribute> attributesMap = factory.getRegisteredAttributes(graphElementType);
-            attributesMap.values().stream().forEach((SchemaAttribute schemaAttribute) -> {
-                if (schemaAttribute.getAttributeType().equals(ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME)) {
-                    datetimeAttributes.add(schemaAttribute.getName());
-                }
-            });
-        }
-
-        return datetimeAttributes;
-    }
-
-    /**
-     * Return a set of types used by a graph
-     *
-     * @param graph The graph
-     * @return Set of types used by a graph
-     */
-    public static Set<String> getTypesUsedByGraph(final Graph graph) {
-        final List<String> types;
-        try (final ReadableGraph rg = graph.getReadableGraph()) {
-            final GraphRecordStore recordstore = GraphRecordStoreUtilities.getVertices(rg, false, false, false);
-            types = recordstore.getAll(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE);
-        }
-
-        return types != null ? new TreeSet<>(types) : new TreeSet<>();
-    }
-
-    /**
-     * Return a set of vertex attributes
+     * Get all the vertex attributes on the given graph
      *
      * @param graph The graph
      * @return Map of attribute names
@@ -123,14 +73,10 @@ public class AttributeUtilities {
         if (graph == null) {
             return attributeIds;
         }
-
-        int attributeCount = graph.getAttributeCount(GraphElementType.VERTEX);
-        for (int i = 0; i < attributeCount; i++) {
-
-            final Attribute attr = new GraphAttribute(graph, graph.getAttribute(GraphElementType.VERTEX, i));
-
-            attributeIds.put(attr.getName(), attr.getId());
-            
+        
+        for (int i = 0; i < graph.getAttributeCount(GraphElementType.VERTEX); i++) {
+            final int attributeId = graph.getAttribute(GraphElementType.VERTEX, i);
+            attributeIds.put(graph.getAttributeName(attributeId), attributeId);          
         }
 
         return attributeIds;

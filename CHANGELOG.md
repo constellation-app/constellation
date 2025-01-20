@@ -1,7 +1,8 @@
 # Constellation Changes
 
 ## Changes in January 2025
--   Removed classes `VideoCreator` and `VideoFrame` from Core Utilities as they are unused. 
+-   Removed classes `VideoCreator` and `VideoFrame` from Core Utilities as they are unused.
+-   Removed `AttributeUtilities.getDateTimeAttributes()` and `AttributeUtilities.getTypesUsedByGraph()` which were unused.
 -   Removed all the classes in `au.gov.asd.tac.constellation.graph.utilities.wrapper` which were all unused.
 -   Removed all the classes in `au.gov.asd.tac.constellation.graph.utilities.widgets` other than `AttributeSelectionPanel`, which were unused.
 -   Removed `PlaceholderDominanceCalculator` since there was no place it would be used over `AnalyticDominanceCalculator`.
