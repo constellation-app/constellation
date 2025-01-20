@@ -53,6 +53,9 @@ public class ParameterInputPaneNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        parameterInputPaneMock = null;
+        pluginParamMock = null;
+        inputMock = null;
     }
     
     @Test
