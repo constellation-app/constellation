@@ -84,11 +84,11 @@ public class TextInputDialogWithKeybordShortcutNGTest {
             when(textInputDialogWithKeybordShortcut.getDialogPane()).thenReturn(dialogPane);
             assertEquals(textInputDialogWithKeybordShortcut.getDefaultValue(), StringUtils.EMPTY);
 
-            Optional<KeyboardShortcutSelectionResult> ksResult = Optional.of(new KeyboardShortcutSelectionResult("Ctrl 1", false, null));
-            RecordKeyboardShortcut rk = mock(RecordKeyboardShortcut.class);
+            final  Optional<KeyboardShortcutSelectionResult> ksResult = Optional.of(new KeyboardShortcutSelectionResult("Ctrl 1", false, null));
+            final RecordKeyboardShortcut rk = mock(RecordKeyboardShortcut.class);
             when(rk.start(outputFile)).thenReturn(ksResult);
 
-            Optional<KeyboardShortcutSelectionResult> actualResponse = TextInputDialogWithKeybordShortcut.getKeyboardShortcut(outputFile, rk);
+            final Optional<KeyboardShortcutSelectionResult> actualResponse = TextInputDialogWithKeybordShortcut.getKeyboardShortcut(outputFile, rk);
 
             assertEquals(actualResponse, ksResult);
 
@@ -99,13 +99,13 @@ public class TextInputDialogWithKeybordShortcutNGTest {
 
     @Test
     public void testTextInputDialogWithKeybordShortcut() throws Exception {
-        File preferenceDirectory = new File(System.getProperty("java.io.tmpdir"));
-        Optional<String> ks = Optional.of("Ctrl+1");
+        final File preferenceDirectory = new File(System.getProperty("java.io.tmpdir"));
+        final Optional<String> ks = Optional.of("Ctrl+1");
 
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                TextInputDialogWithKeybordShortcut textInputDialogWithKeybordShortcut = new TextInputDialogWithKeybordShortcut(preferenceDirectory, ks);
+                final TextInputDialogWithKeybordShortcut textInputDialogWithKeybordShortcut = new TextInputDialogWithKeybordShortcut(preferenceDirectory, ks);
                 Assert.assertNotNull(textInputDialogWithKeybordShortcut.getEditor());
                 assertEquals(textInputDialogWithKeybordShortcut.getDefaultValue(), "");
             }
@@ -115,7 +115,7 @@ public class TextInputDialogWithKeybordShortcutNGTest {
     
     @Test
     public void testClickOnShortcutButton() throws Exception {
-        Optional<String> ks = Optional.of("ctrl 1");
+        final Optional<String> ks = Optional.of("ctrl 1");
         final File preferenceDirectory = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
 
         final Future<Optional<KeyboardShortcutSelectionResult>> future = WaitForAsyncUtils.asyncFx(

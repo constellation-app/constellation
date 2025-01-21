@@ -262,7 +262,7 @@ public class JsonIO {
         // Ask the user to provide a file name        
         Optional<String> userInputWithKs;
 
-        Optional<KeyboardShortcutSelectionResult> ksResult = JsonIODialog.getPreferenceFileName(ks, preferenceDirectory);
+        final Optional<KeyboardShortcutSelectionResult> ksResult = JsonIODialog.getPreferenceFileName(ks, preferenceDirectory);
         if (ksResult.isPresent()) {
             if (Objects.isNull(ksResult.get().getFileName())) {
                 return;
@@ -337,7 +337,7 @@ public class JsonIO {
         
     }
 
-    public static Alert getAlert(AlertType alertType) {
+    public static Alert getAlert(final AlertType alertType) {
         return new Alert(alertType);
     }
     /**

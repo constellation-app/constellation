@@ -424,23 +424,23 @@ public class DataAccessPaneNGTest {
         final DataAccessPane dataAccessPane = mock(DataAccessPane.class);
         when(dataAccessPane.createCombo(any())).thenCallRealMethod();
 
-        KeyEvent keyEvent = new KeyEvent(KeyEvent.KEY_PRESSED, "Ctrl", "A", KeyCode.A, false, true, false, false);
-        KeyCombination keyCombination = dataAccessPane.createCombo(keyEvent);
+        final KeyEvent keyEvent = new KeyEvent(KeyEvent.KEY_PRESSED, "Ctrl", "A", KeyCode.A, false, true, false, false);
+        final KeyCombination keyCombination = dataAccessPane.createCombo(keyEvent);
         assertTrue(keyCombination != null);
         assertTrue(keyCombination.getDisplayText().equals("Ctrl+A"));
 
-        KeyEvent keyEvent1 = new KeyEvent(KeyEvent.KEY_PRESSED, "Shift", "A", KeyCode.A, true, false, false, false);
-        KeyCombination keyCombination1 = dataAccessPane.createCombo(keyEvent1);
+        final KeyEvent keyEvent1 = new KeyEvent(KeyEvent.KEY_PRESSED, "Shift", "A", KeyCode.A, true, false, false, false);
+        final KeyCombination keyCombination1 = dataAccessPane.createCombo(keyEvent1);
         assertTrue(keyCombination1 != null);
         assertTrue(keyCombination1.getDisplayText().equals("Shift+A"));
 
-        KeyEvent keyEvent2 = new KeyEvent(KeyEvent.KEY_PRESSED, "Alt", "A", KeyCode.A, false, false, true, false);
-        KeyCombination keyCombination2 = dataAccessPane.createCombo(keyEvent2);
+        final KeyEvent keyEvent2 = new KeyEvent(KeyEvent.KEY_PRESSED, "Alt", "A", KeyCode.A, false, false, true, false);
+        final KeyCombination keyCombination2 = dataAccessPane.createCombo(keyEvent2);
         assertTrue(keyCombination2 != null);
         assertTrue(keyCombination2.getDisplayText().equals("Alt+A"));
 
-        KeyEvent keyEvent3 = new KeyEvent(KeyEvent.KEY_PRESSED, "Meta", "A", KeyCode.A, false, false, false, true);
-        KeyCombination keyCombination3 = dataAccessPane.createCombo(keyEvent3);
+        final KeyEvent keyEvent3 = new KeyEvent(KeyEvent.KEY_PRESSED, "Meta", "A", KeyCode.A, false, false, false, true);
+        final KeyCombination keyCombination3 = dataAccessPane.createCombo(keyEvent3);
         assertTrue(keyCombination3 != null);
         assertTrue(keyCombination3.getDisplayText().equals("Meta+A"));
 

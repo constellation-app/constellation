@@ -91,10 +91,10 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         final Map<String, Pair<Integer, List<DataAccessPlugin>>> plugins;
         try {
             plugins = DataAccessPaneState.getPlugins();
-        } catch (ExecutionException ex) {
+        } catch (final ExecutionException ex) {
             throw new IllegalStateException("Failed to load data access plugins. "
                     + "Data Access View cannot be created."); // NOSONAR
-        } catch (InterruptedException ex) {
+        } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt(); // NOSONAR
 
             throw new IllegalStateException("Failed to load data access plugins. "
