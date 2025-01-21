@@ -58,7 +58,7 @@ public class RecordKeyboardShortcutNGTest {
     public static void tearDownClass() throws Exception {
         try {
             FxToolkit.cleanupStages();
-        } catch (TimeoutException ex) {
+        } catch (final TimeoutException ex) {
             LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
         }
     }
@@ -66,7 +66,7 @@ public class RecordKeyboardShortcutNGTest {
     @Test
     public void test_recordKeyboardShortcut() throws Exception {
 
-        File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
+        final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
 
         try {
 
@@ -77,7 +77,7 @@ public class RecordKeyboardShortcutNGTest {
             when(keyPressLabelDialog.getLabel()).thenReturn(createContentLabel("ctrl+1"));
             when(keyPressLabelDialog.getResult()).thenReturn("ctrl 1");
 
-            DialogPane dialogPane = mock(DialogPane.class);
+            final DialogPane dialogPane = mock(DialogPane.class);
             when(dialogPane.getStylesheets()).thenReturn(mock(ObservableList.class));
             when(keyPressLabelDialog.getDialogPane()).thenReturn(dialogPane);
 
@@ -86,8 +86,8 @@ public class RecordKeyboardShortcutNGTest {
                 return result;
             });
 
-            RecordKeyboardShortcut rk = new RecordKeyboardShortcut(keyPressLabelDialog);
-            Optional<KeyboardShortcutSelectionResult> ksResult = rk.start(outputFile);
+            final RecordKeyboardShortcut rk = new RecordKeyboardShortcut(keyPressLabelDialog);
+            final Optional<KeyboardShortcutSelectionResult> ksResult = rk.start(outputFile);
             assertTrue(ksResult.isPresent());            
 
         } finally {
@@ -99,7 +99,7 @@ public class RecordKeyboardShortcutNGTest {
     @Test
     public void test_recordKeyboardShortcut_alreadyassigned() throws Exception {
 
-        File preferenceFileDirectory = new File(System.getProperty("java.io.tmpdir"));
+        final File preferenceFileDirectory = new File(System.getProperty("java.io.tmpdir"));
         final File outputFile = new File(System.getProperty("java.io.tmpdir") + "/[ctrl 1] my-preferences.json");
 
         try {
@@ -110,7 +110,7 @@ public class RecordKeyboardShortcutNGTest {
             when(keyPressLabelDialog.getLabel()).thenReturn(createContentLabel("ctrl+1"));
             when(keyPressLabelDialog.getResult()).thenReturn("ctrl+1");
 
-            DialogPane dialogPane = mock(DialogPane.class);
+            final DialogPane dialogPane = mock(DialogPane.class);
             when(dialogPane.getStylesheets()).thenReturn(mock(ObservableList.class));
             when(keyPressLabelDialog.getDialogPane()).thenReturn(dialogPane);
 
@@ -119,8 +119,8 @@ public class RecordKeyboardShortcutNGTest {
                 return result;
             });
 
-            RecordKeyboardShortcut rk = new RecordKeyboardShortcut(keyPressLabelDialog);
-            Optional<KeyboardShortcutSelectionResult> ksResult = rk.start(preferenceFileDirectory);
+            final RecordKeyboardShortcut rk = new RecordKeyboardShortcut(keyPressLabelDialog);
+            final Optional<KeyboardShortcutSelectionResult> ksResult = rk.start(preferenceFileDirectory);
             assertTrue(ksResult.isPresent());
 
         } finally {
@@ -132,30 +132,30 @@ public class RecordKeyboardShortcutNGTest {
     @Test
     public void testCreateCombo() throws Exception {
 
-        KeyEvent keyEvent = new KeyEvent(KeyEvent.KEY_PRESSED, "Ctrl", "A", KeyCode.A, false, true, false, false);
-        KeyCombination keyCombination = RecordKeyboardShortcut.createCombo(keyEvent);
+        final KeyEvent keyEvent = new KeyEvent(KeyEvent.KEY_PRESSED, "Ctrl", "A", KeyCode.A, false, true, false, false);
+        final KeyCombination keyCombination = RecordKeyboardShortcut.createCombo(keyEvent);
         assertTrue(keyCombination != null);
         assertTrue(keyCombination.getDisplayText().equals("Ctrl+A"));
 
-        KeyEvent keyEvent1 = new KeyEvent(KeyEvent.KEY_PRESSED, "Shift", "A", KeyCode.A, true, false, false, false);
-        KeyCombination keyCombination1 = RecordKeyboardShortcut.createCombo(keyEvent1);
+        final KeyEvent keyEvent1 = new KeyEvent(KeyEvent.KEY_PRESSED, "Shift", "A", KeyCode.A, true, false, false, false);
+        final KeyCombination keyCombination1 = RecordKeyboardShortcut.createCombo(keyEvent1);
         assertTrue(keyCombination1 != null);
         assertTrue(keyCombination1.getDisplayText().equals("Shift+A"));
 
-        KeyEvent keyEvent2 = new KeyEvent(KeyEvent.KEY_PRESSED, "Alt", "A", KeyCode.A, false, false, true, false);
-        KeyCombination keyCombination2 = RecordKeyboardShortcut.createCombo(keyEvent2);
+        final KeyEvent keyEvent2 = new KeyEvent(KeyEvent.KEY_PRESSED, "Alt", "A", KeyCode.A, false, false, true, false);
+        final KeyCombination keyCombination2 = RecordKeyboardShortcut.createCombo(keyEvent2);
         assertTrue(keyCombination2 != null);
         assertTrue(keyCombination2.getDisplayText().equals("Alt+A"));
 
-        KeyEvent keyEvent3 = new KeyEvent(KeyEvent.KEY_PRESSED, "Meta", "A", KeyCode.A, false, false, false, true);
-        KeyCombination keyCombination3 = RecordKeyboardShortcut.createCombo(keyEvent3);
+        final KeyEvent keyEvent3 = new KeyEvent(KeyEvent.KEY_PRESSED, "Meta", "A", KeyCode.A, false, false, false, true);
+        final KeyCombination keyCombination3 = RecordKeyboardShortcut.createCombo(keyEvent3);
         assertTrue(keyCombination3 != null);
         assertTrue(keyCombination3.getDisplayText().equals("Meta+A"));
 
     }
 
     private static Label createContentLabel(final String text) {
-        Label label = new Label(text);
+        final Label label = new Label(text);
         label.setMaxWidth(Double.MAX_VALUE);
         label.setMaxHeight(Double.MAX_VALUE);
         label.getStyleClass().add("content");

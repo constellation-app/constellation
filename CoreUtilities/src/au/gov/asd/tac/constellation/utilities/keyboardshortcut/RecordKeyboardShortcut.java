@@ -78,7 +78,7 @@ public class RecordKeyboardShortcut  {
             boolean alreadyAssigned = false;
             
                         
-            File exisitngTemplateWithKs = keyboardShortCutAlreadyAssigned(preferenceDirectory, keyboardShortcut);
+            final File exisitngTemplateWithKs = keyboardShortCutAlreadyAssigned(preferenceDirectory, keyboardShortcut);
             
             if(exisitngTemplateWithKs != null) {
                 alreadyAssigned = true;

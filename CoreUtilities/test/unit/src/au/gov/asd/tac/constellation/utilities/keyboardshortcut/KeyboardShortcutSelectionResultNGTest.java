@@ -60,7 +60,7 @@ public class KeyboardShortcutSelectionResultNGTest {
     public static void tearDownClass() throws Exception {
         try {
             FxToolkit.cleanupStages();
-        } catch (TimeoutException ex) {
+        } catch (final TimeoutException ex) {
             LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
         }
     }
@@ -107,11 +107,11 @@ public class KeyboardShortcutSelectionResultNGTest {
         try {
             outputFile.createNewFile();
 
-            String keyboardShortcut = "ctrl 1";
+            final String keyboardShortcut = "ctrl 1";
 
-            KeyboardShortcutSelectionResult ksResult = new KeyboardShortcutSelectionResult(keyboardShortcut, true, outputFile);
+            final KeyboardShortcutSelectionResult ksResult = new KeyboardShortcutSelectionResult(keyboardShortcut, true, outputFile);
 
-            RecordKeyboardShortcut rks = mock(RecordKeyboardShortcut.class);
+            final RecordKeyboardShortcut rks = mock(RecordKeyboardShortcut.class);
             Mockito.when(rks.start(outputFile)).thenReturn(Optional.of(ksResult));
 
             Optional<KeyboardShortcutSelectionResult> actualResult = rks.start(outputFile);

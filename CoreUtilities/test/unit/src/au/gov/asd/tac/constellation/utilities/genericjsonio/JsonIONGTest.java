@@ -264,7 +264,7 @@ public class JsonIONGTest {
 
         try (MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class)) {
 
-            Optional<KeyboardShortcutSelectionResult> ksResult = Optional.of(new KeyboardShortcutSelectionResult("Ctrl 1", false, null));
+            final Optional<KeyboardShortcutSelectionResult> ksResult = Optional.of(new KeyboardShortcutSelectionResult("Ctrl 1", false, null));
 
             jsonIoDialogMockedStatic.when(() -> JsonIODialog
                     .getPreferenceFileName(any(Optional.class), any()))
@@ -311,7 +311,7 @@ public class JsonIONGTest {
 
             outputFile.createNewFile();
 
-            Optional<KeyboardShortcutSelectionResult> ksResult = Optional.of(new KeyboardShortcutSelectionResult("Ctrl 1", false, null));
+            final Optional<KeyboardShortcutSelectionResult> ksResult = Optional.of(new KeyboardShortcutSelectionResult("Ctrl 1", false, null));
             ksResult.get().setFileName("my-preferences");
 
             Alert mockAlert = Mockito.mock(Alert.class);

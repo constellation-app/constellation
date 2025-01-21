@@ -62,7 +62,7 @@ public class TextInputDialogWithKeybordShortcutNGTest {
     public static void tearDownClass() throws Exception {
         try {
             FxToolkit.cleanupStages();
-        } catch (TimeoutException ex) {
+        } catch (final TimeoutException ex) {
             LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
         }
     }
@@ -70,17 +70,16 @@ public class TextInputDialogWithKeybordShortcutNGTest {
     @Test
     public void testKeyPressLabelDialog() throws Exception {
 
-        File outputFile = new File(System.getProperty("java.io.tmpdir"));
+        final File outputFile = new File(System.getProperty("java.io.tmpdir"));
 
         try {
 
             outputFile.createNewFile();
 
             TextInputDialogWithKeybordShortcut textInputDialogWithKeybordShortcut = mock(TextInputDialogWithKeybordShortcut.class);
-            when(textInputDialogWithKeybordShortcut.getDefaultValue()).thenReturn(StringUtils.EMPTY);
-            // when(textInputDialogWithKeybordShortcut.getEditor()).thenReturn(createTextField(StringUtils.EMPTY));            
+            when(textInputDialogWithKeybordShortcut.getDefaultValue()).thenReturn(StringUtils.EMPTY);            
 
-            DialogPane dialogPane = mock(DialogPane.class);
+            final DialogPane dialogPane = mock(DialogPane.class);
             when(textInputDialogWithKeybordShortcut.getDialogPane()).thenReturn(dialogPane);
             assertEquals(textInputDialogWithKeybordShortcut.getDefaultValue(), StringUtils.EMPTY);
 
