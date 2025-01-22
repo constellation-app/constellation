@@ -61,6 +61,17 @@ public abstract class Bin implements Comparable<Bin> {
     // The label for this bin that is displayed to the user.
     protected String label;
 
+    // Do not create a bin if all the elements are null
+    boolean allElementsAreNull = false;
+
+    public boolean isAllElementsAreNull() {
+        return allElementsAreNull;
+    }
+
+    public void setAllElementsAreNull(boolean allElementsNull) {
+        this.allElementsAreNull = allElementsNull;
+    }
+    
     /**
      * Returns the label.
      *

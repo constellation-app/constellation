@@ -33,6 +33,9 @@ public class LinkSumTransactionLongAttributeBin extends LongBin {
         final int transactionCount = graph.getLinkTransactionCount(element);
         for (int t = 0; t < transactionCount; t++) {
             final int transaction = graph.getLinkTransaction(element, t);
+            if (graph.getObjectValue(attribute, transaction) == null) {
+                continue;
+            }
             sum += graph.getLongValue(attribute, transaction);
         }
         key = sum;

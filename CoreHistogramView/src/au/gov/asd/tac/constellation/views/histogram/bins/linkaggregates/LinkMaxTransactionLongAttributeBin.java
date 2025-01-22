@@ -30,10 +30,20 @@ public class LinkMaxTransactionLongAttributeBin extends LongBin {
     @Override
     public void setKey(GraphReadMethods graph, int attribute, int element) {
         long max = Long.MIN_VALUE;
+        int nullCount = 0;
+        setAllElementsAreNull(false);
         final int transactionCount = graph.getLinkTransactionCount(element);
         for (int t = 0; t < transactionCount; t++) {
             final int transaction = graph.getLinkTransaction(element, t);
+            if (graph.getObjectValue(attribute, transaction) == null) {
+                nullCount++;
+                continue;
+            }
             max = Math.max(graph.getLongValue(attribute, transaction), max);
+        }
+        if (nullCount >= transactionCount) {
+            setAllElementsAreNull(true);
+            return;
         }
         key = max;
     }

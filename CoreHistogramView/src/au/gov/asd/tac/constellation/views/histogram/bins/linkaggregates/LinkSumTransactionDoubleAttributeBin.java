@@ -30,11 +30,21 @@ public class LinkSumTransactionDoubleAttributeBin extends DoubleBin {
     @Override
     public void setKey(GraphReadMethods graph, int attribute, int element) {
         double sum = 0;
+        int nullCount = 0;
+        setAllElementsAreNull(false);
         final int transactionCount = graph.getLinkTransactionCount(element);
         for (int t = 0; t < transactionCount; t++) {
             final int transaction = graph.getLinkTransaction(element, t);
+            if (graph.getObjectValue(attribute, transaction) == null) {
+                nullCount++;
+                continue;
+            }
             sum += graph.getDoubleValue(attribute, transaction);
         }
+        if (nullCount >= transactionCount) {
+            setAllElementsAreNull(true);
+            return;
+        }        
         key = sum;
     }
 

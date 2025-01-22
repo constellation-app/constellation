@@ -30,10 +30,20 @@ public class LinkMaxTransactionFloatAttributeBin extends FloatBin {
     @Override
     public void setKey(GraphReadMethods graph, int attribute, int element) {
         float max = Float.MIN_VALUE;
+        int nullCount = 0;
+        setAllElementsAreNull(false);
         final int transactionCount = graph.getLinkTransactionCount(element);
         for (int t = 0; t < transactionCount; t++) {
             final int transaction = graph.getLinkTransaction(element, t);
+            if (graph.getObjectValue(attribute, transaction) == null) {
+                nullCount++;
+                continue;
+            }
             max = Math.max(graph.getFloatValue(attribute, transaction), max);
+        }
+        if (nullCount >= transactionCount) {
+            setAllElementsAreNull(true);
+            return;
         }
         key = max;
     }

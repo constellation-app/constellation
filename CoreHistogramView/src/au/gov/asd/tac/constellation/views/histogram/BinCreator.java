@@ -79,18 +79,20 @@ public class BinCreator {
             if (filter == null || filter.contains(graph, element)) {
                 bin.setKey(graph, binnedAttributeId, representative.findRepresentative(graph, elementType, element));
                 Bin currentBin = bins.get(bin);
-                if (currentBin == null) {
+                if (currentBin == null && !bin.isAllElementsAreNull()) {
                     currentBin = bin;
                     currentBin.prepareForPresentation();
                     bin = currentBin.create();
-                    bins.put(currentBin, currentBin);
+                    bins.put(currentBin, currentBin); // ?? currentBin is both kay and value ?? ... redundant ???
                 }
-                currentBin.elementCount++;
-                if (selectedAttributeId != Graph.NOT_FOUND && elementType.isSelected(graph, element, selectedAttributeId)) {
-                    currentBin.selectedCount++;
+                if (currentBin != null) {
+                    currentBin.elementCount++;
+                    if (selectedAttributeId != Graph.NOT_FOUND && elementType.isSelected(graph, element, selectedAttributeId)) {
+                        currentBin.selectedCount++;
+                    }
+                    binElements[position] = currentBin.firstElement < 0 ? -1 : currentBin.firstElement;
+                    currentBin.firstElement = position;
                 }
-                binElements[position] = currentBin.firstElement < 0 ? -1 : currentBin.firstElement;
-                currentBin.firstElement = position;
             }
         }
     }
