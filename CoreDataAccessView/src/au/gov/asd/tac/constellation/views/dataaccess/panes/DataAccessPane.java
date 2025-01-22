@@ -81,10 +81,10 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
 
         searchPluginTextField = new TextField();
         searchPluginTextField.setPromptText("Type to search for a plugin");
-        searchPluginTextField.textProperty().addListener((observable, oldValue, newValue) ->
+        searchPluginTextField.textProperty().addListener((observable, oldValue, newValue) -> // NOSONAR
             getDataAccessTabPane().getQueryPhasePaneOfCurrentTab()
                     .showMatchingPlugins(newValue)
-        ); // NOSONAR
+        ); 
 
         // Plugins are now needed, so wait until the load is complete
         
