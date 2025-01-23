@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.views.dataaccess.panes.GlobalParametersPane;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.QueryPhasePane;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Serializable;
@@ -35,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
@@ -318,6 +320,85 @@ public class DataAccessParametersIoProviderNGTest {
     }
 
 
+      @Test
+    public void loadParameters_withKeyboardShortcut_1() throws IOException {
+        final DataAccessPane dataAccessPane = mock(DataAccessPane.class);
+        final DataAccessTabPane dataAccessTabPane = mock(DataAccessTabPane.class);
+        
+        when(dataAccessPane.getDataAccessTabPane()).thenReturn(dataAccessTabPane);
+        
+        final QueryPhasePane tab1 = mock(QueryPhasePane.class);
+        final QueryPhasePane tab2 = mock(QueryPhasePane.class);
+        when(dataAccessTabPane.newTab(anyString())).thenReturn(tab1).thenReturn(tab2);
+        
+        final GlobalParametersPane globalParametersPane1 = mock(GlobalParametersPane.class); 
+        final GlobalParametersPane globalParametersPane2 = mock(GlobalParametersPane.class); 
+        when(tab1.getGlobalParametersPane()).thenReturn(globalParametersPane1);
+        when(tab2.getGlobalParametersPane()).thenReturn(globalParametersPane2);
+
+        // By adding the settings bit here, it forces mockito to generate two different
+        // classes. Otherwise they would be two different objects but have the same class name
+        final Plugin plugin1 = mock(Plugin.class, withSettings().extraInterfaces(Comparable.class));
+        final Plugin plugin2 = mock(Plugin.class, withSettings().extraInterfaces(Serializable.class));
+
+        final DataSourceTitledPane dataSourceTitledPane1 = mock(DataSourceTitledPane.class);
+        when(dataSourceTitledPane1.getPlugin()).thenReturn(plugin1);
+
+        final DataSourceTitledPane dataSourceTitledPane2 = mock(DataSourceTitledPane.class);
+        when(dataSourceTitledPane2.getPlugin()).thenReturn(plugin2);
+
+        when(tab1.getDataAccessPanes()).thenReturn(List.of(dataSourceTitledPane1, dataSourceTitledPane2));
+        when(tab2.getDataAccessPanes()).thenReturn(List.of());
+
+        final PluginParameter pluginParameter1 = mock(PluginParameter.class);
+        when(pluginParameter1.getId()).thenReturn("param1");
+
+        final PluginParameter pluginParameter2 = mock(PluginParameter.class);
+        when(pluginParameter2.getId()).thenReturn("param2");
+
+        final PluginParameter pluginParameter3 = mock(PluginParameter.class);
+        when(pluginParameter3.getId()).thenReturn("param3");
+
+        final PluginParameter pluginParameter4 = mock(PluginParameter.class);
+        when(pluginParameter4.getId()).thenReturn("param4");
+
+        final PluginParameters globalPluginParameters1 = new PluginParameters();
+        globalPluginParameters1.addParameter(pluginParameter1);
+        globalPluginParameters1.addParameter(pluginParameter2);
+        globalPluginParameters1.addParameter(pluginParameter3);
+
+        final PluginParameters globalPluginParameters2 = new PluginParameters();
+        globalPluginParameters2.addParameter(pluginParameter3);
+        globalPluginParameters2.addParameter(pluginParameter4);
+
+        when(globalParametersPane1.getParams()).thenReturn(globalPluginParameters1);
+        when(globalParametersPane2.getParams()).thenReturn(globalPluginParameters2);
+
+        try (final MockedStatic<JsonIO> jsonIOStaticMock = Mockito.mockStatic(JsonIO.class)) {
+            final ObjectMapper objectMapper = new ObjectMapper();
+            final String json = IOUtils.toString(
+                    new FileInputStream(getClass().getResource("resources/preferences.json").getPath()),
+                    StandardCharsets.UTF_8
+            );
+
+            // We do not know the mockito plugin names ahead of time so substitute them in now
+            final StringSubstitutor substitutor = new StringSubstitutor(
+                    Map.of(
+                            "INSERT_PLUGIN1_NAME", plugin1.getClass().getSimpleName(),
+                            "INSERT_PLUGIN2_NAME", plugin2.getClass().getSimpleName()
+                    )
+            );
+            final List<DataAccessUserPreferences> preferences = objectMapper.readValue(
+                    substitutor.replace(json), new TypeReference<List<DataAccessUserPreferences>>() {});
+
+            jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferencesWithFilePrefix(eq(Optional.of("DataAccessView")), eq(Optional.of("[Ctrl 1]")),any(TypeReference.class)))
+                    .thenCallRealMethod();           
+
+            DataAccessParametersIoProvider.loadParameters(dataAccessPane, "Ctrl 1");
+        }
+        
+        
+    }
     /**
      * Verifies the save parameter method saves only if the query name parameter
      * is present in the global parameters and is not blank. This will simulate two
