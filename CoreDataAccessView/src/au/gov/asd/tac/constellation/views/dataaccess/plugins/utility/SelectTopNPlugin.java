@@ -197,10 +197,11 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
                     types.sort(String::compareTo);
                     MultiChoiceParameterType.setOptions(typeParamter, types);
                     MultiChoiceParameterType.setChoices(typeParamter, types);
+                    typeParamter.fireChangeEvent(ParameterChange.PROPERTY);
                 }
             }
         });
-
+    
         return params;
     }
 

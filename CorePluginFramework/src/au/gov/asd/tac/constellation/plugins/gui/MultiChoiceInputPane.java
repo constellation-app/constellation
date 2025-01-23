@@ -26,8 +26,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputListener;
 
 /**
@@ -88,9 +86,10 @@ public final class MultiChoiceInputPane extends
                     List<ParameterValue> paramOptions = MultiChoiceParameterType.getOptionsData(mcPluginParameter);
                     if (!((MultiChoiceInput) input).getOptions().equals(paramOptions)){
                         ((MultiChoiceInput) input).setOptions(paramOptions);
-                        
+                        final List<ParameterValue> choicesData = MultiChoiceParameterType.getChoicesData(mcPluginParameter);
+                        boolean test = paramOptions.stream().anyMatch(choicesData::contains);
                         // Only keep the value if it's in the new choices.
-                        if (paramOptions.contains(MultiChoiceParameterType.getChoicesData(mcPluginParameter))) {
+                        if (paramOptions.stream().anyMatch(choicesData::contains)) {
                             setFieldValue(MultiChoiceParameterType.getChoicesData(mcPluginParameter));
                         } else {
                             setFieldValue(null);
