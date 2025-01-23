@@ -210,8 +210,6 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
 
                 if (interactionGraph == null) {
                     manager.addOperation(visualAnnotator.flagBusy(true));
-                } else {
-                    interactionGraph = interactionGraph.flush(false);
                 }
 
                 long waitTime = 0;
@@ -229,25 +227,14 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                         if (interactionGraph != null) {
                             nextWaitTime = Math.max(0, beforeProcessing + handler.processEvent(interactionGraph) - System.currentTimeMillis());
                         } else {
-                            // info log for race condition when running animations
-                            final GraphNode gn = GraphNode.getGraphNode(graph.getId());
-                            final AnimationManager animationManager = ((VisualGraphTopComponent) gn.getTopComponent()).getAnimationManager();
-                            
-                            if (!animationManager.isAnimating()) {
-                                LOGGER.log(Level.WARNING, "Unable to obtain lock on interactionGraph, event is queued");
-                            } else {
-                                LOGGER.log(Level.INFO, "Unable to obtain lock on interactionGraph during animation, event is queued");
-                            }                           
+                            logNullInteractionGraph();                           
                         }
                         // Add any visual operations that need to occur after a graph flush.
                         final List<VisualOperation> operations = new LinkedList<>();
                         operationQueue.drainTo(operations);
-                        
-                        if (!operations.isEmpty()) {
-                            if (interactionGraph != null) {
-                                interactionGraph = interactionGraph.flush(false);
-                            }
-                            operations.forEach(op -> manager.addOperation(op));
+                        operations.forEach(op -> manager.addOperation(op));
+                        if (!operations.isEmpty() && interactionGraph != null) {
+                            interactionGraph = interactionGraph.flush(false);
                         }
                         final boolean waitForever = eventState.isMousePressed() || (eventState.getCurrentAction().equals(SceneAction.CREATING) && eventState.getCurrentCreationMode().equals(CreationMode.CREATING_TRANSACTION));
                         waitTime = Math.max(nextWaitTime, time + waitTime - System.currentTimeMillis());
@@ -278,6 +265,18 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
         handleEvents = true;
         eventHandlingThread.setName("Default Interaction Event Handler");
         eventHandlingThread.start();
+    }
+
+    private void logNullInteractionGraph() {
+        // info log for race condition when running animations
+        final GraphNode gn = GraphNode.getGraphNode(graph.getId());
+        final AnimationManager animationManager = ((VisualGraphTopComponent) gn.getTopComponent()).getAnimationManager();
+        
+        if (!animationManager.isAnimating()) {
+            LOGGER.log(Level.WARNING, "Unable to obtain lock on interactionGraph, event is queued");
+        } else {
+            LOGGER.log(Level.INFO, "Unable to obtain lock on interactionGraph during animation, event is queued");
+        }
     }
 
     @Override
