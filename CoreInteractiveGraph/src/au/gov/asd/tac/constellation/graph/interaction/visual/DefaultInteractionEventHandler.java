@@ -242,7 +242,13 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                         // Add any visual operations that need to occur after a graph flush.
                         final List<VisualOperation> operations = new LinkedList<>();
                         operationQueue.drainTo(operations);
-                        operations.forEach(op -> manager.addOperation(op));
+                        
+                        if (!operations.isEmpty()) {
+                            if (interactionGraph != null) {
+                                interactionGraph = interactionGraph.flush(false);
+                            }
+                            operations.forEach(op -> manager.addOperation(op));
+                        }
                         final boolean waitForever = eventState.isMousePressed() || (eventState.getCurrentAction().equals(SceneAction.CREATING) && eventState.getCurrentCreationMode().equals(CreationMode.CREATING_TRANSACTION));
                         waitTime = Math.max(nextWaitTime, time + waitTime - System.currentTimeMillis());
                         time = System.currentTimeMillis();
