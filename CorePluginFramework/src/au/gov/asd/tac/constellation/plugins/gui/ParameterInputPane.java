@@ -99,6 +99,14 @@ public abstract class ParameterInputPane<T extends ParameterValue, V extends Obj
         input.setPrefRowCount(lineCount);
     }
     
+    public void setFieldWidth(final double prefWidth) {
+        input.setPrefWidth(prefWidth);
+    }
+
+    public void setFieldMinWidth(final double prefWidth) {
+        input.setMinWidth(prefWidth);
+    }
+    
     public final void updateFieldVisibility(){
             input.setManaged(parameter.isVisible());
             this.setManaged(parameter.isVisible());

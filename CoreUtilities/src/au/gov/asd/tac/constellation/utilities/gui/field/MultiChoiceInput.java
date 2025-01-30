@@ -30,6 +30,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.AutoCompleteSupport;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ChoiceInputField;
+import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInput;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.ConstellationInputDropDown;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.InfoWindowSupport;
 import au.gov.asd.tac.constellation.utilities.gui.field.framework.RightButtonSupport;
@@ -325,7 +326,7 @@ public final class MultiChoiceInput<C extends Object>
         //Remove blank entries from here
         final String[] candidateArray = this.getText().split(SeparatorConstants.COMMA);
         final int indexOfNull = choices.indexOf(null) == -1 ? 0 : choices.indexOf(null);
-        final String invalidEntry = indexOfNull > -1 ? candidateArray[indexOfNull].stripLeading().stripTrailing() : "";
+        final String invalidEntry = indexOfNull > -1 && !this.getText().endsWith(",") ? candidateArray[indexOfNull].stripLeading().stripTrailing() : "";
         
         final List<MenuItem> suggestions = new ArrayList<>();
         
@@ -337,7 +338,7 @@ public final class MultiChoiceInput<C extends Object>
                 .forEach(value -> {
                     final MenuItem item = new MenuItem(value.toString());
                     item.setOnAction(event -> {
-                            choices.add(indexOfNull, value);
+                            choices.addLast(value);
                             this.setChoices(choices);
                     });
                     suggestions.add(item);
