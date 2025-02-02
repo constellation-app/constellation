@@ -34,6 +34,8 @@ import org.testng.annotations.Test;
  */
 public class SubgraphUtilitiesNGTest {
     
+    private StoreGraph graph;
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         // Not currently required
@@ -46,7 +48,7 @@ public class SubgraphUtilitiesNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        // Not currently required
+        graph = new StoreGraph();
     }
 
     @AfterMethod
@@ -63,8 +65,7 @@ public class SubgraphUtilitiesNGTest {
         final String vxValue = "Foo";
         final String txAttribute = "Name";
         final String txValue = "Bar";
-
-        final StoreGraph graph = new StoreGraph();
+        
         final int vx0 = graph.addVertex();
         final int vx1 = graph.addVertex();
         final int tx0 = graph.addTransaction(vx0, vx1, true);
@@ -98,8 +99,7 @@ public class SubgraphUtilitiesNGTest {
     public void testCopyGraphWithoutTransaction() {
         final String vxAttribute = "Name";
         final String vxValue = "Foo";
-
-        final StoreGraph graph = new StoreGraph();
+        
         final int vx0 = graph.addVertex();
         final int vxAttr = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, vxAttribute, "", "", null);
         graph.setPrimaryKey(GraphElementType.VERTEX, vxAttr);
@@ -125,8 +125,7 @@ public class SubgraphUtilitiesNGTest {
         final String vxAttribute = "Name";
         final String vxValue = "Foo";
         final String txAttribute = "Name";
-
-        final StoreGraph graph = new StoreGraph();
+        
         final int vx0 = graph.addVertex();
         final int vxAttr = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, vxAttribute, "", "", null);
         final int txAttr = graph.addAttribute(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, txAttribute, "", "", null);

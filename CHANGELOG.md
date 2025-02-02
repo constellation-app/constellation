@@ -8,6 +8,7 @@
 -   Removed `PlaceholderDominanceCalculator` since there was no place it would be used over `AnalyticDominanceCalculator`.
 -   Removed `PlaceholderUtilities` and `StoreGraphRecordStore` which were unused.
 -   Removed `PlanesPanel` which was unused.
+-   Renamed `SubgraphUtilities.getSubgraph()` to `SubgraphUtilities.getTransactionTypeSubgraph()` to reflect its functionality.
 
 ## Changes in December 2024
 -   Refactored animation framework to update graph attributes and hold write locks for minimal durations to enable graph interction.

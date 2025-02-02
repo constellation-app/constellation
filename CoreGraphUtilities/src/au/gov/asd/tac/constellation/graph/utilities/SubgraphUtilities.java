@@ -130,7 +130,7 @@ public class SubgraphUtilities {
      * @param isExclusive
      * @return
      */
-    public static StoreGraph getSubgraph(final GraphReadMethods graph, final Schema schema, final Set<SchemaTransactionType> types, final boolean isExclusive) {
+    public static StoreGraph getTransactionTypeSubgraph(final GraphReadMethods graph, final Schema schema, final Set<SchemaTransactionType> types, final boolean isExclusive) {
         final StoreGraph subgraph = new StoreGraph(schema);
 
         final int transactionTypeAttributeId = AnalyticConcept.TransactionAttribute.TYPE.get(graph);
@@ -143,7 +143,7 @@ public class SubgraphUtilities {
 
             // check transaction is of desired type
             final SchemaTransactionType transactionType = graph.getObjectValue(transactionTypeAttributeId, transactionId);
-            for (SchemaTransactionType type : types) {
+            for (final SchemaTransactionType type : types) {
                 if ((!isExclusive && ((transactionType == null && type == null) || (transactionType != null && transactionType.isSubTypeOf(type))))
                         || (isExclusive && !((transactionType == null && type == null) || (transactionType != null && transactionType.isSubTypeOf(type))))) {
                     final int sourceVertexId = graph.getTransactionSourceVertex(transactionId);
