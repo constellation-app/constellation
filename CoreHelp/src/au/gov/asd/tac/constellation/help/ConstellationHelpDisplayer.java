@@ -41,6 +41,7 @@ import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
+import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
@@ -61,6 +62,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
 
     private static final String OFFICIAL_CONSTELLATION_WEBSITE = "https://www.constellation-app.com/help";
     private static final String NEWLINE = "\n";
+    private static final Pattern SPLIT_REGEX = Pattern.compile("</a>");
     
     // Run in a different thread, not the JavaFX thread
     private static final ExecutorService pluginExecutor = Executors.newCachedThreadPool();
@@ -269,7 +271,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         // Each entry has an id, title, category and link 
         final List<String> documents = new ArrayList<>();
 
-        final String[] elements = toc.split("</a>");
+        final String[] elements = SPLIT_REGEX.split(toc);
         int index = 0;
         String category = "";
         String pageName = "";
@@ -289,6 +291,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
                 final int quoteIndex = linkString.indexOf("\"");
                 final int endIndex = linkString.indexOf(">");
                 link = linkString.substring(quoteIndex + 1, endIndex - 1);
+                // Changing this to a replace instead of replaceAll stops the search from working as the links require double \ 
                 link = link.replaceAll("\\\\", "\\\\\\\\");
                 pageName = linkString.substring(endIndex + 1);
                 

@@ -178,8 +178,7 @@ public class Generator implements Runnable {
         if (index <= 0) {
             return filePath;
         } else {
-            final String newPath = filePath.substring(0, index + 14);
-            return newPath;
+            return filePath.substring(0, index + 14);
         }
     }
     
