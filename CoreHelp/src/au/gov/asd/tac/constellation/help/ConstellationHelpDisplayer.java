@@ -63,12 +63,12 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
     private static final String OFFICIAL_CONSTELLATION_WEBSITE = "https://www.constellation-app.com/help";
     private static final String NEWLINE = "\n";
     private static final Pattern SPLIT_REGEX = Pattern.compile("</a>");
+    private static final String SEP = File.separator;
     
     // Run in a different thread, not the JavaFX thread
     private static final ExecutorService pluginExecutor = Executors.newCachedThreadPool();
 
     public static void copy(final String filePath, final OutputStream out) throws IOException {
-        final String SEP = File.separator;
         final InputStream pageInput = getInputStream(filePath);
         final InputStream tocInput = getInputStream(Generator.getBaseDirectory() + SEP + Generator.getTOCDirectory());
 
@@ -117,8 +117,6 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
      */
     protected static String generateHTMLOutput(final InputStream tocInput, final InputStream pageInput) throws IOException {
         final StringBuilder html = new StringBuilder();
-        
-        final String SEP = File.separator;
         
         final InputStream htmlTemplate = getInputStream(Generator.getBaseDirectory() + SEP + "ext" + SEP + "bootstrap" + SEP + "assets" + SEP + "HelpTemplate.html");
         final String templateHtml =  new String(htmlTemplate.readAllBytes(), StandardCharsets.UTF_8);
@@ -202,8 +200,6 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
      */
     @Override
     public boolean display(final HelpCtx helpCtx) {
-        final String SEP = File.separator;
-
         final Preferences prefs = NbPreferences.forModule(HelpPreferenceKeys.class);
         final boolean isOnline = prefs.getBoolean(HelpPreferenceKeys.HELP_KEY, HelpPreferenceKeys.ONLINE_HELP);
 

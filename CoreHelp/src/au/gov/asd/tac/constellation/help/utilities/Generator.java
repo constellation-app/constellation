@@ -175,11 +175,7 @@ public class Generator implements Runnable {
         if (index <= 0) {
             index = filePath.indexOf("constellation" + File.separator);
         }
-        if (index <= 0) {
-            return filePath;
-        } else {
-            return filePath.substring(0, index + 14);
-        }
+        return index <= 0 ? filePath : filePath.substring(0, index + 14);
     }
-    
+
 }
