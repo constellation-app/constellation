@@ -48,30 +48,27 @@ import org.testng.annotations.Test;
 public class VisualSchemaV1UpdateProviderNGTest {
     
     StoreGraph mockStoreGraph;
-    SchemaFactoryUtilities mockSchemaFactory;
     VisualSchemaV1UpdateProvider instance;
      
     // Captors
     ArgumentCaptor<Integer> attributeCaptor = ArgumentCaptor.forClass(Integer.class);
     ArgumentCaptor<Integer> idCaptor = ArgumentCaptor.forClass(Integer.class);
     ArgumentCaptor<Object> listCaptor = ArgumentCaptor.forClass(Object.class);
-        
-    public VisualSchemaV1UpdateProviderNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
         instance = new VisualSchemaV1UpdateProvider();
         mockStoreGraph = mock(StoreGraph.class);
-        mockSchemaFactory = mock(SchemaFactoryUtilities.class);
         attributeCaptor = ArgumentCaptor.forClass(Integer.class);
         idCaptor = ArgumentCaptor.forClass(Integer.class);
         listCaptor = ArgumentCaptor.forClass(Object.class);
@@ -79,6 +76,7 @@ public class VisualSchemaV1UpdateProviderNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**

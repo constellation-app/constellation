@@ -62,10 +62,12 @@ public class WordCloudParametersPaneNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -125,8 +127,7 @@ public class WordCloudParametersPaneNGTest {
             final boolean val = true;
             final WordCloudParametersPane instance = new WordCloudParametersPane(pane);
             instance.setAttributeSelectionEnabled(val);
-            assertTrue(instance.getParams().getParameters().get(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_PARAMETER_ID).isEnabled());
-            
+            assertTrue(instance.getParams().getParameters().get(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_PARAMETER_ID).isEnabled());  
         }
     }    
 }

@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.graph.file.SaveNotification;
 import au.gov.asd.tac.constellation.graph.file.io.GraphJsonWriter;
 import au.gov.asd.tac.constellation.graph.file.nebula.NebulaDataObject;
 import au.gov.asd.tac.constellation.graph.file.save.AutosaveUtilities;
+import au.gov.asd.tac.constellation.graph.interaction.animation.AnimationManager;
 import au.gov.asd.tac.constellation.graph.interaction.framework.GraphVisualManagerFactory;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.CopyToClipboardAction;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.CutToClipboardAction;
@@ -224,6 +225,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
     private final GraphVisualManagerFactory graphVisualManagerFactory;
     private final VisualManager visualManager;
+    private final AnimationManager animationManager;
     private final InstanceContent content;
     private final Graph graph;
     private MySaveAs saveAs = null;
@@ -466,6 +468,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         content = new InstanceContent();
         init();
         MemoryManager.newObject(VisualGraphTopComponent.class);
+        animationManager = new AnimationManager(graph.getId());
         cleaner.register(this, cleanupAction);
     }
 
@@ -511,6 +514,10 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     public GraphNode getGraphNode() {
         return graphNode;
     }
+    
+    public AnimationManager getAnimationManager(){
+        return animationManager;
+    }
 
     /**
      * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The
@@ -540,6 +547,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
     @Override
     public void componentClosed() {
+        animationManager.interruptAllAnimations();
         super.componentClosed();
 
         setActivatedNodes(new Node[]{});
@@ -799,6 +807,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     }
 
     public boolean forceClose() {
+        animationManager.interruptAllAnimations();
         savable.setModified(false);
         return close();
     }

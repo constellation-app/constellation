@@ -131,7 +131,7 @@ public class CameraUtilities {
     }
 
     /**
-     * Sets the camera's previous position to its current position.
+     * Sets the camera's current position to its previous position.
      *
      * @param camera
      */

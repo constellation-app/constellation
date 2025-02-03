@@ -32,15 +32,14 @@ public class MemoryManagerNGTest {
     
     TestMemoryManagerListener testListener;
     
-    public MemoryManagerNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -179,7 +178,6 @@ public class MemoryManagerNGTest {
             if (objectCount > 0) {
                 objectCount--;
             }
-        }
-        
+        }       
     }
 }

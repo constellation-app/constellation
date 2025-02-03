@@ -199,9 +199,6 @@ public class Vector4fNGTest {
      */
     @Test
     public void testToString() {
-        assertEquals(
-                new Vector4f(F1, F2, F3, F4).toString(),
-                "4f[123.000000,321.000000,456.000000,654.000000]");
+        assertEquals(new Vector4f(F1, F2, F3, F4).toString(), "4f[123.000000,321.000000,456.000000,654.000000]");
     }
-
 }

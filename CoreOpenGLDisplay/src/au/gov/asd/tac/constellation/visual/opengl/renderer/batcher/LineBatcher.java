@@ -287,6 +287,11 @@ public class LineBatcher implements SceneBatcher {
         final float updatedOpacity = access.getConnectionOpacity();
         return gl -> opacity = updatedOpacity;
     }
+    
+    public GLRenderableUpdateTask updateMotion(final VisualAccess access) {
+        final float updatedMotion = access.getConnectionMotion();
+        return gl -> motion = updatedMotion;
+    }
 
     public void setNextDrawIsHitTest() {
         this.drawForHitTest = true;
@@ -295,10 +300,6 @@ public class LineBatcher implements SceneBatcher {
     private float opacity;
     private float motion;
     private float[] highlightColor;
-
-    public void setMotion(final float motion) {
-        this.motion = motion;
-    }
 
     public GLRenderableUpdateTask setHighlightColor(final VisualAccess access) {
         final ConstellationColor color = access.getHighlightColor();

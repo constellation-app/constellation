@@ -48,7 +48,7 @@ public final class GraphOptionsPanelController extends OptionsPanelController {
 
     private GraphOptionsPanel panel;
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-
+    
     @Override
     public void update() {
         final Preferences prefs = NbPreferences.forModule(GraphPreferenceKeys.class);
@@ -76,6 +76,7 @@ public final class GraphOptionsPanelController extends OptionsPanelController {
         graphOptionsPanel.setPresetColors(colors);
         graphOptionsPanel.setLeftColor(prefs.get(GraphPreferenceKeys.LEFT_COLOR, GraphPreferenceKeys.LEFT_COLOR_DEFAULT));
         graphOptionsPanel.setRightColor(prefs.get(GraphPreferenceKeys.RIGHT_COLOR, GraphPreferenceKeys.RIGHT_COLOR_DEFAULT));
+        graphOptionsPanel.setAnimationsEnabled(prefs.getBoolean(GraphPreferenceKeys.ENABLE_ANIMATIONS, GraphPreferenceKeys.ENABLE_ANIMATIONS_DEFAULT));
     }
 
     @Override
@@ -93,6 +94,7 @@ public final class GraphOptionsPanelController extends OptionsPanelController {
                 prefs.putInt(GraphPreferenceKeys.BLAZE_OPACITY, graphOptionsPanel.getBlazeOpacity());
                 prefs.put(GraphPreferenceKeys.LEFT_COLOR, graphOptionsPanel.getLeftColor());
                 prefs.put(GraphPreferenceKeys.RIGHT_COLOR, graphOptionsPanel.getRightColor());
+                prefs.putBoolean(GraphPreferenceKeys.ENABLE_ANIMATIONS, graphOptionsPanel.getAnimationsEnabled());
             }
         }
     }
@@ -120,7 +122,8 @@ public final class GraphOptionsPanelController extends OptionsPanelController {
         return !(graphOptionsPanel.getBlazeSize() == prefs.getInt(GraphPreferenceKeys.BLAZE_SIZE, GraphPreferenceKeys.BLAZE_SIZE_DEFAULT)
                 && graphOptionsPanel.getBlazeOpacity() == prefs.getInt(GraphPreferenceKeys.BLAZE_OPACITY, GraphPreferenceKeys.BLAZE_OPACITY_DEFAULT)
                 && graphOptionsPanel.getLeftColor().equals(prefs.get(GraphPreferenceKeys.LEFT_COLOR, GraphPreferenceKeys.LEFT_COLOR_DEFAULT))
-                && graphOptionsPanel.getRightColor().equals(prefs.get(GraphPreferenceKeys.RIGHT_COLOR, GraphPreferenceKeys.LEFT_COLOR_DEFAULT)));
+                && graphOptionsPanel.getRightColor().equals(prefs.get(GraphPreferenceKeys.RIGHT_COLOR, GraphPreferenceKeys.LEFT_COLOR_DEFAULT))
+                && graphOptionsPanel.getAnimationsEnabled() == prefs.getBoolean(GraphPreferenceKeys.ENABLE_ANIMATIONS, GraphPreferenceKeys.ENABLE_ANIMATIONS_DEFAULT));
     }
 
     @Override

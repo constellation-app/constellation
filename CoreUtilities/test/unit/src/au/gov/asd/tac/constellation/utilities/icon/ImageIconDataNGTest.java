@@ -25,38 +25,39 @@ import org.testng.annotations.Test;
 
 /**
  * Test for {@link ImageIconData} 
+ * 
  * @author capricornunicorn123
  */
 public class ImageIconDataNGTest {
     
-    public ImageIconDataNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
      * Test of createVectorInputStream method, of class ImageIconData.
      * @throws java.io.IOException
      */
-    @Test(expectedExceptions=UnsupportedOperationException.class)
+    @Test(expectedExceptions = UnsupportedOperationException.class)
     public void testCreateVectorInputStream() throws IOException {
         final BufferedImage bi = new BufferedImage(1, 1, 1);
         ImageIconData iid = new ImageIconData(bi);
         iid.createVectorInputStream();
-    }
-    
+    }   
 }

@@ -15,12 +15,9 @@
  */
 package au.gov.asd.tac.constellation.webserver;
 
-import au.gov.asd.tac.constellation.help.utilities.Generator;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -35,18 +32,22 @@ public class StartJupyterNotebookActionNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -65,8 +66,6 @@ public class StartJupyterNotebookActionNGTest {
 
             // Assert the following functions were run
             webserverMock.verify(() -> WebServer.start(), times(1));
-
         }
     }
-
 }

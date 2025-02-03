@@ -38,6 +38,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class UpdateStatePluginNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(UpdateStatePluginNGTest.class.getName());
 
     @BeforeClass
@@ -63,8 +64,7 @@ public class UpdateStatePluginNGTest {
         final TableViewState tableViewState = new TableViewState();
         tableViewState.setElementType(GraphElementType.META);
 
-        final UpdateStatePlugin updateStatePlugin
-                = new UpdateStatePlugin(tableViewState);
+        final UpdateStatePlugin updateStatePlugin = new UpdateStatePlugin(tableViewState);
 
         updateStatePlugin.edit(graph, null, null);
 

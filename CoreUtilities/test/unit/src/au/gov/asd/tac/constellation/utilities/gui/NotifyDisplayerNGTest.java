@@ -346,17 +346,12 @@ public class NotifyDisplayerNGTest {
      * @param runThroughThread true if the call is meant to run through a
      * separate thread first, false otherwise
      */
-    private void displayWithIcon(final boolean isEventDispatchThread,
-            final boolean isFxApplicationThread,
-            final boolean runThroughThread) {
-        try (
-                final MockedStatic<EventQueue> eventQueueMockedStatic = Mockito.mockStatic(EventQueue.class); 
+    private void displayWithIcon(final boolean isEventDispatchThread, final boolean isFxApplicationThread, final boolean runThroughThread) {
+        try (final MockedStatic<EventQueue> eventQueueMockedStatic = Mockito.mockStatic(EventQueue.class); 
                 final MockedStatic<CompletableFuture> completableFutureMockedStatic = Mockito.mockStatic(CompletableFuture.class); 
                 final MockedStatic<NotificationDisplayer> notificationDisplayerMockedStatic = Mockito.mockStatic(NotificationDisplayer.class); 
                 final MockedStatic<SwingUtilities> swingUtilitiesMockedStatic = Mockito.mockStatic(SwingUtilities.class); 
-                final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class);
-                ) {
-            
+                final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {           
             setupThreadingMocks(eventQueueMockedStatic, completableFutureMockedStatic, swingUtilitiesMockedStatic, platformMockedStatic);
 
             final NotificationDisplayer notificationDisplayer = mock(NotificationDisplayer.class);
@@ -377,9 +372,7 @@ public class NotifyDisplayerNGTest {
                 completableFutureMockedStatic.verify(() -> CompletableFuture.runAsync(any(Runnable.class)));
             } else {
                 completableFutureMockedStatic.verifyNoInteractions();
-            }
-            
-                        
+            }                       
         }
     }
 
@@ -393,16 +386,12 @@ public class NotifyDisplayerNGTest {
      * @param runThroughThread true if the call is meant to run through a
      * separate thread first, false otherwise
      */
-    private void display(final boolean isEventDispatchThread,
-            final boolean isFxApplicationThread,
-            final boolean runThroughThread) {
-        try (
-                final MockedStatic<EventQueue> eventQueueMockedStatic = Mockito.mockStatic(EventQueue.class); 
+    private void display(final boolean isEventDispatchThread, final boolean isFxApplicationThread, final boolean runThroughThread) {
+        try (final MockedStatic<EventQueue> eventQueueMockedStatic = Mockito.mockStatic(EventQueue.class); 
                 final MockedStatic<CompletableFuture> completableFutureMockedStatic = Mockito.mockStatic(CompletableFuture.class); 
                 final MockedStatic<DialogDisplayer> dialogDisplayerMockedStatic = Mockito.mockStatic(DialogDisplayer.class); 
                 final MockedStatic<SwingUtilities> swingUtilitiesMockedStatic = Mockito.mockStatic(SwingUtilities.class); 
-                final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class);
-                ) {
+                final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
             setupThreadingMocks(eventQueueMockedStatic, completableFutureMockedStatic, swingUtilitiesMockedStatic, platformMockedStatic);
 
             final DialogDisplayer dialogDisplayer = mock(DialogDisplayer.class);
@@ -422,7 +411,6 @@ public class NotifyDisplayerNGTest {
             } else {
                 completableFutureMockedStatic.verifyNoInteractions();
             }
-
         }
     }
 
@@ -435,10 +423,8 @@ public class NotifyDisplayerNGTest {
      * @param swingUtilitiesMockedStatic a static mock to {@link SwingUtilities}
      * @param platformMockedStatic a static mock to {@link Platform}
      */
-    private void setupThreadingMocks(final MockedStatic<EventQueue> eventQueueMockedStatic,
-            final MockedStatic<CompletableFuture> completableFutureMockedStatic,
-            final MockedStatic<SwingUtilities> swingUtilitiesMockedStatic,
-            final MockedStatic<Platform> platformMockedStatic) {
+    private void setupThreadingMocks(final MockedStatic<EventQueue> eventQueueMockedStatic, final MockedStatic<CompletableFuture> completableFutureMockedStatic,
+            final MockedStatic<SwingUtilities> swingUtilitiesMockedStatic, final MockedStatic<Platform> platformMockedStatic) {
         completableFutureMockedStatic.when(() -> CompletableFuture.runAsync(any(Runnable.class))).thenAnswer(
                 iom -> {
                     final Runnable runnable = iom.getArgument(0);

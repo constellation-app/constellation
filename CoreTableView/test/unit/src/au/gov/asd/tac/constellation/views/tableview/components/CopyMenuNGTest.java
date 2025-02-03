@@ -53,6 +53,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class CopyMenuNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(CopyMenuNGTest.class.getName());
 
     private TablePane tablePane;
@@ -94,6 +95,7 @@ public class CopyMenuNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     @Test
@@ -111,15 +113,8 @@ public class CopyMenuNGTest {
         assertNotNull(copyMenu.getCopyTableMenu());
         assertNotNull(copyMenu.getCopyTableSelectionMenu());
 
-        assertEquals(
-                FXCollections.observableList(
-                        List.of(
-                                copyMenu.getCopyTableMenu(),
-                                copyMenu.getCopyTableSelectionMenu()
-                        )
-                ),
-                copyMenu.getCopyButton().getItems()
-        );
+        assertEquals(FXCollections.observableList(List.of(copyMenu.getCopyTableMenu(), copyMenu.getCopyTableSelectionMenu())), 
+                copyMenu.getCopyButton().getItems());
 
         // Copy Button
         final ImageView icon = (ImageView) copyMenu.getCopyButton().getGraphic();
@@ -144,11 +139,8 @@ public class CopyMenuNGTest {
      * @param expectedCopyOnlySelectedRows true if only the selected rows are
      * expected to be copied, false otherwise
      */
-    private void verifyCopyAction(final EventHandler<ActionEvent> eventHandler,
-            final boolean expectedCopyOnlySelectedRows) {
-        try (MockedStatic<TableViewUtilities> tableViewUtilsMockedStatic
-                = Mockito.mockStatic(TableViewUtilities.class)) {
-
+    private void verifyCopyAction(final EventHandler<ActionEvent> eventHandler, final boolean expectedCopyOnlySelectedRows) {
+        try (MockedStatic<TableViewUtilities> tableViewUtilsMockedStatic = Mockito.mockStatic(TableViewUtilities.class)) {
             final ActionEvent actionEvent = mock(ActionEvent.class);
 
             final TableView<ObservableList<String>> tableView = mock(TableView.class);
@@ -185,11 +177,8 @@ public class CopyMenuNGTest {
         }
 
         // Compare images size
-        if (firstImage.getWidth() != secondImage.getWidth()) {
-            return false;
-        }
-
-        if (firstImage.getHeight() != secondImage.getHeight()) {
+        if (firstImage.getWidth() != secondImage.getWidth()
+                || firstImage.getHeight() != secondImage.getHeight()) {
             return false;
         }
 

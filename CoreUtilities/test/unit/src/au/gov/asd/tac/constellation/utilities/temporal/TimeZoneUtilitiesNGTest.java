@@ -32,23 +32,24 @@ import org.testng.annotations.Test;
  */
 public class TimeZoneUtilitiesNGTest {
     
-    public TimeZoneUtilitiesNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
     
     /**
@@ -99,6 +100,5 @@ public class TimeZoneUtilitiesNGTest {
         
         final String result2 = TimeZoneUtilities.getTimeZoneAsString(localDateTime, TimeZoneUtilities.UTC);
         assertEquals(result2, "+00:00 [UTC]");
-    }
-    
+    }  
 }

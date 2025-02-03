@@ -45,7 +45,7 @@ public class HistogramViewHelpProvider extends HelpPageProvider {
         final String histogramModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreHistogramView" + sep + "src" + sep + "au" + sep + "gov" + sep
                 + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "histogram" + sep;
 
-        map.put("au.gov.asd.tac.constellation.views.histogram", histogramModulePath + "histogram-view.md");
+        map.put("au.gov.asd.tac.constellation.views.histogram.HistogramTopComponent", histogramModulePath + "histogram-view.md");
         return map;
     }
 

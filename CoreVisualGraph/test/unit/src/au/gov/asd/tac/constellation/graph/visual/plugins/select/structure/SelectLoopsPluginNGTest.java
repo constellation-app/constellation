@@ -43,7 +43,6 @@ public class SelectLoopsPluginNGTest {
     private int vxId5;
     private int vxId6;
     private int vxId7;
-    private int vxId8;
     
     private int tId1;
     private int tId2;
@@ -58,10 +57,12 @@ public class SelectLoopsPluginNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -76,22 +77,23 @@ public class SelectLoopsPluginNGTest {
         vxId5 = graph.addVertex();
         vxId6 = graph.addVertex();
         vxId7 = graph.addVertex();
-        vxId8 = graph.addVertex();
+        graph.addVertex();
         
         tId1 = graph.addTransaction(vxId1, vxId2, true);
-        tId2 = graph.addTransaction(vxId1, vxId4, true);
-        tId3 = graph.addTransaction(vxId1, vxId5, true);
+        tId2 = graph.addTransaction(vxId1, vxId3, true);
+        tId3 = graph.addTransaction(vxId1, vxId4, true);
         tId4 = graph.addTransaction(vxId2, vxId2, true);
-        tId5 = graph.addTransaction(vxId6, vxId5, true);
-        tId6 = graph.addTransaction(vxId7, vxId5, true);
-        tId7 = graph.addTransaction(vxId7, vxId6, true);
-        tId8 = graph.addTransaction(vxId8, vxId8, true);
+        tId5 = graph.addTransaction(vxId5, vxId4, true);
+        tId6 = graph.addTransaction(vxId6, vxId4, true);
+        tId7 = graph.addTransaction(vxId6, vxId5, true);
+        tId8 = graph.addTransaction(vxId7, vxId7, true);
         
         selectedTransactionAttribute = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**

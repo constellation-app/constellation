@@ -60,10 +60,7 @@ import org.testng.annotations.Test;
 public class TooltipMouseEnteredHandlerNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(TooltipMouseEnteredHandlerNGTest.class.getName());
-
-    public TooltipMouseEnteredHandlerNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -82,10 +79,12 @@ public class TooltipMouseEnteredHandlerNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
