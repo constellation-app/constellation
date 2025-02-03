@@ -30,11 +30,21 @@ public class EdgeMinTransactionFloatAttributeBin extends FloatBin {
     @Override
     public void setKey(GraphReadMethods graph, int attribute, int element) {
         float min = Float.MAX_VALUE;
+        int nullCount = 0;
+        setAllElementsAreNull(false);
         final int transactionCount = graph.getEdgeTransactionCount(element);
         for (int t = 0; t < transactionCount; t++) {
             final int transaction = graph.getEdgeTransaction(element, t);
+            if (graph.getObjectValue(attribute, transaction) == null) {
+                nullCount++;
+                continue;
+            }
             min = Math.min(graph.getFloatValue(attribute, transaction), min);
         }
+        if (nullCount >= transactionCount) {
+            setAllElementsAreNull(true);
+            return;
+        }        
         key = min;
     }
 

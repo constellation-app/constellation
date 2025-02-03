@@ -30,11 +30,21 @@ public class EdgeMaxTransactionDoubleAttributeBin extends DoubleBin {
     @Override
     public void setKey(GraphReadMethods graph, int attribute, int element) {
         double max = Double.MIN_VALUE;
+        int nullCount = 0;
+        setAllElementsAreNull(false);
         final int transactionCount = graph.getEdgeTransactionCount(element);
         for (int t = 0; t < transactionCount; t++) {
             final int transaction = graph.getEdgeTransaction(element, t);
+            if (graph.getObjectValue(attribute, transaction) == null) {
+                nullCount++;
+                continue;
+            }
             max = Math.max(graph.getDoubleValue(attribute, transaction), max);
         }
+        if (nullCount >= transactionCount) {
+            setAllElementsAreNull(true);
+            return;
+        }        
         key = max;
     }
 

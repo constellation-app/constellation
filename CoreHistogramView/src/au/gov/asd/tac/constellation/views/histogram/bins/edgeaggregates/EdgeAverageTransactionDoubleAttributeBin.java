@@ -30,12 +30,22 @@ public class EdgeAverageTransactionDoubleAttributeBin extends DoubleBin {
     @Override
     public void setKey(GraphReadMethods graph, int attribute, int element) {
         double sum = 0;
+        int nullCount = 0;
+        setAllElementsAreNull(false);
         final int transactionCount = graph.getEdgeTransactionCount(element);
         for (int t = 0; t < transactionCount; t++) {
             final int transaction = graph.getEdgeTransaction(element, t);
+            if (graph.getObjectValue(attribute, transaction) == null) {
+                nullCount++;
+                continue;
+            }
             sum += graph.getDoubleValue(attribute, transaction);
         }
-        key = sum / transactionCount;
+        if (nullCount >= transactionCount) {
+            setAllElementsAreNull(true);
+            return;
+        }        
+        key = sum / (transactionCount - nullCount);
     }
 
     @Override

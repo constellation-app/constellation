@@ -83,7 +83,7 @@ public class BinCreator {
                     currentBin = bin;
                     currentBin.prepareForPresentation();
                     bin = currentBin.create();
-                    bins.put(currentBin, currentBin); // ?? currentBin is both kay and value ?? ... redundant ???
+                    bins.put(currentBin, currentBin);
                 }
                 if (currentBin != null) {
                     currentBin.elementCount++;
