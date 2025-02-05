@@ -26,6 +26,9 @@ import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
+import au.gov.asd.tac.constellation.views.histogram.AttributeType;
+import au.gov.asd.tac.constellation.views.histogram.BinCreator;
+import au.gov.asd.tac.constellation.views.histogram.DefaultBinCreatorProvider;
 import au.gov.asd.tac.constellation.views.histogram.bins.edgeaggregates.EdgeAverageTransactionDoubleAttributeBin;
 import au.gov.asd.tac.constellation.views.histogram.bins.edgeaggregates.EdgeAverageTransactionFloatAttributeBin;
 import au.gov.asd.tac.constellation.views.histogram.bins.edgeaggregates.EdgeMaxTransactionDoubleAttributeBin;
@@ -48,8 +51,10 @@ import au.gov.asd.tac.constellation.views.histogram.bins.linkaggregates.LinkMinT
 import au.gov.asd.tac.constellation.views.histogram.bins.linkaggregates.LinkSumTransactionDoubleAttributeBin;
 import au.gov.asd.tac.constellation.views.histogram.bins.linkaggregates.LinkSumTransactionFloatAttributeBin;
 import au.gov.asd.tac.constellation.views.histogram.bins.linkaggregates.LinkSumTransactionLongAttributeBin;
+import java.util.Map;
 import org.openide.util.Exceptions;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -73,8 +78,8 @@ public class TransactionAggregateBinsNGTest {
     
     private int txId1;
     private int txId2;
-    private int txId3;
-    private int txId3Xa;
+    private int txId3a;
+    private int txId3b;
     private int txId4a;
     private int txId4b;
     
@@ -105,13 +110,35 @@ public class TransactionAggregateBinsNGTest {
     }
 
     /**
+     * Test registry
+     */
+    @Test
+    public void testRegistry() {
+        System.out.println("[TransactionAggregateBinsNGTest] START REGISTRY TEST");
+        final DefaultBinCreatorProvider dbcp = new DefaultBinCreatorProvider();
+        dbcp.register();
+        // read registry and confirm some values        
+        AttributeType att = AttributeType.EDGE_AVERAGE_TRANSACTION_ATTRIBUTE;
+        Map<String, BinCreator> attMap = att.getBinCreators();
+        System.out.println("EDGE_AVERAGE_TRANSACTION_ATTRIBUTE registered keys: " + attMap.keySet());
+        assertTrue(attMap.keySet().contains("double_or_null"));
+        
+        att = AttributeType.LINK_SUM_TRANSACTION_ATTRIBUTE;
+        attMap = att.getBinCreators();
+        System.out.println("LINK_SUM_TRANSACTION_ATTRIBUTE registered keys: " + attMap.keySet());
+        assertTrue(attMap.keySet().contains("double_or_null"));
+        
+        System.out.println("[TransactionAggregateBinsNGTest] END REGISTRY TEST");
+    }
+    
+    /**
      * Test of Transaction Edge Aggregate Bins for DOUBLE datatype.
      */
     @Test
     public void testEdgeDoubleAggregates() {
         
         try {
-            System.out.println("START EDGE DOUBLE TEST");
+            System.out.println("[TransactionAggregateBinsNGTest] START EDGE DOUBLE TEST");
             
             final EdgeMaxTransactionDoubleAttributeBin edge3Max = new EdgeMaxTransactionDoubleAttributeBin();
             final EdgeMinTransactionDoubleAttributeBin edge4Min = new EdgeMinTransactionDoubleAttributeBin();
@@ -128,14 +155,14 @@ public class TransactionAggregateBinsNGTest {
             
             final WritableGraph wg = graph.getWritableGraph("", true);
             
-            edge3Max.setKey(wg, testDoubleAttrId, wg.getTransactionEdge(txId3Xa));
+            edge3Max.setKey(wg, testDoubleAttrId, wg.getTransactionEdge(txId3b));
             edge4Min.setKey(wg, testDoubleAttrId, wg.getTransactionEdge(txId4a));
             
             final double result3Max = (Double) edge3Max.getKeyAsObject();
             final double result4Min = (Double) edge4Min.getKeyAsObject();
             
-            edge3Average.setKey(wg, testDoubleAttrId, wg.getTransactionEdge(txId3));
-            edge3XAverage.setKey(wg, testDoubleAttrId, wg.getTransactionEdge(txId3Xa));
+            edge3Average.setKey(wg, testDoubleAttrId, wg.getTransactionEdge(txId3a));
+            edge3XAverage.setKey(wg, testDoubleAttrId, wg.getTransactionEdge(txId3b));
             edge4aAverage.setKey(wg, testDoubleAttrId, wg.getTransactionEdge(txId4a));
             edge4bAverage.setKey(wg, testDoubleAttrId, wg.getTransactionEdge(txId4b));
             final double result3 = (Double) edge3Average.getKeyAsObject();
@@ -143,8 +170,8 @@ public class TransactionAggregateBinsNGTest {
             final double result4a = (Double) edge4aAverage.getKeyAsObject();
             final double result4b = (Double) edge4bAverage.getKeyAsObject();
             
-            edge3Sum.setKey(wg, testDoubleAttrId, wg.getTransactionEdge(txId3));
-            edge3XSum.setKey(wg, testDoubleAttrId, wg.getTransactionEdge(txId3Xa));
+            edge3Sum.setKey(wg, testDoubleAttrId, wg.getTransactionEdge(txId3a));
+            edge3XSum.setKey(wg, testDoubleAttrId, wg.getTransactionEdge(txId3b));
             edge4aSum.setKey(wg, testDoubleAttrId, wg.getTransactionEdge(txId4a));
             edge4bSum.setKey(wg, testDoubleAttrId, wg.getTransactionEdge(txId4b));
             final double sresult3 = (Double) edge3Sum.getKeyAsObject();
@@ -161,7 +188,7 @@ public class TransactionAggregateBinsNGTest {
             assertEquals(240.0D, sresult3X);
             assertTrue(edge4bSum.isAllElementsAreNull());
             
-            System.out.println("END EDGE DOUBLE TEST");
+            System.out.println("[TransactionAggregateBinsNGTest] END EDGE DOUBLE TEST");
             
         } catch (final InterruptedException ex) {
             Exceptions.printStackTrace(ex);
@@ -175,7 +202,7 @@ public class TransactionAggregateBinsNGTest {
     public void testLinkDoubleAggregates() {
         
         try {
-            System.out.println("START LINK DOUBLE TEST");
+            System.out.println("[TransactionAggregateBinsNGTest] START LINK DOUBLE TEST");
             
             final LinkMaxTransactionDoubleAttributeBin link3Max = new LinkMaxTransactionDoubleAttributeBin();
             final LinkMinTransactionDoubleAttributeBin link4Min = new LinkMinTransactionDoubleAttributeBin();
@@ -192,14 +219,14 @@ public class TransactionAggregateBinsNGTest {
             
             final WritableGraph wg = graph.getWritableGraph("", true);
             
-            link3Max.setKey(wg, testDoubleAttrId, wg.getTransactionLink(txId3Xa));
+            link3Max.setKey(wg, testDoubleAttrId, wg.getTransactionLink(txId3b));
             link4Min.setKey(wg, testDoubleAttrId, wg.getTransactionLink(txId4a));
             
             final double result3Max = (Double) link3Max.getKeyAsObject();
             final double result4Min = (Double) link4Min.getKeyAsObject();
             
-            link3aAverage.setKey(wg, testDoubleAttrId, wg.getTransactionLink(txId3));
-            link3bAverage.setKey(wg, testDoubleAttrId, wg.getTransactionLink(txId3Xa));
+            link3aAverage.setKey(wg, testDoubleAttrId, wg.getTransactionLink(txId3a));
+            link3bAverage.setKey(wg, testDoubleAttrId, wg.getTransactionLink(txId3b));
             link4aAverage.setKey(wg, testDoubleAttrId, wg.getTransactionLink(txId4a));
             link4bAverage.setKey(wg, testDoubleAttrId, wg.getTransactionLink(txId4b));
             final double result3aAvg = (Double) link3aAverage.getKeyAsObject();
@@ -207,8 +234,8 @@ public class TransactionAggregateBinsNGTest {
             final double result4aAvg = (Double) link4aAverage.getKeyAsObject();
             final double result4bAvg = (Double) link4bAverage.getKeyAsObject();
             
-            link3aSum.setKey(wg, testDoubleAttrId, wg.getTransactionLink(txId3));
-            link3bSum.setKey(wg, testDoubleAttrId, wg.getTransactionLink(txId3Xa));
+            link3aSum.setKey(wg, testDoubleAttrId, wg.getTransactionLink(txId3a));
+            link3bSum.setKey(wg, testDoubleAttrId, wg.getTransactionLink(txId3b));
             link4aSum.setKey(wg, testDoubleAttrId, wg.getTransactionLink(txId4a));
             link4bSum.setKey(wg, testDoubleAttrId, wg.getTransactionLink(txId4b));
             final double result3aSum = (Double) link3aSum.getKeyAsObject();
@@ -223,9 +250,9 @@ public class TransactionAggregateBinsNGTest {
             assertEquals(result3aAvg, 162.0D);
             assertEquals(result4Min, 5.0D);
             assertEquals(result3Max, 330.0D);
-            assertFalse(link4bSum.isAllElementsAreNull());
+            assertTrue(!link4bSum.isAllElementsAreNull());
             
-            System.out.println("END LINK DOUBLE TEST");
+            System.out.println("[TransactionAggregateBinsNGTest] END LINK DOUBLE TEST");
             
         } catch (final InterruptedException ex) {
             Exceptions.printStackTrace(ex);
@@ -239,7 +266,7 @@ public class TransactionAggregateBinsNGTest {
     public void testEdgeFloatAggregates() {
         
         try {
-            System.out.println("START EDGE FLOAT TEST");
+            System.out.println("[TransactionAggregateBinsNGTest] START EDGE FLOAT TEST");
             
             final EdgeMaxTransactionFloatAttributeBin edge1Max = new EdgeMaxTransactionFloatAttributeBin();
             final EdgeMinTransactionFloatAttributeBin edge1Min = new EdgeMinTransactionFloatAttributeBin();
@@ -270,7 +297,7 @@ public class TransactionAggregateBinsNGTest {
             assertEquals(330.0F, result1Max);
             assertEquals(430.0F, result1Sum);
             
-            System.out.println("END EDGE FLOAT TEST");
+            System.out.println("[TransactionAggregateBinsNGTest] END EDGE FLOAT TEST");
             
         } catch (final InterruptedException ex) {
             Exceptions.printStackTrace(ex);
@@ -284,7 +311,7 @@ public class TransactionAggregateBinsNGTest {
     public void testLinkFloatAggregates() {
         
         try {
-            System.out.println("START LINK FLOAT TEST");
+            System.out.println("[TransactionAggregateBinsNGTest] START LINK FLOAT TEST");
             
             final LinkMaxTransactionFloatAttributeBin link1Max = new LinkMaxTransactionFloatAttributeBin();
             final LinkMinTransactionFloatAttributeBin link1Min = new LinkMinTransactionFloatAttributeBin();
@@ -315,7 +342,7 @@ public class TransactionAggregateBinsNGTest {
             assertEquals(330.0F, result1Max);
             assertEquals(430.0F, result1Sum);
             
-            System.out.println("END LINK FLOAT TEST");
+            System.out.println("[TransactionAggregateBinsNGTest] END LINK FLOAT TEST");
             
         } catch (final InterruptedException ex) {
             Exceptions.printStackTrace(ex);
@@ -329,7 +356,7 @@ public class TransactionAggregateBinsNGTest {
     public void testEdgeLongAggregates() {
         
         try {
-            System.out.println("START EDGE LONG TEST");
+            System.out.println("[TransactionAggregateBinsNGTest] START EDGE LONG TEST");
             
             final EdgeMaxTransactionLongAttributeBin edge2Max = new EdgeMaxTransactionLongAttributeBin();
             final EdgeMinTransactionLongAttributeBin edge2Min = new EdgeMinTransactionLongAttributeBin();
@@ -353,7 +380,7 @@ public class TransactionAggregateBinsNGTest {
             assertEquals(330, result2Max);
             assertEquals(630, result2Sum);
             
-            System.out.println("END EDGE LONG TEST");
+            System.out.println("[TransactionAggregateBinsNGTest] END EDGE LONG TEST");
             
         } catch (final InterruptedException ex) {
             Exceptions.printStackTrace(ex);
@@ -367,7 +394,7 @@ public class TransactionAggregateBinsNGTest {
     public void testLinkLongAggregates() {
         
         try {
-            System.out.println("START LINK LONG TEST");
+            System.out.println("[TransactionAggregateBinsNGTest] START LINK LONG TEST");
             
             final LinkMaxTransactionLongAttributeBin link2Max = new LinkMaxTransactionLongAttributeBin();
             final LinkMinTransactionLongAttributeBin link2Min = new LinkMinTransactionLongAttributeBin();
@@ -391,7 +418,7 @@ public class TransactionAggregateBinsNGTest {
             assertEquals(330, result2Max);
             assertEquals(630, result2Sum);
             
-            System.out.println("END LINK LONG TEST");
+            System.out.println("[TransactionAggregateBinsNGTest] END LINK LONG TEST");
             
         } catch (final InterruptedException ex) {
             Exceptions.printStackTrace(ex);
@@ -448,17 +475,17 @@ public class TransactionAggregateBinsNGTest {
             final int txId2c = wg.addTransaction(vxId2, vxId3, true);
             final int txId2d = wg.addTransaction(vxId2, vxId3, true);
 
-            txId3 = wg.addTransaction(vxId3, vxId4, true);
-            final int txId3b = wg.addTransaction(vxId3, vxId4, true);
-            final int txId3c = wg.addTransaction(vxId3, vxId4, true);
-            final int txId3d = wg.addTransaction(vxId3, vxId4, true);
-            final int txId3e = wg.addTransaction(vxId3, vxId4, true);
+            txId3a = wg.addTransaction(vxId3, vxId4, true);
+            final int txId3a2 = wg.addTransaction(vxId3, vxId4, true);
+            final int txId3a3 = wg.addTransaction(vxId3, vxId4, true);
+            final int txId3a4 = wg.addTransaction(vxId3, vxId4, true);
+            final int txId3a5 = wg.addTransaction(vxId3, vxId4, true);
 
-            txId3Xa = wg.addTransaction(vxId4, vxId3, true);
-            final int txId3Xb = wg.addTransaction(vxId4, vxId3, true);
-            final int txId3Xc = wg.addTransaction(vxId4, vxId3, true);
-            final int txId3Xd = wg.addTransaction(vxId4, vxId3, true);
-            final int txId3Xe = wg.addTransaction(vxId4, vxId3, true);
+            txId3b = wg.addTransaction(vxId4, vxId3, true);
+            final int txId3b2 = wg.addTransaction(vxId4, vxId3, true);
+            final int txId3b3 = wg.addTransaction(vxId4, vxId3, true);
+            final int txId3b4 = wg.addTransaction(vxId4, vxId3, true);
+            final int txId3b5 = wg.addTransaction(vxId4, vxId3, true);
 
             txId4a = wg.addTransaction(vxId2, vxId4, true);
             txId4b = wg.addTransaction(vxId4, vxId2, true);
@@ -476,17 +503,17 @@ public class TransactionAggregateBinsNGTest {
             wg.setObjectValue(testLongAttrId, txId2c, 330L);
             wg.setObjectValue(testLongAttrId, txId2d, null);
 
-            wg.setObjectValue(testDoubleAttrId, txId3, null);
-            wg.setObjectValue(testDoubleAttrId, txId3b, 200.0D);
-            wg.setObjectValue(testDoubleAttrId, txId3c, 330.0D);
-            wg.setObjectValue(testDoubleAttrId, txId3d, null);
-            wg.setObjectValue(testDoubleAttrId, txId3e, 40.0D);
+            wg.setObjectValue(testDoubleAttrId, txId3a, null);
+            wg.setObjectValue(testDoubleAttrId, txId3a2, 200.0D);
+            wg.setObjectValue(testDoubleAttrId, txId3a3, 330.0D);
+            wg.setObjectValue(testDoubleAttrId, txId3a4, null);
+            wg.setObjectValue(testDoubleAttrId, txId3a5, 40.0D);
 
-            wg.setObjectValue(testDoubleAttrId, txId3Xa, null);
-            wg.setObjectValue(testDoubleAttrId, txId3Xb, 200.0D);
-            wg.setObjectValue(testDoubleAttrId, txId3Xc, null);
-            wg.setObjectValue(testDoubleAttrId, txId3Xd, null);
-            wg.setObjectValue(testDoubleAttrId, txId3Xe, 40.0D);
+            wg.setObjectValue(testDoubleAttrId, txId3b, null);
+            wg.setObjectValue(testDoubleAttrId, txId3b2, 200.0D);
+            wg.setObjectValue(testDoubleAttrId, txId3b3, null);
+            wg.setObjectValue(testDoubleAttrId, txId3b4, null);
+            wg.setObjectValue(testDoubleAttrId, txId3b5, 40.0D);
 
             wg.setObjectValue(testDoubleAttrId, txId4a, 5.0D);
             wg.setObjectValue(testDoubleAttrId, txId4b, null);
