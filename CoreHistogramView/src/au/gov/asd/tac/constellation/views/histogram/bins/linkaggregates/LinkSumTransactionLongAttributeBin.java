@@ -29,16 +29,7 @@ public class LinkSumTransactionLongAttributeBin extends LongBin {
 
     @Override
     public void setKey(GraphReadMethods graph, int attribute, int element) {
-        long sum = 0;
-        final int transactionCount = graph.getLinkTransactionCount(element);
-        for (int t = 0; t < transactionCount; t++) {
-            final int transaction = graph.getLinkTransaction(element, t);
-            if (graph.getObjectValue(attribute, transaction) == null) {
-                continue;
-            }
-            sum += graph.getLongValue(attribute, transaction);
-        }
-        key = sum;
+        calculateAggregates(graph, attribute, element, Bin.AGGREGATION.SUM, false);
     }
 
     @Override

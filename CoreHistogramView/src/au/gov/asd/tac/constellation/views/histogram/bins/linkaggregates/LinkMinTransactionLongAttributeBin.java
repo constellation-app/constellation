@@ -29,23 +29,7 @@ public class LinkMinTransactionLongAttributeBin extends LongBin {
 
     @Override
     public void setKey(GraphReadMethods graph, int attribute, int element) {
-        long min = Long.MAX_VALUE;
-        int nullCount = 0;
-        setAllElementsAreNull(false);
-        final int transactionCount = graph.getLinkTransactionCount(element);
-        for (int t = 0; t < transactionCount; t++) {
-            final int transaction = graph.getLinkTransaction(element, t);
-            if (graph.getObjectValue(attribute, transaction) == null) {
-                nullCount++;
-                continue;
-            }
-            min = Math.min(graph.getLongValue(attribute, transaction), min);
-        }
-        if (nullCount >= transactionCount) {
-            setAllElementsAreNull(true);
-            return;
-        }
-        key = min;
+        calculateAggregates(graph, attribute, element, Bin.AGGREGATION.MIN, false);
     }
 
     @Override

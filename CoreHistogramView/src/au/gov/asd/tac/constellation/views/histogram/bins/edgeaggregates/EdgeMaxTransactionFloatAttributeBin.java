@@ -29,7 +29,7 @@ public class EdgeMaxTransactionFloatAttributeBin extends FloatBin {
 
     @Override
     public void setKey(GraphReadMethods graph, int attribute, int element) {
-        calculateAggragates(graph, attribute, element, Bin.AGGREGATION.MAX);
+        calculateAggregates(graph, attribute, element, Bin.AGGREGATION.MAX, true);
     }
 
     @Override

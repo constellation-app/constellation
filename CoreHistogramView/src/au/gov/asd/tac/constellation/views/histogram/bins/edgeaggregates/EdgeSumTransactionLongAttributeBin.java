@@ -29,7 +29,7 @@ public class EdgeSumTransactionLongAttributeBin extends LongBin {
 
     @Override
     public void setKey(GraphReadMethods graph, int attribute, int element) {
-        calculateAggragates(graph, attribute, element, Bin.AGGREGATION.SUM);
+        calculateAggregates(graph, attribute, element, Bin.AGGREGATION.SUM, true);
     }
 
     @Override

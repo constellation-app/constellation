@@ -29,7 +29,7 @@ public class EdgeMinTransactionDoubleAttributeBin extends DoubleBin {
 
     @Override
     public void setKey(GraphReadMethods graph, int attribute, int element) {
-        calculateAggragates(graph, attribute, element, Bin.AGGREGATION.MIN);
+        calculateAggregates(graph, attribute, element, Bin.AGGREGATION.MIN, true);
     }
 
     @Override

@@ -78,15 +78,15 @@ public class LongBin extends Bin {
         return key;
     }
 
-    public void calculateAggragates(GraphReadMethods graph, int attribute, int element, Bin.AGGREGATION aggregation) {
+    public void calculateAggregates(GraphReadMethods graph, int attribute, int element, Bin.AGGREGATION aggregation, boolean edgeOnly) {
         long sum = 0;
         long min = Long.MAX_VALUE;
         long max = Long.MIN_VALUE;
         int nullCount = 0;
         setAllElementsAreNull(false);
-        final int transactionCount = graph.getEdgeTransactionCount(element);
+        final int transactionCount = edgeOnly ? graph.getEdgeTransactionCount(element) : graph.getLinkTransactionCount(element);
         for (int t = 0; t < transactionCount; t++) {
-            final int transaction = graph.getEdgeTransaction(element, t);
+            final int transaction = edgeOnly ? graph.getEdgeTransaction(element, t) : graph.getLinkTransaction(element, t);
             if (graph.getObjectValue(attribute, transaction) == null) {
                 nullCount++;
                 continue;

@@ -75,15 +75,15 @@ public class FloatBin extends Bin {
         return key;
     }
 
-    public void calculateAggragates(GraphReadMethods graph, int attribute, int element, Bin.AGGREGATION aggregation) {
+    public void calculateAggregates(GraphReadMethods graph, int attribute, int element, Bin.AGGREGATION aggregation, boolean edgeOnly) {
         float sum = 0;
         float min = Float.MAX_VALUE;
         float max = Float.MIN_VALUE;
         int nullCount = 0;
         setAllElementsAreNull(false);
-        final int transactionCount = graph.getEdgeTransactionCount(element);
+        final int transactionCount = edgeOnly ? graph.getEdgeTransactionCount(element) : graph.getLinkTransactionCount(element);
         for (int t = 0; t < transactionCount; t++) {
-            final int transaction = graph.getEdgeTransaction(element, t);
+            final int transaction = edgeOnly ? graph.getEdgeTransaction(element, t) : graph.getLinkTransaction(element, t);
             if (graph.getObjectValue(attribute, transaction) == null) {
                 nullCount++;
                 continue;

@@ -71,15 +71,15 @@ public class DoubleBin extends Bin {
         return key;
     }
     
-    public void calculateAggragates(GraphReadMethods graph, int attribute, int element, Bin.AGGREGATION aggregation) {
+    public void calculateAggregates(GraphReadMethods graph, int attribute, int element, Bin.AGGREGATION aggregation, boolean edgeOnly) {
         double sum = 0;
         double min = Double.MAX_VALUE;
         double max = Double.MIN_VALUE;
         int nullCount = 0;
         setAllElementsAreNull(false);
-        final int transactionCount = graph.getEdgeTransactionCount(element);
+        final int transactionCount = edgeOnly ? graph.getEdgeTransactionCount(element) : graph.getLinkTransactionCount(element);
         for (int t = 0; t < transactionCount; t++) {
-            final int transaction = graph.getEdgeTransaction(element, t);
+            final int transaction = edgeOnly ? graph.getEdgeTransaction(element, t) : graph.getLinkTransaction(element, t);
             if (graph.getObjectValue(attribute, transaction) == null) {
                 nullCount++;
                 continue;

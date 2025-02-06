@@ -29,7 +29,7 @@ public class EdgeAverageTransactionDoubleAttributeBin extends DoubleBin {
 
     @Override
     public void setKey(GraphReadMethods graph, int attribute, int element) {
-        calculateAggragates(graph, attribute, element, Bin.AGGREGATION.AVERAGE);
+        calculateAggregates(graph, attribute, element, Bin.AGGREGATION.AVERAGE, true);
     }
 
     @Override
