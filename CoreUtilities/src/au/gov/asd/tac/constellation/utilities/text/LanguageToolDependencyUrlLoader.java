@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,8 +32,8 @@ public class LanguageToolDependencyUrlLoader {
     private static final Logger LOGGER = Logger.getLogger(LanguageToolDependencyUrlLoader.class.getName());
 
     public static URL[] loadUrls() throws MalformedURLException {
-        ProtectionDomain domain = LanguageToolDependencyUrlLoader.class.getProtectionDomain();
-        File jarFolder;
+        final ProtectionDomain domain = LanguageToolDependencyUrlLoader.class.getProtectionDomain();
+        final File jarFolder;
 
         if (domain.getCodeSource() != null) {
             String classPath = domain.getCodeSource().getLocation().getPath();
@@ -45,17 +45,17 @@ public class LanguageToolDependencyUrlLoader {
 
             jarFolder = new File(URI.create(classPath).getPath()).getParentFile();
 
-            File libLanguageToolFolder = new File(jarFolder, "ext/languagetoolconf");
+            final File libLanguageToolFolder = new File(jarFolder, "ext/languagetoolconf");
 
             if (!libLanguageToolFolder.exists() || !libLanguageToolFolder.isDirectory()) {
                 LOGGER.log(Level.SEVERE, String.format("Can't locate the directory containing dependencies '%s'.", libLanguageToolFolder.getAbsolutePath()));
                 return null;
             }
 
-            File[] libLanguageToolFiles = libLanguageToolFolder.listFiles((dir, name) -> name.endsWith(".jar"));
+            final File[] libLanguageToolFiles = libLanguageToolFolder.listFiles((dir, name) -> name.endsWith(".jar"));
 
             // Create an array of URLs for LibA and its dependencies
-            URL[] libLanguageToolUrls = new URL[libLanguageToolFiles.length];
+            final URL[] libLanguageToolUrls = new URL[libLanguageToolFiles.length];
             for (int i = 0; i < libLanguageToolFiles.length; i++) {
                 libLanguageToolUrls[i] = libLanguageToolFiles[i].toURI().toURL();
             }

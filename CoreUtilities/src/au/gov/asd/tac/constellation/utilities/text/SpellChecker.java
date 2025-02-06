@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,6 @@ package au.gov.asd.tac.constellation.utilities.text;
 
 //import static au.gov.asd.tac.constellation.utilities.text.LanguagetoolClassLoader.*;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
-import static au.gov.asd.tac.constellation.utilities.text.LanguagetoolClassLoader.JLanguagetool;
-import static au.gov.asd.tac.constellation.utilities.text.LanguagetoolClassLoader.Language;
-import static au.gov.asd.tac.constellation.utilities.text.LanguagetoolClassLoader.Languages;
-import static au.gov.asd.tac.constellation.utilities.text.LanguagetoolClassLoader.MultiThreadedJLanguageTool;
-import static au.gov.asd.tac.constellation.utilities.text.LanguagetoolClassLoader.Rule;
-import static au.gov.asd.tac.constellation.utilities.text.LanguagetoolClassLoader.RuleMatch;
-import static au.gov.asd.tac.constellation.utilities.text.LanguagetoolClassLoader.SpellingCheckRule;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -34,6 +27,8 @@ import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
@@ -71,6 +66,9 @@ public final class SpellChecker {
     private static final double POPUP_PADDING = 5;
     private static final double ITEM_HEIGHT = 24;
     private static Object language = null;
+    private static final String NON_WORD_PATTERN = "[\\W]"; //excludes alphanumeric characters including the underscore
+    private static final Pattern NON_WORD_MATCHER = Pattern.compile(NON_WORD_PATTERN);
+    
 
     protected static final CompletableFuture<Void> LANGTOOL_LOAD;
 
@@ -81,22 +79,22 @@ public final class SpellChecker {
             @Override
             public Void get() {
                 LanguagetoolClassLoader.loadDependencies();
-                if (MultiThreadedJLanguageTool != null) {
+                if (LanguagetoolClassLoader.getMultiThreadedJLanguageTool() != null) {
                     try {
-                        Constructor<?> constructor = Languages.getDeclaredConstructor();
+                        final Constructor<?> constructor = LanguagetoolClassLoader.getLanguages().getDeclaredConstructor();
                         constructor.setAccessible(true);
-                        Object languages = constructor.newInstance();
-                        language = Languages.getMethod("getLanguageForShortCode", String.class).invoke(languages, "en-AU");
-                        langToolStatic = MultiThreadedJLanguageTool.getDeclaredConstructor(Language).newInstance(language);
+                        final Object languages = constructor.newInstance();
+                        language = LanguagetoolClassLoader.getLanguages().getMethod("getLanguageForShortCode", String.class).invoke(languages, "en-AU");
+                        langToolStatic = LanguagetoolClassLoader.getMultiThreadedJLanguageTool().getDeclaredConstructor(LanguagetoolClassLoader.getLanguage()).newInstance(language);
 
                         //perform a check here to prevent the spell checking being too slow at the first word after loading costy
-                        final Object initMatches = JLanguagetool.getMethod("check", String.class).invoke(langToolStatic, "random text");
+                        final Object initMatches = LanguagetoolClassLoader.getJLanguagetool().getMethod("check", String.class).invoke(langToolStatic, "random text");
 
-                    } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                    } catch (final NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                         logAndDisplayErrorMessage("Error while initializing spell checking. Spell checking may not be functioning.", ex);
                     }
                 } else {
-                    NotifyDisplayer.display("Error while loading spell checking. Spell checking will not be functioning.", NotifyDescriptor.ERROR_MESSAGE);
+                    NotifyDisplayer.display("Error while loading spell checker. Spell checking will not be functioning.", NotifyDescriptor.ERROR_MESSAGE);
                 }
                 return null;
             }
@@ -126,18 +124,17 @@ public final class SpellChecker {
 
     private void initializeRules() {
         try {
-            langTool = MultiThreadedJLanguageTool.getDeclaredConstructor(Language).newInstance(language);
-            List<?> rules = (List<?>) JLanguagetool.getMethod("getAllRules").invoke(langTool);
+            langTool = LanguagetoolClassLoader.getMultiThreadedJLanguageTool().getDeclaredConstructor(LanguagetoolClassLoader.getLanguage()).newInstance(language);
+            final List<?> rules = (List<?>) LanguagetoolClassLoader.getJLanguagetool().getMethod("getAllRules").invoke(langTool);
             for (final Object rule : rules) {
-                if (Rule.getMethod("getId").invoke(rule).equals("UPPERCASE_SENTENCE_START")) {
-                    //langTool.get().disableRule(rule.getId());
-                    JLanguagetool.getMethod("disableRule", String.class).invoke(langTool, Rule.getMethod("getId").invoke(rule));
+                if (LanguagetoolClassLoader.getRule().getMethod("getId").invoke(rule).equals("UPPERCASE_SENTENCE_START")) {
+                    LanguagetoolClassLoader.getJLanguagetool().getMethod("disableRule", String.class).invoke(langTool, LanguagetoolClassLoader.getRule().getMethod("getId").invoke(rule));
 
-                } else if (SpellingCheckRule.isInstance(rule)) {
+                } else if (LanguagetoolClassLoader.getSpellingCheckRule().isInstance(rule)) {
                     spellingCheckRule = rule;
                 }
             }
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException | SecurityException ex) {
+        } catch (final IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException | SecurityException ex) {
             logAndDisplayErrorMessage("Error while initializing spell checking rules. Spell checking may not be functioning properly.", ex);
         }
     }
@@ -152,22 +149,22 @@ public final class SpellChecker {
 
         if (!turnOffSpellChecking && StringUtils.isNotBlank(textArea.getText())) {
             try {
-                matches = (List<Object>) JLanguagetool.getMethod("check", String.class).invoke(langTool, textArea.getText());
+                matches = (List<Object>) LanguagetoolClassLoader.getJLanguagetool().getMethod("check", String.class).invoke(langTool, textArea.getText());
                 matches.forEach((var match) -> {
 
-                    if (match.getClass() == RuleMatch) {
+                    if (LanguagetoolClassLoader.getRuleMatch().isInstance(match)){
                         try {
-                            final int start = (int) RuleMatch.getMethod("getFromPos").invoke(match);
-                            final int end = (int) RuleMatch.getMethod("getToPos").invoke(match);
+                            final int start = (int) LanguagetoolClassLoader.getRuleMatch().getMethod("getFromPos").invoke(match);
+                            final int end = (int) LanguagetoolClassLoader.getRuleMatch().getMethod("getToPos").invoke(match);
                             final String misspell = textArea.getText().substring(start, end);
                             misspells.add(misspell);
                             textArea.highlightText(start, end);
-                        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
+                        } catch (final IllegalAccessException | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
                             logAndDisplayErrorMessage("Error while checking spelling. It may not be functioning properly.", ex);
                         }
                     }
                 });
-            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
+            } catch (final IllegalAccessException | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
                 logAndDisplayErrorMessage("Error while checking spelling. It may not be functioning properly.", ex);
             }
         }
@@ -199,7 +196,7 @@ public final class SpellChecker {
                     popup.getContent().clear();
                     suggestions.getSelectionModel().clearSelection();
 
-                    suggestionsList.addAll((List<String>) (RuleMatch.getMethod("getSuggestedReplacements").invoke(matches.get(indexOfMisspelledTextUnderCursor))));
+                    suggestionsList.addAll((List<String>) (LanguagetoolClassLoader.getRuleMatch().getMethod("getSuggestedReplacements").invoke(matches.get(indexOfMisspelledTextUnderCursor))));
                     if (suggestionsList.isEmpty()) {
                         labelMessage.setText("No matching suggestions available");
                         popupContent.getChildren().addAll(labelMessage);
@@ -222,7 +219,7 @@ public final class SpellChecker {
                     popup.setAutoFix(true);
                     popup.show(textArea, event.getScreenX(), event.getScreenY() + 10);
                 }
-            } catch (SecurityException | InvocationTargetException | NoSuchMethodException | IllegalAccessException ex) {
+            } catch (final SecurityException | InvocationTargetException | NoSuchMethodException | IllegalAccessException ex) {
                 logAndDisplayErrorMessage("Error while populating suggestions. Spell checking may not be functioning properly.", ex);
             }
         }
@@ -242,16 +239,15 @@ public final class SpellChecker {
         }
 
         for (final Object match : matches) {
-            if (match.getClass() == RuleMatch) {
-
-                final int start = (int) RuleMatch.getMethod("getFromPos").invoke(match);
-                final int end = (int) RuleMatch.getMethod("getToPos").invoke(match);
+            if (LanguagetoolClassLoader.getRuleMatch().isInstance(match)){
+                final int start = (int) LanguagetoolClassLoader.getRuleMatch().getMethod("getFromPos").invoke(match);
+                final int end = (int) LanguagetoolClassLoader.getRuleMatch().getMethod("getToPos").invoke(match);
                 if (cursorIndex >= start && cursorIndex <= end) {
                     indexOfMisspelledTextUnderCursor = misspells.indexOf(textArea.getText().substring(start, end));
                     startOfMisspelledTextUnderCursor = start;
                     endOfMisspelledTextUnderCursor = end;
-                    specificRuleId = (String) RuleMatch.getMethod("getSpecificRuleId").invoke(match);
-                    labelMessage.setText((String) RuleMatch.getMethod("getMessage").invoke(match));
+                    specificRuleId = (String) LanguagetoolClassLoader.getRuleMatch().getMethod("getSpecificRuleId").invoke(match);
+                    labelMessage.setText((String) LanguagetoolClassLoader.getRuleMatch().getMethod("getMessage").invoke(match));
                     return true;
                 }
             }
@@ -266,13 +262,14 @@ public final class SpellChecker {
      * @param newText
      * @return
      */
+
     public boolean canCheckSpelling(final String newText) {
         final int caretPosition = textArea.getCaretPosition();
         if (caretPosition == 0) {
             return true;
         } else if (caretPosition <= newText.length()) {
-            final String charAtCaret = Character.toString(textArea.getText().charAt(caretPosition - 1));
-            return !newText.isEmpty() && (textArea.isWordUnderCursorHighlighted(caretPosition - 1) || !charAtCaret.matches("[a-zA-Z0-9']"));
+            final Matcher nonWordMatcher = NON_WORD_MATCHER.matcher(Character.toString(textArea.getText().charAt(caretPosition - 1)));
+            return !newText.isEmpty() && (textArea.isWordUnderCursorHighlighted(caretPosition - 1) || nonWordMatcher.matches());
         } else {
             return false;
         }
@@ -289,16 +286,16 @@ public final class SpellChecker {
         if (spellingCheckRule != null) {
             try {
                 final List<String> ss = Arrays.asList(textArea.getText().substring(startOfMisspelledTextUnderCursor, endOfMisspelledTextUnderCursor));
-                SpellingCheckRule.getMethod("addIgnoreTokens", List.class).invoke(spellingCheckRule, ss);
+                LanguagetoolClassLoader.getSpellingCheckRule().getMethod("addIgnoreTokens", List.class).invoke(spellingCheckRule, ss);
                 popup.hide();
                 checkSpelling();
-            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException ex) {
+            } catch (final IllegalAccessException | InvocationTargetException | NoSuchMethodException ex) {
                 logAndDisplayErrorMessage("Error while adding words to ignore. Spell checking may not be functioning properly.", ex);
             }
         }
     }
 
-    private static void logAndDisplayErrorMessage(String message, Exception ex) {
+    private static void logAndDisplayErrorMessage(final String message, final Exception ex) {
         LOGGER.log(Level.SEVERE, String.format("%s: %s", message, ex));
         NotifyDisplayer.display(message, NotifyDescriptor.ERROR_MESSAGE);
     }

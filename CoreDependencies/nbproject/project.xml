@@ -2443,10 +2443,6 @@
                 <binary-origin>release/modules/ext/aircompressor-0.20.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/apiguardian-api-1.1.2.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/apiguardian-api-1.1.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/asm-7.3.1.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/asm-7.3.1.jar</binary-origin>
             </class-path-extension>
@@ -2727,8 +2723,8 @@
                 <binary-origin>release/modules/ext/imageio-ext-utilities-1.3.12.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/indriya-2.2.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/indriya-2.2.jar</binary-origin>
+                <runtime-relative-path>ext/indriya-2.0.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/indriya-2.0.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/istack-commons-runtime-3.0.7.jar</runtime-relative-path>
@@ -2759,16 +2755,16 @@
                 <binary-origin>release/modules/ext/jakarta.annotation-api-1.3.4.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jakarta.inject-api-2.0.1.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jakarta.inject-api-2.0.1.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/javahelp-2.0.05.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/javahelp-2.0.05.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/javax.activation-api-1.2.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/javax.activation-api-1.2.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/javax.inject-1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/javax.inject-1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jaxb-api-2.4.0-b180830.0359.jar</runtime-relative-path>
@@ -3163,12 +3159,12 @@
                 <binary-origin>release/modules/ext/unfolding-master-20171010.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/unit-api-2.2.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/unit-api-2.2.jar</binary-origin>
+                <runtime-relative-path>ext/unit-api-2.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/unit-api-2.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/uom-lib-common-2.2.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/uom-lib-common-2.2.jar</binary-origin>
+                <runtime-relative-path>ext/uom-lib-common-2.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/uom-lib-common-2.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/wellbehavedfx-0.3.3.jar</runtime-relative-path>

@@ -5,7 +5,6 @@
     <configurations defaultconfmapping="*->default,master">      
         <conf name="defaultconf" description="default location, including common dependencies" /> 
         <conf name="languagetoolconf" description="Configuration for languagetool" />
-        <!-- <conf name="geotoolconf" description="Configuration for org.geotools" /-->
     </configurations>
 
     <dependencies >
@@ -60,8 +59,6 @@
         
         <!-- Dependency for languagetool using indriya v1.3 -->
         <dependency org="org.languagetool" name="language-en" rev="6.0" conf="languagetoolconf"/> 
-        <dependency org="tech.units" name="indriya" rev="1.3" conf="languagetoolconf"/>
-                             
         
         <!-- Geotools -->
         <dependency org="org.geotools" name="gt-cql" rev="26.4" conf="defaultconf"/>
@@ -69,8 +66,6 @@
         <dependency org="org.geotools" name="gt-main" rev="26.4" conf="defaultconf"/>
         <dependency org="org.geotools" name="gt-metadata" rev="26.4" conf="defaultconf"/>
         <dependency org="org.geotools" name="gt-opengis" rev="26.4" conf="defaultconf"/> 
-        <dependency org="tech.units" name="indriya" rev="2.2" conf="defaultconf"/>
-        
         <dependency org="org.geotools" name="gt-referencing" rev="26.4" conf="defaultconf"/>
         <dependency org="org.geotools" name="gt-xml" rev="26.4" conf="defaultconf"/>
         <dependency org="org.geotools" name="gt-epsg-hsql" rev="26.4" conf="defaultconf"/>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,27 +28,27 @@ import java.util.logging.Logger;
 
 public class LanguagetoolClassLoader {
     private static URLClassLoader classLoader;
-    public static LanguagetoolClassLoader LanguagetoolClassLoader;
-    public static Class<?> JLanguagetool;
-    public static Class<?> Language;
-    public static Class<?> Languages;
-    public static Class<?> MultiThreadedJLanguageTool;
-    public static Class<?> RuleMatch;
-    public static Class<?> Rule;
-    public static Class<?> SpellingCheckRule;
+    private static LanguagetoolClassLoader languagetoolClassLoader;
+    private static Class<?> jLanguagetool;
+    private static Class<?> language;
+    private static Class<?> languages;
+    private static Class<?> multiThreadedJLanguageTool;
+    private static Class<?> ruleMatch;
+    private static Class<?> rule;
+    private static Class<?> spellingCheckRule;
     private static final Logger LOGGER = Logger.getLogger(LanguagetoolClassLoader.class.getName());
 
-    private LanguagetoolClassLoader(URL[] urls) {
+    private LanguagetoolClassLoader(final URL[] urls) {
         classLoader = new URLClassLoader(urls);
     }
 
     public static synchronized void loadDependencies() {
-        if (LanguagetoolClassLoader == null) {
+        if (languagetoolClassLoader == null) {
             try {
-                URL[] urls = LanguageToolDependencyUrlLoader.loadUrls();
-                LanguagetoolClassLoader = new LanguagetoolClassLoader(urls);
+                final URL[] urls = LanguageToolDependencyUrlLoader.loadUrls();
+                languagetoolClassLoader = new LanguagetoolClassLoader(urls);
                 LoadOtherClasses();
-            } catch (MalformedURLException | ClassNotFoundException ex) {
+            } catch (final MalformedURLException | ClassNotFoundException ex) {
                 LOGGER.log(Level.SEVERE, "An error occured loading LanguageTool Classes", ex);
             }
         }
@@ -56,14 +56,46 @@ public class LanguagetoolClassLoader {
 
     private static void LoadOtherClasses() throws ClassNotFoundException {
         // Load JLanguagetool
-        JLanguagetool = classLoader.loadClass("org.languagetool.JLanguageTool");
+        jLanguagetool = classLoader.loadClass("org.languagetool.JLanguageTool");
 
         // Load other classes
-        Language = classLoader.loadClass("org.languagetool.Language");
-        Languages = classLoader.loadClass("org.languagetool.Languages");
-        MultiThreadedJLanguageTool = classLoader.loadClass("org.languagetool.MultiThreadedJLanguageTool");
-        RuleMatch = classLoader.loadClass("org.languagetool.rules.RuleMatch");
-        Rule = classLoader.loadClass("org.languagetool.rules.Rule");
-        SpellingCheckRule = classLoader.loadClass("org.languagetool.rules.spelling.SpellingCheckRule");
+        language = classLoader.loadClass("org.languagetool.Language");
+        languages = classLoader.loadClass("org.languagetool.Languages");
+        multiThreadedJLanguageTool = classLoader.loadClass("org.languagetool.MultiThreadedJLanguageTool");
+        ruleMatch = classLoader.loadClass("org.languagetool.rules.RuleMatch");
+        rule = classLoader.loadClass("org.languagetool.rules.Rule");
+        spellingCheckRule = classLoader.loadClass("org.languagetool.rules.spelling.SpellingCheckRule");
+    }
+        
+    public static LanguagetoolClassLoader getLanguagetoolClassLoader() {
+        return languagetoolClassLoader;
+    }
+
+    public static Class<?> getJLanguagetool() {
+        return jLanguagetool;
+    }
+
+    public static Class<?> getLanguage() {
+        return language;
+    }
+
+    public static Class<?> getLanguages() {
+        return languages;
+    }
+
+    public static Class<?> getMultiThreadedJLanguageTool() {
+        return multiThreadedJLanguageTool;
+    }
+
+    public static Class<?> getRuleMatch() {
+        return ruleMatch;
+    }
+
+    public static Class<?> getRule() {
+        return rule;
+    }
+
+    public static Class<?> getSpellingCheckRule() {
+        return spellingCheckRule;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -115,7 +115,7 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
     }
 
     public boolean isWordUnderCursorHighlighted(final int index) {
-        return (this.getStyleOfChar(index) != null ? this.getStyleOfChar(index).equals(UNDERLINE_AND_HIGHLIGHT_STYLE) : false);
+        return this.getStyleOfChar(index) != null && this.getStyleOfChar(index).equals(UNDERLINE_AND_HIGHLIGHT_STYLE);
     }
 
 
