@@ -32,7 +32,7 @@ public class FloatBin extends Bin {
     }
 
     @Override
-    public int compareTo(Bin o) {
+    public int compareTo(final Bin o) {
         return Float.compare(key, ((FloatBin) o).key);
     }
 
@@ -44,12 +44,12 @@ public class FloatBin extends Bin {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (o == null) {
             return false;
         }
         if (this.getClass() == o.getClass()) {
-            FloatBin bin = (FloatBin) o;
+            final FloatBin bin = (FloatBin) o;
             return key == bin.key;
         }
         return false;
@@ -61,7 +61,7 @@ public class FloatBin extends Bin {
     }
 
     @Override
-    public void setKey(GraphReadMethods graph, int attribute, int element) {
+    public void setKey(final GraphReadMethods graph, final int attribute, final int element) {
         key = graph.getFloatValue(attribute, element);
     }
 
@@ -75,7 +75,7 @@ public class FloatBin extends Bin {
         return key;
     }
 
-    public void calculateAggregates(GraphReadMethods graph, int attribute, int element, Bin.AGGREGATION aggregation, boolean edgeOnly) {
+    public void calculateAggregates(final GraphReadMethods graph, final int attribute, final int element, final Bin.AGGREGATION aggregation, final boolean edgeOnly) {
         float sum = 0;
         float min = Float.MAX_VALUE;
         float max = Float.MIN_VALUE;

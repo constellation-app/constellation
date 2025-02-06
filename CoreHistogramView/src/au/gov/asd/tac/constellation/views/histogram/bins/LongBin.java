@@ -28,8 +28,8 @@ public class LongBin extends Bin {
     protected long key;
 
     @Override
-    public int compareTo(Bin o) {
-        LongBin bin = (LongBin) o;
+    public int compareTo(final Bin o) {
+        final LongBin bin = (LongBin) o;
         if (key > bin.key) {
             return 1;
         } else if (key < bin.key) {
@@ -47,12 +47,12 @@ public class LongBin extends Bin {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (o == null) {
             return false;
         }
         if (this.getClass() == o.getClass()) {
-            LongBin bin = (LongBin) o;
+            final LongBin bin = (LongBin) o;
             return key == bin.key;
         }
         return false;
@@ -64,7 +64,7 @@ public class LongBin extends Bin {
     }
 
     @Override
-    public void setKey(GraphReadMethods graph, int attribute, int element) {
+    public void setKey(final GraphReadMethods graph, final int attribute, final int element) {
         key = graph.getLongValue(attribute, element);
     }
 
@@ -78,7 +78,7 @@ public class LongBin extends Bin {
         return key;
     }
 
-    public void calculateAggregates(GraphReadMethods graph, int attribute, int element, Bin.AGGREGATION aggregation, boolean edgeOnly) {
+    public void calculateAggregates(final GraphReadMethods graph, final int attribute, final int element, final Bin.AGGREGATION aggregation, final boolean edgeOnly) {
         long sum = 0;
         long min = Long.MAX_VALUE;
         long max = Long.MIN_VALUE;

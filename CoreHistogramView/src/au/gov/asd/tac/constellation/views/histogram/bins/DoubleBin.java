@@ -28,7 +28,7 @@ public class DoubleBin extends Bin {
     protected double key;
 
     @Override
-    public int compareTo(Bin o) {
+    public int compareTo(final Bin o) {
         return Double.compare(key, ((DoubleBin) o).key);
     }
 
@@ -40,12 +40,12 @@ public class DoubleBin extends Bin {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (o == null) {
             return false;
         }
         if (this.getClass() == o.getClass()) {
-            DoubleBin bin = (DoubleBin) o;
+            final DoubleBin bin = (DoubleBin) o;
             return key == bin.key;
         }
         return false;
@@ -57,7 +57,7 @@ public class DoubleBin extends Bin {
     }
 
     @Override
-    public void setKey(GraphReadMethods graph, int attribute, int element) {
+    public void setKey(final GraphReadMethods graph, final int attribute, final int element) {
         key = graph.getDoubleValue(attribute, element);
     }
 
@@ -71,7 +71,7 @@ public class DoubleBin extends Bin {
         return key;
     }
     
-    public void calculateAggregates(GraphReadMethods graph, int attribute, int element, Bin.AGGREGATION aggregation, boolean edgeOnly) {
+    public void calculateAggregates(final GraphReadMethods graph, final int attribute, final int element, final Bin.AGGREGATION aggregation, final boolean edgeOnly) {
         double sum = 0;
         double min = Double.MAX_VALUE;
         double max = Double.MIN_VALUE;
