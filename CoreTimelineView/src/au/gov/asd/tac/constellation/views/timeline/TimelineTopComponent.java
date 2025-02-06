@@ -110,6 +110,8 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
             LocalDateTimeAttributeDescription.ATTRIBUTE_NAME,
             DateAttributeDescription.ATTRIBUTE_NAME);
 
+    private static final long CLOSE_CLEANUP_TIMEOUT = 5L;
+
     private GraphNode graphNode = null;
     private final Lookup.Result<GraphNode> result;
     private TimelineState state;
@@ -342,7 +344,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
         });
         try {
             // Wait for five seconds or until data cleared
-            if (!latch.await(5L, TimeUnit.SECONDS)) {
+            if (!latch.await(CLOSE_CLEANUP_TIMEOUT, TimeUnit.SECONDS)) {
                 // Warn if 5 seconds had passed
                 LOGGER.log(Level.WARNING, "Latch in TimelineTopComponent canClose() timed out!");
             }
