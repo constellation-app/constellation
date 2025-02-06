@@ -35,6 +35,8 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -328,9 +330,30 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
     }
 
     @Override
+    public boolean canClose() {
+        // Data needs to be cleared BEFORE component is closed,
+        // otherwise memory isn't always freed correctly
+        // I believe its because once the top component is closed, the panels cant update and remove the data too
+        final CountDownLatch latch = new CountDownLatch(1);
+        Platform.runLater(() -> {
+            timelinePanel.clearTimeline();
+            overviewPanel.clearHistogram(false);
+            latch.countDown();
+        });
+        try {
+            // wait for five seconds or until data cleared
+            latch.await(5L, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            System.out.println("Interrrupted exception when tryin got close TimelineTopComponent");
+        }
+
+        return true;
+    }
+
+    @Override
     public void componentClosed() {
+        super.componentClosed();
         result.removeLookupListener(this);
-        timelinePanel.clearTimeline();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Properties">
@@ -637,16 +660,13 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
     }
 
     private void retrieveStateFromGraph() {
-        final ReadableGraph rg = graphNode.getGraph().getReadableGraph();
-        try {
+        try (final ReadableGraph rg = graphNode.getGraph().getReadableGraph()) {
             final int attrID = rg.getAttribute(GraphElementType.META, TimelineConcept.MetaAttribute.TIMELINE_STATE.getName());
             if (attrID != Graph.NOT_FOUND) {
                 state = (TimelineState) rg.getObjectValue(attrID, 0);
             } else {
                 state = null;
             }
-        } finally {
-            rg.release();
         }
     }
 
@@ -668,8 +688,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
     @Override
     public void resultChanged(final LookupEvent ev) {
         final Node[] activatedNodes = TopComponent.getRegistry().getActivatedNodes();
-        if (activatedNodes != null && activatedNodes.length == 1
-                && activatedNodes[0] instanceof GraphNode) {
+        if (activatedNodes != null && activatedNodes.length == 1 && activatedNodes[0] instanceof GraphNode) {
             final GraphNode gnode = ((GraphNode) activatedNodes[0]);
 
             if (gnode != graphNode) {

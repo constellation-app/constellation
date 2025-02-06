@@ -341,6 +341,7 @@ public class OverviewPanel extends Pane {
     public void clearHistogram() {
         if (histogram.getData() != null) {
             histogram.getData().clear();
+            histogram.setData(null);
         }
     }
 

@@ -216,6 +216,9 @@ public class ClusteringManager {
 
     public void cleanupVariables() {
         clearTree();
+        if (elementsToDraw != null) {
+            elementsToDraw.clear();
+        }
         elementsToDraw = null;
         elementsToUndim = null;
         oldElementsToUndim = null;

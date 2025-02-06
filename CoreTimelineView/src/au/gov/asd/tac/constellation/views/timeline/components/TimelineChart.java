@@ -631,9 +631,13 @@ public class TimelineChart extends XYChart<Number, Number> {
             // fade out old item:
             final FadeTransition ft = new FadeTransition(Duration.millis(500), child);
             ft.setToValue(0);
-            ft.setOnFinished((final ActionEvent actionEvent) -> getPlotChildren().remove(child));
+            ft.setOnFinished((final ActionEvent actionEvent) -> {
+                removeDataItemFromDisplay(series, item);
+                getPlotChildren().remove(child);
+            });
             ft.play();
         } else {
+            removeDataItemFromDisplay(series, item);
             getPlotChildren().remove(child);
         }
     }
@@ -678,10 +682,10 @@ public class TimelineChart extends XYChart<Number, Number> {
             // fade out old item:
             final FadeTransition ft = new FadeTransition(Duration.millis(500), child);
             ft.setToValue(0);
-            ft.setOnFinished((final ActionEvent actionEvent) -> getPlotChildren().clear());
+            ft.setOnFinished((final ActionEvent actionEvent) -> removeSeriesFromDisplay(series));
             ft.play();
         } else {
-            getPlotChildren().clear();
+            removeSeriesFromDisplay(series);
         }
     }
 

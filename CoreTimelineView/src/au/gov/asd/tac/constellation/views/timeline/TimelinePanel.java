@@ -101,7 +101,7 @@ public class TimelinePanel extends Region {
     private ComboBox<ZoneId> timeZoneComboBox;
     private long expectedvxMod = Long.MIN_VALUE;
     private long expectedtxMod = Long.MIN_VALUE;
-    
+
     final BorderPane timelinePane = new BorderPane();
 
     /*
@@ -217,7 +217,6 @@ public class TimelinePanel extends Region {
         } else {
             this.setTimelineExtent(graph, 0, System.currentTimeMillis(), selectedOnly, zoneId);
         }
-
     }
 
     public void updateTimeline(final GraphReadMethods graph, final boolean selectedOnly, final ZoneId zoneId) {
@@ -356,31 +355,22 @@ public class TimelinePanel extends Region {
     }
 
     public void clearTimelineData() {
-        System.out.println("clearTimelineData");
-        
         // Reset timeline by copying values to new instance
-        //System.out.println("Is thing bound? " + lowerTime.textProperty().isBound());
         lowerTime.textProperty().unbind();
-        //System.out.println("Is thing bound now (shouldnt be)? " + lowerTime.textProperty().isBound());
         upperTime.textProperty().unbind();
-       
+
         // Get old extents
         final double lower = getTimelineLowerTimeExtent();
         final double upper = getTimelineUpperTimeExtent();
-        System.out.println("Lower: " + lower + " Upper: " + upper);
-        
+
         timeline = new TimelineChart(this, new NumberAxis(), new NumberAxis());
-        
+
         // Rebind text
         lowerTime.textProperty().bind(timeline.lowerTimeExtentProperty());
         upperTime.textProperty().bind(timeline.upperTimeExtentProperty());
-        
-        timelinePane.setCenter(timeline);
-        
+
         timeline.setExtents(lower, upper);
-        
-        
-        //timeline.clear();
+        timelinePane.setCenter(timeline);
     }
 
     /**
