@@ -455,29 +455,29 @@ public class TransactionAggregateBinsNGTest {
         try {    
             // add custom attributes
 
-            final SchemaAttribute LONG_TEST_VAL = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, LongObjectAttributeDescription.ATTRIBUTE_NAME, "long_test_val")
+            final SchemaAttribute longOrNullAttribute = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, LongObjectAttributeDescription.ATTRIBUTE_NAME, "long_test_val")
                 .setDescription("Long or Null value")
                 .setDefaultValue(null)
                 .create()
                 .build();
             
-            testLongAttrId = LONG_TEST_VAL.ensure(wg);
+            testLongAttrId = longOrNullAttribute.ensure(wg);
             
-            final SchemaAttribute DOUBLE_TEST_VAL = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, DoubleObjectAttributeDescription.ATTRIBUTE_NAME, "long_test_val")
+            final SchemaAttribute doubleOrNullAttribute = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, DoubleObjectAttributeDescription.ATTRIBUTE_NAME, "long_test_val")
                 .setDescription("Double or Null value")
                 .setDefaultValue(null)
                 .create()
                 .build();
             
-            testDoubleAttrId = DOUBLE_TEST_VAL.ensure(wg);
+            testDoubleAttrId = doubleOrNullAttribute.ensure(wg);
 
-            final SchemaAttribute FLOAT_TEST_VAL = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, FloatObjectAttributeDescription.ATTRIBUTE_NAME, "long_test_val")
+            final SchemaAttribute floatOrNullAttribute = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, FloatObjectAttributeDescription.ATTRIBUTE_NAME, "long_test_val")
                 .setDescription("Float or Null value")
                 .setDefaultValue(null)
                 .create()
                 .build();
             
-            testFloatAttrId = FLOAT_TEST_VAL.ensure(wg);
+            testFloatAttrId = floatOrNullAttribute.ensure(wg);
 
             // add vertices
             vxId1 = wg.addVertex();
