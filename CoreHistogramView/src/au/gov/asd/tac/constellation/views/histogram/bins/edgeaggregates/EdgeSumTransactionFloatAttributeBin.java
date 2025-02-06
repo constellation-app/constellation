@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,14 +28,8 @@ import au.gov.asd.tac.constellation.views.histogram.bins.FloatBin;
 public class EdgeSumTransactionFloatAttributeBin extends FloatBin {
 
     @Override
-    public void setKey(GraphReadMethods graph, int attribute, int element) {
-        float sum = 0;
-        final int transactionCount = graph.getEdgeTransactionCount(element);
-        for (int t = 0; t < transactionCount; t++) {
-            final int transaction = graph.getEdgeTransaction(element, t);
-            sum += graph.getFloatValue(attribute, transaction);
-        }
-        key = sum;
+    public void setKey(final GraphReadMethods graph, final int attribute, final int element) {
+        calculateAggregates(graph, attribute, element, Bin.AGGREGATION.SUM, true);
     }
 
     @Override
