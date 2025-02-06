@@ -141,7 +141,8 @@ public class TransactionAggregateBinsNGTest {
             System.out.println("[TransactionAggregateBinsNGTest] START EDGE DOUBLE TEST");
             
             final EdgeMaxTransactionDoubleAttributeBin edge3Max = new EdgeMaxTransactionDoubleAttributeBin();
-            final EdgeMinTransactionDoubleAttributeBin edge4Min = new EdgeMinTransactionDoubleAttributeBin();
+            final EdgeMinTransactionDoubleAttributeBin edge4aMin = new EdgeMinTransactionDoubleAttributeBin();
+            final EdgeMinTransactionDoubleAttributeBin edge4bMin = (EdgeMinTransactionDoubleAttributeBin) edge4aMin.create();
             
             final EdgeAverageTransactionDoubleAttributeBin edge3aAverage = new EdgeAverageTransactionDoubleAttributeBin();
             final EdgeAverageTransactionDoubleAttributeBin edge3bAverage = (EdgeAverageTransactionDoubleAttributeBin) edge3aAverage.create();
@@ -156,10 +157,11 @@ public class TransactionAggregateBinsNGTest {
             final WritableGraph wg = graph.getWritableGraph("", true);
             
             edge3Max.setKey(wg, testDoubleAttrId, wg.getTransactionEdge(txId3b));
-            edge4Min.setKey(wg, testDoubleAttrId, wg.getTransactionEdge(txId4a));
+            edge4aMin.setKey(wg, testDoubleAttrId, wg.getTransactionEdge(txId4a));
+            edge4bMin.setKey(wg, testDoubleAttrId, wg.getTransactionLink(txId4b));
             
             final double result3Max = (Double) edge3Max.getKeyAsObject();
-            final double result4Min = (Double) edge4Min.getKeyAsObject();
+            final double result4Min = (Double) edge4aMin.getKeyAsObject();
             
             edge3aAverage.setKey(wg, testDoubleAttrId, wg.getTransactionEdge(txId3a));
             edge3bAverage.setKey(wg, testDoubleAttrId, wg.getTransactionEdge(txId3b));
@@ -206,7 +208,6 @@ public class TransactionAggregateBinsNGTest {
             
             final LinkMaxTransactionDoubleAttributeBin link3Max = new LinkMaxTransactionDoubleAttributeBin();
             final LinkMinTransactionDoubleAttributeBin link4aMin = new LinkMinTransactionDoubleAttributeBin();
-            final LinkMinTransactionDoubleAttributeBin link4bMin = (LinkMinTransactionDoubleAttributeBin) link4aMin.create();
             
             final LinkAverageTransactionDoubleAttributeBin link3aAverage = new LinkAverageTransactionDoubleAttributeBin();
             final LinkAverageTransactionDoubleAttributeBin link3bAverage = (LinkAverageTransactionDoubleAttributeBin) link3aAverage.create();
@@ -222,7 +223,6 @@ public class TransactionAggregateBinsNGTest {
             
             link3Max.setKey(wg, testDoubleAttrId, wg.getTransactionLink(txId3b));
             link4aMin.setKey(wg, testDoubleAttrId, wg.getTransactionLink(txId4a));
-            link4bMin.setKey(wg, testDoubleAttrId, wg.getTransactionLink(txId4b));
             
             final double result3Max = (Double) link3Max.getKeyAsObject();
             final double result4Min = (Double) link4aMin.getKeyAsObject();
