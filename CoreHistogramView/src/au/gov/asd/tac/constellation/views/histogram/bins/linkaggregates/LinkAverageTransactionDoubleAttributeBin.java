@@ -28,7 +28,7 @@ import au.gov.asd.tac.constellation.views.histogram.bins.DoubleBin;
 public class LinkAverageTransactionDoubleAttributeBin extends DoubleBin {
 
     @Override
-    public void setKey(GraphReadMethods graph, int attribute, int element) {
+    public void setKey(final GraphReadMethods graph, final int attribute, final int element) {
         calculateAggregates(graph, attribute, element, Bin.AGGREGATION.AVERAGE, false);
     }
 
