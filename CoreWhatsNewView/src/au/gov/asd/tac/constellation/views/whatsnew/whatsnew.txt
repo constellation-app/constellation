@@ -2,7 +2,7 @@
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
 == 2025-02-06 Histogram can now perform aggregate functions on nullable Transaction data
-<p> The Histogram View has had an enhancement to its aggregate processing for Transaction <b>Links</b> and <b>Edges</b>.</p>
+<p> The Histogram View has had an enhancement to its aggregate processing for <b>Links</b> and <b>Edges</b>.</p>
 <p> The <b>Category</b> options to calculate Average, Sum, Min, and Max on Transactions will now work on nullable datatypes, such as "long_or_null", "double_or_null", etc. </p>
 
 == 2025-02-03 Search Added to Online and Offline Help
