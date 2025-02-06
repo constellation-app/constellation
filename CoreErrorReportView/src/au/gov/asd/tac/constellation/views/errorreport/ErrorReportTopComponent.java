@@ -543,7 +543,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
             popupFilters.add(SeverityCode.FINE_POPUP.getCode());
         }
     }
-    
+
     private void updateSettingsIcon(final FlowPane settingsPane, final String innerShade, final String borderShade) {
         settingsPane.setStyle(FX_BACKGROUND + innerShade + "; -fx-border-color: " + borderShade + ";");
     }

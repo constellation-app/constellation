@@ -15,12 +15,17 @@
  */
 package au.gov.asd.tac.constellation.views.pluginreporter.panes;
 
+import au.gov.asd.tac.constellation.plugins.gui.MultiChoiceInputPane;
+import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReportFilter;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.gui.MultiChoiceInputField;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
@@ -32,7 +37,6 @@ import java.util.prefs.Preferences;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -54,7 +58,7 @@ import org.openide.util.NbPreferences;
  *
  * @author sirius
  */
-public class PluginReporterPane extends BorderPane implements ListChangeListener<String> {
+public class PluginReporterPane extends BorderPane {
 
     private static final String FILTERED_TAGS_KEY = "filteredTags";
 
@@ -65,8 +69,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
     private GraphReport graphReport = null;
 
     private final ObservableList<String> availableTags = FXCollections.observableArrayList();
-    private final MultiChoiceInputField<String> tagFilterMultiChoiceInput = new MultiChoiceInputField<>(availableTags);
-    private final Set<String> filteredTags = new HashSet<>();
+    private final Set<String> filteredTags = new HashSet<>(); // filter out tags
     private PluginReportFilter pluginReportFilter = null;
 
     // The height of the report box last time we looked
@@ -86,20 +89,42 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
     // the JavaFX thread from running out of memory
     private static final int MAXIMUM_REPORT_PANES = 300;
 
+    final PluginParameters params = new PluginParameters();
+    public static final String REPORT_SETTINGS_PARAMETER_ID = PluginParameter.buildId(PluginReporterPane.class, "report_settings");    
+  
     public PluginReporterPane() {
 
         // Update filtered tags from preferences
         final Preferences prefs = NbPreferences.forModule(PluginReporterPane.class);
         String filteredTagString = prefs.get(FILTERED_TAGS_KEY, PluginTags.LOW_LEVEL);
-        filteredTags.addAll(Arrays.asList(filteredTagString.split(SeparatorConstants.TAB, 0)));
-
+        filteredTags.addAll(Arrays.asList(filteredTagString.trim().split(SeparatorConstants.TAB, 0)));
+        
+        // Add multichoice filter
+        
+        final PluginParameter<MultiChoiceParameterValue> reportSettingOptions = MultiChoiceParameterType.build(REPORT_SETTINGS_PARAMETER_ID);
+        
+        reportSettingOptions.setName("Report Settings");
+        reportSettingOptions.setDescription("Report Settings");
+        reportSettingOptions.setEnabled(true);
+        
+        params.addParameter(reportSettingOptions);
+        
+        params.addController(REPORT_SETTINGS_PARAMETER_ID, (masterId, parameters, change) -> {
+            if (change == ParameterChange.VALUE) {
+                onChanged();
+           }
+        });
+        
         // The filter drop down
         Label filterLabel = new Label("Filter: ");
-        tagFilterMultiChoiceInput.setMaxWidth(Double.MAX_VALUE);
-        tagFilterMultiChoiceInput.setMinWidth(50);
+        
+        // Add MultiChoiceInputPane as Filter
+        final MultiChoiceInputPane reportSettingPane = new MultiChoiceInputPane(reportSettingOptions);
+        reportSettingPane.setFieldWidth(250);
+        reportSettingPane.setFieldMinWidth(200);
 
         // Group these together so the Toolbar treats them as a unit.
-        final HBox filterBox = new HBox(filterLabel, tagFilterMultiChoiceInput);
+        final HBox filterBox = new HBox(filterLabel, reportSettingPane);
         filterBox.setAlignment(Pos.BASELINE_LEFT);
 
         // The clear button
@@ -125,7 +150,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
                 -> new HelpCtx(getClass().getPackage().getName()).display());
 
         controlToolbar.getItems().addAll(
-                filterBox,
+                filterLabel, reportSettingPane,
                 clearButton, showAllButton, helpButton);
         setTop(controlToolbar);
 
@@ -149,11 +174,16 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
         });
         setCenter(reportBoxScroll);
     }
-
-    @Override
-    public void onChanged(ListChangeListener.Change<? extends String> c) {
-        filteredTags.addAll(tagFilterMultiChoiceInput.getItems());
-        filteredTags.removeAll(tagFilterMultiChoiceInput.getCheckModel().getCheckedItems());
+    
+    public void onChanged() {
+        if (params.hasParameter(REPORT_SETTINGS_PARAMETER_ID)) {
+            final MultiChoiceParameterValue multiChoiceValue = params.getMultiChoiceValue(REPORT_SETTINGS_PARAMETER_ID);
+            final List<String> options = multiChoiceValue.getOptions();
+            final List<String> choices = multiChoiceValue.getChoices();
+            
+            filteredTags.addAll(options);
+            filteredTags.removeAll(choices);            
+        }                
 
         // Save the new filtered tags to preferences
         final StringBuilder prefString = new StringBuilder();
@@ -220,25 +250,30 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
     }
 
     void updateTags() {
-        tagFilterMultiChoiceInput.getCheckModel().getCheckedItems().removeListener(this);
-        tagFilterMultiChoiceInput.getCheckModel().clearChecks();
+        final List<String> alltags = new ArrayList<>();
         if (graphReport != null) {
             final List<String> tags = new ArrayList<>(graphReport.getUTags());
-            int[] selectedIndices = new int[tags.size()];
-            int selectedIndexCount = 0;
-            int tagIndex;
+            final List<String> selectedIndices = new ArrayList<>();
             for (String tag : tags) {
+                alltags.add(tag);
                 if (!availableTags.contains(tag)) {
                     availableTags.add(tag);
                 }
                 if (!filteredTags.contains(tag)) {
-                    tagIndex = availableTags.indexOf(tag);
-                    selectedIndices[selectedIndexCount++] = tagIndex; //AIOOBE = DED.
-                }
+                    selectedIndices.add(tag); //AIOOBE = DED.
+                }            
             }
-            tagFilterMultiChoiceInput.getCheckModel().checkIndices(Arrays.copyOfRange(selectedIndices, 0, selectedIndexCount));
+                        
+            if (params.hasParameter(REPORT_SETTINGS_PARAMETER_ID)) {
+                final MultiChoiceParameterValue multiChoiceValue = params.getMultiChoiceValue(REPORT_SETTINGS_PARAMETER_ID);                
+                multiChoiceValue.setOptions(alltags);
+                multiChoiceValue.setChoices(selectedIndices);
+                final PluginParameter<MultiChoiceParameterValue> filterTypeParameter 
+                        = (PluginParameter<MultiChoiceParameterValue>) params.getParameters().get(REPORT_SETTINGS_PARAMETER_ID);
+                // fire property event to prevent a looping event trigger on parameter value
+                filterTypeParameter.fireChangeEvent(ParameterChange.PROPERTY);
+            }
         }
-        tagFilterMultiChoiceInput.getCheckModel().getCheckedItems().addListener(this);
     }
 
     public synchronized void setGraphReport(GraphReport graphReport) {

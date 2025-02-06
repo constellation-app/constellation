@@ -79,6 +79,8 @@ public final class MultiChoiceInput<C extends Object>
             localList.retainAll(getOptions());
             //Single Modification
             this.setText(listToString(localList));
+        } else {
+            this.setText("");
         }
     }
     
