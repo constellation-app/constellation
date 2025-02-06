@@ -325,6 +325,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
         // Ensure that graph manager is listening for graphs:
         GraphManager.getDefault();
         result.addLookupListener(this);
+        populateFromGraphNode(true);
     }
 
     public void zoomFromOverview(final ScrollEvent se) {
