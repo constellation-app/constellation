@@ -62,18 +62,18 @@ public abstract class Bin implements Comparable<Bin> {
     protected String label;
 
     // Do not create a bin if all the elements are null
-    boolean allElementsAreNull = false;
+    private boolean onlyNullElements = false;
     
     public enum AGGREGATION {
         AVERAGE, SUM, MIN, MAX
     }
 
-    public boolean isAllElementsAreNull() {
-        return allElementsAreNull;
+    public boolean isOnlyNullElements() {
+        return onlyNullElements;
     }
 
-    public void setAllElementsAreNull(boolean allElementsNull) {
-        this.allElementsAreNull = allElementsNull;
+    public void setOnlyNullElements(boolean hasOnlyNullElements) {
+        this.onlyNullElements = hasOnlyNullElements;
     }
     
     /**

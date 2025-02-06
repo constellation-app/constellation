@@ -80,7 +80,7 @@ public class FloatBin extends Bin {
         float min = Float.MAX_VALUE;
         float max = Float.MIN_VALUE;
         int nullCount = 0;
-        setAllElementsAreNull(false);
+        setOnlyNullElements(false);
         final int transactionCount = edgeOnly ? graph.getEdgeTransactionCount(element) : graph.getLinkTransactionCount(element);
         for (int t = 0; t < transactionCount; t++) {
             final int transaction = edgeOnly ? graph.getEdgeTransaction(element, t) : graph.getLinkTransaction(element, t);
@@ -95,7 +95,7 @@ public class FloatBin extends Bin {
             }
         }
         if (nullCount >= transactionCount) {
-            setAllElementsAreNull(true);
+            setOnlyNullElements(true);
             return;
         }
         key = switch (aggregation) {

@@ -79,7 +79,7 @@ public class BinCreator {
             if (filter == null || filter.contains(graph, element)) {
                 bin.setKey(graph, binnedAttributeId, representative.findRepresentative(graph, elementType, element));
                 Bin currentBin = bins.get(bin);
-                if (currentBin == null && !bin.isAllElementsAreNull()) {
+                if (currentBin == null && !bin.isOnlyNullElements()) {
                     currentBin = bin;
                     currentBin.prepareForPresentation();
                     bin = currentBin.create();

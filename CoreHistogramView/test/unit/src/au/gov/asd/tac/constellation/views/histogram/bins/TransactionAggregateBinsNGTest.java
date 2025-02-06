@@ -185,12 +185,12 @@ public class TransactionAggregateBinsNGTest {
             
             System.out.println("Avgs " + result3a + " , " + result3b + " , [" + result4a + " , " + result4b + "]");
             System.out.println("Min/Max " + result4Min + " , " + result3Max);
-            System.out.println("Sums " + sresult3 + " , " + sresult3X + " , [" + sresult4a + "{" + edge4aSum.isAllElementsAreNull() + "}" + " , " + sresult4b + "{" + edge4bSum.isAllElementsAreNull() + "}" + "]");
+            System.out.println("Sums " + sresult3 + " , " + sresult3X + " , [" + sresult4a + "{" + edge4aSum.isOnlyNullElements() + "}" + " , " + sresult4b + "{" + edge4bSum.isOnlyNullElements() + "}" + "]");
             wg.commit();
             assertEquals(190.0D, result3a);
             assertEquals(20.0D, result4a);
             assertEquals(240.0D, sresult3X);
-            assertTrue(edge4bSum.isAllElementsAreNull());
+            assertTrue(edge4bSum.isOnlyNullElements());
             
             System.out.println("[TransactionAggregateBinsNGTest] END EDGE DOUBLE TEST");
             
@@ -251,12 +251,12 @@ public class TransactionAggregateBinsNGTest {
             
             System.out.println("Avgs " + result3aAvg + " , " + result3bAvg + " , [" + result4aAvg + " , " + result4bAvg + "]");
             System.out.println("Min/Max " + result4Min + " , " + result3Max);
-            System.out.println("Sums " + result3aSum + " , " + result3bSum + " , [" + result4aSum + "{" + link4aSum.isAllElementsAreNull() + "}" + " , " + result4bSum + "{" + link4bSum.isAllElementsAreNull() + "}" + "]");
+            System.out.println("Sums " + result3aSum + " , " + result3bSum + " , [" + result4aSum + "{" + link4aSum.isOnlyNullElements() + "}" + " , " + result4bSum + "{" + link4bSum.isOnlyNullElements() + "}" + "]");
             wg.commit();
             assertEquals(result3aAvg, 162.0D);
             assertEquals(result4Min, 5.0D);
             assertEquals(result3Max, 330.0D);
-            assertTrue(!link4bSum.isAllElementsAreNull());
+            assertTrue(!link4bSum.isOnlyNullElements());
             
             System.out.println("[TransactionAggregateBinsNGTest] END LINK DOUBLE TEST");
             
