@@ -29,23 +29,7 @@ public class EdgeAverageTransactionFloatAttributeBin extends FloatBin {
 
     @Override
     public void setKey(GraphReadMethods graph, int attribute, int element) {
-        float sum = 0;
-        int nullCount = 0;
-        setAllElementsAreNull(false);
-        final int transactionCount = graph.getEdgeTransactionCount(element);
-        for (int t = 0; t < transactionCount; t++) {
-            final int transaction = graph.getEdgeTransaction(element, t);
-            if (graph.getObjectValue(attribute, transaction) == null) {
-                nullCount++;
-                continue;
-            }
-            sum += graph.getFloatValue(attribute, transaction);
-        }
-        if (nullCount >= transactionCount) {
-            setAllElementsAreNull(true);
-            return;
-        }        
-        key = sum / (transactionCount - nullCount);
+        calculateAggragates(graph, attribute, element, Bin.AGGREGATION.AVERAGE);
     }
 
     @Override

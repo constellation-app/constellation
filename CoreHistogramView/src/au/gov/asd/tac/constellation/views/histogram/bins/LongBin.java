@@ -77,4 +77,35 @@ public class LongBin extends Bin {
     public Object getKeyAsObject() {
         return key;
     }
+
+    public void calculateAggragates(GraphReadMethods graph, int attribute, int element, Bin.AGGREGATION aggregation) {
+        long sum = 0;
+        long min = Long.MAX_VALUE;
+        long max = Long.MIN_VALUE;
+        int nullCount = 0;
+        setAllElementsAreNull(false);
+        final int transactionCount = graph.getEdgeTransactionCount(element);
+        for (int t = 0; t < transactionCount; t++) {
+            final int transaction = graph.getEdgeTransaction(element, t);
+            if (graph.getObjectValue(attribute, transaction) == null) {
+                nullCount++;
+                continue;
+            }
+            switch (aggregation) {
+                case AVERAGE, SUM -> sum += graph.getLongValue(attribute, transaction);
+                case MIN -> min = Math.min(graph.getLongValue(attribute, transaction), min);
+                case MAX -> max = Math.max(graph.getLongValue(attribute, transaction), max);
+            }
+        }
+        if (nullCount >= transactionCount) {
+            setAllElementsAreNull(true);
+            return;
+        }        
+        key = switch (aggregation) {
+            case AVERAGE -> sum / (transactionCount - nullCount);
+            case SUM -> sum;
+            case MIN -> min;
+            case MAX -> max;
+        };
+    }
 }

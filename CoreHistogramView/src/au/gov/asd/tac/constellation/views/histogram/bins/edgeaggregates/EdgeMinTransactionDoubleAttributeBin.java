@@ -29,23 +29,7 @@ public class EdgeMinTransactionDoubleAttributeBin extends DoubleBin {
 
     @Override
     public void setKey(GraphReadMethods graph, int attribute, int element) {
-        double min = Double.MAX_VALUE;
-        int nullCount = 0;
-        setAllElementsAreNull(false);
-        final int transactionCount = graph.getEdgeTransactionCount(element);
-        for (int t = 0; t < transactionCount; t++) {
-            final int transaction = graph.getEdgeTransaction(element, t);
-            if (graph.getObjectValue(attribute, transaction) == null) {
-                nullCount++;
-                continue;
-            }
-            min = Math.min(graph.getDoubleValue(attribute, transaction), min);
-        }
-        if (nullCount >= transactionCount) {
-            setAllElementsAreNull(true);
-            return;
-        }        
-        key = min;
+        calculateAggragates(graph, attribute, element, Bin.AGGREGATION.MIN);
     }
 
     @Override

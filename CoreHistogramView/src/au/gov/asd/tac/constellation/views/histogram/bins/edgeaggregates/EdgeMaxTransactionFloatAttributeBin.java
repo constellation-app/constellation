@@ -29,23 +29,7 @@ public class EdgeMaxTransactionFloatAttributeBin extends FloatBin {
 
     @Override
     public void setKey(GraphReadMethods graph, int attribute, int element) {
-        float max = Float.MIN_VALUE;
-        int nullCount = 0;
-        setAllElementsAreNull(false);
-        final int transactionCount = graph.getEdgeTransactionCount(element);
-        for (int t = 0; t < transactionCount; t++) {
-            final int transaction = graph.getEdgeTransaction(element, t);
-            if (graph.getObjectValue(attribute, transaction) == null) {
-                nullCount++;
-                continue;
-            }
-            max = Math.max(graph.getFloatValue(attribute, transaction), max);
-        }
-        if (nullCount >= transactionCount) {
-            setAllElementsAreNull(true);
-            return;
-        }        
-        key = max;
+        calculateAggragates(graph, attribute, element, Bin.AGGREGATION.MAX);
     }
 
     @Override

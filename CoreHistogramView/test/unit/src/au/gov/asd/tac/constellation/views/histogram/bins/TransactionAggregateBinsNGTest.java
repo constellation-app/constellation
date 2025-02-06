@@ -208,8 +208,10 @@ public class TransactionAggregateBinsNGTest {
         try {
             System.out.println("[TransactionAggregateBinsNGTest] START LINK DOUBLE TEST");
             
-            final LinkMaxTransactionDoubleAttributeBin link3Max = new LinkMaxTransactionDoubleAttributeBin();
-            final LinkMinTransactionDoubleAttributeBin link4aMin = new LinkMinTransactionDoubleAttributeBin();
+            final LinkMaxTransactionDoubleAttributeBin linkMax = new LinkMaxTransactionDoubleAttributeBin();
+            final LinkMaxTransactionDoubleAttributeBin link3Max = (LinkMaxTransactionDoubleAttributeBin) linkMax.create();
+            final LinkMinTransactionDoubleAttributeBin linkMin = new LinkMinTransactionDoubleAttributeBin();
+            final LinkMinTransactionDoubleAttributeBin link4aMin = (LinkMinTransactionDoubleAttributeBin) linkMin.create();
             
             final LinkAverageTransactionDoubleAttributeBin link3aAverage = new LinkAverageTransactionDoubleAttributeBin();
             final LinkAverageTransactionDoubleAttributeBin link3bAverage = (LinkAverageTransactionDoubleAttributeBin) link3aAverage.create();
@@ -272,11 +274,15 @@ public class TransactionAggregateBinsNGTest {
         try {
             System.out.println("[TransactionAggregateBinsNGTest] START EDGE FLOAT TEST");
             
-            final EdgeMaxTransactionFloatAttributeBin edge1Max = new EdgeMaxTransactionFloatAttributeBin();
-            final EdgeMinTransactionFloatAttributeBin edge1Min = new EdgeMinTransactionFloatAttributeBin();
+            final EdgeMaxTransactionFloatAttributeBin edgeMax = new EdgeMaxTransactionFloatAttributeBin();
+            final EdgeMaxTransactionFloatAttributeBin edge1Max = (EdgeMaxTransactionFloatAttributeBin) edgeMax.create();
+            final EdgeMinTransactionFloatAttributeBin edgeMin = new EdgeMinTransactionFloatAttributeBin();
+            final EdgeMinTransactionFloatAttributeBin edge1Min = (EdgeMinTransactionFloatAttributeBin) edgeMin.create();
             
-            final EdgeAverageTransactionFloatAttributeBin edge1Average = new EdgeAverageTransactionFloatAttributeBin();
-            final EdgeSumTransactionFloatAttributeBin edge1Sum = new EdgeSumTransactionFloatAttributeBin();
+            final EdgeAverageTransactionFloatAttributeBin edgeAverage = new EdgeAverageTransactionFloatAttributeBin();
+            final EdgeAverageTransactionFloatAttributeBin edge1Average = (EdgeAverageTransactionFloatAttributeBin) edgeAverage.create();
+            final EdgeSumTransactionFloatAttributeBin edgeSum = new EdgeSumTransactionFloatAttributeBin();
+            final EdgeSumTransactionFloatAttributeBin edge1Sum = (EdgeSumTransactionFloatAttributeBin) edgeSum.create();
             
             final WritableGraph wg = graph.getWritableGraph("", true);
             
@@ -317,11 +323,15 @@ public class TransactionAggregateBinsNGTest {
         try {
             System.out.println("[TransactionAggregateBinsNGTest] START LINK FLOAT TEST");
             
-            final LinkMaxTransactionFloatAttributeBin link1Max = new LinkMaxTransactionFloatAttributeBin();
-            final LinkMinTransactionFloatAttributeBin link1Min = new LinkMinTransactionFloatAttributeBin();
+            final LinkMaxTransactionFloatAttributeBin linkMax = new LinkMaxTransactionFloatAttributeBin();
+            final LinkMaxTransactionFloatAttributeBin link1Max = (LinkMaxTransactionFloatAttributeBin) linkMax.create();
+            final LinkMinTransactionFloatAttributeBin linkMin = new LinkMinTransactionFloatAttributeBin();
+            final LinkMinTransactionFloatAttributeBin link1Min = (LinkMinTransactionFloatAttributeBin) linkMin.create();
             
-            final LinkAverageTransactionFloatAttributeBin link1Average = new LinkAverageTransactionFloatAttributeBin();
-            final LinkSumTransactionFloatAttributeBin link1Sum = new LinkSumTransactionFloatAttributeBin();
+            final LinkAverageTransactionFloatAttributeBin linkAverage = new LinkAverageTransactionFloatAttributeBin();
+            final LinkAverageTransactionFloatAttributeBin link1Average = (LinkAverageTransactionFloatAttributeBin) linkAverage.create();
+            final LinkSumTransactionFloatAttributeBin linkSum = new LinkSumTransactionFloatAttributeBin();
+            final LinkSumTransactionFloatAttributeBin link1Sum = (LinkSumTransactionFloatAttributeBin) linkSum.create();
             
             final WritableGraph wg = graph.getWritableGraph("", true);
             
@@ -362,9 +372,12 @@ public class TransactionAggregateBinsNGTest {
         try {
             System.out.println("[TransactionAggregateBinsNGTest] START EDGE LONG TEST");
             
-            final EdgeMaxTransactionLongAttributeBin edge2Max = new EdgeMaxTransactionLongAttributeBin();
-            final EdgeMinTransactionLongAttributeBin edge2Min = new EdgeMinTransactionLongAttributeBin();
-            final EdgeSumTransactionLongAttributeBin edge2Sum = new EdgeSumTransactionLongAttributeBin();
+            final EdgeMaxTransactionLongAttributeBin edgeMax = new EdgeMaxTransactionLongAttributeBin();
+            final EdgeMaxTransactionLongAttributeBin edge2Max = (EdgeMaxTransactionLongAttributeBin) edgeMax.create();
+            final EdgeMinTransactionLongAttributeBin edgeMin = new EdgeMinTransactionLongAttributeBin();
+            final EdgeMinTransactionLongAttributeBin edge2Min = (EdgeMinTransactionLongAttributeBin) edgeMin.create();
+            final EdgeSumTransactionLongAttributeBin edgeSum = new EdgeSumTransactionLongAttributeBin();
+            final EdgeSumTransactionLongAttributeBin edge2Sum = (EdgeSumTransactionLongAttributeBin) edgeSum.create();
             
             final WritableGraph wg = graph.getWritableGraph("", true);
             
@@ -400,9 +413,12 @@ public class TransactionAggregateBinsNGTest {
         try {
             System.out.println("[TransactionAggregateBinsNGTest] START LINK LONG TEST");
             
-            final LinkMaxTransactionLongAttributeBin link2Max = new LinkMaxTransactionLongAttributeBin();
-            final LinkMinTransactionLongAttributeBin link2Min = new LinkMinTransactionLongAttributeBin();
-            final LinkSumTransactionLongAttributeBin link2Sum = new LinkSumTransactionLongAttributeBin();
+            final LinkMaxTransactionLongAttributeBin linkMax = new LinkMaxTransactionLongAttributeBin();
+            final LinkMaxTransactionLongAttributeBin link2Max = (LinkMaxTransactionLongAttributeBin) linkMax.create();
+            final LinkMinTransactionLongAttributeBin linkMin = new LinkMinTransactionLongAttributeBin();
+            final LinkMinTransactionLongAttributeBin link2Min = (LinkMinTransactionLongAttributeBin) linkMin.create();
+            final LinkSumTransactionLongAttributeBin linkSum = new LinkSumTransactionLongAttributeBin();
+            final LinkSumTransactionLongAttributeBin link2Sum = (LinkSumTransactionLongAttributeBin) linkSum.create();
             
             final WritableGraph wg = graph.getWritableGraph("", true);
             

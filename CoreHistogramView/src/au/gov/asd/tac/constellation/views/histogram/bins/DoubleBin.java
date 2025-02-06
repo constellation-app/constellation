@@ -70,4 +70,35 @@ public class DoubleBin extends Bin {
     public Object getKeyAsObject() {
         return key;
     }
+    
+    public void calculateAggragates(GraphReadMethods graph, int attribute, int element, Bin.AGGREGATION aggregation) {
+        double sum = 0;
+        double min = Double.MAX_VALUE;
+        double max = Double.MIN_VALUE;
+        int nullCount = 0;
+        setAllElementsAreNull(false);
+        final int transactionCount = graph.getEdgeTransactionCount(element);
+        for (int t = 0; t < transactionCount; t++) {
+            final int transaction = graph.getEdgeTransaction(element, t);
+            if (graph.getObjectValue(attribute, transaction) == null) {
+                nullCount++;
+                continue;
+            }
+            switch (aggregation) {
+                case AVERAGE, SUM -> sum += graph.getDoubleValue(attribute, transaction);
+                case MIN -> min = Math.min(graph.getDoubleValue(attribute, transaction), min);
+                case MAX -> max = Math.max(graph.getDoubleValue(attribute, transaction), max);
+            }
+        }
+        if (nullCount >= transactionCount) {
+            setAllElementsAreNull(true);
+            return;
+        }        
+        key = switch (aggregation) {
+            case AVERAGE -> sum / (transactionCount - nullCount);
+            case SUM -> sum;
+            case MIN -> min;
+            case MAX -> max;
+        };
+    }
 }
