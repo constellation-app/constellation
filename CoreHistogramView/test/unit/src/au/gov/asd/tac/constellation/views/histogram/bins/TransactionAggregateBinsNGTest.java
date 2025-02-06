@@ -140,7 +140,8 @@ public class TransactionAggregateBinsNGTest {
         try {
             System.out.println("[TransactionAggregateBinsNGTest] START EDGE DOUBLE TEST");
             
-            final EdgeMaxTransactionDoubleAttributeBin edge3Max = new EdgeMaxTransactionDoubleAttributeBin();
+            final EdgeMaxTransactionDoubleAttributeBin edge3aMax = new EdgeMaxTransactionDoubleAttributeBin();
+            final EdgeMaxTransactionDoubleAttributeBin edge3bMax = (EdgeMaxTransactionDoubleAttributeBin) edge3aMax.create();
             final EdgeMinTransactionDoubleAttributeBin edge4aMin = new EdgeMinTransactionDoubleAttributeBin();
             final EdgeMinTransactionDoubleAttributeBin edge4bMin = (EdgeMinTransactionDoubleAttributeBin) edge4aMin.create();
             
@@ -156,11 +157,12 @@ public class TransactionAggregateBinsNGTest {
             
             final WritableGraph wg = graph.getWritableGraph("", true);
             
-            edge3Max.setKey(wg, testDoubleAttrId, wg.getTransactionEdge(txId3b));
+            edge3aMax.setKey(wg, testDoubleAttrId, wg.getTransactionEdge(txId3b));
+            edge3bMax.setKey(wg, testDoubleAttrId, wg.getTransactionEdge(txId4b));
             edge4aMin.setKey(wg, testDoubleAttrId, wg.getTransactionEdge(txId4a));
-            edge4bMin.setKey(wg, testDoubleAttrId, wg.getTransactionLink(txId4b));
+            edge4bMin.setKey(wg, testDoubleAttrId, wg.getTransactionEdge(txId4b));
             
-            final double result3Max = (Double) edge3Max.getKeyAsObject();
+            final double result3Max = (Double) edge3aMax.getKeyAsObject();
             final double result4Min = (Double) edge4aMin.getKeyAsObject();
             
             edge3aAverage.setKey(wg, testDoubleAttrId, wg.getTransactionEdge(txId3a));
