@@ -325,6 +325,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
         // Ensure that graph manager is listening for graphs:
         GraphManager.getDefault();
         result.addLookupListener(this);
+        // Populate the graph, this ensures that when timeline view is opened after being closed, it will be updated
         populateFromGraphNode(true);
     }
 
