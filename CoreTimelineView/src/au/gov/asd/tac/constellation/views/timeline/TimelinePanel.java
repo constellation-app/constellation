@@ -83,16 +83,16 @@ import org.openide.util.NbBundle.Messages;
 public class TimelinePanel extends Region {
 
     private static final char ARROW_CHAR = 0x2192;
-    
+
     private static final int MIN_CLUSTER_WIDTH = 14; // Min width of 14 pixels which matches the min label width.
-    public final TimelineTopComponent coordinator;
+    private final TimelineTopComponent coordinator;
     private final AnchorPane innerPane = new AnchorPane();
     private final ToolBar toolbar;
     private final Label lowerTime;
     private final Label upperTime;
     private String nodeLabelAttr = null;
     private final ClusteringManager clusteringManager = new ClusteringManager();
-    private final TimelineChart timeline;
+    private TimelineChart timeline;
     private ComboBox<String> cmbDatetimeAttributes;
     private ComboBox<String> cmbAttributeNames;
     private ComboBox<String> cmbExcludedNodes;
@@ -102,17 +102,17 @@ public class TimelinePanel extends Region {
     private long expectedvxMod = Long.MIN_VALUE;
     private long expectedtxMod = Long.MIN_VALUE;
 
+    final BorderPane timelinePane = new BorderPane();
+
     /*
      If there is no color set for a node or transaction then set it to clouds.
      */
     private static final Color FALLBACK_COLOR = ConstellationColor.CLOUDS.getJavaFXColor();
 
     /**
-     * Constructs a new TimelinePanel, and sets the parent top component as its
-     * coordinator.
+     * Constructs a new TimelinePanel, and sets the parent top component as its coordinator.
      *
-     * @param coordinator The top component that manages and liaises with both
-     * the timeline and histogram components.
+     * @param coordinator The top component that manages and liaises with both the timeline and histogram components.
      *
      * @see TimelineTopComponent
      */
@@ -140,13 +140,16 @@ public class TimelinePanel extends Region {
         doLayout();
     }
 
+    public TimelineTopComponent getCoordinator() {
+        return coordinator;
+    }
+
     // <editor-fold defaultstate="collapsed" desc="Layout Layers">
     /**
      * Creates organises the TimelinePanel's layers.
      */
-    private void doLayout() {
+    protected void doLayout() {
         // Layer that contains the timelinechart component:
-        final BorderPane timelinePane = new BorderPane();
 
         timelinePane.setCenter(timeline);
         // The layer that contains the time extent labels:
@@ -213,11 +216,11 @@ public class TimelinePanel extends Region {
         } else {
             this.setTimelineExtent(graph, 0, System.currentTimeMillis(), selectedOnly, zoneId);
         }
-
     }
 
     public void updateTimeline(final GraphReadMethods graph, final boolean selectedOnly, final ZoneId zoneId) {
-        final XYChart.Series<Number, Number> series = new XYChart.Series<>();
+        final ObservableList<XYChart.Data<Number, Number>> listOfNodeItems = FXCollections.observableArrayList();
+
         // Graph attribute ids:
         final String colorAttrDesc = new ColorAttributeDescription().getName();
         final int colorTransAttr = graph.getAttribute(GraphElementType.TRANSACTION, colorAttrDesc);
@@ -227,6 +230,9 @@ public class TimelinePanel extends Region {
         final int labelVertAttr = graph.getAttribute(GraphElementType.VERTEX, nodeLabelAttr);
         long lowestObservedY = Long.MAX_VALUE;
         long highestObservedY = Long.MIN_VALUE;
+
+        // Helps with out of memory issues
+        clearTimelineData();
 
         for (final TreeElement element : clusteringManager.getElementsToDraw()) {
             XYChart.Data<Number, Number> nodeItem = element.getNodeItem();
@@ -285,7 +291,8 @@ public class TimelinePanel extends Region {
                                 final String label = labelMaker(sourceALabel, ARROW_CHAR, sourceBLabel);
                                 transaction = new Transaction(transactionID, transColor, label, Transaction.DIRECTED_UP, transSelected);
                             }
-                            case Graph.UPHILL -> throw new IllegalArgumentException("source > dest is always downhill");
+                            case Graph.UPHILL ->
+                                throw new IllegalArgumentException("source > dest is always downhill");
                             default -> { // Undirected / Bi-directional
                                 final String label = labelMaker(sourceALabel, '-', sourceBLabel);
                                 transaction = new Transaction(transactionID, transColor, label, transSelected);
@@ -298,7 +305,8 @@ public class TimelinePanel extends Region {
                                 sourceASelected, transSelected, btnShowLabels.isSelected());
 
                         switch (directionality) {
-                            case Graph.DOWNHILL -> throw new IllegalArgumentException("source < dest is always uphill");
+                            case Graph.DOWNHILL ->
+                                throw new IllegalArgumentException("source < dest is always uphill");
                             case Graph.UPHILL -> {
                                 final String label = labelMaker(sourceALabel, ARROW_CHAR, sourceBLabel);
                                 transaction = new Transaction(transactionID, transColor, label, Transaction.DIRECTED_DOWN, transSelected);
@@ -321,21 +329,23 @@ public class TimelinePanel extends Region {
                             (Math.max(sourceA, sourceB) - Math.min(sourceA, sourceB)),
                             new Interaction(vertexA, vertexB, transaction, btnShowLabels.isSelected()));
                 } else {
-                    nodeItem = new XYChart.Data<>(element.getLowerTimeExtent(), element.getLowerDisplayPos(), 
-                            new Cluster(element.getLowerTimeExtent(), element.getUpperTimeExtent(), 
+                    nodeItem = new XYChart.Data<>(element.getLowerTimeExtent(), element.getLowerDisplayPos(),
+                            new Cluster(element.getLowerTimeExtent(), element.getUpperTimeExtent(),
                                     element.getLowerDisplayPos(), element.getUpperDisplayPos(), element.getCount(),
                                     element.getSelectedCount(), element.anyNodesSelected()));
                 }
-                
+
                 element.setNodeItem(nodeItem);
             }
 
-            series.getData().add(nodeItem);
+            listOfNodeItems.add(nodeItem);
 
             lowestObservedY = Math.min(element.getLowerDisplayPos(), lowestObservedY);
             highestObservedY = Math.max(element.getUpperDisplayPos(), highestObservedY);
         }
 
+        final XYChart.Series<Number, Number> series = new XYChart.Series<>();
+        series.setData(listOfNodeItems);
         timeline.populate(series, lowestObservedY, highestObservedY, selectedOnly, zoneId);
     }
 
@@ -343,24 +353,39 @@ public class TimelinePanel extends Region {
         return a != null && b != null ? String.format("%s %s %s", a, cxn, b) : null;
     }
 
+    public void clearTimelineData() {
+        // Reset timeline by copying values to new instance
+        lowerTime.textProperty().unbind();
+        upperTime.textProperty().unbind();
+
+        // Get old extents
+        final double lower = getTimelineLowerTimeExtent();
+        final double upper = getTimelineUpperTimeExtent();
+
+        timeline = new TimelineChart(this, new NumberAxis(), new NumberAxis());
+
+        // Rebind text
+        lowerTime.textProperty().bind(timeline.lowerTimeExtentProperty());
+        upperTime.textProperty().bind(timeline.upperTimeExtentProperty());
+
+        timeline.setExtents(lower, upper);
+        timelinePane.setCenter(timeline);
+    }
+
     /**
-     * Method responsible for removing all content from the
-     * <code>TimelineChart</code> component.
+     * Method responsible for removing all content from the <code>TimelineChart</code> component.
      *
      * @see TimelineChart
      */
     public void clearTimeline() {
-        if (timeline.getData() != null) {
-            timeline.getData().clear();
-        }
-
-        clusteringManager.clearTree();
+        clearTimelineData();
+        clusteringManager.cleanupVariables();
         GraphManager.getDefault().setElementSelected(false);
     }
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Extents">
-    protected void setTimelineExtent(final GraphReadMethods graph, final double lowerTimeExtent, final double upperTimeExtent, 
+    protected void setTimelineExtent(final GraphReadMethods graph, final double lowerTimeExtent, final double upperTimeExtent,
             final boolean showSelectedOnly, final ZoneId zoneId) {
         final double millisPerPixel = (upperTimeExtent - lowerTimeExtent) / timeline.getWidth();
         final double pixelsPerTransaction = MIN_CLUSTER_WIDTH * millisPerPixel;
@@ -368,15 +393,17 @@ public class TimelinePanel extends Region {
         clusteringManager.filterTree(pixelsPerTransaction, (long) lowerTimeExtent, (long) upperTimeExtent);
 
         updateTimeline(graph, showSelectedOnly, zoneId);
-
         timeline.setExtents(lowerTimeExtent, upperTimeExtent);
     }
 
     protected void setExclusionState(final int exclusionState) {
         switch (exclusionState) {
-            case 1 -> cmbExcludedNodes.setValue(Bundle.DimNodesLabel());
-            case 2 -> cmbExcludedNodes.setValue(Bundle.HideNodesLabel());
-            default -> cmbExcludedNodes.setValue(Bundle.ShowNodesLabel());
+            case 1 ->
+                cmbExcludedNodes.setValue(Bundle.DimNodesLabel());
+            case 2 ->
+                cmbExcludedNodes.setValue(Bundle.HideNodesLabel());
+            default ->
+                cmbExcludedNodes.setValue(Bundle.ShowNodesLabel());
         }
     }
 
@@ -400,7 +427,7 @@ public class TimelinePanel extends Region {
         return actualVxModCount <= expectedvxMod && actualTxModCount <= expectedtxMod;
     }
 
-    protected void initExclusionState(final Graph graph, final long lowerTimeExtent, final long upperTimeExtent, 
+    protected void initExclusionState(final Graph graph, final long lowerTimeExtent, final long upperTimeExtent,
             final int exclusionState) {
         final Plugin initPlugin = clusteringManager.new InitDimOrHidePlugin(lowerTimeExtent, upperTimeExtent, exclusionState, (vxMod, txMod) -> {
             expectedvxMod = vxMod;
@@ -409,7 +436,7 @@ public class TimelinePanel extends Region {
         PluginExecution.withPlugin(initPlugin).executeLater(graph);
     }
 
-    protected void updateExclusionState(final Graph graph, final long lowerTimeExtent, final long upperTimeExtent, 
+    protected void updateExclusionState(final Graph graph, final long lowerTimeExtent, final long upperTimeExtent,
             final int exclusionState) {
         final Plugin updatePlugin = clusteringManager.new UpdateDimOrHidePlugin(lowerTimeExtent, upperTimeExtent, exclusionState, (vxMod, txMod) -> {
             expectedvxMod = vxMod;
@@ -455,8 +482,7 @@ public class TimelinePanel extends Region {
         timeZoneComboBox.setCellFactory(cellFactory);
         timeZoneComboBox.setButtonCell(cellFactory.call(null));
         timeZoneComboBox.getSelectionModel().select(TimeZoneUtilities.UTC);
-        timeZoneComboBox.getSelectionModel().selectedItemProperty().addListener((v, o, n) -> 
-            coordinator.updateTimeZone(n));
+        timeZoneComboBox.getSelectionModel().selectedItemProperty().addListener((v, o, n) -> coordinator.updateTimeZone(n));
 
         // Combo box for excluded nodes visibility
         cmbExcludedNodes = new ComboBox<>();
@@ -483,21 +509,17 @@ public class TimelinePanel extends Region {
 
         // Handle
         btnShowLabels = new ToggleButton(Bundle.ShowLabels());
-        btnShowLabels.selectedProperty().addListener((observable, oldValue, newValue) 
-                -> coordinator.setIsShowingNodeLabels(newValue));
+        btnShowLabels.selectedProperty().addListener((observable, oldValue, newValue) -> coordinator.setIsShowingNodeLabels(newValue));
 
         final Button btnZoomToSelection = new Button(Bundle.ZoomtoSelection());
-        btnZoomToSelection.setOnAction(e -> 
-            coordinator.setExtents());
+        btnZoomToSelection.setOnAction(e -> coordinator.setExtents());
 
         selectedOnlyButton = new ToggleButton(Bundle.Lbl_ShowSelectedOnly());
-        selectedOnlyButton.selectedProperty().addListener((observable, oldValue, newValue) -> 
-            coordinator.setIsShowingSelectedOnly(newValue));
+        selectedOnlyButton.selectedProperty().addListener((observable, oldValue, newValue) -> coordinator.setIsShowingSelectedOnly(newValue));
 
         final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.WHITE.getJavaColor())));
         helpButton.setTooltip(new Tooltip("Display help for Timeline"));
-        helpButton.setOnAction(event -> 
-            new HelpCtx(TimelineTopComponent.class.getName()).display());
+        helpButton.setOnAction(event -> new HelpCtx(TimelineTopComponent.class.getName()).display());
 
         final Label spacer1 = new Label("   ");
         final Label spacer2 = new Label("   ");
