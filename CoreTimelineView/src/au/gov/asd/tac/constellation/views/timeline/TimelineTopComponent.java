@@ -341,10 +341,14 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
             latch.countDown();
         });
         try {
-            // wait for five seconds or until data cleared
-            latch.await(5L, TimeUnit.SECONDS);
+            // Wait for five seconds or until data cleared
+            if (!latch.await(5L, TimeUnit.SECONDS)) {
+                // Warn if 5 seconds had passed
+                LOGGER.log(Level.WARNING, "Latch in TimelineTopComponent canClose() timed out!");
+            }
         } catch (InterruptedException e) {
-            System.out.println("Interrrupted exception when tryin got close TimelineTopComponent");
+            LOGGER.log(Level.WARNING, "Interrupted!", e);
+            Thread.currentThread().interrupt();
         }
 
         return true;

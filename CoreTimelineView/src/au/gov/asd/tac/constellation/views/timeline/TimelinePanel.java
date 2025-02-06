@@ -150,7 +150,6 @@ public class TimelinePanel extends Region {
      */
     protected void doLayout() {
         // Layer that contains the timelinechart component:
-//        final BorderPane timelinePane = new BorderPane();
 
         timelinePane.setCenter(timeline);
         // The layer that contains the time extent labels:
