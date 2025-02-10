@@ -49,9 +49,9 @@ public class CompositeNodeStateAttributeInteraction extends AbstractAttributeInt
         return switch (status) {
             case NOT_A_COMPOSITE -> "";
             case IS_A_COMPOSITE ->
-                String.format("%s comprising %d nodes.", status.compositeName, state.getNumberOfNodes());
+                String.format("%s comprising %d nodes.", status.getCompositeName(), state.getNumberOfNodes());
             default ->
-                String.format("%s with %d other node%s.", status.compositeName, state.getNumberOfNodes() - 1, state.getNumberOfNodes() == 1 ? "" : "s");
+                String.format("%s with %d other node%s.", status.getCompositeName(), state.getNumberOfNodes() - 1, state.getNumberOfNodes() == 1 ? "" : "s");
         };
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,33 +15,47 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.animation.actions;
 
-import au.gov.asd.tac.constellation.graph.interaction.animation.Animation;
+import au.gov.asd.tac.constellation.graph.interaction.animation.AnimationUtilities;
 import au.gov.asd.tac.constellation.graph.interaction.animation.ThrobbingNodeAnimation;
-import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.lookup.ServiceProvider;
 
-/*
- * adding animation motion to graph elements
+/**
+ * An action for triggering a {@link ThrobNodesAnimation}.
+ * 
+ * @author capricornunicorn123
  */
 @ActionID(category = "Experimental", id = "au.gov.asd.tac.constellation.graph.interaction.animation.actions.AnimateThrobNodesAction")
-@ActionRegistration(displayName = "#CTL_AnimateThrobNodesAction", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_AnimateThrobNodesAction", lazy = false)
 @ActionReference(path = "Menu/Experimental/Animations", position = 0)
 @Messages("CTL_AnimateThrobNodesAction=Throb Nodes")
-public final class AnimateThrobNodesAction implements ActionListener {
+@ServiceProvider(service = AnimationMenuBaseAction.class)
+public final class AnimateThrobNodesAction extends AnimationMenuBaseAction implements ActionListener {
 
-    private final GraphNode context;
-
-    public AnimateThrobNodesAction(final GraphNode context) {
-        this.context = context;
+    public AnimateThrobNodesAction() {
+        super(Bundle.CTL_AnimateThrobNodesAction());
+    }
+    
+    @Override
+    protected void updateValue() {
+        if (menuButton.isSelected()) {
+            AnimationUtilities.startAnimation(new ThrobbingNodeAnimation(), this.getContext().getGraph().getId());
+        } else {
+            stopAnimation(this.getContext().getGraph().getId());
+        }
     }
 
     @Override
-    public void actionPerformed(final ActionEvent ev) {
-        Animation.startAnimation(new ThrobbingNodeAnimation(), context.getGraph());
+    protected void displayValue() {
+        menuButton.setSelected(AnimationUtilities.isAnimating(ThrobbingNodeAnimation.NAME, this.getContext().getGraph().getId()));
+    }
+    
+    @Override
+    protected void stopAnimation(final String graphId) {
+        AnimationUtilities.stopAnimation(ThrobbingNodeAnimation.NAME, graphId);
     }
 }

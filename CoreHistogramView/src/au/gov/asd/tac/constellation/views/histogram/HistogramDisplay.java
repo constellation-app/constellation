@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -566,9 +566,9 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
             if (bin.selectedCount > 0) {
                 final String label = bin.getLabel() != null ? bin.getLabel() : HistogramDisplay.NO_VALUE;
                 if (includeCounts) {
-                    buf.append(String.format("%s\t%d\n", label, bin.elementCount));
+                    buf.append(String.format("%s\t%d%n", label, bin.elementCount));
                 } else {
-                    buf.append(String.format("%s%s", label, "\n"));
+                    buf.append(String.format("%s%n", label));
                 }
             }
         }

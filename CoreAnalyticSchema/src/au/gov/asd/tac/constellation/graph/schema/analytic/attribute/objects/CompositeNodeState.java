@@ -216,7 +216,6 @@ public class CompositeNodeState {
      * JSON.
      */
     public static CompositeNodeState createFromString(final String s) {
-
         if (StringUtils.isBlank(s)) {
             return null;
         }
@@ -265,6 +264,5 @@ public class CompositeNodeState {
         } catch (final IOException ex) {
             throw new IllegalArgumentException("Error converting this string to a composite node state");
         }
-
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeNodeType.MergeException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -38,9 +39,17 @@ import org.testng.annotations.Test;
  */
 public class MergeNodesByLocationNGTest {
 
-    private int vertexIdentifierAttribute, vertexTypeAttribute, vertexLatitudeAttribute, vertexLongitudeAttribute, vertexSelectedAttribute;
-    private int vxId1, vxId2, vxId3, vxId4, vxId5;
-    private int txId1, txId2, txId3;
+    private int vertexIdentifierAttribute;
+    private int vertexLatitudeAttribute;
+    private int vertexLongitudeAttribute;
+    private int vertexSelectedAttribute;
+    
+    private int vxId1;
+    private int vxId2;
+    private int vxId3;
+    private int vxId4;
+    private int vxId5;
+    
     private StoreGraph graph;
 
     @BeforeMethod
@@ -51,10 +60,10 @@ public class MergeNodesByLocationNGTest {
 
         // add attributes
         vertexIdentifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
-        vertexTypeAttribute = AnalyticConcept.VertexAttribute.TYPE.ensure(graph);
         vertexLatitudeAttribute = SpatialConcept.VertexAttribute.LATITUDE.ensure(graph);
         vertexLongitudeAttribute = SpatialConcept.VertexAttribute.LONGITUDE.ensure(graph);
         vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
+        AnalyticConcept.VertexAttribute.TYPE.ensure(graph);
 
         // add vertices
         vxId1 = graph.addVertex();
@@ -84,11 +93,6 @@ public class MergeNodesByLocationNGTest {
         graph.setStringValue(vertexLongitudeAttribute, vxId4, "4600");
         graph.setStringValue(vertexLongitudeAttribute, vxId5, "5700");
 
-        // add transactions
-        txId1 = graph.addTransaction(vxId1, vxId2, false);
-        txId2 = graph.addTransaction(vxId3, vxId4, false);
-        txId3 = graph.addTransaction(vxId5, vxId3, false);
-
         // select all
         graph.setBooleanValue(vertexSelectedAttribute, vxId1, true);
         graph.setBooleanValue(vertexSelectedAttribute, vxId2, true);
@@ -100,10 +104,12 @@ public class MergeNodesByLocationNGTest {
     /**
      * Test of getNodesToMerge method, of class MergeNodesByLocation, with
      * missing LatitudeAttribute
+     * @throws au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeNodeType.MergeException
      */
     @Test
-    public void testGetNodesToMerge_NoLatitudeAttribute() throws Exception {
+    public void testGetNodesToMerge_NoLatitudeAttribute() throws MergeException {
         System.out.println("testGetNodesToMerge_NoLatitudeAttribute");
+        
         Comparator<String> leadVertexChooser = null;
         int threshold = 1600000;
         boolean selectedOnly = false;
@@ -112,32 +118,34 @@ public class MergeNodesByLocationNGTest {
 
         // create a new analytic graph
         final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
-        StoreGraph graph = new StoreGraph(schema);
+        StoreGraph graph2 = new StoreGraph(schema);
 
         // add attributes
-        int vertexIdentifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
+        int vertexIdentifierAttribute2 = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph2);
 
         // add vertices
-        int vxId1 = graph.addVertex();
-        int vxId2 = graph.addVertex();
-        int vxId3 = graph.addVertex();
+        int vxId21 = graph2.addVertex();
+        int vxId22 = graph2.addVertex();
+        int vxId23 = graph2.addVertex();
 
         // set the identifier of each vertex to something unique
-        graph.setStringValue(vertexIdentifierAttribute, vxId1, "V1");
-        graph.setStringValue(vertexIdentifierAttribute, vxId2, "V2");
-        graph.setStringValue(vertexIdentifierAttribute, vxId3, "V3");
+        graph.setStringValue(vertexIdentifierAttribute2, vxId21, "V1");
+        graph.setStringValue(vertexIdentifierAttribute2, vxId22, "V2");
+        graph.setStringValue(vertexIdentifierAttribute2, vxId23, "V3");
 
-        Map<Integer, Set<Integer>> result = instance.getNodesToMerge(graph, leadVertexChooser, threshold, selectedOnly);
+        Map<Integer, Set<Integer>> result = instance.getNodesToMerge(graph2, leadVertexChooser, threshold, selectedOnly);
         assertEquals(result, expResult);
     }
 
     /**
      * Test of getNodesToMerge method, of class MergeNodesByLocation, with
      * selectedOnly = False
+     * @throws au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeNodeType.MergeException
      */
     @Test
-    public void testGetNodesToMergee_Threshold_1600000_selectedOnlyFalse() throws Exception {
+    public void testGetNodesToMergee_Threshold_1600000_selectedOnlyFalse() throws MergeException {
         System.out.println("testGetNodesToMergee_Threshold_1600000_selectedOnlyFalse_2");
+        
         Comparator<String> leadVertexChooser = null;
         int threshold = 1600000;
         boolean selectedOnly = false;
@@ -155,10 +163,12 @@ public class MergeNodesByLocationNGTest {
     /**
      * Test of getNodesToMerge method, of class MergeNodesByLocation, with
      * selectedOnly = false and threshold = 10
+     * @throws au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeNodeType.MergeException
      */
     @Test
-    public void testGetNodesToMerge_Threshold_10() throws Exception {
+    public void testGetNodesToMerge_Threshold_10() throws MergeException {
         System.out.println("testGetNodesToMerge_Threshold_10");
+        
         Comparator<String> leadVertexChooser = null;
         int threshold = 10;
         boolean selectedOnly = false;
@@ -171,10 +181,12 @@ public class MergeNodesByLocationNGTest {
     /**
      * Test of getNodesToMerge method, of class MergeNodesByLocation, with
      * selectedOnly = True and all Nodes selected
+     * @throws au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeNodeType.MergeException
      */
     @Test
-    public void testGetNodesToMergee_selectedOnlyTrue_AllNodesSelected() throws Exception {
+    public void testGetNodesToMergee_selectedOnlyTrue_AllNodesSelected() throws MergeException {
         System.out.println("testGetNodesToMergee_selectedOnlyTrue_AllNodesSelected");
+        
         Comparator<String> leadVertexChooser = null;
         int threshold = 1600000;
         boolean selectedOnly = true;
@@ -199,10 +211,12 @@ public class MergeNodesByLocationNGTest {
     /**
      * Test of getNodesToMerge method, of class MergeNodesByLocation, with
      * selectedOnly = True and some Nodes selected
+     * @throws au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeNodeType.MergeException
      */
     @Test
-    public void testGetNodesToMergee_selectedOnlyTrue_SomeNodesSelected() throws Exception {
+    public void testGetNodesToMergee_selectedOnlyTrue_SomeNodesSelected() throws MergeException {
         System.out.println("testGetNodesToMergee_selectedOnlyTrue_SomeNodesSelected");
+        
         Comparator<String> leadVertexChooser = null;
         int threshold = 1590000;
         boolean selectedOnly = true;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,15 +86,9 @@ public class Matrix44fNGTest {
         m.set(2, 3, F2);
         for (int i = 0; i < m.a.length; i++) {
             switch (i) {
-                case 0:
-                    assertEquals(m.a[i], F1);
-                    break;
-                case 11:
-                    assertEquals(m.a[i], F2);
-                    break;
-                default:
-                    assertEquals(m.a[i], 0F);
-                    break;
+                case 0 -> assertEquals(m.a[i], F1);
+                case 11 -> assertEquals(m.a[i], F2);
+                default -> assertEquals(m.a[i], 0F);
             }
         }
     }
@@ -109,15 +103,9 @@ public class Matrix44fNGTest {
         m.setTransposed(3, 1, F2);
         for (int i = 0; i < m.a.length; i++) {
             switch (i) {
-                case 0:
-                    assertEquals(m.a[i], F1);
-                    break;
-                case 7:
-                    assertEquals(m.a[i], F2);
-                    break;
-                default:
-                    assertEquals(m.a[i], 0F);
-                    break;
+                case 0 -> assertEquals(m.a[i], F1);
+                case 7 -> assertEquals(m.a[i], F2);
+                default -> assertEquals(m.a[i], 0F);
             }
         }
     }

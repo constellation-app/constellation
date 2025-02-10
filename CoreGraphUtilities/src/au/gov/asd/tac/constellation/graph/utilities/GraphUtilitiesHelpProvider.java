@@ -34,7 +34,8 @@ public class GraphUtilitiesHelpProvider extends HelpPageProvider {
     private static final String CODEBASE_NAME = "constellation";
 
     /**
-     * Provides a map of all the help files Maps the file name to the md file name
+     * Provides a map of all the help files Maps the file name to the md file
+     * name
      *
      * @return Map of the file names vs md file names
      */
@@ -45,7 +46,7 @@ public class GraphUtilitiesHelpProvider extends HelpPageProvider {
         final String graphUtilitiesModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreGraphUtilities" + sep + "src" + sep + "au" + sep + "gov"
                 + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "graph" + sep + "utilities" + sep;
 
-        map.put("au.gov.asd.tac.constellation.graph.utilities.perspectives", graphUtilitiesModulePath + "perspective-bookmarks-view.md");
+        map.put("au.gov.asd.tac.constellation.graph.utilities.perspectives.PerspectiveBookmarkTopComponent", graphUtilitiesModulePath + "perspective-bookmarks-view.md");
         return map;
     }
 

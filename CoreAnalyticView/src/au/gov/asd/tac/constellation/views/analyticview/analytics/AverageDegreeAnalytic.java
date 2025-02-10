@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.plugins.algorithms.sna.SnaConcept;
 import au.gov.asd.tac.constellation.plugins.algorithms.sna.global.AverageDegreePlugin;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
+import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticUtilities;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -45,7 +46,7 @@ public class AverageDegreeAnalytic extends GraphAnalyticPlugin {
 
     @Override
     public String getDocumentationUrl() {
-        return getHelpPath() + "analytic-average-degree.md";
+        return AnalyticUtilities.getHelpPath() + "analytic-average-degree.md";
     }
 
     @Override

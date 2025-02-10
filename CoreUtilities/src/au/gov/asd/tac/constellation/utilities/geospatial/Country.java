@@ -82,12 +82,12 @@ public enum Country {
     CONGO_DEMOCRATIC_REPUBLIC("CD", "COD", "Congolese", "Congo, the Democratic Republic of the"),
     COOK_ISLANDS("CK", "COK", "Cook Island", "Cook Islands"),
     COSTA_RICA("CR", "CRI", "Costa Rican", "Costa Rica"),
+    COTE_DIVOIRE("CI", "CIV", "Ivorian", "Cote D'Ivoire"),
     CROATIA("HR", "HRV", "Croatian", "Croatia", "Hrvatska"),
     CUBA("CU", "CUB", "Cuban", "Cuba"),
     CURACAO("CW", "CUW", null, "Curacao"),
     CYPRUS("CY", "CYP", "Cypriot", "Cyprus"),
     CZECH_REPUBLIC("CZ", "CZE", "Czech", "Czechia", "Czech Republic"),
-    COTE_DIVOIRE("CI", "CIV", "Ivorian", "Cote D'Ivoire"),
     DENMARK("DK", "DNK", "Danish", "Denmark"),
     DJIBOUTI("DJ", "DJI", "Djiboutian", "Djibouti"),
     DOMINICA("DM", "DMA", "Dominican", "Dominica"),
@@ -296,7 +296,7 @@ public enum Country {
             throw new IllegalArgumentException("Country trigraph must be 3 characters long: " + trigraph);
         }
         if (displayName == null) {
-            throw new NullPointerException("Display name must be specified");
+            throw new IllegalArgumentException("Display name must be specified");
         }
         this.digraph = digraph;
         this.trigraph = trigraph;

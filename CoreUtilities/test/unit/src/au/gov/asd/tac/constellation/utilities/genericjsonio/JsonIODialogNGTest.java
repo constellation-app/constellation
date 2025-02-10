@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,6 +47,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class JsonIODialogNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(JsonIODialogNGTest.class.getName());
 
     private final FxRobot robot = new FxRobot();
@@ -127,7 +128,6 @@ public class JsonIODialogNGTest {
             // The JsonIO Mock happens here because the static mocking needs to be on
             // the same thread as the execution
             try (MockedStatic<JsonIO> jsonIOMockedStatic = Mockito.mockStatic(JsonIO.class)) {
-
                 final Optional<String> result = JsonIODialog.getSelection(
                         names, Optional.of("loadDir"), Optional.of("filePrefix"));
 
@@ -178,8 +178,7 @@ public class JsonIODialogNGTest {
 
     @Test
     public void getPreferenceFileName_ok_pressed() {
-        final Future<Optional<String>> future = WaitForAsyncUtils.asyncFx(
-                () -> JsonIODialog.getPreferenceFileName());
+        final Future<Optional<String>> future = WaitForAsyncUtils.asyncFx(() -> JsonIODialog.getPreferenceFileName());
 
         final Stage dialog = getDialog(robot);
 
@@ -205,8 +204,7 @@ public class JsonIODialogNGTest {
 
     @Test
     public void getPreferenceFileName_cancel_pressed() {
-        final Future<Optional<String>> future = WaitForAsyncUtils.asyncFx(
-                () -> JsonIODialog.getPreferenceFileName());
+        final Future<Optional<String>> future = WaitForAsyncUtils.asyncFx(() -> JsonIODialog.getPreferenceFileName());
 
         final Stage dialog = getDialog(robot);
 
@@ -255,5 +253,4 @@ public class JsonIODialogNGTest {
         }
         return dialog;
     }
-
 }

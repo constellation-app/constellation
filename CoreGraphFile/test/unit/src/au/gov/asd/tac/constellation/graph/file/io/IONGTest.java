@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.UUID;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -45,75 +44,69 @@ public class IONGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
      * Saving and loading an attribute with a non-null default value.
+     * @throws java.io.IOException
+     * @throws au.gov.asd.tac.constellation.graph.file.io.GraphParseException
      */
     @Test
-    public void saveLoadNonNullDefault() {
+    public void saveLoadNonNullDefault() throws IOException, GraphParseException {
         final String name = "0000-00-00-00-000000";
-        File graphFile = null;
-        try {
-            graphFile = File.createTempFile(name, ".star");
-        } catch (IOException ex) {
-            Assert.fail("Create file", ex);
-        }
+        File graphFile = File.createTempFile(name, ".star");
 
         final String nameAttrLabel = "name";
         final String nndAttrLabel = "nnd";
         final String defaultValue = "A non-null value";
 
-        try {
-            final StoreGraph graph = new StoreGraph();
-            final int nameAttrId = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, nameAttrLabel, nameAttrLabel, "", null);
-            final int nndAttrId = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, nndAttrLabel, "All nulls", defaultValue, null);
-            final int v0 = graph.addVertex();
-            Assert.assertEquals(graph.getStringValue(nameAttrId, v0), "");
-            Assert.assertNotNull(graph.getStringValue(nndAttrId, v0));
-            Assert.assertEquals(graph.getStringValue(nndAttrId, v0), defaultValue);
-            final int v1 = graph.addVertex();
-            graph.setStringValue(nameAttrId, v1, "V1");
-            graph.setStringValue(nndAttrId, v1, null);
-            Assert.assertNull(graph.getStringValue(nndAttrId, v1));
+        final StoreGraph graph = new StoreGraph();
+        int nameAttrId = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, nameAttrLabel, nameAttrLabel, "", null);
+        final int nndAttrId = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, nndAttrLabel, "All nulls", defaultValue, null);
+        int v0 = graph.addVertex();
+        Assert.assertEquals(graph.getStringValue(nameAttrId, v0), "");
+        Assert.assertNotNull(graph.getStringValue(nndAttrId, v0));
+        Assert.assertEquals(graph.getStringValue(nndAttrId, v0), defaultValue);
+        int v1 = graph.addVertex();
+        graph.setStringValue(nameAttrId, v1, "V1");
+        graph.setStringValue(nndAttrId, v1, null);
+        Assert.assertNull(graph.getStringValue(nndAttrId, v1));
 
-            GraphJsonWriter writer = new GraphJsonWriter();
-            writer.writeGraphToZip(graph, graphFile.getPath(), new TextIoProgress(false));
-        } catch (IOException ex) {
-            Assert.fail("Graph write", ex);
-        }
+        GraphJsonWriter writer = new GraphJsonWriter();
+        writer.writeGraphToZip(graph, graphFile.getPath(), new TextIoProgress(false));
 
         try {
             final Graph newGraph = new GraphJsonReader().readGraphZip(graphFile, new TextIoProgress(false));
-            final ReadableGraph rg = newGraph.getReadableGraph();
-            final int nameAttrId = rg.getAttribute(GraphElementType.VERTEX, nameAttrLabel);
-            final int nattrId = rg.getAttribute(GraphElementType.VERTEX, nndAttrLabel);
+            try (final ReadableGraph rg = newGraph.getReadableGraph()) {
+                nameAttrId = rg.getAttribute(GraphElementType.VERTEX, nameAttrLabel);
+                final int nattrId = rg.getAttribute(GraphElementType.VERTEX, nndAttrLabel);
 
-            final int v0 = rg.getVertex(0);
-            Assert.assertEquals(rg.getStringValue(nameAttrId, v0), "");
-            final String val0 = rg.getStringValue(nattrId, v0);
-            Assert.assertEquals(val0, defaultValue);
+                v0 = rg.getVertex(0);
+                Assert.assertEquals(rg.getStringValue(nameAttrId, v0), "");
+                final String val0 = rg.getStringValue(nattrId, v0);
+                Assert.assertEquals(val0, defaultValue);
 
-            final int v1 = rg.getVertex(1);
-            Assert.assertEquals(rg.getStringValue(nameAttrId, v1), "V1");
-            final String nval1 = rg.getStringValue(nattrId, v1);
-            Assert.assertNull(nval1, "Expecting the default non-null value");
-        } catch (IOException ex) {
-            Assert.fail("Graph read", ex);
-        } catch (GraphParseException ex) {
-            Assert.fail("Graph parse", ex);
+                v1 = rg.getVertex(1);
+                Assert.assertEquals(rg.getStringValue(nameAttrId, v1), "V1");
+                final String nval1 = rg.getStringValue(nattrId, v1);
+                Assert.assertNull(nval1, "Expecting the default non-null value");               
+            }
         } finally {
             graphFile.delete();
         }
@@ -140,16 +133,13 @@ public class IONGTest {
         final ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
         GraphJsonReader reader = new GraphJsonReader();
         final Graph graph = reader.readGraph(in, -1, null);
-        ReadableGraph rg = graph.getReadableGraph();
-        try {
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
             final int defaultMergerAttributeId = rg.getAttribute(GraphElementType.VERTEX, "defaultMergerAttribute");
             assert rg.getAttributeMerger(defaultMergerAttributeId) == GraphAttributeMerger.getDefault();
             final int customMergerAttributeId = rg.getAttribute(GraphElementType.VERTEX, "customMergerAttribute");
             assert rg.getAttributeMerger(customMergerAttributeId) == GraphAttributeMerger.getMergers().get(ConcatenatedSetGraphAttributeMerger.ID);
             final int noMergerAttributeId = rg.getAttribute(GraphElementType.VERTEX, "noMergerAttribute");
             assert rg.getAttributeMerger(noMergerAttributeId) == null;
-        } finally {
-            rg.release();
         }
     }
 }

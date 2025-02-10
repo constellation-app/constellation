@@ -69,12 +69,12 @@ public class AddCustomBlazePlugin extends SimpleEditPlugin {
         final PluginParameter<ObjectParameterValue> vertexIdsParam = ObjectParameterType.build(VERTEX_IDS_PARAMETER_ID);
         vertexIdsParam.setName("Vertex Ids");
         vertexIdsParam.setDescription("The list of vertex ids to add a color blaze (in bulk)");
-        vertexIdsParam.setObjectValue(null);
         parameters.addParameter(vertexIdsParam);
 
         final PluginParameter<ColorParameterValue> colorParam = ColorParameterType.build(COLOR_PARAMETER_ID);
         colorParam.setName("Color");
         colorParam.setDescription("The color value");
+        colorParam.setColorValue(BlazeUtilities.DEFAULT_BLAZE.getColor());
         parameters.addParameter(colorParam);
 
         return parameters;

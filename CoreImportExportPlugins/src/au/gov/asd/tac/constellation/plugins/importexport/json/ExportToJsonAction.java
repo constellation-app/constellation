@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,6 @@ import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import javax.swing.filechooser.FileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -68,21 +66,6 @@ public final class ExportToJsonAction implements ActionListener {
      * @return the created file chooser.
      */
     public FileChooserBuilder getExportToJSONFileChooser() {
-        return new FileChooserBuilder(TITLE)
-                .setTitle(TITLE)
-                .setAcceptAllFileFilterUsed(false)
-                .setFilesOnly(true)
-                .setFileFilter(new FileFilter() {
-                    @Override
-                    public boolean accept(final File file) {
-                        final String name = file.getName();
-                        return (file.isFile() && StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.JSON)) || file.isDirectory();
-                    }
-
-                    @Override
-                    public String getDescription() {
-                        return "JSON Files (" + FileExtensionConstants.JSON + ")";
-                    }
-                });
+        return FileChooser.createFileChooserBuilder(TITLE, FileExtensionConstants.JSON, "JSON Files (" + FileExtensionConstants.JSON + ")", true);
     }
 }

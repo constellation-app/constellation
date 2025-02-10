@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -195,8 +195,13 @@ public class GLVisualProcessor extends VisualProcessor {
 
     @Override
     public final void performVisualUpdate() {
-        updating = true;
-        canvas.display();
+        try {
+            updating = true;
+            canvas.display();
+        }  catch (final GLException ex) {
+            // don't perform update if canvas is unavailable
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+        }
     }
 
     @Override
@@ -414,6 +419,7 @@ public class GLVisualProcessor extends VisualProcessor {
                 new VisualChangeBuilder(VisualProperty.BACKGROUND_COLOR).forItems(1).build(),
                 new VisualChangeBuilder(VisualProperty.HIGHLIGHT_COLOR).forItems(1).build(),
                 new VisualChangeBuilder(VisualProperty.CONNECTIONS_OPACITY).forItems(1).build(),
+                new VisualChangeBuilder(VisualProperty.CONNECTIONS_MOTION).forItems(1).build(),
                 new VisualChangeBuilder(VisualProperty.BLAZE_SIZE).forItems(1).build(),
                 //                new VisualChangeBuilder(VisualProperty.DRAW_FLAGS).forItems(1).build(),
                 new VisualChangeBuilder(VisualProperty.CAMERA).forItems(1).build()

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ContentConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -94,10 +95,11 @@ public class ExtractWordsFromTextPluginNGTest {
     /**
      * Test of class ExtractFromContentPlugin.
      *
-     * @throws java.lang.Exception
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testExtractWordFromContent() throws Exception {
+    public void testExtractWordFromContent() throws InterruptedException, PluginException {
         final int vertexIdentifierAttributeId = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
         final int transactionContentAttributeId = ContentConcept.TransactionAttribute.CONTENT.ensure(graph);
         final int vertexTypeAttributeId = AnalyticConcept.VertexAttribute.TYPE.ensure(graph);
@@ -127,10 +129,11 @@ public class ExtractWordsFromTextPluginNGTest {
     /**
      * Test of class ExtractFromContentPlugin with word list parameter.
      *
-     * @throws java.lang.Exception
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testExtractWordFromContentWordListParameter() throws Exception {
+    public void testExtractWordFromContentWordListParameter() throws InterruptedException, PluginException {
         final int vertexIdentifierAttributeId = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
         final int transactionContentAttributeId = ContentConcept.TransactionAttribute.CONTENT.ensure(graph);
         final int transactionTypeAttributeId = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
@@ -159,10 +162,11 @@ public class ExtractWordsFromTextPluginNGTest {
     /**
      * Test of class ExtractFromContentPlugin with regex parameter.
      *
-     * @throws java.lang.Exception
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testExtractWordFromContentRegexParameter() throws Exception {
+    public void testExtractWordFromContentRegexParameter() throws InterruptedException, PluginException {
         final int vertexIdentifierAttributeId = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
         final int transactionContentAttributeId = ContentConcept.TransactionAttribute.CONTENT.ensure(graph);
         final int transactionTypeAttributeId = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
@@ -194,10 +198,11 @@ public class ExtractWordsFromTextPluginNGTest {
      * Test of class ExtractFromContentPlugin with minimum word length
      * parameter.
      *
-     * @throws java.lang.Exception
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testExtractWordFromContentWordLengthParameter() throws Exception {
+    public void testExtractWordFromContentWordLengthParameter() throws InterruptedException, PluginException {
         final int vertexIdentifierAttributeId = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
         final int transactionContentAttributeId = ContentConcept.TransactionAttribute.CONTENT.ensure(graph);
         final int transactionTypeAttributeId = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
@@ -227,10 +232,11 @@ public class ExtractWordsFromTextPluginNGTest {
     /**
      * Test of class ExtractFromContentPlugin with whole word only parameter.
      *
-     * @throws java.lang.Exception
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testExtractWordFromContentWholeWordOnlyParameter() throws Exception {
+    public void testExtractWordFromContentWholeWordOnlyParameter() throws InterruptedException, PluginException {
         final int vertexIdentifierAttributeId = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
         final int transactionContentAttributeId = ContentConcept.TransactionAttribute.CONTENT.ensure(graph);
         final int transactionTypeAttributeId = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
@@ -260,10 +266,11 @@ public class ExtractWordsFromTextPluginNGTest {
     /**
      * Test of class ExtractFromContentPlugin with whole word only parameter.
      *
-     * @throws java.lang.Exception
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testExtractWordFromContentWholeWordOnlyFalseParameter() throws Exception {
+    public void testExtractWordFromContentWholeWordOnlyFalseParameter() throws InterruptedException, PluginException {
         final int vertexIdentifierAttributeId = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
         final int transactionContentAttributeId = ContentConcept.TransactionAttribute.CONTENT.ensure(graph);
         final int transactionTypeAttributeId = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
@@ -295,10 +302,11 @@ public class ExtractWordsFromTextPluginNGTest {
     /**
      * Test of class ExtractFromContentPlugin with schema types parameter.
      *
-     * @throws java.lang.Exception
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testExtractWordFromContentSchemaTypesParameter() throws Exception {
+    public void testExtractWordFromContentSchemaTypesParameter() throws InterruptedException, PluginException {
         final int vertexIdentifierAttributeId = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
         final int transactionContentAttributeId = ContentConcept.TransactionAttribute.CONTENT.ensure(graph);
         final int vertexTypeAttributeId = AnalyticConcept.VertexAttribute.TYPE.ensure(graph);
@@ -329,10 +337,11 @@ public class ExtractWordsFromTextPluginNGTest {
     /**
      * Test of class ExtractFromContentPlugin with case sensitive parameter.
      *
-     * @throws java.lang.Exception
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testExtractWordFromContentCaseSensitiveParameter() throws Exception {
+    public void testExtractWordFromContentCaseSensitiveParameter() throws InterruptedException, PluginException {
         final int vertexIdentifierAttributeId = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
         final int transactionContentAttributeId = ContentConcept.TransactionAttribute.CONTENT.ensure(graph);
         final int transactionTypeAttributeId = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
@@ -363,10 +372,11 @@ public class ExtractWordsFromTextPluginNGTest {
      * Test of class ExtractFromContentPlugin with ignore special characters
      * parameter.
      *
-     * @throws java.lang.Exception
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testExtractWordFromContentIgnoreCharsParameter() throws Exception {
+    public void testExtractWordFromContentIgnoreCharsParameter() throws InterruptedException, PluginException {
         final int vertexIdentifierAttributeId = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
         final int transactionContentAttributeId = ContentConcept.TransactionAttribute.CONTENT.ensure(graph);
         final int transactionTypeAttributeId = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
@@ -396,13 +406,13 @@ public class ExtractWordsFromTextPluginNGTest {
     /**
      * Test of class ExtractFromContentPlugin.
      *
-     * @throws java.lang.Exception
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testExtractWordFromContentSelectedParameter() throws Exception {
+    public void testExtractWordFromContentSelectedParameter() throws InterruptedException, PluginException {
         final int vertexIdentifierAttributeId = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
         final int transactionContentAttributeId = ContentConcept.TransactionAttribute.CONTENT.ensure(graph);
-        final int vertexTypeAttributeId = AnalyticConcept.VertexAttribute.TYPE.ensure(graph);
         final int transactionTypeAttributeId = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
         final int transactionSelectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
 
@@ -435,14 +445,13 @@ public class ExtractWordsFromTextPluginNGTest {
     /**
      * Test of class ExtractFromContentPlugin with an empty transaction type
      *
-     * @throws java.lang.Exception
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testExtractWordFromContentWithEmptyTransactionType() throws Exception {
+    public void testExtractWordFromContentWithEmptyTransactionType() throws InterruptedException, PluginException {
         final int vertexIdentifierAttributeId = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
         final int transactionContentAttributeId = ContentConcept.TransactionAttribute.CONTENT.ensure(graph);
-        final int vertexTypeAttributeId = AnalyticConcept.VertexAttribute.TYPE.ensure(graph);
-        final int transactionTypeAttributeId = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
         final int transactionSelectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
 
         graph.getSchema().newGraph(graph);
@@ -472,10 +481,11 @@ public class ExtractWordsFromTextPluginNGTest {
     /**
      * Test of class ExtractFromContentPlugin with regexOnly parameter.
      *
-     * @throws java.lang.Exception
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testExtractWordFromContentRegexOnlyParameter() throws Exception {
+    public void testExtractWordFromContentRegexOnlyParameter() throws InterruptedException, PluginException {
         final int vertexIdentifierAttributeId = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
         final int transactionContentAttributeId = ContentConcept.TransactionAttribute.CONTENT.ensure(graph);
         final int transactionTypeAttributeId = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
@@ -509,10 +519,11 @@ public class ExtractWordsFromTextPluginNGTest {
      * Test of class ExtractFromContentPlugin with regexOnly + lower-case true
      * parameters.
      *
-     * @throws java.lang.Exception
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testExtractWordFromContentRegexOnlyLowerCaseTrueParameter() throws Exception {
+    public void testExtractWordFromContentRegexOnlyLowerCaseTrueParameter() throws InterruptedException, PluginException {
         final int vertexIdentifierAttributeId = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
         final int transactionContentAttributeId = ContentConcept.TransactionAttribute.CONTENT.ensure(graph);
         final int transactionTypeAttributeId = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
@@ -545,10 +556,11 @@ public class ExtractWordsFromTextPluginNGTest {
      * Test of class ExtractFromContentPlugin with regexOnly + lower-case false
      * parameters.
      *
-     * @throws java.lang.Exception
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testExtractWordFromContentRegexOnlyLowerCaseFalseParameter() throws Exception {
+    public void testExtractWordFromContentRegexOnlyLowerCaseFalseParameter() throws InterruptedException, PluginException {
         final int vertexIdentifierAttributeId = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
         final int transactionContentAttributeId = ContentConcept.TransactionAttribute.CONTENT.ensure(graph);
         final int transactionTypeAttributeId = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
+import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -39,9 +40,11 @@ public class WorkflowQueryPluginNGTest {
 
     /**
      * Test of execute method, of class WorkflowQueryPlugin.
+     * @throws java.lang.InterruptedException
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testExecute() throws Exception {
+    public void testExecute() throws InterruptedException, PluginException {
         System.out.println("execute");
 
         final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
@@ -135,12 +138,14 @@ public class WorkflowQueryPluginNGTest {
         assertEquals(result, expResult);
     }
 
-    public class WorkflowQueryPluginImpl extends WorkflowQueryPlugin {
+    private class WorkflowQueryPluginImpl extends WorkflowQueryPlugin {
 
+        @Override
         public List<String> getWorkflow() {
             return Collections.emptyList();
         }
 
+        @Override
         public String getErrorHandlingPlugin() {
             return "SelectAll";
         }

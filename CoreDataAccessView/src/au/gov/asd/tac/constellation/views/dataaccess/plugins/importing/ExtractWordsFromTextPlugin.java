@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -94,6 +94,8 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
 
     private static final String OUTGOING = "outgoing";
     private static final String INCOMING = "incoming";
+    
+    private static final Pattern SPECIAL_CHARS_PATTERN = Pattern.compile("\\W", Pattern.UNICODE_CHARACTER_CLASS);
 
     @Override
     public String getType() {
@@ -297,12 +299,13 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
         final boolean outgoing = OUTGOING.equals(inOrOut);
         final Set<String> newNodes = new HashSet<>();
         
-        // Local process-tracking varables.
+        // Local process-tracking variables.
         int currentProcessStep = 0;
         final int totalProcessSteps = transactionCount; 
         int newTransactionCount = 0;
         int newNodeCount = 0;
-        interaction.setProgress(currentProcessStep, totalProcessSteps, "Extracting...", true);
+        interaction.setProgressTimestamp(true);
+        interaction.setProgress(currentProcessStep, totalProcessSteps, "Extracting...", true, parameters);
         
         if (regexOnly) {
             /*
@@ -469,13 +472,23 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
                             word = word.toLowerCase();
                         }
                         if (removeSpecialChars) {
-                            word = word.replaceAll("\\W", "");
+                            word = SPECIAL_CHARS_PATTERN.matcher(word).replaceAll("");
                         }
                         if (word.length() < wordLength) {
                             continue;
                         }
                         foundWords.add(word);
                     }
+                } else if (words.contains(content) && wholeWordOnly) {
+                    // If words matches the content but only as a whole word
+                    for (final String word : content.split(" ")) {
+                        if (word.equals(content)) {
+                            foundWords.add(content);
+                        }
+                    }
+                } else if (words.contains(content)) {
+                    // If words contains the content but it doesn't need to match as a whole word 
+                    foundWords.add(content);
                 } else {
                     patterns.stream().map(pattern -> pattern.matcher(content))
                             .forEach(matcher -> {

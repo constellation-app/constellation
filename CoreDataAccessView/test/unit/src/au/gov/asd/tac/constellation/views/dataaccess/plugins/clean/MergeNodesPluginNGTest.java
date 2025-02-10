@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -120,37 +120,37 @@ public class MergeNodesPluginNGTest {
     public void createParameters() {
         final PluginParameters actual = mergeNodesPlugin.createParameters();
 
-        final Map<String, PluginParameter<?>> parameters = actual.getParameters();
+        final Map<String, PluginParameter<?>> actualParameters = actual.getParameters();
 
-        assertEquals(parameters.keySet(), Set.of(
+        assertEquals(actualParameters.keySet(), Set.of(
                 "MergeNodesPlugin.merge_type",
                 "MergeNodesPlugin.threshold",
                 "MergeNodesPlugin.merger",
                 "MergeNodesPlugin.lead",
                 "MergeNodesPlugin.selected"));
 
-        final PluginParameter<SingleChoiceParameterValue> mergeTypeParameter
-                = (PluginParameter<SingleChoiceParameterValue>) parameters.get("MergeNodesPlugin.merge_type");
+        final PluginParameter<SingleChoiceParameterValue> actualMergeTypeParameter
+                = (PluginParameter<SingleChoiceParameterValue>) actualParameters.get("MergeNodesPlugin.merge_type");
 
-        assertEquals(mergeTypeParameter.getName(), "Merge By");
-        assertEquals(mergeTypeParameter.getDescription(), "Nodes will be merged based on this");
-        assertEquals(mergeTypeParameter.getParameterValue().getOptions(), List.of(
+        assertEquals(actualMergeTypeParameter.getName(), "Merge By");
+        assertEquals(actualMergeTypeParameter.getDescription(), "Nodes will be merged based on this");
+        assertEquals(actualMergeTypeParameter.getParameterValue().getOptions(), List.of(
                 TestMergeType.NAME,
                 "Geospatial Distance",
                 "Identifier Prefix Length",
                 "Identifier Suffix Length",
                 "Supported Type"));
-        assertEquals(mergeTypeParameter.getProperty("choices").getClass(), Object.class);
+        assertEquals(actualMergeTypeParameter.getProperty("choices").getClass(), Object.class);
 
-        final PluginParameter<IntegerParameterValue> thresholdParameter
-                = (PluginParameter<IntegerParameterValue>) parameters.get("MergeNodesPlugin.threshold");
+        final PluginParameter<IntegerParameterValue> actualThresholdParameter
+                = (PluginParameter<IntegerParameterValue>) actualParameters.get("MergeNodesPlugin.threshold");
 
-        assertEquals(thresholdParameter.getName(), "Threshold");
-        assertEquals(thresholdParameter.getDescription(), "The maximum nodes to merge");
-        assertFalse(thresholdParameter.isEnabled());
+        assertEquals(actualThresholdParameter.getName(), "Threshold");
+        assertEquals(actualThresholdParameter.getDescription(), "The maximum nodes to merge");
+        assertFalse(actualThresholdParameter.isEnabled());
 
         final PluginParameter<SingleChoiceParameterValue> mergingRuleParameter
-                = (PluginParameter<SingleChoiceParameterValue>) parameters.get("MergeNodesPlugin.merger");
+                = (PluginParameter<SingleChoiceParameterValue>) actualParameters.get("MergeNodesPlugin.merger");
 
         assertEquals(mergingRuleParameter.getName(), "Merging Rule");
         assertEquals(mergingRuleParameter.getDescription(), "The rule deciding how attributes are merged");
@@ -165,7 +165,7 @@ public class MergeNodesPluginNGTest {
         assertFalse(mergingRuleParameter.isEnabled());
 
         final PluginParameter<SingleChoiceParameterValue> leadNodeParameter
-                = (PluginParameter<SingleChoiceParameterValue>) parameters.get("MergeNodesPlugin.lead");
+                = (PluginParameter<SingleChoiceParameterValue>) actualParameters.get("MergeNodesPlugin.lead");
 
         assertEquals(leadNodeParameter.getName(), "Lead Node");
         assertEquals(leadNodeParameter.getDescription(), "The rule deciding how to choose the lead node");
@@ -179,7 +179,7 @@ public class MergeNodesPluginNGTest {
         assertFalse(leadNodeParameter.isEnabled());
 
         final PluginParameter<BooleanParameterValue> selectedOnlyParameter
-                = (PluginParameter<BooleanParameterValue>) parameters.get("MergeNodesPlugin.selected");
+                = (PluginParameter<BooleanParameterValue>) actualParameters.get("MergeNodesPlugin.selected");
 
         assertEquals(selectedOnlyParameter.getName(), "Selected Only");
         assertEquals(selectedOnlyParameter.getDescription(), "Merge Only Selected Nodes");
@@ -247,9 +247,11 @@ public class MergeNodesPluginNGTest {
             mergeNodesPlugin.edit(graph, interaction, parameters);
 
             verify(pluginExecution).executeNow(graph);
-            verify(interaction, atLeast(2)).setProgress(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean());
+            verify(interaction, atLeast(1)).setProgress(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean());
+            verify(interaction, atLeast(1)).setProgress(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyBoolean());
+            verify(interaction, atLeast(1)).setProgress(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.any(PluginParameters.class), Mockito.anyInt());
 
-            // Due to accessibility issues the call to mergeVerticies and its follow
+            // Due to accessibility issues the call to mergeVertices and its follow
             // on logic cannot be verified without tying this test to the logic of
             // one of the concrete implementations of GraphElementMerger.
         }

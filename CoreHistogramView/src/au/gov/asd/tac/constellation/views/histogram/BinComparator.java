@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ public enum BinComparator implements Comparator<Bin> {
                     return 0;
                 }
             }
-            return -1;
+            return o2.compareTo(o1);
         }
 
         @Override
@@ -57,7 +57,7 @@ public enum BinComparator implements Comparator<Bin> {
                     return 0;
                 }
             }
-            return -1;
+            return o1.compareTo(o2);
         }
 
         @Override
@@ -240,12 +240,12 @@ public enum BinComparator implements Comparator<Bin> {
         return usesSelection;
     }
 
-    public boolean isNumeric(final String strNum) {
+    protected boolean isNumeric(final String strNum) {
         if (strNum == null) {
             return false;
         }
         try {
-            Float.parseFloat(strNum);
+            Float.valueOf(strNum);
         } catch (final NumberFormatException nfe) {
             return false;
         }

@@ -2,6 +2,10 @@
 
 ## Split nodes based on supplied character(s) in the identifier
 
+<br />
+<img src="../ext/docs/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/resources/SplitNodes.png" alt="Split Nodes" />
+<br />
+
 This plugin will split nodes based on whether a node Identifier contains
 a supplied character(s).
 

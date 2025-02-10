@@ -150,7 +150,7 @@ public class UndoGraphEditState {
     }
 
     public byte[] getByteStack() {
-        return byteStack.clone();
+        return byteStack;
     }
 
     public void setByteStack(final byte[] byteStack) {
@@ -166,7 +166,7 @@ public class UndoGraphEditState {
     }
 
     public short[] getShortStack() {
-        return shortStack.clone();
+        return shortStack;
     }
 
     public void setShortStack(final short[] shortStack) {
@@ -182,7 +182,7 @@ public class UndoGraphEditState {
     }
 
     public int[] getIntStack() {
-        return intStack.clone();
+        return intStack;
     }
 
     public void setIntStack(final int[] intStack) {
@@ -198,7 +198,7 @@ public class UndoGraphEditState {
     }
 
     public long[] getLongStack() {
-        return longStack.clone();
+        return longStack;
     }
 
     public void setLongStack(final long[] longStack) {
@@ -214,7 +214,7 @@ public class UndoGraphEditState {
     }
 
     public Object[] getObjectStack() {
-        return objectStack.clone();
+        return objectStack;
     }
 
     public void setObjectStack(final Object[] objectStack) {
@@ -405,7 +405,11 @@ public class UndoGraphEditState {
         }
 
         final int total = (operationCount * 2) + byteCount + (shortCount * 2) + (intCount * 4) + (longCount * 8) + (objectCount * 4) + graphOperationCount;
-        final String log = String.format("STATS: OPERATIONS = " + operationCount + " BYTES = " + byteCount + " SHORTS = " + shortCount + " INTS = " + intCount + " LONGS = " + longCount + " OBJECTS = " + objectCount + " GRAPH_OPERATIONS = " + graphOperationCount + " TOTAL = " + total);
+        final String log = String.format(
+                "STATS: OPERATIONS = %s BYTES = %s SHORTS = %s INTS = %s LONGS = %s OBJECTS = %s GRAPH_OPERATIONS = %s TOTAL = %s",
+                operationCount, byteCount, shortCount, intCount, longCount,objectCount, graphOperationCount, total
+        );
+        
         LOGGER.log(Level.INFO, log);
         for (final UndoGraphEditOperation operation : UndoGraphEditOperation.values()) {
             LOGGER.log(Level.INFO, "    {0} {1}", new Object[]{operation.ordinal(), operation.getName()});

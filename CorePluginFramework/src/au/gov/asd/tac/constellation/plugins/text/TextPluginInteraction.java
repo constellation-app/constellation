@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,12 @@ package au.gov.asd.tac.constellation.plugins.text;
 
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -62,6 +67,13 @@ public class TextPluginInteraction implements PluginInteraction {
     }
     
     @Override
+    public void setProgress(final int currentStep, final int totalSteps, final String message, final boolean cancellable, final PluginParameters parameters) throws InterruptedException {
+        currentMessage = message;
+        final Map<String, PluginParameter<?>> params = parameters != null ? parameters.getParameters() : new HashMap<>();
+        LOGGER.log(Level.INFO, "currentStep={0} totalSteps={1} message={2} parameters={3}", new Object[]{currentStep, totalSteps, message, params.toString()});
+    }
+    
+    @Override
     public void setProgress(final int currentStep, final int totalSteps, final boolean cancellable) throws InterruptedException {
         LOGGER.log(Level.INFO, "currentStep={0} totalSteps={1}", new Object[]{currentStep, totalSteps});
     }
@@ -90,6 +102,20 @@ public class TextPluginInteraction implements PluginInteraction {
     @Override
     public boolean prompt(final String promptName, final PluginParameters parameters, final String disclaimer, final String helpID) {
         throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setProgress(final int currentStep, final int totalSteps, final String message, final boolean cancellable, final PluginParameters parameters, final int selected) throws InterruptedException {
+        currentMessage = message;
+        final Map<String, PluginParameter<?>> params = parameters != null ? parameters.getParameters() : new HashMap<>();
+        LOGGER.log(Level.INFO, "currentStep={0} totalSteps={1} message={2} parameters={3} selected={4}", new Object[]{currentStep, totalSteps, message, params.toString(), selected});
+    }
+
+    @Override
+    public void setProgressTimestamp(boolean addTimestamp) throws InterruptedException {
+        final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        final Date date = new Date();
+        LOGGER.log(Level.INFO, "time={0}", format.format(date));
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,17 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.animation.actions;
 
-import au.gov.asd.tac.constellation.graph.interaction.animation.Animation;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import au.gov.asd.tac.constellation.graph.interaction.animation.AnimationUtilities;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
-/*
- * stop the animation
+/**
+ * An action for stopping all animations.
+ * 
+ * @author capricornunicorn123
  */
 @ActionID(category = "Experimental", id = "au.gov.asd.tac.constellation.graph.interaction.animation.actions.AnimateStopAction")
 @ActionRegistration(displayName = "#CTL_AnimateStopAction", surviveFocusChange = true)
@@ -34,10 +34,22 @@ import org.openide.util.NbBundle.Messages;
     @ActionReference(path = "Shortcuts", name = "S-Escape")
 })
 @Messages("CTL_AnimateStopAction=Stop Animating")
-public final class AnimateStopAction implements ActionListener {
+public final class AnimateStopAction extends AnimationUtilityMenuBaseAction {
+
+    public AnimateStopAction() {
+        super(Bundle.CTL_AnimateStopAction());
+    }
 
     @Override
-    public void actionPerformed(final ActionEvent ev) {
-        Animation.stopAnimation();
+    protected void updateValue() {
+        if (this.getContext() != null && this.getContext().getGraph() != null
+                && AnimationUtilities.isAnimating(this.getContext().getGraph().getId())) {
+            AnimationUtilities.stopAllAnimations(this.getContext().getGraph().getId());
+        }
+    }
+
+    @Override
+    protected void displayValue() {
+        // DoNothing
     }
 }

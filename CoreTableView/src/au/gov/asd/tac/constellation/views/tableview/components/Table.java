@@ -601,16 +601,16 @@ public class Table {
 
     /**
      * Gets the context menu describing the columns that make a vertex or
-     * transaction unique. In other words the primary columns. Then manually
+     * transaction unique. In other words the default columns. Then manually
      * triggers a click event causing those columns to be made visible.
      *
-     * @see ColumnVisibilityContextMenu#getShowPrimaryColumnsMenu()
+     * @see ColumnVisibilityContextMenu#getShowDefaultColumnsMenu()
      */
     protected void openColumnVisibilityMenu() {
         final ColumnVisibilityContextMenu columnVisibilityContextMenu = new ColumnVisibilityContextMenu(this);
         columnVisibilityContextMenu.init();
 
-        final MenuItem keyColumns = columnVisibilityContextMenu.getShowPrimaryColumnsMenu();
-        keyColumns.fire();
+        final MenuItem defaultColumns = columnVisibilityContextMenu.getShowDefaultColumnsMenu();
+        defaultColumns.fire();
     }
 }

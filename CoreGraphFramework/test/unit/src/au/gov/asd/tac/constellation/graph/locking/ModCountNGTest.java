@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,6 +66,7 @@ public class ModCountNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -375,8 +376,10 @@ public class ModCountNGTest {
         try {
             long modCount;
             WritableGraph wg = g.getWritableGraph("", true);
-            int attribute, vertex;
-            final int value = 1, defaultValue = 0;
+            int attribute;
+            int vertex;
+            final int value = 1;
+            final int defaultValue = 0;
             try {
                 vertex = wg.addVertex();
                 attribute = wg.addAttribute(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "name", "description", defaultValue, null);
@@ -423,7 +426,8 @@ public class ModCountNGTest {
         try {
             long modCount;
             WritableGraph wg = g.getWritableGraph("", true);
-            int attribute, vertex;
+            int attribute;
+            int vertex;
             final Object object = new Object();
             try {
                 vertex = wg.addVertex();
@@ -471,10 +475,10 @@ public class ModCountNGTest {
         try {
             long modCount;
             WritableGraph wg = g.getWritableGraph("", true);
-            int vertex0, vertex1;
+            int vertex0;
             try {
                 vertex0 = wg.addVertex();
-                vertex1 = wg.addVertex();
+                wg.addVertex();
                 modCount = wg.getGlobalModificationCounter();
             } finally {
                 wg.commit();
@@ -519,13 +523,13 @@ public class ModCountNGTest {
         try {
             long modCount;
             WritableGraph wg = g.getWritableGraph("", true);
-            int vertex0, vertex1;
-            int trans0, trans1;
+            int vertex0;
+            int vertex1;
             try {
                 vertex0 = wg.addVertex();
                 vertex1 = wg.addVertex();
-                trans0 = wg.addTransaction(vertex0, vertex1, true);
-                trans1 = wg.addTransaction(vertex0, vertex1, true);
+                wg.addTransaction(vertex0, vertex1, true);
+                wg.addTransaction(vertex0, vertex1, true);
                 modCount = wg.getGlobalModificationCounter();
             } finally {
                 wg.commit();
@@ -572,12 +576,13 @@ public class ModCountNGTest {
         try {
             long modCount;
             WritableGraph wg = g.getWritableGraph("", true);
-            int vertex0, vertex1;
-            int trans0, trans1;
+            int vertex0;
+            int vertex1;
+            int trans1;
             try {
                 vertex0 = wg.addVertex();
                 vertex1 = wg.addVertex();
-                trans0 = wg.addTransaction(vertex0, vertex1, true);
+                wg.addTransaction(vertex0, vertex1, true);
                 trans1 = wg.addTransaction(vertex0, vertex1, true);
                 modCount = wg.getGlobalModificationCounter();
             } finally {
@@ -625,7 +630,9 @@ public class ModCountNGTest {
         try {
             long modCount;
             WritableGraph wg = g.getWritableGraph("", true);
-            int vertex0, vertex1, vertex2;
+            int vertex0;
+            int vertex1;
+            int vertex2;
             int trans;
             try {
                 vertex0 = wg.addVertex();
@@ -682,7 +689,9 @@ public class ModCountNGTest {
         try {
             long modCount;
             WritableGraph wg = g.getWritableGraph("", true);
-            int vertex0, vertex1, vertex2;
+            int vertex0;
+            int vertex1;
+            int vertex2;
             int trans;
             try {
                 vertex0 = wg.addVertex();
@@ -739,7 +748,8 @@ public class ModCountNGTest {
         try {
             long modCount;
             WritableGraph wg = g.getWritableGraph("", true);
-            int vertex0, vertex1;
+            int vertex0;
+            int vertex1;
             int trans;
             try {
                 vertex0 = wg.addVertex();
@@ -795,7 +805,8 @@ public class ModCountNGTest {
         try {
             long modCount;
             WritableGraph wg = g.getWritableGraph("", true);
-            int vertex0, vertex1;
+            int vertex0;
+            int vertex1;
             int trans;
             try {
                 vertex0 = wg.addVertex();

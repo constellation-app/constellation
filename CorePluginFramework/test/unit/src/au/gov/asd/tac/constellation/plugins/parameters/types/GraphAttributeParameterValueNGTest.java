@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,10 +38,12 @@ public class GraphAttributeParameterValueNGTest {
     
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -51,6 +53,7 @@ public class GraphAttributeParameterValueNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -150,6 +153,5 @@ public class GraphAttributeParameterValueNGTest {
         assertEquals(graphParameterValue.compareTo(comp2), 1);
         assertEquals(comp2.compareTo(graphParameterValue), -1);
         assertEquals(graphParameterValue.compareTo(comp3), 0);
-    }
-    
+    }  
 }

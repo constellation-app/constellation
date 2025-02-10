@@ -38,8 +38,6 @@ import javafx.geometry.Side;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
-import javax.swing.filechooser.FileFilter;
-import org.apache.commons.lang3.StringUtils;
 import org.openide.filesystems.FileChooserBuilder;
 
 /**
@@ -301,23 +299,8 @@ public class ExportMenu {
          * @return the created file chooser
          */
         public FileChooserBuilder getExportFileChooser() {
-            return new FileChooserBuilder(fileChooserTitle)
-                    .setTitle(fileChooserTitle)
-                    .setFilesOnly(true)
-                    .setFileFilter(new FileFilter() {
-                    @Override
-                    public boolean accept(final File file) {
-                        final String name = file.getName();
-                        // if it is an actual file and it ends with the expected extension
-
-                        return (file.isFile() && StringUtils.endsWithIgnoreCase(name, expectedFileExtension)) || file.isDirectory();
-                    }
-                    @Override
-                    public String getDescription() {
-                        return fileChooserDescription;
-                    }
-                }
-            );
+            return FileChooser.createFileChooserBuilder(fileChooserTitle, expectedFileExtension, fileChooserDescription, true)
+                    .setAcceptAllFileFilterUsed(true);
         }
     }
 }

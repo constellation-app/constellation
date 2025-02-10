@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import au.gov.asd.tac.constellation.plugins.importexport.SchemaDestination;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.ImportFileParser;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.InputSource;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.gui.ScreenWindowsHelper;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.io.BufferedReader;
 import java.io.File;
@@ -208,7 +209,7 @@ public class DelimitedImportController extends ImportController {
                 fnfEx.setStackTrace(ex.getStackTrace());
                 LOGGER.log(Level.INFO, warningMsg, fnfEx);
                 NotifyDisplayer.displayAlert("Delimited File Import", "Invalid file selected",
-                        warningMsg, Alert.AlertType.WARNING);
+                        warningMsg, Alert.AlertType.WARNING, ScreenWindowsHelper.getMainWindowCentrePoint());
                 files.remove(sampleFile);
                 ((DelimitedSourcePane) importPane.getSourcePane()).removeFile(sampleFile);
             } catch (final IOException ex) {
@@ -219,7 +220,7 @@ public class DelimitedImportController extends ImportController {
                 ioEx.setStackTrace(ex.getStackTrace());
                 LOGGER.log(Level.INFO, warningMsg, ioEx);
                 NotifyDisplayer.displayAlert("Delimited File Import", "Invalid file selected", warningMsg,
-                        Alert.AlertType.WARNING);
+                        Alert.AlertType.WARNING, ScreenWindowsHelper.getMainWindowCentrePoint());
                 files.remove(sampleFile);
                 ((DelimitedSourcePane) importPane.getSourcePane()).removeFile(sampleFile);
             }
@@ -244,7 +245,7 @@ public class DelimitedImportController extends ImportController {
         NotifyDisplayer.displayAlert("Header structure mismatch", "The header structure of the files should be the same", "If the `Files Include Headers` "
                 + "option is disabled, the number of columns should be the same. Otherwise the column headers should be the same, in the same order. "
                 + SeparatorConstants.NEWLINE + warningMsg,
-                Alert.AlertType.WARNING);
+                Alert.AlertType.WARNING, ScreenWindowsHelper.getMainWindowCentrePoint());
     }
 
     public List<String> getColumnHeaders(final File file) {

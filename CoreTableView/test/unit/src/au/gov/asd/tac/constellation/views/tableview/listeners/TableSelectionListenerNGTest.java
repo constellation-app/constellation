@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,6 +48,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class TableSelectionListenerNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(TableSelectionListenerNGTest.class.getName());
 
     private TableSelectionListener tableSelectionListener;
@@ -98,6 +99,7 @@ public class TableSelectionListenerNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     @Test
@@ -114,7 +116,6 @@ public class TableSelectionListenerNGTest {
     @Test
     public void changedCurrentStateSelectedOnlyModeTrue() {
         try (MockedStatic<TableViewUtilities> tableViewUtilitiesMockedStatic = Mockito.mockStatic(TableViewUtilities.class)) {
-
             final TableViewState currentState = new TableViewState();
             currentState.setSelectedOnly(true);
 
@@ -129,7 +130,6 @@ public class TableSelectionListenerNGTest {
     @Test
     public void changedCurrentStateSelectedOnlyModeFalse() {
         try (MockedStatic<TableViewUtilities> tableViewUtilitiesMockedStatic = Mockito.mockStatic(TableViewUtilities.class)) {
-
             final TableViewState currentState = new TableViewState();
             currentState.setSelectedOnly(false);
             currentState.setElementType(GraphElementType.META);
@@ -141,11 +141,7 @@ public class TableSelectionListenerNGTest {
 
             tableSelectionListener.changed(null, null, null);
 
-            tableViewUtilitiesMockedStatic.verify(()
-                    -> TableViewUtilities.copySelectionToGraph(same(tableView), same(rowToElementIdIndex),
-                            eq(GraphElementType.META), same(graph))
-            );
+            tableViewUtilitiesMockedStatic.verify(() -> TableViewUtilities.copySelectionToGraph(same(tableView), same(rowToElementIdIndex), eq(GraphElementType.META), same(graph)));
         }
     }
-
 }

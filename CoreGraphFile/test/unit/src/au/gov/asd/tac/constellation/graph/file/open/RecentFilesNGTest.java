@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,60 +38,25 @@ import org.testng.annotations.Test;
  */
 public class RecentFilesNGTest {
     
-    public RecentFilesNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
-
-    /**
-     * Test of init method, of class RecentFiles.
-     */
-//    @Test
-//    public void testInit() {
-//        System.out.println("init");
-//        RecentFiles.init();
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-
-    /**
-     * Test of saved method, of class RecentFiles.
-     */
-//    @Test
-//    public void testSaved() {
-//        System.out.println("saved");
-//        String path = "";
-//        RecentFiles.saved(path);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-
-    /**
-     * Test of getRecentFiles method, of class RecentFiles.
-     */
-//    @Test
-//    public void testGetRecentFiles() {
-//        System.out.println("getRecentFiles");
-//        List expResult = null;
-//        List result = RecentFiles.getRecentFiles();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
 
     /**
      * Test of getUniqueRecentFiles method, of class RecentFiles.
@@ -133,117 +98,4 @@ public class RecentFilesNGTest {
             assertEquals(result.size(), 2);
         }
     }
-
-    /**
-     * Test of hasRecentFiles method, of class RecentFiles.
-     */
-//    @Test
-//    public void testHasRecentFiles() {
-//        System.out.println("hasRecentFiles");
-//        boolean expResult = false;
-//        boolean result = RecentFiles.hasRecentFiles();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-
-    /**
-     * Test of load method, of class RecentFiles.
-     */
-//    @Test
-//    public void testLoad() {
-//        System.out.println("load");
-//        List expResult = null;
-//        List result = RecentFiles.load();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-
-    /**
-     * Test of store method, of class RecentFiles.
-     */
-//    @Test
-//    public void testStore_0args() {
-//        System.out.println("store");
-//        RecentFiles.store();
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-
-    /**
-     * Test of store method, of class RecentFiles.
-     */
-//    @Test
-//    public void testStore_List() {
-//        System.out.println("store");
-//        List<RecentFiles.HistoryItem> history = null;
-//        RecentFiles.store(history);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-
-    /**
-     * Test of getPrefs method, of class RecentFiles.
-     */
-//    @Test
-//    public void testGetPrefs() {
-//        System.out.println("getPrefs");
-//        Preferences expResult = null;
-//        Preferences result = RecentFiles.getPrefs();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-
-    /**
-     * Test of addFile method, of class RecentFiles.
-     */
-//    @Test
-//    public void testAddFile() {
-//        System.out.println("addFile");
-//        String path = "";
-//        RecentFiles.addFile(path);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-
-    /**
-     * Test of convertFile2Path method, of class RecentFiles.
-     */
-//    @Test
-//    public void testConvertFile2Path() {
-//        System.out.println("convertFile2Path");
-//        FileObject fo = null;
-//        String expResult = "";
-//        String result = RecentFiles.convertFile2Path(fo);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-
-    /**
-     * Test of convertPath2File method, of class RecentFiles.
-     */
-//    @Test
-//    public void testConvertPath2File() {
-//        System.out.println("convertPath2File");
-//        String path = "";
-//        FileObject expResult = null;
-//        FileObject result = RecentFiles.convertPath2File(path);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-
-    /**
-     * Test of pruneHistory method, of class RecentFiles.
-     */
-//    @Test
-//    public void testPruneHistory() {
-//        System.out.println("pruneHistory");
-//        RecentFiles.pruneHistory();
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }  
 }

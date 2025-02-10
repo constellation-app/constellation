@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,33 +15,47 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.animation.actions;
 
-import au.gov.asd.tac.constellation.graph.interaction.animation.Animation;
+import au.gov.asd.tac.constellation.graph.interaction.animation.AnimationUtilities;
 import au.gov.asd.tac.constellation.graph.interaction.animation.FlyingAnimation;
-import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.lookup.ServiceProvider;
 
-/*
- * adding animation motion to graph elements
+/**
+ * An action for triggering a {@link FlyingAnimation}.
+ * 
+ * @author capricornunicorn123
  */
 @ActionID(category = "Experimental", id = "au.gov.asd.tac.constellation.graph.interaction.animation.actions.AnimateFlyingAction")
-@ActionRegistration(displayName = "#CTL_AnimateFlyingAction", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_AnimateFlyingAction", lazy = false)
 @ActionReference(path = "Menu/Experimental/Animations", position = 0)
-@Messages("CTL_AnimateFlyingAction=Fly-through")
-public final class AnimateFlyingAction implements ActionListener {
+@Messages("CTL_AnimateFlyingAction=Fly Through")
+@ServiceProvider(service = AnimationMenuBaseAction.class)
+public final class AnimateFlyingAction extends AnimationMenuBaseAction implements ActionListener {
 
-    private final GraphNode context;
-
-    public AnimateFlyingAction(final GraphNode context) {
-        this.context = context;
+    public AnimateFlyingAction() {
+        super(Bundle.CTL_AnimateFlyingAction());
+    }
+    
+    @Override
+    protected void updateValue() {
+        if (menuButton.isSelected()) {
+            AnimationUtilities.startAnimation(new FlyingAnimation(), this.getContext().getGraph().getId());
+        } else {
+            stopAnimation(this.getContext().getGraph().getId());
+        }
     }
 
     @Override
-    public void actionPerformed(final ActionEvent ev) {
-        Animation.startAnimation(new FlyingAnimation(), context.getGraph());
+    protected void displayValue() {
+        menuButton.setSelected(AnimationUtilities.isAnimating(FlyingAnimation.NAME, this.getContext().getGraph().getId()));
+    }
+    
+    @Override
+    protected void stopAnimation(final String graphId) {
+        AnimationUtilities.stopAnimation(FlyingAnimation.NAME, graphId);
     }
 }

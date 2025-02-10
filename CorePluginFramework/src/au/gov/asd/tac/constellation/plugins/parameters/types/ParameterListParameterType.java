@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2023 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import javafx.application.Platform;
 import javafx.scene.layout.Pane;
 import org.openide.util.lookup.ServiceProvider;
@@ -226,6 +227,7 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
                     }
                     case VALUE -> parameterHasChanged();
                     default -> {
+                        // do nothing
                     }
                 }
             });
@@ -295,6 +297,9 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
     public static class ParameterListParameterValue extends ParameterValue {
         
         private static final Logger LOGGER = Logger.getLogger(ParameterListParameterValue.class.getName());
+        
+        private static final Pattern DOUBLE_COLON_REGEX = Pattern.compile("::");
+        private static final Pattern DOUBLE_SEMICOLON_REGEX = Pattern.compile(";;");
 
         private ParameterList value;
         private boolean locked = false;
@@ -311,7 +316,7 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
 
         @Override
         public Object getObjectValue() {
-            return value;
+            return get();
         }
 
         @Override
@@ -428,10 +433,10 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
         }
 
         private void appendPanels(final String strValue) {
-            final String[] args = strValue.split("::");
+            final String[] args = DOUBLE_COLON_REGEX.split(strValue);
             for (int i = 1; i <= Integer.parseInt(args[0]); i++) {
                 final PluginParameters newParams = value.getNewItem();
-                final String[] keyVals = args[i].split(";;");
+                final String[] keyVals = DOUBLE_SEMICOLON_REGEX.split(args[i]);
                 for (int j = 0; j < keyVals.length; j += 2) {
                     final String key = keyVals[j].replace("\\;", SeparatorConstants.SEMICOLON).replace("\\:", SeparatorConstants.COLON);
                     final String val = keyVals[j + 1].replace("\\;", SeparatorConstants.SEMICOLON).replace("\\:", SeparatorConstants.COLON);

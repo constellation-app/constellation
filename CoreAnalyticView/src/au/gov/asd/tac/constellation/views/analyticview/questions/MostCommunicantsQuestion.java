@@ -28,6 +28,7 @@ import au.gov.asd.tac.constellation.views.analyticview.analytics.DegreeCentralit
 import au.gov.asd.tac.constellation.views.analyticview.analytics.ScoreAnalyticPlugin;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult;
+import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticUtilities;
 import java.util.Arrays;
 import java.util.List;
 import org.openide.util.lookup.ServiceProvider;
@@ -47,6 +48,11 @@ public class MostCommunicantsQuestion implements AnalyticQuestionDescription<Sco
     @Override
     public String getDescription() {
         return "";
+    }
+    
+    @Override 
+    public String getDocumentationUrl() {
+        return AnalyticUtilities.getHelpPath() + "question-most-communicants.md";
     }
 
     @Override

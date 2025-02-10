@@ -1,28 +1,22 @@
-<div>
-
-JavaScript is disabled on your browser.
-
-</div>
-
 <div class="topNav">
 
 <span id="navbar.top"></span>
 
 <div class="skipNav">
 
-[Skip navigation links](#skip.navbar.top "Skip navigation links")
+[Skip navigation links](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SReadableGraph.md#skip.navbar.top "Skip navigation links")
 
 </div>
 
 <span id="navbar.top.firstrow"></span>
 
--   [Overview](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/overview-summary.md)
--   [Package](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/package-summary.md)
+-   [Overview](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/overview-summary.md)
+-   [Package](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/package-summary.md)
 -   Class
--   [Tree](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/package-tree.md)
--   [Deprecated](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/deprecated-list.md)
--   [Index](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/index-all.md)
--   [Help](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/help-doc.md)
+-   [Tree](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/package-tree.md)
+-   [Deprecated](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/deprecated-list.md)
+-   [Index](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/index-all.md)
+-   [Help](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/help-doc.md)
 
 <div class="aboutLanguage">
 
@@ -35,18 +29,13 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 <div class="subNav">
 
 -   [<span
-    class="typeNameLink">Prev Class</span>](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SLink.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
+    class="typeNameLink">Prev Class</span>](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SLink.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
 -   [<span
-    class="typeNameLink">Next Class</span>](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/STransaction.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
+    class="typeNameLink">Next Class</span>](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/STransaction.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
 
 <!-- -->
 
--   [Frames](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md)
--   [No Frames](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md)
-
-<!-- -->
-
--   [All Classes](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/allclasses-noframe.md)
+-   [All Classes](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/allclasses-noframe.md)
 
 <div>
 
@@ -56,16 +45,16 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 
 -   Summary: 
 -   Nested | 
--   [Field](#field.summary) | 
--   Constr | 
--   [Method](#method.summary)
+-   [Field](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SReadableGraph.md#field.summary) | 
+-   Constructor | 
+-   [Method](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SReadableGraph.md#method.summary)
 
 <!-- -->
 
 -   Detail: 
--   [Field](#field.detail) | 
--   Constr | 
--   [Method](#method.detail)
+-   [Field](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SReadableGraph.md#field.detail) | 
+-   Constructor | 
+-   [Method](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SReadableGraph.md#method.detail)
 
 </div>
 
@@ -94,11 +83,9 @@ au.gov.asd.tac.constellation.views.scripting.graph
 <div class="description">
 
 -   Direct Known Subclasses:  
-    [SWritableGraph](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SWritableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
+    [SWritableGraph](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SWritableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
 
     ------------------------------------------------------------------------
-
-      
 
         public class SReadableGraph
         extends java.lang.Object
@@ -149,7 +136,6 @@ au.gov.asd.tac.constellation.views.scripting.graph
         ### Method Summary
 
         <table class="memberSummary" data-border="0" data-cellpadding="3" data-cellspacing="0" data-summary="Method Summary table, listing methods, and an explanation">
-        <caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd"> </span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd"> </span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd"> </span></span></caption>
         <colgroup>
         <col style="width: 50%" />
         <col style="width: 50%" />
@@ -413,13 +399,6 @@ au.gov.asd.tac.constellation.views.scripting.graph
         </tbody>
         </table>
 
-        <span id="t0" class="activeTableTab">All Methods<span
-        class="tabEnd"> </span></span><span id="t2"
-        class="tableTab">[Instance Methods](javascript:show(2);)<span
-        class="tabEnd"> </span></span><span id="t4"
-        class="tableTab">[Concrete Methods](javascript:show(8);)<span
-        class="tabEnd"> </span></span>
-
         -   <span
             id="methods.inherited.from.class.java.lang.Object"></span>
 
@@ -613,7 +592,7 @@ au.gov.asd.tac.constellation.views.scripting.graph
 
             <span class="returnLabel">Returns:</span>  
             the requested attribute as a
-            [`SAttribute`](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SAttribute.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
+            [`SAttribute`](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SAttribute.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
 
         <span
         id="attribute-au.gov.asd.tac.constellation.graph.GraphElementType-java.lang.String-"></span>
@@ -770,7 +749,7 @@ au.gov.asd.tac.constellation.views.scripting.graph
 
             <span class="returnLabel">Returns:</span>  
             a collection of vertices as a
-            [`SCollection`](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SCollection.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
+            [`SCollection`](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SCollection.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
 
             <span class="throwsLabel">Throws:</span>  
             `javax.script.ScriptException`
@@ -884,7 +863,7 @@ au.gov.asd.tac.constellation.views.scripting.graph
 
             <span class="returnLabel">Returns:</span>  
             a collection of transactions as a
-            [`SCollection`](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SCollection.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
+            [`SCollection`](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SCollection.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
 
             <span class="throwsLabel">Throws:</span>  
             `javax.script.ScriptException`
@@ -1022,10 +1001,10 @@ au.gov.asd.tac.constellation.views.scripting.graph
 
             <span class="paramLabel">Parameters:</span>  
             `sourceVertex` - the source vertex as a
-            [`SVertex`](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SVertex.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
+            [`SVertex`](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SVertex.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
 
             `destinationVertex` - the destination vertex as a
-            [`SVertex`](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SVertex.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
+            [`SVertex`](../ext/docs/CoreScriptingView/src/au/gov/asd/tac/constellation/views/scripting/docs/javadoc/graph/SVertex.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
 
             <span class="returnLabel">Returns:</span>  
             the link as a {link SLink}.
@@ -1110,74 +1089,5 @@ au.gov.asd.tac.constellation.views.scripting.graph
             `toString` in class `java.lang.Object`
 
 </div>
-
-</div>
-
-<div class="bottomNav">
-
-<span id="navbar.bottom"></span>
-
-<div class="skipNav">
-
-[Skip navigation links](#skip.navbar.bottom "Skip navigation links")
-
-</div>
-
-<span id="navbar.bottom.firstrow"></span>
-
--   [Overview](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/overview-summary.md)
--   [Package](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/package-summary.md)
--   Class
--   [Tree](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/package-tree.md)
--   [Deprecated](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/deprecated-list.md)
--   [Index](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/index-all.md)
--   [Help](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/help-doc.md)
-
-<div class="aboutLanguage">
-
-au.gov.asd.tac.constellation.views.scripting 1.0
-
-</div>
-
-</div>
-
-<div class="subNav">
-
--   [<span
-    class="typeNameLink">Prev Class</span>](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SLink.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
--   [<span
-    class="typeNameLink">Next Class</span>](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/STransaction.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
-
-<!-- -->
-
--   [Frames](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md)
--   [No Frames](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/graph/SReadableGraph.md)
-
-<!-- -->
-
--   [All Classes](../constellation/CoreScriptingView/src/au/gov/asd/tac/constellation/scripting/docs/javadoc/allclasses-noframe.md)
-
-<div>
-
-</div>
-
-<div>
-
--   Summary: 
--   Nested | 
--   [Field](#field.summary) | 
--   Constr | 
--   [Method](#method.summary)
-
-<!-- -->
-
--   Detail: 
--   [Field](#field.detail) | 
--   Constr | 
--   [Method](#method.detail)
-
-</div>
-
-<span id="skip.navbar.bottom"></span>
 
 </div>

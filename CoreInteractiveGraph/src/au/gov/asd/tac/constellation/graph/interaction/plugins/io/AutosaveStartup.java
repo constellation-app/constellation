@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,8 +54,17 @@ public final class AutosaveStartup implements Runnable {
      */
     private static final long PURGE_PERIOD_MS = 28 * 24 * 60 * 60 * 1000L;
 
+    /**
+     * This is the system property that is set to true in order to make the AWT
+     * thread run in headless mode for tests, etc.
+     */
+    private static final String AWT_HEADLESS_PROPERTY = "java.awt.headless";
+
     @Override
     public void run() {
+        if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty(AWT_HEADLESS_PROPERTY))) {
+            return;
+        }
         synchronized (String.class) {
             // Look for existing autosaved in-memory graphs.
             final File[] saveFiles = AutosaveUtilities.getAutosaves(FileExtensionConstants.STAR_AUTOSAVE);

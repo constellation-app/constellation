@@ -20,7 +20,7 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import java.util.ArrayList;
 import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -60,18 +60,21 @@ public class OctTreeNGTest {
         graphWithTwoTwins.setFloatValue(attrY, twoTwinsSubject, 0.0f);
         graphWithTwoTwins.setFloatValue(attrZ, twoTwinsSubject, 0.0f);
         graphWithTwoTwins.setFloatValue(attrR, twoTwinsSubject, 1.0f);
+        
         // First twin
         twin1 = graphWithTwoTwins.addVertex();
         graphWithTwoTwins.setFloatValue(attrX, twin1, 0.1f);
         graphWithTwoTwins.setFloatValue(attrY, twin1, 0.1f);
         graphWithTwoTwins.setFloatValue(attrZ, twin1, 0.1f);
         graphWithTwoTwins.setFloatValue(attrR, twin1, 1.0f);
+        
         // Second twin
         twin2 = graphWithTwoTwins.addVertex();
         graphWithTwoTwins.setFloatValue(attrX, twin2, -0.1f);
         graphWithTwoTwins.setFloatValue(attrY, twin2, -0.1f);
         graphWithTwoTwins.setFloatValue(attrZ, twin2, -0.1f);
         graphWithTwoTwins.setFloatValue(attrR, twin2, 1.0f);
+        
         // Non-twin collider
         int collider = graphWithTwoTwins.addVertex();
         graphWithTwoTwins.setFloatValue(attrX, collider, 1.0f);
@@ -94,48 +97,56 @@ public class OctTreeNGTest {
         graphWithNoCollisions.setFloatValue(attrY, noCollisionSubject, 0.0f);
         graphWithNoCollisions.setFloatValue(attrY, noCollisionSubject, 0.0f);
         graphWithNoCollisions.setFloatValue(attrR, noCollisionSubject, 1.0f);
+        
         // Distant top right front octant
         distantVertexTRF = graphWithNoCollisions.addVertex();
         graphWithNoCollisions.setFloatValue(attrX, distantVertexTRF, 1000f);
         graphWithNoCollisions.setFloatValue(attrY, distantVertexTRF, 1000f);
         graphWithNoCollisions.setFloatValue(attrZ, distantVertexTRF, 1000f);
         graphWithNoCollisions.setFloatValue(attrR, distantVertexTRF, 1.0f);
+        
         // Distant top right back octant
         distantVertexTRB = graphWithNoCollisions.addVertex();
         graphWithNoCollisions.setFloatValue(attrX, distantVertexTRB, 1000f);
         graphWithNoCollisions.setFloatValue(attrY, distantVertexTRB, 1000f);
         graphWithNoCollisions.setFloatValue(attrZ, distantVertexTRB, -1000f);
         graphWithNoCollisions.setFloatValue(attrR, distantVertexTRB, 1.0f);
+        
         // Distant top left front octant
         distantVertexTLF = graphWithNoCollisions.addVertex();
         graphWithNoCollisions.setFloatValue(attrX, distantVertexTLF, -1000f);
         graphWithNoCollisions.setFloatValue(attrY, distantVertexTLF, 1000f);
         graphWithNoCollisions.setFloatValue(attrZ, distantVertexTLF, 1000f);
         graphWithNoCollisions.setFloatValue(attrR, distantVertexTLF, 1.0f);
+        
         // Distant top left back octant
         distantVertexTLB = graphWithNoCollisions.addVertex();
         graphWithNoCollisions.setFloatValue(attrX, distantVertexTLB, -1000f);
         graphWithNoCollisions.setFloatValue(attrY, distantVertexTLB, 1000f);
         graphWithNoCollisions.setFloatValue(attrZ, distantVertexTLB, -1000f);
         graphWithNoCollisions.setFloatValue(attrR, distantVertexTLB, 1.0f);
+        
         // Distant bottom right front octant
         distantVertexBRF = graphWithNoCollisions.addVertex();
         graphWithNoCollisions.setFloatValue(attrX, distantVertexBRF, 1000f);
         graphWithNoCollisions.setFloatValue(attrY, distantVertexBRF, -1000f);
         graphWithNoCollisions.setFloatValue(attrZ, distantVertexBRF, 1000f);
         graphWithNoCollisions.setFloatValue(attrR, distantVertexBRF, 1.0f);
+        
         // Distant bottom right back octant
         distantVertexBRB = graphWithNoCollisions.addVertex();
         graphWithNoCollisions.setFloatValue(attrX, distantVertexBRB, 1000f);
         graphWithNoCollisions.setFloatValue(attrY, distantVertexBRB, -1000f);
         graphWithNoCollisions.setFloatValue(attrZ, distantVertexBRB, -1000f);
         graphWithNoCollisions.setFloatValue(attrR, distantVertexBRB, 1.0f);
+        
         // Distant bottom right back octant
         distantVertexBLF = graphWithNoCollisions.addVertex();
         graphWithNoCollisions.setFloatValue(attrX, distantVertexBLF, -1000f);
         graphWithNoCollisions.setFloatValue(attrY, distantVertexBLF, -1000f);
         graphWithNoCollisions.setFloatValue(attrZ, distantVertexBLF, 1000f);
         graphWithNoCollisions.setFloatValue(attrR, distantVertexBLF, 1.0f);
+        
         // second distant vertex
         distantVertexBLB = graphWithNoCollisions.addVertex();
         graphWithNoCollisions.setFloatValue(attrX, distantVertexBLB, -1000f);
@@ -224,5 +235,4 @@ public class OctTreeNGTest {
         assertEquals(noCollisionsOT.hasCollision(), false);
         assertEquals(twoTwinsOT.hasCollision(), true);
     }
-
 }

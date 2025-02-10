@@ -42,11 +42,11 @@ and open the template in the editor.
 }
 
 .text-area {
-    text-area-background: black ;
+   -text-area-background: black;
 }
 
 .text-area .content {
-    -fx-background-color: text-area-background ;
+    -fx-background-color: -text-area-background;
 }
 /*
 
@@ -73,6 +73,16 @@ and open the template in the editor.
     -fx-padding: 0.166667em 0.833333em 0.25em 0.833333em; 
 }
 */
+
+.check-box > .box {
+    -fx-border-color: #555555;
+}
+
+.button {
+    -fx-background-insets: 0,0,0,0;
+    -fx-background-radius: 1px, 1px, 1px, 1px;
+    -fx-padding: 4,0,4,0
+}
 
 .titled-pane-heading .title, .titled-pane-heading > .title {
     -fx-background-color: linear-gradient(to bottom, derive(#cd853f,100%), derive(#cd853f,0%) 5%, derive(#cd853f,-25%) 95%, derive(#cd853f,50%) 100%);

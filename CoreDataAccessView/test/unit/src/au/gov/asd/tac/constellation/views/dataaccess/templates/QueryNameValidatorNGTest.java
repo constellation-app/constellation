@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,9 +34,10 @@ public class QueryNameValidatorNGTest {
 
     /**
      * Test of validatePreQuery method, of class QueryNameValidator.
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test(expectedExceptions = PluginException.class)
-    public void testValidatePreQueryWhenBlank() throws Exception {
+    public void testValidatePreQueryWhenBlank() throws PluginException {
         System.out.println("testValidatePreQueryWhenBlank");
 
         final RecordStoreQueryPlugin plugin = mock(RecordStoreQueryPlugin.class);
@@ -52,9 +53,10 @@ public class QueryNameValidatorNGTest {
 
     /**
      * Test of validatePreQuery method, of class QueryNameValidator.
+     * @throws au.gov.asd.tac.constellation.plugins.PluginException
      */
     @Test
-    public void testValidatePreQueryWhenNotBlank() throws Exception {
+    public void testValidatePreQueryWhenNotBlank() throws PluginException {
         System.out.println("testValidatePreQueryWhenNotBlank");
 
         final RecordStoreQueryPlugin plugin = mock(RecordStoreQueryPlugin.class);
@@ -69,5 +71,4 @@ public class QueryNameValidatorNGTest {
 
         verify(parameters, times(1)).getStringValue(CoreGlobalParameters.QUERY_NAME_PARAMETER_ID);
     }
-
 }

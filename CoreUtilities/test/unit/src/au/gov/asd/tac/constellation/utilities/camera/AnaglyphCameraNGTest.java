@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ public class AnaglyphCameraNGTest {
     private static final float[] M2_R4 = {403.65F, 542.94F, 311.68F, 319.01F};
 
     @BeforeClass
-    public void before() {
+    public void setUpMethod() {
         M1.setRow(M1_R1[0], M1_R1[1], M1_R1[2], M1_R1[3], 0);
         M1.setRow(M1_R2[0], M1_R2[1], M1_R2[2], M1_R2[3], 1);
         M1.setRow(M1_R3[0], M1_R3[1], M1_R3[2], M1_R3[3], 2);
@@ -79,12 +79,10 @@ public class AnaglyphCameraNGTest {
         expected1.setRow(M1_R2[0], M1_R2[1], M1_R2[2], M1_R2[3], 1);
         expected1.setRow(M1_R3[0], M1_R3[1], M1_R3[2], M1_R3[3], 2);
         expected1.setRow(34996.41F, 30003.002F, 8168.77F, 7247.0312F, 3);
-        assertEquals(sc.applyLeftFrustum(copyMatrix(M1)).toString(),
-                expected1.toString());
+        assertEquals(sc.applyLeftFrustum(copyMatrix(M1)).toString(), expected1.toString());
 
         // using an equivalent matrix to apply a left frustum yields the same result
-        assertEquals(sc.applyLeftFrustum(copyMatrix(M1)).toString(),
-                expected1.toString());
+        assertEquals(sc.applyLeftFrustum(copyMatrix(M1)).toString(), expected1.toString());
 
         // apply a right frustum
         final Matrix44f expected2 = new Matrix44f();
@@ -92,12 +90,10 @@ public class AnaglyphCameraNGTest {
         expected2.setRow(-25310.898F, M1_R2[1], M1_R2[2], M1_R2[3], 1);
         expected2.setRow(-3630.2336F, M1_R3[1], M1_R3[2], M1_R3[3], 2);
         expected2.setRow(-7736.1377F, M1_R4[1], M1_R4[2], M1_R4[3], 3);
-        assertEquals(sc.applyRightFrustum(copyMatrix(M1)).toString(),
-                expected2.toString());
+        assertEquals(sc.applyRightFrustum(copyMatrix(M1)).toString(), expected2.toString());
 
         // using an equivalent matrix to apply a right frustum yields the same result
-        assertEquals(sc.applyRightFrustum(copyMatrix(M1)).toString(),
-                expected2.toString());
+        assertEquals(sc.applyRightFrustum(copyMatrix(M1)).toString(), expected2.toString());
     }
 
     /**
@@ -131,8 +127,6 @@ public class AnaglyphCameraNGTest {
         final AnaglyphCamera sc = new AnaglyphCamera(F3, F6, F2, F5, F1, F4);
         sc.applyRightFrustum(copyMatrix(M1));
 
-        assertEquals(sc.getMvpMatrix(copyMatrix(M2)).toString(),
-                expected.toString());
+        assertEquals(sc.getMvpMatrix(copyMatrix(M2)).toString(), expected.toString());
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,10 +35,7 @@ import org.testng.annotations.Test;
 public class ConstellationGlobalThreadPoolNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(ConstellationGlobalThreadPoolNGTest.class.getName());
-
-    public ConstellationGlobalThreadPoolNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -57,10 +54,12 @@ public class ConstellationGlobalThreadPoolNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -73,7 +72,7 @@ public class ConstellationGlobalThreadPoolNGTest {
         System.out.println("getThreadPool");
         ConstellationGlobalThreadPool c1 = ConstellationGlobalThreadPool.getThreadPool();
         ConstellationGlobalThreadPool c2 = ConstellationGlobalThreadPool.getThreadPool();
-        assertEquals(c1 == c2, true);
+        assertEquals(c1, c2);
     }
 
     /**
@@ -88,7 +87,7 @@ public class ConstellationGlobalThreadPoolNGTest {
         System.out.println("getScheduledExecutorService");
         ScheduledExecutorService s1 = ConstellationGlobalThreadPool.getThreadPool().getScheduledExecutorService();
         ScheduledExecutorService s2 = ConstellationGlobalThreadPool.getThreadPool().getScheduledExecutorService();
-        assertEquals(s1 == s2, true);
+        assertEquals(s1, s2);
     }
 
     /**
@@ -103,7 +102,7 @@ public class ConstellationGlobalThreadPoolNGTest {
         System.out.println("getFixedThreadPool");
         ExecutorService f1 = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool();
         ExecutorService f2 = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool();
-        assertEquals(f1 == f2, true);
+        assertEquals(f1, f2);
     }
 
     /**
@@ -117,6 +116,6 @@ public class ConstellationGlobalThreadPoolNGTest {
         System.out.println("getCachedThreadPool");
         ExecutorService e1 = ConstellationGlobalThreadPool.getThreadPool().getCachedThreadPool();
         ExecutorService e2 = ConstellationGlobalThreadPool.getThreadPool().getCachedThreadPool();
-        assertEquals(e1 == e2, true);
+        assertEquals(e1, e2);
     }
 }

@@ -52,7 +52,7 @@ public class FlagIconProvider implements ConstellationIconProvider {
                         .addCategory(FLAG_CATEGORY)
                         .build();
                 flagIcons.add(countryIcon);
-            } catch (FileSystemNotFoundException e) {
+            } catch (final FileSystemNotFoundException e) {
                 LOGGER.log(Level.WARNING, "Unable to find file: {0}", "modules/ext/icons/flags/" + c.getDisplayName().replaceAll(" ", "_").toLowerCase() + ".png");
             }
         }

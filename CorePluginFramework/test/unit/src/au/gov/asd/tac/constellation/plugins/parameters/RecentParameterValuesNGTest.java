@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import org.openide.util.NbPreferences;
-import org.testng.Assert;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -40,16 +39,15 @@ import org.testng.annotations.Test;
 public class RecentParameterValuesNGTest {
 
     private String recentValues;
-
-    public RecentParameterValuesNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -62,6 +60,7 @@ public class RecentParameterValuesNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -93,7 +92,7 @@ public class RecentParameterValuesNGTest {
         RecentParameterValues.saveToPreferences();
         final List<String> result = RecentParameterValues.getRecentValues("TestChainer.planets");
         final String expResult = "Mercury\\nVenus\\n✓ Earth\\nMars\\nJupiter\\nSaturn\\nUranus\\nNeptune\\nCoruscant";
-        Assert.assertEquals(result.get(0), expResult);
+        assertEquals(result.get(0), expResult);
     }
 
     @Test
@@ -105,7 +104,7 @@ public class RecentParameterValuesNGTest {
         RecentParameterValues.saveToPreferences();
         final List<String> result = RecentParameterValues.getRecentValues("foo");
         final String expResult = "✓ Newline ✓ Comma Whitespace";
-        Assert.assertEquals(result.get(0), expResult);
+        assertEquals(result.get(0), expResult);
     }
 
     /**
@@ -121,7 +120,7 @@ public class RecentParameterValuesNGTest {
         RecentParameterValues.loadFromPreference();
         final List<String> result = RecentParameterValues.getRecentValues("TestChainer.planets");
         final String expResult = "Mercury\\nVenus\\n✓ Earth\\nMars\\nJupiter\\nSaturn\\nUranus\\nNeptune\\nCoruscant";
-        Assert.assertEquals(result.get(0), expResult);
+        assertEquals(result.get(0), expResult);
     }
 
     @Test
@@ -132,25 +131,6 @@ public class RecentParameterValuesNGTest {
         RecentParameterValues.loadFromPreference();
         final List<String> result = RecentParameterValues.getRecentValues("foo");
         final String expResult = "✓ Newline ✓ Comma Whitespace";
-        Assert.assertEquals(result.get(0), expResult);
+        assertEquals(result.get(0), expResult);
     }
-
-//    @Test
-//    public void testByteArrayOutputStreamContainingUtf8() throws IOException, BackingStoreException {
-//        JsonFactory jsonFactory = new MappingJsonFactory();
-//        final String utf8String = "✓ Newline";
-//        final ByteArrayOutputStream json = new ByteArrayOutputStream();
-//        final JsonGenerator jg = jsonFactory.createGenerator(json);
-//        jg.writeString(utf8String);
-//        jg.flush();
-//
-//        final Preferences prefs = NbPreferences.forModule(RecentParameterValuesKey.class);
-//        prefs.put(RecentParameterValuesKey.RECENT_VALUES, json.toString(StandardCharsets.UTF_8.name()));
-//        prefs.flush();
-//
-//        final String recentValuesJSON = prefs.get(RecentParameterValuesKey.RECENT_VALUES, "");
-//
-//        final String expResult = "\"✓ Newline\"";
-//        Assert.assertEquals(recentValuesJSON, expResult);
-//    }
 }

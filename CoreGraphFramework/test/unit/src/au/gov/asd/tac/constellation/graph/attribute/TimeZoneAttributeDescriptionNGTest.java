@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.graph.attribute;
 
 import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
 import java.time.ZoneId;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -31,16 +31,15 @@ import org.testng.annotations.Test;
 public class TimeZoneAttributeDescriptionNGTest {
 
     TimeZoneAttributeDescription instance;
-
-    public TimeZoneAttributeDescriptionNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -51,6 +50,7 @@ public class TimeZoneAttributeDescriptionNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**

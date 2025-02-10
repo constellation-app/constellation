@@ -37,16 +37,15 @@ import org.testng.annotations.Test;
 public class DijkstraServicesNGTest {
 
     private StoreGraph graph;
-
-    public DijkstraServicesNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -56,6 +55,7 @@ public class DijkstraServicesNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -65,19 +65,16 @@ public class DijkstraServicesNGTest {
      */
     @Test
     public void testQueryPathsWithNothingSelected() throws Exception {
-        final int vx0, vx1, tx0;
-        final int selectedVertexAttr, selectedTransactionAttr;
-
-        selectedVertexAttr = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
-        selectedTransactionAttr = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
-
         // Add 2 vertices
-        vx0 = graph.addVertex();
-        vx1 = graph.addVertex();
-
+        final int vx0 = graph.addVertex();
+        final int vx1 = graph.addVertex();
+        
         // create a transaction from vx0 -> vx1
-        tx0 = graph.addTransaction(vx0, vx1, true);
-
+        final int tx0 = graph.addTransaction(vx0, vx1, true);
+        
+        final int selectedVertexAttr = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
+        final int selectedTransactionAttr = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
+        
         final List<Integer> selectedNodes = new ArrayList<>();
 
         boolean deselectCurrent = false;
@@ -96,18 +93,15 @@ public class DijkstraServicesNGTest {
      */
     @Test
     public void testQueryPathsWithNoDirection() throws Exception {
-        final int vx0, vx1, tx0;
-        final int selectedVertexAttr, selectedTransactionAttr;
-
-        selectedVertexAttr = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
-        selectedTransactionAttr = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
-
         // Add 2 vertices
-        vx0 = graph.addVertex();
-        vx1 = graph.addVertex();
-
+        final int vx0 = graph.addVertex();
+        final int vx1 = graph.addVertex();
+        
         // create a transaction from vx0 -> vx1
-        tx0 = graph.addTransaction(vx0, vx1, true);
+        final int tx0 = graph.addTransaction(vx0, vx1, true);
+        
+        final int selectedVertexAttr = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
+        final int selectedTransactionAttr = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
 
         // select vx0 and vx1
         graph.setBooleanValue(selectedVertexAttr, vx0, true);
@@ -133,18 +127,15 @@ public class DijkstraServicesNGTest {
      */
     @Test
     public void testQueryPathsWithDirection() throws Exception {
-        final int vx0, vx1, tx0;
-        final int selectedVertexAttr, selectedTransactionAttr;
-
-        selectedVertexAttr = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
-        selectedTransactionAttr = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
-
         // Add 2 vertices
-        vx0 = graph.addVertex();
-        vx1 = graph.addVertex();
-
+        final int vx0 = graph.addVertex();
+        final int vx1 = graph.addVertex();
+        
         // create a transaction from vx0 -> vx1
-        tx0 = graph.addTransaction(vx0, vx1, true);
+        final int tx0 = graph.addTransaction(vx0, vx1, true);
+        
+        final int selectedVertexAttr = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
+        final int selectedTransactionAttr = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
 
         // select vx0 and vx1
         graph.setBooleanValue(selectedVertexAttr, vx0, true);
@@ -170,26 +161,23 @@ public class DijkstraServicesNGTest {
      */
     @Test
     public void testQueryPathsWithDirectionComplex1() throws Exception {
-        final int vx0, vx1, vx2, vx3, vx4, tx0, tx1, tx2, tx3, tx4, tx5;
-        final int selectedVertexAttr, selectedTransactionAttr;
-
-        selectedVertexAttr = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
-        selectedTransactionAttr = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
-
-        // Add 2 vertices
-        vx0 = graph.addVertex();
-        vx1 = graph.addVertex();
-        vx2 = graph.addVertex();
-        vx3 = graph.addVertex();
-        vx4 = graph.addVertex();
-
+        // Add 5 vertices
+        final int vx0 = graph.addVertex();
+        final int vx1 = graph.addVertex();
+        final int vx2 = graph.addVertex();
+        final int vx3 = graph.addVertex();
+        final int vx4 = graph.addVertex();
+        
         // create transactions
-        tx0 = graph.addTransaction(vx0, vx2, true);
-        tx1 = graph.addTransaction(vx2, vx1, true);
-        tx2 = graph.addTransaction(vx1, vx0, true);
-        tx3 = graph.addTransaction(vx0, vx3, true);
-        tx4 = graph.addTransaction(vx3, vx4, true);
-        tx5 = graph.addTransaction(vx4, vx2, true);
+        final int tx0 = graph.addTransaction(vx0, vx2, true);
+        final int tx1 = graph.addTransaction(vx2, vx1, true);
+        final int tx2 = graph.addTransaction(vx1, vx0, true);
+        final int tx3 = graph.addTransaction(vx0, vx3, true);
+        final int tx4 = graph.addTransaction(vx3, vx4, true);
+        final int tx5 = graph.addTransaction(vx4, vx2, true);
+        
+        final int selectedVertexAttr = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
+        final int selectedTransactionAttr = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
 
         // make the selection
         graph.setBooleanValue(selectedVertexAttr, vx0, true);
@@ -226,27 +214,24 @@ public class DijkstraServicesNGTest {
      */
     @Test
     public void testQueryPathsWithDirectionComplex2() throws Exception {
-        final int vx0, vx1, vx2, vx3, vx4, tx0, tx1, tx2, tx3, tx4, tx5;
-        final int selectedVertexAttr, selectedTransactionAttr;
-
-        selectedVertexAttr = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
-        selectedTransactionAttr = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
-
-        // Add 2 vertices
-        vx0 = graph.addVertex();
-        vx1 = graph.addVertex();
-        vx2 = graph.addVertex();
-        vx3 = graph.addVertex();
-        vx4 = graph.addVertex();
-
+        // Add 5 vertices
+        final int vx0 = graph.addVertex();
+        final int vx1 = graph.addVertex();
+        final int vx2 = graph.addVertex();
+        final int vx3 = graph.addVertex();
+        final int vx4 = graph.addVertex();
+        
         // create transactions
-        tx0 = graph.addTransaction(vx2, vx0, true);
-        tx1 = graph.addTransaction(vx2, vx1, true);
-        tx2 = graph.addTransaction(vx1, vx0, true);
-        tx3 = graph.addTransaction(vx0, vx3, true);
-        tx4 = graph.addTransaction(vx3, vx4, true);
-        tx5 = graph.addTransaction(vx4, vx2, true);
-
+        final int tx0 = graph.addTransaction(vx2, vx0, true);
+        final int tx1 = graph.addTransaction(vx2, vx1, true);
+        final int tx2 = graph.addTransaction(vx1, vx0, true);
+        final int tx3 = graph.addTransaction(vx0, vx3, true);
+        final int tx4 = graph.addTransaction(vx3, vx4, true);
+        final int tx5 = graph.addTransaction(vx4, vx2, true);
+        
+        final int selectedVertexAttr = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
+        final int selectedTransactionAttr = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
+        
         // make the selection
         graph.setBooleanValue(selectedVertexAttr, vx0, true);
         graph.setBooleanValue(selectedVertexAttr, vx2, true);
@@ -282,25 +267,22 @@ public class DijkstraServicesNGTest {
      */
     @Test
     public void testQueryPathsWithDirectionComplex3() throws Exception {
-        final int vx0, vx1, vx2, vx3, vx4, tx0, tx1, tx2, tx3, tx4, tx5;
-        final int selectedVertexAttr, selectedTransactionAttr;
-
-        selectedVertexAttr = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
-        selectedTransactionAttr = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
-
-        // Add 2 vertices
-        vx0 = graph.addVertex();
-        vx1 = graph.addVertex();
-        vx2 = graph.addVertex();
-        vx3 = graph.addVertex();
-        vx4 = graph.addVertex();
-
+        // Add 5 vertices
+        final int vx0 = graph.addVertex();
+        final int vx1 = graph.addVertex();
+        final int vx2 = graph.addVertex();
+        final int vx3 = graph.addVertex();
+        final int vx4 = graph.addVertex();
+        
         // create transactions
-        tx1 = graph.addTransaction(vx2, vx1, true);
-        tx2 = graph.addTransaction(vx1, vx0, true);
-        tx3 = graph.addTransaction(vx0, vx3, true);
-        tx4 = graph.addTransaction(vx3, vx4, true);
-        tx5 = graph.addTransaction(vx4, vx2, true);
+        final int tx0 = graph.addTransaction(vx2, vx1, true);
+        final int tx1 = graph.addTransaction(vx1, vx0, true);
+        final int tx2 = graph.addTransaction(vx0, vx3, true);
+        final int tx3 = graph.addTransaction(vx3, vx4, true);
+        final int tx4 = graph.addTransaction(vx4, vx2, true);
+        
+        final int selectedVertexAttr = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
+        final int selectedTransactionAttr = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
 
         // make the selection
         graph.setBooleanValue(selectedVertexAttr, vx0, true);
@@ -318,15 +300,15 @@ public class DijkstraServicesNGTest {
         assertTrue(graph.getBooleanValue(selectedVertexAttr, vx0));
         assertTrue(graph.getBooleanValue(selectedVertexAttr, vx2));
         assertTrue(graph.getBooleanValue(selectedVertexAttr, vx1));
+        assertTrue(graph.getBooleanValue(selectedTransactionAttr, tx0));
         assertTrue(graph.getBooleanValue(selectedTransactionAttr, tx1));
-        assertTrue(graph.getBooleanValue(selectedTransactionAttr, tx2));
 
         // deselected
         assertFalse(graph.getBooleanValue(selectedVertexAttr, vx3));
         assertFalse(graph.getBooleanValue(selectedVertexAttr, vx4));
+        assertFalse(graph.getBooleanValue(selectedTransactionAttr, tx2));
         assertFalse(graph.getBooleanValue(selectedTransactionAttr, tx3));
         assertFalse(graph.getBooleanValue(selectedTransactionAttr, tx4));
-        assertFalse(graph.getBooleanValue(selectedTransactionAttr, tx5));
     }
 
     /**
@@ -336,25 +318,22 @@ public class DijkstraServicesNGTest {
      */
     @Test
     public void testQueryPathsWithNoDirectionComplex3() throws Exception {
-        final int vx0, vx1, vx2, vx3, vx4, tx0, tx1, tx2, tx3, tx4, tx5;
-        final int selectedVertexAttr, selectedTransactionAttr;
-
-        selectedVertexAttr = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
-        selectedTransactionAttr = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
-
-        // Add 2 vertices
-        vx0 = graph.addVertex();
-        vx1 = graph.addVertex();
-        vx2 = graph.addVertex();
-        vx3 = graph.addVertex();
-        vx4 = graph.addVertex();
-
+        // Add 5 vertices
+        final int vx0 = graph.addVertex();
+        final int vx1 = graph.addVertex();
+        final int vx2 = graph.addVertex();
+        final int vx3 = graph.addVertex();
+        final int vx4 = graph.addVertex();
+        
         // create transactions
-        tx1 = graph.addTransaction(vx2, vx1, true);
-        tx2 = graph.addTransaction(vx1, vx0, true);
-        tx3 = graph.addTransaction(vx0, vx3, true);
-        tx4 = graph.addTransaction(vx3, vx4, true);
-        tx5 = graph.addTransaction(vx4, vx2, true);
+        final int tx0 = graph.addTransaction(vx2, vx1, true);
+        final int tx1 = graph.addTransaction(vx1, vx0, true);
+        final int tx2 = graph.addTransaction(vx0, vx3, true);
+        final int tx3 = graph.addTransaction(vx3, vx4, true);
+        final int tx4 = graph.addTransaction(vx4, vx2, true);
+        
+        final int selectedVertexAttr = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
+        final int selectedTransactionAttr = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
 
         // make the selection
         graph.setBooleanValue(selectedVertexAttr, vx0, true);
@@ -372,14 +351,14 @@ public class DijkstraServicesNGTest {
         assertTrue(graph.getBooleanValue(selectedVertexAttr, vx0));
         assertTrue(graph.getBooleanValue(selectedVertexAttr, vx2));
         assertTrue(graph.getBooleanValue(selectedVertexAttr, vx1));
+        assertTrue(graph.getBooleanValue(selectedTransactionAttr, tx0));
         assertTrue(graph.getBooleanValue(selectedTransactionAttr, tx1));
-        assertTrue(graph.getBooleanValue(selectedTransactionAttr, tx2));
 
         // deselected
         assertFalse(graph.getBooleanValue(selectedVertexAttr, vx3));
         assertFalse(graph.getBooleanValue(selectedVertexAttr, vx4));
+        assertFalse(graph.getBooleanValue(selectedTransactionAttr, tx2));
         assertFalse(graph.getBooleanValue(selectedTransactionAttr, tx3));
         assertFalse(graph.getBooleanValue(selectedTransactionAttr, tx4));
-        assertFalse(graph.getBooleanValue(selectedTransactionAttr, tx5));
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ public class IntHashSetNGTest implements Serializable {
      * IntHashSet is abstract so this is a concrete implementation for testing.
      * Specifically, the hashing algorithm is fantastic.
      */
-    public class IntHashSetImpl extends IntHashSet {
+    private class IntHashSetImpl extends IntHashSet {
 
         public IntHashSetImpl(int capacity) {
             super(capacity);
@@ -69,7 +69,7 @@ public class IntHashSetNGTest implements Serializable {
      * {@link IntHashSet#getAverageQueue IntHashSet.getAverageQueue()} to give
      * an indication of changes occurring to the internal state of the object.
      */
-    public class IntHashSetImplBadHash extends IntHashSet {
+    private class IntHashSetImplBadHash extends IntHashSet {
 
         public IntHashSetImplBadHash(int capacity) {
             super(capacity);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -224,7 +224,7 @@ public class ButtonToolbar {
 
     /**
      * Change the execute buttons state, changing the text, style and ensuring
-     * it enablement state remains unchanged.
+     * its enablement state remains unchanged.
      *
      * @param state the new state to set the execute button to
      */
@@ -234,7 +234,7 @@ public class ButtonToolbar {
 
     /**
      * Change the execute buttons state, changing the text, style and ensuring
-     * it disable status is set to the passed flag.
+     * its disable status is set to the passed flag.
      *
      * @param state the new state to set the execute button to
      * @param disable true if the button should be disabled, false otherwise

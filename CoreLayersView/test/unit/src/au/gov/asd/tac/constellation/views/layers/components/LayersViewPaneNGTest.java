@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,8 +39,6 @@ import org.testng.annotations.Test;
  */
 public class LayersViewPaneNGTest {
     
-    public LayersViewPaneNGTest() {
-    }
     private static final Logger LOGGER = Logger.getLogger(LayersViewPaneNGTest.class.getName());
 
     @BeforeClass
@@ -61,10 +59,12 @@ public class LayersViewPaneNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -119,6 +119,7 @@ public class LayersViewPaneNGTest {
 
     /**
      * Test of setEnabled method, of class LayersViewPane.
+     * @throws java.lang.InterruptedException
      */
     @Test
     public void testSetEnabled() throws InterruptedException {
@@ -145,6 +146,7 @@ public class LayersViewPaneNGTest {
     
     /**
      * Test of setEnabled method, of class LayersViewPane.
+     * @throws java.lang.InterruptedException
      */
     @Test
     public void testSetEnabledFalse() throws InterruptedException {
@@ -168,5 +170,4 @@ public class LayersViewPaneNGTest {
         verify(spiedLvp).setEnabled(Mockito.eq(false));
         verify(spiedLvp).setCenter(Mockito.same(spiedLvp.noGraphPane));
     }
-
 }

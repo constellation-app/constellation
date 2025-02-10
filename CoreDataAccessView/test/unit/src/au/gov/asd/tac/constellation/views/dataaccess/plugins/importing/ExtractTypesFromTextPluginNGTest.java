@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,11 +38,10 @@ import org.testng.annotations.Test;
  * @author Delphinus8821
  */
 public class ExtractTypesFromTextPluginNGTest {
-    private StoreGraph graph;
     
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        graph = new StoreGraph(SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema());
+        // Not currently required
     }
 
     /**
@@ -128,7 +127,7 @@ public class ExtractTypesFromTextPluginNGTest {
         PluginParameters parameters = instance.createParameters();
         parameters.getParameters().get(ExtractTypesFromTextPlugin.TEXT_PARAMETER_ID).setStringValue(null);
         
-        RecordStore result = instance.query(query, interaction, parameters);
+        instance.query(query, interaction, parameters);
     }
 
     /**

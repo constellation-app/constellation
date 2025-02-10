@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,24 +29,25 @@ import org.testng.annotations.Test;
  * @author aldebaran30701
  */
 public class TreeNodeNGTest {
-
-    public TreeNodeNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -150,7 +151,7 @@ public class TreeNodeNGTest {
 
     }
 
-    public TreeNode<Integer> getNestedTree() {
+    private TreeNode<Integer> getNestedTree() {
         TreeNode<Integer> root = new TreeNode(0);
 
         TreeNode<Integer> one0 = new TreeNode(10);
@@ -183,11 +184,11 @@ public class TreeNodeNGTest {
         return root;
     }
 
-    public String getStringTree() {
+    private String getStringTree() {
         return " 0 10 20 11 21 22 30 12 23 31 41 13 14";
     }
 
-    public TreeNode<TOCItem> getNestedTOCTree() {
+    private TreeNode<TOCItem> getNestedTOCTree() {
         final TOCItem rootItem = new TOCItem("0", "zero");
         TreeNode<TOCItem> root = new TreeNode(rootItem);
 

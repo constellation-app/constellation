@@ -12,7 +12,7 @@
 <th>Constellation Action</th>
 <th>Keyboard Shortcut</th>
 <th>User Action</th>
-<th>Menu Icon</th>
+<th style="text-align: center;">Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -20,9 +20,7 @@
 <td>Open Analytic View</td>
 <td>Ctrl + Shift + Z</td>
 <td>Views -&gt; Analytic View</td>
-<td><div style="text-align: center">
-<img src="../ext/docs/CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/resources/analytic-view.png" width="16" height="16" />
-</div></td>
+<td style="text-align: center"><img src="../ext/docs/CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/resources/analytic-view.png" alt="Analytic View Icon" /></td>
 </tr>
 </tbody>
 </table>
@@ -37,9 +35,7 @@ clustering and partitioning the graph, and even analysing content stored
 on a graph.
 
 <div style="text-align: center">
-
 <img src="../ext/docs/CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/resources/AnalyticView.png" alt="Analytic View" />
-
 </div>
 
 ## Asking a Question
@@ -69,3 +65,7 @@ Once a question has finished running, the results are compiled into a
 table which is displayed at the top of the view. You can also visualise
 these results on the graph with options to add color, size, and
 show/hide filters.
+
+<div style="text-align: center">
+<img src="../ext/docs/CoreAnalyticView/src/au/gov/asd/tac/constellation/views/analyticview/resources/AnalyticViewResultsTable.png" alt="Analytic View Results Table" />
+</div>

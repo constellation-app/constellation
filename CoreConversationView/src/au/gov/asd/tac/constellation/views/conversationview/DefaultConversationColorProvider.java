@@ -16,6 +16,8 @@
 package au.gov.asd.tac.constellation.views.conversationview;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import static au.gov.asd.tac.constellation.views.conversationview.ConversationSide.LEFT;
+import static au.gov.asd.tac.constellation.views.conversationview.ConversationSide.RIGHT;
 import java.util.List;
 import javafx.scene.paint.Color;
 import javax.swing.SwingUtilities;
@@ -52,18 +54,20 @@ public class DefaultConversationColorProvider implements ConversationColorProvid
 
         for (final ConversationMessage message : messages) {
             final int sender = message.getSender();
-            final int senderPosition = graph.getVertexPosition(sender);
-            final int colorPosition = colorPositions[senderPosition];
-            if (colorPosition == 0) {
-                switch (message.getConversationSide()) {
-                    case LEFT:
-                        colorPositions[senderPosition] = ++leftVertexCount;
-                        break;
-                    case RIGHT:
-                        colorPositions[senderPosition] = rightVertexCount--;
-                        break;
-                    default:
-                        break;
+            if (sender < colorPositions.length) {
+                final int senderPosition = graph.getVertexPosition(sender);
+                final int colorPosition = colorPositions[senderPosition];
+                if (colorPosition == 0) {
+                    switch (message.getConversationSide()) {
+                        case LEFT:
+                            colorPositions[senderPosition] = ++leftVertexCount;
+                            break;
+                        case RIGHT:
+                            colorPositions[senderPosition] = rightVertexCount--;
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         }
@@ -83,10 +87,12 @@ public class DefaultConversationColorProvider implements ConversationColorProvid
 
         for (final ConversationMessage message : messages) {
             final int sender = message.getSender();
-            final int senderPosition = graph.getVertexPosition(sender);
-            final int colorPosition = colorPositions[senderPosition] - 1;
-            final Color vertexColor = vertexColors[colorPosition];
-            message.setColor(vertexColor);
+            if (sender < colorPositions.length) {
+                final int senderPosition = graph.getVertexPosition(sender);
+                final int colorPosition = colorPositions[senderPosition] - 1;
+                final Color vertexColor = vertexColors[colorPosition];
+                message.setColor(vertexColor);
+            }
         }
     }
 

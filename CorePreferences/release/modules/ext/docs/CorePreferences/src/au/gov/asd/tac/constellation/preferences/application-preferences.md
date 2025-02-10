@@ -3,6 +3,10 @@
 Application preferences can be accessed via Setup -> Options ->
 CONSTELLATION -> Application.
 
+<div style="text-align: center">
+<img src="../ext/docs/CorePreferences/src/au/gov/asd/tac/constellation/preferences/resources/applicationPanel.png" alt="Application Options Panel" />
+</div>
+
 ## User Directory
 
 The user directory is where Constellation stores user-specific data such
@@ -27,6 +31,8 @@ By default, Constellation displays the Welcome page when on startup. The
 Welcome page can be hidden on startup either in preferences or directly
 on the Welcome page via the "Show on Startup" tickbox option.
 
+The What's New page can also be displayed on startup if the tickbox is selected.
+
 ## Internal Webserver
 
 Constellation has a built in Restful web service allowing you to
@@ -48,20 +54,10 @@ Notebooks are located and will launch the Jupyter Notebooks server from
 this directory. You can start the Jupyter Notebooks server from
 Constellation via Tools -> Start Jupyter Notebook.
 
-Selecting to "Download Python REST client" means that when you start the
-Jupyter Notebook server, Constellation will download the
-constellation_client.py file to your .ipython folder. The
-constellation_client.py provides easy access to make Restful calls to
-Constellation.
-
-## Open/Save Location
-
-By default, Constellation opens your previous opened or saved location
-when you try to open or save a file, and it will remember the last
-location accessed for the next session. This can be altered in
-preferences by unticking the "Remember Open/Save Location" option. When
-this is unticked, the open or save location defaults to the user's home
-directory.
+Selecting to "Download Python REST client" means that when you start the Jupyter 
+Notebook server, Constellation will install our custom python package, constellation_client.
+The constellation_client package provides a convenient interface to the REST API 
+for Python scripts in Jupyter notebooks.
 
 ## Application Font Preferences
 
@@ -91,3 +87,4 @@ The user is able to set a colorblind mode for constellation. When a
 colorblind mode is set, nodes drawn are automatically generated with
 colorblind-friendly colors, and existing graphs can be adjusted to 
 the new color scheme using Tools -> Complete with Schema.
+

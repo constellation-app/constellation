@@ -97,9 +97,8 @@ public class ImageIconDropper implements GraphDropper {
                         image = ImageIO.read(file);
                     }
                 }
-            } else {
-                // Do nothing
             }
+            
             if (image != null) {
                 final BufferedImage resultImage = image;
                 return (graph, dropInfo) -> {
@@ -140,7 +139,7 @@ public class ImageIconDropper implements GraphDropper {
     }
 
     /**
-     * Plugin to add the required Layers View attributes.
+     * Plugin to set the foreground icon of the selected vertices to the given icon.
      */
     @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
     public static class SetVertexIconsPlugin extends SimpleEditPlugin {
@@ -162,7 +161,6 @@ public class ImageIconDropper implements GraphDropper {
             final int selectedAttr = VisualConcept.VertexAttribute.SELECTED.get(graph);
             final int iconAttr = VisualConcept.VertexAttribute.FOREGROUND_ICON.get(graph);
             if (selectedAttr != Graph.NOT_FOUND && iconAttr != Graph.NOT_FOUND) {
-
                 final GraphIndexResult selectionResult = GraphIndexUtilities.filterElements(graph, selectedAttr, true);
                 int vertex = selectionResult.getNextElement();
                 while (vertex != Graph.NOT_FOUND) {
@@ -170,12 +168,7 @@ public class ImageIconDropper implements GraphDropper {
                     vertex = selectionResult.getNextElement();
                 }
             }
-            ConstellationLoggerHelper.importPropertyBuilder(
-                    this,
-                    Arrays.asList(iconName),
-                    null,
-                    ConstellationLoggerHelper.SUCCESS
-            );
+            ConstellationLoggerHelper.importPropertyBuilder(this, Arrays.asList(iconName), null, ConstellationLoggerHelper.SUCCESS);
         }
     }
 }

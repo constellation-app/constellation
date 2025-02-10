@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,21 +56,37 @@ public class ExportToImageActionNGTest {
     private static PluginExecution withParameterMock;
     private static GraphNode contextMock;
     private static Graph graphMock;
-
-    public ExportToImageActionNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
         fileChooserStaticMock = mockStatic(FileChooser.class);
+        
+        fileChooserStaticMock.when(()
+                -> FileChooser.createFileChooserBuilder(any(String.class)))
+                .thenCallRealMethod();
+        
+        fileChooserStaticMock.when(()
+                -> FileChooser.createFileChooserBuilder(any(String.class), any(String.class)))
+                .thenCallRealMethod();
+        
+        fileChooserStaticMock.when(()
+                -> FileChooser.createFileChooserBuilder(any(String.class), any(String.class), any(String.class)))
+                .thenCallRealMethod();
+        
+        fileChooserStaticMock.when(()
+                -> FileChooser.createFileChooserBuilder(any(String.class), any(String.class), any(String.class), any(Boolean.class)))
+                .thenCallRealMethod();
+
         pluginExecutionStaticMock = mockStatic(PluginExecution.class);
         withPluginMock = mock(PluginExecution.class);
         withParameterMock = mock(PluginExecution.class);
@@ -132,8 +148,7 @@ public class ExportToImageActionNGTest {
     }
 
     /**
-     * Test of testGetExportToImageFileChooser method, of class
-     * ExportToImageAction.
+     * Test of testGetExportToImageFileChooser method, of class ExportToImageAction.
      *
      * @throws IOException
      */

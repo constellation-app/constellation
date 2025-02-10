@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.plugins.importexport.jdbc;
 
 import java.util.ArrayList;
 import java.util.List;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -29,24 +29,25 @@ import org.testng.annotations.Test;
  * @author altair1673
  */
 public class JDBCImportControllerNGTest {
-
-    public JDBCImportControllerNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
 
@@ -56,23 +57,25 @@ public class JDBCImportControllerNGTest {
     @Test
     public void testClearData() {
         System.out.println("clearData");
+        
         JDBCImportController instance = new JDBCImportController();
 
         String[] sample = {"test", "test", "test"};
-        List<String[]> sampleData = new ArrayList<String[]>();
+        List<String[]> sampleData = new ArrayList<>();
 
         sampleData.add(sample);
         sampleData.add(sample);
         sampleData.add(sample);
 
         instance.setColumns(sample);
-
+        instance.setData(sampleData);
+        
+        assertEquals(instance.getColumns().length, 3);
+        assertEquals(instance.getData().size(), 3);
 
         instance.clearSampleData();
 
-        assertEquals(0, instance.getColumns().length);
-        assertEquals(0, instance.getData().size());
+        assertEquals(instance.getColumns().length, 0);
+        assertEquals(instance.getData().size(), 0);
     }
-
-
 }

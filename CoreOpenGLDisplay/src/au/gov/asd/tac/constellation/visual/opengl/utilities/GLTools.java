@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -240,7 +240,8 @@ public final class GLTools {
         }
 
         // Bind attributes from the args.
-        for (int i = 0; i < args.length;) {
+        int i = 0;
+        while (i < args.length) {
             final int index = (Integer) args[i++];
             final String arg = (String) args[i++];
             if (index >= ShaderManager.FRAG_BASE) {

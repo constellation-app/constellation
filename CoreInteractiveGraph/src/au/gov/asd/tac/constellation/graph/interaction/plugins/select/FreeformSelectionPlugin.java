@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,12 +62,11 @@ public final class FreeformSelectionPlugin extends SimpleEditPlugin {
 
     // From https://stackoverflow.com/questions/11716268/point-in-polygon-algorithm
     private boolean inFreeformPolygons(float xPoint, float yPoint) {
-        int j = -999;
-        int i = -999;
+
         boolean locatedInPolygon = false;
 
-        for (i = 0; i < numVertices; i++) {
-            j = (i == numVertices - 1) ? 0 : i + 1;
+        for (int i = 0; i < numVertices; i++) {
+            final int j = (i == numVertices - 1) ? 0 : i + 1;
 
             final float vertY_i = transformedVertices[i * 2 + 1];
             final float vertX_i = transformedVertices[i * 2];
@@ -173,12 +172,10 @@ public final class FreeformSelectionPlugin extends SimpleEditPlugin {
             float z = zAttr != Graph.NOT_FOUND ? graph.getFloatValue(zAttr, vxId) : VisualGraphDefaults.getDefaultZ(vxId);
 
             // If mixing is required then mix the main location with the alternative location.
-            boolean mixed = false;
             if (requiresMix) {
                 x = inverseMix * x + mix * graph.getFloatValue(x2Attr, vxId);
                 y = inverseMix * y + mix * graph.getFloatValue(y2Attr, vxId);
                 z = inverseMix * z + mix * graph.getFloatValue(z2Attr, vxId);
-                mixed = true;
             }
 
             // Convert world coordinates to camera coordinates.

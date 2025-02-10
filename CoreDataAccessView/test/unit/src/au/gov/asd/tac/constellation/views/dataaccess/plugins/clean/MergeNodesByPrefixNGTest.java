@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,8 +51,15 @@ public class MergeNodesByPrefixNGTest {
 
     private Schema schema;
     private StoreGraph graph;
-    private int vxId1, vxId2, vxId3, vxId4, vxId5;
-    private int vertexIdentifierAttribute, vertexSelectedAttribute;
+    
+    private int vxId1;
+    private int vxId2;
+    private int vxId3;
+    private int vxId4;
+    private int vxId5;
+    
+    private int vertexIdentifierAttribute;
+    private int vertexSelectedAttribute;
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
@@ -128,8 +135,8 @@ public class MergeNodesByPrefixNGTest {
         final boolean selectedOnly = false;
 
         final MergeNodesByPrefix instance = new MergeNodesByPrefix();
-        final StoreGraph graph_NoIdentierAttribute = new StoreGraph(schema);
-        final Map<Integer, Set<Integer>> result = instance.getNodesToMerge(graph_NoIdentierAttribute, leadVertexChooser, threshold, selectedOnly);
+        final StoreGraph graphNoIdentifierAttribute = new StoreGraph(schema);
+        final Map<Integer, Set<Integer>> result = instance.getNodesToMerge(graphNoIdentifierAttribute, leadVertexChooser, threshold, selectedOnly);
 
         final Map<Integer, Set<Integer>> expResult = new HashMap<>();
 

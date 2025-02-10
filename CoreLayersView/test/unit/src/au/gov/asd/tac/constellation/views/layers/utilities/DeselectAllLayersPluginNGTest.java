@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,6 @@ import au.gov.asd.tac.constellation.views.layers.shortcut.NewLayerPlugin;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewState;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 import org.testng.annotations.Test;
 
 /**
@@ -34,32 +33,19 @@ import org.testng.annotations.Test;
  * @author formalhaut69
  */
 public class DeselectAllLayersPluginNGTest {
-
-    private int layerMaskV, layerMaskT, layerVisibilityV, layerVisibilityT;
+    
     private StoreGraph graph;
 
     public void setupGraph() {
         graph = new StoreGraph();
 
         // Create LayerMask attributes
-        layerMaskV = LayersConcept.VertexAttribute.LAYER_MASK.ensure(graph);
-        if (layerMaskV == Graph.NOT_FOUND) {
-            fail();
-        }
-        layerMaskT = LayersConcept.TransactionAttribute.LAYER_MASK.ensure(graph);
-        if (layerMaskT == Graph.NOT_FOUND) {
-            fail();
-        }
+        LayersConcept.VertexAttribute.LAYER_MASK.ensure(graph);
+        LayersConcept.TransactionAttribute.LAYER_MASK.ensure(graph);
 
         // Create LayerVisilibity Attributes
-        layerVisibilityV = LayersConcept.VertexAttribute.LAYER_VISIBILITY.ensure(graph);
-        if (layerVisibilityV == Graph.NOT_FOUND) {
-            fail();
-        }
-        layerVisibilityT = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.ensure(graph);
-        if (layerVisibilityT == Graph.NOT_FOUND) {
-            fail();
-        }
+        LayersConcept.VertexAttribute.LAYER_VISIBILITY.ensure(graph);
+        LayersConcept.TransactionAttribute.LAYER_VISIBILITY.ensure(graph);
     }
 
     @Test

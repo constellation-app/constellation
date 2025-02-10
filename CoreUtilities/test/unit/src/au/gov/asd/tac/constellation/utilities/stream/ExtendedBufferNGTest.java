@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,8 @@ package au.gov.asd.tac.constellation.utilities.stream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.fail;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -33,23 +34,24 @@ public class ExtendedBufferNGTest {
     
     private final int size = 10;
     
-    public ExtendedBufferNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -57,7 +59,7 @@ public class ExtendedBufferNGTest {
      * 
      */
     @Test
-    public void testDefaultConstructor() throws Exception {
+    public void testDefaultConstructor() {
         System.out.println("ExtendedBufferNGTest.testDefaultConstructor");
 
         final ExtendedBuffer localBuffer = new ExtendedBuffer(size);
@@ -67,9 +69,10 @@ public class ExtendedBufferNGTest {
 
     /**
      * Test of getOutputStream method, of class ExtendedBuffer.
+     * @throws java.io.IOException
      */
     @Test
-    public void testOutputStream() throws Exception {
+    public void testOutputStream() throws IOException {
         System.out.println("ExtendedBufferNGTest.testOutputStream");
 
         final ExtendedBuffer buffer = new ExtendedBuffer(size);
@@ -105,9 +108,10 @@ public class ExtendedBufferNGTest {
     
     /**
      * Test of getOutputStream method, of class ExtendedBuffer.
+     * @throws java.io.IOException
      */
     @Test
-    public void testOutputStreamRanges() throws Exception {
+    public void testOutputStreamRanges() throws IOException {
         System.out.println("ExtendedBufferNGTest.testOutputStreamRanges");
 
         final ExtendedBuffer buffer = new ExtendedBuffer(size);
@@ -141,9 +145,10 @@ public class ExtendedBufferNGTest {
     
     /**
      * Test of getInputStream method, of class ExtendedBuffer.
+     * @throws java.io.IOException
      */
     @Test
-    public void testInputStreamReadByte() throws Exception {
+    public void testInputStreamReadByte() throws IOException {
         System.out.println("ExtendedBufferNGTest.testInputStreamReadByte");
         
         final ExtendedBuffer buffer = new ExtendedBuffer(size);
@@ -175,9 +180,10 @@ public class ExtendedBufferNGTest {
     
     /**
      * Test of getInputStream method, of class ExtendedBuffer.
+     * @throws java.io.IOException
      */
     @Test
-    public void testInputStreamReadArray() throws Exception {
+    public void testInputStreamReadArray() throws IOException {
         System.out.println("ExtendedBufferNGTest.testInputStreamReadArray");
         
         final ExtendedBuffer buffer = new ExtendedBuffer(size);
@@ -216,9 +222,10 @@ public class ExtendedBufferNGTest {
     
     /**
      * Test of getInputStream method, of class ExtendedBuffer.
+     * @throws java.io.IOException
      */
     @Test
-    public void testInputStreamRanges() throws Exception {
+    public void testInputStreamRanges() throws IOException {
         System.out.println("ExtendedBufferNGTest.testInputStreamRanges");
 
         final ExtendedBuffer buffer = new ExtendedBuffer(size);
@@ -254,9 +261,10 @@ public class ExtendedBufferNGTest {
 
     /**
      * Test of getData method, of class ExtendedBuffer.
+     * @throws java.io.IOException
      */
     @Test
-    public void testGetData() throws Exception {
+    public void testGetData() throws IOException {
         System.out.println("ExtendedBufferNGTest.testGetData");
         
         final ExtendedBuffer buffer = new ExtendedBuffer(size);
@@ -281,7 +289,7 @@ public class ExtendedBufferNGTest {
             outputStream.close();
             assertEquals(buffer.getAvailableSize(), 6);
 
-            final int readResult = inputStream.read(readBytes, 0, 2);
+            inputStream.read(readBytes, 0, 2);
             final byte[] result = buffer.getData();
             assertEquals(buffer.getAvailableSize(), 0);
 

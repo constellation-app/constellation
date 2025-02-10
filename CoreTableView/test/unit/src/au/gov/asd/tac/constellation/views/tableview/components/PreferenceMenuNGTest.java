@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,6 +85,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class PreferenceMenuNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(PreferenceMenuNGTest.class.getName());
 
     private TableViewTopComponent tableViewTopComponent;
@@ -126,6 +127,7 @@ public class PreferenceMenuNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     @Test
@@ -145,16 +147,8 @@ public class PreferenceMenuNGTest {
         assertNotNull(preferencesMenu.getLoadPreferencesMenu());
         assertNotNull(preferencesMenu.getPageSizeMenu());
 
-        assertEquals(
-                FXCollections.observableList(
-                        List.of(
-                                preferencesMenu.getPageSizeMenu(),
-                                preferencesMenu.getSavePreferencesMenu(),
-                                preferencesMenu.getLoadPreferencesMenu()
-                        )
-                ),
-                preferencesMenu.getPreferencesButton().getItems()
-        );
+        assertEquals(FXCollections.observableList(List.of(preferencesMenu.getPageSizeMenu(), preferencesMenu.getSavePreferencesMenu(), preferencesMenu.getLoadPreferencesMenu())),
+                preferencesMenu.getPreferencesButton().getItems());
 
         // Preferences Button
         final ImageView icon = (ImageView) preferencesMenu.getPreferencesButton().getGraphic();
@@ -166,17 +160,9 @@ public class PreferenceMenuNGTest {
         assertEquals("Set Page Size", preferencesMenu.getPageSizeMenu().getText());
         assertEquals(4, preferencesMenu.getPageSizeMenu().getItems().size());
 
-        Map.of(
-                0, "100",
-                1, "250",
-                2, "500",
-                3, "1000"
-        ).entrySet().stream()
+        Map.of(0, "100", 1, "250", 2, "500", 3, "1000").entrySet().stream()
                 .forEach(entry -> {
-                    verifyPageSizeRadioButton(
-                            ((RadioMenuItem) preferencesMenu.getPageSizeMenu().getItems().get(entry.getKey())),
-                            entry.getValue()
-                    );
+                    verifyPageSizeRadioButton(((RadioMenuItem) preferencesMenu.getPageSizeMenu().getItems().get(entry.getKey())), entry.getValue());
                 });
 
         // Save Preferences
@@ -195,9 +181,7 @@ public class PreferenceMenuNGTest {
 
     @Test
     public void loadPreferencesCurrentStateNull() {
-        try (
-                final MockedStatic<TableViewPreferencesIoProvider> tablePrefIOUtilsMockedStatic
-                = Mockito.mockStatic(TableViewPreferencesIoProvider.class);) {
+        try (final MockedStatic<TableViewPreferencesIoProvider> tablePrefIOUtilsMockedStatic = Mockito.mockStatic(TableViewPreferencesIoProvider.class)) {
             preferencesMenu.loadPreferences();
 
             tablePrefIOUtilsMockedStatic.verifyNoInteractions();
@@ -206,9 +190,7 @@ public class PreferenceMenuNGTest {
 
     @Test
     public void loadPreferencesColumnOrderIsEmpty() {
-        try (
-                final MockedStatic<TableViewPreferencesIoProvider> tablePrefIOUtilsMockedStatic
-                = Mockito.mockStatic(TableViewPreferencesIoProvider.class);) {
+        try (final MockedStatic<TableViewPreferencesIoProvider> tablePrefIOUtilsMockedStatic = Mockito.mockStatic(TableViewPreferencesIoProvider.class);) {
             final TableViewState tableViewState = new TableViewState();
             tableViewState.setElementType(GraphElementType.VERTEX);
 
@@ -228,16 +210,13 @@ public class PreferenceMenuNGTest {
             preferencesMenu.loadPreferences();
 
             verify(activeTableReference, times(0)).saveSortDetails(anyString(), any(TableColumn.SortType.class));
-            verify(activeTableReference, times(0)).updateVisibleColumns(any(Graph.class), any(TableViewState.class),
-                    any(List.class), any(UpdateMethod.class));
+            verify(activeTableReference, times(0)).updateVisibleColumns(any(Graph.class), any(TableViewState.class), any(List.class), any(UpdateMethod.class));
         }
     }
 
     @Test
     public void loadPreferences() {
-        try (
-                final MockedStatic<TableViewPreferencesIoProvider> tablePrefIOUtilsMockedStatic
-                = Mockito.mockStatic(TableViewPreferencesIoProvider.class);) {
+        try (final MockedStatic<TableViewPreferencesIoProvider> tablePrefIOUtilsMockedStatic = Mockito.mockStatic(TableViewPreferencesIoProvider.class)) {
             final TableViewState tableViewState = new TableViewState();
             tableViewState.setElementType(GraphElementType.VERTEX);
 
@@ -268,8 +247,7 @@ public class PreferenceMenuNGTest {
             when(column3.getText()).thenReturn("Column3");
             when(column4.getText()).thenReturn("Column4");
 
-            when(tableView.getColumns()).thenReturn(
-                    FXCollections.observableList(List.of(column1, column2, column3, column4)));
+            when(tableView.getColumns()).thenReturn(FXCollections.observableList(List.of(column1, column2, column3, column4)));
 
             final Attribute attribute1 = mock(Attribute.class);
             final Attribute attribute2 = mock(Attribute.class);
@@ -290,12 +268,8 @@ public class PreferenceMenuNGTest {
             loadedTablePreferences.setSortByColumn(ImmutablePair.of("Column2", TableColumn.SortType.DESCENDING));
             loadedTablePreferences.setMaxRowsPerPage(150);
 
-            when(activeTableReference.updateVisibleColumns(
-                    any(Graph.class),
-                    any(TableViewState.class),
-                    any(List.class),
-                    eq(UpdateMethod.REPLACE)
-            )).thenReturn(CompletableFuture.completedFuture(null));
+            when(activeTableReference.updateVisibleColumns(any(Graph.class), any(TableViewState.class), any(List.class), eq(UpdateMethod.REPLACE)))
+                    .thenReturn(CompletableFuture.completedFuture(null));
 
             // Create page size option menu items, with one matching the pages size
             // in the loaded prefs above
@@ -308,8 +282,7 @@ public class PreferenceMenuNGTest {
             when(pageSizeOption2.getText()).thenReturn("150");
 
             when(preferencesMenu.getPageSizeToggle()).thenReturn(toggleGroup);
-            when(toggleGroup.getToggles()).thenReturn(
-                    FXCollections.observableList(List.of(pageSizeOption1, pageSizeOption2)));
+            when(toggleGroup.getToggles()).thenReturn(FXCollections.observableList(List.of(pageSizeOption1, pageSizeOption2)));
 
             // Return the loaded userTablePreferences when the load call is made
             tablePrefIOUtilsMockedStatic.when(() -> TableViewPreferencesIoProvider
@@ -324,15 +297,12 @@ public class PreferenceMenuNGTest {
             verify(column4).setVisible(true);
 
             verify(activeTableReference).saveSortDetails("Column2", TableColumn.SortType.DESCENDING);
-            verify(activeTableReference).updateVisibleColumns(
-                    same(graph),
-                    same(tableViewState),
+            verify(activeTableReference).updateVisibleColumns(same(graph), same(tableViewState),
                     eq(List.of(
                             Tuple.create("type1", attribute1),
                             Tuple.create("type2", attribute2),
                             Tuple.create("type4", attribute4)
-                    )),
-                    eq(UpdateMethod.REPLACE));
+                    )), eq(UpdateMethod.REPLACE));
 
             verify(pageSizeOption1, times(0)).setSelected(true);
             verify(pageSizeOption2, times(1)).setSelected(true);
@@ -356,10 +326,7 @@ public class PreferenceMenuNGTest {
             final boolean isActiveGraphNull) throws InterruptedException {
         clearInvocations(preferencesMenu, activeTableReference, tablePane);
 
-        try (
-                final MockedStatic<GraphManager> graphManagerMockedStatic
-                = Mockito.mockStatic(GraphManager.class);) {
-
+        try (final MockedStatic<GraphManager> graphManagerMockedStatic = Mockito.mockStatic(GraphManager.class)) {
             final GraphManager graphManager = mock(GraphManager.class);
             graphManagerMockedStatic.when(GraphManager::getDefault).thenReturn(graphManager);
 
@@ -419,15 +386,10 @@ public class PreferenceMenuNGTest {
      * {@link TableViewPreferencesIoProvider#savePreferences(GraphElementType, TableView, int)}
      * should have been called, false otherwise
      */
-    private void verifySavePreferencesAction(final MenuItem savePreferencesMenu,
-            final boolean isTableViewColumnsEmpty,
-            final boolean isActivGraphNull,
+    private void verifySavePreferencesAction(final MenuItem savePreferencesMenu, final boolean isTableViewColumnsEmpty, final boolean isActivGraphNull,
             final boolean expectSavePrefsCalled) {
-        try (
-                final MockedStatic<TableViewPreferencesIoProvider> tablePrefsIOUtilsMockedStatic
-                = Mockito.mockStatic(TableViewPreferencesIoProvider.class);
-                final MockedStatic<GraphManager> graphManagerMockedStatic
-                = Mockito.mockStatic(GraphManager.class);) {
+        try (final MockedStatic<TableViewPreferencesIoProvider> tablePrefsIOUtilsMockedStatic = Mockito.mockStatic(TableViewPreferencesIoProvider.class);
+                final MockedStatic<GraphManager> graphManagerMockedStatic = Mockito.mockStatic(GraphManager.class);) {
 
             final TableView<ObservableList<String>> tableView = mock(TableView.class);
             when(table.getTableView()).thenReturn(tableView);
@@ -481,8 +443,7 @@ public class PreferenceMenuNGTest {
      * @param expectedTitle the page size that the radio button will trigger as
      * a string
      */
-    private void verifyPageSizeRadioButton(final RadioMenuItem radioButton,
-            final String expectedTitle) {
+    private void verifyPageSizeRadioButton(final RadioMenuItem radioButton, final String expectedTitle) {
         assertEquals(expectedTitle, radioButton.getText());
         assertSame(preferencesMenu.getPageSizeToggle(), radioButton.getToggleGroup());
 
@@ -511,8 +472,7 @@ public class PreferenceMenuNGTest {
      * @throws InterruptedException if there is a an issue waiting for the
      * JavaFX thread work to complete
      */
-    private void verifyPageSizeAction(final MenuItem pageSizeMenuItem,
-            final int pageSize) throws InterruptedException {
+    private void verifyPageSizeAction(final MenuItem pageSizeMenuItem, final int pageSize) throws InterruptedException {
         clearInvocations(activeTableReference, tablePane);
 
         final ActionEvent actionEvent = mock(ActionEvent.class);
@@ -556,11 +516,8 @@ public class PreferenceMenuNGTest {
         }
 
         // Compare images size
-        if (firstImage.getWidth() != secondImage.getWidth()) {
-            return false;
-        }
-
-        if (firstImage.getHeight() != secondImage.getHeight()) {
+        if (firstImage.getWidth() != secondImage.getWidth()
+                || firstImage.getHeight() != secondImage.getHeight()) {
             return false;
         }
 

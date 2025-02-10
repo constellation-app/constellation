@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,24 +28,25 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class DrawFlagsAttributeDescriptionNGTest {
-
-    public DrawFlagsAttributeDescriptionNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -72,7 +73,7 @@ public class DrawFlagsAttributeDescriptionNGTest {
     /**
      * Test of setInt method, of class DrawFlagsAttributeDescription. Trying to set before capacity has been allocated to do so
      */
-    @Test(expectedExceptions = {ArrayIndexOutOfBoundsException.class})
+    @Test(expectedExceptions = ArrayIndexOutOfBoundsException.class)
     public void testSetIntBadSet() {
         System.out.println("setIntBadSet");
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.graph.interaction.plugins.io;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.interaction.animation.AnimationUtilities;
 import au.gov.asd.tac.constellation.graph.interaction.gui.VisualGraphTopComponent;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.Plugin;
@@ -72,7 +73,7 @@ public class CloseGraphPlugin extends SimplePlugin {
         final Graph g = graphs.getAllGraphs().get(parameters.getStringValue(GRAPH_PARAMETER_ID));
         final GraphNode gn = GraphNode.getGraphNode(g);
         final boolean forced = parameters.getBooleanValue(FORCED_PARAMETER_ID);
-
+        AnimationUtilities.interruptAllAnimations(g.getId());
         if (forced) {
             SwingUtilities.invokeLater(((VisualGraphTopComponent) gn.getTopComponent())::forceClose);
         } else {

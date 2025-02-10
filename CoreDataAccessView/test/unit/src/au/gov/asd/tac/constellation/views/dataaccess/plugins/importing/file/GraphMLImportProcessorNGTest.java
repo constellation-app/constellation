@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,8 +30,6 @@ import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -45,23 +43,24 @@ import org.testng.annotations.Test;
  */
 public class GraphMLImportProcessorNGTest {
     
-    public GraphMLImportProcessorNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
     
     /**
@@ -200,11 +199,8 @@ public class GraphMLImportProcessorNGTest {
         // Mock the buffered reader to always throw an IO exception when the readLine() method is called
         try (final MockedStatic<NotifyDisplayer> notiDispMock = Mockito.mockStatic(NotifyDisplayer.class);
                 final MockedConstruction<XmlUtilities> mockedXmlUtils = Mockito.mockConstruction(XmlUtilities.class, (mock, context) -> {
-                    when(mock.read(any(InputStream.class), any(Boolean.class))).thenAnswer(new Answer(){
-                        @Override
-                        public Object answer(final InvocationOnMock iom) throws Throwable {
-                            throw new IOException("mocked IO exception");
-                        }
+                    when(mock.read(any(InputStream.class), any(Boolean.class))).thenAnswer(iom -> {
+                        throw new IOException("mocked IO exception");
                     });
                 })
             ) {

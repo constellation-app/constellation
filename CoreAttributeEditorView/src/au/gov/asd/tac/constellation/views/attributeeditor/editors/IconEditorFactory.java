@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.FileIconData;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import java.io.File;
@@ -80,6 +81,7 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
 
     public class IconEditor extends AbstractEditor<ConstellationIcon> {
 
+        private static final String LIGHT_THEME = "/au/gov/asd/tac/constellation/views/attributeeditor/resources/attribute-icon-editor-light.css";
         private static final int BUTTON_SPACING = 10;
 
         private ListView<String> listView;
@@ -150,6 +152,9 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
             splitPane.getItems().add(treeView);
             splitPane.getItems().add(listView);
             controls.addRow(0, splitPane);
+            if (!JavafxStyleManager.isDarkTheme()) {
+                splitPane.getStylesheets().add(IconEditorFactory.class.getResource(LIGHT_THEME).toExternalForm());
+            }
 
             final HBox addRemoveBox = createAddRemoveBox();
             controls.addRow(1, addRemoveBox);

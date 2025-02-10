@@ -47,6 +47,7 @@ import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
 import java.util.prefs.Preferences;
+import java.util.regex.Pattern;
 import javafx.util.Pair;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -102,6 +103,8 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
     private static final String ADD_CUSTOM_BLAZE_ACTION = "Add_Custom_Blaze";
     private static final String ADD_PRESET_BLAZE_ACTION = "Add_Preset_Blaze";
     private static final String REMOVE_BLAZES_ACTION = "Remove_Blazes";
+    
+    private static final Pattern ADD_PRESET_BLAZE_REGEX = Pattern.compile(ADD_PRESET_BLAZE_ACTION);
 
     private static final Color DEFAULT_COLOR = new Color(255, 255, 254);
 
@@ -141,7 +144,7 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
 
         if (newColor != null) {
             colorPanels.get(panelID - 1).setBackground(newColor);
-            BlazeUtilities.savePreset(newColor, panelID - 1);
+            BlazeUtilities.savePreset(ConstellationColor.fromJavaColor(newColor), panelID - 1);
         }
     }
 
@@ -381,9 +384,7 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
     }
 
     private void updateSliders(final Graph graph) {
-        final ReadableGraph rg = graph.getReadableGraph();
-        try {
-
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
             final int blazeSizeAttributeId = VisualConcept.GraphAttribute.BLAZE_SIZE.get(rg);
             final float blazeSize = blazeSizeAttributeId == Graph.NOT_FOUND
                     ? (prefs.getInt(GraphPreferenceKeys.BLAZE_SIZE, GraphPreferenceKeys.BLAZE_SIZE_DEFAULT)) / 100F
@@ -400,8 +401,6 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
             opacitySlider.removeChangeListener(sliderChangeListener);
             opacitySlider.setValue((int) (blazeOpacity * 100));
             opacitySlider.addChangeListener(sliderChangeListener);
-        } finally {
-            rg.release();
         }
     }
 
@@ -414,9 +413,8 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
 
         switch (command) {
             case ADD_CUSTOM_BLAZE_ACTION -> {
-                final Pair<Boolean, ConstellationColor> colorResult = BlazeUtilities.colorDialog(selectionResult.getValue());
-                if (colorResult.getKey()) {
-                    final ConstellationColor color = colorResult.getValue();
+                final ConstellationColor color = BlazeUtilities.colorDialog(selectionResult.getValue());
+                if (color != null) {
                     plugin = PluginRegistry.get(VisualGraphPluginRegistry.ADD_CUSTOM_BLAZE);
                     parameters = DefaultPluginParameters.getDefaultParameters(plugin);
                     parameters.getParameters().get(BlazeUtilities.VERTEX_IDS_PARAMETER_ID).setObjectValue(selectionResult.getKey());
@@ -436,7 +434,7 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
                 // check for the overloaded command name. In this case the default action name
                 // ADD_PRESET_BLAZE_ACTION has the string representation of the color
                 if (command.startsWith(ADD_PRESET_BLAZE_ACTION)) {
-                    final String colorValStr = command.replaceFirst(ADD_PRESET_BLAZE_ACTION, "");
+                    final String colorValStr = ADD_PRESET_BLAZE_REGEX.matcher(command).replaceFirst("");
                     final ConstellationColor color = ConstellationColor.fromHtmlColor(colorValStr) == null
                             ? ConstellationColor.getColorValue(colorValStr)
                             : ConstellationColor.fromHtmlColor(colorValStr);

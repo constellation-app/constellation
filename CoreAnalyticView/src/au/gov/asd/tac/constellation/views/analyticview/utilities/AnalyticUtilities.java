@@ -15,11 +15,13 @@
  */
 package au.gov.asd.tac.constellation.views.analyticview.utilities;
 
+import au.gov.asd.tac.constellation.help.utilities.Generator;
 import au.gov.asd.tac.constellation.views.analyticview.aggregators.AnalyticAggregator;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestionDescription;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.translators.GraphVisualisationTranslator;
 import au.gov.asd.tac.constellation.views.analyticview.translators.InternalVisualisationTranslator;
+import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -37,6 +39,7 @@ public class AnalyticUtilities {
     private static final Map<String, AnalyticAggregator<?>> ANALYTIC_AGGREGATORS = new HashMap<>();
     private static final Map<String, InternalVisualisationTranslator> INTERNAL_VISUALISATION_TRANSLATORS = new HashMap<>();
     private static final Map<String, GraphVisualisationTranslator> GRAPH_VISUALISATION_TRANSLATORS = new HashMap<>();
+    private static final String SEP = File.separator;
 
     static {
         Lookup.getDefault().lookupAll(AnalyticQuestionDescription.class).forEach(analyticQuestionDescription
@@ -131,5 +134,15 @@ public class AnalyticUtilities {
 
     public static GraphVisualisationTranslator<?, ?> lookupGraphVisualisationTranslator(final String graphVisualisationTranslatorName) {
         return GRAPH_VISUALISATION_TRANSLATORS.get(graphVisualisationTranslatorName);
+    }
+    
+    /**
+     * Helper method to get the path for the documentation pages 
+     * @return path
+     */
+    public static String getHelpPath() {
+        final String codebaseName = "constellation";
+        return Generator.getBaseDirectory() + SEP + "ext" + SEP + "docs" + SEP + "CoreAnalyticView" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP
+                + "asd" + SEP + "tac" + SEP + codebaseName + SEP + "views" + SEP + "analyticview" +  SEP;
     }
 }

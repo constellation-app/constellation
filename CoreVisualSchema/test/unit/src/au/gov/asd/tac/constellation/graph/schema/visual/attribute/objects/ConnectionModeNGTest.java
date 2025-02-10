@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,23 +42,24 @@ public class ConnectionModeNGTest {
     final int inPos = 2;
     final int outId = 23;
     
-    public ConnectionModeNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
     
     /**
@@ -67,27 +68,12 @@ public class ConnectionModeNGTest {
     public void resetMocking() {
         mockGraphReadMethods = mock(GraphReadMethods.class);
     }
-
-    /**
-     * Test of values method, of class ConnectionMode.
-     */
-    @Test
-    public void testValues() {
-    }
-
-    /**
-     * Test of valueOf method, of class ConnectionMode.
-     */
-    @Test
-    public void testValueOf() {
-    }
-
+    
     /**
      * Test of getConnection method, of class ConnectionMode.
      */
     @Test
     public void testGetConnection() {
-
         resetMocking();
         when(mockGraphReadMethods.getLink(anyInt())).thenReturn(outId);
         assertEquals(ConnectionMode.LINK.getConnection(mockGraphReadMethods, inId), outId);
@@ -115,7 +101,6 @@ public class ConnectionModeNGTest {
      */
     @Test
     public void testGetConnectionCount() {
-
         resetMocking();
         when(mockGraphReadMethods.getLinkCount()).thenReturn(outId);
         assertEquals(ConnectionMode.LINK.getConnectionCount(mockGraphReadMethods), outId);
@@ -143,7 +128,6 @@ public class ConnectionModeNGTest {
      */
     @Test
     public void testGetConnectionCapacity() {
-
         resetMocking();
         when(mockGraphReadMethods.getLinkCapacity()).thenReturn(outId);
         assertEquals(ConnectionMode.LINK.getConnectionCapacity(mockGraphReadMethods), outId);
@@ -171,7 +155,6 @@ public class ConnectionModeNGTest {
      */
     @Test
     public void testGetConnectionSourceVertex() {
-
         resetMocking();
         when(mockGraphReadMethods.getLinkLowVertex(anyInt())).thenReturn(outId);
         assertEquals(ConnectionMode.LINK.getConnectionSourceVertex(mockGraphReadMethods, inId), outId);
@@ -199,7 +182,6 @@ public class ConnectionModeNGTest {
      */
     @Test
     public void testGetConnectionDestinationVertex() {
-
         resetMocking();
         when(mockGraphReadMethods.getLinkHighVertex(anyInt())).thenReturn(outId);
         assertEquals(ConnectionMode.LINK.getConnectionDestinationVertex(mockGraphReadMethods, inId), outId);
@@ -227,7 +209,6 @@ public class ConnectionModeNGTest {
      */
     @Test
     public void testGetConnectionCountPerLink() {
-
         resetMocking();
         assertEquals(ConnectionMode.LINK.getConnectionCountPerLink(mockGraphReadMethods, inId), 1);
         Mockito.verify(mockGraphReadMethods, times(0)).getEdgeDestinationVertex(anyInt());
@@ -251,7 +232,6 @@ public class ConnectionModeNGTest {
      */
     @Test
     public void testGetConnectionLink() {
-
         resetMocking();
         assertEquals(ConnectionMode.LINK.getConnectionLink(mockGraphReadMethods, inId), inId);
         Mockito.verify(mockGraphReadMethods, times(0)).getEdgeLink(anyInt());
@@ -275,7 +255,6 @@ public class ConnectionModeNGTest {
      */
     @Test
     public void testGetFirstTransaction() {
-
         resetMocking();
         when(mockGraphReadMethods.getLinkTransaction(anyInt(), anyInt())).thenReturn(outId);
         assertEquals(ConnectionMode.LINK.getFirstTransaction(mockGraphReadMethods, inId), outId);
@@ -299,7 +278,6 @@ public class ConnectionModeNGTest {
      */
     @Test
     public void testGetVertexConnectionCount() {
-
         resetMocking();
         when(mockGraphReadMethods.getVertexLinkCount(anyInt())).thenReturn(outId);
         assertEquals(ConnectionMode.LINK.getVertexConnectionCount(mockGraphReadMethods, inId), outId);
@@ -327,7 +305,6 @@ public class ConnectionModeNGTest {
      */
     @Test
     public void testGetVertexConnection() {
-
         resetMocking();
         when(mockGraphReadMethods.getVertexLink(anyInt(), anyInt())).thenReturn(outId);
         assertEquals(ConnectionMode.LINK.getVertexConnection(mockGraphReadMethods, inId, inPos), outId);

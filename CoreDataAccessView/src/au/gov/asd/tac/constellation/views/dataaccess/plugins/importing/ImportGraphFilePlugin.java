@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -134,6 +134,11 @@ public class ImportGraphFilePlugin extends RecordStoreQueryPlugin implements Dat
                 
                 @SuppressWarnings("unchecked") //FILE_NAME_PARAMETER_ID is always of type FileParameter
                 final PluginParameter<FileParameterValue> fileName = (PluginParameter<FileParameterValue>) parameters.get(FILE_NAME_PARAMETER_ID);
+                // clear filename string on file type change
+                if (!fileName.getStringValue().isEmpty()) {
+                    fileName.getParameterValue().setStringValue("");
+                    fileName.fireChangeEvent(ParameterChange.VALUE);
+                }
                 FileParameterType.setFileFilters(fileName, selection.getExtensionFilter());
             }
         });

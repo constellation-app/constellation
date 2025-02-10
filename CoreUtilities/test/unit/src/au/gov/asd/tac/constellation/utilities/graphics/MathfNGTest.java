@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,9 +75,7 @@ public class MathfNGTest {
      */
     @Test
     public void testDistanceSquared() {
-        assertEquals(Mathf.distanceSquared(
-                new Vector3f(F1, F2, F3), new Vector3f(F4, F5, F6)), 
-                78.2946F);
+        assertEquals(Mathf.distanceSquared(new Vector3f(F1, F2, F3), new Vector3f(F4, F5, F6)), 78.2946F);
     }
     
     /**
@@ -85,9 +83,7 @@ public class MathfNGTest {
      */
     @Test
     public void testDistance() {
-        assertEquals(Mathf.distance(
-                new Vector3f(F1, F2, F3), new Vector3f(F4, F5, F6)), 
-                8.848424F);
+        assertEquals(Mathf.distance(new Vector3f(F1, F2, F3), new Vector3f(F4, F5, F6)), 8.848424F);
     }
     
     /**
@@ -102,28 +98,8 @@ public class MathfNGTest {
         assertEquals(distance, expectedResult);
     }
     
-    // This below test is causing online tests to fail. 
-    // Removing this test also causes the online tests to fail. 
-    // The only way to get the online tests to pass is by commenting out this test. 
-    // This makes no sense to me and hints to the issue lying elsewhere.
-    // However logs do not apear to be showing any usefull information and im at a loss for a solution...
-    
-//    /**
-//     * Can get the plane equation from three points.
-//     */
-//    @Test
-//    public void testPlaneEquation() {
-//        final Vector4f planeEq = new Vector4f();
-//        Mathf.planeEquation(planeEq, new Vector3f(F1, F2, F3), 
-//                new Vector3f(F4, F5, F6), new Vector3f(F7, F8, F9));
-//        assertEquals(planeEq.a, new float[] {0.7757828F, -0.20191793F, 
-//            -0.59782124F, 2.4200084F});
-//    }
-    
-    
     @Test
     public void testPlaneIntersectionPoint() {
-        
         // Initialise a plane that sits verticaly y and horisintaly x at z = 1
         final Vector4f plane = new Vector4f();
         final Vector3f planePoint1 = new Vector3f(0,0,1);
@@ -246,8 +222,7 @@ public class MathfNGTest {
     @Test
     public void testMakePlanarShadowMatrix() {
         final float[] proj = new float[16];
-        Mathf.makePlanarShadowMatrix(proj, 
-                new float[] {F10, F3, F9, F4}, new float[] {F8, F5, F7});
+        Mathf.makePlanarShadowMatrix(proj, new float[] {F10, F3, F9, F4}, new float[] {F8, F5, F7});
         assertEquals(proj, new float[] {
             -43.1027F, 79.7679F, 19.310099F, 0F,
             37.756798F, -90.83509F, 8.7095995F, 0F,

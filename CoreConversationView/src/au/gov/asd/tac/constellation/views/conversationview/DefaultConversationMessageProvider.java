@@ -24,16 +24,17 @@ import java.util.List;
 import javax.swing.SwingUtilities;
 
 /**
- * The DefaultConversationMessageProvider creates messages based on the current
- * selection in a number of ways: 1) If a single vertex is selected then
- * messages are created for all adjacent transactions. 2) If 2 vertices are
- * selected then messages are created for all transactions between them 3) If
- * transactions are selected and there is a common vertex in all of them then
- * messages are created for each.
+ * The DefaultConversationMessageProvider creates messages based on the current selection in a number of ways: 1) If a
+ * single vertex is selected then messages are created for all adjacent transactions. 2) If 2 vertices are selected then
+ * messages are created for all transactions between them 3) If transactions are selected and there is a common vertex
+ * in all of them then messages are created for each.
  *
  * @author sirius
  */
 public class DefaultConversationMessageProvider implements ConversationMessageProvider {
+
+    private int totalMessageCount = 0;
+    private int currentVertex = -1;
 
     @Override
     public void getMessages(final GraphReadMethods graph, final List<ConversationMessage> messages) {
@@ -42,11 +43,14 @@ public class DefaultConversationMessageProvider implements ConversationMessagePr
         if (graph == null) {
             return; // Null graph means no messages.
         }
+        // Get content when only one vertex is selected 
         final int vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
         if (vertexSelectedAttribute != Graph.NOT_FOUND) {
+            totalMessageCount = 0;
             final GraphIndexResult selectedVertices = GraphIndexUtilities.filterElements(graph, vertexSelectedAttribute, true);
             final int vertex = selectedVertices.getNextElement();
             if (vertex != Graph.NOT_FOUND) {
+                currentVertex = vertex;
                 final int secondVertex = selectedVertices.getNextElement();
                 if (secondVertex == Graph.NOT_FOUND) {
                     final int transactionCount = graph.getVertexTransactionCount(vertex);
@@ -56,16 +60,20 @@ public class DefaultConversationMessageProvider implements ConversationMessagePr
                             final int sender = graph.getTransactionSourceVertex(transaction);
                             final ConversationSide conversationSide = sender == vertex ? ConversationSide.LEFT : ConversationSide.RIGHT;
                             final ConversationMessage message = new ConversationMessage(transaction, sender, conversationSide);
+                            
+                            totalMessageCount++;
                             messages.add(message);
                         }
                     }
                     return;
                 }
-            }
+            } 
         }
 
+        // Get content when only one transaction is selected
         final int transactionSelectedAttribute = VisualConcept.TransactionAttribute.SELECTED.get(graph);
         if (transactionSelectedAttribute != Graph.NOT_FOUND) {
+            totalMessageCount = 0;
             final GraphIndexResult transactionResult = GraphIndexUtilities.filterElements(graph, transactionSelectedAttribute, true);
 
             int transactionCount = 0;
@@ -98,6 +106,7 @@ public class DefaultConversationMessageProvider implements ConversationMessagePr
             }
 
             final int leftSender = Math.max(vertexA, vertexB);
+            totalMessageCount = transactionCount;
             for (int i = 0; i < transactionCount; i++) {
                 transaction = graph.getTransaction(transactionPositions[i]);
                 if (graph.getTransactionDirection(transaction) != Graph.UNDIRECTED) {
@@ -108,5 +117,10 @@ public class DefaultConversationMessageProvider implements ConversationMessagePr
                 }
             }
         }
+    }
+
+    @Override
+    public int getTotalMessageCount() {
+        return totalMessageCount;
     }
 }

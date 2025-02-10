@@ -36,6 +36,9 @@ import javax.swing.ListSelectionModel;
  * @author sol695510
  */
 final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
+    
+    private static final String NO_CATEGORY_SELECTED = "No Category Selected";
+    private static final String PLEASE_SELECT_CATEGORY_MESSAGE = "Please select a category first";
 
     private final DataAccessViewCategoryPanelController controller;
 
@@ -148,7 +151,6 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
         jLabel3 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
         buttonRight = new javax.swing.JButton();
         buttonLeft = new javax.swing.JButton();
         buttonUp = new javax.swing.JButton();
@@ -164,9 +166,6 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
         org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(DataAccessViewCategoryPanel.class, "DataAccessViewCategoryPanel.jLabel1.text")); // NOI18N
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel2, org.openide.util.NbBundle.getMessage(DataAccessViewCategoryPanel.class, "DataAccessViewCategoryPanel.jLabel2.text")); // NOI18N
-
-        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/views/dataaccess/panes/resources/warning.png"))); // NOI18N
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel4, org.openide.util.NbBundle.getMessage(DataAccessViewCategoryPanel.class, "DataAccessViewCategoryPanel.jLabel4.text")); // NOI18N
 
         org.openide.awt.Mnemonics.setLocalizedText(buttonRight, org.openide.util.NbBundle.getMessage(DataAccessViewCategoryPanel.class, "DataAccessViewCategoryPanel.buttonRight.text")); // NOI18N
         buttonRight.addActionListener(new java.awt.event.ActionListener() {
@@ -222,7 +221,6 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
                     .addGroup(OptionPanelLayout.createSequentialGroup()
                         .addGap(38, 38, 38)
                         .addGroup(OptionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4)
                             .addGroup(OptionPanelLayout.createSequentialGroup()
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(46, 46, 46)
@@ -260,9 +258,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
                 .addGroup(OptionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(buttonUp)
                     .addComponent(buttonDown))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
-                .addComponent(jLabel4)
-                .addGap(15, 15, 15)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 58, Short.MAX_VALUE)
                 .addComponent(buttonRestore)
                 .addContainerGap())
         );
@@ -288,7 +284,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
     private void buttonRightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRightActionPerformed
 
         if (visibleList.getSelectedIndex() == -1) {
-            JOptionPane.showMessageDialog(OptionPanel, "No Category selected...", "Error", 1);
+            JOptionPane.showMessageDialog(OptionPanel, PLEASE_SELECT_CATEGORY_MESSAGE, NO_CATEGORY_SELECTED, JOptionPane.WARNING_MESSAGE);
         } else {
             // Add selected options to hidden list.
             final List<String> selectedValues = visibleList.getSelectedValuesList();
@@ -313,7 +309,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
     private void buttonLeftActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonLeftActionPerformed
 
         if (hiddenList.getSelectedIndex() == -1) {
-            JOptionPane.showMessageDialog(OptionPanel, "No Category selected...", "Error", 1);
+            JOptionPane.showMessageDialog(OptionPanel, PLEASE_SELECT_CATEGORY_MESSAGE, NO_CATEGORY_SELECTED, JOptionPane.WARNING_MESSAGE);
         } else {
             // Add selected options to visible list.
             final List<String> selectedValues = hiddenList.getSelectedValuesList();
@@ -337,7 +333,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
 
     private void buttonUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonUpActionPerformed
         if (visibleList.getSelectedIndex() == -1) {
-            JOptionPane.showMessageDialog(OptionPanel, "No Category selected...", "Error", 1);
+            JOptionPane.showMessageDialog(OptionPanel, PLEASE_SELECT_CATEGORY_MESSAGE, NO_CATEGORY_SELECTED, JOptionPane.WARNING_MESSAGE);
         } else {
             final int[] selectedIndices = visibleList.getSelectedIndices();
 
@@ -363,7 +359,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
 
     private void buttonDownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDownActionPerformed
         if (visibleList.getSelectedIndex() == -1) {
-            JOptionPane.showMessageDialog(OptionPanel, "No Category selected...", "Error", 1);
+            JOptionPane.showMessageDialog(OptionPanel, PLEASE_SELECT_CATEGORY_MESSAGE, NO_CATEGORY_SELECTED, JOptionPane.WARNING_MESSAGE);
         } else {
             final int[] selectedIndices = visibleList.getSelectedIndices();
 
@@ -402,7 +398,6 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JList<String> visibleList;

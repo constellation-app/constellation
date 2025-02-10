@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.CharacterIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -33,204 +34,27 @@ import org.testng.annotations.Test;
  * @author arcturus
  */
 public class SchemaVertexTypeNGTest {
-
-    public SchemaVertexTypeNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
-//    /**
-//     * Test of getForegroundIcon method, of class SchemaVertexType.
-//     */
-//    @Test
-//    public void testGetForegroundIcon() {
-//        System.out.println("getForegroundIcon");
-//        SchemaVertexType instance = null;
-//        ConstellationIcon expResult = null;
-//        ConstellationIcon result = instance.getForegroundIcon();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getBackgroundIcon method, of class SchemaVertexType.
-//     */
-//    @Test
-//    public void testGetBackgroundIcon() {
-//        System.out.println("getBackgroundIcon");
-//        SchemaVertexType instance = null;
-//        ConstellationIcon expResult = null;
-//        ConstellationIcon result = instance.getBackgroundIcon();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getDetectionRegex method, of class SchemaVertexType.
-//     */
-//    @Test
-//    public void testGetDetectionRegex() {
-//        System.out.println("getDetectionRegex");
-//        SchemaVertexType instance = null;
-//        Pattern expResult = null;
-//        Pattern result = instance.getDetectionRegex();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getValidationRegex method, of class SchemaVertexType.
-//     */
-//    @Test
-//    public void testGetValidationRegex() {
-//        System.out.println("getValidationRegex");
-//        SchemaVertexType instance = null;
-//        Pattern expResult = null;
-//        Pattern result = instance.getValidationRegex();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getOverridenType method, of class SchemaVertexType.
-//     */
-//    @Test
-//    public void testGetOverridenType() {
-//        System.out.println("getOverridenType");
-//        SchemaVertexType instance = null;
-//        SchemaVertexType expResult = null;
-//        SchemaVertexType result = instance.getOverridenType();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//    /**
-//     * Test of buildHierarchy method, of class SchemaVertexType.
-//     */
-//    @Test
-//    public void testBuildHierarchy() {
-//        System.out.println("buildHierarchy");
-//        SchemaVertexType instance = null;
-//        instance.buildHierarchy();
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//    /**
-//     * Test of hashCode method, of class SchemaVertexType.
-//     */
-//    @Test
-//    public void testHashCode() {
-//        System.out.println("hashCode");
-//        SchemaVertexType instance = null;
-//        int expResult = 0;
-//        int result = instance.hashCode();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//    /**
-//     * Test of equals method, of class SchemaVertexType.
-//     */
-//    @Test
-//    public void testEquals() {
-//        System.out.println("equals");
-//        Object obj = null;
-//        SchemaVertexType instance = null;
-//        boolean expResult = false;
-//        boolean result = instance.equals(obj);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of compareTo method, of class SchemaVertexType.
-//     */
-//    @Test
-//    public void testCompareTo() {
-//        System.out.println("compareTo");
-//        SchemaVertexType type = null;
-//        SchemaVertexType instance = null;
-//        int expResult = 0;
-//        int result = instance.compareTo(type);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of unknownType method, of class SchemaVertexType.
-//     */
-//    @Test
-//    public void testUnknownType() {
-//        System.out.println("unknownType");
-//        SchemaVertexType expResult = null;
-//        SchemaVertexType result = SchemaVertexType.unknownType();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getUnknownType method, of class SchemaVertexType.
-//     */
-//    @Test
-//    public void testGetUnknownType() {
-//        System.out.println("getUnknownType");
-//        SchemaVertexType instance = null;
-//        SchemaVertexType expResult = null;
-//        SchemaVertexType result = instance.getUnknownType();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of copy method, of class SchemaVertexType.
-//     */
-//    @Test
-//    public void testCopy() {
-//        System.out.println("copy");
-//        SchemaVertexType instance = null;
-//        SchemaVertexType expResult = null;
-//        SchemaVertexType result = instance.copy();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of rename method, of class SchemaVertexType.
-//     */
-//    @Test
-//    public void testRename() {
-//        System.out.println("rename");
-//        String name = "";
-//        SchemaVertexType instance = null;
-//        SchemaVertexType expResult = null;
-//        SchemaVertexType result = instance.rename(name);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
     @Test
     public void testBuildTypeObjectWithNothingSet() {
         final SchemaVertexType type = new SchemaVertexType.Builder(null).build();
@@ -271,7 +95,7 @@ public class SchemaVertexTypeNGTest {
                 .setIncomplete(true)
                 .build();
 
-        final HashMap<Object, Object> properties = new HashMap<>();
+        final Map<Object, Object> properties = new HashMap<>();
         properties.put("my key", "my value");
 
         Assert.assertEquals(type.name, "name");
@@ -337,5 +161,4 @@ public class SchemaVertexTypeNGTest {
         Assert.assertEquals(child.overridenType, null);
         Assert.assertEquals(child.getOverridenType(), null);
     }
-
 }

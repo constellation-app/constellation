@@ -37,18 +37,26 @@ import org.testng.annotations.Test;
  */
 public class DegreeCentralityPluginNGTest {
 
-    private int vertexDegreeAttribute, vertexInDegreeAttribute, vertexOutDegreeAttribute;
-    private int vertexSelectedAttribute;
-    private int vxId0, vxId1, vxId2, vxId3, vxId4;
-    private int txId0, txId1, txId2, txId3, txId4;
+    private int vertexDegreeAttribute;
+    private int vertexInDegreeAttribute;
+    private int vertexOutDegreeAttribute;
+    
+    private int vxId0;
+    private int vxId1;
+    private int vxId2;
+    private int vxId3;
+    private int vxId4;
+    
     private StoreGraph graph;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -61,7 +69,6 @@ public class DegreeCentralityPluginNGTest {
         vertexDegreeAttribute = SnaConcept.VertexAttribute.DEGREE_CENTRALITY.ensure(graph);
         vertexInDegreeAttribute = SnaConcept.VertexAttribute.IN_DEGREE_CENTRALITY.ensure(graph);
         vertexOutDegreeAttribute = SnaConcept.VertexAttribute.OUT_DEGREE_CENTRALITY.ensure(graph);
-        vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
 
         // add vertices
         vxId0 = graph.addVertex();
@@ -71,11 +78,11 @@ public class DegreeCentralityPluginNGTest {
         vxId4 = graph.addVertex();
 
         // add transactions
-        txId0 = graph.addTransaction(vxId0, vxId1, true);
-        txId1 = graph.addTransaction(vxId1, vxId2, true);
-        txId2 = graph.addTransaction(vxId1, vxId3, true);
-        txId3 = graph.addTransaction(vxId2, vxId3, true);
-        txId4 = graph.addTransaction(vxId3, vxId4, true);
+        graph.addTransaction(vxId0, vxId1, true);
+        graph.addTransaction(vxId1, vxId2, true);
+        graph.addTransaction(vxId1, vxId3, true);
+        graph.addTransaction(vxId2, vxId3, true);
+        graph.addTransaction(vxId3, vxId4, true);
     }
 
     @AfterMethod

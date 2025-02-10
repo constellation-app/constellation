@@ -32,10 +32,10 @@ import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestio
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticException;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticUtilities;
-import com.github.rjeschke.txtmark.Processor;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -61,6 +61,9 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
+import org.commonmark.node.Node;
+import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.HtmlRenderer;
 import org.openide.util.Lookup;
 
 /**
@@ -196,6 +199,7 @@ public class AnalyticConfigurationPane extends VBox {
                     SingleChoiceParameterType.setChoiceData(aggregator, (AnalyticAggregatorParameterValue) aggregatorParameterValue);
                 }
             });
+            populateDocumentationPane(newValue.getDocumentationUrl());
             populateParameterPane(globalAnalyticParameters);
             setPluginsFromSelectedQuestion();
         });
@@ -209,7 +213,7 @@ public class AnalyticConfigurationPane extends VBox {
             questionListPane.setExpanded(!categoryListPane.isExpanded());
             if (categoryListPane.isExpanded()) {
                 currentQuestion = null;
-                populateParameterPane(globalAnalyticParameters);
+                populateParameterPane(globalAnalyticParameters);            
                 setPluginsFromSelectedCategory();
                 AnalyticViewController.getDefault().setCategoriesVisible(true);
             }
@@ -219,6 +223,7 @@ public class AnalyticConfigurationPane extends VBox {
             categoryListPane.setExpanded(!questionListPane.isExpanded());
             if (questionListPane.isExpanded()) {
                 currentQuestion = questionList.getSelectionModel().getSelectedItem();
+                populateDocumentationPane(currentQuestion.getDocumentationUrl());
                 populateParameterPane(globalAnalyticParameters);
                 setPluginsFromSelectedQuestion();
                 AnalyticViewController.getDefault().setCategoriesVisible(false);
@@ -240,6 +245,7 @@ public class AnalyticConfigurationPane extends VBox {
                 } else {
                     item.setParent(this);
                     setGraphic(item.checkbox);
+                    item.checkbox.setId("pluginCheckbox");
                     setText(item.plugin.getName());
                 }
             }
@@ -248,10 +254,14 @@ public class AnalyticConfigurationPane extends VBox {
         pluginList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (!selectionSuppressed) {
                 if (newValue != null) {
-                    populateDocumentationPane(newValue);
+                    populateDocumentationPane(newValue.getPlugin().getDocumentationUrl());
                     populateParameterPane(newValue.getAllParameters());
                 } else {
-                    populateDocumentationPane(null);
+                    if (currentQuestion != null) {
+                        populateDocumentationPane(currentQuestion.getDocumentationUrl());
+                    } else {
+                        populateDocumentationPane(null);
+                    }
                     populateParameterPane(globalAnalyticParameters);
                 }
             }
@@ -284,7 +294,9 @@ public class AnalyticConfigurationPane extends VBox {
             this.documentationView = new WebView();
             if (JavafxStyleManager.isDarkTheme()) {
                 documentationView.getEngine().setUserStyleSheetLocation(getClass().getResource("resources/analytic-view-dark.css").toExternalForm());
-            }        
+            } else {
+                documentationView.getEngine().setUserStyleSheetLocation(getClass().getResource("resources/analytic-view-light.css").toExternalForm());
+            }     
             populateDocumentationPane(null);
             cdl.countDown();
         });
@@ -418,15 +430,20 @@ public class AnalyticConfigurationPane extends VBox {
      * 
      * @param plugin
      */
-    private void populateDocumentationPane(final SelectableAnalyticPlugin plugin) {
+    private void populateDocumentationPane(final String documentationURL) {
         if (documentationView != null) {
-            if (plugin == null || plugin.getPlugin() == null || plugin.getPlugin().getDocumentationUrl() == null) {
+            if (documentationURL == null) {
                 documentationView.getEngine().loadContent("<html>No Documentation Available</html>", "text/html");
             } else {
                 try {
-                    final Path path = Paths.get(plugin.getPlugin().getDocumentationUrl());
+                    final Path path = Paths.get(documentationURL);
                     final InputStream pageInput = new FileInputStream(path.toString());
-                    documentationView.getEngine().loadContent(Processor.process(pageInput), "text/html");
+                    final String pageString =  new String(pageInput.readAllBytes(), StandardCharsets.UTF_8);
+                    final Parser parser = Parser.builder().build();
+                    final HtmlRenderer renderer = HtmlRenderer.builder().build();
+                    final Node tocDocument = parser.parse(pageString);
+                    final String pageHtml = renderer.render(tocDocument);
+                    documentationView.getEngine().loadContent(pageHtml, "text/html");
                 } catch (final IOException ex) {
                     LOGGER.log(Level.WARNING, ex.getMessage());
                 }

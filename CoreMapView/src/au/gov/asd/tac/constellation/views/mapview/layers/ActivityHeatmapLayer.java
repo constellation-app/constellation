@@ -45,6 +45,7 @@ public class ActivityHeatmapLayer extends AbstractHeatmapLayer {
                         case VERTEX -> activityCount += readableGraph.getVertexTransactionCount(element.getId());
                         case TRANSACTION -> activityCount += 1;
                         default -> {
+                            // do nothing
                         }
                     }
                 }

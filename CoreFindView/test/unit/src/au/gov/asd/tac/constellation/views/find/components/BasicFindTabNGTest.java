@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.find.components;
 
-import au.gov.asd.tac.constellation.views.find.components.BasicFindTab;
-import au.gov.asd.tac.constellation.views.find.components.ReplaceTab;
-import au.gov.asd.tac.constellation.views.find.components.FindViewTabs;
-import au.gov.asd.tac.constellation.views.find.components.FindViewPane;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
@@ -42,6 +38,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import org.mockito.MockedStatic;
@@ -69,28 +66,33 @@ import org.testng.annotations.Test;
  */
 public class BasicFindTabNGTest {
 
-    private Map<String, Graph> graphMap = new HashMap<>();
+    private Map<String, Graph> graphMap;
+    
     private Graph graph;
     private Graph graph2;
-    private GraphAttribute labelAttributeV, identifierAttributeV, labelAttributeT, identifierAttributeT;
+    
+    private GraphAttribute labelAttributeV;
+    private GraphAttribute identifierAttributeV;
+    private GraphAttribute labelAttributeT;
+    private GraphAttribute identifierAttributeT;
 
-    private int selectedV, selectedT;
-    private int labelV, identifierV, xV, labelT, identiferT, widthT;
-    private int vxId1, vxId2, vxId3, vxId4, vxId5UpperCase, vxId6, vxId7, vxId8, txId1, txId2, txId3, txId4;
+    private int selectedV;
+    private int labelV;
+    private int identifierV;
+    private int xV;
+    
+    private int vxId1;
 
-    FindViewTopComponent findViewTopComponent;
-    FindViewTopComponent spyTopComponent;
-
-//    FindViewController findViewController;
-    BasicFindTab basicFindTab;
-    ReplaceTab replaceTab;
-    FindViewPane findViewPane;
-    FindViewTabs findViewTabs;
+    private FindViewTopComponent findViewTopComponent;
+    private FindViewTopComponent spyTopComponent;
+    
+    private BasicFindTab basicFindTab;
+    private ReplaceTab replaceTab;
+    private FindViewPane findViewPane;
+    private FindViewTabs findViewTabs;
+    
     private static final Logger LOGGER = Logger.getLogger(BasicFindTabNGTest.class.getName());
-
-    public BasicFindTabNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -128,6 +130,7 @@ public class BasicFindTabNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -156,10 +159,10 @@ public class BasicFindTabNGTest {
          * getFindAllButton and getSearchAllGraphs checkbox.
          */
         basicFindTab.updateButtons();
-        assertEquals(basicFindTab.buttonsHBox.getChildren().get(0), basicFindTab.getDeleteResultsButton());
-        assertEquals(basicFindTab.buttonsHBox.getChildren().get(1), basicFindTab.getFindAllButton());
-        assertEquals(basicFindTab.buttonsHBox.getChildren().get(2), basicFindTab.getFindPrevButton());
-        assertEquals(basicFindTab.buttonsHBox.getChildren().get(3), basicFindTab.getFindNextButton());
+        assertEquals(basicFindTab.buttonsHBox.getChildren().get(1), basicFindTab.getDeleteResultsButton());
+        assertEquals(basicFindTab.buttonsHBox.getChildren().get(2), basicFindTab.getFindAllButton());
+        assertEquals(basicFindTab.buttonsHBox.getChildren().get(3), basicFindTab.getFindPrevButton());
+        assertEquals(basicFindTab.buttonsHBox.getChildren().get(4), basicFindTab.getFindNextButton());
     }
 
     /**
@@ -436,7 +439,7 @@ public class BasicFindTabNGTest {
         //Create a controller mock and do nothing on retriveMatchingElements()
         FindViewController mockController = mock(FindViewController.class);
         mockController.init(spyTopComponent);
-        doNothing().when(mockController).retriveMatchingElements(Mockito.eq(true), Mockito.eq(false));
+        doNothing().when(mockController).retriveMatchingElements(Mockito.eq(true), Mockito.eq(false), Mockito.eq(false));
         Button mockButton = mock(Button.class);
 
         /**
@@ -448,10 +451,13 @@ public class BasicFindTabNGTest {
         lookForChoiceBox.getItems().add("Node");
         lookForChoiceBox.getSelectionModel().select(0);
         final TextField findTextField = new TextField("test");
+        final CheckBox zoomToSelectionCheckBox = new CheckBox("Zoom to Selection");
 
         //Mock the getters to return the newly made java fx element.
         when(basicFindMock.getLookForChoiceBox()).thenReturn(lookForChoiceBox);
         when(basicFindMock.getFindTextField()).thenReturn(findTextField);
+        when(basicFindMock.getZoomToSelection()).thenReturn(zoomToSelectionCheckBox);
+        zoomToSelectionCheckBox.setSelected(false);
 
         //Do nothing on saveSelected() and updateBasicFindParamters()
         doCallRealMethod().when(basicFindMock).findAllAction();
@@ -472,7 +478,7 @@ public class BasicFindTabNGTest {
 
             verify(basicFindMock, times(1)).saveSelected(Mockito.eq(GraphElementType.VERTEX));
             verify(basicFindMock, times(1)).updateBasicFindParamters();
-            verify(mockController, times(1)).retriveMatchingElements(true, false);
+            verify(mockController, times(1)).retriveMatchingElements(true, true, false);
         }
     }
 
@@ -488,7 +494,7 @@ public class BasicFindTabNGTest {
 
         FindViewController mockController = mock(FindViewController.class);
         mockController.init(spyTopComponent);
-        doNothing().when(mockController).retriveMatchingElements(Mockito.eq(false), Mockito.eq(true));
+        doNothing().when(mockController).retriveMatchingElements(Mockito.eq(false), Mockito.eq(true), Mockito.eq(false));
 
         BasicFindTab basicFindMock = mock(BasicFindTab.class);
 
@@ -496,9 +502,12 @@ public class BasicFindTabNGTest {
         lookForChoiceBox.getItems().add("Node");
         lookForChoiceBox.getSelectionModel().select(0);
         final TextField findTextField = new TextField("test");
+        final CheckBox zoomToSelectionCheckBox = new CheckBox("Zoom to Selection");
 
         when(basicFindMock.getLookForChoiceBox()).thenReturn(lookForChoiceBox);
         when(basicFindMock.getFindTextField()).thenReturn(findTextField);
+        when(basicFindMock.getZoomToSelection()).thenReturn(zoomToSelectionCheckBox);
+        zoomToSelectionCheckBox.setSelected(false);
 
         doCallRealMethod().when(basicFindMock).findNextAction();
         doNothing().when(basicFindMock).saveSelected(Mockito.any());
@@ -511,7 +520,7 @@ public class BasicFindTabNGTest {
 
             verify(basicFindMock, times(1)).saveSelected(Mockito.eq(GraphElementType.VERTEX));
             verify(basicFindMock, times(1)).updateBasicFindParamters();
-            verify(mockController, times(1)).retriveMatchingElements(false, true);
+            verify(mockController, times(1)).retriveMatchingElements(false, true, false);
         }
     }
 
@@ -527,7 +536,7 @@ public class BasicFindTabNGTest {
 
         FindViewController mockController = mock(FindViewController.class);
         mockController.init(spyTopComponent);
-        doNothing().when(mockController).retriveMatchingElements(Mockito.eq(false), Mockito.eq(false));
+        doNothing().when(mockController).retriveMatchingElements(Mockito.eq(false), Mockito.eq(false), Mockito.eq(false));
 
         BasicFindTab basicFindMock = mock(BasicFindTab.class);
 
@@ -538,10 +547,13 @@ public class BasicFindTabNGTest {
 
         when(basicFindMock.getLookForChoiceBox()).thenReturn(lookForChoiceBox);
         when(basicFindMock.getFindTextField()).thenReturn(findTextField);
+        final CheckBox zoomToSelectionCheckBox = new CheckBox("Zoom to Selection");
 
         doCallRealMethod().when(basicFindMock).findPrevAction();
         doNothing().when(basicFindMock).saveSelected(Mockito.any());
         doNothing().when(basicFindMock).updateBasicFindParamters();
+        when(basicFindMock.getZoomToSelection()).thenReturn(zoomToSelectionCheckBox);
+        zoomToSelectionCheckBox.setSelected(false);
 
         try (MockedStatic<FindViewController> mockedStatic = Mockito.mockStatic(FindViewController.class)) {
             mockedStatic.when(() -> FindViewController.getDefault()).thenReturn(mockController);
@@ -550,7 +562,7 @@ public class BasicFindTabNGTest {
 
             verify(basicFindMock, times(1)).saveSelected(Mockito.eq(GraphElementType.VERTEX));
             verify(basicFindMock, times(1)).updateBasicFindParamters();
-            verify(mockController, times(1)).retriveMatchingElements(false, false);
+            verify(mockController, times(1)).retriveMatchingElements(false, false, false);
         }
     }
 
@@ -572,6 +584,7 @@ public class BasicFindTabNGTest {
         graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
         graph2 = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
 
+        graphMap = new HashMap<>();
         graphMap.put(graph.getId(), graph);
         graphMap.put(graph2.getId(), graph2);
         try {
@@ -584,10 +597,9 @@ public class BasicFindTabNGTest {
             identifierV = VisualConcept.VertexAttribute.IDENTIFIER.ensure(wg);
             xV = VisualConcept.VertexAttribute.X.ensure(wg);
 
-            selectedT = VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
-            labelT = VisualConcept.TransactionAttribute.LABEL.ensure(wg);
-            identiferT = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(wg);
-            widthT = VisualConcept.TransactionAttribute.WIDTH.ensure(wg);
+            VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
+            VisualConcept.TransactionAttribute.LABEL.ensure(wg);
+            VisualConcept.TransactionAttribute.IDENTIFIER.ensure(wg);
 
             vxId1 = wg.addVertex();
             wg.setBooleanValue(selectedV, vxId1, false);

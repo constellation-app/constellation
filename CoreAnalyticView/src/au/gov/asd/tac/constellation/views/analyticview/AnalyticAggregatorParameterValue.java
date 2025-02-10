@@ -59,7 +59,7 @@ public class AnalyticAggregatorParameterValue extends ParameterValue {
 
     @Override
     public boolean setObjectValue(final Object o) {
-        if (o instanceof AnalyticAggregator aggregator && !analyticAggregator.getClass().equals(o.getClass())) {
+        if (o instanceof AnalyticAggregator<?> aggregator && !analyticAggregator.getClass().equals(o.getClass())) {
             analyticAggregator = aggregator;
             return true;
         }

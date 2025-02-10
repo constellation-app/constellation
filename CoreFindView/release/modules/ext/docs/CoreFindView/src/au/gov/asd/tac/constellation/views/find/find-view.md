@@ -12,7 +12,7 @@
 <th>Constellation Action</th>
 <th>Keyboard Shortcut</th>
 <th>User Action</th>
-<th>Menu Icon</th>
+<th style="text-align: center;">Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -20,9 +20,7 @@
 <td>Open Find View</td>
 <td>Ctrl + F</td>
 <td>Edit -&gt; Find...</td>
-<td><div style="text-align: center">
-<img src="../ext/docs/CoreFindView/src/au/gov/asd/tac/constellation/views/find/resources/find.png" width="16" height="16" />
-</div></td>
+<td style="text-align: center;"><img src="../ext/docs/CoreFindView/src/au/gov/asd/tac/constellation/views/find/resources/find.png" alt="Find View Icon" alt="Find View Icon" /></td>
 </tr>
 </tbody>
 </table>

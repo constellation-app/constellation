@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.wordcloud.ui;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import java.awt.BorderLayout;
@@ -50,7 +51,7 @@ import org.openide.windows.TopComponent;
         id = "au.gov.asd.tac.constellation.views.wordcloud.ui.WordCloudTopComponent"
 )
 @ActionReferences({
-    @ActionReference(path = "Menu/Experimental/Views", position = 2000),
+    @ActionReference(path = "Menu/Views", position = 1700),
     @ActionReference(path = "Shortcuts", name = "CS-W")
 })
 @TopComponent.OpenActionRegistration(
@@ -84,36 +85,30 @@ public final class WordCloudTopComponent extends JavaFxTopComponent<WordCloudPan
 
         // Populate the jfx container
         Platform.setImplicitExit(false);
-        Platform.runLater(() -> {
-            wordCloudPane = createContent();
-            controller.setWordCloudPane(wordCloudPane);
-            final Scene scene = new Scene(wordCloudPane);
-            scene.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
-            panel.setScene(scene);
+        wordCloudPane = new WordCloudPane(controller);
+        controller.setWordCloudPane(wordCloudPane);
+        final Scene scene = new Scene(wordCloudPane);
+        scene.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
+        panel.setScene(scene);
 
-            // Update word cloud pane's size when window size changes
-            scene.heightProperty().addListener((obv, oldVal, newVal) -> 
-                wordCloudPane.setContentHeight(newVal.intValue()));
-        });
+        // Update word cloud pane's size when window size changes
+        scene.heightProperty().addListener((obv, oldVal, newVal) -> 
+            wordCloudPane.setContentHeight(newVal.intValue()));
     }
 
     @Override
     protected String createStyle() {
-        return JavafxStyleManager.isDarkTheme()
-                ? "resources/word-cloud-dark.css"
-                : "resources/word-cloud-light.css";
+        return JavafxStyleManager.isDarkTheme() ? "resources/word-cloud-dark.css" : "resources/word-cloud-light.css";
     }
 
     @Override
     protected WordCloudPane createContent() {
-        wordCloudPane = new WordCloudPane(controller);
         return wordCloudPane;
     }
 
     @Override
     public void handleNewGraph(final Graph graph) {
         if (this.graph != graph || controller.isControllerIntialising()) {
-
             // Remove change listener from previous graph
             if (this.graph != null) {
                 this.graph.removeGraphChangeListener(this);
@@ -139,11 +134,45 @@ public final class WordCloudTopComponent extends JavaFxTopComponent<WordCloudPan
             controller.updateButtonsOnPane();
             controller.updateParametersOnPane(vertTextAttributes, transTextAttributes);
         }
+        setPaneStatus();
     }
 
     @Override
     public void handleGraphOpened(final Graph graph) {
+        if (graph != null) {
+            controller.updateGraph();
+        }
+        setPaneStatus();
+    }
+
+    @Override
+    protected void handleGraphClosed(final Graph graph) {
+        if (graph != null) {
+            controller.updateGraph();
+        }
+        setPaneStatus();
+    }
+    
+    @Override
+    protected void handleComponentOpened() {
+        super.handleComponentOpened();
         controller.updateGraph();
+        setPaneStatus();
+    }
+
+    @Override
+    protected void componentShowing() {
+        super.componentShowing();
+        controller.updateGraph();
+        setPaneStatus();
+    }
+        
+    /**
+     * Sets the status of the pane dependent on if a graph is currently active.
+     * The status is used to enable or disable the view when a graph exists.
+     */
+    protected void setPaneStatus(){
+        createContent().setEnabled(GraphManager.getDefault().getActiveGraph() != null);
     }
 
     /**

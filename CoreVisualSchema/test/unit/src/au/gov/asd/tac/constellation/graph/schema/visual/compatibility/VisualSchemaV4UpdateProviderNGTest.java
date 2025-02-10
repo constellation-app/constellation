@@ -44,18 +44,16 @@ import org.testng.annotations.Test;
 public class VisualSchemaV4UpdateProviderNGTest {
     
     StoreGraph mockStoreGraph;
-    SchemaFactoryUtilities mockSchemaFactory;
     VisualSchemaV4UpdateProvider instance;
     
-    public VisualSchemaV4UpdateProviderNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -65,6 +63,7 @@ public class VisualSchemaV4UpdateProviderNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -72,7 +71,6 @@ public class VisualSchemaV4UpdateProviderNGTest {
      */
     public void resetMocking() {
         mockStoreGraph = mock(StoreGraph.class);
-        mockSchemaFactory = mock(SchemaFactoryUtilities.class);
     }
 
     /**

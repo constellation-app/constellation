@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,23 +40,24 @@ import org.testng.annotations.Test;
  */
 public class VisualConceptNGTest {
     
-    public VisualConceptNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -95,17 +96,21 @@ public class VisualConceptNGTest {
         final List<SchemaAttribute> graphAttributes = getElementTypeSpecificAttributes(visualAttributes, GraphElementType.GRAPH);
         final List<SchemaAttribute> nodeAttributes = getElementTypeSpecificAttributes(visualAttributes, GraphElementType.VERTEX);
         final List<SchemaAttribute> transactionAttributes = getElementTypeSpecificAttributes(visualAttributes, GraphElementType.TRANSACTION);
-        
+        final List<SchemaAttribute> metaAttributes = getElementTypeSpecificAttributes(visualAttributes, GraphElementType.META);
+
+        // Note: CONNECTION_MOTION is a GraphAttribute of GraphElementType META
         final int graphAttributeCount = getAttributeCount(VisualConcept.GraphAttribute.class);
+        final int metaAttributeCount = getAttributeCount(VisualConcept.MetaAttribute.class);
         final int nodeAttributeCount = getAttributeCount(VisualConcept.VertexAttribute.class);
         final int transactionAttributeCount = getAttributeCount(VisualConcept.TransactionAttribute.class);
         
         // ensure that all created attributes have been added to the schema attributes collection
         assertEquals(graphAttributes.size(), graphAttributeCount);
         assertEquals(nodeAttributes.size(), nodeAttributeCount);
+        assertEquals(metaAttributes.size(), metaAttributeCount);
         assertEquals(transactionAttributes.size(), transactionAttributeCount);
         // this check will catch out any new attribute classes added to the concept
-        assertEquals(visualAttributes.size(), graphAttributeCount + nodeAttributeCount + transactionAttributeCount);
+        assertEquals(visualAttributes.size(), graphAttributeCount + nodeAttributeCount + transactionAttributeCount + metaAttributeCount);
     }
     
     private int getAttributeCount(final Class<?> attributeClass) {

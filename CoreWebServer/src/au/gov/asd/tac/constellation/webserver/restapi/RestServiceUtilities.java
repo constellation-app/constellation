@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.DoubleNode;
 import com.fasterxml.jackson.databind.node.IntNode;
 import java.util.ArrayList;
@@ -177,7 +176,7 @@ public class RestServiceUtilities {
                 final Graph newGraph = GraphManager.getDefault().getActiveGraph();
                 if (newGraph != null) {
                     final String newId = newGraph.getId();
-                    if (existingId == null || (existingId != null && !existingId.equals(newId))) {
+                    if (existingId == null || !existingId.equals(newId)) {
                         // - there was no existing graph, and the new graph is active, or
                         // - there was an existing graph, and the active graph is not the existing graph.
                         // - we assume the user hasn't interfered by manually switching to another graph at the same time.

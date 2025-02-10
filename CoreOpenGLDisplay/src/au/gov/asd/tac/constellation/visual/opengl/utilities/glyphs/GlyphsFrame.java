@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -390,7 +390,8 @@ public class GlyphsFrame extends JFrame {
         if (isZalgo) {
             final List<Integer> codepoints = new ArrayList<>();
             final int length = line.length();
-            for (int offset = 0; offset < length;) {
+            int offset = 0; 
+            while (offset < length) {
                 final int codepoint = line.codePointAt(offset);
                 final int cc = Character.charCount(codepoint);
 
@@ -426,7 +427,7 @@ public class GlyphsFrame extends JFrame {
         final ParsedFontInfo pfi = FontInfo.parseFontInfo(fontNames, GlyphManagerBI.DEFAULT_FONT_SIZE);
 
         if (!pfi.messages.isEmpty()) {
-            final String log = String.format("ParsedFontInfo message: %s\n", pfi.getMessages());
+            final String log = String.format("ParsedFontInfo message: %s%n", pfi.getMessages());
             LOGGER.log(Level.INFO, log);
         }
 

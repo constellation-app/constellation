@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,14 +19,12 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
-import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
-import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
-import static org.testng.Assert.fail;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -39,25 +37,43 @@ import org.testng.annotations.BeforeMethod;
  */
 public class CutCopyPasteNGTest {
 
-    private int attrX, attrY, attrZ;
-    private int vxId1, vxId2, vxId3, vxId4, vxId5, vxId6, vxId7;
-    private int txId1, txId2, txId3, txId4, txId5;
-    private int vNameAttr, tNameAttr, vSelAttr, tSelAttr;
+    private int attrX;
+    private int attrY;
+    
+    private int vxId1;
+    private int vxId2;
+    private int vxId3;
+    private int vxId4;
+    private int vxId5;
+    private int vxId6;
+    private int vxId7;
+    
+    private int txId1;
+    private int txId2;
+    private int txId3;
+    private int txId4;
+    private int txId5;
+    
+    private int vNameAttr;
+    private int tNameAttr;
+    private int vSelAttr;
+    private int tSelAttr;
+    
     private Graph graph;
-
-    public CutCopyPasteNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -66,71 +82,50 @@ public class CutCopyPasteNGTest {
         graph = new DualGraph(ss);
         WritableGraph wg = graph.getWritableGraph("add", true);
         try {
-            attrX = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", 0.0, null);
-            if (attrX == Graph.NOT_FOUND) {
-                fail();
-            }
-
-            attrY = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y", "y", 0.0, null);
-            if (attrY == Graph.NOT_FOUND) {
-                fail();
-            }
-
-            attrZ = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z", "z", 0.0, null);
-            if (attrZ == Graph.NOT_FOUND) {
-                fail();
-            }
+            attrX = VisualConcept.VertexAttribute.X.ensure(wg);
+            attrY = VisualConcept.VertexAttribute.Y.ensure(wg);
 
             vNameAttr = wg.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "name", "descr", "", null);
-            if (vNameAttr == Graph.NOT_FOUND) {
-                fail();
-            }
-
             tNameAttr = wg.addAttribute(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, "name", "descr", "", null);
-            if (tNameAttr == Graph.NOT_FOUND) {
-                fail();
-            }
-
-            vSelAttr = wg.addAttribute(GraphElementType.VERTEX, BooleanAttributeDescription.ATTRIBUTE_NAME, "selected", "selected", false, null);
-            if (vSelAttr == Graph.NOT_FOUND) {
-                fail();
-            }
-
-            tSelAttr = wg.addAttribute(GraphElementType.TRANSACTION, BooleanAttributeDescription.ATTRIBUTE_NAME, "selected", "selected", false, null);
-            if (tSelAttr == Graph.NOT_FOUND) {
-                fail();
-            }
+            vSelAttr = VisualConcept.VertexAttribute.SELECTED.ensure(wg);
+            tSelAttr = VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
 
             vxId1 = wg.addVertex();
             wg.setFloatValue(attrX, vxId1, 1.0f);
             wg.setFloatValue(attrY, vxId1, 1.0f);
             wg.setBooleanValue(vSelAttr, vxId1, false);
             wg.setStringValue(vNameAttr, vxId1, "name1");
+            
             vxId2 = wg.addVertex();
             wg.setFloatValue(attrX, vxId2, 5.0f);
             wg.setFloatValue(attrY, vxId2, 1.0f);
             wg.setBooleanValue(vSelAttr, vxId2, true);
             wg.setStringValue(vNameAttr, vxId2, "name2");
+            
             vxId3 = wg.addVertex();
             wg.setFloatValue(attrX, vxId3, 1.0f);
             wg.setFloatValue(attrY, vxId3, 5.0f);
             wg.setBooleanValue(vSelAttr, vxId3, false);
             wg.setStringValue(vNameAttr, vxId3, "name3");
+            
             vxId4 = wg.addVertex();
             wg.setFloatValue(attrX, vxId4, 5.0f);
             wg.setFloatValue(attrY, vxId4, 5.4f);
             wg.setBooleanValue(vSelAttr, vxId4, true);
             wg.setStringValue(vNameAttr, vxId4, "name4");
+            
             vxId5 = wg.addVertex();
             wg.setFloatValue(attrX, vxId5, 15.0f);
             wg.setFloatValue(attrY, vxId5, 15.5f);
             wg.setBooleanValue(vSelAttr, vxId5, false);
             wg.setStringValue(vNameAttr, vxId5, "name5");
+            
             vxId6 = wg.addVertex();
             wg.setFloatValue(attrX, vxId6, 26.0f);
             wg.setFloatValue(attrY, vxId6, 26.60f);
             wg.setBooleanValue(vSelAttr, vxId6, true);
             wg.setStringValue(vNameAttr, vxId6, "name6");
+            
             vxId7 = wg.addVertex();
             wg.setFloatValue(attrX, vxId7, 37.0f);
             wg.setFloatValue(attrY, vxId7, 37.7f);

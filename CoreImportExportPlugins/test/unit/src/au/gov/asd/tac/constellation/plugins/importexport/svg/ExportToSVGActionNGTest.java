@@ -1,5 +1,5 @@
 /*
-* Copyright 2010-2023 Australian Signals Directorate
+* Copyright 2010-2024 Australian Signals Directorate
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -42,7 +42,8 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
- *
+ * Tests for {@link ExportToSVGAction}
+ * 
  * @author capricornunicorn123
  */
 public class ExportToSVGActionNGTest {
@@ -61,15 +62,14 @@ public class ExportToSVGActionNGTest {
     final String graphName = "Test Graph 1";
     final DrawFlags drawFlags = new DrawFlags(true, true, true, true, true); 
     
-    public ExportToSVGActionNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -91,6 +91,7 @@ public class ExportToSVGActionNGTest {
         doReturn(pluginExecutionMock).when(pluginExecutionMock).withParameter(any(String.class), any(String.class));
         doReturn(pluginExecutionMock).when(pluginExecutionMock).withParameter(any(String.class), anyBoolean());
         doReturn(pluginExecutionMock).when(pluginExecutionMock).withParameter(any(String.class), any(ConstellationColor.class));
+        doReturn(pluginExecutionMock).when(pluginExecutionMock).withParameter(any(String.class), any(Integer.class));
         doReturn(pluginExecutionMock).when(pluginExecutionMock).interactively(anyBoolean(), any(String.class));
         doReturn(graphMock).when(contextMock).getGraph();
         doReturn(readableGraphMock).when(graphMock).getReadableGraph();
@@ -151,8 +152,6 @@ public class ExportToSVGActionNGTest {
         verify(pluginExecutionMock, times(1)).withParameter(ExportToSVGPlugin.SHOW_CONNECTION_LABELS_PARAMETER_ID, true);
         verify(pluginExecutionMock, times(1)).withParameter(ExportToSVGPlugin.SHOW_CONNECTIONS_PARAMETER_ID, true);
         verify(pluginExecutionMock, times(1)).executeLater(graphMock);
-        verify(contextMock, times(2)).getGraph();
-        
+        verify(contextMock, times(2)).getGraph();       
     }
-    
 }

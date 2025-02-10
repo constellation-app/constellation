@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,11 +69,8 @@ public class JSingleChoiceComboBoxMenuNGTest {
 
     private static final String COOKIE_ICON_PATH = "au/gov/asd/tac/constellation/utilities/modules/ext/icons/cookie.png";
     private static final String DROP_DOWN_ARROW_ICON_PATH = "au/gov/asd/tac/constellation/utilities/modules/ext/icons/drop_down_arrow.png";
-    private static final File iconFile = new File(DROP_DOWN_ARROW_ICON_PATH);
-
-    public JSingleChoiceComboBoxMenuNGTest() {
-    }
-
+    private static final File ICON_FILE = new File(DROP_DOWN_ARROW_ICON_PATH);
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         installedFileLocatorMocked = mock(InstalledFileLocator.class);
@@ -91,7 +88,7 @@ public class JSingleChoiceComboBoxMenuNGTest {
                 .thenReturn(installedFileLocatorMocked);
         installedFileLocatorMockedStatic.when(() -> InstalledFileLocator.getDefault()
                 .locate("modules/ext/icons/drop_down_arrow.png", "au.gov.asd.tac.constellation.utilities", false))
-                .thenReturn(iconFile);
+                .thenReturn(ICON_FILE);
 
         items.clear();
         items.add("Item 1");
@@ -142,6 +139,7 @@ public class JSingleChoiceComboBoxMenuNGTest {
     /**
      * Test the constructor Triggers Assertion Error when the arrow icon cannot
      * be generated.
+     * @throws java.net.MalformedURLException
      */
     @Test(expectedExceptions = AssertionError.class)
     public void testConstructor_WithIcon_ThrowsMalformedURLExceptionTriggersAssertionError() throws MalformedURLException {
@@ -210,7 +208,7 @@ public class JSingleChoiceComboBoxMenuNGTest {
         newMenuItem.getActionListeners()[0].actionPerformed(actionEventMock);
 
         final Set<String> resultSet = instance.getSelectedItem();
-        assertEquals(resultSet.stream().findFirst().get().toString(), "Item 4");
+        assertEquals(resultSet.stream().findFirst().get(), "Item 4");
         verify(listSelectionListenerMock1, times(1)).valueChanged(any(ListSelectionEvent.class));
     }
 
@@ -262,6 +260,7 @@ public class JSingleChoiceComboBoxMenuNGTest {
 
     /**
      * Test of setIcon method, of class JSingleChoiceComboBoxMenu.
+     * @throws java.net.MalformedURLException
      */
     @Test
     public void testSetIcon() throws MalformedURLException {
@@ -269,7 +268,7 @@ public class JSingleChoiceComboBoxMenuNGTest {
 
         final JSingleChoiceComboBoxMenu instance = new JSingleChoiceComboBoxMenu("Text", items);
 
-        final Icon newIcon1 = new ImageIcon(Utilities.toURI(iconFile).toURL());
+        final Icon newIcon1 = new ImageIcon(Utilities.toURI(ICON_FILE).toURL());
         final Icon newIcon2 = new ImageIcon(DROP_DOWN_ARROW_ICON_PATH);
         instance.setIcon(newIcon1);
         Icon result = instance.getIcon();
@@ -302,7 +301,7 @@ public class JSingleChoiceComboBoxMenuNGTest {
         assertTrue(instance.getSelectedItem().isEmpty());
         instance.setSelectedItem(item);
         final Set<String> resultSet = instance.getSelectedItem();
-        assertEquals(resultSet.stream().findFirst().get().toString(), item);
+        assertEquals(resultSet.stream().findFirst().get(), item);
     }
 
     /**
@@ -316,7 +315,7 @@ public class JSingleChoiceComboBoxMenuNGTest {
         instance.setSelectedItem(item);
         final Set resultSet = instance.getSelectedItem();
         assertEquals(resultSet.size(), 1);
-        assertEquals(resultSet.stream().findFirst().get().toString(), item);
+        assertEquals(resultSet.stream().findFirst().get(), item);
     }
 
     /**

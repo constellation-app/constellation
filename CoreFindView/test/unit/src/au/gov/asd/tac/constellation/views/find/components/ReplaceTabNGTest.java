@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.find.components;
 
-import au.gov.asd.tac.constellation.views.find.components.BasicFindTab;
-import au.gov.asd.tac.constellation.views.find.components.ReplaceTab;
-import au.gov.asd.tac.constellation.views.find.components.FindViewTabs;
-import au.gov.asd.tac.constellation.views.find.components.FindViewPane;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
@@ -36,6 +32,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import org.mockito.MockedStatic;
@@ -62,30 +59,31 @@ import org.testng.annotations.Test;
  */
 public class ReplaceTabNGTest {
 
-    private Map<String, Graph> graphMap = new HashMap<>();
+    private Map<String, Graph> graphMap;
+    
     private Graph graph;
     private Graph graph2;
-    private GraphAttribute labelAttributeV, identifierAttributeV, labelAttributeT, identifierAttributeT;
+    
+    private GraphAttribute labelAttributeV;
+    private GraphAttribute identifierAttributeV;
 
-    private int selectedV, selectedT;
-    private int labelV, identifierV, xV, labelT, identiferT, widthT;
-    private int vxId1, vxId2, vxId3, vxId4, vxId5UpperCase, vxId6, vxId7, vxId8, txId1, txId2, txId3, txId4;
+    private int selectedV;
+    private int labelV;
+    private int identifierV;
+    private int xV;
+    
+    private int vxId1;
 
-    FindViewTopComponent findViewTopComponent;
-    FindViewTopComponent spyTopComponent;
-
-//    FindViewController findViewController;
-    BasicFindTab basicFindTab;
-    ReplaceTab replaceTab;
-    ReplaceTab spyReplaceTab;
-    FindViewPane findViewPane;
-    FindViewTabs findViewTabs;
+    private FindViewTopComponent findViewTopComponent;
+    private FindViewTopComponent spyTopComponent;
+    
+    private BasicFindTab basicFindTab;
+    private ReplaceTab replaceTab;
+    private FindViewPane findViewPane;
+    private FindViewTabs findViewTabs;
 
     private static final Logger LOGGER = Logger.getLogger(ReplaceTabNGTest.class.getName());
-
-    public ReplaceTabNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -122,6 +120,7 @@ public class ReplaceTabNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -140,8 +139,8 @@ public class ReplaceTabNGTest {
          * and getSearchAllGraphs checkbox.
          */
         replaceTab.updateButtons();
-        assertEquals(replaceTab.buttonsHBox.getChildren().get(0), replaceTab.getReplaceAllButton());
-        assertEquals(replaceTab.buttonsHBox.getChildren().get(1), replaceTab.getReplaceNextButton());
+        assertEquals(replaceTab.buttonsHBox.getChildren().get(1), replaceTab.getReplaceAllButton());
+        assertEquals(replaceTab.buttonsHBox.getChildren().get(2), replaceTab.getReplaceNextButton());
     }
 
     /**
@@ -200,7 +199,7 @@ public class ReplaceTabNGTest {
         //Create a controller mock and do nothing on retriveMatchingElements()
         FindViewController mockController = mock(FindViewController.class);
         mockController.init(spyTopComponent);
-        doNothing().when(mockController).replaceMatchingElements(Mockito.eq(true), Mockito.eq(false));
+        doNothing().when(mockController).replaceMatchingElements(Mockito.eq(true), Mockito.eq(false), Mockito.eq(false));
 
         /**
          * Create a basicFindMock and adds a temporary choice box and textFild
@@ -212,11 +211,14 @@ public class ReplaceTabNGTest {
         lookForChoiceBox.getSelectionModel().select(0);
         final TextField findTextField = new TextField("test");
         final TextField repalceTextField = new TextField("replace");
+        final CheckBox zoomToSelectionCheckBox = new CheckBox("Zoom to Selection");
 
         //Mock the getters to return the newly made java fx element.
         when(replaceMock.getLookForChoiceBox()).thenReturn(lookForChoiceBox);
         when(replaceMock.getFindTextField()).thenReturn(findTextField);
         when(replaceMock.getReplaceTextField()).thenReturn(repalceTextField);
+        when(replaceMock.getZoomToSelection()).thenReturn(zoomToSelectionCheckBox);
+        zoomToSelectionCheckBox.setSelected(false);
 
         //Do nothing on saveSelected() and updateBasicFindParamters()
         doCallRealMethod().when(replaceMock).replaceAllAction();
@@ -236,7 +238,7 @@ public class ReplaceTabNGTest {
 
             verify(replaceMock, times(1)).saveSelected(Mockito.eq(GraphElementType.VERTEX));
             verify(replaceMock, times(1)).updateBasicReplaceParamters();
-            verify(mockController, times(1)).replaceMatchingElements(true, false);
+            verify(mockController, times(1)).replaceMatchingElements(true, false, false);
         }
 
     }
@@ -253,7 +255,7 @@ public class ReplaceTabNGTest {
         //Create a controller mock and do nothing on retriveMatchingElements()
         FindViewController mockController = mock(FindViewController.class);
         mockController.init(spyTopComponent);
-        doNothing().when(mockController).replaceMatchingElements(Mockito.eq(false), Mockito.eq(true));
+        doNothing().when(mockController).replaceMatchingElements(Mockito.eq(false), Mockito.eq(true), Mockito.eq(false));
 
         /**
          * Create a basicFindMock and adds a temporary choice box and textFild
@@ -265,11 +267,14 @@ public class ReplaceTabNGTest {
         lookForChoiceBox.getSelectionModel().select(0);
         final TextField findTextField = new TextField("test");
         final TextField repalceTextField = new TextField("replace");
+        final CheckBox zoomToSelectionCheckBox = new CheckBox("Zoom to Selection");
 
         //Mock the getters to return the newly made java fx element.
         when(replaceMock.getLookForChoiceBox()).thenReturn(lookForChoiceBox);
         when(replaceMock.getFindTextField()).thenReturn(findTextField);
         when(replaceMock.getReplaceTextField()).thenReturn(repalceTextField);
+        when(replaceMock.getZoomToSelection()).thenReturn(zoomToSelectionCheckBox);
+        zoomToSelectionCheckBox.setSelected(false);
 
         //Do nothing on saveSelected() and updateBasicFindParamters()
         doCallRealMethod().when(replaceMock).replaceNextAction();
@@ -289,7 +294,7 @@ public class ReplaceTabNGTest {
 
             verify(replaceMock, times(1)).saveSelected(Mockito.eq(GraphElementType.VERTEX));
             verify(replaceMock, times(1)).updateBasicReplaceParamters();
-            verify(mockController, times(1)).replaceMatchingElements(false, true);
+            verify(mockController, times(1)).replaceMatchingElements(false, true, false);
         }
     }
 
@@ -297,10 +302,10 @@ public class ReplaceTabNGTest {
         graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
         graph2 = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
 
+        graphMap = new HashMap<>();
         graphMap.put(graph.getId(), graph);
         graphMap.put(graph2.getId(), graph2);
         try {
-
             WritableGraph wg = graph.getWritableGraph("", true);
 
             // Create Selected Attributes
@@ -308,11 +313,6 @@ public class ReplaceTabNGTest {
             labelV = VisualConcept.VertexAttribute.LABEL.ensure(wg);
             identifierV = VisualConcept.VertexAttribute.IDENTIFIER.ensure(wg);
             xV = VisualConcept.VertexAttribute.X.ensure(wg);
-
-            selectedT = VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
-            labelT = VisualConcept.TransactionAttribute.LABEL.ensure(wg);
-            identiferT = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(wg);
-            widthT = VisualConcept.TransactionAttribute.WIDTH.ensure(wg);
 
             vxId1 = wg.addVertex();
             wg.setBooleanValue(selectedV, vxId1, false);
@@ -334,15 +334,7 @@ public class ReplaceTabNGTest {
             identifierAttributeV = new GraphAttribute(wg, attributeInt);
             replaceTab.attributes.add(identifierAttributeV);
 
-            elementType = GraphElementType.TRANSACTION;
-            attributeInt = wg.getAttribute(elementType, 1);
-            labelAttributeT = new GraphAttribute(wg, attributeInt);
-
-            attributeInt = wg.getAttribute(elementType, 2);
-            identifierAttributeT = new GraphAttribute(wg, attributeInt);
-
             wg.commit();
-
         } catch (final InterruptedException ex) {
             Exceptions.printStackTrace(ex);
             Thread.currentThread().interrupt();

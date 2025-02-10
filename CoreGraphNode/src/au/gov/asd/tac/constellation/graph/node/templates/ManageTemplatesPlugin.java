@@ -36,6 +36,9 @@ import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -148,8 +151,10 @@ public class ManageTemplatesPlugin extends SimplePlugin {
 
         final Map<String, String> templates = NewSchemaGraphAction.getTemplateNames();
         deletedTemplates.forEach(template -> {
-            final boolean newFileIsDeleted = new File(NewSchemaGraphAction.getTemplateDirectory(), templates.get(template) + "/" + template).delete();
-            if (!newFileIsDeleted) {
+            final File newFile = new File(NewSchemaGraphAction.getTemplateDirectory(), templates.get(template) + File.separator + template);
+            try {
+                Files.delete(Path.of(newFile.getPath()));
+            } catch (final IOException ex) {
                 //TODO: Handle case where file not successfully deleted
             }
         });

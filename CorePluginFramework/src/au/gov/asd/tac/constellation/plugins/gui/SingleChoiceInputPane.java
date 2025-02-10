@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,7 +55,11 @@ public class SingleChoiceInputPane extends HBox {
     public SingleChoiceInputPane(final PluginParameter<SingleChoiceParameterValue> parameter) {
         field = new SearchableComboBox<>();
         field.setPromptText(parameter.getDescription());
-        field.setItems(FXCollections.observableList(SingleChoiceParameterType.getOptionsData(parameter)));
+
+        final ObservableList<ParameterValue> optionsList = FXCollections.observableArrayList();
+        optionsList.setAll(SingleChoiceParameterType.getOptionsData(parameter));
+        field.setItems(optionsList);
+
         final ParameterValue initialValue = parameter.getParameterValue();
         if (initialValue.getObjectValue() != null) {
             field.getSelectionModel().select(initialValue);

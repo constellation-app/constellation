@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.find.components;
 
-import au.gov.asd.tac.constellation.views.find.components.AdvancedFindTab;
-import au.gov.asd.tac.constellation.views.find.components.BasicFindTab;
-import au.gov.asd.tac.constellation.views.find.components.ReplaceTab;
-import au.gov.asd.tac.constellation.views.find.components.FindViewTabs;
-import au.gov.asd.tac.constellation.views.find.components.FindViewPane;
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
@@ -43,6 +37,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -69,28 +64,28 @@ import org.testng.annotations.Test;
  */
 public class AdvancedFindTabNGTest {
 
-    private Map<String, Graph> graphMap = new HashMap<>();
+    private Map<String, Graph> graphMap;
     private Graph graph;
     private Graph graph2;
-    private GraphAttribute labelAttributeV, identifierAttributeV, xAtrributeV, labelAttributeT, identifierAttributeT;
 
-    private int selectedV, selectedT;
-    private int labelV, identifierV, xV, labelT, identiferT, widthT;
-    private int vxId1, vxId2, vxId3, vxId4, vxId5UpperCase, vxId6, vxId7, vxId8, txId1, txId2, txId3, txId4;
+    private int selectedV;
+    private int labelV;
+    private int identifierV;
+    private int xV;
+    
+    private int vxId1;
 
-    FindViewTopComponent findViewTopComponent;
-    FindViewTopComponent spyTopComponent;
+    private FindViewTopComponent findViewTopComponent;
+    private FindViewTopComponent spyTopComponent;
 
-    BasicFindTab basicFindTab;
-    ReplaceTab replaceTab;
-    AdvancedFindTab advancedTab;
-    FindViewPane findViewPane;
-    FindViewTabs findViewTabs;
+    private BasicFindTab basicFindTab;
+    private ReplaceTab replaceTab;
+    private AdvancedFindTab advancedTab;
+    private FindViewPane findViewPane;
+    private FindViewTabs findViewTabs;
+    
     private static final Logger LOGGER = Logger.getLogger(BasicFindTabNGTest.class.getName());
-
-    public AdvancedFindTabNGTest() throws Exception {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -130,6 +125,7 @@ public class AdvancedFindTabNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -148,10 +144,10 @@ public class AdvancedFindTabNGTest {
          * getFindAllButton and getSearchAllGraphs checkbox.
          */
         advancedTab.updateButtons();
-        assertEquals(advancedTab.buttonsHBox.getChildren().get(0), advancedTab.getDeleteResultsButton());
-        assertEquals(advancedTab.buttonsHBox.getChildren().get(1), advancedTab.getFindAllButton());
-        assertEquals(advancedTab.buttonsHBox.getChildren().get(2), advancedTab.getFindPrevButton());
-        assertEquals(advancedTab.buttonsHBox.getChildren().get(3), advancedTab.getFindNextButton());
+        assertEquals(advancedTab.buttonsHBox.getChildren().get(1), advancedTab.getDeleteResultsButton());
+        assertEquals(advancedTab.buttonsHBox.getChildren().get(2), advancedTab.getFindAllButton());
+        assertEquals(advancedTab.buttonsHBox.getChildren().get(3), advancedTab.getFindPrevButton());
+        assertEquals(advancedTab.buttonsHBox.getChildren().get(4), advancedTab.getFindNextButton());
 
     }
 
@@ -222,8 +218,7 @@ public class AdvancedFindTabNGTest {
         assertEquals(advancedTab.getCorrespondingCriteriaList(type).size(), 1);
         advancedTab.addCriteriaPane(type);
         assertEquals(advancedTab.getCorrespondingCriteriaList(type).size(), 2);
-
-        // TODO review the generated test code and remove the default call to fail.
+        
     }
 
     /**
@@ -375,7 +370,7 @@ public class AdvancedFindTabNGTest {
         //Create a controller mock and do nothing on retriveMatchingElements()
         FindViewController mockController = mock(FindViewController.class);
         mockController.init(spyTopComponent);
-        doNothing().when(mockController).retrieveAdvancedSearch(Mockito.eq(true), Mockito.eq(false));
+        doNothing().when(mockController).retrieveAdvancedSearch(Mockito.eq(true), Mockito.eq(false), Mockito.eq(false));
         Button mockButton = mock(Button.class);
 
         GraphElementType graphElementType = GraphElementType.VERTEX;
@@ -399,12 +394,16 @@ public class AdvancedFindTabNGTest {
         final List<FindCriteriaValues> findCriteriaValues = new ArrayList<>();
         final StringCriteriaValues stringCriteriaValue = new StringCriteriaValues("string", "Identifer", "Is", "hello", false, false);
         findCriteriaValues.add(stringCriteriaValue);
+        final CheckBox zoomToSelectionCheckBox = new CheckBox("Zoom to Selection");
 
         //When each function is called return the temporarily created elements above
         when(advancedFindMock.getCorrespondingCriteriaList(graphElementType)).thenReturn(criteriaPaneList);
         when(advancedFindMock.getCriteriaValues(criteriaPaneList)).thenReturn(findCriteriaValues);
         when(advancedFindMock.getLookForChoiceBox()).thenReturn(lookForChoiceBox);
         when(advancedFindMock.getDeleteResultsButton()).thenReturn(mockButton);
+        when(advancedFindMock.getZoomToSelection()).thenReturn(zoomToSelectionCheckBox);
+        
+        zoomToSelectionCheckBox.setSelected(false);
 
         //Do real call on findAllAction
         doCallRealMethod().when(advancedFindMock).findAllAction();
@@ -421,7 +420,7 @@ public class AdvancedFindTabNGTest {
 
             advancedFindMock.findAllAction();
             verify(advancedFindMock, times(1)).updateAdvancedSearchParameters(graphElementType);
-            verify(mockController, times(1)).retrieveAdvancedSearch(true, false);
+            verify(mockController, times(1)).retrieveAdvancedSearch(true, true, false);
         }
     }
 
@@ -437,7 +436,7 @@ public class AdvancedFindTabNGTest {
         //Create a controller mock and do nothing on retriveMatchingElements()
         FindViewController mockController = mock(FindViewController.class);
         mockController.init(spyTopComponent);
-        doNothing().when(mockController).retrieveAdvancedSearch(Mockito.eq(false), Mockito.eq(true));
+        doNothing().when(mockController).retrieveAdvancedSearch(Mockito.eq(false), Mockito.eq(true), Mockito.eq(false));
 
         GraphElementType graphElementType = GraphElementType.VERTEX;
 
@@ -460,11 +459,15 @@ public class AdvancedFindTabNGTest {
         final List<FindCriteriaValues> findCriteriaValues = new ArrayList<>();
         final StringCriteriaValues stringCriteriaValue = new StringCriteriaValues("string", "Identifer", "Is", "hello", false, false);
         findCriteriaValues.add(stringCriteriaValue);
+        final CheckBox zoomToSelectionCheckBox = new CheckBox("Zoom to Selection");
 
         //When each function is called return the temporarily created elements above
         when(advancedFindMock.getCorrespondingCriteriaList(graphElementType)).thenReturn(criteriaPaneList);
         when(advancedFindMock.getCriteriaValues(criteriaPaneList)).thenReturn(findCriteriaValues);
         when(advancedFindMock.getLookForChoiceBox()).thenReturn(lookForChoiceBox);
+        when(advancedFindMock.getZoomToSelection()).thenReturn(zoomToSelectionCheckBox);
+        
+        zoomToSelectionCheckBox.setSelected(false);
 
         //Do real call on findAllAction
         doCallRealMethod().when(advancedFindMock).findNextAction();
@@ -481,7 +484,7 @@ public class AdvancedFindTabNGTest {
 
             advancedFindMock.findNextAction();
             verify(advancedFindMock, times(1)).updateAdvancedSearchParameters(graphElementType);
-            verify(mockController, times(1)).retrieveAdvancedSearch(false, true);
+            verify(mockController, times(1)).retrieveAdvancedSearch(false, true, false);
         }
     }
 
@@ -497,7 +500,7 @@ public class AdvancedFindTabNGTest {
         //Create a controller mock and do nothing on retriveMatchingElements()
         FindViewController mockController = mock(FindViewController.class);
         mockController.init(spyTopComponent);
-        doNothing().when(mockController).retrieveAdvancedSearch(Mockito.eq(false), Mockito.eq(false));
+        doNothing().when(mockController).retrieveAdvancedSearch(Mockito.eq(false), Mockito.eq(false), Mockito.eq(false));
 
         GraphElementType graphElementType = GraphElementType.VERTEX;
 
@@ -520,11 +523,15 @@ public class AdvancedFindTabNGTest {
         final List<FindCriteriaValues> findCriteriaValues = new ArrayList<>();
         final StringCriteriaValues stringCriteriaValue = new StringCriteriaValues("string", "Identifer", "Is", "hello", false, false);
         findCriteriaValues.add(stringCriteriaValue);
+        final CheckBox zoomToSelectionCheckBox = new CheckBox("Zoom to Selection");
 
         //When each function is called return the temporarily created elements above
         when(advancedFindMock.getCorrespondingCriteriaList(graphElementType)).thenReturn(criteriaPaneList);
         when(advancedFindMock.getCriteriaValues(criteriaPaneList)).thenReturn(findCriteriaValues);
         when(advancedFindMock.getLookForChoiceBox()).thenReturn(lookForChoiceBox);
+        when(advancedFindMock.getZoomToSelection()).thenReturn(zoomToSelectionCheckBox);
+
+        zoomToSelectionCheckBox.setSelected(false);
 
         //Do real call on findAllAction
         doCallRealMethod().when(advancedFindMock).findPreviousAction();
@@ -541,7 +548,7 @@ public class AdvancedFindTabNGTest {
 
             advancedFindMock.findPreviousAction();
             verify(advancedFindMock, times(1)).updateAdvancedSearchParameters(graphElementType);
-            verify(mockController, times(1)).retrieveAdvancedSearch(false, false);
+            verify(mockController, times(1)).retrieveAdvancedSearch(false, false, false);
         }
     }
 
@@ -550,10 +557,10 @@ public class AdvancedFindTabNGTest {
         graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
         graph2 = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
 
+        graphMap = new HashMap<>();
         graphMap.put(graph.getId(), graph);
         graphMap.put(graph2.getId(), graph2);
         try {
-
             WritableGraph wg = graph.getWritableGraph("", true);
 
             // Create Selected Attributes
@@ -562,11 +569,6 @@ public class AdvancedFindTabNGTest {
             identifierV = VisualConcept.VertexAttribute.IDENTIFIER.ensure(wg);
             xV = VisualConcept.VertexAttribute.X.ensure(wg);
 
-            selectedT = VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
-            labelT = VisualConcept.TransactionAttribute.LABEL.ensure(wg);
-            identiferT = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(wg);
-            widthT = VisualConcept.TransactionAttribute.WIDTH.ensure(wg);
-
             vxId1 = wg.addVertex();
             wg.setBooleanValue(selectedV, vxId1, false);
             wg.setStringValue(labelV, vxId1, "label name");
@@ -574,11 +576,9 @@ public class AdvancedFindTabNGTest {
             wg.setIntValue(xV, vxId1, 1);
 
             wg.commit();
-
         } catch (final InterruptedException ex) {
             Exceptions.printStackTrace(ex);
             Thread.currentThread().interrupt();
         }
     }
-
 }

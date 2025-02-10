@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,6 +45,7 @@ import org.testng.annotations.Test;
  * @author Auriga2
  */
 public class HeadingPaneNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(HeadingPaneNGTest.class.getName());
 
     private static MockedStatic<DataAccessPreferenceUtilities> dataAccessPreferenceUtilitiesMockedStatic;
@@ -54,10 +55,7 @@ public class HeadingPaneNGTest {
     private final String headingText = "Heading Text";
     private List<DataAccessPlugin> pluginsList;
     private final Set<String> globalParamLabels = new HashSet<>(Arrays.asList("ParamLabel_1", "ParamLabel_2"));
-
-    public HeadingPaneNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         dataAccessPreferenceUtilitiesMockedStatic = Mockito.mockStatic(DataAccessPreferenceUtilities.class);
@@ -114,10 +112,10 @@ public class HeadingPaneNGTest {
     public void testValidityChanged_disabled() {
         System.out.println("testValidityChanged_disabled");
 
-        String headingText = "Heading Text 2";
-        dataAccessPreferenceUtilitiesMockedStatic.when(() -> DataAccessPreferenceUtilities.isExpanded(headingText, true)).thenReturn(false);
+        String headingText2 = "Heading Text 2";
+        dataAccessPreferenceUtilitiesMockedStatic.when(() -> DataAccessPreferenceUtilities.isExpanded(headingText2, true)).thenReturn(false);
 
-        final HeadingPane instance = new HeadingPane(headingText, pluginsList, top, globalParamLabels);
+        final HeadingPane instance = new HeadingPane(headingText2, pluginsList, top, globalParamLabels);
         instance.validityChanged(false);
         assertFalse(instance.isExpanded());
     }
@@ -129,6 +127,7 @@ public class HeadingPaneNGTest {
     @Test
     public void testHierarchicalUpdate_paneIsNotQueryEnabled() {
         System.out.println("testHierarchicalUpdate_paneIsNotQueryEnabled");
+        
         headingPane.hierarchicalUpdate();
         verify(top, times(1)).hierarchicalUpdate();
         assertEquals(headingPane.getBoxes().getChildren().size(), 3);
@@ -141,6 +140,7 @@ public class HeadingPaneNGTest {
     @Test
     public void testHierarchicalUpdate_paneIsNotQueryEnabled_withlisteners() {
         System.out.println("testHierarchicalUpdate_paneIsNotQueryEnabled_withlisteners");
+        
         final TestListener listener = new TestListener();
         
         final HeadingPane listenedHeadingPane = new HeadingPane(headingText, pluginsList, listener, globalParamLabels);

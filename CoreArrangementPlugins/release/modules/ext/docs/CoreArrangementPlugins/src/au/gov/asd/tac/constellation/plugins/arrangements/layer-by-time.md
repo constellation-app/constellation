@@ -1,7 +1,32 @@
 # Layer by Time
 
+<table class="table table-striped">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Constellation Action</th>
+<th>Keyboard Shortcut</th>
+<th>User Action</th>
+<th style="text-align: center;">Menu Icon</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Run Layer by Time</td>
+<td></td>
+<td>Arrange -&gt; Layer by Time</td>
+<td style="text-align: center;"><img src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/layerByTime.png" alt="Layer by Time Icon" /></td>
+</tr>
+</tbody>
+</table>
+
 Layer by Time is an analytic using the Z-axis or 3D capability of
-CONSTELLATION. It uses a transaction attribute of type datetime to split
+Constellation. It uses a transaction attribute of type datetime to split
 the data in the graph into a series of time bins. Select a range using
 the First Datetime and Last Datetime selection boxes, or use the default
 values of the earliest and latest timestamps in the current graph data.
@@ -20,5 +45,21 @@ the data in the same way, but puts transactions on a separate layer
 (between their source and destination nodes). Experiment with both
 options to see which one works best for you.
 
-<img src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/layer_by_time_parameters_gui_screenshot.jpg" alt="Layer by Time
-Interface" />
+<div style="text-align: center">
+    <img height=600 src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/layer_by_time_parameters_gui_screenshot.png" alt="Layer by Time Interface" />
+</div>
+<br />
+<br />
+
+Example:
+
+<div style="text-align: center">
+    <figure style = "display: inline-block">
+        <img height=400 src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/BeforeLayer.png" alt="Before" />
+        <figcaption>Before</figcaption>
+    </figure>
+    <figure style = "display: inline-block">
+        <img height=400 src="../ext/docs/CoreArrangementPlugins/src/au/gov/asd/tac/constellation/plugins/arrangements/resources/AfterLayer.png" alt="After" />
+        <figcaption>After</figcaption>
+    </figure>
+</div>

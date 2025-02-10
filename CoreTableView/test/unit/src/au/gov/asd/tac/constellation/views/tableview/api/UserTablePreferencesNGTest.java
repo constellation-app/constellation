@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,27 +47,22 @@ public class UserTablePreferencesNGTest {
         final JsonNode serialization = OBJECT_MAPPER.valueToTree(fixture());
         final JsonNode expected = OBJECT_MAPPER.readTree(
                 new FileInputStream(getClass().getResource(JSON_RESOURCE).getPath()));
-        final String column = "ColumnOrder";
         
         assertThat(expected).usingRecursiveComparison().isEqualTo(serialization);
     }
 
     @Test
     public void deserialization() throws IOException {
-        final UserTablePreferences deserialization = OBJECT_MAPPER.readValue(
-                new FileInputStream(getClass().getResource(JSON_RESOURCE).getPath()),
-                UserTablePreferences.class
-        );
+        final UserTablePreferences deserialization = OBJECT_MAPPER.readValue(new FileInputStream(getClass().getResource(JSON_RESOURCE).getPath()),
+                UserTablePreferences.class);
 
         assertEquals(fixture(), deserialization);
     }
 
     @Test
     public void equality() {
-        final Pair<String, TableColumn.SortType> black
-                = ImmutablePair.of("BLACK", TableColumn.SortType.ASCENDING);
-        final Pair<String, TableColumn.SortType> red
-                = ImmutablePair.of("RED", TableColumn.SortType.ASCENDING);
+        final Pair<String, TableColumn.SortType> black = ImmutablePair.of("BLACK", TableColumn.SortType.ASCENDING);
+        final Pair<String, TableColumn.SortType> red = ImmutablePair.of("RED", TableColumn.SortType.ASCENDING);
 
         EqualsVerifier.forClass(UserTablePreferences.class)
                 .suppress(Warning.NONFINAL_FIELDS)
@@ -78,9 +73,7 @@ public class UserTablePreferencesNGTest {
     @Test
     public void getSortColumn() {
         final UserTablePreferences userTablePreferences = new UserTablePreferences();
-        userTablePreferences.setSortByColumn(ImmutablePair.of(
-                "DEF", TableColumn.SortType.DESCENDING
-        ));
+        userTablePreferences.setSortByColumn(ImmutablePair.of("DEF", TableColumn.SortType.DESCENDING));
 
         assertEquals("DEF", userTablePreferences.getSortColumn());
 
@@ -92,9 +85,7 @@ public class UserTablePreferencesNGTest {
     @Test
     public void getSortDirection() {
         final UserTablePreferences userTablePreferences = new UserTablePreferences();
-        userTablePreferences.setSortByColumn(ImmutablePair.of(
-                "DEF", TableColumn.SortType.DESCENDING
-        ));
+        userTablePreferences.setSortByColumn(ImmutablePair.of("DEF", TableColumn.SortType.DESCENDING));
 
         assertEquals(TableColumn.SortType.DESCENDING, userTablePreferences.getSortDirection());
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,7 +65,7 @@ import org.testng.annotations.Test;
 public class FindViewTopComponentNGTest {
 
     private Graph graph;
-    private Map<String, Graph> graphMap = new HashMap<>();
+    private Map<String, Graph> graphMap;
     private FindViewTopComponent topComponent;
     private FindViewTopComponent spyTopComponent;
     private FindViewPane pane;
@@ -80,10 +80,7 @@ public class FindViewTopComponentNGTest {
     private AdvancedFindTab spyAdvancedFindTab;
     private List<AdvancedCriteriaBorderPane> criteriaPanesList;
     private static final Logger LOGGER = Logger.getLogger(FindViewTopComponentNGTest.class.getName());
-
-    public FindViewTopComponentNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {
@@ -142,6 +139,7 @@ public class FindViewTopComponentNGTest {
     @Test
     public void testCreateStyle() {
         System.out.println("createStyle");
+        
         final FindViewTopComponent findViewTopComponent = mock(FindViewTopComponent.class);
 
         doCallRealMethod().when(findViewTopComponent).createStyle();
@@ -282,15 +280,6 @@ public class FindViewTopComponentNGTest {
              */
             spyTopComponent.disableFindView();
             assertEquals(spyPane.isDisabled(), false);
-//            verify(spyTopComponent, times(1)).disableFindView();
-
-//            /**
-//             * SetUp the graph then repeat the same process. Verify that the
-//             * pane is no longer disabled
-//             */
-//            spyPane.setDisable(true);
-//            assertEquals(spyPane.isDisabled(), true);
-//            verify(spyTopComponent, times(2)).disableFindView();
         }
     }
 
@@ -334,7 +323,6 @@ public class FindViewTopComponentNGTest {
     @Test
     public void testUpdateUI() {
         System.out.println("UpdateUI");
-//        final GraphElementType basicFindType = GraphElementType.getValue(getFindViewPane().getTabs().getBasicFindTab().getLookForChoiceBox().getSelectionModel().getSelectedItem());
 
         final ChoiceBox<String> lookForChoiceBox = new ChoiceBox<>();
         lookForChoiceBox.getItems().add("Node");
@@ -376,6 +364,7 @@ public class FindViewTopComponentNGTest {
     private void setupGraph() {
         graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
 
+        graphMap = new HashMap<>();
         graphMap.put(graph.getId(), graph);
         try {
             WritableGraph wg = graph.getWritableGraph("", true);
@@ -388,11 +377,9 @@ public class FindViewTopComponentNGTest {
             wg.setObjectValue(stateId, 0, foundResult);
 
             wg.commit();
-
         } catch (final InterruptedException ex) {
             Exceptions.printStackTrace(ex);
             Thread.currentThread().interrupt();
         }
     }
-
 }

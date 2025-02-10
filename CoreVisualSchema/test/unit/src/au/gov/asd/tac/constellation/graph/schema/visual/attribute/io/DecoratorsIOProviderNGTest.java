@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.graph.schema.visual.attribute.DecoratorsAttr
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.TextNode;
+import java.io.IOException;
 import org.mockito.ArgumentCaptor;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -67,16 +68,15 @@ public class DecoratorsIOProviderNGTest {
     final String attribValue = "TestAttrib";
     final String decoratorStr = "TestDecorator";
     final GraphAttribute attr = new GraphAttribute(attributeId, GraphElementType.GRAPH, "attrType", "attrName", "attrDesc", null, null);
- 
-    public DecoratorsIOProviderNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -86,6 +86,7 @@ public class DecoratorsIOProviderNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
     
     /**
@@ -114,9 +115,10 @@ public class DecoratorsIOProviderNGTest {
 
     /**
      * Test of readObject method, of class DecoratorsIOProvider.
+     * @throws java.io.IOException
      */
     @Test
-    public void testReadObject() throws Exception {
+    public void testReadObject() throws IOException {
         System.out.println("DecoratorsIOProviderNGTest.testReadObject");
 
         // Call method under test with JsonNode.isNull=false and JsonNode.isObject=true
@@ -161,17 +163,11 @@ public class DecoratorsIOProviderNGTest {
 
     /**
      * Test of writeObject method, of class DecoratorsIOProvider.
+     * @throws java.io.IOException
      */
     @Test
-    public void testWriteObject() throws Exception {
+    public void testWriteObject() throws IOException {
         System.out.println("DecoratorsIOProviderNGTest.testWriteObject");
-
-//        int attributeId = 23;
-//        int elementId = 41;
-//        String attrType = "attrType";
-//        String attrName = "attrName";
-//        String attrDesc = "attrDesc";
-//        GraphAttribute attr = new GraphAttribute(attributeId, GraphElementType.GRAPH, attrType, attrName, attrDesc, null, null);
 
         // Test not verbose and graph.IsDefaultValue is true skips all processing
         resetMocking();

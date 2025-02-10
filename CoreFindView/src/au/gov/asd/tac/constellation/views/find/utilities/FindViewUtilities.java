@@ -18,10 +18,16 @@ package au.gov.asd.tac.constellation.views.find.utilities;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.interaction.gui.VisualGraphTopComponent;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import java.awt.EventQueue;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
@@ -32,6 +38,8 @@ import org.openide.windows.WindowManager;
  */
 public class FindViewUtilities {
 
+    private static final Logger LOGGER = Logger.getLogger(FindViewUtilities.class.getName());
+
     private FindViewUtilities() {
         throw new IllegalStateException("Utility class");
     }
@@ -40,17 +48,31 @@ public class FindViewUtilities {
      * Changes the active graph to the one where a graph element has been found and selected
      * 
      * @param graph
+     * @param zoomToSelection
      */
-    public static void searchAllGraphs(final GraphWriteMethods graph) {
+    public static void searchAllGraphs(final GraphWriteMethods graph, final boolean zoomToSelection) {
         final Set<TopComponent> topComponents = WindowManager.getDefault().getRegistry().getOpened();
         if (topComponents != null) {
             for (final TopComponent component : topComponents) {
                 if (component instanceof VisualGraphTopComponent vgtComponent && vgtComponent.getGraphNode().getGraph().getId().equals(graph.getId())) {
-                    EventQueue.invokeLater(vgtComponent::requestActive);
-                    break;
+                    try {
+                        EventQueue.invokeAndWait(vgtComponent::requestActive);
+                        if (zoomToSelection) {
+                            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(GraphManager.getDefault().getActiveGraph());
+                        } else {
+                            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeLater(GraphManager.getDefault().getActiveGraph());
+                        }
+                        break;
+                    } catch (final InterruptedException ex) {
+                        LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                        Thread.currentThread().interrupt();
+                    } catch (final InvocationTargetException ex) {
+                        LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                    }
                 }
             }
         }
+
     }
 
     /**

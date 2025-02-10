@@ -102,6 +102,7 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
@@ -127,6 +128,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import org.apache.commons.collections4.CollectionUtils;
+import org.openide.util.HelpCtx;
 import org.openide.util.NbPreferences;
 
 /**
@@ -148,10 +150,11 @@ public class AttributeEditorPanel extends BorderPane {
     private static final GraphElementType[] ELEMENT_TYPES = {GraphElementType.GRAPH, GraphElementType.VERTEX, GraphElementType.TRANSACTION};
     private static final String NO_VALUE_TEXT = "<No Value>";
 
-    private static final String PRIMARY_KEY_ATTRIBUTE_COLOR = "#8a1d1d";
-    private static final String CUSTOM_ATTRIBUTE_COLOR = "#1f4f8a";
-    private static final String HIDDEN_ATTRIBUTE_COLOR = "#999999";
-    private static final String SCHEMA_ATTRIBUTE_COLOR = JavafxStyleManager.isDarkTheme() ? "#333333" : "#777777";
+    private static final boolean DARK_MODE = JavafxStyleManager.isDarkTheme();
+    private static final String PRIMARY_KEY_ATTRIBUTE_COLOR = DARK_MODE ? "#8a1d1d" : "#e8a49c";
+    private static final String CUSTOM_ATTRIBUTE_COLOR = DARK_MODE ? "#1f4f8a" : "#a0c0ff";
+    private static final String HIDDEN_ATTRIBUTE_COLOR = DARK_MODE ? "#999999" : "#b8b8b8";
+    private static final String SCHEMA_ATTRIBUTE_COLOR = DARK_MODE ? "#333333" : "#d6d6d6";
 
     private StackPane root;
     private ArrayList<VBox> valueTitledPaneContainers = new ArrayList<>();
@@ -159,6 +162,7 @@ public class AttributeEditorPanel extends BorderPane {
     private final ScrollPane scrollPane = new ScrollPane();
     private final MenuBar optionsBar = new MenuBar();
     private final Menu optionsMenu = new Menu("Options");
+    private final ToolBar optionsPane = new ToolBar();
     private final CheckMenuItem completeWithSchemaItem = new CheckMenuItem("Complete with Schema After Edits");
     private final Preferences prefs = NbPreferences.forModule(AttributePreferenceKey.class);
     private final AttributeEditorTopComponent topComponent;
@@ -228,9 +232,17 @@ public class AttributeEditorPanel extends BorderPane {
 
             completeWithSchemaItem.setSelected(false);
             optionsMenu.getItems().addAll(createColorsMenu(), completeWithSchemaItem);
+            optionsBar.setId("options-menu");
             optionsBar.getMenus().add(optionsMenu);
+            
+            final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor()));
+            final Button helpButton = new Button("", helpImage);
+            helpButton.setStyle("-fx-border-color: transparent; -fx-background-color: transparent; -fx-effect: null; ");
+            helpButton.setOnAction(event
+                    -> new HelpCtx(this.getClass().getName()).display());
+            optionsPane.getItems().addAll(optionsBar, helpButton);
 
-            borderPane.setTop(optionsBar);
+            borderPane.setTop(optionsPane);
             borderPane.setCenter(scrollPane);
 
             root.getChildren().add(borderPane);
@@ -524,7 +536,8 @@ public class AttributeEditorPanel extends BorderPane {
      */
     private TitledPane createAttributeTitlePane(final AttributeData attribute, final Object[] values, final double longestTitledWidth, final boolean hidden) {
         final String attributeTitle = attribute.getAttributeName();
-        final int spacing = 5;
+        final boolean multiValue = values != null && values.length > 1;
+        final int spacing = multiValue ? 3 : 6;
         final GridPane gridPane = new GridPane();
         gridPane.setHgap(spacing);
         final double titleWidth = longestTitledWidth + spacing;
@@ -544,8 +557,6 @@ public class AttributeEditorPanel extends BorderPane {
         if (attribute.getDataType().equals(ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME)) {
             attributePane.addMenuItem("Update time-zone of selection", e -> updateTimeZoneAction(attribute));
         }
-
-        final boolean multiValue = values != null && values.length > 1;
 
         if (attribute.isKey()) {
             final String color;
@@ -577,11 +588,6 @@ public class AttributeEditorPanel extends BorderPane {
 
         if (!multiValue) {
             attributePane.setCollapsible(false);
-
-            if (!JavafxStyleManager.isDarkTheme()) {
-                attributePane.setStyle("-fx-background-color: #FFFFFF; ");
-            }
-
         } else {
             createMultiValuePane(attribute, attributePane, values);
         }
@@ -591,10 +597,10 @@ public class AttributeEditorPanel extends BorderPane {
 
         // Value TextField
         final Node attributeValueNode = createAttributeValueNode(values, attribute, attributePane, multiValue);
-        if (JavafxStyleManager.isDarkTheme()) {
+        if (DARK_MODE) {
             attributeValueNode.setStyle("-fx-background-color: #111111; ");
         } else {
-            attributeValueNode.setStyle("-fx-background-color: #757575; -fx-text-fill: #FFFFFF; ");
+            attributeValueNode.setStyle("-fx-text-fill: #000000; ");
         }
 
         // Edit Functionality
@@ -937,10 +943,9 @@ public class AttributeEditorPanel extends BorderPane {
 
     private double calcLongestTitle(final List<AttributeData> attributeData) {
         double maxWidth = 0;
-        double currWidth = 0;
         if (attributeData != null) {
             for (final AttributeData data : attributeData) {
-                currWidth = getTextWidth(data.getAttributeName());
+                final double currWidth = getTextWidth(data.getAttributeName());
                 if (maxWidth < currWidth) {
                     maxWidth = currWidth;
                 }

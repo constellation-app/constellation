@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,7 +69,7 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                                 notesArray.get(i).get(2).asText(),
                                 notesArray.get(i).get(3).asBoolean(),
                                 notesArray.get(i).get(4).asBoolean(),
-                                "#942483",
+                                "#a26fc0",
                                 false
                         ));
 
@@ -199,7 +199,7 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                         jsonGenerator.writeBoolean(note.isUserCreated());
                         jsonGenerator.writeBoolean(note.isGraphAttribute());
 
-                        if (!note.isGraphAttribute() && note.isUserCreated()) {
+                        if (!Boolean.TRUE.equals(note.isGraphAttribute()) && note.isUserCreated()) {
 
                             if (note.getNodesSelected() != null) {
                                 // Add nodes that are selected to the note
@@ -227,7 +227,7 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
 
                             jsonGenerator.writeString(note.getNodeColour());
 
-                        } else if (note.isGraphAttribute() && note.isUserCreated()) {
+                        } else if (Boolean.TRUE.equals(note.isGraphAttribute()) && note.isUserCreated()) {
                             jsonGenerator.writeString(note.getNodeColour());
                         }
 

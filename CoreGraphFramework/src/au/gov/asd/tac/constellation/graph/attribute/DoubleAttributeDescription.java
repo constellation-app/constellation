@@ -62,7 +62,7 @@ public class DoubleAttributeDescription extends AbstractAttributeDescription {
                 return number.doubleValue();
             }       
             case Boolean bool -> {
-                return bool ? 1.0 : 0.0;
+                return Boolean.TRUE.equals(bool) ? 1.0 : 0.0;
             }       
             case Character character -> {
                 return character;

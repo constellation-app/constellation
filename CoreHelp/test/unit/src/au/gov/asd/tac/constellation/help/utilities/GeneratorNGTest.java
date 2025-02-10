@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,24 +45,25 @@ import org.testng.annotations.Test;
  * @author aldebaran30701
  */
 public class GeneratorNGTest {
-
-    public GeneratorNGTest() {
-    }
-
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**
@@ -73,32 +74,37 @@ public class GeneratorNGTest {
         System.out.println("testing run");
 
         final String previousProperty = System.getProperty("constellation.environment");
+        final String previousHeadlessPorperty = System.getProperty("java.awt.headless");
 
         try {
             // Test on IDE Version
             System.setProperty("constellation.environment", "IDE(CORE)");
-
-            try (MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class, Mockito.CALLS_REAL_METHODS)) {
+            
+            // This particular test needs to NOT be in headless mode
+            System.setProperty("java.awt.headless", "false");
+ 
+            try (final MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class, Mockito.CALLS_REAL_METHODS)) {
                 final List<File> tocXMLFiles = new ArrayList<>();
                 final String layersTOC = "../ext/docs/CoreLayersView/src/au/gov/asd/tac/constellation/views/layers/layers-view-toc.xml";
                 final String notesTOC  = "../ext/docs/CoreNotesView/src/au/gov/asd/tac/constellation/views/notes/notes-view-toc.xml";
 
                 tocXMLFiles.add(new File(System.getProperty("user.dir") + layersTOC));
                 tocXMLFiles.add(new File(System.getProperty("user.dir") + notesTOC));
+                tocXMLFiles.add(new File("/non_consty_path/missing_file.md"));
                 generatorStaticMock.when(() -> Generator.getXMLFiles(Mockito.any())).thenReturn(tocXMLFiles);
                 generatorStaticMock.when(() -> Generator.getBaseDirectory()).thenCallRealMethod();
                 generatorStaticMock.when(() -> Generator.getResource()).thenCallRealMethod();
 
-                try (MockedStatic<TOCGenerator> tocgeneratorStaticMock = Mockito.mockStatic(TOCGenerator.class)) {
+                try (final MockedStatic<TOCGenerator> tocgeneratorStaticMock = Mockito.mockStatic(TOCGenerator.class)) {
                     tocgeneratorStaticMock.when(() -> TOCGenerator.createTOCFile(Mockito.anyString())).thenReturn(true);
                     tocgeneratorStaticMock.when(() -> TOCGenerator.convertXMLMappings(Mockito.any(), Mockito.any())).thenAnswer((Answer<Void>) invocation -> null);
-                    Generator generator = new Generator();
+                    final Generator generator = new Generator();
                     System.out.println("prop : " + System.getProperty("constellation.environment"));
                     generator.run();
 
                     // verify that the toc file was called to be created, and that the xml mappings were to be converted
-                    tocgeneratorStaticMock.verify(() -> TOCGenerator.createTOCFile(Mockito.anyString()));
-                    tocgeneratorStaticMock.verify(() -> TOCGenerator.convertXMLMappings(Mockito.any(), Mockito.any()));
+                    tocgeneratorStaticMock.verify(() -> TOCGenerator.createTOCFile(Mockito.anyString()), times(1));
+                    tocgeneratorStaticMock.verify(() -> TOCGenerator.convertXMLMappings(Mockito.any(), Mockito.any()), times(1));
 
                     generatorStaticMock.verify(() -> Generator.getBaseDirectory(), times(2));
                 }
@@ -108,8 +114,10 @@ public class GeneratorNGTest {
             if (previousProperty != null) {
                 System.setProperty("constellation.environment", previousProperty);
             }
+            if (previousHeadlessPorperty != null) {
+                System.setProperty("java.awt.headless", previousHeadlessPorperty);
+            }
         }
-
     }
     
     /**
@@ -154,6 +162,8 @@ public class GeneratorNGTest {
     /**
      * Test of getBaseDirectory method, of class Generator. Tests all available
      * file system roots, with module and class specific locations.
+     * @throws java.net.URISyntaxException
+     * @throws java.net.MalformedURLException
      */
     @Test
     public void testGetBaseDirectory() throws URISyntaxException, MalformedURLException {
@@ -165,7 +175,6 @@ public class GeneratorNGTest {
                 MockedStatic<Paths> pathsStaticMock = Mockito.mockStatic(Paths.class, Mockito.CALLS_REAL_METHODS)) {
             // loop over all possible file roots on the file system
             for (final File file : File.listRoots()) {
-
                 // try within base level of help module
                 final String userDir = file.getPath() + "Users" + sep + "Username" + sep + "Constellation" + sep + "ext" + sep + "CoreHelp";
 

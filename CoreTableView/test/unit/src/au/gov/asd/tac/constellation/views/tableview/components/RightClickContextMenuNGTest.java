@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,6 +49,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class RightClickContextMenuNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(RightClickContextMenuNGTest.class.getName());
 
     private Table table;
@@ -84,6 +85,7 @@ public class RightClickContextMenuNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     @Test
@@ -172,12 +174,9 @@ public class RightClickContextMenuNGTest {
      * @param eventHandler the handler to test
      * @param expectedClipboardText the expected CSV copied to the clipboard
      */
-    private void verifyCopyAction(final EventHandler<ActionEvent> eventHandler,
-            final String expectedClipboardText) {
+    private void verifyCopyAction(final EventHandler<ActionEvent> eventHandler, final String expectedClipboardText) {
 
-        try (MockedStatic<TableViewUtilities> tableViewUtilsMockedStatic
-                = Mockito.mockStatic(TableViewUtilities.class)) {
-
+        try (MockedStatic<TableViewUtilities> tableViewUtilsMockedStatic = Mockito.mockStatic(TableViewUtilities.class)) {
             final ActionEvent actionEvent = mock(ActionEvent.class);
 
             eventHandler.handle(actionEvent);

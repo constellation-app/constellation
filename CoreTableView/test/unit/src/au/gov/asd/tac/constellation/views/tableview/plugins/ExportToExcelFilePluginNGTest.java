@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,6 +53,7 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class ExportToExcelFilePluginNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(ExportToExcelFilePluginNGTest.class.getName());
 
     @BeforeClass
@@ -93,10 +94,8 @@ public class ExportToExcelFilePluginNGTest {
             when(pagination.getCurrentPageIndex()).thenReturn(42);
             when(pagination.getPageCount()).thenReturn(2);
 
-            final TableColumn<ObservableList<String>, ? extends Object> column1
-                    = mock(TableColumn.class);
-            final TableColumn<ObservableList<String>, ? extends Object> column2
-                    = mock(TableColumn.class);
+            final TableColumn<ObservableList<String>, ? extends Object> column1 = mock(TableColumn.class);
+            final TableColumn<ObservableList<String>, ? extends Object> column2 = mock(TableColumn.class);
 
             when(column1.getText()).thenReturn("COLUMN_1");
             when(column2.getText()).thenReturn("COLUMN_2");
@@ -114,9 +113,7 @@ public class ExportToExcelFilePluginNGTest {
                             FXCollections.observableList(List.of("row2Column1", "row2Column2", "row2InvisibleColumn3")))))
                     .when(selectionModel).getSelectedItems();
 
-            final ExportToExcelFilePlugin exportToExcel
-                    = new ExportToExcelFilePlugin(tmpFile, table,
-                            pagination, 1, selectedOnly, sheetName);
+            final ExportToExcelFilePlugin exportToExcel = new ExportToExcelFilePlugin(tmpFile, table, pagination, 1, selectedOnly, sheetName);
 
             exportToExcel.execute(null, pluginInteraction, null);
 
@@ -132,7 +129,6 @@ public class ExportToExcelFilePluginNGTest {
             verify(callback).call(42);
 
             assertEquals("Table View: Export to Excel File", exportToExcel.getName());
-
         } finally {
             if (tmpFile != null) {
                 tmpFile.delete();
@@ -160,10 +156,8 @@ public class ExportToExcelFilePluginNGTest {
             when(pagination.getCurrentPageIndex()).thenReturn(42);
             when(pagination.getPageCount()).thenReturn(2);
 
-            final TableColumn<ObservableList<String>, ? extends Object> column1
-                    = mock(TableColumn.class);
-            final TableColumn<ObservableList<String>, ? extends Object> column2
-                    = mock(TableColumn.class);
+            final TableColumn<ObservableList<String>, ? extends Object> column1 = mock(TableColumn.class);
+            final TableColumn<ObservableList<String>, ? extends Object> column2 = mock(TableColumn.class);
 
             when(column1.getText()).thenReturn("COLUMN_1");
             when(column2.getText()).thenReturn("COLUMN_2");
@@ -182,9 +176,7 @@ public class ExportToExcelFilePluginNGTest {
                             FXCollections.observableList(List.of("row2Column1", "row2Column2", "row2InvisibleColumn3")))))
                     .when(table).getItems();
 
-            final ExportToExcelFilePlugin exportToExcel
-                    = new ExportToExcelFilePlugin(tmpFile, table,
-                            pagination, 1, selectedOnly, sheetName);
+            final ExportToExcelFilePlugin exportToExcel = new ExportToExcelFilePlugin(tmpFile, table, pagination, 1, selectedOnly, sheetName);
 
             exportToExcel.execute(null, pluginInteraction, null);
 
@@ -200,7 +192,6 @@ public class ExportToExcelFilePluginNGTest {
             verify(callback).call(42);
 
             assertEquals("Table View: Export to Excel File", exportToExcel.getName());
-
         } finally {
             if (tmpFile != null) {
                 tmpFile.delete();
@@ -224,10 +215,9 @@ public class ExportToExcelFilePluginNGTest {
         final StringBuilder output = new StringBuilder();
         for (int i = 0; i <= sheet.getLastRowNum(); i++) {
             final Row row = sheet.getRow(i);
-            output.append(
-                    IntStream.range(0, row.getLastCellNum())
-                            .mapToObj(cellId -> row.getCell(cellId).toString())
-                            .collect(Collectors.joining(","))
+            output.append(IntStream.range(0, row.getLastCellNum())
+                    .mapToObj(cellId -> row.getCell(cellId).toString())
+                    .collect(Collectors.joining(","))
             );
             output.append("\n");
         }

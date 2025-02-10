@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.webserver;
 
+import au.gov.asd.tac.constellation.help.utilities.Generator;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
@@ -23,17 +24,20 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.security.MessageDigest;
@@ -46,6 +50,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
+import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -70,9 +75,8 @@ public class WebServer {
         /**
          * The HTTP header that contains the REST secret.
          * <p>
-         * Note: RFC6648 has deprecated the use of "X-" because changing it when
-         * it becomes a standard is problematic. Since this header is highly
-         * unlikely to ever to be registered, using "X-" is fine.
+         * Note: RFC6648 has deprecated the use of "X-" because changing it when it becomes a standard is problematic.
+         * Since this header is highly unlikely to ever to be registered, using "X-" is fine.
          */
         public static final String SECRET_HEADER = "X-CONSTELLATION-SECRET";
 
@@ -81,10 +85,9 @@ public class WebServer {
         /**
          * Check that a request contains the correct secret.
          * <p>
-         * If the request does not contain the correct secret, send an
-         * SC_AUTHORIZED error to the client; the caller is expected to honor
-         * the return value and return immediately without doing any work if the
-         * return value is false.
+         * If the request does not contain the correct secret, send an SC_AUTHORIZED error to the client; the caller is
+         * expected to honor the return value and return immediately without doing any work if the return value is
+         * false.
          *
          * @param request The client request.
          * @param response The response.
@@ -109,7 +112,6 @@ public class WebServer {
                         null
                 );
             }
-
             return ok;
         }
     }
@@ -121,9 +123,19 @@ public class WebServer {
     private static boolean running = false;
     private static int port = 0;
 
-    protected static final String CONSTELLATION_CLIENT = "constellation_client.py";
+    private static final String PACKAGE_NAME = "constellation_client";
+    protected static final String CONSTELLATION_CLIENT = PACKAGE_NAME + ".py";
+
     private static final String IPYTHON = ".ipython";
-    private static final String RESOURCES = "resources/";
+    private static final String SEP = File.separator;
+    private static final String SCRIPT_SOURCE = Generator.getBaseDirectory() + "ext" + SEP + "package" + SEP + "src" + SEP + PACKAGE_NAME + SEP;
+
+    private static final String PACKAGE_SOURCE = Generator.getBaseDirectory() + "ext" + SEP + "package" + SEP + "package_dist";
+    private static final String[] PACKAGE_INSTALL = {"pip", "install", "--upgrade", PACKAGE_NAME, "--no-index", "--find-links", "file:" + PACKAGE_SOURCE};
+    private static final String[] WINDOWS_COMMAND = {"cmd.exe", "/C"};
+
+    private static final String[] CHECK_INSTALL = {"pip", "freeze"};
+    private static final int INSTALL_SUCCESS = 0;
 
     public static boolean isRunning() {
         return running;
@@ -138,23 +150,18 @@ public class WebServer {
                 port = prefs.getInt(ApplicationPreferenceKeys.WEBSERVER_PORT, ApplicationPreferenceKeys.WEBSERVER_PORT_DEFAULT);
 
                 // Put the session secret and port number in a JSON file in the .CONSTELLATION directory.
-                // Make sure the file is owner read/write.
-                final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
-                final File restFile = new File(userDir, REST_FILE);
-                if (restFile.exists()) {
-                    final boolean restFileIsDeleted = restFile.delete();
-                    if (!restFileIsDeleted) {
-                        //TODO: Handle case where file not successfully deleted
-                    }
-                }
+                // Get rest directory, if path to directory is empty (default), use the ipython directory
+                final String restPref = prefs.get(ApplicationPreferenceKeys.REST_DIR, ApplicationPreferenceKeys.REST_DIR_DEFAULT);
+                final String restDir = "".equals(restPref) ? getScriptDir(true).toString() : restPref;
+                final File restFile = new File(restDir, REST_FILE);
+                cleanupRest(restFile, restDir);
 
                 // On Posix, we can use stricter file permissions.
                 // On Windows, we just create the new file.
-                final String os = System.getProperty("os.name");
-                if (!os.startsWith("Windows")) {
-                    final Path restPath = restFile.toPath();
+                if (!isWindows()) {
+                    // Make sure the file is owner read/write.
                     final Set<PosixFilePermission> perms = EnumSet.of(PosixFilePermission.OWNER_READ, PosixFilePermission.OWNER_WRITE);
-                    Files.createFile(restPath, PosixFilePermissions.asFileAttribute(perms));
+                    Files.createFile(restFile.toPath(), PosixFilePermissions.asFileAttribute(perms));
                 }
 
                 // Now write the file contents.
@@ -166,7 +173,7 @@ public class WebServer {
                 // Download the Python REST client if enabled.
                 final boolean pythonRestClientDownload = prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT);
                 if (pythonRestClientDownload) {
-                    downloadPythonClient();
+                    installPythonPackage();
                 }
 
                 // Build the server.
@@ -195,7 +202,7 @@ public class WebServer {
                 };
                 server.setRequestLog(requestLog);
 
-                LOGGER.info(String.format("Starting Jetty version %s on%s:%d...", Server.getVersion(), loopback, port));
+                LOGGER.log(Level.INFO, "{0}", String.format("Starting Jetty version %s on%s:%d...", Server.getVersion(), loopback, port));
                 server.start();
 
                 // Wait for the server to stop (if it ever does).
@@ -208,8 +215,9 @@ public class WebServer {
                         throw new RuntimeException(ex);
                     } finally {
                         // Play nice and clean up (if Netbeans lets us).
-                        final boolean restFileIsDeleted = restFile.delete();
-                        if (!restFileIsDeleted) {
+                        try {
+                            Files.delete(Path.of(restFile.getPath()));
+                        } catch (final IOException ex) {
                             //TODO: Handle case where file not successfully deleted
                         }
                     }
@@ -226,7 +234,17 @@ public class WebServer {
         return port;
     }
 
-    static File getScriptDir(final boolean mkdir) {
+    private static void cleanupRest(final File restFile, final String directory) {
+        if (Files.exists(Path.of(directory).resolve(REST_FILE))) {
+            try {
+                Files.delete(Path.of(restFile.getPath()));
+            } catch (final IOException e) {
+                LOGGER.log(Level.WARNING, "Error deleting existing rest file in user directory");
+            }
+        }
+    }
+
+    public static File getScriptDir(final boolean mkdir) {
         final File homeDir = new File(System.getProperty("user.home"));
         final File ipython = new File(homeDir, IPYTHON);
 
@@ -237,43 +255,178 @@ public class WebServer {
         return ipython;
     }
 
+    public static String getNotebookDir() {
+        final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+        // Return path to directory
+        return prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT);
+    }
+
     /**
      * Download the Python REST API client to the user's ~/.ipython directory.
      * <p>
-     * The download is done only if the script doesn't exist, or the existing
-     * script needs updating.
+     * The download is done only if the script doesn't exist, or the existing script needs updating.
      * <p>
      * This is in the path for Jupyter notebooks, but not for standard Python.
      */
     public static void downloadPythonClient() {
         final File ipython = getScriptDir(true);
-        final File download = new File(ipython, CONSTELLATION_CLIENT);
+        downloadPythonClientToDir(ipython);
+    }
+
+    /**
+     * Download the Python REST API client to the user's Jupyter Notebook directory.
+     * <p>
+     * The download is done only if the package installation fails
+     */
+    public static void downloadPythonClientNotebookDir() {
+        downloadPythonClientToDir(new File(getNotebookDir()));
+    }
+
+    /**
+     * Download the Python REST API client to a given directory.
+     * <p>
+     * The download is done only if the script doesn't exist, or the existing script needs updating.
+     * <p>
+     * This is in the path for Jupyter notebooks, but not for standard Python.
+     *
+     * @param directory The directory for constellation_client.py to be downloaded to.
+     */
+    public static void downloadPythonClientToDir(final File directory) {
+        final File download = new File(directory, CONSTELLATION_CLIENT);
 
         final boolean doDownload = !download.exists() || !equalScripts(download);
 
         if (doDownload) {
-            boolean complete = false;
-            try (final InputStream in = WebServer.class.getResourceAsStream(RESOURCES + CONSTELLATION_CLIENT); final FileOutputStream out = new FileOutputStream(download)) {
-                final byte[] buf = new byte[64 * 1024];
-                while (true) {
-                    final int len = in.read(buf);
-                    if (len == -1) {
-                        break;
-                    }
 
-                    out.write(buf, 0, len);
-                }
-
-                complete = true;
-            } catch (final IOException ex) {
-                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            try {
+                Files.copy(Paths.get(SCRIPT_SOURCE + CONSTELLATION_CLIENT), download.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            } catch (final IOException e) {
+                LOGGER.log(Level.WARNING, "Error retrieving constellation_client.py:", e);
+                return;
             }
 
-            if (complete) {
-                final String msg = String.format("'%s' downloaded to %s", CONSTELLATION_CLIENT, ipython);
-                StatusDisplayer.getDefault().setStatusText(msg);
-            }
+            // Succssfully copied files
+            final String msg = String.format("'%s' downloaded to %s", CONSTELLATION_CLIENT, directory);
+            StatusDisplayer.getDefault().setStatusText(msg);
+
         }
+    }
+
+    /**
+     * Install the Python REST API client package using pip install
+     *
+     * @throws IOException
+     */
+    public static void installPythonPackage() throws IOException {
+        // Create the process buillder with required arguments
+        final ProcessBuilder pb;
+        int processResult = -1; // Fail by default
+
+        if (isWindows()) {
+            pb = new ProcessBuilder(ArrayUtils.addAll(WINDOWS_COMMAND, PACKAGE_INSTALL)).redirectErrorStream(true);
+        } else {
+            pb = new ProcessBuilder(PACKAGE_INSTALL).redirectErrorStream(true);
+        }
+
+        // Start install process
+        final Process p = startPythonProcess(pb, "installation");
+        if (p == null) {
+            return;
+        }
+
+        try (final BufferedReader inputBuffer = new BufferedReader(new InputStreamReader(p.getInputStream()));) {
+
+            // If inputStream available, log output
+            String line;
+
+            while ((line = inputBuffer.readLine()) != null) {
+                LOGGER.log(Level.INFO, "{0}", line);
+            }
+
+            processResult = p.waitFor();
+            LOGGER.log(Level.INFO, "Python package installation finished...");
+            LOGGER.log(Level.INFO, "Python install process result: {0}", processResult);
+
+            // If not successful
+            if (processResult != INSTALL_SUCCESS) {
+                LOGGER.log(Level.INFO, "Python package installation unsuccessful, copying script to notebook directory...");
+                downloadPythonClientNotebookDir();
+            }
+
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.WARNING, "INTERRUPTED EXCEPTION CAUGHT in the python package installation:", ex);
+            Thread.currentThread().interrupt();
+        }
+
+        p.destroy();
+
+        // Verify install worked, unsuccessful process would have already been caught
+        if (processResult == INSTALL_SUCCESS) {
+            verifyPythonPackage();
+        }
+    }
+
+    /**
+     * Verify that the Python REST API client package was installed. Otherwise copy the script file to the notebook
+     * directory
+     *
+     */
+    public static void verifyPythonPackage() throws IOException {
+        // Create the process buillder with required arguments
+        final ProcessBuilder pb = new ProcessBuilder(CHECK_INSTALL).redirectErrorStream(true);
+
+        // Verify process
+        final Process p = startPythonProcess(pb, "verification");
+        if (p == null) {
+            return;
+        }
+
+        try (final BufferedReader inputBuffer = new BufferedReader(new InputStreamReader(p.getInputStream()));) {
+
+            // If inputStream available, log output
+            String allLines = "";
+            String currentLine;
+
+            while ((currentLine = inputBuffer.readLine()) != null) {
+                allLines = allLines.concat(currentLine);
+            }
+
+            final int result = p.waitFor();
+
+            LOGGER.log(Level.INFO, "Verification process result: {0}", result);
+
+            // If not successful
+            if (result != INSTALL_SUCCESS) {
+                LOGGER.log(Level.INFO, "Python package verification unsuccessful, copying script to notebook directory...");
+                downloadPythonClientNotebookDir();
+            } else if (allLines.contains(PACKAGE_NAME)) {  // Result must be success, so if output of listed packages include constellation_client
+                LOGGER.log(Level.INFO, "Python package was installed!");
+            } else {
+                LOGGER.log(Level.INFO, "Could not find python package, copying script to notebook directory...");
+                downloadPythonClientNotebookDir();
+            }
+
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.WARNING, "INTERRUPTED EXCEPTION CAUGHT in the python package verification:", ex);
+            Thread.currentThread().interrupt();
+        }
+
+        LOGGER.log(Level.INFO, "Verification of package finished...");
+        p.destroy();
+    }
+
+    public static Process startPythonProcess(final ProcessBuilder pb, final String warning) {
+        LOGGER.log(Level.INFO, "Python package {0} begun...", warning);
+        final Process p;
+        try {
+            p = pb.start();
+        } catch (final IOException ex) {
+            LOGGER.log(Level.WARNING, "IO EXCEPTION CAUGHT in process for python package {0}: {1}", new Object[]{warning, ex});
+            LOGGER.log(Level.INFO, "Copying python script to notebook directory instead...");
+            downloadPythonClientNotebookDir();
+            return null;
+        }
+        return p;
     }
 
     /**
@@ -309,18 +462,21 @@ public class WebServer {
      * @return True if both exist and are (pseudo-)equal, False otherwise.
      */
     static boolean equalScripts(final File scriptFile) {
-        try (final FileInputStream in1 = new FileInputStream(scriptFile)) {
-            try (final InputStream in2 = WebServer.class.getResourceAsStream(RESOURCES + CONSTELLATION_CLIENT)) {
-                final byte[] dig1 = getDigest(in1);
-                final byte[] dig2 = getDigest(in2);
+        try (final FileInputStream in1 = new FileInputStream(scriptFile); final InputStream in2 = new FileInputStream(SCRIPT_SOURCE + CONSTELLATION_CLIENT)) {
+            final byte[] dig1 = getDigest(in1);
+            final byte[] dig2 = getDigest(in2);
 
-                return MessageDigest.isEqual(dig1, dig2);
-            }
+            return MessageDigest.isEqual(dig1, dig2);
+
         } catch (final FileNotFoundException | NoSuchAlgorithmException ex) {
             return false;
         } catch (final IOException ex) {
             LOGGER.log(Level.SEVERE, "Equal scripts", ex);
             return false;
         }
+    }
+
+    public static boolean isWindows() {
+        return System.getProperty("os.name").startsWith("Windows");
     }
 }

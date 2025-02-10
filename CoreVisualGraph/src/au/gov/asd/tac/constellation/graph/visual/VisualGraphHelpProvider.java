@@ -47,7 +47,7 @@ public class VisualGraphHelpProvider extends HelpPageProvider {
 
         map.put("au.gov.asd.tac.constellation.graph.visual.inducedSubgraph", visualModulePath + "induced-subgraph.md");
         map.put("au.gov.asd.tac.constellation.graph.visual.hopOut", visualModulePath + "hop-out.md");
-        map.put("au.gov.asd.tac.constellation.graph.visual.mergeNodes", visualModulePath + "merge-nodes.md");
+        map.put("au.gov.asd.tac.constellation.graph.visual.mergeNodes", visualModulePath + "merge-nodes-tool.md");
         map.put("au.gov.asd.tac.constellation.graph.visual.generalSelection", visualModulePath + "general-selection.md");
         map.put("au.gov.asd.tac.constellation.graph.visual.dimmedSelection", visualModulePath + "dimmed-selection.md");
         map.put("au.gov.asd.tac.constellation.graph.visual.structureSelection", visualModulePath + "structure-selection.md");
@@ -63,9 +63,7 @@ public class VisualGraphHelpProvider extends HelpPageProvider {
      */
     @Override
     public String getHelpTOC() {
-        final String visualPath;
-        visualPath = "ext" + SEP + "docs" + SEP + "CoreVisualGraph" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP + "asd" + SEP + "tac" + SEP
+        return "ext" + SEP + "docs" + SEP + "CoreVisualGraph" + SEP + "src" + SEP + "au" + SEP + "gov" + SEP + "asd" + SEP + "tac" + SEP
                 + CODEBASE_NAME + SEP + "graph" + SEP + "visual" + SEP + "visualgraph-toc.xml";
-        return visualPath;
     }
 }

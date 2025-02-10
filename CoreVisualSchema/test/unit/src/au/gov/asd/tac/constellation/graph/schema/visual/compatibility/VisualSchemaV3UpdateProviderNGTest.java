@@ -41,15 +41,14 @@ public class VisualSchemaV3UpdateProviderNGTest {
     StoreGraph mockStoreGraph;
     VisualSchemaV3UpdateProvider instance;
     
-    public VisualSchemaV3UpdateProviderNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
@@ -60,6 +59,7 @@ public class VisualSchemaV3UpdateProviderNGTest {
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     /**

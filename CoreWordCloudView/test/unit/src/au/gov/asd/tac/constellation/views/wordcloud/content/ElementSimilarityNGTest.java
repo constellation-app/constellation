@@ -31,18 +31,22 @@ public class ElementSimilarityNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Not currently required
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        // Not currently required
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        // Not currently required
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        // Not currently required
     }
 
     @Test
@@ -56,6 +60,5 @@ public class ElementSimilarityNGTest {
         assertEquals(1, newInstance.low);
         assertEquals(5, newInstance.high);
         assertEquals(7.0, newInstance.score);
-    }
-    
+    }    
 }

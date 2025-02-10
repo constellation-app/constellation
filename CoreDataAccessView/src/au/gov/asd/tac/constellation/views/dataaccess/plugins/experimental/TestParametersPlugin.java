@@ -387,7 +387,8 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         // Local process-tracking variables (Process is indeteminate due to the nature of plugin reporting through the logger)
         final int currentProcessStep = 0;
         final int totalProcessSteps = -1;
-        interaction.setProgress(currentProcessStep, totalProcessSteps, "Testing parameters...", true);
+        interaction.setProgressTimestamp(true);
+        interaction.setProgress(currentProcessStep, totalProcessSteps, "Testing parameters...", true, parameters);
 
         //Display parameter information
         LOGGER.log(Level.INFO, "parameters: {0}", parameters);
@@ -412,9 +413,9 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         LOGGER.log(Level.INFO, "localdate: {0} ", localDate);
         if (localDate != null) {
             final Calendar cal = LocalDateParameterType.toCalendar(localDate);
-            LOGGER.log(Level.INFO, String.format("toDate: [%s] [%04d-%02d-%02d]",
+            LOGGER.log(Level.INFO, "{0}", String.format("toDate: [%s] [%04d-%02d-%02d]",
                     cal, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)));
-            LOGGER.log(Level.INFO, String.format("fields: [%04d-%02d-%02d]",
+            LOGGER.log(Level.INFO, "{0}", String.format("fields: [%04d-%02d-%02d]",
                     localDate.get(ChronoField.YEAR), localDate.get(ChronoField.MONTH_OF_YEAR), localDate.get(ChronoField.DAY_OF_MONTH)));
         }
 

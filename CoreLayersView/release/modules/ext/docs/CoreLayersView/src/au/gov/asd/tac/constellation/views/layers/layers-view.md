@@ -12,7 +12,7 @@
 <th>Constellation Action</th>
 <th>Keyboard Shortcut</th>
 <th>User Action</th>
-<th>Menu Icon</th>
+<th style="text-align: center;">Menu Icon</th>
 </tr>
 </thead>
 <tbody>
@@ -20,27 +20,25 @@
 <td>Open Layers View</td>
 <td>Ctrl + Shift + L</td>
 <td>Views -&gt; Layers View</td>
-<td><div style="text-align: center">
-<img src="../ext/docs/CoreLayersView/src/au/gov/asd/tac/constellation/views/layers/resources/layers-view.png" width="16" height="16" />
-</div></td>
+<td style="text-align: center;"><img src="../ext/docs/CoreLayersView/src/au/gov/asd/tac/constellation/views/layers/resources/layers-view.png" alt="Layers View Icon" /></td>
 </tr>
 <tr class="even">
 <td>Add New Layer</td>
 <td>Ctrl + Alt + L</td>
 <td>Click "Add New Layer"</td>
-<td>N/A</td>
+<td></td>
 </tr>
 <tr class="odd">
 <td>Deselect All Layers</td>
 <td>Ctrl + Alt + D</td>
 <td>Click "Deselect All Layers"</td>
-<td>N/A</td>
+<td></td>
 </tr>
 <tr class="even">
 <td>Toggle On/Off Layer</td>
 <td>Ctrl + Alt + x (x is layer number)</td>
 <td>Toggle Visibility Checkbox</td>
-<td>N/A</td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -69,33 +67,29 @@ is 64.
 When a single layer is toggled on, that layer will be displayed on the
 graph. When multiple manual layers are selected, it will display
 everything on layer x, as well as everything on layer y (i.e. the union
-of all selected layers). Combining both query and manual layers will
-produce undefined results and should not be used when accuracy of
-results is needed.
+of all selected layers). 
 
 To delete a layer, simply press the Delete button next to the layer you want to 
 remove.
 
-## Layer Types
+## Layer Allocation
 
 <img src="../ext/docs/CoreLayersView/src/au/gov/asd/tac/constellation/views/layers/resources/layers-context.png" alt="Right-click context menu used for adding elements to a manual
 layer." />  
 
-There are two main layer types within the Layers View. The
-differentiating factor of the two being the way elements are chosen to
-be displayed.
+There are two main ways for a graph element to be allocated to a layer:
 
-### Manual Layer
+### Manual Allocation to a Layer
 
-A manual layer is a static layer only containing elements added via
-right click context menu (see above image) or manually set layer_mask
-Attribute.
+Graph Elements can be manually added to a layer via the right click context menu (see above image) or by manually setting the layer_mask
+Attribute via the Attribute Editor.  
+Note: When any layers are active, any graph elements that are manually created/added to the graph will have their layer_mask automatically allocated to the set of active layers.
 
-### Query Layer
+### Query Allocation to a Layer
 
-A query layer is a dynamic layer that shows the elements represented by
-the specified Vertex and Transaction queries. Query layers are
-dynamically recalculated upon changes to those attributes being queried.
+When a query is defined on a layer it provides a dynamic means to include graph elements on that layer as determined by
+the specified Vertex and Transaction queries. Queries are
+dynamically recalculated upon changes to any attributes being queried.
 This is to ensure the accuracy of the shown layer. e.g. Layer 1 has a
 vertex query described as Label == 'Vertex #0'. This will show the
 vertex with that label. If you then change Vertex #0's label to
@@ -108,3 +102,30 @@ NOTE: Layers View does not allow for the use of the assignment operator
 Click
 [here](../ext/docs/CoreGraphFramework/src/au/gov/asd/tac/constellation/graph/expressions-framework.md)
 for more information on the structure of the expression framework
+
+
+## Layer Functions  
+  
+<img src="../ext/docs/CoreLayersView/src/au/gov/asd/tac/constellation/views/layers/resources/LayerFunctions.png" alt="Layer specific functions" />  
+  
+The __Select__ button will select only the graph elements that are allocated to the corresponding layer.  
+The __De-Select__ button will deselect only the graph elements that are allocated to the corresponding layer.  
+The __Allocate__ button will directly allocate all selected graph elements to the corresponding layer, while maintaining any allocations to other layers.  
+The __De-Allocate__ button will directly deallocate all selected graph elements to the corresponding layer, while maintaining any allocations to other layers.  
+  
+The __Include Hidden__ checkbox allows selections and allocations to occur on graph elements even if they are currently not being displayed.  
+When this is unchecked, only the currently displayed graph elements will be affected.  
+  
+
+## Union and Intersection Modes  
+  
+At the top right of the Layers View you can switch between <img src="../ext/docs/CoreLayersView/src/au/gov/asd/tac/constellation/views/layers/resources/UnionMode.png" alt="Layers View : Union Mode" /> and <img src="../ext/docs/CoreLayersView/src/au/gov/asd/tac/constellation/views/layers/resources/IntersectionMode.png" alt="Layers View : Intersection Mode" />  
+In Union Mode, when multiple layers are selected/active, then __all__ graph elements belonging to __any__ active layer will be displayed.  
+In Intersection Mode, when multiple layers are selected/active, then __only__ graph elements belonging to __every__ active layer will be displayed.  
+
+Union sample:  
+<img src="../ext/docs/CoreLayersView/src/au/gov/asd/tac/constellation/views/layers/resources/Layers2and7union.png" alt="Layers View : Union sample" />
+
+Intersection sample:  
+<img src="../ext/docs/CoreLayersView/src/au/gov/asd/tac/constellation/views/layers/resources/Layers2and7intersection.png" alt="Layers View : Intersection sample" />
+
