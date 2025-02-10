@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,19 +31,18 @@ import javafx.scene.shape.Rectangle;
  */
 public abstract class Button extends StackPane {
     
-    final int endCellPrefWidth = 50;
-    final int defaultCellHeight = 22;
+    private final int endCellPrefWidth = 50;
+    private final int defaultCellHeight = 22;
     
-    final Color dkButtonColor = Color.color(0.11, 0.35, 0.65);
-    final Color dkOptionColor = Color.color(0.4, 0.4, 0.4);
+    private final Color dkButtonColor = Color.color(0.11, 0.35, 0.65);
+    private final Color dkOptionColor = Color.color(0.4, 0.4, 0.4);
     
-    final Color ltButtonColor = Color.color(0.19, 0.5, 0.97);
-    final Color ltOptionColor = Color.color(0.255, 0.568, 0.91);
+    private final Color ltButtonColor = Color.color(0.19, 0.5, 0.97);
+    private final Color ltOptionColor = Color.color(0.255, 0.568, 0.91);
     
-    final Rectangle background = new Rectangle(endCellPrefWidth, defaultCellHeight); 
+    private final Rectangle background = new Rectangle(endCellPrefWidth, defaultCellHeight); 
     
-    public Button(final Label label, final ButtonType type) {
-        
+    public Button(final Label label, final ButtonType type) {        
         final Color color = switch (type){
             case POPUP -> JavafxStyleManager.isDarkTheme() ? dkButtonColor : ltButtonColor;
             default -> JavafxStyleManager.isDarkTheme() ? dkOptionColor : ltOptionColor;

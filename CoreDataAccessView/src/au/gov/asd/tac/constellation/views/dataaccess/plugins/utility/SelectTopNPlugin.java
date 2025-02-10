@@ -201,7 +201,7 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
                 }
             }
         });
-    
+
         return params;
     }
 

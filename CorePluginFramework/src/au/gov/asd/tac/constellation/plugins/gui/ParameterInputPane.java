@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,12 @@ public abstract class ParameterInputPane<T extends ParameterValue, V extends Obj
     public final ConstellationInput<V> input;
     public final PluginParameter<T> parameter;
     
-    ParameterInputPane(final ConstellationInput<V> input, final PluginParameter<T> parameter){
+    /**
+     * Constructor taking in input and parameter.
+     * @param input
+     * @param parameter
+     */
+    protected ParameterInputPane(final ConstellationInput<V> input, final PluginParameter<T> parameter) {
         
         //Set local references to the PluginParameter and the ConstellationInput
         this.input = input;
@@ -66,10 +71,8 @@ public abstract class ParameterInputPane<T extends ParameterValue, V extends Obj
         this.input.addListener(getFieldChangeListener(parameter));
         parameter.addListener(getPluginParameterListener());
         
-        // Add a validator that uses the parameter validation to validae the value of an input.
-        this.input.addValidator((String s) -> {
-            return parameter.validateString(s);
-        });
+        // Add a validator that uses the parameter validation to validate the value of an input.
+        this.input.addValidator(parameter::validateString);
         
         getChildren().add(input);
     }
@@ -80,35 +83,35 @@ public abstract class ParameterInputPane<T extends ParameterValue, V extends Obj
      * @return 
      */
     protected final ConstellationInput<V> getInputReference(){
-        return this.input;
+        return input;
     }
     
     /**
      * Sets the value of the input that this ParameterInputPane uses.
-     * @return 
+     * @param value Value to set in input field. 
      */
     public void setFieldValue(final V value){
-        this.input.setValue(value);
+        input.setValue(value);
     }
     
     public V getFieldValue(){
-        return this.input.getValue();
+        return input.getValue();
     }
     
     public void setFieldHeight(final int lineCount){
         input.setPrefRowCount(lineCount);
     }
     
-    public final void updateFieldVisibility(){
-            input.setManaged(parameter.isVisible());
-            this.setManaged(parameter.isVisible());
-            
-            input.setVisible(parameter.isVisible());
-            this.setVisible(parameter.isVisible());
+    public final void updateFieldVisibility() {
+        input.setManaged(parameter.isVisible());
+        this.setManaged(parameter.isVisible());
+
+        input.setVisible(parameter.isVisible());
+        this.setVisible(parameter.isVisible());
     }
-    
-    public final void updateFieldEnablement(){
-            input.setDisable(!parameter.isEnabled());
+
+    public final void updateFieldEnablement() {
+        input.setDisable(!parameter.isEnabled());
     }
     
     /**

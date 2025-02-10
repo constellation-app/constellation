@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2024 Australian Signals Directorate
+ * Copyright 2010-2025 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,21 +18,22 @@ package au.gov.asd.tac.constellation.utilities.gui.field.framework;
 import javafx.scene.control.Label;
 
 /**
- * An Interface for {@link ConstellationInput} extensions.
- * Provides required functionality to allow an extension to have a {@link RightButton}.
- * 
+ * An Interface for {@link ConstellationInput} extensions. Provides required
+ * functionality to allow an extension to have a {@link RightButton}.
+ *
  * @author capricornunicorn123
  */
 public interface RightButtonSupport {
-    
+
     public RightButton getRightButton();
-    
+
     public void executeRightButtonAction();
-    
+
     public abstract class RightButton extends Button {
+
         public RightButton(final Label label, final ButtonType type) {
             super(label, type);
         }
     }
-    
+
 }

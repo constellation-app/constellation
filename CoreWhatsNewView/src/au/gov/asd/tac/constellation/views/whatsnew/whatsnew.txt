@@ -1,6 +1,10 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2025-02 Multi-choice input field
+<p>Multi-choice type ahead input field added with infrastructure to enable other input fields to be based on it
+<p>Replaced existing multi-choice dropdown input fields with multi-choice type ahead input field so they all look and behave the same.
+
 == 2024-12-18 Animation updates
 <p>Direction Indicators animation moved to Animations -> Experimental.</p>
 <p>New Color Warp animation added to Animations -> Experimental.</p>
