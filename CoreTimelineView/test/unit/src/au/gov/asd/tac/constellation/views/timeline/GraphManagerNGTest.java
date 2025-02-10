@@ -30,10 +30,6 @@ import static org.mockito.Mockito.when;
 import org.openide.nodes.Node;
 import org.openide.windows.TopComponent;
 import static org.testng.Assert.*;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -42,52 +38,6 @@ import org.testng.annotations.Test;
  */
 public class GraphManagerNGTest {
 
-    public GraphManagerNGTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
-    @BeforeMethod
-    public void setUpMethod() throws Exception {
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
-    }
-
-//    /**
-//     * Test of getDefault method, of class GraphManager.
-//     */
-//    @Test
-//    public void testGetDefault() {
-//        System.out.println("getDefault");
-//        GraphManager expResult = null;
-//        GraphManager result = GraphManager.getDefault();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//    /**
-//     * Test of select method, of class GraphManager.
-//     */
-//    @Test
-//    public void testSelect() {
-//        System.out.println("select");
-//        int srcID = 0;
-//        int destID = 0;
-//        int transID = 0;
-//        boolean isCtrlDown = false;
-//        GraphManager instance = null;
-//        instance.select(srcID, destID, transID, isCtrlDown);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
     /**
      * Test of selectAllInRange method, of class GraphManager.
      */
@@ -129,59 +79,6 @@ public class GraphManagerNGTest {
         }
     }
 
-//    /**
-//     * Test of setElementSelected method, of class GraphManager.
-//     */
-//    @Test
-//    public void testSetElementSelected() {
-//        System.out.println("setElementSelected");
-//        boolean isElementSelected = false;
-//        GraphManager instance = null;
-//        instance.setElementSelected(isElementSelected);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of isElementSelected method, of class GraphManager.
-//     */
-//    @Test
-//    public void testIsElementSelected() {
-//        System.out.println("isElementSelected");
-//        GraphManager instance = null;
-//        boolean expResult = false;
-//        boolean result = instance.isElementSelected();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getDatetimeAttr method, of class GraphManager.
-//     */
-//    @Test
-//    public void testGetDatetimeAttr() {
-//        System.out.println("getDatetimeAttr");
-//        GraphManager instance = null;
-//        String expResult = "";
-//        String result = instance.getDatetimeAttr();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of setDatetimeAttr method, of class GraphManager.
-//     */
-//    @Test
-//    public void testSetDatetimeAttr() {
-//        System.out.println("setDatetimeAttr");
-//        String datetimeAttr = "";
-//        GraphManager instance = null;
-//        instance.setDatetimeAttr(datetimeAttr);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
     /**
      * Test of getVertexAttributeNames method, of class GraphManager.
      */
@@ -219,17 +116,4 @@ public class GraphManagerNGTest {
             verify(mockGraph).getReadableGraph();
         }
     }
-
-//    /**
-//     * Test of resultChanged method, of class GraphManager.
-//     */
-//    @Test
-//    public void testResultChanged() {
-//        System.out.println("resultChanged");
-//        LookupEvent lev = null;
-//        GraphManager instance = null;
-//        instance.resultChanged(lev);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
 }

@@ -261,14 +261,11 @@ public class TimelinePanel extends Region {
         }
 
         // Helps with out of memory issues
-        Platform.runLater(() -> {
-            clearTimelineData(); // requires platform runlater
-        });
-
-        //for (final TreeElement element : clusteringManager.getElementsToDraw()) {
-        final Object[] elementsAsArray = clusteringManager.getElementsToDraw().toArray();
-        for (Object elementsAsArray1 : elementsAsArray) {
-            final TreeElement element = (TreeElement) elementsAsArray1;
+        Platform.runLater(() -> clearTimelineData());
+        
+        // Loop done in this way to prevent concurrent modification error
+        for (final Object elementsFromArray : clusteringManager.getElementsToDraw().toArray()) {
+            final TreeElement element = (TreeElement) elementsFromArray;
 
             // Check if thread has been interrupted
             if (Thread.interrupted()) {
@@ -395,10 +392,8 @@ public class TimelinePanel extends Region {
         series.setData(listOfNodeItems);
         final long low = lowestObservedY;
         final long high = highestObservedY;
-        
-        Platform.runLater(() -> {
-            timeline.populate(series, low, high, selectedOnly, zoneId); // requires platform runlater
-        });
+
+        Platform.runLater(() -> timeline.populate(series, low, high, selectedOnly, zoneId));
     }
 
     private static String labelMaker(final String a, final char cxn, final String b) {
