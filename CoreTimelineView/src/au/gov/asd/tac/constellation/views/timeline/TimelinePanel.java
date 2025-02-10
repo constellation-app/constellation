@@ -36,6 +36,7 @@ import au.gov.asd.tac.constellation.views.timeline.components.Vertex;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Objects;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -103,6 +104,8 @@ public class TimelinePanel extends Region {
     private long expectedtxMod = Long.MIN_VALUE;
 
     final BorderPane timelinePane = new BorderPane();
+
+    Thread updateTimelineThread = null;
 
     /*
      If there is no color set for a node or transaction then set it to clouds.
@@ -218,7 +221,28 @@ public class TimelinePanel extends Region {
         }
     }
 
+    // Wrapper function for updateTimelineWorker, allowing it to be interrupted and restarted
+    // updateTimelineWorker can be a lengthy function depending on the amount of data,
+    // so allowing it to be interrupted prevents running out of memory issues and overall responsivness
     public void updateTimeline(final GraphReadMethods graph, final boolean selectedOnly, final ZoneId zoneId) {
+        // If thread still running, stop and restart
+        if (updateTimelineThread != null && updateTimelineThread.isAlive()) {
+            updateTimelineThread.interrupt();
+            updateTimelineThread = null;
+        }
+
+        // At this stage, thread has to be stopped/finished. So start again
+        updateTimelineThread = new Thread() {
+            @Override
+            public void run() {
+                updateTimelineWorker(graph, selectedOnly, zoneId);
+            }
+        };
+
+        updateTimelineThread.start();
+    }
+
+    private void updateTimelineWorker(final GraphReadMethods graph, final boolean selectedOnly, final ZoneId zoneId) {
         final ObservableList<XYChart.Data<Number, Number>> listOfNodeItems = FXCollections.observableArrayList();
 
         // Graph attribute ids:
@@ -231,10 +255,25 @@ public class TimelinePanel extends Region {
         long lowestObservedY = Long.MAX_VALUE;
         long highestObservedY = Long.MIN_VALUE;
 
-        // Helps with out of memory issues
-        clearTimelineData();
+        // Check if thread has been interrupted
+        if (Thread.interrupted()) {
+            return;
+        }
 
-        for (final TreeElement element : clusteringManager.getElementsToDraw()) {
+        // Helps with out of memory issues
+        Platform.runLater(() -> {
+            clearTimelineData(); // requires platform runlater
+        });
+
+        //for (final TreeElement element : clusteringManager.getElementsToDraw()) {
+        final Object[] elementsAsArray = clusteringManager.getElementsToDraw().toArray();
+        for (Object elementsAsArray1 : elementsAsArray) {
+            final TreeElement element = (TreeElement) elementsAsArray1;
+
+            // Check if thread has been interrupted
+            if (Thread.interrupted()) {
+                return;
+            }
             XYChart.Data<Number, Number> nodeItem = element.getNodeItem();
             if (nodeItem == null) {
                 if (element instanceof TreeLeaf leaf) {
@@ -250,6 +289,11 @@ public class TimelinePanel extends Region {
                     // Get the source and destination vertices, and their respective colors:
                     final int sourceA = graph.getTransactionSourceVertex(transactionID);
                     final int sourceB = graph.getTransactionDestinationVertex(transactionID);
+
+                    // If either vertex not found, skip this loop
+                    if (sourceA == -1 || sourceB == -1) {
+                        continue;
+                    }
 
                     // Get the color for each vertex:
                     col = ConstellationColor.getColorValue(graph.getStringValue(colorVertAttr, sourceA));
@@ -337,16 +381,24 @@ public class TimelinePanel extends Region {
 
                 element.setNodeItem(nodeItem);
             }
-
             listOfNodeItems.add(nodeItem);
-
             lowestObservedY = Math.min(element.getLowerDisplayPos(), lowestObservedY);
             highestObservedY = Math.max(element.getUpperDisplayPos(), highestObservedY);
         }
 
+        // Check if thread has been interrupted
+        if (Thread.interrupted()) {
+            return;
+        }
+
         final XYChart.Series<Number, Number> series = new XYChart.Series<>();
         series.setData(listOfNodeItems);
-        timeline.populate(series, lowestObservedY, highestObservedY, selectedOnly, zoneId);
+        final long low = lowestObservedY;
+        final long high = highestObservedY;
+        
+        Platform.runLater(() -> {
+            timeline.populate(series, low, high, selectedOnly, zoneId); // requires platform runlater
+        });
     }
 
     private static String labelMaker(final String a, final char cxn, final String b) {
