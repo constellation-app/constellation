@@ -336,6 +336,13 @@ public class OverviewPanel extends Pane {
     }
 
     /**
+     * Method to return histogram's data
+     */
+    protected ObservableList<XYChart.Series<Number, Number>> getHistogramData() {
+        return histogram.getData();
+    }
+
+    /**
      * Helper method that clears all data off the histogram component.
      */
     public void clearHistogram() {
