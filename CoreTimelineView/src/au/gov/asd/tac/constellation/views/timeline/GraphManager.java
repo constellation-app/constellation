@@ -75,7 +75,6 @@ public class GraphManager implements LookupListener {
         if (datetimeAttr != null) {
             final Set<Integer> vertices = new HashSet<>();
             final Set<Integer> transactions = new HashSet<>();
-
             try (final ReadableGraph rg = graphNode.getGraph().getReadableGraph()) {
                 final int datetimeAttrID = rg.getAttribute(GraphElementType.TRANSACTION, datetimeAttr);
                 final int selectedAttr = VisualConcept.TransactionAttribute.SELECTED.get(rg);
@@ -119,7 +118,7 @@ public class GraphManager implements LookupListener {
         final List<String> attrNames = new ArrayList<>();
 
         if (graphNode != null) {
-            try (final ReadableGraph rg = graphNode.getGraph().getReadableGraph();) {
+            try (final ReadableGraph rg = graphNode.getGraph().getReadableGraph()) {
                 for (int pos = 0; pos < rg.getAttributeCount(GraphElementType.VERTEX); pos++) {
                     final int attrID = rg.getAttribute(GraphElementType.VERTEX, pos);
                     attrNames.add(rg.getAttributeName(attrID));
