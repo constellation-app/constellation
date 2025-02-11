@@ -271,6 +271,7 @@ public class TimelinePanel extends Region {
         try {
             clearLatch.await();
         } catch (final InterruptedException e) {
+            Thread.currentThread().interrupt();
             return;
         }
 
@@ -418,7 +419,7 @@ public class TimelinePanel extends Region {
         try {
             populateLatch.await();
         } catch (final InterruptedException e) {
-            // Do nothing as function will return anyway
+            Thread.currentThread().interrupt();
         }
     }
 
