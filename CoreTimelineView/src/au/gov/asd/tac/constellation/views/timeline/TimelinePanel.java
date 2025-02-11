@@ -105,7 +105,7 @@ public class TimelinePanel extends Region {
 
     final BorderPane timelinePane = new BorderPane();
 
-    Thread updateTimelineThread = null;
+    private Thread updateTimelineThread = null;
 
     /*
      If there is no color set for a node or transaction then set it to clouds.

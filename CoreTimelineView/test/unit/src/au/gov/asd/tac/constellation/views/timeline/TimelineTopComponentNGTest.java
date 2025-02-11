@@ -34,6 +34,7 @@ import org.openide.nodes.Node;
 import org.openide.windows.TopComponent.Registry;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -319,6 +320,15 @@ public class TimelineTopComponentNGTest {
         final OverviewPanel overviewPanel = mock(OverviewPanel.class);
         instance.setOverviewPanel(overviewPanel);
         assertEquals(instance.getOverviewPanel(), overviewPanel);
+    }
+
+    @Test
+    public void testCanClose() {
+        System.out.println("canClose");
+        final TimelineTopComponent instance = new TimelineTopComponent();
+        // Assert function runs correctly without error
+        assertTrue(instance.canClose());
+
     }
 
 }
