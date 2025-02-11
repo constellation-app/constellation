@@ -1,3 +1,12 @@
+---
+name: Issue Template
+about: The template for submitting issues
+title: ''
+labels: ''
+assignees: ''
+
+---
+
 <!--
 
 ### Requirements
