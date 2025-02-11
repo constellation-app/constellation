@@ -350,7 +350,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                 // Warn if 5 seconds had passed
                 LOGGER.log(Level.WARNING, "Latch in TimelineTopComponent canClose() timed out!");
             }
-        } catch (InterruptedException e) {
+        } catch (final InterruptedException e) {
             LOGGER.log(Level.WARNING, "Interrupted!", e);
             Thread.currentThread().interrupt();
         }
