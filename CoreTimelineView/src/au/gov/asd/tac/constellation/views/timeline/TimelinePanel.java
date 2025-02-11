@@ -236,20 +236,14 @@ public class TimelinePanel extends Region {
         updateTimelineThread = new Thread() {
             @Override
             public void run() {
-                // try {
                 updateTimelineWorker(graph, selectedOnly, zoneId);
-//                } catch (final InterruptedException e) {
-//                    System.out.println("WORKER INTERRUTED!!!");
-//                }
             }
         };
 
         updateTimelineThread.start();
     }
-//    private static int id = 0;
-//    private static Object lock
-    private synchronized void updateTimelineWorker(final GraphReadMethods graph, final boolean selectedOnly, final ZoneId zoneId) { //throws InterruptedException {
-        //id++;
+
+    private synchronized void updateTimelineWorker(final GraphReadMethods graph, final boolean selectedOnly, final ZoneId zoneId) {
         final ObservableList<XYChart.Data<Number, Number>> listOfNodeItems = FXCollections.observableArrayList();
 
         // Graph attribute ids:
@@ -264,7 +258,6 @@ public class TimelinePanel extends Region {
 
         // Check if thread has been interrupted
         if (Thread.interrupted()) {
-            //System.out.println("Interrupted before clear");
             return;
         }
 
@@ -275,31 +268,21 @@ public class TimelinePanel extends Region {
             clearLatch.countDown();
         });
 
-        //System.out.println("waiting for clear...");
         try {
             clearLatch.await();
         } catch (final InterruptedException e) {
-            //System.out.println("interrupt in clear");
             return;
         }
 
-        //System.out.println("Finished clearing");
-        //int i = 0; //debug
         // Loop done in this way to prevent concurrent modification error
         // Copy of the array is stored as opposed to being called in for loop to prevent issues cause by threading
         final Object[] arrayCopy = clusteringManager.getElementsToDraw().toArray();
         for (final Object elementsFromArray : arrayCopy) {
+
             // Check if thread has been interrupted
             if (Thread.interrupted()) {
-                //System.out.println("Interrupted in loop");
                 return;
             }
-
-            // Debug
-//            i++;
-//            if (i % 1000 == 0) {
-//                System.out.println("Element: " + i);
-//            }
 
             final TreeElement element = (TreeElement) elementsFromArray;
 
@@ -417,9 +400,9 @@ public class TimelinePanel extends Region {
 
         // Check if thread has been interrupted
         if (Thread.interrupted()) {
-            //System.out.println("Interrupted after loop, before populate");
             return;
         }
+
         final XYChart.Series<Number, Number> series = new XYChart.Series<>();
         series.setData(listOfNodeItems);
         final long low = lowestObservedY;
@@ -431,14 +414,12 @@ public class TimelinePanel extends Region {
             timeline.populate(series, low, high, selectedOnly, zoneId);
             populateLatch.countDown();
         });
-        //System.out.println("waiting for populate...");
 
         try {
             populateLatch.await();
         } catch (final InterruptedException e) {
-            //System.out.println("interrupt in populate");
+            // Do nothing as function will return anyway
         }
-        //System.out.println("Done!");
     }
 
     private static String labelMaker(final String a, final char cxn, final String b) {
