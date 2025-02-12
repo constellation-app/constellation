@@ -20,14 +20,14 @@ import java.time.ZoneId;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -94,17 +94,18 @@ public class TimelinePanelNGTest {
     public void testUpdateTimeline() {
         System.out.println("updateTimeline");
         final TimelineTopComponent coordinator = mock(TimelineTopComponent.class);
-        final TimelinePanel instance = new TimelinePanel(coordinator);
-        final TimelinePanel instanceSpy = spy(instance);
+        final TimelinePanel instanceSpy = spy(new TimelinePanel(coordinator));
 
         final GraphReadMethods mockGraph = mock(GraphReadMethods.class);
         final ZoneId mockZoneId = ZoneId.systemDefault();
 
         assertEquals(coordinator, instanceSpy.getCoordinator());
 
+        assertNull(instanceSpy.getUpdateTimelineThread());
+
         instanceSpy.updateTimeline(mockGraph, false, mockZoneId);
-        //verify(mockGraph, times(4)).getAttribute(any(), anyString());
-        //verify(instanceSpy, times(1)).clearTimelineData();
+
+        assertNotNull(instanceSpy.getUpdateTimelineThread());
 
         instanceSpy.clearTimelineData();
     }

@@ -222,9 +222,24 @@ public class TimelinePanel extends Region {
         }
     }
 
-    // Wrapper function for updateTimelineWorker, allowing it to be interrupted and restarted
-    // updateTimelineWorker can be a lengthy function depending on the amount of data,
-    // so allowing it to be interrupted prevents running out of memory issues and overall responsivness
+    /**
+     * Returns the current thread for updating the timeline.
+     *
+     * @return current update timeline thread.
+     */
+    protected Thread getUpdateTimelineThread() {
+        return updateTimelineThread;
+    }
+
+    /**
+     * Wrapper function for updateTimelineThread, which runs updateTimelineWorker, allowing it to be interrupted and
+     * restarted. UpdateTimelineWorker can be a lengthy function as it's processing time scales with the amount of data,
+     * so allowing it to be interrupted prevents issues with running out of memory and overall responsiveness
+     *
+     * @param graph the graph to update the timeline from
+     * @param selectedOnly limit to selected graph items
+     * @param zoneId current time zone
+     */
     public void updateTimeline(final GraphReadMethods graph, final boolean selectedOnly, final ZoneId zoneId) {
         // If thread still running, stop and restart
         if (updateTimelineThread != null && updateTimelineThread.isAlive()) {
