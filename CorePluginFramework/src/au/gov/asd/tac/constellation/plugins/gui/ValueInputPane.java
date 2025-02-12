@@ -207,7 +207,6 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                 recentValuesCombo.setDisable(!parameter.isEnabled());
             }
 
-            field.addEventFilter(KeyEvent.KEY_PRESSED, event -> FileInputPane.handleEventFilter(event, field));
             final Tooltip tooltip = new Tooltip("");
             tooltip.setStyle("-fx-text-fill: white;");
             field.textProperty().addListener((ov, t, t1) -> {
