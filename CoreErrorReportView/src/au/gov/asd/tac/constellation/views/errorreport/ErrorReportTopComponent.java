@@ -107,6 +107,13 @@ import org.openide.windows.TopComponent;
 
 public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
 
+    /**
+     * @return the params
+     */
+    public PluginParameters getParams() {
+        return params;
+    }
+
     private static final Logger LOGGER = Logger.getLogger(ErrorReportTopComponent.class.getName());
 
     private List<ErrorReportEntry> sessionErrors = new ArrayList<>();
@@ -182,7 +189,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
     private final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor()));
     private final Button helpButton = new Button("", helpImage);
 
-    final PluginParameters params = new PluginParameters();
+    protected final PluginParameters params = new PluginParameters();
     public static final String REPORT_SETTINGS_PARAMETER_ID = PluginParameter.buildId(ErrorReportTopComponent.class, "report_settings");    
         
     ErrorReportTopComponent() {
@@ -313,10 +320,11 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         MultiChoiceParameterType.setChoices(reportSettingOptions, checked);
         reportSettingOptions.setEnabled(true);
         
-        params.addParameter(reportSettingOptions);
+        getParams().addParameter(reportSettingOptions);
         
-        params.addController(REPORT_SETTINGS_PARAMETER_ID, (masterId, parameters, change) -> {
+        getParams().addController(REPORT_SETTINGS_PARAMETER_ID, (masterId, parameters, change) -> {
             if (change == ParameterChange.VALUE) {
+                filterUpdateDate = new Date();
                 updateSettings();
                 updateSessionErrorsBox(-1);
             }
@@ -478,8 +486,8 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
 
 
         List<String> choices = new ArrayList();
-        if (params.hasParameter(REPORT_SETTINGS_PARAMETER_ID)) {
-            MultiChoiceParameterValue multiChoiceValue = params.getMultiChoiceValue(REPORT_SETTINGS_PARAMETER_ID);
+        if (getParams().hasParameter(REPORT_SETTINGS_PARAMETER_ID)) {
+            MultiChoiceParameterValue multiChoiceValue = getParams().getMultiChoiceValue(REPORT_SETTINGS_PARAMETER_ID);
             choices = multiChoiceValue.getChoices();
         }
         
@@ -518,8 +526,8 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         
 
         List<String> choices = new ArrayList();
-        if (params.hasParameter(REPORT_SETTINGS_PARAMETER_ID)) {
-            MultiChoiceParameterValue multiChoiceValue = params.getMultiChoiceValue(REPORT_SETTINGS_PARAMETER_ID);
+        if (getParams().hasParameter(REPORT_SETTINGS_PARAMETER_ID)) {
+            MultiChoiceParameterValue multiChoiceValue = getParams().getMultiChoiceValue(REPORT_SETTINGS_PARAMETER_ID);
             choices = multiChoiceValue.getChoices();
         }
        
@@ -574,8 +582,8 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         
         
         List<String> choices = new ArrayList();
-        if (params.hasParameter(REPORT_SETTINGS_PARAMETER_ID)) {
-            MultiChoiceParameterValue multiChoiceValue = params.getMultiChoiceValue(REPORT_SETTINGS_PARAMETER_ID);
+        if (getParams().hasParameter(REPORT_SETTINGS_PARAMETER_ID)) {
+            MultiChoiceParameterValue multiChoiceValue = getParams().getMultiChoiceValue(REPORT_SETTINGS_PARAMETER_ID);
             choices = multiChoiceValue.getChoices();
         }
         
@@ -653,8 +661,8 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
                 
                 // check popup selection
                 List<String> choices = new ArrayList();
-                if (params.hasParameter(REPORT_SETTINGS_PARAMETER_ID)) {
-                    MultiChoiceParameterValue multiChoiceValue = params.getMultiChoiceValue(REPORT_SETTINGS_PARAMETER_ID);
+                if (getParams().hasParameter(REPORT_SETTINGS_PARAMETER_ID)) {
+                    MultiChoiceParameterValue multiChoiceValue = getParams().getMultiChoiceValue(REPORT_SETTINGS_PARAMETER_ID);
                     choices = multiChoiceValue.getChoices();
                 }
                 final boolean severePopupIsSelected = choices.contains(SeverityCode.SEVERE_POPUP.getCode());
@@ -1069,7 +1077,10 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         bdrPane.setCenter(hBoxTitle);
         bdrPane.setRight(hBoxRight);
         bdrPane.setStyle("-fx-border-color: grey;");
-        bdrPane.prefWidthProperty().bind(scrollPane.widthProperty().subtract(48));
+        // ErrorReportFullSuiteNGTest will sometimes have scrollPane = null
+        if (scrollPane != null) {
+            bdrPane.prefWidthProperty().bind(scrollPane.widthProperty().subtract(48));
+        }
         bdrPane.setPrefHeight(24);
 
         ttlPane.setGraphic(bdrPane);
